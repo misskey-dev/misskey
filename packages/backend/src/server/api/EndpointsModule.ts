@@ -195,7 +195,6 @@ import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
-import * as ep___i_readAllMessagingMessages from './endpoints/i/read-all-messaging-messages.js';
 import * as ep___i_readAllUnreadNotes from './endpoints/i/read-all-unread-notes.js';
 import * as ep___i_readAnnouncement from './endpoints/i/read-announcement.js';
 import * as ep___i_regenerateToken from './endpoints/i/regenerate-token.js';
@@ -212,17 +211,11 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
-import * as ep___i_userGroupInvites from './endpoints/i/user-group-invites.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
-import * as ep___messaging_history from './endpoints/messaging/history.js';
-import * as ep___messaging_messages from './endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
@@ -300,18 +293,6 @@ import * as ep___users_followers from './endpoints/users/followers.js';
 import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
-import * as ep___users_groups_create from './endpoints/users/groups/create.js';
-import * as ep___users_groups_delete from './endpoints/users/groups/delete.js';
-import * as ep___users_groups_invitations_accept from './endpoints/users/groups/invitations/accept.js';
-import * as ep___users_groups_invitations_reject from './endpoints/users/groups/invitations/reject.js';
-import * as ep___users_groups_invite from './endpoints/users/groups/invite.js';
-import * as ep___users_groups_joined from './endpoints/users/groups/joined.js';
-import * as ep___users_groups_leave from './endpoints/users/groups/leave.js';
-import * as ep___users_groups_owned from './endpoints/users/groups/owned.js';
-import * as ep___users_groups_pull from './endpoints/users/groups/pull.js';
-import * as ep___users_groups_show from './endpoints/users/groups/show.js';
-import * as ep___users_groups_transfer from './endpoints/users/groups/transfer.js';
-import * as ep___users_groups_update from './endpoints/users/groups/update.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
 import * as ep___users_lists_list from './endpoints/users/lists/list.js';
@@ -530,7 +511,6 @@ const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
 const $i_pin: Provider = { provide: 'ep:i/pin', useClass: ep___i_pin.default };
-const $i_readAllMessagingMessages: Provider = { provide: 'ep:i/read-all-messaging-messages', useClass: ep___i_readAllMessagingMessages.default };
 const $i_readAllUnreadNotes: Provider = { provide: 'ep:i/read-all-unread-notes', useClass: ep___i_readAllUnreadNotes.default };
 const $i_readAnnouncement: Provider = { provide: 'ep:i/read-announcement', useClass: ep___i_readAnnouncement.default };
 const $i_regenerateToken: Provider = { provide: 'ep:i/regenerate-token', useClass: ep___i_regenerateToken.default };
@@ -547,17 +527,11 @@ const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: e
 const $i_unpin: Provider = { provide: 'ep:i/unpin', useClass: ep___i_unpin.default };
 const $i_updateEmail: Provider = { provide: 'ep:i/update-email', useClass: ep___i_updateEmail.default };
 const $i_update: Provider = { provide: 'ep:i/update', useClass: ep___i_update.default };
-const $i_userGroupInvites: Provider = { provide: 'ep:i/user-group-invites', useClass: ep___i_userGroupInvites.default };
 const $i_webhooks_create: Provider = { provide: 'ep:i/webhooks/create', useClass: ep___i_webhooks_create.default };
 const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep___i_webhooks_list.default };
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
 const $i_webhooks_update: Provider = { provide: 'ep:i/webhooks/update', useClass: ep___i_webhooks_update.default };
 const $i_webhooks_delete: Provider = { provide: 'ep:i/webhooks/delete', useClass: ep___i_webhooks_delete.default };
-const $messaging_history: Provider = { provide: 'ep:messaging/history', useClass: ep___messaging_history.default };
-const $messaging_messages: Provider = { provide: 'ep:messaging/messages', useClass: ep___messaging_messages.default };
-const $messaging_messages_create: Provider = { provide: 'ep:messaging/messages/create', useClass: ep___messaging_messages_create.default };
-const $messaging_messages_delete: Provider = { provide: 'ep:messaging/messages/delete', useClass: ep___messaging_messages_delete.default };
-const $messaging_messages_read: Provider = { provide: 'ep:messaging/messages/read', useClass: ep___messaging_messages_read.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
@@ -635,18 +609,6 @@ const $users_followers: Provider = { provide: 'ep:users/followers', useClass: ep
 const $users_following: Provider = { provide: 'ep:users/following', useClass: ep___users_following.default };
 const $users_gallery_posts: Provider = { provide: 'ep:users/gallery/posts', useClass: ep___users_gallery_posts.default };
 const $users_getFrequentlyRepliedUsers: Provider = { provide: 'ep:users/get-frequently-replied-users', useClass: ep___users_getFrequentlyRepliedUsers.default };
-const $users_groups_create: Provider = { provide: 'ep:users/groups/create', useClass: ep___users_groups_create.default };
-const $users_groups_delete: Provider = { provide: 'ep:users/groups/delete', useClass: ep___users_groups_delete.default };
-const $users_groups_invitations_accept: Provider = { provide: 'ep:users/groups/invitations/accept', useClass: ep___users_groups_invitations_accept.default };
-const $users_groups_invitations_reject: Provider = { provide: 'ep:users/groups/invitations/reject', useClass: ep___users_groups_invitations_reject.default };
-const $users_groups_invite: Provider = { provide: 'ep:users/groups/invite', useClass: ep___users_groups_invite.default };
-const $users_groups_joined: Provider = { provide: 'ep:users/groups/joined', useClass: ep___users_groups_joined.default };
-const $users_groups_leave: Provider = { provide: 'ep:users/groups/leave', useClass: ep___users_groups_leave.default };
-const $users_groups_owned: Provider = { provide: 'ep:users/groups/owned', useClass: ep___users_groups_owned.default };
-const $users_groups_pull: Provider = { provide: 'ep:users/groups/pull', useClass: ep___users_groups_pull.default };
-const $users_groups_show: Provider = { provide: 'ep:users/groups/show', useClass: ep___users_groups_show.default };
-const $users_groups_transfer: Provider = { provide: 'ep:users/groups/transfer', useClass: ep___users_groups_transfer.default };
-const $users_groups_update: Provider = { provide: 'ep:users/groups/update', useClass: ep___users_groups_update.default };
 const $users_lists_create: Provider = { provide: 'ep:users/lists/create', useClass: ep___users_lists_create.default };
 const $users_lists_delete: Provider = { provide: 'ep:users/lists/delete', useClass: ep___users_lists_delete.default };
 const $users_lists_list: Provider = { provide: 'ep:users/lists/list', useClass: ep___users_lists_list.default };
@@ -869,7 +831,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
-		$i_readAllMessagingMessages,
 		$i_readAllUnreadNotes,
 		$i_readAnnouncement,
 		$i_regenerateToken,
@@ -886,17 +847,11 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
-		$i_userGroupInvites,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
-		$messaging_history,
-		$messaging_messages,
-		$messaging_messages_create,
-		$messaging_messages_delete,
-		$messaging_messages_read,
 		$meta,
 		$emojis,
 		$miauth_genToken,
@@ -974,18 +929,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_following,
 		$users_gallery_posts,
 		$users_getFrequentlyRepliedUsers,
-		$users_groups_create,
-		$users_groups_delete,
-		$users_groups_invitations_accept,
-		$users_groups_invitations_reject,
-		$users_groups_invite,
-		$users_groups_joined,
-		$users_groups_leave,
-		$users_groups_owned,
-		$users_groups_pull,
-		$users_groups_show,
-		$users_groups_transfer,
-		$users_groups_update,
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,
@@ -1202,7 +1145,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_pageLikes,
 		$i_pages,
 		$i_pin,
-		$i_readAllMessagingMessages,
 		$i_readAllUnreadNotes,
 		$i_readAnnouncement,
 		$i_regenerateToken,
@@ -1219,17 +1161,11 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
-		$i_userGroupInvites,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
-		$messaging_history,
-		$messaging_messages,
-		$messaging_messages_create,
-		$messaging_messages_delete,
-		$messaging_messages_read,
 		$meta,
 		$emojis,
 		$miauth_genToken,
@@ -1305,18 +1241,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_following,
 		$users_gallery_posts,
 		$users_getFrequentlyRepliedUsers,
-		$users_groups_create,
-		$users_groups_delete,
-		$users_groups_invitations_accept,
-		$users_groups_invitations_reject,
-		$users_groups_invite,
-		$users_groups_joined,
-		$users_groups_leave,
-		$users_groups_owned,
-		$users_groups_pull,
-		$users_groups_show,
-		$users_groups_transfer,
-		$users_groups_update,
 		$users_lists_create,
 		$users_lists_delete,
 		$users_lists_list,

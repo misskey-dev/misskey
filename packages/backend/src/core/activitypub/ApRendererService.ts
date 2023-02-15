@@ -13,7 +13,6 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
-import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
 import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
 import { MfmService } from '@/core/MfmService.js';
@@ -293,7 +292,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderNote(note: Note, dive = true, isTalk = false): Promise<IPost> {
+	public async renderNote(note: Note, dive = true): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
@@ -407,11 +406,7 @@ export class ApRendererService {
 				},
 			})),
 		} as const : {};
-	
-		const asTalk = isTalk ? {
-			_misskey_talk: true,
-		} as const : {};
-	
+
 		return {
 			id: `${this.config.url}/notes/${note.id}`,
 			type: 'Note',
@@ -433,7 +428,6 @@ export class ApRendererService {
 			sensitive: note.cw != null || files.some(file => file.isSensitive),
 			tag,
 			...asPoll,
-			...asTalk,
 		};
 	}
 
@@ -529,15 +523,6 @@ export class ApRendererService {
 					totalItems: poll.votes[i],
 				},
 			})),
-		};
-	}
-
-	@bindThis
-	public renderRead(user: { id: User['id'] }, message: MessagingMessage): IRead {
-		return {
-			type: 'Read',
-			actor: `${this.config.url}/users/${user.id}`,
-			object: message.uri!,
 		};
 	}
 
@@ -643,7 +628,6 @@ export class ApRendererService {
 					'_misskey_quote': 'misskey:_misskey_quote',
 					'_misskey_reaction': 'misskey:_misskey_reaction',
 					'_misskey_votes': 'misskey:_misskey_votes',
-					'_misskey_talk': 'misskey:_misskey_talk',
 					'isCat': 'misskey:isCat',
 					// vcard
 					vcard: 'http://www.w3.org/2006/vcard/ns#',

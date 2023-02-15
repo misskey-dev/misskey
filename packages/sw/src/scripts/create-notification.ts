@@ -209,23 +209,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 						data,
 					}];
 
-				case 'groupInvited':
-					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
-						body: data.body.invitation.group.name,
-						badge: iconUrl('users'),
-						data,
-						actions: [
-							{
-								action: 'accept',
-								title: t('accept'),
-							},
-							{
-								action: 'reject',
-								title: t('reject'),
-							},
-						],
-					}];
-
 				case 'app':
 					return [data.body.header ?? data.body.body, {
 						body: data.body.header ? data.body.body : '',
@@ -236,23 +219,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 				default:
 					return null;
 			}
-		case 'unreadMessagingMessage':
-			if (data.body.groupId === null) {
-				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
-					icon: data.body.user.avatarUrl,
-					badge: iconUrl('messages'),
-					tag: `messaging:user:${data.body.userId}`,
-					data,
-					renotify: true,
-				}];
-			}
-			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group?.name ?? '' }), {
-				icon: data.body.user.avatarUrl,
-				badge: iconUrl('messages'),
-				tag: `messaging:group:${data.body.groupId}`,
-				data,
-				renotify: true,
-			}];
 		case 'unreadAntennaNote':
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,

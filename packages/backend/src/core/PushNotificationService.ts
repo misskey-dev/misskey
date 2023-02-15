@@ -11,15 +11,12 @@ import { bindThis } from '@/decorators.js';
 // Defined also packages/sw/types.ts#L13
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
-	'unreadMessagingMessage': Packed<'MessagingMessage'>;
 	'unreadAntennaNote': {
 		antenna: { id: string, name: string };
 		note: Packed<'Note'>;
 	};
 	'readNotifications': { notificationIds: string[] };
 	'readAllNotifications': undefined;
-	'readAllMessagingMessages': undefined;
-	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
 	'readAntenna': { antennaId: string };
 	'readAllAntennas': undefined;
 };
@@ -40,11 +37,10 @@ function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pus
 				reply: undefined,
 				renote: undefined,
 				user: type === 'notification' ? undefined as any : body.note.user,
-			}
+			},
 		} : {}),
 	};
 
-	return body;
 }
 
 @Injectable()
@@ -81,8 +77,6 @@ export class PushNotificationService {
 			if ([
 				'readNotifications',
 				'readAllNotifications',
-				'readAllMessagingMessages',
-				'readAllMessagingMessagesOfARoom',
 				'readAntenna',
 				'readAllAntennas',
 			].includes(type) && !subscription.sendReadMessage) continue;
