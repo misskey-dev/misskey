@@ -22,7 +22,7 @@ export class Ad {
 	@Column('timestamp with time zone', {
 		comment: 'The expired date of the Ad.',
 	})
-	public startAt: Date;
+	public startsAt: Date;
 
 	@Column('varchar', {
 		length: 32, nullable: false,

@@ -262,7 +262,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const ads = await this.adsRepository.find({
 				where: {
 					expiresAt: MoreThan(new Date()),
-					startAt: LessThanOrEqual(new Date()),
+					startsAt: LessThanOrEqual(new Date()),
 				},
 			});
 

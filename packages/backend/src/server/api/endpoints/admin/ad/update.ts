@@ -30,9 +30,9 @@ export const paramDef = {
 		priority: { type: 'string' },
 		ratio: { type: 'integer' },
 		expiresAt: { type: 'integer' },
-		startAt: { type: 'integer' },
+		startsAt: { type: 'integer' },
 	},
-	required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt', 'startAt'],
+	required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				memo: ps.memo,
 				imageUrl: ps.imageUrl,
 				expiresAt: new Date(ps.expiresAt),
-				startAt: new Date(ps.startAt),
+				startsAt: new Date(ps.startsAt),
 			});
 		});
 	}

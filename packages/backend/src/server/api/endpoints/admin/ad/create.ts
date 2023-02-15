@@ -20,10 +20,10 @@ export const paramDef = {
 		priority: { type: 'string' },
 		ratio: { type: 'integer' },
 		expiresAt: { type: 'integer' },
-		startAt: { type: 'integer' },
+		startsAt: { type: 'integer' },
 		imageUrl: { type: 'string', minLength: 1 },
 	},
-	required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'startAt', 'imageUrl'],
+	required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt', 'imageUrl'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				expiresAt: new Date(ps.expiresAt),
-				startAt: new Date(ps.startAt),
+				startsAt: new Date(ps.startsAt),
 				url: ps.url,
 				imageUrl: ps.imageUrl,
 				priority: ps.priority,
