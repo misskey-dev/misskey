@@ -14,7 +14,7 @@ You should also include the user name that made the change.
 - Server: URLプレビュー（summaly）はプロキシを通すように
 
 ### Bugfixes
--
+- ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
 
 ## 13.6.1 (2023/02/12)
 
