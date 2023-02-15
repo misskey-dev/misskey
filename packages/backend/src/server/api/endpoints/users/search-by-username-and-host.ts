@@ -1,7 +1,8 @@
-import { Brackets } from 'typeorm';
+import { Brackets, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { USER_ACTIVE_THRESHOLD } from '@/const.js';
+import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -54,6 +55,9 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -67,8 +71,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.host) {
 				const q = this.usersRepository.createQueryBuilder('user')
-					.where('user.isSuspended = FALSE')
-					.andWhere('user.host LIKE :host', { host: sqlLikeEscape(ps.host.toLowerCase()) + '%' });
+					.where('user.isSuspended = FALSE');
+		
+				if (ps.host === this.config.hostname || ps.host === '.') {
+					q.andWhere('user.host IS NULL');
+				} else {
+					q.andWhere('user.host LIKE :host', {
+						host: sqlLikeEscape(ps.host.toLowerCase()) + '%'
+					});
+				}
 
 				if (ps.username) {
 					q.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });

@@ -23,7 +23,7 @@
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"/>
 		</datalist>
 		<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
 	</div>

@@ -16,7 +16,7 @@
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" @update:model-value="search">
+				<MkInput v-model="host" @update:model-value="search" :datalist="[hostname]">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -61,6 +61,7 @@ import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { hostname } from '@/config';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
