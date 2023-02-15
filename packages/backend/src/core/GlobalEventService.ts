@@ -3,7 +3,6 @@ import Redis from 'ioredis';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { UserList } from '@/models/entities/UserList.js';
-import type { UserGroup } from '@/models/entities/UserGroup.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import type {
