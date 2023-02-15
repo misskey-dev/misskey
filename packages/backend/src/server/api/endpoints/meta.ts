@@ -1,4 +1,4 @@
-import { IsNull, MoreThan } from 'typeorm';
+import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
 import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -262,6 +262,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const ads = await this.adsRepository.find({
 				where: {
 					expiresAt: MoreThan(new Date()),
+					startAt: LessThanOrEqual(new Date()),
 				},
 			});
 
