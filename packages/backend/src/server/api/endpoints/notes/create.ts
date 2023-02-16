@@ -11,7 +11,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
-import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

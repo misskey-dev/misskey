@@ -1,4 +1,3 @@
-import { performance } from 'perf_hooks';
 import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { User, UsersRepository } from '@/models/index.js';
+import type { User } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { toArray, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';

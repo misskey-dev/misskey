@@ -22,16 +22,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onActivated, onMounted, onUnmounted, provide, ref, shallowRef, watch } from 'vue';
+import { computed, onActivated, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import { scroll } from '@/scripts/scroll';
 import { signout, $i } from '@/account';
 import { unisonReload } from '@/scripts/unison-reload';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import * as os from '@/os';
 import { miLocalStorage } from '@/local-storage';
 import { fetchCustomEmojis } from '@/custom-emojis';

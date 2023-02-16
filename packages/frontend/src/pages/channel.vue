@@ -32,8 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, watch } from 'vue';
-import MkContainer from '@/components/MkContainer.vue';
+import { computed, watch } from 'vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import XTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';

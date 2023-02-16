@@ -1,11 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository } from '@/models/index.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { App } from '@/models/entities/App.js';
 import type { User } from '@/models/entities/User.js';
-import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()

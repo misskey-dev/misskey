@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/schema.js';
 import type { User } from '@/models/entities/User.js';
 import type { Role } from '@/models/entities/Role.js';
 import { bindThis } from '@/decorators.js';
