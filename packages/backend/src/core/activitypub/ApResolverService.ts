@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@/di-decorators.js';
-import type { ILocalUser } from '@/models/entities/User.js';
+import type { LocalUser } from '@/models/entities/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -18,7 +18,7 @@ import type { IObject, ICollection, IOrderedCollection } from './type.js';
 
 export class Resolver {
 	private history: Set<string>;
-	private user?: ILocalUser;
+	private user?: LocalUser;
 	private logger: Logger;
 
 	constructor(
@@ -133,7 +133,7 @@ export class Resolver {
 					});
 			case 'users':
 				return this.usersRepository.findOneByOrFail({ id: parsed.id })
-					.then(user => this.apRendererService.renderPerson(user as ILocalUser));
+					.then(user => this.apRendererService.renderPerson(user as LocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
 				return Promise.all([
@@ -196,6 +196,8 @@ export class ApResolverService {
 
 		@Inject(DI.ApDbResolverService)
 		private apDbResolverService: ApDbResolverService,
+
+		@Inject(DI.LoggerService)
 		private loggerService: LoggerService,
 	) {
 	}

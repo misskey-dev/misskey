@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@/di-decorators.js';
 import summaly from 'summaly';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -35,7 +35,7 @@ export class UrlPreviewService {
 	}
 
 	@bindThis
-	private wrap(url?: string): string | null {
+	private wrap(url?: string | null): string | null {
 		return url != null
 			? url.match(/^https?:\/\//)
 				? `${this.config.mediaProxy}/preview.webp?${query({
@@ -69,14 +69,21 @@ export class UrlPreviewService {
 			? `(Proxy) Getting preview of ${url}@${lang} ...`
 			: `Getting preview of ${url}@${lang} ...`);
 		try {
-			const summary = meta.summalyProxy ? await this.httpRequestService.getJson<ReturnType<typeof summaly.default>>(`${meta.summalyProxy}?${query({
-				url: url,
-				lang: lang ?? 'ja-JP',
-			})}`) : await summaly.default(url, {
-				followRedirects: false,
-				lang: lang ?? 'ja-JP',
-			});
-	
+			const summary = meta.summalyProxy ?
+				await this.httpRequestService.getJson<ReturnType<typeof summaly>>(`${meta.summalyProxy}?${query({
+					url: url,
+					lang: lang ?? 'ja-JP',
+				})}`)
+				:
+				await summaly(url, {
+					followRedirects: false,
+					lang: lang ?? 'ja-JP',
+					agent: {
+						http: this.httpRequestService.httpAgent,
+						https: this.httpRequestService.httpsAgent,
+					},
+				});
+
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
 
 			if (summary.url && !(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {

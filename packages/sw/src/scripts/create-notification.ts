@@ -30,7 +30,7 @@ export async function createNotification<K extends keyof pushNotificationDataMap
 	}
 }
 
-async function composeNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]): Promise<[string, NotificationOptions] | null> {
+async function composeNotification(data: pushNotificationDataMap[keyof pushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
 	if (!swLang.i18n) swLang.fetchLocale();
 	const i18n = await swLang.i18n as I18n<any>;
 	const { t } = i18n;
@@ -66,7 +66,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'mention':
 					return [t('_notification.youGotMention', { name: getUserName(data.body.user) }), {
-						body: data.body.note.text || '',
+						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('at'),
 						data,
@@ -80,7 +80,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'reply':
 					return [t('_notification.youGotReply', { name: getUserName(data.body.user) }), {
-						body: data.body.note.text || '',
+						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('arrow-back-up'),
 						data,
@@ -94,7 +94,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'renote':
 					return [t('_notification.youRenoted', { name: getUserName(data.body.user) }), {
-						body: data.body.note.text || '',
+						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('repeat'),
 						data,
@@ -108,7 +108,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 
 				case 'quote':
 					return [t('_notification.youGotQuote', { name: getUserName(data.body.user) }), {
-						body: data.body.note.text || '',
+						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('quote'),
 						data,
@@ -162,7 +162,7 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 					}
 
 					return [`${reaction} ${getUserName(data.body.user)}`, {
-						body: data.body.note.text || '',
+						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
 						badge,
 						data,
@@ -209,53 +209,19 @@ async function composeNotification<K extends keyof pushNotificationDataMap>(data
 						data,
 					}];
 
-				case 'groupInvited':
-					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
-						body: data.body.invitation.group.name,
-						badge: iconUrl('users'),
-						data,
-						actions: [
-							{
-								action: 'accept',
-								title: t('accept'),
-							},
-							{
-								action: 'reject',
-								title: t('reject'),
-							},
-						],
-					}];
-
 				case 'app':
-					return [data.body.header || data.body.body, {
-						body: data.body.header && data.body.body,
-						icon: data.body.icon,
+					return [data.body.header ?? data.body.body, {
+						body: data.body.header ? data.body.body : '',
+						icon: data.body.icon ?? undefined,
 						data,
 					}];
 
 				default:
 					return null;
 			}
-		case 'unreadMessagingMessage':
-			if (data.body.groupId === null) {
-				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
-					icon: data.body.user.avatarUrl,
-					badge: iconUrl('messages'),
-					tag: `messaging:user:${data.body.userId}`,
-					data,
-					renotify: true,
-				}];
-			}
-			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group.name }), {
-				icon: data.body.user.avatarUrl,
-				badge: iconUrl('messages'),
-				tag: `messaging:group:${data.body.groupId}`,
-				data,
-				renotify: true,
-			}];
 		case 'unreadAntennaNote':
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
-				body: `${getUserName(data.body.note.user)}: ${data.body.note.text || ''}`,
+				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
 				icon: data.body.note.user.avatarUrl,
 				badge: iconUrl('antenna'),
 				tag: `antenna:${data.body.antenna.id}`,
@@ -272,7 +238,7 @@ export async function createEmptyNotification() {
 		if (!swLang.i18n) swLang.fetchLocale();
 		const i18n = await swLang.i18n as I18n<any>;
 		const { t } = i18n;
-	
+
 		await self.registration.showNotification(
 			t('_notification.emptyPushNotificationMessage'),
 			{

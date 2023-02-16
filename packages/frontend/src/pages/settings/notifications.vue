@@ -5,7 +5,6 @@
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
 			<FormLink @click="readAllUnreadNotes">{{ i18n.ts.markAsReadAllUnreadNotes }}</FormLink>
-			<FormLink @click="readAllMessagingMessages">{{ i18n.ts.markAsReadAllTalkMessages }}</FormLink>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -45,10 +44,6 @@ let sendReadMessage = $computed(() => pushRegistrationInServer?.sendReadMessage 
 
 async function readAllUnreadNotes() {
 	await os.api('i/read-all-unread-notes');
-}
-
-async function readAllMessagingMessages() {
-	await os.api('i/read-all-messaging-messages');
 }
 
 async function readAllNotifications() {

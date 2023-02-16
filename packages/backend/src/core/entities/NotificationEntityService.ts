@@ -12,7 +12,6 @@ import { bindThis } from '@/decorators.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
-import type { UserGroupInvitationEntityService } from './UserGroupInvitationEntityService.js';
 import type { IServiceProvider } from 'yohira';
 
 @Injectable()
@@ -36,9 +35,6 @@ export class NotificationEntityService {
 		// @Inject(DI.NoteEntityService)
 		// private noteEntityService: NoteEntityService,
 
-		// @Inject(DI.UserGroupInvitationEntityService)
-		// private userGroupInvitationEntityService: UserGroupInvitationEntityService,
-
 		// @Inject(DI.CustomEmojiService)
 		// private customEmojiService: CustomEmojiService,
 	) {
@@ -50,9 +46,6 @@ export class NotificationEntityService {
 	}
 	private get noteEntityService(): NoteEntityService {
 		return getRequiredService(this.serviceProvider, DI.NoteEntityService);
-	}
-	private get userGroupInvitationEntityService(): UserGroupInvitationEntityService {
-		return getRequiredService(this.serviceProvider, DI.UserGroupInvitationEntityService);
 	}
 	private get customEmojiService(): CustomEmojiService {
 		return getRequiredService(this.serviceProvider, DI.CustomEmojiService);
@@ -120,9 +113,6 @@ export class NotificationEntityService {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
-			} : {}),
-			...(notification.type === 'groupInvited' ? {
-				invitation: this.userGroupInvitationEntityService.pack(notification.userGroupInvitationId!),
 			} : {}),
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,

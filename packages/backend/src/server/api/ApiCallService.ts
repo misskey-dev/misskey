@@ -5,7 +5,7 @@ import { IDisposable } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { CacheableLocalUser, ILocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
@@ -176,7 +176,7 @@ export class ApiCallService implements IDisposable {
 	}
 
 	@bindThis
-	private async logIp(request: FastifyRequest, user: ILocalUser) {
+	private async logIp(request: FastifyRequest, user: LocalUser) {
 		const meta = await this.metaService.fetch();
 		if (!meta.enableIpLogging) return;
 		const ip = request.ip;
@@ -202,7 +202,7 @@ export class ApiCallService implements IDisposable {
 	@bindThis
 	private async call(
 		ep: IEndpoint & { exec: any },
-		user: CacheableLocalUser | null | undefined,
+		user: LocalUser | null | undefined,
 		token: AccessToken | null | undefined,
 		data: any,
 		file: {

@@ -32,7 +32,7 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
-		includeReplies: include.value === 'replies',
+		includeReplies: include.value === 'replies' || include.value === 'files',
 		withFiles: include.value === 'files',
 	})),
 };

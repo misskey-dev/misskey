@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
 import { IDisposable } from 'yohira';
 import { IdService } from '@/core/IdService.js';
-import type { CacheableUser, User } from '@/models/entities/User.js';
+import type { User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -251,7 +251,7 @@ export class UserBlockingService implements IDisposable {
 	}
 
 	@bindThis
-	public async unblock(blocker: CacheableUser, blockee: CacheableUser) {
+	public async unblock(blocker: User, blockee: User) {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,

@@ -7,15 +7,15 @@
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
 			<MkFoldableSection class="_margin" persist-key="explore-pinned-users">
-				<template #header><i class="fas fa-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
+				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
 				<XUserList :pagination="pinnedUsers"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persist-key="explore-popular-users">
-				<template #header><i class="fas fa-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
+				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsers"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persist-key="explore-recently-updated-users">
-				<template #header><i class="fas fa-comment-alt ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
+				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persist-key="explore-recently-registered-users">
@@ -41,15 +41,15 @@
 
 		<template v-if="tag == null">
 			<MkFoldableSection class="_margin">
-				<template #header><i class="fas fa-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
+				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<XUserList :pagination="popularUsersF"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
-				<template #header><i class="fas fa-comment-alt ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
+				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<XUserList :pagination="recentlyUpdatedUsersF"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
-				<template #header><i class="fas fa-rocket ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyDiscoveredUsers }}</template>
+				<template #header><i class="ti ti-rocket ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyDiscoveredUsers }}</template>
 				<XUserList :pagination="recentlyRegisteredUsersF"/>
 			</MkFoldableSection>
 		</template>

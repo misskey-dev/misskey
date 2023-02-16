@@ -6,8 +6,6 @@ import type { Antenna } from '@/models/entities/Antenna.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { DriveFolder } from '@/models/entities/DriveFolder.js';
 import type { UserList } from '@/models/entities/UserList.js';
-import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
-import type { UserGroup } from '@/models/entities/UserGroup.js';
 import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import type { Signin } from '@/models/entities/Signin.js';
 import type { Page } from '@/models/entities/Page.js';
@@ -96,9 +94,6 @@ export interface MainStreamTypes {
 	readAllUnreadMentions: undefined;
 	unreadSpecifiedNote: Note['id'];
 	readAllUnreadSpecifiedNotes: undefined;
-	readAllMessagingMessages: undefined;
-	messagingMessage: Packed<'MessagingMessage'>;
-	unreadMessagingMessage: Packed<'MessagingMessage'>;
 	readAllAntennas: undefined;
 	unreadAntenna: Antenna;
 	readAllAnnouncements: undefined;
@@ -153,10 +148,6 @@ type NoteStreamEventTypes = {
 	};
 };
 
-export interface ChannelStreamTypes {
-	typing: User['id'];
-}
-
 export interface UserListStreamTypes {
 	userAdded: Packed<'User'>;
 	userRemoved: Packed<'User'>;
@@ -164,28 +155,6 @@ export interface UserListStreamTypes {
 
 export interface AntennaStreamTypes {
 	note: Note;
-}
-
-export interface MessagingStreamTypes {
-	read: MessagingMessage['id'][];
-	typing: User['id'];
-	message: Packed<'MessagingMessage'>;
-	deleted: MessagingMessage['id'];
-}
-
-export interface GroupMessagingStreamTypes {
-	read: {
-		ids: MessagingMessage['id'][];
-		userId: User['id'];
-	};
-	typing: User['id'];
-	message: Packed<'MessagingMessage'>;
-	deleted: MessagingMessage['id'];
-}
-
-export interface MessagingIndexStreamTypes {
-	read: MessagingMessage['id'][];
-	message: Packed<'MessagingMessage'>;
 }
 
 export interface AdminStreamTypes {
@@ -242,10 +211,6 @@ export type StreamMessages = {
 		name: `noteStream:${Note['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<NoteStreamEventTypes>>;
 	};
-	channel: {
-		name: `channelStream:${Channel['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<ChannelStreamTypes>>;
-	};
 	userList: {
 		name: `userListStream:${UserList['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<UserListStreamTypes>>;
@@ -253,18 +218,6 @@ export type StreamMessages = {
 	antenna: {
 		name: `antennaStream:${Antenna['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<AntennaStreamTypes>>;
-	};
-	messaging: {
-		name: `messagingStream:${User['id']}-${User['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<MessagingStreamTypes>>;
-	};
-	groupMessaging: {
-		name: `messagingStream:${UserGroup['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<GroupMessagingStreamTypes>>;
-	};
-	messagingIndex: {
-		name: `messagingIndexStream:${User['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<MessagingIndexStreamTypes>>;
 	};
 	admin: {
 		name: `adminStream:${User['id']}`;

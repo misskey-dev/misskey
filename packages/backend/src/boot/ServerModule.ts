@@ -26,8 +26,6 @@ import { HomeTimelineChannelService } from '@/server/api/stream/channels/home-ti
 import { HybridTimelineChannelService } from '@/server/api/stream/channels/hybrid-timeline.js';
 import { LocalTimelineChannelService } from '@/server/api/stream/channels/local-timeline.js';
 import { MainChannelService } from '@/server/api/stream/channels/main.js';
-import { MessagingIndexChannelService } from '@/server/api/stream/channels/messaging-index.js';
-import { MessagingChannelService } from '@/server/api/stream/channels/messaging.js';
 import { QueueStatsChannelService } from '@/server/api/stream/channels/queue-stats.js';
 import { ServerStatsChannelService } from '@/server/api/stream/channels/server-stats.js';
 import { UserListChannelService } from '@/server/api/stream/channels/user-list.js';
@@ -65,8 +63,6 @@ const ServerServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[DI.HomeTimelineChannelService, HomeTimelineChannelService],
 	[DI.HybridTimelineChannelService, HybridTimelineChannelService],
 	[DI.LocalTimelineChannelService, LocalTimelineChannelService],
-	[DI.MessagingIndexChannelService, MessagingIndexChannelService],
-	[DI.MessagingChannelService, MessagingChannelService],
 	[DI.QueueStatsChannelService, QueueStatsChannelService],
 	[DI.ServerStatsChannelService, ServerStatsChannelService],
 	[DI.UserListChannelService, UserListChannelService],

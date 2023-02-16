@@ -203,7 +203,6 @@ import * as ep___i_notifications from '@/server/api/endpoints/i/notifications.js
 import * as ep___i_pageLikes from '@/server/api/endpoints/i/page-likes.js';
 import * as ep___i_pages from '@/server/api/endpoints/i/pages.js';
 import * as ep___i_pin from '@/server/api/endpoints/i/pin.js';
-import * as ep___i_readAllMessagingMessages from '@/server/api/endpoints/i/read-all-messaging-messages.js';
 import * as ep___i_readAllUnreadNotes from '@/server/api/endpoints/i/read-all-unread-notes.js';
 import * as ep___i_readAnnouncement from '@/server/api/endpoints/i/read-announcement.js';
 import * as ep___i_regenerateToken from '@/server/api/endpoints/i/regenerate-token.js';
@@ -220,18 +219,12 @@ import * as ep___i_signinHistory from '@/server/api/endpoints/i/signin-history.j
 import * as ep___i_unpin from '@/server/api/endpoints/i/unpin.js';
 import * as ep___i_updateEmail from '@/server/api/endpoints/i/update-email.js';
 import * as ep___i_update from '@/server/api/endpoints/i/update.js';
-import * as ep___i_userGroupInvites from '@/server/api/endpoints/i/user-group-invites.js';
 import * as ep___i_webhooks_create from '@/server/api/endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_delete from '@/server/api/endpoints/i/webhooks/delete.js';
 import * as ep___i_webhooks_list from '@/server/api/endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_show from '@/server/api/endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_update from '@/server/api/endpoints/i/webhooks/update.js';
 import * as ep___invite from '@/server/api/endpoints/invite.js';
-import * as ep___messaging_history from '@/server/api/endpoints/messaging/history.js';
-import * as ep___messaging_messages from '@/server/api/endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from '@/server/api/endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from '@/server/api/endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from '@/server/api/endpoints/messaging/messages/read.js';
 import * as ep___meta from '@/server/api/endpoints/meta.js';
 import * as ep___miauth_genToken from '@/server/api/endpoints/miauth/gen-token.js';
 import * as ep___mute_create from '@/server/api/endpoints/mute/create.js';
@@ -301,18 +294,6 @@ import * as ep___users_followers from '@/server/api/endpoints/users/followers.js
 import * as ep___users_following from '@/server/api/endpoints/users/following.js';
 import * as ep___users_gallery_posts from '@/server/api/endpoints/users/gallery/posts.js';
 import * as ep___users_getFrequentlyRepliedUsers from '@/server/api/endpoints/users/get-frequently-replied-users.js';
-import * as ep___users_groups_create from '@/server/api/endpoints/users/groups/create.js';
-import * as ep___users_groups_delete from '@/server/api/endpoints/users/groups/delete.js';
-import * as ep___users_groups_invitations_accept from '@/server/api/endpoints/users/groups/invitations/accept.js';
-import * as ep___users_groups_invitations_reject from '@/server/api/endpoints/users/groups/invitations/reject.js';
-import * as ep___users_groups_invite from '@/server/api/endpoints/users/groups/invite.js';
-import * as ep___users_groups_joined from '@/server/api/endpoints/users/groups/joined.js';
-import * as ep___users_groups_leave from '@/server/api/endpoints/users/groups/leave.js';
-import * as ep___users_groups_owned from '@/server/api/endpoints/users/groups/owned.js';
-import * as ep___users_groups_pull from '@/server/api/endpoints/users/groups/pull.js';
-import * as ep___users_groups_show from '@/server/api/endpoints/users/groups/show.js';
-import * as ep___users_groups_transfer from '@/server/api/endpoints/users/groups/transfer.js';
-import * as ep___users_groups_update from '@/server/api/endpoints/users/groups/update.js';
 import * as ep___users_lists_create from '@/server/api/endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from '@/server/api/endpoints/users/lists/delete.js';
 import * as ep___users_lists_list from '@/server/api/endpoints/users/lists/list.js';
@@ -527,7 +508,6 @@ const eps = [
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
 	['i/pin', ep___i_pin],
-	['i/read-all-messaging-messages', ep___i_readAllMessagingMessages],
 	['i/read-all-unread-notes', ep___i_readAllUnreadNotes],
 	['i/read-announcement', ep___i_readAnnouncement],
 	['i/regenerate-token', ep___i_regenerateToken],
@@ -544,17 +524,11 @@ const eps = [
 	['i/unpin', ep___i_unpin],
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
-	['i/user-group-invites', ep___i_userGroupInvites],
 	['i/webhooks/create', ep___i_webhooks_create],
 	['i/webhooks/list', ep___i_webhooks_list],
 	['i/webhooks/show', ep___i_webhooks_show],
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
-	['messaging/history', ep___messaging_history],
-	['messaging/messages', ep___messaging_messages],
-	['messaging/messages/create', ep___messaging_messages_create],
-	['messaging/messages/delete', ep___messaging_messages_delete],
-	['messaging/messages/read', ep___messaging_messages_read],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
 	['miauth/gen-token', ep___miauth_genToken],
@@ -632,18 +606,6 @@ const eps = [
 	['users/following', ep___users_following],
 	['users/gallery/posts', ep___users_gallery_posts],
 	['users/get-frequently-replied-users', ep___users_getFrequentlyRepliedUsers],
-	['users/groups/create', ep___users_groups_create],
-	['users/groups/delete', ep___users_groups_delete],
-	['users/groups/invitations/accept', ep___users_groups_invitations_accept],
-	['users/groups/invitations/reject', ep___users_groups_invitations_reject],
-	['users/groups/invite', ep___users_groups_invite],
-	['users/groups/joined', ep___users_groups_joined],
-	['users/groups/leave', ep___users_groups_leave],
-	['users/groups/owned', ep___users_groups_owned],
-	['users/groups/pull', ep___users_groups_pull],
-	['users/groups/show', ep___users_groups_show],
-	['users/groups/transfer', ep___users_groups_transfer],
-	['users/groups/update', ep___users_groups_update],
 	['users/lists/create', ep___users_lists_create],
 	['users/lists/delete', ep___users_lists_delete],
 	['users/lists/list', ep___users_lists_list],
@@ -870,7 +832,6 @@ const EndpointsServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[Symbol.for('ep:i/page-likes'), ep___i_pageLikes.default],
 	[Symbol.for('ep:i/pages'), ep___i_pages.default],
 	[Symbol.for('ep:i/pin'), ep___i_pin.default],
-	[Symbol.for('ep:i/read-all-messaging-messages'), ep___i_readAllMessagingMessages.default],
 	[Symbol.for('ep:i/read-all-unread-notes'), ep___i_readAllUnreadNotes.default],
 	[Symbol.for('ep:i/read-announcement'), ep___i_readAnnouncement.default],
 	[Symbol.for('ep:i/regenerate-token'), ep___i_regenerateToken.default],
@@ -887,17 +848,11 @@ const EndpointsServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[Symbol.for('ep:i/unpin'), ep___i_unpin.default],
 	[Symbol.for('ep:i/update-email'), ep___i_updateEmail.default],
 	[Symbol.for('ep:i/update'), ep___i_update.default],
-	[Symbol.for('ep:i/user-group-invites'), ep___i_userGroupInvites.default],
 	[Symbol.for('ep:i/webhooks/create'), ep___i_webhooks_create.default],
 	[Symbol.for('ep:i/webhooks/list'), ep___i_webhooks_list.default],
 	[Symbol.for('ep:i/webhooks/show'), ep___i_webhooks_show.default],
 	[Symbol.for('ep:i/webhooks/update'), ep___i_webhooks_update.default],
 	[Symbol.for('ep:i/webhooks/delete'), ep___i_webhooks_delete.default],
-	[Symbol.for('ep:messaging/history'), ep___messaging_history.default],
-	[Symbol.for('ep:messaging/messages'), ep___messaging_messages.default],
-	[Symbol.for('ep:messaging/messages/create'), ep___messaging_messages_create.default],
-	[Symbol.for('ep:messaging/messages/delete'), ep___messaging_messages_delete.default],
-	[Symbol.for('ep:messaging/messages/read'), ep___messaging_messages_read.default],
 	[Symbol.for('ep:meta'), ep___meta.default],
 	[Symbol.for('ep:emojis'), ep___emojis.default],
 	[Symbol.for('ep:miauth/gen-token'), ep___miauth_genToken.default],
@@ -975,18 +930,6 @@ const EndpointsServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[Symbol.for('ep:users/following'), ep___users_following.default],
 	[Symbol.for('ep:users/gallery/posts'), ep___users_gallery_posts.default],
 	[Symbol.for('ep:users/get-frequently-replied-users'), ep___users_getFrequentlyRepliedUsers.default],
-	[Symbol.for('ep:users/groups/create'), ep___users_groups_create.default],
-	[Symbol.for('ep:users/groups/delete'), ep___users_groups_delete.default],
-	[Symbol.for('ep:users/groups/invitations/accept'), ep___users_groups_invitations_accept.default],
-	[Symbol.for('ep:users/groups/invitations/reject'), ep___users_groups_invitations_reject.default],
-	[Symbol.for('ep:users/groups/invite'), ep___users_groups_invite.default],
-	[Symbol.for('ep:users/groups/joined'), ep___users_groups_joined.default],
-	[Symbol.for('ep:users/groups/leave'), ep___users_groups_leave.default],
-	[Symbol.for('ep:users/groups/owned'), ep___users_groups_owned.default],
-	[Symbol.for('ep:users/groups/pull'), ep___users_groups_pull.default],
-	[Symbol.for('ep:users/groups/show'), ep___users_groups_show.default],
-	[Symbol.for('ep:users/groups/transfer'), ep___users_groups_transfer.default],
-	[Symbol.for('ep:users/groups/update'), ep___users_groups_update.default],
 	[Symbol.for('ep:users/lists/create'), ep___users_lists_create.default],
 	[Symbol.for('ep:users/lists/delete'), ep___users_lists_delete.default],
 	[Symbol.for('ep:users/lists/list'), ep___users_lists_list.default],

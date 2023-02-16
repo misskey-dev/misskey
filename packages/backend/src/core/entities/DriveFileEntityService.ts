@@ -47,6 +47,8 @@ export class DriveFileEntityService {
 
 		@Inject(DI.DriveFolderEntityService)
 		private driveFolderEntityService: DriveFolderEntityService,
+
+		@Inject(DI.VideoProcessingService)
 		private videoProcessingService: VideoProcessingService,
 	) {
 	}
