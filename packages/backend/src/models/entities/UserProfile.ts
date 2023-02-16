@@ -202,7 +202,11 @@ export class UserProfile {
 	public mutedInstances: string[];
 
 	@Column('enum', {
-		enum: notificationTypes,
+		enum: [ 
+			...notificationTypes,
+			// マイグレーションで削除が困難なので古いenumは残しておく
+			'groupInvited',
+		],
 		array: true,
 		default: [],
 	})
