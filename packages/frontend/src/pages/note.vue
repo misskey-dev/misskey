@@ -41,9 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, watch } from 'vue';
+import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import XNote from '@/components/MkNote.vue';
 import XNoteDetailed from '@/components/MkNoteDetailed.vue';
 import XNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';

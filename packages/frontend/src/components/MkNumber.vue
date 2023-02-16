@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
+import { reactive, watch } from 'vue';
 import gsap from 'gsap';
 import number from '@/filters/number';
 

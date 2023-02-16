@@ -1,11 +1,10 @@
 import autobind from 'autobind-decorator';
-import { markRaw, ref, Ref, unref } from 'vue';
+import { ref, Ref, unref } from 'vue';
 import { collectPageVars } from '../collect-page-vars';
-import { initHpmlLib, initAiLib } from './lib';
+import { initHpmlLib } from './lib';
 import { Expr, isLiteralValue, Variable } from './expr';
 import { PageVar, envVarsDef, Fn, HpmlScope, HpmlError } from '.';
 import { version } from '@/config';
-import * as os from '@/os';
 
 /**
  * Hpml evaluator

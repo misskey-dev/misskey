@@ -34,7 +34,7 @@ export type Tab = {
 </script>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch, nextTick, Transition, shallowRef } from 'vue';
+import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
 import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{

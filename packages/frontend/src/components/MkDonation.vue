@@ -31,7 +31,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
 import { host } from '@/config';

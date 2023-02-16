@@ -76,7 +76,6 @@ import insertTextAtCursor from 'insert-text-at-cursor';
 import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
-import { throttle } from 'throttle-debounce';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -87,7 +86,6 @@ import { extractMentions } from '@/scripts/extract-mentions';
 import { formatTimeString } from '@/scripts/format-time-string';
 import { Autocomplete } from '@/scripts/autocomplete';
 import * as os from '@/os';
-import { stream } from '@/stream';
 import { selectFiles } from '@/scripts/select-file';
 import { defaultStore, notePostInterruptors, postFormActions } from '@/store';
 import MkInfo from '@/components/MkInfo.vue';
@@ -159,12 +157,6 @@ let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
 let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') || '[]'));
 let imeText = $ref('');
-
-const typing = throttle(3000, () => {
-	if (props.channel) {
-		stream.send('typingOnChannel', { channel: props.channel.id });
-	}
-});
 
 const draftKey = $computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -447,12 +439,10 @@ function clear() {
 function onKeydown(ev: KeyboardEvent) {
 	if ((ev.which === 10 || ev.which === 13) && (ev.ctrlKey || ev.metaKey) && canPost) post();
 	if (ev.which === 27) emit('esc');
-	typing();
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
 	imeText = ev.data;
-	typing();
 }
 
 function onCompositionEnd(ev: CompositionEvent) {

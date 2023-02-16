@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { bindThis } from '@/decorators.js';
 import FederationChart from './charts/federation.js';

@@ -24,10 +24,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
+import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import { url } from '@/config';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkTextarea from '@/components/MkTextarea.vue';

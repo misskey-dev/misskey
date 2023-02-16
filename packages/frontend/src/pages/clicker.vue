@@ -8,9 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import MkClickerGame from '@/components/MkClickerGame.vue';
-import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 definePageMetadata({

@@ -58,13 +58,11 @@ import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { instance } from '@/instance';
-import MkPagination from '@/components/MkPagination.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import MkButton from '@/components/MkButton.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { mainRouter } from '@/router';
-import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 const DESKTOP_THRESHOLD = 1100;
 

@@ -34,9 +34,6 @@
 			<MkSwitch v-model="emailNotification_receiveFollowRequest">
 				{{ i18n.ts._notification._types.receiveFollowRequest }}
 			</MkSwitch>
-			<MkSwitch v-model="emailNotification_groupInvited">
-				{{ i18n.ts._notification._types.groupInvited }}
-			</MkSwitch>
 		</div>
 	</FormSection>
 </div>
@@ -78,7 +75,6 @@ const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply')
 const emailNotification_quote = ref($i!.emailNotificationTypes.includes('quote'));
 const emailNotification_follow = ref($i!.emailNotificationTypes.includes('follow'));
 const emailNotification_receiveFollowRequest = ref($i!.emailNotificationTypes.includes('receiveFollowRequest'));
-const emailNotification_groupInvited = ref($i!.emailNotificationTypes.includes('groupInvited'));
 
 const saveNotificationSettings = () => {
 	os.api('i/update', {
@@ -88,12 +84,11 @@ const saveNotificationSettings = () => {
 			...[emailNotification_quote.value ? 'quote' : null],
 			...[emailNotification_follow.value ? 'follow' : null],
 			...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
-			...[emailNotification_groupInvited.value ? 'groupInvited' : null],
 		].filter(x => x != null),
 	});
 };
 
-watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest, emailNotification_groupInvited], () => {
+watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest], () => {
 	saveNotificationSettings();
 });
 

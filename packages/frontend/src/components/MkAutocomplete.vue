@@ -43,7 +43,6 @@ import * as os from '@/os';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
 import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
-import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { miLocalStorage } from '@/local-storage';
 import { customEmojis } from '@/custom-emojis';

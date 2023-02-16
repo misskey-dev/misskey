@@ -10,7 +10,6 @@ import {
 import { packedNoteSchema } from '@/models/schema/note.js';
 import { packedUserListSchema } from '@/models/schema/user-list.js';
 import { packedAppSchema } from '@/models/schema/app.js';
-import { packedMessagingMessageSchema } from '@/models/schema/messaging-message.js';
 import { packedNotificationSchema } from '@/models/schema/notification.js';
 import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 import { packedDriveFolderSchema } from '@/models/schema/drive-folder.js';
@@ -20,7 +19,6 @@ import { packedBlockingSchema } from '@/models/schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/schema/hashtag.js';
 import { packedPageSchema } from '@/models/schema/page.js';
-import { packedUserGroupSchema } from '@/models/schema/user-group.js';
 import { packedNoteFavoriteSchema } from '@/models/schema/note-favorite.js';
 import { packedChannelSchema } from '@/models/schema/channel.js';
 import { packedAntennaSchema } from '@/models/schema/antenna.js';
@@ -40,9 +38,7 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
-	UserGroup: packedUserGroupSchema,
 	App: packedAppSchema,
-	MessagingMessage: packedMessagingMessageSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
 	NoteFavorite: packedNoteFavoriteSchema,

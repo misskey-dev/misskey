@@ -23,7 +23,6 @@ import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];

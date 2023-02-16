@@ -26,7 +26,6 @@ import * as Acct from 'misskey-js/built/acct';
 import * as misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user';
 import * as os from '@/os';
-import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
