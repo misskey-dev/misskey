@@ -21,6 +21,7 @@ export class Ad {
 	@Index()
 	@Column('timestamp with time zone', {
 		comment: 'The expired date of the Ad.',
+		default: () => 'now()',
 	})
 	public startsAt: Date;
 

@@ -1,7 +1,7 @@
 import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
-import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import type { AdsRepository, UsersRepository } from '@/models/index.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';

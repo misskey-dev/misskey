@@ -58,14 +58,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { watch } from 'vue';
 import XUserList from '@/components/MkUserList.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
-import number from '@/filters/number';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { instance } from '@/instance';
 
 const props = defineProps<{
 	tag?: string;

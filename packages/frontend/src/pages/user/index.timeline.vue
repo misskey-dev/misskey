@@ -18,7 +18,6 @@ import { ref, computed } from 'vue';
 import * as misskey from 'misskey-js';
 import XNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
-import * as os from '@/os';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
