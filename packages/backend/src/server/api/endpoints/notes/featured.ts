@@ -43,7 +43,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const max = 30;
 			const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
 			const query = this.notesRepository.createQueryBuilder('note')
