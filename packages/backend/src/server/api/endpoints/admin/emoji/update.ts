@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const emoji = await this.emojisRepository.findOneBy({ id: ps.id });
 			const emojiname = await this.emojisRepository.findOneBy({name:ps.name})
 			if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
-			if (ps.name.match(/^[a-zA-Z0-9_]+$/)) == null) throw new ApiError(meta.errors.inappropriateEmojiName);
+			if (ps.name.match(/^[a-zA-Z0-9_]+$/) == null) throw new ApiError(meta.errors.inappropriateEmojiName);
 			if (emojiname != null) throw new ApiError(meta.errors.alreadyexistsemoji);
 			await this.emojisRepository.update(emoji.id, {
 				updatedAt: new Date(),
