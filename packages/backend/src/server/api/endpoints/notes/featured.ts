@@ -9,6 +9,8 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: false,
+	allowGet: true,
+	cacheSec: 3600,
 
 	res: {
 		type: 'array',
@@ -67,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let notes = await query
 				.orderBy('note.score', 'DESC')
-				.take(max)
+				.take(ps.limit)
 				.getMany();
 
 			notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

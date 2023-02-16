@@ -10,6 +10,8 @@ export const meta = {
 	tags: ['federation'],
 
 	requireCredential: false,
+	allowGet: true,
+	cacheSec: 3600,
 
 	res: {
 		type: 'array',
