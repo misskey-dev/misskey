@@ -54,4 +54,4 @@ jobs:
         cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
-    - run: pnpm --filter ${{ matrix.workspace }} run {{lint}}
+    - run: pnpm --filter ${{ matrix.workspace }} run ${{ matrix.lint }}
