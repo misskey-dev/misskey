@@ -7,7 +7,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.sounds }}</template>
 		<div class="_gaps_s">
-			<MkFolder v-for="type in Object.keys(sounds)" :key="type">
+			<MkFolder v-for="type in soundsKeys" :key="type">
 				<template #label>{{ $t('_sfx.' + type) }}</template>
 				<template #suffix>{{ sounds[type].type ?? i18n.ts.none }}</template>
 
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { Ref, computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -33,7 +33,9 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVolume'));
 
-const sounds = ref({
+const soundsKeys = ['note', 'noteMy', 'notification', 'chat', 'chatBg', 'antenna', 'channel'] as const;
+
+const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
 	note: soundConfigStore.reactiveState.sound_note,
 	noteMy: soundConfigStore.reactiveState.sound_noteMy,
 	notification: soundConfigStore.reactiveState.sound_notification,
