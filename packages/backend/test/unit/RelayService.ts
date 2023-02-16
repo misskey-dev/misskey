@@ -1,60 +1,43 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
-import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
+import { addSingletonCtor, addSingletonInstance, buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
 import { RelayService } from '@/core/RelayService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { IdService } from '@/core/IdService.js';
-import type { RelaysRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
+import { addRepositoryServices } from '@/boot/RepositoryModule.js';
+import { addCoreServices } from '@/boot/CoreModule.js';
 
 describe('RelayService', () => {
-	let app: TestingModule;
+	let serviceProvider: ServiceProvider;
 	let relayService: RelayService;
 	let queueService: jest.Mocked<QueueService>;
-	let relaysRepository: RelaysRepository;
 
 	beforeAll(async () => {
-		app = await Test.createTestingModule({
-			imports: [
-				GlobalModule,
-			],
-			providers: [
-				IdService,
-				CreateSystemUserService,
-				ApRendererService,
-				RelayService,
-			],
-		})
-			.useMocker((token) => {
-				if (token === QueueService) {
-					return { deliver: jest.fn() };
-				}
-				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
-				}
-			})
-			.compile();
+		const services = new ServiceCollection();
+		addGlobalServices(services);
+		addRepositoryServices(services);
+		addCoreServices(services);
+		addSingletonCtor(services, DI.IdService, IdService);
+		addSingletonCtor(services, DI.CreateSystemUserService, CreateSystemUserService);
+		addSingletonCtor(services, DI.ApRendererService, ApRendererService);
+		addSingletonCtor(services, DI.RelayService, RelayService);
+		addSingletonInstance(services, DI.QueueService, { deliver: jest.fn() });
 
-		app.enableShutdownHooks();
+		serviceProvider = buildServiceProvider(services);
 
-		relayService = app.get<RelayService>(RelayService);
-		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
-		relaysRepository = app.get<RelaysRepository>(DI.relaysRepository);
+		await initializeGlobalServices(serviceProvider);
+
+		relayService = getRequiredService<RelayService>(serviceProvider, DI.RelayService);
+		queueService = getRequiredService<QueueService>(serviceProvider, DI.QueueService) as jest.Mocked<QueueService>;
 	});
 
 	afterAll(async () => {
-		await app.close();
+		await serviceProvider.disposeAsync();
 	});
 
 	test('addRelay', async () => {	

@@ -1,42 +1,38 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
-import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
-import type { MetasRepository } from '@/models/index.js';
+import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
-import { CoreModule } from '@/core/CoreModule.js';
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
+import { addCoreServices } from '@/boot/CoreModule.js';
 import type { DataSource } from 'typeorm';
-import type { TestingModule } from '@nestjs/testing';
 
 describe('MetaService', () => {
-	let app: TestingModule;
+	let serviceProvider: ServiceProvider;
 	let metaService: MetaService;
 
 	beforeAll(async () => {
-		app = await Test.createTestingModule({
-			imports: [
-				GlobalModule,
-				CoreModule,
-			],
-		}).compile();
+		const services = new ServiceCollection();
+		addGlobalServices(services);
+		addCoreServices(services);
 
-		app.enableShutdownHooks();
+		serviceProvider = buildServiceProvider(services);
 
-		metaService = app.get<MetaService>(MetaService, { strict: false });
+		await initializeGlobalServices(serviceProvider);
+
+		metaService = getRequiredService<MetaService>(serviceProvider, DI.MetaService);
 
 		// Make it cached
 		await metaService.fetch();
 	});
 
 	afterAll(async () => {
-		await app.close();
+		await serviceProvider.disposeAsync();
 	});
 
 	test('fetch (cache)', async () => {
-		const db = app.get<DataSource>(DI.db);
+		const db = getRequiredService<DataSource>(serviceProvider, DI.db);
 		const spy = jest.spyOn(db, 'transaction');
 
 		const result = await metaService.fetch();
@@ -46,7 +42,7 @@ describe('MetaService', () => {
 	});
 
 	test('fetch (force)', async () => {
-		const db = app.get<DataSource>(DI.db);
+		const db = getRequiredService<DataSource>(serviceProvider, DI.db);
 		const spy = jest.spyOn(db, 'transaction');
 
 		const result = await metaService.fetch(true);

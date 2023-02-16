@@ -1,25 +1,20 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
-import { Test } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
 import rndstr from 'rndstr';
-import { GlobalModule } from '@/GlobalModule.js';
+import { addSingletonCtor, addSingletonInstance, buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
 import { RoleService } from '@/core/RoleService.js';
-import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository, User } from '@/models/index.js';
-import { DI } from '@/di-symbols.js';
-import { CoreModule } from '@/core/CoreModule.js';
+import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository, User, MetasRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
 import { genAid } from '@/misc/id/aid.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
+import { DI } from '@/di-symbols.js';
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
+import { addRepositoryServices } from '@/boot/RepositoryModule.js';
+import { addCoreServices } from '@/boot/CoreModule.js';
 
 describe('RoleService', () => {
-	let app: TestingModule;
+	let serviceProvider: ServiceProvider;
 	let roleService: RoleService;
 	let usersRepository: UsersRepository;
 	let rolesRepository: RolesRepository;
@@ -60,45 +55,34 @@ describe('RoleService', () => {
 	}
 
 	beforeEach(async () => {
-		app = await Test.createTestingModule({
-			imports: [
-				GlobalModule,
-			],
-			providers: [
-				RoleService,
-				UserCacheService,
-			],
-		})
-			.useMocker((token) => {
-				if (token === MetaService) {
-					return { fetch: jest.fn() };
-				}
-				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
-				}
-			})
-			.compile();
+		const services = new ServiceCollection();
+		addGlobalServices(services);
+		addRepositoryServices(services);
+		addCoreServices(services);
+		addSingletonCtor(services, DI.RoleService, RoleService);
+		addSingletonCtor(services, DI.UserCacheService, UserCacheService);
+		addSingletonInstance(services, DI.MetaService, { fetch: jest.fn() });
 
-		app.enableShutdownHooks();
+		serviceProvider = buildServiceProvider(services);
 
-		roleService = app.get<RoleService>(RoleService);
-		usersRepository = app.get<UsersRepository>(DI.usersRepository);
-		rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
-		roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
+		await initializeGlobalServices(serviceProvider);
 
-		metaService = app.get<MetaService>(MetaService) as jest.Mocked<MetaService>;
+		roleService = getRequiredService<RoleService>(serviceProvider, DI.RoleService);
+		usersRepository = getRequiredService<UsersRepository>(serviceProvider, DI.usersRepository);
+		rolesRepository = getRequiredService<RolesRepository>(serviceProvider, DI.rolesRepository);
+		roleAssignmentsRepository = getRequiredService<RoleAssignmentsRepository>(serviceProvider, DI.roleAssignmentsRepository);
+
+		metaService = getRequiredService<MetaService>(serviceProvider, DI.MetaService) as jest.Mocked<MetaService>;
 	});
 
 	afterEach(async () => {
 		await Promise.all([
-			app.get(DI.metasRepository).delete({}),
+			getRequiredService<MetasRepository>(serviceProvider, DI.metasRepository).delete({}),
 			usersRepository.delete({}),
 			rolesRepository.delete({}),
 			roleAssignmentsRepository.delete({}),
 		]);
-		await app.close();
+		await serviceProvider.disposeAsync();
 	});
 
 	describe('getUserPolicies', () => {

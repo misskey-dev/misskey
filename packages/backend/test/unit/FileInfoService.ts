@@ -3,55 +3,35 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { ModuleMocker } from 'jest-mock';
-import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
+import { addSingletonCtor, buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
-import type { TestingModule } from '@nestjs/testing';
-import type { jest } from '@jest/globals';
-import type { MockFunctionMetadata } from 'jest-mock';
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 const resources = `${_dirname}/../resources`;
 
-const moduleMocker = new ModuleMocker(global);
-
 describe('FileInfoService', () => {
-	let app: TestingModule;
+	let serviceProvider: ServiceProvider;
 	let fileInfoService: FileInfoService;
 
 	beforeAll(async () => {
-		app = await Test.createTestingModule({
-			imports: [
-				GlobalModule,
-			],
-			providers: [
-				AiService,
-				FileInfoService,
-			],
-		})
-			.useMocker((token) => {
-				//if (token === AiService) {
-				//	return {  };
-				//}
-				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
-				}
-			})
-			.compile();
+		const services = new ServiceCollection();
+		addGlobalServices(services);
+		addSingletonCtor(services, DI.AiService, AiService);
+		addSingletonCtor(services, DI.FileInfoService, FileInfoService);
 
-		app.enableShutdownHooks();
+		serviceProvider = buildServiceProvider(services);
 
-		fileInfoService = app.get<FileInfoService>(FileInfoService);
+		await initializeGlobalServices(serviceProvider);
+
+		fileInfoService = getRequiredService<FileInfoService>(serviceProvider, DI.FileInfoService);
 	});
 
 	afterAll(async () => {
-		await app.close();
+		await serviceProvider.disposeAsync();
 	});
 
 	test('Empty file', async () => {
