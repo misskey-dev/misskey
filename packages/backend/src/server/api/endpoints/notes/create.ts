@@ -280,7 +280,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				files: files,
 				poll: ps.poll ? {
 					choices: ps.poll.choices,
-					multiple: ps.poll.multiple || false,
+					multiple: ps.poll.multiple ?? false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				} : undefined,
 				text: ps.text ?? undefined,
