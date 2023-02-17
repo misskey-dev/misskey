@@ -4,44 +4,63 @@
 	<div ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
-				<MkEmojiPickerIconButton
+				<button
 					v-for="emoji in searchResultCustom"
 					:key="emoji.name"
-					:emoji="emoji"
+					class="_button item"
+					:title="emoji.name"
+					tabindex="0"
 					@click="chosen(emoji, $event)"
-				/>
+				>
+					<MkCustomEmoji class="emoji" :name="emoji.name"/>
+				</button>
 			</div>
 			<div v-if="searchResultUnicode.length > 0" class="body">
-				<MkEmojiPickerIconButton
+				<button
 					v-for="emoji in searchResultUnicode"
 					:key="emoji.name"
-					:emoji="emoji.char"
+					class="_button item"
+					:title="emoji.name"
+					tabindex="0"
 					@click="chosen(emoji, $event)"
-				/>
+				>
+					<MkEmoji class="emoji" :emoji="emoji.char"/>
+				</button>
 			</div>
 		</section>
 
 		<div v-if="tab === 'index'" class="group index">
 			<section v-if="showPinned">
 				<div class="body">
-					<MkEmojiPickerIconButton
+					<button
 						v-for="emoji in pinned"
 						:key="emoji"
-						:emoji="emoji"
+						:data-emoji="emoji"
+						class="_button item"
+						tabindex="0"
+						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
-					/>
+					>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+					</button>
 				</div>
 			</section>
 
 			<section>
 				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
 				<div class="body">
-					<MkEmojiPickerIconButton
+					<button
 						v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
-						:emoji="emoji"
+						class="_button item"
+						:data-emoji="emoji"
+						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
-					/>
+					>
+						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
+						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+					</button>
 				</div>
 			</section>
 		</div>
@@ -75,8 +94,7 @@
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
-import MkEmojiPickerIconButton from '@/components/MkEmojiPickerIconButton.vue';
+import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
@@ -276,6 +294,13 @@ function reset() {
 
 function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef): string {
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
+}
+
+/** @see MkEmojiPicker.secion.vue */
+function computeButtonTitle(ev: MouseEvent): void {
+	const elm = ev.target as HTMLElement;
+	const emoji = elm.dataset.emoji as string;
+	elm.title = getEmojiName(emoji) ?? emoji;
 }
 
 function chosen(emoji: any, ev?: MouseEvent) {
