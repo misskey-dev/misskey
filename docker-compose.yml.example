@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    restart: always
+    links:
+      - db
+      - redis
+#      - es
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    networks:
+      - internal_network
+      - external_network
+    volumes:
+      - ./files:/misskey/files
+      - ./.config:/misskey/.config:ro
+
+  redis:
+    restart: always
+    image: redis:7-alpine
+    networks:
+      - internal_network
+    volumes:
+      - ./redis:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
+
+  db:
+    restart: always
+    image: postgres:15-alpine
+    networks:
+      - internal_network
+    env_file:
+      - .config/docker.env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      interval: 5s
+      retries: 20
+
+#  es:
+#    restart: always
+#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
+#    environment:
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - "TAKE_FILE_OWNERSHIP=111"
+#    networks:
+#      - internal_network
+#    volumes:
+#      - ./elasticsearch:/usr/share/elasticsearch/data
+
+networks:
+  internal_network:
+    internal: true
+  external_network:

@@ -1,11 +1,16 @@
-import define from '../../../define.js';
-import { getJsonSchema } from '@/services/chart/core.js';
-import { perUserDriveChart } from '@/services/chart/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { getJsonSchema } from '@/core/chart/core.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
+import { schema } from '@/core/chart/charts/entities/per-user-drive.js';
 
 export const meta = {
 	tags: ['charts', 'drive', 'users'],
 
-	res: getJsonSchema(perUserDriveChart.schema),
+	res: getJsonSchema(schema),
+
+	allowGet: true,
+	cacheSec: 60 * 60,
 } as const;
 
 export const paramDef = {
@@ -20,6 +25,13 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	return await perUserDriveChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private perUserDriveChart: PerUserDriveChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return await this.perUserDriveChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
+		});
+	}
+}

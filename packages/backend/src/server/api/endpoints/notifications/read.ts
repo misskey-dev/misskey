@@ -1,8 +1,6 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
-import { Notifications } from '@/models/index.js';
-import { readNotification } from '../../common/read-notification.js';
-import { ApiError } from '../../error.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NotificationService } from '@/core/NotificationService.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],
@@ -10,6 +8,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:notifications',
+
+	description: 'Mark a notification as read.',
 
 	errors: {
 		noSuchNotification: {
@@ -21,23 +21,37 @@ export const meta = {
 } as const;
 
 export const paramDef = {
-	type: 'object',
-	properties: {
-		notificationId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['notificationId'],
+	oneOf: [
+		{
+			type: 'object',
+			properties: {
+				notificationId: { type: 'string', format: 'misskey:id' },
+			},
+			required: ['notificationId'],
+		},
+		{
+			type: 'object',
+			properties: {
+				notificationIds: {
+					type: 'array',
+					items: { type: 'string', format: 'misskey:id' },
+					maxItems: 100,
+				},
+			},
+			required: ['notificationIds'],
+		},
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const notification = await Notifications.findOneBy({
-		notifieeId: user.id,
-		id: ps.notificationId,
-	});
-
-	if (notification == null) {
-		throw new ApiError(meta.errors.noSuchNotification);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private notificationService: NotificationService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			if ('notificationId' in ps) return this.notificationService.readNotification(me.id, [ps.notificationId]);
+			return this.notificationService.readNotification(me.id, ps.notificationIds);
+		});
 	}
-
-	readNotification(user.id, [notification.id]);
-});
+}

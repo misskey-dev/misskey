@@ -1,5 +1,3 @@
-import config from '@/config/index.js';
-
 export const packedFederationInstanceSchema = {
 	type: 'object',
 	properties: {
@@ -8,7 +6,7 @@ export const packedFederationInstanceSchema = {
 			optional: false, nullable: false,
 			format: 'id',
 		},
-		caughtAt: {
+		firstRetrievedAt: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'date-time',
@@ -34,21 +32,15 @@ export const packedFederationInstanceSchema = {
 			type: 'number',
 			optional: false, nullable: false,
 		},
-		latestRequestSentAt: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'date-time',
-		},
-		lastCommunicatedAt: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'date-time',
-		},
 		isNotResponding: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
 		isSuspended: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		isBlocked: {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
@@ -60,7 +52,6 @@ export const packedFederationInstanceSchema = {
 		softwareVersion: {
 			type: 'string',
 			optional: false, nullable: true,
-			example: config.version,
 		},
 		openRegistrations: {
 			type: 'boolean',
@@ -87,6 +78,15 @@ export const packedFederationInstanceSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'url',
+		},
+		faviconUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'url',
+		},
+		themeColor: {
+			type: 'string',
+			optional: false, nullable: true,
 		},
 		infoUpdatedAt: {
 			type: 'string',

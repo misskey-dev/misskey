@@ -1,6 +1,9 @@
-import define from '../../../define.js';
-import { Announcements, AnnouncementReads } from '@/models/index.js';
-import { makePaginationQuery } from '../../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/index.js';
+import type { Announcement } from '@/models/entities/Announcement.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -63,16 +66,39 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const query = makePaginationQuery(Announcements.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.announcementsRepository)
+		private announcementsRepository: AnnouncementsRepository,
 
-	const announcements = await query.take(ps.limit).getMany();
+		@Inject(DI.announcementReadsRepository)
+		private announcementReadsRepository: AnnouncementReadsRepository,
 
-	for (const announcement of announcements) {
-		(announcement as any).reads = await AnnouncementReads.countBy({
-			announcementId: announcement.id,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+
+			const announcements = await query.take(ps.limit).getMany();
+
+			const reads = new Map<Announcement, number>();
+
+			for (const announcement of announcements) {
+				reads.set(announcement, await this.announcementReadsRepository.countBy({
+					announcementId: announcement.id,
+				}));
+			}
+
+			return announcements.map(announcement => ({
+				id: announcement.id,
+				createdAt: announcement.createdAt.toISOString(),
+				updatedAt: announcement.updatedAt?.toISOString() ?? null,
+				title: announcement.title,
+				text: announcement.text,
+				imageUrl: announcement.imageUrl,
+				reads: reads.get(announcement)!,
+			}));
 		});
 	}
-
-	return announcements;
-});
+}

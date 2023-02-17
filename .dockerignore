@@ -10,6 +10,21 @@ db/
 docker-compose.yml
 elasticsearch/
 node_modules/
+packages/*/node_modules
 redis/
 files/
 misskey-assets/
+fluent-emojis/
+.pnp.*
+
+# .yarn関連
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+.idea/
+packages/*/.vscode/
+packages/backend/test/docker-compose.yml

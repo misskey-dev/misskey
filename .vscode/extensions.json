@@ -3,6 +3,7 @@
 		"editorconfig.editorconfig",
 		"eg2.vscode-npm-script",
 		"dbaeumer.vscode-eslint",
-		"johnsoncodehk.volar",
+		"Vue.volar",
+		"Vue.vscode-typescript-vue-plugin"
 	]
 }

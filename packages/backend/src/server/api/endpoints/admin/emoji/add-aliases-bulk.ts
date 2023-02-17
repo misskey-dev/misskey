@@ -1,14 +1,16 @@
-import define from '../../../define.js';
-import { Emojis } from '@/models/index.js';
-import { In } from 'typeorm';
-import { ApiError } from '../../../error.js';
-import { db } from '@/db/postgre.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { DataSource, In } from 'typeorm';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { EmojisRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 
 export const meta = {
 	tags: ['admin'],
 
 	requireCredential: true,
-	requireModerator: true,
+	requireRolePolicy: 'canManageCustomEmojis',
 } as const;
 
 export const paramDef = {
@@ -24,18 +26,38 @@ export const paramDef = {
 	required: ['ids', 'aliases'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps) => {
-	const emojis = await Emojis.findBy({
-		id: In(ps.ids),
-	});
+// TODO: ロジックをサービスに切り出す
 
-	for (const emoji of emojis) {
-		await Emojis.update(emoji.id, {
-			updatedAt: new Date(),
-			aliases: [...new Set(emoji.aliases.concat(ps.aliases))],
+// eslint-disable-next-line import/no-default-export
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
+
+		private emojiEntityService: EmojiEntityService,
+		private globalEventService: GlobalEventService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const emojis = await this.emojisRepository.findBy({
+				id: In(ps.ids),
+			});
+
+			for (const emoji of emojis) {
+				await this.emojisRepository.update(emoji.id, {
+					updatedAt: new Date(),
+					aliases: [...new Set(emoji.aliases.concat(ps.aliases))],
+				});
+			}
+
+			await this.db.queryResultCache!.remove(['meta_emojis']);
+
+			this.globalEventService.publishBroadcastStream('emojiUpdated', {
+				emojis: await this.emojiEntityService.packMany(ps.ids),
+			});
 		});
 	}
-
-	await db.queryResultCache!.remove(['meta_emojis']);
-});
+}

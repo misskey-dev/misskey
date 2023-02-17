@@ -1,8 +1,11 @@
-import define from '../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Note } from '@/models/entities/Note.js';
+import type { NotesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { getNote } from '../../common/getters.js';
-import { Note } from '@/models/entities/note.js';
-import { Notes } from '@/models/index.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -39,36 +42,47 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	const conversation: Note[] = [];
-	let i = 0;
+		private noteEntityService: NoteEntityService,
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const note = await this.getterService.getNote(ps.noteId).catch(err => {
+				if (err.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw err;
+			});
 
-	async function get(id: any) {
-		i++;
-		const p = await Notes.findOneBy({ id });
-		if (p == null) return;
+			const conversation: Note[] = [];
+			let i = 0;
 
-		if (i > ps.offset!) {
-			conversation.push(p);
-		}
+			const get = async (id: any) => {
+				i++;
+				const p = await this.notesRepository.findOneBy({ id });
+				if (p == null) return;
 
-		if (conversation.length === ps.limit) {
-			return;
-		}
+				if (i > ps.offset!) {
+					conversation.push(p);
+				}
 
-		if (p.replyId) {
-			await get(p.replyId);
-		}
+				if (conversation.length === ps.limit) {
+					return;
+				}
+
+				if (p.replyId) {
+					await get(p.replyId);
+				}
+			};
+
+			if (note.replyId) {
+				await get(note.replyId);
+			}
+
+			return await this.noteEntityService.packMany(conversation, me);
+		});
 	}
-
-	if (note.replyId) {
-		await get(note.replyId);
-	}
-
-	return await Notes.packMany(conversation, user);
-});
+}

@@ -1,6 +1,9 @@
-import define from '../../define.js';
-import { Channels, ChannelFollowings } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { ChannelFollowingsRepository } from '@/models/index.js';
+import { QueryService } from '@/core/QueryService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['channels', 'account'],
@@ -31,13 +34,24 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = makePaginationQuery(ChannelFollowings.createQueryBuilder(), ps.sinceId, ps.untilId)
-		.andWhere({ followerId: me.id });
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.channelFollowingsRepository)
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
-	const followings = await query
-		.take(ps.limit)
-		.getMany();
+		private channelEntityService: ChannelEntityService,
+		private queryService: QueryService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.queryService.makePaginationQuery(this.channelFollowingsRepository.createQueryBuilder(), ps.sinceId, ps.untilId)
+				.andWhere({ followerId: me.id });
 
-	return await Promise.all(followings.map(x => Channels.pack(x.followeeId, me)));
-});
+			const followings = await query
+				.take(ps.limit)
+				.getMany();
+
+			return await Promise.all(followings.map(x => this.channelEntityService.pack(x.followeeId, me)));
+		});
+	}
+}

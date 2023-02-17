@@ -1,5 +1,7 @@
-import define from '../../define.js';
-import { MutedNotes } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { MutedNotesRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['account'],
@@ -27,11 +29,19 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	return {
-		count: await MutedNotes.countBy({
-			userId: user.id,
-			reason: 'word',
-		}),
-	};
-});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.mutedNotesRepository)
+		private mutedNotesRepository: MutedNotesRepository,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			return {
+				count: await this.mutedNotesRepository.countBy({
+					userId: me.id,
+					reason: 'word',
+				}),
+			};
+		});
+	}
+}

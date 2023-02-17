@@ -12,6 +12,11 @@ export const packedNoteSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
+		deletedAt: {
+			type: 'string',
+			optional: true, nullable: true,
+			format: 'date-time',
+		},
 		text: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -135,24 +140,6 @@ export const packedNoteSchema = {
 		localOnly: {
 			type: 'boolean',
 			optional: true, nullable: false,
-		},
-		emojis: {
-			type: 'array',
-			optional: false, nullable: false,
-			items: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					name: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-					url: {
-						type: 'string',
-						optional: false, nullable: true,
-					},
-				},
-			},
 		},
 		reactions: {
 			type: 'object',

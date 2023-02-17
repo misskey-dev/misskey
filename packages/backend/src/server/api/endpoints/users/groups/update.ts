@@ -1,6 +1,9 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserGroupEntityService } from '@/core/entities/UserGroupEntityService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { UserGroups } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups'],
@@ -8,6 +11,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Update the properties of a group.',
 
 	res: {
 		type: 'object',
@@ -34,20 +39,30 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the group
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupsRepository)
+		private userGroupsRepository: UserGroupsRepository,
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+		private userGroupEntityService: UserGroupEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the group
+			const userGroup = await this.userGroupsRepository.findOneBy({
+				id: ps.groupId,
+				userId: me.id,
+			});
+
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			await this.userGroupsRepository.update(userGroup.id, {
+				name: ps.name,
+			});
+
+			return await this.userGroupEntityService.pack(userGroup.id);
+		});
 	}
-
-	await UserGroups.update(userGroup.id, {
-		name: ps.name,
-	});
-
-	return await UserGroups.pack(userGroup.id);
-});
+}

@@ -89,7 +89,7 @@ export interface Schema extends OfSchema {
 	readonly optional?: boolean;
 	readonly items?: Schema;
 	readonly properties?: Obj;
-	readonly required?: ReadonlyArray<keyof NonNullable<this['properties']>>;
+	readonly required?: ReadonlyArray<Extract<keyof NonNullable<this['properties']>, string>>;
 	readonly description?: string;
 	readonly example?: any;
 	readonly format?: string;
@@ -98,6 +98,9 @@ export interface Schema extends OfSchema {
 	readonly default?: (this['type'] extends TypeStringef ? StringDefToType<this['type']> : any) | null;
 	readonly maxLength?: number;
 	readonly minLength?: number;
+	readonly maximum?: number;
+	readonly minimum?: number;
+	readonly pattern?: string;
 }
 
 type RequiredPropertyNames<s extends Obj> = {
@@ -105,33 +108,51 @@ type RequiredPropertyNames<s extends Obj> = {
 		// K is not optional
 		s[K]['optional'] extends false ? K :
 		// K has default value
-		s[K]['default'] extends null | string | number | boolean | Record<string, unknown> ? K : never
+		s[K]['default'] extends null | string | number | boolean | Record<string, unknown> ? K :
+		never
 }[keyof s];
 
-export interface Obj { [key: string]: Schema; }
+export type Obj = Record<string, Schema>;
 
+// https://github.com/misskey-dev/misskey/issues/8535
+// To avoid excessive stack depth error,
+// deceive TypeScript with UnionToIntersection (or more precisely, `infer` expression within it).
 export type ObjType<s extends Obj, RequiredProps extends keyof s> =
-	{ -readonly [P in keyof s]?: SchemaType<s[P]> } &
-	{ -readonly [P in RequiredProps]: SchemaType<s[P]> } &
-	{ -readonly [P in RequiredPropertyNames<s>]: SchemaType<s[P]> };
+	UnionToIntersection<
+		{ -readonly [R in RequiredPropertyNames<s>]-?: SchemaType<s[R]> } &
+		{ -readonly [R in RequiredProps]-?: SchemaType<s[R]> } &
+		{ -readonly [P in keyof s]?: SchemaType<s[P]> }
+	>;
 
 type NullOrUndefined<p extends Schema, T> =
-	p['nullable'] extends true
-		?	p['optional'] extends true
-			? (T | null | undefined)
-			: (T | null)
-		: p['optional'] extends true
-			? (T | undefined)
-			: T;
+	| (p['nullable'] extends true ? null : never)
+	| (p['optional'] extends true ? undefined : never)
+	| T;
 
 // https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 // Get intersection from union 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
 
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // To get union, we use `Foo extends any ? Hoge<Foo> : never`
 type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? SchemaType<X> : never;
-type ArrayUnion<T> = T extends any ? Array<T> : never; 
+type UnionObjectSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? ObjectSchemaType<X> : never;
+type ArrayUnion<T> = T extends any ? Array<T> : never;
+
+type ObjectSchemaTypeDef<p extends Schema> =
+	p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
+	p['properties'] extends NonNullable<Obj> ?
+		p['anyOf'] extends ReadonlyArray<Schema> ?
+			ObjType<p['properties'], NonNullable<p['required']>[number]> & UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>>
+			:
+			ObjType<p['properties'], NonNullable<p['required']>[number]>
+	:
+	p['anyOf'] extends ReadonlyArray<Schema> ? UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>> :
+	p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
+	any
+
+type ObjectSchemaType<p extends Schema> = NullOrUndefined<p, ObjectSchemaTypeDef<p>>;
 
 export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'null' ? null :
@@ -139,18 +160,12 @@ export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
 		p['enum'] extends readonly string[] ?
-			p['enum'][number] :
-			p['format'] extends 'date-time' ? string : // Dateにする？？
-			string
+		p['enum'][number] :
+		p['format'] extends 'date-time' ? string : // Dateにする？？
+		string
 	) :
 	p['type'] extends 'boolean' ? boolean :
-	p['type'] extends 'object' ? (
-		p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
-		p['properties'] extends NonNullable<Obj> ? ObjType<p['properties'], NonNullable<p['required']>[number]> :
-		p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & Partial<UnionToIntersection<UnionSchemaType<p['anyOf']>>> :
-		p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
-		any
-	) :
+	p['type'] extends 'object' ? ObjectSchemaTypeDef<p> :
 	p['type'] extends 'array' ? (
 		p['items'] extends OfSchema ? (
 			p['items']['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<NonNullable<p['items']['anyOf']>>[] :
@@ -161,6 +176,7 @@ export type SchemaTypeDef<p extends Schema> =
 		p['items'] extends NonNullable<Schema> ? SchemaTypeDef<p['items']>[] :
 		any[]
 	) :
+	p['anyOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['anyOf']> & PartialIntersection<UnionSchemaType<p['anyOf']>> :
 	p['oneOf'] extends ReadonlyArray<Schema> ? UnionSchemaType<p['oneOf']> :
 	any;
 

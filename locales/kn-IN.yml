@@ -60,14 +60,14 @@ smtpUser: "ಬಳಕೆಹೆಸರು"
 smtpPass: "ಗುಪ್ತಪದ"
 user: "ಬಳಕೆದಾರ"
 searchByGoogle: "ಹುಡುಕು"
+file: "ಕಡತಗಳು"
 _email:
   _follow:
     title: "ಹಿಂಬಾಲಿಸಿದರು"
-_mfm:
-  search: "ಹುಡುಕು"
 _sfx:
   notification: "ಅಧಿಸೂಚನೆಗಳು"
 _widgets:
+  profile: "ಪ್ರೊಫೈಲು"
   notifications: "ಅಧಿಸೂಚನೆಗಳು"
   timeline: "ಸಮಯಸಾಲು"
 _cw:
@@ -76,6 +76,8 @@ _profile:
   username: "ಬಳಕೆಹೆಸರು"
 _notification:
   youWereFollowed: "ಹಿಂಬಾಲಿಸಿದರು"
+  _actions:
+    reply: "ಉತ್ತರಿಸು"
 _deck:
   _columns:
     notifications: "ಅಧಿಸೂಚನೆಗಳು"

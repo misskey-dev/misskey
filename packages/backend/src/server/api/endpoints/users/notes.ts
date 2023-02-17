@@ -1,16 +1,17 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { getUser } from '../../common/getters.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { Notes } from '@/models/index.js';
-import { generateMutedUserQuery } from '../../common/generate-muted-user-query.js';
 import { Brackets } from 'typeorm';
-import { generateBlockedUserQuery } from '../../common/generate-block-query.js';
-import { generateMutedInstanceQuery } from '../../common/generate-muted-instance-query.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { DI } from '@/di-symbols.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users', 'notes'],
+
+	description: 'Show all notes that this user created.',
 
 	res: {
 		type: 'array',
@@ -52,69 +53,82 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Lookup user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-		.andWhere('note.userId = :userId', { userId: user.id })
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Lookup user
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
 
-	generateVisibilityQuery(query, me);
-	if (me) generateMutedUserQuery(query, me, user);
-	if (me) generateBlockedUserQuery(query, me);
-	if (me) generateMutedInstanceQuery(query, me);
+			//#region Construct query
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('note.userId = :userId', { userId: user.id })
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-	if (ps.withFiles) {
-		query.andWhere('note.fileIds != \'{}\'');
-	}
-
-	if (ps.fileType != null) {
-		query.andWhere('note.fileIds != \'{}\'');
-		query.andWhere(new Brackets(qb => {
-			for (const type of ps.fileType!) {
-				const i = ps.fileType!.indexOf(type);
-				qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+			this.queryService.generateVisibilityQuery(query, me);
+			if (me) {
+				this.queryService.generateMutedUserQuery(query, me, user);
+				this.queryService.generateBlockedUserQuery(query, me);
 			}
-		}));
 
-		if (ps.excludeNsfw) {
-			query.andWhere('note.cw IS NULL');
-			query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
-		}
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
+
+			if (ps.fileType != null) {
+				query.andWhere('note.fileIds != \'{}\'');
+				query.andWhere(new Brackets(qb => {
+					for (const type of ps.fileType!) {
+						const i = ps.fileType!.indexOf(type);
+						qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
+					}
+				}));
+
+				if (ps.excludeNsfw) {
+					query.andWhere('note.cw IS NULL');
+					query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
+				}
+			}
+
+			if (!ps.includeReplies) {
+				query.andWhere('note.replyId IS NULL');
+			}
+
+			if (ps.includeMyRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.userId != :userId', { userId: user.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			//#endregion
+
+			const timeline = await query.take(ps.limit).getMany();
+
+			return await this.noteEntityService.packMany(timeline, me);
+		});
 	}
-
-	if (!ps.includeReplies) {
-		query.andWhere('note.replyId IS NULL');
-	}
-
-	if (ps.includeMyRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.userId != :userId', { userId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	//#endregion
-
-	const timeline = await query.take(ps.limit).getMany();
-
-	return await Notes.packMany(timeline, me);
-});
+}

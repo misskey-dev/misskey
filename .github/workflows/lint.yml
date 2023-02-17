@@ -8,18 +8,47 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.3.0
       with:
+        fetch-depth: 0
         submodules: true
-    - uses: actions/setup-node@v3
+    - uses: pnpm/action-setup@v2
       with:
-        node-version: 16.x
-        cache: 'yarn'
-        cache-dependency-path: |
-          packages/backend/yarn.lock
-          packages/client/yarn.lock
-    - run: yarn install
-    - run: yarn lint
+        version: 7
+        run_install: false
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+
+  lint:
+    needs: [pnpm_install]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        workspace:
+        - backend
+        - frontend
+        - sw
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter ${{ matrix.workspace }} run lint

@@ -34,8 +34,10 @@ const languages = [
 	'pt-PT',
 	'ru-RU',
 	'sk-SK',
+	'th-TH',
 	'ug-CN',
 	'uk-UA',
+	'vi-VN',
 	'zh-CN',
 	'zh-TW',
 ];

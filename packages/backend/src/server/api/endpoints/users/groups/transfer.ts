@@ -1,7 +1,10 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { UserGroupsRepository, UserGroupJoiningsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserGroupEntityService } from '@/core/entities/UserGroupEntityService.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { getUser } from '../../../common/getters.js';
-import { UserGroups, UserGroupJoinings } from '@/models/index.js';
 
 export const meta = {
 	tags: ['groups', 'users'],
@@ -9,6 +12,8 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:user-groups',
+
+	description: 'Transfer ownership of a group from the authenticated user to another user.',
 
 	res: {
 		type: 'object',
@@ -47,35 +52,49 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	// Fetch the group
-	const userGroup = await UserGroups.findOneBy({
-		id: ps.groupId,
-		userId: me.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.userGroupsRepository)
+		private userGroupsRepository: UserGroupsRepository,
 
-	if (userGroup == null) {
-		throw new ApiError(meta.errors.noSuchGroup);
+		@Inject(DI.userGroupJoiningsRepository)
+		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
+
+		private userGroupEntityService: UserGroupEntityService,
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Fetch the group
+			const userGroup = await this.userGroupsRepository.findOneBy({
+				id: ps.groupId,
+				userId: me.id,
+			});
+
+			if (userGroup == null) {
+				throw new ApiError(meta.errors.noSuchGroup);
+			}
+
+			// Fetch the user
+			const user = await this.getterService.getUser(ps.userId).catch(err => {
+				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
+				throw err;
+			});
+
+			const joining = await this.userGroupJoiningsRepository.findOneBy({
+				userGroupId: userGroup.id,
+				userId: user.id,
+			});
+
+			if (joining == null) {
+				throw new ApiError(meta.errors.noSuchGroupMember);
+			}
+
+			await this.userGroupsRepository.update(userGroup.id, {
+				userId: ps.userId,
+			});
+
+			return await this.userGroupEntityService.pack(userGroup.id);
+		});
 	}
-
-	// Fetch the user
-	const user = await getUser(ps.userId).catch(e => {
-		if (e.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
-		throw e;
-	});
-
-	const joining = await UserGroupJoinings.findOneBy({
-		userGroupId: userGroup.id,
-		userId: user.id,
-	});
-
-	if (joining == null) {
-		throw new ApiError(meta.errors.noSuchGroupMember);
-	}
-
-	await UserGroups.update(userGroup.id, {
-		userId: ps.userId,
-	});
-
-	return await UserGroups.pack(userGroup.id);
-});
+}

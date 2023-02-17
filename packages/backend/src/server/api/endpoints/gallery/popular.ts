@@ -1,5 +1,8 @@
-import define from '../../define.js';
-import { GalleryPosts } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { GalleryPostsRepository } from '@/models/index.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -24,12 +27,22 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, me) => {
-	const query = GalleryPosts.createQueryBuilder('post')
-		.andWhere('post.likedCount > 0')
-		.orderBy('post.likedCount', 'DESC');
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.galleryPostsRepository)
+		private galleryPostsRepository: GalleryPostsRepository,
 
-	const posts = await query.take(10).getMany();
+		private galleryPostEntityService: GalleryPostEntityService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const query = this.galleryPostsRepository.createQueryBuilder('post')
+				.andWhere('post.likedCount > 0')
+				.orderBy('post.likedCount', 'DESC');
 
-	return await GalleryPosts.packMany(posts, me);
-});
+			const posts = await query.take(10).getMany();
+
+			return await this.galleryPostEntityService.packMany(posts, me);
+		});
+	}
+}

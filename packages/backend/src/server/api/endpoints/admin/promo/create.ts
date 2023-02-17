@@ -1,7 +1,9 @@
-import define from '../../../define.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { PromoNotesRepository } from '@/models/index.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
-import { getNote } from '../../../common/getters.js';
-import { PromoNotes } from '@/models/index.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -34,21 +36,31 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const note = await getNote(ps.noteId).catch(e => {
-		if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
-		throw e;
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.promoNotesRepository)
+		private promoNotesRepository: PromoNotesRepository,
 
-	const exist = await PromoNotes.findOneBy({ noteId: note.id });
+		private getterService: GetterService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const note = await this.getterService.getNote(ps.noteId).catch(e => {
+				if (e.id === '9725d0ce-ba28-4dde-95a7-2cbb2c15de24') throw new ApiError(meta.errors.noSuchNote);
+				throw e;
+			});
 
-	if (exist != null) {
-		throw new ApiError(meta.errors.alreadyPromoted);
+			const exist = await this.promoNotesRepository.findOneBy({ noteId: note.id });
+
+			if (exist != null) {
+				throw new ApiError(meta.errors.alreadyPromoted);
+			}
+
+			await this.promoNotesRepository.insert({
+				noteId: note.id,
+				expiresAt: new Date(ps.expiresAt),
+				userId: note.userId,
+			});
+		});
 	}
-
-	await PromoNotes.insert({
-		noteId: note.id,
-		expiresAt: new Date(ps.expiresAt),
-		userId: note.userId,
-	});
-});
+}

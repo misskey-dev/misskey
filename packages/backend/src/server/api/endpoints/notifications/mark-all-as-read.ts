@@ -1,6 +1,9 @@
-import { publishMainStream } from '@/services/stream.js';
-import define from '../../define.js';
-import { Notifications } from '@/models/index.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotificationsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	tags: ['notifications', 'account'],
@@ -17,15 +20,27 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	// Update documents
-	await Notifications.update({
-		notifieeId: user.id,
-		isRead: false,
-	}, {
-		isRead: true,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notificationsRepository)
+		private notificationsRepository: NotificationsRepository,
 
-	// 全ての通知を読みましたよというイベントを発行
-	publishMainStream(user.id, 'readAllNotifications');
-});
+		private globalEventService: GlobalEventService,
+		private pushNotificationService: PushNotificationService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			// Update documents
+			await this.notificationsRepository.update({
+				notifieeId: me.id,
+				isRead: false,
+			}, {
+				isRead: true,
+			});
+
+			// 全ての通知を読みましたよというイベントを発行
+			this.globalEventService.publishMainStream(me.id, 'readAllNotifications');
+			this.pushNotificationService.pushNotification(me.id, 'readAllNotifications', undefined);
+		});
+	}
+}

@@ -1,10 +1,12 @@
-import define from '../../define.js';
-import { ApiError } from '../../error.js';
-import { UserLists, UserListJoinings, Notes } from '@/models/index.js';
-import { makePaginationQuery } from '../../common/make-pagination-query.js';
-import { generateVisibilityQuery } from '../../common/generate-visibility-query.js';
-import { activeUsersChart } from '@/services/chart/index.js';
 import { Brackets } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['notes', 'lists'],
@@ -52,72 +54,90 @@ export const paramDef = {
 } as const;
 
 // eslint-disable-next-line import/no-default-export
-export default define(meta, paramDef, async (ps, user) => {
-	const list = await UserLists.findOneBy({
-		id: ps.listId,
-		userId: user.id,
-	});
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
-	if (list == null) {
-		throw new ApiError(meta.errors.noSuchList);
+		@Inject(DI.userListsRepository)
+		private userListsRepository: UserListsRepository,
+
+		@Inject(DI.userListJoiningsRepository)
+		private userListJoiningsRepository: UserListJoiningsRepository,
+
+		private noteEntityService: NoteEntityService,
+		private queryService: QueryService,
+		private activeUsersChart: ActiveUsersChart,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			const list = await this.userListsRepository.findOneBy({
+				id: ps.listId,
+				userId: me.id,
+			});
+
+			if (list == null) {
+				throw new ApiError(meta.errors.noSuchList);
+			}
+
+			//#region Construct query
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+				.innerJoin(this.userListJoiningsRepository.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('user.avatar', 'avatar')
+				.leftJoinAndSelect('user.banner', 'banner')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
+				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
+				.leftJoinAndSelect('renote.user', 'renoteUser')
+				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
+				.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
+
+			this.queryService.generateVisibilityQuery(query, me);
+
+			if (ps.includeMyRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.userId != :meId', { meId: me.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.includeRenotedMyNotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteUserId != :meId', { meId: me.id });
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.includeLocalRenotes === false) {
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteUserHost IS NOT NULL');
+					qb.orWhere('note.renoteId IS NULL');
+					qb.orWhere('note.text IS NOT NULL');
+					qb.orWhere('note.fileIds != \'{}\'');
+					qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
+				}));
+			}
+
+			if (ps.withFiles) {
+				query.andWhere('note.fileIds != \'{}\'');
+			}
+			//#endregion
+
+			const timeline = await query.take(ps.limit).getMany();
+
+			this.activeUsersChart.read(me);
+
+			return await this.noteEntityService.packMany(timeline, me);
+		});
 	}
-
-	//#region Construct query
-	const query = makePaginationQuery(Notes.createQueryBuilder('note'), ps.sinceId, ps.untilId)
-		.innerJoin(UserListJoinings.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
-		.innerJoinAndSelect('note.user', 'user')
-		.leftJoinAndSelect('user.avatar', 'avatar')
-		.leftJoinAndSelect('user.banner', 'banner')
-		.leftJoinAndSelect('note.reply', 'reply')
-		.leftJoinAndSelect('note.renote', 'renote')
-		.leftJoinAndSelect('reply.user', 'replyUser')
-		.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-		.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-		.leftJoinAndSelect('renote.user', 'renoteUser')
-		.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-		.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-		.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
-
-	generateVisibilityQuery(query, user);
-
-	if (ps.includeMyRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.userId != :meId', { meId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.includeRenotedMyNotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.renoteUserId != :meId', { meId: user.id });
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.includeLocalRenotes === false) {
-		query.andWhere(new Brackets(qb => {
-			qb.orWhere('note.renoteUserHost IS NOT NULL');
-			qb.orWhere('note.renoteId IS NULL');
-			qb.orWhere('note.text IS NOT NULL');
-			qb.orWhere('note.fileIds != \'{}\'');
-			qb.orWhere('0 < (SELECT COUNT(*) FROM poll WHERE poll."noteId" = note.id)');
-		}));
-	}
-
-	if (ps.withFiles) {
-		query.andWhere('note.fileIds != \'{}\'');
-	}
-	//#endregion
-
-	const timeline = await query.take(ps.limit).getMany();
-
-	activeUsersChart.read(user);
-
-	return await Notes.packMany(timeline, user);
-});
+}

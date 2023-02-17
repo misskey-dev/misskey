@@ -56,13 +56,11 @@ emailNotification: "Ilɣa imayl"
 selectAccount: "Fren amiḍan"
 accounts: "Imiḍan"
 searchByGoogle: "Nadi"
+file: "Ifuyla"
+account: "Imiḍan"
 _email:
   _follow:
     title: "Yeṭṭafaṛ-ik·em-id"
-_mfm:
-  mention: "Bder"
-  search: "Nadi"
-  font: "Tasefsit"
 _theme:
   keys:
     mention: "Bder"
@@ -71,7 +69,10 @@ _sfx:
 _permissions:
   "write:account": "Ẓreg talɣut n umiḍan-ik·im"
 _widgets:
+  profile: "Amaɣnu"
   notifications: "Ilɣuyen"
+  _userList:
+    chooseList: "Fren tabdart"
 _cw:
   show: "Wali ugar"
 _visibility:
@@ -93,29 +94,13 @@ _pages:
   contentBlocks: "Agbur"
   inputBlocks: "Anekcum"
   specialBlocks: "Uzzig"
-  script:
-    categories:
-      list: "Tibdarin"
-    blocks:
-      _join:
-        arg1: "Tibdarin"
-      _randomPick:
-        arg1: "Tibdarin"
-      _dailyRandomPick:
-        arg1: "Tibdarin"
-      _seedRandomPick:
-        arg2: "Tibdarin"
-      _pick:
-        arg1: "Tibdarin"
-      _listLen:
-        arg1: "Tibdarin"
-    types:
-      array: "Tibdarin"
 _notification:
   youWereFollowed: "Yeṭṭafaṛ-ik·em-id"
   _types:
     follow: "Ig ṭṭafaṛ"
     mention: "Bder"
+  _actions:
+    reply: "Err"
 _deck:
   _columns:
     notifications: "Ilɣuyen"
