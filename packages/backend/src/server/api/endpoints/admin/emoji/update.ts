@@ -72,11 +72,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (emoji.name === ps.name) {
 				this.globalEventService.publishBroadcastStream('emojiUpdated', {
-					emojis: [ updated ],
+					emojis: [updated],
 				});
 			} else {
 				this.globalEventService.publishBroadcastStream('emojiDeleted', {
-					emojis: [ await this.emojiEntityService.pack(emoji) ],
+					emojis: [await this.emojiEntityService.pack(emoji)],
 				});
 
 				this.globalEventService.publishBroadcastStream('emojiAdded', {

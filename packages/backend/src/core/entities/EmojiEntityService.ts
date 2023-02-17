@@ -22,7 +22,7 @@ export class EmojiEntityService {
 		src: Emoji['id'] | Emoji,
 		opts: { omitHost?: boolean; omitId?: boolean; withUrl?: boolean; } = { omitHost: true, omitId: true, withUrl: true },
 	): Promise<Packed<'Emoji'>> {
-		opts = { omitHost: true, omitId: true, withUrl: true, ...opts }
+		opts = { omitHost: true, omitId: true, withUrl: true, ...opts };
 
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 

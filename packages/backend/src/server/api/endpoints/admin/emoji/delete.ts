@@ -57,7 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.db.queryResultCache!.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiDeleted', {
-				emojis: [ await this.emojiEntityService.pack(emoji) ],
+				emojis: [await this.emojiEntityService.pack(emoji)],
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'deleteEmoji', {
