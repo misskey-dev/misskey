@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				emojis = await q.take(ps.limit).getMany();
 			}
 
-			return this.emojiEntityService.packMany(emojis, { omitHost: false, omitId: false, withUrl: false });
+			return this.emojiEntityService.packDetailedMany(emojis);
 		});
 	}
 }
