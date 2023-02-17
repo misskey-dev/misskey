@@ -2,6 +2,7 @@ import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
+import { MultipartFields, MultipartValue } from '@fastify/multipart';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
@@ -27,6 +28,10 @@ const accessDenied = {
 	code: 'ACCESS_DENIED',
 	id: '56f35758-7dd5-468b-8439-5d6fb8ec9b8e',
 };
+
+function hasStringValue(v: MultipartFields[string]): v is MultipartValue<string> {
+	return typeof v === 'object' && 'value' in v && typeof v.value === 'string';
+}
 
 @Injectable()
 export class ApiCallService implements OnApplicationShutdown {
@@ -100,7 +105,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		reply: FastifyReply,
 	) {
 		const multipartData = await request.file();
-		if (multipartData == null) {
+		if (!multipartData) {
 			reply.code(400);
 			return;
 		}
@@ -108,9 +113,9 @@ export class ApiCallService implements OnApplicationShutdown {
 		const [path] = await createTemp();
 		await pump(multipartData.file, fs.createWriteStream(path));
 
-		const fields = {} as Record<string, string | undefined>;
+		const fields: Record<string, string | undefined> = {};
 		for (const [k, v] of Object.entries(multipartData.fields)) {
-			fields[k] = v.value;
+			fields[k] = hasStringValue(v) ? v.value : undefined;
 		}
 
 		const token = fields['i'];
