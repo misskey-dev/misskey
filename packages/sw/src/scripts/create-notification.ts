@@ -23,7 +23,7 @@ export async function createNotification<K extends keyof pushNotificationDataMap
 	const n = await composeNotification(data);
 
 	if (n) {
-		return self.registration.showNotification(...n);
+		return globalThis.registration.showNotification(...n);
 	} else {
 		console.error('Could not compose notification', data);
 		return createEmptyNotification();
@@ -239,7 +239,7 @@ export async function createEmptyNotification() {
 		const i18n = await swLang.i18n as I18n<any>;
 		const { t } = i18n;
 
-		await self.registration.showNotification(
+		await globalThis.registration.showNotification(
 			t('_notification.emptyPushNotificationMessage'),
 			{
 				silent: true,
@@ -253,8 +253,8 @@ export async function createEmptyNotification() {
 		setTimeout(async () => {
 			for (const n of
 				[
-					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
-					...(await self.registration.getNotifications({ tag: 'read_notification' })),
+					...(await globalThis.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
+					...(await globalThis.registration.getNotifications({ tag: 'read_notification' })),
 				]
 			) {
 				n.close();
