@@ -1871,3 +1871,7 @@ _deck:
     channel: "チャンネル"
     mentions: "あなた宛て"
     direct: "ダイレクト"
+
+_dialog:
+  charactersExceeded: "最大文字数を超えています！ 現在 {current} / 制限 {max}"
+  charactersBelow: "最小文字数を下回っています！ 現在 {current} / 制限 {min}"

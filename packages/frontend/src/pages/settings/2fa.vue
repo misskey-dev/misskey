@@ -26,7 +26,7 @@
 						</template>
 					</I18n>
 				</li>
-				<li>{{ i18n.ts._2fa.step2 }}<br><img :src="twoFactorData.qr"><p>{{ $ts._2fa.step2Url }}<br>{{ twoFactorData.url }}</p></li>
+				<li></li>
 				<li>
 					{{ i18n.ts._2fa.step3 }}<br>
 					<MkInput :model-value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" :spellcheck="false"><template #label>{{ i18n.ts.token }}</template></MkInput>
@@ -182,6 +182,15 @@ async function addSecurityKey() {
 		password: password.result,
 	});
 
+	const name = await os.inputText({
+		title: i18n.ts._2fa.registerSecurityKey,
+		text: i18n.ts._2fa.securityKeyName,
+		type: 'text',
+		minLength: 1,
+		maxLength: 30,
+	});
+	if (name.canceled) return;
+
 	const credential = await os.promiseDialog(navigator.credentials.create({
 			publicKey: {
 				challenge: byteify(challenge.challenge, 'base64'),
@@ -204,13 +213,6 @@ async function addSecurityKey() {
 		i18n.ts._2fa.tapSecurityKey,
 	) as PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null;
 	if (!credential) return;
-
-	const name = await os.inputText({
-		title: i18n.ts._2fa.registerSecurityKey,
-		text: i18n.ts._2fa.securityKeyName,
-		type: 'text',
-	})
-	if (name.canceled) return;
 
 	await os.apiWithDialog('i/2fa/key-done', {
 		password: password.result,

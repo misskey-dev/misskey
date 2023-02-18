@@ -16,6 +16,11 @@
 		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
+			<template #caption>
+				<span v-if="okButtonDisabled && disabledReason === 'charactersExceeded'" v-text="i18n.t('_dialog.charactersExceeded', { current: inputValue.length, max: input.maxLength ?? 'NaN' })" />
+				<span v-else-if="okButtonDisabled && disabledReason === 'charactersBelow'" v-text="i18n.t('_dialog.charactersBelow', { current: inputValue.length, min: input.minLength ?? 'NaN' })" />
+				<span v-else-if="input.minLength || input.maxLength"> </span>
+			</template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
@@ -28,7 +33,7 @@
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
-			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
+			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok" :disabled="okButtonDisabled">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
@@ -50,6 +55,8 @@ type Input = {
 	type: HTMLInputElement['type'];
 	placeholder?: string | null;
 	default: any | null;
+	minLength?: number;
+	maxLength?: number;
 };
 
 type Select = {
@@ -100,6 +107,26 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 const inputValue = ref(props.input?.default || null);
 const selectedValue = ref(props.select?.default || null);
+
+let disabledReason = $ref<null | 'charactersExceeded' | 'charactersBelow'>(null);
+const okButtonDisabled = $computed<boolean>(() => {
+	if (props.input) {
+		if (props.input.minLength) {
+			if (inputValue.value && inputValue.length < props.input.minLength) {
+				disabledReason = 'charactersBelow';
+				return true
+			};
+		}
+		if (props.input.maxLength) {
+			if (inputValue.value && inputValue.length > props.input.maxLength) {
+				disabledReason = 'charactersExceeded'
+				return true
+			};
+		}
+	}
+
+	return false;
+});
 
 function done(canceled: boolean, result?) {
 	emit('done', { canceled, result });

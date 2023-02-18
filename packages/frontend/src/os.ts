@@ -247,6 +247,8 @@ export function inputText(props: {
 	text?: string | null;
 	placeholder?: string | null;
 	default?: string | null;
+	minLength?: number;
+	maxLength?: number;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: string;
 }> {
@@ -258,6 +260,8 @@ export function inputText(props: {
 				type: props.type,
 				placeholder: props.placeholder,
 				default: props.default,
+				minLength: props.minLength,
+				maxLength: props.maxLength,
 			},
 		}, {
 			done: result => {
