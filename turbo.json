@@ -29,6 +29,12 @@
 				"**/built/**"
 			]
 		},
+		"clean": {},
+		"clean-all": {
+			"dependsOn": [
+				"clean"
+			]
+		},
 		"lint": {
 			"dependsOn": [
 				"lint:eslint",

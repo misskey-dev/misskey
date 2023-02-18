@@ -13,7 +13,9 @@
 		"build:post:frontend:fonts": "shx mkdir -p ./../built/_frontend_dist_/fonts && shx cp -r ./../packages/frontend/node_modules/three/examples/fonts/ ./../built/_frontend_dist_/fonts",
 		"build:post:frontend:tabler-icons": "shx mkdir -p ./../built/_frontend_dist_/tabler-icons &&shx cp -r ./../packages/frontend/node_modules/@tabler/icons-webfont/ ./../built/_frontend_dist_/tabler-icons",
 		"build:post:script": "shx mkdir -p ./built && node ./build-post.js",
-		"build:pre": "node ./build-pre.js"
+		"build:pre": "node ./build-pre.js",
+		"clean": "node ./clean.js",
+		"clean-all": "node ./clean-all"
 	},
 	"dependencies": {
 		"chokidar": "3.5.3",
