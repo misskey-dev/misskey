@@ -9,6 +9,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 
 // Defined also packages/sw/types.ts#L13
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type pushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
 	'unreadAntennaNote': {

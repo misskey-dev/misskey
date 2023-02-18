@@ -20,6 +20,7 @@ type File = {
 };
 
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type executor<T extends IEndpointMeta, Ps extends Schema> =
 	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
