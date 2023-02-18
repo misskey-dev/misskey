@@ -1528,7 +1528,7 @@ _2fa:
   registerTOTP: "ワンタイムパスワードを設定"
   securityKeyNotSupported: "お使いのブラウザはセキュリティキーに対応していません。"
   registerTOTPBeforeKey: "セキュリティキー・パスキーを登録するには、まずワンタイムパスワードの設定を行なってください。"
-  securityKeyInfo: "FIDO2をサポートするハードウェアセキュリティキーや端末の生体認証やPINロック、パスキーといった、WebAuthn由来の鍵を登録します。"
+  securityKeyInfo: "FIDO2をサポートするハードウェアセキュリティキー、端末の生体認証やPINロック、パスキーといった、WebAuthn由来の鍵を登録します。"
   chromePasskeyNotSupported: "Chromeのパスキーは現在サポートしていません。"
   registerSecurityKey: "セキュリティキー・パスキーを登録する"
   securityKeyName: "キーの名前を入力"
