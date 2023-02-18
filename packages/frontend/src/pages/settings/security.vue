@@ -5,11 +5,8 @@
 		<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
 	</FormSection>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.twoStepAuthentication }}</template>
-		<X2fa/>
-	</FormSection>
-	
+	<X2fa/>
+
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
 		<MkPagination :pagination="pagination" disable-auto-load>

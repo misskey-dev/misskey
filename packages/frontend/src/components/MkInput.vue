@@ -49,7 +49,7 @@ const props = defineProps<{
 	pattern?: string;
 	placeholder?: string;
 	autofocus?: boolean;
-	autocomplete?: boolean;
+	autocomplete?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];
