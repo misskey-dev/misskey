@@ -53,9 +53,6 @@ globalThis.addEventListener('push', ev => {
 				// 1日以上経過している場合は無視
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
-				// クライアントがあったらストリームに接続しているということなので通知しない
-				if (clients.length !== 0) break;
-
 				return createNotification(data);
 			case 'readAllNotifications':
 				for (const n of await globalThis.registration.getNotifications()) {
@@ -83,7 +80,8 @@ globalThis.addEventListener('push', ev => {
 				break;
 		}
 
-		return createEmptyNotification();
+		await createEmptyNotification();
+		return;
 	}));
 });
 

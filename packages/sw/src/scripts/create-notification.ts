@@ -10,6 +10,12 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
 
+const closeNotificationsByTags = async (tags: string[]) => {
+	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
+		n.close();
+	}
+}
+
 const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
 /* How to add a new badge:
  * 1. Find the icon and download png from https://tabler-icons.io/
@@ -161,6 +167,7 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 						badge = iconUrl('plus');
 					}
 
+					const tag = `reaction:${data.body.note.id}`;
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
@@ -176,10 +183,11 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 				}
 
 				case 'pollEnded':
+					const tag = `poll:${data.body.note.id}`;
 					return [t('_notification.pollEnded'), {
 						body: data.body.note.text || '',
 						badge: iconUrl('chart-arrows'),
-						tag: `poll:${data.body.note.id}`,
+						tag,
 						data,
 					}];
 
@@ -220,11 +228,12 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 					return null;
 			}
 		case 'unreadAntennaNote':
+			const tag = `antenna:${data.body.antenna.id}`;
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
 				icon: data.body.note.user.avatarUrl,
 				badge: iconUrl('antenna'),
-				tag: `antenna:${data.body.antenna.id}`,
+				tag,
 				data,
 				renotify: true,
 			}];
@@ -248,16 +257,11 @@ export async function createEmptyNotification() {
 			},
 		);
 
-		res();
-
 		setTimeout(async () => {
-			for (const n of
-				[
-					...(await globalThis.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
-					...(await globalThis.registration.getNotifications({ tag: 'read_notification' })),
-				]
-			) {
-				n.close();
+			try {
+				await closeNotificationsByTags(['user_visible_auto_notification', 'read_notification']);
+			} finally {
+				res();
 			}
 		}, 1000);
 	});
