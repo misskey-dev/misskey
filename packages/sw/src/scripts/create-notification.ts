@@ -248,16 +248,16 @@ export async function createEmptyNotification() {
 			},
 		);
 
-		res();
-
 		setTimeout(async () => {
-			for (const n of
-				[
+			try {
+				for (const n of [
 					...(await globalThis.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
 					...(await globalThis.registration.getNotifications({ tag: 'read_notification' })),
-				]
-			) {
-				n.close();
+				]) {
+					n.close();
+				}
+			} finally {
+				res();
 			}
 		}, 1000);
 	});
