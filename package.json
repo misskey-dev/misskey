@@ -32,8 +32,8 @@
 		"migrate": "turbo run migrate",
 		"migrateandstart": "run-s migrate start",
 		"start": "turbo run start",
-		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"watch": "pnpm dev"
+		"start:test": "cross-env NODE_ENV=test turbo run start",
 		"test": "run-s jest",
 		"test-and-coverage": "run-s jest-and-coverage"
 	},

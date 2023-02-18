@@ -44,7 +44,9 @@
 		"lint:eslint": {},
 		"lint:typecheck": {},
 		"migrate":{},
-		"start":{},
+		"start":{
+			"env": ["NODE_ENV"]
+		},
 		"jest":{}
 	}
 }
