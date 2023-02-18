@@ -36,6 +36,9 @@ jobs:
         - backend
         - frontend
         - sw
+        lint:
+        - typecheck
+        - eslint
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -51,4 +54,4 @@ jobs:
         cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
-    - run: pnpm --filter ${{ matrix.workspace }} run lint
+    - run: pnpm --filter ${{ matrix.workspace }} run ${{ matrix.lint }}

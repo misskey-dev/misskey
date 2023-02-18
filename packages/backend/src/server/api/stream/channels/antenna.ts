@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@/di-decorators.js';
-import type { NotesRepository } from '@/models/index.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';

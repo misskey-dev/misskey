@@ -13,13 +13,6 @@
 import { computed } from 'vue';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkButton from '@/components/MkButton.vue';
-import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

@@ -6,7 +6,7 @@ import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
+import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from '@/boot/QueueModule.js';
 import type { ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
 

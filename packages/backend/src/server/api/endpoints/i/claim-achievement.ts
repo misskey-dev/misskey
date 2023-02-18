@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
 import { AchievementService, ACHIEVEMENT_TYPES } from '@/core/AchievementService.js';
+import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,

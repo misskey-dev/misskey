@@ -406,7 +406,7 @@ export class FileServerService {
 				state: 'remote',
 				mime, ext,
 				path, cleanup,
-			}
+			};
 		} catch (e) {
 			cleanup();
 			throw e;
@@ -440,7 +440,7 @@ export class FileServerService {
 				url: file.uri,
 				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 				file,
-			}
+			};
 		}
 
 		const path = this.internalStorageService.resolvePath(key);
@@ -463,6 +463,6 @@ export class FileServerService {
 			mime: file.type,
 			ext: null,
 			path,
-		}
+		};
 	}
 }

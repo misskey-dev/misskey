@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NotePiningService } from '@/core/NotePiningService.js';
 import { DI } from '@/di-symbols.js';

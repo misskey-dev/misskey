@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onBeforeUnmount, shallowRef, nextTick } from 'vue';
+import { computed, onMounted, onBeforeUnmount } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
 

@@ -1,4 +1,3 @@
-import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@/di-decorators.js';
 import type { RetentionAggregationsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

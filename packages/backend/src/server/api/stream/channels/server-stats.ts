@@ -1,5 +1,5 @@
 import Xev from 'xev';
-import { Inject, Injectable } from '@/di-decorators.js';
+import { Injectable } from '@/di-decorators.js';
 import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 

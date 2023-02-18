@@ -8,7 +8,6 @@ import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { EmailService } from '@/core/EmailService.js';
-import { ApiError } from '../error.js';
 
 export const meta = {
 	tags: ['reset password'],

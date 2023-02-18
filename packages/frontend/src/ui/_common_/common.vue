@@ -30,11 +30,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, nextTick } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import * as misskey from 'misskey-js';
 import { swInject } from './sw-inject';
 import XNotification from './notification.vue';
-import { popup, popups, pendingApiRequestsCount } from '@/os';
+import { popups, pendingApiRequestsCount } from '@/os';
 import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';

@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
 import * as os from '@/os';
 import { calcPopupPosition } from '@/scripts/popup-position';
 

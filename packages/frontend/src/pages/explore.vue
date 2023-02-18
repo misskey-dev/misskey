@@ -36,11 +36,8 @@ import XUsers from './explore.users.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { instance } from '@/instance';
 import XUserList from '@/components/MkUserList.vue';
 
 const props = withDefaults(defineProps<{

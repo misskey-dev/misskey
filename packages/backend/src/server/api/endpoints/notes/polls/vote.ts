@@ -1,4 +1,3 @@
-import { Not } from 'typeorm';
 import { Inject, Injectable } from '@/di-decorators.js';
 import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
 import type { RemoteUser } from '@/models/entities/User.js';

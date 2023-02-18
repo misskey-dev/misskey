@@ -11,7 +11,7 @@ import { bindThis } from '@/decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { Schema } from '@/misc/schema.js';
 import { endpoints } from '@/boot/EndpointsModule.js';
-import { IEndpoint, IEndpointMeta } from './endpoints.js';
+import { IEndpointMeta } from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';

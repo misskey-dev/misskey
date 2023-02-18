@@ -8,8 +8,8 @@
 					<i v-if="t.icon" :class="[$style.tabIcon, t.icon]"></i>
 					<div v-if="!t.iconOnly || (!defaultStore.reactiveState.animation.value && t.key === tab)"
 						:class="$style.tabTitle">{{ t.title }}</div>
-					<Transition v-else @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterLeave"
-						mode="in-out">
+					<Transition v-else mode="in-out" @enter="enter" @after-enter="afterEnter" @leave="leave"
+						@after-leave="afterLeave">
 						<div v-show="t.key === tab" :class="[$style.tabTitle, $style.animate]">{{ t.title }}</div>
 					</Transition>
 				</div>
@@ -34,7 +34,7 @@ export type Tab = {
 </script>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, watch, nextTick, Transition, shallowRef } from 'vue';
+import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
 import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{

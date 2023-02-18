@@ -3,7 +3,6 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['federation'],

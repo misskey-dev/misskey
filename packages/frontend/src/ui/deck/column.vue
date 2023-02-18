@@ -29,8 +29,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column, deckStore } from './deck-store';
+import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { MenuItem } from '@/types/menu';

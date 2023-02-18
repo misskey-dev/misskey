@@ -1,9 +1,8 @@
+import { Injectable } from '@/di-decorators.js';
 import si from 'systeminformation';
 import Xev from 'xev';
 import { IDisposable } from 'yohira';
 import * as osUtils from 'os-utils';
-import { Inject, Injectable } from '@/di-decorators.js';
-import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 const ev = new Xev();

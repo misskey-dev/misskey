@@ -32,7 +32,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="instances" class="federation">
+		<div v-if="instances && instances.length > 0" class="federation">
 			<MarqueeText :duration="40">
 				<MkA v-for="instance in instances" :key="instance.id" :class="$style.federationInstance" :to="`/instance-info/${instance.host}`" behavior="window">
 					<!--<MkInstanceCardMini :instance="instance"/>-->
@@ -47,45 +47,25 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { toUnicode } from 'punycode/';
 import XTimeline from './welcome.timeline.vue';
 import MarqueeText from '@/components/MkMarquee.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
-import XNote from '@/components/MkNote.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
-import { host, instanceName } from '@/config';
+import { instanceName } from '@/config';
 import * as os from '@/os';
-import number from '@/filters/number';
 import { i18n } from '@/i18n';
+import { Instance } from 'misskey-js/built/entities';
 
-let meta = $ref();
-let stats = $ref();
-let tags = $ref();
-let onlineUsersCount = $ref();
-let instances = $ref();
+let meta = $ref<Instance>();
+let instances = $ref<any[]>();
 
 os.api('meta', { detail: true }).then(_meta => {
 	meta = _meta;
 });
 
-os.api('stats').then(_stats => {
-	stats = _stats;
-});
-
-os.api('get-online-users-count').then(res => {
-	onlineUsersCount = res.count;
-});
-
-os.api('hashtags/list', {
-	sort: '+mentionedLocalUsers',
-	limit: 8,
-}).then(_tags => {
-	tags = _tags;
-});
-
-os.api('federation/instances', {
+os.apiGet('federation/instances', {
 	sort: '+pubSub',
 	limit: 20,
 }).then(_instances => {
@@ -150,8 +130,9 @@ function showMenu(ev) {
 			bottom: 0;
 			right: 64px;
 			margin: auto;
+			padding: 128px 0;
 			width: 500px;
-			height: calc(100% - 128px);
+			height: calc(100% - 256px);
 			overflow: hidden;
 			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);
 			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 128px, rgba(0,0,0,1) calc(100% - 128px), rgba(0,0,0,0) 100%);

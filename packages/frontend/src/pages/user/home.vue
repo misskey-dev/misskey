@@ -112,21 +112,18 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, inject, onMounted, onUnmounted, watch } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import XNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import MkContainer from '@/components/MkContainer.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
-import MkTab from '@/components/MkTab.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
-import { userPage, acct as getAcct } from '@/filters/user';
+import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';

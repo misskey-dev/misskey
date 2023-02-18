@@ -1,5 +1,5 @@
 import { endpoints } from '@/boot/EndpointsModule.js';
-import { Inject, Injectable } from '@/di-decorators.js';
+import { Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

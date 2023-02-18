@@ -74,7 +74,6 @@ import { FlashLike } from '@/models/entities/FlashLike.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
 

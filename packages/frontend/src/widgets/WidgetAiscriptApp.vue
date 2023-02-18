@@ -8,16 +8,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, Ref, ref, watch } from 'vue';
-import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { onMounted, Ref, ref, watch } from 'vue';
+import { Interpreter, Parser } from '@syuilo/aiscript';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { $i } from '@/account';
 import MkAsUi from '@/components/MkAsUi.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
+import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui';
 
 const name = 'aiscriptApp';
 
