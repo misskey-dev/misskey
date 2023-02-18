@@ -119,8 +119,6 @@ function unregisterTOTP() {
 		if (canceled) return;
 		os.apiWithDialog('i/2fa/unregister', {
 			password: password,
-		}).then(() => {
-			return updatePasswordLessLogin(false);
 		}).catch(error => {
 			os.alert({
 				type: 'error',
@@ -161,7 +159,6 @@ async function unregisterKey(key) {
 		password: password.result,
 		credentialId: key.id,
 	});
-	await updatePasswordLessLogin(false);
 	os.success();
 }
 

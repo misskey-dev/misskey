@@ -43,6 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: null,
 				twoFactorEnabled: false,
+				usePasswordLessLogin: false,
 			});
 
 			// Publish meUpdated event
