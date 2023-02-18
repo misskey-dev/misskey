@@ -3,10 +3,8 @@
 	"private": true,
 	"scripts": {
 		"build": "node build.js",
-		"lint": "run-p lint:*",
 		"lint:eslint": "eslint --quiet src/**/*.ts",
-		"lint:typecheck": "tsc --noEmit",
-		"watch": "node build.js watch"
+		"lint:typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"esbuild": "0.14.42",

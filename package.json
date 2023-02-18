@@ -26,7 +26,7 @@
 		"init": "pnpm migrate",
 		"jest": "cd packages/backend && pnpm jest",
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
-		"lint": "pnpm -r lint",
+		"lint": "turbo run lint",
 		"migrate": "cd packages/backend && pnpm migrate",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"start": "cd packages/backend && node ./built/boot/index.js",

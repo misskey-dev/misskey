@@ -5,6 +5,13 @@
 			"persistent": true
 		},
 		"cy:run": {},
-		"lint": {}
+		"lint": {
+			"dependsOn": [
+				"lint:eslint",
+				"lint:typecheck"
+			]
+		},
+		"lint:eslint": {},
+		"lint:typecheck": {}
 	}
 }
