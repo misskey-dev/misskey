@@ -20,6 +20,8 @@
 		
 		<div class="_gaps_s">
 			<MkInfo>
+				{{ i18n.ts._2fa.securityKeyInfo }}
+				<br>
 				{{ i18n.ts._2fa.chromePasskeyNotSupported }}
 			</MkInfo>
 
@@ -33,7 +35,10 @@
 
 			<template v-else>
 				<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-				<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">{{ i18n.ts.passwordLessLogin }}</MkSwitch>
+				<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">
+					<template #label>{{ i18n.ts.passwordLessLogin }}</template>
+					<template #caption>{{ i18n.ts.passwordLessLoginDescription }}</template>
+				</MkSwitch>
 
 				<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
 					<template #label>{{ key.name }}</template>
