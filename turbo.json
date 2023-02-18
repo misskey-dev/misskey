@@ -4,6 +4,7 @@
 		"cy:open": {
 			"persistent": true
 		},
-		"cy:run": {}
+		"cy:run": {},
+		"lint": {}
 	}
 }

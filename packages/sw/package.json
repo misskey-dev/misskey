@@ -3,9 +3,9 @@
 	"private": true,
 	"scripts": {
 		"build": "node build.js",
-		"eslint": "eslint --quiet src/**/*.ts",
-		"lint": "pnpm typecheck && pnpm eslint",
-		"typecheck": "tsc --noEmit",
+		"lint": "run-p lint:*",
+		"lint:eslint": "eslint --quiet src/**/*.ts",
+		"lint:typecheck": "tsc --noEmit",
 		"watch": "node build.js watch"
 	},
 	"dependencies": {
