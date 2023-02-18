@@ -21,8 +21,8 @@ packages/backend/.yarn/cache
 packages/sw/.yarn/cache
 
 # Cypress
-cypress/screenshots
-cypress/videos
+scripts/cypress/screenshots
+scripts/cypress/videos
 
 # Coverage
 coverage

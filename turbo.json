@@ -1,5 +1,9 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
+		"cy:open": {
+			"persistent": true
+		},
+		"cy:run": {}
 	}
 }

@@ -1,0 +1,16 @@
+{
+	"name": "scripts",
+	"private": true,
+	"scripts": {
+		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
+		"cy:run": "pnpm cypress run",
+		"e2e": "pnpm start-server-and-test 'turbo run start:test' http://localhost:61812 cy:run"
+	},
+	"dependencies": {
+		"typescript": "4.9.5"
+	},
+	"devDependencies": {
+		"cypress": "12.5.1",
+		"start-server-and-test": "1.15.3"
+	}
+}
