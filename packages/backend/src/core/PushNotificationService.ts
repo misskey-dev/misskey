@@ -21,25 +21,17 @@ type pushNotificationsTypes = {
 	'readAllAntennas': undefined;
 };
 
-type bodyWithNotes = pushNotificationsTypes['notification' | 'unreadAntennaNote'];
-function hasNote(body: pushNotificationsTypes[keyof pushNotificationsTypes]): body is bodyWithNotes {
-	return typeof body === 'object' && 'note' in body;
-}
-function hasRenoteType(body: bodyWithNotes): body is pushNotificationsTypes['notification'] {
-	return 'type' in body && body.type === 'renote';
-}
-
 // Reduce length because push message servers have character limits
 function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pushNotificationsTypes[T]): pushNotificationsTypes[T] {
-	if (body === undefined) return body;
+	if (typeof body !== 'object') return body;
 
 	return {
 		...body,
-		...((hasNote(body) && body.note) ? {
+		...(('note' in body && body.note) ? {
 			note: {
 				...body.note,
 				// textをgetNoteSummaryしたものに置き換える
-				text: getNoteSummary((hasRenoteType(body) && body.note.renote) ? body.note.renote : body.note),
+				text: getNoteSummary(('type' in body && body.type === 'renote' && body.note.renote) ? body.note.renote : body.note),
 
 				cw: undefined,
 				reply: undefined,

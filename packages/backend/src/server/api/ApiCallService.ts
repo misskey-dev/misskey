@@ -30,7 +30,7 @@ const accessDenied = {
 };
 
 function hasStringValue(v: MultipartFields[string]): v is MultipartValue<string> {
-	return typeof v === 'object' && 'value' in v && typeof v.value === 'string';
+	return typeof v === 'object' && 'value' in v;
 }
 
 @Injectable()
@@ -105,7 +105,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		reply: FastifyReply,
 	) {
 		const multipartData = await request.file();
-		if (!multipartData) {
+		if (multipartData == null) {
 			reply.code(400);
 			return;
 		}
@@ -113,7 +113,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		const [path] = await createTemp();
 		await pump(multipartData.file, fs.createWriteStream(path));
 
-		const fields: Record<string, string | undefined> = {};
+		const fields = {} as Record<string, string | undefined>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
 			fields[k] = hasStringValue(v) ? v.value : undefined;
 		}
