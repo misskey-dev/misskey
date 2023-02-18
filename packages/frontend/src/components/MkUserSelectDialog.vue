@@ -116,7 +116,7 @@ onMounted(() => {
 	os.api('users/show', {
 		userIds: defaultStore.state.recentlyUsedUsers,
 	}).then(users => {
-		if (props.includeSelf) {
+		if (props.includeSelf && users.find(x => $i ? x.id === $i.id : true) == null) {
 			recentUsers = [$i, ...users];
 		} else {
 			recentUsers = users;
