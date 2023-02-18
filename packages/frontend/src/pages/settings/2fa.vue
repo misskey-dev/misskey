@@ -1,40 +1,18 @@
 <template>
-<div class="_gaps_m" v-if="$i">
+<div v-if="$i" class="_gaps_m">
 	<FormSection :first="first">
-		<template #label>{{ i18n.ts.twoStepAuthentication }}</template>
+		<template #label>{{ i18n.ts.totp }}</template>
 
-		<template v-if="$i.twoFactorEnabled">
-			<p>{{ i18n.ts._2fa.alreadyRegistered }}</p>
+		<div v-if="$i.twoFactorEnabled" class="_gaps_s">
+			<div v-text="i18n.ts._2fa.alreadyRegistered" />
 			<template v-if="$i.securityKeysList.length > 0">
 				<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 				<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 			</template>
-			<MkButton @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
-		</template>
+			<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+		</div>
 
 		<MkButton v-else-if="!twoFactorData && !$i.twoFactorEnabled" @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
-
-		<div v-else-if="twoFactorData && !$i.twoFactorEnabled">
-			<ol style="margin: 0; padding: 0 0 0 1em;">
-				<li>
-					<I18n :src="i18n.ts._2fa.step1" tag="span">
-						<template #a>
-							<a href="https://authy.com/" rel="noopener" target="_blank" class="_link">Authy</a>
-						</template>
-						<template #b>
-							<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
-						</template>
-					</I18n>
-				</li>
-				<li></li>
-				<li>
-					{{ i18n.ts._2fa.step3 }}<br>
-					<MkInput :model-value="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" :spellcheck="false"><template #label>{{ i18n.ts.token }}</template></MkInput>
-					<MkButton primary @click="submit">{{ i18n.ts.done }}</MkButton>
-				</li>
-			</ol>
-			<MkInfo>{{ i18n.ts._2fa.step4 }}</MkInfo>
-		</div>
 	</FormSection>
 
 	<FormSection>
@@ -49,6 +27,10 @@
 		</MkInfo>
 
 		<template v-else>
+			<div class="_gaps_s">
+				<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
+				<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">{{ i18n.ts.passwordLessLogin }}</MkSwitch>
+			</div>
 			<div :class="$style.keyList" class="_gaps_s">
 				<div v-for="key in $i.securityKeysList" :key="key.id" :class="$style.key">
 					<h3>{{ key.name }}</h3>
@@ -56,22 +38,17 @@
 					<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>
 				</div>
 			</div>
-			<FormSection class="_gaps_s">
-				<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="updatePasswordLessLogin">{{ i18n.ts.passwordLessLogin }}</MkSwitch>
-				<MkButton @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-			</FormSection>
 		</template>
 	</FormSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import { hostname } from '@/config';
 import { byteify, hexify, stringify } from '@/scripts/2fa';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import * as os from '@/os';
@@ -82,24 +59,47 @@ withDefaults(defineProps<{
 	first?: boolean;
 }>(), {
 	first: false,
-})
+});
 
 const twoFactorData = ref<any>(null);
 const supportsCredentials = ref(!!navigator.credentials);
 const usePasswordLessLogin = ref($i!.usePasswordLessLogin);
-const token = ref<string>('');
 
-function registerTOTP() {
-	os.inputText({
+async function registerTOTP() {
+	const password = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
-	}).then(({ canceled, result: password }) => {
-		if (canceled) return;
-		os.apiWithDialog('i/2fa/register', {
-			password: password,
-		}).then(data => {
-			twoFactorData.value = data;
-		});
+	});
+	if (password.canceled) return;
+
+	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
+		password: password.result,
+	});
+
+	const qrdialog = await new Promise<boolean>(res => {
+		os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
+			twoFactorData,
+		}, {
+			'ok': () => res(true),
+			'cancel': () => res(false),
+		}, 'closed');
+	});
+	if (!qrdialog) return;
+
+	const token = await os.inputNumber({
+		title: i18n.ts._2fa.step3Title,
+		text: i18n.ts._2fa.step3,
+	});
+	if (token.canceled) return;
+
+	await os.apiWithDialog('i/2fa/done', {
+		token: token.result.toString(),
+	});
+	await refreshAccount();
+
+	await os.alert({
+		type: 'success',
+		text: i18n.ts._2fa.step4,
 	});
 }
 
@@ -112,11 +112,12 @@ function unregisterTOTP() {
 		os.apiWithDialog('i/2fa/unregister', {
 			password: password,
 		}).then(() => {
-			usePasswordLessLogin.value = false;
-			updatePasswordLessLogin();
-		}).then(() => {
-			os.success();
-			refreshAccount();
+			return updatePasswordLessLogin(false);
+		}).catch(error => {
+			os.alert({
+				type: 'error',
+				text: error,
+			});
 		});
 	});
 }
@@ -131,20 +132,6 @@ function renewTOTP() {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		registerTOTP();
-	});
-}
-
-function submit() {
-	os.apiWithDialog('i/2fa/done', {
-		token: token.value,
-	}).then(() => {
-		os.success();
-		$i!.twoFactorEnabled = true;
-	}).catch(err => {
-		os.alert({
-			type: 'error',
-			text: err,
-		});
 	});
 }
 
@@ -166,8 +153,7 @@ async function unregisterKey(key) {
 		password: password.result,
 		credentialId: key.id,
 	});
-	usePasswordLessLogin.value = false;
-	await updatePasswordLessLogin();
+	await updatePasswordLessLogin(false);
 	os.success();
 }
 
@@ -175,7 +161,7 @@ async function addSecurityKey() {
 	const password = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
-	})
+	});
 	if (password.canceled) return;
 
 	const challenge: any = await os.apiWithDialog('i/2fa/register-key', {
@@ -209,7 +195,7 @@ async function addSecurityKey() {
 			},
 		}),
 		null,
-		null,
+		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
 		i18n.ts._2fa.tapSecurityKey,
 	) as PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null;
 	if (!credential) return;
@@ -222,13 +208,16 @@ async function addSecurityKey() {
 		clientDataJSON: stringify(credential.response.clientDataJSON),
 		attestationObject: hexify(credential.response.attestationObject),
 	});
+
+	await refreshAccount();
 }
 
-async function updatePasswordLessLogin() {
+async function updatePasswordLessLogin(value: boolean) {
+	usePasswordLessLogin.value = value;
 	await os.api('i/2fa/password-less', {
-		value: !!usePasswordLessLogin.value,
+		value,
 	});
-	refreshAccount();
+	await refreshAccount();
 }
 </script>
 
