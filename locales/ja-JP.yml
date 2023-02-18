@@ -1534,11 +1534,11 @@ _2fa:
   chromePasskeyNotSupported: "Chromeのパスキーは現在サポートしていません"
   removeKey: "セキュリティキーを削除"
   removeKeyConfirm: "{name}を削除しますか？"
-  renewTOTP: "ワンタイムパスワードを更新"
-  whyTOTPOnlyRenew: "セキュリティキーが登録されている場合、ワンタイムパスワードを解除できません。"
+  whyTOTPOnlyRenew: "セキュリティキーが登録されている場合、ワンタイムパスワードの解除はできません。"
+  renewTOTP: "ワンタイムパスワードを再設定"
   renewTOTPConfirm: "今までのワンタイムパスワードは使用できなくなります"
-  renewTOTPOk: "更新する"
-  renewTOTPCancel: "更新しない"
+  renewTOTPOk: "再設定する"
+  renewTOTPCancel: "やめておく"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
