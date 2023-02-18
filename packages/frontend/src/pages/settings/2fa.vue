@@ -39,8 +39,8 @@
 					<template #label>{{ key.name }}</template>
 					<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
 					<div class="_buttons">
-						<MkButton @click="renameKey(key)">{{ i18n.ts.rename }}</MkButton>
-						<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>
+						<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ i18n.ts.rename }}</MkButton>
+						<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ i18n.ts.unregister }}</MkButton>
 					</div>
 				</MkFolder>
 			</template>
