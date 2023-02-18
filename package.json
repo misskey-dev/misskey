@@ -27,7 +27,7 @@
 		"e2e": "turbo run e2e",
 		"init": "run-s migrate",
 		"jest": "turbo run jest",
-		"jest-and-coverage": "turbo run jest --coverage",
+		"jest-and-coverage": "turbo run jest -- --coverage",
 		"lint": "turbo run lint",
 		"migrate": "turbo run migrate",
 		"migrateandstart": "run-s migrate start",
