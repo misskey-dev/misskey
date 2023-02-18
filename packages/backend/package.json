@@ -12,7 +12,7 @@
 		"lint:eslint": "eslint --quiet \"src/**/*.ts\"",
 		"lint:typecheck": "tsc --noEmit",
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
-		"start": "node ./built/index.js",
+		"start": "node ./built/boot/index.js",
 		"start:test": "NODE_ENV=test node ./built/index.js",
 		"test": "pnpm jest",
 		"test-and-coverage": "pnpm jest-and-coverage",

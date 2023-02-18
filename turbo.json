@@ -42,6 +42,8 @@
 			]
 		},
 		"lint:eslint": {},
-		"lint:typecheck": {}
+		"lint:typecheck": {},
+		"migrate":{},
+		"start":{}
 	}
 }
