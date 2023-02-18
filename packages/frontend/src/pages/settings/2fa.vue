@@ -20,7 +20,7 @@
 		
 		<div class="_gaps_s">
 			<MkInfo>
-				{{ i18n.ts._2fa.securityKeyInfo }}
+				{{ i18n.ts._2fa.securityKeyInfo }}<br>
 				<br>
 				{{ i18n.ts._2fa.chromePasskeyNotSupported }}
 			</MkInfo>

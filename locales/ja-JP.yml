@@ -1529,7 +1529,7 @@ _2fa:
   securityKeyNotSupported: "お使いのブラウザはセキュリティキーに対応していません。"
   registerTOTPBeforeKey: "セキュリティキー・パスキーを登録するには、まずワンタイムパスワードの設定を行なってください。"
   securityKeyInfo: "FIDO2をサポートするハードウェアセキュリティキーや端末の生体認証やPINロック、パスキーといった、WebAuthn由来の鍵を登録します。"
-  chromePasskeyNotSupported: "Chromeのパスキーは現在サポートしていません"
+  chromePasskeyNotSupported: "Chromeのパスキーは現在サポートしていません。"
   registerSecurityKey: "セキュリティキー・パスキーを登録する"
   securityKeyName: "キーの名前を入力"
   tapSecurityKey: "ブラウザの指示に従い、セキュリティキーやパスキーを登録してください"
