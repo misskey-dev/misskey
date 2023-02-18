@@ -1,9 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export type obj = { [x: string]: any };
+export type Obj = { [x: string]: any };
 export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
-	'@context'?: string | string[] | obj | obj[];
+	'@context'?: string | string[] | Obj | Obj[];
 	type: string | string[];
 	id?: string;
 	name?: string | null;
