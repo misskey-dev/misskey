@@ -31,8 +31,8 @@ function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pus
 			note: {
 				...body.note,
 				// textをgetNoteSummaryしたものに置き換える
-				text: getNoteSummary(('type' in body && body.type === 'renote' && body.note.renote) ? body.note.renote : body.note),
-
+				text: getNoteSummary(('type' in body && body.type === 'renote') ? body.note.renote as Packed<'Note'> : body.note),
+	
 				cw: undefined,
 				reply: undefined,
 				renote: undefined,
