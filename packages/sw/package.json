@@ -2,7 +2,7 @@
 	"name": "sw",
 	"private": true,
 	"scripts": {
-		"build": "node build.js",
+		"build:main": "node build.js",
 		"lint:eslint": "eslint --quiet src/**/*.ts",
 		"lint:typecheck": "tsc --noEmit"
 	},

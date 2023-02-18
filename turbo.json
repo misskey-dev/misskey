@@ -5,6 +5,30 @@
 			"persistent": true
 		},
 		"cy:run": {},
+		"build:main": {
+			"inputs": [
+				"packages/**",
+				"**/built/**"
+			],
+			"outputs": [
+				"built/meta.json"
+			]
+		},
+		"build:pre": {
+			"inputs": [
+				"scripts/build-pre.js"
+			]
+		},
+		"build:post": {
+			"inputs": [
+				"scripts/build-post.js",
+				"scripts/package.json",
+				"**/built/**"
+			],
+			"outputs": [
+				"**/built/**"
+			]
+		},
 		"lint": {
 			"dependsOn": [
 				"lint:eslint",
