@@ -18,7 +18,7 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
 		
-		<div class="_gaps_m">
+		<div class="_gaps_s">
 			<MkInfo>
 				{{ i18n.ts._2fa.chromePasskeyNotSupported }}
 			</MkInfo>
@@ -37,8 +37,11 @@
 
 				<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
 					<template #label>{{ key.name }}</template>
-					<template #suffix><I18n :src="i18n.ts.lastUsedAt ?? ''"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
-					<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>
+					<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
+					<div class="_buttons">
+						<MkButton @click="renameKey(key)">{{ i18n.ts.rename }}</MkButton>
+						<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>
+					</div>
 				</MkFolder>
 			</template>
 		</div>
@@ -56,8 +59,10 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
-import { $i, refreshAccount } from '@/account';
+import { $i } from '@/account';
 import { i18n } from '@/i18n';
+
+// メモ: 各エンドポイントはmeUpdatedを発行するため、refreshAccountは不要
 
 withDefaults(defineProps<{
 	first?: boolean;
@@ -67,7 +72,7 @@ withDefaults(defineProps<{
 
 const twoFactorData = ref<any>(null);
 const supportsCredentials = ref(!!navigator.credentials);
-const usePasswordLessLogin = ref($i!.usePasswordLessLogin);
+const usePasswordLessLogin = $computed(() => $i!.usePasswordLessLogin);
 
 async function registerTOTP() {
 	const password = await os.inputText({
@@ -99,7 +104,6 @@ async function registerTOTP() {
 	await os.apiWithDialog('i/2fa/done', {
 		token: token.result.toString(),
 	});
-	await refreshAccount();
 
 	await os.alert({
 		type: 'success',
@@ -161,6 +165,22 @@ async function unregisterKey(key) {
 	os.success();
 }
 
+async function renameKey(key) {
+	const name = await os.inputText({
+		title: i18n.ts.rename,
+		default: key.name,
+		type: 'text',
+		minLength: 1,
+		maxLength: 30,
+	});
+	if (name.canceled) return;
+
+	await os.apiWithDialog('i/2fa/update-key', {
+		name: name.result,
+		credentialId: key.id,
+	});
+}
+
 async function addSecurityKey() {
 	const password = await os.inputText({
 		title: i18n.ts.password,
@@ -212,15 +232,11 @@ async function addSecurityKey() {
 		clientDataJSON: stringify(credential.response.clientDataJSON),
 		attestationObject: hexify(credential.response.attestationObject),
 	});
-
-	await refreshAccount();
 }
 
 async function updatePasswordLessLogin(value: boolean) {
-	usePasswordLessLogin.value = value;
 	await os.api('i/2fa/password-less', {
 		value,
 	});
-	await refreshAccount();
 }
 </script>
