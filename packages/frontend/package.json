@@ -2,8 +2,8 @@
 	"name": "frontend",
 	"private": true,
 	"scripts": {
-		"watch": "vite",
 		"build:main": "vite build",
+		"dev:watch": "vite",
 		"lint:eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint:typecheck": "vue-tsc --noEmit"
 	},

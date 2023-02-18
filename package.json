@@ -23,7 +23,10 @@
 		"cleanall": "run-s clean-all",
 		"cy:open": "turbo run cy:open",
 		"cy:run": "turbo run cy:run",
-		"dev": "node ./scripts/dev.js",
+		"dev": "run-p dev:setup dev:watch",
+		"dev:setup": "run-s clean build:pre dev:main",
+		"dev:main": "turbo run dev:main",
+		"dev:watch": "turbo run dev:watch",
 		"e2e": "turbo run e2e",
 		"init": "run-s migrate",
 		"jest": "turbo run jest",
@@ -32,7 +35,6 @@
 		"migrate": "turbo run migrate",
 		"migrateandstart": "run-s migrate start",
 		"start": "turbo run start",
-		"watch": "pnpm dev"
 		"start:test": "cross-env NODE_ENV=test turbo run start",
 		"test": "run-s jest",
 		"test-and-coverage": "run-s jest-and-coverage"

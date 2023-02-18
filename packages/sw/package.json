@@ -3,6 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build:main": "node build.js",
+		"dev:watch": "node build.js watch",
 		"lint:eslint": "eslint --quiet src/**/*.ts",
 		"lint:typecheck": "tsc --noEmit"
 	},

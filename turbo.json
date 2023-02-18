@@ -35,6 +35,12 @@
 				"clean"
 			]
 		},
+		"dev:main": {
+			"persistent": true
+		},
+		"dev:watch": {
+			"persistent": true
+		},
 		"lint": {
 			"dependsOn": [
 				"lint:eslint",
