@@ -17,28 +17,31 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
+		
+		<div class="_gaps_m">
+			<MkInfo>
+				{{ i18n.ts._2fa.chromePasskeyNotSupported }}
+			</MkInfo>
 
-		<MkInfo v-if="!supportsCredentials" warn>
-			{{ i18n.ts._2fa.securityKeyNotSupported }}
-		</MkInfo>
+			<MkInfo v-if="!supportsCredentials" warn>
+				{{ i18n.ts._2fa.securityKeyNotSupported }}
+			</MkInfo>
 
-		<MkInfo v-else-if="supportsCredentials && !$i.twoFactorEnabled" warn>
-			{{ i18n.ts._2fa.registerTOTPBeforeKey }}
-		</MkInfo>
+			<MkInfo v-else-if="supportsCredentials && !$i.twoFactorEnabled" warn>
+				{{ i18n.ts._2fa.registerTOTPBeforeKey }}
+			</MkInfo>
 
-		<template v-else>
-			<div class="_gaps_s">
+			<template v-else>
 				<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
 				<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">{{ i18n.ts.passwordLessLogin }}</MkSwitch>
-			</div>
-			<div :class="$style.keyList" class="_gaps_s">
-				<div v-for="key in $i.securityKeysList" :key="key.id" :class="$style.key">
-					<h3>{{ key.name }}</h3>
-					<div :class="$style.keyLastUsed">{{ i18n.ts.lastUsed }}<MkTime :time="key.lastUsed"/></div>
+
+				<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
+					<template #label>{{ key.name }}</template>
+					<template #suffix><I18n :src="i18n.ts.lastUsedAt ?? ''"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
 					<MkButton @click="unregisterKey(key)">{{ i18n.ts.unregister }}</MkButton>
-				</div>
-			</div>
-		</template>
+				</MkFolder>
+			</template>
+		</div>
 	</FormSection>
 </div>
 </template>
@@ -51,6 +54,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSection from '@/components/form/section.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { $i, refreshAccount } from '@/account';
 import { i18n } from '@/i18n';
@@ -220,13 +224,3 @@ async function updatePasswordLessLogin(value: boolean) {
 	await refreshAccount();
 }
 </script>
-
-<style lang="scss" module>
-.key {
-
-}
-
-.keyLastUsed {
-
-}
-</style>
