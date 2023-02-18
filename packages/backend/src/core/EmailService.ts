@@ -89,11 +89,7 @@ export class EmailService {
 					padding: 32px;
 					background: #86b300;
 				}
-					main > header > img {
-						max-width: 128px;
-						max-height: 28px;
-						vertical-align: bottom;
-					}
+
 				main > article {
 					padding: 32px;
 				}
@@ -108,7 +104,7 @@ export class EmailService {
 			nav {
 				box-sizing: border-box;
 				max-width: 500px;
-				margin: 16px auto 0 auto;
+				margin: 16px auto 16px auto;
 				padding: 0 32px;
 			}
 				nav > a {
@@ -119,7 +115,7 @@ export class EmailService {
 	<body>
 		<main>
 			<header>
-				<img src="${ meta.logoImageUrl ?? meta.iconUrl ?? iconUrl }"/>
+				<img style="max-width: 128px; max-height: 28px; vertical-align: bottom;" src="${ meta.logoImageUrl ?? meta.iconUrl ?? iconUrl }"/>
 			</header>
 			<article>
 				<h1>${ subject }</h1>
