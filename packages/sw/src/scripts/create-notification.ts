@@ -14,7 +14,7 @@ const closeNotificationsByTags = async (tags: string[]) => {
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
 		n.close();
 	}
-}
+};
 
 const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
 /* How to add a new badge:
@@ -183,11 +183,10 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 				}
 
 				case 'pollEnded':
-					const tag = `poll:${data.body.note.id}`;
 					return [t('_notification.pollEnded'), {
 						body: data.body.note.text || '',
 						badge: iconUrl('chart-arrows'),
-						tag,
+						tag: `poll:${data.body.note.id}`,
 						data,
 					}];
 
@@ -228,12 +227,11 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 					return null;
 			}
 		case 'unreadAntennaNote':
-			const tag = `antenna:${data.body.antenna.id}`;
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
 				icon: data.body.note.user.avatarUrl,
 				badge: iconUrl('antenna'),
-				tag,
+				tag: `antenna:${data.body.antenna.id}`,
 				data,
 				renotify: true,
 			}];
