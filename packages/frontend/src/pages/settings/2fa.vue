@@ -209,7 +209,6 @@ async function addSecurityKey() {
 		title: i18n.ts._2fa.registerSecurityKey,
 		text: i18n.ts._2fa.securityKeyName,
 		type: 'text',
-		okText: i18n.ts._2fa.registerSecurityKey,
 	})
 	if (name.canceled) return;
 
@@ -236,7 +235,7 @@ async function updatePasswordLessLogin() {
 
 }
 
-.keyLastUsed: {
+.keyLastUsed {
 
 }
 </style>
