@@ -2,11 +2,11 @@
 	"name": "sw",
 	"private": true,
 	"scripts": {
-		"watch": "node build.js watch",
 		"build": "node build.js",
-		"typecheck": "tsc --noEmit",
 		"eslint": "eslint --quiet src/**/*.ts",
-		"lint": "pnpm typecheck && pnpm eslint"
+		"lint": "pnpm typecheck && pnpm eslint",
+		"typecheck": "tsc --noEmit",
+		"watch": "node build.js watch"
 	},
 	"dependencies": {
 		"esbuild": "0.14.42",
