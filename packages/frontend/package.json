@@ -73,8 +73,6 @@
 	"devDependencies": {
 		"@types/escape-regexp": "0.0.1",
 		"@types/glob": "8.0.1",
-		"@types/gulp": "4.0.10",
-		"@types/gulp-rename": "2.0.1",
 		"@types/matter-js": "0.18.2",
 		"@types/node": "18.13.0",
 		"@types/punycode": "2.1.0",
