@@ -6,7 +6,7 @@ import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
 globalThis.addEventListener('install', ev => {
-	//ev.waitUntil(self.skipWaiting());
+	//ev.waitUntil(globalThis.skipWaiting());
 });
 
 globalThis.addEventListener('activate', ev => {
@@ -17,7 +17,7 @@ globalThis.addEventListener('activate', ev => {
 					.filter((v) => v !== swLang.cacheName)
 					.map(name => caches.delete(name)),
 			))
-			.then(() => self.clients.claim()),
+			.then(() => globalThis.clients.claim()),
 	);
 });
 
@@ -40,7 +40,7 @@ globalThis.addEventListener('fetch', ev => {
 
 globalThis.addEventListener('push', ev => {
 	// クライアント取得
-	ev.waitUntil(self.clients.matchAll({
+	ev.waitUntil(globalThis.clients.matchAll({
 		includeUncontrolled: true,
 		type: 'window',
 	}).then(async (clients: readonly WindowClient[]) => {
@@ -53,29 +53,26 @@ globalThis.addEventListener('push', ev => {
 				// 1日以上経過している場合は無視
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
-				// クライアントがあったらストリームに接続しているということなので通知しない
-				if (clients.length !== 0) break;
-
 				return createNotification(data);
 			case 'readAllNotifications':
-				for (const n of await self.registration.getNotifications()) {
+				for (const n of await globalThis.registration.getNotifications()) {
 					if (n?.data?.type === 'notification') n.close();
 				}
 				break;
 			case 'readAllAntennas':
-				for (const n of await self.registration.getNotifications()) {
+				for (const n of await globalThis.registration.getNotifications()) {
 					if (n?.data?.type === 'unreadAntennaNote') n.close();
 				}
 				break;
 			case 'readNotifications':
-				for (const n of await self.registration.getNotifications()) {
+				for (const n of await globalThis.registration.getNotifications()) {
 					if (data.body.notificationIds.includes(n.data.body.id)) {
 						n.close();
 					}
 				}
 				break;
 			case 'readAntenna':
-				for (const n of await self.registration.getNotifications()) {
+				for (const n of await globalThis.registration.getNotifications()) {
 					if (n?.data?.type === 'unreadAntennaNote' && data.body.antennaId === n.data.body.antenna.id) {
 						n.close();
 					}
@@ -83,7 +80,8 @@ globalThis.addEventListener('push', ev => {
 				break;
 		}
 
-		return createEmptyNotification();
+		await createEmptyNotification();
+		return;
 	}));
 });
 
