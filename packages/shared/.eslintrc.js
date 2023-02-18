@@ -79,10 +79,6 @@ module.exports = {
 		],
 		'@typescript-eslint/naming-convention': [
 			'error',
-			{
-				"selector": "typeLike",
-				"format": ["PascalCase"]
-			},
 		],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
