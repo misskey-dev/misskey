@@ -24,16 +24,16 @@
 		"dev": "node ./scripts/dev.js",
 		"e2e": "turbo run e2e",
 		"init": "run-s migrate",
-		"jest": "cd packages/backend && pnpm jest",
-		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
+		"jest": "turbo run jest",
+		"jest-and-coverage": "turbo run jest --coverage",
 		"lint": "turbo run lint",
 		"migrate": "turbo run migrate",
 		"migrateandstart": "run-s migrate start",
 		"start": "turbo run start",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
-		"test": "pnpm jest",
-		"test-and-coverage": "pnpm jest-and-coverage",
 		"watch": "pnpm dev"
+		"test": "run-s jest",
+		"test-and-coverage": "run-s jest-and-coverage"
 	},
 	"resolutions": {
 		"chokidar": "3.5.3",
