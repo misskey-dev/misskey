@@ -11,7 +11,6 @@ import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
 
 const closeNotificationsByTags = async (tags: string[]) => {
-	// Chromeはtagを指定すると以前の通知を上書きするが、Safariは上書きしないので閉じてあげる
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
 		n.close();
 	}
@@ -169,7 +168,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 					}
 
 					const tag = `reaction:${data.body.note.id}`;
-					await closeNotificationsByTags([tag]);
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
@@ -186,7 +184,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 
 				case 'pollEnded':
 					const tag = `poll:${data.body.note.id}`;
-					await closeNotificationsByTags([tag]);
 					return [t('_notification.pollEnded'), {
 						body: data.body.note.text || '',
 						badge: iconUrl('chart-arrows'),
@@ -232,7 +229,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 			}
 		case 'unreadAntennaNote':
 			const tag = `antenna:${data.body.antenna.id}`;
-			await closeNotificationsByTags([tag]);
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
 				icon: data.body.note.user.avatarUrl,
