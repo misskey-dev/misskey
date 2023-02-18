@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import type { PollsRepository, EmojisRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { RemoteUser } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';

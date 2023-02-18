@@ -51,7 +51,7 @@ watch([() => props.note.reactions, () => props.maxNumber], ([newSource, maxNumbe
 		...Object.entries(newSource)
 			.sort(([, a], [, b]) => b - a)
 			.filter(([y], i) => i < maxNumber && !newReactionsNames.includes(y)),
-	]
+	];
 
 	newReactions = newReactions.slice(0, props.maxNumber);
 

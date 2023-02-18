@@ -1,4 +1,3 @@
-import * as Acct from 'misskey-js/built/acct';
 import { defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';

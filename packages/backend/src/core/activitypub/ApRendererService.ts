@@ -23,7 +23,7 @@ import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFil
 import { bindThis } from '@/decorators.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IRead, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -178,9 +178,8 @@ export class ApRendererService {
 	}
 
 	// to anonymise reporters, the reporting actor must be a system user
-	// object has to be a uri or array of uris
 	@bindThis
-	public renderFlag(user: LocalUser, object: IObject | string | string[], content: string): IFlag {
+	public renderFlag(user: LocalUser, object: IObject | string, content: string): IFlag {
 		return {
 			type: 'Flag',
 			actor: `${this.config.url}/users/${user.id}`,

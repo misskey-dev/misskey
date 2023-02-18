@@ -41,14 +41,14 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, markRaw, ComputedRef, ref, onMounted, provide } from 'vue';
+import { defineAsyncComponent, ComputedRef, onMounted, provide } from 'vue';
 import XSidebar from './classic.sidebar.vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
-import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { miLocalStorage } from '@/local-storage';
@@ -124,7 +124,7 @@ function onAiClick(ev) {
 }
 
 if (window.innerWidth < 1024) {
-	const currentUI = miLocalStorage.getItem('ui')
+	const currentUI = miLocalStorage.getItem('ui');
 	miLocalStorage.setItem('ui_temp', currentUI || 'default');
 	miLocalStorage.setItem('ui', 'default');
 	location.reload();

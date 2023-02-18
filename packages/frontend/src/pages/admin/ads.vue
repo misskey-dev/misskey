@@ -29,6 +29,9 @@
 					<MkInput v-model="ad.ratio" type="number">
 						<template #label>{{ i18n.ts.ratio }}</template>
 					</MkInput>
+					<MkInput v-model="ad.startsAt" type="datetime-local">
+						<template #label>{{ i18n.ts.startingperiod }}</template>
+					</MkInput>
 					<MkInput v-model="ad.expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
@@ -66,11 +69,14 @@ const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
 
 os.api('admin/ad/list').then(adsResponse => {
 	ads = adsResponse.map(r => {
-		const date = new Date(r.expiresAt);
-		date.setMilliseconds(date.getMilliseconds() - localTimeDiff);
+		const exdate = new Date(r.expiresAt);
+		const stdate = new Date(r.startsAt);
+		exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
+		stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
 		return {
 			...r,
-			expiresAt: date.toISOString().slice(0, 16),
+			expiresAt: exdate.toISOString().slice(0, 16),
+			startsAt: stdate.toISOString().slice(0, 16),
 		};
 	});
 });
@@ -85,6 +91,7 @@ function add() {
 		url: '',
 		imageUrl: null,
 		expiresAt: null,
+		startsAt: null,
 	});
 }
 
@@ -106,11 +113,13 @@ function save(ad) {
 		os.apiWithDialog('admin/ad/create', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
+			startsAt: new Date(ad.startsAt).getTime(),
 		});
 	} else {
 		os.apiWithDialog('admin/ad/update', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
+			startsAt: new Date(ad.startsAt).getTime(),
 		});
 	}
 }

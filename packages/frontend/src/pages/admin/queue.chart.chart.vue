@@ -3,10 +3,8 @@
 </template>
 
 <script lang="ts" setup>
-import { watch, onMounted, onUnmounted, ref, shallowRef } from 'vue';
+import { onMounted, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
-import number from '@/filters/number';
-import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';

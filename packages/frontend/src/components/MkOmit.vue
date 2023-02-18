@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted } from 'vue';
+import { onMounted } from 'vue';
 
 const props = withDefaults(defineProps<{
 	maxHeight: number;

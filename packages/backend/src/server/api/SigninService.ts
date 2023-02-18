@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { SigninsRepository, UsersRepository } from '@/models/index.js';
+import type { SigninsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { IdService } from '@/core/IdService.js';
 import type { LocalUser } from '@/models/entities/User.js';

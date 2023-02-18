@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DI } from '../di-symbols.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';

@@ -1,4 +1,5 @@
 import type { Schema } from '@/misc/schema.js';
+import { RolePolicies } from '@/core/RoleService.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -659,7 +660,7 @@ export interface IEndpointMeta {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requireRolePolicy?: string;
+	readonly requireRolePolicy?: keyof RolePolicies;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ

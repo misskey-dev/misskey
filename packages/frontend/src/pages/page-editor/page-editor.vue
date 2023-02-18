@@ -56,10 +56,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, provide, watch } from 'vue';
+import { computed, provide, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XBlocks from './page-editor.blocks.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
