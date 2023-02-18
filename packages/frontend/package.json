@@ -4,8 +4,8 @@
 	"scripts": {
 		"watch": "vite",
 		"build:main": "vite build",
-		"lint:typecheck": "vue-tsc --noEmit",
-		"lint:eslint": "eslint --quiet \"src/**/*.{ts,vue}\""
+		"lint:eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
+		"lint:typecheck": "vue-tsc --noEmit"
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "14.0.2",
