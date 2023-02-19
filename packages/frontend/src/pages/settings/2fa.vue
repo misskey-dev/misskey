@@ -207,7 +207,7 @@ async function addSecurityKey() {
 	});
 	if (name.canceled) return;
 
-	const credential = await os.promiseDialog(navigator.credentials.create({
+	const webAuthnCreation = navigator.credentials.create({
 			publicKey: {
 				challenge: byteify(challenge.challenge, 'base64'),
 				rp: {
@@ -223,11 +223,14 @@ async function addSecurityKey() {
 				timeout: 60000,
 				attestation: 'direct',
 			},
-		}),
+		}) as Promise<PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null>;
+
+		const credential = await os.promiseDialog(
+		webAuthnCreation,
 		null,
 		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
 		i18n.ts._2fa.tapSecurityKey,
-	) as PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null;
+	);
 	if (!credential) return;
 
 	await os.apiWithDialog('i/2fa/key-done', {
