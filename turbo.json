@@ -3,6 +3,7 @@
 	"pipeline": {
 		"build:main": {
 			"inputs": [
+				"built/meta.json",
 				"packages/**"
 			],
 			"outputs": [
@@ -11,9 +12,9 @@
 		},
 		"build:post": {
 			"inputs": [
+				"**/built/**",
 				"scripts/build-post.js",
-				"scripts/package.json",
-				"**/built/**"
+				"scripts/package.json"
 			],
 			"outputs": [
 				"**/built/**"
@@ -21,6 +22,7 @@
 		},
 		"build:pre": {
 			"inputs": [
+				"built/**",
 				"scripts/build-pre.js",
 				"scripts/package.json",
 				"package.json"
