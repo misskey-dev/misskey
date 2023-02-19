@@ -153,6 +153,7 @@ flagShowTimelineReplies: "タイムラインにノートへの返信を表示す
 flagShowTimelineRepliesDescription: "オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します。"
 autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自動承認"
 addAccount: "アカウントを追加"
+reloadAccountsList: "アカウントリストの情報を更新"
 loginFailed: "ログインに失敗しました"
 showOnRemote: "リモートで表示"
 general: "全般"
