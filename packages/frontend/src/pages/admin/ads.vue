@@ -161,7 +161,7 @@ definePageMetadata({
 
 <style lang="scss" scoped>
 .uqshojas {
-	>.ad {
+	> .ad {
 		padding: 32px;
 
 		&:not(:last-child) {
