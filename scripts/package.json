@@ -7,7 +7,7 @@
 		"build:post:backend:style": "postcss ./../packages/backend/src/server/web/style.css > ./../packages/backend/built/server/web/style.css && postcss ./../packages/backend/src/server/web/bios.css > ./../packages/backend/built/server/web/bios.css && postcss ./../packages/backend/src/server/web/cli.css > ./../packages/backend/built/server/web/cli.css",
 		"build:post:backend:views": "shx cp -r ./../packages/backend/src/server/web/views/ ./../packages/backend/built/server/web",
 		"build:post:frontend:fonts": "shx mkdir -p ./../built/_frontend_dist_/fonts && shx cp -r ./../packages/frontend/node_modules/three/examples/fonts/ ./../built/_frontend_dist_",
-		"build:post:frontend:tabler-icons": "shx mkdir -p ./../built/_frontend_dist_/tabler-icons && shx cp -r ./../packages/frontend/node_modules/@tabler/icons-webfont/ ./../built/_frontend_dist_",
+		"build:post:frontend:tabler-icons": "shx mkdir -p ./../built/_frontend_dist_/tabler-icons && shx cp -rf ./../packages/frontend/node_modules/@tabler/icons-webfont/* ./../built/_frontend_dist_/tabler-icons",
 		"build:post:main": "run-s build:post:backend:* build:post:frontend:*",
 		"build:post:script": "shx mkdir -p ./built && node ./build-post.js",
 		"build:pre": "node ./build-pre.js",
