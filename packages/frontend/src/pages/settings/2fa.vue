@@ -84,7 +84,7 @@ const usePasswordLessLogin = $computed(() => $i!.usePasswordLessLogin);
 
 async function registerTOTP() {
 	const password = await os.inputText({
-		title: i18n.ts.password,
+		title: i18n.ts._2fa.registerTOTP,
 		text: i18n.ts._2fa.passwordToTOTP,
 		type: 'password',
 	});
