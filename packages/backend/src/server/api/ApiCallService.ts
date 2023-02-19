@@ -219,8 +219,8 @@ export class ApiCallService implements OnApplicationShutdown {
 
 			const limit = Object.assign({}, ep.meta.limit);
 
-			if (!limit.key) {
-				limit.key = ep.name;
+			if (limit.key == null) {
+				(limit as any).key = ep.name;
 			}
 
 			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい

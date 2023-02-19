@@ -26,7 +26,7 @@ import { packedClipSchema } from '@/models/schema/clip.js';
 import { packedFederationInstanceSchema } from '@/models/schema/federation-instance.js';
 import { packedQueueCountSchema } from '@/models/schema/queue.js';
 import { packedGalleryPostSchema } from '@/models/schema/gallery-post.js';
-import { packedEmojiSchema } from '@/models/schema/emoji.js';
+import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/schema/emoji.js';
 import { packedFlashSchema } from '@/models/schema/flash.js';
 
 export const refs = {
@@ -57,7 +57,8 @@ export const refs = {
 	Clip: packedClipSchema,
 	FederationInstance: packedFederationInstanceSchema,
 	GalleryPost: packedGalleryPostSchema,
-	Emoji: packedEmojiSchema,
+	EmojiSimple: packedEmojiSimpleSchema,
+	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
 };
 
