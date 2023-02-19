@@ -76,11 +76,11 @@
 		},
 		"lint": {
 			"dependsOn": [
-				"lint:eslint",
-				"lint:typecheck"
+				"eslint",
+				"typecheck"
 			]
 		},
-		"lint:eslint": {
+		"eslint": {
 			"inputs": [
 				"packages/**"
 			],
@@ -88,7 +88,7 @@
 				"packages/**"
 			]
 		},
-		"lint:typecheck": {
+		"typecheck": {
 			"inputs": [
 				"packages/**"
 			],

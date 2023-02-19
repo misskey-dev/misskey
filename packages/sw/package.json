@@ -4,8 +4,8 @@
 	"scripts": {
 		"build:main": "node build.js",
 		"dev:watch": "node build.js watch",
-		"lint:eslint": "eslint --quiet src/**/*.ts",
-		"lint:typecheck": "tsc --noEmit"
+		"eslint": "eslint --quiet src/**/*.ts",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"esbuild": "0.14.42",

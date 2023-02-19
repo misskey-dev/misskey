@@ -10,8 +10,8 @@
 		"dev:watch:swc": "swc src -d built -D -w",
 		"jest": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --forceExit --runInBand",
 		"jest-clear": "cross-env NODE_ENV=test node --experimental-vm-modules --experimental-import-meta-resolve node_modules/jest/bin/jest.js --clearCache",
-		"lint:eslint": "eslint --quiet \"src/**/*.ts\"",
-		"lint:typecheck": "tsc --noEmit",
+		"eslint": "eslint --quiet \"src/**/*.ts\"",
+		"typecheck": "tsc --noEmit",
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
 		"start": "node ./built/boot/index.js"
 	},
