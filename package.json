@@ -31,6 +31,7 @@
 		"init": "cross-env FORCE_COLOR=1 run-s migrate",
 		"jest": "cross-env FORCE_COLOR=1 turbo run jest",
 		"jest-and-coverage": "turbo run jest -- --coverage",
+		"jest-clear": "turbo run jest-clear",
 		"lint": "cross-env FORCE_COLOR=1 turbo run lint",
 		"migrate": "cross-env FORCE_COLOR=1 turbo run migrate",
 		"migrateandstart": "run-s migrate start",

@@ -65,6 +65,17 @@
 		"jest": {
 			"inputs": [
 				"packages/backend/**"
+			],
+			"env": [
+				"NODE_ENV"
+			]
+		},
+		"jest-clear": {
+			"inputs": [
+				"packages/backend/**"
+			],
+			"env": [
+				"NODE_ENV"
 			]
 		},
 		"lint": {
