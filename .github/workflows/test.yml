@@ -112,7 +112,7 @@ jobs:
     # XXX: This tries reinstalling Cypress if the binary is not cached
     # Remove this when the cache issue is fixed
     - name: Cypress install
-      run: pnpm exec cypress install
+      run: pnpm cy:install
     - name: Cypress run
       uses: cypress-io/github-action@v5
       with:

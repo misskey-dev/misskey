@@ -13,6 +13,7 @@
 		"build:pre": "node ./build-pre.js",
 		"clean": "node ./clean.js",
 		"clean-all": "node ./clean-all.js",
+		"cy:install": "pnpm cypress install",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"dev:main": "node ./dev-main.js",

@@ -21,6 +21,7 @@
 		"clean": "turbo run clean",
 		"clean-all": "turbo run clean-all",
 		"cleanall": "run-s clean-all",
+		"cy:install": "turbo run cy:install",
 		"cy:open": "turbo run cy:open",
 		"cy:run": "turbo run cy:run",
 		"dev": "run-p dev:setup dev:watch",
