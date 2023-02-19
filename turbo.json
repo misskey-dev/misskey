@@ -50,6 +50,7 @@
 				"**/node_modules/**"
 			]
 		},
+		"cy:install": {},
 		"cy:open": {
 			"persistent": true
 		},
