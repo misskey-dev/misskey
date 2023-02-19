@@ -1,4 +1,4 @@
-import { defineAsyncComponent, reactive } from 'vue';
+import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
 import { i18n } from './i18n';
@@ -25,12 +25,71 @@ export function incNotesCount() {
 	notesCount++;
 }
 
-export async function signout() {
+// 複数のダイアログが表示されるのを防止するため、refreshAccountsの同時実行を避ける
+const refreshing = ref(false);
+
+// 保存されているアカウント情報全てに対して、最新の情報を取得
+export async function refreshAccounts(force?: true) {
+	if (force !== true && refreshing.value) return;
+	refreshing.value = true;
+	const storedAccounts = await getAccounts();
+	const newAccounts: (Account | { id: Account['id']; token: Account['token']; })[] = [];
+
+	for (const storedAccount of storedAccounts) {
+		await fetchAccount(storedAccount.token, storedAccount.id)
+		.then(res => newAccounts.push(res))
+		.catch(async reason => {
+			// サーバーがビジーなどでapi/iが500番台を返した場合にもログアウトされてしまうのは微妙
+			// しかしアカウント削除は壊れているので、500が返ってくる
+			// 本当はシンプルに次のようにしたい
+			// if (reason !== true) newAccounts.push(storedAccount);
+			if (reason === true) return;
+			if (reason.text && typeof reason.text === 'function') {
+				const text = await reason.text();
+				// `Could not find any entity of type \"UserProfile\" matching`
+				// と返ってくる場合はアカウントが削除されている
+				if (text.includes('UserProfile')) {
+					await alert({
+						type: 'error',
+						title: i18n.ts.accountRemoved,
+						text: i18n.ts.accountRemovedDescription,
+					});
+					return;
+				}
+			}
+
+			newAccounts.push(storedAccount);
+		});
+	}
+
+	if (newAccounts.length === 0) {
+		miLocalStorage.removeItem('account');
+		await del('accounts');
+		unisonReload('/');
+		return;
+	}
+
+	set('accounts', newAccounts.map(x => ({ id: x.id, token: x.token })));
+
+	if ($i) {
+		const found = newAccounts.find(x => x.id === $i.id);
+		if (found) {
+			updateAccount(found);
+		} else {
+			signout(true);
+		}
+	}
+
+	refreshing.value = false;
+	return newAccounts;
+}
+
+export async function signout(doNotEditAccountList?: boolean) {
+	if (!$i) return;
+
 	waiting();
 	miLocalStorage.removeItem('account');
-
-	await removeAccount($i.id);
-
+	if (!doNotEditAccountList) await removeAccount($i.id);
 	const accounts = await getAccounts();
 
 	//#region Remove service worker registration
@@ -78,13 +137,18 @@ export async function addAccount(id: Account['id'], token: Account['token']) {
 
 export async function removeAccount(id: Account['id']) {
 	const accounts = await getAccounts();
-	accounts.splice(accounts.findIndex(x => x.id === id), 1);
+	const i = accounts.findIndex(x => x.id === id);
+	if (i !== -1) accounts.splice(i, 1);
 
-	if (accounts.length > 0) await set('accounts', accounts);
-	else await del('accounts');
+	if (accounts.length > 0) {
+		await set('accounts', accounts);
+		await refreshAccounts(true);
+	} else {
+		await del('accounts');
+	}
 }
 
-function fetchAccount(token: string): Promise<Account> {
+function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Promise<Account> {
 	return new Promise((done, fail) => {
 		// Fetch user
 		window.fetch(`${apiUrl}/i`, {
@@ -96,44 +160,69 @@ function fetchAccount(token: string): Promise<Account> {
 				'Content-Type': 'application/json',
 			},
 		})
-			.then(res => res.json())
-			.then(res => {
-				if (res.error) {
-					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
-						showSuspendedDialog().then(() => {
-							signout();
-						});
-					} else {
-						alert({
+		.then(res => new Promise<Account | { error: Record<string, any> }>((done2, fail2) => {
+			if (res.status >= 500 && res.status < 600) {
+				// サーバーエラー(5xx)の場合をrejectとする
+				// （認証エラーなど4xxはresolve）
+				return fail2(res);
+			}
+			res.json().then(done2, fail2);
+		}))
+		.then(async res => {
+			if (res.error) {
+				if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
+					// SUSPENDED
+					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+						await showSuspendedDialog();
+					}
+				} else if (res.error.id === 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14') {
+					// AUTHENTICATION_FAILED
+					// トークンが無効化されていたりアカウントが削除されたりしている
+					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+						await alert({
 							type: 'error',
-							title: i18n.ts.failedToFetchAccountInformation,
-							text: JSON.stringify(res.error),
+							title: i18n.ts.tokenRemoved,
+							text: i18n.ts.tokenRemovedDescription,
 						});
 					}
 				} else {
-					res.token = token;
-					done(res);
+					await alert({
+						type: 'error',
+						title: i18n.ts.failedToFetchAccountInformation,
+						text: JSON.stringify(res.error),
+					});
 				}
-			})
-			.catch(fail);
+
+				// rejectかつ理由がtrueの場合、削除対象であることを示す
+				fail(true);
+			} else {
+				(res as Account).token = token;
+				done(res as Account);
+			}
+		}, fail);
 	});
 }
 
-export function updateAccount(accountData) {
+export function updateAccount(accountData: Partial<Account>) {
+	if (!$i) return;
 	for (const [key, value] of Object.entries(accountData)) {
 		$i[key] = value;
 	}
 	miLocalStorage.setItem('account', JSON.stringify($i));
 }
 
-export function refreshAccount() {
-	return fetchAccount($i.token).then(updateAccount);
-}
-
 export async function login(token: Account['token'], redirect?: string) {
-	waiting();
+	const showing = ref(true);
+	popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
+		success: false,
+		showing: showing,
+	}, {}, 'closed');
 	if (_DEV_) console.log('logging as token ', token);
-	const me = await fetchAccount(token);
+	const me = await fetchAccount(token, undefined, true)
+		.catch(reason => {
+			showing.value = false;
+			throw reason;
+		});
 	miLocalStorage.setItem('account', JSON.stringify(me));
 	document.cookie = `token=${token}; path=/; max-age=31536000`; // bull dashboardの認証とかで使う
 	await addAccount(me.id, token);
@@ -155,6 +244,8 @@ export async function openAccountMenu(opts: {
 	active?: misskey.entities.UserDetailed['id'];
 	onChoose?: (account: misskey.entities.UserDetailed) => void;
 }, ev: MouseEvent) {
+	if (!$i) return;
+
 	function showSigninDialog() {
 		popup(defineAsyncComponent(() => import('@/components/MkSigninDialog.vue')), {}, {
 			done: res => {
@@ -175,8 +266,9 @@ export async function openAccountMenu(opts: {
 
 	async function switchAccount(account: misskey.entities.UserDetailed) {
 		const storedAccounts = await getAccounts();
-		const token = storedAccounts.find(x => x.id === account.id).token;
-		switchAccountWithToken(token);
+		const found = storedAccounts.find(x => x.id === account.id);
+		if (found == null) return;
+		switchAccountWithToken(found.token);
 	}
 
 	function switchAccountWithToken(token: string) {

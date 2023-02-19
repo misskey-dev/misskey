@@ -27,7 +27,7 @@ import { defineAsyncComponent, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account';
+import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i, refreshAccounts } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
@@ -35,6 +35,7 @@ const storedAccounts = ref<any>(null);
 const accounts = ref<any>(null);
 
 const init = async () => {
+	await refreshAccounts();
 	getAccounts().then(accounts => {
 		storedAccounts.value = accounts.filter(x => x.id !== $i!.id);
 
