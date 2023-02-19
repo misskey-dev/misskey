@@ -88,7 +88,11 @@ function initPlugin({ plugin, aiscript }): void {
 function registerPostFormAction({ pluginId, title, handler }): void {
 	postFormActions.push({
 		title, handler: (form, update) => {
-			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
+			const pluginContext = pluginContexts.get(pluginId);
+			if (!pluginContext) {
+				return;
+			}
+			pluginContext.execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
 				update(key.value, value.value);
 			})]);
 		},
@@ -98,7 +102,11 @@ function registerPostFormAction({ pluginId, title, handler }): void {
 function registerUserAction({ pluginId, title, handler }): void {
 	userActions.push({
 		title, handler: (user) => {
-			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
+			const pluginContext = pluginContexts.get(pluginId);
+			if (!pluginContext) {
+				return;
+			}
+			pluginContext.execFn(handler, [utils.jsToVal(user)]);
 		},
 	});
 }
@@ -106,7 +114,11 @@ function registerUserAction({ pluginId, title, handler }): void {
 function registerNoteAction({ pluginId, title, handler }): void {
 	noteActions.push({
 		title, handler: (note) => {
-			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
+			const pluginContext = pluginContexts.get(pluginId);
+			if (!pluginContext) {
+				return;
+			}
+			pluginContext.execFn(handler, [utils.jsToVal(note)]);
 		},
 	});
 }
@@ -114,7 +126,11 @@ function registerNoteAction({ pluginId, title, handler }): void {
 function registerNoteViewInterruptor({ pluginId, handler }): void {
 	noteViewInterruptors.push({
 		handler: async (note) => {
-			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
+			const pluginContext = pluginContexts.get(pluginId);
+			if (!pluginContext) {
+				return;
+			}
+			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(note)]));
 		},
 	});
 }
@@ -122,7 +138,11 @@ function registerNoteViewInterruptor({ pluginId, handler }): void {
 function registerNotePostInterruptor({ pluginId, handler }): void {
 	notePostInterruptors.push({
 		handler: async (note) => {
-			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
+			const pluginContext = pluginContexts.get(pluginId);
+			if (!pluginContext) {
+				return;
+			}
+			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(note)]));
 		},
 	});
 }
