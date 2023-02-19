@@ -9,6 +9,14 @@ export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		noKey: {
+			message: 'No security key.',
+			code: 'NO_SECURITY_KEY',
+			id: 'f9c54d7f-d4c2-4d3c-9a8g-a70daac86512',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -30,6 +38,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.value === true) {
+				// セキュリティキーがなければパスワードレスを有効にはできない
+				const keyCount = await this.userSecurityKeysRepository.count({
+					where: {
+						userId: me.id,
+					},
+					select: {
+						id: true,
+						name: true,
+						lastUsed: true,
+					},
+				});
+
+				if (keyCount === 0) {
+					await this.userProfilesRepository.update(me.id, {
+						usePasswordLessLogin: false,
+					});
+
+					throw new ApiError(meta.errors.noKey);
+				}
+			}
+
 			await this.userProfilesRepository.update(me.id, {
 				usePasswordLessLogin: ps.value,
 			});

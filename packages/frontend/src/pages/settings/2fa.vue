@@ -1,57 +1,60 @@
 <template>
-<div v-if="$i" class="_gaps_m">
-	<FormSection :first="first">
-		<template #label>{{ i18n.ts.totp }}</template>
+<FormSection :first="first">
+	<template #label>{{ i18n.ts['2fa'] }}</template>
 
-		<div v-if="$i.twoFactorEnabled" class="_gaps_s">
-			<div v-text="i18n.ts._2fa.alreadyRegistered" />
-			<template v-if="$i.securityKeysList.length > 0">
-				<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
-				<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
-			</template>
-			<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
-		</div>
+	<div v-if="$i" class="_gaps_s">
+		<MkFolder>
+			<template #label>{{ i18n.ts.totp }}</template>
+			<template #caption>{{ i18n.ts.totpDescription }}</template>
+			<div v-if="$i.twoFactorEnabled" class="_gaps_s">
+				<div v-text="i18n.ts._2fa.alreadyRegistered" />
+				<template v-if="$i.securityKeysList.length > 0">
+					<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
+					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
+				</template>
+				<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+			</div>
 
-		<MkButton v-else-if="!twoFactorData && !$i.twoFactorEnabled" @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
-	</FormSection>
+			<MkButton v-else-if="!twoFactorData && !$i.twoFactorEnabled" @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
+		</MkFolder>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
-		
-		<div class="_gaps_s">
-			<MkInfo>
-				{{ i18n.ts._2fa.securityKeyInfo }}<br>
-				<br>
-				{{ i18n.ts._2fa.chromePasskeyNotSupported }}
-			</MkInfo>
+		<MkFolder>
+			<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
+			<div class="_gaps_s">
+				<MkInfo>
+					{{ i18n.ts._2fa.securityKeyInfo }}<br>
+					<br>
+					{{ i18n.ts._2fa.chromePasskeyNotSupported }}
+				</MkInfo>
 
-			<MkInfo v-if="!supportsCredentials" warn>
-				{{ i18n.ts._2fa.securityKeyNotSupported }}
-			</MkInfo>
+				<MkInfo v-if="!supportsCredentials" warn>
+					{{ i18n.ts._2fa.securityKeyNotSupported }}
+				</MkInfo>
 
-			<MkInfo v-else-if="supportsCredentials && !$i.twoFactorEnabled" warn>
-				{{ i18n.ts._2fa.registerTOTPBeforeKey }}
-			</MkInfo>
+				<MkInfo v-else-if="supportsCredentials && !$i.twoFactorEnabled" warn>
+					{{ i18n.ts._2fa.registerTOTPBeforeKey }}
+				</MkInfo>
 
-			<template v-else>
-				<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-				<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">
-					<template #label>{{ i18n.ts.passwordLessLogin }}</template>
-					<template #caption>{{ i18n.ts.passwordLessLoginDescription }}</template>
-				</MkSwitch>
+				<template v-else>
+					<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
+					<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">
+						<template #label>{{ i18n.ts.passwordLessLogin }}</template>
+						<template #caption>{{ i18n.ts.passwordLessLoginDescription }}</template>
+					</MkSwitch>
 
-				<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
-					<template #label>{{ key.name }}</template>
-					<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
-					<div class="_buttons">
-						<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ i18n.ts.rename }}</MkButton>
-						<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ i18n.ts.unregister }}</MkButton>
-					</div>
-				</MkFolder>
-			</template>
-		</div>
-	</FormSection>
-</div>
+					<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
+						<template #label>{{ key.name }}</template>
+						<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
+						<div class="_buttons">
+							<MkButton @click="renameKey(key)"><i class="ti ti-forms"></i> {{ i18n.ts.rename }}</MkButton>
+							<MkButton danger @click="unregisterKey(key)"><i class="ti ti-trash"></i> {{ i18n.ts.unregister }}</MkButton>
+						</div>
+					</MkFolder>
+				</template>
+			</div>
+		</MkFolder>
+	</div>
+</FormSection>
 </template>
 
 <script lang="ts" setup>
@@ -82,6 +85,7 @@ const usePasswordLessLogin = $computed(() => $i!.usePasswordLessLogin);
 async function registerTOTP() {
 	const password = await os.inputText({
 		title: i18n.ts.password,
+		text: i18n.ts._2fa.passwordToTOTP,
 		type: 'password',
 	});
 	if (password.canceled) return;
@@ -237,7 +241,7 @@ async function addSecurityKey() {
 }
 
 async function updatePasswordLessLogin(value: boolean) {
-	await os.api('i/2fa/password-less', {
+	await os.apiWithDialog('i/2fa/password-less', {
 		value,
 	});
 }
