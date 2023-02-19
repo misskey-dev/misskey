@@ -6,7 +6,7 @@ import { noteActions, notePostInterruptors, noteViewInterruptors, postFormAction
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
 
-export function install(plugin) {
+export function install(plugin): void {
 	// 後方互換性のため
 	if (plugin.src == null) return;
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
@@ -15,7 +15,7 @@ export function install(plugin) {
 		plugin: plugin,
 		storageKey: 'plugins:' + plugin.id,
 	}), {
-		in: (q) => {
+		in: (q): Promise<string> => {
 			return new Promise(ok => {
 				inputText({
 					title: q,
@@ -28,10 +28,10 @@ export function install(plugin) {
 				});
 			});
 		},
-		out: (value) => {
+		out: (value): void => {
 			console.log(value);
 		},
-		log: (type, params) => {
+		log: (): void => {
 		},
 	});
 
@@ -40,7 +40,7 @@ export function install(plugin) {
 	aiscript.exec(parser.parse(plugin.src));
 }
 
-function createPluginEnv(opts) {
+function createPluginEnv(opts): Record<string, values.Value> {
 	const config = new Map();
 	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
 		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
@@ -81,11 +81,11 @@ function createPluginEnv(opts) {
 	};
 }
 
-function initPlugin({ plugin, aiscript }) {
+function initPlugin({ plugin, aiscript }): void {
 	pluginContexts.set(plugin.id, aiscript);
 }
 
-function registerPostFormAction({ pluginId, title, handler }) {
+function registerPostFormAction({ pluginId, title, handler }): void {
 	postFormActions.push({
 		title, handler: (form, update) => {
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
@@ -95,7 +95,7 @@ function registerPostFormAction({ pluginId, title, handler }) {
 	});
 }
 
-function registerUserAction({ pluginId, title, handler }) {
+function registerUserAction({ pluginId, title, handler }): void {
 	userActions.push({
 		title, handler: (user) => {
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(user)]);
@@ -103,7 +103,7 @@ function registerUserAction({ pluginId, title, handler }) {
 	});
 }
 
-function registerNoteAction({ pluginId, title, handler }) {
+function registerNoteAction({ pluginId, title, handler }): void {
 	noteActions.push({
 		title, handler: (note) => {
 			pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]);
@@ -111,7 +111,7 @@ function registerNoteAction({ pluginId, title, handler }) {
 	});
 }
 
-function registerNoteViewInterruptor({ pluginId, handler }) {
+function registerNoteViewInterruptor({ pluginId, handler }): void {
 	noteViewInterruptors.push({
 		handler: async (note) => {
 			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
@@ -119,7 +119,7 @@ function registerNoteViewInterruptor({ pluginId, handler }) {
 	});
 }
 
-function registerNotePostInterruptor({ pluginId, handler }) {
+function registerNotePostInterruptor({ pluginId, handler }): void {
 	notePostInterruptors.push({
 		handler: async (note) => {
 			return utils.valToJs(await pluginContexts.get(pluginId).execFn(handler, [utils.jsToVal(note)]));
