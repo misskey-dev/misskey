@@ -37,11 +37,6 @@
 
 				<template v-else>
 					<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-					<MkSwitch v-if="$i.securityKeysList.length > 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">
-						<template #label>{{ i18n.ts.passwordLessLogin }}</template>
-						<template #caption>{{ i18n.ts.passwordLessLoginDescription }}</template>
-					</MkSwitch>
-
 					<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
 						<template #label>{{ key.name }}</template>
 						<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
@@ -53,6 +48,11 @@
 				</template>
 			</div>
 		</MkFolder>
+
+		<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList.length === 0" :model-value="usePasswordLessLogin" @update:model-value="v => updatePasswordLessLogin(v)">
+			<template #label>{{ i18n.ts.passwordLessLogin }}</template>
+			<template #caption>{{ i18n.ts.passwordLessLoginDescription }}</template>
+		</MkSwitch>
 	</div>
 </FormSection>
 </template>
