@@ -87,6 +87,7 @@ async function registerTOTP() {
 		title: i18n.ts._2fa.registerTOTP,
 		text: i18n.ts._2fa.passwordToTOTP,
 		type: 'password',
+		autocomplete: 'current-password',
 	});
 	if (password.canceled) return;
 
@@ -107,6 +108,7 @@ async function registerTOTP() {
 	const token = await os.inputNumber({
 		title: i18n.ts._2fa.step3Title,
 		text: i18n.ts._2fa.step3,
+		autocomplete: 'one-time-code',
 	});
 	if (token.canceled) return;
 
@@ -124,6 +126,7 @@ function unregisterTOTP() {
 	os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
+		autocomplete: 'current-password',
 	}).then(({ canceled, result: password }) => {
 		if (canceled) return;
 		os.apiWithDialog('i/2fa/unregister', {
@@ -161,6 +164,7 @@ async function unregisterKey(key) {
 	const password = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
+		autocomplete: 'current-password',
 	});
 	if (password.canceled) return;
 
@@ -191,6 +195,7 @@ async function addSecurityKey() {
 	const password = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
+		autocomplete: 'current-password',
 	});
 	if (password.canceled) return;
 

@@ -246,6 +246,7 @@ export function inputText(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
+	autocomplete?: string;
 	default?: string | null;
 	minLength?: number;
 	maxLength?: number;
@@ -259,6 +260,7 @@ export function inputText(props: {
 			input: {
 				type: props.type,
 				placeholder: props.placeholder,
+				autocomplete: props.autocomplete,
 				default: props.default,
 				minLength: props.minLength,
 				maxLength: props.maxLength,
@@ -275,6 +277,7 @@ export function inputNumber(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
+	autocomplete?: string;
 	default?: number | null;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: number;
@@ -286,6 +289,7 @@ export function inputNumber(props: {
 			input: {
 				type: 'number',
 				placeholder: props.placeholder,
+				autocomplete: props.autocomplete,
 				default: props.default,
 			},
 		}, {
