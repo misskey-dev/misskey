@@ -1,22 +1,12 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
-		"cy:open": {
-			"persistent": true
-		},
-		"cy:run": {},
 		"build:main": {
 			"inputs": [
-				"packages/**",
-				"**/built/**"
+				"packages/**"
 			],
 			"outputs": [
-				"built/meta.json"
-			]
-		},
-		"build:pre": {
-			"inputs": [
-				"scripts/build-pre.js"
+				"**/built/**"
 			]
 		},
 		"build:post": {
@@ -29,17 +19,51 @@
 				"**/built/**"
 			]
 		},
-		"clean": {},
+		"build:pre": {
+			"inputs": [
+				"scripts/build-pre.js",
+				"scripts/package.json",
+				"package.json"
+			],
+			"outputs": [
+				"built/meta.json"
+			]
+		},
+		"clean": {
+			"inputs": [
+				"**/built/**"
+			],
+			"outputs": [
+				"**/built/**"
+			]
+		},
 		"clean-all": {
 			"dependsOn": [
 				"clean"
+			],
+			"inputs": [
+				"**/node_modules/**"
+			],
+			"outputs": [
+				"**/node_modules/**"
 			]
 		},
+		"cy:open": {
+			"persistent": true
+		},
+		"cy:run": {},
 		"dev:main": {
+			"cache": false,
 			"persistent": true
 		},
 		"dev:watch": {
+			"cache": false,
 			"persistent": true
+		},
+		"jest": {
+			"inputs": [
+				"packages/backend/**"
+			]
 		},
 		"lint": {
 			"dependsOn": [
@@ -47,12 +71,30 @@
 				"lint:typecheck"
 			]
 		},
-		"lint:eslint": {},
-		"lint:typecheck": {},
-		"migrate":{},
-		"start":{
-			"env": ["NODE_ENV"]
+		"lint:eslint": {
+			"inputs": [
+				"packages/**"
+			],
+			"outputs": [
+				"packages/**"
+			]
 		},
-		"jest":{}
+		"lint:typecheck": {
+			"inputs": [
+				"packages/**"
+			],
+			"outputs": [
+				"packages/**"
+			]
+		},
+		"migrate": {
+			"cache": false
+		},
+		"start": {
+			"cache": false,
+			"env": [
+				"NODE_ENV"
+			]
+		}
 	}
 }
