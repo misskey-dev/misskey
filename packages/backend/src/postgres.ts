@@ -2,7 +2,8 @@
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
-import { DataSource, Logger } from 'typeorm';
+import { DataSource, DataSourceOptions, Logger } from 'typeorm';
+import { DataType, newDb } from 'pg-mem';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
@@ -188,8 +189,8 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
-export function createPostgresDataSource(config: Config) {
-	return new DataSource({
+export function createPostgresDataSource(config: Config): DataSource {
+	const dataSourceOptions: DataSourceOptions = {
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
@@ -218,5 +219,38 @@ export function createPostgresDataSource(config: Config) {
 		maxQueryExecutionTime: 300,
 		entities: entities,
 		migrations: ['../../migration/*.js'],
-	});
+	};
+
+	if (process.env.NODE_ENV === 'test') {
+		const db = newDb({ autoCreateForeignKeyIndices: true });
+
+		db.public.registerFunction({
+			name: 'version',
+			args: [],
+			returns: DataType.text,
+			implementation: (x) => `hello world: ${x}`,
+		});
+
+		db.public.registerFunction({
+			name: 'current_database',
+			implementation: () => 'test',
+		});
+
+		// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
+		db.public.interceptQueries((text) => {
+			console.log(text);
+			switch (text) {
+				case 'SELECT \'DROP VIEW IF EXISTS "\' || schemaname || \'"."\' || viewname || \'" CASCADE;\' as "query" FROM "pg_views" WHERE "schemaname" IN (current_schema()) AND "viewname" NOT IN (\'geography_columns\', \'geometry_columns\', \'raster_columns\', \'raster_overviews\')':
+				case 'SELECT \'DROP TABLE IF EXISTS "\' || schemaname || \'"."\' || tablename || \'" CASCADE;\' as "query" FROM "pg_tables" WHERE "schemaname" IN (current_schema()) AND "tablename" NOT IN (\'spatial_ref_sys\')':
+				case 'SELECT \'DROP TYPE IF EXISTS "\' || n.nspname || \'"."\' || t.typname || \'" CASCADE;\' as "query" FROM "pg_type" "t" INNER JOIN "pg_enum" "e" ON "e"."enumtypid" = "t"."oid" INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" WHERE "n"."nspname" IN (current_schema()) GROUP BY "n"."nspname", "t"."typname"':
+					return [];
+				default:
+					return null;
+			}
+		});
+
+		return db.adapters.createTypeormDataSource(dataSourceOptions);
+	} else {
+		return new DataSource(dataSourceOptions);
+	}
 }

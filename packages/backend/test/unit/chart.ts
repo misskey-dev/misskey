@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import { jest } from '@jest/globals';
 import * as lolex from '@sinonjs/fake-timers';
 import { DataSource } from 'typeorm';
+import { DataType, IMemoryDb, newDb } from 'pg-mem';
 import TestChart from '@/core/chart/charts/test.js';
 import TestGroupedChart from '@/core/chart/charts/test-grouped.js';
 import TestUniqueChart from '@/core/chart/charts/test-unique.js';
@@ -22,7 +23,8 @@ describe('Chart', () => {
 		getChartInsertLock: jest.fn().mockImplementation(() => Promise.resolve(() => {})),
 	} as unknown as jest.Mocked<AppLockService>;
 
-	let db: DataSource | undefined;
+	let db: IMemoryDb;
+	let dataSource: DataSource | undefined;
 
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
@@ -31,9 +33,35 @@ describe('Chart', () => {
 	let clock: lolex.InstalledClock;
 
 	beforeEach(async () => {
-		if (db) db.destroy();
+		db = newDb({ autoCreateForeignKeyIndices: true });
 
-		db = new DataSource({
+		db.public.registerFunction({
+			name: 'version',
+			args: [],
+			returns: DataType.text,
+			implementation: (x) => `hello world: ${x}`,
+		});
+
+		db.public.registerFunction({
+			name: 'current_database',
+			implementation: () => 'test',
+		});
+
+		// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
+		db.public.interceptQueries((text) => {
+			switch (text) {
+				case 'SELECT \'DROP VIEW IF EXISTS "\' || schemaname || \'"."\' || viewname || \'" CASCADE;\' as "query" FROM "pg_views" WHERE "schemaname" IN (current_schema()) AND "viewname" NOT IN (\'geography_columns\', \'geometry_columns\', \'raster_columns\', \'raster_overviews\')':
+				case 'SELECT \'DROP TABLE IF EXISTS "\' || schemaname || \'"."\' || tablename || \'" CASCADE;\' as "query" FROM "pg_tables" WHERE "schemaname" IN (current_schema()) AND "tablename" NOT IN (\'spatial_ref_sys\')':
+				case 'SELECT \'DROP TYPE IF EXISTS "\' || n.nspname || \'"."\' || t.typname || \'" CASCADE;\' as "query" FROM "pg_type" "t" INNER JOIN "pg_enum" "e" ON "e"."enumtypid" = "t"."oid" INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" WHERE "n"."nspname" IN (current_schema()) GROUP BY "n"."nspname", "t"."typname"':
+					return [];
+				default:
+					return null;
+			}
+		});
+
+		if (dataSource) dataSource.destroy();
+
+		dataSource = db.adapters.createTypeormDataSource({
 			type: 'postgres',
 			host: config.db.host,
 			port: config.db.port,
@@ -54,15 +82,15 @@ describe('Chart', () => {
 				TestIntersectionChartEntity.hour, TestIntersectionChartEntity.day,
 			],
 			migrations: ['../../migration/*.js'],
-		});
+		}) as DataSource;
 
-		await db.initialize();
+		await dataSource.initialize();
 
 		const logger = new Logger('chart'); // TODO: モックにする
-		testChart = new TestChart(db, appLockService, logger);
-		testGroupedChart = new TestGroupedChart(db, appLockService, logger);
-		testUniqueChart = new TestUniqueChart(db, appLockService, logger);
-		testIntersectionChart = new TestIntersectionChart(db, appLockService, logger);
+		testChart = new TestChart(dataSource, appLockService, logger);
+		testGroupedChart = new TestGroupedChart(dataSource, appLockService, logger);
+		testUniqueChart = new TestUniqueChart(dataSource, appLockService, logger);
+		testIntersectionChart = new TestIntersectionChart(dataSource, appLockService, logger);
 
 		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
@@ -75,7 +103,7 @@ describe('Chart', () => {
 	});
 
 	afterAll(async () => {
-		if (db) await db.destroy();
+		if (dataSource) await dataSource.destroy();
 	});
 
 	test('Can updates', async () => {
