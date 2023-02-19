@@ -50,22 +50,40 @@ function createPluginEnv(opts): Record<string, values.Value> {
 		...createAiScriptEnv({ ...opts, token: opts.plugin.token }),
 		//#region Deprecated
 		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
+			if (title?.type !== 'str') {
+				return;
+			}
 			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Mk:register_user_action': values.FN_NATIVE(([title, handler]) => {
+			if (title?.type !== 'str') {
+				return;
+			}
 			registerUserAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Mk:register_note_action': values.FN_NATIVE(([title, handler]) => {
+			if (title?.type !== 'str') {
+				return;
+			}
 			registerNoteAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		//#endregion
 		'Plugin:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
+			if (title?.type !== 'str') {
+				return;
+			}
 			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Plugin:register_user_action': values.FN_NATIVE(([title, handler]) => {
+			if (title?.type !== 'str') {
+				return;
+			}
 			registerUserAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
+			if (title?.type !== 'str') {
+				return;
+			}
 			registerNoteAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
@@ -75,6 +93,9 @@ function createPluginEnv(opts): Record<string, values.Value> {
 			registerNotePostInterruptor({ pluginId: opts.plugin.id, handler });
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
+			if (url?.type !== 'str') {
+				return;
+			}
 			window.open(url.value, '_blank');
 		}),
 		'Plugin:config': values.OBJ(config),
