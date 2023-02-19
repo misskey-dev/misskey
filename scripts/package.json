@@ -13,12 +13,8 @@
 		"build:pre": "node ./build-pre.js",
 		"clean": "node ./clean.js",
 		"clean-all": "node ./clean-all.js",
-		"cy:install": "pnpm cypress install",
-		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
-		"cy:run": "pnpm cypress run",
 		"dev:main": "node ./dev-main.js",
-		"dev:watch": "node ./dev-watch.js",
-		"e2e": "pnpm start-server-and-test 'turbo run start:test' http://localhost:61812 cy:run"
+		"dev:watch": "node ./dev-watch.js"
 	},
 	"dependencies": {
 		"chokidar": "3.5.3",
@@ -26,11 +22,9 @@
 		"typescript": "4.9.5"
 	},
 	"devDependencies": {
-		"cypress": "12.5.1",
 		"shx": "0.3.4",
 		"postcss": "8.4.21",
 		"postcss-cli": "10.1.0",
-		"terser": "5.16.4",
-		"start-server-and-test": "1.15.3"
+		"terser": "5.16.4"
 	}
 }

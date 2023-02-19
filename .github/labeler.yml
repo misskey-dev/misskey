@@ -5,7 +5,7 @@
 - packages/frontend/**/*
 
 '🧪Test':
-- scripts/cypress/**/*
+- cypress/**/*
 - packages/backend/test/**/*
 
 '‼️ wrong locales':

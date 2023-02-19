@@ -50,11 +50,6 @@
 				"**/node_modules/**"
 			]
 		},
-		"cy:install": {},
-		"cy:open": {
-			"persistent": true
-		},
-		"cy:run": {},
 		"dev:main": {
 			"cache": false,
 			"persistent": true
