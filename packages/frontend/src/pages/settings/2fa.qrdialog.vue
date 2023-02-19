@@ -16,8 +16,11 @@
 				<a href="https://support.google.com/accounts/answer/1066447" rel="noopener" target="_blank" class="_link">Google Authenticator</a>
 			</template>
 		</I18n>
-		<div v-text="i18n.ts._2fa.step2" />
-		<img :class="$style.qr" :src="twoFactorData.qr">
+		<div>
+			{{ i18n.ts._2fa.step2 }}<br>
+			{{ i18n.ts._2fa.step2Click }}
+		</div>
+		<a :href="twoFactorData.url"><img :class="$style.qr" :src="twoFactorData.qr"></a>
 		<MkKeyValue :copy="twoFactorData.url">
 			<template #key>{{ i18n.ts._2fa.step2Url }}</template>
 			<template #value>{{ twoFactorData.url }}</template>

@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	requireCredential: true,
@@ -33,6 +34,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
