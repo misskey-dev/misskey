@@ -617,6 +617,7 @@ function showReactions(): void {
 
 .text {
 	overflow-wrap: break-word;
+	overflow: clip;
 }
 
 .replyIcon {
