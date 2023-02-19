@@ -296,7 +296,7 @@ function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef):
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 }
 
-/** @see MkEmojiPicker.secion.vue */
+/** @see MkEmojiPicker.section.vue */
 function computeButtonTitle(ev: MouseEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
