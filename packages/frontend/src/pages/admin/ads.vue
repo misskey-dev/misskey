@@ -47,8 +47,9 @@
 			<MkButton class="button" @click="more()">
 				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
 			</MkButton>
-		</MkSpacer>
-	</MkStickyContainer>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
