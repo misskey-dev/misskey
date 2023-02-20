@@ -19,7 +19,7 @@ fs.mkdirSync(__dirname + "/../packages/backend/built/server/web/views", {
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/*.js", {
 		persistent: watch ? true : false,
-		ignoreInitial: false,
+		ignoreInitial: watch ? false : true,
 		ignored: "boot.js",
 	})
 	.on("add", (paths) => {
@@ -63,7 +63,7 @@ chokidar
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/boot.js", {
 		persistent: watch ? true : false,
-		ignoreInitial: false,
+		ignoreInitial: watch ? false : true,
 	})
 	.on("add", (paths) => {
 		const content = fs.readFileSync(
@@ -73,6 +73,21 @@ chokidar
 		fs.writeFileSync(
 			__dirname + "/built/boot.js",
 			content.replace("LANGS", JSON.stringify(Object.keys(locales)))
+		);
+		execa(
+			"pnpm",
+			[
+				"terser",
+				__dirname + "/built/boot.js",
+				"-o",
+				__dirname + "/../packages/backend/built/server/web/boot.js",
+				"--toplevel",
+			],
+			{
+				cwd: __dirname + "/",
+				stdout: process.stdout,
+				stderr: process.stderr,
+			}
 		);
 	})
 	.on("change", (paths) => {
@@ -84,13 +99,28 @@ chokidar
 			__dirname + "/built/boot.js",
 			content.replace("LANGS", JSON.stringify(Object.keys(locales)))
 		);
+		execa(
+			"pnpm",
+			[
+				"terser",
+				__dirname + "/built/boot.js",
+				"-o",
+				__dirname + "/../packages/backend/built/server/web/boot.js",
+				"--toplevel",
+			],
+			{
+				cwd: __dirname + "/",
+				stdout: process.stdout,
+				stderr: process.stderr,
+			}
+		);
 	});
 
 // backend:style
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/*.css", {
 		persistent: watch ? true : false,
-		ignoreInitial: false,
+		ignoreInitial: watch ? false : true,
 	})
 	.on("add", (paths) => {
 		execa(
@@ -133,7 +163,7 @@ chokidar
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/views/*", {
 		persistent: watch ? true : false,
-		ignoreInitial: false,
+		ignoreInitial: watch ? false : true,
 	})
 	.on("add", (paths) => {
 		execa(
@@ -173,7 +203,6 @@ chokidar
 			}
 		);
 	});
-
 
 // frontend:fonts
 fs.mkdirSync(__dirname + "/../built/_frontend_dist_/fonts", {
