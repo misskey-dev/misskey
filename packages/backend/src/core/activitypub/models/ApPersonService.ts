@@ -46,8 +46,6 @@ const summaryLength = 2048;
 
 @Injectable()
 export class ApPersonService {
-	private logger: Logger;
-
 	constructor(
 		@Inject(Symbol.for('IServiceProvider'))
 		private serviceProvider: IServiceProvider,
@@ -171,6 +169,9 @@ export class ApPersonService {
 	}
 	private get apLoggerService(): ApLoggerService {
 		return getRequiredService(this.serviceProvider, DI.ApLoggerService);
+	}
+	private get logger(): Logger {
+		return this.apLoggerService.logger;
 	}
 
 	/**

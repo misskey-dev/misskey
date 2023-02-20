@@ -2,37 +2,47 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import rndstr from 'rndstr';
-import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
-
+import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
+import { addRepositoryServices } from '@/boot/RepositoryModule.js';
+import { addQueueServices } from '@/boot/QueueModule.js';
+import { addCoreServices } from '@/boot/CoreModule.js';
+import { DI } from '@/di-symbols.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 describe('ActivityPub', () => {
+	let serviceProvider: ServiceProvider;
 	let noteService: ApNoteService;
 	let personService: ApPersonService;
 	let resolver: MockResolver;
 
 	beforeEach(async () => {
-		const app = await Test.createTestingModule({
-			imports: [GlobalModule, CoreModule],
-		}).compile();
+		const services = new ServiceCollection();
+		addGlobalServices(services);
+		addRepositoryServices(services);
+		addQueueServices(services);
+		addCoreServices(services);
 
-		await app.init();
-		app.enableShutdownHooks();
+		serviceProvider = buildServiceProvider(services);
 
-		noteService = app.get<ApNoteService>(ApNoteService);
-		personService = app.get<ApPersonService>(ApPersonService);
-		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
+		await initializeGlobalServices(serviceProvider);
+
+		noteService = getRequiredService<ApNoteService>(serviceProvider, DI.ApNoteService);
+		personService = getRequiredService<ApPersonService>(serviceProvider, DI.ApPersonService);
+		resolver = new MockResolver(getRequiredService<LoggerService>(serviceProvider, DI.LoggerService));
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
-		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);
+		const federatedInstanceService = getRequiredService<FederatedInstanceService>(serviceProvider, DI.FederatedInstanceService);
 		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => {}));
+	});
+
+	afterEach(async () => {
+		await serviceProvider.disposeAsync();
 	});
 
 	describe('Parse minimum object', () => {
