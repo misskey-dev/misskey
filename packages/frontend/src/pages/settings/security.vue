@@ -109,7 +109,7 @@ definePageMetadata({
 
 <style lang="scss" scoped>
 .timnmucd {
-	padding: 16px;
+	padding: 12px;
 
 	&:first-child {
 		border-top-left-radius: 6px;
