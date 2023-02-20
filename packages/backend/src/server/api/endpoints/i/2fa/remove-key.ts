@@ -50,6 +50,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: ps.credentialId,
 			});
 
+			// 使われているキーがなくなったらパスワードレスログインをやめる
+			const keyCount = await this.userSecurityKeysRepository.count({
+				where: {
+					userId: me.id,
+				},
+				select: {
+					id: true,
+					name: true,
+					lastUsed: true,
+				},
+			});
+
+			if (keyCount === 0) {
+				await this.userProfilesRepository.update(me.id, {
+					usePasswordLessLogin: false,
+				});
+			}
+
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
 				detail: true,

@@ -12,6 +12,8 @@ You should also include the user name that made the change.
 
 ### Improvements
 - Server: URLプレビュー（summaly）はプロキシを通すように
+- Client: 2FA設定のUIをまともにした
+- セキュリティキーの名前を変更できるように
 
 ### Bugfixes
 -
