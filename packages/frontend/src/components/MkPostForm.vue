@@ -73,7 +73,6 @@ import { inject, watch, nextTick, onMounted, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -201,7 +200,7 @@ const submitText = $computed((): string => {
 });
 
 const textLength = $computed((): number => {
-	return length((text + imeText).trim());
+	return (text + imeText).trim().length;
 });
 
 const maxTextLength = $computed((): number => {
