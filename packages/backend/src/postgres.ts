@@ -238,7 +238,7 @@ export function createPostgresDataSource(config: Config): DataSource {
 
 		// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
 		db.public.interceptQueries((text) => {
-			console.log(text);
+			//console.log(text);
 			switch (text) {
 				case 'SELECT \'DROP VIEW IF EXISTS "\' || schemaname || \'"."\' || viewname || \'" CASCADE;\' as "query" FROM "pg_views" WHERE "schemaname" IN (current_schema()) AND "viewname" NOT IN (\'geography_columns\', \'geometry_columns\', \'raster_columns\', \'raster_overviews\')':
 				case 'SELECT \'DROP TABLE IF EXISTS "\' || schemaname || \'"."\' || tablename || \'" CASCADE;\' as "query" FROM "pg_tables" WHERE "schemaname" IN (current_schema()) AND "tablename" NOT IN (\'spatial_ref_sys\')':
