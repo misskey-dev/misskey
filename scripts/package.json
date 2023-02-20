@@ -2,19 +2,12 @@
 	"name": "scripts",
 	"private": true,
 	"scripts": {
-		"build:post": "run-p build:post:script build:post:main",
-		"build:post:backend:script": "terser ./../packages/backend/src/server/web/bios.js -o ./../packages/backend/built/server/web/bios.js --toplevel && terser ./../packages/backend/src/server/web/cli.js -o ./../packages/backend/built/server/web/cli.js --toplevel && terser ./built/boot.js -o ./../packages/backend/built/server/web/boot.js --toplevel",
-		"build:post:backend:style": "postcss ./../packages/backend/src/server/web/style.css > ./../packages/backend/built/server/web/style.css && postcss ./../packages/backend/src/server/web/bios.css > ./../packages/backend/built/server/web/bios.css && postcss ./../packages/backend/src/server/web/cli.css > ./../packages/backend/built/server/web/cli.css",
-		"build:post:backend:views": "shx cp -r ./../packages/backend/src/server/web/views/ ./../packages/backend/built/server/web",
-		"build:post:frontend:fonts": "shx mkdir -p ./../built/_frontend_dist_/fonts && shx cp -r ./../packages/frontend/node_modules/three/examples/fonts/ ./../built/_frontend_dist_",
-		"build:post:frontend:tabler-icons": "shx mkdir -p ./../built/_frontend_dist_/tabler-icons && shx cp -rf ./../packages/frontend/node_modules/@tabler/icons-webfont/* ./../built/_frontend_dist_/tabler-icons",
-		"build:post:main": "run-s build:post:backend:* build:post:frontend:*",
-		"build:post:script": "shx mkdir -p ./built && node ./build-post.js",
+		"build:post": "node ./build-watch.js",
 		"build:pre": "node ./build-pre.js",
 		"clean": "node ./clean.js",
 		"clean-all": "node ./clean-all.js",
 		"dev:main": "node ./dev-main.js",
-		"dev:watch": "node ./dev-watch.js"
+		"dev:watch": "node ./build-watch.js watch"
 	},
 	"dependencies": {
 		"chokidar": "3.5.3",
