@@ -9,7 +9,7 @@ const start = async () => {
 		if (!exist) throw new Error("not exist yet");
 
 		await execa("pnpm", ["start"], {
-			cwd: __dirname + "/../",
+			cwd: __dirname + "/../packages/backend/",
 			stdout: process.stdout,
 			stderr: process.stderr,
 		});

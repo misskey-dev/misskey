@@ -101,6 +101,7 @@
 		},
 		"start": {
 			"cache": false,
+			"persistent": true,
 			"env": [
 				"NODE_ENV"
 			]
