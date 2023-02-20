@@ -4,10 +4,11 @@
 
 	<div v-if="$i" class="_gaps_s">
 		<MkFolder>
+			<template #icon><i class="ti ti-shield-lock"></i></template>
 			<template #label>{{ i18n.ts.totp }}</template>
 			<template #caption>{{ i18n.ts.totpDescription }}</template>
 			<div v-if="$i.twoFactorEnabled" class="_gaps_s">
-				<div v-text="i18n.ts._2fa.alreadyRegistered" />
+				<div v-text="i18n.ts._2fa.alreadyRegistered"/>
 				<template v-if="$i.securityKeysList.length > 0">
 					<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
@@ -19,6 +20,7 @@
 		</MkFolder>
 
 		<MkFolder>
+			<template #icon><i class="ti ti-key"></i></template>
 			<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
 			<div class="_gaps_s">
 				<MkInfo>
@@ -213,24 +215,24 @@ async function addSecurityKey() {
 	if (name.canceled) return;
 
 	const webAuthnCreation = navigator.credentials.create({
-			publicKey: {
-				challenge: byteify(challenge.challenge, 'base64'),
-				rp: {
-					id: hostname,
-					name: 'Misskey',
-				},
-				user: {
-					id: byteify($i!.id, 'ascii'),
-					name: $i!.username,
-					displayName: $i!.name,
-				},
-				pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
-				timeout: 60000,
-				attestation: 'direct',
+		publicKey: {
+			challenge: byteify(challenge.challenge, 'base64'),
+			rp: {
+				id: hostname,
+				name: 'Misskey',
 			},
-		}) as Promise<PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null>;
+			user: {
+				id: byteify($i!.id, 'ascii'),
+				name: $i!.username,
+				displayName: $i!.name,
+			},
+			pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
+			timeout: 60000,
+			attestation: 'direct',
+		},
+	}) as Promise<PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null>;
 
-		const credential = await os.promiseDialog(
+	const credential = await os.promiseDialog(
 		webAuthnCreation,
 		null,
 		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
