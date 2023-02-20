@@ -117,9 +117,9 @@ export class ApiCallService implements IDisposable {
 		const [path] = await createTemp();
 		await pump(multipartData.file, fs.createWriteStream(path));
 
-		const fields = {} as Record<string, string | undefined>;
+		const fields = {} as Record<string, unknown>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
-			fields[k] = v.value;
+			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
 		}
 
 		const token = fields['i'];

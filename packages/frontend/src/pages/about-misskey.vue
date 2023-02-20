@@ -111,6 +111,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'だれかさん',
 	icon: 'https://misskey-hub.net/patrons/f7409b5e5a88477a9b9d740c408de125.jpg',
+}, {
+	name: 'narazaka',
+	icon: 'https://misskey-hub.net/patrons/e3affff31ffb4877b1196c7360abc3e5.jpg',
 }];
 
 const patrons = [

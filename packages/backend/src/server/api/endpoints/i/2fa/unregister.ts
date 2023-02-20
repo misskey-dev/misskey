@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/index.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -24,6 +26,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
+
+		@Inject(DI.UserEntityService)
+		private userEntityService: UserEntityService,
+
+		@Inject(DI.GlobalEventService)
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
@@ -38,7 +46,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: null,
 				twoFactorEnabled: false,
+				usePasswordLessLogin: false,
 			});
+
+			// Publish meUpdated event
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+				detail: true,
+				includeSecrets: true,
+			}));
 		});
 	}
 }

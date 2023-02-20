@@ -1,4 +1,5 @@
 import { Ctor, IServiceCollection, addSingletonCtor } from 'yohira';
+import * as ep___admin_meta from '@/server/api/endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from '@/server/api/endpoints/admin/abuse-user-reports.js';
 import * as ep___admin_accounts_create from '@/server/api/endpoints/admin/accounts/create.js';
 import * as ep___admin_accounts_delete from '@/server/api/endpoints/admin/accounts/delete.js';
@@ -10,7 +11,6 @@ import * as ep___admin_announcements_create from '@/server/api/endpoints/admin/a
 import * as ep___admin_announcements_delete from '@/server/api/endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from '@/server/api/endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from '@/server/api/endpoints/admin/announcements/update.js';
-import * as ep___admin_deleteAccount from '@/server/api/endpoints/admin/delete-account.js';
 import * as ep___admin_deleteAllFilesOfAUser from '@/server/api/endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_drive_cleanRemoteFiles from '@/server/api/endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from '@/server/api/endpoints/admin/drive/cleanup.js';
@@ -35,7 +35,7 @@ import * as ep___admin_federation_updateInstance from '@/server/api/endpoints/ad
 import * as ep___admin_getIndexStats from '@/server/api/endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from '@/server/api/endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from '@/server/api/endpoints/admin/get-user-ips.js';
-import * as ep___admin_meta from '@/server/api/endpoints/admin/meta.js';
+import * as ep___invite from '@/server/api/endpoints/invite.js';
 import * as ep___admin_promo_create from '@/server/api/endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from '@/server/api/endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from '@/server/api/endpoints/admin/queue/deliver-delayed.js';
@@ -46,14 +46,6 @@ import * as ep___admin_relays_list from '@/server/api/endpoints/admin/relays/lis
 import * as ep___admin_relays_remove from '@/server/api/endpoints/admin/relays/remove.js';
 import * as ep___admin_resetPassword from '@/server/api/endpoints/admin/reset-password.js';
 import * as ep___admin_resolveAbuseUserReport from '@/server/api/endpoints/admin/resolve-abuse-user-report.js';
-import * as ep___admin_roles_assign from '@/server/api/endpoints/admin/roles/assign.js';
-import * as ep___admin_roles_create from '@/server/api/endpoints/admin/roles/create.js';
-import * as ep___admin_roles_delete from '@/server/api/endpoints/admin/roles/delete.js';
-import * as ep___admin_roles_list from '@/server/api/endpoints/admin/roles/list.js';
-import * as ep___admin_roles_show from '@/server/api/endpoints/admin/roles/show.js';
-import * as ep___admin_roles_unassign from '@/server/api/endpoints/admin/roles/unassign.js';
-import * as ep___admin_roles_updateDefaultPolicies from '@/server/api/endpoints/admin/roles/update-default-policies.js';
-import * as ep___admin_roles_update from '@/server/api/endpoints/admin/roles/update.js';
 import * as ep___admin_sendEmail from '@/server/api/endpoints/admin/send-email.js';
 import * as ep___admin_serverInfo from '@/server/api/endpoints/admin/server-info.js';
 import * as ep___admin_showModerationLogs from '@/server/api/endpoints/admin/show-moderation-logs.js';
@@ -62,7 +54,16 @@ import * as ep___admin_showUsers from '@/server/api/endpoints/admin/show-users.j
 import * as ep___admin_suspendUser from '@/server/api/endpoints/admin/suspend-user.js';
 import * as ep___admin_unsuspendUser from '@/server/api/endpoints/admin/unsuspend-user.js';
 import * as ep___admin_updateMeta from '@/server/api/endpoints/admin/update-meta.js';
+import * as ep___admin_deleteAccount from '@/server/api/endpoints/admin/delete-account.js';
 import * as ep___admin_updateUserNote from '@/server/api/endpoints/admin/update-user-note.js';
+import * as ep___admin_roles_create from '@/server/api/endpoints/admin/roles/create.js';
+import * as ep___admin_roles_delete from '@/server/api/endpoints/admin/roles/delete.js';
+import * as ep___admin_roles_list from '@/server/api/endpoints/admin/roles/list.js';
+import * as ep___admin_roles_show from '@/server/api/endpoints/admin/roles/show.js';
+import * as ep___admin_roles_update from '@/server/api/endpoints/admin/roles/update.js';
+import * as ep___admin_roles_assign from '@/server/api/endpoints/admin/roles/assign.js';
+import * as ep___admin_roles_unassign from '@/server/api/endpoints/admin/roles/unassign.js';
+import * as ep___admin_roles_updateDefaultPolicies from '@/server/api/endpoints/admin/roles/update-default-policies.js';
 import * as ep___announcements from '@/server/api/endpoints/announcements.js';
 import * as ep___antennas_create from '@/server/api/endpoints/antennas/create.js';
 import * as ep___antennas_delete from '@/server/api/endpoints/antennas/delete.js';
@@ -103,11 +104,11 @@ import * as ep___charts_user_pv from '@/server/api/endpoints/charts/user/pv.js';
 import * as ep___charts_user_reactions from '@/server/api/endpoints/charts/user/reactions.js';
 import * as ep___charts_users from '@/server/api/endpoints/charts/users.js';
 import * as ep___clips_addNote from '@/server/api/endpoints/clips/add-note.js';
+import * as ep___clips_removeNote from '@/server/api/endpoints/clips/remove-note.js';
 import * as ep___clips_create from '@/server/api/endpoints/clips/create.js';
 import * as ep___clips_delete from '@/server/api/endpoints/clips/delete.js';
 import * as ep___clips_list from '@/server/api/endpoints/clips/list.js';
 import * as ep___clips_notes from '@/server/api/endpoints/clips/notes.js';
-import * as ep___clips_removeNote from '@/server/api/endpoints/clips/remove-note.js';
 import * as ep___clips_show from '@/server/api/endpoints/clips/show.js';
 import * as ep___clips_update from '@/server/api/endpoints/clips/update.js';
 import * as ep___drive from '@/server/api/endpoints/drive.js';
@@ -129,7 +130,6 @@ import * as ep___drive_folders_show from '@/server/api/endpoints/drive/folders/s
 import * as ep___drive_folders_update from '@/server/api/endpoints/drive/folders/update.js';
 import * as ep___drive_stream from '@/server/api/endpoints/drive/stream.js';
 import * as ep___emailAddress_available from '@/server/api/endpoints/email-address/available.js';
-import * as ep___emojis from '@/server/api/endpoints/emojis.js';
 import * as ep___endpoint from '@/server/api/endpoints/endpoint.js';
 import * as ep___endpoints from '@/server/api/endpoints/endpoints.js';
 import * as ep___exportCustomEmojis from '@/server/api/endpoints/export-custom-emojis.js';
@@ -137,19 +137,9 @@ import * as ep___federation_followers from '@/server/api/endpoints/federation/fo
 import * as ep___federation_following from '@/server/api/endpoints/federation/following.js';
 import * as ep___federation_instances from '@/server/api/endpoints/federation/instances.js';
 import * as ep___federation_showInstance from '@/server/api/endpoints/federation/show-instance.js';
-import * as ep___federation_stats from '@/server/api/endpoints/federation/stats.js';
 import * as ep___federation_updateRemoteUser from '@/server/api/endpoints/federation/update-remote-user.js';
 import * as ep___federation_users from '@/server/api/endpoints/federation/users.js';
-import * as ep___fetchRss from '@/server/api/endpoints/fetch-rss.js';
-import * as ep___flash_create from '@/server/api/endpoints/flash/create.js';
-import * as ep___flash_delete from '@/server/api/endpoints/flash/delete.js';
-import * as ep___flash_featured from '@/server/api/endpoints/flash/featured.js';
-import * as ep___flash_like from '@/server/api/endpoints/flash/like.js';
-import * as ep___flash_myLikes from '@/server/api/endpoints/flash/my-likes.js';
-import * as ep___flash_my from '@/server/api/endpoints/flash/my.js';
-import * as ep___flash_show from '@/server/api/endpoints/flash/show.js';
-import * as ep___flash_unlike from '@/server/api/endpoints/flash/unlike.js';
-import * as ep___flash_update from '@/server/api/endpoints/flash/update.js';
+import * as ep___federation_stats from '@/server/api/endpoints/federation/stats.js';
 import * as ep___following_create from '@/server/api/endpoints/following/create.js';
 import * as ep___following_delete from '@/server/api/endpoints/following/delete.js';
 import * as ep___following_invalidate from '@/server/api/endpoints/following/invalidate.js';
@@ -178,18 +168,19 @@ import * as ep___i_2fa_keyDone from '@/server/api/endpoints/i/2fa/key-done.js';
 import * as ep___i_2fa_passwordLess from '@/server/api/endpoints/i/2fa/password-less.js';
 import * as ep___i_2fa_registerKey from '@/server/api/endpoints/i/2fa/register-key.js';
 import * as ep___i_2fa_register from '@/server/api/endpoints/i/2fa/register.js';
+import * as ep___i_2fa_updateKey from '@/server/api/endpoints/i/2fa/update-key.js';
 import * as ep___i_2fa_removeKey from '@/server/api/endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from '@/server/api/endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from '@/server/api/endpoints/i/apps.js';
 import * as ep___i_authorizedApps from '@/server/api/endpoints/i/authorized-apps.js';
-import * as ep___i_changePassword from '@/server/api/endpoints/i/change-password.js';
 import * as ep___i_claimAchievement from '@/server/api/endpoints/i/claim-achievement.js';
+import * as ep___i_changePassword from '@/server/api/endpoints/i/change-password.js';
 import * as ep___i_deleteAccount from '@/server/api/endpoints/i/delete-account.js';
 import * as ep___i_exportBlocking from '@/server/api/endpoints/i/export-blocking.js';
-import * as ep___i_exportFavorites from '@/server/api/endpoints/i/export-favorites.js';
 import * as ep___i_exportFollowing from '@/server/api/endpoints/i/export-following.js';
 import * as ep___i_exportMute from '@/server/api/endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from '@/server/api/endpoints/i/export-notes.js';
+import * as ep___i_exportFavorites from '@/server/api/endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from '@/server/api/endpoints/i/export-user-lists.js';
 import * as ep___i_favorites from '@/server/api/endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from '@/server/api/endpoints/i/gallery/likes.js';
@@ -220,12 +211,12 @@ import * as ep___i_unpin from '@/server/api/endpoints/i/unpin.js';
 import * as ep___i_updateEmail from '@/server/api/endpoints/i/update-email.js';
 import * as ep___i_update from '@/server/api/endpoints/i/update.js';
 import * as ep___i_webhooks_create from '@/server/api/endpoints/i/webhooks/create.js';
-import * as ep___i_webhooks_delete from '@/server/api/endpoints/i/webhooks/delete.js';
-import * as ep___i_webhooks_list from '@/server/api/endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_show from '@/server/api/endpoints/i/webhooks/show.js';
+import * as ep___i_webhooks_list from '@/server/api/endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from '@/server/api/endpoints/i/webhooks/update.js';
-import * as ep___invite from '@/server/api/endpoints/invite.js';
+import * as ep___i_webhooks_delete from '@/server/api/endpoints/i/webhooks/delete.js';
 import * as ep___meta from '@/server/api/endpoints/meta.js';
+import * as ep___emojis from '@/server/api/endpoints/emojis.js';
 import * as ep___miauth_genToken from '@/server/api/endpoints/miauth/gen-token.js';
 import * as ep___mute_create from '@/server/api/endpoints/mute/create.js';
 import * as ep___mute_delete from '@/server/api/endpoints/mute/delete.js';
@@ -272,23 +263,30 @@ import * as ep___pages_like from '@/server/api/endpoints/pages/like.js';
 import * as ep___pages_show from '@/server/api/endpoints/pages/show.js';
 import * as ep___pages_unlike from '@/server/api/endpoints/pages/unlike.js';
 import * as ep___pages_update from '@/server/api/endpoints/pages/update.js';
+import * as ep___flash_create from '@/server/api/endpoints/flash/create.js';
+import * as ep___flash_delete from '@/server/api/endpoints/flash/delete.js';
+import * as ep___flash_featured from '@/server/api/endpoints/flash/featured.js';
+import * as ep___flash_like from '@/server/api/endpoints/flash/like.js';
+import * as ep___flash_show from '@/server/api/endpoints/flash/show.js';
+import * as ep___flash_unlike from '@/server/api/endpoints/flash/unlike.js';
+import * as ep___flash_update from '@/server/api/endpoints/flash/update.js';
+import * as ep___flash_my from '@/server/api/endpoints/flash/my.js';
+import * as ep___flash_myLikes from '@/server/api/endpoints/flash/my-likes.js';
 import * as ep___ping from '@/server/api/endpoints/ping.js';
 import * as ep___pinnedUsers from '@/server/api/endpoints/pinned-users.js';
 import * as ep___promo_read from '@/server/api/endpoints/promo/read.js';
 import * as ep___requestResetPassword from '@/server/api/endpoints/request-reset-password.js';
 import * as ep___resetDb from '@/server/api/endpoints/reset-db.js';
 import * as ep___resetPassword from '@/server/api/endpoints/reset-password.js';
-import * as ep___retention from '@/server/api/endpoints/retention.js';
 import * as ep___serverInfo from '@/server/api/endpoints/server-info.js';
 import * as ep___stats from '@/server/api/endpoints/stats.js';
-import * as ep___sw_register from '@/server/api/endpoints/sw/register.js';
 import * as ep___sw_show_registration from '@/server/api/endpoints/sw/show-registration.js';
-import * as ep___sw_unregister from '@/server/api/endpoints/sw/unregister.js';
 import * as ep___sw_update_registration from '@/server/api/endpoints/sw/update-registration.js';
+import * as ep___sw_register from '@/server/api/endpoints/sw/register.js';
+import * as ep___sw_unregister from '@/server/api/endpoints/sw/unregister.js';
 import * as ep___test from '@/server/api/endpoints/test.js';
 import * as ep___username_available from '@/server/api/endpoints/username/available.js';
 import * as ep___users from '@/server/api/endpoints/users.js';
-import * as ep___users_achievements from '@/server/api/endpoints/users/achievements.js';
 import * as ep___users_clips from '@/server/api/endpoints/users/clips.js';
 import * as ep___users_followers from '@/server/api/endpoints/users/followers.js';
 import * as ep___users_following from '@/server/api/endpoints/users/following.js';
@@ -311,6 +309,9 @@ import * as ep___users_searchByUsernameAndHost from '@/server/api/endpoints/user
 import * as ep___users_search from '@/server/api/endpoints/users/search.js';
 import * as ep___users_show from '@/server/api/endpoints/users/show.js';
 import * as ep___users_stats from '@/server/api/endpoints/users/stats.js';
+import * as ep___users_achievements from '@/server/api/endpoints/users/achievements.js';
+import * as ep___fetchRss from '@/server/api/endpoints/fetch-rss.js';
+import * as ep___retention from '@/server/api/endpoints/retention.js';
 import { IEndpoint, IEndpointMeta } from '@/server/api/endpoints.js';
 
 const eps = [
@@ -483,6 +484,7 @@ const eps = [
 	['i/2fa/password-less', ep___i_2fa_passwordLess],
 	['i/2fa/register-key', ep___i_2fa_registerKey],
 	['i/2fa/register', ep___i_2fa_register],
+	['i/2fa/update-key', ep___i_2fa_updateKey],
 	['i/2fa/remove-key', ep___i_2fa_removeKey],
 	['i/2fa/unregister', ep___i_2fa_unregister],
 	['i/apps', ep___i_apps],
@@ -807,6 +809,7 @@ const EndpointsServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[Symbol.for('ep:i/2fa/password-less'), ep___i_2fa_passwordLess.default],
 	[Symbol.for('ep:i/2fa/register-key'), ep___i_2fa_registerKey.default],
 	[Symbol.for('ep:i/2fa/register'), ep___i_2fa_register.default],
+	[Symbol.for('ep:i/2fa/update-key'), ep___i_2fa_updateKey.default],
 	[Symbol.for('ep:i/2fa/remove-key'), ep___i_2fa_removeKey.default],
 	[Symbol.for('ep:i/2fa/unregister'), ep___i_2fa_unregister.default],
 	[Symbol.for('ep:i/apps'), ep___i_apps.default],
