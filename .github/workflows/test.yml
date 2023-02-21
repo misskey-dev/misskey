@@ -119,7 +119,6 @@ jobs:
         install: false
         start: pnpm start:test
         wait-on: 'http://localhost:61812'
-        wait-on-timeout: 120
         headless: false
         browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
