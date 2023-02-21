@@ -19,7 +19,7 @@ fs.mkdirSync(__dirname + "/../packages/backend/built/server/web/views", {
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/*.js", {
 		persistent: watch ? true : false,
-		ignoreInitial: watch ? false : true,
+		ignoreInitial: watch ? true : false,
 		ignored: "boot.js",
 	})
 	.on("add", (paths) => {
@@ -63,7 +63,7 @@ chokidar
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/boot.js", {
 		persistent: watch ? true : false,
-		ignoreInitial: watch ? false : true,
+		ignoreInitial: watch ? true : false,
 	})
 	.on("add", (paths) => {
 		const content = fs.readFileSync(
@@ -120,7 +120,7 @@ chokidar
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/*.css", {
 		persistent: watch ? true : false,
-		ignoreInitial: watch ? false : true,
+		ignoreInitial: watch ? true : false,
 	})
 	.on("add", (paths) => {
 		execa(
@@ -163,7 +163,7 @@ chokidar
 chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/views/*", {
 		persistent: watch ? true : false,
-		ignoreInitial: watch ? false : true,
+		ignoreInitial: watch ? true : false,
 	})
 	.on("add", (paths) => {
 		execa(
