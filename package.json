@@ -36,7 +36,7 @@
 		"migrate": "cross-env FORCE_COLOR=1 turbo run migrate",
 		"migrateandstart": "run-s migrate start",
 		"start": "cross-env FORCE_COLOR=1 turbo run start",
-		"start:test": "cross-env FORCE_COLOR=1 NODE_ENV=test turbo run start",
+		"start:test": "cross-env FORCE_COLOR=1 NODE_ENV=test turbo run start --concurrency=100%",
 		"test": "run-s jest",
 		"test-and-coverage": "run-s jest-and-coverage"
 	},
