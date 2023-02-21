@@ -23,7 +23,7 @@
 		"cleanall": "run-s clean-all",
 		"cy:open": "pnpm cypress open --browser --e2e --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
-		"dev": "run-p dev:setup dev:watch",
+		"dev": "run-s dev:setup",
 		"dev:main": "cross-env FORCE_COLOR=1 turbo run dev:main",
 		"dev:setup": "run-s clean build dev:main",
 		"dev:watch": "turbo run dev:watch",

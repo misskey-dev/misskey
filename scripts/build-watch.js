@@ -204,55 +204,57 @@ chokidar
 		);
 	});
 
-// frontend:fonts
-fs.mkdirSync(__dirname + "/../built/_frontend_dist_/fonts", {
-	recursive: true,
-});
-execa(
-	"pnpm",
-	[
-		"shx",
-		"cp",
-		"-rf",
-		__dirname + "/../packages/frontend/node_modules/three/examples/fonts/",
-		__dirname + "/../built/_frontend_dist_",
-	],
-	{
-		cwd: __dirname + "/",
-		stdout: process.stdout,
-		stderr: process.stderr,
-	}
-);
+if (watch == false) {
+	// frontend:fonts
+	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/fonts", {
+		recursive: true,
+	});
+	execa(
+		"pnpm",
+		[
+			"shx",
+			"cp",
+			"-rf",
+			__dirname + "/../packages/frontend/node_modules/three/examples/fonts/",
+			__dirname + "/../built/_frontend_dist_",
+		],
+		{
+			cwd: __dirname + "/",
+			stdout: process.stdout,
+			stderr: process.stderr,
+		}
+	);
 
-// frontend:locales
-fs.mkdirSync(__dirname + "/../built/_frontend_dist_/locales", {
-	recursive: true,
-});
-for (const [lang, locale] of Object.entries(locales)) {
-	fs.writeFileSync(
-		__dirname +
-			`/../built/_frontend_dist_/locales/${lang}.${meta.version}.json`,
-		JSON.stringify({ ...locale, ...v }),
-		"utf-8"
+	// frontend:locales
+	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/locales", {
+		recursive: true,
+	});
+	for (const [lang, locale] of Object.entries(locales)) {
+		fs.writeFileSync(
+			__dirname +
+				`/../built/_frontend_dist_/locales/${lang}.${meta.version}.json`,
+			JSON.stringify({ ...locale, ...v }),
+			"utf-8"
+		);
+	}
+
+	// frontend:tabler-icons
+	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/tabler-icons", {
+		recursive: true,
+	});
+	execa(
+		"pnpm",
+		[
+			"shx",
+			"cp",
+			"-rf",
+			__dirname + "/../packages/frontend/node_modules/@tabler/icons-webfont/*",
+			__dirname + "/../built/_frontend_dist_/tabler-icons",
+		],
+		{
+			cwd: __dirname + "/",
+			stdout: process.stdout,
+			stderr: process.stderr,
+		}
 	);
 }
-
-// frontend:tabler-icons
-fs.mkdirSync(__dirname + "/../built/_frontend_dist_/tabler-icons", {
-	recursive: true,
-});
-execa(
-	"pnpm",
-	[
-		"shx",
-		"cp",
-		"-rf",
-		__dirname + "/../packages/frontend/node_modules/@tabler/icons-webfont/*",
-		__dirname + "/../built/_frontend_dist_/tabler-icons",
-	],
-	{
-		cwd: __dirname + "/",
-		stdout: process.stdout,
-		stderr: process.stderr,
-	}
-);
