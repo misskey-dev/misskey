@@ -101,6 +101,10 @@
 		},
 		"start": {
 			"cache": false,
+			"persistent": true
+		},
+		"start:test": {
+			"cache": false,
 			"persistent": true,
 			"env": [
 				"NODE_ENV"
