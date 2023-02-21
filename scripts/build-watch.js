@@ -20,7 +20,7 @@ chokidar
 	.watch(__dirname + "/../packages/backend/src/server/web/*.js", {
 		persistent: watch ? true : false,
 		ignoreInitial: watch ? true : false,
-		ignored: "boot.js",
+		ignored: __dirname + "/../packages/backend/src/server/web/boot.js",
 	})
 	.on("add", (paths) => {
 		execa(
@@ -132,6 +132,8 @@ chokidar
 				__dirname +
 					"/../packages/backend/built/server/web/" +
 					path.win32.basename(paths),
+				"--config",
+				__dirname + "/postcss.config.js",
 			],
 			{
 				cwd: __dirname + "/",
@@ -150,6 +152,8 @@ chokidar
 				__dirname +
 					"/../packages/backend/built/server/web/" +
 					path.win32.basename(paths),
+				"--config",
+				__dirname + "/postcss.config.js",
 			],
 			{
 				cwd: __dirname + "/",
