@@ -13,7 +13,8 @@
 		"eslint": "eslint --quiet \"src/**/*.ts\"",
 		"typecheck": "tsc --noEmit",
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
-		"start": "node ./built/boot/index.js"
+		"start": "node ./built/boot/index.js",
+		"start:test": "NODE_ENV=test node ./built/index.js"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs": "4.2.0",
