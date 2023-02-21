@@ -128,7 +128,7 @@ chokidar
 			[
 				"postcss",
 				paths,
-				">",
+				"-o",
 				__dirname +
 					"/../packages/backend/built/server/web/" +
 					path.win32.basename(paths),
@@ -146,7 +146,7 @@ chokidar
 			[
 				"postcss",
 				paths,
-				">",
+				"-o",
 				__dirname +
 					"/../packages/backend/built/server/web/" +
 					path.win32.basename(paths),
