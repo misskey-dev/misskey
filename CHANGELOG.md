@@ -10,13 +10,19 @@ You should also include the user name that made the change.
 -->
 ## 13.x.x (unreleased)
 
+### Changes
+- チャット機能が削除されました
+
 ### Improvements
 - Server: URLプレビュー（summaly）はプロキシを通すように
 - Client: 2FA設定のUIをまともにした
 - セキュリティキーの名前を変更できるように
+- 管理画面の広告を10個以上見えるように
+- enhance(client): add quiz preset for play
+- 広告開始時期を設定できるように
 
 ### Bugfixes
--
+- fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
 
 ## 13.6.1 (2023/02/12)
 

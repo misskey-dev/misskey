@@ -128,7 +128,7 @@ function save(ad) {
 }
 function more() {
 	os.api('admin/ad/list', { untilId: ads.reduce((acc, ad) => ad.id != null ? ad : acc).id }).then(adsResponse => {
-	ads = ads.concat(adsResponse.map(r => {
+		ads = ads.concat(adsResponse.map(r => {
 			const exdate = new Date(r.expiresAt);
 			const stdate = new Date(r.startsAt);
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
