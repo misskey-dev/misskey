@@ -2,8 +2,8 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import rndstr from 'rndstr';
-import { jest } from '@jest/globals';
 import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterEach, beforeEach, describe, test, vi } from 'vitest';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -38,7 +38,7 @@ describe('ActivityPub', () => {
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
 		const federatedInstanceService = getRequiredService<FederatedInstanceService>(serviceProvider, DI.FederatedInstanceService);
-		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => {}));
+		vi.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => {}));
 	});
 
 	afterEach(async () => {

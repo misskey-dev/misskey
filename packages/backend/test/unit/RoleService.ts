@@ -1,8 +1,8 @@
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
 import rndstr from 'rndstr';
 import { addSingletonCtor, addSingletonInstance, buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { RoleService } from '@/core/RoleService.js';
 import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository, User, MetasRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -61,7 +61,7 @@ describe('RoleService', () => {
 		addCoreServices(services);
 		addSingletonCtor(services, DI.RoleService, RoleService);
 		addSingletonCtor(services, DI.UserCacheService, UserCacheService);
-		addSingletonInstance(services, DI.MetaService, { fetch: jest.fn() });
+		addSingletonInstance(services, DI.MetaService, { fetch: vi.fn() });
 
 		serviceProvider = buildServiceProvider(services);
 

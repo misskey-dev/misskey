@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as mfm from 'mfm-js';
 import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterEach, beforeEach, describe, test } from 'vitest';
 import { MfmService } from '@/core/MfmService.js';
 import { DI } from '@/di-symbols.js';
 import { addGlobalServices } from '@/boot/GlobalModule';

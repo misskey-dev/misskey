@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { addSingletonCtor, buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterAll, beforeAll, describe, test } from 'vitest';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';

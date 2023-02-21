@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 
 import { parse } from 'mfm-js';
+import { describe, test } from 'vitest';
 import { extractMentions } from '@/misc/extract-mentions.js';
 
 describe('Extract mentions', () => {

@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterEach, beforeEach, describe, test } from 'vitest';
 import { ReactionService } from '@/core/ReactionService.js';
 import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule';
 import { addRepositoryServices } from '@/boot/RepositoryModule';

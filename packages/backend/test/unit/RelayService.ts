@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
 import { addSingletonCtor, addSingletonInstance, buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 import { RelayService } from '@/core/RelayService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
@@ -26,7 +26,7 @@ describe('RelayService', () => {
 		addSingletonCtor(services, DI.CreateSystemUserService, CreateSystemUserService);
 		addSingletonCtor(services, DI.ApRendererService, ApRendererService);
 		addSingletonCtor(services, DI.RelayService, RelayService);
-		addSingletonInstance(services, DI.QueueService, { deliver: jest.fn() });
+		addSingletonInstance(services, DI.QueueService, { deliver: vi.fn() });
 
 		serviceProvider = buildServiceProvider(services);
 

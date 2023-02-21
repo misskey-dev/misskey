@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
 import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
@@ -33,7 +33,7 @@ describe('MetaService', () => {
 
 	test('fetch (cache)', async () => {
 		const db = getRequiredService<DataSource>(serviceProvider, DI.db);
-		const spy = jest.spyOn(db, 'transaction');
+		const spy = vi.spyOn(db, 'transaction');
 
 		const result = await metaService.fetch();
 
@@ -43,7 +43,7 @@ describe('MetaService', () => {
 
 	test('fetch (force)', async () => {
 		const db = getRequiredService<DataSource>(serviceProvider, DI.db);
-		const spy = jest.spyOn(db, 'transaction');
+		const spy = vi.spyOn(db, 'transaction');
 
 		const result = await metaService.fetch(true);
 
