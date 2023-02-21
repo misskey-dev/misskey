@@ -208,7 +208,7 @@ chokidar
 		);
 	});
 
-if (watch == false) {
+if (watch ? false : true) {
 	// frontend:fonts
 	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/fonts", {
 		recursive: true,
