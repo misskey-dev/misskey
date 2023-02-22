@@ -201,8 +201,8 @@ export const routes = [{
 	path: '/roles/:role',
 	component: page(() => import('./pages/role.vue')),
 }, {
-	path: '/explore/tags/:tag',
-	component: page(() => import('./pages/explore.vue')),
+	path: '/user-tags/:tag',
+	component: page(() => import('./pages/user-tag.vue')),
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
