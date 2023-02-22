@@ -8,7 +8,7 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.7.1 (2023/02/23)
 
 ### Improvements
 - pnpm buildではswcを使うように
