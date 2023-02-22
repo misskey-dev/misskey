@@ -133,7 +133,7 @@
 					</div>
 				</MkFolder>
 				<div class="_gaps_s">
-					<MkRolePreview v-for="role in roles" :key="role.id" :role="role"/>
+					<MkRolePreview v-for="role in roles" :key="role.id" :role="role" :for-moderation="true"/>
 				</div>
 			</div>
 		</MkSpacer>
@@ -145,8 +145,6 @@
 import { computed, reactive } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';

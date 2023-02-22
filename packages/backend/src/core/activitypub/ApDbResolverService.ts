@@ -1,15 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
-import type { MessagingMessagesRepository, NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { CacheableRemoteUser, CacheableUser } from '@/models/entities/User.js';
 import { Cache } from '@/misc/cache.js';
 import type { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { bindThis } from '@/decorators.js';
+import { RemoteUser, User } from '@/models/entities/User.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
@@ -41,9 +40,6 @@ export class ApDbResolverService {
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
-		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: MessagingMessagesRepository,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -101,28 +97,11 @@ export class ApDbResolverService {
 		}
 	}
 
-	@bindThis
-	public async getMessageFromApId(value: string | IObject): Promise<MessagingMessage | null> {
-		const parsed = this.parseUri(value);
-
-		if (parsed.local) {
-			if (parsed.type !== 'notes') return null;
-
-			return await this.messagingMessagesRepository.findOneBy({
-				id: parsed.id,
-			});
-		} else {
-			return await this.messagingMessagesRepository.findOneBy({
-				uri: parsed.uri,
-			});
-		}
-	}
-
 	/**
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject): Promise<CacheableUser | null> {
+	public async getUserFromApId(value: string | IObject): Promise<User | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
@@ -143,7 +122,7 @@ export class ApDbResolverService {
 	 */
 	@bindThis
 	public async getAuthUserFromKeyId(keyId: string): Promise<{
-		user: CacheableRemoteUser;
+		user: RemoteUser;
 		key: UserPublickey;
 	} | null> {
 		const key = await this.publicKeyCache.fetch(keyId, async () => {
@@ -159,7 +138,7 @@ export class ApDbResolverService {
 		if (key == null) return null;
 
 		return {
-			user: await this.userCacheService.findById(key.userId) as CacheableRemoteUser,
+			user: await this.userCacheService.findById(key.userId) as RemoteUser,
 			key,
 		};
 	}
@@ -169,10 +148,10 @@ export class ApDbResolverService {
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
-		user: CacheableRemoteUser;
+		user: RemoteUser;
 		key: UserPublickey | null;
 	} | null> {
-		const user = await this.apPersonService.resolvePerson(uri) as CacheableRemoteUser;
+		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 
 		if (user == null) return null;
 

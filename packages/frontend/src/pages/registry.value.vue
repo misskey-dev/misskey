@@ -40,13 +40,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 import JSON5 from 'json5';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import FormLink from '@/components/form/link.vue';
-import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkTextarea from '@/components/MkTextarea.vue';

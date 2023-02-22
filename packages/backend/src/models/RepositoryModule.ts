@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserGroup, UserGroupJoining, UserGroupInvitation, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, MessagingMessage, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment } from './index.js';
+import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment } from './index.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
@@ -115,24 +115,6 @@ const $userListsRepository: Provider = {
 const $userListJoiningsRepository: Provider = {
 	provide: DI.userListJoiningsRepository,
 	useFactory: (db: DataSource) => db.getRepository(UserListJoining),
-	inject: [DI.db],
-};
-
-const $userGroupsRepository: Provider = {
-	provide: DI.userGroupsRepository,
-	useFactory: (db: DataSource) => db.getRepository(UserGroup),
-	inject: [DI.db],
-};
-
-const $userGroupJoiningsRepository: Provider = {
-	provide: DI.userGroupJoiningsRepository,
-	useFactory: (db: DataSource) => db.getRepository(UserGroupJoining),
-	inject: [DI.db],
-};
-
-const $userGroupInvitationsRepository: Provider = {
-	provide: DI.userGroupInvitationsRepository,
-	useFactory: (db: DataSource) => db.getRepository(UserGroupInvitation),
 	inject: [DI.db],
 };
 
@@ -253,12 +235,6 @@ const $accessTokensRepository: Provider = {
 const $signinsRepository: Provider = {
 	provide: DI.signinsRepository,
 	useFactory: (db: DataSource) => db.getRepository(Signin),
-	inject: [DI.db],
-};
-
-const $messagingMessagesRepository: Provider = {
-	provide: DI.messagingMessagesRepository,
-	useFactory: (db: DataSource) => db.getRepository(MessagingMessage),
 	inject: [DI.db],
 };
 
@@ -435,9 +411,6 @@ const $roleAssignmentsRepository: Provider = {
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListJoiningsRepository,
-		$userGroupsRepository,
-		$userGroupJoiningsRepository,
-		$userGroupInvitationsRepository,
 		$userNotePiningsRepository,
 		$userIpsRepository,
 		$usedUsernamesRepository,
@@ -458,7 +431,6 @@ const $roleAssignmentsRepository: Provider = {
 		$authSessionsRepository,
 		$accessTokensRepository,
 		$signinsRepository,
-		$messagingMessagesRepository,
 		$pagesRepository,
 		$pageLikesRepository,
 		$galleryPostsRepository,
@@ -505,9 +477,6 @@ const $roleAssignmentsRepository: Provider = {
 		$userPublickeysRepository,
 		$userListsRepository,
 		$userListJoiningsRepository,
-		$userGroupsRepository,
-		$userGroupJoiningsRepository,
-		$userGroupInvitationsRepository,
 		$userNotePiningsRepository,
 		$userIpsRepository,
 		$usedUsernamesRepository,
@@ -528,7 +497,6 @@ const $roleAssignmentsRepository: Provider = {
 		$authSessionsRepository,
 		$accessTokensRepository,
 		$signinsRepository,
-		$messagingMessagesRepository,
 		$pagesRepository,
 		$pageLikesRepository,
 		$galleryPostsRepository,

@@ -81,14 +81,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { reactive, watch } from 'vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { deepClone } from '@/scripts/clone';

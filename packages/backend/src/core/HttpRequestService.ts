@@ -99,7 +99,6 @@ export class HttpRequestService {
 		const res = await this.send(url, {
 			method: 'GET',
 			headers: Object.assign({
-				'User-Agent': this.config.userAgent,
 				Accept: accept,
 			}, headers ?? {}),
 			timeout: 5000,
@@ -114,7 +113,6 @@ export class HttpRequestService {
 		const res = await this.send(url, {
 			method: 'GET',
 			headers: Object.assign({
-				'User-Agent': this.config.userAgent,
 				Accept: accept,
 			}, headers ?? {}),
 			timeout: 5000,
@@ -144,7 +142,10 @@ export class HttpRequestService {
 
 		const res = await fetch(url, {
 			method: args.method ?? 'GET',
-			headers: args.headers,
+			headers: {
+				'User-Agent': this.config.userAgent,
+				...(args.headers ?? {})
+			},
 			body: args.body,
 			size: args.size ?? 10 * 1024 * 1024,
 			agent: (url) => this.getAgentByUrl(url),

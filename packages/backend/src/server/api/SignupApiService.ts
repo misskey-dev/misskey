@@ -10,7 +10,7 @@ import { IdService } from '@/core/IdService.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
-import { ILocalUser } from '@/models/entities/User.js';
+import { LocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { SigninService } from './SigninService.js';
@@ -194,7 +194,7 @@ export class SignupApiService {
 				emailVerifyCode: null,
 			});
 
-			return this.signinService.signin(request, reply, account as ILocalUser);
+			return this.signinService.signin(request, reply, account as LocalUser);
 		} catch (err) {
 			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}

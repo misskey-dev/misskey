@@ -113,7 +113,8 @@ command.
 
 ### Dev Container
 Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
-To use Dev Container, open the project directory on VSCode with Dev Containers installed.
+To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
+**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
 
 It will run the following command automatically inside the container.
 ``` bash
