@@ -1,12 +1,12 @@
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { inputText } from '@/os';
-import { noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@/store';
+import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions } from '@/store';
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
 
-export function install(plugin): void {
+export function install(plugin: Plugin): void {
 	// 後方互換性のため
 	if (plugin.src == null) return;
 	console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
@@ -40,9 +40,9 @@ export function install(plugin): void {
 	aiscript.exec(parser.parse(plugin.src));
 }
 
-function createPluginEnv(opts): Record<string, values.Value> {
-	const config = new Map();
-	for (const [k, v] of Object.entries(opts.plugin.config || {})) {
+function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<string, values.Value> {
+	const config = new Map<string, values.Value>();
+	for (const [k, v] of Object.entries(opts.plugin.config ?? {})) {
 		config.set(k, utils.jsToVal(typeof opts.plugin.configData[k] !== 'undefined' ? opts.plugin.configData[k] : v.default));
 	}
 
