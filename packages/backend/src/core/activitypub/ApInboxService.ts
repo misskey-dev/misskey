@@ -452,7 +452,7 @@ export class ApInboxService {
 	
 		const user = await this.usersRepository.findOneByOrFail({ id: actor.id });
 		if (user.isDeleted) {
-			this.logger.info('skip: already deleted');
+			return 'skip: already deleted';
 		}
 	
 		const job = await this.queueService.createDeleteAccountJob(actor);

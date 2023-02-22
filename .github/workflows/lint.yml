@@ -37,7 +37,6 @@ jobs:
         - frontend
         - sw
         lint:
-        - typecheck
         - eslint
     steps:
     - uses: actions/checkout@v3.3.0

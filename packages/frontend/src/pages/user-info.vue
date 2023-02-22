@@ -112,7 +112,7 @@
 						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
 						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
-							<MkRolePreview :class="$style.role" :role="role"/>
+							<MkRolePreview :class="$style.role" :role="role" :for-moderation="true"/>
 							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
 							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>

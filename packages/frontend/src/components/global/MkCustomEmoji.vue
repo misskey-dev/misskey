@@ -24,7 +24,7 @@ const rawUrl = computed(() => {
 		return props.url;
 	}
 	if (props.host == null && !customEmojiName.value.includes('@')) {
-		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url || null;
+		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url ?? null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });
@@ -32,7 +32,7 @@ const rawUrl = computed(() => {
 const url = computed(() =>
 	defaultStore.reactiveState.disableShowingAnimatedImages.value && rawUrl.value
 		? getStaticImageUrl(rawUrl.value)
-		: rawUrl.value
+		: rawUrl.value,
 );
 
 const alt = computed(() => `:${customEmojiName.value}:`);

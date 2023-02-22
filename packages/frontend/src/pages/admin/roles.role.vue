@@ -16,16 +16,29 @@
 				<MkFolder v-if="role.target === 'manual'" default-open>
 					<template #icon><i class="ti ti-users"></i></template>
 					<template #label>{{ i18n.ts.users }}</template>
-					<template #suffix>{{ role.users.length }}</template>
+					<template #suffix>{{ role.usersCount }}</template>
 					<div class="_gaps">
 						<MkButton primary rounded @click="assign"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-						<div v-for="user in role.users" :key="user.id" :class="$style.userItem">
-							<MkA :class="$style.user" :to="`/user-info/${user.id}`">
-								<MkUserCardMini :user="user"/>
-							</MkA>
-							<button class="_button" :class="$style.unassign" @click="unassign(user, $event)"><i class="ti ti-x"></i></button>
-						</div>
+						<MkPagination :pagination="usersPagination">
+							<template #empty>
+								<div class="_fullinfo">
+									<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+									<div>{{ i18n.ts.noUsers }}</div>
+								</div>
+							</template>
+
+							<template #default="{ items }">
+								<div class="_gaps_s">
+									<div v-for="item in items" :key="item.user.id" :class="$style.userItem">
+										<MkA :class="$style.user" :to="`/user-info/${item.user.id}`">
+											<MkUserCardMini :user="item.user"/>
+										</MkA>
+										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
+									</div>
+								</div>
+							</template>
+						</MkPagination>
 					</div>
 				</MkFolder>
 				<MkInfo v-else>{{ i18n.ts._role.isConditionalRole }}</MkInfo>
@@ -47,12 +60,21 @@ import { useRouter } from '@/router';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
 const router = useRouter();
 
 const props = defineProps<{
 	id?: string;
 }>();
+
+const usersPagination = {
+	endpoint: 'admin/roles/users' as const,
+	limit: 20,
+	params: computed(() => ({
+		roleId: props.id,
+	})),
+};
 
 const role = reactive(await os.api('admin/roles/show', {
 	roleId: props.id,

@@ -200,7 +200,7 @@ export function getNoteMenu(props: {
 		props.translating.value = true;
 		const res = await os.api('notes/translate', {
 			noteId: appearNote.id,
-			targetLang: miLocalStorage.getItem('lang') || navigator.language,
+			targetLang: miLocalStorage.getItem('lang') ?? navigator.language,
 		});
 		props.translating.value = false;
 		props.translation.value = res;
@@ -240,7 +240,7 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url || appearNote.uri, '_blank');
+					window.open(appearNote.url ?? appearNote.uri, '_blank');
 				},
 			} : undefined,
 			{
@@ -302,7 +302,7 @@ export function getNoteMenu(props: {
 					icon: 'ti ti-exclamation-circle',
 					text: i18n.ts.reportAbuse,
 					action: () => {
-						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
+						const u = appearNote.url ?? appearNote.uri ?? `${url}/notes/${appearNote.id}`;
 						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 							user: appearNote.user,
 							initialComment: `Note: ${u}\n-----\n`,
@@ -344,7 +344,7 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
-				window.open(appearNote.url || appearNote.uri, '_blank');
+				window.open(appearNote.url ?? appearNote.uri, '_blank');
 			},
 		} : undefined]
 			.filter(x => x !== undefined);
