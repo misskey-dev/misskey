@@ -19,7 +19,6 @@ const _dirname = dirname(_filename);
 
 const config = loadConfig();
 export const port = config.port;
-export const host = config.host || "localhost";
 
 export const api = async (endpoint: string, params: any, me?: any) => {
 	endpoint = endpoint.replace(/^\//, '');
@@ -29,7 +28,7 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 	} : {};
 
 	try {
-		const res = await got<string>(`http://${host}:${port}/api/${endpoint}`, {
+		const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -67,7 +66,7 @@ export const request = async (path: string, params: any, me?: any): Promise<{ bo
 		i: me.token,
 	} : {};
 
-	const res = await fetch(`http://${host}:${port}/${path}`, {
+	const res = await fetch(`http://localhost:${port}/${path}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -124,7 +123,7 @@ export const uploadFile = async (user: any, _path?: string): Promise<any> => {
 	formData.append('file', fs.createReadStream(absPath));
 	formData.append('force', 'true');
 
-	const res = await got<string>(`http://${host}:${port}/api/drive/files/create`, {
+	const res = await got<string>(`http://localhost:${port}/api/drive/files/create`, {
 		method: 'POST',
 		body: formData,
 		retry: {
@@ -161,7 +160,7 @@ export const uploadUrl = async (user: any, url: string) => {
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
-		const ws = new WebSocket(`ws://${host}:${port}/streaming?i=${user.token}`);
+		const ws = new WebSocket(`ws://localhost:${port}/streaming?i=${user.token}`);
 
 		ws.on('open', () => {
 			ws.on('message', data => {
@@ -223,7 +222,7 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {
 	// node-fetchだと3xxを取れない
 	return await new Promise((resolve, reject) => {
-		const req = http.request(`http://${host}:${port}${path}`, {
+		const req = http.request(`http://localhost:${port}${path}`, {
 			headers: {
 				Accept: accept,
 			},

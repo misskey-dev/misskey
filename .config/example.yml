@@ -30,9 +30,6 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
-# The hostname or address to listen on (default: all)
-#host: "127.0.0.1"
-
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 
