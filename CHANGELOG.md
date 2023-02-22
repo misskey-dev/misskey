@@ -21,6 +21,7 @@ You should also include the user name that made the change.
 - 広告開始時期を設定できるように
 - みつけるで公開ロール一覧とそのメンバーを閲覧できるように
 - enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
+- enhance(client): make possible to reload page of window
 
 ### Bugfixes
 - ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
