@@ -142,6 +142,7 @@ importers:
       fluent-ffmpeg: 2.1.2
       form-data: 4.0.0
       got: 12.5.3
+      happy-dom: ^8.7.0
       hpagent: 1.2.0
       ioredis: 4.28.5
       ip-cidr: 3.1.0
@@ -248,6 +249,7 @@ importers:
       fluent-ffmpeg: 2.1.2
       form-data: 4.0.0
       got: 12.5.3
+      happy-dom: 8.7.0
       hpagent: 1.2.0
       ioredis: 4.28.5
       ip-cidr: 3.1.0
@@ -4821,6 +4823,10 @@ packages:
     engines: {node: '>= 6'}
     dev: false
 
+  /css.escape/1.5.1:
+    resolution: {integrity: sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==}
+    dev: false
+
   /cssesc/3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
@@ -7080,6 +7086,19 @@ packages:
     engines: {node: '>=0.8.0'}
     dev: false
 
+  /happy-dom/8.7.0:
+    resolution: {integrity: sha512-F/mH5l8aQwlfeByB0nU6Lg7a0FBax/nPCYNYg8tn/abdKCmiIJH+gU/5MVysf5XoM6KjJsvkbIaXAmS/8HxXLA==}
+    dependencies:
+      css.escape: 1.5.1
+      he: 1.2.0
+      node-fetch: 2.6.7
+      webidl-conversions: 7.0.0
+      whatwg-encoding: 2.0.0
+      whatwg-mimetype: 3.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /har-schema/2.0.0:
     resolution: {integrity: sha512-Oqluz6zhGX8cyRaTQlFMPw80bSJVG2x/cFb8ZPhUILGgHka9SsokCCOQgpveePerqidZOrT14ipqfJb7ILcW5Q==}
     engines: {node: '>=4'}
@@ -7182,7 +7201,6 @@ packages:
   /he/1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
-    dev: true
 
   /hexoid/1.0.0:
     resolution: {integrity: sha512-QFLV0taWQOZtvIRIAdBChesmogZrtuXvVWsFHZTk2SU+anspqZ2vMnoLg7IE1+Uk16N19APic1BuF8bC8c2m5g==}

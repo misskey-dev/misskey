@@ -66,6 +66,7 @@
 		"fluent-ffmpeg": "2.1.2",
 		"form-data": "4.0.0",
 		"got": "12.5.3",
+		"happy-dom": "^8.7.0",
 		"hpagent": "1.2.0",
 		"ioredis": "4.28.5",
 		"ip-cidr": "3.1.0",
