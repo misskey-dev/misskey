@@ -1,5 +1,5 @@
 import Xev from 'xev';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 

@@ -44,7 +44,7 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
+import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui';
 import MkAsUi from '@/components/MkAsUi.vue';
 import { miLocalStorage } from '@/local-storage';
 import { claimAchievement } from '@/scripts/achievements';

@@ -107,7 +107,7 @@ export class ImageProcessingService {
 				withoutEnlargement: true,
 			})
 			.rotate()
-			.webp(options)
+			.webp(options);
 
 		return {
 			data,

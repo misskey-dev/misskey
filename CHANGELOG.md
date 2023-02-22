@@ -8,8 +8,10 @@
 
 You should also include the user name that made the change.
 -->
+## 13.7.0 (2023/02/22)
 
-## 13.x.x (unreleased)
+### Changes
+- チャット機能が削除されました
 
 ### Changes
 - カスタム絵文字関連の変更
@@ -17,12 +19,51 @@ You should also include the user name that made the change.
   * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
 
 ### Improvements
+- Server: URLプレビュー（summaly）はプロキシを通すように
+- Client: 2FA設定のUIをまともにした
+- セキュリティキーの名前を変更できるように
+- enhance(client): add quiz preset for play
+- 広告開始時期を設定できるように
+- みつけるで公開ロール一覧とそのメンバーを閲覧できるように
+- enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
+- enhance(client): make possible to reload page of window
+
+### Bugfixes
+- ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
+- fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
+- 管理画面の広告を10個以上見えるように
+- Moderation note が保存できない
+- ユーザーのハッシュタグ検索が機能していないのを修正
+
+## 13.6.1 (2023/02/12)
+
+### Improvements
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+- Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
+- enhance: レートリミットを0%にできるように
+- チャンネル内Renoteを行えるように
+
+### Bugfixes
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
+
+## 13.6.0 (2023/02/11)
+
+### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
+  * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
+- ユーザーページのノート一覧をタブとして分離
 - コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
 - enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
 - 一部のMFM構文をopt-outに
 
 ### Bugfixes
--
+- Client: ユーザーページでタブがほとんど見れないことがないように
 
 ## 13.5.6 (2023/02/10)
 

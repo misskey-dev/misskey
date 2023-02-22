@@ -13,13 +13,11 @@ import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
-import type { UserGroupInvitationEntityService } from './UserGroupInvitationEntityService.js';
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private noteEntityService: NoteEntityService;
-	private userGroupInvitationEntityService: UserGroupInvitationEntityService;
 	private customEmojiService: CustomEmojiService;
 
 	constructor(
@@ -36,7 +34,6 @@ export class NotificationEntityService implements OnModuleInit {
 
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,
-		//private userGroupInvitationEntityService: UserGroupInvitationEntityService,
 		//private customEmojiService: CustomEmojiService,
 	) {
 	}
@@ -44,7 +41,6 @@ export class NotificationEntityService implements OnModuleInit {
 	onModuleInit() {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
-		this.userGroupInvitationEntityService = this.moduleRef.get('UserGroupInvitationEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 	}
 
@@ -110,9 +106,6 @@ export class NotificationEntityService implements OnModuleInit {
 					detail: true,
 					_hint_: options._hintForEachNotes_,
 				}),
-			} : {}),
-			...(notification.type === 'groupInvited' ? {
-				invitation: this.userGroupInvitationEntityService.pack(notification.userGroupInvitationId!),
 			} : {}),
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,

@@ -1,11 +1,9 @@
-import { DeepPartial } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NoteReactionsRepository } from '@/models/index.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import type { FindOptionsWhere } from 'typeorm';
 
 export const meta = {

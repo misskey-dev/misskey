@@ -7,7 +7,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkButton from '../MkButton.vue';
-import * as os from '@/os';
 import { CounterVarBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
 

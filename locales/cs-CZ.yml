@@ -642,19 +642,6 @@ _registry:
 _aboutMisskey:
   allContributors: "Všichni přispěvatelé"
   source: "Zdrojový kód"
-_mfm:
-  mention: "Zmínění"
-  hashtag: "Hashtag"
-  link: "Odkaz"
-  bold: "Tučně"
-  quote: "Citovat"
-  emoji: "Vlastní emoji"
-  search: "Vyhledávání"
-  flip: "Otočit"
-  tada: "Animace (tadá)"
-  blur: "Rozmazání"
-  font: "Font"
-  rainbow: "Duha"
 _channel:
   featured: "Trendy"
 _menuDisplay:

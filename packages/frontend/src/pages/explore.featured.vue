@@ -4,13 +4,13 @@
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
 	</MkTab>
-	<XNotes v-if="tab === 'notes'" :pagination="paginationForNotes"/>
-	<XNotes v-else-if="tab === 'polls'" :pagination="paginationForPolls"/>
+	<MkNotes v-if="tab === 'notes'" :pagination="paginationForNotes"/>
+	<MkNotes v-else-if="tab === 'polls'" :pagination="paginationForPolls"/>
 </MkSpacer>
 </template>
 
 <script lang="ts" setup>
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n';
 

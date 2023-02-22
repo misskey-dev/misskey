@@ -55,6 +55,7 @@ module.exports = {
 		'vue/multi-word-component-names': 'warn',
 		'vue/require-v-for-key': 'warn',
 		'vue/no-unused-components': 'warn',
+		'vue/no-unused-vars': 'warn',
 		'vue/valid-v-for': 'warn',
 		'vue/return-in-computed-property': 'warn',
 		'vue/no-setup-props-destructure': 'warn',

@@ -5,11 +5,11 @@
 	ref="el"
 	v-hotkey="keymap"
 	:class="$style.root"
-	:tabindex="!isDeleted ? '-1' : null"
+	:tabindex="!isDeleted ? '-1' : undefined"
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<!--<div v-if="appearNote._prId_" class="tip"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
+	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
@@ -77,7 +77,13 @@
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<footer :class="$style.footer">
-				<MkReactionsViewer :note="appearNote"/>
+				<MkReactionsViewer :note="appearNote" :max-number="16">
+					<template #more>
+						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+							{{ i18n.ts.more }}
+						</button>
+					</template>
+				</MkReactionsViewer>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -120,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -150,6 +156,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { shownNoteIds } from '@/os';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -186,20 +193,23 @@ const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
+const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.includes('$[x3')) ||
+	(appearNote.text.includes('$[x4')) ||
 	(appearNote.text.split('\n').length > 9) ||
 	(appearNote.text.length > 500) ||
-	(appearNote.files.length >= 5)
+	(appearNote.files.length >= 5) ||
+	(urls && urls.length >= 4)
 ));
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
-const translation = ref(null);
+const translation = ref<any>(null);
 const translating = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-let renoteCollapsed = $ref(isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
+let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
 
 shownNoteIds.add(appearNote.id);
 
@@ -240,7 +250,32 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
-	os.popupMenu([{
+
+	let items = [] as MenuItem[];
+
+	if (appearNote.channel) {
+		items = items.concat([{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				});
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+					channel: appearNote.channel,
+				});
+			},
+		}, null]);
+	}
+
+	items = items.concat([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
@@ -256,7 +291,9 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
-	}], renoteButton.value, {
+	}]);
+
+	os.popupMenu(items, renoteButton.value, {
 		viaKeyboard,
 	});
 }
@@ -359,6 +396,12 @@ function readPromo() {
 		noteId: appearNote.id,
 	});
 	isDeleted.value = true;
+}
+
+function showReactions(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+		noteId: appearNote.id,
+	}, {}, 'closed');
 }
 </script>
 
@@ -691,9 +734,30 @@ function readPromo() {
 	}
 }
 
+@container (max-width: 250px) {
+	.quoteNote {
+		padding: 12px;
+	}
+}
+
 .muted {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.reactionDetailsButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border: dashed 1px var(--divider);
+	border-radius: 4px;
+	background: transparent;
+	opacity: .8;
+
+	&:hover {
+		background: var(--X5);
+	}
 }
 </style>

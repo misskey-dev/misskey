@@ -39,12 +39,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private roleEntityService: RoleEntityService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
-			return await this.roleEntityService.pack(role);
+			return await this.roleEntityService.pack(role, me);
 		});
 	}
 }

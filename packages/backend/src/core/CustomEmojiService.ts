@@ -61,7 +61,7 @@ export class CustomEmojiService {
 			await this.db.queryResultCache!.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: await this.emojiEntityService.pack(emoji.id),
+				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
 		}
 

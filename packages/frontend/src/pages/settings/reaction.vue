@@ -57,7 +57,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, watch } from 'vue';
 import Sortable from 'vuedraggable';
-import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import FromSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { WebhooksRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';

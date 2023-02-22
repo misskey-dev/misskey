@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ../:/workspace:cached
+
+    command: sleep infinity
+
+    networks:
+      - internal_network
+      - external_network
+
+  redis:
+    restart: always
+    image: redis:7-alpine
+    networks:
+      - internal_network
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 5s
+      retries: 20
+
+  db:
+    restart: unless-stopped
+    image: postgres:15-alpine
+    networks:
+      - internal_network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: misskey
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
+      interval: 5s
+      retries: 20
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  internal_network:
+    internal: true
+  external_network:

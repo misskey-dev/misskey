@@ -14,6 +14,8 @@ import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class UserListService {
+	public static TooManyUsersError = class extends Error {};
+
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -36,7 +38,7 @@ export class UserListService {
 			userListId: list.id,
 		});
 		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
-			throw new Error('Too many users');
+			throw new UserListService.TooManyUsersError();
 		}
 
 		await this.userListJoiningsRepository.insert({
