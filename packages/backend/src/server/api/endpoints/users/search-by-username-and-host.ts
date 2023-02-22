@@ -37,13 +37,13 @@ export const paramDef = {
 			properties: {
 				username: { type: 'string', nullable: true },
 			},
-			required: ['username']
+			required: ['username'],
 		},
 		{
 			properties: {
 				host: { type: 'string', nullable: true },
 			},
-			required: ['host']
+			required: ['host'],
 		},
 	],
 } as const;
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const setUsernameAndHostQuery = (query = this.usersRepository.createQueryBuilder('user')) => {
 				if (ps.username) {
-					query.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' })
+					query.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(ps.username.toLowerCase()) + '%' });
 				}
 
 				if (ps.host) {
@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						query.andWhere('user.host IS NULL');
 					} else {
 						query.andWhere('user.host LIKE :host', {
-							host: sqlLikeEscape(ps.host.toLowerCase()) + '%'
+							host: sqlLikeEscape(ps.host.toLowerCase()) + '%',
 						});
 					}
 				}
