@@ -16,7 +16,7 @@
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" @update:model-value="search" :datalist="[hostname]">
+				<MkInput v-model="host" :datalist="[hostname]" @update:model-value="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>

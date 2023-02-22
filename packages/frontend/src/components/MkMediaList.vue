@@ -45,8 +45,8 @@ onMounted(() => {
 					src: media.url,
 					w: media.properties.width,
 					h: media.properties.height,
-					alt: media.comment || media.name,
-					comment: media.comment || media.name,
+					alt: media.comment ?? media.name,
+					comment: media.comment ?? media.name,
 				};
 				if (media.properties.orientation != null && media.properties.orientation >= 5) {
 					[item.w, item.h] = [item.h, item.w];
@@ -90,8 +90,8 @@ onMounted(() => {
 			[itemData.w, itemData.h] = [itemData.h, itemData.w];
 		}
 		itemData.msrc = file.thumbnailUrl;
-		itemData.alt = file.comment || file.name;
-		itemData.comment = file.comment || file.name;
+		itemData.alt = file.comment ?? file.name;
+		itemData.comment = file.comment ?? file.name;
 		itemData.thumbCropped = true;
 	});
 
