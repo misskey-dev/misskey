@@ -25,7 +25,7 @@
 
 			<MkPostForm v-if="$i" :channel="channel" class="post-form _panel _margin" fixed/>
 
-			<XTimeline :key="channelId" class="_margin" src="channel" :channel="channelId" @before="before" @after="after"/>
+			<MkTimeline :key="channelId" class="_margin" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import XTimeline from '@/components/MkTimeline.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os';
 import { useRouter } from '@/router';

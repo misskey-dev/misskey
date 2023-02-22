@@ -12,7 +12,7 @@ const retryDelay = 100;
 
 @Injectable()
 export class AppLockService {
-	private lock: (key: string, timeout?: number) => Promise<() => void>;
+	private lock: (key: string, timeout?: number, _?: (() => Promise<void>) | undefined) => Promise<() => void>;
 
 	constructor(
 		@Inject(DI.redis)

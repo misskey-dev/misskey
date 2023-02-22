@@ -63,7 +63,7 @@ export class HpmlTypeChecker {
 
 	@autobind
 	public getExpectedType(v: Expr, slot: number): Type {
-		const def = funcDefs[v.type || ''];
+		const def = funcDefs[v.type ?? ''];
 		if (def == null) {
 			throw new Error('Unknown type: ' + v.type);
 		}
@@ -107,7 +107,7 @@ export class HpmlTypeChecker {
 				return pageVar.type;
 			}
 
-			const envVar = envVarsDef[v.value || ''];
+			const envVar = envVarsDef[v.value ?? ''];
 			if (envVar !== undefined) {
 				return envVar;
 			}

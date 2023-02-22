@@ -15,7 +15,7 @@
 		</p>
 		<p :class="$style.disabledDescription">{{ $t('disabled-timeline.description') }}</p>
 	</div>
-	<XTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
+	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
 </XColumn>
 </template>
 
@@ -23,7 +23,7 @@
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store';
-import XTimeline from '@/components/MkTimeline.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';

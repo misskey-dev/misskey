@@ -1,17 +1,18 @@
 import * as assert from 'assert';
 import * as mfm from 'mfm-js';
 import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
-import { afterEach, beforeEach, describe, test } from 'vitest';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+
 import { MfmService } from '@/core/MfmService.js';
+import { addGlobalServices } from '@/boot/GlobalModule.js';
+import { addCoreServices } from '@/boot/CoreModule.js';
 import { DI } from '@/di-symbols.js';
-import { addGlobalServices } from '@/boot/GlobalModule';
-import { addCoreServices } from '@/boot/CoreModule';
 
 describe('MfmService', () => {
 	let serviceProvider: ServiceProvider;
 	let mfmService: MfmService;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const services = new ServiceCollection();
 		addGlobalServices(services);
 		addCoreServices(services);
@@ -21,7 +22,7 @@ describe('MfmService', () => {
 		mfmService = getRequiredService<MfmService>(serviceProvider, DI.MfmService);
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await serviceProvider.disposeAsync();
 	});
 

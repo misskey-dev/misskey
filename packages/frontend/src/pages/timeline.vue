@@ -8,7 +8,7 @@
 
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
-				<XTimeline
+				<MkTimeline
 					ref="tlComponent"
 					:key="src"
 					:src="src"
@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch, provide } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
-import XTimeline from '@/components/MkTimeline.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -44,7 +44,7 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $shallowRef<InstanceType<typeof XTimeline>>();
+const tlComponent = $shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = $shallowRef<HTMLElement>();
 
 let queue = $ref(0);

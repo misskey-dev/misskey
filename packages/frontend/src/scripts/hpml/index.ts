@@ -58,7 +58,7 @@ export class HpmlScope {
 
 	constructor(layerdStates: HpmlScope['layerdStates'], name?: HpmlScope['name']) {
 		this.layerdStates = layerdStates;
-		this.name = name || 'anonymous';
+		this.name = name ?? 'anonymous';
 	}
 
 	@autobind

@@ -4,7 +4,7 @@
 	<div ref="rootEl" class="eqqrhokj">
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 		<div class="tl">
-			<XTimeline
+			<MkTimeline
 				ref="tlEl" :key="listId"
 				class="tl"
 				src="list"
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import XTimeline from '@/components/MkTimeline.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
@@ -34,7 +34,7 @@ const props = defineProps<{
 
 let list = $ref(null);
 let queue = $ref(0);
-let tlEl = $shallowRef<InstanceType<typeof XTimeline>>();
+let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
 let rootEl = $shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {

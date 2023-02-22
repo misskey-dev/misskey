@@ -1,18 +1,19 @@
 import * as assert from 'assert';
 import { buildServiceProvider, getRequiredService, ServiceCollection, ServiceProvider } from 'yohira';
-import { afterEach, beforeEach, describe, test } from 'vitest';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+
 import { ReactionService } from '@/core/ReactionService.js';
-import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule';
-import { addRepositoryServices } from '@/boot/RepositoryModule';
-import { addQueueServices } from '@/boot/QueueModule';
-import { addCoreServices } from '@/boot/CoreModule';
+import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
+import { addRepositoryServices } from '@/boot/RepositoryModule.js';
+import { addQueueServices } from '@/boot/QueueModule.js';
+import { addCoreServices } from '@/boot/CoreModule.js';
 import { DI } from '@/di-symbols.js';
 
 describe('ReactionService', () => {
 	let serviceProvider: ServiceProvider;
 	let reactionService: ReactionService;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const services = new ServiceCollection();
 		addGlobalServices(services);
 		addRepositoryServices(services);
@@ -26,7 +27,7 @@ describe('ReactionService', () => {
 		reactionService = getRequiredService<ReactionService>(serviceProvider, DI.ReactionService);
 	});
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await serviceProvider.disposeAsync();
 	});
 
