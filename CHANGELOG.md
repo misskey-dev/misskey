@@ -17,12 +17,14 @@ You should also include the user name that made the change.
 - Server: URLプレビュー（summaly）はプロキシを通すように
 - Client: 2FA設定のUIをまともにした
 - セキュリティキーの名前を変更できるように
-- 管理画面の広告を10個以上見えるように
 - enhance(client): add quiz preset for play
 - 広告開始時期を設定できるように
+- みつけるで公開ロール一覧とそのメンバーを閲覧できるように
+- enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
 
 ### Bugfixes
 - fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
+- 管理画面の広告を10個以上見えるように
 
 ## 13.6.1 (2023/02/12)
 
