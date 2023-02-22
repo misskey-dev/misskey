@@ -1,4 +1,4 @@
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
 
 type CondFormulaValueAnd = {

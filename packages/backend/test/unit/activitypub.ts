@@ -2,8 +2,39 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import rndstr from 'rndstr';
+import { Test } from '@nestjs/testing';
+import { jest } from '@jest/globals';
+
+import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { CoreModule } from '@/core/CoreModule.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { MockResolver } from '../misc/mock-resolver.js';
 
 describe('ActivityPub', () => {
+	let noteService: ApNoteService;
+	let personService: ApPersonService;
+	let resolver: MockResolver;
+
+	beforeEach(async () => {
+		const app = await Test.createTestingModule({
+			imports: [GlobalModule, CoreModule],
+		}).compile();
+
+		await app.init();
+		app.enableShutdownHooks();
+
+		noteService = app.get<ApNoteService>(ApNoteService);
+		personService = app.get<ApPersonService>(ApPersonService);
+		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
+
+		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
+		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);
+		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => {}));
+	});
+
 	describe('Parse minimum object', () => {
 		const host = 'https://host1.test';
 		const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;
@@ -28,13 +59,9 @@ describe('ActivityPub', () => {
 		};
 
 		test('Minimum Actor', async () => {
-			const { MockResolver } = await import('../misc/mock-resolver.js');
-			const { createPerson } = await import('../../src/activitypub/models/person.js');
-
-			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
 
-			const user = await createPerson(actor.id, resolver);
+			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.deepStrictEqual(user.uri, actor.id);
 			assert.deepStrictEqual(user.username, actor.preferredUsername);
@@ -42,14 +69,10 @@ describe('ActivityPub', () => {
 		});
 
 		test('Minimum Note', async () => {
-			const { MockResolver } = await import('../misc/mock-resolver.js');
-			const { createNote } = await import('../../src/activitypub/models/note.js');
-
-			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
 			resolver._register(post.id, post);
 
-			const note = await createNote(post.id, resolver, true);
+			const note = await noteService.createNote(post.id, resolver, true);
 
 			assert.deepStrictEqual(note?.uri, post.id);
 			assert.deepStrictEqual(note.visibility, 'public');
@@ -75,13 +98,9 @@ describe('ActivityPub', () => {
 		};
 
 		test('Actor', async () => {
-			const { MockResolver } = await import('../misc/mock-resolver.js');
-			const { createPerson } = await import('../../src/activitypub/models/person.js');
-
-			const resolver = new MockResolver();
 			resolver._register(actor.id, actor);
 
-			const user = await createPerson(actor.id, resolver);
+			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.deepStrictEqual(user.name, actor.name.substr(0, 128));
 		});

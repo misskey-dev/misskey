@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs } from 'vue';
+import { defineComponent, onMounted, nextTick, ref, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { CacheableRemoteUser } from '@/models/entities/User.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { MetaService } from '@/core/MetaService.js';
 import { truncate } from '@/misc/truncate.js';
@@ -36,7 +36,7 @@ export class ApImageService {
 	 * Imageを作成します。
 	 */
 	@bindThis
-	public async createImage(actor: CacheableRemoteUser, value: any): Promise<DriveFile> {
+	public async createImage(actor: RemoteUser, value: any): Promise<DriveFile> {
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
 			throw new Error('actor has been suspended');
@@ -88,7 +88,7 @@ export class ApImageService {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolveImage(actor: CacheableRemoteUser, value: any): Promise<DriveFile> {
+	public async resolveImage(actor: RemoteUser, value: any): Promise<DriveFile> {
 		// TODO
 
 		// リモートサーバーからフェッチしてきて登録

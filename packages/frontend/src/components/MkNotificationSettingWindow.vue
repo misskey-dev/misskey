@@ -54,7 +54,7 @@ const props = withDefaults(defineProps<{
 	showGlobalToggle: true,
 });
 
-let includingTypes = $computed(() => props.includingTypes || []);
+let includingTypes = $computed(() => props.includingTypes ?? []);
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 

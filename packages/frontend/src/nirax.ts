@@ -1,7 +1,7 @@
 // NIRAX --- A lightweight router
 
 import { EventEmitter } from 'eventemitter3';
-import { Ref, Component, ref, shallowRef, ShallowRef } from 'vue';
+import { Component, shallowRef, ShallowRef } from 'vue';
 import { pleaseLogin } from '@/scripts/please-login';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
 

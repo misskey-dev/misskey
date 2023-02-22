@@ -48,8 +48,8 @@ export class Storage<T extends StateDef> {
 	// 簡易的にキューイングして占有ロックとする
 	private currentIdbJob: Promise<any> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
-		const promise = this.currentIdbJob.then(job, e => {
-			console.error('Pizzax failed to save data to idb!', e);
+		const promise = this.currentIdbJob.then(job, err => {
+			console.error('Pizzax failed to save data to idb!', err);
 			return job();
 		});
 		this.currentIdbJob = promise;
@@ -130,22 +130,22 @@ export class Storage<T extends StateDef> {
 					await defaultStore.ready;
 
 					api('i/registry/get-all', { scope: ['client', this.key] })
-					.then(kvs => {
-						const cache: Partial<T> = {};
-						for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
-							if (v.where === 'account') {
-								if (Object.prototype.hasOwnProperty.call(kvs, k)) {
-									this.reactiveState[k].value = this.state[k] = (kvs as Partial<T>)[k];
-									cache[k] = (kvs as Partial<T>)[k];
-								} else {
-									this.reactiveState[k].value = this.state[k] = v.default;
+						.then(kvs => {
+							const cache: Partial<T> = {};
+							for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
+								if (v.where === 'account') {
+									if (Object.prototype.hasOwnProperty.call(kvs, k)) {
+										this.reactiveState[k].value = this.state[k] = (kvs as Partial<T>)[k];
+										cache[k] = (kvs as Partial<T>)[k];
+									} else {
+										this.reactiveState[k].value = this.state[k] = v.default;
+									}
 								}
 							}
-						}
 	
-						return set(this.registryCacheKeyName, cache);
-					})
-					.then(() => resolve());
+							return set(this.registryCacheKeyName, cache);
+						})
+						.then(() => resolve());
 				}, 1);
 			} else {
 				resolve();

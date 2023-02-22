@@ -103,6 +103,8 @@ renoted: "Renoteしたで。"
 cantRenote: "この投稿はRenoteできへんらしい。"
 cantReRenote: "Renote自体はRenoteできへんで。"
 quote: "引用"
+inChannelRenote: "チャンネル内Renote"
+inChannelQuote: "チャンネル内引用"
 pinnedNote: "ピン留めされとるノート"
 pinned: "ピン留めしとく"
 you: "あんた"
@@ -948,35 +950,168 @@ achievements: "実績"
 gotInvalidResponseError: "サーバー黙っとるわ、知らんけど"
 gotInvalidResponseErrorDescription: "サーバーいま日曜日。またきて月曜日。"
 thisPostMayBeAnnoying: "この投稿は迷惑かもしらんで。"
+thisPostMayBeAnnoyingHome: "ホームに投稿"
+thisPostMayBeAnnoyingCancel: "やめとく"
+thisPostMayBeAnnoyingIgnore: "このまま投稿"
 collapseRenotes: "見たことあるRenoteは省略やで"
+internalServerError: "サーバー内部エラー"
+internalServerErrorDescription: "サーバー内部でよう分からんエラーやわ"
+copyErrorInfo: "エラー情報をコピー"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
     _notes1:
       title: "まいど！"
       description: "初めてノート投稿したった"
+      flavor: "Misskeyを楽しんでな～"
     _notes10:
       title: "ノートの天保山"
+      description: "ノートを10回投稿した"
     _notes100:
       title: "ノートの真田山"
+      description: "ノートを100回投稿した"
     _notes500:
       title: "ノートの生駒山"
+      description: "ノートを500回投稿した"
+    _notes1000:
+      title: "ノートの山"
+      description: "ノートを1,000回投稿した"
     _notes5000:
       title: "箕面の滝からノート"
+      description: "ノートを5,000回投稿した"
+    _notes10000:
+      title: "スーパーノート"
+      description: "ノートを10,000回投稿した"
+    _notes20000:
+      title: "ニードモアノート"
+      description: "ノートを20,000回投稿した"
+    _notes30000:
+      title: "ノートノートノート"
+      description: "ノートを30,000回投稿した"
+    _notes40000:
+      title: "ノート工場"
+      description: "ノートを40,000回投稿した"
+    _notes50000:
+      title: "ノートの惑星"
+      description: "ノートを50,000回投稿した"
+    _notes60000:
+      title: "ノートクエーサー"
+      description: "ノートを60,000回投稿した"
+    _notes70000:
+      title: "ブラックノートホール"
+      description: "ノートを70,000回投稿した"
+    _notes80000:
+      title: "ノートギャラクシー"
+      description: "ノートを80,000回投稿した"
+    _notes90000:
+      title: "ノートバース"
+      description: "ノートを90,000回投稿した"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "ノートを100,000回投稿した"
+      flavor: "そんなに書くことあるんか？"
     _login3:
+      title: "ビギナーⅠ"
+      description: "通算ログイン日数が3日"
       flavor: "今日からワシはミスキストやで"
+    _login7:
+      title: "ビギナーⅡ"
+      description: "通算ログイン日数が7日"
+      flavor: "慣れてきたんちゃう？"
+    _login15:
+      title: "ビギナーⅢ"
+      description: "通算ログイン日数が15日"
+    _login30:
+      title: "ミスキストⅠ"
+      description: "通算ログイン日数が30日"
+    _login60:
+      title: "ミスキストⅡ"
+      description: "通算ログイン日数が60日"
+    _login100:
+      title: "ミスキストⅢ"
+      description: "通算ログイン日数が100日"
+      flavor: "そのユーザー、ミスキストにつき"
+    _login200:
+      title: "常連Ⅰ"
+    _followers500:
+      title: "基地局"
+      description: "フォロワーが500人を超した"
+    _followers1000:
+      title: "インフルエンサー"
+      description: "フォロワーが1,000人を超した"
+    _collectAchievements30:
+      title: "実績コレクター"
+      description: "実績を30個以上獲得した"
+    _viewAchievements3min:
+      title: "実績好き"
+      description: "実績一覧を3分以上眺め続けた"
     _iLoveMisskey:
       title: "Misskey好きやねん"
+      description: "\"I ❤ #Misskey\"を投稿した"
+      flavor: "Misskeyを使ってくれてありがとうな～　by 開発チーム"
     _foundTreasure:
       title: "なんでも鑑定団"
+      description: "隠されたお宝を発見した"
     _client30min:
       title: "ねんね"
+      description: "クライアントを起動してから30分以上経過した"
     _noteDeletedWithin1min:
       title: "＊おおっと＊"
+      description: "投稿してから1分以内にその投稿を消した"
+    _postedAtLateNight:
+      title: "夜行性"
+      description: "深夜にノートを投稿した"
+      flavor: "そろそろ寝よか"
+    _postedAt0min0sec:
+      title: "時報"
+      description: "0分0秒にノートを投稿した"
+      flavor: "ポッ ポッ ポッ ピーン"
+    _selfQuote:
+      title: "自己言及"
+      description: "自分のノートを引用した"
+    _htl20npm:
+      title: "流れるTL"
+      description: "ホームタイムラインの流速が20npmを超す"
+    _viewInstanceChart:
+      title: "アナリスト"
+      description: "インスタンスのチャートを表示した"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "スクラッチパッドで hello worldを出力した"
     _open3windows:
       title: "マド開けすぎ"
+      description: "ウィンドウを3つ以上開いた状態にした"
     _driveFolderCircularReference:
       title: "環状線"
+      description: "ドライブのフォルダを再帰的な入れ子にしようとした"
+    _reactWithoutRead:
+      title: "ちゃんと読んだんか？"
+      description: "100文字以上のテキストを含むノートに投稿されてから3秒以内にリアクションした"
+    _clickedClickHere:
+      title: "ここをクリック"
+      description: "ここをクリックした"
+    _justPlainLucky:
+      title: "単なるラッキー"
+      description: "10秒ごとに0.005％の確率で獲得"
+    _setNameToSyuilo:
+      title: "神様コンプレックス"
+      description: "名前を syuilo に設定した"
+    _passedSinceAccountCreated1:
+      title: "一周年"
+      description: "アカウント作成から1年経過した"
+    _passedSinceAccountCreated2:
+      title: "二周年"
+      description: "アカウント作成から2年経過した"
+    _passedSinceAccountCreated3:
+      title: "三周年"
+      description: "アカウント作成から3年経過した"
+    _loggedInOnBirthday:
+      title: "ハッピーバースデー！"
+      description: "誕生日にログインした"
+    _loggedInOnNewYearsDay:
+      title: "あけましておめでとうございます！"
+      description: "元旦にログインした"
+      flavor: "今年も弊インスタンスをよろしくお願いします"
 _role:
   new: "ロールの作成"
   edit: "ロールの編集"

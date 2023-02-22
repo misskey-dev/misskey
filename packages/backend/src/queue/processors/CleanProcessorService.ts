@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In, LessThan, MoreThan } from 'typeorm';
+import { LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { AntennaNotesRepository, MutedNotesRepository, NotificationsRepository, UserIpsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
