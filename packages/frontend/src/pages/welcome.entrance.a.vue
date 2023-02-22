@@ -33,7 +33,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="tl">
+		<div v-if="instance.policies.ltlAvailable" class="tl">
 			<div class="title">{{ i18n.ts.letsLookAtTimeline }}</div>
 			<div class="body">
 				<MkTimeline src="local"/>
@@ -65,6 +65,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 let meta = $ref<Instance>();
 let instances = $ref<any[]>();
@@ -209,7 +210,6 @@ function exploreOtherServers() {
 			border-radius: var(--radius);
 			box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 			text-align: center;
-			margin-bottom: 16px;
 		
 			> .icon {
 				width: 85px;
@@ -265,6 +265,7 @@ function exploreOtherServers() {
 			border-radius: var(--radius);
 			overflow: clip;
 			box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+			margin-top: 16px;
 
 			> .title {
 				padding: 12px 16px;
