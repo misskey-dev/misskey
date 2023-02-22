@@ -78,7 +78,7 @@ export async function masterMain() {
 		await spawnWorkers(config.clusterLimit);
 	}
 
-	bootLogger.succ(`Now listening on port ${config.port} on ${config.url}`, null, true);
+	bootLogger.succ(`Now listening on ${config.host ? `[${config.host}]:` : ''}${config.port} for ${config.url}`, null, true);
 }
 
 function showEnvironment(): void {

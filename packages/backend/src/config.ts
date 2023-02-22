@@ -15,6 +15,7 @@ export type Source = {
 	feedback_url?: string;
 	url: string;
 	port: number;
+	host: string;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -125,6 +126,7 @@ export function loadConfig() {
 	config.url = url.origin;
 
 	config.port = config.port ?? parseInt(process.env.PORT ?? '', 10);
+	config.host = config.host ?? process.env.HOST;
 
 	mixin.version = meta.version;
 	mixin.host = url.host;
