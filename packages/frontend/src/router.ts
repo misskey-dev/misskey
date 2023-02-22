@@ -198,6 +198,9 @@ export const routes = [{
 	component: page(() => import('./pages/theme-editor.vue')),
 	loginRequired: true,
 }, {
+	path: '/roles/:role',
+	component: page(() => import('./pages/role.vue')),
+}, {
 	path: '/explore/tags/:tag',
 	component: page(() => import('./pages/explore.vue')),
 }, {
