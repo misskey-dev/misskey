@@ -22,9 +22,6 @@ import * as game from '@/scripts/clicker-game';
 import number from '@/filters/number';
 import { claimAchievement } from '@/scripts/achievements';
 
-defineProps<{
-}>();
-
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);
 let cps = $ref(0);
