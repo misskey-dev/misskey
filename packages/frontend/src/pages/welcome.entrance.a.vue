@@ -28,7 +28,7 @@
 				</div>
 				<div class="action _gaps_s">
 					<MkButton full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
-					<MkButton full rounded data-cy-signin @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
+					<MkButton full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
 					<MkButton full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 				</div>
 			</div>
