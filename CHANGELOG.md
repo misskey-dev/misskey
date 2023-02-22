@@ -23,6 +23,7 @@ You should also include the user name that made the change.
 - enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
 
 ### Bugfixes
+- ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
 - fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
 - 管理画面の広告を10個以上見えるように
 
