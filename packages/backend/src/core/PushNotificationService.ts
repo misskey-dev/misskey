@@ -22,8 +22,8 @@ type PushNotificationsTypes = {
 };
 
 // Reduce length because push message servers have character limits
-function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: PushNotificationsTypes[T]): PushNotificationsTypes[T] {
-	if (body === undefined) return body;
+function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pushNotificationsTypes[T]): pushNotificationsTypes[T] {
+	if (typeof body !== 'object') return body;
 
 	return {
 		...body,

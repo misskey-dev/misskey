@@ -14,8 +14,12 @@
 		</div>
 		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
 		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
-		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" @keydown="onInputKeydown">
+		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
+			<template #caption>
+				<span v-if="okButtonDisabled && disabledReason === 'charactersExceeded'" v-text="i18n.t('_dialog.charactersExceeded', { current: (inputValue as string).length, max: input.maxLength ?? 'NaN' })" />
+				<span v-else-if="okButtonDisabled && disabledReason === 'charactersBelow'" v-text="i18n.t('_dialog.charactersBelow', { current: (inputValue as string).length, min: input.minLength ?? 'NaN' })" />
+			</template>
 		</MkInput>
 		<MkSelect v-if="select" v-model="selectedValue" autofocus>
 			<template v-if="select.items">
@@ -28,7 +32,7 @@
 			</template>
 		</MkSelect>
 		<div v-if="(showOkButton || showCancelButton) && !actions" :class="$style.buttons">
-			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
+			<MkButton v-if="showOkButton" inline primary :autofocus="!input && !select" :disabled="okButtonDisabled" @click="ok">{{ okText ?? ((showCancelButton || input || select) ? i18n.ts.ok : i18n.ts.gotIt) }}</MkButton>
 			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
@@ -47,9 +51,12 @@ import MkSelect from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n';
 
 type Input = {
-	type: HTMLInputElement['type'];
+	type: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	placeholder?: string | null;
-	default: any | null;
+	autocomplete?: string;
+	default: string | number | null;
+	minLength?: number;
+	maxLength?: number;
 };
 
 type Select = {
@@ -98,8 +105,28 @@ const emit = defineEmits<{
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
-const inputValue = ref(props.input?.default || null);
-const selectedValue = ref(props.select?.default || null);
+const inputValue = ref<string | number | null>(props.input?.default ?? null);
+const selectedValue = ref(props.select?.default ?? null);
+
+let disabledReason = $ref<null | 'charactersExceeded' | 'charactersBelow'>(null);
+const okButtonDisabled = $computed<boolean>(() => {
+	if (props.input) {
+		if (props.input.minLength) {
+			if ((inputValue.value || inputValue.value === '') && (inputValue.value as string).length < props.input.minLength) {
+				disabledReason = 'charactersBelow';
+				return true;
+			}
+		}
+		if (props.input.maxLength) {
+			if (inputValue.value && (inputValue.value as string).length > props.input.maxLength) {
+				disabledReason = 'charactersExceeded';
+				return true;
+			}
+		}
+	}
+
+	return false;
+});
 
 function done(canceled: boolean, result?) {
 	emit('done', { canceled, result });

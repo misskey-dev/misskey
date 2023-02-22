@@ -4,7 +4,7 @@
 
 	<div :class="$style.main">
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value]" @contextmenu.self.prevent="onContextmenu">
+		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value, { [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
 			<template v-for="ids in layout">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
@@ -115,6 +115,7 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
 });
 
+const snapScroll = isMobile;
 const drawerMenuShowing = ref(false);
 
 const route = 'TODO';
@@ -297,9 +298,14 @@ async function deleteProfile() {
 			margin-right: auto;
 		}
 	}
+
+	&.snapScroll {
+		scroll-snap-type: x mandatory;
+	}
 }
 
 .column {
+	scroll-snap-align: start;
 	flex-shrink: 0;
 	border-right: solid var(--deckDividerThickness) var(--deckDivider);
 

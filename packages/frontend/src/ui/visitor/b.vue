@@ -11,7 +11,10 @@
 
 		<div class="contents">
 			<XHeader v-if="!root" class="header"/>
-			<main style="container-type: inline-size;">
+			<main v-if="!root" style="container-type: inline-size;">
+				<RouterView/>
+			</main>
+			<main v-else>
 				<RouterView/>
 			</main>
 			<div v-if="!root" class="powered-by">

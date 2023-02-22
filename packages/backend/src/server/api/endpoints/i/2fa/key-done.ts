@@ -25,7 +25,7 @@ export const paramDef = {
 		attestationObject: { type: 'string' },
 		password: { type: 'string' },
 		challengeId: { type: 'string' },
-		name: { type: 'string' },
+		name: { type: 'string', minLength: 1, maxLength: 30 },
 	},
 	required: ['clientDataJSON', 'attestationObject', 'password', 'challengeId', 'name'],
 } as const;
