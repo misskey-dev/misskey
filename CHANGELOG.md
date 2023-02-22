@@ -8,7 +8,7 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.7.0 (2023/02/22)
 
 ### Changes
 - チャット機能が削除されました
