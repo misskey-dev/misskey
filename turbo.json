@@ -56,7 +56,15 @@
 			"cache": false,
 			"persistent": true
 		},
+		"dev:main:swc": {
+			"cache": false,
+			"persistent": true
+		},
 		"dev:watch": {
+			"cache": false,
+			"persistent": true
+		},
+		"dev:watch:swc": {
 			"cache": false,
 			"persistent": true
 		},
