@@ -26,6 +26,7 @@ You should also include the user name that made the change.
 - ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
 - fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
 - 管理画面の広告を10個以上見えるように
+- Moderation note が保存できない
 
 ## 13.6.1 (2023/02/12)
 

@@ -59,12 +59,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot show info of admin');
 			}
 
-			if (!await this.roleService.isAdministrator(_me)) {
-				return {
-					isSuspended: user.isSuspended,
-				};
-			}
-
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
 			const roles = await this.roleService.getUserRoles(user.id);
