@@ -32,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const roles = await this.rolesRepository.find({
 				order: { lastUsedAt: 'DESC' },
 			});
-			return await this.roleEntityService.packMany(roles, me, { detail: false });
+			return await this.roleEntityService.packMany(roles, me);
 		});
 	}
 }

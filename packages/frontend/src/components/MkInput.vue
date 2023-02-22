@@ -41,7 +41,7 @@ import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	modelValue: string | number;
+	modelValue: string | number | null;
 	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
@@ -49,7 +49,7 @@ const props = defineProps<{
 	pattern?: string;
 	placeholder?: string;
 	autofocus?: boolean;
-	autocomplete?: boolean;
+	autocomplete?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];

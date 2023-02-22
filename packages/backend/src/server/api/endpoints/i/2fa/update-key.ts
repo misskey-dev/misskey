@@ -1,7 +1,8 @@
+import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -12,10 +13,16 @@ export const meta = {
 	secure: true,
 
 	errors: {
-		noKey: {
-			message: 'No security key.',
-			code: 'NO_SECURITY_KEY',
-			id: 'f9c54d7f-d4c2-4d3c-9a8g-a70daac86512',
+		noSuchKey: {
+			message: 'No such key.',
+			code: 'NO_SUCH_KEY',
+			id: 'f9c5467f-d492-4d3c-9a8g-a70dacc86512',
+		},
+
+		accessDenied: {
+			message: 'You do not have edit privilege of the channel.',
+			code: 'ACCESS_DENIED',
+			id: '1fb7cb09-d46a-4fff-b8df-057708cce513',
 		},
 	},
 } as const;
@@ -23,49 +30,40 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		value: { type: 'boolean' },
+		name: { type: 'string', minLength: 1, maxLength: 30 },
+		credentialId: { type: 'string' },
 	},
-	required: ['value'],
+	required: ['name', 'credentialId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: UserSecurityKeysRepository,
+
+		@Inject(DI.userProfilesRepository)
+		private userProfilesRepository: UserProfilesRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (ps.value === true) {
-				// セキュリティキーがなければパスワードレスを有効にはできない
-				const keyCount = await this.userSecurityKeysRepository.count({
-					where: {
-						userId: me.id,
-					},
-					select: {
-						id: true,
-						name: true,
-						lastUsed: true,
-					},
-				});
+			const key = await this.userSecurityKeysRepository.findOneBy({
+				id: ps.credentialId,
+			});
 
-				if (keyCount === 0) {
-					await this.userProfilesRepository.update(me.id, {
-						usePasswordLessLogin: false,
-					});
-
-					throw new ApiError(meta.errors.noKey);
-				}
+			if (key == null) {
+				throw new ApiError(meta.errors.noSuchKey);
 			}
 
-			await this.userProfilesRepository.update(me.id, {
-				usePasswordLessLogin: ps.value,
+			if (key.userId !== me.id) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+	
+			await this.userSecurityKeysRepository.update(key.id, {
+				name: ps.name,
 			});
 
 			// Publish meUpdated event
@@ -73,6 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				detail: true,
 				includeSecrets: true,
 			}));
+
+			return {};
 		});
 	}
 }

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -161,6 +161,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -178,7 +181,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const isModerator = await this.roleService.isModerator(me);
+			const owner = file.userId ? await this.usersRepository.findOneByOrFail({
+				id: file.userId,
+			}) : null;
+
+			const iAmModerator = await this.roleService.isModerator(me);
+			const ownerIsModerator = owner ? await this.roleService.isModerator(owner) : false;
 
 			return {
 				id: file.id,
@@ -207,8 +215,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: file.name,
 				md5: file.md5,
 				createdAt: file.createdAt.toISOString(),
-				requestIp: isModerator ? file.requestIp : null,
-				requestHeaders: isModerator ? file.requestHeaders : null,
+				requestIp: iAmModerator ? file.requestIp : null,
+				requestHeaders: iAmModerator && !ownerIsModerator ? file.requestHeaders : null,
 			};
 		});
 	}

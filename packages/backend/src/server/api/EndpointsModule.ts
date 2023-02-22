@@ -66,6 +66,7 @@ import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
+import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -170,6 +171,7 @@ import * as ep___i_2fa_keyDone from './endpoints/i/2fa/key-done.js';
 import * as ep___i_2fa_passwordLess from './endpoints/i/2fa/password-less.js';
 import * as ep___i_2fa_registerKey from './endpoints/i/2fa/register-key.js';
 import * as ep___i_2fa_register from './endpoints/i/2fa/register.js';
+import * as ep___i_2fa_updateKey from './endpoints/i/2fa/update-key.js';
 import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
@@ -276,6 +278,9 @@ import * as ep___flash_myLikes from './endpoints/flash/my-likes.js';
 import * as ep___ping from './endpoints/ping.js';
 import * as ep___pinnedUsers from './endpoints/pinned-users.js';
 import * as ep___promo_read from './endpoints/promo/read.js';
+import * as ep___roles_list from './endpoints/roles/list.js';
+import * as ep___roles_show from './endpoints/roles/show.js';
+import * as ep___roles_users from './endpoints/roles/users.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -382,6 +387,7 @@ const $admin_roles_update: Provider = { provide: 'ep:admin/roles/update', useCla
 const $admin_roles_assign: Provider = { provide: 'ep:admin/roles/assign', useClass: ep___admin_roles_assign.default };
 const $admin_roles_unassign: Provider = { provide: 'ep:admin/roles/unassign', useClass: ep___admin_roles_unassign.default };
 const $admin_roles_updateDefaultPolicies: Provider = { provide: 'ep:admin/roles/update-default-policies', useClass: ep___admin_roles_updateDefaultPolicies.default };
+const $admin_roles_users: Provider = { provide: 'ep:admin/roles/users', useClass: ep___admin_roles_users.default };
 const $announcements: Provider = { provide: 'ep:announcements', useClass: ep___announcements.default };
 const $antennas_create: Provider = { provide: 'ep:antennas/create', useClass: ep___antennas_create.default };
 const $antennas_delete: Provider = { provide: 'ep:antennas/delete', useClass: ep___antennas_delete.default };
@@ -486,6 +492,7 @@ const $i_2fa_keyDone: Provider = { provide: 'ep:i/2fa/key-done', useClass: ep___
 const $i_2fa_passwordLess: Provider = { provide: 'ep:i/2fa/password-less', useClass: ep___i_2fa_passwordLess.default };
 const $i_2fa_registerKey: Provider = { provide: 'ep:i/2fa/register-key', useClass: ep___i_2fa_registerKey.default };
 const $i_2fa_register: Provider = { provide: 'ep:i/2fa/register', useClass: ep___i_2fa_register.default };
+const $i_2fa_updateKey: Provider = { provide: 'ep:i/2fa/update-key', useClass: ep___i_2fa_updateKey.default };
 const $i_2fa_removeKey: Provider = { provide: 'ep:i/2fa/remove-key', useClass: ep___i_2fa_removeKey.default };
 const $i_2fa_unregister: Provider = { provide: 'ep:i/2fa/unregister', useClass: ep___i_2fa_unregister.default };
 const $i_apps: Provider = { provide: 'ep:i/apps', useClass: ep___i_apps.default };
@@ -592,6 +599,9 @@ const $flash_myLikes: Provider = { provide: 'ep:flash/my-likes', useClass: ep___
 const $ping: Provider = { provide: 'ep:ping', useClass: ep___ping.default };
 const $pinnedUsers: Provider = { provide: 'ep:pinned-users', useClass: ep___pinnedUsers.default };
 const $promo_read: Provider = { provide: 'ep:promo/read', useClass: ep___promo_read.default };
+const $roles_list: Provider = { provide: 'ep:roles/list', useClass: ep___roles_list.default };
+const $roles_show: Provider = { provide: 'ep:roles/show', useClass: ep___roles_show.default };
+const $roles_users: Provider = { provide: 'ep:roles/users', useClass: ep___roles_users.default };
 const $requestResetPassword: Provider = { provide: 'ep:request-reset-password', useClass: ep___requestResetPassword.default };
 const $resetDb: Provider = { provide: 'ep:reset-db', useClass: ep___resetDb.default };
 const $resetPassword: Provider = { provide: 'ep:reset-password', useClass: ep___resetPassword.default };
@@ -702,6 +712,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_assign,
 		$admin_roles_unassign,
 		$admin_roles_updateDefaultPolicies,
+		$admin_roles_users,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -806,6 +817,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_passwordLess,
 		$i_2fa_registerKey,
 		$i_2fa_register,
+		$i_2fa_updateKey,
 		$i_2fa_removeKey,
 		$i_2fa_unregister,
 		$i_apps,
@@ -912,6 +924,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$ping,
 		$pinnedUsers,
 		$promo_read,
+		$roles_list,
+		$roles_show,
+		$roles_users,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,
@@ -1016,6 +1031,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_roles_assign,
 		$admin_roles_unassign,
 		$admin_roles_updateDefaultPolicies,
+		$admin_roles_users,
 		$announcements,
 		$antennas_create,
 		$antennas_delete,
@@ -1120,6 +1136,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_passwordLess,
 		$i_2fa_registerKey,
 		$i_2fa_register,
+		$i_2fa_updateKey,
 		$i_2fa_removeKey,
 		$i_2fa_unregister,
 		$i_apps,
@@ -1226,6 +1243,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$ping,
 		$pinnedUsers,
 		$promo_read,
+		$roles_list,
+		$roles_show,
+		$roles_users,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,

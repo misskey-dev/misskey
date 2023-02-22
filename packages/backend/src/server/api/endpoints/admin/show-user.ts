@@ -89,7 +89,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				moderationNote: profile.moderationNote,
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
-				roles: await this.roleEntityService.packMany(roles, me, { detail: false }),
+				roles: await this.roleEntityService.packMany(roles, me),
 			};
 		});
 	}
