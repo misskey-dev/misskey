@@ -946,6 +946,9 @@ collapseRenotes: "見たことのあるRenoteを省略して表示"
 internalServerError: "サーバー内部エラー"
 internalServerErrorDescription: "サーバー内部で予期しないエラーが発生しました。"
 copyErrorInfo: "エラー情報をコピー"
+joinThisServer: "このサーバーに登録する"
+exploreOtherServers: "他のサーバーを探す"
+letsLookAtTimeline: "タイムラインを見てみる"
 
 _achievements:
   earnedAt: "獲得日時"
