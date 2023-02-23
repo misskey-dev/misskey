@@ -34,8 +34,8 @@ export async function main(): Promise<void> {
 	addDaemonServices(services);
 
 	const options = new ServiceProviderOptions();
-	options.validateOnBuild = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
-	options.validateScopes = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
+	options.validateOnBuild = process.env.NODE_ENV !== 'production';
+	options.validateScopes = process.env.NODE_ENV !== 'production';
 	const serviceProvider = buildServiceProvider(services, options);
 
 	await initializeGlobalServices(serviceProvider);
