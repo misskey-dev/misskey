@@ -19,6 +19,18 @@ You should also include the user name that made the change.
 - Client: 通知設定画面で以前からグループの招待を有効化していた場合、通知の表示に失敗する問題の修正
 - Client: 通知設定画面に古いトグルが残っていた問題を修正
 
+## 13.7.2 (2023/02/23)
+
+### Note
+13.7.0以前からアップデートする場合は全ての通知が削除されます。
+
+### Improvements
+- enhance: make pwa icon maskable
+- chore(client): tweak custom emoji size
+
+### Bugfixes
+- マイグレーションが失敗することがあるのを修正
+
 ## 13.7.1 (2023/02/23)
 
 ### Improvements
