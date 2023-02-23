@@ -1,4 +1,4 @@
-import summaly from 'summaly';
+import { summaly } from 'summaly';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
