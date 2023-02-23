@@ -23,7 +23,8 @@
 				</div>
 			</div>
 
-			<MkPostForm v-if="$i" :channel="channel" class="post-form _panel _margin" fixed/>
+			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
+			<MkPostForm v-if="$i" :channel="channel" class="post-form _panel _margin" fixed :autofocus="deviceKind === 'desktop'"/>
 
 			<MkTimeline :key="channelId" class="_margin" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
@@ -41,6 +42,7 @@ import { useRouter } from '@/router';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { deviceKind } from '@/scripts/device-kind';
 
 const router = useRouter();
 
