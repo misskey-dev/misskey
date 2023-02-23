@@ -2,7 +2,7 @@
 <span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }">
+	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }]">
 		<div :class="$style.earLeft"/>
 		<div :class="$style.earRight"/>
 	</div>
@@ -10,7 +10,7 @@
 <MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }">
+	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }]">
 		<div :class="$style.earLeft"/>
 		<div :class="$style.earRight"/>
 	</div>
