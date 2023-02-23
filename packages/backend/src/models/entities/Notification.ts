@@ -68,7 +68,7 @@ export class Notification {
 	@Column('enum', {
 		enum: [
 			...notificationTypes,
-			...obsoleteNotificationTypes.filter(x => x !== 'groupInvited'), // dropGroup1676434944993でgroupInvitedは削除
+			...obsoleteNotificationTypes,
 		],
 		comment: 'The type of the Notification.',
 	})
