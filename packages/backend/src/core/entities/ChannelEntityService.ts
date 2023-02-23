@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository } from '@/models/index.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
@@ -54,7 +53,7 @@ export class ChannelEntityService {
 			name: channel.name,
 			description: channel.description,
 			userId: channel.userId,
-			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner, false) : null,
+			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
 			usersCount: channel.usersCount,
 			notesCount: channel.notesCount,
 

@@ -7,7 +7,7 @@ import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
-import type { IRemoteUser, User } from '@/models/entities/User.js';
+import type { RemoteUser, User } from '@/models/entities/User.js';
 import { MetaService } from '@/core/MetaService.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
@@ -250,6 +250,14 @@ export class DriveService {
 	@bindThis
 	public async generateAlts(path: string, type: string, generateWeb: boolean) {
 		if (type.startsWith('video/')) {
+			if (this.config.videoThumbnailGenerator != null) {
+				// videoThumbnailGeneratorが指定されていたら動画サムネイル生成はスキップ
+				return {
+					webpublic: null,
+					thumbnail: null,
+				};
+			}
+
 			try {
 				const thumbnail = await this.videoProcessingService.generateVideoThumbnail(path);
 				return {
@@ -391,7 +399,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	private async deleteOldFile(user: IRemoteUser) {
+	private async deleteOldFile(user: RemoteUser) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -492,7 +500,7 @@ export class DriveService {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				} else {
 				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-					this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as IRemoteUser);
+					this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as RemoteUser);
 				}
 			}
 		}

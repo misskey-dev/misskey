@@ -17,15 +17,13 @@ export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;
 	private store: boolean;
-	private syslogClient: any | null = null;
 
-	constructor(context: string, color?: KEYWORD, store = true, syslogClient = null) {
+	constructor(context: string, color?: KEYWORD, store = true) {
 		this.context = {
 			name: context,
 			color: color,
 		};
 		this.store = store;
-		this.syslogClient = syslogClient;
 	}
 
 	@bindThis
@@ -47,7 +45,7 @@ export default class Logger {
 		}
 
 		const time = dateFormat(new Date(), 'HH:mm:ss');
-		const worker = cluster.isPrimary ? '*' : cluster.worker.id;
+		const worker = cluster.isPrimary ? '*' : cluster.worker!.id;
 		const l =
 			level === 'error' ? important ? chalk.bgRed.white('ERR ') : chalk.red('ERR ') :
 			level === 'warning' ? chalk.yellow('WARN') :
@@ -69,20 +67,6 @@ export default class Logger {
 
 		console.log(important ? chalk.bold(log) : log);
 		if (level === 'error' && data) console.log(data);
-
-		if (store) {
-			if (this.syslogClient) {
-				const send =
-					level === 'error' ? this.syslogClient.error :
-					level === 'warning' ? this.syslogClient.warning :
-					level === 'success' ? this.syslogClient.info :
-					level === 'debug' ? this.syslogClient.info :
-					level === 'info' ? this.syslogClient.info :
-					null as never;
-
-				send.bind(this.syslogClient)(message).catch(() => {});
-			}
-		}
 	}
 
 	@bindThis

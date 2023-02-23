@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { DI } from '../di-symbols.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';
@@ -22,7 +21,6 @@ import { IdService } from './IdService.js';
 import { ImageProcessingService } from './ImageProcessingService.js';
 import { InstanceActorService } from './InstanceActorService.js';
 import { InternalStorageService } from './InternalStorageService.js';
-import { MessagingService } from './MessagingService.js';
 import { MetaService } from './MetaService.js';
 import { MfmService } from './MfmService.js';
 import { ModerationLogService } from './ModerationLogService.js';
@@ -62,7 +60,6 @@ import PerUserNotesChart from './chart/charts/per-user-notes.js';
 import PerUserPvChart from './chart/charts/per-user-pv.js';
 import DriveChart from './chart/charts/drive.js';
 import PerUserReactionsChart from './chart/charts/per-user-reactions.js';
-import HashtagChart from './chart/charts/hashtag.js';
 import PerUserFollowingChart from './chart/charts/per-user-following.js';
 import PerUserDriveChart from './chart/charts/per-user-drive.js';
 import ApRequestChart from './chart/charts/ap-request.js';
@@ -83,7 +80,6 @@ import { GalleryLikeEntityService } from './entities/GalleryLikeEntityService.js
 import { GalleryPostEntityService } from './entities/GalleryPostEntityService.js';
 import { HashtagEntityService } from './entities/HashtagEntityService.js';
 import { InstanceEntityService } from './entities/InstanceEntityService.js';
-import { MessagingMessageEntityService } from './entities/MessagingMessageEntityService.js';
 import { ModerationLogEntityService } from './entities/ModerationLogEntityService.js';
 import { MutingEntityService } from './entities/MutingEntityService.js';
 import { NoteEntityService } from './entities/NoteEntityService.js';
@@ -94,8 +90,6 @@ import { PageEntityService } from './entities/PageEntityService.js';
 import { PageLikeEntityService } from './entities/PageLikeEntityService.js';
 import { SigninEntityService } from './entities/SigninEntityService.js';
 import { UserEntityService } from './entities/UserEntityService.js';
-import { UserGroupEntityService } from './entities/UserGroupEntityService.js';
-import { UserGroupInvitationEntityService } from './entities/UserGroupInvitationEntityService.js';
 import { UserListEntityService } from './entities/UserListEntityService.js';
 import { FlashEntityService } from './entities/FlashEntityService.js';
 import { FlashLikeEntityService } from './entities/FlashLikeEntityService.js';
@@ -147,7 +141,6 @@ const $IdService: Provider = { provide: 'IdService', useExisting: IdService };
 const $ImageProcessingService: Provider = { provide: 'ImageProcessingService', useExisting: ImageProcessingService };
 const $InstanceActorService: Provider = { provide: 'InstanceActorService', useExisting: InstanceActorService };
 const $InternalStorageService: Provider = { provide: 'InternalStorageService', useExisting: InternalStorageService };
-const $MessagingService: Provider = { provide: 'MessagingService', useExisting: MessagingService };
 const $MetaService: Provider = { provide: 'MetaService', useExisting: MetaService };
 const $MfmService: Provider = { provide: 'MfmService', useExisting: MfmService };
 const $ModerationLogService: Provider = { provide: 'ModerationLogService', useExisting: ModerationLogService };
@@ -187,7 +180,6 @@ const $PerUserNotesChart: Provider = { provide: 'PerUserNotesChart', useExisting
 const $PerUserPvChart: Provider = { provide: 'PerUserPvChart', useExisting: PerUserPvChart };
 const $DriveChart: Provider = { provide: 'DriveChart', useExisting: DriveChart };
 const $PerUserReactionsChart: Provider = { provide: 'PerUserReactionsChart', useExisting: PerUserReactionsChart };
-const $HashtagChart: Provider = { provide: 'HashtagChart', useExisting: HashtagChart };
 const $PerUserFollowingChart: Provider = { provide: 'PerUserFollowingChart', useExisting: PerUserFollowingChart };
 const $PerUserDriveChart: Provider = { provide: 'PerUserDriveChart', useExisting: PerUserDriveChart };
 const $ApRequestChart: Provider = { provide: 'ApRequestChart', useExisting: ApRequestChart };
@@ -209,7 +201,6 @@ const $GalleryLikeEntityService: Provider = { provide: 'GalleryLikeEntityService
 const $GalleryPostEntityService: Provider = { provide: 'GalleryPostEntityService', useExisting: GalleryPostEntityService };
 const $HashtagEntityService: Provider = { provide: 'HashtagEntityService', useExisting: HashtagEntityService };
 const $InstanceEntityService: Provider = { provide: 'InstanceEntityService', useExisting: InstanceEntityService };
-const $MessagingMessageEntityService: Provider = { provide: 'MessagingMessageEntityService', useExisting: MessagingMessageEntityService };
 const $ModerationLogEntityService: Provider = { provide: 'ModerationLogEntityService', useExisting: ModerationLogEntityService };
 const $MutingEntityService: Provider = { provide: 'MutingEntityService', useExisting: MutingEntityService };
 const $NoteEntityService: Provider = { provide: 'NoteEntityService', useExisting: NoteEntityService };
@@ -220,8 +211,6 @@ const $PageEntityService: Provider = { provide: 'PageEntityService', useExisting
 const $PageLikeEntityService: Provider = { provide: 'PageLikeEntityService', useExisting: PageLikeEntityService };
 const $SigninEntityService: Provider = { provide: 'SigninEntityService', useExisting: SigninEntityService };
 const $UserEntityService: Provider = { provide: 'UserEntityService', useExisting: UserEntityService };
-const $UserGroupEntityService: Provider = { provide: 'UserGroupEntityService', useExisting: UserGroupEntityService };
-const $UserGroupInvitationEntityService: Provider = { provide: 'UserGroupInvitationEntityService', useExisting: UserGroupInvitationEntityService };
 const $UserListEntityService: Provider = { provide: 'UserListEntityService', useExisting: UserListEntityService };
 const $FlashEntityService: Provider = { provide: 'FlashEntityService', useExisting: FlashEntityService };
 const $FlashLikeEntityService: Provider = { provide: 'FlashLikeEntityService', useExisting: FlashLikeEntityService };
@@ -275,7 +264,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ImageProcessingService,
 		InstanceActorService,
 		InternalStorageService,
-		MessagingService,
 		MetaService,
 		MfmService,
 		ModerationLogService,
@@ -315,7 +303,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PerUserPvChart,
 		DriveChart,
 		PerUserReactionsChart,
-		HashtagChart,
 		PerUserFollowingChart,
 		PerUserDriveChart,
 		ApRequestChart,
@@ -336,7 +323,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		GalleryPostEntityService,
 		HashtagEntityService,
 		InstanceEntityService,
-		MessagingMessageEntityService,
 		ModerationLogEntityService,
 		MutingEntityService,
 		NoteEntityService,
@@ -347,8 +333,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageLikeEntityService,
 		SigninEntityService,
 		UserEntityService,
-		UserGroupEntityService,
-		UserGroupInvitationEntityService,
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
@@ -397,7 +381,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ImageProcessingService,
 		$InstanceActorService,
 		$InternalStorageService,
-		$MessagingService,
 		$MetaService,
 		$MfmService,
 		$ModerationLogService,
@@ -437,7 +420,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PerUserPvChart,
 		$DriveChart,
 		$PerUserReactionsChart,
-		$HashtagChart,
 		$PerUserFollowingChart,
 		$PerUserDriveChart,
 		$ApRequestChart,
@@ -458,7 +440,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$GalleryPostEntityService,
 		$HashtagEntityService,
 		$InstanceEntityService,
-		$MessagingMessageEntityService,
 		$ModerationLogEntityService,
 		$MutingEntityService,
 		$NoteEntityService,
@@ -469,8 +450,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageLikeEntityService,
 		$SigninEntityService,
 		$UserEntityService,
-		$UserGroupEntityService,
-		$UserGroupInvitationEntityService,
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,
@@ -520,7 +499,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ImageProcessingService,
 		InstanceActorService,
 		InternalStorageService,
-		MessagingService,
 		MetaService,
 		MfmService,
 		ModerationLogService,
@@ -559,7 +537,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PerUserPvChart,
 		DriveChart,
 		PerUserReactionsChart,
-		HashtagChart,
 		PerUserFollowingChart,
 		PerUserDriveChart,
 		ApRequestChart,
@@ -580,7 +557,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		GalleryPostEntityService,
 		HashtagEntityService,
 		InstanceEntityService,
-		MessagingMessageEntityService,
 		ModerationLogEntityService,
 		MutingEntityService,
 		NoteEntityService,
@@ -591,8 +567,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageLikeEntityService,
 		SigninEntityService,
 		UserEntityService,
-		UserGroupEntityService,
-		UserGroupInvitationEntityService,
 		UserListEntityService,
 		FlashEntityService,
 		FlashLikeEntityService,
@@ -641,7 +615,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ImageProcessingService,
 		$InstanceActorService,
 		$InternalStorageService,
-		$MessagingService,
 		$MetaService,
 		$MfmService,
 		$ModerationLogService,
@@ -680,7 +653,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PerUserPvChart,
 		$DriveChart,
 		$PerUserReactionsChart,
-		$HashtagChart,
 		$PerUserFollowingChart,
 		$PerUserDriveChart,
 		$ApRequestChart,
@@ -701,7 +673,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$GalleryPostEntityService,
 		$HashtagEntityService,
 		$InstanceEntityService,
-		$MessagingMessageEntityService,
 		$ModerationLogEntityService,
 		$MutingEntityService,
 		$NoteEntityService,
@@ -712,8 +683,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageLikeEntityService,
 		$SigninEntityService,
 		$UserEntityService,
-		$UserGroupEntityService,
-		$UserGroupInvitationEntityService,
 		$UserListEntityService,
 		$FlashEntityService,
 		$FlashLikeEntityService,

@@ -25,7 +25,7 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, EmojisRepository, FlashsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
@@ -155,7 +155,7 @@ export class ClientServerService {
 		});
 
 		serverAdapter.setBasePath(bullBoardPath);
-		fastify.register(serverAdapter.registerPlugin(), { prefix: bullBoardPath });
+		(fastify.register as any)(serverAdapter.registerPlugin(), { prefix: bullBoardPath });
 		//#endregion
 
 		fastify.register(fastifyView, {
@@ -337,7 +337,7 @@ export class ClientServerService {
 
 		const renderBase = async (reply: FastifyReply) => {
 			const meta = await this.metaService.fetch();
-			reply.header('Cache-Control', 'public, max-age=15');
+			reply.header('Cache-Control', 'public, max-age=30');
 			return await reply.view('base', {
 				img: meta.bannerUrl,
 				title: meta.name ?? 'Misskey',
@@ -372,6 +372,7 @@ export class ClientServerService {
 				return feed.atom1();
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 
@@ -384,6 +385,7 @@ export class ClientServerService {
 				return feed.rss2();
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 
@@ -396,6 +398,7 @@ export class ClientServerService {
 				return feed.json1();
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 

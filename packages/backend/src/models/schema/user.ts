@@ -311,10 +311,6 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		hasUnreadMessagingMessage: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
 		hasUnreadNotification: {
 			type: 'boolean',
 			nullable: false, optional: false,
@@ -322,10 +318,6 @@ export const packedMeDetailedOnlySchema = {
 		hasPendingReceivedFollowRequest: {
 			type: 'boolean',
 			nullable: false, optional: false,
-		},
-		integrations: {
-			type: 'object',
-			nullable: true, optional: false,
 		},
 		mutedWords: {
 			type: 'array',

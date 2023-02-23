@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -111,9 +110,6 @@ export class NodeinfoServerService {
 					enableHcaptcha: meta.enableHcaptcha,
 					enableRecaptcha: meta.enableRecaptcha,
 					maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
-					enableTwitterIntegration: meta.enableTwitterIntegration,
-					enableGithubIntegration: meta.enableGithubIntegration,
-					enableDiscordIntegration: meta.enableDiscordIntegration,
 					enableEmail: meta.enableEmail,
 					enableServiceWorker: meta.enableServiceWorker,
 					proxyAccountName: proxyAccount ? proxyAccount.username : null,

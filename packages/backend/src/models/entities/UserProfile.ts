@@ -1,5 +1,5 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { ffVisibility, notificationTypes } from '@/types.js';
+import { obsoleteNotificationTypes, ffVisibility, notificationTypes } from '@/types.js';
 import { id } from '../id.js';
 import { User } from './User.js';
 import { Page } from './Page.js';
@@ -71,7 +71,7 @@ export class UserProfile {
 	public emailVerified: boolean;
 
 	@Column('jsonb', {
-		default: ['follow', 'receiveFollowRequest', 'groupInvited'],
+		default: ['follow', 'receiveFollowRequest'],
 	})
 	public emailNotificationTypes: string[];
 
@@ -184,11 +184,6 @@ export class UserProfile {
 	@JoinColumn()
 	public pinnedPage: Page | null;
 
-	@Column('jsonb', {
-		default: {},
-	})
-	public integrations: Record<string, any>;
-
 	@Index()
 	@Column('boolean', {
 		default: false, select: false,
@@ -207,7 +202,11 @@ export class UserProfile {
 	public mutedInstances: string[];
 
 	@Column('enum', {
-		enum: notificationTypes,
+		enum: [ 
+			...notificationTypes,
+			// マイグレーションで削除が困難なので古いenumは残しておく
+			...obsoleteNotificationTypes,
+		],
 		array: true,
 		default: [],
 	})

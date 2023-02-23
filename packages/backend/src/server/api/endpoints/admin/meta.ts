@@ -54,99 +54,23 @@ export const meta = {
 			},
 			mascotImageUrl: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 				default: '/assets/ai.png',
 			},
 			bannerUrl: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 			},
 			errorImageUrl: {
 				type: 'string',
-				optional: false, nullable: false,
+				optional: false, nullable: true,
 				default: 'https://xn--931a.moe/aiart/yubitun.png',
 			},
 			iconUrl: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			maxNoteTextLength: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
-			emojis: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						id: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'id',
-						},
-						aliases: {
-							type: 'array',
-							optional: false, nullable: false,
-							items: {
-								type: 'string',
-								optional: false, nullable: false,
-							},
-						},
-						category: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-						host: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-						url: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-					},
-				},
-			},
-			ads: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					properties: {
-						place: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-						url: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-						imageUrl: {
-							type: 'string',
-							optional: false, nullable: false,
-							format: 'url',
-						},
-					},
-				},
-			},
 			enableEmail: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableTwitterIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableGithubIntegration: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			enableDiscordIntegration: {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
@@ -157,10 +81,6 @@ export const meta = {
 			translatorAvailable: {
 				type: 'boolean',
 				optional: false, nullable: false,
-			},
-			proxyAccountName: {
-				type: 'string',
-				optional: false, nullable: true,
 			},
 			userStarForReactionFallback: {
 				type: 'boolean',
@@ -223,30 +143,6 @@ export const meta = {
 				optional: true, nullable: true,
 				format: 'id',
 			},
-			twitterConsumerKey: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			twitterConsumerSecret: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			githubClientId: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			githubClientSecret: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			discordClientId: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
-			discordClientSecret: {
-				type: 'string',
-				optional: true, nullable: true,
-			},
 			summaryProxy: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -264,7 +160,7 @@ export const meta = {
 				optional: true, nullable: true,
 			},
 			smtpPort: {
-				type: 'string',
+				type: 'number',
 				optional: true, nullable: true,
 			},
 			smtpUser: {
@@ -335,6 +231,10 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			policies: {
+				type: 'object',
+				optional: false, nullable: false,
+			},
 		},
 	},
 } as const;
@@ -385,13 +285,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
-				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
 				enableEmail: instance.enableEmail,
-				enableTwitterIntegration: instance.enableTwitterIntegration,
-				enableGithubIntegration: instance.enableGithubIntegration,
-				enableDiscordIntegration: instance.enableDiscordIntegration,
 				enableServiceWorker: instance.enableServiceWorker,
 				translatorAvailable: instance.deeplAuthKey != null,
 				pinnedPages: instance.pinnedPages,
@@ -409,12 +305,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
 				enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
 				proxyAccountId: instance.proxyAccountId,
-				twitterConsumerKey: instance.twitterConsumerKey,
-				twitterConsumerSecret: instance.twitterConsumerSecret,
-				githubClientId: instance.githubClientId,
-				githubClientSecret: instance.githubClientSecret,
-				discordClientId: instance.discordClientId,
-				discordClientSecret: instance.discordClientSecret,
 				summalyProxy: instance.summalyProxy,
 				email: instance.email,
 				smtpSecure: instance.smtpSecure,

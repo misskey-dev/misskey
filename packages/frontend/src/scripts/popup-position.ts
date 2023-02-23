@@ -1,4 +1,3 @@
-import { Ref } from 'vue';
 
 export function calcPopupPosition(el: HTMLElement, props: {
 	anchorElement: HTMLElement | null;

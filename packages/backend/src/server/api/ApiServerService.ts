@@ -2,19 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
-import { ModuleRef, repl } from '@nestjs/core';
+import { ModuleRef } from '@nestjs/core';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import endpoints, { IEndpoint } from './endpoints.js';
+import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
-import { GithubServerService } from './integration/GithubServerService.js';
-import { DiscordServerService } from './integration/DiscordServerService.js';
-import { TwitterServerService } from './integration/TwitterServerService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
@@ -38,9 +35,6 @@ export class ApiServerService {
 		private apiCallService: ApiCallService,
 		private signupApiService: SignupApiService,
 		private signinApiService: SigninApiService,
-		private githubServerService: GithubServerService,
-		private discordServerService: DiscordServerService,
-		private twitterServerService: TwitterServerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -132,10 +126,6 @@ export class ApiServerService {
 		}>('/signin', (request, reply) => this.signinApiService.signin(request, reply));
 
 		fastify.post<{ Body: { code: string; } }>('/signup-pending', (request, reply) => this.signupApiService.signupPending(request, reply));
-
-		fastify.register(this.discordServerService.create);
-		fastify.register(this.githubServerService.create);
-		fastify.register(this.twitterServerService.create);
 
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({

@@ -11,7 +11,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
-import { noteVisibilities } from '../../../../types.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -281,7 +280,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				files: files,
 				poll: ps.poll ? {
 					choices: ps.poll.choices,
-					multiple: ps.poll.multiple || false,
+					multiple: ps.poll.multiple ?? false,
 					expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
 				} : undefined,
 				text: ps.text ?? undefined,

@@ -7,9 +7,6 @@ import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ServerService } from './ServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
 import { GetterService } from './api/GetterService.js';
-import { DiscordServerService } from './api/integration/DiscordServerService.js';
-import { GithubServerService } from './api/integration/GithubServerService.js';
-import { TwitterServerService } from './api/integration/TwitterServerService.js';
 import { ChannelsService } from './api/stream/ChannelsService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { ApiLoggerService } from './api/ApiLoggerService.js';
@@ -33,8 +30,6 @@ import { HashtagChannelService } from './api/stream/channels/hashtag.js';
 import { HomeTimelineChannelService } from './api/stream/channels/home-timeline.js';
 import { HybridTimelineChannelService } from './api/stream/channels/hybrid-timeline.js';
 import { LocalTimelineChannelService } from './api/stream/channels/local-timeline.js';
-import { MessagingIndexChannelService } from './api/stream/channels/messaging-index.js';
-import { MessagingChannelService } from './api/stream/channels/messaging.js';
 import { QueueStatsChannelService } from './api/stream/channels/queue-stats.js';
 import { ServerStatsChannelService } from './api/stream/channels/server-stats.js';
 import { UserListChannelService } from './api/stream/channels/user-list.js';
@@ -54,9 +49,6 @@ import { UserListChannelService } from './api/stream/channels/user-list.js';
 		ServerService,
 		WellKnownServerService,
 		GetterService,
-		DiscordServerService,
-		GithubServerService,
-		TwitterServerService,
 		ChannelsService,
 		ApiCallService,
 		ApiLoggerService,
@@ -77,8 +69,6 @@ import { UserListChannelService } from './api/stream/channels/user-list.js';
 		HomeTimelineChannelService,
 		HybridTimelineChannelService,
 		LocalTimelineChannelService,
-		MessagingIndexChannelService,
-		MessagingChannelService,
 		QueueStatsChannelService,
 		ServerStatsChannelService,
 		UserListChannelService,

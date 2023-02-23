@@ -61,7 +61,7 @@ export class CustomEmojiService {
 			await this.db.queryResultCache!.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
-				emoji: await this.emojiEntityService.pack(emoji.id),
+				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
 		}
 
@@ -120,7 +120,7 @@ export class CustomEmojiService {
 		const url = isLocal
 			? emojiUrl
 			: this.config.proxyRemoteFiles
-				? `${this.config.url}/proxy/${encodeURIComponent((new URL(emojiUrl)).pathname)}?${query({ url: emojiUrl })}`
+				? `${this.config.mediaProxy}/emoji.webp?${query({ url: emojiUrl })}`
 				: emojiUrl;
 
 		return url;

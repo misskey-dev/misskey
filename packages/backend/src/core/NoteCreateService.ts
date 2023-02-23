@@ -1,5 +1,5 @@
 import * as mfm from 'mfm-js';
-import { Not, In, DataSource } from 'typeorm';
+import { In, DataSource } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
@@ -11,7 +11,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { App } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
-import type { User, ILocalUser, IRemoteUser } from '@/models/entities/User.js';
+import type { User, LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import { Poll } from '@/models/entities/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -52,7 +52,7 @@ class NotificationManager {
 	private notifier: { id: User['id']; };
 	private note: Note;
 	private queue: {
-		target: ILocalUser['id'];
+		target: LocalUser['id'];
 		reason: NotificationType;
 	}[];
 
@@ -68,7 +68,7 @@ class NotificationManager {
 	}
 
 	@bindThis
-	public push(notifiee: ILocalUser['id'], reason: NotificationType) {
+	public push(notifiee: LocalUser['id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
 
@@ -175,7 +175,7 @@ export class NoteCreateService {
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
 		private noteReadService: NoteReadService,
 		private createNotificationService: CreateNotificationService,
@@ -535,7 +535,7 @@ export class NoteCreateService {
 			// Pack the note
 			const noteObj = await this.noteEntityService.pack(note);
 
-			this.globalEventServie.publishNotesStream(noteObj);
+			this.globalEventService.publishNotesStream(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
 				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
@@ -561,7 +561,7 @@ export class NoteCreateService {
 
 					if (!threadMuted) {
 						nm.push(data.reply.userId, 'reply');
-						this.globalEventServie.publishMainStream(data.reply.userId, 'reply', noteObj);
+						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
 
 						const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.reply!.userId && x.on.includes('reply'));
 						for (const webhook of webhooks) {
@@ -584,7 +584,7 @@ export class NoteCreateService {
 
 				// Publish event
 				if ((user.id !== data.renote.userId) && data.renote.userHost === null) {
-					this.globalEventServie.publishMainStream(data.renote.userId, 'renote', noteObj);
+					this.globalEventService.publishMainStream(data.renote.userId, 'renote', noteObj);
 
 					const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === data.renote!.userId && x.on.includes('renote'));
 					for (const webhook of webhooks) {
@@ -605,7 +605,7 @@ export class NoteCreateService {
 
 					// メンションされたリモートユーザーに配送
 					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {
-						dm.addDirectRecipe(u as IRemoteUser);
+						dm.addDirectRecipe(u as RemoteUser);
 					}
 
 					// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
@@ -684,7 +684,7 @@ export class NoteCreateService {
 				detail: true,
 			});
 
-			this.globalEventServie.publishMainStream(u.id, 'mention', detailPackedNote);
+			this.globalEventService.publishMainStream(u.id, 'mention', detailPackedNote);
 
 			const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === u.id && x.on.includes('mention'));
 			for (const webhook of webhooks) {
@@ -711,7 +711,7 @@ export class NoteCreateService {
 			? this.apRendererService.renderAnnounce(data.renote.uri ? data.renote.uri : `${this.config.url}/notes/${data.renote.id}`, note)
 			: this.apRendererService.renderCreate(await this.apRendererService.renderNote(note, false), note);
 
-		return this.apRendererService.renderActivity(content);
+		return this.apRendererService.addContext(content);
 	}
 
 	@bindThis

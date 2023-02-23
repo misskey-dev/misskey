@@ -10,7 +10,7 @@
 				<template #prefix>@</template>
 				<template #suffix>@{{ host }}</template>
 			</MkInput>
-			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" :with-password-toggle="true" required data-cy-signin-password>
+			<MkInput v-if="!user || user && !user.usePasswordLessLogin" v-model="password" :placeholder="i18n.ts.password" type="password" autocomplete="current-password" :with-password-toggle="true" required data-cy-signin-password>
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #caption><button class="_textButton" type="button" @click="resetPassword">{{ i18n.ts.forgotPassword }}</button></template>
 			</MkInput>
@@ -28,22 +28,17 @@
 			</div>
 			<div class="twofa-group totp-group">
 				<p style="margin-bottom:0;">{{ i18n.ts.twoStepAuthentication }}</p>
-				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" :with-password-toggle="true" required>
+				<MkInput v-if="user && user.usePasswordLessLogin" v-model="password" type="password" autocomplete="current-password" :with-password-toggle="true" required>
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
-				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="off" :spellcheck="false" required>
+				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="one-time-code" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.token }}</template>
 					<template #prefix><i class="ti ti-123"></i></template>
 				</MkInput>
 				<MkButton type="submit" :disabled="signing" large primary rounded style="margin: 0 auto;">{{ signing ? i18n.ts.loggingIn : i18n.ts.login }}</MkButton>
 			</div>
 		</div>
-	</div>
-	<div class="social">
-		<a v-if="meta && meta.enableTwitterIntegration" class="_borderButton _margin" :href="`${apiUrl}/signin/twitter`"><i class="ti ti-brand-twitter" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Twitter' }) }}</a>
-		<a v-if="meta && meta.enableGithubIntegration" class="_borderButton _margin" :href="`${apiUrl}/signin/github`"><i class="ti ti-brand-github" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'GitHub' }) }}</a>
-		<a v-if="meta && meta.enableDiscordIntegration" class="_borderButton _margin" :href="`${apiUrl}/signin/discord`"><i class="ti ti-brand-discord" style="margin-right: 4px;"></i>{{ $t('signinWith', { x: 'Discord' }) }}</a>
 	</div>
 </form>
 </template>
@@ -55,7 +50,7 @@ import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { apiUrl, host as configHost } from '@/config';
+import { host as configHost } from '@/config';
 import { byteify, hexify } from '@/scripts/2fa';
 import * as os from '@/os';
 import { login } from '@/account';
@@ -159,7 +154,6 @@ function queryKey() {
 
 function onSubmit() {
 	signing = true;
-	console.log('submit');
 	if (!totpLogin && user && user.twoFactorEnabled) {
 		if (window.PublicKeyCredential && user.securityKeys) {
 			os.api('signin', {

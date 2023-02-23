@@ -3,7 +3,7 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, NotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { CacheableLocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import type { SchemaType } from '@/misc/schema.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
@@ -114,7 +114,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	 * URIからUserかNoteを解決する
 	 */
 	@bindThis
-	private async fetchAny(uri: string, me: CacheableLocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	private async fetchAny(uri: string, me: LocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
 		if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) return null;
@@ -147,7 +147,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	}
 
 	@bindThis
-	private async mergePack(me: CacheableLocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+	private async mergePack(me: LocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 		if (user != null) {
 			return {
 				type: 'User',

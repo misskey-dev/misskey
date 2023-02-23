@@ -17,7 +17,8 @@
 	</ol>
 	<ol v-else-if="emojis.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="emoji in emojis" :key="emoji.emoji" :class="$style.item" tabindex="-1" @click="complete(type, emoji.emoji)" @keydown="onKeydown">
-			<MkCustomEmoji :name="emoji.emoji" :class="$style.emoji"/>
+			<MkCustomEmoji v-if="'isCustomEmoji' in emoji && emoji.isCustomEmoji" :name="emoji.emoji" :class="$style.emoji"/>
+			<MkEmoji v-else :emoji="emoji.emoji" :class="$style.emoji"/>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<span v-if="q" :class="$style.emojiName" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
 			<span v-else v-text="emoji.name"></span>
@@ -42,7 +43,6 @@ import * as os from '@/os';
 import { MFM_TAGS } from '@/scripts/mfm-tags';
 import { defaultStore } from '@/store';
 import { emojilist } from '@/scripts/emojilist';
-import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { miLocalStorage } from '@/local-storage';
 import { customEmojis } from '@/custom-emojis';
@@ -209,7 +209,7 @@ function exec() {
 		}
 	} else if (props.type === 'hashtag') {
 		if (!props.q || props.q === '') {
-			hashtags.value = JSON.parse(miLocalStorage.getItem('hashtags') || '[]');
+			hashtags.value = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]');
 			fetching.value = false;
 		} else {
 			const cacheKey = `autocomplete:hashtag:${props.q}`;

@@ -3,7 +3,7 @@ import * as crypto from 'node:crypto';
 import { join } from 'node:path';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
 import { fileTypeFromFile } from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';

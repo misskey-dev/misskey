@@ -22,7 +22,7 @@ describe('FF visibility', () => {
 		await shutdownServer(p);
 	});
 
-	it('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
+	test('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'public',
 		}, alice);
@@ -40,7 +40,7 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	it('ffVisibility が followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
+	test('ffVisibility が followers なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'followers',
 		}, alice);
@@ -58,7 +58,7 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	it('ffVisibility が followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
+	test('ffVisibility が followers なユーザーのフォロー/フォロワーを非フォロワーが見れない', async () => {
 		await request('/i/update', {
 			ffVisibility: 'followers',
 		}, alice);
@@ -74,7 +74,7 @@ describe('FF visibility', () => {
 		assert.strictEqual(followersRes.status, 400);
 	});
 
-	it('ffVisibility が followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
+	test('ffVisibility が followers なユーザーのフォロー/フォロワーをフォロワーが見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'followers',
 		}, alice);
@@ -96,7 +96,7 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	it('ffVisibility が private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
+	test('ffVisibility が private なユーザーのフォロー/フォロワーを自分で見れる', async () => {
 		await request('/i/update', {
 			ffVisibility: 'private',
 		}, alice);
@@ -114,7 +114,7 @@ describe('FF visibility', () => {
 		assert.strictEqual(Array.isArray(followersRes.body), true);
 	});
 
-	it('ffVisibility が private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
+	test('ffVisibility が private なユーザーのフォロー/フォロワーを他人が見れない', async () => {
 		await request('/i/update', {
 			ffVisibility: 'private',
 		}, alice);
@@ -131,7 +131,7 @@ describe('FF visibility', () => {
 	});
 
 	describe('AP', () => {
-		it('ffVisibility が public 以外ならばAPからは取得できない', async () => {
+		test('ffVisibility が public 以外ならばAPからは取得できない', async () => {
 			{
 				await request('/i/update', {
 					ffVisibility: 'public',

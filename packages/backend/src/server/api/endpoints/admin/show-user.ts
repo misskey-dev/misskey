@@ -59,17 +59,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot show info of admin');
 			}
 
-			if (!await this.roleService.isAdministrator(_me)) {
-				return {
-					isSuspended: user.isSuspended,
-				};
-			}
-
-			const maskedKeys = ['accessToken', 'accessTokenSecret', 'refreshToken'];
-			Object.keys(profile.integrations).forEach(integration => {
-				maskedKeys.forEach(key => profile.integrations[integration][key] = '<MASKED>');
-			});
-
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
 			const roles = await this.roleService.getUserRoles(user.id);
@@ -84,7 +73,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				carefulBot: profile.carefulBot,
 				injectFeaturedNote: profile.injectFeaturedNote,
 				receiveAnnouncementEmail: profile.receiveAnnouncementEmail,
-				integrations: profile.integrations,
 				mutedWords: profile.mutedWords,
 				mutedInstances: profile.mutedInstances,
 				mutingNotificationTypes: profile.mutingNotificationTypes,
@@ -95,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				moderationNote: profile.moderationNote,
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
-				roles: await this.roleEntityService.packMany(roles, me, { detail: false }),
+				roles: await this.roleEntityService.packMany(roles, me),
 			};
 		});
 	}

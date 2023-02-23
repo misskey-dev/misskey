@@ -1,6 +1,5 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
-import { Theme } from './scripts/theme';
 
 interface PostFormAction {
 	title: string,
@@ -46,6 +45,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	collapseRenotes: {
+		where: 'account',
+		default: true,
+	},
 	rememberNoteVisibility: {
 		where: 'account',
 		default: false,
@@ -83,10 +86,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: [],
 	},
 	mutedAds: {
-		where: 'account',
-		default: [] as string[],
-	},
-	hiddenAds: {
 		where: 'account',
 		default: [] as string[],
 	},
@@ -162,6 +161,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	advancedMfm: {
+		where: 'device',
+		default: true,
+	},
 	loadRawImages: {
 		where: 'device',
 		default: false,
@@ -172,7 +175,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: false,
+		default: matchMedia('(prefers-reduced-motion)').matches,
 	},
 	emojiStyle: {
 		where: 'device',
@@ -331,6 +334,16 @@ export class ColdDeviceStorage {
 		} else {
 			return JSON.parse(value);
 		}
+	}
+
+	public static getAll(): Partial<typeof this.default> {
+		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce((acc, key) => {
+			const value = localStorage.getItem(PREFIX + key);
+			if (value != null) {
+				acc[key] = JSON.parse(value);
+			}
+			return acc;
+		}, {} as any);
 	}
 
 	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {

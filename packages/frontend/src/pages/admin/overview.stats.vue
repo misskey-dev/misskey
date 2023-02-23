@@ -56,10 +56,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-import MkMiniChart from '@/components/MkMiniChart.vue';
+import { onMounted } from 'vue';
 import * as os from '@/os';
-import number from '@/filters/number';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n';

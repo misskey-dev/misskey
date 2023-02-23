@@ -8,7 +8,6 @@ import type { Config } from '@/config.js';
 import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { envOption } from '@/env.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
 import { createTemp } from '@/misc/create-temp.js';
@@ -106,7 +105,7 @@ export class ServerService {
 				}
 			}
 
-			const url = new URL('/proxy/emoji.webp', this.config.url);
+			const url = new URL(`${this.config.mediaProxy}/emoji.webp`);
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 			url.searchParams.set('emoji', '1');
@@ -166,6 +165,7 @@ export class ServerService {
 				return 'Verify succeeded!';
 			} else {
 				reply.code(404);
+				return;
 			}
 		});
 

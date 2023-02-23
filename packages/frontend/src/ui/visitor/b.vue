@@ -10,8 +10,11 @@
 		<XKanban v-if="narrow && !root" class="banner" :powered-by="root"/>
 
 		<div class="contents">
-			<XHeader v-if="!root" class="header" :info="pageInfo"/>
-			<main style="container-type: inline-size;">
+			<XHeader v-if="!root" class="header"/>
+			<main v-if="!root" style="container-type: inline-size;">
+				<RouterView/>
+			</main>
+			<main v-else>
 				<RouterView/>
 			</main>
 			<div v-if="!root" class="powered-by">
@@ -33,9 +36,14 @@
 	<Transition :name="$store.state.animation ? 'tray' : ''">
 		<div v-if="showMenu" class="menu">
 			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ $ts.home }}</MkA>
+			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i>{{ $ts.timeline }}</MkA>
 			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/featured" class="link" active-class="active"><i class="ti ti-flare icon"></i>{{ $ts.featured }}</MkA>
+			<MkA to="/announcements" class="link" active-class="active"><i class="ti ti-speakerphone icon"></i>{{ $ts.announcements }}</MkA>
 			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ $ts.channel }}</MkA>
+			<div class="divider"></div>
+			<MkA to="/pages" class="link" active-class="active"><i class="ti ti-news icon"></i>{{ $ts.pages }}</MkA>
+			<MkA to="/play" class="link" active-class="active"><i class="ti ti-player-play icon"></i>Play</MkA>
+			<MkA to="/gallery" class="link" active-class="active"><i class="ti ti-icons icon"></i>{{ $ts.gallery }}</MkA>
 			<div class="action">
 				<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
 				<button class="_button" @click="signin()">{{ $ts.login }}</button>
@@ -52,13 +60,12 @@ import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
 import { search } from '@/scripts/search';
 import * as os from '@/os';
-import MkPagination from '@/components/MkPagination.vue';
+import { instance } from '@/instance';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
-import MkButton from '@/components/MkButton.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { mainRouter } from '@/router';
-import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -76,6 +83,9 @@ const announcements = {
 	endpoint: 'announcements',
 	limit: 10,
 };
+
+const isTimelineAvailable = $ref(instance.policies?.ltlAvailable || instance.policies?.gtlAvailable);
+
 let showMenu = $ref(false);
 let isDesktop = $ref(window.innerWidth >= DESKTOP_THRESHOLD);
 let narrow = $ref(window.innerWidth < 1280);
@@ -221,6 +231,12 @@ defineExpose({
 			> .icon {
 				margin-right: 1em;
 			}
+		}
+
+		> .divider {
+			margin: 8px auto;
+			width: calc(100% - 32px);
+			border-top: solid 0.5px var(--divider);
 		}
 
 		> .action {

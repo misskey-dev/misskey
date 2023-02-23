@@ -3,7 +3,6 @@ import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import { ui } from '@/config';
 
 const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loader: loader,
@@ -70,10 +69,6 @@ export const routes = [{
 		path: '/email',
 		name: 'email',
 		component: page(() => import('./pages/settings/email.vue')),
-	}, {
-		path: '/integration',
-		name: 'integration',
-		component: page(() => import('./pages/settings/integration.vue')),
 	}, {
 		path: '/security',
 		name: 'security',
@@ -203,8 +198,11 @@ export const routes = [{
 	component: page(() => import('./pages/theme-editor.vue')),
 	loginRequired: true,
 }, {
-	path: '/explore/tags/:tag',
-	component: page(() => import('./pages/explore.vue')),
+	path: '/roles/:role',
+	component: page(() => import('./pages/role.vue')),
+}, {
+	path: '/user-tags/:tag',
+	component: page(() => import('./pages/user-tag.vue')),
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
@@ -228,9 +226,6 @@ export const routes = [{
 	path: '/api-console',
 	component: page(() => import('./pages/api-console.vue')),
 	loginRequired: true,
-}, {
-	path: '/mfm-cheat-sheet',
-	component: page(() => import('./pages/mfm-cheat-sheet.vue')),
 }, {
 	path: '/scratchpad',
 	component: page(() => import('./pages/scratchpad.vue')),
@@ -400,10 +395,6 @@ export const routes = [{
 		name: 'relays',
 		component: page(() => import('./pages/admin/relays.vue')),
 	}, {
-		path: '/integrations',
-		name: 'integrations',
-		component: page(() => import('./pages/admin/integrations.vue')),
-	}, {
 		path: '/instance-block',
 		name: 'instance-block',
 		component: page(() => import('./pages/admin/instance-block.vue')),
@@ -430,19 +421,6 @@ export const routes = [{
 }, {
 	path: '/my/achievements',
 	component: page(() => import('./pages/achievements.vue')),
-	loginRequired: true,
-}, {
-	name: 'messaging',
-	path: '/my/messaging',
-	component: page(() => import('./pages/messaging/index.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/messaging/:userAcct',
-	component: page(() => import('./pages/messaging/messaging-room.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/messaging/group/:groupId',
-	component: page(() => import('./pages/messaging/messaging-room.vue')),
 	loginRequired: true,
 }, {
 	path: '/my/drive/folder/:folder',
@@ -492,6 +470,9 @@ export const routes = [{
 	path: '/clicker',
 	component: page(() => import('./pages/clicker.vue')),
 	loginRequired: true,
+}, {
+	path: '/timeline',
+	component: page(() => import('./pages/timeline.vue')),
 }, {
 	name: 'index',
 	path: '/',

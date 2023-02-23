@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
-		"noEmitOnError": false,
+		"noEmitOnError": true,
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
