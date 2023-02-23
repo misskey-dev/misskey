@@ -421,7 +421,7 @@ importers:
       autosize: 5.0.2
       blurhash: 2.0.5
       broadcast-channel: 4.20.2
-      browser-image-resizer: git+https://github.com/misskey-dev/browser-image-resizer#v2.2.1-misskey.3
+      browser-image-resizer: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
       canvas-confetti: 1.6.0
       chart.js: 4.2.1
       chartjs-adapter-date-fns: 3.0.0
@@ -2168,6 +2168,7 @@ packages:
   /@swc/cli/0.1.62_r2avoeggowhtjk5lmq5oy455q4:
     resolution: {integrity: sha512-kOFLjKY3XH1DWLfXL1/B5MizeNorHR8wHKEi92S/Zi9Md/AK17KSqR8MgyRJ6C1fhKHvbBCl8wboyKAFXStkYw==}
     engines: {node: '>= 12.13'}
+    hasBin: true
     peerDependencies:
       '@swc/core': ^1.2.66
       chokidar: ^3.5.1
@@ -3806,7 +3807,7 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3814,7 +3815,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -6586,7 +6587,7 @@ packages:
       readable-stream: 2.3.7
     dev: false
 
-  /follow-redirects/1.15.2:
+  /follow-redirects/1.15.2_debug@4.3.4:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -6594,6 +6595,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -8122,6 +8125,7 @@ packages:
   /jest-cli/29.4.3_@types+node@18.14.0:
     resolution: {integrity: sha512-PiiAPuFNfWWolCE6t3ZrDXQc6OsAuM3/tVW0u27UWc1KE+n/HSn5dSE6B2juqN7WP+PP0jAcnKtGmI4u8GMYCg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    hasBin: true
     peerDependencies:
       node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
     peerDependenciesMeta:
@@ -8532,6 +8536,7 @@ packages:
   /jest/29.4.3_@types+node@18.14.0:
     resolution: {integrity: sha512-XvK65feuEFGZT8OO0fB/QAQS+LGHvQpaadkH5p47/j3Ocqq3xf2pK9R+G0GzgfuhXVxEv76qCOOcMb5efLk6PA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    hasBin: true
     peerDependencies:
       node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
     peerDependenciesMeta:
@@ -12573,6 +12578,7 @@ packages:
   /typeorm/0.3.11_ioredis@4.28.5+pg@8.9.0:
     resolution: {integrity: sha512-pzdOyWbVuz/z8Ww6gqvBW4nylsM0KLdUCDExr2gR20/x1khGSVxQkjNV/3YqliG90jrWzrknYbYscpk8yxFJVg==}
     engines: {node: '>= 12.9.0'}
+    hasBin: true
     peerDependencies:
       '@google-cloud/spanner': ^5.18.0
       '@sap/hana-client': ^2.12.25
@@ -12795,6 +12801,7 @@ packages:
 
   /update-browserslist-db/1.0.10_browserslist@4.21.4:
     resolution: {integrity: sha512-OztqDenkfFkbSG+tRxBeAnCVPckDBcvibKd35yDONx6OU8N7sqgwc7rCbkJ/WcYtVRZ4ba68d6byhC21GFh7sQ==}
+    hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
     dependencies:
@@ -13484,13 +13491,13 @@ packages:
     dev: false
 
   github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
-    resolution: {commit: 0227e860621e55cbed0aabe6dc601096a7748c4a, repo: git+ssh://git@github.com/misskey-dev/browser-image-resizer.git, type: git}
+    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0227e860621e55cbed0aabe6dc601096a7748c4a}
     name: browser-image-resizer
     version: 2.2.1-misskey.3
     dev: false
 
   github.com/misskey-dev/summaly/51f3870e1ff5e0b22102e804112b10cb72f3c494:
-    resolution: {commit: 51f3870e1ff5e0b22102e804112b10cb72f3c494, repo: git+ssh://git@github.com/misskey-dev/summaly.git, type: git}
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/51f3870e1ff5e0b22102e804112b10cb72f3c494}
     name: summaly
     version: 3.0.4
     dependencies:
