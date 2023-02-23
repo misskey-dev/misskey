@@ -1846,6 +1846,7 @@ _notification:
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
+    achievementEarned: "実績の獲得"
     app: "連携アプリからの通知"
 
   _actions:
