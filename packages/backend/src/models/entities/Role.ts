@@ -1,4 +1,4 @@
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
 
 type CondFormulaValueAnd = {
@@ -102,6 +102,11 @@ export class Role {
 	})
 	public color: string | null;
 
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public iconUrl: string | null;
+
 	@Column('enum', {
 		enum: ['manual', 'conditional'],
 		default: 'manual',
@@ -117,6 +122,12 @@ export class Role {
 		default: false,
 	})
 	public isPublic: boolean;
+
+	// trueの場合ユーザー名の横にバッジとして表示
+	@Column('boolean', {
+		default: false,
+	})
+	public asBadge: boolean;
 
 	@Column('boolean', {
 		default: false,

@@ -11,7 +11,7 @@ const PREFER_AP = 'application/activity+json, */*';
 const PREFER_HTML = 'text/html, */*';
 const UNSPECIFIED = '*/*';
 
-// Response Contet-Type
+// Response Content-Type
 const AP = 'application/activity+json; charset=utf-8';
 const JSON = 'application/json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';

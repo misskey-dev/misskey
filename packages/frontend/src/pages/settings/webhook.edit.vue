@@ -31,6 +31,7 @@
 
 	<div class="_buttons">
 		<MkButton primary inline @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+		<MkButton danger inline @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 	</div>
 </div>
 </template>
@@ -44,6 +45,9 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { useRouter } from '@/router';
+
+const router = useRouter();
 
 const props = defineProps<{
 	webhookId: string;
@@ -86,6 +90,19 @@ async function save(): Promise<void> {
 	});
 }
 
+async function del(): Promise<void> {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: i18n.t('deleteAreYouSure', { x: webhook.name }),
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('i/webhooks/delete', {
+		webhookId: props.webhookId,
+	});
+
+	router.push('/settings/webhook');
+}
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);

@@ -1,6 +1,5 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
-import { Theme } from './scripts/theme';
 
 interface PostFormAction {
 	title: string,
@@ -45,6 +44,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	showFullAcct: {
 		where: 'account',
 		default: false,
+	},
+	collapseRenotes: {
+		where: 'account',
+		default: true,
 	},
 	rememberNoteVisibility: {
 		where: 'account',
@@ -158,6 +161,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	advancedMfm: {
+		where: 'device',
+		default: true,
+	},
 	loadRawImages: {
 		where: 'device',
 		default: false,
@@ -168,7 +175,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: false,
+		default: matchMedia('(prefers-reduced-motion)').matches,
 	},
 	emojiStyle: {
 		where: 'device',

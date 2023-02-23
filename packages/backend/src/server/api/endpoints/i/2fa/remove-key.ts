@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
-import type { UsersRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -50,6 +49,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 				id: ps.credentialId,
 			});
+
+			// 使われているキーがなくなったらパスワードレスログインをやめる
+			const keyCount = await this.userSecurityKeysRepository.count({
+				where: {
+					userId: me.id,
+				},
+				select: {
+					id: true,
+					name: true,
+					lastUsed: true,
+				},
+			});
+
+			if (keyCount === 0) {
+				await this.userProfilesRepository.update(me.id, {
+					usePasswordLessLogin: false,
+				});
+			}
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {

@@ -1,5 +1,7 @@
 import { bindThis } from '@/decorators.js';
 
+// TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
+
 export class Cache<T> {
 	public cache: Map<string | null, { date: number; value: T; }>;
 	private lifetime: number;

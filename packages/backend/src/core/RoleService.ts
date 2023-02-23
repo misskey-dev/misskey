@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
+import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -200,6 +200,25 @@ export class RoleService implements OnApplicationShutdown {
 		const user = roles.some(r => r.target === 'conditional') ? await this.userCacheService.findById(userId) : null;
 		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, r.condFormula));
 		return [...assignedRoles, ...matchedCondRoles];
+	}
+
+	/**
+	 * 指定ユーザーのバッジロール一覧取得
+	 */
+	@bindThis
+	public async getUserBadgeRoles(userId: User['id']) {
+		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const assignedRoleIds = assigns.map(x => x.roleId);
+		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
+		const assignedBadgeRoles = roles.filter(r => r.asBadge && assignedRoleIds.includes(r.id));
+		const badgeCondRoles = roles.filter(r => r.asBadge && (r.target === 'conditional'));
+		if (badgeCondRoles.length > 0) {
+			const user = roles.some(r => r.target === 'conditional') ? await this.userCacheService.findById(userId) : null;
+			const matchedBadgeCondRoles = badgeCondRoles.filter(r => this.evalCond(user!, r.condFormula));
+			return [...assignedBadgeRoles, ...matchedBadgeCondRoles];
+		} else {
+			return assignedBadgeRoles;
+		}
 	}
 
 	@bindThis

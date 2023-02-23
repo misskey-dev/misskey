@@ -20,10 +20,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
           tags: nyaone/misskey:latest
+
+      - name: Send success webhook
+        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}?subject=%E5%96%B5%E7%AA%9D%20Misskey%20%E9%95%9C%E5%83%8F

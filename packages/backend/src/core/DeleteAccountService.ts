@@ -14,7 +14,7 @@ export class DeleteAccountService {
 
 		private userSuspendService: UserSuspendService,
 		private queueService: QueueService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 	) {
 	}
 
@@ -38,6 +38,6 @@ export class DeleteAccountService {
 		});
 	
 		// Terminate streaming
-		this.globalEventServie.publishUserEvent(user.id, 'terminate', {});
+		this.globalEventService.publishUserEvent(user.id, 'terminate', {});
 	}
 }

@@ -1,3 +1,4 @@
 apiVersion: v2
 name: misskey
 version: 0.0.0
+description: This chart is created for the purpose of previewing Pull Requests. Do not use this for production use.

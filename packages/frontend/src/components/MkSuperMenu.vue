@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, unref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	props: {

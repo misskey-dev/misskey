@@ -137,38 +137,48 @@ export class FileServerService {
 
 		try {
 			if (file.state === 'remote') {
-				const convertFile = async () => {
-					if (file.fileRole === 'thumbnail') {
-						if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(file.mime)) {
-							return this.imageProcessingService.convertToWebpStream(
-								file.path,
-								498,
-								280
-							);
-						} else if (file.mime.startsWith('video/')) {
-							return await this.videoProcessingService.generateVideoThumbnail(file.path);
-						}
-					}
+				let image: IImageStreamable | null = null;
 
-					if (file.fileRole === 'webpublic') {
-						if (['image/svg+xml'].includes(file.mime)) {
-							return this.imageProcessingService.convertToWebpStream(
-								file.path,
-								2048,
-								2048,
-								{ ...webpDefault, lossless: true }
-							)
-						}
-					}
+				if (file.fileRole === 'thumbnail') {
+					if (isMimeImage(file.mime, 'sharp-convertible-image')) {
+						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-					return {
+						const url = new URL(`${this.config.mediaProxy}/static.webp`);
+						url.searchParams.set('url', file.url);
+						url.searchParams.set('static', '1');
+
+						file.cleanup();
+						return await reply.redirect(301, url.toString());
+					} else if (file.mime.startsWith('video/')) {
+						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
+						if (externalThumbnail) {
+							file.cleanup();
+							return await reply.redirect(301, externalThumbnail);
+						}
+
+						image = await this.videoProcessingService.generateVideoThumbnail(file.path);
+					}
+				}
+
+				if (file.fileRole === 'webpublic') {
+					if (['image/svg+xml'].includes(file.mime)) {
+						reply.header('Cache-Control', 'max-age=31536000, immutable');
+
+						const url = new URL(`${this.config.mediaProxy}/svg.webp`);
+						url.searchParams.set('url', file.url);
+
+						file.cleanup();
+						return await reply.redirect(301, url.toString());
+					}
+				}
+
+				if (!image) {
+					image = {
 						data: fs.createReadStream(file.path),
 						ext: file.ext,
 						type: file.mime,
 					};
-				};
-
-				const image = await convertFile();
+				}
 
 				if ('pipe' in image.data && typeof image.data.pipe === 'function') {
 					// image.dataがstreamなら、stream終了後にcleanup
@@ -180,7 +190,6 @@ export class FileServerService {
 				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
-				reply.header('Cache-Control', 'max-age=31536000, immutable');
 				return image.data;
 			}
 
@@ -217,6 +226,23 @@ export class FileServerService {
 			return;
 		}
 
+		if (this.config.externalMediaProxyEnabled) {
+			// 外部のメディアプロキシが有効なら、そちらにリダイレクト
+
+			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
+
+			const url = new URL(`${this.config.mediaProxy}/${request.params.url || ''}`);
+
+			for (const [key, value] of Object.entries(request.query)) {
+				url.searchParams.append(key, value);
+			}
+
+			return await reply.redirect(
+				301,
+				url.toString(),
+			);
+		}
+
 		// Create temp file
 		const file = await this.getStreamAndTypeFromUrl(url);
 		if (file === '404') {
@@ -235,8 +261,21 @@ export class FileServerService {
 			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image');
 			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image');
 
+			if (
+				'emoji' in request.query ||
+				'avatar' in request.query ||
+				'static' in request.query ||
+				'preview' in request.query ||
+				'badge' in request.query
+			) {
+				if (!isConvertibleImage) {
+					// 画像でないなら404でお茶を濁す
+					throw new StatusError('Unexpected mime', 404);
+				}
+			}
+
 			let image: IImageStreamable | null = null;
-			if ('emoji' in request.query && isConvertibleImage) {
+			if ('emoji' in request.query || 'avatar' in request.query) {
 				if (!isAnimationConvertibleImage && !('static' in request.query)) {
 					image = {
 						data: fs.createReadStream(file.path),
@@ -246,7 +285,7 @@ export class FileServerService {
 				} else {
 					const data = sharp(file.path, { animated: !('static' in request.query) })
 							.resize({
-								height: 128,
+								height: 'emoji' in request.query ? 128 : 320,
 								withoutEnlargement: true,
 							})
 							.webp(webpDefault);
@@ -257,16 +296,11 @@ export class FileServerService {
 						type: 'image/webp',
 					};
 				}
-			} else if ('static' in request.query && isConvertibleImage) {
+			} else if ('static' in request.query) {
 				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
-			} else if ('preview' in request.query && isConvertibleImage) {
+			} else if ('preview' in request.query) {
 				image = this.imageProcessingService.convertToWebpStream(file.path, 200, 200);
 			} else if ('badge' in request.query) {
-				if (!isConvertibleImage) {
-					// 画像でないなら404でお茶を濁す
-					throw new StatusError('Unexpected mime', 404);
-				}
-
 				const mask = sharp(file.path)
 					.resize(96, 96, {
 						fit: 'inside',
@@ -361,7 +395,7 @@ export class FileServerService {
 				state: 'remote',
 				mime, ext,
 				path, cleanup,
-			}
+			};
 		} catch (e) {
 			cleanup();
 			throw e;
@@ -370,7 +404,7 @@ export class FileServerService {
 
 	@bindThis
 	private async getFileFromKey(key: string): Promise<
-		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; url: string; mime: string; ext: string | null; path: string; cleanup: () => void; }
 		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
@@ -392,9 +426,10 @@ export class FileServerService {
 			const result = await this.downloadAndDetectTypeFromUrl(file.uri);
 			return {
 				...result,
+				url: file.uri,
 				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 				file,
-			}
+			};
 		}
 
 		const path = this.internalStorageService.resolvePath(key);
@@ -417,6 +452,6 @@ export class FileServerService {
 			mime: file.type,
 			ext: null,
 			path,
-		}
+		};
 	}
 }

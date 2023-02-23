@@ -1,7 +1,7 @@
-import { IsNull, MoreThan } from 'typeorm';
+import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { AdsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
-import { MAX_NOTE_TEXT_LENGTH, DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import type { AdsRepository, UsersRepository } from '@/models/index.js';
+import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -181,6 +181,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			mediaProxy: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
 			features: {
 				type: 'object',
 				optional: true, nullable: false,
@@ -258,6 +262,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const ads = await this.adsRepository.find({
 				where: {
 					expiresAt: MoreThan(new Date()),
+					startsAt: LessThanOrEqual(new Date()),
 				},
 			});
 
@@ -290,7 +295,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
-				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH, // 後方互換性のため
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
 				ads: ads.map(ad => ({
@@ -306,6 +311,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				translatorAvailable: instance.deeplAuthKey != null,
 
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
+
+				mediaProxy: this.config.mediaProxy,
 
 				...(ps.detail ? {
 					pinnedPages: instance.pinnedPages,

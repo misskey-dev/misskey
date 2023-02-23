@@ -14,6 +14,8 @@ import { RoleService } from '@/core/RoleService.js';
 
 @Injectable()
 export class UserListService {
+	public static TooManyUsersError = class extends Error {};
+
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -25,7 +27,7 @@ export class UserListService {
 		private idService: IdService,
 		private userFollowingService: UserFollowingService,
 		private roleService: RoleService,
-		private globalEventServie: GlobalEventService,
+		private globalEventService: GlobalEventService,
 		private proxyAccountService: ProxyAccountService,
 	) {
 	}
@@ -36,7 +38,7 @@ export class UserListService {
 			userListId: list.id,
 		});
 		if (currentCount > (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
-			throw new Error('Too many users');
+			throw new UserListService.TooManyUsersError();
 		}
 
 		await this.userListJoiningsRepository.insert({
@@ -46,7 +48,7 @@ export class UserListService {
 			userListId: list.id,
 		} as UserListJoining);
 	
-		this.globalEventServie.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
+		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
 	
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {

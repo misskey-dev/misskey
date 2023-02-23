@@ -1,12 +1,11 @@
 <template>
-<div class="hoawjimk">
+<div>
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
-	<div v-if="mediaList.filter(media => previewable(media)).length > 0" class="gird-container">
-		<div ref="gallery" :data-count="mediaList.filter(media => previewable(media)).length">
+	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
+		<div ref="gallery" :class="[$style.medias, count <= 4 ? $style['n' + count] : $style.nMany]">
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="media.id" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" class="image" :data-id="media.id" :image="media" :raw="raw"/>
-				<XAudio v-else-if="media.type.startWith('audio')" :key="media.id" :audio="media"/>
+				<XVideo v-if="media.type.startsWith('video')" :key="media.id" :class="$style.media" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -22,10 +21,8 @@ import 'photoswipe/style.css';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
-import XAudio from '@/components/MkMediaAudio.vue';
 import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
-import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];
@@ -34,6 +31,7 @@ const props = defineProps<{
 
 const gallery = ref(null);
 const pswpZIndex = os.claimZIndex('middle');
+const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
 
 onMounted(() => {
 	const lightbox = new PhotoSwipeLightbox({
@@ -47,8 +45,8 @@ onMounted(() => {
 					src: media.url,
 					w: media.properties.width,
 					h: media.properties.height,
-					alt: media.comment || media.name,
-					comment: media.comment || media.name,
+					alt: media.comment ?? media.name,
+					comment: media.comment ?? media.name,
 				};
 				if (media.properties.orientation != null && media.properties.orientation >= 5) {
 					[item.w, item.h] = [item.h, item.w];
@@ -92,8 +90,8 @@ onMounted(() => {
 			[itemData.w, itemData.h] = [itemData.h, itemData.w];
 		}
 		itemData.msrc = file.thumbnailUrl;
-		itemData.alt = file.comment || file.name;
-		itemData.comment = file.comment || file.name;
+		itemData.alt = file.comment ?? file.name;
+		itemData.comment = file.comment ?? file.name;
 		itemData.thumbCropped = true;
 	});
 
@@ -120,86 +118,68 @@ onMounted(() => {
 const previewable = (file: misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
-	return (file.type.startsWith('video') || file.type.startsWith('image') || file.type.startsWith('audio')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
+	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
 </script>
 
-<style lang="scss" scoped>
-.hoawjimk {
-	> .gird-container {
-		position: relative;
-		width: 100%;
-		margin-top: 4px;
+<style lang="scss" module>
+.container {
+	position: relative;
+	width: 100%;
+	margin-top: 4px;
+}
 
-		&:before {
-			content: '';
-			display: block;
-			padding-top: 56.25% // 16:9;
+.medias {
+	display: grid;
+	grid-gap: 8px;
+
+	// for webkit
+	height: 100%;
+
+	&.n1 {
+		aspect-ratio: 16/9;
+		grid-template-rows: 1fr;
+	}
+
+	&.n2 {
+		aspect-ratio: 16/9;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr;
+	}
+
+	&.n3 {
+		aspect-ratio: 16/9;
+		grid-template-columns: 1fr 0.5fr;
+		grid-template-rows: 1fr 1fr;
+
+		> .media:nth-child(1) {
+			grid-row: 1 / 3;
 		}
 
-		> div {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			display: grid;
-			grid-gap: 8px;
-
-			> * {
-				overflow: hidden;
-				border-radius: 6px;
-			}
-
-			&[data-count="1"] {
-				grid-template-rows: 1fr;
-			}
-
-			&[data-count="2"] {
-				grid-template-columns: 1fr 1fr;
-				grid-template-rows: 1fr;
-			}
-
-			&[data-count="3"] {
-				grid-template-columns: 1fr 0.5fr;
-				grid-template-rows: 1fr 1fr;
-
-				> *:nth-child(1) {
-					grid-row: 1 / 3;
-				}
-
-				> *:nth-child(3) {
-					grid-column: 2 / 3;
-					grid-row: 2 / 3;
-				}
-			}
-
-			&[data-count="4"] {
-				grid-template-columns: 1fr 1fr;
-				grid-template-rows: 1fr 1fr;
-			}
-
-			> *:nth-child(1) {
-				grid-column: 1 / 2;
-				grid-row: 1 / 2;
-			}
-
-			> *:nth-child(2) {
-				grid-column: 2 / 3;
-				grid-row: 1 / 2;
-			}
-
-			> *:nth-child(3) {
-				grid-column: 1 / 2;
-				grid-row: 2 / 3;
-			}
-
-			> *:nth-child(4) {
-				grid-column: 2 / 3;
-				grid-row: 2 / 3;
-			}
+		> .media:nth-child(3) {
+			grid-column: 2 / 3;
+			grid-row: 2 / 3;
 		}
 	}
+
+	&.n4 {
+		aspect-ratio: 16/9;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+	}
+
+	&.nMany {
+		grid-template-columns: 1fr 1fr;
+
+		> .media {
+			aspect-ratio: 16/9;
+		}
+	}
+}
+
+.media {
+	overflow: hidden; // clipにするとバグる
+	border-radius: 8px;
 }
 </style>
 

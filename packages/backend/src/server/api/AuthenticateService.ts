@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
-import type { CacheableLocalUser, ILocalUser } from '@/models/entities/User.js';
+import type { LocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { Cache } from '@/misc/cache.js';
 import type { App } from '@/models/entities/App.js';
@@ -36,14 +36,14 @@ export class AuthenticateService {
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[CacheableLocalUser | null | undefined, AccessToken | null | undefined]> {
+	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null | undefined, AccessToken | null | undefined]> {
 		if (token == null) {
 			return [null, null];
 		}
 	
 		if (isNativeToken(token)) {
 			const user = await this.userCacheService.localUserByNativeTokenCache.fetch(token,
-				() => this.usersRepository.findOneBy({ token }) as Promise<ILocalUser | null>);
+				() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
 	
 			if (user == null) {
 				throw new AuthenticationError('user not found');
@@ -70,7 +70,7 @@ export class AuthenticateService {
 			const user = await this.userCacheService.localUserByIdCache.fetch(accessToken.userId,
 				() => this.usersRepository.findOneBy({
 					id: accessToken.userId,
-				}) as Promise<ILocalUser>);
+				}) as Promise<LocalUser>);
 	
 			if (accessToken.appId) {
 				const app = await this.appCache.fetch(accessToken.appId,

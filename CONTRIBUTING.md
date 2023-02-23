@@ -83,7 +83,7 @@ An actual domain will be assigned so you can test the federation.
 	- The title must be in the format `Release: x.y.z`.
 		- `x.y.z` is the new version you are trying to release.
 3. Deploy and perform a simple QA check. Also verify that the tests passed.
-4. Merge it.
+4. Merge it. (Do not squash commit)
 5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
 	- The target branch must be `master`
 	- The tag name must be the version
@@ -111,6 +111,26 @@ command.
 - Vite HMR (just the `vite` command) is available. The behavior may be different from production.
 - Service Worker is watched by esbuild.
 
+### Dev Container
+Instead of running `pnpm` locally, you can use Dev Container to set up your development environment.
+To use Dev Container, open the project directory on VSCode with Dev Containers installed.  
+**Note:** If you are using Windows, please clone the repository with WSL. Using Git for Windows will result in broken files due to the difference in how newlines are handled.
+
+It will run the following command automatically inside the container.
+``` bash
+git submodule update --init
+pnpm install --frozen-lockfile
+cp .devcontainer/devcontainer.yml .config/default.yml
+pnpm build
+pnpm migrate
+```
+
+After finishing the migration, run the `pnpm dev` command to start the development server.
+
+``` bash
+pnpm dev
+```
+
 ## Testing
 - Test codes are located in [`/packages/backend/test`](/packages/backend/test).
 
@@ -121,7 +141,7 @@ cp .github/misskey/test.yml .config/
 ```
 Prepare DB/Redis for testing.
 ```
-docker-compose -f packages/backend/test/docker-compose.yml up
+docker compose -f packages/backend/test/docker-compose.yml up
 ```
 Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
 
@@ -258,9 +278,10 @@ SQLでは配列のインデックスは**1始まり**。
 ### null IN
 nullが含まれる可能性のあるカラムにINするときは、そのままだとおかしくなるのでORなどでnullのハンドリングをしよう。
 
-### `undefined`にご用心
-MongoDBの時とは違い、findOneでレコードを取得する時に対象レコードが存在しない場合 **`undefined`** が返ってくるので注意。
-MongoDBは`null`で返してきてたので、その感覚で`if (x === null)`とか書くとバグる。代わりに`if (x == null)`と書いてください
+### enumの削除は気をつける
+enumの列挙の内容の削除は、その値をもつレコードを全て削除しないといけない
+
+削除が重たかったり不可能だったりする場合は、削除しないでおく
 
 ### Migration作成方法
 packages/backendで:
