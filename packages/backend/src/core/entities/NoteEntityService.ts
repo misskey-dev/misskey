@@ -43,7 +43,7 @@ export class NoteEntityService implements OnModuleInit {
 		private pollsRepository: PollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: PollVotesRepository,
+		private sRepository: PollVotesRepository,
 
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
