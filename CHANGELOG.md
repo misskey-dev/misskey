@@ -10,6 +10,9 @@ You should also include the user name that made the change.
 -->
 ## 13.x.x (unreleased)
 
+### Note
+13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
 ### Improvements
 
 ### Bugfixes
