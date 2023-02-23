@@ -221,7 +221,7 @@ export function createPostgresDataSource(config: Config): DataSource {
 		migrations: ['../../migration/*.js'],
 	};
 
-	if (process.env.NODE_ENV === 'test') {
+	if (process.env.NODE_ENV === 'test' && process.env.VITEST === 'true') {
 		const db = newDb({ autoCreateForeignKeyIndices: true });
 
 		db.public.registerFunction({
