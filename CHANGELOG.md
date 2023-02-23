@@ -8,6 +8,14 @@
 
 You should also include the user name that made the change.
 -->
+## 13.7.1 (2023/02/23)
+
+### Improvements
+- pnpm buildではswcを使うように
+
+### Bugfixes
+- NODE_ENV=productionでビルドできないのを修正
+
 ## 13.7.0 (2023/02/22)
 
 ### Changes
