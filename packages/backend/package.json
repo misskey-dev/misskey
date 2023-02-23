@@ -7,9 +7,9 @@
 		"start": "node ./built/index.js",
 		"start:test": "NODE_ENV=test node ./built/index.js",
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
-		"build:swc": "swc src -d built -D",
+		"build": "swc src -d built -D",
 		"watch:swc": "swc src -d built -D -w",
-		"build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+		"build:tsc": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
 		"typecheck": "tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.ts\"",
@@ -21,6 +21,17 @@
 		"test-and-coverage": "pnpm jest-and-coverage"
 	},
 	"optionalDependencies": {
+		"@swc/core-android-arm64": "^1.3.11",
+		"@swc/core-darwin-arm64": "^1.3.36",
+		"@swc/core-darwin-x64": "^1.3.36",
+		"@swc/core-linux-arm-gnueabihf": "^1.3.36",
+		"@swc/core-linux-arm64-gnu": "^1.3.36",
+		"@swc/core-linux-arm64-musl": "^1.3.36",
+		"@swc/core-linux-x64-gnu": "^1.3.36",
+		"@swc/core-linux-x64-musl": "^1.3.36",
+		"@swc/core-win32-arm64-msvc": "^1.3.36",
+		"@swc/core-win32-ia32-msvc": "^1.3.36",
+		"@swc/core-win32-x64-msvc": "^1.3.36",
 		"@tensorflow/tfjs": "4.2.0",
 		"@tensorflow/tfjs-node": "4.2.0"
 	},
@@ -118,9 +129,11 @@
 		"systeminformation": "5.17.9",
 		"tinycolor2": "1.6.0",
 		"tmp": "0.2.1",
+		"tsc-alias": "1.8.2",
 		"tsconfig-paths": "4.1.2",
 		"twemoji-parser": "14.0.0",
 		"typeorm": "0.3.11",
+		"typescript": "4.9.5",
 		"ulid": "2.3.0",
 		"unzipper": "0.10.11",
 		"uuid": "9.0.0",
@@ -128,9 +141,7 @@
 		"web-push": "3.5.0",
 		"websocket": "1.0.34",
 		"ws": "8.12.1",
-		"xev": "3.0.2",
-		"tsc-alias": "1.8.2",
-		"typescript": "4.9.5"
+		"xev": "3.0.2"
 	},
 	"devDependencies": {
 		"@jest/globals": "29.4.3",
