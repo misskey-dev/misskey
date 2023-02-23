@@ -36,7 +36,6 @@ import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
-import { search } from '@/scripts/search';
 import { deviceKind } from '@/scripts/device-kind';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
