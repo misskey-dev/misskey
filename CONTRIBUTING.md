@@ -83,7 +83,7 @@ An actual domain will be assigned so you can test the federation.
 	- The title must be in the format `Release: x.y.z`.
 		- `x.y.z` is the new version you are trying to release.
 3. Deploy and perform a simple QA check. Also verify that the tests passed.
-4. Merge it.
+4. Merge it. (Do not squash commit)
 5. Create a [release of GitHub](https://github.com/misskey-dev/misskey/releases)
 	- The target branch must be `master`
 	- The tag name must be the version
