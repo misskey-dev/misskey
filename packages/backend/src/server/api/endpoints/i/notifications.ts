@@ -43,10 +43,10 @@ export const paramDef = {
 		markAsRead: { type: 'boolean', default: true },
 		// 後方互換のため、廃止された通知タイプも受け付ける
 		includeTypes: { type: 'array', items: {
-			type: 'string', enum: [ ...notificationTypes, ...obsoleteNotificationTypes ],
+			type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],
 		} },
 		excludeTypes: { type: 'array', items: {
-			type: 'string', enum: [ ...notificationTypes, ...obsoleteNotificationTypes ],
+			type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],
 		} },
 	},
 	required: [],
