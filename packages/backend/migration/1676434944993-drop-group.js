@@ -2,6 +2,7 @@ export class dropGroup1676434944993 {
     name = 'dropGroup1676434944993'
 
     async up(queryRunner) {
+				await queryRunner.query(`TRUNCATE TABLE "notification"`, undefined);
         await queryRunner.query(`ALTER TABLE "antenna" DROP CONSTRAINT "FK_ccbf5a8c0be4511133dcc50ddeb"`);
         await queryRunner.query(`ALTER TABLE "notification" DROP CONSTRAINT "FK_8fe87814e978053a53b1beb7e98"`);
         await queryRunner.query(`ALTER TABLE "antenna" DROP COLUMN "userGroupJoiningId"`);
