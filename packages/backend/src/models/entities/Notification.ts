@@ -65,8 +65,8 @@ export class Notification {
 	 * app - アプリ通知
 	 */
 	@Index()
-	@Column('varchar', {
-		length: 64,
+	@Column('enum', {
+		enum: notificationTypes,
 		comment: 'The type of the Notification.',
 	})
 	public type: typeof notificationTypes[number];
