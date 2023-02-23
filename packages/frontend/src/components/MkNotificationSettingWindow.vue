@@ -25,7 +25,7 @@
 					<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 					<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 				</div>
-				<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype]">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
+				<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.t(`_notification._types.${ntype}`) }}</MkSwitch>
 			</template>
 		</div>
 	</MkSpacer>
