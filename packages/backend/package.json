@@ -9,7 +9,7 @@
 		"migrate": "pnpm typeorm migration:run -d ormconfig.js",
 		"build": "swc src -d built -D",
 		"watch:swc": "swc src -d built -D -w",
-		"build:tsc": "tsc -p tsconfig.json || echo done. && tsc-alias -p tsconfig.json",
+		"build:tsc": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
 		"watch": "node watch.mjs",
 		"typecheck": "tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.ts\"",
