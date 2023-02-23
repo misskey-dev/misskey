@@ -50,9 +50,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		...createAiScriptEnv({ ...opts, token: opts.plugin.token }),
 		//#region Deprecated
 		'Mk:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
-			if (title?.type !== 'str') {
-				return;
-			}
+			utils.assertString(title);
 			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Mk:register_user_action': values.FN_NATIVE(([title, handler]) => {
