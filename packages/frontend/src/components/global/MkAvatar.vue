@@ -2,15 +2,15 @@
 <span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<template v-if="user.isCat">
+	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }">
 		<div :class="$style.earLeft"/>
 		<div :class="$style.earRight"/>
-	</template>
+	</div>
 </span>
 <MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="$style.ears">
+	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }">
 		<div :class="$style.earLeft"/>
 		<div :class="$style.earRight"/>
 	</div>
@@ -126,13 +126,16 @@ watch(() => props.user.avatarBlurhash, () => {
 		width: 100%;
 		height: 100%;
 		padding: 50%;
-		-webkit-mask:
-			url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') center / 50% 50%,
-			linear-gradient(#fff, #fff);
-		-webkit-mask-composite: destination-out, source-over;
-		mask:
-			url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') exclude center / 50% 50%,
-			linear-gradient(#fff, #fff);
+
+		&.mask {
+			-webkit-mask:
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') center / 50% 50%,
+				linear-gradient(#fff, #fff);
+			-webkit-mask-composite: destination-out, source-over;
+			mask:
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') exclude center / 50% 50%,
+				linear-gradient(#fff, #fff);
+		}
 
 		> .earLeft,
 		> .earRight {
