@@ -136,6 +136,7 @@ definePageMetadata(computed(() => ({
 
 .user {
 	flex: 1;
+	min-width: 0;
 }
 
 .unassign {
