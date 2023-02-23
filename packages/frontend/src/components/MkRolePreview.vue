@@ -1,10 +1,15 @@
 <template>
-<MkA v-adaptive-bg :to="`/admin/roles/${role.id}`" class="_panel" :class="$style.root" tabindex="-1" :style="{ '--color': role.color }">
+<MkA v-adaptive-bg :to="forModeration ? `/admin/roles/${role.id}` : `/roles/${role.id}`" class="_panel" :class="$style.root" tabindex="-1" :style="{ '--color': role.color }">
 	<div :class="$style.title">
 		<span :class="$style.icon">
-			<i v-if="role.isAdministrator" class="ti ti-crown" style="color: var(--accent);"></i>
-			<i v-else-if="role.isModerator" class="ti ti-shield" style="color: var(--accent);"></i>
-			<i v-else class="ti ti-user" style="opacity: 0.7;"></i>
+			<template v-if="role.iconUrl">
+				<img :class="$style.badge" :src="role.iconUrl"/>
+			</template>
+			<template v-else>
+				<i v-if="role.isAdministrator" class="ti ti-crown" style="color: var(--accent);"></i>
+				<i v-else-if="role.isModerator" class="ti ti-shield" style="color: var(--accent);"></i>
+				<i v-else class="ti ti-user" style="opacity: 0.7;"></i>
+			</template>
 		</span>
 		<span :class="$style.name">{{ role.name }}</span>
 		<span v-if="role.target === 'manual'" :class="$style.users">{{ role.usersCount }} users</span>
@@ -20,6 +25,7 @@ import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	role: any;
+	forModeration: boolean;
 }>();
 </script>
 
@@ -36,6 +42,11 @@ const props = defineProps<{
 
 .icon {
 	margin-right: 8px;
+}
+
+.badge {
+	height: 1.3em;
+	vertical-align: -20%;
 }
 
 .name {

@@ -73,7 +73,6 @@ import { inject, watch, nextTick, onMounted, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
-import { length } from 'stringz';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -155,7 +154,7 @@ let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
-let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') || '[]'));
+let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
 let imeText = $ref('');
 
 const draftKey = $computed((): string => {
@@ -201,7 +200,7 @@ const submitText = $computed((): string => {
 });
 
 const textLength = $computed((): number => {
-	return length((text + imeText).trim());
+	return (text + imeText).trim().length;
 });
 
 const maxTextLength = $computed((): number => {
@@ -534,7 +533,7 @@ function onDrop(ev): void {
 }
 
 function saveDraft() {
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') || '{}');
+	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
 
 	draftData[draftKey] = {
 		updatedAt: new Date(),
@@ -643,7 +642,7 @@ async function post(ev?: MouseEvent) {
 			emit('posted');
 			if (postData.text && postData.text !== '') {
 				const hashtags_ = mfm.parse(postData.text).filter(x => x.type === 'hashtag').map(x => x.props.hashtag);
-				const history = JSON.parse(miLocalStorage.getItem('hashtags') || '[]') as string[];
+				const history = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]') as string[];
 				miLocalStorage.setItem('hashtags', JSON.stringify(unique(hashtags_.concat(history))));
 			}
 			posting = false;
@@ -747,7 +746,7 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified) {
-			const draft = JSON.parse(miLocalStorage.getItem('drafts') || '{}')[draftKey];
+			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey];
 			if (draft) {
 				text = draft.data.text;
 				useCw = draft.data.useCw;

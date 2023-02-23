@@ -155,7 +155,6 @@ import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
-import { shownNoteIds } from '@/os';
 import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
@@ -195,6 +194,8 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.includes('$[x3')) ||
+	(appearNote.text.includes('$[x4')) ||
 	(appearNote.text.split('\n').length > 9) ||
 	(appearNote.text.length > 500) ||
 	(appearNote.files.length >= 5) ||
@@ -207,9 +208,7 @@ const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
-
-shownNoteIds.add(appearNote.id);
+let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || (appearNote.myReaction != null)));
 
 const keymap = {
 	'r': () => reply(true),

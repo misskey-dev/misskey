@@ -20,14 +20,14 @@ type File = {
 };
 
 // TODO: paramsの型をT['params']のスキーマ定義から推論する
-type executor<T extends IEndpointMeta, Ps extends Schema> =
+type Executor<T extends IEndpointMeta, Ps extends Schema> =
 	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
 		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
 
 export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
 	public exec: (params: any, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => Promise<any>;
 
-	constructor(meta: T, paramDef: Ps, cb: executor<T, Ps>) {
+	constructor(meta: T, paramDef: Ps, cb: Executor<T, Ps>) {
 		const validate = ajv.compile(paramDef);
 
 		this.exec = (params: any, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => {

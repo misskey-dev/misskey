@@ -84,6 +84,10 @@
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
+				<FormSection>
+					<template #label>Credits</template>
+					<p>Misskeyで使われる画像の一部は、許可を得て「あの子がこっちを見てるメーカー」で作成したものが含まれます。</p>
+				</FormSection>
 			</div>
 		</MkSpacer>
 	</div>
@@ -114,6 +118,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'narazaka',
 	icon: 'https://misskey-hub.net/patrons/e3affff31ffb4877b1196c7360abc3e5.jpg',
+}, {
+	name: 'ひとぅ',
+	icon: 'https://misskey-hub.net/patrons/8cc0d0a0a6d84c88bca1aedabf6ed5ab.jpg',
 }];
 
 const patrons = [

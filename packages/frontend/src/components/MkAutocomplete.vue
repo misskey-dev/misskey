@@ -209,7 +209,7 @@ function exec() {
 		}
 	} else if (props.type === 'hashtag') {
 		if (!props.q || props.q === '') {
-			hashtags.value = JSON.parse(miLocalStorage.getItem('hashtags') || '[]');
+			hashtags.value = JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]');
 			fetching.value = false;
 		} else {
 			const cacheKey = `autocomplete:hashtag:${props.q}`;

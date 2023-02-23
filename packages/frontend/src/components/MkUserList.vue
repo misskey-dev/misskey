@@ -7,9 +7,9 @@
 		</div>
 	</template>
 
-	<template #default="{ items: users }">
+	<template #default="{ items }">
 		<div class="efvhhmdq">
-			<MkUserInfo v-for="user in users" :key="user.id" class="user" :user="user"/>
+			<MkUserInfo v-for="item in items" :key="item.id" class="user" :user="extractor(item)"/>
 		</div>
 	</template>
 </MkPagination>
@@ -20,10 +20,13 @@ import MkUserInfo from '@/components/MkUserInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
-}>();
+	extractor?: (item: any) => any;
+}>(), {
+	extractor: (item) => item,
+});
 </script>
 
 <style lang="scss" scoped>

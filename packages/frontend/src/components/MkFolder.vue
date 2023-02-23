@@ -1,13 +1,20 @@
 <template>
 <div ref="rootEl" :class="[$style.root, { [$style.opened]: opened }]">
 	<div :class="$style.header" class="_button" @click="toggle">
-		<span :class="$style.headerIcon"><slot name="icon"></slot></span>
-		<span :class="$style.headerText"><slot name="label"></slot></span>
-		<span :class="$style.headerRight">
+		<div :class="$style.headerIcon"><slot name="icon"></slot></div>
+		<div :class="$style.headerText">
+			<div :class="$style.headerTextMain">
+				<slot name="label"></slot>
+			</div>
+			<div :class="$style.headerTextSub">
+				<slot name="caption"></slot>
+			</div>
+		</div>
+		<div :class="$style.headerRight">
 			<span :class="$style.headerRightText"><slot name="suffix"></slot></span>
 			<i v-if="opened" class="ti ti-chevron-up icon"></i>
 			<i v-else class="ti ti-chevron-down icon"></i>
-		</span>
+		</div>
 	</div>
 	<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null }">
 		<Transition
@@ -139,6 +146,17 @@ onMounted(() => {
 	}
 }
 
+.headerUpper {
+	display: flex;
+	align-items: center;
+}
+
+.headerLower {
+	color: var(--fgTransparentWeak);
+    font-size: .85em;
+	padding-left: 4px;
+}
+
 .headerIcon {
 	margin-right: 0.75em;
 	flex-shrink: 0;
@@ -159,6 +177,15 @@ onMounted(() => {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	padding-right: 12px;
+}
+
+.headerTextMain {
+
+}
+
+.headerTextSub {
+	color: var(--fgTransparentWeak);
+	font-size: .85em;
 }
 
 .headerRight {
