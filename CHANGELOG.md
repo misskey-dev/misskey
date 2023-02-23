@@ -8,6 +8,17 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Changes
+- Server: 通知タイプ pollVoteをデータベースから完全に削除
+
+### Improvements
+
+### Bugfixes
+- Client: 通知設定画面で以前からグループの招待を有効化していた場合、通知の表示に失敗する問題の修正
+- Client: 通知設定画面に古いトグルが残っていた問題を修正
+
 ## 13.7.1 (2023/02/23)
 
 ### Improvements
