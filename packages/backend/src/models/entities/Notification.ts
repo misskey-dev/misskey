@@ -1,5 +1,5 @@
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
-import { notificationTypes } from '@/types.js';
+import { notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { id } from '../id.js';
 import { User } from './User.js';
 import { Note } from './Note.js';
@@ -66,7 +66,10 @@ export class Notification {
 	 */
 	@Index()
 	@Column('enum', {
-		enum: notificationTypes,
+		enum: [
+			...notificationTypes,
+			...obsoleteNotificationTypes.filter(x => x !== 'groupInvited'), // dropGroup1676434944993でgroupInvitedは削除
+		],
 		comment: 'The type of the Notification.',
 	})
 	public type: typeof notificationTypes[number];
