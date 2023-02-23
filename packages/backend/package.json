@@ -33,17 +33,7 @@
 		"@swc/core-win32-ia32-msvc": "^1.3.36",
 		"@swc/core-win32-x64-msvc": "^1.3.36",
 		"@tensorflow/tfjs": "4.2.0",
-		"@tensorflow/tfjs-node": "4.2.0",
-		"@swc/core-darwin-arm64": "^1.3.36",
-		"@swc/core-darwin-x64": "^1.3.36",
-		"@swc/core-linux-arm-gnueabihf": "^1.3.36",
-		"@swc/core-linux-arm64-gnu": "^1.3.36",
-		"@swc/core-linux-arm64-musl": "^1.3.36",
-		"@swc/core-linux-x64-gnu": "^1.3.36",
-		"@swc/core-linux-x64-musl": "^1.3.36",
-		"@swc/core-win32-arm64-msvc": "^1.3.36",
-		"@swc/core-win32-ia32-msvc": "^1.3.36",
-		"@swc/core-win32-x64-msvc": "^1.3.36"
+		"@tensorflow/tfjs-node": "4.2.0"
 	},
 	"dependencies": {
 		"@bull-board/api": "4.12.1",
