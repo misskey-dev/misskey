@@ -13,9 +13,6 @@ You should also include the user name that made the change.
 ### Note
 13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
 
-### Changes
-- Server: 通知タイプ pollVoteをデータベースから完全に削除
-
 ### Improvements
 
 ### Bugfixes
