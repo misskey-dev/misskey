@@ -201,13 +201,7 @@ export class UserProfile {
 	})
 	public mutedInstances: string[];
 
-	@Column('enum', {
-		enum: [ 
-			...notificationTypes,
-			// マイグレーションで削除が困難なので古いenumは残しておく
-			...obsoleteNotificationTypes,
-		],
-		array: true,
+	@Column('jsonb', {
 		default: [],
 	})
 	public mutingNotificationTypes: typeof notificationTypes[number][];
