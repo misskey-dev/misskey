@@ -8,6 +8,12 @@
 
 You should also include the user name that made the change.
 -->
+## 13.x.x (unreleased)
+
+### Improvements
+
+### Bugfixes
+- Client: 「キャッシュを削除」した後、ローカルのカスタム絵文字が表示されなくなる
 
 ## 13.7.2 (2023/02/23)
 
