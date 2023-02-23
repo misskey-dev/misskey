@@ -36,8 +36,6 @@ jobs:
         - backend
         - frontend
         - sw
-        lint:
-        - eslint
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -53,4 +51,29 @@ jobs:
         cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
-    - run: pnpm --filter ${{ matrix.workspace }} run ${{ matrix.lint }}
+    - run: pnpm --filter ${{ matrix.workspace }} run eslint
+
+  typecheck:
+    needs: [pnpm_install]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        workspace:
+        - backend
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter ${{ matrix.workspace }} run typecheck
