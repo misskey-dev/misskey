@@ -56,34 +56,24 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Mk:register_user_action': values.FN_NATIVE(([title, handler]) => {
-			if (title?.type !== 'str') {
-				return;
-			}
+			utils.assertString(title);
 			registerUserAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Mk:register_note_action': values.FN_NATIVE(([title, handler]) => {
-			if (title?.type !== 'str') {
-				return;
-			}
+			utils.assertString(title);
 			registerNoteAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		//#endregion
 		'Plugin:register_post_form_action': values.FN_NATIVE(([title, handler]) => {
-			if (title?.type !== 'str') {
-				return;
-			}
+			utils.assertString(title);
 			registerPostFormAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Plugin:register_user_action': values.FN_NATIVE(([title, handler]) => {
-			if (title?.type !== 'str') {
-				return;
-			}
+			utils.assertString(title);
 			registerUserAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Plugin:register_note_action': values.FN_NATIVE(([title, handler]) => {
-			if (title?.type !== 'str') {
-				return;
-			}
+			utils.assertString(title);
 			registerNoteAction({ pluginId: opts.plugin.id, title: title.value, handler });
 		}),
 		'Plugin:register_note_view_interruptor': values.FN_NATIVE(([handler]) => {
@@ -93,9 +83,7 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 			registerNotePostInterruptor({ pluginId: opts.plugin.id, handler });
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
-			if (url?.type !== 'str') {
-				return;
-			}
+			utils.assertString(url);
 			window.open(url.value, '_blank');
 		}),
 		'Plugin:config': values.OBJ(config),
