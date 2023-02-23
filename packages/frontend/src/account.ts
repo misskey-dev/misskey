@@ -29,7 +29,7 @@ export function incNotesCount() {
 const refreshing = ref(false);
 
 // 保存されているアカウント情報全てに対して、最新の情報を取得
-export async function refreshAccounts(force?: true) {
+export async function refreshAccounts(force = false) {
 	if (force !== true && refreshing.value) return;
 	refreshing.value = true;
 	const storedAccounts = await getAccounts();
