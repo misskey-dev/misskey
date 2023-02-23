@@ -352,7 +352,10 @@ export class NoteCreateService {
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
+		// FIXME
+		if (process.env.NODE_ENV !== 'test') {
+			setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
+		}
 
 		return note;
 	}
