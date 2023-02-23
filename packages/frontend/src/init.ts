@@ -47,6 +47,7 @@ import { deckStore } from './ui/deck/deck-store';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
 import { fetchCustomEmojis } from './custom-emojis';
+import { mainRouter } from './router';
 
 console.info(`Misskey v${version}`);
 
@@ -352,7 +353,9 @@ const hotkeys = {
 	'd': (): void => {
 		defaultStore.set('darkMode', !defaultStore.state.darkMode);
 	},
-	's': search,
+	's': (): void => {
+		mainRouter.push('/search');
+	}
 };
 
 if ($i) {

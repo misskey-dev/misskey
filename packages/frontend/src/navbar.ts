@@ -42,7 +42,7 @@ export const navbarItemDef = reactive({
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',
-		action: () => search(),
+		to: '/search',
 	},
 	lists: {
 		title: i18n.ts.lists,
