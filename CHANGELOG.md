@@ -8,7 +8,8 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+
+## 13.7.3 (2023/02/23)
 
 ### Note
 13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
