@@ -10,10 +10,10 @@
 <MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<template v-if="user.isCat">
+	<div v-if="user.isCat" :class="$style.ears">
 		<div :class="$style.earLeft"/>
 		<div :class="$style.earRight"/>
-	</template>
+	</div>
 </MkA>
 </template>
 
@@ -118,42 +118,67 @@ watch(() => props.user.avatarBlurhash, () => {
 }
 
 .cat {
-	> .earLeft,
-	> .earRight {
+	> .ears {
 		contain: strict;
-		display: inline-block;
-		height: 50%;
-		width: 50%;
-		background: currentColor;
+		position: absolute;
+		top: -50%;
+		left: -50%;
+		width: 100%;
+		height: 100%;
+		padding: 50%;
+		-webkit-mask:
+			url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') center / 50% 50%,
+			linear-gradient(#fff, #fff);
+		-webkit-mask-composite: destination-out, source-over;
+		mask:
+			url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') exclude center / 50% 50%,
+			linear-gradient(#fff, #fff);
 
-		&::before {
+		> .earLeft,
+		> .earRight {
 			contain: strict;
-			content: '';
-			display: block;
-			width: 60%;
-			height: 60%;
-			margin: 20%;
-			background: #df548f;
+			display: inline-block;
+			height: 50%;
+			width: 50%;
+			background: currentColor;
+
+			&::before {
+				contain: strict;
+				content: '';
+				display: block;
+				width: 60%;
+				height: 60%;
+				margin: 20%;
+				background: #df548f;
+			}
 		}
-	}
 
-	> .earLeft {
-		border-radius: 0 75% 75%;
-		transform: rotate(37.5deg) skew(30deg);
-	}
-
-	> .earRight {
-		border-radius: 75% 0 75% 75%;
-		transform: rotate(-37.5deg) skew(-30deg);
-	}
-
-	&:hover {
 		> .earLeft {
-			animation: earwiggleleft 1s infinite;
+			transform: rotate(37.5deg) skew(30deg);
+
+			&, &::before {
+				border-radius: 0 75% 75%;
+			}
 		}
 
 		> .earRight {
-			animation: earwiggleright 1s infinite;
+			transform: rotate(-37.5deg) skew(-30deg);
+
+			&, &::before {
+				border-radius: 75% 0 75% 75%;
+			}
+		}
+	}
+
+	&:hover {
+		> .ears {
+			> .earLeft {
+				animation: earwiggleleft 1s infinite;
+			}
+
+			> .earRight {
+				animation: earwiggleright 1s infinite;
+			}
 		}
 	}
 }
