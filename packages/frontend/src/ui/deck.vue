@@ -98,6 +98,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
+import { deviceKind } from '@/scripts/device-kind';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 mainRouter.navHook = (path, flag): boolean => {
@@ -115,7 +116,7 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
 });
 
-const snapScroll = isMobile;
+const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
 const drawerMenuShowing = ref(false);
 
 const route = 'TODO';

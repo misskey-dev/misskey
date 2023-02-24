@@ -101,13 +101,6 @@ export class NotificationEntityService {
 				}),
 				reaction: notification.reaction,
 			} : {}),
-			...(notification.type === 'pollVote' ? { // TODO: そのうち消す
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
-				choice: notification.choice,
-			} : {}),
 			...(notification.type === 'pollEnded' ? {
 				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
 					detail: true,
