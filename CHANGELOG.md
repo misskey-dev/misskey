@@ -14,7 +14,7 @@ You should also include the user name that made the change.
 ### Improvements
 
 ### Bugfixes
-- Windows環境でswcを使うとビルドできないのを修正
+- Windows環境でswcを使うと正しくビルドできない問題の修正
 
 ## 13.7.5 (2023/02/24)
 
