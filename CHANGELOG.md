@@ -2,6 +2,7 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
 
 ### Bugfixes
 -
