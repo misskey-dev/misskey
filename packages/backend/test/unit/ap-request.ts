@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import httpSignature from '@peertube/http-signature';
+import { describe, test } from 'vitest';
 
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
