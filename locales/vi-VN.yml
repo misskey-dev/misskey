@@ -1102,6 +1102,7 @@ _ago:
   weeksAgo: "{n} tuần trước"
   monthsAgo: "{n} tháng trước"
   yearsAgo: "{n} năm trước"
+  invalid: "Không có gì ở đây"
 _time:
   second: "s"
   minute: "phút"
