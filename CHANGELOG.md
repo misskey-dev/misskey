@@ -13,6 +13,9 @@ You should also include the user name that made the change.
 ### Note
 13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
 
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+
 ### Bugfixes
 - 全ての通知が削除されてしまうのを修正
 
