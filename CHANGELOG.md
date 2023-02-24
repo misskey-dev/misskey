@@ -2,16 +2,21 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
+-
 
 ### Bugfixes
 -
 
 You should also include the user name that made the change.
 -->
-## 13.7.4 (unreleased)
+## 13.7.5 (2023/02/24)
 
 ### Note
 13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
 
 ### Bugfixes
 - 全ての通知が削除されてしまうのを修正
