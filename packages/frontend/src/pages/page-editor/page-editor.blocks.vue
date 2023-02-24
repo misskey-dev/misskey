@@ -15,8 +15,6 @@ import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
-import * as os from '@/os';
-import { deepClone } from '@/scripts/clone';
 
 export default defineComponent({
 	components: {

@@ -6,7 +6,7 @@ import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
 globalThis.addEventListener('install', ev => {
-	//ev.waitUntil(self.skipWaiting());
+	//ev.waitUntil(globalThis.skipWaiting());
 });
 
 globalThis.addEventListener('activate', ev => {
@@ -15,9 +15,9 @@ globalThis.addEventListener('activate', ev => {
 			.then(cacheNames => Promise.all(
 				cacheNames
 					.filter((v) => v !== swLang.cacheName)
-					.map(name => caches.delete(name))
+					.map(name => caches.delete(name)),
 			))
-			.then(() => self.clients.claim())
+			.then(() => globalThis.clients.claim()),
 	);
 });
 
@@ -34,73 +34,54 @@ globalThis.addEventListener('fetch', ev => {
 	if (!isHTMLRequest) return;
 	ev.respondWith(
 		fetch(ev.request)
-		.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 }))
+			.catch(() => new Response(`Offline. Service Worker @${_VERSION_}`, { status: 200 })),
 	);
 });
 
 globalThis.addEventListener('push', ev => {
 	// クライアント取得
-	ev.waitUntil(self.clients.matchAll({
+	ev.waitUntil(globalThis.clients.matchAll({
 		includeUncontrolled: true,
-		type: 'window'
+		type: 'window',
 	}).then(async (clients: readonly WindowClient[]) => {
 		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.data?.json();
 
 		switch (data.type) {
 			// case 'driveFileCreated':
 			case 'notification':
-			case 'unreadMessagingMessage':
 			case 'unreadAntennaNote':
 				// 1日以上経過している場合は無視
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
-				// クライアントがあったらストリームに接続しているということなので通知しない
-				if (clients.length !== 0) break;
-
 				return createNotification(data);
 			case 'readAllNotifications':
-				for (const n of await self.registration.getNotifications()) {
+				for (const n of await globalThis.registration.getNotifications()) {
 					if (n?.data?.type === 'notification') n.close();
 				}
 				break;
-			case 'readAllMessagingMessages':
-				for (const n of await self.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadMessagingMessage') n.close();
-				}
-				break;
 			case 'readAllAntennas':
-				for (const n of await self.registration.getNotifications()) {
+				for (const n of await globalThis.registration.getNotifications()) {
 					if (n?.data?.type === 'unreadAntennaNote') n.close();
 				}
 				break;
 			case 'readNotifications':
-				for (const n of await self.registration.getNotifications()) {
-					if (data.body?.notificationIds?.includes(n.data.body.id)) {
+				for (const n of await globalThis.registration.getNotifications()) {
+					if (data.body.notificationIds.includes(n.data.body.id)) {
 						n.close();
 					}
 				}
 				break;
-			case 'readAllMessagingMessagesOfARoom':
-				for (const n of await self.registration.getNotifications()) {
-					if (n.data.type === 'unreadMessagingMessage'
-						&& ('userId' in data.body
-							? data.body.userId === n.data.body.userId
-							: data.body.groupId === n.data.body.groupId)
-						) {
-							n.close();
-						}
-				}
-				break;
 			case 'readAntenna':
-				for (const n of await self.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadAntennaNote' && data.body?.antennaId === n.data.body.antenna.id) {
+				for (const n of await globalThis.registration.getNotifications()) {
+					if (n?.data?.type === 'unreadAntennaNote' && data.body.antennaId === n.data.body.antenna.id) {
 						n.close();
 					}
 				}
 				break;
 		}
 
-		return createEmptyNotification();
+		await createEmptyNotification();
+		return;
 	}));
 });
 
@@ -135,18 +116,12 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 							case 'receiveFollowRequest':
 								await swos.api('following/requests/accept', loginId, { userId: data.body.userId });
 								break;
-							case 'groupInvited':
-								await swos.api('users/groups/invitations/accept', loginId, { invitationId: data.body.invitation.id });
-								break;
 						}
 						break;
 					case 'reject':
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
 								await swos.api('following/requests/reject', loginId, { userId: data.body.userId });
-								break;
-							case 'groupInvited':
-								await swos.api('users/groups/invitations/reject', loginId, { invitationId: data.body.invitation.id });
 								break;
 						}
 						break;
@@ -157,9 +132,6 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						switch (data.body.type) {
 							case 'receiveFollowRequest':
 								client = await swos.openClient('push', '/my/follow-requests', loginId);
-								break;
-							case 'groupInvited':
-								client = await swos.openClient('push', '/my/groups', loginId);
 								break;
 							case 'reaction':
 								client = await swos.openNote(data.body.note.id, loginId);
@@ -173,9 +145,6 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 								break;
 						}
 				}
-				break;
-			case 'unreadMessagingMessage':
-				client = await swos.openChat(data.body, loginId);
 				break;
 			case 'unreadAntennaNote':
 				client = await swos.openAntenna(data.body.antenna.id, loginId);
@@ -207,7 +176,7 @@ globalThis.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['me
 				// Cache Storage全削除
 				await caches.keys()
 					.then(cacheNames => Promise.all(
-						cacheNames.map(name => caches.delete(name))
+						cacheNames.map(name => caches.delete(name)),
 					));
 				return; // TODO
 		}

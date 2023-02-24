@@ -33,8 +33,8 @@
 		<button key="localOnly" class="_button" :class="[$style.item, $style.localOnly, { [$style.active]: localOnly }]" data-index="5" @click="localOnly = !localOnly">
 			<div :class="$style.icon"><i class="ti ti-world-off"></i></div>
 			<div :class="$style.body">
-				<span :class="$style.itemTitle">{{ i18n.ts._visibility.localOnly }}</span>
-				<span :class="$style.itemDescription">{{ i18n.ts._visibility.localOnlyDescription }}</span>
+				<span :class="$style.itemTitle">{{ i18n.ts._visibility.disableFederation }}</span>
+				<span :class="$style.itemDescription">{{ i18n.ts._visibility.disableFederationDescription }}</span>
 			</div>
 			<div :class="$style.toggle"><i :class="localOnly ? 'ti ti-toggle-right' : 'ti ti-toggle-left'"></i></div>
 		</button>

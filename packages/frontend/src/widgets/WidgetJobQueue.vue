@@ -46,13 +46,12 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { onUnmounted, reactive } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
 import number from '@/filters/number';
 import * as sound from '@/scripts/sound';
-import * as os from '@/os';
 import { deepClone } from '@/scripts/clone';
 
 const name = 'jobQueue';

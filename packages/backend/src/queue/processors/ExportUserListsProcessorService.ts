@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull, MoreThan } from 'typeorm';
+import { In } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
 import type { UserListJoiningsRepository, UserListsRepository, UsersRepository } from '@/models/index.js';

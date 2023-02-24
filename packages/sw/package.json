@@ -4,7 +4,9 @@
 	"scripts": {
 		"watch": "node build.js watch",
 		"build": "node build.js",
-		"lint": "tsc --noEmit && eslint --quiet src/**/*.ts"
+		"typecheck": "tsc --noEmit",
+		"eslint": "eslint --quiet src/**/*.ts",
+		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
 		"esbuild": "0.14.42",
@@ -12,9 +14,9 @@
 		"misskey-js": "0.0.15"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "5.51.0",
+		"@typescript-eslint/parser": "5.52.0",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.62",
-		"eslint": "8.33.0",
+		"eslint": "8.34.0",
 		"eslint-plugin-import": "2.27.5",
 		"typescript": "4.9.5"
 	}

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onUnmounted, ref, toRef } from 'vue';
+import { computed, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { sum } from '@/scripts/array';
 import { pleaseLogin } from '@/scripts/please-login';

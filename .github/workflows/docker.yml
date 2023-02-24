@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3.3.0
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.3.0
+        with:
+          platforms: linux/amd64,linux/arm64
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -31,9 +36,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and Push to Docker Hub
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
+          builder: ${{ steps.buildx.outputs.name }}
           context: .
           push: true
+          platforms: ${{ steps.buildx.outputs.platforms }}
+          provenance: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

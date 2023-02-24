@@ -12,10 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import * as os from '@/os';
-import number from '@/filters/number';
-import { i18n } from '@/i18n';
 
 let moderators: any = $ref(null);
 let fetching = $ref(true);

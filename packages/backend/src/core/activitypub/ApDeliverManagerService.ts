@@ -3,7 +3,7 @@ import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -18,7 +18,7 @@ interface IFollowersRecipe extends IRecipe {
 
 interface IDirectRecipe extends IRecipe {
 	type: 'Direct';
-	to: IRemoteUser;
+	to: RemoteUser;
 }
 
 const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
@@ -50,7 +50,7 @@ export class ApDeliverManagerService {
 	 * @param from Followee
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: ILocalUser['id']; host: null; }, activity: any) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: any) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -68,7 +68,7 @@ export class ApDeliverManagerService {
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: ILocalUser['id']; host: null; }, activity: any, to: IRemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: any, to: RemoteUser) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -132,7 +132,7 @@ class DeliverManager {
 	 * @param to To
 	 */
 	@bindThis
-	public addDirectRecipe(to: IRemoteUser) {
+	public addDirectRecipe(to: RemoteUser) {
 		const recipe = {
 			type: 'Direct',
 			to,

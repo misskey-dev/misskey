@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, onUnmounted } from 'vue';
+import { defineAsyncComponent, onUnmounted } from 'vue';
 import { url as local } from '@/config';
 import { i18n } from '@/i18n';
 import * as os from '@/os';

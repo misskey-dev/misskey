@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
-import * as mfm from 'mfm-js';
+import { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
