@@ -13,13 +13,13 @@ import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
 
 const props = withDefaults(defineProps<{
-	time: Date | string;
+	time: Date | string | number;
 	mode?: 'relative' | 'absolute' | 'detail';
 }>(), {
 	mode: 'relative',
 });
 
-const _time = (props.time instanceof Date ? props.time : new Date(props.time)).getTime();
+const _time = typeof props.time === 'number' ? props.time : (props.time instanceof Date ? props.time : new Date(props.time).getTime());
 const invalid = Number.isNaN(_time)
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
