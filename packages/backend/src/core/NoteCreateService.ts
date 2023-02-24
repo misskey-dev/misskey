@@ -353,7 +353,7 @@ export class NoteCreateService {
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		// FIXME: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1115459668
-		if (process.env.NODE_ENV !== 'test' && process.env.VITEST === 'true') {
+		if (!(process.env.NODE_ENV === 'test' && process.env.VITEST === 'true')) {
 			setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
 		}
 
