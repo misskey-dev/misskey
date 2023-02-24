@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
 import { Cache } from '@/misc/cache.js';
-import type { CacheableLocalUser, CacheableUser, ILocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -11,10 +11,10 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class UserCacheService implements OnApplicationShutdown {
-	public userByIdCache: Cache<CacheableUser>;
-	public localUserByNativeTokenCache: Cache<CacheableLocalUser | null>;
-	public localUserByIdCache: Cache<CacheableLocalUser>;
-	public uriPersonCache: Cache<CacheableUser | null>;
+	public userByIdCache: Cache<User>;
+	public localUserByNativeTokenCache: Cache<LocalUser | null>;
+	public localUserByIdCache: Cache<LocalUser>;
+	public uriPersonCache: Cache<User | null>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -27,10 +27,10 @@ export class UserCacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new Cache<CacheableUser>(Infinity);
-		this.localUserByNativeTokenCache = new Cache<CacheableLocalUser | null>(Infinity);
-		this.localUserByIdCache = new Cache<CacheableLocalUser>(Infinity);
-		this.uriPersonCache = new Cache<CacheableUser | null>(Infinity);
+		this.userByIdCache = new Cache<User>(Infinity);
+		this.localUserByNativeTokenCache = new Cache<LocalUser | null>(Infinity);
+		this.localUserByIdCache = new Cache<LocalUser>(Infinity);
+		this.uriPersonCache = new Cache<User | null>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}
@@ -45,10 +45,10 @@ export class UserCacheService implements OnApplicationShutdown {
 				case 'userChangeSuspendedState':
 				case 'remoteUserUpdated': {
 					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
-					this.userByIdCache.set(user.id, user as CacheableUser);
+					this.userByIdCache.set(user.id, user);
 					for (const [k, v] of this.uriPersonCache.cache.entries()) {
 						if (v.value?.id === user.id) {
-							this.uriPersonCache.set(k, user as CacheableUser);
+							this.uriPersonCache.set(k, user);
 						}
 					}
 					if (this.userEntityService.isLocalUser(user)) {
@@ -58,7 +58,7 @@ export class UserCacheService implements OnApplicationShutdown {
 					break;
 				}
 				case 'userTokenRegenerated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as ILocalUser;
+					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as LocalUser;
 					this.localUserByNativeTokenCache.delete(body.oldToken);
 					this.localUserByNativeTokenCache.set(body.newToken, user);
 					break;
@@ -78,7 +78,7 @@ export class UserCacheService implements OnApplicationShutdown {
 
 	@bindThis
 	public findById(userId: User['id']) {
-		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }) as Promise<CacheableUser>);
+		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
 	}
 
 	@bindThis

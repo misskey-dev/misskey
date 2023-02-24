@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
-import * as os from '@/os';
 import { CanvasBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
 

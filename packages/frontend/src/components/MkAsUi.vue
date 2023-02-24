@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, Ref } from 'vue';
+import { Ref } from 'vue';
 import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';

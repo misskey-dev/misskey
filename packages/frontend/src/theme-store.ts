@@ -1,13 +1,13 @@
-import { api } from '@/os';
-import { $i } from '@/account';
 import { Theme } from './scripts/theme';
 import { miLocalStorage } from './local-storage';
+import { api } from '@/os';
+import { $i } from '@/account';
 
 const lsCacheKey = $i ? `themes:${$i.id}` as const : null;
 
 export function getThemes(): Theme[] {
 	if ($i == null) return [];
-	return JSON.parse(miLocalStorage.getItem(lsCacheKey!) || '[]');
+	return JSON.parse(miLocalStorage.getItem(lsCacheKey!) ?? '[]');
 }
 
 export async function fetchThemes(): Promise<void> {

@@ -1,5 +1,5 @@
 import * as crypto from 'node:crypto';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { CONTEXTS } from './misc/contexts.js';

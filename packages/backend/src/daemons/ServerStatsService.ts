@@ -1,8 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import si from 'systeminformation';
 import Xev from 'xev';
 import * as osUtils from 'os-utils';
-import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 

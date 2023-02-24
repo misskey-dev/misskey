@@ -8,7 +8,7 @@
 
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
-				<XTimeline
+				<MkTimeline
 					ref="tlComponent"
 					:key="src"
 					:src="src"
@@ -23,7 +23,8 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch, provide } from 'vue';
-import XTimeline from '@/components/MkTimeline.vue';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -32,7 +33,6 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -44,7 +44,7 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $shallowRef<InstanceType<typeof XTimeline>>();
+const tlComponent = $shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = $shallowRef<HTMLElement>();
 
 let queue = $ref(0);
@@ -83,7 +83,9 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await os.api('channels/followed');
+	const channels = await os.api('channels/followed', {
+		limit: 100,
+	});
 	const items = channels.map(channel => ({
 		type: 'link' as const,
 		text: channel.name,

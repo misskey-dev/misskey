@@ -86,10 +86,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue';
+import { computed, watch } from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
-import { version, instanceName, host } from '@/config';
+import { version, host } from '@/config';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSuspense from '@/components/form/suspense.vue';

@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {

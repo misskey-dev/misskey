@@ -53,7 +53,7 @@ export class VideoProcessingService {
 				thumbnail: '1',
 				url,
 			})
-		)
+		);
 	}
 }
 

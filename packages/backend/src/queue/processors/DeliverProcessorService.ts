@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, InstancesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';

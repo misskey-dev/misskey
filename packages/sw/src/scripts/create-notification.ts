@@ -10,6 +10,12 @@ import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
 import * as url from '@/scripts/url';
 
+const closeNotificationsByTags = async (tags: string[]) => {
+	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
+		n.close();
+	}
+};
+
 const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
 /* How to add a new badge:
  * 1. Find the icon and download png from https://tabler-icons.io/
@@ -23,7 +29,7 @@ export async function createNotification<K extends keyof pushNotificationDataMap
 	const n = await composeNotification(data);
 
 	if (n) {
-		return self.registration.showNotification(...n);
+		return globalThis.registration.showNotification(...n);
 	} else {
 		console.error('Could not compose notification', data);
 		return createEmptyNotification();
@@ -161,6 +167,7 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 						badge = iconUrl('plus');
 					}
 
+					const tag = `reaction:${data.body.note.id}`;
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
@@ -209,23 +216,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 						data,
 					}];
 
-				case 'groupInvited':
-					return [t('_notification.youWereInvitedToGroup', { userName: getUserName(data.body.user) }), {
-						body: data.body.invitation.group.name,
-						badge: iconUrl('users'),
-						data,
-						actions: [
-							{
-								action: 'accept',
-								title: t('accept'),
-							},
-							{
-								action: 'reject',
-								title: t('reject'),
-							},
-						],
-					}];
-
 				case 'app':
 					return [data.body.header ?? data.body.body, {
 						body: data.body.header ? data.body.body : '',
@@ -236,23 +226,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 				default:
 					return null;
 			}
-		case 'unreadMessagingMessage':
-			if (data.body.groupId === null) {
-				return [t('_notification.youGotMessagingMessageFromUser', { name: getUserName(data.body.user) }), {
-					icon: data.body.user.avatarUrl,
-					badge: iconUrl('messages'),
-					tag: `messaging:user:${data.body.userId}`,
-					data,
-					renotify: true,
-				}];
-			}
-			return [t('_notification.youGotMessagingMessageFromGroup', { name: data.body.group?.name ?? '' }), {
-				icon: data.body.user.avatarUrl,
-				badge: iconUrl('messages'),
-				tag: `messaging:group:${data.body.groupId}`,
-				data,
-				renotify: true,
-			}];
 		case 'unreadAntennaNote':
 			return [t('_notification.unreadAntennaNote', { name: data.body.antenna.name }), {
 				body: `${getUserName(data.body.note.user)}: ${data.body.note.text ?? ''}`,
@@ -273,7 +246,7 @@ export async function createEmptyNotification() {
 		const i18n = await swLang.i18n as I18n<any>;
 		const { t } = i18n;
 
-		await self.registration.showNotification(
+		await globalThis.registration.showNotification(
 			t('_notification.emptyPushNotificationMessage'),
 			{
 				silent: true,
@@ -282,16 +255,11 @@ export async function createEmptyNotification() {
 			},
 		);
 
-		res();
-
 		setTimeout(async () => {
-			for (const n of
-				[
-					...(await self.registration.getNotifications({ tag: 'user_visible_auto_notification' })),
-					...(await self.registration.getNotifications({ tag: 'read_notification' })),
-				]
-			) {
-				n.close();
+			try {
+				await closeNotificationsByTags(['user_visible_auto_notification', 'read_notification']);
+			} finally {
+				res();
 			}
 		}, 1000);
 	});

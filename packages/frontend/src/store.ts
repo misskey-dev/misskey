@@ -1,6 +1,5 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
-import { Theme } from './scripts/theme';
 
 interface PostFormAction {
 	title: string,
