@@ -20,7 +20,9 @@ import Logger from '@/logger.js';
 describe('Chart', () => {
 	const config = loadConfig();
 	const appLockService = {
-		getChartInsertLock: () => () => Promise.resolve(() => {}),
+		getChartInsertLock(): Promise<() => void> {
+			return Promise.resolve(() => {});
+		},
 	} as unknown as jest.Mocked<AppLockService>;
 
 	let db: IMemoryDb;
