@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n}w ago"
   monthsAgo: "{n}mo ago"
   yearsAgo: "{n}y ago"
+  invalid: "There's nothing to see here"
 _time:
   second: "Second(s)"
   minute: "Minute(s)"
