@@ -80,9 +80,9 @@ export const meta = {
 			id: 'b390d7e1-8a5e-46ed-b625-06271cafd3d3',
 		},
 
-		fileNotFound: {
+		noSuchFile: {
 			message: 'Some files are not found.',
-			code: 'FILE_NOT_FOUND',
+			code: 'NO_SUCH_FILE',
 			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
 		},
 	},
@@ -215,7 +215,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.getMany();
 
 				if (files.length !== fileIds.length) {
-					throw new ApiError(meta.errors.fileNotFound);
+					throw new ApiError(meta.errors.noSuchFile);
 				}
 			}
 
