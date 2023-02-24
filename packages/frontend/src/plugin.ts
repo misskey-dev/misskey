@@ -100,10 +100,10 @@ function registerPostFormAction({ pluginId, title, handler }): void {
 				return;
 			}
 			pluginContext.execFn(handler, [utils.jsToVal(form), values.FN_NATIVE(([key, value]) => {
-				if (!key || key.type === 'null' || key.type === 'fn' || !value || value.type === 'null' || value.type === 'fn') {
+				if (!key || !value) {
 					return;
 				}
-				update(key.value, value.value);
+				update(utils.valToJs(key), utils.valToJs(value));
 			})]);
 		},
 	});
