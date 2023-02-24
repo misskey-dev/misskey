@@ -18,7 +18,7 @@ const start = async () => {
 			"pnpm",
 			["start-server-and-test", "start", config.url, "dev:watch"],
 			{
-				cwd: path.resolve(__dirname, "../"),
+				cwd: path.resolve(__dirname, "/../"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
