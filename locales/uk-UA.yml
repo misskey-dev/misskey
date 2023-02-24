@@ -879,8 +879,17 @@ like: "Вподобати"
 unlike: "Не вподобати"
 numberOfLikes: "Вподобання"
 show: "Відображення"
+roles: "Ролі"
+role: "Роль"
+normalUser: "Звичайний користувач"
+undefined: "Не визначено"
+assign: "Призначити"
+unassign: "Скасувати призначення"
 color: "Колір"
 achievements: "Досягнення"
+joinThisServer: "Зареєструватися на цьому сервері"
+exploreOtherServers: "Знайти інший сервер"
+letsLookAtTimeline: "Перегляд історії"
 _achievements:
   earnedAt: "Відкрито"
   _types:
@@ -1102,6 +1111,7 @@ _achievements:
       description: "Відправити посилання на \"Brain Diver\""
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
+  assignTarget: "Призначити"
   priority: "Пріоритет"
   _priority:
     low: "Низький"
