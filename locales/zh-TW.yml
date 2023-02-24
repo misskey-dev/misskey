@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n}周前"
   monthsAgo: "{n}個月前"
   yearsAgo: "{n}年前"
+  invalid: "未發現"
 _time:
   second: "秒"
   minute: "分鐘"
