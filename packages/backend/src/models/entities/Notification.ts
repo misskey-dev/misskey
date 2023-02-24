@@ -1,5 +1,5 @@
 import { Entity, Index, JoinColumn, ManyToOne, Column, PrimaryColumn } from 'typeorm';
-import { notificationTypes } from '@/types.js';
+import { notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 import { id } from '../id.js';
 import { User } from './User.js';
 import { Note } from './Note.js';
@@ -58,7 +58,6 @@ export class Notification {
 	 * renote - 投稿がRenoteされた
 	 * quote - 投稿が引用Renoteされた
 	 * reaction - 投稿にリアクションされた
-	 * pollVote - 投稿のアンケートに投票された (廃止)
 	 * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
 	 * receiveFollowRequest - フォローリクエストされた
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
@@ -67,7 +66,10 @@ export class Notification {
 	 */
 	@Index()
 	@Column('enum', {
-		enum: notificationTypes,
+		enum: [
+			...notificationTypes,
+			...obsoleteNotificationTypes,
+		],
 		comment: 'The type of the Notification.',
 	})
 	public type: typeof notificationTypes[number];
