@@ -2,7 +2,7 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
-- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
+-
 
 ### Bugfixes
 -
@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
 
 ### Bugfixes
 - 全ての通知が削除されてしまうのを修正
