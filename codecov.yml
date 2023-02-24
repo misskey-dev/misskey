@@ -3,3 +3,4 @@ coverage:
     project:
       default:
         only_pulls: true
+        if_ci_failed: success
