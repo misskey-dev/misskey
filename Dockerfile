@@ -1,3 +1,5 @@
+# syntax = docker/dockerfile:1.4
+
 ARG NODE_VERSION=18.13.0-bullseye
 
 FROM node:${NODE_VERSION} AS builder
@@ -14,16 +16,16 @@ RUN corepack enable
 
 WORKDIR /misskey
 
-COPY ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
-COPY ["scripts", "./scripts"]
-COPY ["packages/backend/package.json", "./packages/backend/"]
-COPY ["packages/frontend/package.json", "./packages/frontend/"]
-COPY ["packages/sw/package.json", "./packages/sw/"]
+COPY --link ["pnpm-lock.yaml", "pnpm-workspace.yaml", "package.json", "./"]
+COPY --link ["scripts", "./scripts"]
+COPY --link ["packages/backend/package.json", "./packages/backend/"]
+COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
+COPY --link ["packages/sw/package.json", "./packages/sw/"]
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
 
-COPY . ./
+COPY --link . ./
 
 ARG NODE_ENV=production
 

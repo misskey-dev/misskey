@@ -1,62 +1,54 @@
 <template>
-<div class="civpbkhh">
-	<div ref="scroll" class="scrollbox" v-bind:class="{ scroll: isScrolling }">
-		<div v-for="note in notes" class="note">
-			<div class="content _panel">
-				<div class="body">
+<div :class="$style.root">
+	<div ref="scrollEl" :class="[$style.scrollbox, { [$style.scroll]: isScrolling }]">
+		<div v-for="note in notes" :key="note.id" :class="$style.note">
+			<div class="_panel" :class="$style.content">
+				<div :class="$style.body">
 					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i"/>
+					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i" />
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
-				<div v-if="note.files.length > 0" class="richcontent">
-					<MkMediaList :media-list="note.files"/>
+				<div v-if="note.files.length > 0" :class="$style.richcontent">
+					<MkMediaList :media-list="note.files" />
 				</div>
 				<div v-if="note.poll">
-					<MkPoll :note="note" :readOnly="true"/>
+					<MkPoll :note="note" :readOnly="true" />
 				</div>
 			</div>
-			<MkReactionsViewer ref="reactionsViewer" :note="note"/>
+			<MkReactionsViewer ref="reactionsViewer" :note="note" />
 		</div>
 	</div>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import * as os from '@/os';
+import { Note } from 'misskey-js/built/entities';
+import { onUpdated } from 'vue';
+import { getScrollContainer } from '@/scripts/scroll';
 
-export default defineComponent({
-	components: {
-		MkReactionsViewer,
-		MkMediaList,
-		MkPoll,
-	},
+let notes = $ref<Note[]>([]);
+let isScrolling = $ref(false);
+let scrollEl = $ref<HTMLElement>();
 
-	data() {
-		return {
-			notes: [],
-			isScrolling: false,
-		};
-	},
+os.apiGet('notes/featured').then(_notes => {
+	notes = _notes;
+});
 
-	created() {
-		os.api('notes/featured').then(notes => {
-			this.notes = notes;
-		});
-	},
-
-	updated() {
-		if (this.$refs.scroll.clientHeight > window.innerHeight) {
-			this.isScrolling = true;
-		}
-	},
+onUpdated(() => {
+	if (!scrollEl) return;
+	const container = getScrollContainer(scrollEl);
+	const containerHeight = container ? container.clientHeight : window.innerHeight;
+	if (scrollEl.offsetHeight > containerHeight) {
+		isScrolling = true;
+	}
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 @keyframes scroll {
 	0% {
 		transform: translate3d(0, 0, 0);
@@ -72,28 +64,28 @@ export default defineComponent({
 	}
 }
 
-.civpbkhh {
+.root {
 	text-align: right;
+}
 
-	> .scrollbox {
-		&.scroll {
-			animation: scroll 45s linear infinite;
-		}
-
-		> .note {
-			margin: 16px 0 16px auto;
-
-			> .content {
-				padding: 16px;
-				margin: 0 0 0 auto;
-				max-width: max-content;
-				border-radius: 16px;
-
-				> .richcontent {
-					min-width: 250px;
-				}
-			}
-		}
+.scrollbox {
+	&.scroll {
+		animation: scroll 45s linear infinite;
 	}
+}
+
+.note {
+	margin: 16px 0 16px auto;
+}
+
+.content {
+	padding: 16px;
+	margin: 0 0 0 auto;
+	max-width: max-content;
+	border-radius: 16px;
+}
+
+.richcontent {
+	min-width: 250px;
 }
 </style>

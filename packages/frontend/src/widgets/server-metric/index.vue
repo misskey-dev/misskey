@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from '../widget';
+import { onUnmounted, ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from '../widget';
 import XCpuMemory from './cpu-mem.vue';
 import XNet from './net.vue';
 import XCpu from './cpu.vue';

@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
+import { ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
 import * as os from '@/os';

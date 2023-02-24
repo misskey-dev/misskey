@@ -69,7 +69,7 @@ const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown 
 if (loaded) {
 	available.value = true;
 } else {
-	(document.getElementById(scriptId.value) || document.head.appendChild(Object.assign(document.createElement('script'), {
+	(document.getElementById(scriptId.value) ?? document.head.appendChild(Object.assign(document.createElement('script'), {
 		async: true,
 		id: scriptId.value,
 		src: src.value,

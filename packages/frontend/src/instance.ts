@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { api } from './os';
 import { miLocalStorage } from './local-storage';

@@ -23,7 +23,7 @@
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"/>
 		</datalist>
 		<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -34,14 +34,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
+import { onMounted, nextTick, ref, shallowRef, watch, computed, toRefs } from 'vue';
 import { debounce } from 'throttle-debounce';
 import MkButton from '@/components/MkButton.vue';
 import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	modelValue: string | number;
+	modelValue: string | number | null;
 	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';
 	required?: boolean;
 	readonly?: boolean;
@@ -49,7 +49,7 @@ const props = defineProps<{
 	pattern?: string;
 	placeholder?: string;
 	autofocus?: boolean;
-	autocomplete?: boolean;
+	autocomplete?: string;
 	spellcheck?: boolean;
 	step?: any;
 	datalist?: string[];

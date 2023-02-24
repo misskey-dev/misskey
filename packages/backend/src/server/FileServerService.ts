@@ -150,6 +150,12 @@ export class FileServerService {
 						file.cleanup();
 						return await reply.redirect(301, url.toString());
 					} else if (file.mime.startsWith('video/')) {
+						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
+						if (externalThumbnail) {
+							file.cleanup();
+							return await reply.redirect(301, externalThumbnail);
+						}
+
 						image = await this.videoProcessingService.generateVideoThumbnail(file.path);
 					}
 				}
@@ -389,7 +395,7 @@ export class FileServerService {
 				state: 'remote',
 				mime, ext,
 				path, cleanup,
-			}
+			};
 		} catch (e) {
 			cleanup();
 			throw e;
@@ -423,7 +429,7 @@ export class FileServerService {
 				url: file.uri,
 				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 				file,
-			}
+			};
 		}
 
 		const path = this.internalStorageService.resolvePath(key);
@@ -446,6 +452,6 @@ export class FileServerService {
 			mime: file.type,
 			ext: null,
 			path,
-		}
+		};
 	}
 }

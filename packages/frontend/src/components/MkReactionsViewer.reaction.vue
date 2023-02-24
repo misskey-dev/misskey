@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, shallowRef, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XDetails from '@/components/MkReactionsViewer.details.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';

@@ -17,6 +17,7 @@ import MkEmojiPickerWindow from '@/components/MkEmojiPickerWindow.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
+import copyToClipboard from './scripts/copy-to-clipboard';
 
 export const openingWindowsCount = ref(0);
 
@@ -26,10 +27,32 @@ export const apiWithDialog = ((
 	token?: string | null | undefined,
 ) => {
 	const promise = api(endpoint, data, token);
-	promiseDialog(promise, null, (err) => {
+	promiseDialog(promise, null, async (err) => {
 		let title = null;
 		let text = err.message + '\n' + (err as any).id;
-		if (err.code === 'RATE_LIMIT_EXCEEDED') {
+		if (err.code === 'INTERNAL_ERROR') {
+			title = i18n.ts.internalServerError;
+			text = i18n.ts.internalServerErrorDescription;
+			const date = new Date().toISOString();
+			const { result } = await actions({
+				type: 'error',
+				title,
+				text,
+				actions: [{
+					value: 'ok',
+					text: i18n.ts.gotIt,
+					primary: true,
+				}, {
+					value: 'copy',
+					text: i18n.ts.copyErrorInfo,
+				}],
+			});
+			if (result === 'copy') {
+				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
+				success();
+			}
+			return;
+		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
 			title = i18n.ts.cannotPerformTemporary;
 			text = i18n.ts.cannotPerformTemporaryDescription;
 		} else if (err.code.startsWith('TOO_MANY')) {
@@ -223,7 +246,10 @@ export function inputText(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
+	autocomplete?: string;
 	default?: string | null;
+	minLength?: number;
+	maxLength?: number;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: string;
 }> {
@@ -234,7 +260,10 @@ export function inputText(props: {
 			input: {
 				type: props.type,
 				placeholder: props.placeholder,
+				autocomplete: props.autocomplete,
 				default: props.default,
+				minLength: props.minLength,
+				maxLength: props.maxLength,
 			},
 		}, {
 			done: result => {
@@ -248,6 +277,7 @@ export function inputNumber(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
+	autocomplete?: string;
 	default?: number | null;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: number;
@@ -259,6 +289,7 @@ export function inputNumber(props: {
 			input: {
 				type: 'number',
 				placeholder: props.placeholder,
+				autocomplete: props.autocomplete,
 				default: props.default,
 			},
 		}, {
@@ -572,9 +603,3 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		});
 	});
 }*/
-
-export const shownNoteIds = new Set();
-
-window.setInterval(() => {
-	shownNoteIds.clear();
-}, 1000 * 60 * 5);

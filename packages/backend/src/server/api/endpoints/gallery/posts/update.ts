@@ -2,11 +2,9 @@ import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/index.js';
-import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['gallery'],

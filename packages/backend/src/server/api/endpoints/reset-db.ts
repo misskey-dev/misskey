@@ -4,7 +4,6 @@ import Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { resetDb } from '@/misc/reset-db.js';
-import { ApiError } from '../error.js';
 
 export const meta = {
 	tags: ['non-productive'],

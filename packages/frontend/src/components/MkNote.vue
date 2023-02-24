@@ -9,7 +9,7 @@
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<!--<div v-if="appearNote._prId_" class="tip"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
+	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
@@ -31,7 +31,7 @@
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
@@ -78,7 +78,7 @@
 			</div>
 			<footer :class="$style.footer">
 				<MkReactionsViewer :note="appearNote" :max-number="16">
-					<template v-slot:more>
+					<template #more>
 						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 							{{ i18n.ts.more }}
 						</button>
@@ -126,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -155,7 +155,7 @@ import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
-import { shownNoteIds } from '@/os';
+import { MenuItem } from '@/types/menu';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -194,6 +194,8 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.includes('$[x3')) ||
+	(appearNote.text.includes('$[x4')) ||
 	(appearNote.text.split('\n').length > 9) ||
 	(appearNote.text.length > 500) ||
 	(appearNote.files.length >= 5) ||
@@ -206,9 +208,7 @@ const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-let renoteCollapsed = $ref(isRenote && (($i && ($i.id === note.userId)) || shownNoteIds.has(appearNote.id)));
-
-shownNoteIds.add(appearNote.id);
+let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || (appearNote.myReaction != null)));
 
 const keymap = {
 	'r': () => reply(true),
@@ -247,7 +247,32 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
-	os.popupMenu([{
+
+	let items = [] as MenuItem[];
+
+	if (appearNote.channel) {
+		items = items.concat([{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				});
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+					channel: appearNote.channel,
+				});
+			},
+		}, null]);
+	}
+
+	items = items.concat([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
@@ -263,7 +288,9 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
-	}], renoteButton.value, {
+	}]);
+
+	os.popupMenu(items, renoteButton.value, {
 		viaKeyboard,
 	});
 }
@@ -701,6 +728,12 @@ function showReactions(): void {
 		&:not(:last-child) {
 			margin-right: 12px;
 		}
+	}
+}
+
+@container (max-width: 250px) {
+	.quoteNote {
+		padding: 12px;
 	}
 }
 

@@ -75,7 +75,6 @@ import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { acct } from '@/filters/user';
 import { iAmAdmin, iAmModerator } from '@/account';
 
 let tab = $ref('overview');

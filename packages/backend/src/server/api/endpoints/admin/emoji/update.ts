@@ -3,9 +3,9 @@ import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../../error.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -68,15 +68,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await this.db.queryResultCache!.remove(['meta_emojis']);
 
-			const updated = await this.emojiEntityService.pack(emoji.id);
+			const updated = await this.emojiEntityService.packDetailed(emoji.id);
 
 			if (emoji.name === ps.name) {
 				this.globalEventService.publishBroadcastStream('emojiUpdated', {
-					emojis: [ updated ],
+					emojis: [updated],
 				});
 			} else {
 				this.globalEventService.publishBroadcastStream('emojiDeleted', {
-					emojis: [ await this.emojiEntityService.pack(emoji) ],
+					emojis: [await this.emojiEntityService.packDetailed(emoji)],
 				});
 
 				this.globalEventService.publishBroadcastStream('emojiAdded', {

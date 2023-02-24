@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { DbJobData } from '@/queue/types.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';

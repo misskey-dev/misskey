@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, reactive, ref, shallowRef } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { onMounted, onUnmounted, shallowRef } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 
 const name = 'ai';
