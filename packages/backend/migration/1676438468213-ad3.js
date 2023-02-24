@@ -4,6 +4,6 @@ export class ad1676438468213 {
 			await queryRunner.query(`ALTER TABLE "ad" ADD "startsAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()`);
 	}
 	async down(queryRunner) {
-		await queryRunner.query(`ALTER TABLE "role" DROP COLUMN "startsAt"`);
+		await queryRunner.query(`ALTER TABLE "ad" DROP COLUMN "startsAt"`);
 	}
 }

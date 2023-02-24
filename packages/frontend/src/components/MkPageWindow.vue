@@ -18,7 +18,7 @@
 	</template>
 
 	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
-		<RouterView :router="router"/>
+		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </MkWindow>
 </template>
@@ -67,6 +67,10 @@ const buttonsLeft = $computed(() => {
 });
 const buttonsRight = $computed(() => {
 	const buttons = [{
+		icon: 'ti ti-reload',
+		title: i18n.ts.reload,
+		onClick: reload,
+	}, {
 		icon: 'ti ti-player-eject',
 		title: i18n.ts.showInPage,
 		onClick: expand,
@@ -74,6 +78,7 @@ const buttonsRight = $computed(() => {
 
 	return buttons;
 });
+let reloadCount = $ref(0);
 
 router.addListener('push', ctx => {
 	history.push({ path: ctx.path, key: ctx.key });
@@ -113,6 +118,10 @@ const contextmenu = $computed(() => ([{
 function back() {
 	history.pop();
 	router.replace(history[history.length - 1].path, history[history.length - 1].key);
+}
+
+function reload() {
+	reloadCount++;
 }
 
 function close() {

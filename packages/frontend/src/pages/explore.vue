@@ -8,6 +8,9 @@
 		<div v-else-if="tab === 'users'">
 			<XUsers/>
 		</div>
+		<div v-else-if="tab === 'roles'">
+			<XRoles/>
+		</div>
 		<div v-else-if="tab === 'search'">
 			<MkSpacer :content-max="1200">
 				<div>
@@ -22,7 +25,7 @@
 					</MkRadios>
 				</div>
 
-				<XUserList v-if="searchQuery" ref="searchEl" class="_margin" :pagination="searchPagination"/>
+				<MkUserList v-if="searchQuery" ref="searchEl" class="_margin" :pagination="searchPagination"/>
 			</MkSpacer>
 		</div>
 	</div>
@@ -33,12 +36,13 @@
 import { computed, watch } from 'vue';
 import XFeatured from './explore.featured.vue';
 import XUsers from './explore.users.vue';
+import XRoles from './explore.roles.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import XUserList from '@/components/MkUserList.vue';
+import MkUserList from '@/components/MkUserList.vue';
 
 const props = withDefaults(defineProps<{
 	tag?: string;
@@ -76,7 +80,12 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-users',
 	title: i18n.ts.users,
 }, {
+	key: 'roles',
+	icon: 'ti ti-badges',
+	title: i18n.ts.roles,
+}, {
 	key: 'search',
+	icon: 'ti ti-search',
 	title: i18n.ts.search,
 }]);
 

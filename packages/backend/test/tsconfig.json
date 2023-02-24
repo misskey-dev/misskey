@@ -37,6 +37,7 @@
 	},
 	"compileOnSave": false,
 	"include": [
-		"./**/*.ts"
+		"./**/*.ts",
+		"../src/@types/**/*.ts",
 	]
 }

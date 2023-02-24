@@ -198,8 +198,11 @@ export const routes = [{
 	component: page(() => import('./pages/theme-editor.vue')),
 	loginRequired: true,
 }, {
-	path: '/explore/tags/:tag',
-	component: page(() => import('./pages/explore.vue')),
+	path: '/roles/:role',
+	component: page(() => import('./pages/role.vue')),
+}, {
+	path: '/user-tags/:tag',
+	component: page(() => import('./pages/user-tag.vue')),
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
