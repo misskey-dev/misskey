@@ -19,15 +19,16 @@ const props = withDefaults(defineProps<{
 	mode: 'relative',
 });
 
-const _time = props.time instanceof Date ? props.time : new Date(props.time);
-const invalid = Number.isNaN(_time.getTime())
+const _time = (props.time instanceof Date ? props.time : new Date(props.time)).getTime();
+const invalid = Number.isNaN(_time)
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
-let now = $shallowRef(new Date());
-const relative = $computed(() => {
-	if (props.mode === 'absolute' || invalid) return i18n.ts._ago.invalid;
+let now = $ref((new Date()).getTime());
+const relative = $computed<string>(() => {
+	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
+	if (invalid) return i18n.ts._ago.invalid;
 
-	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
+	const ago = (now - _time) / 1000/*ms*/;
 	return (
 		ago >= 31536000 ? i18n.t('_ago.yearsAgo', { n: Math.round(ago / 31536000).toString() }) :
 		ago >= 2592000 ? i18n.t('_ago.monthsAgo', { n: Math.round(ago / 2592000).toString() }) :
@@ -43,8 +44,8 @@ const relative = $computed(() => {
 let tickId: number;
 
 function tick() {
-	now = new Date();
-	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
+	now = (new Date()).getTime();
+	const ago = (now - _time) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
 	tickId = window.setTimeout(tick, next);
