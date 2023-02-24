@@ -1112,7 +1112,12 @@ _achievements:
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "Нова роль"
+  edit: "Змінити роль"
+  name: "Назва ролі"
+  description: "Опис ролі"
+  permission: "Права ролі"
   assignTarget: "Призначити"
+  manual: "Вручну"
   priority: "Пріоритет"
   _priority:
     low: "Низький"
