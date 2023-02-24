@@ -1438,6 +1438,7 @@ _ago:
   weeksAgo: "Hace {n} semanas"
   monthsAgo: "Hace {n} meses"
   yearsAgo: "Hace {n} años"
+  invalid: "No hay nada que ver aqui"
 _time:
   second: "Segundos"
   minute: "Minutos"
