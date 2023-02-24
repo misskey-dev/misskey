@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n} สัปดาห์ที่แล้ว"
   monthsAgo: "{n} เดือนที่แล้ว"
   yearsAgo: "{n} ปีที่ผ่านมา"
+  invalid: "ไม่พบผลลัพธ์"
 _time:
   second: "วินาที"
   minute: "นาที"
