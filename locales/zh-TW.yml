@@ -46,7 +46,7 @@ copyContent: "複製內容"
 copyLink: "複製連結"
 delete: "刪除"
 deleteAndEdit: "刪除並編輯"
-deleteAndEditConfirm: "要刪除並再次編輯嗎？此貼文的所有情感、轉發和回覆也將會消失。"
+deleteAndEditConfirm: "要刪除並再次編輯嗎？此貼文的所有反應、轉發和回覆也將會消失。"
 addToList: "加入至清單"
 sendMessage: "發送訊息"
 copyRSS: "複製RSS"
@@ -112,7 +112,7 @@ clickToShow: "按一下以顯示"
 sensitive: "敏感內容"
 add: "新增"
 reaction: "反應"
-reactions: "情感"
+reactions: "反應"
 reactionSetting: "在選擇器中顯示反應"
 reactionSettingDescription2: "拖動以重新列序，點擊以刪除，按下 + 添加。"
 rememberNoteVisibility: "記住貼文可見性"
@@ -1095,7 +1095,7 @@ _achievements:
       title: "成群結隊"
       description: "跟隨者超過50人了"
     _followers100:
-      title: "紅人"
+      title: "熱門人物"
       description: "跟隨者超過100人了"
     _followers300:
       title: "請排成一排"
@@ -1153,7 +1153,7 @@ _achievements:
       description: "試圖遞迴套入雲端硬碟資料夾"
     _reactWithoutRead:
       title: "有好好讀過嗎？"
-      description: "對包含100字以上內容的貼文做出情感反應"
+      description: "對包含100字以上內容的貼文在3秒以內做出反應"
     _clickedClickHere:
       title: "點擊這裡"
       description: "已點擊這裡了"
@@ -1835,3 +1835,4 @@ _deck:
     direct: "指定使用者"
 _dialog:
   charactersExceeded: "已超過最大字數！現在 {current} / 限制 {max}"
+  charactersBelow: "低於最少字數！現在 {current} / 限制 {max}"
