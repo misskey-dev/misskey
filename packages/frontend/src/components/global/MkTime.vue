@@ -1,6 +1,7 @@
 <template>
 <time :title="absolute">
-	<template v-if="mode === 'relative'">{{ relative }}</template>
+	<template v-if="invalid">{{ i18n.ts._ago.invalid }}</template>
+	<template v-else-if="mode === 'relative'">{{ relative }}</template>
 	<template v-else-if="mode === 'absolute'">{{ absolute }}</template>
 	<template v-else-if="mode === 'detail'">{{ absolute }} ({{ relative }})</template>
 </time>
@@ -18,11 +19,14 @@ const props = withDefaults(defineProps<{
 	mode: 'relative',
 });
 
-const _time = typeof props.time === 'string' ? new Date(props.time) : props.time;
-const absolute = dateTimeFormat.format(_time);
+const _time = props.time instanceof Date ? props.time : new Date(props.time);
+const invalid = Number.isNaN(_time.getTime())
+const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
 let now = $shallowRef(new Date());
 const relative = $computed(() => {
+	if (props.mode === 'absolute' || invalid) return i18n.ts._ago.invalid;
+
 	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
 	return (
 		ago >= 31536000 ? i18n.t('_ago.yearsAgo', { n: Math.round(ago / 31536000).toString() }) :
