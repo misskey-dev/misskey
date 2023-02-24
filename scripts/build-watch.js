@@ -8,19 +8,25 @@ const fs = require("fs");
 const watch = process.argv[2]?.includes("watch");
 
 // build:init
-fs.mkdirSync(__dirname + "/built", {
+fs.mkdirSync(path.resolve(__dirname, "./built"), {
 	recursive: true,
 });
-fs.mkdirSync(__dirname + "/../packages/backend/built/server/web/views", {
-	recursive: true,
-});
+fs.mkdirSync(
+	path.resolve(__dirname, "../packages/backend/built/server/web/views"),
+	{
+		recursive: true,
+	}
+);
 
 // build:backend:script
 chokidar
-	.watch(__dirname + "/../packages/backend/src/server/web/*.js", {
+	.watch(path.resolve(__dirname, "../packages/backend/src/server/web/*.js"), {
 		persistent: watch ? true : false,
 		ignoreInitial: watch ? true : false,
-		ignored: __dirname + "/../packages/backend/src/server/web/boot.js",
+		ignored: path.resolve(
+			__dirname,
+			"../packages/backend/src/server/web/boot.js"
+		),
 	})
 	.on("add", (paths) => {
 		execa(
@@ -29,13 +35,15 @@ chokidar
 				"terser",
 				paths,
 				"-o",
-				__dirname +
-					"/../packages/backend/built/server/web/" +
-					path.win32.basename(paths),
+				path.resolve(
+					__dirname,
+					"../packages/backend/built/server/web/",
+					path.win32.basename(paths)
+				),
 				"--toplevel",
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -48,43 +56,48 @@ chokidar
 				"terser",
 				paths,
 				"-o",
-				__dirname +
-					"/../packages/backend/built/server/web/" +
-					path.win32.basename(paths),
+				path.resolve(
+					__dirname,
+					"../packages/backend/built/server/web/",
+					path.win32.basename(paths)
+				),
 				"--toplevel",
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
 		);
 	});
 chokidar
-	.watch(__dirname + "/../packages/backend/src/server/web/boot.js", {
-		persistent: watch ? true : false,
-		ignoreInitial: watch ? true : false,
-	})
+	.watch(
+		path.resolve(__dirname, "../packages/backend/src/server/web/boot.js"),
+		{
+			persistent: watch ? true : false,
+			ignoreInitial: watch ? true : false,
+		}
+	)
 	.on("add", (paths) => {
 		const content = fs.readFileSync(
-			__dirname + "/../packages/backend/src/server/web/boot.js",
+			path.resolve(__dirname, "../packages/backend/src/server/web/boot.js"),
 			{ encoding: "utf8" }
 		);
 		fs.writeFileSync(
-			__dirname + "/built/boot.js",
+			path.resolve(__dirname, "./built/boot.js"),
 			content.replace("LANGS", JSON.stringify(Object.keys(locales)))
 		);
 		execa(
 			"pnpm",
 			[
 				"terser",
-				__dirname + "/built/boot.js",
+				path.resolve(__dirname, "./built/boot.js"),
 				"-o",
-				__dirname + "/../packages/backend/built/server/web/boot.js",
+				path.resolve(__dirname, "../packages/backend/built/server/web/boot.js"),
 				"--toplevel",
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -92,24 +105,24 @@ chokidar
 	})
 	.on("change", (paths) => {
 		const content = fs.readFileSync(
-			__dirname + "/../packages/backend/src/server/web/boot.js",
+			path.resolve(__dirname, "../packages/backend/src/server/web/boot.js"),
 			{ encoding: "utf8" }
 		);
 		fs.writeFileSync(
-			__dirname + "/built/boot.js",
+			path.resolve(__dirname, "./built/boot.js"),
 			content.replace("LANGS", JSON.stringify(Object.keys(locales)))
 		);
 		execa(
 			"pnpm",
 			[
 				"terser",
-				__dirname + "/built/boot.js",
+				path.resolve(__dirname, "./built/boot.js"),
 				"-o",
-				__dirname + "/../packages/backend/built/server/web/boot.js",
+				path.resolve(__dirname, "../packages/backend/built/server/web/boot.js"),
 				"--toplevel",
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -118,7 +131,7 @@ chokidar
 
 // backend:style
 chokidar
-	.watch(__dirname + "/../packages/backend/src/server/web/*.css", {
+	.watch(path.resolve(__dirname, "/../packages/backend/src/server/web/*.css"), {
 		persistent: watch ? true : false,
 		ignoreInitial: watch ? true : false,
 	})
@@ -129,14 +142,16 @@ chokidar
 				"postcss",
 				paths,
 				"-o",
-				__dirname +
-					"/../packages/backend/built/server/web/" +
-					path.win32.basename(paths),
+				path.resolve(
+					__dirname,
+					"/../packages/backend/built/server/web/",
+					path.win32.basename(paths)
+				),
 				"--config",
-				__dirname + "/postcss.config.js",
+				path.resolve(__dirname, "/postcss.config.js"),
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -149,14 +164,16 @@ chokidar
 				"postcss",
 				paths,
 				"-o",
-				__dirname +
-					"/../packages/backend/built/server/web/" +
-					path.win32.basename(paths),
+				path.resolve(
+					__dirname,
+					"/../packages/backend/built/server/web/",
+					path.win32.basename(paths)
+				),
 				"--config",
-				__dirname + "/postcss.config.js",
+				path.resolve(__dirname, "/postcss.config.js"),
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -165,10 +182,13 @@ chokidar
 
 // backend:views
 chokidar
-	.watch(__dirname + "/../packages/backend/src/server/web/views/*", {
-		persistent: watch ? true : false,
-		ignoreInitial: watch ? true : false,
-	})
+	.watch(
+		path.resolve(__dirname, "/../packages/backend/src/server/web/views/*"),
+		{
+			persistent: watch ? true : false,
+			ignoreInitial: watch ? true : false,
+		}
+	)
 	.on("add", (paths) => {
 		execa(
 			"pnpm",
@@ -177,12 +197,14 @@ chokidar
 				"cp",
 				"-rf",
 				paths,
-				__dirname +
-					"/../packages/backend/built/server/web/views/" +
-					path.win32.basename(paths),
+				path.resolve(
+					__dirname,
+					"/../packages/backend/built/server/web/views/",
+					path.win32.basename(paths)
+				),
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -196,12 +218,14 @@ chokidar
 				"cp",
 				"-rf",
 				paths,
-				__dirname +
-					"/../packages/backend/built/server/web/views/" +
-					path.win32.basename(paths),
+				path.resolve(
+					__dirname,
+					"/../packages/backend/built/server/web/views/",
+					path.win32.basename(paths)
+				),
 			],
 			{
-				cwd: __dirname + "/",
+				cwd: path.resolve(__dirname, "/"),
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -210,53 +234,66 @@ chokidar
 
 if (watch ? false : true) {
 	// frontend:fonts
-	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/fonts", {
+	fs.mkdirSync(path.resolve(__dirname, "../built/_frontend_dist_/fonts"), {
 		recursive: true,
 	});
+
 	execa(
 		"pnpm",
 		[
 			"shx",
 			"cp",
 			"-rf",
-			__dirname + "/../packages/frontend/node_modules/three/examples/fonts/",
-			__dirname + "/../built/_frontend_dist_",
+			path.resolve(
+				__dirname,
+				"../packages/frontend/node_modules/three/examples/fonts/"
+			),
+			path.resolve(__dirname, "../built/_frontend_dist_"),
 		],
 		{
-			cwd: __dirname + "/",
+			cwd: path.resolve(__dirname, "/"),
 			stdout: process.stdout,
 			stderr: process.stderr,
 		}
 	);
 
 	// frontend:locales
-	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/locales", {
+	fs.mkdirSync(path.resolve(__dirname, "../built/_frontend_dist_/locales"), {
 		recursive: true,
 	});
 	for (const [lang, locale] of Object.entries(locales)) {
 		fs.writeFileSync(
-			__dirname +
-				`/../built/_frontend_dist_/locales/${lang}.${meta.version}.json`,
+			path.resolve(
+				__dirname,
+				`../built/_frontend_dist_/locales/${lang}.${meta.version}.json`
+			),
 			JSON.stringify({ ...locale, ...v }),
 			"utf-8"
 		);
 	}
 
 	// frontend:tabler-icons
-	fs.mkdirSync(__dirname + "/../built/_frontend_dist_/tabler-icons", {
-		recursive: true,
-	});
+	fs.mkdirSync(
+		path.resolve(__dirname, "../built/_frontend_dist_/tabler-icons"),
+		{
+			recursive: true,
+		}
+	);
+
 	execa(
 		"pnpm",
 		[
 			"shx",
 			"cp",
 			"-rf",
-			__dirname + "/../packages/frontend/node_modules/@tabler/icons-webfont/*",
-			__dirname + "/../built/_frontend_dist_/tabler-icons",
+			path.resolve(
+				__dirname,
+				"../packages/frontend/node_modules/@tabler/icons-webfont/*"
+			),
+			path.resolve(__dirname, "../built/_frontend_dist_/tabler-icons"),
 		],
 		{
-			cwd: __dirname + "/",
+			cwd: path.resolve(__dirname, "/"),
 			stdout: process.stdout,
 			stderr: process.stderr,
 		}
