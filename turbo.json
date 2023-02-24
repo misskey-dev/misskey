@@ -31,6 +31,7 @@
 				"built/meta.json"
 			]
 		},
+		"check:connect": {},
 		"clean": {
 			"inputs": [
 				"**/built/**",
@@ -68,28 +69,6 @@
 			"cache": false,
 			"persistent": true
 		},
-		"jest": {
-			"inputs": [
-				"packages/backend/**"
-			],
-			"env": [
-				"NODE_ENV"
-			]
-		},
-		"jest-clear": {
-			"inputs": [
-				"packages/backend/**"
-			],
-			"env": [
-				"NODE_ENV"
-			]
-		},
-		"lint": {
-			"dependsOn": [
-				"eslint",
-				"typecheck"
-			]
-		},
 		"eslint": {
 			"inputs": [
 				"packages/**"
@@ -98,12 +77,26 @@
 				"packages/**"
 			]
 		},
-		"typecheck": {
-			"inputs": [
-				"packages/**"
+		"jest": {
+			"env": [
+				"NODE_ENV"
 			],
-			"outputs": [
-				"packages/**"
+			"inputs": [
+				"packages/backend/**"
+			]
+		},
+		"jest-clear": {
+			"env": [
+				"NODE_ENV"
+			],
+			"inputs": [
+				"packages/backend/**"
+			]
+		},
+		"lint": {
+			"dependsOn": [
+				"eslint",
+				"typecheck"
 			]
 		},
 		"migrate": {
@@ -111,9 +104,20 @@
 		},
 		"start": {
 			"cache": false,
-			"persistent": true,
+			"dependsOn": [
+				"check:connect"
+			],
 			"env": [
 				"NODE_ENV"
+			],
+			"persistent": true
+		},
+		"typecheck": {
+			"inputs": [
+				"packages/**"
+			],
+			"outputs": [
+				"packages/**"
 			]
 		}
 	}
