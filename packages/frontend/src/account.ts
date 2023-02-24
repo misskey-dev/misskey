@@ -51,8 +51,8 @@ export async function refreshAccounts(force = false) {
 				if (text.includes('UserProfile')) {
 					await alert({
 						type: 'error',
-						title: i18n.ts.accountRemoved,
-						text: i18n.ts.accountRemovedDescription,
+						title: i18n.ts.accountDeleted,
+						text: i18n.ts.accountDeletedDescription,
 					});
 					return;
 				}
@@ -181,8 +181,8 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
 						await alert({
 							type: 'error',
-							title: i18n.ts.tokenRemoved,
-							text: i18n.ts.tokenRemovedDescription,
+							title: i18n.ts.tokenRevoked,
+							text: i18n.ts.tokenRevokedDescription,
 						});
 					}
 				} else {
