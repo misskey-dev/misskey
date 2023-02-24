@@ -1111,6 +1111,7 @@ _achievements:
       description: "Відправити посилання на \"Brain Diver\""
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
+  new: "Нова роль"
   assignTarget: "Призначити"
   priority: "Пріоритет"
   _priority:
