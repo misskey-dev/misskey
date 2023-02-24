@@ -9,6 +9,12 @@
 
 You should also include the user name that made the change.
 -->
+
+
+- カスタム絵文字関連の変更
+  * ノートなどに含まれるemojis（populateEmojiの結果）は（プロキシされたURLではなく）オリジナルのURLを指すように
+  * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
+
 ## 13.7.5 (2023/02/24)
 
 ### Note
@@ -57,11 +63,6 @@ You should also include the user name that made the change.
 
 ### Changes
 - チャット機能が削除されました
-
-### Changes
-- カスタム絵文字関連の変更
-  * ノートなどに含まれるemojis（populateEmojiの結果）は（プロキシされたURLではなく）オリジナルのURLを指すように
-  * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
 
 ### Improvements
 - Server: URLプレビュー（summaly）はプロキシを通すように
