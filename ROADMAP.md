@@ -5,9 +5,9 @@ Also, the later tasks are more indefinite and are subject to change as developme
 ## (1) Improve maintainability \<current phase\>
 This is the phase we are at now. We need to make a high-maintenance environment that can withstand future development.
 
-- Make the number of type errors zero (backend)
+- ~~Make the number of type errors zero (backend)~~ → Done ✔️
 - Improve CI
-	- Fix tests
+	- ~~Fix tests~~ → Done ✔️
 	- Fix random test failures - https://github.com/misskey-dev/misskey/issues/7985 and https://github.com/misskey-dev/misskey/issues/7986
 	- Add more tests
 		- ~~May need to implement a mechanism that allows for DI~~ → Done ✔️

@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -45,7 +45,7 @@ export class GetterService {
 			throw new IdentifiableError('15348ddd-432d-49c2-8a5a-8069753becff', 'No such user.');
 		}
 
-		return user;
+		return user as LocalUser | RemoteUser;
 	}
 
 	/**

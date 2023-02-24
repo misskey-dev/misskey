@@ -181,7 +181,7 @@ const menuDef = computed(() => [{
 			miLocalStorage.removeItem('theme');
 			miLocalStorage.removeItem('emojis');
 			miLocalStorage.removeItem('lastEmojisFetchedAt');
-			await fetchCustomEmojis();
+			await fetchCustomEmojis(true);
 			unisonReload();
 		},
 	}, {

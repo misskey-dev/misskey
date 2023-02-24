@@ -8,7 +8,7 @@
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<XTimeline ref="timeline" src="channel" :channel="column.channelId" @after="() => emit('loaded')"/>
+		<MkTimeline ref="timeline" src="channel" :channel="column.channelId" @after="() => emit('loaded')"/>
 	</template>
 </XColumn>
 </template>
@@ -17,7 +17,7 @@
 import { } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
-import XTimeline from '@/components/MkTimeline.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -32,7 +32,7 @@ const emit = defineEmits<{
 	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
-let timeline = $shallowRef<InstanceType<typeof XTimeline>>();
+let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
 
 if (props.column.channelId == null) {
 	setChannel();

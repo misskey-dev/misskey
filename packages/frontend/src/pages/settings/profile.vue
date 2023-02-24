@@ -124,11 +124,11 @@ function saveFields() {
 
 function save() {
 	os.apiWithDialog('i/update', {
-		name: profile.name || null,
-		description: profile.description || null,
-		location: profile.location || null,
-		birthday: profile.birthday || null,
-		lang: profile.lang || null,
+		name: profile.name ?? null,
+		description: profile.description ?? null,
+		location: profile.location ?? null,
+		birthday: profile.birthday ?? null,
+		lang: profile.lang ?? null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,

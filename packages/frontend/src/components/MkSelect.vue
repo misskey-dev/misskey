@@ -34,7 +34,7 @@ import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	modelValue: string;
+	modelValue: string | null;
 	required?: boolean;
 	readonly?: boolean;
 	disabled?: boolean;
@@ -48,7 +48,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'change', _ev: KeyboardEvent): void;
-	(ev: 'update:modelValue', value: string): void;
+	(ev: 'update:modelValue', value: string | null): void;
 }>();
 
 const slots = useSlots();
