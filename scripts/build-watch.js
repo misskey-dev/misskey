@@ -43,7 +43,7 @@ chokidar
 				"--toplevel",
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -64,7 +64,7 @@ chokidar
 				"--toplevel",
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -97,7 +97,7 @@ chokidar
 				"--toplevel",
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -122,7 +122,7 @@ chokidar
 				"--toplevel",
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -151,7 +151,7 @@ chokidar
 				path.resolve(__dirname, "/postcss.config.js"),
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -173,7 +173,7 @@ chokidar
 				path.resolve(__dirname, "/postcss.config.js"),
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -204,7 +204,7 @@ chokidar
 				),
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -225,7 +225,7 @@ chokidar
 				),
 			],
 			{
-				cwd: path.resolve(__dirname, "/"),
+				cwd: __dirname + "/",
 				stdout: process.stdout,
 				stderr: process.stderr,
 			}
@@ -251,7 +251,7 @@ if (watch ? false : true) {
 			path.resolve(__dirname, "../built/_frontend_dist_"),
 		],
 		{
-			cwd: path.resolve(__dirname, "/"),
+			cwd: __dirname + "/",
 			stdout: process.stdout,
 			stderr: process.stderr,
 		}
@@ -293,7 +293,7 @@ if (watch ? false : true) {
 			path.resolve(__dirname, "../built/_frontend_dist_/tabler-icons"),
 		],
 		{
-			cwd: path.resolve(__dirname, "/"),
+			cwd: __dirname + "/",
 			stdout: process.stdout,
 			stderr: process.stderr,
 		}
