@@ -88,6 +88,13 @@ An actual domain will be assigned so you can test the federation.
 	- The target branch must be `master`
 	- The tag name must be the version
 
+> **Note**
+> Why this instruction is necessary:
+> - To perform final QA checks
+> - To distribute responsibility
+> - To check direct commits to develop
+> - To celebrate the release together 🎉
+
 ## Localization (l10n)
 Misskey uses [Crowdin](https://crowdin.com/project/misskey) for localization management.
 You can improve our translations with your Crowdin account.
