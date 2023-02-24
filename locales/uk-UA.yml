@@ -1299,6 +1299,7 @@ _ago:
   weeksAgo: "{n} тиж. тому"
   monthsAgo: "{n} міс. тому"
   yearsAgo: "{n} р. тому"
+  invalid: "Тут нічого немає"
 _time:
   second: "с"
   minute: "х"
