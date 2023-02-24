@@ -30,6 +30,11 @@ jobs:
             });
 
             const check = checks.check_runs.filter(c => c.name === 'deploy-preview-environment');
+
+            if (check.length === 0) {
+              return;
+            }
+
             const { data: result } = await github.rest.checks.get({
               ...context.repo,
               check_run_id: check[0].id,
