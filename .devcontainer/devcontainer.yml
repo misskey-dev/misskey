@@ -1,0 +1,146 @@
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Misskey configuration
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+#   ┌─────┐
+#───┘ URL └─────────────────────────────────────────────────────
+
+# Final accessible URL seen by a user.
+url: http://127.0.0.1:3000/
+
+# ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
+# URL SETTINGS AFTER THAT!
+
+#   ┌───────────────────────┐
+#───┘ Port and TLS settings └───────────────────────────────────
+
+#
+# Misskey requires a reverse proxy to support HTTPS connections.
+#
+#                 +----- https://example.tld/ ------------+
+#   +------+      |+-------------+      +----------------+|
+#   | User | ---> || Proxy (443) | ---> | Misskey (3000) ||
+#   +------+      |+-------------+      +----------------+|
+#                 +---------------------------------------+
+#
+#   You need to set up a reverse proxy. (e.g. nginx)
+#   An encrypted connection with HTTPS is highly recommended
+#   because tokens may be transferred in GET requests.
+
+# The port that your Misskey server should listen on.
+port: 3000
+
+#   ┌──────────────────────────┐
+#───┘ PostgreSQL configuration └────────────────────────────────
+
+db:
+  host: db
+  port: 5432
+
+  # Database name
+  db: misskey
+
+  # Auth
+  user: postgres
+  pass: postgres
+
+  # Whether disable Caching queries
+  #disableCache: true
+
+  # Extra Connection options
+  #extra:
+  #  ssl: true
+
+#   ┌─────────────────────┐
+#───┘ Redis configuration └─────────────────────────────────────
+
+redis:
+  host: redis
+  port: 6379
+  #family: 0  # 0=Both, 4=IPv4, 6=IPv6
+  #pass: example-pass
+  #prefix: example-prefix
+  #db: 1
+
+#   ┌─────────────────────────────┐
+#───┘ Elasticsearch configuration └─────────────────────────────
+
+#elasticsearch:
+#  host: localhost
+#  port: 9200
+#  ssl: false
+#  user:
+#  pass:
+
+#   ┌───────────────┐
+#───┘ ID generation └───────────────────────────────────────────
+
+# You can select the ID generation method.
+# You don't usually need to change this setting, but you can
+# change it according to your preferences.
+
+# Available methods:
+# aid ... Short, Millisecond accuracy
+# meid ... Similar to ObjectID, Millisecond accuracy
+# ulid ... Millisecond accuracy
+# objectid ... This is left for backward compatibility
+
+# ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
+# ID SETTINGS AFTER THAT!
+
+id: 'aid'
+
+#   ┌─────────────────────┐
+#───┘ Other configuration └─────────────────────────────────────
+
+# Whether disable HSTS
+#disableHsts: true
+
+# Number of worker processes
+#clusterLimit: 1
+
+# Job concurrency per worker
+# deliverJobConcurrency: 128
+# inboxJobConcurrency: 16
+
+# Job rate limiter
+# deliverJobPerSec: 128
+# inboxJobPerSec: 16
+
+# Job attempts
+# deliverJobMaxAttempts: 12
+# inboxJobMaxAttempts: 8
+
+# IP address family used for outgoing request (ipv4, ipv6 or dual)
+#outgoingAddressFamily: ipv4
+
+# Proxy for HTTP/HTTPS
+#proxy: http://127.0.0.1:3128
+
+proxyBypassHosts:
+  - api.deepl.com
+  - api-free.deepl.com
+  - www.recaptcha.net
+  - hcaptcha.com
+  - challenges.cloudflare.com
+
+# Proxy for SMTP/SMTPS
+#proxySmtp: http://127.0.0.1:3128   # use HTTP/1.1 CONNECT
+#proxySmtp: socks4://127.0.0.1:1080 # use SOCKS4
+#proxySmtp: socks5://127.0.0.1:1080 # use SOCKS5
+
+# Media Proxy
+#mediaProxy: https://example.com/proxy
+
+# Proxy remote files (default: false)
+#proxyRemoteFiles: true
+
+# Sign to ActivityPub GET request (default: true)
+signToActivityPubGet: true
+
+allowedPrivateNetworks: [
+  '127.0.0.1/32'
+]
+
+# Upload or download file size limits (bytes)
+#maxFileSize: 262144000

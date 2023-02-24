@@ -9,6 +9,8 @@ export const meta = {
 	tags: ['notes'],
 
 	requireCredential: false,
+	allowGet: true,
+	cacheSec: 3600,
 
 	res: {
 		type: 'array',
@@ -41,7 +43,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const max = 30;
 			const day = 1000 * 60 * 60 * 24 * 3; // 3日前まで
 
 			const query = this.notesRepository.createQueryBuilder('note')
@@ -67,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let notes = await query
 				.orderBy('note.score', 'DESC')
-				.take(max)
+				.take(50)
 				.getMany();
 
 			notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());

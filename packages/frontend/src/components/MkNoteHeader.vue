@@ -1,6 +1,6 @@
 <template>
 <header :class="$style.root">
-	<MkA v-once v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -17,7 +17,7 @@
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 		</span>
-		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
 	</div>
 </header>
 </template>
@@ -90,7 +90,7 @@ defineProps<{
 	vertical-align: -20%;
 
 	& + .badgeRole {
-		margin-left: .125em;
+		margin-left: 0.2em;
 	}
 }
 </style>

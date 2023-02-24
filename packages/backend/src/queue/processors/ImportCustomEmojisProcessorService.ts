@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan, DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import unzipper from 'unzipper';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';

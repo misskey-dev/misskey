@@ -12,7 +12,7 @@ import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserGroupJoiningsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -38,9 +38,6 @@ export class AntennaService implements OnApplicationShutdown {
 
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
-
-		@Inject(DI.userGroupJoiningsRepository)
-		private userGroupJoiningsRepository: UserGroupJoiningsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
@@ -160,14 +157,6 @@ export class AntennaService implements OnApplicationShutdown {
 			})).map(x => x.userId);
 	
 			if (!listUsers.includes(note.userId)) return false;
-		} else if (antenna.src === 'group') {
-			const joining = await this.userGroupJoiningsRepository.findOneByOrFail({ id: antenna.userGroupJoiningId! });
-	
-			const groupUsers = (await this.userGroupJoiningsRepository.findBy({
-				userGroupId: joining.userGroupId,
-			})).map(x => x.userId);
-	
-			if (!groupUsers.includes(note.userId)) return false;
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);

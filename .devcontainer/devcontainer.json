@@ -1,0 +1,11 @@
+{
+	"name": "Misskey",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"features": {
+		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
+	},
+	"forwardPorts": [3000],
+	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh"
+}

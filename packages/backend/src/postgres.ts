@@ -30,7 +30,6 @@ import { GalleryLike } from '@/models/entities/GalleryLike.js';
 import { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { Hashtag } from '@/models/entities/Hashtag.js';
 import { Instance } from '@/models/entities/Instance.js';
-import { MessagingMessage } from '@/models/entities/MessagingMessage.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
@@ -55,9 +54,6 @@ import { Signin } from '@/models/entities/Signin.js';
 import { SwSubscription } from '@/models/entities/SwSubscription.js';
 import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { User } from '@/models/entities/User.js';
-import { UserGroup } from '@/models/entities/UserGroup.js';
-import { UserGroupInvitation } from '@/models/entities/UserGroupInvitation.js';
-import { UserGroupJoining } from '@/models/entities/UserGroupJoining.js';
 import { UserIp } from '@/models/entities/UserIp.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UserList } from '@/models/entities/UserList.js';
@@ -78,7 +74,6 @@ import { FlashLike } from '@/models/entities/FlashLike.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { envOption } from './env.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -137,9 +132,6 @@ export const entities = [
 	UserPublickey,
 	UserList,
 	UserListJoining,
-	UserGroup,
-	UserGroupJoining,
-	UserGroupInvitation,
 	UserNotePining,
 	UserSecurityKey,
 	UsedUsername,
@@ -167,7 +159,6 @@ export const entities = [
 	SwSubscription,
 	AbuseUserReport,
 	RegistrationTicket,
-	MessagingMessage,
 	Signin,
 	ModerationLog,
 	Clip,

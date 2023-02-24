@@ -1,9 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import type { MessagingMessagesRepository, PollsRepository, EmojisRepository, UsersRepository } from '@/models/index.js';
+import type { PollsRepository, EmojisRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { CacheableRemoteUser } from '@/models/entities/User.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
@@ -16,7 +16,6 @@ import { IdService } from '@/core/IdService.js';
 import { PollService } from '@/core/PollService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { MessagingService } from '@/core/MessagingService.js';
 import { bindThis } from '@/decorators.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -47,9 +46,6 @@ export class ApNoteService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
-		@Inject(DI.messagingMessagesRepository)
-		private messagingMessagesRepository: MessagingMessagesRepository,
-
 		private idService: IdService,
 		private apMfmService: ApMfmService,
 		private apResolverService: ApResolverService,
@@ -64,7 +60,6 @@ export class ApNoteService {
 		private apImageService: ApImageService,
 		private apQuestionService: ApQuestionService,
 		private metaService: MetaService,
-		private messagingService: MessagingService,
 		private appLockService: AppLockService,
 		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
@@ -114,7 +109,7 @@ export class ApNoteService {
 	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 	
-		const object: any = await resolver.resolve(value);
+		const object = await resolver.resolve(value);
 	
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
@@ -129,7 +124,7 @@ export class ApNoteService {
 			throw new Error('invalid note');
 		}
 	
-		const note: IPost = object;
+		const note: IPost = object as any;
 	
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
@@ -146,7 +141,7 @@ export class ApNoteService {
 		this.logger.info(`Creating the Note: ${note.id}`);
 	
 		// 投稿者をフェッチ
-		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as CacheableRemoteUser;
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo!), resolver) as RemoteUser;
 	
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
@@ -164,8 +159,6 @@ export class ApNoteService {
 				visibility = 'public';
 			}
 		}
-	
-		let isMessaging = note._misskey_talk && visibility === 'specified';
 	
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
 		const apHashtags = await extractApHashtags(note.tag);
@@ -193,17 +186,6 @@ export class ApNoteService {
 					return x;
 				}
 			}).catch(async err => {
-				// トークだったらinReplyToのエラーは無視
-				const uri = getApId(note.inReplyTo);
-				if (uri.startsWith(this.config.url + '/')) {
-					const id = uri.split('/').pop();
-					const talk = await this.messagingMessagesRepository.findOneBy({ id });
-					if (talk) {
-						isMessaging = true;
-						return null;
-					}
-				}
-	
 				this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
 				throw err;
 			})
@@ -292,14 +274,7 @@ export class ApNoteService {
 		const apEmojis = emojis.map(emoji => emoji.name);
 	
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
-	
-		if (isMessaging) {
-			for (const recipient of visibleUsers) {
-				await this.messagingService.createMessage(actor, recipient, undefined, text ?? undefined, (files && files.length > 0) ? files[0] : null, object.id);
-				return null;
-			}
-		}
-	
+		
 		return await this.noteCreateService.create(actor, {
 			createdAt: note.published ? new Date(note.published) : null,
 			files,
