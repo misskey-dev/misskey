@@ -1,10 +1,10 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { jest } from '@jest/globals';
 import * as lolex from '@sinonjs/fake-timers';
 import { DataSource } from 'typeorm';
 import { DataType, IMemoryDb, newDb } from 'pg-mem';
+import { afterAll, afterEach, beforeEach, describe, test } from 'vitest';
 import TestChart from '@/core/chart/charts/test.js';
 import TestGroupedChart from '@/core/chart/charts/test-grouped.js';
 import TestUniqueChart from '@/core/chart/charts/test-unique.js';
