@@ -8,19 +8,19 @@
 		<template v-if="tag == null">
 			<MkFoldableSection class="_margin" persist-key="explore-pinned-users">
 				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
-				<XUserList :pagination="pinnedUsers"/>
+				<MkUserList :pagination="pinnedUsers"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persist-key="explore-popular-users">
 				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
-				<XUserList :pagination="popularUsers"/>
+				<MkUserList :pagination="popularUsers"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persist-key="explore-recently-updated-users">
 				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
-				<XUserList :pagination="recentlyUpdatedUsers"/>
+				<MkUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin" persist-key="explore-recently-registered-users">
 				<template #header><i class="ti ti-plus ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
-				<XUserList :pagination="recentlyRegisteredUsers"/>
+				<MkUserList :pagination="recentlyRegisteredUsers"/>
 			</MkFoldableSection>
 		</template>
 	</div>
@@ -29,28 +29,28 @@
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div class="vxjfqztj">
-				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/explore/tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
-				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/explore/tags/${tag.tag}`">{{ tag.tag }}</MkA>
+				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/user-tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
+				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/user-tags/${tag.tag}`">{{ tag.tag }}</MkA>
 			</div>
 		</MkFoldableSection>
 
 		<MkFoldableSection v-if="tag != null" :key="`${tag}`" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
-			<XUserList :pagination="tagUsers"/>
+			<MkUserList :pagination="tagUsers"/>
 		</MkFoldableSection>
 
 		<template v-if="tag == null">
 			<MkFoldableSection class="_margin">
 				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
-				<XUserList :pagination="popularUsersF"/>
+				<MkUserList :pagination="popularUsersF"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
 				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
-				<XUserList :pagination="recentlyUpdatedUsersF"/>
+				<MkUserList :pagination="recentlyUpdatedUsersF"/>
 			</MkFoldableSection>
 			<MkFoldableSection class="_margin">
 				<template #header><i class="ti ti-rocket ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyDiscoveredUsers }}</template>
-				<XUserList :pagination="recentlyRegisteredUsersF"/>
+				<MkUserList :pagination="recentlyRegisteredUsersF"/>
 			</MkFoldableSection>
 		</template>
 	</div>
@@ -59,7 +59,7 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import XUserList from '@/components/MkUserList.vue';
+import MkUserList from '@/components/MkUserList.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkTab from '@/components/MkTab.vue';
 import * as os from '@/os';

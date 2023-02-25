@@ -9,6 +9,7 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { noteActions } from '@/store';
 import { miLocalStorage } from '@/local-storage';
+import { getUserMenu } from '@/scripts/get-user-menu';
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -99,66 +100,6 @@ export function getNoteMenu(props: {
 		});
 	}
 
-	async function clip(): Promise<void> {
-		const clips = await os.api('clips/list');
-		os.popupMenu([{
-			icon: 'ti ti-plus',
-			text: i18n.ts.createNew,
-			action: async () => {
-				const { canceled, result } = await os.form(i18n.ts.createNewClip, {
-					name: {
-						type: 'string',
-						label: i18n.ts.name,
-					},
-					description: {
-						type: 'string',
-						required: false,
-						multiline: true,
-						label: i18n.ts.description,
-					},
-					isPublic: {
-						type: 'boolean',
-						label: i18n.ts.public,
-						default: false,
-					},
-				});
-				if (canceled) return;
-
-				const clip = await os.apiWithDialog('clips/create', result);
-
-				claimAchievement('noteClipped1');
-				os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
-			},
-		}, null, ...clips.map(clip => ({
-			text: clip.name,
-			action: () => {
-				claimAchievement('noteClipped1');
-				os.promiseDialog(
-					os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
-					null,
-					async (err) => {
-						if (err.id === '734806c4-542c-463a-9311-15c512803965') {
-							const confirm = await os.confirm({
-								type: 'warning',
-								text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
-							});
-							if (!confirm.canceled) {
-								os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
-								if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
-							}
-						} else {
-							os.alert({
-								type: 'error',
-								text: err.message + '\n' + err.id,
-							});
-						}
-					},
-				);
-			},
-		}))], props.menuButton.value, {
-		}).then(focus);
-	}
-
 	async function unclip(): Promise<void> {
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClipPage.value.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
@@ -200,7 +141,7 @@ export function getNoteMenu(props: {
 		props.translating.value = true;
 		const res = await os.api('notes/translate', {
 			noteId: appearNote.id,
-			targetLang: miLocalStorage.getItem('lang') || navigator.language,
+			targetLang: miLocalStorage.getItem('lang') ?? navigator.language,
 		});
 		props.translating.value = false;
 		props.translation.value = res;
@@ -240,7 +181,7 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
-					window.open(appearNote.url || appearNote.uri, '_blank');
+					window.open(appearNote.url ?? appearNote.uri, '_blank');
 				},
 			} : undefined,
 			{
@@ -264,9 +205,67 @@ export function getNoteMenu(props: {
 				action: () => toggleFavorite(true),
 			}),
 			{
+				type: 'parent',
 				icon: 'ti ti-paperclip',
 				text: i18n.ts.clip,
-				action: () => clip(),
+				children: async () => {
+					const clips = await os.api('clips/list');
+					return [{
+						icon: 'ti ti-plus',
+						text: i18n.ts.createNew,
+						action: async () => {
+							const { canceled, result } = await os.form(i18n.ts.createNewClip, {
+								name: {
+									type: 'string',
+									label: i18n.ts.name,
+								},
+								description: {
+									type: 'string',
+									required: false,
+									multiline: true,
+									label: i18n.ts.description,
+								},
+								isPublic: {
+									type: 'boolean',
+									label: i18n.ts.public,
+									default: false,
+								},
+							});
+							if (canceled) return;
+
+							const clip = await os.apiWithDialog('clips/create', result);
+
+							claimAchievement('noteClipped1');
+							os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
+						},
+					}, null, ...clips.map(clip => ({
+						text: clip.name,
+						action: () => {
+							claimAchievement('noteClipped1');
+							os.promiseDialog(
+								os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
+								null,
+								async (err) => {
+									if (err.id === '734806c4-542c-463a-9311-15c512803965') {
+										const confirm = await os.confirm({
+											type: 'warning',
+											text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
+										});
+										if (!confirm.canceled) {
+											os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
+											if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
+										}
+									} else {
+										os.alert({
+											type: 'error',
+											text: err.message + '\n' + err.id,
+										});
+									}
+								},
+							);
+						},
+					}))];
+				},
 			},
 			statePromise.then(state => state.isMutedThread ? {
 				icon: 'ti ti-message-off',
@@ -286,6 +285,15 @@ export function getNoteMenu(props: {
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
 			} : undefined,
+			appearNote.userId !== $i.id ? {
+				type: 'parent',
+				icon: 'ti ti-user',
+				text: i18n.ts.user,
+				children: async () => {
+					const user = await os.api('users/show', { userId: appearNote.userId });
+					return getUserMenu(user);
+				},
+			} : undefined,
 			/*
 		...($i.isModerator || $i.isAdmin ? [
 			null,
@@ -302,7 +310,7 @@ export function getNoteMenu(props: {
 					icon: 'ti ti-exclamation-circle',
 					text: i18n.ts.reportAbuse,
 					action: () => {
-						const u = appearNote.url || appearNote.uri || `${url}/notes/${appearNote.id}`;
+						const u = appearNote.url ?? appearNote.uri ?? `${url}/notes/${appearNote.id}`;
 						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 							user: appearNote.user,
 							initialComment: `Note: ${u}\n-----\n`,
@@ -344,7 +352,7 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
-				window.open(appearNote.url || appearNote.uri, '_blank');
+				window.open(appearNote.url ?? appearNote.uri, '_blank');
 			},
 		} : undefined]
 			.filter(x => x !== undefined);

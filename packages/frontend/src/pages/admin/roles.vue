@@ -133,7 +133,7 @@
 					</div>
 				</MkFolder>
 				<div class="_gaps_s">
-					<MkRolePreview v-for="role in roles" :key="role.id" :role="role"/>
+					<MkRolePreview v-for="role in roles" :key="role.id" :role="role" :for-moderation="true"/>
 				</div>
 			</div>
 		</MkSpacer>

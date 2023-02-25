@@ -6,7 +6,7 @@
 			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note" class="note">
 					<div v-if="showNext" class="_margin">
-						<XNotes class="" :pagination="nextPagination" :no-gap="true"/>
+						<MkNotes class="" :pagination="nextPagination" :no-gap="true"/>
 					</div>
 
 					<div class="main _margin">
@@ -29,7 +29,7 @@
 					</div>
 
 					<div v-if="showPrev" class="_margin">
-						<XNotes class="" :pagination="prevPagination" :no-gap="true"/>
+						<MkNotes class="" :pagination="prevPagination" :no-gap="true"/>
 					</div>
 				</div>
 				<MkError v-else-if="error" @retry="fetchNote()"/>
@@ -44,7 +44,7 @@
 import { computed, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import XNoteDetailed from '@/components/MkNoteDetailed.vue';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';

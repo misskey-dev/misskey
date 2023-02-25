@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import * as speakeasy from 'speakeasy';
+import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallengesRepository, UsersRepository } from '@/models/index.js';
@@ -155,19 +155,19 @@ export class SigninApiService {
 				});
 			}
 
-			const verified = (speakeasy as any).totp.verify({
-				secret: profile.twoFactorSecret,
-				encoding: 'base32',
-				token: token,
-				window: 2,
+			const delta = OTPAuth.TOTP.validate({
+				secret: OTPAuth.Secret.fromBase32(profile.twoFactorSecret!),
+				digits: 6,
+				token,
+				window: 1,
 			});
 
-			if (verified) {
-				return this.signinService.signin(request, reply, user);
-			} else {
+			if (delta === null) {
 				return await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
 				});
+			} else {
+				return this.signinService.signin(request, reply, user);
 			}
 		} else if (body.credentialId && body.clientDataJSON && body.authenticatorData && body.signature) {
 			if (!same && !profile.usePasswordLessLogin) {

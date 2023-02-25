@@ -11,7 +11,10 @@
 
 		<div class="contents">
 			<XHeader v-if="!root" class="header"/>
-			<main style="container-type: inline-size;">
+			<main v-if="!root" style="container-type: inline-size;">
+				<RouterView/>
+			</main>
+			<main v-else>
 				<RouterView/>
 			</main>
 			<div v-if="!root" class="powered-by">
@@ -55,7 +58,6 @@ import { ComputedRef, onMounted, provide } from 'vue';
 import XHeader from './header.vue';
 import XKanban from './kanban.vue';
 import { host, instanceName } from '@/config';
-import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { instance } from '@/instance';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
@@ -94,7 +96,9 @@ const keymap = $computed(() => {
 			if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
 			defaultStore.set('darkMode', !defaultStore.state.darkMode);
 		},
-		's': search,
+		's': () => {
+			mainRouter.push('/search');
+		},
 	};
 });
 
