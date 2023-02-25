@@ -32,8 +32,7 @@ describe('Chart', () => {
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
 	let testIntersectionChart: TestIntersectionChart;
-	// FIXME
-	//let clock: lolex.InstalledClock;
+	let clock: lolex.InstalledClock;
 
 	beforeEach(async () => {
 		db = newDb({ autoCreateForeignKeyIndices: true });
@@ -95,17 +94,17 @@ describe('Chart', () => {
 		testUniqueChart = new TestUniqueChart(dataSource, appLockService, logger);
 		testIntersectionChart = new TestIntersectionChart(dataSource, appLockService, logger);
 
-		// FIXME
-		/*clock = lolex.install({
+		clock = lolex.install({
 			now: new Date(Date.UTC(2000, 0, 1, 0, 0, 0)),
 			shouldClearNativeTimers: true,
-		});*/
+			// https://github.com/oguimbal/pg-mem/issues/170#issuecomment-956078966
+			toFake: ['Date'],
+		});
 	});
 
-	// FIXME
-	/*afterEach(() => {
+	afterEach(() => {
 		clock.uninstall();
-	});*/
+	});
 
 	afterAll(async () => {
 		if (dataSource) await dataSource.destroy();
@@ -232,8 +231,7 @@ describe('Chart', () => {
 		});
 	});
 
-	// FIXME
-	/*test('Can updates at different times', async () => {
+	test('Can updates at different times', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -260,7 +258,7 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	});*/
+	});
 
 	// 仕様上はこうなってほしいけど、実装は難しそうなのでskip
 	/*
@@ -293,8 +291,7 @@ describe('Chart', () => {
 	});
 	*/
 
-	// FIXME
-	/*test('Can padding', async () => {
+	test('Can padding', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -321,11 +318,10 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	});*/
+	});
 
 	// 要求された範囲にログがひとつもない場合でもパディングできる
-	// FIXME
-	/*test('Can padding from past range', async () => {
+	test('Can padding from past range', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -349,12 +345,11 @@ describe('Chart', () => {
 				total: [1, 0, 0],
 			},
 		});
-	});*/
+	});
 
 	// 要求された範囲の最も古い箇所に位置するログが存在しない場合でもパディングできる
 	// Issue #3190
-	// FIXME
-	/*test('Can padding from past range 2', async () => {
+	test('Can padding from past range 2', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -381,10 +376,9 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	});*/
+	});
 
-	// FIXME
-	/*test('Can specify offset', async () => {
+	test('Can specify offset', async () => {
 		await testChart.increment();
 		await testChart.save();
 
@@ -411,10 +405,9 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	});*/
+	});
 
-	// FIXME
-	/*test('Can specify offset (floor time)', async () => {
+	test('Can specify offset (floor time)', async () => {
 		clock.tick('00:30:00');
 
 		await testChart.increment();
@@ -443,7 +436,7 @@ describe('Chart', () => {
 				total: [2, 0, 0],
 			},
 		});
-	});*/
+	});
 
 	describe('Grouped', () => {
 		test('Can updates', async () => {
@@ -583,8 +576,7 @@ describe('Chart', () => {
 			});
 		});
 
-		// FIXME
-		/*test('Can resync (2)', async () => {
+		test('Can resync (2)', async () => {
 			await testChart.increment();
 			await testChart.save();
 
@@ -612,6 +604,6 @@ describe('Chart', () => {
 					total: [100, 0, 0],
 				},
 			});
-		});*/
+		});
 	});
 });
