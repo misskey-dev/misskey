@@ -482,8 +482,7 @@ describe('Chart', () => {
 		});
 	});
 
-	// FIXME
-	/*describe('Unique increment', () => {
+	describe('Unique increment', () => {
 		test('Can updates', async () => {
 			await testUniqueChart.uniqueIncrement('alice');
 			await testUniqueChart.uniqueIncrement('alice');
@@ -548,7 +547,7 @@ describe('Chart', () => {
 				});
 			});
 		});
-	});*/
+	});
 
 	describe('Resync', () => {
 		test('Can resync', async () => {
