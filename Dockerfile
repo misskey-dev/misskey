@@ -59,7 +59,8 @@ FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 ARG UID="991"
 ARG GID="991"
 
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
 	ffmpeg tini curl \
 	&& corepack enable \
 	&& groupadd -g "${GID}" misskey \
