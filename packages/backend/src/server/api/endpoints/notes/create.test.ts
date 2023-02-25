@@ -198,11 +198,11 @@ describe('api:notes/create', () => {
 			});
 		});
 
-		test('test, fileIds and poll', () => {
+		test('text, fileIds and poll', () => {
 			expect(v({ text: 'Hello, world!', fileIds: ['1', '2', '3'], poll: { choices: ['a', 'b', 'c'] } }))
 			.toBe(true);
 		});
-		test('test, invalid fileIds and invalid poll', () => {
+		test('text, invalid fileIds and invalid poll', () => {
 			expect(v({ text: 'Hello, world!', fileIds: ['あ'], poll: { choices: ['a'] } }))
 			.toBe(false);
 		});
