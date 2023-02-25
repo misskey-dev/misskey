@@ -2,7 +2,7 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
--
+- feat: 検索画面の統合 (Khsmty)
 
 ### Bugfixes
 -
