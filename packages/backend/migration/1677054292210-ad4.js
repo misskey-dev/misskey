@@ -1,7 +1,7 @@
 export class ad1677054292210 {
 	name = 'ad1677054292210';
 	async up(queryRunner) {
-			await queryRunner.query(`ALTER TABLE "ad" ADD "dayofweek" smallint NOT NULL Default 0`);
+			await queryRunner.query(`ALTER TABLE "ad" ADD "dayofweek" integer NOT NULL Default 0`);
 	}
 	async down(queryRunner) {
 		await queryRunner.query(`ALTER TABLE "ad" DROP COLUMN "dayofweek"`);
