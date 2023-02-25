@@ -146,30 +146,10 @@ export const paramDef = {
 	},
 	// (re)note with text, files and poll are optional
 	anyOf: [
-		{
-			properties: {
-				text: { type: 'string' },
-			},
-			required: ['text'],
-		},
-		{
-			properties: {
-				fileIds: { type: 'array' },
-			},
-			required: ['fileIds'],
-		},
-		{
-			properties: {
-				mediaIds: { type: 'array' },
-			},
-			required: ['mediaIds'],
-		},
-		{
-			properties: {
-				poll: { type: 'object' },
-			},
-			required: ['poll'],
-		},
+		{ required: ['text'] },
+		{ required: ['fileIds'] },
+		{ required: ['mediaIds'] },
+		{ required: ['poll'] },
 	],
 } as const;
 
