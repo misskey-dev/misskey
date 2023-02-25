@@ -48,6 +48,7 @@ export const paramDef = {
 			type: 'string',
 		} },
 		excludeNsfw: { type: 'boolean', default: false },
+		isrenoteshow: true,
 	},
 	required: ['userId'],
 } as const;

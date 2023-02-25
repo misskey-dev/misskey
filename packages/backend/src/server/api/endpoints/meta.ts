@@ -1,4 +1,4 @@
-import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
+import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { AdsRepository, UsersRepository } from '@/models/index.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
@@ -259,13 +259,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
-			const ads = await this.adsRepository.find({
-				where: {
-					expiresAt: MoreThan(new Date()),
-					startsAt: LessThanOrEqual(new Date()),
-				},
-			});
-
+			const ads = await this.adsRepository.createQueryBuilder("ads")
+				.where('ads.expiresAt > :now', { now: new Date() })
+				.andWhere('ads.startsAt <= :now', { now: new Date() })
+				.andWhere(new Brackets(qb => {
+					qb.where('ads.dayofweek & :dayofweek > 0', { dayofweek: Math.pow(2, new Date().getDay()) })
+						.orWhere('ads.dayofweek = 0');
+				}))
+				.getMany();
+		
 			const response: any = {
 				maintainerName: instance.maintainerName,
 				maintainerEmail: instance.maintainerEmail,
@@ -304,6 +306,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					place: ad.place,
 					ratio: ad.ratio,
 					imageUrl: ad.imageUrl,
+					dayofweek: ad.dayofweek,
 				})),
 				enableEmail: instance.enableEmail,
 				enableServiceWorker: instance.enableServiceWorker,

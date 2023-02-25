@@ -35,6 +35,10 @@
 					<MkInput v-model="ad.expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
+					<div v-for="(day, index) in daysOfWeek" :key="index">
+						<input :id="day" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad.dayofweek, index)">
+						<label :for="day">{{ day }}</label>
+					</div>
 				</FormSplit>
 				<MkTextarea v-model="ad.memo">
 					<template #label>{{ i18n.ts.memo }}</template>
@@ -69,6 +73,7 @@ let ads: any[] = $ref([]);
 // ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
 const localTime = new Date();
 const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
+const daysOfWeek: string[] = [i18n.ts._weekday.sunday, i18n.ts._weekday.monday, i18n.ts._weekday.tuesday, i18n.ts._weekday.wednesday, i18n.ts._weekday.thursday, i18n.ts._weekday.friday, i18n.ts._weekday.saturday];
 
 os.api('admin/ad/list').then(adsResponse => {
 	ads = adsResponse.map(r => {
@@ -84,6 +89,10 @@ os.api('admin/ad/list').then(adsResponse => {
 	});
 });
 
+function toggleDayOfWeek(dayofweek, index) {
+	dayofweek ^= 1 << index;
+}
+
 function add() {
 	ads.unshift({
 		id: null,
@@ -95,6 +104,7 @@ function add() {
 		imageUrl: null,
 		expiresAt: null,
 		startsAt: null,
+		dayofweek: 0,
 	});
 }
 
