@@ -36,7 +36,7 @@
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
 					<div v-for="(day, index) in daysOfWeek" :key="index">
-						<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad.dayofweek, index)">
+						<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad, index)">
 						<label :for="`ad${ad.id}-${index}`">{{ day }}</label>
 					</div>
 				</FormSplit>
@@ -89,8 +89,8 @@ os.api('admin/ad/list').then(adsResponse => {
 	});
 });
 
-function toggleDayOfWeek(dayofweek, index) {
-	dayofweek ^= 1 << index;
+function toggleDayOfWeek(ad, index) {
+	ad.dayofweek ^= 1 << index;
 }
 
 function add() {
