@@ -12,6 +12,7 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- renoteした際の表示を改善
 
 ### Bugfixes
 - Windows環境でswcを使うと正しくビルドできない問題の修正

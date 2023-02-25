@@ -255,7 +255,7 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
-				os.api('notes/create', {
+				os.apiWithDialog('notes/create', {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
 				});
@@ -276,7 +276,7 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
-			os.api('notes/create', {
+			os.apiWithDialog('notes/create', {
 				renoteId: appearNote.id,
 			});
 		},
