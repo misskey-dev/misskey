@@ -101,6 +101,7 @@ export const paramDef = {
 		noExtractHashtags: { type: 'boolean', default: false },
 		noExtractEmojis: { type: 'boolean', default: false },
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
+		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	anyOf: [
@@ -161,13 +162,6 @@ export const paramDef = {
 				},
 			},
 			required: ['poll'],
-		},
-		{
-			// pure renote
-			properties: {
-				renoteId: { type: 'string', format: 'misskey:id', nullable: true },
-			},
-			required: ['renoteId'],
 		},
 	],
 } as const;
