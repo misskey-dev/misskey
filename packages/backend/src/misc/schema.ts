@@ -142,10 +142,10 @@ type ArrayUnion<T> = T extends any ? Array<T> : never;
 type ObjectSchemaTypeDef<p extends Schema> =
 	p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
 	p['properties'] extends NonNullable<Obj> ?
-		p['anyOf'] extends ReadonlyArray<Schema> ?
-			ObjType<p['properties'], NonNullable<p['required']>[number]> & UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>>
-			:
-			ObjType<p['properties'], NonNullable<p['required']>[number]>
+		p['anyOf'] extends ReadonlyArray<Schema> ? p['anyOf'][number]['required'] extends ReadonlyArray<keyof NonNullable<p['properties']>> ?
+			ObjType<p['properties'], NonNullable<p['required']>[number]> & ObjType<p['properties'], p['anyOf'][number]['required'][number]>
+			: never
+			: ObjType<p['properties'], NonNullable<p['required']>[number]>
 	:
 	p['anyOf'] extends ReadonlyArray<Schema> ? UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>> :
 	p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
