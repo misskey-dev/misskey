@@ -36,8 +36,8 @@
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
 					<div v-for="(day, index) in daysOfWeek" :key="index">
-						<input :id="day" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad.dayofweek, index)">
-						<label :for="day">{{ day }}</label>
+						<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad.dayofweek, index)">
+						<label :for="`ad${ad.id}-${index}`">{{ day }}</label>
 					</div>
 				</FormSplit>
 				<MkTextarea v-model="ad.memo">
