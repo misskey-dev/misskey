@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import { getValidator } from '@/../test/prelude/get-api-validator.js';
 import { describe, test, expect } from '@jest/globals';
-import { readFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises';
 
 import { paramDef } from './create.js';
 
