@@ -116,7 +116,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host || host}`);
+			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
 	}, {
 		icon: 'ti ti-info-circle',
