@@ -50,11 +50,9 @@
 import { computed } from 'vue';
 
 import XHeader from './_header_.vue';
-import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
-import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { i18n } from '@/i18n';
 import { useInterval } from '@/scripts/use-interval';

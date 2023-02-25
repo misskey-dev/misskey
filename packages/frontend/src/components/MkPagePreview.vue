@@ -18,7 +18,6 @@
 import { } from 'vue';
 import * as misskey from 'misskey-js';
 import { userName } from '@/filters/user';
-import * as os from '@/os';
 
 const props = defineProps<{
 	page: misskey.entities.Page;

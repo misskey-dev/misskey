@@ -215,19 +215,15 @@ export class User {
 	}
 }
 
-export interface ILocalUser extends User {
+export type LocalUser = User & {
 	host: null;
+	uri: null;
 }
 
-export interface IRemoteUser extends User {
+export type RemoteUser = User & {
 	host: string;
+	uri: string;
 }
-
-export type CacheableLocalUser = ILocalUser;
-
-export type CacheableRemoteUser = IRemoteUser;
-
-export type CacheableUser = CacheableLocalUser | CacheableRemoteUser;
 
 export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
 export const passwordSchema = { type: 'string', minLength: 1 } as const;

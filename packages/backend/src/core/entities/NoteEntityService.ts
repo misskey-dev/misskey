@@ -1,9 +1,8 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';

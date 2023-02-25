@@ -2,12 +2,79 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
+-
 
 ### Bugfixes
 -
 
 You should also include the user name that made the change.
 -->
+## 13.7.5 (2023/02/24)
+
+### Note
+13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
+
+### Bugfixes
+- 全ての通知が削除されてしまうのを修正
+
+## 13.7.3 (2023/02/23)
+
+### Note
+~~13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**~~
+
+### Improvements
+
+### Bugfixes
+- Client: 「キャッシュを削除」した後、ローカルのカスタム絵文字が表示されなくなるされなくなる問題を修正
+- Client: 通知設定画面で以前からグループの招待を有効化していた場合、通知の表示に失敗する問題の修正
+- Client: 通知設定画面に古いトグルが残っていた問題を修正
+
+## 13.7.2 (2023/02/23)
+
+### Note
+13.7.0以前からアップデートする場合は全ての通知が削除されます。
+
+### Improvements
+- enhance: make pwa icon maskable
+- chore(client): tweak custom emoji size
+
+### Bugfixes
+- マイグレーションが失敗することがあるのを修正
+
+## 13.7.1 (2023/02/23)
+
+### Improvements
+- pnpm buildではswcを使うように
+
+### Bugfixes
+- NODE_ENV=productionでビルドできないのを修正
+
+## 13.7.0 (2023/02/22)
+
+### Changes
+- チャット機能が削除されました
+
+### Improvements
+- Server: URLプレビュー（summaly）はプロキシを通すように
+- Client: 2FA設定のUIをまともにした
+- セキュリティキーの名前を変更できるように
+- enhance(client): add quiz preset for play
+- 広告開始時期を設定できるように
+- みつけるで公開ロール一覧とそのメンバーを閲覧できるように
+- enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
+- enhance(client): make possible to reload page of window
+
+### Bugfixes
+- ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
+- fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
+- 管理画面の広告を10個以上見えるように
+- Moderation note が保存できない
+- ユーザーのハッシュタグ検索が機能していないのを修正
+
 ## 13.6.1 (2023/02/12)
 
 ### Improvements

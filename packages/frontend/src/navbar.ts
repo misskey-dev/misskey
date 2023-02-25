@@ -1,4 +1,4 @@
-import { computed, ref, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { miLocalStorage } from './local-storage';
 import { search } from '@/scripts/search';
@@ -14,13 +14,6 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		indicated: computed(() => $i != null && $i.hasUnreadNotification),
 		to: '/my/notifications',
-	},
-	messaging: {
-		title: i18n.ts.messaging,
-		icon: 'ti ti-messages',
-		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadMessagingMessage),
-		to: '/my/messaging',
 	},
 	drive: {
 		title: i18n.ts.drive,
@@ -57,14 +50,6 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/lists',
 	},
-	/*
-	groups: {
-		title: i18n.ts.groups,
-		icon: 'ti ti-users',
-		show: computed(() => $i != null),
-		to: '/my/groups',
-	},
-	*/
 	antennas: {
 		title: i18n.ts.antennas,
 		icon: 'ti ti-antenna',

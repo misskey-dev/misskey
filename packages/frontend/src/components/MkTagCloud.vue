@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, watch, PropType, onBeforeUnmount } from 'vue';
+import { onMounted, watch, onBeforeUnmount } from 'vue';
 import tinycolor from 'tinycolor2';
 
 const loaded = !!window.TagCanvas;

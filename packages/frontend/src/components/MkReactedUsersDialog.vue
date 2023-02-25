@@ -10,15 +10,21 @@
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div v-if="note" class="_gaps">
-			<div :class="$style.tabs">
-				<button v-for="reaction in reactions" :key="reaction" :class="[$style.tab, { [$style.tabActive]: tab === reaction }]" class="_button" @click="tab = reaction">
-					<MkReactionIcon :reaction="reaction"/>
-					<span style="margin-left: 4px;">{{ note.reactions[reaction] }}</span>
-				</button>
+			<div v-if="reactions.length === 0" class="_fullinfo">
+				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<div>{{ i18n.ts.nothing }}</div>
 			</div>
-			<MkA v-for="user in users" :key="user.id" :to="userPage(user)">
-				<MkUserCardMini :user="user" :with-chart="false"/>
-			</MkA>
+			<template v-else>
+				<div :class="$style.tabs">
+					<button v-for="reaction in reactions" :key="reaction" :class="[$style.tab, { [$style.tabActive]: tab === reaction }]" class="_button" @click="tab = reaction">
+						<MkReactionIcon :reaction="reaction"/>
+						<span style="margin-left: 4px;">{{ note.reactions[reaction] }}</span>
+					</button>
+				</div>
+				<MkA v-for="user in users" :key="user.id" :to="userPage(user)">
+					<MkUserCardMini :user="user" :with-chart="false"/>
+				</MkA>
+			</template>
 		</div>
 		<div v-else>
 			<MkLoading/>

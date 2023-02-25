@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
 
     volumes:
-      - ../..:/workspaces:cached
+      - ../:/workspace:cached
 
     command: sleep infinity
 
@@ -21,7 +21,7 @@ services:
     networks:
       - internal_network
     volumes:
-      - ../redis:/data
+      - redis-data:/data
     healthcheck:
       test: "redis-cli ping"
       interval: 5s
@@ -37,7 +37,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: misskey
     volumes:
-      - ../db:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
@@ -45,6 +45,7 @@ services:
 
 volumes:
   postgres-data:
+  redis-data:
 
 networks:
   internal_network:
