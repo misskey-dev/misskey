@@ -145,7 +145,7 @@
 		"websocket": "1.0.34",
 		"ws": "8.12.1",
 		"xev": "3.0.2",
-		"yohira": "0.0.0-alpha.7"
+		"yohira": "0.0.0-alpha.11"
 	},
 	"devDependencies": {
 		"@jest/globals": "29.4.3",
