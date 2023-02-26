@@ -3,6 +3,7 @@
 
 ### Improvements
 - feat: 検索画面の統合 (Khsmty)
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
 
 ### Bugfixes
 -
