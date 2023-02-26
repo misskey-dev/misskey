@@ -160,16 +160,16 @@ export class ApiServerService {
 			}
 		});
 
-		// Make sure any incorrect path under /api returns HTTP 400 Bad Request,
+		// Make sure any unknown path under /api returns HTTP 404 Not Found,
 		// because otherwise ClientServerService will return the base client HTML
 		// page with HTTP 200.
 		fastify.get('*', (request, reply) => {
-			reply.code(400);
+			reply.code(404);
 			// Mock ApiCallService.send's error handling
 			reply.send({
 				error: {
-					message: 'Invalid API endpoint.',
-					code: 'INVALID_API_ENDPOINT',
+					message: 'Unknown API endpoint.',
+					code: 'UNKNOWN_API_ENDPOINT',
 					id: '2ca3b769-540a-4f08-9dd5-b5a825b6d0f1',
 					kind: 'client',
 				},
