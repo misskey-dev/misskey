@@ -16,7 +16,7 @@ export const meta = {
 	errors: {
 		noSuchFile: {
 			message: 'No such file.',
-			code: 'MO_SUCH_FILE',
+			code: 'NO_SUCH_FILE',
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
 	},

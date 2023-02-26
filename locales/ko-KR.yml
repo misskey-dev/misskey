@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n}주 전"
   monthsAgo: "{n}개월 전"
   yearsAgo: "{n}년 전"
+  invalid: "아무것도 없습니다"
 _time:
   second: "초"
   minute: "분"

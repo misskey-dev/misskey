@@ -58,25 +58,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const hasFollowing = (await this.followingsRepository.count({
-				where: {
-					followerId: me.id,
-				},
-				take: 1,
-			})) !== 0;
+			const followees = await this.followingsRepository.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: me.id })
+				.getMany();
 
 			//#region Construct query
-			const followingQuery = this.followingsRepository.createQueryBuilder('following')
-				.select('following.followeeId')
-				.where('following.followerId = :followerId', { followerId: me.id });
-
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.createdAt > :minDate', { minDate: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) }) // 30日前まで
-				.andWhere(new Brackets(qb => { qb
-					.where('note.userId = :meId', { meId: me.id });
-				if (hasFollowing) qb.orWhere(`note.userId IN (${ followingQuery.getQuery() })`);
-				}))
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
@@ -87,8 +77,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 				.leftJoinAndSelect('renote.user', 'renoteUser')
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
-				.setParameters(followingQuery.getParameters());
+				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+
+			if (followees.length > 0) {
+				const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
+
+				query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
+			} else {
+				query.andWhere('note.userId = :meId', { meId: me.id });
+			}
 
 			this.queryService.generateChannelQuery(query, me);
 			this.queryService.generateRepliesQuery(query, me);

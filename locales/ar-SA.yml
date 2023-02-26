@@ -971,6 +971,7 @@ _ago:
   weeksAgo: "منذ {n} أسابيع"
   monthsAgo: "منذ {n} أشهر"
   yearsAgo: "منذ {n} سنوات"
+  invalid: "لا يوجد شيء هنا"
 _time:
   second: "ثا"
   minute: "د"

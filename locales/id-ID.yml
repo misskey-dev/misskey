@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n} minggu lalu"
   monthsAgo: "{n} bulan lalu"
   yearsAgo: "{n} tahun lalu"
+  invalid: "Tidak ada sama sekali disini"
 _time:
   second: "detik"
   minute: "menit"
