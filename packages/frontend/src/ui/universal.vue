@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, watch, ComputedRef } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
@@ -94,9 +94,8 @@ import { defaultStore } from '@/store';
 import { navbarItemDef } from '@/navbar';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
-import { Router } from '@/nirax';
 import { mainRouter } from '@/router';
-import { PageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));

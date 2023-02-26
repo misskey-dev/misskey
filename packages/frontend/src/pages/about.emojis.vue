@@ -31,14 +31,11 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, computed, watch } from 'vue';
+import { watch } from 'vue';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import MkTab from '@/components/MkTab.vue';
-import * as os from '@/os';
 import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 import { i18n } from '@/i18n';
 import * as Misskey from 'misskey-js';

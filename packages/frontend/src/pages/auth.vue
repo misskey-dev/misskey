@@ -1,12 +1,12 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs" /></template>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="500">
 		<div v-if="state == 'fetch-session-error'">
 			<p>{{ i18n.ts.somethingHappened }}</p>
 		</div>
 		<div v-else-if="$i && !session">
-			<MkLoading />
+			<MkLoading/>
 		</div>
 		<div v-else-if="$i && session">
 			<XForm
@@ -21,15 +21,16 @@
 			</div>
 			<div v-if="state == 'accepted' && session">
 				<h1>{{ session.app.isAuthorized ? $t('already-authorized') : i18n.ts.allowed }}</h1>
-				<p v-if="session.app.callbackUrl">{{ i18n.ts._auth.callback }}
-					<MkEllipsis />
+				<p v-if="session.app.callbackUrl">
+					{{ i18n.ts._auth.callback }}
+					<MkEllipsis/>
 				</p>
 				<p v-if="!session.app.callbackUrl">{{ i18n.ts._auth.pleaseGoBack }}</p>
 			</div>
 		</div>
 		<div v-else>
 			<p :class="$style.loginMessage">{{ i18n.ts._auth.pleaseLogin }}</p>
-			<MkSignin @login="onLogin" />
+			<MkSignin @login="onLogin"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -37,12 +38,12 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
+import { AuthSession } from 'misskey-js/built/entities';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
 import * as os from '@/os';
 import { $i, login } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { AuthSession } from 'misskey-js/built/entities';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{
@@ -82,7 +83,7 @@ onMounted(async () => {
 		} else {
 			state = 'waiting';
 		}
-	} catch (e) {
+	} catch (err) {
 		state = 'fetch-session-error';
 	}
 });

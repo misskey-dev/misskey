@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, toRef, watch } from 'vue';
+import { computed, defineAsyncComponent, toRef } from 'vue';
 import { openInstanceMenu } from './common';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';

@@ -2,7 +2,6 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
-import fetch from 'node-fetch';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { InstancesRepository } from '@/models/index.js';
 import { AppLockService } from '@/core/AppLockService.js';

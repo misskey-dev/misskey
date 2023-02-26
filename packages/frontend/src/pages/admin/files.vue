@@ -33,14 +33,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import { computed } from 'vue';
 import XHeader from './_header_.vue';
-import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
-import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';

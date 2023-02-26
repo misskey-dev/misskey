@@ -78,7 +78,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -125,11 +124,11 @@ function saveFields() {
 
 function save() {
 	os.apiWithDialog('i/update', {
-		name: profile.name || null,
-		description: profile.description || null,
-		location: profile.location || null,
-		birthday: profile.birthday || null,
-		lang: profile.lang || null,
+		name: profile.name ?? null,
+		description: profile.description ?? null,
+		location: profile.location ?? null,
+		birthday: profile.birthday ?? null,
+		lang: profile.lang ?? null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
 		showTimelineReplies: !!profile.showTimelineReplies,
