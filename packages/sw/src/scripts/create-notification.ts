@@ -138,7 +138,7 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
-						const name = reaction.substring(1, reaction.length - 2);
+						const name = reaction.substring(1, reaction.length - 1);
 						badge = `${origin}/emoji/${name}.webp?${url.query({
 							badge: '1',
 						})}`;
