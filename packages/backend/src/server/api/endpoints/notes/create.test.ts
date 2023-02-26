@@ -1,15 +1,17 @@
 process.env.NODE_ENV = 'test';
 
-import { getValidator } from '../../../../../test/prelude/get-api-validator.js';
-import { describe, test, expect } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
-
-import { paramDef } from './create.js';
-
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import { describe, test, expect } from '@jest/globals';
+import { getValidator } from '../../../../../test/prelude/get-api-validator.js';
+import { paramDef } from './create.js';
+
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
+
+const VALID = true;
+const INVALID = false;
 
 describe('api:notes/create', () => {
 	describe('validation', () => {
@@ -18,92 +20,108 @@ describe('api:notes/create', () => {
 
 		test('reject empty', () => {
 			const valid = v({ });
-			expect(valid).toBe(false);
+			expect(valid).toBe(INVALID);
 		});
 
 		describe('text', () => {
 			test('simple post', () => {
 				expect(v({ text: 'Hello, world!' }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('null post', () => {
 				expect(v({ text: null }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('0 characters post', () => {
 				expect(v({ text: '' }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('over 3000 characters post', async () => {
 				expect(v({ text: await tooLong }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
 		});
 
 		describe('cw', () => {
 			test('simple cw', () => {
 				expect(v({ text: 'Hello, world!', cw: 'Hello, world!' }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('null cw', () => {
 				expect(v({ text: 'Body', cw: null }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('0 characters cw', () => {
 				expect(v({ text: 'Body', cw: '' }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('reject only cw', () => {
 				expect(v({ cw: 'Hello, world!' }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('over 100 characters cw', async () => {
 				expect(v({ text: 'Body', cw: await tooLong }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
 		});
 
 		describe('visibility', () => {
 			test('public', () => {
 				expect(v({ text: 'Hello, world!', visibility: 'public' }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('home', () => {
 				expect(v({ text: 'Hello, world!', visibility: 'home' }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('followers', () => {
-				expect(v({ text: 'Hello, world!', visibility: 'followers' })
-				).toBe(true);
+				expect(v({ text: 'Hello, world!', visibility: 'followers' }))
+					.toBe(VALID);
 			});
+
 			test('reject only visibility', () => {
 				expect(v({ visibility: 'public' }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject invalid visibility', () => {
 				expect(v({ text: 'Hello, world!', visibility: 'invalid' }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject null visibility', () => {
 				expect(v({ text: 'Hello, world!', visibility: null }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			describe('visibility:specified', () => {
 				test('specified without visibleUserIds', () => {
 					expect(v({ text: 'Hello, world!', visibility: 'specified' }))
-					.toBe(true);
+						.toBe(VALID);
 				});
+
 				test('specified with empty visibleUserIds', () => {
 					expect(v({ text: 'Hello, world!', visibility: 'specified', visibleUserIds: [] }))
-					.toBe(true);
+						.toBe(VALID);
 				});
+
 				test('reject specified with non unique visibleUserIds', () => {
 					expect(v({ text: 'Hello, world!', visibility: 'specified', visibleUserIds: ['1', '1', '2'] }))
-					.toBe(false);
+						.toBe(INVALID);
 				});
+
 				test('reject specified with null visibleUserIds', () => {
 					expect(v({ text: 'Hello, world!', visibility: 'specified', visibleUserIds: null }))
-					.toBe(false);
+						.toBe(INVALID);
 				});
 			});
 		});
@@ -111,100 +129,120 @@ describe('api:notes/create', () => {
 		describe('fileIds', () => {
 			test('only fileIds', () => {
 				expect(v({ fileIds: ['1', '2', '3'] }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('text and fileIds', () => {
 				expect(v({ text: 'Hello, world!', fileIds: ['1', '2', '3'] }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('reject null fileIds', () => {
 				expect(v({ fileIds: null }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject text and null fileIds （複合的なanyOfのバリデーションが正しく動作する）', () => {
 				expect(v({ text: 'Hello, world!', fileIds: null }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject 0 files', () => {
 				expect(v({ fileIds: [] }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject non unique', () => {
 				expect(v({ fileIds: ['1', '1', '2'] }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject invalid id', () => {
 				expect(v({ fileIds: ['あ'] }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject over 17 files', () => {
 				const valid = v({ text: 'Hello, world!', fileIds: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18'] });
-				expect(valid).toBe(false);
+				expect(valid).toBe(INVALID);
 			});
 		});
 
 		describe('poll', () => {
 			test('note with poll', () => {
 				expect(v({ text: 'Hello, world!', poll: { choices: ['a', 'b', 'c'] } }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('null poll', () => {
 				expect(v({ text: 'Hello, world!', poll: null }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('allow only poll', () => {
 				expect(v({ poll: { choices: ['a', 'b', 'c'] } }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('poll with expiresAt', async () => {
 				expect(v({ poll: { choices: ['a', 'b', 'c'], expiresAt: 1 } }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('poll with expiredAfter', async () => {
 				expect(v({ poll: { choices: ['a', 'b', 'c'], expiredAfter: 1 } }))
-				.toBe(true);
+					.toBe(VALID);
 			});
+
 			test('reject poll without choices', () => {
 				expect(v({ poll: { } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with empty choices', () => {
 				expect(v({ poll: { choices: [] } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with null choices', () => {
 				expect(v({ poll: { choices: null } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with 1 choice', () => {
 				expect(v({ poll: { choices: ['a'] } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with too long choice', async () => {
 				expect(v({ poll: { choices: [await tooLong, '2'] } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with too many choices', () => {
 				expect(v({ poll: { choices: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'] } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with non unique choices', () => {
 				expect(v({ poll: { choices: ['a', 'a', 'b', 'c'] } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
+
 			test('reject poll with expiredAfter 0', async () => {
 				expect(v({ poll: { choices: ['a', 'b', 'c'], expiredAfter: 0 } }))
-				.toBe(false);
+					.toBe(INVALID);
 			});
 		});
 
 		test('text, fileIds and poll', () => {
 			expect(v({ text: 'Hello, world!', fileIds: ['1', '2', '3'], poll: { choices: ['a', 'b', 'c'] } }))
-			.toBe(true);
+				.toBe(VALID);
 		});
+
 		test('text, invalid fileIds and invalid poll', () => {
 			expect(v({ text: 'Hello, world!', fileIds: ['あ'], poll: { choices: ['a'] } }))
-			.toBe(false);
+				.toBe(INVALID);
 		});
 	});
 });
