@@ -27,7 +27,7 @@
 						</div>
 					</div>
 				</Transition>
-				<MkFolder :default-open=false maxHeight=280 class="_margin">
+				<MkFolder :default-open="false" :max-height="280" class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
