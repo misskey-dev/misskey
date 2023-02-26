@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n} sett. fa"
   monthsAgo: "{n} mesi fa"
   yearsAgo: "{n} anni fa"
+  invalid: "Niente da visualizzare"
 _time:
   second: "s"
   minute: "min"
