@@ -161,6 +161,7 @@ import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { MenuItem } from '@/types/menu';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -254,7 +255,13 @@ function renote(viaKeyboard = false) {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
 				}).then(() => {
-					os.toast(i18n.ts.renoted);
+					const el = renoteButton.value as HTMLElement | null | undefined;
+					if (el) {
+						const rect = el.getBoundingClientRect();
+						const x = rect.left + (el.offsetWidth / 2);
+						const y = rect.top + (el.offsetHeight / 2);
+						os.popup(MkRippleEffect, { x, y }, {}, 'end');
+					}
 				});
 			},
 		}, {
@@ -276,7 +283,13 @@ function renote(viaKeyboard = false) {
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
-				os.toast(i18n.ts.renoted);
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
 			});
 		},
 	}, {
