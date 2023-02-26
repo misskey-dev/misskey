@@ -299,6 +299,27 @@ pnpm dlx typeorm migration:generate -d ormconfig.js -o <migration name>
 - 生成後、ファイルをmigration下に移してください
 - 作成されたスクリプトは不必要な変更を含むため除去してください
 
+### JSON SchemaのobjectでanyOfを使うとき
+JSON Schemaで、objectに対してanyOfを使う場合、anyOfの中でpropertiesを定義しないこと。  
+バリデーションが効かないため。（SchemaTypeもそのように作られており、objectのanyOf内のpropertiesは捨てられます）  
+https://github.com/misskey-dev/misskey/pull/10082
+
+テキストhogeおよびfugaについて、片方を必須としつつ両方の指定もありうる場合:
+
+```
+export const paramDef = {
+	type: 'object',
+	properties: {
+		hoge: { type: 'string', minLength: 1 },
+		fuga: { type: 'string', minLength: 1 },
+	},
+	anyOf: [
+		{ required: ['hoge'] },
+		{ required: ['fuga'] },
+	],
+} as const;
+```
+
 ### コネクションには`markRaw`せよ
 **Vueのコンポーネントのdataオプションとして**misskey.jsのコネクションを設定するとき、必ず`markRaw`でラップしてください。インスタンスが不必要にリアクティブ化されることで、misskey.js内の処理で不具合が発生するとともに、パフォーマンス上の問題にも繋がる。なお、Composition APIを使う場合はこの限りではない(リアクティブ化はマニュアルなため)。
 
