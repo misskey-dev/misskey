@@ -116,10 +116,10 @@ export type Obj = Record<string, Schema>;
 // https://github.com/misskey-dev/misskey/issues/8535
 // To avoid excessive stack depth error,
 // deceive TypeScript with UnionToIntersection (or more precisely, `infer` expression within it).
-export type ObjType<s extends Obj, RequiredProps extends keyof s> =
+export type ObjType<s extends Obj, RequiredProps extends ReadonlyArray<keyof s>> =
 	UnionToIntersection<
 		{ -readonly [R in RequiredPropertyNames<s>]-?: SchemaType<s[R]> } &
-		{ -readonly [R in RequiredProps]-?: SchemaType<s[R]> } &
+		{ -readonly [R in RequiredProps[number]]-?: SchemaType<s[R]> } &
 		{ -readonly [P in keyof s]?: SchemaType<s[P]> }
 	>;
 
@@ -136,18 +136,19 @@ type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
 // https://github.com/misskey-dev/misskey/pull/8144#discussion_r785287552
 // To get union, we use `Foo extends any ? Hoge<Foo> : never`
 type UnionSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? SchemaType<X> : never;
-type UnionObjectSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? ObjectSchemaType<X> : never;
+//type UnionObjectSchemaType<a extends readonly any[], X extends Schema = a[number]> = X extends any ? ObjectSchemaType<X> : never;
+type UnionObjType<s extends Obj, a extends readonly any[], X extends ReadonlyArray<keyof s> = a[number]> = X extends any ? ObjType<s, X> : never;
 type ArrayUnion<T> = T extends any ? Array<T> : never;
 
 type ObjectSchemaTypeDef<p extends Schema> =
 	p['ref'] extends keyof typeof refs ? Packed<p['ref']> :
 	p['properties'] extends NonNullable<Obj> ?
-		p['anyOf'] extends ReadonlyArray<Schema> ?
-			ObjType<p['properties'], NonNullable<p['required']>[number]> & UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>>
-			:
-			ObjType<p['properties'], NonNullable<p['required']>[number]>
+		p['anyOf'] extends ReadonlyArray<Schema> ? p['anyOf'][number]['required'] extends ReadonlyArray<keyof p['properties']> ?
+			UnionObjType<p['properties'], NonNullable<p['anyOf'][number]['required']>> & ObjType<p['properties'], NonNullable<p['required']>>
+			: never
+			: ObjType<p['properties'], NonNullable<p['required']>>
 	:
-	p['anyOf'] extends ReadonlyArray<Schema> ? UnionObjectSchemaType<p['anyOf']> & PartialIntersection<UnionObjectSchemaType<p['anyOf']>> :
+	p['anyOf'] extends ReadonlyArray<Schema> ? never : // see CONTRIBUTING.md
 	p['allOf'] extends ReadonlyArray<Schema> ? UnionToIntersection<UnionSchemaType<p['allOf']>> :
 	any
 
