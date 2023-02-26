@@ -2,8 +2,7 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
-- feat: 検索画面の統合 (Khsmty)
-- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
+- 
 
 ### Bugfixes
 -
@@ -21,6 +20,7 @@ You should also include the user name that made the change.
 - enhance(client): improve clip menu ux
 - 検索画面の統合
 - enhance(client): ノートメニューからユーザーメニューを開けるように
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
 
 ### Bugfixes
 - Windows環境でswcを使うと正しくビルドできない問題の修正
