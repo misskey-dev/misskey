@@ -138,15 +138,16 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
-						badge = `${origin}/emoji/${reaction.substr(1, reaction.length - 2)}.webp?${url.query({
+						const name = reaction.substring(1, reaction.length - 2);
+						badge = `${origin}/emoji/${name}.webp?${url.query({
 							badge: '1',
 						})}`;
+						reaction = name.split('@')[0];
 					} else {
 						// Unicode絵文字の場合
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
 					}
 
-					console.log(badge)
 					if (badge ? await fetch(badge).then(res => res.status !== 200).catch(() => true) : true) {
 						badge = iconUrl('plus');
 					}
