@@ -147,10 +147,7 @@ onUnmounted(() => {
 
 	.tabs:first-child {
 		margin-left: auto;
-	}
-	.tabs:not(:first-child) {
-		padding-left: 16px;
-		mask-image: linear-gradient(90deg, rgba(0,0,0,0), rgb(0,0,0) 16px, rgb(0,0,0) 100%);
+		padding: 0 12px;
 	}
 	.tabs {
 		margin-right: auto;

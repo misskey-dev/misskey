@@ -36,7 +36,6 @@ import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
-import { search } from '@/scripts/search';
 import { deviceKind } from '@/scripts/device-kind';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
@@ -47,6 +46,7 @@ import { deckStore } from './ui/deck/deck-store';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
 import { fetchCustomEmojis } from './custom-emojis';
+import { mainRouter } from './router';
 
 console.info(`Misskey v${version}`);
 
@@ -352,7 +352,9 @@ const hotkeys = {
 	'd': (): void => {
 		defaultStore.set('darkMode', !defaultStore.state.darkMode);
 	},
-	's': search,
+	's': (): void => {
+		mainRouter.push('/search');
+	}
 };
 
 if ($i) {

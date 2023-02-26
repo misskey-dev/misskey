@@ -1,7 +1,8 @@
 import * as assert from 'assert';
 import httpSignature from '@peertube/http-signature';
-import { genRsaKeyPair } from '../../src/misc/gen-key-pair.js';
-import { createSignedPost, createSignedGet } from '../../src/activitypub/ap-request.js';
+
+import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
+import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 
 export const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {
 	return {
@@ -9,7 +10,7 @@ export const buildParsedSignature = (signingString: string, signature: string, a
 		params: {
 			keyId: 'KeyID',	// dummy, not used for verify
 			algorithm: algorithm,
-			headers: [ '(request-target)', 'date', 'host', 'digest' ],	// dummy, not used for verify
+			headers: ['(request-target)', 'date', 'host', 'digest'],	// dummy, not used for verify
 			signature: signature,
 		},
 		signingString: signingString,
@@ -29,7 +30,7 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = createSignedPost({ key, url, body, additionalHeaders: headers });
+		const req = ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
@@ -45,7 +46,7 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = createSignedGet({ key, url, additionalHeaders: headers });
+		const req = ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 

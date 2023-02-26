@@ -1,4 +1,5 @@
 import { defineAsyncComponent } from 'vue';
+import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host } from '@/config';
@@ -8,31 +9,8 @@ import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 
-export function getUserMenu(user, router: Router = mainRouter) {
+export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
-
-	async function pushList() {
-		const t = i18n.ts.selectList; // なぜか後で参照すると null になるので最初にメモリに確保しておく
-		const lists = await os.api('users/lists/list');
-		if (lists.length === 0) {
-			os.alert({
-				type: 'error',
-				text: i18n.ts.youHaveNoLists,
-			});
-			return;
-		}
-		const { canceled, result: listId } = await os.select({
-			title: t,
-			items: lists.map(list => ({
-				value: list.id, text: list.name,
-			})),
-		});
-		if (canceled) return;
-		os.apiWithDialog('users/lists/push', {
-			listId: listId,
-			userId: user.id,
-		});
-	}
 
 	async function toggleMute() {
 		if (user.isMuted) {
@@ -102,6 +80,8 @@ export function getUserMenu(user, router: Router = mainRouter) {
 	}
 
 	async function invalidateFollow() {
+		if (!await getConfirmed(i18n.ts.breakFollowConfirm)) return;
+
 		os.apiWithDialog('following/invalidate', {
 			userId: user.id,
 		}).then(() => {
@@ -113,7 +93,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host || host}`);
+			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
 	}, {
 		icon: 'ti ti-info-circle',
@@ -134,12 +114,43 @@ export function getUserMenu(user, router: Router = mainRouter) {
 			os.post({ specified: user });
 		},
 	}, null, {
+		type: 'parent',
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
-		action: pushList,
+		children: async () => {
+			const lists = await os.api('users/lists/list');
+
+			return lists.map(list => ({
+				text: list.name,
+				action: () => {
+					os.apiWithDialog('users/lists/push', {
+						listId: list.id,
+						userId: user.id,
+					});
+				},
+			}));
+		},
 	}] as any;
 
 	if ($i && meId !== user.id) {
+		if (iAmModerator) {
+			menu = menu.concat([{
+				type: 'parent',
+				icon: 'ti ti-badges',
+				text: i18n.ts.roles,
+				children: async () => {
+					const roles = await os.api('admin/roles/list');
+
+					return roles.filter(r => r.target === 'manual').map(r => ({
+						text: r.name,
+						action: () => {
+							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id });
+						},
+					}));
+				},
+			}]);
+		}
+
 		menu = menu.concat([null, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
@@ -163,30 +174,6 @@ export function getUserMenu(user, router: Router = mainRouter) {
 			text: i18n.ts.reportAbuse,
 			action: reportAbuse,
 		}]);
-
-		if (iAmModerator) {
-			menu = menu.concat([null, {
-				icon: 'ti ti-user-exclamation',
-				text: i18n.ts.moderation,
-				action: () => {
-					router.push('/user-info/' + user.id + '#moderation');
-				},
-			}, {
-				icon: 'ti ti-badges',
-				text: i18n.ts.roles,
-				action: async () => {
-					const roles = await os.api('admin/roles/list');
-
-					const { canceled, result: roleId } = await os.select({
-						title: i18n.ts._role.chooseRoleToAssign,
-						items: roles.map(r => ({ text: r.name, value: r.id })),
-					});
-					if (canceled) return;
-
-					await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.id });
-				},
-			}]);
-		}
 	}
 
 	if ($i && meId === user.id) {

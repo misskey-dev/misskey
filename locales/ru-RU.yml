@@ -1452,6 +1452,7 @@ _ago:
   weeksAgo: "{n} нед. назад"
   monthsAgo: "{n} мес. назад"
   yearsAgo: "{n} г. назад"
+  invalid: "Ничего нет"
 _time:
   second: "с"
   minute: "мин"
