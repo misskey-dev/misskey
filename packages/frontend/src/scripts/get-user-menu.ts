@@ -1,4 +1,5 @@
 import { defineAsyncComponent } from 'vue';
+import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host } from '@/config';
@@ -8,7 +9,7 @@ import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 
-export function getUserMenu(user, router: Router = mainRouter) {
+export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
 
 	async function pushList() {
@@ -115,7 +116,7 @@ export function getUserMenu(user, router: Router = mainRouter) {
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host || host}`);
+			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
 	}, {
 		icon: 'ti ti-info-circle',
@@ -168,12 +169,6 @@ export function getUserMenu(user, router: Router = mainRouter) {
 
 		if (iAmModerator) {
 			menu = menu.concat([null, {
-				icon: 'ti ti-user-exclamation',
-				text: i18n.ts.moderation,
-				action: () => {
-					router.push('/user-info/' + user.id + '#moderation');
-				},
-			}, {
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
 				action: async () => {

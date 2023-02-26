@@ -1,7 +1,6 @@
 import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { miLocalStorage } from './local-storage';
-import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
@@ -42,7 +41,7 @@ export const navbarItemDef = reactive({
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',
-		action: () => search(),
+		to: '/search',
 	},
 	lists: {
 		title: i18n.ts.lists,
