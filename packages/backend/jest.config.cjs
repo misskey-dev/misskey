@@ -20,7 +20,7 @@ module.exports = {
 	// collectCoverage: false,
 
 	// An array of glob patterns indicating a set of files for which coverage information should be collected
-	collectCoverageFrom: ['src/**/*.ts'],
+	collectCoverageFrom: ['src/**/*.ts', '!src/**/*.test.ts'],
 
 	// The directory where Jest should output its coverage files
 	coverageDirectory: "coverage",
@@ -159,6 +159,7 @@ module.exports = {
 	// The glob patterns Jest uses to detect test files
 	testMatch: [
 		"<rootDir>/test/unit/**/*.ts",
+		"<rootDir>/src/**/*.test.ts",
 		//"<rootDir>/test/e2e/**/*.ts"
 	],
 
