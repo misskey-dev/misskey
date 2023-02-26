@@ -58,12 +58,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const hasFollowing = (await this.followingsRepository.count({
-				where: {
-					followerId: me.id,
-				},
-				take: 1,
-			})) !== 0;
+			const followees = await this.followingsRepository.createQueryBuilder('following')
+				.select('following.followeeId')
+				.where('following.followerId = :followerId', { followerId: me.id })
+				.getMany();
 
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
@@ -81,11 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			if (hasFollowing) {
-				const followees = await this.followingsRepository.createQueryBuilder('following')
-					.select('following.followeeId')
-					.where('following.followerId = :followerId', { followerId: me.id })
-					.getMany();
+			if (followees.length > 0) {
 				const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
 
 				query.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
