@@ -36,12 +36,10 @@ import MkRadios from '@/components/MkRadios.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { useRouter, mainRouter } from '@/router';
-
-const router = useRouter();
+import { mainRouter } from '@/router';
 
 const props = defineProps<{
-	query: string;
+	query?: string;
 	channel?: string;
 	type?: string;
 	origin?: string;
@@ -58,6 +56,12 @@ onMounted(() => {
 
 	if (searchQuery) {
 		search();
+	}
+});
+
+mainRouter.on('change', (ctx) => {
+	if (ctx.beforePath !== '/search' && ctx.path === '/search') {
+		searchQuery = '';
 	}
 });
 
