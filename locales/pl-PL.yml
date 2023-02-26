@@ -1061,6 +1061,7 @@ _ago:
   weeksAgo: "{n} tyg. temu"
   monthsAgo: "{n} mies. temu"
   yearsAgo: "{n} lat temu"
+  invalid: "Nie ma tu niczego"
 _time:
   second: "sekunda"
   minute: "minuta"

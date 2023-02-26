@@ -1121,6 +1121,7 @@ _ago:
   weeksAgo: "Il y a {n} semaines"
   monthsAgo: "Il y a {n} mois"
   yearsAgo: "Il y a {n} ans"
+  invalid: "Il n'y a rien à voir ici"
 _time:
   second: "s"
   minute: "min"

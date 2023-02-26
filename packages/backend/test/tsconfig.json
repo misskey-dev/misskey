@@ -33,11 +33,12 @@
 		"lib": [
 			"esnext"
 		],
-		"types": ["jest"]
+		"types": ["jest", "node"]
 	},
 	"compileOnSave": false,
 	"include": [
 		"./**/*.ts",
+		"../src/**/*.test.ts",
 		"../src/@types/**/*.ts",
 	]
 }
