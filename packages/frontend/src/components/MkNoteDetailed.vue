@@ -555,7 +555,6 @@ if (appearNote.replyId) {
 				> .content {
 					> .text {
 						overflow-wrap: break-word;
-						overflow: clip;
 
 						> .reply {
 							color: var(--accent);
