@@ -37,7 +37,6 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
 import { useRouter, mainRouter } from '@/router';
-import { $i } from '@/account';
 
 const router = useRouter();
 
@@ -114,24 +113,6 @@ const search = async () => {
 		}
 
 		return;
-	}
-
-	if ($i != null) {
-		if (query.startsWith('https://') || (query.startsWith('@') && !query.includes(' '))) {
-			const promise = os.api('ap/show', {
-				uri: query,
-			});
-
-			os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-			const res = await promise;
-
-			if (res.type === 'User') {
-				router.replace(`/@${res.object.username}@${res.object.host}`);
-			} else if (res.type === 'Note') {
-				router.replace(`/notes/${res.object.id}`);
-			}
-		}
 	}
 
 	window.history.replaceState('', '', `/search?q=${encodeURIComponent(query)}&type=${searchType}${searchType === 'user' ? `&origin=${searchOrigin}` : ''}`);
