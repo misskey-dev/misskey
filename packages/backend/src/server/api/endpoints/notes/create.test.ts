@@ -235,6 +235,21 @@ describe('api:notes/create', () => {
 			});
 		});
 
+		describe('renote', () => {
+			test('just a renote', () => {
+				expect(v({ renoteId: '1' }))
+					.toBe(VALID);
+			});
+			test('just a quote', () => {
+				expect(v({ text: 'Hello, world!', renoteId: '1' }))
+					.toBe(VALID);
+			});
+			test('reject invalid renoteId', () => {
+				expect(v({ renoteId: 'あ' }))
+					.toBe(INVALID);
+			});
+		});
+
 		test('text, fileIds and poll', () => {
 			expect(v({ text: 'Hello, world!', fileIds: ['1', '2', '3'], poll: { choices: ['a', 'b', 'c'] } }))
 				.toBe(VALID);

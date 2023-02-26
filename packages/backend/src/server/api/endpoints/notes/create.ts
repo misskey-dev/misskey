@@ -147,6 +147,7 @@ export const paramDef = {
 	// (re)note with text, files and poll are optional
 	anyOf: [
 		{ required: ['text'] },
+		{ required: ['renoteId'] },
 		{ required: ['fileIds'] },
 		{ required: ['mediaIds'] },
 		{ required: ['poll'] },
