@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
 - renoteした際の表示を改善
 - バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
 - enhance(client): MkUrlPreviewの閉じるボタンを見やすく
