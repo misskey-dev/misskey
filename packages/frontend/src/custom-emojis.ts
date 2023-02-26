@@ -40,16 +40,17 @@ export async function fetchCustomEmojis(force = false) {
 	if (force || needsMigration) {
 		res = await api('emojis', {});
 	} else {
-		const lastFetchedAt = miLocalStorage.getItem('lastEmojisFetchedAt');
-		if (lastFetchedAt && (now - parseInt(lastFetchedAt)) < 1000 * 60 * 60) return;
+		const lastFetchedAt = await get('lastEmojisFetchedAt');
+		if (lastFetchedAt && (now - lastFetchedAt) < 1000 * 60 * 60) return;
 		res = await apiGet('emojis', {});
 	}
 
 	customEmojis.value = res.emojis;
 	set('emojis', res.emojis);
-	miLocalStorage.setItem('lastEmojisFetchedAt', now.toString());
+	set('lastEmojisFetchedAt', now);
 	if (needsMigration) {
 		miLocalStorage.removeItem('emojis');
+		miLocalStorage.removeItem('lastEmojisFetchedAt');
 	}
 }
 

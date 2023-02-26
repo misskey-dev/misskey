@@ -2,7 +2,6 @@ type Keys =
 	'v' |
 	'lastVersion' |
 	'instance' |
-	'lastEmojisFetchedAt' |
 	'account' |
 	'accounts' |
 	'latestDonationInfoShownAt' |
@@ -28,6 +27,7 @@ type Keys =
 	`ui:folder:${string}` |
 	`themes:${string}` |
 	`aiscript:${string}` |
+	'lastEmojisFetchedAt' | // DEPRECATED, stored in indexeddb (13.9.0~)
 	'emojis' // DEPRECATED, stored in indexeddb (13.9.0~);
 
 export const miLocalStorage = {
