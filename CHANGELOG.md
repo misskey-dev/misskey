@@ -9,10 +9,11 @@
 
 You should also include the user name that made the change.
 -->
-## 13.x.x (unreleased)
+## 13.8.0 (2023/02/26)
 
 ### Improvements
 - チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
 - renoteした際の表示を改善
 - バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
 - enhance(client): MkUrlPreviewの閉じるボタンを見やすく
