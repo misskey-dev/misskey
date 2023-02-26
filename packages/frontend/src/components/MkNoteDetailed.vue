@@ -250,9 +250,11 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
-				os.apiWithDialog('notes/create', {
+				os.api('notes/create', {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
 				});
 			},
 		}, {
@@ -271,8 +273,10 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
-			os.apiWithDialog('notes/create', {
+			os.api('notes/create', {
 				renoteId: appearNote.id,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
 			});
 		},
 	}, {
