@@ -6,5 +6,5 @@ const redis = createRedisConnection(config);
 
 redis.on('connect', () => redis.disconnect());
 redis.on('error', (e) => {
-    throw e;
+	throw e;
 });
