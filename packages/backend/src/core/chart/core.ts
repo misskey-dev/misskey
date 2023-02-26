@@ -144,7 +144,8 @@ export default abstract class Chart<T extends Schema> {
 				columns[UNIQUE_TEMP_COLUMN_PREFIX + name] = {
 					type: 'varchar',
 					array: true,
-					default: '{}',
+					// REVIEW
+					default: () => 'array[]::varchar[]',
 				};
 				columns[COLUMN_PREFIX + name] = {
 					type,
