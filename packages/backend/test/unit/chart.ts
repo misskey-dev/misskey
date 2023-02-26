@@ -49,6 +49,35 @@ describe('Chart', () => {
 			implementation: () => 'test',
 		});
 
+		// HACK: As of writing, pg-mem doesn't support `array_cat`.
+		db.public.registerFunction({
+			name: 'array_cat',
+			args: [db.public.getType(DataType.text).asArray(), db.public.getType(DataType.text).asArray()],
+			returns: db.public.getType(DataType.text).asArray(),
+			implementation: (x: unknown[], y: unknown[]) => {
+				if (x instanceof Array && y instanceof Array) {
+					const result: string[] = [];
+					for (const item of x) {
+						if (typeof item === 'string') {
+							result.push(item);
+						} else {
+							throw new Error('Assertion failed.');
+						}
+					}
+					for (const item of y) {
+						if (typeof item === 'string') {
+							result.push(item);
+						} else {
+							throw new Error('Assertion failed.');
+						}
+					}
+					return result;
+				} else {
+					throw new Error('Assertion failed.');
+				}
+			},
+		});
+
 		// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
 		db.public.interceptQueries((text) => {
 			switch (text) {
