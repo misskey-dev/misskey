@@ -1,6 +1,6 @@
 import { DataSource, In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { getRequiredService } from 'yohira';
+import { getRequiredService, IServiceProvider } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/schema.js';
 import { nyaize } from '@/misc/nyaize.js';
@@ -15,12 +15,11 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
-import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class NoteEntityService {
 	constructor(
-		@Inject(Symbol.for('IServiceProvider'))
+		@Inject(IServiceProvider)
 		private serviceProvider: IServiceProvider,
 
 		@Inject(DI.db)

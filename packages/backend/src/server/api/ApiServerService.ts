@@ -1,7 +1,7 @@
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import fastifyCookie from '@fastify/cookie';
-import { getRequiredService } from 'yohira';
+import { getRequiredService, IServiceProvider } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import type { Config } from '@/config.js';
 import type { UsersRepository, InstancesRepository, AccessTokensRepository } from '@/models/index.js';
@@ -16,12 +16,11 @@ import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class ApiServerService {
 	constructor(
-		@Inject(Symbol.for('IServiceProvider'))
+		@Inject(IServiceProvider)
 		private serviceProvider: IServiceProvider,
 
 		@Inject(DI.config)

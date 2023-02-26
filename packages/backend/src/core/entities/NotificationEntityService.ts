@@ -1,5 +1,5 @@
 import { In } from 'typeorm';
-import { getRequiredService } from 'yohira';
+import { getRequiredService, IServiceProvider } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, NoteReactionsRepository, NotificationsRepository, User } from '@/models/index.js';
@@ -12,12 +12,11 @@ import { bindThis } from '@/decorators.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
-import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class NotificationEntityService {
 	constructor(
-		@Inject(Symbol.for('IServiceProvider'))
+		@Inject(IServiceProvider)
 		private serviceProvider: IServiceProvider,
 
 		@Inject(DI.notificationsRepository)

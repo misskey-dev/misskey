@@ -1,6 +1,6 @@
 import { In, Not } from 'typeorm';
 import Ajv from 'ajv';
-import { getRequiredService } from 'yohira';
+import { getRequiredService, IServiceProvider } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/schema.js';
@@ -20,7 +20,6 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
-import type { IServiceProvider } from 'yohira';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
@@ -49,7 +48,7 @@ export class UserEntityService {
 	private userInstanceCache: Cache<Instance | null>;
 
 	constructor(
-		@Inject(Symbol.for('IServiceProvider'))
+		@Inject(IServiceProvider)
 		private serviceProvider: IServiceProvider,
 
 		@Inject(DI.config)

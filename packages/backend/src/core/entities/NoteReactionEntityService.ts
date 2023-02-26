@@ -1,4 +1,4 @@
-import { getRequiredService } from 'yohira';
+import { getRequiredService, IServiceProvider } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { NoteReactionsRepository } from '@/models/index.js';
@@ -10,12 +10,11 @@ import { bindThis } from '@/decorators.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
-import type { IServiceProvider } from 'yohira';
 
 @Injectable()
 export class NoteReactionEntityService {
 	constructor(
-		@Inject(Symbol.for('IServiceProvider'))
+		@Inject(IServiceProvider)
 		private serviceProvider: IServiceProvider,
 
 		@Inject(DI.noteReactionsRepository)
