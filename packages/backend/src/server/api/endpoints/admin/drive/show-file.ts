@@ -138,19 +138,13 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
+	properties: {
+		fileId: { type: 'string', format: 'misskey:id' },
+		url: { type: 'string' },
+	},
 	anyOf: [
-		{
-			properties: {
-				fileId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['fileId'],
-		},
-		{
-			properties: {
-				url: { type: 'string' },
-			},
-			required: ['url'],
-		},
+		{ required: ['fileId'] },
+		{ required: ['url'] },
 	],
 } as const;
 

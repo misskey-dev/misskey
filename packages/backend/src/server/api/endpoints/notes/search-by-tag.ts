@@ -36,32 +36,25 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+
+		tag: { type: 'string', minLength: 1 },
+		query: {
+			type: 'array',
+			description: 'The outer arrays are chained with OR, the inner arrays are chained with AND.',
+			items: {
+				type: 'array',
+				items: {
+					type: 'string',
+					minLength: 1,
+				},
+				minItems: 1,
+			},
+			minItems: 1,
+		},
 	},
 	anyOf: [
-		{
-			properties: {
-				tag: { type: 'string', minLength: 1 },
-			},
-			required: ['tag'],
-		},
-		{
-			properties: {
-				query: {
-					type: 'array',
-					description: 'The outer arrays are chained with OR, the inner arrays are chained with AND.',
-					items: {
-						type: 'array',
-						items: {
-							type: 'string',
-							minLength: 1,
-						},
-						minItems: 1,
-					},
-					minItems: 1,
-				},
-			},
-			required: ['query'],
-		},
+		{ required: ['tag'] },
+		{ required: ['query'] },
 	],
 } as const;
 

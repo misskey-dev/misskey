@@ -29,20 +29,14 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
+	properties: {
+		pageId: { type: 'string', format: 'misskey:id' },
+		name: { type: 'string' },
+		username: { type: 'string' },
+	},
 	anyOf: [
-		{
-			properties: {
-				pageId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['pageId'],
-		},
-		{
-			properties: {
-				name: { type: 'string' },
-				username: { type: 'string' },
-			},
-			required: ['name', 'username'],
-		},
+		{ required: ['pageId'] },
+		{ required: ['name', 'username'] },
 	],
 } as const;
 

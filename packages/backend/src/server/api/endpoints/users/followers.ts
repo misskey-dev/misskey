@@ -46,25 +46,18 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+
+		userId: { type: 'string', format: 'misskey:id' },
+		username: { type: 'string' },
+		host: {
+			type: 'string',
+			nullable: true,
+			description: 'The local host is represented with `null`.',
+		},
 	},
 	anyOf: [
-		{
-			properties: {
-				userId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['userId'],
-		},
-		{
-			properties: {
-				username: { type: 'string' },
-				host: {
-					type: 'string',
-					nullable: true,
-					description: 'The local host is represented with `null`.',
-				},
-			},
-			required: ['username', 'host'],
-		},
+		{ required: ['userId'] },
+		{ required: ['username', 'host'] },
 	],
 } as const;
 
