@@ -9,6 +9,12 @@
 
 You should also include the user name that made the change.
 -->
+
+## 13.8.1 (2023/02/26)
+
+### Bugfixes
+- モバイルでドロワーメニューが表示されない問題を修正
+
 ## 13.8.0 (2023/02/26)
 
 ### Improvements
