@@ -282,7 +282,7 @@ function renote(viaKeyboard = false) {
 				renoteId: appearNote.id,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
-			})
+			});
 		},
 	}, {
 		text: i18n.ts.quote,
