@@ -10,14 +10,14 @@ describe('Before setup instance', () => {
 	});
 
   it('successfully loads', () => {
-    cy.visit('/');
+    cy.visitHome();
   });
 
 	it('setup instance', () => {
-    cy.visit('/');
+    cy.visitHome();
 
 		cy.intercept('POST', '/api/admin/accounts/create').as('signup');
-	
+
 		cy.get('[data-cy-admin-username] input').type('admin');
 		cy.get('[data-cy-admin-password] input').type('admin1234');
 		cy.get('[data-cy-admin-ok]').click();
@@ -43,11 +43,11 @@ describe('After setup instance', () => {
 	});
 
   it('successfully loads', () => {
-    cy.visit('/');
+    cy.visitHome();
   });
 
 	it('signup', () => {
-		cy.visit('/');
+		cy.visitHome();
 
 		cy.intercept('POST', '/api/signup').as('signup');
 
@@ -79,11 +79,11 @@ describe('After user signup', () => {
 	});
 
   it('successfully loads', () => {
-    cy.visit('/');
+    cy.visitHome();
   });
 
 	it('signin', () => {
-		cy.visit('/');
+		cy.visitHome();
 
 		cy.intercept('POST', '/api/signin').as('signin');
 
@@ -101,7 +101,7 @@ describe('After user signup', () => {
 			userId: this.alice.id,
 		});
 
-		cy.visit('/');
+		cy.visitHome();
 
 		cy.get('[data-cy-signin]').click();
 		cy.get('[data-cy-signin-username] input').type('alice');
