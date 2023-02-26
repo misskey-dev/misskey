@@ -1033,6 +1033,7 @@ _ago:
   weeksAgo: "{n} সপ্তাহ আগে"
   monthsAgo: "{n} মাস আগে"
   yearsAgo: "{n} বছর আগে"
+  invalid: "এখানে কিছুই নাই"
 _time:
   second: "সেকেন্ড"
   minute: "মিনিট"

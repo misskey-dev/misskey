@@ -1123,6 +1123,7 @@ _ago:
   weeksAgo: "pred {n} týždňami"
   monthsAgo: "pred {n} mesiacmi"
   yearsAgo: "pred {n} rokmi"
+  invalid: "Nič tu nie je"
 _time:
   second: "s"
   minute: "min"

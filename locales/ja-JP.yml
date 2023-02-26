@@ -812,6 +812,7 @@ lastCommunication: "直近の通信"
 resolved: "解決済み"
 unresolved: "未解決"
 breakFollow: "フォロワーを解除"
+breakFollowConfirm: "フォロワー解除しますか？"
 itsOn: "オンになっています"
 itsOff: "オフになっています"
 emailRequiredForSignup: "アカウント登録にメールアドレスを必須にする"
@@ -1489,6 +1490,7 @@ _ago:
   weeksAgo: "{n}週間前"
   monthsAgo: "{n}ヶ月前"
   yearsAgo: "{n}年前"
+  invalid: "ありません"
 
 _time:
   second: "秒"
