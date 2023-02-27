@@ -11,6 +11,11 @@
 			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="icon ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 			</MkA>
+
+			<MkA v-click-anime class="item" active-class="active" to="/tags/delmulin">
+				<i class="icon ti ti-hash ti-fw"></i><span class="text">#delmulin</span>
+			</MkA>
+
 			<template v-for="item in menu">
 				<div v-if="item === '-'" class="divider"></div>
 				<component
@@ -32,6 +37,12 @@
 			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip.noDelay.right="i18n.ts.controlPanel" class="item" active-class="active" to="/admin">
 				<i class="icon ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
+
+			<button v-click-anime class="item _button" @click="mulukhiya">
+				<i class="icon ti ti-leaf ti-fw"></i><span class="text">モロヘイヤHOME</span>
+				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
+			</button>
+
 			<button v-click-anime class="item _button" @click="more">
 				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
@@ -88,6 +99,10 @@ function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
 		withExtraOperation: true,
 	}, ev);
+}
+
+function mulukhiya(ev: MouseEvent) {
+	window.open('/mulukhiya');
 }
 
 function more(ev: MouseEvent) {
@@ -469,3 +484,4 @@ function more(ev: MouseEvent) {
 	}
 }
 </style>
+
