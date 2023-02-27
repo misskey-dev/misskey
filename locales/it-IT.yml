@@ -1087,7 +1087,7 @@ _achievements:
       description: "Hai seguito 300 profili"
     _followers1:
       title: "Il primo profilo tuo Follower"
-      description: "Hai ottenuto il tuo primo Follower"
+      description: "Hai ottenuto il tuo primo profilo Follower"
     _followers10:
       title: "Follow me!"
       description: "Hai ottenuto 10 profili Follower"
@@ -1640,7 +1640,7 @@ _visibility:
   home: "Home"
   homeDescription: "Visibile solo sulla timeline \"Home\""
   followers: "Follower"
-  followersDescription: "Visibile solo per i tuoi followers"
+  followersDescription: "Visibile solo per i tuoi follower"
   specified: "Nota diretta"
   specifiedDescription: "Visibile solo ai profili menzionati"
   disableFederation: "Interrompi la federazione"
