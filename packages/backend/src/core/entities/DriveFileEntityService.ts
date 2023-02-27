@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -18,6 +18,9 @@ type PackOptions = {
 	detail?: boolean,
 	self?: boolean,
 	withUser?: boolean,
+	_hint_?: {
+		packedUsers?: Map<string, Packed<'UserLite'>>,
+	}
 };
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
@@ -255,10 +258,19 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async packMany(
-		files: (DriveFile['id'] | DriveFile)[],
+		files: DriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
 		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
 		return items.filter((x): x is Packed<'DriveFile'> => x != null);
+	}
+
+	@bindThis
+	public async packManyByIds(
+		fileIds: DriveFile['id'][],
+		options?: PackOptions,
+	): Promise<Packed<'DriveFile'>[]> {
+		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
+		return await this.packMany(files, options);
 	}
 }
