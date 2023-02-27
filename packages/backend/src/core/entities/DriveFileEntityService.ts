@@ -18,9 +18,6 @@ type PackOptions = {
 	detail?: boolean,
 	self?: boolean,
 	withUser?: boolean,
-	_hint_?: {
-		packedUsers?: Map<string, Packed<'UserLite'>>,
-	}
 };
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
