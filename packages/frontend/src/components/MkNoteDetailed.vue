@@ -251,19 +251,19 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
 				os.api('notes/create', {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
 				}).then(() => {
 					os.toast(i18n.ts.renoted);
-
-					const el = renoteButton.value as HTMLElement | null | undefined;
-					if (el) {
-						const rect = el.getBoundingClientRect();
-						const x = rect.left + (el.offsetWidth / 2);
-						const y = rect.top + (el.offsetHeight / 2);
-						os.popup(MkRippleEffect, { x, y }, {}, 'end');
-					}
 				});
 			},
 		}, {
@@ -282,18 +282,18 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
+			const el = renoteButton.value as HTMLElement | null | undefined;
+			if (el) {
+				const rect = el.getBoundingClientRect();
+				const x = rect.left + (el.offsetWidth / 2);
+				const y = rect.top + (el.offsetHeight / 2);
+				os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			}
+				
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
-
-				const el = renoteButton.value as HTMLElement | null | undefined;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
 			});
 		},
 	}, {
