@@ -260,6 +260,8 @@ function renote(viaKeyboard = false) {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
 				}).then(() => {
+					os.toast(i18n.ts.renoted);
+
 					const el = renoteButton.value as HTMLElement | null | undefined;
 					if (el) {
 						const rect = el.getBoundingClientRect();
@@ -288,6 +290,8 @@ function renote(viaKeyboard = false) {
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
+				os.toast(i18n.ts.renoted);
+
 				const el = renoteButton.value as HTMLElement | null | undefined;
 				if (el) {
 					const rect = el.getBoundingClientRect();
