@@ -2,6 +2,7 @@ import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
@@ -320,6 +321,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (err instanceof ApiError) {
 				throw err;
 			} else {
+				const errId = uuid();
 				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					ep: ep.name,
 					ps: data,
@@ -327,14 +329,15 @@ export class ApiCallService implements OnApplicationShutdown {
 						message: err.message,
 						code: err.name,
 						stack: err.stack,
+						id: errId,
 					},
 				});
-				console.error(err);
+				console.error(err, errId);
 				throw new ApiError(null, {
 					e: {
 						message: err.message,
 						code: err.name,
-						stack: err.stack,
+						id: errId,
 					},
 				});
 			}
