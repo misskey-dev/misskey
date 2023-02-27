@@ -205,8 +205,8 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 }
 
 .pswp {
-	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700);
-	--pswp-bg: var(--modalBg);
+	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
+	--pswp-bg: var(--modalBg) !important;
 }
 </style>
 
