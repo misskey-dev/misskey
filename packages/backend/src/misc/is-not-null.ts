@@ -1,3 +1,3 @@
-export function isNotNull<T>(input: T | undefined | null): input is T {
+export function isNotNull<T extends {}>(input: T | undefined | null): input is T {
 	return input != null;
 }
