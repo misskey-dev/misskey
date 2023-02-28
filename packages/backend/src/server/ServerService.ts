@@ -75,7 +75,7 @@ export class ServerService {
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
 
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			reply.header('Cache-Control', 'public, max-age=86400');
@@ -105,11 +105,19 @@ export class ServerService {
 				}
 			}
 
-			const url = new URL(`${this.config.mediaProxy}/emoji.webp`);
-			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
-			url.searchParams.set('emoji', '1');
-			if ('static' in request.query) url.searchParams.set('static', '1');
+			let url: URL;
+			if ('badge' in request.query) {
+				url = new URL(`${this.config.mediaProxy}/emoji.png`);
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('badge', '1');
+			} else {
+				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('emoji', '1');
+				if ('static' in request.query) url.searchParams.set('static', '1');
+			}
 
 			return await reply.redirect(
 				301,
