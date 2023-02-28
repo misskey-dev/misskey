@@ -13,7 +13,7 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
-- 
+- プッシュ通知でカスタム絵文字リアクションを表示できるように
 
 ### Bugfixes
 - 外部メディアプロキシ使用時にアバタークロップができない問題を修正
