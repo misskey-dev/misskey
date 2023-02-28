@@ -10,6 +10,14 @@
 You should also include the user name that made the change.
 -->
 
+## 13.x.x (unreleased)
+
+### Improvements
+- 
+
+### Bugfixes
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+
 ## 13.8.1 (2023/02/26)
 
 ### Bugfixes
