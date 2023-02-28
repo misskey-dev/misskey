@@ -169,7 +169,7 @@ export class DriveService {
 			//#region Uploads
 			this.registerLogger.info(`uploading original: ${key}`);
 			const uploads = [
-				this.upload(key, fs.createReadStream(path), type, name),
+				this.upload(key, fs.createReadStream(path), type, ext, name),
 			];
 
 			if (alts.webpublic) {
@@ -177,7 +177,7 @@ export class DriveService {
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
-				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
+				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
 			}
 
 			if (alts.thumbnail) {
@@ -185,7 +185,7 @@ export class DriveService {
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
-				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
+				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext));
 			}
 
 			await Promise.all(uploads);
@@ -361,7 +361,7 @@ export class DriveService {
 	 * Upload to ObjectStorage
 	 */
 	@bindThis
-	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext: string | null, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
@@ -375,7 +375,12 @@ export class DriveService {
 			CacheControl: 'max-age=31536000, immutable',
 		} as S3.PutObjectRequest;
 
-		if (filename) params.ContentDisposition = contentDisposition('inline', filename);
+		if (filename) params.ContentDisposition = contentDisposition(
+			'inline',
+			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
+			// 許可されているファイル形式でしか拡張子をつけない
+			ext ? correctFilename(filename, ext) : filename,
+		);
 		if (meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
 		const s3 = this.s3Service.getS3(meta);
