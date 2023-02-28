@@ -34,6 +34,7 @@
 										<MkA :class="$style.user" :to="`/user-info/${item.user.id}`">
 											<MkUserCardMini :user="item.user"/>
 										</MkA>
+										<button v-if="item.expiresAt != null" class="_button" :class="$style.expiresAt" @click="showExpireInfo(item, $event)"><i class="ti ti-clock-hour-3"></i></button>
 										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
 									</div>
 								</div>
@@ -143,6 +144,13 @@ async function unassign(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
+async function showExpireInfo(assignment) {
+	os.alert({
+		type: 'info',
+		text: assignment.expiresAt.toLocaleString(),
+	});
+}
+
 const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);
@@ -163,10 +171,15 @@ definePageMetadata(computed(() => ({
 	min-width: 0;
 }
 
+.expiresAt,
 .unassign {
 	width: 32px;
 	height: 32px;
 	margin-left: 8px;
 	align-self: center;
+}
+
+.expiresAt + .unassign {
+	margin-left: 0;
 }
 </style>

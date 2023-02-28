@@ -70,6 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			return await Promise.all(assigns.map(async assign => ({
 				id: assign.id,
 				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
+				expiresAt: assign.expiresAt,
 			})));
 		});
 	}
