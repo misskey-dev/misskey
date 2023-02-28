@@ -273,6 +273,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 5,
 	},
+	showNoteActionsOnlyHover: {
+		where: 'device',
+		default: false,
+	},
 	aiChanMode: {
 		where: 'device',
 		default: false,

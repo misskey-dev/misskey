@@ -15,6 +15,7 @@ You should also include the user name that made the change.
 ### Improvements
 - プッシュ通知でカスタム絵文字リアクションを表示できるように
 - アンテナでCWも検索対象にするように
+- ノートの操作部をホバー時のみ表示するオプションを追加
 
 ### Bugfixes
 - 外部メディアプロキシ使用時にアバタークロップができない問題を修正

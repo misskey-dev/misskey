@@ -4,7 +4,7 @@
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	:class="$style.root"
+	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
 	:tabindex="!isDeleted ? '-1' : undefined"
 >
 	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
@@ -76,14 +76,14 @@
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
+			<MkReactionsViewer :note="appearNote" :max-number="16">
+				<template #more>
+					<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+						{{ i18n.ts.more }}
+					</button>
+				</template>
+			</MkReactionsViewer>
 			<footer :class="$style.footer">
-				<MkReactionsViewer :note="appearNote" :max-number="16">
-					<template #more>
-						<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
-							{{ i18n.ts.more }}
-						</button>
-					</template>
-				</MkReactionsViewer>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -442,6 +442,33 @@ function showReactions(): void {
 
 	&:hover > .article > .main > .footer > .footerButton {
 		opacity: 1;
+	}
+
+	&.showActionsOnlyHover {
+		.footer {
+			visibility: hidden;
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			padding: 0 4px;
+			background: var(--popup);
+			border-radius: 6px;
+			box-shadow: 0px 4px 32px var(--shadow);
+		}
+
+		.footerButton {
+			font-size: 80%;
+
+			&:not(:last-child) {
+				margin-right: 6px;
+			}
+		}
+	}
+
+	&.showActionsOnlyHover:hover {
+		.footer {
+			visibility: visible;
+		}
 	}
 }
 
