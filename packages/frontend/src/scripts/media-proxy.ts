@@ -7,7 +7,7 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview', mustOrigi
 
 	if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {
 		// もう既にproxyっぽそうだったらurlを取り出す
-		imageUrl = (new URL(imageUrl)).searchParams.get('url') || imageUrl;
+		imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
 	}
 
 	return `${mustOrigin ? localProxy : instance.mediaProxy}/image.webp?${query({
