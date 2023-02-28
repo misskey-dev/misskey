@@ -22,7 +22,7 @@ import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import sharp from 'sharp';
-import { correctFilename } from '@/misc/correct-filename';
+import { correctFilename } from '@/misc/correct-filename.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

@@ -34,7 +34,7 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
-import { correctFilename } from '@/misc/correct-filename';
+import { correctFilename } from '@/misc/correct-filename.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
