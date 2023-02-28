@@ -1,4 +1,4 @@
-import { query, appendQuery } from '@/scripts/url';
+import { query } from '@/scripts/url';
 import { url } from '@/config';
 import { instance } from '@/instance';
 
@@ -14,6 +14,7 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview', mustOrigi
 		url: imageUrl,
 		fallback: '1',
 		...(type ? { [type]: '1' } : {}),
+		...(mustOrigin ? { origin: '1' } : {}),
 	})}`;
 }
 
