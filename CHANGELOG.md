@@ -10,9 +10,18 @@
 You should also include the user name that made the change.
 -->
 
+## 13.x.x (unreleased)
+
+### Changes
 - カスタム絵文字関連の変更
   * ノートなどに含まれるemojis（populateEmojiの結果）は（プロキシされたURLではなく）オリジナルのURLを指すように
   * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
+
+### Improvements
+- 
+
+### Bugfixes
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
 
 ## 13.8.1 (2023/02/26)
 
