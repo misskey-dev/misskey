@@ -95,7 +95,6 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
-import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { customEmojiCategories, customEmojis } from '@/custom-emojis';

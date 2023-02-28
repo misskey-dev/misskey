@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
-		"noEmitOnError": false,
+		"noEmitOnError": true,
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
@@ -26,9 +26,7 @@
 		"rootDir": "./src",
 		"baseUrl": "./",
 		"paths": {
-			"@/*": [
-				"./src/*"
-			]
+			"@/*": ["./src/*"]
 		},
 		"outDir": "./built",
 		"types": [
@@ -46,4 +44,7 @@
 	"include": [
 		"./src/**/*.ts"
 	],
+	"exclude": [
+		"./src/**/*.test.ts"
+	]
 }

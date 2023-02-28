@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch, PropType, onUnmounted } from 'vue';
 import { Chart, LegendItem } from 'chart.js';
 
 const props = defineProps({

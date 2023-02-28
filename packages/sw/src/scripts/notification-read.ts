@@ -28,7 +28,7 @@ class SwNotificationReadManager {
 	}
 
 	// プッシュ通知の既読をサーバーに送信
-	public async read<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
+	public async read(data: pushNotificationDataMap[keyof pushNotificationDataMap]) {
 		if (data.type !== 'notification' || !(data.userId in this.accounts)) return;
 
 		const account = this.accounts[data.userId];

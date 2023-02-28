@@ -3,7 +3,7 @@
 	<div :class="$style.root">
 		<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
-		<MkButton :class="$style.button" @click="() => $emit('retry')">{{ i18n.ts.retry }}</MkButton>
+		<MkButton :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</MkButton>
 	</div>
 </Transition>
 </template>
@@ -11,6 +11,10 @@
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
+
+const emit = defineEmits<{
+	(ev: 'retry'): void;
+}>();
 </script>
 
 <style lang="scss" module>

@@ -22,7 +22,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import * as misskey from 'misskey-js';
 import XHeatmap from './activity.heatmap.vue';
 import XPv from './activity.pv.vue';

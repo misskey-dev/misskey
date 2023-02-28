@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { markRaw, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import XFederation from './overview.federation.vue';
 import XInstances from './overview.instances.vue';
 import XQueue from './overview.queue.vue';
@@ -71,14 +71,10 @@ import XStats from './overview.stats.vue';
 import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
-import MkTagCloud from '@/components/MkTagCloud.vue';
-import { version, url } from '@/config';
 import * as os from '@/os';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { defaultStore } from '@/store';
-import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const rootEl = $shallowRef<HTMLElement>();

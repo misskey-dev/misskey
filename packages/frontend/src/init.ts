@@ -25,7 +25,7 @@ import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
-import { version, ui, lang, host, updateLocale } from '@/config';
+import { version, ui, lang, updateLocale } from '@/config';
 import { applyTheme } from '@/scripts/theme';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 import { i18n, updateI18n } from '@/i18n';
@@ -36,7 +36,6 @@ import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
-import { search } from '@/scripts/search';
 import { deviceKind } from '@/scripts/device-kind';
 import { initializeSw } from '@/scripts/initialize-sw';
 import { reloadChannel } from '@/scripts/unison-reload';
@@ -47,6 +46,7 @@ import { deckStore } from './ui/deck/deck-store';
 import { miLocalStorage } from './local-storage';
 import { claimAchievement, claimedAchievements } from './scripts/achievements';
 import { fetchCustomEmojis } from './custom-emojis';
+import { mainRouter } from './router';
 
 console.info(`Misskey v${version}`);
 
@@ -352,7 +352,9 @@ const hotkeys = {
 	'd': (): void => {
 		defaultStore.set('darkMode', !defaultStore.state.darkMode);
 	},
-	's': search,
+	's': (): void => {
+		mainRouter.push('/search');
+	}
 };
 
 if ($i) {
@@ -503,15 +505,6 @@ if ($i) {
 
 	main.on('readAllUnreadSpecifiedNotes', () => {
 		updateAccount({ hasUnreadSpecifiedNotes: false });
-	});
-
-	main.on('readAllMessagingMessages', () => {
-		updateAccount({ hasUnreadMessagingMessage: false });
-	});
-
-	main.on('unreadMessagingMessage', () => {
-		updateAccount({ hasUnreadMessagingMessage: true });
-		sound.play('chatBg');
 	});
 
 	main.on('readAllAntennas', () => {

@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, nextTick, onBeforeUnmount, onMounted, onUnmounted, provide, watch } from 'vue';
+import { inject, onBeforeUnmount, provide } from 'vue';
 import { Resolved, Router } from '@/nirax';
 import { defaultStore } from '@/store';
 

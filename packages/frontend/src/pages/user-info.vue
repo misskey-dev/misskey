@@ -112,7 +112,7 @@
 						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
 						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
-							<MkRolePreview :class="$style.role" :role="role"/>
+							<MkRolePreview :class="$style.role" :role="role" :for-moderation="true"/>
 							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
 							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>
@@ -181,8 +181,6 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -190,14 +188,11 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
-import number from '@/filters/number';
-import bytes from '@/filters/bytes';
 import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator } from '@/account';
-import { instance } from '@/instance';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = withDefaults(defineProps<{

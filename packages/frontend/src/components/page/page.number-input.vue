@@ -9,7 +9,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkInput from '../MkInput.vue';
-import * as os from '@/os';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { NumberInputVarBlock } from '@/scripts/hpml/block';
 

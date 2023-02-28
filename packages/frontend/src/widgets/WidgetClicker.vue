@@ -7,10 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, Ref, ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import { $i } from '@/account';
 import MkContainer from '@/components/MkContainer.vue';
 import MkClickerGame from '@/components/MkClickerGame.vue';
 

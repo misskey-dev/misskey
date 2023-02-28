@@ -27,7 +27,7 @@ import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import * as os from '@/os';
 import { instance } from '@/instance';
-import { search } from '@/scripts/search';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	data() {
@@ -55,7 +55,9 @@ export default defineComponent({
 			}, {}, 'closed');
 		},
 
-		search,
+		search() {
+			mainRouter.push('/search');
+		},
 	},
 });
 </script>

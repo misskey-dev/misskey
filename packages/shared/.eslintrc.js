@@ -77,6 +77,17 @@ module.exports = {
 		'@typescript-eslint/prefer-nullish-coalescing': [
 			'error',
 		],
+		'@typescript-eslint/naming-convention': [
+			'error',
+			{
+				"selector": "typeLike",
+				"format": ["PascalCase"]
+			},
+			{
+				"selector": "typeParameter",
+				"format": []
+			}
+		],
 		'import/no-unresolved': ['off'],
 		'import/no-default-export': ['warn'],
 		'import/order': ['warn', {

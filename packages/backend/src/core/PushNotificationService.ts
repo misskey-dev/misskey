@@ -9,24 +9,21 @@ import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 
 // Defined also packages/sw/types.ts#L13
-type pushNotificationsTypes = {
+type PushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
-	'unreadMessagingMessage': Packed<'MessagingMessage'>;
 	'unreadAntennaNote': {
 		antenna: { id: string, name: string };
 		note: Packed<'Note'>;
 	};
 	'readNotifications': { notificationIds: string[] };
 	'readAllNotifications': undefined;
-	'readAllMessagingMessages': undefined;
-	'readAllMessagingMessagesOfARoom': { userId: string } | { groupId: string };
 	'readAntenna': { antennaId: string };
 	'readAllAntennas': undefined;
 };
 
 // Reduce length because push message servers have character limits
-function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pushNotificationsTypes[T]): pushNotificationsTypes[T] {
-	if (body === undefined) return body;
+function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: PushNotificationsTypes[T]): PushNotificationsTypes[T] {
+	if (typeof body !== 'object') return body;
 
 	return {
 		...body,
@@ -40,11 +37,9 @@ function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pus
 				reply: undefined,
 				renote: undefined,
 				user: type === 'notification' ? undefined as any : body.note.user,
-			}
+			},
 		} : {}),
 	};
-
-	return body;
 }
 
 @Injectable()
@@ -61,7 +56,7 @@ export class PushNotificationService {
 	}
 
 	@bindThis
-	public async pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
+	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
 		const meta = await this.metaService.fetch();
 	
 		if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
@@ -81,8 +76,6 @@ export class PushNotificationService {
 			if ([
 				'readNotifications',
 				'readAllNotifications',
-				'readAllMessagingMessages',
-				'readAllMessagingMessagesOfARoom',
 				'readAntenna',
 				'readAllAntennas',
 			].includes(type) && !subscription.sendReadMessage) continue;
