@@ -226,7 +226,10 @@ export class FileServerService {
 			return;
 		}
 
-		if (this.config.externalMediaProxyEnabled) {
+		// アバタークロップなど、画像の参照元がオリジンである必要がある場合
+		const mustOrigin = 'origin' in request.headers && (!request.headers.origin || request.headers.origin === this.config.url);
+
+		if (this.config.externalMediaProxyEnabled || !mustOrigin) {
 			// 外部のメディアプロキシが有効なら、そちらにリダイレクト
 
 			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
