@@ -178,7 +178,14 @@ type EventUnionFromDictionary<
 
 // redis通すとDateのインスタンスはstringに変換されるので
 type Serialized<T> = {
-	[K in keyof T]: T[K] extends Date ? string : T[K] extends Record<string, any> ? Serialized<T[K]> : T[K];
+	[K in keyof T]:
+		T[K] extends Date
+			? string
+			: T[K] extends (Date | null)
+				? (string | null)
+				: T[K] extends Record<string, any>
+					? Serialized<T[K]>
+					: T[K];
 };
 
 type SerializedAll<T> = {
