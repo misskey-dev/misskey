@@ -43,7 +43,7 @@ export class DownloadService {
 		const maxSize = this.config.maxFileSize ?? 262144000;
 
 		const urlObj = new URL(url);
-		let filename = urlObj.pathname.split('/').pop() ?? 'unknown';
+		let filename = urlObj.pathname.split('/').pop() ?? 'untitled';
 
 		const req = got.stream(url, {
 			headers: {
