@@ -263,7 +263,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.where('ads.expiresAt > :now', { now: new Date() })
 				.andWhere('ads.startsAt <= :now', { now: new Date() })
 				.andWhere(new Brackets(qb => {
-					qb.where('ads.dayofweek & :dayofweek > 0', { dayofweek: Math.pow(2, new Date(new Date().getTimezoneOffset() * 60 * 1000).getDay()) })
+					qb.where('ads.dayofweek & :dayofweek > 0', { dayofweek: Math.pow(2, new Date().getDay()) })
 						.orWhere('ads.dayofweek = 0');
 				}))
 				.getMany();
