@@ -2,7 +2,7 @@ import { query } from '@/scripts/url';
 import { url } from '@/config';
 import { instance } from '@/instance';
 
-export function getProxiedImageUrl(imageUrl: string, type?: 'preview', mustOrigin: boolean = false, noFallback: boolean = false): string {
+export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', mustOrigin: boolean = false, noFallback: boolean = false): string {
 	const localProxy = `${url}/proxy`;
 
 	if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {

@@ -40,6 +40,7 @@ const url = computed(() => {
 			: getProxiedImageUrl(
 				rawUrl.value,
 				props.useOriginalSize ? undefined : 'emoji',
+				false,
 				true,
 			);
 	return defaultStore.reactiveState.disableShowingAnimatedImages.value
