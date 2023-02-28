@@ -34,6 +34,7 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
+import { correctFilename } from '@/misc/correct-filename';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -466,7 +467,12 @@ export class DriveService {
 		//}
 
 		// detect name
-		const detectedName = name ?? (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
+		const detectedName = correctFilename(
+			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
+			// extを付加してデータベースの文字数制限に当たることはまずない
+			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
+			info.type.ext
+		);
 
 		if (user && !force) {
 		// Check if there is a file with the same hash
@@ -736,24 +742,19 @@ export class DriveService {
 		requestIp = null,
 		requestHeaders = null,
 	}: UploadFromUrlArgs): Promise<DriveFile> {
-		let name = new URL(url).pathname.split('/').pop() ?? null;
-		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
-			name = null;
-		}
-	
-		// If the comment is same as the name, skip comment
-		// (image.name is passed in when receiving attachment)
-		if (comment !== null && name === comment) {
-			comment = null;
-		}
-	
 		// Create temp file
 		const [path, cleanup] = await createTemp();
 	
 		try {
 			// write content at URL to temp file
-			await this.downloadService.downloadUrl(url, path);
-	
+			const { filename: name } = await this.downloadService.downloadUrl(url, path);
+
+			// If the comment is same as the name, skip comment
+			// (image.name is passed in when receiving attachment)
+			if (comment !== null && name === comment) {
+				comment = null;
+			}
+
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
 			this.downloaderLogger.succ(`Got: ${driveFile.id}`);
 			return driveFile!;
