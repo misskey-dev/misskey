@@ -182,6 +182,12 @@ export class FileServerService {
 				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+				reply.header('Content-Disposition',
+					contentDisposition(
+						'inline',
+						correctFilename(file.filename, image.ext)
+					)
+				);
 				return image.data;
 			}
 
