@@ -951,6 +951,7 @@ joinThisServer: "Registrati su questa istanza"
 exploreOtherServers: "Trova altre istanze"
 letsLookAtTimeline: "Sbircia la timeline"
 disableFederationWarn: "Disabilita la federazione. Questo cambiamento non rende le pubblicazioni private. Di solito non è necessario abilitare questa opzione."
+invitationRequiredToRegister: "L'accesso a questo nodo è solo ad invito. Devi inserire un codice d'invito valido. Puoi richiedere un codice all'amministratore."
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
