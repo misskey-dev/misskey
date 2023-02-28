@@ -50,16 +50,6 @@ describe('RoleService', () => {
 			.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	async function assign(roleId: Role['id'], userId: User['id'], expiresAt: Date | null = null) {
-		await roleAssignmentsRepository.insert({
-			id: genAid(new Date()),
-			createdAt: new Date(),
-			roleId,
-			userId,
-			expiresAt,
-		});
-	}
-
 	beforeEach(async () => {
 		clock = lolex.install({
 			now: new Date(),
@@ -149,7 +139,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await assign(role.id, user.id);
+			await roleService.assign(user.id, role.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
@@ -183,8 +173,8 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await assign(role1.id, user.id);
-			await assign(role2.id, user.id);
+			await roleService.assign(user.id, role1.id);
+			await roleService.assign(user.id, role2.id);
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					driveCapacityMb: 50,
@@ -250,7 +240,7 @@ describe('RoleService', () => {
 					},
 				},
 			});
-			await assign(role.id, user.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
+			await roleService.assign(user.id, role.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
 			metaService.fetch.mockResolvedValue({
 				policies: {
 					canManageCustomEmojis: false,
@@ -264,6 +254,11 @@ describe('RoleService', () => {
 
 			const resultAfter25h = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25h.canManageCustomEmojis).toBe(false);
+
+			await roleService.assign(user.id, role.id);
+
+			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
+			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
 		});
 	});
 });

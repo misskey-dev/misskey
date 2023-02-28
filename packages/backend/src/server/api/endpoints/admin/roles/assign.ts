@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
+import type { RolesRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
@@ -60,12 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
 
-		@Inject(DI.roleAssignmentsRepository)
-		private roleAssignmentsRepository: RoleAssignmentsRepository,
-
-		private globalEventService: GlobalEventService,
 		private roleService: RoleService,
-		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
@@ -86,20 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			const date = new Date();
-			const created = await this.roleAssignmentsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: date,
-				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
-				roleId: role.id,
-				userId: user.id,
-			}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));
-
-			this.rolesRepository.update(ps.roleId, {
-				lastUsedAt: new Date(),
-			});
-	
-			this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+			await this.roleService.assign(user.id, role.id, ps.expiresAt ? new Date(ps.expiresAt) : null);
 		});
 	}
 }
