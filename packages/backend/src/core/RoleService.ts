@@ -128,6 +128,7 @@ export class RoleService implements OnApplicationShutdown {
 						cached.push({
 							...body,
 							createdAt: new Date(body.createdAt),
+							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
 						});
 					}
 					break;
@@ -193,7 +194,10 @@ export class RoleService implements OnApplicationShutdown {
 
 	@bindThis
 	public async getUserRoles(userId: User['id']) {
-		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const now = Date.now();
+		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		// 期限切れのロールを除外
+		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
 		const assignedRoles = roles.filter(r => assignedRoleIds.includes(r.id));
@@ -207,7 +211,10 @@ export class RoleService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async getUserBadgeRoles(userId: User['id']) {
-		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const now = Date.now();
+		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		// 期限切れのロールを除外
+		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
 		const assignedBadgeRoles = roles.filter(r => r.asBadge && assignedRoleIds.includes(r.id));

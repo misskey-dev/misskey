@@ -13,7 +13,7 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
-- 
+- 時限ロール
 
 ### Bugfixes
 - fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正

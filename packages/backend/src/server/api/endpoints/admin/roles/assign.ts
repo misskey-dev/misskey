@@ -39,6 +39,10 @@ export const paramDef = {
 	properties: {
 		roleId: { type: 'string', format: 'misskey:id' },
 		userId: { type: 'string', format: 'misskey:id' },
+		expiresAt: {
+			type: 'integer',
+			nullable: true,
+		},
 	},
 	required: [
 		'roleId',
@@ -78,10 +82,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchUser);
 			}
 
+			if (ps.expiresAt && ps.expiresAt <= Date.now()) {
+				return;
+			}
+
 			const date = new Date();
 			const created = await this.roleAssignmentsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: date,
+				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
 				roleId: role.id,
 				userId: user.id,
 			}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));

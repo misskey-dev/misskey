@@ -3,13 +3,12 @@ process.env.NODE_ENV = 'test';
 import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
+import * as lolex from '@sinonjs/fake-timers';
 import rndstr from 'rndstr';
 import { GlobalModule } from '@/GlobalModule.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository, User } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { CoreModule } from '@/core/CoreModule.js';
 import { MetaService } from '@/core/MetaService.js';
 import { genAid } from '@/misc/id/aid.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
@@ -25,6 +24,7 @@ describe('RoleService', () => {
 	let rolesRepository: RolesRepository;
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let metaService: jest.Mocked<MetaService>;
+	let clock: lolex.InstalledClock;
 
 	function createUser(data: Partial<User> = {}) {
 		const un = rndstr('a-z0-9', 16);
@@ -50,16 +50,22 @@ describe('RoleService', () => {
 			.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	async function assign(roleId: Role['id'], userId: User['id']) {
+	async function assign(roleId: Role['id'], userId: User['id'], expiresAt: Date | null = null) {
 		await roleAssignmentsRepository.insert({
 			id: genAid(new Date()),
 			createdAt: new Date(),
 			roleId,
 			userId,
+			expiresAt,
 		});
 	}
 
 	beforeEach(async () => {
+		clock = lolex.install({
+			now: new Date(),
+			shouldClearNativeTimers: true,
+		});
+
 		app = await Test.createTestingModule({
 			imports: [
 				GlobalModule,
@@ -92,12 +98,15 @@ describe('RoleService', () => {
 	});
 
 	afterEach(async () => {
+		clock.uninstall();
+
 		await Promise.all([
 			app.get(DI.metasRepository).delete({}),
 			usersRepository.delete({}),
 			rolesRepository.delete({}),
 			roleAssignmentsRepository.delete({}),
 		]);
+
 		await app.close();
 	});
 
@@ -227,6 +236,34 @@ describe('RoleService', () => {
 			const user2Policies = await roleService.getUserPolicies(user2.id);
 			expect(user1Policies.canManageCustomEmojis).toBe(false);
 			expect(user2Policies.canManageCustomEmojis).toBe(true);
+		});
+
+		test('expired role', async () => {	
+			const user = await createUser();
+			const role = await createRole({
+				name: 'a',
+				policies: {
+					canManageCustomEmojis: {
+						useDefault: false,
+						priority: 0,
+						value: true,
+					},
+				},
+			});
+			await assign(role.id, user.id, new Date(Date.now() + (1000 * 60 * 60 * 24)));
+			metaService.fetch.mockResolvedValue({
+				policies: {
+					canManageCustomEmojis: false,
+				},
+			} as any);
+	
+			const result = await roleService.getUserPolicies(user.id);
+			expect(result.canManageCustomEmojis).toBe(true);
+
+			clock.tick('25:00:00');
+
+			const resultAfter25h = await roleService.getUserPolicies(user.id);
+			expect(resultAfter25h.canManageCustomEmojis).toBe(false);
 		});
 	});
 });
