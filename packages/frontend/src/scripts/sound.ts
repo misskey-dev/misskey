@@ -4,6 +4,12 @@ const cache = new Map<string, HTMLAudioElement>();
 
 export const soundsTypes = [
 	null,
+	'syuilo/new-eca',
+	'syuilo/new-cea',
+	'syuilo/new-aec',
+	'syuilo/new-eca-oct',
+	'syuilo/new-cea-oct',
+	'syuilo/new-aec-oct',
 	'syuilo/up',
 	'syuilo/down',
 	'syuilo/pope1',
