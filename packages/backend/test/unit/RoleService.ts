@@ -55,6 +55,8 @@ describe('RoleService', () => {
 		clock = lolex.install({
 			now: new Date(),
 			shouldClearNativeTimers: true,
+			// https://github.com/oguimbal/pg-mem/issues/170#issuecomment-956078966
+			toFake: ['Date'],
 		});
 
 		const services = new ServiceCollection();
