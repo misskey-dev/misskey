@@ -1,7 +1,7 @@
-import { miLocalStorage } from "./local-storage";
+import { miLocalStorage } from './local-storage';
 
 const address = new URL(location.href);
-const siteName = (document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement)?.content;
+const siteName = document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
 
 export const host = address.host;
 export const hostname = address.hostname;
@@ -17,6 +17,6 @@ export const instanceName = siteName === 'Misskey' ? host : siteName;
 export const ui = miLocalStorage.getItem('ui');
 export const debug = miLocalStorage.getItem('debug') === 'true';
 
-export function updateLocale(newLocale) {
+export function updateLocale(newLocale): void {
 	locale = newLocale;
 }
