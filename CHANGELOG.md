@@ -22,6 +22,7 @@ You should also include the user name that made the change.
 ### Bugfixes
 - 外部メディアプロキシ使用時にアバタークロップができない問題を修正
 - fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
 
 ## 13.8.1 (2023/02/26)
 
