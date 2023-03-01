@@ -143,7 +143,7 @@ if ($i && $i.token) {
 		console.log('account cache found. refreshing...');
 	}
 
-	await refreshAccount();
+	refreshAccount();
 } else {
 	if (_DEV_) {
 		console.log('no account cache found.');

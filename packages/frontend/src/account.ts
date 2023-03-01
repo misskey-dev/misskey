@@ -30,11 +30,10 @@ const refreshing = ref(false);
 
 export async function refreshAccount() {
 	if (!$i) return;
-	await fetchAccount($i.token, $i.id)
-		.then(updateAccount)
-		.catch(async reason => {
+	return fetchAccount($i.token, $i.id)
+		.then(updateAccount, async reason => {
 			const removed = await accountIsRemoved(reason);
-			if (removed) signout();
+			if (removed) return signout();
 		});
 }
 
@@ -191,11 +190,13 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 				(res as Account).token = token;
 				done(res as Account);
 			}
-		}, fail);
+		})
+		.catch(fail);
 	});
 }
 
 async function accountIsRemoved(reason: Record<string, any> | true): Promise<boolean> {
+	console.error('error while fetching account', reason);
 	// サーバーがビジーなどでapi/iが500番台を返した場合にもログアウトされてしまうのは微妙
 	// しかしアカウント削除は壊れているので、500が返ってくる
 	// 本当はシンプルに次のようにしたい
