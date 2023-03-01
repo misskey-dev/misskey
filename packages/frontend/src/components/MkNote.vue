@@ -453,12 +453,12 @@ function showReactions(): void {
 			padding: 0 4px;
 			margin-bottom: 0 !important;
 			background: var(--popup);
-			border-radius: 6px;
+			border-radius: 8px;
 			box-shadow: 0px 4px 32px var(--shadow);
 		}
 
 		.footerButton {
-			font-size: 80%;
+			font-size: 90%;
 
 			&:not(:last-child) {
 				margin-right: 0;
