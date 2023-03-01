@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 - アンテナでCWも検索対象にするように
 - ノートの操作部をホバー時のみ表示するオプションを追加
 - サウンドを追加
+- enhance(client): MFMのx2, scale, positionが含まれていたらノートをたたむように
 
 ### Bugfixes
 - 外部メディアプロキシ使用時にアバタークロップができない問題を修正
