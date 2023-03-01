@@ -441,6 +441,11 @@ function showReactions(): void {
 		}
 	}
 
+	.footer {
+		position: relative;
+		z-index: 1;
+	}
+
 	&:hover > .article > .main > .footer > .footerButton {
 		opacity: 1;
 	}
