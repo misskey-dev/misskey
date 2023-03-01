@@ -186,7 +186,7 @@ fetchInstanceMetaPromise.then(() => {
 
 try {
 	await fetchCustomEmojis();
-} catch (err) {}
+} catch (err) { /* empty */ }
 
 const app = createApp(
 	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
@@ -267,8 +267,7 @@ if (lastVersion !== version) {
 				popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
 			}
 		}
-	} catch (err) {
-	}
+	} catch (err) { /* empty */ }
 }
 
 await defaultStore.ready;
