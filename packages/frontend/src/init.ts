@@ -226,17 +226,17 @@ await deckStore.ready;
 const rootEl = ((): HTMLElement => {
 	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
-	const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+	const currentRoot = document.getElementById(MISSKEY_MOUNT_DIV_ID);
 
-	if (currentEl) {
+	if (currentRoot) {
 		console.warn('multiple import detected');
-		return currentEl;
+		return currentRoot;
 	}
 
-	const rootEl = document.createElement('div');
-	rootEl.id = MISSKEY_MOUNT_DIV_ID;
-	document.body.appendChild(rootEl);
-	return rootEl;
+	const root = document.createElement('div');
+	root.id = MISSKEY_MOUNT_DIV_ID;
+	document.body.appendChild(root);
+	return root;
 })();
 
 app.mount(rootEl);
