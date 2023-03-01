@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { startServer, signup, post, api, simpleGet, port, shutdownServer } from '../utils.js';
+import { startServer, signup, post, api, simpleGet, shutdownServer } from '../utils.js';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -51,6 +51,22 @@ describe('Fetch resource', () => {
 			const res = await simpleGet('/docs/ja-JP/about');
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(res.type, HTML);
+		});
+
+		test('GET api-doc (廃止)', async () => {
+			const res = await simpleGet('/api-doc').catch(res => ({ status: res.status }));
+			assert.strictEqual(res.status, 404);
+		});
+
+		test('GET api.json (廃止)', async () => {
+			const res = await simpleGet('/api.json').catch(res => ({ status: res.status }));
+			assert.strictEqual(res.status, 404);
+		});
+
+		test('GET api/foo (存在しない)', async () => {
+			const res = await api('foo', {});
+			assert.strictEqual(res.status, 404);
+			assert.strictEqual(res.body.error.code, 'UNKNOWN_API_ENDPOINT');
 		});
 
 		test('GET favicon.ico', async () => {
