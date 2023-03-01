@@ -12,6 +12,8 @@ import { UserCacheService } from '@/core/UserCacheService.js';
 import type { RoleCondFormulaValue } from '@/models/entities/Role.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
+import { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -56,6 +58,9 @@ export class RoleService implements IDisposable {
 	private rolesCache: Cache<Role[]>;
 	private roleAssignmentByUserIdCache: Cache<RoleAssignment[]>;
 
+	public static AlreadyAssignedError = class extends Error {};
+	public static NotAssignedError = class extends Error {};
+
 	constructor(
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
@@ -77,6 +82,12 @@ export class RoleService implements IDisposable {
 
 		@Inject(DI.UserEntityService)
 		private userEntityService: UserEntityService,
+
+		@Inject(DI.GlobalEventService)
+		private globalEventService: GlobalEventService,
+
+		@Inject(DI.IdService)
+		private idService: IdService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -133,6 +144,7 @@ export class RoleService implements IDisposable {
 						cached.push({
 							...body,
 							createdAt: new Date(body.createdAt),
+							expiresAt: body.expiresAt ? new Date(body.expiresAt) : null,
 						});
 					}
 					break;
@@ -198,7 +210,10 @@ export class RoleService implements IDisposable {
 
 	@bindThis
 	public async getUserRoles(userId: User['id']) {
-		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const now = Date.now();
+		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		// 期限切れのロールを除外
+		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
 		const assignedRoles = roles.filter(r => assignedRoleIds.includes(r.id));
@@ -212,7 +227,10 @@ export class RoleService implements IDisposable {
 	 */
 	@bindThis
 	public async getUserBadgeRoles(userId: User['id']) {
-		const assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		const now = Date.now();
+		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
+		// 期限切れのロールを除外
+		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
 		const assignedRoleIds = assigns.map(x => x.roleId);
 		const roles = await this.rolesCache.fetch(null, () => this.rolesRepository.findBy({}));
 		const assignedBadgeRoles = roles.filter(r => r.asBadge && assignedRoleIds.includes(r.id));
@@ -322,7 +340,66 @@ export class RoleService implements IDisposable {
 	}
 
 	@bindThis
-	public dispose(): void {
+	public async assign(userId: User['id'], roleId: Role['id'], expiresAt: Date | null = null): Promise<void> {
+		const now = new Date();
+
+		const existing = await this.roleAssignmentsRepository.findOneBy({
+			roleId: roleId,
+			userId: userId,
+		});
+
+		if (existing) {
+			if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
+				await this.roleAssignmentsRepository.delete({
+					roleId: roleId,
+					userId: userId,
+				});
+			} else {
+				throw new RoleService.AlreadyAssignedError();
+			}
+		}
+
+		const created = await this.roleAssignmentsRepository.insert({
+			id: this.idService.genId(),
+			createdAt: now,
+			expiresAt: expiresAt,
+			roleId: roleId,
+			userId: userId,
+		}).then(x => this.roleAssignmentsRepository.findOneByOrFail(x.identifiers[0]));
+
+		this.rolesRepository.update(roleId, {
+			lastUsedAt: new Date(),
+		});
+
+		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+	}
+
+	@bindThis
+	public async unassign(userId: User['id'], roleId: Role['id']): Promise<void> {
+		const now = new Date();
+	
+		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
+		if (existing == null) {
+			throw new RoleService.NotAssignedError();
+		} else if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
+			await this.roleAssignmentsRepository.delete({
+				roleId: roleId,
+				userId: userId,
+			});
+			throw new RoleService.NotAssignedError();
+		}
+
+		await this.roleAssignmentsRepository.delete(existing.id);
+
+		this.rolesRepository.update(roleId, {
+			lastUsedAt: now,
+		});
+
+		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
+	}
+
+	@bindThis
+	public dispose(signal?: string | undefined): void {
 		this.redisSubscriber.off('message', this.onMessage);
 	}
 }

@@ -59,6 +59,8 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'tl',
 	'overridedDeviceKind',
 	'serverDisconnectedBehavior',
+	'collapseRenotes',
+	'showNoteActionsOnlyHover',
 	'nsfw',
 	'animation',
 	'animatedMfm',

@@ -47,6 +47,7 @@ export class WebhookService implements IDisposable {
 						this.webhooks.push({
 							...body,
 							createdAt: new Date(body.createdAt),
+							latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
 						});
 					}
 					break;
@@ -57,11 +58,13 @@ export class WebhookService implements IDisposable {
 							this.webhooks[i] = {
 								...body,
 								createdAt: new Date(body.createdAt),
+								latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
 							};
 						} else {
 							this.webhooks.push({
 								...body,
 								createdAt: new Date(body.createdAt),
+								latestSentAt: body.latestSentAt ? new Date(body.latestSentAt) : null,
 							});
 						}
 					} else {

@@ -182,13 +182,15 @@ export class AntennaService implements IDisposable {
 			.filter(xs => xs.length > 0);
 	
 		if (keywords.length > 0) {
-			if (note.text == null) return false;
+			if (note.text == null && note.cw == null) return false;
+
+			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
 	
 			const matched = keywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
-						? note.text!.includes(keyword)
-						: note.text!.toLowerCase().includes(keyword.toLowerCase()),
+						? _text.includes(keyword)
+						: _text.toLowerCase().includes(keyword.toLowerCase()),
 				));
 	
 			if (!matched) return false;
@@ -200,13 +202,15 @@ export class AntennaService implements IDisposable {
 			.filter(xs => xs.length > 0);
 	
 		if (excludeKeywords.length > 0) {
-			if (note.text == null) return false;
-	
+			if (note.text == null && note.cw == null) return false;
+
+			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+
 			const matched = excludeKeywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
-						? note.text!.includes(keyword)
-						: note.text!.toLowerCase().includes(keyword.toLowerCase()),
+						? _text.includes(keyword)
+						: _text.toLowerCase().includes(keyword.toLowerCase()),
 				));
 	
 			if (matched) return false;

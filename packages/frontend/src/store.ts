@@ -273,6 +273,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 5,
 	},
+	showNoteActionsOnlyHover: {
+		where: 'device',
+		default: false,
+	},
 	aiChanMode: {
 		where: 'device',
 		default: false,
@@ -283,12 +287,15 @@ export const defaultStore = markRaw(new Storage('base', {
 
 const PREFIX = 'miux:' as const;
 
-type Plugin = {
+export type Plugin = {
 	id: string;
 	name: string;
 	active: boolean;
+	config?: Record<string, { default: any }>;
 	configData: Record<string, any>;
 	token: string;
+	src: string | null;
+	version: string;
 	ast: any[];
 };
 
