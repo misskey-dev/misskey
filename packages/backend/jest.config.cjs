@@ -91,7 +91,7 @@ module.exports = {
 		// See https://github.com/swc-project/jest/issues/64#issuecomment-1029753225
 		// TODO: Use `--allowImportingTsExtensions` on TypeScript 5.0 so that we can
 		// directly import `.ts` files without this hack.
-		'^(.*/.*)\\.js$': '$1',
+		'^((?:\\.{1,2}|[A-Z:])*/.*)\\.js$': '$1',
 	},
 
 	// An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
