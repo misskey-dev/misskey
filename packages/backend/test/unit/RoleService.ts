@@ -14,6 +14,7 @@ import { genAid } from '@/misc/id/aid.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { sleep } from '../utils.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -260,6 +261,9 @@ describe('RoleService', () => {
 			expect(resultAfter25h.canManageCustomEmojis).toBe(false);
 
 			await roleService.assign(user.id, role.id);
+
+			// ストリーミング経由で反映されるまでちょっと待つ
+			await sleep(100);
 
 			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
 			expect(resultAfter25hAgain.canManageCustomEmojis).toBe(true);
