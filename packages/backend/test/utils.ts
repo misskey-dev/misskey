@@ -3,15 +3,13 @@ import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import * as childProcess from 'child_process';
-import * as http from 'node:http';
 import { SIGKILL } from 'constants';
 import WebSocket from 'ws';
-import fetch from 'node-fetch';
+import fetch, { RequestInit } from 'node-fetch';
 import FormData from 'form-data';
 import { DataSource } from 'typeorm';
-import got, { RequestError } from 'got';
+import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
-import { entities } from '@/postgres.js';
 import type * as misskey from 'misskey-js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -21,65 +19,36 @@ const config = loadConfig();
 export const port = config.port;
 
 export const api = async (endpoint: string, params: any, me?: any) => {
-	endpoint = endpoint.replace(/^\//, '');
-
-	const auth = me ? {
-		i: me.token,
-	} : {};
-
-	try {
-		const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(Object.assign(auth, params)),
-			retry: {
-				limit: 0,
-			},
-		});
-
-		const status = res.statusCode;
-		const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
-
-		return {
-			status,
-			body,
-		};
-	} catch (err: unknown) {
-		if (err instanceof RequestError && err.response) {
-			const status = err.response.statusCode;
-			const body = await JSON.parse(err.response.body as string);
-
-			return {
-				status,
-				body,
-			};
-		} else {
-			throw err;
-		}
-	}
+	const normalized = endpoint.replace(/^\//, '');
+	return await request(`api/${normalized}`, params, me);
 };
 
-export const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
+const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
 	const auth = me ? {
 		i: me.token,
 	} : {};
 
-	const res = await fetch(`http://localhost:${port}/${path}`, {
+	const res = await relativeFetch(path, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(Object.assign(auth, params)),
+		redirect: 'manual',
 	});
 
 	const status = res.status;
-	const body = res.status === 200 ? await res.json().catch() : null;
+	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+		? await res.json()
+		: null;
 
 	return {
 		body, status,
 	};
+};
+
+const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
+	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
 export const signup = async (params?: any): Promise<any> => {
@@ -123,15 +92,12 @@ export const uploadFile = async (user: any, _path?: string): Promise<any> => {
 	formData.append('file', fs.createReadStream(absPath));
 	formData.append('force', 'true');
 
-	const res = await got<string>(`http://localhost:${port}/api/drive/files/create`, {
+	const res = await fetch(`http://127.0.0.1:${port}/api/drive/files/create`, {
 		method: 'POST',
 		body: formData,
-		retry: {
-			limit: 0,
-		},
 	});
 
-	const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
+	const body = res.status !== 204 ? await res.json() : null;
 
 	return body;
 };
@@ -160,7 +126,7 @@ export const uploadUrl = async (user: any, url: string) => {
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
-		const ws = new WebSocket(`ws://localhost:${port}/streaming?i=${user.token}`);
+		const ws = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${user.token}`);
 
 		ws.on('open', () => {
 			ws.on('message', data => {
@@ -219,27 +185,23 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {
-	// node-fetchだと3xxを取れない
-	return await new Promise((resolve, reject) => {
-		const req = http.request(`http://localhost:${port}${path}`, {
-			headers: {
-				Accept: accept,
-			},
-		}, res => {
-			if (res.statusCode! >= 400) {
-				reject(res);
-			} else {
-				resolve({
-					status: res.statusCode,
-					type: res.headers['content-type'],
-					location: res.headers.location,
-				});
-			}
-		});
-
-		req.end();
+export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status: number, type: string | null, location: string | null }> => {
+	const res = await relativeFetch(path, {
+		headers: {
+			Accept: accept,
+		},
+		redirect: 'manual',
 	});
+
+	if (res.status >= 400) {
+		throw res;
+	}
+
+	return {
+		status: res.status,
+		type: res.headers.get('content-type'),
+		location: res.headers.get('location'),
+	};
 };
 
 export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
@@ -282,7 +244,7 @@ export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProc
 			rej('timeout to start');
 		}, timeout);
 
-		const p = childProcess.spawn('node', [_dirname + '/../built/index.js'], {
+		const p = childProcess.spawn('node', [_dirname + '/../built/boot/index.js'], {
 			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
 			env: { NODE_ENV: 'test', PATH: process.env.PATH },
 		});

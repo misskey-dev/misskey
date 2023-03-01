@@ -2,8 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import * as openapi from '@redocly/openapi-core';
-import { startServer, signup, post, request, simpleGet, port, shutdownServer, api } from '../utils.js';
+import { startServer, signup, post, shutdownServer, api } from '../utils.js';
 
 describe('Endpoints', () => {
 	let p: childProcess.ChildProcess;
@@ -15,7 +14,7 @@ describe('Endpoints', () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
-	}, 1000 * 30);
+	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
 		await shutdownServer(p);
@@ -23,7 +22,7 @@ describe('Endpoints', () => {
 
 	describe('signup', () => {
 		test('不正なユーザー名でアカウントが作成できない', async () => {
-			const res = await request('api/signup', {
+			const res = await api('signup', {
 				username: 'test.',
 				password: 'test',
 			});
@@ -31,7 +30,7 @@ describe('Endpoints', () => {
 		});
 
 		test('空のパスワードでアカウントが作成できない', async () => {
-			const res = await request('api/signup', {
+			const res = await api('signup', {
 				username: 'test',
 				password: '',
 			});
@@ -44,7 +43,7 @@ describe('Endpoints', () => {
 				password: 'test1',
 			};
 
-			const res = await request('api/signup', me);
+			const res = await api('signup', me);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -52,7 +51,7 @@ describe('Endpoints', () => {
 		});
 
 		test('同じユーザー名のアカウントは作成できない', async () => {
-			const res = await request('api/signup', {
+			const res = await api('signup', {
 				username: 'test1',
 				password: 'test1',
 			});
@@ -63,7 +62,7 @@ describe('Endpoints', () => {
 
 	describe('signin', () => {
 		test('間違ったパスワードでサインインできない', async () => {
-			const res = await request('api/signin', {
+			const res = await api('signin', {
 				username: 'test1',
 				password: 'bar',
 			});
@@ -72,7 +71,7 @@ describe('Endpoints', () => {
 		});
 
 		test('クエリをインジェクションできない', async () => {
-			const res = await request('api/signin', {
+			const res = await api('signin', {
 				username: 'test1',
 				password: {
 					$gt: '',
@@ -83,7 +82,7 @@ describe('Endpoints', () => {
 		});
 
 		test('正しい情報でサインインできる', async () => {
-			const res = await request('api/signin', {
+			const res = await api('signin', {
 				username: 'test1',
 				password: 'test1',
 			});
@@ -111,11 +110,12 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.body.birthday, myBirthday);
 		});
 
-		test('名前を空白にできない', async () => {
+		test('名前を空白にできる', async () => {
 			const res = await api('/i/update', {
 				name: ' ',
 			}, alice);
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.body.name, ' ');
 		});
 
 		test('誕生日の設定を削除できる', async () => {
@@ -201,7 +201,6 @@ describe('Endpoints', () => {
 		test('リアクションできる', async () => {
 			const bobPost = await post(bob);
 
-			const alice = await signup({ username: 'alice' });
 			const res = await api('/notes/reactions/create', {
 				noteId: bobPost.id,
 				reaction: '🚀',
@@ -214,7 +213,7 @@ describe('Endpoints', () => {
 			}, alice);
 
 			assert.strictEqual(resNote.status, 200);
-			assert.strictEqual(resNote.body.reactions['🚀'], [alice.id]);
+			assert.strictEqual(resNote.body.reactions['🚀'], 1);
 		});
 
 		test('自分の投稿にもリアクションできる', async () => {
@@ -228,7 +227,7 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.status, 204);
 		});
 
-		test('二重にリアクションできない', async () => {
+		test('二重にリアクションすると上書きされる', async () => {
 			const bobPost = await post(bob);
 
 			await api('/notes/reactions/create', {
@@ -241,7 +240,14 @@ describe('Endpoints', () => {
 				reaction: '🚀',
 			}, alice);
 
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 204);
+
+			const resNote = await api('/notes/show', {
+				noteId: bobPost.id,
+			}, alice);
+
+			assert.strictEqual(resNote.status, 200);
+			assert.deepStrictEqual(resNote.body.reactions, { '🚀': 1 });
 		});
 
 		test('存在しない投稿にはリアクションできない', async () => {

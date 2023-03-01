@@ -146,7 +146,6 @@
 	},
 	"devDependencies": {
 		"@jest/globals": "29.4.3",
-		"@redocly/openapi-core": "1.0.0-beta.123",
 		"@swc/jest": "0.2.24",
 		"@types/accepts": "1.3.5",
 		"@types/archiver": "5.3.1",

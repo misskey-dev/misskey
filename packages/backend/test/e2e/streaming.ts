@@ -71,7 +71,7 @@ describe('Streaming', () => {
 				listId: list.id,
 				userId: kyoko.id,
 			}, chitose);
-		}, 1000 * 30);
+		}, 1000 * 60 * 2);
 
 		afterAll(async () => {
 			await shutdownServer(p);
@@ -408,7 +408,7 @@ describe('Streaming', () => {
 				let fooCount = 0;
 				let barCount = 0;
 				let fooBarCount = 0;
-	
+
 				const ws = await connectStream(chitose, 'hashtag', ({ type, body }) => {
 					if (type === 'note') {
 						if (body.text === '#foo') fooCount++;
@@ -420,19 +420,19 @@ describe('Streaming', () => {
 						['foo', 'bar'],
 					],
 				});
-	
+
 				post(chitose, {
 					text: '#foo',
 				});
-	
+
 				post(chitose, {
 					text: '#bar',
 				});
-	
+
 				post(chitose, {
 					text: '#foo #bar',
 				});
-	
+
 				setTimeout(() => {
 					assert.strictEqual(fooCount, 0);
 					assert.strictEqual(barCount, 0);

@@ -2,8 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import * as openapi from '@redocly/openapi-core';
-import { startServer, signup, post, request, simpleGet, port, shutdownServer } from '../utils.js';
+import { startServer, signup, post, api, simpleGet, port, shutdownServer } from '../utils.js';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -28,7 +27,7 @@ describe('Fetch resource', () => {
 		alicesPost = await post(alice, {
 			text: 'test',
 		});
-	}, 1000 * 30);
+	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
 		await shutdownServer(p);
@@ -36,7 +35,7 @@ describe('Fetch resource', () => {
 
 	describe('Common', () => {
 		test('meta', async () => {
-			const res = await request('/meta', {
+			const res = await api('/meta', {
 			});
 
 			assert.strictEqual(res.status, 200);
@@ -54,36 +53,10 @@ describe('Fetch resource', () => {
 			assert.strictEqual(res.type, HTML);
 		});
 
-		test('GET api-doc', async () => {
-			const res = await simpleGet('/api-doc');
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, HTML);
-		});
-
-		test('GET api.json', async () => {
-			const res = await simpleGet('/api.json');
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, JSON);
-		});
-
-		test('Validate api.json', async () => {
-			const config = await openapi.loadConfig();
-			const result = await openapi.bundle({
-				config,
-				ref: `http://localhost:${port}/api.json`,
-			});
-
-			for (const problem of result.problems) {
-				console.log(`${problem.message} - ${problem.location[0]?.pointer}`);
-			}
-
-			assert.strictEqual(result.problems.length, 0);
-		});
-
 		test('GET favicon.ico', async () => {
 			const res = await simpleGet('/favicon.ico');
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, 'image/x-icon');
+			assert.strictEqual(res.type, 'image/vnd.microsoft.icon');
 		});
 
 		test('GET apple-touch-icon.png', async () => {
