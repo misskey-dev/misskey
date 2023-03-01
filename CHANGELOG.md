@@ -13,6 +13,7 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- 時限ロール
 - プッシュ通知でカスタム絵文字リアクションを表示できるように
 - アンテナでCWも検索対象にするように
 - ノートの操作部をホバー時のみ表示するオプションを追加

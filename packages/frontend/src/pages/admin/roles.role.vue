@@ -34,6 +34,7 @@
 										<MkA :class="$style.user" :to="`/user-info/${item.user.id}`">
 											<MkUserCardMini :user="item.user"/>
 										</MkA>
+										<button v-if="item.expiresAt != null" class="_button" :class="$style.expiresAt" @click="showExpireInfo(item, $event)"><i class="ti ti-clock-hour-3"></i></button>
 										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
 									</div>
 								</div>
@@ -98,13 +99,37 @@ async function del() {
 	router.push('/admin/roles');
 }
 
-function assign() {
-	os.selectUser({
+async function assign() {
+	const user = await os.selectUser({
 		includeSelf: true,
-	}).then(async (user) => {
-		await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id });
-		role.users.push(user);
 	});
+
+	const { canceled: canceled2, result: period } = await os.select({
+		title: i18n.ts.period,
+		items: [{
+			value: 'indefinitely', text: i18n.ts.indefinitely,
+		}, {
+			value: 'oneHour', text: i18n.ts.oneHour,
+		}, {
+			value: 'oneDay', text: i18n.ts.oneDay,
+		}, {
+			value: 'oneWeek', text: i18n.ts.oneWeek,
+		}, {
+			value: 'oneMonth', text: i18n.ts.oneMonth,
+		}],
+		default: 'indefinitely',
+	});
+	if (canceled2) return;
+
+	const expiresAt = period === 'indefinitely' ? null
+		: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
+		: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
+		: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
+		: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
+		: null;
+
+	await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id, expiresAt });
+	role.users.push(user);
 }
 
 async function unassign(user, ev) {
@@ -117,6 +142,13 @@ async function unassign(user, ev) {
 			role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
+}
+
+async function showExpireInfo(assignment) {
+	os.alert({
+		type: 'info',
+		text: assignment.expiresAt.toLocaleString(),
+	});
 }
 
 const headerActions = $computed(() => []);
@@ -139,10 +171,15 @@ definePageMetadata(computed(() => ({
 	min-width: 0;
 }
 
+.expiresAt,
 .unassign {
 	width: 32px;
 	height: 32px;
 	margin-left: 8px;
 	align-self: center;
+}
+
+.expiresAt + .unassign {
+	margin-left: 0;
 }
 </style>
