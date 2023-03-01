@@ -147,9 +147,9 @@ export class DriveService {
 
 			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
 			// 許可されているファイル形式でしか拡張子をつけない
-			if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
-				ext = '';
-			}
+			// if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
+			// 	ext = '';
+			// }
 
 			const baseUrl = meta.objectStorageBaseUrl
 				?? `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
@@ -361,8 +361,8 @@ export class DriveService {
 	 */
 	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
-		if (type === 'image/apng') type = 'image/png';
-		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
+		// if (type === 'image/apng') type = 'image/png';
+		// if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
 		const meta = await this.metaService.fetch();
 
