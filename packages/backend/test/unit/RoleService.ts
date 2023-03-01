@@ -12,6 +12,8 @@ import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { genAid } from '@/misc/id/aid.js';
 import { UserCacheService } from '@/core/UserCacheService.js';
+import { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -63,6 +65,8 @@ describe('RoleService', () => {
 			providers: [
 				RoleService,
 				UserCacheService,
+				IdService,
+				GlobalEventService,
 			],
 		})
 			.useMocker((token) => {
@@ -114,7 +118,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(false);
 		});
 	
-		test('instance default policies 2', async () => {	
+		test('instance default policies 2', async () => {
 			const user = await createUser();
 			metaService.fetch.mockResolvedValue({
 				policies: {
@@ -127,7 +131,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 	
-		test('with role', async () => {	
+		test('with role', async () => {
 			const user = await createUser();
 			const role = await createRole({
 				name: 'a',
@@ -151,7 +155,7 @@ describe('RoleService', () => {
 			expect(result.canManageCustomEmojis).toBe(true);
 		});
 
-		test('priority', async () => {	
+		test('priority', async () => {
 			const user = await createUser();
 			const role1 = await createRole({
 				name: 'role1',
@@ -186,7 +190,7 @@ describe('RoleService', () => {
 			expect(result.driveCapacityMb).toBe(100);
 		});
 
-		test('conditional role', async () => {	
+		test('conditional role', async () => {
 			const user1 = await createUser({
 				createdAt: new Date(Date.now() - (1000 * 60 * 60 * 24 * 365)),
 			});
@@ -228,7 +232,7 @@ describe('RoleService', () => {
 			expect(user2Policies.canManageCustomEmojis).toBe(true);
 		});
 
-		test('expired role', async () => {	
+		test('expired role', async () => {
 			const user = await createUser();
 			const role = await createRole({
 				name: 'a',
