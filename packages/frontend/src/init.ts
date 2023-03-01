@@ -114,8 +114,10 @@ if (['smartphone', 'tablet'].includes(deviceKind)) {
 }
 
 //#region Set lang attr
-const html = document.documentElement;
-html.setAttribute('lang', lang);
+if (lang) {
+	const html = document.documentElement;
+	html.setAttribute('lang', lang);
+}
 //#endregion
 
 //#region loginId
