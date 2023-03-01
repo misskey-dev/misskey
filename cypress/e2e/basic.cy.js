@@ -17,7 +17,7 @@ describe('Before setup instance', () => {
     cy.visit('/');
 
 		cy.intercept('POST', '/api/admin/accounts/create').as('signup');
-	
+
 		cy.get('[data-cy-admin-username] input').type('admin');
 		cy.get('[data-cy-admin-password] input').type('admin1234');
 		cy.get('[data-cy-admin-ok]').click();
@@ -112,7 +112,7 @@ describe('After user signup', () => {
 	});
 });
 
-describe('After user singed in', () => {
+describe('After user signed in', () => {
 	beforeEach(() => {
 		cy.resetState();
 
@@ -141,6 +141,19 @@ describe('After user singed in', () => {
 		cy.get('[data-cy-open-post-form-submit]').click();
 
 		cy.contains('Hello, Misskey!');
+  });
+
+	it('open note form with hotkey', () => {
+		// Wait until the page loads
+		cy.get('[data-cy-open-post-form]').should('be.visible');
+		// Use trigger() to give different `code` to test if hotkeys also work on non-QWERTY keyboards.
+		cy.document().trigger("keydown", { eventConstructor: 'KeyboardEvent', key: "n", code: "KeyL" });
+		// See if the form is opened
+		cy.get('[data-cy-post-form-text]').should('be.visible');
+		// Close it
+		cy.focused().trigger("keydown", { eventConstructor: 'KeyboardEvent', key: "Escape", code: "Escape" });
+		// See if the form is closed
+		cy.get('[data-cy-post-form-text]').should('not.be.visible');
   });
 });
 
