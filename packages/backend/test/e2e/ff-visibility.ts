@@ -147,8 +147,8 @@ describe('FF visibility', () => {
 					ffVisibility: 'followers',
 				}, alice);
 
-				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json').catch(res => ({ status: res.status }));
-				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json').catch(res => ({ status: res.status }));
+				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
+				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
 				assert.strictEqual(followingRes.status, 403);
 				assert.strictEqual(followersRes.status, 403);
 			}
@@ -157,8 +157,8 @@ describe('FF visibility', () => {
 					ffVisibility: 'private',
 				}, alice);
 
-				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json').catch(res => ({ status: res.status }));
-				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json').catch(res => ({ status: res.status }));
+				const followingRes = await simpleGet(`/users/${alice.id}/following`, 'application/activity+json');
+				const followersRes = await simpleGet(`/users/${alice.id}/followers`, 'application/activity+json');
 				assert.strictEqual(followingRes.status, 403);
 				assert.strictEqual(followersRes.status, 403);
 			}

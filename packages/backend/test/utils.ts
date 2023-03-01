@@ -185,7 +185,7 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status: number, type: string | null, location: string | null }> => {
+export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status: number, body: any, type: string | null, location: string | null }> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,
@@ -193,12 +193,13 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status:
 		redirect: 'manual',
 	});
 
-	if (res.status >= 400) {
-		throw res;
-	}
+	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+		? await res.json()
+		: null;
 
 	return {
 		status: res.status,
+		body,
 		type: res.headers.get('content-type'),
 		location: res.headers.get('location'),
 	};

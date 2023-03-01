@@ -54,17 +54,17 @@ describe('Fetch resource', () => {
 		});
 
 		test('GET api-doc (廃止)', async () => {
-			const res = await simpleGet('/api-doc').catch(res => ({ status: res.status }));
+			const res = await simpleGet('/api-doc');
 			assert.strictEqual(res.status, 404);
 		});
 
 		test('GET api.json (廃止)', async () => {
-			const res = await simpleGet('/api.json').catch(res => ({ status: res.status }));
+			const res = await simpleGet('/api.json');
 			assert.strictEqual(res.status, 404);
 		});
 
 		test('GET api/foo (存在しない)', async () => {
-			const res = await api('foo', {});
+			const res = await simpleGet('/api/foo');
 			assert.strictEqual(res.status, 404);
 			assert.strictEqual(res.body.error.code, 'UNKNOWN_API_ENDPOINT');
 		});
