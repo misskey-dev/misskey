@@ -32,7 +32,7 @@ import { i18n, updateI18n } from '@/i18n';
 import { confirm, alert, post, popup, toast } from '@/os';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
-import { $i, refreshAccounts, login, updateAccount, signout } from '@/account';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { fetchInstance, instance } from '@/instance';
 import { makeHotkey } from '@/scripts/hotkey';
@@ -143,7 +143,7 @@ if ($i && $i.token) {
 		console.log('account cache found. refreshing...');
 	}
 
-	refreshAccounts();
+	await refreshAccount();
 } else {
 	if (_DEV_) {
 		console.log('no account cache found.');
