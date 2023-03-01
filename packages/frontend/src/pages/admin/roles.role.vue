@@ -30,12 +30,19 @@
 
 							<template #default="{ items }">
 								<div class="_gaps_s">
-									<div v-for="item in items" :key="item.user.id" :class="$style.userItem">
-										<MkA :class="$style.user" :to="`/user-info/${item.user.id}`">
-											<MkUserCardMini :user="item.user"/>
-										</MkA>
-										<button v-if="item.expiresAt != null" class="_button" :class="$style.expiresAt" @click="showExpireInfo(item, $event)"><i class="ti ti-clock-hour-3"></i></button>
-										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
+									<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
+										<div :class="$style.userItemMain">
+											<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.user.id}`">
+												<MkUserCardMini :user="item.user"/>
+											</MkA>
+											<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
+											<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
+										</div>
+										<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
+											<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
+											<div v-if="item.expiresAt">Period: {{ item.expiresAt.toLocaleString() }}</div>
+											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+										</div>
 									</div>
 								</div>
 							</template>
@@ -76,6 +83,8 @@ const usersPagination = {
 		roleId: props.id,
 	})),
 };
+
+let expandedItems = $ref([]);
 
 const role = reactive(await os.api('admin/roles/show', {
 	roleId: props.id,
@@ -129,7 +138,7 @@ async function assign() {
 		: null;
 
 	await os.apiWithDialog('admin/roles/assign', { roleId: role.id, userId: user.id, expiresAt });
-	role.users.push(user);
+	//role.users.push(user);
 }
 
 async function unassign(user, ev) {
@@ -139,16 +148,17 @@ async function unassign(user, ev) {
 		danger: true,
 		action: async () => {
 			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.id });
-			role.users = role.users.filter(u => u.id !== user.id);
+			//role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function showExpireInfo(assignment) {
-	os.alert({
-		type: 'info',
-		text: assignment.expiresAt.toLocaleString(),
-	});
+async function toggleItem(item) {
+	if (expandedItems.includes(item.id)) {
+		expandedItems = expandedItems.filter(x => x !== item.id);
+	} else {
+		expandedItems.push(item.id);
+	}
 }
 
 const headerActions = $computed(() => []);
@@ -162,24 +172,41 @@ definePageMetadata(computed(() => ({
 </script>
 
 <style lang="scss" module>
-.userItem {
+.userItemMain {
 	display: flex;
 }
 
-.user {
-	flex: 1;
-	min-width: 0;
+.userItemSub {
+	padding: 6px 12px;
+	font-size: 85%;
+	color: var(--fgTransparentWeak);
 }
 
-.expiresAt,
+.userItemMainBody {
+	flex: 1;
+	min-width: 0;
+	margin-right: 8px;
+
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.userToggle,
 .unassign {
 	width: 32px;
 	height: 32px;
-	margin-left: 8px;
 	align-self: center;
 }
 
-.expiresAt + .unassign {
-	margin-left: 0;
+.chevron {
+	display: block;
+	transition: transform 0.1s ease-out;
+}
+
+.userItem.userItemOpend {
+	.chevron {
+		transform: rotateX(180deg);
+	}
 }
 </style>
