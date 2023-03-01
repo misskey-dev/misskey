@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { Following } from '../../src/models/entities/following.js';
+import { Following } from '@/models/entities/following.js';
 import { connectStream, signup, api, post, startServer, shutdownServer, initTestDb, waitFire } from '../utils.js';
 
 describe('Streaming', () => {
