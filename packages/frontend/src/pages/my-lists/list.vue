@@ -2,13 +2,13 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="mk-list-page">
+		<div>
 			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 				<div v-if="list" class="">
-					<div class="">
+					<div class="_buttons">
 						<MkButton inline @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
 						<MkButton inline @click="renameList()">{{ i18n.ts.rename }}</MkButton>
-						<MkButton inline @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
+						<MkButton inline danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
 					</div>
 				</div>
 			</Transition>
@@ -16,18 +16,12 @@
 			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
 				<div v-if="list" class="members _margin">
 					<div class="">{{ i18n.ts.members }}</div>
-					<div class="">
-						<div class="users">
-							<div v-for="user in users" :key="user.id" class="user _panel">
-								<MkAvatar :user="user" class="avatar" indicator link preview/>
-								<div class="body">
-									<MkUserName :user="user" class="name"/>
-									<MkAcct :user="user" class="acct"/>
-								</div>
-								<div class="action">
-									<button class="_button" @click="removeUser(user)"><i class="ti ti-x"></i></button>
-								</div>
-							</div>
+					<div class="_gaps_s">
+						<div v-for="user in users" :key="user.id" :class="$style.userItem">
+							<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
+								<MkUserCardMini :user="user"/>
+							</MkA>
+							<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
 						</div>
 					</div>
 				</div>
@@ -44,6 +38,8 @@ import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import { userPage } from '@/filters/user';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const props = defineProps<{
 	listId: string;
@@ -76,13 +72,20 @@ function addUser() {
 	});
 }
 
-function removeUser(user) {
-	os.api('users/lists/pull', {
-		listId: list.id,
-		userId: user.id,
-	}).then(() => {
-		users = users.filter(x => x.id !== user.id);
-	});
+async function removeUser(user, ev) {
+	os.popupMenu([{
+		text: i18n.ts.remove,
+		icon: 'ti ti-x',
+		danger: true,
+		action: async () => {
+			os.api('users/lists/pull', {
+				listId: list.id,
+				userId: user.id,
+			}).then(() => {
+				users = users.filter(x => x.id !== user.id);
+			});
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 async function renameList() {
@@ -126,37 +129,24 @@ definePageMetadata(computed(() => list ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
-.mk-list-page {
-	> .members {
-		> ._content {
-			> .users {
-				> .user {
-					display: flex;
-					align-items: center;
-					padding: 16px;
+<style lang="scss" module>
+.userItem {
+	display: flex;
+}
 
-					> .avatar {
-						width: 50px;
-						height: 50px;
-					}
+.userItemBody {
+	flex: 1;
+	min-width: 0;
+	margin-right: 8px;
 
-					> .body {
-						flex: 1;
-						padding: 8px;
-
-						> .name {
-							display: block;
-							font-weight: bold;
-						}
-
-						> .acct {
-							opacity: 0.5;
-						}
-					}
-				}
-			}
-		}
+	&:hover {
+		text-decoration: none;
 	}
+}
+
+.remove {
+	width: 32px;
+	height: 32px;
+	align-self: center;
 }
 </style>

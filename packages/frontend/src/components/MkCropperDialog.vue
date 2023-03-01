@@ -18,7 +18,7 @@
 				</div>
 			</Transition>
 			<div class="container">
-				<img ref="imgEl" :src="imgUrl" style="display: none;" crossorigin="anonymous" @load="onImageLoad">
+				<img ref="imgEl" :src="imgUrl" style="display: none;" @load="onImageLoad">
 			</div>
 		</div>
 	</template>
@@ -49,7 +49,7 @@ const props = defineProps<{
 	aspectRatio: number;
 }>();
 
-const imgUrl = getProxiedImageUrl(props.file.url);
+const imgUrl = getProxiedImageUrl(props.file.url, undefined, true);
 let dialogEl = $shallowRef<InstanceType<typeof MkModalWindow>>();
 let imgEl = $shallowRef<HTMLImageElement>();
 let cropper: Cropper | null = null;
