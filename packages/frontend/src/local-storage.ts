@@ -23,6 +23,7 @@ type Keys =
 	'customCss' |
 	'message_drafts' |
 	'scratchpad' |
+	'debug' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` |
