@@ -35,14 +35,14 @@
 					<MkInput v-model="ad.expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
-					<span>
-						<div>{{ i18n.ts._ad.timezoneinfo }}</div>
-						<div v-for="(day, index) in daysOfWeek" :key="index">
-							<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad, index)">
-							<label :for="`ad${ad.id}-${index}`">{{ day }}</label>
-						</div>
-					</span>
 				</FormSplit>
+				<span>
+					{{ i18n.ts._ad.timezoneinfo }}
+					<div v-for="(day, index) in daysOfWeek" :key="index">
+						<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad, index)">
+						<label :for="`ad${ad.id}-${index}`">{{ day }}</label>
+					</div>
+				</span>
 				<MkTextarea v-model="ad.memo">
 					<template #label>{{ i18n.ts.memo }}</template>
 				</MkTextarea>
@@ -118,6 +118,7 @@ function remove(ad) {
 	}).then(({ canceled }) => {
 		if (canceled) return;
 		ads = ads.filter(x => x !== ad);
+		if (ad.id == null) return;
 		os.apiWithDialog('admin/ad/delete', {
 			id: ad.id,
 		});
