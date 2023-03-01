@@ -6,18 +6,6 @@ import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 
-//#region account indexedDB migration
-import { set } from '@/scripts/idb-proxy';
-
-{
-	const accounts = miLocalStorage.getItem('accounts');
-	if (accounts) {
-		set('accounts', JSON.parse(accounts));
-		miLocalStorage.removeItem('accounts');
-	}
-}
-//#endregion
-
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import { compareVersions } from 'compare-versions';
 import JSON5 from 'json5';
@@ -42,11 +30,22 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { deckStore } from './ui/deck/deck-store';
-import { miLocalStorage } from './local-storage';
-import { claimAchievement, claimedAchievements } from './scripts/achievements';
-import { fetchCustomEmojis } from './custom-emojis';
-import { mainRouter } from './router';
+import { deckStore } from '@/ui/deck/deck-store';
+import { miLocalStorage } from '@/local-storage';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
+import { fetchCustomEmojis } from '@/custom-emojis';
+import { mainRouter } from '@/router';
+//#region account indexedDB migration
+import { set } from '@/scripts/idb-proxy';
+
+{
+	const accounts = miLocalStorage.getItem('accounts');
+	if (accounts) {
+		set('accounts', JSON.parse(accounts));
+		miLocalStorage.removeItem('accounts');
+	}
+}
+//#endregion
 
 console.info(`Misskey v${version}`);
 
