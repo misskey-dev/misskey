@@ -263,6 +263,7 @@ describe('RoleService', () => {
 			await roleService.assign(user.id, role.id);
 
 			// ストリーミング経由で反映されるまでちょっと待つ
+			clock.uninstall();
 			await sleep(100);
 
 			const resultAfter25hAgain = await roleService.getUserPolicies(user.id);
