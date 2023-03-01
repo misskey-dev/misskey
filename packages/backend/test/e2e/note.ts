@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as childProcess from 'child_process';
-import { Note } from '@/models/entities/note.js';
+import { Note } from '@/models/entities/Note.js';
 import { signup, post, uploadUrl, startServer, shutdownServer, initTestDb, api } from '../utils.js';
 
 describe('Note', () => {
