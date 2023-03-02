@@ -625,9 +625,9 @@ function showReactions(): void {
 
 .showLess {
 	width: 100%;
-	margin-top: 1em;
+	margin-top: 14px;
 	position: sticky;
-	bottom: 1em;
+	bottom: calc(var(--stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {

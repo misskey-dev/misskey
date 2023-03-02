@@ -43,8 +43,8 @@
 import { nextTick, onMounted } from 'vue';
 
 const props = withDefaults(defineProps<{
-	defaultOpen: boolean;
-	maxHeight: number | null;
+	defaultOpen?: boolean;
+	maxHeight?: number | null;
 }>(), {
 	defaultOpen: false,
 	maxHeight: null,
