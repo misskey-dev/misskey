@@ -3,7 +3,7 @@ name: うすゆきー自動デプロイ
 on:
   pull_request:
     branches:
-      - main
+      - usuyukey-master@v13
     types: [closed]
 
 jobs:
@@ -26,7 +26,6 @@ jobs:
             git fetch
             git reset --hard origin/usuyukey-master@v13
             git submodule update --init --recursive
-            hash=$(echo "${{ github.sha }}" | cut -b -7)
             sed -i -e "s/\(\"version\": \".*\)\(\"\)/\\1-usuyukey-${{ secrets.USUYUKEY_VERSION }}\2/" package.json
             pnpm install
             pnpm clean
