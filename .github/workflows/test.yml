@@ -16,13 +16,6 @@ jobs:
         node-version: [18.x]
 
     services:
-      postgres:
-        image: postgres:13
-        ports:
-          - 54312:5432
-        env:
-          POSTGRES_DB: test-misskey
-          POSTGRES_HOST_AUTH_METHOD: trust
       redis:
         image: redis:6
         ports:
