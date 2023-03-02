@@ -22,6 +22,7 @@ jobs:
             echo "START🚀"
             echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S systemctl stop misskey
             echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo su ${{ secrets.SERVER_MISSKEY_EXECUTION_USER }}
+            echo $(whoami)
             cd ~/usuyukey
             git fetch
             git reset --hard origin/usuyukey-master@v13
