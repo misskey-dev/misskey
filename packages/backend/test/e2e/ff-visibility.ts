@@ -9,13 +9,11 @@ describe('FF visibility', () => {
 
 	let alice: any;
 	let bob: any;
-	let carol: any;
 
 	beforeAll(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
-		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {

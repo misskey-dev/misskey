@@ -12,7 +12,6 @@ const UNSPECIFIED = '*/*';
 
 // Response Content-Type
 const AP = 'application/activity+json; charset=utf-8';
-const JSON = 'application/json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
 
 describe('Fetch resource', () => {
