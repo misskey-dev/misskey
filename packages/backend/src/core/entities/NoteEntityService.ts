@@ -392,7 +392,7 @@ export class NoteEntityService implements OnModuleInit {
 
 		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
 		const fileIds = notes.flatMap(n => n.fileIds);
-		const packedFiles = new Map(fileIds.length === 0 ? [] : (await this.driveFileEntityService.packManyByIds(fileIds)).map(r => [r.id, r]));
+		const packedFiles = await this.driveFileEntityService.packManyByIdsMap(fileIds);
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,

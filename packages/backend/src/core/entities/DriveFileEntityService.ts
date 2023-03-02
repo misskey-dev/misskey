@@ -21,6 +21,7 @@ type PackOptions = {
 };
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -263,11 +264,21 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
+	public async packManyByIdsMap(
+		fileIds: DriveFile['id'][],
+		options?: PackOptions,
+	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'>>> {
+		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
+		const packedFiles = await this.packMany(files, options);
+		return new Map(packedFiles.map(f => [f.id, f]));
+	}
+
+	@bindThis
 	public async packManyByIds(
 		fileIds: DriveFile['id'][],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
-		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
-		return await this.packMany(files, options);
+		const filesMap = await this.packManyByIdsMap(fileIds, options);
+		return fileIds.map(id => filesMap.get(id)).filter(isNotNull);
 	}
 }
