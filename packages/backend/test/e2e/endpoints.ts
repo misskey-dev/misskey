@@ -1,7 +1,10 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { startServer, signup, post, api } from '../utils.js';
+// node-fetch only supports it's own Blob yet
+// https://github.com/node-fetch/node-fetch/pull/1664
+import { Blob } from 'node-fetch';
+import { startServer, signup, post, api, uploadFile } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Endpoints', () => {
@@ -9,11 +12,15 @@ describe('Endpoints', () => {
 
 	let alice: any;
 	let bob: any;
+	let carol: any;
+	let dave: any;
 
 	beforeAll(async () => {
 		p = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
+		carol = await signup({ username: 'carol' });
+		dave = await signup({ username: 'dave' });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
@@ -375,57 +382,22 @@ describe('Endpoints', () => {
 		});
 	});
 
-	/*
-	describe('/i', () => {
-		test('', async () => {
-		});
-	});
-	*/
-});
-
-/*
-process.env.NODE_ENV = 'test';
-
-import * as assert from 'assert';
-import type { INestApplicationContext } from '@nestjs/common';
-import { async, signup, request, post, react, uploadFile, startServer } from './utils.js';
-
-describe('API: Endpoints', () => {
-	let p: INestApplicationContext;
-	let alice: any;
-	let bob: any;
-	let carol: any;
-
-	before(async () => {
-		p = await startServer();
-		alice = await signup({ username: 'alice' });
-		bob = await signup({ username: 'bob' });
-		carol = await signup({ username: 'carol' });
-	});
-
-	after(async () => {
-		await p.close();
-	});
-
 	describe('drive', () => {
 		test('ドライブ情報を取得できる', async () => {
-			await uploadFile({
-				userId: alice.id,
-				size: 256
+			await uploadFile(alice, {
+				blob: new Blob([new Uint8Array(256)]),
 			});
-			await uploadFile({
-				userId: alice.id,
-				size: 512
+			await uploadFile(alice, {
+				blob: new Blob([new Uint8Array(512)]),
 			});
-			await uploadFile({
-				userId: alice.id,
-				size: 1024
+			await uploadFile(alice, {
+				blob: new Blob([new Uint8Array(1024)]),
 			});
 			const res = await api('/drive', {}, alice);
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			expect(res.body).have.property('usage').eql(1792);
-		}));
+			expect(res.body).toHaveProperty('usage', 1792);
+		});
 	});
 
 	describe('drive/files/create', () => {
@@ -434,397 +406,392 @@ describe('API: Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.name, 'Lenna.png');
-		}));
+			assert.strictEqual(res.body.name, 'Lenna.jpg');
+		});
 
 		test('ファイルに名前を付けられる', async () => {
-			const res = await assert.request(server)
-				.post('/drive/files/create')
-				.field('i', alice.token)
-				.field('name', 'Belmond.png')
-				.attach('file', fs.readFileSync(__dirname + '/resources/Lenna.png'), 'Lenna.png');
+			const res = await uploadFile(alice, { name: 'Belmond.png' });
 
-			expect(res).have.status(200);
-			expect(res.body).be.a('object');
-			expect(res.body).have.property('name').eql('Belmond.png');
-		}));
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.name, 'Belmond.png');
+		});
 
 		test('ファイル無しで怒られる', async () => {
 			const res = await api('/drive/files/create', {}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('SVGファイルを作成できる', async () => {
-			const res = await uploadFile(alice, __dirname + '/resources/image.svg');
+			const res = await uploadFile(alice, { path: 'image.svg' });
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.name, 'image.svg');
 			assert.strictEqual(res.body.type, 'image/svg+xml');
-		}));
+		});
 	});
 
 	describe('drive/files/update', () => {
 		test('名前を更新できる', async () => {
-			const file = await uploadFile(alice);
+			const file = (await uploadFile(alice)).body;
 			const newName = 'いちごパスタ.png';
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				name: newName
+				name: newName,
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.name, newName);
-		}));
+		});
 
 		test('他人のファイルは更新できない', async () => {
-			const file = await uploadFile(bob);
+			const file = (await uploadFile(alice)).body;
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				name: 'いちごパスタ.png'
-			}, alice);
+				name: 'いちごパスタ.png',
+			}, bob);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('親フォルダを更新できる', async () => {
-			const file = await uploadFile(alice);
+			const file = (await uploadFile(alice)).body;
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				folderId: folder.id
+				folderId: folder.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.folderId, folder.id);
-		}));
+		});
 
 		test('親フォルダを無しにできる', async () => {
-			const file = await uploadFile(alice);
+			const file = (await uploadFile(alice)).body;
 
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 
 			await api('/drive/files/update', {
 				fileId: file.id,
-				folderId: folder.id
+				folderId: folder.id,
 			}, alice);
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				folderId: null
+				folderId: null,
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.folderId, null);
-		}));
+		});
 
 		test('他人のフォルダには入れられない', async () => {
-			const file = await uploadFile(alice);
+			const file = (await uploadFile(alice)).body;
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, bob)).body;
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				folderId: folder.id
+				folderId: folder.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('存在しないフォルダで怒られる', async () => {
-			const file = await uploadFile(alice);
+			const file = (await uploadFile(alice)).body;
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				folderId: '000000000000000000000000'
+				folderId: '000000000000000000000000',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('不正なフォルダIDで怒られる', async () => {
-			const file = await uploadFile(alice);
+			const file = (await uploadFile(alice)).body;
 
 			const res = await api('/drive/files/update', {
 				fileId: file.id,
-				folderId: 'foo'
+				folderId: 'foo',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('ファイルが存在しなかったら怒る', async () => {
 			const res = await api('/drive/files/update', {
 				fileId: '000000000000000000000000',
-				name: 'いちごパスタ.png'
+				name: 'いちごパスタ.png',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('間違ったIDで怒られる', async () => {
 			const res = await api('/drive/files/update', {
 				fileId: 'kyoppie',
-				name: 'いちごパスタ.png'
+				name: 'いちごパスタ.png',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 	});
 
 	describe('drive/folders/create', () => {
 		test('フォルダを作成できる', async () => {
 			const res = await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.name, 'test');
-		}));
+		});
 	});
 
 	describe('drive/folders/update', () => {
 		test('名前を更新できる', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				name: 'new name'
+				name: 'new name',
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.name, 'new name');
-		}));
+		});
 
 		test('他人のフォルダを更新できない', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, bob)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				name: 'new name'
+				name: 'new name',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('親フォルダを更新できる', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			const parentFolder = (await api('/drive/folders/create', {
-				name: 'parent'
+				name: 'parent',
 			}, alice)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: parentFolder.id
+				parentId: parentFolder.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.parentId, parentFolder.id);
-		}));
+		});
 
 		test('親フォルダを無しに更新できる', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			const parentFolder = (await api('/drive/folders/create', {
-				name: 'parent'
+				name: 'parent',
 			}, alice)).body;
 			await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: parentFolder.id
+				parentId: parentFolder.id,
 			}, alice);
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: null
+				parentId: null,
 			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
 			assert.strictEqual(res.body.parentId, null);
-		}));
+		});
 
 		test('他人のフォルダを親フォルダに設定できない', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			const parentFolder = (await api('/drive/folders/create', {
-				name: 'parent'
+				name: 'parent',
 			}, bob)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: parentFolder.id
+				parentId: parentFolder.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('フォルダが循環するような構造にできない', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			const parentFolder = (await api('/drive/folders/create', {
-				name: 'parent'
+				name: 'parent',
 			}, alice)).body;
 			await api('/drive/folders/update', {
 				folderId: parentFolder.id,
-				parentId: folder.id
+				parentId: folder.id,
 			}, alice);
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: parentFolder.id
+				parentId: parentFolder.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('フォルダが循環するような構造にできない(再帰的)', async () => {
 			const folderA = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			const folderB = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			const folderC = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 			await api('/drive/folders/update', {
 				folderId: folderB.id,
-				parentId: folderA.id
+				parentId: folderA.id,
 			}, alice);
 			await api('/drive/folders/update', {
 				folderId: folderC.id,
-				parentId: folderB.id
+				parentId: folderB.id,
 			}, alice);
 
 			const res = await api('/drive/folders/update', {
 				folderId: folderA.id,
-				parentId: folderC.id
+				parentId: folderC.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('フォルダが循環するような構造にできない(自身)', async () => {
 			const folderA = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folderA.id,
-				parentId: folderA.id
+				parentId: folderA.id,
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('存在しない親フォルダを設定できない', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: '000000000000000000000000'
+				parentId: '000000000000000000000000',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('不正な親フォルダIDで怒られる', async () => {
 			const folder = (await api('/drive/folders/create', {
-				name: 'test'
+				name: 'test',
 			}, alice)).body;
 
 			const res = await api('/drive/folders/update', {
 				folderId: folder.id,
-				parentId: 'foo'
+				parentId: 'foo',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('存在しないフォルダを更新できない', async () => {
 			const res = await api('/drive/folders/update', {
-				folderId: '000000000000000000000000'
+				folderId: '000000000000000000000000',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 
 		test('不正なフォルダIDで怒られる', async () => {
 			const res = await api('/drive/folders/update', {
-				folderId: 'foo'
+				folderId: 'foo',
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-		}));
+		});
 	});
 
 	describe('notes/replies', () => {
 		test('自分に閲覧権限のない投稿は含まれない', async () => {
 			const alicePost = await post(alice, {
-				text: 'foo'
+				text: 'foo',
 			});
 
 			await post(bob, {
 				replyId: alicePost.id,
 				text: 'bar',
 				visibility: 'specified',
-				visibleUserIds: [alice.id]
+				visibleUserIds: [alice.id],
 			});
 
 			const res = await api('/notes/replies', {
-				noteId: alicePost.id
+				noteId: alicePost.id,
 			}, carol);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.length, 0);
-		}));
+		});
 	});
 
 	describe('notes/timeline', () => {
 		test('フォロワー限定投稿が含まれる', async () => {
 			await api('/following/create', {
-				userId: alice.id
-			}, bob);
+				userId: carol.id,
+			}, dave);
 
-			const alicePost = await post(alice, {
+			const carolPost = await post(carol, {
 				text: 'foo',
-				visibility: 'followers'
+				visibility: 'followers',
 			});
 
-			const res = await api('/notes/timeline', {}, bob);
+			const res = await api('/notes/timeline', {}, dave);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.length, 1);
-			assert.strictEqual(res.body[0].id, alicePost.id);
-		}));
+			assert.strictEqual(res.body[0].id, carolPost.id);
+		});
 	});
 });
-*/

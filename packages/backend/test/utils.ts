@@ -1,19 +1,13 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+import { readFile } from 'node:fs/promises';
+import { isAbsolute, basename } from 'node:path';
 import WebSocket from 'ws';
-import fetch, { RequestInit } from 'node-fetch';
-import FormData from 'form-data';
+import fetch, { Blob, File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
 
 export { server as startServer } from '@/boot/common.js';
-
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
 
 const config = loadConfig();
 export const port = config.port;
@@ -79,27 +73,46 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 	}, user);
 };
 
+interface UploadOptions {
+	/** Optional, absolute path or relative from ./resources/ */
+	path?: string | URL;
+	/** The name to be used for the file upload */
+	name?: string;
+	/** A Blob can be provided instead of path */
+	blob?: Blob;
+}
+
 /**
  * Upload file
  * @param user User
- * @param _path Optional, absolute path or relative from ./resources/
  */
-export const uploadFile = async (user: any, _path?: string): Promise<any> => {
-	const absPath = _path == null ? `${_dirname}/resources/Lenna.jpg` : path.isAbsolute(_path) ? _path : `${_dirname}/resources/${_path}`;
+export const uploadFile = async (user: any, { path, name, blob }: UploadOptions = {}): Promise<any> => {
+	const absPath = path == null
+		? new URL('resources/Lenna.jpg', import.meta.url)
+		: isAbsolute(path.toString())
+			? new URL(path)
+			: new URL(path, new URL('resources/', import.meta.url));
 
-	const formData = new FormData() as any;
+	const formData = new FormData();
 	formData.append('i', user.token);
-	formData.append('file', fs.createReadStream(absPath));
+	formData.append('file', blob ??
+		new File([await readFile(absPath)], basename(absPath.toString())));
 	formData.append('force', 'true');
+	if (name) {
+		formData.append('name', name);
+	}
 
-	const res = await fetch(`http://127.0.0.1:${port}/api/drive/files/create`, {
+	const res = await relativeFetch('api/drive/files/create', {
 		method: 'POST',
 		body: formData,
 	});
 
 	const body = res.status !== 204 ? await res.json() : null;
 
-	return body;
+	return {
+		status: res.status,
+		body,
+	};
 };
 
 export const uploadUrl = async (user: any, url: string) => {
