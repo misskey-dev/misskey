@@ -1,0 +1,37 @@
+name: うすゆきー自動デプロイ
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            echo "START🚀"
+            echo ${{ secrets.SERVER_USER_PASSWORD }} | sudo systemctl stop misskey
+            sudo su ${{ secrets.SERVER_MISSKEY_EXECUTION_USER }}
+            cd ~/usuyukey
+            git fetch
+            git reset --hard origin/usuyukey-master@v13
+            git submodule update --init --recursive
+            hash=$(echo "${{ github.sha }}" | cut -b -7)
+            sed -i -e "s/\(\"version\": \".*\)\(\"\)/\\1-usuyukey-${{ secrets.USUYUKEY_VERSION }}\2/" package.json
+            pnpm install
+            pnpm clean
+            NODE_ENV=production pnpm build
+            pnpm migrate
+            exit
+            sudo systemctl restart misskey
+            echo "DONE🥳"
