@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "13.7.5",
+	"version": "13.8.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -16,10 +16,11 @@
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
 		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
-		"start": "cd packages/backend && node ./built/boot/index.js",
+		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"init": "pnpm migrate",
 		"migrate": "cd packages/backend && pnpm migrate",
+		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"gulp": "pnpm exec gulp build",
 		"watch": "pnpm dev",
@@ -54,11 +55,11 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.52.0",
-		"@typescript-eslint/parser": "5.52.0",
+		"@typescript-eslint/eslint-plugin": "5.53.0",
+		"@typescript-eslint/parser": "5.53.0",
 		"cross-env": "7.0.3",
-		"cypress": "12.6.0",
-		"eslint": "8.34.0",
+		"cypress": "12.7.0",
+		"eslint": "8.35.0",
 		"start-server-and-test": "1.15.4"
 	},
 	"optionalDependencies": {
