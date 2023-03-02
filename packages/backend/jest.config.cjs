@@ -213,5 +213,7 @@ module.exports = {
 	// Let Jest kill the test worker whenever it grows too much
 	// (It seems there's a known memory leak issue in Node.js' vm.Script used by Jest)
 	// https://github.com/facebook/jest/issues/11956
-	workerIdleMemoryLimit: '500MB',
+	maxWorkers: 1, // Make it use worker (that can be killed and restarted)
+	logHeapUsage: true, // To debug when out-of-memory happens on CI
+	workerIdleMemoryLimit: '1GiB', // Limit the worker to 1GB (GitHub Workflows dies at 2GB)
 };
