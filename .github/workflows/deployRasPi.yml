@@ -21,7 +21,7 @@ jobs:
           script: |
             echo "START🚀"
             echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S systemctl stop misskey
-            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo su misskey
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S su misskey
             echo $(whoami)
             cd ~/usuyukey
             git fetch
