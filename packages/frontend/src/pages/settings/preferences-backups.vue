@@ -422,7 +422,6 @@ onUnmounted(() => {
 definePageMetadata(computed(() => ({
 	title: ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
-	bg: 'var(--bg)',
 })));
 </script>
 
