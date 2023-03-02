@@ -215,5 +215,5 @@ module.exports = {
 	// https://github.com/facebook/jest/issues/11956
 	maxWorkers: 1,
 	logHeapUsage: true,
-	workerIdleMemoryLimit: 0.5,
+	workerIdleMemoryLimit: '500MB',
 };
