@@ -21,18 +21,13 @@ jobs:
           script: |
             echo "START🚀"
             echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S systemctl stop misskey
-            echo "Change User To Misskey🍮"
-            sudo su misskey
-            echo "ユーザーは$(whoami)"
-            cd ~/usuyukey
-            git fetch
-            git reset --hard origin/usuyukey-master@v13
-            git submodule update --init --recursive
-            sed -i -e "s/\(\"version\": \".*\)\(\"\)/\\1-usuyukey-${{ secrets.USUYUKEY_VERSION }}\2/" package.json
-            pnpm install
-            pnpm clean
-            NODE_ENV=production pnpm build
-            pnpm migrate
-            exit
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && git fetch'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && git reset --hard origin/usuyukey-master@v13'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && git submodule update --init --recursive'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && sed -i -e "s/\(\"version\": \".*\)\(\"\)/\\1-usuyukey-${{ secrets.USUYUKEY_VERSION }}\2/" package.json'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && pnpm install'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && pnpm clean'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && NODE_ENV=production pnpm build'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && NODE_ENV=production pnpm migrate'
             sudo systemctl restart misskey
             echo "DONE🥳"
