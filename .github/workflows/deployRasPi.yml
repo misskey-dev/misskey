@@ -25,9 +25,9 @@ jobs:
             sudo -u misskey sh -c 'cd /home/misskey/usuyukey && git reset --hard origin/usuyukey-master@v13'
             sudo -u misskey sh -c 'cd /home/misskey/usuyukey && git submodule update --init --recursive'
             sudo -u misskey sh -c 'cd /home/misskey/usuyukey && sed -i -e "s/\(\"version\": \".*\)\(\"\)/\\1-usuyukey-${{ secrets.USUYUKEY_VERSION }}\2/" package.json'
-            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && pnpm install'
-            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && pnpm clean'
-            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && NODE_ENV=production pnpm build'
-            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && NODE_ENV=production pnpm migrate'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && /home/misskey/.asdf/shims/pnpm install'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && /home/misskey/.asdf/shims/pnpm clean'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && NODE_ENV=production /home/misskey/.asdf/shims/pnpm build'
+            sudo -u misskey sh -c 'cd /home/misskey/usuyukey && NODE_ENV=production /home/misskey/.asdf/shims/pnpm migrate'
             sudo systemctl restart misskey
             echo "DONE🥳"
