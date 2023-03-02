@@ -103,6 +103,8 @@ renoted: "Renoté !"
 cantRenote: "Ce message ne peut pas être renoté."
 cantReRenote: "Impossible de renoter une Renote."
 quote: "Citer"
+inChannelRenote: "Renoter dans le canal"
+inChannelQuote: "Citer dans le canal"
 pinnedNote: "Note épinglée"
 pinned: "Épingler sur le profil"
 you: "Vous"
@@ -129,6 +131,7 @@ unblockConfirm: "Êtes-vous sûr·e de vouloir débloquer ce compte ?"
 suspendConfirm: "Êtes-vous sûr·e de vouloir suspendre ce compte ?"
 unsuspendConfirm: "Êtes-vous sûr·e de vouloir annuler la suspension de ce compte ?"
 selectList: "Sélectionner une liste"
+selectChannel: "Sélectionner un canal"
 selectAntenna: "Sélectionner une antenne"
 selectWidget: "Sélectionner un widget"
 editWidgets: "Modifier les widgets"
@@ -898,6 +901,17 @@ show: "Affichage"
 neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
 color: "Couleur"
+_achievements:
+  _types:
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+    _login1000:
+      flavor: "Merci d'utiliser Misskey !"
+    _markedAsCat:
+      title: "Je suis un chat"
+      flavor: "Je n'ai pas encore de nom"
+    _following50:
+      title: "Beaucoup d'amis"
 _role:
   priority: "Priorité"
   _priority:
@@ -1121,6 +1135,7 @@ _ago:
   weeksAgo: "Il y a {n} semaines"
   monthsAgo: "Il y a {n} mois"
   yearsAgo: "Il y a {n} ans"
+  invalid: "Il n'y a rien à voir ici"
 _time:
   second: "s"
   minute: "min"

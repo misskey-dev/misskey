@@ -42,6 +42,7 @@ import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, o
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
 import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
+import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
@@ -106,6 +107,12 @@ const {
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
+
+const visibility = useDocumentVisibility();
+
+let isPausingUpdate = false;
+let timerForSetPause: number | null = null;
+const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 // 先頭が表示されているかどうかを検出
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
@@ -279,6 +286,28 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
+const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
+
+watch(visibility, () => {
+	if (visibility.value === 'hidden') {
+		timerForSetPause = window.setTimeout(() => {
+			isPausingUpdate = true;
+			timerForSetPause = null;
+		},
+		BACKGROUND_PAUSE_WAIT_SEC * 1000);
+	} else { // 'visible'
+		if (timerForSetPause) {
+			clearTimeout(timerForSetPause);
+			timerForSetPause = null;
+		} else {
+			isPausingUpdate = false;
+			if (isTop()) {
+				executeQueue();
+			}
+		}
+	}
+});
+
 const prepend = (item: MisskeyEntity): void => {
 	// 初回表示時はunshiftだけでOK
 	if (!rootEl) {
@@ -286,9 +315,7 @@ const prepend = (item: MisskeyEntity): void => {
 		return;
 	}
 
-	const isTop = isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
-
-	if (isTop) unshiftItems([item]);
+	if (isTop() && !isPausingUpdate) unshiftItems([item]);
 	else prependQueue(item);
 };
 
@@ -357,6 +384,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+	if (timerForSetPause) {
+		clearTimeout(timerForSetPause);
+		timerForSetPause = null;
+	}
 	scrollObserver.disconnect();
 });
 

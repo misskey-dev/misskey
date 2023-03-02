@@ -1,9 +1,9 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div v-if="channel">
-			<div class="wpgynlbz _panel _margin" :class="{ hide: !showBanner }">
+		<div v-if="channel && tab === 'timeline'" class="_gaps">
+			<div class="wpgynlbz _panel" :class="{ hide: !showBanner }">
 				<XChannelFollowButton :channel="channel" :full="true" class="subscribe"/>
 				<button class="_button toggle" @click="() => showBanner = !showBanner">
 					<template v-if="showBanner"><i class="ti ti-chevron-up"></i></template>
@@ -24,9 +24,12 @@
 			</div>
 
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
-			<MkPostForm v-if="$i" :channel="channel" class="post-form _panel _margin" fixed :autofocus="deviceKind === 'desktop'"/>
+			<MkPostForm v-if="$i" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
-			<MkTimeline :key="channelId" class="_margin" src="channel" :channel="channelId" @before="before" @after="after"/>
+			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after"/>
+		</div>
+		<div v-else-if="tab === 'featured'">
+			<MkNotes :pagination="featuredPagination"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -43,6 +46,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
+import MkNotes from '@/components/MkNotes.vue';
 
 const router = useRouter();
 
@@ -50,15 +54,17 @@ const props = defineProps<{
 	channelId: string;
 }>();
 
+let tab = $ref('timeline');
 let channel = $ref(null);
 let showBanner = $ref(true);
-const pagination = {
-	endpoint: 'channels/timeline' as const,
+const featuredPagination = $computed(() => ({
+	endpoint: 'notes/featured' as const,
 	limit: 10,
-	params: computed(() => ({
+	offsetMode: true,
+	params: {
 		channelId: props.channelId,
-	})),
-};
+	},
+}));
 
 watch(() => props.channelId, async () => {
 	channel = await os.api('channels/show', {
@@ -76,7 +82,15 @@ const headerActions = $computed(() => channel && channel.userId ? [{
 	handler: edit,
 }] : null);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	key: 'timeline',
+	title: i18n.ts.timeline,
+	icon: 'ti ti-home',
+}, {
+	key: 'featured',
+	title: i18n.ts.featured,
+	icon: 'ti ti-bolt',
+}]);
 
 definePageMetadata(computed(() => channel ? {
 	title: channel.name,
