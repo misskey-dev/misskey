@@ -1,3 +1,4 @@
+import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
 import Redis from 'ioredis';
 import { DataSource } from 'typeorm';
@@ -59,12 +60,11 @@ export class GlobalModule implements OnApplicationShutdown {
 	async onApplicationShutdown(signal: string): Promise<void> {
 		if (process.env.NODE_ENV === 'test') {
 			// XXX:
-			// Misskey has asynchronous postgres/redis connections that are not awaited.
-			// Shutting down the existing connections causes errors on Jest.
-			// This can cause intermittent test failures as there's no promise that
-			// those connections will finish before the next test starts.
-			// See also the comment for `cache` in packages/backend/src/postgres.ts
-			return;
+			// Shutting down the existing connections causes errors on Jest as
+			// Misskey has asynchronous postgres/redis connections that are not
+			// awaited.
+			// Let's wait for some random time for them to finish.
+			await setTimeout(5000);
 		}
 		await Promise.all([
 			this.db.destroy(),
