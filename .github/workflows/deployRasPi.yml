@@ -20,7 +20,7 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             echo "START🚀"
-            echo ${{ secrets.SERVER_USER_PASSWORD }} | sudo systemctl stop misskey
+            echo ${{ secrets.SERVER_USER_PASSWORD }} | sudo -S systemctl stop misskey
             sudo su ${{ secrets.SERVER_MISSKEY_EXECUTION_USER }}
             cd ~/usuyukey
             git fetch
