@@ -2,8 +2,6 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import * as childProcess from 'child_process';
-import { SIGKILL } from 'constants';
 import WebSocket from 'ws';
 import fetch, { RequestInit } from 'node-fetch';
 import FormData from 'form-data';
@@ -11,6 +9,8 @@ import { DataSource } from 'typeorm';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+
+export { server as startServer } from '@/boot/common.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -205,19 +205,6 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status:
 	};
 };
 
-export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
-	return (done: (err?: Error) => any) => {
-		const p = childProcess.spawn('node', [_dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH },
-		});
-		callbackSpawnedProcess(p);
-		p.on('message', message => {
-			if (message === 'ok') moreProcess().then(() => done()).catch(e => done(e));
-		});
-	};
-}
-
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
@@ -236,46 +223,6 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	await db.initialize();
 
 	return db;
-}
-
-export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProcess> {
-	return new Promise((res, rej) => {
-		const t = setTimeout(() => {
-			p.kill(SIGKILL);
-			rej('timeout to start');
-		}, timeout);
-
-		const p = childProcess.spawn('node', [_dirname + '/../built/boot/index.js'], {
-			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH },
-		});
-
-		p.on('error', e => rej(e));
-
-		p.on('message', message => {
-			if (message === 'ok') {
-				clearTimeout(t);
-				res(p);
-			}
-		});
-	});
-}
-
-export function shutdownServer(p: childProcess.ChildProcess | undefined, timeout = 20 * 1000) {
-	if (p == null) return Promise.resolve('nop');
-	return new Promise((res, rej) => {
-		const t = setTimeout(() => {
-			p.kill(SIGKILL);
-			res('force exit');
-		}, timeout);
-
-		p.once('exit', () => {
-			clearTimeout(t);
-			res('exited');
-		});
-
-		p.kill();
-	});
 }
 
 export function sleep(msec: number) {

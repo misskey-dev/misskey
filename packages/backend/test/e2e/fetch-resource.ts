@@ -1,8 +1,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { startServer, signup, post, api, simpleGet, shutdownServer } from '../utils.js';
+import { startServer, signup, post, api, simpleGet } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -16,7 +16,7 @@ const JSON = 'application/json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
 
 describe('Fetch resource', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	let alice: any;
 	let alicesPost: any;
@@ -30,7 +30,7 @@ describe('Fetch resource', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	describe('Common', () => {

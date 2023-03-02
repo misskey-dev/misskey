@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { signup, api, startServer, shutdownServer } from '../utils.js';
+import { signup, api, startServer } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('API', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 	let alice: any;
 	let bob: any;
 	let carol: any;
@@ -18,7 +18,7 @@ describe('API', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	describe('General validation', () => {

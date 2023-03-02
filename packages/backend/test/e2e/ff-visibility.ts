@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { signup, api, startServer, shutdownServer, simpleGet } from '../utils.js';
+import { signup, api, startServer, simpleGet } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('FF visibility', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
@@ -19,7 +19,7 @@ describe('FF visibility', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	test('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {

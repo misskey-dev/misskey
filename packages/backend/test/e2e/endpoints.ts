@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { startServer, signup, post, shutdownServer, api } from '../utils.js';
+import { startServer, signup, post, api } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Endpoints', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
@@ -17,7 +17,7 @@ describe('Endpoints', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	describe('signup', () => {
@@ -387,11 +387,11 @@ describe('Endpoints', () => {
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { async, signup, request, post, react, uploadFile, startServer, shutdownServer } from './utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
+import { async, signup, request, post, react, uploadFile, startServer } from './utils.js';
 
 describe('API: Endpoints', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 	let alice: any;
 	let bob: any;
 	let carol: any;
@@ -404,7 +404,7 @@ describe('API: Endpoints', () => {
 	});
 
 	after(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	describe('drive', () => {

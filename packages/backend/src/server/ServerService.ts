@@ -1,7 +1,7 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
-import Fastify from 'fastify';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import Fastify, { FastifyInstance } from 'fastify';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
@@ -23,8 +23,9 @@ import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 
 @Injectable()
-export class ServerService {
+export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
+	#fastify: FastifyInstance;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,11 +55,12 @@ export class ServerService {
 	}
 
 	@bindThis
-	public launch() {
+	public async launch() {
 		const fastify = Fastify({
 			trustProxy: true,
 			logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
 		});
+		this.#fastify = fastify;
 
 		// HSTS
 		// 6months (15552000sec)
@@ -203,5 +205,11 @@ export class ServerService {
 		});
 
 		fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+
+		await fastify.ready();
+	}
+
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.#fastify.close();
 	}
 }

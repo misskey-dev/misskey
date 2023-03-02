@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { signup, api, post, connectStream, startServer, shutdownServer } from '../utils.js';
+import { signup, api, post, connectStream, startServer } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Note thread mute', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
@@ -19,7 +19,7 @@ describe('Note thread mute', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	test('notes/mentions にミュートしているスレッドの投稿が含まれない', async () => {

@@ -1,18 +1,18 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { signup, api, post, startServer, shutdownServer } from '../utils.js';
+import { signup, api, post, startServer } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('API visibility', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	beforeAll(async () => {
 		p = await startServer();
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	describe('Note visibility', () => {

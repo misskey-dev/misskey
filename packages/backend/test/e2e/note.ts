@@ -1,12 +1,12 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
 import { Note } from '@/models/entities/Note.js';
-import { signup, post, uploadUrl, startServer, shutdownServer, initTestDb, api } from '../utils.js';
+import { signup, post, uploadUrl, startServer, initTestDb, api } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Note', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 	let Notes: any;
 
 	let alice: any;
@@ -21,7 +21,7 @@ describe('Note', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	test('投稿できる', async () => {

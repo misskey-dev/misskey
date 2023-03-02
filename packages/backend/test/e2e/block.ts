@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { signup, api, post, startServer, shutdownServer } from '../utils.js';
+import { signup, api, post, startServer } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Block', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	// alice blocks bob
 	let alice: any;
@@ -20,7 +20,7 @@ describe('Block', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	test('Block作成', async () => {

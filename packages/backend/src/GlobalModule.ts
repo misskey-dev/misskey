@@ -57,6 +57,15 @@ export class GlobalModule implements OnApplicationShutdown {
 	) {}
 
 	async onApplicationShutdown(signal: string): Promise<void> {
+		if (process.env.NODE_ENV === 'test') {
+			// XXX:
+			// Misskey has asynchronous postgres/redis connections that are not awaited.
+			// Shutting down the existing connections causes errors on Jest.
+			// This can cause intermittent test failures as there's no promise that
+			// those connections will finish before the next test starts.
+			// See also the comment for `cache` in packages/backend/src/postgres.ts
+			return;
+		}
 		await Promise.all([
 			this.db.destroy(),
 			this.redisClient.disconnect(),
