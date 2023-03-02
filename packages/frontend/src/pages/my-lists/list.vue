@@ -1,33 +1,30 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
-		<div>
-			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
-				<div v-if="list" class="">
-					<div class="_buttons">
-						<MkButton inline @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
-						<MkButton inline @click="renameList()">{{ i18n.ts.rename }}</MkButton>
-						<MkButton inline danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
-					</div>
+	<MkSpacer :content-max="700" :class="$style.main">
+		<div v-if="list" class="members _margin">
+			<div class="">{{ i18n.ts.members }}</div>
+			<div class="_gaps_s">
+				<div v-for="user in users" :key="user.id" :class="$style.userItem">
+					<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
+						<MkUserCardMini :user="user"/>
+					</MkA>
+					<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
 				</div>
-			</Transition>
-
-			<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
-				<div v-if="list" class="members _margin">
-					<div class="">{{ i18n.ts.members }}</div>
-					<div class="_gaps_s">
-						<div v-for="user in users" :key="user.id" :class="$style.userItem">
-							<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
-								<MkUserCardMini :user="user"/>
-							</MkA>
-							<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
-						</div>
-					</div>
-				</div>
-			</Transition>
+			</div>
 		</div>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+				<div class="_buttons">
+					<MkButton inline rounded primary @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
+					<MkButton inline rounded @click="renameList()">{{ i18n.ts.rename }}</MkButton>
+					<MkButton inline rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
+				</div>
+			</MkSpacer>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
@@ -130,6 +127,10 @@ definePageMetadata(computed(() => list ? {
 </script>
 
 <style lang="scss" module>
+.main {
+	min-height: calc(100vh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
+}
+
 .userItem {
 	display: flex;
 }
@@ -148,5 +149,11 @@ definePageMetadata(computed(() => list ? {
 	width: 32px;
 	height: 32px;
 	align-self: center;
+}
+
+.footer {
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	border-top: solid 0.5px var(--divider);
 }
 </style>
