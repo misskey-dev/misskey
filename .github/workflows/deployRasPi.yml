@@ -20,8 +20,8 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             echo "START🚀"
-            echo ${{ secrets.SERVER_USER_PASSWORD }} | sudo -S systemctl stop misskey
-            sudo su ${{ secrets.SERVER_MISSKEY_EXECUTION_USER }}
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S systemctl stop misskey
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo su ${{ secrets.SERVER_MISSKEY_EXECUTION_USER }}
             cd ~/usuyukey
             git fetch
             git reset --hard origin/usuyukey-master@v13
@@ -32,5 +32,5 @@ jobs:
             NODE_ENV=production pnpm build
             pnpm migrate
             exit
-            sudo systemctl restart misskey
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo systemctl restart misskey
             echo "DONE🥳"
