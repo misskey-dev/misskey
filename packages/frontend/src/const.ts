@@ -46,3 +46,9 @@ https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Containers
 
 export const notificationTypes = ['follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app'] as const;
 export const obsoleteNotificationTypes = ['pollVote', 'groupInvited'] as const;
+
+// なんか動かない
+//export const CURRENT_STICKY_TOP = Symbol('CURRENT_STICKY_TOP');
+//export const CURRENT_STICKY_BOTTOM = Symbol('CURRENT_STICKY_BOTTOM');
+export const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
+export const CURRENT_STICKY_BOTTOM = 'CURRENT_STICKY_BOTTOM';

@@ -289,12 +289,12 @@ function renote(viaKeyboard = false) {
 		icon: 'ti ti-repeat',
 		action: () => {
 			const el = renoteButton.value as HTMLElement | null | undefined;
-				if (el) {
-					const rect = el.getBoundingClientRect();
-					const x = rect.left + (el.offsetWidth / 2);
-					const y = rect.top + (el.offsetHeight / 2);
-					os.popup(MkRippleEffect, { x, y }, {}, 'end');
-				}
+			if (el) {
+				const rect = el.getBoundingClientRect();
+				const x = rect.left + (el.offsetWidth / 2);
+				const y = rect.top + (el.offsetHeight / 2);
+				os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			}
 				
 			os.api('notes/create', {
 				renoteId: appearNote.id,
@@ -622,9 +622,9 @@ function showReactions(): void {
 
 .showLess {
 	width: 100%;
-	margin-top: 1em;
+	margin-top: 14px;
 	position: sticky;
-	bottom: 1em;
+	bottom: calc(var(--stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {
