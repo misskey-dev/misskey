@@ -4,27 +4,29 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.manage }}</template>
-		<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
-			<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
+		<div class="_gaps_s">
+			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
+				<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-			<MkSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
+				<MkSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 
-			<MkKeyValue>
-				<template #key>{{ i18n.ts.author }}</template>
-				<template #value>{{ plugin.author }}</template>
-			</MkKeyValue>
-			<MkKeyValue>
-				<template #key>{{ i18n.ts.description }}</template>
-				<template #value>{{ plugin.description }}</template>
-			</MkKeyValue>
-			<MkKeyValue>
-				<template #key>{{ i18n.ts.permission }}</template>
-				<template #value>{{ plugin.permission }}</template>
-			</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.author }}</template>
+					<template #value>{{ plugin.author }}</template>
+				</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.description }}</template>
+					<template #value>{{ plugin.description }}</template>
+				</MkKeyValue>
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.permission }}</template>
+					<template #value>{{ plugin.permission }}</template>
+				</MkKeyValue>
 
-			<div class="_buttons">
-				<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
-				<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+				<div class="_buttons">
+					<MkButton v-if="plugin.config" inline @click="config(plugin)"><i class="ti ti-settings"></i> {{ i18n.ts.settings }}</MkButton>
+					<MkButton inline danger @click="uninstall(plugin)"><i class="ti ti-trash"></i> {{ i18n.ts.uninstall }}</MkButton>
+				</div>
 			</div>
 		</div>
 	</FormSection>

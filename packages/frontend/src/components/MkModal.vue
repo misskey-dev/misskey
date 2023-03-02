@@ -133,6 +133,7 @@ const keymap = {
 };
 
 const MARGIN = 16;
+const SCROLLBAR_THICKNESS = 16;
 
 const align = () => {
 	if (props.src == null) return;
@@ -170,15 +171,15 @@ const align = () => {
 
 	if (fixed) {
 		// 画面から横にはみ出る場合
-		if (left + width > window.innerWidth) {
-			left = window.innerWidth - width;
+		if (left + width > (window.innerWidth - SCROLLBAR_THICKNESS)) {
+			left = (window.innerWidth - SCROLLBAR_THICKNESS) - width;
 		}
 
-		const underSpace = (window.innerHeight - MARGIN) - top;
+		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - top;
 		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
-		if (top + height > (window.innerHeight - MARGIN)) {
+		if (top + height > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight = underSpace;
@@ -187,22 +188,22 @@ const align = () => {
 					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
-				top = (window.innerHeight - MARGIN) - height;
+				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height;
 			}
 		} else {
 			maxHeight = underSpace;
 		}
 	} else {
 		// 画面から横にはみ出る場合
-		if (left + width - window.pageXOffset > window.innerWidth) {
-			left = window.innerWidth - width + window.pageXOffset - 1;
+		if (left + width - window.pageXOffset > (window.innerWidth - SCROLLBAR_THICKNESS)) {
+			left = (window.innerWidth - SCROLLBAR_THICKNESS) - width + window.pageXOffset - 1;
 		}
 
-		const underSpace = (window.innerHeight - MARGIN) - (top - window.pageYOffset);
+		const underSpace = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - (top - window.pageYOffset);
 		const upperSpace = (srcRect.top - MARGIN);
 
 		// 画面から縦にはみ出る場合
-		if (top + height - window.pageYOffset > (window.innerHeight - MARGIN)) {
+		if (top + height - window.pageYOffset > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
 					maxHeight = underSpace;
@@ -211,7 +212,7 @@ const align = () => {
 					top = window.pageYOffset + ((upperSpace + MARGIN) - height);
 				}
 			} else {
-				top = (window.innerHeight - MARGIN) - height + window.pageYOffset - 1;
+				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height + window.pageYOffset - 1;
 			}
 		} else {
 			maxHeight = underSpace;
