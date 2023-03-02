@@ -21,8 +21,9 @@ jobs:
           script: |
             echo "START🚀"
             echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S systemctl stop misskey
-            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S su misskey
-            echo $(whoami)
+            echo "Change User To Misskey🍮"
+            sudo su misskey
+            echo "ユーザーは$(whoami)"
             cd ~/usuyukey
             git fetch
             git reset --hard origin/usuyukey-master@v13
@@ -33,5 +34,5 @@ jobs:
             NODE_ENV=production pnpm build
             pnpm migrate
             exit
-            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo systemctl restart misskey
+            sudo systemctl restart misskey
             echo "DONE🥳"
