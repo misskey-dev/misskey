@@ -85,8 +85,10 @@ export class ChartManagementService implements IAsyncDisposable {
 
 	async disposeAsync(): Promise<void> {
 		clearInterval(this.saveIntervalId);
-		await Promise.all(
-			this.charts.map(chart => chart.save()),
-		);
+		if (process.env.NODE_ENV !== 'test') {
+			await Promise.all(
+				this.charts.map(chart => chart.save()),
+			);
+		}
 	}
 }

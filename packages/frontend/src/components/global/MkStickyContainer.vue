@@ -32,11 +32,17 @@ const parentStickyBottom = inject<Ref<number>>(CURRENT_STICKY_BOTTOM, ref(0));
 provide(CURRENT_STICKY_BOTTOM, $$(childStickyBottom));
 
 const calc = () => {
-	childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
-	headerHeight = headerEl.offsetHeight.toString();
+	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
+	if (headerEl != null) {
+		childStickyTop = parentStickyTop.value + headerEl.offsetHeight;
+		headerHeight = headerEl.offsetHeight.toString();
+	}
 
-	childStickyBottom = parentStickyBottom.value + footerEl.offsetHeight;
-	footerHeight = footerEl.offsetHeight.toString();
+	// コンポーネントが表示されてないけどKeepAliveで残ってる場合などは null になる
+	if (footerEl != null) {
+		childStickyBottom = parentStickyBottom.value + footerEl.offsetHeight;
+		footerHeight = footerEl.offsetHeight.toString();
+	}
 };
 
 const observer = new ResizeObserver(() => {

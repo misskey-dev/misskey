@@ -41,7 +41,7 @@ export async function main(): Promise<void> {
 	await initializeGlobalServices(serviceProvider);
 
 	const serverService = getRequiredService<ServerService>(serviceProvider, DI.ServerService);
-	serverService.launch();
+	await serverService.launch();
 
 	getRequiredService<ChartManagementService>(serviceProvider, DI.ChartManagementService).start();
 	getRequiredService<JanitorService>(serviceProvider, DI.JanitorService).start();

@@ -1,5 +1,7 @@
+import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
+import { IDisposable } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
@@ -137,7 +139,9 @@ type Option = {
 };
 
 @Injectable()
-export class NoteCreateService {
+export class NoteCreateService implements IDisposable {
+	#shutdownController = new AbortController();
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -354,7 +358,10 @@ export class NoteCreateService {
 
 		// FIXME: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1115459668
 		if (!(process.env.NODE_ENV === 'test' && process.env.VITEST === 'true')) {
-			setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
+			setImmediate('post created', { signal: this.#shutdownController.signal }).then(
+				() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
+				() => { /* aborted, ignore this */ },
+			);
 		}
 
 		return note;
@@ -797,5 +804,9 @@ export class NoteCreateService {
 		);
 
 		return mentionedUsers;
+	}
+
+	dispose(): void {
+		this.#shutdownController.abort();
 	}
 }

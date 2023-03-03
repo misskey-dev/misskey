@@ -1,5 +1,7 @@
-import { Inject, Injectable } from '@/di-decorators.js';
+import { setTimeout } from 'node:timers/promises';
 import { In, IsNull, Not } from 'typeorm';
+import { IDisposable } from 'yohira';
+import { Inject, Injectable } from '@/di-decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
@@ -15,7 +17,9 @@ import { AntennaService } from './AntennaService.js';
 import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
-export class NoteReadService {
+export class NoteReadService implements IDisposable {
+	#shutdownController = new AbortController();
+
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -71,14 +75,14 @@ export class NoteReadService {
 		});
 		if (mute.map(m => m.muteeId).includes(note.userId)) return;
 		//#endregion
-	
+
 		// スレッドミュート
 		const threadMute = await this.noteThreadMutingsRepository.findOneBy({
 			userId: userId,
 			threadId: note.threadId ?? note.id,
 		});
 		if (threadMute) return;
-	
+
 		const unread = {
 			id: this.idService.genId(),
 			noteId: note.id,
@@ -88,15 +92,15 @@ export class NoteReadService {
 			noteChannelId: note.channelId,
 			noteUserId: note.userId,
 		};
-	
+
 		await this.noteUnreadsRepository.insert(unread);
-	
+
 		// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
-		setTimeout(async () => {
+		setTimeout(2000, 'unread note', { signal: this.#shutdownController.signal }).then(async () => {
 			const exist = await this.noteUnreadsRepository.findOneBy({ id: unread.id });
-	
+
 			if (exist == null) return;
-	
+
 			if (params.isMentioned) {
 				this.globalEventService.publishMainStream(userId, 'unreadMention', note.id);
 			}
@@ -106,8 +110,8 @@ export class NoteReadService {
 			if (note.channelId) {
 				this.globalEventService.publishMainStream(userId, 'unreadChannel', note.id);
 			}
-		}, 2000);
-	}	
+		}, () => { /* aborted, ignore it */ });
+	}
 
 	@bindThis
 	public async read(
@@ -124,24 +128,24 @@ export class NoteReadService {
 			},
 			select: ['followeeId'],
 		})).map(x => x.followeeId));
-	
+
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 		const readMentions: (Note | Packed<'Note'>)[] = [];
 		const readSpecifiedNotes: (Note | Packed<'Note'>)[] = [];
 		const readChannelNotes: (Note | Packed<'Note'>)[] = [];
 		const readAntennaNotes: (Note | Packed<'Note'>)[] = [];
-	
+
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {
 				readMentions.push(note);
 			} else if (note.visibleUserIds && note.visibleUserIds.includes(userId)) {
 				readSpecifiedNotes.push(note);
 			}
-	
+
 			if (note.channelId && followingChannels.has(note.channelId)) {
 				readChannelNotes.push(note);
 			}
-	
+
 			if (note.user != null) { // たぶんnullになることは無いはずだけど一応
 				for (const antenna of myAntennas) {
 					if (await this.antennaService.checkHitAntenna(antenna, note, note.user)) {
@@ -150,14 +154,14 @@ export class NoteReadService {
 				}
 			}
 		}
-	
+
 		if ((readMentions.length > 0) || (readSpecifiedNotes.length > 0) || (readChannelNotes.length > 0)) {
 			// Remove the record
 			await this.noteUnreadsRepository.delete({
 				userId: userId,
 				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id), ...readChannelNotes.map(n => n.id)]),
 			});
-	
+
 			// TODO: ↓まとめてクエリしたい
 	
 			this.noteUnreadsRepository.countBy({
@@ -194,7 +198,7 @@ export class NoteReadService {
 				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
 			});
 		}
-	
+
 		if (readAntennaNotes.length > 0) {
 			await this.antennaNotesRepository.update({
 				antennaId: In(myAntennas.map(a => a.id)),
@@ -202,14 +206,14 @@ export class NoteReadService {
 			}, {
 				read: true,
 			});
-	
+
 			// TODO: まとめてクエリしたい
 			for (const antenna of myAntennas) {
 				const count = await this.antennaNotesRepository.countBy({
 					antennaId: antenna.id,
 					read: false,
 				});
-	
+
 				if (count === 0) {
 					this.globalEventService.publishMainStream(userId, 'readAntenna', antenna);
 					this.pushNotificationService.pushNotification(userId, 'readAntenna', { antennaId: antenna.id });
@@ -223,5 +227,9 @@ export class NoteReadService {
 				}
 			});
 		}
+	}
+
+	dispose(signal?: string | undefined): void {
+		this.#shutdownController.abort();
 	}
 }
