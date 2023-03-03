@@ -236,7 +236,7 @@ describe('Note', () => {
 
 			const res = await api('/notes/timeline', {
 				withFiles: true,
-			});
+			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
@@ -256,12 +256,12 @@ describe('Note', () => {
 
 			const renoted = await api('/notes/create', {
 				renoteId: createdNote.body.createdNote.id,
-			});
+			}, alice);
 			assert.strictEqual(renoted.status, 200);
 
 			const res = await api('/notes/timeline', {
 				renote: true,
-			});
+			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
@@ -282,12 +282,12 @@ describe('Note', () => {
 			const reply = await api('/notes/create', {
 				replyId: createdNote.body.createdNote.id,
 				text: 'this is reply',
-			});
+			}, alice);
 			assert.strictEqual(reply.status, 200);
 
 			const res = await api('/notes/timeline', {
 				reply: true,
-			});
+			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
@@ -308,17 +308,17 @@ describe('Note', () => {
 			const reply = await api('/notes/create', {
 				replyId: createdNote.body.createdNote.id,
 				text: 'this is reply',
-			});
+			}, alice);
 			assert.strictEqual(reply.status, 200);
 
 			const renoted = await api('/notes/create', {
 				renoteId: reply.body.createdNote.id,
-			});
+			}, alice);
 			assert.strictEqual(renoted.status, 200);
 
 			const res = await api('/notes/timeline', {
 				renote: true,
-			});
+			}, alice);
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(Array.isArray(res.body), true);
