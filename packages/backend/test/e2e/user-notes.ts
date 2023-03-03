@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { signup, request, post, uploadUrl, startServer, shutdownServer } from '../utils.js';
+import { signup, api, post, uploadUrl, startServer } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('users/notes', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	let alice: any;
 	let jpgNote: any;
@@ -26,14 +26,14 @@ describe('users/notes', () => {
 		jpgPngNote = await post(alice, {
 			fileIds: [jpg.id, png.id],
 		});
-	}, 1000 * 30);
+	}, 1000 * 60 * 2);
 
 	afterAll(async() => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	test('ファイルタイプ指定 (jpg)', async () => {
-		const res = await request('/users/notes', {
+		const res = await api('/users/notes', {
 			userId: alice.id,
 			fileType: ['image/jpeg'],
 		}, alice);
@@ -46,7 +46,7 @@ describe('users/notes', () => {
 	});
 
 	test('ファイルタイプ指定 (jpg or png)', async () => {
-		const res = await request('/users/notes', {
+		const res = await api('/users/notes', {
 			userId: alice.id,
 			fileType: ['image/jpeg', 'image/png'],
 		}, alice);
