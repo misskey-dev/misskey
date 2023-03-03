@@ -406,7 +406,8 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
-		const fileIds = notes.flatMap(n => n.fileIds);
+		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
+		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
 		const packedFiles = await this.driveFileEntityService.packManyByIdsMap(fileIds);
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
