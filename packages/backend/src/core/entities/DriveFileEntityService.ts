@@ -267,10 +267,14 @@ export class DriveFileEntityService {
 	public async packManyByIdsMap(
 		fileIds: DriveFile['id'][],
 		options?: PackOptions,
-	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'>>> {
+	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
 		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
 		const packedFiles = await this.packMany(files, options);
-		return new Map(packedFiles.map(f => [f.id, f]));
+		const map = new Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>(packedFiles.map(f => [f.id, f]));
+		for (const id of fileIds) {
+			if (!map.has(id)) map.set(id, null);
+		}
+		return map;
 	}
 
 	@bindThis
