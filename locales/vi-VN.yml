@@ -10,7 +10,7 @@ password: "Mật khẩu"
 forgotPassword: "Quên mật khẩu"
 fetchingAsApObject: "Đang nạp dữ liệu từ Fediverse..."
 ok: "Đồng ý"
-gotIt: "Đã hiểu!"
+gotIt: "Hiểu rồi!"
 cancel: "Hủy"
 noThankYou: "Không, cảm ơn"
 enterUsername: "Nhập tên người dùng"
@@ -399,7 +399,7 @@ nUsersMentioned: "Dùng bởi {n} người"
 securityKeyAndPasskey: "Mã bảo mật・Passkey"
 securityKey: "Khóa bảo mật"
 lastUsed: "Dùng lần cuối"
-lastUsedAt: "Lần cuối sử dụng"
+lastUsedAt: "Lần cuối sử dụng: {t}"
 unregister: "Hủy đăng ký"
 passwordLessLogin: "Đăng nhập không mật khẩu"
 passwordLessLoginDescription: "Đăng nhập bằng chỉ mã bảo mật hoặc passkey, không sử dụng mật khẩu."
@@ -903,10 +903,70 @@ pushNotification: "Thông báo đẩy"
 subscribePushNotification: "Bật thông báo đẩy"
 unsubscribePushNotification: "Tắt thông báo đẩy"
 pushNotificationAlreadySubscribed: "Đang bật thông báo đẩy"
+windowMaximize: "Phóng to"
 windowRestore: "Khôi phục"
+caption: "Mô tả"
+loggedInAsBot: "Đang đăng nhập bằng tài khoản Bot"
+tools: "Công Cụ"
+cannotLoad: "Không tải được"
+numberOfProfileView: "Số lần mở hồ sơ"
 like: "Thích"
+unlike: "Bỏ lượt thích"
+numberOfLikes: "Lượt thích"
 show: "Hiển thị"
+neverShow: "Không hiển thị nữa"
+remindMeLater: "Để sau"
+didYouLikeMisskey: "Bạn có ưa thích Mískey không?"
+pleaseDonate: "Misskey là phần mềm miễn phí mà {host} đang sử dụng. Xin mong bạn quyên góp cho chúng tôi để chúng tôi có thể tiếp tục phát triển dịch vụ này. Xin cảm ơn!!"
+roles: "Vai trò"
+role: "Vai trò"
+normalUser: "Người dùng bình thường"
 color: "Màu sắc"
+_achievements:
+  _types:
+    _notes20000:
+      description: "Đã đăng bài 20,000 lần rồi"
+    _notes30000:
+      title: "ĐĂNG VỚI BÀI"
+      description: "Đã đăng bài 30,000 lần rồi"
+    _notes40000:
+      title: "Nhà xưởng dăng bài"
+      description: "Đã đăng bài 40,000 lần rồi"
+    _notes50000:
+      title: "Hàng tinh đăng bài"
+      description: "Đã đăng bài 50,000 lần rồi"
+    _notes100000:
+      flavor: "Liệu viết bài gì tầm này vậy? "
+    _login3:
+      title: "Sơ cấp I"
+      description: "Tổng số ngày đăng nhập đạt 3 ngày"
+      flavor: "Từ nay các bạn cứ xem như mình là một Misskist đó"
+    _login7:
+      title: "Sơ cấp II"
+      description: "Tổng số ngày đăng nhập đạt 7 ngày"
+      flavor: "Bạn dần quen chưa? "
+    _login15:
+      title: "Sơ cấp III"
+      description: "Tổng số ngày đăng nhập đạt 7 ngày"
+    _login30:
+      title: "Misskist cấp I"
+      description: "Tổng số ngày đăng nhập đạt 30 ngày"
+    _login60:
+      title: "Misskist cấp II"
+      description: "Tổng số ngày đăng nhập đạt 60 ngày"
+    _login100:
+      title: "Misskist cấp III"
+      description: "Tổng số ngày đăng nhập đạt 100 ngày"
+      flavor: "Người dùng này, chính vì đó là một Misskist"
+    _login200:
+      title: "Khách hàng thường xuyên cấp I"
+      description: "Tổng số ngày đăng nhập đạt 200 ngày"
+    _login300:
+      title: "Khách hàng thường xuyên cấp II"
+      description: "Tổng số ngày đăng nhập đạt 300 ngày"
+    _login400:
+      title: "Khách hàng thường xuyên cấp III"
+      description: "Tổng số ngày đăng nhập đạt 400 ngày"
 _role:
   priority: "Ưu tiên"
   _priority:
