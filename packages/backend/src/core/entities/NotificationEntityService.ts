@@ -1,18 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, NoteReactionsRepository, NotificationsRepository, User } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
-import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Packed } from '@/misc/schema.js';
 import { bindThis } from '@/decorators.js';
+import { isNotNull } from '@/misc/is-not-null.js';
+import { notificationTypes } from '@/types.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
+
+const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded'] as (typeof notificationTypes[number])[]);
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {
@@ -48,13 +50,20 @@ export class NotificationEntityService implements OnModuleInit {
 	public async pack(
 		src: Notification['id'] | Notification,
 		options: {
-			_hintForEachNotes_?: {
-				myReactions: Map<Note['id'], NoteReaction | null>;
+			_hint_?: {
+				packedNotes: Map<Note['id'], Packed<'Note'>>;
 			};
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = typeof src === 'object' ? src : await this.notificationsRepository.findOneByOrFail({ id: src });
 		const token = notification.appAccessTokenId ? await this.accessTokensRepository.findOneByOrFail({ id: notification.appAccessTokenId }) : null;
+		const noteIfNeed = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && notification.noteId != null ? (
+			options._hint_?.packedNotes != null
+				? options._hint_.packedNotes.get(notification.noteId)
+				: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
+					detail: true,
+				})
+		) : undefined;
 
 		return await awaitAll({
 			id: notification.id,
@@ -63,42 +72,9 @@ export class NotificationEntityService implements OnModuleInit {
 			isRead: notification.isRead,
 			userId: notification.notifierId,
 			user: notification.notifierId ? this.userEntityService.pack(notification.notifier ?? notification.notifierId) : null,
-			...(notification.type === 'mention' ? {
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
-			} : {}),
-			...(notification.type === 'reply' ? {
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
-			} : {}),
-			...(notification.type === 'renote' ? {
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
-			} : {}),
-			...(notification.type === 'quote' ? {
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
-			} : {}),
+			...(noteIfNeed != null ? { note: noteIfNeed } : {}),
 			...(notification.type === 'reaction' ? {
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
 				reaction: notification.reaction,
-			} : {}),
-			...(notification.type === 'pollEnded' ? {
-				note: this.noteEntityService.pack(notification.note ?? notification.noteId!, { id: notification.notifieeId }, {
-					detail: true,
-					_hint_: options._hintForEachNotes_,
-				}),
 			} : {}),
 			...(notification.type === 'achievementEarned' ? {
 				achievement: notification.achievement,
@@ -111,32 +87,32 @@ export class NotificationEntityService implements OnModuleInit {
 		});
 	}
 
+	/**
+	 * @param notifications you should join "note" property when fetch from DB, and all notifieeId should be same as meId
+	 */
 	@bindThis
 	public async packMany(
 		notifications: Notification[],
 		meId: User['id'],
 	) {
 		if (notifications.length === 0) return [];
-
-		const notes = notifications.filter(x => x.note != null).map(x => x.note!);
-		const noteIds = notes.map(n => n.id);
-		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
-		const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
-		const targets = [...noteIds, ...renoteIds];
-		const myReactions = await this.noteReactionsRepository.findBy({
-			userId: meId,
-			noteId: In(targets),
-		});
-
-		for (const target of targets) {
-			myReactionsMap.set(target, myReactions.find(reaction => reaction.noteId === target) ?? null);
+		
+		for (const notification of notifications) {
+			if (meId !== notification.notifieeId) {
+				// because we call note packMany with meId, all notifieeId should be same as meId
+				throw new Error('TRY_TO_PACK_ANOTHER_USER_NOTIFICATION');
+			}
 		}
 
-		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
+		const notes = notifications.map(x => x.note).filter(isNotNull);
+		const packedNotesArray = await this.noteEntityService.packMany(notes, { id: meId }, {
+			detail: true,
+		});
+		const packedNotes = new Map(packedNotesArray.map(p => [p.id, p]));
 
 		return await Promise.all(notifications.map(x => this.pack(x, {
-			_hintForEachNotes_: {
-				myReactions: myReactionsMap,
+			_hint_: {
+				packedNotes,
 			},
 		})));
 	}
