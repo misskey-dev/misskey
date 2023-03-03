@@ -14,7 +14,6 @@ You should also include the user name that made the change.
 
 ### Improvements
 - 時限ロール
-- プッシュ通知でカスタム絵文字リアクションを表示できるように
 - アンテナでCWも検索対象にするように
 - ノートの操作部をホバー時のみ表示するオプションを追加
 - サウンドを追加
@@ -24,6 +23,7 @@ You should also include the user name that made the change.
 - 外部メディアプロキシ使用時にアバタークロップができない問題を修正
 - fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
 - fix(server): チャンネルでミュートが正しく機能していないのを修正
+- プッシュ通知でカスタム絵文字リアクションを表示できなかった問題を修正
 
 ## 13.8.1 (2023/02/26)
 
