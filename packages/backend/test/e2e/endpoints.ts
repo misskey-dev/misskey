@@ -410,11 +410,19 @@ describe('Endpoints', () => {
 		});
 
 		test('ファイルに名前を付けられる', async () => {
+			const res = await uploadFile(alice, { name: 'Belmond.jpg' });
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.name, 'Belmond.jpg');
+		});
+
+		test('ファイルに名前を付けられるが、拡張子は正しいものになる', async () => {
 			const res = await uploadFile(alice, { name: 'Belmond.png' });
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.name, 'Belmond.png');
+			assert.strictEqual(res.body.name, 'Belmond.png.jpg');
 		});
 
 		test('ファイル無しで怒られる', async () => {
