@@ -84,10 +84,6 @@
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
-				<FormSection>
-					<template #label>Credits</template>
-					<p>Misskeyで使われる画像の一部は、許可を得て「あの子がこっちを見てるメーカー」で作成したものが含まれます。</p>
-				</FormSection>
 			</div>
 		</MkSpacer>
 	</div>

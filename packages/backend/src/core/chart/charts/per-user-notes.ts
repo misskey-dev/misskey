@@ -45,8 +45,8 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async update(user: { id: User['id'] }, note: Note, isAdditional: boolean): Promise<void> {
-		await this.commit({
+	public update(user: { id: User['id'] }, note: Note, isAdditional: boolean): void {
+		this.commit({
 			'total': isAdditional ? 1 : -1,
 			'inc': isAdditional ? 1 : 0,
 			'dec': isAdditional ? 0 : 1,
