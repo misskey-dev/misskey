@@ -2,9 +2,9 @@
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
 	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
 		<div v-if="!thin_ && narrow && props.displayMyAvatar && $i" class="_button" :class="$style.buttonsLeft" @click="openAccountMenu">
-			<MkAvatar :class="$style.avatar" :user="$i" />
+			<MkAvatar :class="$style.avatar" :user="$i"/>
 		</div>
-		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft" />
+		<div v-else-if="!thin_ && narrow && !hideTitle" :class="$style.buttonsLeft"/>
 
 		<template v-if="metadata">
 			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
@@ -19,7 +19,7 @@
 					</div>
 				</div>
 			</div>
-			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" @update:tab="key => emit('update:tab', key)" :tabs="tabs" :root-el="el" @tab-click="onTabClick"/>
+			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" :tabs="tabs" :root-el="el" @update:tab="key => emit('update:tab', key)" @tab-click="onTabClick"/>
 		</template>
 		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<XTabs :class="$style.tabs" :tab="tab" @update:tab="key => emit('update:tab', key)" :tabs="tabs" :root-el="el" @tab-click="onTabClick"/>
+		<XTabs :class="$style.tabs" :tab="tab" :tabs="tabs" :root-el="el" @update:tab="key => emit('update:tab', key)" @tab-click="onTabClick"/>
 	</div>
 </div>
 </template>
@@ -36,11 +36,11 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, inject } from 'vue';
 import tinycolor from 'tinycolor2';
+import XTabs, { Tab } from './MkPageHeader.tabs.vue';
 import { scrollToTop } from '@/scripts/scroll';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
-import XTabs, { Tab } from './MkPageHeader.tabs.vue'
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
@@ -96,7 +96,7 @@ function onTabClick(): void {
 }
 
 const calcBg = () => {
-	const rawBg = metadata?.bg || 'var(--bg)';
+	const rawBg = 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
@@ -147,10 +147,7 @@ onUnmounted(() => {
 
 	.tabs:first-child {
 		margin-left: auto;
-	}
-	.tabs:not(:first-child) {
-		padding-left: 16px;
-		mask-image: linear-gradient(90deg, rgba(0,0,0,0), rgb(0,0,0) 16px, rgb(0,0,0) 100%);
+		padding: 0 12px;
 	}
 	.tabs {
 		margin-right: auto;

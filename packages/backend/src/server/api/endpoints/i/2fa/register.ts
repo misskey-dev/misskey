@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import * as speakeasy from 'speakeasy';
+import * as OTPAuth from 'otpauth';
 import * as QRCode from 'qrcode';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserProfilesRepository } from '@/models/index.js';
@@ -42,25 +42,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Generate user's secret key
-			const secret = speakeasy.generateSecret({
-				length: 32,
-			});
+			const secret = new OTPAuth.Secret();
 
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorTempSecret: secret.base32,
 			});
 
 			// Get the data URL of the authenticator URL
-			const url = speakeasy.otpauthURL({
-				secret: secret.base32,
-				encoding: 'base32',
+			const totp = new OTPAuth.TOTP({
+				secret,
+				digits: 6,
 				label: me.username,
 				issuer: this.config.host,
 			});
-			const dataUrl = await QRCode.toDataURL(url);
+			const url = totp.toString();
+			const qr = await QRCode.toDataURL(url);
 
 			return {
-				qr: dataUrl,
+				qr,
 				url,
 				secret: secret.base32,
 				label: me.username,

@@ -246,7 +246,10 @@ export function inputText(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
+	autocomplete?: string;
 	default?: string | null;
+	minLength?: number;
+	maxLength?: number;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: string;
 }> {
@@ -257,7 +260,10 @@ export function inputText(props: {
 			input: {
 				type: props.type,
 				placeholder: props.placeholder,
+				autocomplete: props.autocomplete,
 				default: props.default,
+				minLength: props.minLength,
+				maxLength: props.maxLength,
 			},
 		}, {
 			done: result => {
@@ -271,6 +277,7 @@ export function inputNumber(props: {
 	title?: string | null;
 	text?: string | null;
 	placeholder?: string | null;
+	autocomplete?: string;
 	default?: number | null;
 }): Promise<{ canceled: true; result: undefined; } | {
 	canceled: false; result: number;
@@ -282,6 +289,7 @@ export function inputNumber(props: {
 			input: {
 				type: 'number',
 				placeholder: props.placeholder,
+				autocomplete: props.autocomplete,
 				default: props.default,
 			},
 		}, {
@@ -354,7 +362,7 @@ export function select<C = any>(props: {
 	});
 }
 
-export function success() {
+export function success(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
 		window.setTimeout(() => {
@@ -369,7 +377,7 @@ export function success() {
 	});
 }
 
-export function waiting() {
+export function waiting(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
 		popup(MkWaitingDialog, {
@@ -520,7 +528,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	width?: number;
 	viaKeyboard?: boolean;
 	onClosing?: () => void;
-}) {
+}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		let dispose;
 		popup(MkPopupMenu, {
@@ -543,7 +551,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	});
 }
 
-export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent) {
+export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent): Promise<void> {
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
@@ -561,7 +569,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	});
 }
 
-export function post(props: Record<string, any> = {}) {
+export function post(props: Record<string, any> = {}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、
@@ -595,9 +603,3 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		});
 	});
 }*/
-
-export const shownNoteIds = new Set();
-
-window.setInterval(() => {
-	shownNoteIds.clear();
-}, 1000 * 60 * 5);

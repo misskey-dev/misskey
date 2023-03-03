@@ -1,6 +1,7 @@
+import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -137,7 +138,9 @@ type Option = {
 };
 
 @Injectable()
-export class NoteCreateService {
+export class NoteCreateService implements OnApplicationShutdown {
+	#shutdownController = new AbortController();
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -313,7 +316,10 @@ export class NoteCreateService {
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
+		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
+			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
+			() => { /* aborted, ignore this */ },
+		);
 
 		return note;
 	}
@@ -755,5 +761,9 @@ export class NoteCreateService {
 		);
 
 		return mentionedUsers;
+	}
+
+	onApplicationShutdown(signal?: string | undefined) {
+		this.#shutdownController.abort();
 	}
 }

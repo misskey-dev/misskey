@@ -9,7 +9,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 
 // Defined also packages/sw/types.ts#L13
-type pushNotificationsTypes = {
+type PushNotificationsTypes = {
 	'notification': Packed<'Notification'>;
 	'unreadAntennaNote': {
 		antenna: { id: string, name: string };
@@ -22,8 +22,8 @@ type pushNotificationsTypes = {
 };
 
 // Reduce length because push message servers have character limits
-function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pushNotificationsTypes[T]): pushNotificationsTypes[T] {
-	if (body === undefined) return body;
+function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: PushNotificationsTypes[T]): PushNotificationsTypes[T] {
+	if (typeof body !== 'object') return body;
 
 	return {
 		...body,
@@ -40,7 +40,6 @@ function truncateBody<T extends keyof pushNotificationsTypes>(type: T, body: pus
 			},
 		} : {}),
 	};
-
 }
 
 @Injectable()
@@ -57,7 +56,7 @@ export class PushNotificationService {
 	}
 
 	@bindThis
-	public async pushNotification<T extends keyof pushNotificationsTypes>(userId: string, type: T, body: pushNotificationsTypes[T]) {
+	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
 		const meta = await this.metaService.fetch();
 	
 		if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;

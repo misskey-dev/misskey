@@ -51,11 +51,11 @@ export async function openClient(order: swMessageOrderType, url: string, loginId
 		return client;
 	}
 
-	return self.clients.openWindow(getUrlWithLoginId(url, loginId));
+	return globalThis.clients.openWindow(getUrlWithLoginId(url, loginId));
 }
 
 export async function findClient() {
-	const clients = await self.clients.matchAll({
+	const clients = await globalThis.clients.matchAll({
 		type: 'window',
 	});
 	for (const c of clients) {

@@ -226,7 +226,10 @@ export class FileServerService {
 			return;
 		}
 
-		if (this.config.externalMediaProxyEnabled) {
+		// アバタークロップなど、どうしてもオリジンである必要がある場合
+		const mustOrigin = 'origin' in request.query;
+
+		if (this.config.externalMediaProxyEnabled && !mustOrigin) {
 			// 外部のメディアプロキシが有効なら、そちらにリダイレクト
 
 			reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
@@ -395,7 +398,7 @@ export class FileServerService {
 				state: 'remote',
 				mime, ext,
 				path, cleanup,
-			}
+			};
 		} catch (e) {
 			cleanup();
 			throw e;
@@ -429,7 +432,7 @@ export class FileServerService {
 				url: file.uri,
 				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 				file,
-			}
+			};
 		}
 
 		const path = this.internalStorageService.resolvePath(key);
@@ -452,6 +455,6 @@ export class FileServerService {
 			mime: file.type,
 			ext: null,
 			path,
-		}
+		};
 	}
 }

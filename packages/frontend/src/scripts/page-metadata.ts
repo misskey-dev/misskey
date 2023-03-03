@@ -10,7 +10,6 @@ export type PageMetadata = {
 	icon?: string | null;
 	avatar?: misskey.entities.User | null;
 	userName?: misskey.entities.User | null;
-	bg?: string;
 };
 
 export function definePageMetadata(metadata: PageMetadata | null | Ref<PageMetadata | null> | ComputedRef<PageMetadata | null>): void {

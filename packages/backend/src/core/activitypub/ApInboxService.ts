@@ -450,9 +450,11 @@ export class ApInboxService {
 			return `skip: delete actor ${actor.uri} !== ${uri}`;
 		}
 	
-		const user = await this.usersRepository.findOneByOrFail({ id: actor.id });
-		if (user.isDeleted) {
-			this.logger.info('skip: already deleted');
+		const user = await this.usersRepository.findOneBy({ id: actor.id });
+		if (user == null) {
+			return 'skip: actor not found';
+		} else if (user.isDeleted) {
+			return 'skip: already deleted';
 		}
 	
 		const job = await this.queueService.createDeleteAccountJob(actor);

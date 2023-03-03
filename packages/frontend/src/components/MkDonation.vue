@@ -50,7 +50,7 @@ function close() {
 }
 
 function neverShow() {
-	miLocalStorage.setItem('neverShowDonationInfo', 'true')
+	miLocalStorage.setItem('neverShowDonationInfo', 'true');
 	close();
 }
 </script>

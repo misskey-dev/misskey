@@ -100,7 +100,7 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<XNotes :class="$style.tl" :no-gap="true" :pagination="pagination"/>
+				<MkNotes :class="$style.tl" :no-gap="true" :pagination="pagination"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -130,7 +130,7 @@ import { i18n } from '@/i18n';
 import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));

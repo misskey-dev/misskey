@@ -30,7 +30,7 @@
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -48,7 +48,7 @@
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
-						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
 					</div>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
@@ -161,6 +161,7 @@ import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { MenuItem } from '@/types/menu';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -250,9 +251,19 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+
 				os.api('notes/create', {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
 				});
 			},
 		}, {
@@ -271,8 +282,18 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
+			const el = renoteButton.value as HTMLElement | null | undefined;
+			if (el) {
+				const rect = el.getBoundingClientRect();
+				const x = rect.left + (el.offsetWidth / 2);
+				const y = rect.top + (el.offsetHeight / 2);
+				os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			}
+				
 			os.api('notes/create', {
 				renoteId: appearNote.id,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
 			});
 		},
 	}, {
