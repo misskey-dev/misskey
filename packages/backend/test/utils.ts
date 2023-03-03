@@ -1,85 +1,48 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import * as childProcess from 'child_process';
-import * as http from 'node:http';
-import { SIGKILL } from 'constants';
+import { readFile } from 'node:fs/promises';
+import { isAbsolute, basename } from 'node:path';
 import WebSocket from 'ws';
-import fetch from 'node-fetch';
-import FormData from 'form-data';
+import fetch, { Blob, File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
-import got, { RequestError } from 'got';
-import loadConfig from '../src/config/load.js';
-import { entities } from '@/postgres.js';
+import { entities } from '../src/postgres.js';
+import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
+export { server as startServer } from '@/boot/common.js';
 
 const config = loadConfig();
 export const port = config.port;
 
 export const api = async (endpoint: string, params: any, me?: any) => {
-	endpoint = endpoint.replace(/^\//, '');
-
-	const auth = me ? {
-		i: me.token,
-	} : {};
-
-	try {
-		const res = await got<string>(`http://localhost:${port}/api/${endpoint}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(Object.assign(auth, params)),
-			retry: {
-				limit: 0,
-			},
-		});
-
-		const status = res.statusCode;
-		const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
-
-		return {
-			status,
-			body,
-		};
-	} catch (err: unknown) {
-		if (err instanceof RequestError && err.response) {
-			const status = err.response.statusCode;
-			const body = await JSON.parse(err.response.body as string);
-
-			return {
-				status,
-				body,
-			};
-		} else {
-			throw err;
-		}
-	}
+	const normalized = endpoint.replace(/^\//, '');
+	return await request(`api/${normalized}`, params, me);
 };
 
-export const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
+const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
 	const auth = me ? {
 		i: me.token,
 	} : {};
 
-	const res = await fetch(`http://localhost:${port}/${path}`, {
+	const res = await relativeFetch(path, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(Object.assign(auth, params)),
+		redirect: 'manual',
 	});
 
 	const status = res.status;
-	const body = res.status === 200 ? await res.json().catch() : null;
+	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+		? await res.json()
+		: null;
 
 	return {
 		body, status,
 	};
+};
+
+const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
+	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
 export const signup = async (params?: any): Promise<any> => {
@@ -110,30 +73,46 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 	}, user);
 };
 
+interface UploadOptions {
+	/** Optional, absolute path or relative from ./resources/ */
+	path?: string | URL;
+	/** The name to be used for the file upload */
+	name?: string;
+	/** A Blob can be provided instead of path */
+	blob?: Blob;
+}
+
 /**
  * Upload file
  * @param user User
- * @param _path Optional, absolute path or relative from ./resources/
  */
-export const uploadFile = async (user: any, _path?: string): Promise<any> => {
-	const absPath = _path == null ? `${_dirname}/resources/Lenna.jpg` : path.isAbsolute(_path) ? _path : `${_dirname}/resources/${_path}`;
+export const uploadFile = async (user: any, { path, name, blob }: UploadOptions = {}): Promise<any> => {
+	const absPath = path == null
+		? new URL('resources/Lenna.jpg', import.meta.url)
+		: isAbsolute(path.toString())
+			? new URL(path)
+			: new URL(path, new URL('resources/', import.meta.url));
 
-	const formData = new FormData() as any;
+	const formData = new FormData();
 	formData.append('i', user.token);
-	formData.append('file', fs.createReadStream(absPath));
+	formData.append('file', blob ??
+		new File([await readFile(absPath)], basename(absPath.toString())));
 	formData.append('force', 'true');
+	if (name) {
+		formData.append('name', name);
+	}
 
-	const res = await got<string>(`http://localhost:${port}/api/drive/files/create`, {
+	const res = await relativeFetch('api/drive/files/create', {
 		method: 'POST',
 		body: formData,
-		retry: {
-			limit: 0,
-		},
 	});
 
-	const body = res.statusCode !== 204 ? await JSON.parse(res.body) : null;
+	const body = res.status !== 204 ? await res.json() : null;
 
-	return body;
+	return {
+		status: res.status,
+		body,
+	};
 };
 
 export const uploadUrl = async (user: any, url: string) => {
@@ -160,7 +139,7 @@ export const uploadUrl = async (user: any, url: string) => {
 
 export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
-		const ws = new WebSocket(`ws://localhost:${port}/streaming?i=${user.token}`);
+		const ws = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${user.token}`);
 
 		ws.on('open', () => {
 			ws.on('message', data => {
@@ -187,7 +166,7 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 
 export const waitFire = async (user: any, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
 	return new Promise<boolean>(async (res, rej) => {
-		let timer: NodeJS.Timeout;
+		let timer: NodeJS.Timeout | null = null;
 
 		let ws: WebSocket;
 		try {
@@ -219,41 +198,25 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status?: number, type?: string, location?: string }> => {
-	// node-fetchだと3xxを取れない
-	return await new Promise((resolve, reject) => {
-		const req = http.request(`http://localhost:${port}${path}`, {
-			headers: {
-				Accept: accept,
-			},
-		}, res => {
-			if (res.statusCode! >= 400) {
-				reject(res);
-			} else {
-				resolve({
-					status: res.statusCode,
-					type: res.headers['content-type'],
-					location: res.headers.location,
-				});
-			}
-		});
-
-		req.end();
+export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status: number, body: any, type: string | null, location: string | null }> => {
+	const res = await relativeFetch(path, {
+		headers: {
+			Accept: accept,
+		},
+		redirect: 'manual',
 	});
-};
 
-export function launchServer(callbackSpawnedProcess: (p: childProcess.ChildProcess) => void, moreProcess: () => Promise<void> = async () => {}) {
-	return (done: (err?: Error) => any) => {
-		const p = childProcess.spawn('node', [_dirname + '/../index.js'], {
-			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH },
-		});
-		callbackSpawnedProcess(p);
-		p.on('message', message => {
-			if (message === 'ok') moreProcess().then(() => done()).catch(e => done(e));
-		});
+	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+		? await res.json()
+		: null;
+
+	return {
+		status: res.status,
+		body,
+		type: res.headers.get('content-type'),
+		location: res.headers.get('location'),
 	};
-}
+};
 
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
@@ -273,46 +236,6 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	await db.initialize();
 
 	return db;
-}
-
-export function startServer(timeout = 60 * 1000): Promise<childProcess.ChildProcess> {
-	return new Promise((res, rej) => {
-		const t = setTimeout(() => {
-			p.kill(SIGKILL);
-			rej('timeout to start');
-		}, timeout);
-
-		const p = childProcess.spawn('node', [_dirname + '/../built/index.js'], {
-			stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
-			env: { NODE_ENV: 'test', PATH: process.env.PATH },
-		});
-
-		p.on('error', e => rej(e));
-
-		p.on('message', message => {
-			if (message === 'ok') {
-				clearTimeout(t);
-				res(p);
-			}
-		});
-	});
-}
-
-export function shutdownServer(p: childProcess.ChildProcess | undefined, timeout = 20 * 1000) {
-	if (p == null) return Promise.resolve('nop');
-	return new Promise((res, rej) => {
-		const t = setTimeout(() => {
-			p.kill(SIGKILL);
-			res('force exit');
-		}, timeout);
-
-		p.once('exit', () => {
-			clearTimeout(t);
-			res('exited');
-		});
-
-		p.kill();
-	});
 }
 
 export function sleep(msec: number) {

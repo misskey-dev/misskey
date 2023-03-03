@@ -26,6 +26,9 @@
 					<!-- eslint-disable-next-line vue/no-v-html -->
 					<div class="desc" v-html="meta.description || i18n.ts.headlineMisskey"></div>
 				</div>
+				<div v-if="instance.disableRegistration" class="warn">
+					<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
+				</div>
 				<div class="action _gaps_s">
 					<MkButton full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
 					<MkButton full rounded @click="exploreOtherServers()">{{ i18n.ts.exploreOtherServers }}</MkButton>
@@ -62,6 +65,7 @@ import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { instanceName } from '@/config';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -247,6 +251,10 @@ function exploreOtherServers() {
 
 				> .about {
 					padding: 0 32px;
+				}
+
+				> .warn {
+					padding: 32px 32px 0 32px;
 				}
 
 				> .action {
