@@ -12,15 +12,15 @@ export const soundConfigStore = markRaw(new Storage('sound', {
 	},
 	sound_note: {
 		where: 'account',
-		default: { type: 'syuilo/down', volume: 1 }
+		default: { type: 'syuilo/n-aec', volume: 1 }
 	},
 	sound_noteMy: {
 		where: 'account',
-		default: { type: 'syuilo/up', volume: 1 }
+		default: { type: 'syuilo/n-cea', volume: 1 }
 	},
 	sound_notification: {
 		where: 'account',
-		default: { type: 'syuilo/pope2', volume: 1 }
+		default: { type: 'syuilo/n-ea', volume: 1 }
 	},
 	sound_chat: {
 		where: 'account',
