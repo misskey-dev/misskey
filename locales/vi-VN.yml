@@ -1039,6 +1039,8 @@ _achievements:
     _followers10:
       title: "FOLLOW ME!!"
       description: "Người theo dõi bạn vượt lên 10 người"
+    _followers500:
+      title: "Trạm phát sóng"
     _followers1000:
       title: "Người có tầm ảnh hưởng"
       description: "Người theo dõi bạn vượt lên 1000 người"
@@ -1382,6 +1384,7 @@ _2fa:
   step3: "Nhập mã token do ứng dụng của bạn cung cấp để hoàn tất thiết lập."
   step4: "Kể từ bây giờ, những lần đăng nhập trong tương lai sẽ yêu cầu mã token đăng nhập đó."
   securityKeyInfo: "Bên cạnh xác minh bằng vân tay hoặc mã PIN, bạn cũng có thể thiết lập xác minh thông qua khóa bảo mật phần cứng hỗ trợ FIDO2 để bảo mật hơn nữa cho tài khoản của mình."
+  removeKey: "Xóa mã bảo mật"
   removeKeyConfirm: "Xóa bản sao lưu {name}?"
   renewTOTP: "Cài đặt lại ứng dụng xác thực"
   renewTOTPConfirm: "Mã xác nhận cũ của ứng dụng xác thực không thể sử dụng được nữa"
