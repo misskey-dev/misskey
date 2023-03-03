@@ -906,6 +906,8 @@ pushNotification: "Thông báo đẩy"
 subscribePushNotification: "Bật thông báo đẩy"
 unsubscribePushNotification: "Tắt thông báo đẩy"
 pushNotificationAlreadySubscribed: "Đang bật thông báo đẩy"
+sendPushNotificationReadMessage: "Xóa thông báo đẩy sau khi đọc thông báo hay tin nhắn"
+sendPushNotificationReadMessageCaption: "Thông báo như {emptyPushNotificationMessage} sẽ hiển thị trong giây phút. Tiêu tốn pin của máy bạn có thể tăng lên hơn nữa."
 windowMaximize: "Phóng to"
 windowRestore: "Khôi phục"
 caption: "Mô tả"
@@ -930,9 +932,24 @@ manageCustomEmojis: "Quản lý CustomEmoji"
 cannotPerformTemporary: "Tạm thời không sử dụng được"
 cannotPerformTemporaryDescription: "Tạm thời không sử dụng được vì lần số điều kiện quá giới hạn. Thử lại sau mọt lát nữa."
 achievements: "Thành tích"
+gotInvalidResponseError: "Không nhận được trả lời chủ máy"
+gotInvalidResponseErrorDescription: "Chủ máy có lẻ ngừng hoạt động hoặc bảo trí. Thử lại sau một lát nữa. "
+thisPostMayBeAnnoying: "Bạn đăng bài này có thể làm phiền cho người ta."
+thisPostMayBeAnnoyingHome: "Đăng trên trang chính"
+thisPostMayBeAnnoyingCancel: "Từ chối"
+thisPostMayBeAnnoyingIgnore: "Đăng bài để nguyên"
+collapseRenotes: "Không hiển thị bài viết đã từng xem"
+internalServerError: "Lỗi trong chủ máy"
+internalServerErrorDescription: "Trong chủ máy lỗi bất ngờ xảy ra"
+copyErrorInfo: "Sao chép thông tin lỗi"
+joinThisServer: "Đăng ký trên chủ máy này"
+exploreOtherServers: "Tìm chủ máy khác"
+letsLookAtTimeline: "Thử xem Timeline"
 _achievements:
+  earnedAt: "Ngày thu nhận"
   _types:
     _notes1:
+      title: "just setting up my msky"
       description: "Lần đầu tiên đăng bài"
       flavor: "Chúc bạn trên Miskey vui vẻ nha!!"
     _notes10:
@@ -1022,6 +1039,68 @@ _achievements:
     _followers10:
       title: "FOLLOW ME!!"
       description: "Người theo dõi bạn vượt lên 10 người"
+    _followers1000:
+      title: "Người có tầm ảnh hưởng"
+      description: "Người theo dõi bạn vượt lên 1000 người"
+    _collectAchievements30:
+      title: "Người sưu tập thành tích"
+      description: "Vừa lấy thành tích hơn 30 cái"
+    _viewAchievements3min:
+      title: "Yêu Thành tích"
+      description: "Ngắm danh sách thành tích đến tận hơn 3 phút"
+    _iLoveMisskey:
+      title: "Tôi Yêu Misskey"
+      description: "Đăng lời nói \"I ❤ #Misskey\""
+      flavor: "Xin chân thành cảm ơn bạn đã sử dụng Misskey!!  by Đội ngũ phát triển"
+    _foundTreasure:
+      title: "Tìm kiếm kho báu"
+      description: "Tìm thấy được những kho báu cất giấu"
+    _client30min:
+      title: "Giải lao xỉu"
+    _noteDeletedWithin1min:
+      title: "Xem như không có gì đâu nha"
+    _postedAtLateNight:
+      title: "Loài ăn đêm"
+      description: "Đăng bài trong đêm khuya "
+    _postedAt0min0sec:
+      title: "Tín hiệu báo giờ"
+      description: "Đăng bài vào 0 phút 0 giây"
+      flavor: "Piiiiiii ĐÂY LÀ TIẾNG NÓI VIỆT NAM"
+    _selfQuote:
+      title: "Nói đến bản thân"
+      description: "Trích dẫn bài viết của mình"
+    _htl20npm:
+      title: "Timeline trôi như con sông"
+      description: "Timeline trang chính tốc độ vượt lên 20npm"
+    _viewInstanceChart:
+      title: "Nhà phân tích"
+      description: "Xem biểu đồ của chủ máy"
+    _outputHelloWorldOnScratchpad:
+      title: "Chào thế giới!"
+    _open3windows:
+      title: "Nhiều cửa sổ"
+      description: "Mở cửa sổ hơn 3 cửa sổ"
+    _reactWithoutRead:
+      title: "Bài này bạn đọc kỹ chứ? "
+      description: "Phản hồi trong vọng 3 giây sau bài viết có hơn 100 ký tự mới được đăng lên"
+    _clickedClickHere:
+      title: "Bấm đây"
+      description: "Bấm chỗ này"
+    _justPlainLucky:
+      title: "Chỉ là một cuộc máy mắn"
+      description: "Mỗi 10 giây thu nhận được với tỷ lệ  0.005%"
+    _setNameToSyuilo:
+      title: "Ngưỡng mộ với vị thần"
+      description: "Đạt tên là syuilo"
+    _loggedInOnBirthday:
+      title: "Sinh nhật vủi vẻ"
+      description: "Đăng nhập vào ngày sinh"
+    _loggedInOnNewYearsDay:
+      title: "Chức mừng năm mới"
+      description: "Đăng nhập vào Tết Nguyên đàn dương lịch"
+      flavor: "Chúc bạn năm mới AN KHANG THỊNH VƯỢNG, VẠN SỰ NHƯ Ý!!"
+    _cookieClicked:
+      flavor: "Bạn nhầm phầm mềm chứ?"
 _role:
   priority: "Ưu tiên"
   _priority:
@@ -1029,7 +1108,14 @@ _role:
     middle: "Vừa"
     high: "Cao"
   _options:
+    gtlAvailable: "Xem Timeline xã hội"
+    ltlAvailable: "Xem Timeline trong máy chủ này"
+    canPublicNote: "Cho phép đăng bài công khai"
     canManageCustomEmojis: "Quản lý CustomEmoji"
+    driveCapacity: "Dữ liệu Drive"
+    pinMax: "Giới hạn ghim bài viết"
+    antennaMax: "Giới hạn tạo ăng ten"
+    canHideAds: "Tắt quảng cáo"
   _condition:
     createdMoreThan: "Trôi qua ～ sau khi lập tài khoản"
     followersLessThanOrEq: "Người theo dõi ít hơn ～"
@@ -1434,7 +1520,7 @@ _postForm:
     b: "Hôm nay bạn có gì vui?"
     c: "Bạn đang nghĩ gì?"
     d: "Bạn muốn nói gì?"
-    e: "Bắt đầu viết..."
+    e: "Cứ viết trên đây"
     f: "Đang chờ bạn viết..."
 _profile:
   name: "Tên"
