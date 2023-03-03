@@ -1182,7 +1182,7 @@ _achievements:
     _loggedInOnNewYearsDay:
       title: "Happy New Year!"
       description: "Logged in on the first day of the year"
-      flavor: "To another great year on this instance"
+      flavor: "To another great year!"
     _cookieClicked:
       title: "A game in which you click cookies"
       description: "Clicked the cookie"
