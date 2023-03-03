@@ -82,6 +82,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.leftJoinAndSelect('note.channel', 'channel');
+
+			if (me) {
+				this.queryService.generateMutedUserQuery(query, me);
+				this.queryService.generateMutedNoteQuery(query, me);
+				this.queryService.generateBlockedUserQuery(query, me);
+			}
 			//#endregion
 
 			const timeline = await query.take(ps.limit).getMany();
