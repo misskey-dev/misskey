@@ -22,6 +22,7 @@ services:
   redis:
     restart: always
     image: redis:7.0.9-alpine
+    init: true
     networks:
       - internal_network
     volumes:
