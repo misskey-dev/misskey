@@ -24,7 +24,7 @@
 			</div>
 
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
-			<MkPostForm v-if="$i" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
+			<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
 			<MkTimeline :key="channelId" src="channel" :channel="channelId" @before="before" @after="after"/>
 		</div>
@@ -32,6 +32,15 @@
 			<MkNotes :pagination="featuredPagination"/>
 		</div>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+				<div class="_buttonsCenter">
+					<MkButton inline rounded primary gradate @click="openPostForm()"><i class="ti ti-pencil"></i> {{ i18n.ts.postToTheChannel }}</MkButton>
+				</div>
+			</MkSpacer>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
@@ -48,6 +57,8 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import MkNotes from '@/components/MkNotes.vue';
 import { url } from '@/config';
+import MkButton from '@/components/MkButton.vue';
+import { defaultStore } from '@/store';
 
 const router = useRouter();
 
@@ -75,6 +86,14 @@ watch(() => props.channelId, async () => {
 
 function edit() {
 	router.push(`/channels/${channel.id}/edit`);
+}
+
+function openPostForm() {
+	os.post({
+		channel: {
+			id: channel.channelId,
+		},
+	});
 }
 
 const headerActions = $computed(() => channel && channel.userId ? [{
@@ -108,6 +127,14 @@ definePageMetadata(computed(() => channel ? {
 	icon: 'ti ti-device-tv',
 } : null));
 </script>
+
+<style lang="scss" module>
+.footer {
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	border-top: solid 0.5px var(--divider);
+}
+</style>
 
 <style lang="scss" scoped>
 .wpgynlbz {

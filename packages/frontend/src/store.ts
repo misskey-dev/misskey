@@ -197,6 +197,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	showFixedPostFormInChannel: {
+		where: 'device',
+		default: false,
+	},
 	enableInfiniteScroll: {
 		where: 'device',
 		default: true,
