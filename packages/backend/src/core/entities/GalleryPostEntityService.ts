@@ -41,8 +41,7 @@ export class GalleryPostEntityService {
 			title: post.title,
 			description: post.description,
 			fileIds: post.fileIds,
-			// TODO: packMany causes N+1 queries
-			files: this.driveFileEntityService.packManyByIds(post.fileIds),
+			files: this.driveFileEntityService.packMany(post.fileIds),
 			tags: post.tags.length > 0 ? post.tags : undefined,
 			isSensitive: post.isSensitive,
 			likedCount: post.likedCount,

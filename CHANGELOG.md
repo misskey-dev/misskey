@@ -10,6 +10,11 @@
 You should also include the user name that made the change.
 -->
 
+## 13.9.1 (2023/03/03)
+
+### Bugfixes
+- ノートに添付したファイルが表示されない場合があるのを修正
+
 ## 13.9.0 (2023/03/03)
 
 ### Improvements

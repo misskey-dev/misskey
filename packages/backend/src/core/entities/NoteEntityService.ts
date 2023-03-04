@@ -11,7 +11,6 @@ import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -258,7 +257,6 @@ export class NoteEntityService implements OnModuleInit {
 			skipHide?: boolean;
 			_hint_?: {
 				myReactions: Map<Note['id'], NoteReaction | null>;
-				packedFiles: Map<Note['fileIds'][number], Packed<'DriveFile'>>;
 			};
 		},
 	): Promise<Packed<'Note'>> {
@@ -286,7 +284,6 @@ export class NoteEntityService implements OnModuleInit {
 		const reactionEmojiNames = Object.keys(note.reactions)
 			.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
-		const packedFiles = options?._hint_?.packedFiles;
 
 		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
@@ -307,7 +304,7 @@ export class NoteEntityService implements OnModuleInit {
 			emojis: host != null ? this.customEmojiService.populateEmojis(note.emojis, host) : undefined,
 			tags: note.tags.length > 0 ? note.tags : undefined,
 			fileIds: note.fileIds,
-			files: packedFiles != null ? note.fileIds.map(fi => packedFiles.get(fi)).filter(isNotNull) : this.driveFileEntityService.packManyByIds(note.fileIds),
+			files: this.driveFileEntityService.packMany(note.fileIds),
 			replyId: note.replyId,
 			renoteId: note.renoteId,
 			channelId: note.channelId ?? undefined,
@@ -391,14 +388,11 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
-		const fileIds = notes.flatMap(n => n.fileIds);
-		const packedFiles = await this.driveFileEntityService.packManyByIdsMap(fileIds);
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,
 			_hint_: {
 				myReactions: myReactionsMap,
-				packedFiles,
 			},
 		})));
 	}
