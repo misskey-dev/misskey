@@ -234,7 +234,7 @@ describe('Note', () => {
 
 			assert.strictEqual(createdNote.status, 200);
 
-			const res = await api('/notes/timeline', {
+			const res = await api('/notes', {
 				withFiles: true,
 			}, alice);
 
@@ -259,7 +259,7 @@ describe('Note', () => {
 			}, alice);
 			assert.strictEqual(renoted.status, 200);
 
-			const res = await api('/notes/timeline', {
+			const res = await api('/notes', {
 				renote: true,
 			}, alice);
 
@@ -285,7 +285,7 @@ describe('Note', () => {
 			}, alice);
 			assert.strictEqual(reply.status, 200);
 
-			const res = await api('/notes/timeline', {
+			const res = await api('/notes', {
 				reply: true,
 			}, alice);
 
@@ -316,7 +316,7 @@ describe('Note', () => {
 			}, alice);
 			assert.strictEqual(renoted.status, 200);
 
-			const res = await api('/notes/timeline', {
+			const res = await api('/notes', {
 				renote: true,
 			}, alice);
 
