@@ -47,6 +47,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import MkNotes from '@/components/MkNotes.vue';
+import { url } from '@/config';
 
 const router = useRouter();
 
@@ -77,6 +78,16 @@ function edit() {
 }
 
 const headerActions = $computed(() => channel && channel.userId ? [{
+	icon: 'ti ti-share',
+	text: i18n.ts.share,
+	handler: async (): Promise<void> => {
+		navigator.share({
+			title: channel.name,
+			text: channel.description,
+			url: `${url}/channels/${channel.id}`,
+		});
+	},
+}, {
 	icon: 'ti ti-settings',
 	text: i18n.ts.edit,
 	handler: edit,

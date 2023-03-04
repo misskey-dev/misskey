@@ -26,6 +26,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { url } from '@/config';
 
 const props = defineProps<{
 	clipId: string,
@@ -82,7 +83,17 @@ const headerActions = $computed(() => clip && isOwned ? [{
 			...result,
 		});
 	},
-}, {
+}, ...(clip.isPublic ? [{
+	icon: 'ti ti-share',
+	text: i18n.ts.share,
+	handler: async (): Promise<void> => {
+		navigator.share({
+			title: clip.name,
+			text: clip.description,
+			url: `${url}/clips/${clip.id}`,
+		});
+	},
+}] : []), {
 	icon: 'ti ti-trash',
 	text: i18n.ts.delete,
 	danger: true,
