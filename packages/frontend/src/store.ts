@@ -275,7 +275,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	numberOfPageCache: {
 		where: 'device',
-		default: 5,
+		default: 3,
 	},
 	showNoteActionsOnlyHover: {
 		where: 'device',
