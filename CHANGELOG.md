@@ -14,6 +14,8 @@ You should also include the user name that made the change.
 
 ### Improvements
 - クリップ、チャンネルページに共有ボタンを追加
+- ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
+- サーバーのパフォーマンスを改善
 
 ### Bugfixes
 -
