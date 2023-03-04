@@ -224,6 +224,9 @@ import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
 import * as ep___mute_list from './endpoints/mute/list.js';
+import * as ep___renote_mute_create from './endpoints/renote-mute/create.js';
+import * as ep___renote_mute_delete from './endpoints/renote-mute/delete.js';
+import * as ep___renote_mute_list from './endpoints/renote-mute/list.js';
 import * as ep___my_apps from './endpoints/my/apps.js';
 import * as ep___notes from './endpoints/notes.js';
 import * as ep___notes_children from './endpoints/notes/children.js';
@@ -545,6 +548,9 @@ const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: e
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
 const $mute_delete: Provider = { provide: 'ep:mute/delete', useClass: ep___mute_delete.default };
 const $mute_list: Provider = { provide: 'ep:mute/list', useClass: ep___mute_list.default };
+const $renote_mute_create: Provider = { provide: 'ep:renote-mute/create', useClass: ep___renote_mute_create.default };
+const $renote_mute_delete: Provider = { provide: 'ep:renote-mute/delete', useClass: ep___renote_mute_delete.default };
+const $renote_mute_list: Provider = { provide: 'ep:renote-mute/list', useClass: ep___renote_mute_list.default };
 const $my_apps: Provider = { provide: 'ep:my/apps', useClass: ep___my_apps.default };
 const $notes: Provider = { provide: 'ep:notes', useClass: ep___notes.default };
 const $notes_children: Provider = { provide: 'ep:notes/children', useClass: ep___notes_children.default };
@@ -870,6 +876,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$mute_create,
 		$mute_delete,
 		$mute_list,
+		$renote_mute_create,
+		$renote_mute_delete,
+		$renote_mute_list,
 		$my_apps,
 		$notes,
 		$notes_children,
@@ -1189,6 +1198,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$mute_create,
 		$mute_delete,
 		$mute_list,
+		$renote_mute_create,
+		$renote_mute_delete,
+		$renote_mute_list,
 		$my_apps,
 		$notes,
 		$notes_children,
