@@ -268,7 +268,7 @@ remoteUserCaution: "เนื่องจากผู้ใช้งานรา
 activity: "กิจกรรม"
 images: "รูปภาพ"
 birthday: "วันเกิด"
-yearsOld: "{อายุ} ปี"
+yearsOld: "{age} ปี"
 registeredDate: "วันที่สมัครสมาชิก"
 location: "ตำแหน่งที่ตั้ง"
 theme: "ธีม"
@@ -955,6 +955,7 @@ exploreOtherServers: "มองหาอินสแตนซ์อื่น"
 letsLookAtTimeline: "ลองดูที่ไทม์ไลน์"
 disableFederationWarn: "การดำเนินการนี้ถ้าหากจะปิดใช้งานการรวมศูนย์ แต่โพสต์ดังกล่าวนั้นจะยังคงเป็นสาธารณะต่อไป ยกเว้นแต่ว่าจะตั้งค่าเป็นอย่างอื่น โดยปกติคุณไม่จำเป็นต้องใช้การตั้งค่านี้นะ"
 invitationRequiredToRegister: "อินสแตนซ์นี้เป็นแบบรับเชิญเท่านั้น คุณต้องป้อนรหัสเชิญที่ถูกต้องถึงจะลงทะเบียนได้นะค่ะ"
+postToTheChannel: "โพสต์ลงช่อง"
 _achievements:
   earnedAt: "ได้รับเมื่อ"
   _types:
