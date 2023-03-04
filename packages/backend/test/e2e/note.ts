@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { Note } from '@/models/entities/Note.js';
-import { signup, post, uploadUrl, startServer, initTestDb, api } from '../utils.js';
+import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Note', () => {
@@ -211,6 +211,122 @@ describe('Note', () => {
 
 		const noteDoc = await Notes.findOneBy({ id: res.body.createdNote.id });
 		assert.deepStrictEqual(noteDoc.mentions, [bob.id]);
+	});
+
+	describe('添付ファイル情報', () => {
+		test('ファイルを添付した場合、投稿成功時にファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const res = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.createdNote.files.length, 1);
+			assert.strictEqual(res.body.createdNote.files[0].id, file.body.id);
+		});
+
+		test('ファイルを添付した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const res = await api('/notes', {
+				withFiles: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string; files: { id: string }[] }) => note.id === createdNote.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.files.length, 1);
+			assert.strictEqual(myNote.files[0].id, file.body.id);
+		});
+
+		test('ファイルが添付されたノートをリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const renoted = await api('/notes/create', {
+				renoteId: createdNote.body.createdNote.id,
+			}, alice);
+			assert.strictEqual(renoted.status, 200);
+
+			const res = await api('/notes', {
+				renote: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.renote.files.length, 1);
+			assert.strictEqual(myNote.renote.files[0].id, file.body.id);
+		});
+
+		test('ファイルが添付されたノートに返信した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const reply = await api('/notes/create', {
+				replyId: createdNote.body.createdNote.id,
+				text: 'this is reply',
+			}, alice);
+			assert.strictEqual(reply.status, 200);
+
+			const res = await api('/notes', {
+				reply: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string }) => note.id === reply.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.reply.files.length, 1);
+			assert.strictEqual(myNote.reply.files[0].id, file.body.id);
+		});
+
+		test('ファイルが添付されたノートへの返信をリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const reply = await api('/notes/create', {
+				replyId: createdNote.body.createdNote.id,
+				text: 'this is reply',
+			}, alice);
+			assert.strictEqual(reply.status, 200);
+
+			const renoted = await api('/notes/create', {
+				renoteId: reply.body.createdNote.id,
+			}, alice);
+			assert.strictEqual(renoted.status, 200);
+
+			const res = await api('/notes', {
+				renote: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.renote.reply.files.length, 1);
+			assert.strictEqual(myNote.renote.reply.files[0].id, file.body.id);
+		});
 	});
 
 	describe('notes/create', () => {
