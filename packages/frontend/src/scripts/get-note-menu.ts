@@ -67,7 +67,7 @@ export function getNoteMenu(props: {
 	function delTagging(): void {
 		os.confirm({
 			type: 'warning',
-			text: i18n.ts.deleteAndEditConfirm,
+			text: i18n.ts.deleteAndTaggingConfirm,
 		}).then(({ canceled }) => {
 			if (canceled) return;
 			window.open(`/mulukhiya/app/status/${appearNote.id}`);
