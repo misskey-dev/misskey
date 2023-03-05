@@ -3,13 +3,15 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspace",
+	"features": {
+		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
+	},
 	"forwardPorts": [3000],
 	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"editorconfig.editorconfig",
-				"eg2.vscode-npm-script",
 				"dbaeumer.vscode-eslint",
 				"Vue.volar",
 				"Vue.vscode-typescript-vue-plugin",
