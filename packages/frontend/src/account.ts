@@ -26,14 +26,6 @@ export function incNotesCount() {
 	notesCount++;
 }
 
-export async function refreshAccount() {
-	if (!$i) return;
-	return fetchAccount($i.token, $i.id)
-		.then(updateAccount, async reason => {
-			if (reason === true) return signout();
-		});
-}
-
 export async function signout() {
 	if (!$i) return;
 
@@ -169,6 +161,14 @@ export function updateAccount(accountData: Partial<Account>) {
 		$i[key] = value;
 	}
 	miLocalStorage.setItem('account', JSON.stringify($i));
+}
+
+export async function refreshAccount() {
+	if (!$i) return;
+	return fetchAccount($i.token, $i.id)
+		.then(updateAccount, async reason => {
+			if (reason === true) return signout();
+		});
 }
 
 export async function login(token: Account['token'], redirect?: string) {
