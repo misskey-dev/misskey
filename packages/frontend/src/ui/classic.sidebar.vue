@@ -23,6 +23,10 @@
 	<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
 		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
 	</MkA>
+	<button v-click-anime class="item _button" @click="mulukhiya">
+		<i class="ti ti-dots ti-fw"></i><span class="text">{{ $ts.mulukhiyaHome }}</span>
+		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
+	</button>
 	<button v-click-anime class="item _button" @click="more">
 		<i class="ti ti-dots ti-fw"></i><span class="text">{{ $ts.more }}</span>
 		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
@@ -121,6 +125,10 @@ export default defineComponent({
 
 		search() {
 			mainRouter.push('/search');
+		},
+
+		mulukhiya(ev) {
+			window.open('/mulukhiya');
 		},
 
 		more(ev) {
