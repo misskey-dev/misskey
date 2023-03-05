@@ -64,6 +64,10 @@ export function getNoteMenu(props: {
 		});
 	}
 
+	function delTagging(): void {
+		window.open('/mulukhiya/app/status/' + appearNote.id)
+	}
+
 	function toggleFavorite(favorite: boolean): void {
 		claimAchievement('noteFavorited1');
 		os.apiWithDialog(favorite ? 'notes/favorites/create' : 'notes/favorites/delete', {
@@ -325,6 +329,11 @@ export function getNoteMenu(props: {
 					icon: 'ti ti-edit',
 					text: i18n.ts.deleteAndEdit,
 					action: delEdit,
+				} : undefined,
+				appearNote.userId === $i.id ? {
+					icon: 'ti ti-tag',
+					text: i18n.ts.deleteAndTagging,
+					action: delTagging,
 				} : undefined,
 				{
 					icon: 'ti ti-trash',
