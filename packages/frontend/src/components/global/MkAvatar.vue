@@ -129,11 +129,11 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		&.mask {
 			-webkit-mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') center / 50% 50%,
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg>') center / 50% 50%,
 				linear-gradient(#fff, #fff);
 			-webkit-mask-composite: destination-out, source-over;
 			mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><circle cx="1" cy="1" r="1"/></svg>') exclude center / 50% 50%,
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"/></svg>') exclude center / 50% 50%,
 				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
 		}
 
