@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 - クリップ、チャンネルページに共有ボタンを追加
 - ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
 - Identiconがローカルとリモートで同じになるように
+  - これまでのIdenticonは異なる画像になります
 - サーバーのパフォーマンスを改善
 
 ### Bugfixes
