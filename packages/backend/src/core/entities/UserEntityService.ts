@@ -298,7 +298,7 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public getIdenticonUrl(user: User): string {
-		return `${this.config.url}/identicon/${user.usernameLower}@${user.host ?? this.config.host}`;
+		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
