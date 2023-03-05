@@ -5,7 +5,7 @@
 - 
 
 ### Bugfixes
--
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
 
 You should also include the user name that made the change.
 -->
