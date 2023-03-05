@@ -5,7 +5,7 @@
 - 
 
 ### Bugfixes
-- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
+x
 
 You should also include the user name that made the change.
 -->
@@ -21,6 +21,7 @@ You should also include the user name that made the change.
 
 ### Bugfixes
 - ロールの権限で「一般ユーザー」のロールがいきなり設定できない問題を修正
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
 
 ## 13.9.1 (2023/03/03)
 
