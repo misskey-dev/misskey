@@ -83,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
-			ps.tag = 'precure_fun';
+			ps.tag = 'delmulin';
 
 			try {
 				if (ps.tag) {
