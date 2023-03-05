@@ -1,17 +1,15 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { NotesRepository } from '@/models/index.js';
+import { safeForSql } from '@/misc/safe-for-sql.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
-import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
-import { RoleService } from '@/core/RoleService.js';
-import { ApiError } from '../../error.js';
 
 export const meta = {
-	tags: ['notes'],
+	tags: ['notes', 'hashtags'],
 
 	res: {
 		type: 'array',
@@ -22,33 +20,37 @@ export const meta = {
 			ref: 'Note',
 		},
 	},
-
-	errors: {
-		ltlDisabled: {
-			message: 'Local timeline has been disabled.',
-			code: 'LTL_DISABLED',
-			id: '45a6eb02-7695-4393-b023-dd3be9aaaefd',
-		},
-	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
+		reply: { type: 'boolean', nullable: true, default: null },
+		renote: { type: 'boolean', nullable: true, default: null },
 		withFiles: {
 			type: 'boolean',
 			default: false,
 			description: 'Only show notes that have attached files.',
 		},
-		fileType: { type: 'array', items: {
-			type: 'string',
-		} },
-		excludeNsfw: { type: 'boolean', default: false },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		poll: { type: 'boolean', nullable: true, default: null },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+
+		tag: { type: 'string', minLength: 1 },
+		query: {
+			type: 'array',
+			description: 'The outer arrays are chained with OR, the inner arrays are chained with AND.',
+			items: {
+				type: 'array',
+				items: {
+					type: 'string',
+					minLength: 1,
+				},
+				minItems: 1,
+			},
+			minItems: 1,
+		},
 	},
 	required: [],
 } as const;
@@ -62,21 +64,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private metaService: MetaService,
-		private roleService: RoleService,
-		private activeUsersChart: ActiveUsersChart,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
-			if (!policies.ltlAvailable) {
-				throw new ApiError(meta.errors.ltlDisabled);
-			}
-
-			//#region Construct query
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
-				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.createdAt > :minDate', { minDate: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) }) // 30日前まで
-				.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')
@@ -89,42 +79,65 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
 				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
 
-			this.queryService.generateChannelQuery(query, me);
-			this.queryService.generateRepliesQuery(query, me);
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
-			if (me) this.queryService.generateMutedNoteQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
+
+			ps.tag = 'precure_fun';
+
+			try {
+				if (ps.tag) {
+					if (!safeForSql(normalizeForSearch(ps.tag))) throw 'Injection';
+					query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
+				} else {
+					query.andWhere(new Brackets(qb => {
+						for (const tags of ps.query!) {
+							qb.orWhere(new Brackets(qb => {
+								for (const tag of tags) {
+									if (!safeForSql(normalizeForSearch(tag))) throw 'Injection';
+									qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
+								}
+							}));
+						}
+					}));
+				}
+			} catch (e) {
+				if (e === 'Injection') return [];
+				throw e;
+			}
+
+			if (ps.reply != null) {
+				if (ps.reply) {
+					query.andWhere('note.replyId IS NOT NULL');
+				} else {
+					query.andWhere('note.replyId IS NULL');
+				}
+			}
+
+			if (ps.renote != null) {
+				if (ps.renote) {
+					query.andWhere('note.renoteId IS NOT NULL');
+				} else {
+					query.andWhere('note.renoteId IS NULL');
+				}
+			}
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');
 			}
 
-			if (ps.fileType != null) {
-				query.andWhere('note.fileIds != \'{}\'');
-				query.andWhere(new Brackets(qb => {
-					for (const type of ps.fileType!) {
-						const i = ps.fileType!.indexOf(type);
-						qb.orWhere(`:type${i} = ANY(note.attachedFileTypes)`, { [`type${i}`]: type });
-					}
-				}));
-
-				if (ps.excludeNsfw) {
-					query.andWhere('note.cw IS NULL');
-					query.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE df.id = ANY(note."fileIds") AND df."isSensitive" = TRUE)');
+			if (ps.poll != null) {
+				if (ps.poll) {
+					query.andWhere('note.hasPoll = TRUE');
+				} else {
+					query.andWhere('note.hasPoll = FALSE');
 				}
 			}
-			//#endregion
 
-			const timeline = await query.take(ps.limit).getMany();
+			// Search notes
+			const notes = await query.take(ps.limit).getMany();
 
-			process.nextTick(() => {
-				if (me) {
-					this.activeUsersChart.read(me);
-				}
-			});
-
-			return await this.noteEntityService.packMany(timeline, me);
+			return await this.noteEntityService.packMany(notes, me);
 		});
 	}
 }
