@@ -278,27 +278,27 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
 		} else if (user.avatarId) {
 			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user);
 		} else {
-			return this.getIdenticonUrl(user.id);
+			return this.getIdenticonUrl(user);
 		}
 	}
 
 	@bindThis
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
 		} else {
-			return this.getIdenticonUrl(user.id);
+			return this.getIdenticonUrl(user);
 		}
 	}
 
 	@bindThis
-	public getIdenticonUrl(userId: User['id']): string {
-		return `${this.config.url}/identicon/${userId}`;
+	public getIdenticonUrl(user: User): string {
+		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
