@@ -53,7 +53,7 @@ onMounted(() => {
 	position: fixed;
 	left: 0;
 	right: 0;
-	top: 0;
+	top: 50px;
 	margin: 0 auto;
 	margin-top: 16px;
 	min-width: 300px;
