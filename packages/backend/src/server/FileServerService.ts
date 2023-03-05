@@ -22,6 +22,7 @@ import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
 import { correctFilename } from '@/misc/correct-filename.js';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -132,7 +133,7 @@ export class FileServerService {
 				let image: IImageStreamable | null = null;
 
 				if (file.fileRole === 'thumbnail') {
-					if (isMimeImage(file.mime, 'sharp-convertible-image')) {
+					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
 						const url = new URL(`${this.config.mediaProxy}/static.webp`);
@@ -257,8 +258,8 @@ export class FileServerService {
 		}
 
 		try {
-			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image');
-			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image');
+			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image-with-bmp');
+			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image-with-bmp');
 
 			if (
 				'emoji' in request.query ||
@@ -282,7 +283,7 @@ export class FileServerService {
 						type: file.mime,
 					};
 				} else {
-					const data = sharp(file.path, { animated: !('static' in request.query) })
+					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
 							.resize({
 								height: 'emoji' in request.query ? 128 : 320,
 								withoutEnlargement: true,
@@ -296,11 +297,11 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query) {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 280);
 			} else if ('preview' in request.query) {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 200, 200);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
-				const mask = sharp(file.path)
+				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
 						fit: 'inside',
 						withoutEnlargement: false,
