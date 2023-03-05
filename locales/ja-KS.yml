@@ -958,6 +958,7 @@ disableFederationWarn: "連合が無効になっとるで。無効にしても�
 invitationRequiredToRegister: "今このサーバー招待制になってもうてんねん。招待コードを持っとるんやったら登録できるで。"
 emailNotSupported: "このサーバーはメール配信がサポートされてへんみたいやわ"
 postToTheChannel: "チャンネルに投稿"
+cannotBeChangedLater: "後からは変えられへんで。"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
