@@ -7,19 +7,7 @@
 				<MkButton @click="init"><i class="ti ti-refresh"></i> {{ i18n.ts.reloadAccountsList }}</MkButton>
 			</div>
 
-			<div v-for="account in accounts" :key="account.id" class="_panel _button lcjjdxlm" @click="menu(account, $event)">
-				<div class="avatar">
-					<MkAvatar :user="account" class="avatar"/>
-				</div>
-				<div class="body">
-					<div class="name">
-						<MkUserName :user="account"/>
-					</div>
-					<div class="acct">
-						<MkAcct :user="account"/>
-					</div>
-				</div>
-			</div>
+			<MkUserCardMini v-for="user in accounts" :key="user.id" :user="user" :class="$style.user" @click.prevent="menu(user, $event)"/>
 		</div>
 	</FormSuspense>
 </div>
@@ -30,16 +18,16 @@ import { defineAsyncComponent, ref } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
-import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i, refreshAccounts } from '@/account';
+import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import type * as Misskey from 'misskey-js';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const storedAccounts = ref<any>(null);
 const accounts = ref<Misskey.entities.UserDetailed[]>([]);
 
 const init = async () => {
-	await refreshAccounts();
 	getAccounts().then(accounts => {
 		storedAccounts.value = accounts.filter(x => x.id !== $i!.id);
 
@@ -118,32 +106,8 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.lcjjdxlm {
-	display: flex;
-	padding: 16px;
-
-	> .avatar {
-		display: block;
-		flex-shrink: 0;
-		margin: 0 12px 0 0;
-
-		> .avatar {
-			width: 50px;
-			height: 50px;
-		}
-	}
-
-	> .body {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		width: calc(100% - 62px);
-		position: relative;
-
-		> .name {
-			font-weight: bold;
-		}
-	}
+<style lang="scss" module>
+.user {
+    cursor: pointer;
 }
 </style>

@@ -7,6 +7,7 @@ import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
+import { MenuButton } from './types/menu';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -25,62 +26,20 @@ export function incNotesCount() {
 	notesCount++;
 }
 
-// 複数のダイアログが表示されるのを防止するため、refreshAccountsの同時実行を避ける
-const refreshing = ref(false);
-
 export async function refreshAccount() {
 	if (!$i) return;
 	return fetchAccount($i.token, $i.id)
 		.then(updateAccount, async reason => {
-			const removed = await accountIsRemoved(reason);
-			if (removed) return signout();
+			if (reason === true) return signout();
 		});
 }
 
-// 保存されているアカウント情報全てに対して、最新の情報を取得
-export async function refreshAccounts(force = false) {
-	if (force !== true && refreshing.value) return;
-	refreshing.value = true;
-	const storedAccounts = await getAccounts();
-	const newAccounts: (Account | { id: Account['id']; token: Account['token']; })[] = [];
-
-	for (const storedAccount of storedAccounts) {
-		await fetchAccount(storedAccount.token, storedAccount.id)
-		.then(res => newAccounts.push(res))
-		.catch(async reason => {
-			const removed = await accountIsRemoved(reason);
-			if (!removed) newAccounts.push(storedAccount);
-		});
-	}
-
-	if (newAccounts.length === 0) {
-		miLocalStorage.removeItem('account');
-		await del('accounts');
-		unisonReload('/');
-		return;
-	}
-
-	set('accounts', newAccounts.map(x => ({ id: x.id, token: x.token })));
-
-	if ($i) {
-		const found = newAccounts.find(x => x.id === $i.id);
-		if (found) {
-			updateAccount(found);
-		} else {
-			signout(true);
-		}
-	}
-
-	refreshing.value = false;
-	return newAccounts;
-}
-
-export async function signout(doNotEditAccountList?: boolean) {
+export async function signout() {
 	if (!$i) return;
 
 	waiting();
 	miLocalStorage.removeItem('account');
-	if (!doNotEditAccountList) await removeAccount($i.id);
+	await removeAccount($i.id);
 	const accounts = await getAccounts();
 
 	//#region Remove service worker registration
@@ -126,14 +85,13 @@ export async function addAccount(id: Account['id'], token: Account['token']) {
 	}
 }
 
-export async function removeAccount(id: Account['id']) {
+export async function removeAccount(idOrToken: Account['id']) {
 	const accounts = await getAccounts();
-	const i = accounts.findIndex(x => x.id === id);
+	const i = accounts.findIndex(x => x.id === idOrToken || x.token === idOrToken);
 	if (i !== -1) accounts.splice(i, 1);
 
 	if (accounts.length > 0) {
 		await set('accounts', accounts);
-		await refreshAccounts(true);
 	} else {
 		await del('accounts');
 	}
@@ -166,6 +124,16 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
 						await showSuspendedDialog();
 					}
+				} else if (res.error.id === 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a') {
+					// USER_IS_DELETED
+					// アカウントが削除されている
+					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+						await alert({
+							type: 'error',
+							title: i18n.ts.accountDeleted,
+							text: i18n.ts.accountDeletedDescription,
+						});
+					}
 				} else if (res.error.id === 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14') {
 					// AUTHENTICATION_FAILED
 					// トークンが無効化されていたりアカウントが削除されたりしている
@@ -195,30 +163,6 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 	});
 }
 
-async function accountIsRemoved(reason: Record<string, any> | true): Promise<boolean> {
-	console.error('error while fetching account', reason);
-	// サーバーがビジーなどでapi/iが500番台を返した場合にもログアウトされてしまうのは微妙
-	// しかしアカウント削除は壊れているので、500が返ってくる
-	// 本当はシンプルに次のようにしたい
-	// if (reason !== true) newAccounts.push(storedAccount);
-	if (reason === true) return true;
-	if (reason.text && typeof reason.text === 'function') {
-		const text = await reason.text();
-		// `Could not find any entity of type \"UserProfile\" matching`
-		// と返ってくる場合はアカウントが削除されている
-		if (text.includes('UserProfile')) {
-			await alert({
-				type: 'error',
-				title: i18n.ts.accountDeleted,
-				text: i18n.ts.accountDeletedDescription,
-			});
-			return true;
-		}
-	}
-
-	return false;
-}
-
 export function updateAccount(accountData: Partial<Account>) {
 	if (!$i) return;
 	for (const [key, value] of Object.entries(accountData)) {
@@ -236,6 +180,11 @@ export async function login(token: Account['token'], redirect?: string) {
 	if (_DEV_) console.log('logging as token ', token);
 	const me = await fetchAccount(token, undefined, true)
 		.catch(reason => {
+			if (reason === true) {
+				// 削除対象の場合
+				removeAccount(token);
+			}
+
 			showing.value = false;
 			throw reason;
 		});
@@ -296,7 +245,7 @@ export async function openAccountMenu(opts: {
 
 	function createItem(account: misskey.entities.UserDetailed) {
 		return {
-			type: 'user',
+			type: 'user' as const,
 			user: account,
 			active: opts.active != null ? opts.active === account.id : false,
 			action: () => {
@@ -309,22 +258,29 @@ export async function openAccountMenu(opts: {
 		};
 	}
 
-	const accountItemPromises = storedAccounts.map(a => new Promise(res => {
+	const accountItemPromises = storedAccounts.map(a => new Promise<ReturnType<typeof createItem> | MenuButton>(res => {
 		accountsPromise.then(accounts => {
 			const account = accounts.find(x => x.id === a.id);
-			if (account == null) return res(null);
+			if (account == null) return res({
+				type: 'button' as const,
+				text: a.id,
+				action: () => {
+					switchAccountWithToken(a.token);
+				},
+			});
+
 			res(createItem(account));
 		});
 	}));
 
 	if (opts.withExtraOperation) {
 		popupMenu([...[{
-			type: 'link',
+			type: 'link' as const,
 			text: i18n.ts.profile,
 			to: `/@${ $i.username }`,
 			avatar: $i,
 		}, null, ...(opts.includeCurrentAccount ? [createItem($i)] : []), ...accountItemPromises, {
-			type: 'parent',
+			type: 'parent' as const,
 			icon: 'ti ti-plus',
 			text: i18n.ts.addAccount,
 			children: [{
@@ -335,7 +291,7 @@ export async function openAccountMenu(opts: {
 				action: () => { createAccount(); },
 			}],
 		}, {
-			type: 'link',
+			type: 'link' as const,
 			icon: 'ti ti-users',
 			text: i18n.ts.manageAccounts,
 			to: '/settings/accounts',
