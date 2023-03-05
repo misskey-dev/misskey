@@ -7,7 +7,7 @@
 	:front="true"
 	@closed="emit('closed')"
 >
-	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" as-window @chosen="chosen" :class="$style.picker"/>
+	<MkEmojiPicker :show-pinned="showPinned" :as-reaction-picker="asReactionPicker" as-window :class="$style.picker" @chosen="chosen"/>
 </MkWindow>
 </template>
 

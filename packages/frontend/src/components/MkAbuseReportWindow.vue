@@ -43,7 +43,7 @@ const emit = defineEmits<{
 }>();
 
 const uiWindow = shallowRef<InstanceType<typeof MkWindow>>();
-const comment = ref(props.initialComment || '');
+const comment = ref(props.initialComment ?? '');
 
 function send() {
 	os.apiWithDialog('users/report-abuse', {

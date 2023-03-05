@@ -28,13 +28,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, shallowRef, inject, watch, nextTick } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import { popupMenu } from '@/os';
-import { url } from '@/config';
 import { scrollToTop } from '@/scripts/scroll';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
 import { globalEvents } from '@/events';
 import { injectPageMetadata } from '@/scripts/page-metadata';
 
@@ -115,7 +113,7 @@ function onTabClick(tab: Tab, ev: MouseEvent): void {
 }
 
 const calcBg = () => {
-	const rawBg = metadata?.bg || 'var(--bg)';
+	const rawBg = metadata?.bg ?? 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();

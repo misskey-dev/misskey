@@ -16,9 +16,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { userName } from '@/filters/user';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import * as os from '@/os';
 
 const props = defineProps<{
 	post: any;

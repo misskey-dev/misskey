@@ -3,7 +3,6 @@ import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
 import MkLoading from '@/pages/_loading_.vue';
 import MkError from '@/pages/_error_.vue';
-import { ui } from '@/config';
 
 const page = (loader: AsyncComponentLoader<any>) => defineAsyncComponent({
 	loader: loader,
@@ -199,8 +198,11 @@ export const routes = [{
 	component: page(() => import('./pages/theme-editor.vue')),
 	loginRequired: true,
 }, {
-	path: '/explore/tags/:tag',
-	component: page(() => import('./pages/explore.vue')),
+	path: '/roles/:role',
+	component: page(() => import('./pages/role.vue')),
+}, {
+	path: '/user-tags/:tag',
+	component: page(() => import('./pages/user-tag.vue')),
 }, {
 	path: '/explore',
 	component: page(() => import('./pages/explore.vue')),
@@ -211,6 +213,8 @@ export const routes = [{
 	query: {
 		q: 'query',
 		channel: 'channel',
+		type: 'type',
+		origin: 'origin',
 	},
 }, {
 	path: '/authorize-follow',
@@ -419,19 +423,6 @@ export const routes = [{
 }, {
 	path: '/my/achievements',
 	component: page(() => import('./pages/achievements.vue')),
-	loginRequired: true,
-}, {
-	name: 'messaging',
-	path: '/my/messaging',
-	component: page(() => import('./pages/messaging/index.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/messaging/:userAcct',
-	component: page(() => import('./pages/messaging/messaging-room.vue')),
-	loginRequired: true,
-}, {
-	path: '/my/messaging/group/:groupId',
-	component: page(() => import('./pages/messaging/messaging-room.vue')),
 	loginRequired: true,
 }, {
 	path: '/my/drive/folder/:folder',
