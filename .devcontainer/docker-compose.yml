@@ -16,7 +16,7 @@ services:
       - external_network
 
   redis:
-    restart: always
+    restart: unless-stopped
     image: redis:7-alpine
     networks:
       - internal_network
