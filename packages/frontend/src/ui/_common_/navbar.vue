@@ -36,10 +36,6 @@
 				<i class="icon ti ti-leaf ti-fw"></i><span class="text">{{ i18n.ts.mulukhiyaHome }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 			</button>
-			<button v-click-anime class="item _button" v-tooltip.noDelay.right="i18n.ts.delmulinMastodon" @click="delmulinMastodon">
-				<i class="icon ti ti-eye ti-fw"></i><span class="text">{{ i18n.ts.delmulinMastodon }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
-			</button>
 			<button v-click-anime class="item _button" @click="more">
 				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
@@ -100,10 +96,6 @@ function openAccountMenu(ev: MouseEvent) {
 
 function mulukhiya(ev: MouseEvent) {
 	window.open('/mulukhiya');
-}
-
-function delmulinMastodon(ev: MouseEvent) {
-	window.open('https://mastodon.delmulin.com');
 }
 
 function more(ev: MouseEvent) {
