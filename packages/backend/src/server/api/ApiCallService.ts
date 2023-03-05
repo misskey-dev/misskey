@@ -100,9 +100,12 @@ export class ApiCallService implements OnApplicationShutdown {
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
-		const multipartData = await request.file();
+		const multipartData = await request.file().catch(() => {
+			/* Fastify throws if the remote didn't send multipart data. Return 400 below. */
+		});
 		if (multipartData == null) {
 			reply.code(400);
+			reply.send();
 			return;
 		}
 
