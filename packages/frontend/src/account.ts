@@ -166,8 +166,9 @@ export function updateAccount(accountData: Partial<Account>) {
 export async function refreshAccount() {
 	if (!$i) return;
 	return fetchAccount($i.token, $i.id)
-		.then(updateAccount, async reason => {
+		.then(updateAccount, reason => {
 			if (reason === true) return signout();
+			return;
 		});
 }
 
