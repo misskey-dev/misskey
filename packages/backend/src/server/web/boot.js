@@ -63,7 +63,10 @@
 		}
 
 		// for https://github.com/misskey-dev/misskey/issues/10202
-		if (lang == null || lang.toString == null || lang.toString() === 'null') lang = 'en-US';
+		if (lang == null || lang.toString == null || lang.toString() === 'null') {
+			console.error('invalid lang value detected!!!', typeof lang, lang);
+			lang = 'en-US';
+		}
 
 		const localRes = await window.fetch(`/assets/locales/${lang}.${v}.json`);
 		if (localRes.status === 200) {
