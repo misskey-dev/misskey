@@ -24,7 +24,11 @@
 		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
 	</MkA>
 	<button v-click-anime class="item _button" @click="mulukhiya">
-		<i class="ti ti-dots ti-fw"></i><span class="text">{{ $ts.mulukhiyaHome }}</span>
+		<i class="ti ti-leaf ti-fw"></i><span class="text">{{ $ts.mulukhiyaHome }}</span>
+		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
+	</button>
+	<button v-click-anime class="item _button" @click="delmulinMastodon">
+		<i class="ti ti-eye ti-fw"></i><span class="text">{{ $ts.delmulinMastodon }}</span>
 		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
 	</button>
 	<button v-click-anime class="item _button" @click="more">
@@ -129,6 +133,10 @@ export default defineComponent({
 
 		mulukhiya(ev) {
 			window.open('/mulukhiya');
+		},
+
+		delmulinMastodon(ev) {
+			window.open('https://mastodon.delmulin.com');
 		},
 
 		more(ev) {
