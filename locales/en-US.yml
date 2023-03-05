@@ -958,6 +958,7 @@ disableFederationWarn: "This will disable federation, but posts will continue to
 invitationRequiredToRegister: "This instance is invite-only. You must enter a valid invite code sign up."
 emailNotSupported: "This instance does not support sending emails"
 postToTheChannel: "Post to channel"
+cannotBeChangedLater: "This cannot be changed later."
 _achievements:
   earnedAt: "Unlocked at"
   _types:
