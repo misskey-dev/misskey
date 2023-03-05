@@ -9,7 +9,6 @@
 		"vscode": {
 			"extensions": [
 				"editorconfig.editorconfig",
-				"eg2.vscode-npm-script",
 				"dbaeumer.vscode-eslint",
 				"Vue.volar",
 				"Vue.vscode-typescript-vue-plugin",
