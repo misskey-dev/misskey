@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.9.2 (2023/03/05)
 
 ### Improvements
 - クリップ、チャンネルページに共有ボタンを追加
