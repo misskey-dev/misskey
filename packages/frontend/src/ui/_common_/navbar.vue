@@ -33,7 +33,7 @@
 				<i class="icon ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
 			<button v-click-anime class="item _button" @click="mulukhiya">
-				<i class="icon ti ti-leaf ti-fw"></i><span class="text">モロヘイヤHOME</span>
+				<i class="icon ti ti-leaf ti-fw"></i><span class="text">{{ i18n.ts.mulukhiyaHome }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 			</button>
 			<button v-click-anime class="item _button" @click="more">
