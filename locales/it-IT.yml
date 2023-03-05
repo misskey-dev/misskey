@@ -958,6 +958,7 @@ disableFederationWarn: "Disabilita la federazione. Questo cambiamento non rende 
 invitationRequiredToRegister: "L'accesso a questo nodo è solo ad invito. Devi inserire un codice d'invito valido. Puoi richiedere un codice all'amministratore."
 emailNotSupported: "L'istanza non supporta l'invio di email"
 postToTheChannel: "Pubblica sul canale"
+cannotBeChangedLater: "Non sarà più modificabile"
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
