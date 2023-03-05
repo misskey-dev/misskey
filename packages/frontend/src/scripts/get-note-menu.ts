@@ -65,7 +65,13 @@ export function getNoteMenu(props: {
 	}
 
 	function delTagging(): void {
-		window.open('/mulukhiya/app/status/' + appearNote.id)
+		os.confirm({
+			type: 'warning',
+			text: i18n.ts.deleteAndEditConfirm,
+		}).then(({ canceled }) => {
+			if (canceled) return;
+			window.open(`/mulukhiya/app/status/${appearNote.id}`);
+		});
 	}
 
 	function toggleFavorite(favorite: boolean): void {
