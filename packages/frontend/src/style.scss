@@ -285,6 +285,12 @@ hr {
 	flex-wrap: wrap;
 }
 
+._buttonsCenter {
+	@extend ._buttons;
+
+	justify-content: center;
+}
+
 ._borderButton {
 	@extend ._button;
 	display: block;
