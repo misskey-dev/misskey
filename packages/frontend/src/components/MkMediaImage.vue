@@ -15,8 +15,11 @@
 		:title="image.name"
 	>
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
-		<div v-if="image.type === 'image/gif'" :class="$style.gif">GIF</div>
 	</a>
+	<div :class="$style.bannerContainer">
+		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.banner">GIF</div>
+		<div v-if="image.comment" :class="$style.banner">ALT</div>
+	</div>
 	<button v-tooltip="$ts.hide" :class="$style.hide" class="_button" @click="hide = true"><i class="ti ti-eye-off"></i></button>
 </div>
 </template>
@@ -108,19 +111,25 @@ watch(() => props.image, () => {
 	background-repeat: no-repeat;
 }
 
-.gif {
+.bannerContainer {
+	display: inline-flex;
 	position: absolute;
-	background-color: var(--fg);
+	top: 12px;
+	left: 12px;
+	text-align: center;
+	pointer-events: none;
+	opacity: .5;
+	font-size: 14px;
+	gap: 6px;
+}
+
+.banner {
+	/* Hardcode to black because either --bg or --fg makes it hard to read in dark/light mode */
+	background-color: black;
 	border-radius: 6px;
 	color: var(--accentLighten);
 	display: inline-block;
-	font-size: 14px;
 	font-weight: bold;
-	left: 12px;
-	opacity: .5;
 	padding: 0 6px;
-	text-align: center;
-	top: 12px;
-	pointer-events: none;
 }
 </style>
