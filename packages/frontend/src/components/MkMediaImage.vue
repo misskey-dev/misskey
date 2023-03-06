@@ -109,6 +109,7 @@ watch(() => props.image, () => {
 }
 
 .gif {
+	position: absolute;
 	background-color: var(--fg);
 	border-radius: 6px;
 	color: var(--accentLighten);
