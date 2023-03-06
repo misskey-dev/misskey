@@ -273,7 +273,7 @@ export class DriveService {
 			}
 		}
 
-		if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'].includes(type)) {
+		if (!['image/jpeg', 'image/png', 'image/avif', 'image/svg+xml'].includes(type)) {
 			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
 			return {
 				webpublic: null,
@@ -740,20 +740,20 @@ export class DriveService {
 		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
 			name = null;
 		}
-	
+
 		// If the comment is same as the name, skip comment
 		// (image.name is passed in when receiving attachment)
 		if (comment !== null && name === comment) {
 			comment = null;
 		}
-	
+
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
 			await this.downloadService.downloadUrl(url, path);
-	
+
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
 			this.downloaderLogger.succ(`Got: ${driveFile.id}`);
 			return driveFile!;
