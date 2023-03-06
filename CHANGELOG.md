@@ -5,10 +5,18 @@
 - 
 
 ### Bugfixes
-x
+- 
 
 You should also include the user name that made the change.
 -->
+
+## 13.x.x (unreleased)
+
+### Improvements
+- ユーザーごとにRenoteをミュートできるように
+
+### Bugfixes
+- 
 
 ## 13.9.2 (2023/03/06)
 
