@@ -10,10 +10,11 @@ x
 You should also include the user name that made the change.
 -->
 
-## 13.9.2 (2023/03/05)
+## 13.9.2 (2023/03/06)
 
 ### Improvements
 - クリップ、チャンネルページに共有ボタンを追加
+- チャンネルでタイムライン上部に投稿フォームを表示するかどうかのオプションを追加
 - ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
 - Identiconがローカルとリモートで同じになるように
   - これまでのIdenticonは異なる画像になります
