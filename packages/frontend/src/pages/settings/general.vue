@@ -193,6 +193,7 @@ watch([
 	enableInfiniteScroll,
 	squareAvatars,
 	aiChanMode,
+	showNoteActionsOnlyHover,
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
 	overridedDeviceKind,
