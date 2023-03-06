@@ -959,6 +959,8 @@ invitationRequiredToRegister: "現在このサーバーは招待制です。招�
 emailNotSupported: "このサーバーではメール配信はサポートされていません"
 postToTheChannel: "チャンネルに投稿"
 cannotBeChangedLater: "後から変更できません。"
+contentFound: "{content} が見つかりました"
+specifiedURLNote: "指定されたURLのノート"
 
 _achievements:
   earnedAt: "獲得日時"

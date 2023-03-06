@@ -5,6 +5,15 @@
 		<MkInput v-model="searchQuery" :large="true" :autofocus="true" :debounce="true" type="search" style="margin-bottom: var(--margin);" @update:model-value="search()">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
+
+		<MkInfo v-if="directLink.text" :action="{ text: i18n.ts.display, to: directLink.url }" style="margin-bottom: var(--margin);">
+			<I18n :src="i18n.ts.contentFound" tag="span">
+				<template #content>
+					<MkA :to="directLink.url">{{ directLink.text }}</MkA>
+				</template>
+			</I18n>
+		</MkInfo>
+
 		<MkTab v-model="searchType" style="margin-bottom: var(--margin);" @update:model-value="search()">
 			<option value="note">{{ i18n.ts.note }}</option>
 			<option value="user">{{ i18n.ts.user }}</option>
@@ -33,15 +42,14 @@ import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTab from '@/components/MkTab.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { useRouter, mainRouter } from '@/router';
-
-const router = useRouter();
+import { mainRouter } from '@/router';
 
 const props = defineProps<{
-	query: string;
+	query?: string;
 	channel?: string;
 	type?: string;
 	origin?: string;
@@ -50,31 +58,29 @@ const props = defineProps<{
 let searchQuery = $ref('');
 let searchType = $ref('note');
 let searchOrigin = $ref('combined');
+let directLink = $ref({
+	text: '',
+	url: '',
+});
 
 onMounted(() => {
 	searchQuery = props.query ?? '';
 	searchType = props.type ?? 'note';
 	searchOrigin = props.origin ?? 'combined';
 
-	if (searchQuery) {
+	if (searchQuery !== '') {
 		search();
 	}
 });
 
-const search = async () => {
+const search = async (): Promise<void> => {
 	const query = searchQuery.toString().trim();
+	if (query === '') return;
 
-	if (query == null || query === '') return;
-
-	if (query.startsWith('@') && !query.includes(' ')) {
-		mainRouter.push(`/${query}`);
-		return;
-	}
-
-	if (query.startsWith('#')) {
-		mainRouter.push(`/tags/${encodeURIComponent(query.substr(1))}`);
-		return;
-	}
+	directLink = {
+		text: '',
+		url: '',
+	};
 
 	// like 2018/03/12
 	if (/^[0-9]{4}\/[0-9]{2}\/[0-9]{2}/.test(query.replace(/-/g, '/'))) {
@@ -97,19 +103,38 @@ const search = async () => {
 		return;
 	}
 
+	if (query.startsWith('@') && !query.includes(' ')) {
+		directLink = {
+			text: query,
+			url: `/${query}`,
+		};
+		return;
+	}
+
+	if (query.startsWith('#')) {
+		directLink = {
+			text: query,
+			url: `/tags/${encodeURIComponent(query.substr(1))}`,
+		};
+		return;
+	}
+
 	if (query.startsWith('https://')) {
-		const promise = os.api('ap/show', {
+		const res = await os.api('ap/show', {
 			uri: query,
 		});
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
-
-		const res = await promise;
-
 		if (res.type === 'User') {
 			mainRouter.push(`/@${res.object.username}@${res.object.host}`);
+			directLink = {
+				text: `@${res.object.username}@${res.object.host}`,
+				url: `/@${res.object.username}@${res.object.host}`,
+			};
 		} else if (res.type === 'Note') {
-			mainRouter.push(`/notes/${res.object.id}`);
+			directLink = {
+				text: i18n.ts.specifiedURLNote,
+				url: `/notes/${res.object.id}`,
+			};
 		}
 
 		return;
@@ -140,7 +165,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => ({
-	title: searchQuery ? i18n.t('searchWith', { q: searchQuery }) : i18n.ts.search,
+	title: searchQuery !== '' ? i18n.t('searchWith', { q: searchQuery }) : i18n.ts.search,
 	icon: 'ti ti-search',
 })));
 </script>
