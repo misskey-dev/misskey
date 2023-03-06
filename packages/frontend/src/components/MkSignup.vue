@@ -117,7 +117,9 @@ const shouldDisableSubmitting = $computed((): boolean => {
 		instance.enableHcaptcha && !hCaptchaResponse ||
 		instance.enableRecaptcha && !reCaptchaResponse ||
 		instance.enableTurnstile && !turnstileResponse ||
-		passwordRetypeState === 'not-match';
+		instance.emailRequiredForSignup && emailState !== 'ok' ||
+		usernameState !== 'ok' ||
+		passwordRetypeState !== 'match';
 });
 
 function onChangeUsername(): void {
