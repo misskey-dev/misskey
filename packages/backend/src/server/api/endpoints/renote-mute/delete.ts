@@ -17,19 +17,19 @@ export const meta = {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: 'b851d00b-8ab1-4a56-8b1b-e24187cb48ef',
+			id: '9b6728cf-638c-4aa1-bedb-e07d8101474d',
 		},
 
 		muteeIsYourself: {
 			message: 'Mutee is yourself.',
 			code: 'MUTEE_IS_YOURSELF',
-			id: 'f428b029-6b39-4d48-a1d2-cc1ae6dd5cf9',
+			id: '619b1314-0850-4597-a242-e245f3da42af',
 		},
 
 		notMuting: {
 			message: 'You are not muting that user.',
 			code: 'NOT_MUTING',
-			id: '5467d020-daa9-4553-81e1-135c0c35a96d',
+			id: '2e4ef874-8bf0-4b4b-b069-4598f6d05817',
 		},
 	},
 } as const;
