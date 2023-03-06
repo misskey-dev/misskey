@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -21,6 +21,7 @@ type PackOptions = {
 };
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -255,10 +256,33 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public async packMany(
-		files: (DriveFile['id'] | DriveFile)[],
+		files: DriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
 		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
 		return items.filter((x): x is Packed<'DriveFile'> => x != null);
+	}
+
+	@bindThis
+	public async packManyByIdsMap(
+		fileIds: DriveFile['id'][],
+		options?: PackOptions,
+	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
+		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
+		const packedFiles = await this.packMany(files, options);
+		const map = new Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>(packedFiles.map(f => [f.id, f]));
+		for (const id of fileIds) {
+			if (!map.has(id)) map.set(id, null);
+		}
+		return map;
+	}
+
+	@bindThis
+	public async packManyByIds(
+		fileIds: DriveFile['id'][],
+		options?: PackOptions,
+	): Promise<Packed<'DriveFile'>[]> {
+		const filesMap = await this.packManyByIdsMap(fileIds, options);
+		return fileIds.map(id => filesMap.get(id)).filter(isNotNull);
 	}
 }

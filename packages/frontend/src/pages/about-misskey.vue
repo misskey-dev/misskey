@@ -84,6 +84,12 @@
 					</div>
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
+				<FormSection>
+					<template #label>Special thanks</template>
+					<div style="text-align: center;">
+						<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="200" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
+					</div>
+				</FormSection>
 			</div>
 		</MkSpacer>
 	</div>
@@ -203,6 +209,7 @@ const patrons = [
 	'pixeldesu',
 	'あめ玉',
 	'氷月氷華里',
+	'Ebise Lutica',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
