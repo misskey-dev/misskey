@@ -131,18 +131,18 @@ export class SignupApiService {
 			if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
-			
+
 			// Check deleted username duplication
 			if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
 			const code = rndstr('a-z0-9', 16);
-		
+
 			// Generate hash of password
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
-		
+
 			await this.userPendingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
@@ -151,13 +151,13 @@ export class SignupApiService {
 				username: username,
 				password: hash,
 			});
-		
+
 			const link = `${this.config.url}/signup-complete/${code}`;
-		
+
 			this.emailService.sendEmail(emailAddress!, 'Signup',
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
-		
+
 			reply.code(204);
 			return;
 		} else {
