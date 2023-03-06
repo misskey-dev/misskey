@@ -101,74 +101,56 @@ export const paramDef = {
 		noExtractHashtags: { type: 'boolean', default: false },
 		noExtractEmojis: { type: 'boolean', default: false },
 		replyId: { type: 'string', format: 'misskey:id', nullable: true },
+		renoteId: { type: 'string', format: 'misskey:id', nullable: true },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true },
+
+		// anyOf内にバリデーションを書いても最初の一つしかチェックされない
+		// See https://github.com/misskey-dev/misskey/pull/10082
+		text: {
+			type: 'string',
+			minLength: 1,
+			maxLength: MAX_NOTE_TEXT_LENGTH,
+			nullable: false
+		},
+		fileIds: {
+			type: 'array',
+			uniqueItems: true,
+			minItems: 1,
+			maxItems: 16,
+			items: { type: 'string', format: 'misskey:id' },
+		},
+		mediaIds: {
+			type: 'array',
+			uniqueItems: true,
+			minItems: 1,
+			maxItems: 16,
+			items: { type: 'string', format: 'misskey:id' },
+		},
+		poll: {
+			type: 'object',
+			nullable: true,
+			properties: {
+				choices: {
+					type: 'array',
+					uniqueItems: true,
+					minItems: 2,
+					maxItems: 10,
+					items: { type: 'string', minLength: 1, maxLength: 50 },
+				},
+				multiple: { type: 'boolean' },
+				expiresAt: { type: 'integer', nullable: true },
+				expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
+			},
+			required: ['choices'],
+		},
 	},
+	// (re)note with text, files and poll are optional
 	anyOf: [
-		{
-			// (re)note with text, files and poll are optional
-			properties: {
-				text: { type: 'string', minLength: 1, maxLength: MAX_NOTE_TEXT_LENGTH, nullable: false },
-			},
-			required: ['text'],
-		},
-		{
-			// (re)note with files, text and poll are optional
-			properties: {
-				fileIds: {
-					type: 'array',
-					uniqueItems: true,
-					minItems: 1,
-					maxItems: 16,
-					items: { type: 'string', format: 'misskey:id' },
-				},
-			},
-			required: ['fileIds'],
-		},
-		{
-			// (re)note with files, text and poll are optional
-			properties: {
-				mediaIds: {
-					deprecated: true,
-					description: 'Use `fileIds` instead. If both are specified, this property is discarded.',
-					type: 'array',
-					uniqueItems: true,
-					minItems: 1,
-					maxItems: 16,
-					items: { type: 'string', format: 'misskey:id' },
-				},
-			},
-			required: ['mediaIds'],
-		},
-		{
-			// (re)note with poll, text and files are optional
-			properties: {
-				poll: {
-					type: 'object',
-					nullable: true,
-					properties: {
-						choices: {
-							type: 'array',
-							uniqueItems: true,
-							minItems: 2,
-							maxItems: 10,
-							items: { type: 'string', minLength: 1, maxLength: 50 },
-						},
-						multiple: { type: 'boolean' },
-						expiresAt: { type: 'integer', nullable: true },
-						expiredAfter: { type: 'integer', nullable: true, minimum: 1 },
-					},
-					required: ['choices'],
-				},
-			},
-			required: ['poll'],
-		},
-		{
-			// pure renote
-			properties: {
-				renoteId: { type: 'string', format: 'misskey:id', nullable: true },
-			},
-			required: ['renoteId'],
-		},
+		{ required: ['text'] },
+		{ required: ['renoteId'] },
+		{ required: ['fileIds'] },
+		{ required: ['mediaIds'] },
+		{ required: ['poll'] },
 	],
 } as const;
 

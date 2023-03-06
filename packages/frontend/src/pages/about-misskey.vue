@@ -85,8 +85,10 @@
 					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
 				</FormSection>
 				<FormSection>
-					<template #label>Credits</template>
-					<p>Misskeyで使われる画像の一部は、許可を得て「あの子がこっちを見てるメーカー」で作成したものが含まれます。</p>
+					<template #label>Special thanks</template>
+					<div style="text-align: center;">
+						<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="200" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
+					</div>
 				</FormSection>
 			</div>
 		</MkSpacer>
@@ -121,6 +123,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'ひとぅ',
 	icon: 'https://misskey-hub.net/patrons/8cc0d0a0a6d84c88bca1aedabf6ed5ab.jpg',
+}, {
+	name: 'ぱーこ',
+	icon: 'https://misskey-hub.net/patrons/79c6602ffade489e8df2fcf2c2bc5d9d.jpg',
 }];
 
 const patrons = [
@@ -203,6 +208,8 @@ const patrons = [
 	'ThatOneCalculator',
 	'pixeldesu',
 	'あめ玉',
+	'氷月氷華里',
+	'Ebise Lutica',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

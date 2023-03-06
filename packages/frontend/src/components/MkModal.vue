@@ -125,7 +125,7 @@ function onBgClick() {
 }
 
 if (type === 'drawer') {
-	maxHeight = (window.innerHeight - SCROLLBAR_THICKNESS) / 1.5;
+	maxHeight = window.innerHeight / 1.5;
 }
 
 const keymap = {
