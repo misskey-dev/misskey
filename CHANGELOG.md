@@ -15,6 +15,7 @@ You should also include the user name that made the change.
 ### Improvements
 - クリップ、チャンネルページに共有ボタンを追加
 - チャンネルでタイムライン上部に投稿フォームを表示するかどうかのオプションを追加
+- ブラウザでメディアプロキシ(/proxy)からファイルを保存した際に、なるべくオリジナルのファイル名を継承するように
 - ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
 - Identiconがローカルとリモートで同じになるように
   - これまでのIdenticonは異なる画像になります
