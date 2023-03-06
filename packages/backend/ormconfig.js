@@ -12,6 +12,7 @@ export default new DataSource({
 	password: config.db.pass,
 	database: config.db.db,
 	extra: config.db.extra,
+	ssl: config.db.ssl,
 	entities: entities,
 	migrations: ['migration/*.js'],
 });
