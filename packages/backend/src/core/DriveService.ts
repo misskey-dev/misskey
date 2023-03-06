@@ -319,11 +319,16 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
+				if (type === 'image/jpeg') {
 					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
-				} else if (['image/png'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
-				} else if (['image/svg+xml'].includes(type)) {
+				} else if (['image/webp', 'image/avif'].includes(type)) {
+					const stats = await img.stats();
+					if (stats.isOpaque) {
+						webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
+					} else {
+						webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
+					}
+				} else if (['image/png', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
@@ -749,7 +754,7 @@ export class DriveService {
 	}: UploadFromUrlArgs): Promise<DriveFile> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
 			const { filename: name } = await this.downloadService.downloadUrl(url, path);
