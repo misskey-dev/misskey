@@ -161,7 +161,7 @@ let visibleUsers = $ref([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
 }
-let reactionAcceptance = $ref(null);
+let reactionAcceptance = $ref(defaultStore.state.reactionAcceptance);
 let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
