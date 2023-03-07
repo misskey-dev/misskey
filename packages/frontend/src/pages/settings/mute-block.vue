@@ -1,10 +1,11 @@
 <template>
 <div class="_gaps_m">
-	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
+	<MkTab v-model="tab">
 		<option value="renoteMute">{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</option>
 		<option value="mute">{{ i18n.ts.mutedUsers }}</option>
 		<option value="block">{{ i18n.ts.blockedUsers }}</option>
 	</MkTab>
+
 	<div v-if="tab === 'renoteMute'">
 		<MkPagination :pagination="renoteMutingPagination">
 			<template #empty>
@@ -32,6 +33,7 @@
 			</template>
 		</MkPagination>
 	</div>
+
 	<div v-else-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
@@ -61,6 +63,7 @@
 			</template>
 		</MkPagination>
 	</div>
+
 	<div v-else-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
