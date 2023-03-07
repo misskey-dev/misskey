@@ -1,10 +1,40 @@
 <template>
 <div class="_gaps_m">
-	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
+	<MkTab v-model="tab">
+		<option value="renoteMute">{{ i18n.ts.mutedUsers }} ({{ i18n.ts.renote }})</option>
 		<option value="mute">{{ i18n.ts.mutedUsers }}</option>
 		<option value="block">{{ i18n.ts.blockedUsers }}</option>
 	</MkTab>
-	<div v-if="tab === 'mute'">
+
+	<div v-if="tab === 'renoteMute'">
+		<MkPagination :pagination="renoteMutingPagination">
+			<template #empty>
+				<div class="_fullinfo">
+					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<div>{{ i18n.ts.noUsers }}</div>
+				</div>
+			</template>
+
+			<template #default="{ items }">
+				<div class="_gaps_s">
+					<div v-for="item in items" :key="item.mutee.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedRenoteMuteItems.includes(item.id) }]">
+						<div :class="$style.userItemMain">
+							<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.mutee.id}`">
+								<MkUserCardMini :user="item.mutee"/>
+							</MkA>
+							<button class="_button" :class="$style.userToggle" @click="toggleRenoteMuteItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
+							<button class="_button" :class="$style.remove" @click="unrenoteMute(item.mutee, $event)"><i class="ti ti-x"></i></button>
+						</div>
+						<div v-if="expandedRenoteMuteItems.includes(item.id)" :class="$style.userItemSub">
+							<div>Muted at: <MkTime :time="item.createdAt" mode="detail"/></div>
+						</div>
+					</div>
+				</div>
+			</template>
+		</MkPagination>
+	</div>
+
+	<div v-else-if="tab === 'mute'">
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -33,7 +63,8 @@
 			</template>
 		</MkPagination>
 	</div>
-	<div v-if="tab === 'block'">
+
+	<div v-else-if="tab === 'block'">
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -77,7 +108,12 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os';
 
-let tab = $ref('mute');
+let tab = $ref('renoteMute');
+
+const renoteMutingPagination = {
+	endpoint: 'renote-mute/list' as const,
+	limit: 10,
+};
 
 const mutingPagination = {
 	endpoint: 'mute/list' as const,
@@ -89,8 +125,20 @@ const blockingPagination = {
 	limit: 10,
 };
 
+let expandedRenoteMuteItems = $ref([]);
 let expandedMuteItems = $ref([]);
 let expandedBlockItems = $ref([]);
+
+async function unrenoteMute(user, ev) {
+	os.popupMenu([{
+		text: i18n.ts.renoteUnmute,
+		icon: 'ti ti-x',
+		action: async () => {
+			await os.apiWithDialog('renote-mute/delete', { userId: user.id });
+			//role.users = role.users.filter(u => u.id !== user.id);
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 
 async function unmute(user, ev) {
 	os.popupMenu([{
@@ -112,6 +160,14 @@ async function unblock(user, ev) {
 			//role.users = role.users.filter(u => u.id !== user.id);
 		},
 	}], ev.currentTarget ?? ev.target);
+}
+
+async function toggleRenoteMuteItem(item) {
+	if (expandedRenoteMuteItems.includes(item.id)) {
+		expandedRenoteMuteItems = expandedRenoteMuteItems.filter(x => x !== item.id);
+	} else {
+		expandedRenoteMuteItems.push(item.id);
+	}
 }
 
 async function toggleMuteItem(item) {
