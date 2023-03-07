@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
+- enhance(client): DM作成時にメンションも含むように
 
 ### Bugfixes
 - 
