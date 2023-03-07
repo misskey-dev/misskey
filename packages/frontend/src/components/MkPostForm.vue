@@ -435,7 +435,7 @@ function addVisibleUser() {
 	os.selectUser().then(user => {
 		pushVisibleUser(user);
 
-		if (!text.includes(`@${user.username}`)) {
+		if (!text.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
 			text = `@${Acct.toString(user)} ${text}`;
 		}
 	});
