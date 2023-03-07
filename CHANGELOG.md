@@ -14,6 +14,7 @@ You should also include the user name that made the change.
 
 ### Improvements
 - ノートごとに絵文字リアクションを受け取るか設定できるように
+- enhance(client): DM作成時にメンションも含むように
 
 ### Bugfixes
 -
