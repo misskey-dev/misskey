@@ -43,7 +43,7 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./packages/backend/coverage/coverage-final.json
+        files: ./packages/frontend/coverage/coverage-final.json
 
   e2e:
     runs-on: ubuntu-latest
