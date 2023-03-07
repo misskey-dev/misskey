@@ -3,12 +3,12 @@
 	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ $ts.sensitive }}</b>
-			<span style="display: block;">{{ $ts.clickToShow }}</span>
+			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</div>
 </div>
-<div v-else :class="$style.visible" :style="defaultStore.state.darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'">
+<div v-else :class="$style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'">
 	<a
 		:class="$style.imageContainer"
 		:href="image.url"
@@ -16,11 +16,11 @@
 	>
 		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
 	</a>
-	<div :class="$style.bannerContainer">
-		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.banner">GIF</div>
-		<div v-if="image.comment" :class="$style.banner">ALT</div>
+	<div :class="$style.indicators">
+		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
+		<div v-if="image.comment" :class="$style.indicator">ALT</div>
 	</div>
-	<button v-tooltip="$ts.hide" :class="$style.hide" class="_button" @click="hide = true"><i class="ti ti-eye-off"></i></button>
+	<button v-tooltip="i18n.ts.hide" :class="$style.hide" class="_button" @click="hide = true"><i class="ti ti-eye-off"></i></button>
 </div>
 </template>
 
@@ -30,6 +30,7 @@ import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	image: misskey.entities.DriveFile;
@@ -37,6 +38,7 @@ const props = defineProps<{
 }>();
 
 let hide = $ref(true);
+let darkMode = $ref(defaultStore.state.darkMode);
 
 const url = (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
@@ -111,7 +113,7 @@ watch(() => props.image, () => {
 	background-repeat: no-repeat;
 }
 
-.bannerContainer {
+.indicators {
 	display: inline-flex;
 	position: absolute;
 	top: 12px;
@@ -123,7 +125,7 @@ watch(() => props.image, () => {
 	gap: 6px;
 }
 
-.banner {
+.indicator {
 	/* Hardcode to black because either --bg or --fg makes it hard to read in dark/light mode */
 	background-color: black;
 	border-radius: 6px;
