@@ -352,6 +352,9 @@ onUnmounted(() => {
 				> .roles {
 					padding: 24px 24px 0 154px;
 					font-size: 0.95em;
+					display: flex;
+					flex-wrap: wrap;
+					gap: 8px;
 
 					> .role {
 						border: solid 1px var(--color, var(--divider));
@@ -493,7 +496,7 @@ onUnmounted(() => {
 
 				> .roles {
 					padding: 16px 16px 0 16px;
-					text-align: center;
+					justify-content: center;
 				}
 
 				> .description {

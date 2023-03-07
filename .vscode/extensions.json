@@ -1,9 +1,11 @@
 {
 	"recommendations": [
 		"editorconfig.editorconfig",
-		"eg2.vscode-npm-script",
 		"dbaeumer.vscode-eslint",
 		"Vue.volar",
-		"Vue.vscode-typescript-vue-plugin"
+		"Vue.vscode-typescript-vue-plugin",
+		"Orta.vscode-jest",
+		"dbaeumer.vscode-eslint",
+		"mrmlnc.vscode-json5"
 	]
 }

@@ -61,7 +61,6 @@ function post() {
 		channel: {
 			id: props.column.channelId,
 		},
-		instant: true,
 	});
 }
 
