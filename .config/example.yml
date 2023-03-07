@@ -154,3 +154,6 @@ signToActivityPubGet: true
 
 # Upload or download file size limits (bytes)
 #maxFileSize: 262144000
+
+# Value of Content-Security-Policy header
+#contentSecurityPolicy: "script-src 'self' 'unsafe-eval' https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/; base-uri 'self'; object-src 'self';"
