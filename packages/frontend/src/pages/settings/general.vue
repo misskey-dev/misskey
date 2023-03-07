@@ -211,6 +211,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div style="margin: 8px 0 0 0; font-size: 1.5em;"><Mfm :key="emojiStyle" text="🍮🍦🍭🍩🍰🍫🍬🥞🍪"/></div>
 			</div>
 
+			<MkSelect v-model="customFont">
+				<template #label>{{ i18n.ts.customFont }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+				<option :value="null">{{ i18n.ts.default }}</option>
+				<option v-for="[name, font] of Object.entries(fontList)" :value="name">{{ font.name }}</option>
+			</MkSelect>
+
 			<MkRadios v-model="fontSize">
 				<template #label>{{ i18n.ts.fontSize }}</template>
 				<option :value="null"><span style="font-size: 14px;">Aa</span></option>
@@ -336,6 +342,7 @@ import { instance } from '@/instance.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { reloadAsk } from '@/scripts/reload-ask.js';
 import { i18n } from '@/i18n.js';
+import { fontList } from '@/scripts/font';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events.js';
@@ -368,6 +375,7 @@ const showReactionsCount = computed(defaultStore.makeGetterSetter('showReactions
 const enableQuickAddMfmFunction = computed(defaultStore.makeGetterSetter('enableQuickAddMfmFunction'));
 const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const menuStyle = computed(defaultStore.makeGetterSetter('menuStyle'));
+const customFont = computed(defaultStore.makeGetterSetter('customFont'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));

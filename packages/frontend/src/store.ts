@@ -345,6 +345,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	customFont: {
+		where: 'device',
+		default: null as null | string,
+	},
 	instanceTicker: {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always',
