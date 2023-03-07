@@ -10,7 +10,7 @@ import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch } from 'vu
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
-type Captcha = {
+export type Captcha = {
 	render(container: string | Node, options: {
 		readonly [_ in 'sitekey' | 'theme' | 'type' | 'size' | 'tabindex' | 'callback' | 'expired' | 'expired-callback' | 'error-callback' | 'endpoint']?: unknown;
 	}): string;
