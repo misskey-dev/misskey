@@ -4,7 +4,8 @@
 	"scripts": {
 		"watch": "vite",
 		"build": "vite build",
-		"vitest": "vitest",
+		"test": "vitest --run",
+		"test-and-coverage": "vitest --run --coverage",
 		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -87,6 +88,7 @@
 		"@types/ws": "8.5.4",
 		"@typescript-eslint/eslint-plugin": "5.53.0",
 		"@typescript-eslint/parser": "5.53.0",
+		"@vitest/coverage-c8": "^0.29.2",
 		"@vue/runtime-core": "3.2.47",
 		"cross-env": "7.0.3",
 		"cypress": "12.7.0",
