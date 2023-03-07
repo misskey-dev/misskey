@@ -1,4 +1,5 @@
 import cluster from 'node:cluster';
+import os from 'node:os';
 import * as fs from 'node:fs';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import Fastify, { FastifyInstance } from 'fastify';
@@ -70,6 +71,12 @@ export class ServerService implements OnApplicationShutdown {
 				done();
 			});
 		}
+
+		const hostname = os.hostname();
+		fastify.addHook('onRequest', (request, reply, done) => {
+			reply.header('x-worker-host', hostname);
+			done();
+		});
 
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.fileServerService.createServer);
