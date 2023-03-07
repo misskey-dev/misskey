@@ -13,14 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import FormLink from '@/components/form/link.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import MkInput from '@/components/MkInput.vue';
 import { deckStore } from '@/ui/deck/deck-store';
-import * as os from '@/os';
-import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 

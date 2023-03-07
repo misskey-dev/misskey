@@ -115,7 +115,7 @@ export class NotePiningService {
 
 		const target = `${this.config.url}/users/${user.id}/collections/featured`;
 		const item = `${this.config.url}/notes/${noteId}`;
-		const content = this.apRendererService.renderActivity(isAddition ? this.apRendererService.renderAdd(user, target, item) : this.apRendererService.renderRemove(user, target, item));
+		const content = this.apRendererService.addContext(isAddition ? this.apRendererService.renderAdd(user, target, item) : this.apRendererService.renderRemove(user, target, item));
 
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);

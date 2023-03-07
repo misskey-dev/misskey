@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, onMounted, onUnmounted, ref } from 'vue';
+import { inject } from 'vue';
 import { deviceKind } from '@/scripts/device-kind';
 
 const props = withDefaults(defineProps<{

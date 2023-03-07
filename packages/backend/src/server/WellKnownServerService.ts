@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
+import { IsNull } from 'typeorm';
 import vary from 'vary';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';

@@ -47,7 +47,7 @@
 						</MkPagination>
 					</MkContainer>
 				</div>
-				<MkError v-else-if="error" @retry="fetch()"/>
+				<MkError v-else-if="error" @retry="fetchPost()"/>
 				<MkLoading v-else/>
 			</Transition>
 		</div>
@@ -56,11 +56,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, inject, watch } from 'vue';
+import { computed, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
-import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';

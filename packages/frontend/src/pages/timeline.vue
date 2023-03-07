@@ -8,7 +8,7 @@
 
 			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 			<div :class="$style.tl">
-				<XTimeline
+				<MkTimeline
 					ref="tlComponent"
 					:key="src"
 					:src="src"
@@ -22,8 +22,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch } from 'vue';
-import XTimeline from '@/components/MkTimeline.vue';
+import { defineAsyncComponent, computed, watch, provide } from 'vue';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
@@ -33,6 +34,8 @@ import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+provide('shouldOmitHeaderTitle', true);
+
 const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
@@ -41,7 +44,7 @@ const keymap = {
 	't': focus,
 };
 
-const tlComponent = $shallowRef<InstanceType<typeof XTimeline>>();
+const tlComponent = $shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = $shallowRef<HTMLElement>();
 
 let queue = $ref(0);
@@ -55,7 +58,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	scroll(rootEl, { top: 0 });
+	if (rootEl) scroll(rootEl, { top: 0 });
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
@@ -80,7 +83,9 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await os.api('channels/followed');
+	const channels = await os.api('channels/followed', {
+		limit: 100,
+	});
 	const items = channels.map(channel => ({
 		type: 'link' as const,
 		text: channel.name,
@@ -148,7 +153,7 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
-}]);
+}] as Tab[]);
 
 const headerTabsWhenNotLogin = $computed(() => [
 	...(isLocalTimelineAvailable ? [{
@@ -163,7 +168,7 @@ const headerTabsWhenNotLogin = $computed(() => [
 		icon: 'ti ti-whirl',
 		iconOnly: true,
 	}] : []),
-]);
+] as Tab[]);
 
 definePageMetadata(computed(() => ({
 	title: i18n.ts.timeline,
@@ -177,6 +182,11 @@ definePageMetadata(computed(() => ({
 	top: calc(var(--stickyTop, 0px) + 16px);
 	z-index: 1000;
 	width: 100%;
+	margin: calc(-0.675em - 8px) 0;
+
+	&:first-child {
+		margin-top: calc(-0.675em - 8px - var(--margin));
+	}
 
 	> button {
 		display: block;

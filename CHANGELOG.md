@@ -2,12 +2,168 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
+- 
 
 ### Bugfixes
 -
 
 You should also include the user name that made the change.
 -->
+
+## 13.9.1 (2023/03/03)
+
+### Bugfixes
+- ノートに添付したファイルが表示されない場合があるのを修正
+
+## 13.9.0 (2023/03/03)
+
+### Improvements
+- 時限ロール
+- アンテナでCWも検索対象にするように
+- ノートの操作部をホバー時のみ表示するオプションを追加
+- サウンドを追加
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- 外部メディアプロキシ使用時にアバタークロップができない問題を修正
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
+- プッシュ通知でカスタム絵文字リアクションを表示できなかった問題を修正
+
+## 13.8.1 (2023/02/26)
+
+### Bugfixes
+- モバイルでドロワーメニューが表示されない問題を修正
+
+## 13.8.0 (2023/02/26)
+
+### Improvements
+- チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
+- renoteした際の表示を改善
+- バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
+- enhance(client): MkUrlPreviewの閉じるボタンを見やすく
+- Add dialog to remove follower
+- enhance(client): improve clip menu ux
+- 検索画面の統合
+- enhance(client): ノートメニューからユーザーメニューを開けるように
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
+
+### Bugfixes
+- Windows環境でswcを使うと正しくビルドできない問題の修正
+- fix(client): Android ChromeでPWAとしてインストールできない問題を修正
+- 未知のユーザーが deleteActor されたら処理をスキップする
+- fix(server): notes/createで、fileIdsと見つかったファイルの数が異なる場合はエラーにする
+- fix(server): notes/createのバリデーションが機能していないのを修正
+- fix(server): エラーのスタックトレースは返さないように
+
+## 13.7.5 (2023/02/24)
+
+### Note
+13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
+
+### Bugfixes
+- 全ての通知が削除されてしまうのを修正
+
+## 13.7.3 (2023/02/23)
+
+### Note
+~~13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**~~
+
+### Improvements
+
+### Bugfixes
+- Client: 「キャッシュを削除」した後、ローカルのカスタム絵文字が表示されなくなるされなくなる問題を修正
+- Client: 通知設定画面で以前からグループの招待を有効化していた場合、通知の表示に失敗する問題の修正
+- Client: 通知設定画面に古いトグルが残っていた問題を修正
+
+## 13.7.2 (2023/02/23)
+
+### Note
+13.7.0以前からアップデートする場合は全ての通知が削除されます。
+
+### Improvements
+- enhance: make pwa icon maskable
+- chore(client): tweak custom emoji size
+
+### Bugfixes
+- マイグレーションが失敗することがあるのを修正
+
+## 13.7.1 (2023/02/23)
+
+### Improvements
+- pnpm buildではswcを使うように
+
+### Bugfixes
+- NODE_ENV=productionでビルドできないのを修正
+
+## 13.7.0 (2023/02/22)
+
+### Changes
+- チャット機能が削除されました
+
+### Improvements
+- Server: URLプレビュー（summaly）はプロキシを通すように
+- Client: 2FA設定のUIをまともにした
+- セキュリティキーの名前を変更できるように
+- enhance(client): add quiz preset for play
+- 広告開始時期を設定できるように
+- みつけるで公開ロール一覧とそのメンバーを閲覧できるように
+- enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
+- enhance(client): make possible to reload page of window
+
+### Bugfixes
+- ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
+- fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
+- 管理画面の広告を10個以上見えるように
+- Moderation note が保存できない
+- ユーザーのハッシュタグ検索が機能していないのを修正
+
+## 13.6.1 (2023/02/12)
+
+### Improvements
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+- Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
+- enhance: レートリミットを0%にできるように
+- チャンネル内Renoteを行えるように
+
+### Bugfixes
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
+
+## 13.6.0 (2023/02/11)
+
+### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
+  * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
+- ユーザーページのノート一覧をタブとして分離
+- コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
+- enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
+- 一部のMFM構文をopt-outに
+
+### Bugfixes
+- Client: ユーザーページでタブがほとんど見れないことがないように
+
+## 13.5.6 (2023/02/10)
+
+### Improvements
+- 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
+- /auth/のUIをアップデート
+- 利用規約同意UIの調整
+- クロップ時の質問を分かりやすく
+
+### Bugfixes
+- fix: prevent clipping audio plyr's tooltip
+
 ## 13.5.4 (2023/02/09)
 
 ### Improvements

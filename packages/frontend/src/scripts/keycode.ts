@@ -16,18 +16,3 @@ export const aliases = {
 	'right': 'ArrowRight',
 	'plus': ['NumpadAdd', 'Semicolon'],
 };
-
-/*!
-* Programmatically add the following
-*/
-
-// lower case chars
-for (let i = 97; i < 123; i++) {
-	const char = String.fromCharCode(i);
-	aliases[char] = `Key${char.toUpperCase()}`;
-}
-
-// numbers
-for (let i = 0; i < 10; i++) {
-	aliases[i] = [`Numpad${i}`, `Digit${i}`];
-}

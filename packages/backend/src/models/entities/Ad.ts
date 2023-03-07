@@ -18,6 +18,13 @@ export class Ad {
 	})
 	public expiresAt: Date;
 
+	@Index()
+	@Column('timestamp with time zone', {
+		comment: 'The expired date of the Ad.',
+		default: () => 'now()',
+	})
+	public startsAt: Date;
+
 	@Column('varchar', {
 		length: 32, nullable: false,
 	})

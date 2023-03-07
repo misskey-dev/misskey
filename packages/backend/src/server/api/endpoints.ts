@@ -1,4 +1,5 @@
 import type { Schema } from '@/misc/schema.js';
+import { RolePolicies } from '@/core/RoleService.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
 import * as ep___admin_abuseUserReports from './endpoints/admin/abuse-user-reports.js';
@@ -65,6 +66,7 @@ import * as ep___admin_roles_update from './endpoints/admin/roles/update.js';
 import * as ep___admin_roles_assign from './endpoints/admin/roles/assign.js';
 import * as ep___admin_roles_unassign from './endpoints/admin/roles/unassign.js';
 import * as ep___admin_roles_updateDefaultPolicies from './endpoints/admin/roles/update-default-policies.js';
+import * as ep___admin_roles_users from './endpoints/admin/roles/users.js';
 import * as ep___announcements from './endpoints/announcements.js';
 import * as ep___antennas_create from './endpoints/antennas/create.js';
 import * as ep___antennas_delete from './endpoints/antennas/delete.js';
@@ -169,6 +171,7 @@ import * as ep___i_2fa_keyDone from './endpoints/i/2fa/key-done.js';
 import * as ep___i_2fa_passwordLess from './endpoints/i/2fa/password-less.js';
 import * as ep___i_2fa_registerKey from './endpoints/i/2fa/register-key.js';
 import * as ep___i_2fa_register from './endpoints/i/2fa/register.js';
+import * as ep___i_2fa_updateKey from './endpoints/i/2fa/update-key.js';
 import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
 import * as ep___i_apps from './endpoints/i/apps.js';
@@ -194,7 +197,6 @@ import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
 import * as ep___i_pin from './endpoints/i/pin.js';
-import * as ep___i_readAllMessagingMessages from './endpoints/i/read-all-messaging-messages.js';
 import * as ep___i_readAllUnreadNotes from './endpoints/i/read-all-unread-notes.js';
 import * as ep___i_readAnnouncement from './endpoints/i/read-announcement.js';
 import * as ep___i_regenerateToken from './endpoints/i/regenerate-token.js';
@@ -211,17 +213,11 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
-import * as ep___i_userGroupInvites from './endpoints/i/user-group-invites.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
-import * as ep___messaging_history from './endpoints/messaging/history.js';
-import * as ep___messaging_messages from './endpoints/messaging/messages.js';
-import * as ep___messaging_messages_create from './endpoints/messaging/messages/create.js';
-import * as ep___messaging_messages_delete from './endpoints/messaging/messages/delete.js';
-import * as ep___messaging_messages_read from './endpoints/messaging/messages/read.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
@@ -282,6 +278,9 @@ import * as ep___flash_myLikes from './endpoints/flash/my-likes.js';
 import * as ep___ping from './endpoints/ping.js';
 import * as ep___pinnedUsers from './endpoints/pinned-users.js';
 import * as ep___promo_read from './endpoints/promo/read.js';
+import * as ep___roles_list from './endpoints/roles/list.js';
+import * as ep___roles_show from './endpoints/roles/show.js';
+import * as ep___roles_users from './endpoints/roles/users.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -299,18 +298,6 @@ import * as ep___users_followers from './endpoints/users/followers.js';
 import * as ep___users_following from './endpoints/users/following.js';
 import * as ep___users_gallery_posts from './endpoints/users/gallery/posts.js';
 import * as ep___users_getFrequentlyRepliedUsers from './endpoints/users/get-frequently-replied-users.js';
-import * as ep___users_groups_create from './endpoints/users/groups/create.js';
-import * as ep___users_groups_delete from './endpoints/users/groups/delete.js';
-import * as ep___users_groups_invitations_accept from './endpoints/users/groups/invitations/accept.js';
-import * as ep___users_groups_invitations_reject from './endpoints/users/groups/invitations/reject.js';
-import * as ep___users_groups_invite from './endpoints/users/groups/invite.js';
-import * as ep___users_groups_joined from './endpoints/users/groups/joined.js';
-import * as ep___users_groups_leave from './endpoints/users/groups/leave.js';
-import * as ep___users_groups_owned from './endpoints/users/groups/owned.js';
-import * as ep___users_groups_pull from './endpoints/users/groups/pull.js';
-import * as ep___users_groups_show from './endpoints/users/groups/show.js';
-import * as ep___users_groups_transfer from './endpoints/users/groups/transfer.js';
-import * as ep___users_groups_update from './endpoints/users/groups/update.js';
 import * as ep___users_lists_create from './endpoints/users/lists/create.js';
 import * as ep___users_lists_delete from './endpoints/users/lists/delete.js';
 import * as ep___users_lists_list from './endpoints/users/lists/list.js';
@@ -398,6 +385,7 @@ const eps = [
 	['admin/roles/assign', ep___admin_roles_assign],
 	['admin/roles/unassign', ep___admin_roles_unassign],
 	['admin/roles/update-default-policies', ep___admin_roles_updateDefaultPolicies],
+	['admin/roles/users', ep___admin_roles_users],
 	['announcements', ep___announcements],
 	['antennas/create', ep___antennas_create],
 	['antennas/delete', ep___antennas_delete],
@@ -502,6 +490,7 @@ const eps = [
 	['i/2fa/password-less', ep___i_2fa_passwordLess],
 	['i/2fa/register-key', ep___i_2fa_registerKey],
 	['i/2fa/register', ep___i_2fa_register],
+	['i/2fa/update-key', ep___i_2fa_updateKey],
 	['i/2fa/remove-key', ep___i_2fa_removeKey],
 	['i/2fa/unregister', ep___i_2fa_unregister],
 	['i/apps', ep___i_apps],
@@ -527,7 +516,6 @@ const eps = [
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
 	['i/pin', ep___i_pin],
-	['i/read-all-messaging-messages', ep___i_readAllMessagingMessages],
 	['i/read-all-unread-notes', ep___i_readAllUnreadNotes],
 	['i/read-announcement', ep___i_readAnnouncement],
 	['i/regenerate-token', ep___i_regenerateToken],
@@ -544,17 +532,11 @@ const eps = [
 	['i/unpin', ep___i_unpin],
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
-	['i/user-group-invites', ep___i_userGroupInvites],
 	['i/webhooks/create', ep___i_webhooks_create],
 	['i/webhooks/list', ep___i_webhooks_list],
 	['i/webhooks/show', ep___i_webhooks_show],
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
-	['messaging/history', ep___messaging_history],
-	['messaging/messages', ep___messaging_messages],
-	['messaging/messages/create', ep___messaging_messages_create],
-	['messaging/messages/delete', ep___messaging_messages_delete],
-	['messaging/messages/read', ep___messaging_messages_read],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
 	['miauth/gen-token', ep___miauth_genToken],
@@ -615,6 +597,9 @@ const eps = [
 	['ping', ep___ping],
 	['pinned-users', ep___pinnedUsers],
 	['promo/read', ep___promo_read],
+	['roles/list', ep___roles_list],
+	['roles/show', ep___roles_show],
+	['roles/users', ep___roles_users],
 	['request-reset-password', ep___requestResetPassword],
 	['reset-db', ep___resetDb],
 	['reset-password', ep___resetPassword],
@@ -632,18 +617,6 @@ const eps = [
 	['users/following', ep___users_following],
 	['users/gallery/posts', ep___users_gallery_posts],
 	['users/get-frequently-replied-users', ep___users_getFrequentlyRepliedUsers],
-	['users/groups/create', ep___users_groups_create],
-	['users/groups/delete', ep___users_groups_delete],
-	['users/groups/invitations/accept', ep___users_groups_invitations_accept],
-	['users/groups/invitations/reject', ep___users_groups_invitations_reject],
-	['users/groups/invite', ep___users_groups_invite],
-	['users/groups/joined', ep___users_groups_joined],
-	['users/groups/leave', ep___users_groups_leave],
-	['users/groups/owned', ep___users_groups_owned],
-	['users/groups/pull', ep___users_groups_pull],
-	['users/groups/show', ep___users_groups_show],
-	['users/groups/transfer', ep___users_groups_transfer],
-	['users/groups/update', ep___users_groups_update],
 	['users/lists/create', ep___users_lists_create],
 	['users/lists/delete', ep___users_lists_delete],
 	['users/lists/list', ep___users_lists_list],
@@ -697,7 +670,7 @@ export interface IEndpointMeta {
 	 */
 	readonly requireAdmin?: boolean;
 
-	readonly requireRolePolicy?: string;
+	readonly requireRolePolicy?: keyof RolePolicies;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ
@@ -768,8 +741,8 @@ export interface IEndpoint {
 const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	return {
 		name: name,
-		meta: ep.meta ?? {},
-		params: ep.paramDef,
+		get meta() { return ep.meta ?? {}; },
+		get params() { return ep.paramDef; },
 	};
 });
 

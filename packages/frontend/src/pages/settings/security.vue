@@ -5,11 +5,8 @@
 		<MkButton primary @click="change()">{{ i18n.ts.changePassword }}</MkButton>
 	</FormSection>
 
-	<FormSection>
-		<template #label>{{ i18n.ts.twoStepAuthentication }}</template>
-		<X2fa/>
-	</FormSection>
-	
+	<X2fa/>
+
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
 		<MkPagination :pagination="pagination" disable-auto-load>
@@ -56,18 +53,21 @@ async function change() {
 	const { canceled: canceled1, result: currentPassword } = await os.inputText({
 		title: i18n.ts.currentPassword,
 		type: 'password',
+		autocomplete: 'current-password',
 	});
 	if (canceled1) return;
 
 	const { canceled: canceled2, result: newPassword } = await os.inputText({
 		title: i18n.ts.newPassword,
 		type: 'password',
+		autocomplete: 'new-password',
 	});
 	if (canceled2) return;
 
 	const { canceled: canceled3, result: newPassword2 } = await os.inputText({
 		title: i18n.ts.newPasswordRetype,
 		type: 'password',
+		autocomplete: 'new-password',
 	});
 	if (canceled3) return;
 
@@ -109,7 +109,7 @@ definePageMetadata({
 
 <style lang="scss" scoped>
 .timnmucd {
-	padding: 16px;
+	padding: 12px;
 
 	&:first-child {
 		border-top-left-radius: 6px;

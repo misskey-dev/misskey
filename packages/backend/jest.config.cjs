@@ -20,7 +20,7 @@ module.exports = {
 	// collectCoverage: false,
 
 	// An array of glob patterns indicating a set of files for which coverage information should be collected
-	collectCoverageFrom: ['src/**/*.ts'],
+	collectCoverageFrom: ['src/**/*.ts', '!src/**/*.test.ts'],
 
 	// The directory where Jest should output its coverage files
 	coverageDirectory: "coverage",
@@ -83,8 +83,15 @@ module.exports = {
 
 	// A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
 	moduleNameMapper: {
-		"^@/(.*?).js": "<rootDir>/src/$1.ts",
-		'^(\\.{1,2}/.*)\\.js$': '$1',
+		// Do not resolve .wasm.js to .wasm by the rule below
+		'^(.+)\\.wasm\\.js$': '$1.wasm.js',
+		// SWC converts @/foo/bar.js to `../../src/foo/bar.js`, and then this rule
+		// converts it again to `../../src/foo/bar` which then can be resolved to
+		// `.ts` files.
+		// See https://github.com/swc-project/jest/issues/64#issuecomment-1029753225
+		// TODO: Use `--allowImportingTsExtensions` on TypeScript 5.0 so that we can
+		// directly import `.ts` files without this hack.
+		'^((?:\\.{1,2}|[A-Z:])*/.*)\\.js$': '$1',
 	},
 
 	// An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -112,7 +119,7 @@ module.exports = {
 	// resetModules: false,
 
 	// A path to a custom resolver
-	resolver: './jest-resolver.cjs',
+	// resolver: './jest-resolver.cjs',
 
 	// Automatically restore mock state between every test
 	restoreMocks: true,
@@ -152,7 +159,8 @@ module.exports = {
 	// The glob patterns Jest uses to detect test files
 	testMatch: [
 		"<rootDir>/test/unit/**/*.ts",
-		//"<rootDir>/test/e2e/**/*.ts"
+		"<rootDir>/src/**/*.test.ts",
+		"<rootDir>/test/e2e/**/*.ts",
 	],
 
 	// An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
@@ -199,4 +207,13 @@ module.exports = {
 	// watchman: true,
 
 	extensionsToTreatAsEsm: ['.ts'],
+
+	testTimeout: 60000,
+
+	// Let Jest kill the test worker whenever it grows too much
+	// (It seems there's a known memory leak issue in Node.js' vm.Script used by Jest)
+	// https://github.com/facebook/jest/issues/11956
+	maxWorkers: 1, // Make it use worker (that can be killed and restarted)
+	logHeapUsage: true, // To debug when out-of-memory happens on CI
+	workerIdleMemoryLimit: '1GiB', // Limit the worker to 1GB (GitHub Workflows dies at 2GB)
 };

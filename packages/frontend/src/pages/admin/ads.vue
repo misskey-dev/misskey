@@ -29,6 +29,9 @@
 					<MkInput v-model="ad.ratio" type="number">
 						<template #label>{{ i18n.ts.ratio }}</template>
 					</MkInput>
+					<MkInput v-model="ad.startsAt" type="datetime-local">
+						<template #label>{{ i18n.ts.startingperiod }}</template>
+					</MkInput>
 					<MkInput v-model="ad.expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expiration }}</template>
 					</MkInput>
@@ -41,6 +44,9 @@
 					<MkButton class="button" inline danger @click="remove(ad)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 				</div>
 			</div>
+			<MkButton class="button" @click="more()">
+				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
+			</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -60,11 +66,20 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 let ads: any[] = $ref([]);
 
+// ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
+const localTime = new Date();
+const localTimeDiff = localTime.getTimezoneOffset() * 60 * 1000;
+
 os.api('admin/ad/list').then(adsResponse => {
 	ads = adsResponse.map(r => {
+		const exdate = new Date(r.expiresAt);
+		const stdate = new Date(r.startsAt);
+		exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
+		stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
 		return {
 			...r,
-			expiresAt: new Date(r.expiresAt).toISOString().slice(0, 16),
+			expiresAt: exdate.toISOString().slice(0, 16),
+			startsAt: stdate.toISOString().slice(0, 16),
 		};
 	});
 });
@@ -79,6 +94,7 @@ function add() {
 		url: '',
 		imageUrl: null,
 		expiresAt: null,
+		startsAt: null,
 	});
 }
 
@@ -100,15 +116,31 @@ function save(ad) {
 		os.apiWithDialog('admin/ad/create', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
+			startsAt: new Date(ad.startsAt).getTime(),
 		});
 	} else {
 		os.apiWithDialog('admin/ad/update', {
 			...ad,
 			expiresAt: new Date(ad.expiresAt).getTime(),
+			startsAt: new Date(ad.startsAt).getTime(),
 		});
 	}
 }
-
+function more() {
+	os.api('admin/ad/list', { untilId: ads.reduce((acc, ad) => ad.id != null ? ad : acc).id }).then(adsResponse => {
+		ads = ads.concat(adsResponse.map(r => {
+			const exdate = new Date(r.expiresAt);
+			const stdate = new Date(r.startsAt);
+			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
+			stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
+			return {
+				...r,
+				expiresAt: exdate.toISOString().slice(0, 16),
+				startsAt: stdate.toISOString().slice(0, 16),
+			};
+		}));
+	});
+}
 const headerActions = $computed(() => [{
 	asFullButton: true,
 	icon: 'ti ti-plus',

@@ -371,11 +371,6 @@ pushNotificationNotSupported: "Din webbläsare eller instans har inte stöd för
 _email:
   _follow:
     title: "följde dig"
-_mfm:
-  mention: "Nämn"
-  quote: "Citat"
-  emoji: "Anpassa emoji"
-  search: "Sök"
 _channel:
   setBanner: "Välj banner"
   removeBanner: "Ta bort banner"
@@ -388,12 +383,13 @@ _sfx:
   notification: "Notifikationer"
   chat: "Chatt"
   antenna: "Antenner"
+_2fa:
+  renewTOTPCancel: "Nej tack"
 _antennaSources:
   all: "Alla noter"
   homeTimeline: "Noter från följda användare"
   users: "Noter från specifika användare"
   userList: "Noter från en specificerad lista av användare"
-  userGroup: "Noter från användare i en specificerad grupp"
 _widgets:
   profile: "Profil"
   instanceInfo: "Instansinformation"

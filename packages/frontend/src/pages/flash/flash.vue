@@ -27,11 +27,11 @@
 						</div>
 					</div>
 				</Transition>
-				<MkFolder class="_margin">
+				<MkFolder :default-open="false" :max-height="280" class="_margin">
 					<template #icon><i class="ti ti-code"></i></template>
 					<template #label>{{ i18n.ts._play.viewSource }}</template>
 
-					<MkTextarea :model-value="flash.script" readonly tall class="_monospace" spellcheck="false"></MkTextarea>
+					<MkCode :code="flash.script" :inline="false" class="_monospace"/>
 				</MkFolder>
 				<div :class="$style.footer">
 					<Mfm :text="`By @${flash.user.username}`"/>
@@ -52,21 +52,17 @@
 
 <script lang="ts" setup>
 import { computed, onDeactivated, onUnmounted, Ref, ref, watch } from 'vue';
-import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { Interpreter, Parser, values } from '@syuilo/aiscript';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { url } from '@/config';
-import MkFollowButton from '@/components/MkFollowButton.vue';
-import MkContainer from '@/components/MkContainer.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkAsUi from '@/components/MkAsUi.vue';
-import { AsUiComponent, AsUiRoot, patch, registerAsUiLib, render } from '@/scripts/aiscript/ui';
+import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import MkFolder from '@/components/MkFolder.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import MkCode from '@/components/MkCode.vue';
 
 const props = defineProps<{
 	id: string;

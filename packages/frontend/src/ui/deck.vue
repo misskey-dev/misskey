@@ -4,7 +4,7 @@
 
 	<div :class="$style.main">
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value]" @contextmenu.self.prevent="onContextmenu">
+		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value, { [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
 			<template v-for="ids in layout">
 				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 				<section
@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, provide, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store';
@@ -98,6 +98,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
+import { deviceKind } from '@/scripts/device-kind';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 mainRouter.navHook = (path, flag): boolean => {
@@ -115,6 +116,7 @@ window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
 });
 
+const snapScroll = deviceKind === 'smartphone' || deviceKind === 'tablet';
 const drawerMenuShowing = ref(false);
 
 const route = 'TODO';
@@ -297,9 +299,14 @@ async function deleteProfile() {
 			margin-right: auto;
 		}
 	}
+
+	&.snapScroll {
+		scroll-snap-type: x mandatory;
+	}
 }
 
 .column {
+	scroll-snap-align: start;
 	flex-shrink: 0;
 	border-right: solid var(--deckDividerThickness) var(--deckDivider);
 
