@@ -57,9 +57,7 @@ export const signup = async (params?: any): Promise<any> => {
 };
 
 export const post = async (user: any, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
-	const q = Object.assign({
-		text: 'test',
-	}, params);
+	const q = params;
 
 	const res = await api('notes/create', q, user);
 

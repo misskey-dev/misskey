@@ -13,10 +13,12 @@ You should also include the user name that made the change.
 ## 13.x.x (unreleased)
 
 ### Improvements
+- ユーザーごとにRenoteをミュートできるように
+- ノートごとに絵文字リアクションを受け取るか設定できるように
 - enhance(client): DM作成時にメンションも含むように
 
 ### Bugfixes
-- 
+-
 
 ## 13.9.2 (2023/03/06)
 

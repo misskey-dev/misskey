@@ -15,6 +15,7 @@ import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
 import { packedDriveFolderSchema } from '@/models/schema/drive-folder.js';
 import { packedFollowingSchema } from '@/models/schema/following.js';
 import { packedMutingSchema } from '@/models/schema/muting.js';
+import { packedRenoteMutingSchema } from '@/models/schema/renote-muting.js';
 import { packedBlockingSchema } from '@/models/schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/schema/hashtag.js';
@@ -48,6 +49,7 @@ export const refs = {
 	DriveFolder: packedDriveFolderSchema,
 	Following: packedFollowingSchema,
 	Muting: packedMutingSchema,
+	RenoteMuting: packedRenoteMutingSchema,
 	Blocking: packedBlockingSchema,
 	Hashtag: packedHashtagSchema,
 	Page: packedPageSchema,
@@ -93,7 +95,7 @@ export interface Schema extends OfSchema {
 	readonly example?: any;
 	readonly format?: string;
 	readonly ref?: keyof typeof refs;
-	readonly enum?: ReadonlyArray<string>;
+	readonly enum?: ReadonlyArray<string | null>;
 	readonly default?: (this['type'] extends TypeStringef ? StringDefToType<this['type']> : any) | null;
 	readonly maxLength?: number;
 	readonly minLength?: number;
@@ -159,7 +161,7 @@ export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'integer' ? number :
 	p['type'] extends 'number' ? number :
 	p['type'] extends 'string' ? (
-		p['enum'] extends readonly string[] ?
+		p['enum'] extends readonly (string | null)[] ?
 		p['enum'][number] :
 		p['format'] extends 'date-time' ? string : // Dateにする？？
 		string

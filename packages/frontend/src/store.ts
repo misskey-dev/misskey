@@ -81,6 +81,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 	},
+	reactionAcceptance: {
+		where: 'account',
+		default: null,
+	},
 	mutedWords: {
 		where: 'account',
 		default: [],
