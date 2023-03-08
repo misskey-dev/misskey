@@ -206,7 +206,7 @@ describe('Endpoints', () => {
 
 	describe('notes/reactions/create', () => {
 		test('リアクションできる', async () => {
-			const bobPost = await post(bob);
+			const bobPost = await post(bob, { text: 'hi' });
 
 			const res = await api('/notes/reactions/create', {
 				noteId: bobPost.id,
@@ -224,7 +224,7 @@ describe('Endpoints', () => {
 		});
 
 		test('自分の投稿にもリアクションできる', async () => {
-			const myPost = await post(alice);
+			const myPost = await post(alice, { text: 'hi' });
 
 			const res = await api('/notes/reactions/create', {
 				noteId: myPost.id,
@@ -235,7 +235,7 @@ describe('Endpoints', () => {
 		});
 
 		test('二重にリアクションすると上書きされる', async () => {
-			const bobPost = await post(bob);
+			const bobPost = await post(bob, { text: 'hi' });
 
 			await api('/notes/reactions/create', {
 				noteId: bobPost.id,
