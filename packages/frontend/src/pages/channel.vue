@@ -46,7 +46,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os';
 import { useRouter } from '@/router';
-import { $i } from '@/account';
+import { $i, iAmModerator } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
@@ -90,7 +90,7 @@ function openPostForm() {
 	});
 }
 
-const headerActions = $computed(() => channel && channel.userId ? [{
+const headerActions = $computed(() => channel && channel.userId && ($i.id === channel.UserId || iAmModerator) ? [{
 	icon: 'ti ti-share',
 	text: i18n.ts.share,
 	handler: async (): Promise<void> => {
