@@ -90,21 +90,30 @@ function openPostForm() {
 	});
 }
 
-const headerActions = $computed(() => channel && channel.userId && ($i.id === channel.UserId || iAmModerator) ? [{
-	icon: 'ti ti-share',
-	text: i18n.ts.share,
-	handler: async (): Promise<void> => {
-		navigator.share({
-			title: channel.name,
-			text: channel.description,
-			url: `${url}/channels/${channel.id}`,
-		});
-	},
-}, {
-	icon: 'ti ti-settings',
-	text: i18n.ts.edit,
-	handler: edit,
-}] : null);
+const headerActions = $computed(() => {
+	if (channel && channel.userId) {
+		const everyOne = {
+			icon: 'ti ti-share',
+			text: i18n.ts.share,
+			handler: async (): Promise<void> => {
+				navigator.share({
+					title: channel.name,
+					text: channel.description,
+					url: `${url}/channels/${channel.id}`,
+				});
+			},
+		};
+
+		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
+		return canEdit ? [everyOne, {
+			icon: 'ti ti-settings',
+			text: i18n.ts.edit,
+			handler: edit,
+		}] : [everyOne];
+	} else {
+		return null;
+	}
+});
 
 const headerTabs = $computed(() => [{
 	key: 'overview',
