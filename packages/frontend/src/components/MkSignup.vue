@@ -110,6 +110,8 @@ let ToSAgreement: boolean = $ref(false);
 let hCaptchaResponse = $ref(null);
 let reCaptchaResponse = $ref(null);
 let turnstileResponse = $ref(null);
+let usernameAbortController: null | AbortController = $ref(null);
+let emailAbortController: null | AbortController = $ref(null);
 
 const shouldDisableSubmitting = $computed((): boolean => {
 	return submitting ||
@@ -141,14 +143,20 @@ function onChangeUsername(): void {
 		}
 	}
 
+	if (usernameAbortController != null) {
+		usernameAbortController.abort();
+	}
 	usernameState = 'wait';
+	usernameAbortController = new AbortController();
 
 	os.api('username/available', {
 		username,
-	}).then(result => {
+	}, undefined, usernameAbortController.signal).then(result => {
 		usernameState = result.available ? 'ok' : 'unavailable';
-	}).catch(() => {
-		usernameState = 'error';
+	}).catch((err) => {
+		if (err.name !== 'AbortError') {
+			usernameState = 'error';
+		}
 	});
 }
 
@@ -158,11 +166,15 @@ function onChangeEmail(): void {
 		return;
 	}
 
+	if (emailAbortController != null) {
+		emailAbortController.abort();
+	}
 	emailState = 'wait';
+	emailAbortController = new AbortController();
 
 	os.api('email-address/available', {
 		emailAddress: email,
-	}).then(result => {
+	}, undefined, emailAbortController.signal).then(result => {
 		emailState = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
@@ -170,8 +182,10 @@ function onChangeEmail(): void {
 			result.reason === 'mx' ? 'unavailable:mx' :
 			result.reason === 'smtp' ? 'unavailable:smtp' :
 			'unavailable';
-	}).catch(() => {
-		emailState = 'error';
+	}).catch((err) => {
+		if (err.name !== 'AbortError') {
+			emailState = 'error';
+		}
 	});
 }
 
