@@ -92,7 +92,7 @@ function openPostForm() {
 
 const headerActions = $computed(() => {
 	if (channel && channel.userId) {
-		const everyOne = {
+		const share = {
 			icon: 'ti ti-share',
 			text: i18n.ts.share,
 			handler: async (): Promise<void> => {
@@ -105,11 +105,11 @@ const headerActions = $computed(() => {
 		};
 
 		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
-		return canEdit ? [everyOne, {
+		return canEdit ? [share, {
 			icon: 'ti ti-settings',
 			text: i18n.ts.edit,
 			handler: edit,
-		}] : [everyOne];
+		}] : [share];
 	} else {
 		return null;
 	}
