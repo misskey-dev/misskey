@@ -455,7 +455,7 @@ describe('Endpoints', () => {
 				return apRes.body.attachment[0].mediaType;
 			};
 
-			test(`${type}ファイルを作成できる`, async () => {
+			test(`透明な${type}ファイルを作成できる`, async () => {
 				const path = `with-alpha.${type}`;
 				const res = await uploadFile(alice, { path });
 
@@ -467,7 +467,7 @@ describe('Endpoints', () => {
 				assert.strictEqual(webpublicType, 'image/webp');
 			});
 
-			test(`透明じゃない${type}のwebpublicはJPGになる`, async () => {
+			test(`透明じゃない${type}ファイルを作成できる`, async () => {
 				const path = `without-alpha.${type}`;
 				const res = await uploadFile(alice, { path });
 				assert.strictEqual(res.status, 200);
@@ -475,7 +475,7 @@ describe('Endpoints', () => {
 				assert.strictEqual(res.body.type, mediaType);
 
 				const webpublicType = await getWebpublicType(alice, res.body.id);
-				assert.strictEqual(webpublicType, 'image/jpeg');
+				assert.strictEqual(webpublicType, 'image/webp');
 			});
 		}
 	});
