@@ -250,6 +250,21 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
+	public async packAttachedFiles(fileIds: Note['fileIds'], packedFiles: Map<Note['fileIds'][number], Packed<'DriveFile'> | null>): Promise<Packed<'DriveFile'>[]> {
+		const missingIds = [];
+		for (const id of fileIds) {
+			if (!packedFiles.has(id)) missingIds.push(id);
+		}
+		if (missingIds.length) {
+			const additionalMap = await this.driveFileEntityService.packManyByIdsMap(missingIds);
+			for (const [k, v] of additionalMap) {
+				packedFiles.set(k, v);
+			}
+		}
+		return fileIds.map(id => packedFiles.get(id)).filter(isNotNull);
+	}
+
+	@bindThis
 	public async pack(
 		src: Note['id'] | Note,
 		me?: { id: User['id'] } | null | undefined,
@@ -258,7 +273,7 @@ export class NoteEntityService implements OnModuleInit {
 			skipHide?: boolean;
 			_hint_?: {
 				myReactions: Map<Note['id'], NoteReaction | null>;
-				packedFiles: Map<Note['fileIds'][number], Packed<'DriveFile'>>;
+				packedFiles: Map<Note['fileIds'][number], Packed<'DriveFile'> | null>;
 			};
 		},
 	): Promise<Packed<'Note'>> {
@@ -299,6 +314,7 @@ export class NoteEntityService implements OnModuleInit {
 			cw: note.cw,
 			visibility: note.visibility,
 			localOnly: note.localOnly ?? undefined,
+			reactionAcceptance: note.reactionAcceptance,
 			visibleUserIds: note.visibility === 'specified' ? note.visibleUserIds : undefined,
 			renoteCount: note.renoteCount,
 			repliesCount: note.repliesCount,
@@ -307,7 +323,7 @@ export class NoteEntityService implements OnModuleInit {
 			emojis: host != null ? this.customEmojiService.populateEmojis(note.emojis, host) : undefined,
 			tags: note.tags.length > 0 ? note.tags : undefined,
 			fileIds: note.fileIds,
-			files: packedFiles != null ? note.fileIds.map(fi => packedFiles.get(fi)).filter(isNotNull) : this.driveFileEntityService.packManyByIds(note.fileIds),
+			files: packedFiles != null ? this.packAttachedFiles(note.fileIds, packedFiles) : this.driveFileEntityService.packManyByIds(note.fileIds),
 			replyId: note.replyId,
 			renoteId: note.renoteId,
 			channelId: note.channelId ?? undefined,
@@ -391,7 +407,8 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
-		const fileIds = notes.flatMap(n => n.fileIds);
+		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
+		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
 		const packedFiles = await this.driveFileEntityService.packManyByIdsMap(fileIds);
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
