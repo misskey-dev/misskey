@@ -417,8 +417,25 @@ export class ClientServerService {
 				const meta = await this.metaService.fetch();
 				const me = profile.fields
 					? profile.fields
-						.filter(filed => filed.value != null && filed.value.match(/^https?:/))
-						.map(field => field.value)
+						.map(field => {
+							if (!field.value) {
+								return null;
+							}
+
+							const ast = mfm.parse(field.value);
+
+							if (ast.length === 1 && ast[0].type === 'mention') {
+								const url = ast[0].props.host ? `https://${ast[0].props.host}` : '';
+                                return `${url}/@${ast[0].props.username}`;
+							}
+
+                            if (field.value.match(/^https?:/)) {
+								return field.value;
+							}
+
+							return null;
+						})
+						.filter(value => value != null)
 					: [];
 
 				reply.header('Cache-Control', 'public, max-age=15');
