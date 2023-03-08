@@ -464,7 +464,7 @@ describe('Endpoints', () => {
 				assert.strictEqual(res.body.type, mediaType);
 
 				const webpublicType = await getWebpublicType(alice, res.body.id);
-				assert.strictEqual(webpublicType, 'image/png');
+				assert.strictEqual(webpublicType, 'image/webp');
 			});
 
 			test(`透明じゃない${type}のwebpublicはJPGになる`, async () => {

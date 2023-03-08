@@ -326,7 +326,7 @@ export class DriveService {
 					if (stats.isOpaque) {
 						webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
 					} else {
-						webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
+						webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
 					}
 				} else if (['image/png', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
