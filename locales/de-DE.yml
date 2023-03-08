@@ -122,6 +122,8 @@ unmarkAsSensitive: "Als nicht NSFW markieren"
 enterFileName: "Dateinamen eingeben"
 mute: "Stummschalten"
 unmute: "Stummschaltung aufheben"
+renoteMute: "Renotes stummschalten"
+renoteUnmute: "Renote-Stummschaltung aufheben"
 block: "Blockieren"
 unblock: "Blockierung aufheben"
 suspend: "Sperren"
@@ -959,6 +961,9 @@ invitationRequiredToRegister: "Diese Instanz ist einladungsbasiert. Du musst ein
 emailNotSupported: "Diese Instanz unterstützt das Versenden von Emails nicht"
 postToTheChannel: "In Kanal senden"
 cannotBeChangedLater: "Kann später nicht mehr geändert werden."
+reactionAcceptance: "Reaktionsannahme"
+likeOnly: "Nur \"Gefällt mir\""
+likeOnlyForRemote: "Nur \"Gefällt mir\" für fremde Instanzen"
 _achievements:
   earnedAt: "Freigeschaltet am"
   _types:
