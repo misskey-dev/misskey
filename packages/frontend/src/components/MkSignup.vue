@@ -58,9 +58,9 @@
 		<li v-if="instance.tosUrl"><a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.tos }}</a></li>
 		<li><a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }}</a></li>
 	</ul>
-	<MkCaptcha v-if="instance.enableHcaptcha && instance.hcaptchaSiteKey" ref="hcaptcha" v-model="hCaptchaResponse" class="captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
-	<MkCaptcha v-if="instance.enableRecaptcha && instance.recaptchaSiteKey" ref="recaptcha" v-model="reCaptchaResponse" class="captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
-	<MkCaptcha v-if="instance.enableTurnstile && instance.turnstileSiteKey" ref="turnstile" v-model="turnstileResponse" class="captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
+	<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
+	<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
+	<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" class="captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
 	<MkButton type="submit" :disabled="shouldDisableSubmitting" gradate data-cy-signup-submit>{{ i18n.ts.start }}</MkButton>
 </form>
 </template>
@@ -133,9 +133,9 @@ function onChangeUsername(): void {
 	{
 		const err =
 			!username.match(/^[a-zA-Z0-9_]+$/) ? 'invalid-format' :
-				username.length < 1 ? 'min-range' :
-				username.length > 20 ? 'max-range' :
-				null;
+			username.length < 1 ? 'min-range' :
+			username.length > 20 ? 'max-range' :
+			null;
 
 		if (err) {
 			usernameState = err;

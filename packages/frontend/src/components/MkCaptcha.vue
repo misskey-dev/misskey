@@ -10,6 +10,7 @@ import { ref, shallowRef, computed, onMounted, onBeforeUnmount, watch } from 'vu
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
+// APIs provided by Captcha services
 export type Captcha = {
 	render(container: string | Node, options: {
 		readonly [_ in 'sitekey' | 'theme' | 'type' | 'size' | 'tabindex' | 'callback' | 'expired' | 'expired-callback' | 'error-callback' | 'endpoint']?: unknown;
@@ -32,7 +33,7 @@ declare global {
 
 const props = defineProps<{
 	provider: CaptchaProvider;
-	sitekey: string;
+	sitekey: string | null; // null will show error on request
 	modelValue?: string | null;
 }>();
 
