@@ -7,6 +7,7 @@ import { FastifyAdapter } from '@bull-board/fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import pug from 'pug';
+import * as mfm from 'mfm-js';
 import { In, IsNull } from 'typeorm';
 import fastifyStatic from '@fastify/static';
 import fastifyView from '@fastify/view';
@@ -425,11 +426,9 @@ export class ClientServerService {
 							const ast = mfm.parse(field.value);
 
 							if (ast.length === 1 && ast[0].type === 'mention') {
-								const url = ast[0].props.host ? `https://${ast[0].props.host}` : '';
-                                return `${url}/@${ast[0].props.username}`;
-							}
-
-                            if (field.value.match(/^https?:/)) {
+								const domain = ast[0].props.host ? `https://${ast[0].props.host}` : '';
+								return `${domain}/@${ast[0].props.username}`;
+							} else if (field.value.match(/^https?:/)) {
 								return field.value;
 							}
 

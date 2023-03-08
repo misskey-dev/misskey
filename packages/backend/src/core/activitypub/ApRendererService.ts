@@ -450,11 +450,23 @@ export class ApRendererService {
 
 		if (profile.fields) {
 			for (const field of profile.fields) {
+				let url = null;
+
+				if (field.value) {
+					const ast = mfm.parse(field.value);
+					if (ast.length === 1 && ast[0].type === 'mention') {
+						const domain = ast[0].props.host ? `https://${ast[0].props.host}` : '';
+						url = `${domain}/@${ast[0].props.username}`;
+					} else if (field.value.match(/^https?:/)) {
+						url = field.value;
+					}
+                }
+
 				attachment.push({
 					type: 'PropertyValue',
 					name: field.name,
-					value: (field.value != null && field.value.match(/^https?:/))
-						? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
+					value: url
+						? `<a href="${new URL(url).href}" rel="me nofollow noopener" target="_blank">${new URL(url).href}</a>`
 						: field.value,
 				});
 			}
