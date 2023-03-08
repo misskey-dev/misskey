@@ -1111,7 +1111,7 @@ _achievements:
       title: "Beliebt"
       description: "Die Anzahl deiner Follower hat 100 überschritten"
     _followers300:
-      title: "Stellt euch bitte in einer Reihe auf"
+      title: "Eine geordnete Reihe, bitte!"
       description: "Die Anzahl deiner Follower hat 300 überschritten"
     _followers500:
       title: "Funkmast"
