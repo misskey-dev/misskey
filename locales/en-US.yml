@@ -122,6 +122,8 @@ unmarkAsSensitive: "Unmark as NSFW"
 enterFileName: "Enter filename"
 mute: "Mute"
 unmute: "Unmute"
+renoteMute: "Mute Renotes"
+renoteUnmute: "Unmute Renotes"
 block: "Block"
 unblock: "Unblock"
 suspend: "Suspend"
@@ -959,6 +961,9 @@ invitationRequiredToRegister: "This instance is invite-only. You must enter a va
 emailNotSupported: "This instance does not support sending emails"
 postToTheChannel: "Post to channel"
 cannotBeChangedLater: "This cannot be changed later."
+reactionAcceptance: "Reaction Acceptance"
+likeOnly: "Only likes"
+likeOnlyForRemote: "Only likes for remote instances"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
