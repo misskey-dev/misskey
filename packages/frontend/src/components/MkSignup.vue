@@ -174,7 +174,7 @@ function onChangeEmail(): void {
 
 	os.api('email-address/available', {
 		emailAddress: email,
-	}, undefined, emailAbortController).then(result => {
+	}, undefined, emailAbortController.signal).then(result => {
 		emailState = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
