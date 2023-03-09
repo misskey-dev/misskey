@@ -41,7 +41,7 @@
 					<span>
 						{{ i18n.ts._ad.timezoneinfo }}
 						<div v-for="(day, index) in daysOfWeek" :key="index">
-							<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayofweek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad, index)">
+							<input :id="`ad${ad.id}-${index}`" type="checkbox" :checked="(ad.dayOfWeek & (1 << index)) !== 0" @change="toggleDayOfWeek(ad, index)">
 							<label :for="`ad${ad.id}-${index}`">{{ day }}</label>
 						</div>
 					</span>
@@ -97,7 +97,7 @@ os.api('admin/ad/list').then(adsResponse => {
 });
 
 function toggleDayOfWeek(ad, index) {
-	ad.dayofweek ^= 1 << index;
+	ad.dayOfWeek ^= 1 << index;
 }
 
 function add() {
@@ -111,7 +111,7 @@ function add() {
 		imageUrl: null,
 		expiresAt: null,
 		startsAt: null,
-		dayofweek: 0,
+		dayOfWeek: 0,
 	});
 }
 
