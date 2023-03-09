@@ -437,8 +437,8 @@ function clear() {
 }
 
 function onKeydown(ev: KeyboardEvent) {
-	if ((ev.which === 10 || ev.which === 13) && (ev.ctrlKey || ev.metaKey) && canPost) post();
-	if (ev.which === 27) emit('esc');
+	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
+	if (ev.key === 'Escape') emit('esc');
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
@@ -489,9 +489,9 @@ function onDragover(ev) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -658,7 +658,14 @@ async function post(ev?: MouseEvent) {
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
-			if (text.includes('Efrlqw8ytg4'.toLowerCase()) || text.includes('XVCwzwxdHuA'.toLowerCase())) {
+			if (
+				text.includes('https://youtu.be/Efrlqw8ytg4'.toLowerCase()) ||
+				text.includes('https://www.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
+				text.includes('https://m.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
+				text.includes('https://youtu.be/XVCwzwxdHuA'.toLowerCase()) ||
+				text.includes('https://www.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase()) ||
+				text.includes('https://m.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase())
+			) {
 				claimAchievement('brainDiver');
 			}
 
