@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.root, { _panel: !widgetProps.transparent }]" class="data-cy-mkw-calendar">
+<div :class="[$style.root, { _panel: !widgetProps.transparent }]" data-cy-mkw-calendar>
 	<div :class="[$style.calendar, { [$style.isHoliday]: isHoliday }]">
 		<p :class="$style.monthAndYear">
 			<span :class="$style.year">{{ $t('yearX', { year }) }}</span>
