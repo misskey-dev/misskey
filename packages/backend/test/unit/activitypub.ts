@@ -11,7 +11,24 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import type { IActor } from '@/core/activitypub/type.js';
 import { MockResolver } from '../misc/mock-resolver.js';
+
+const host = 'https://host1.test';
+
+function createRandomActor(): IActor & { id: string } {
+	const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;
+	const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
+
+	return {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: actorId,
+		type: 'Person',
+		preferredUsername,
+		inbox: `${actorId}/inbox`,
+		outbox: `${actorId}/outbox`,
+	};
+}
 
 describe('ActivityPub', () => {
 	let noteService: ApNoteService;
@@ -36,18 +53,7 @@ describe('ActivityPub', () => {
 	});
 
 	describe('Parse minimum object', () => {
-		const host = 'https://host1.test';
-		const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;
-		const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
-
-		const actor = {
-			'@context': 'https://www.w3.org/ns/activitystreams',
-			id: actorId,
-			type: 'Person',
-			preferredUsername,
-			inbox: `${actorId}/inbox`,
-			outbox: `${actorId}/outbox`,
-		};
+		const actor = createRandomActor();
 
 		const post = {
 			'@context': 'https://www.w3.org/ns/activitystreams',
@@ -80,29 +86,31 @@ describe('ActivityPub', () => {
 		});
 	});
 
-	describe('Truncate long name', () => {
-		const host = 'https://host1.test';
-		const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;
-		const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
+	describe('Name field', () => {
+		test('Truncate long name', async () => {
+			const actor = {
+				...createRandomActor(),
+				name: rndstr('0-9a-z', 129),
+			};
 
-		const name = rndstr('0-9a-z', 129);
-
-		const actor = {
-			'@context': 'https://www.w3.org/ns/activitystreams',
-			id: actorId,
-			type: 'Person',
-			preferredUsername,
-			name,
-			inbox: `${actorId}/inbox`,
-			outbox: `${actorId}/outbox`,
-		};
-
-		test('Actor', async () => {
 			resolver._register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
-			assert.deepStrictEqual(user.name, actor.name.substr(0, 128));
+			assert.deepStrictEqual(user.name, actor.name.slice(0, 128));
+		});
+
+		test('Normalize empty name', async () => {
+			const actor = {
+				...createRandomActor(),
+				name: '',
+			};
+
+			resolver._register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.strictEqual(user.name, null);
 		});
 	});
 });
