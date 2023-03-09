@@ -35,17 +35,6 @@ import { miLocalStorage } from '@/local-storage';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
 import { fetchCustomEmojis } from '@/custom-emojis';
 import { mainRouter } from '@/router';
-//#region account indexedDB migration
-import { set } from '@/scripts/idb-proxy';
-
-{
-	const accounts = miLocalStorage.getItem('accounts');
-	if (accounts) {
-		set('accounts', JSON.parse(accounts));
-		miLocalStorage.removeItem('accounts');
-	}
-}
-//#endregion
 
 console.info(`Misskey v${version}`);
 
