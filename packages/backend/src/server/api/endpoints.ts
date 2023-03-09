@@ -224,6 +224,9 @@ import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
 import * as ep___mute_list from './endpoints/mute/list.js';
+import * as ep___renoteMute_create from './endpoints/renote-mute/create.js';
+import * as ep___renoteMute_delete from './endpoints/renote-mute/delete.js';
+import * as ep___renoteMute_list from './endpoints/renote-mute/list.js';
 import * as ep___my_apps from './endpoints/my/apps.js';
 import * as ep___notes from './endpoints/notes.js';
 import * as ep___notes_children from './endpoints/notes/children.js';
@@ -543,6 +546,9 @@ const eps = [
 	['mute/create', ep___mute_create],
 	['mute/delete', ep___mute_delete],
 	['mute/list', ep___mute_list],
+	['renote-mute/create', ep___renoteMute_create],
+	['renote-mute/delete', ep___renoteMute_delete],
+	['renote-mute/list', ep___renoteMute_list],
 	['my/apps', ep___my_apps],
 	['notes', ep___notes],
 	['notes/children', ep___notes_children],
@@ -741,8 +747,8 @@ export interface IEndpoint {
 const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	return {
 		name: name,
-		meta: ep.meta ?? {},
-		params: ep.paramDef,
+		get meta() { return ep.meta ?? {}; },
+		get params() { return ep.paramDef; },
 	};
 });
 

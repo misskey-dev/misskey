@@ -138,26 +138,11 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
-						const customEmoji = data.body.note.emojis.find(x => x.name === reaction.substr(1, reaction.length - 2));
-						if (customEmoji) {
-							if (reaction.includes('@')) {
-								reaction = `:${reaction.substr(1, reaction.indexOf('@') - 1)}:`;
-							}
-
-							const u = new URL(customEmoji.url);
-							if (u.href.startsWith(`${origin}/proxy/`)) {
-								// もう既にproxyっぽそうだったらsearchParams付けるだけ
-								u.searchParams.set('badge', '1');
-								badge = u.href;
-							} else {
-								// 拡張子がないとキャッシュしてくれないCDNがあるので
-								const dummy = `${encodeURIComponent(`${u.host}${u.pathname}`)}.png`;
-								badge = `${origin}/proxy/${dummy}?${url.query({
-									url: u.href,
-									badge: '1',
-								})}`;
-							}
-						}
+						const name = reaction.substring(1, reaction.length - 1);
+						badge = `${origin}/emoji/${name}.webp?${url.query({
+							badge: '1',
+						})}`;
+						reaction = name.split('@')[0];
 					} else {
 						// Unicode絵文字の場合
 						badge = `/twemoji-badge/${char2fileName(reaction)}.png`;
@@ -171,6 +156,7 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 					return [`${reaction} ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl,
+						tag,
 						badge,
 						data,
 						actions: [

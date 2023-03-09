@@ -1,6 +1,7 @@
+import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -124,6 +125,7 @@ type Option = {
 	files?: DriveFile[] | null;
 	poll?: IPoll | null;
 	localOnly?: boolean | null;
+	reactionAcceptance?: Note['reactionAcceptance'];
 	cw?: string | null;
 	visibility?: string;
 	visibleUsers?: MinimumUser[] | null;
@@ -137,7 +139,9 @@ type Option = {
 };
 
 @Injectable()
-export class NoteCreateService {
+export class NoteCreateService implements OnApplicationShutdown {
+	#shutdownController = new AbortController();
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -313,7 +317,10 @@ export class NoteCreateService {
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		setImmediate(() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!));
+		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
+			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
+			() => { /* aborted, ignore this */ },
+		);
 
 		return note;
 	}
@@ -340,6 +347,7 @@ export class NoteCreateService {
 			emojis,
 			userId: user.id,
 			localOnly: data.localOnly!,
+			reactionAcceptance: data.reactionAcceptance,
 			visibility: data.visibility as any,
 			visibleUserIds: data.visibility === 'specified'
 				? data.visibleUsers
@@ -755,5 +763,9 @@ export class NoteCreateService {
 		);
 
 		return mentionedUsers;
+	}
+
+	onApplicationShutdown(signal?: string | undefined) {
+		this.#shutdownController.abort();
 	}
 }
