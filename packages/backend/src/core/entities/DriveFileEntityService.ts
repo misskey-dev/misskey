@@ -89,9 +89,7 @@ export class DriveFileEntityService {
 		if (file.type.startsWith('video')) {
 			if (file.thumbnailUrl) return file.thumbnailUrl;
 
-			if (this.config.videoThumbnailGenerator == null) {
-				return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url ?? file.uri);
-			}
+			return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url ?? file.uri);
 		} else if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			// 動画ではなくリモートかつメディアプロキシ
 			return this.getProxiedUrl(file.uri, 'static');
