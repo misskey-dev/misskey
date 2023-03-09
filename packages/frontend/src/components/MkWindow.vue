@@ -23,7 +23,7 @@
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
-			<div :class="$style.content">
+			<div v-container :class="$style.content">
 				<slot></slot>
 			</div>
 		</div>

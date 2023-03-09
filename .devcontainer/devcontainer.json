@@ -7,5 +7,18 @@
 		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
 	},
 	"forwardPorts": [3000],
-	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh"
+	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"editorconfig.editorconfig",
+				"dbaeumer.vscode-eslint",
+				"Vue.volar",
+				"Vue.vscode-typescript-vue-plugin",
+				"Orta.vscode-jest",
+				"dbaeumer.vscode-eslint",
+				"mrmlnc.vscode-json5"
+			]
+		}
+	}
 }

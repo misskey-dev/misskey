@@ -819,6 +819,7 @@ instanceDefaultLightTheme: "ইন্সট্যান্সের ডিফল
 instanceDefaultDarkTheme: "ইন্সট্যান্সের ডিফল্ট ডার্ক থিম"
 instanceDefaultThemeDescription: "অবজেক্ট ফরম্যাটে থিম কোড লিখুন"
 mutePeriod: "মিউটের সময়কাল"
+period: "পোলের সময়সীমা"
 indefinitely: "অনির্দিষ্ট"
 tenMinutes: "১০ মিনিট"
 oneHour: "১ ঘণ্টা"
