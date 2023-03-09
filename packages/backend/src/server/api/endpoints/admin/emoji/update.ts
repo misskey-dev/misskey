@@ -18,11 +18,6 @@ export const meta = {
 			message: 'No such emoji.',
 			code: 'NO_SUCH_EMOJI',
 			id: '684dec9d-a8c2-4364-9aa8-456c49cb1dc8',
-		},		
-		inappropriateEmojiName: {
-			message: 'Inappropriate emoji name',
-			code: 'INAPPROPRIATE_EMOJI_NAME',
-			id: '50733374-0f01-555f-1675-87382494561f',
 		},
 		alreadyexistsemoji: {
 			message: 'Emoji already exists',
@@ -36,7 +31,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		id: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string' },
+		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
 		category: {
 			type: 'string',
 			nullable: true,
@@ -68,7 +63,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const emoji = await this.emojisRepository.findOneBy({ id: ps.id });
 			const emojiname = await this.emojisRepository.findOneBy({ name: ps.name });
 			if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
-			if (ps.name.match(/^[a-zA-Z0-9_]+$/) == null) throw new ApiError(meta.errors.inappropriateEmojiName);
 			if (emojiname != null && emojiname.id !== ps.id) throw new ApiError(meta.errors.alreadyexistsemoji);
 			await this.emojisRepository.update(emoji.id, {
 				updatedAt: new Date(),
