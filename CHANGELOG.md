@@ -2,10 +2,10 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
-- 
+-
 
 ### Bugfixes
-- 
+-
 
 You should also include the user name that made the change.
 -->
@@ -17,9 +17,11 @@ You should also include the user name that made the change.
 - ノートごとに絵文字リアクションを受け取るか設定できるように
 - enhance(client): DM作成時にメンションも含むように
 - enhance(client): フォロー申請のボタンのデザインを改善
+- enhance(backend): OpenAPIエンドポイントを復旧
 
 ### Bugfixes
 - ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
+- /api-consoleページにアクセスすると404が出る問題を修正
 
 ## 13.9.2 (2023/03/06)
 
@@ -257,8 +259,8 @@ You should also include the user name that made the change.
 ## 13.3.2 (2023/02/04)
 
 ### Improvements
-- 外部メディアプロキシへの対応を強化しました  
-  外部メディアプロキシのFastify実装を作りました  
+- 外部メディアプロキシへの対応を強化しました
+  外部メディアプロキシのFastify実装を作りました
   https://github.com/misskey-dev/media-proxy
 - Server: improve performance
 
@@ -421,7 +423,7 @@ You should also include the user name that made the change.
 	- ユーザーごとのドライブ容量設定はロールに統合されました。
 	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
 	- LTL/GTLの解放状態はロールに統合されました。
-- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。
   https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
@@ -649,7 +651,7 @@ You should also include the user name that made the change.
 ## 12.112.2 (2022/07/08)
 
 ### Bugfixes
-- Fix Docker doesn't work @mei23  
+- Fix Docker doesn't work @mei23
   Still not working on arm64 environment. (See 12.112.0)
 
 ## 12.112.1 (2022/07/07)
@@ -691,7 +693,7 @@ same as 12.112.0
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
 - Server: Improve performance
-- Server: Supports IPv6 on Redis transport. @mei23  
+- Server: Supports IPv6 on Redis transport. @mei23
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0
