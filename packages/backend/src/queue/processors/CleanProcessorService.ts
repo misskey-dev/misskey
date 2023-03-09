@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { LessThan } from 'typeorm';
+import { In, LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennaNotesRepository, MutedNotesRepository, NotificationsRepository, UserIpsRepository } from '@/models/index.js';
+import type { AntennaNotesRepository, MutedNotesRepository, NotificationsRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
@@ -29,6 +29,9 @@ export class CleanProcessorService {
 		@Inject(DI.antennaNotesRepository)
 		private antennaNotesRepository: AntennaNotesRepository,
 
+		@Inject(DI.roleAssignmentsRepository)
+		private roleAssignmentsRepository: RoleAssignmentsRepository,
+
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,
 	) {
@@ -55,6 +58,17 @@ export class CleanProcessorService {
 		this.antennaNotesRepository.delete({
 			id: LessThan(this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 90)))),
 		});
+
+		const expiredRoleAssignments = await this.roleAssignmentsRepository.createQueryBuilder('assign')
+			.where('assign.expiresAt IS NOT NULL')
+			.andWhere('assign.expiresAt < :now', { now: new Date() })
+			.getMany();
+
+		if (expiredRoleAssignments.length > 0) {
+			await this.roleAssignmentsRepository.delete({
+				id: In(expiredRoleAssignments.map(x => x.id)),
+			});
+		}
 
 		this.logger.succ('Cleaned.');
 		done();

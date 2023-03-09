@@ -19,9 +19,9 @@
 			@update:model-value="v => emit('updateWidgets', v)"
 		>
 			<template #item="{element}">
-				<div :class="[$style.widget, $style['customize-container']]" class="data-cy-customize-container">
+				<div :class="[$style.widget, $style['customize-container']]" data-cy-customize-container>
 					<button :class="$style['customize-container-config']" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button :class="$style['customize-container-remove']" class="_button data-cy-customize-container-remove" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
+					<button :class="$style['customize-container-remove']" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
 						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style['customize-container-handle-widget']" :widget="element" @update-props="updateWidget(element.id, $event)"/>
 					</div>

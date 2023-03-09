@@ -1,9 +1,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import * as openapi from '@redocly/openapi-core';
-import { startServer, signup, post, request, simpleGet, port, shutdownServer } from '../utils.js';
+import { startServer, signup, post, api, simpleGet } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -13,11 +12,10 @@ const UNSPECIFIED = '*/*';
 
 // Response Content-Type
 const AP = 'application/activity+json; charset=utf-8';
-const JSON = 'application/json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
 
 describe('Fetch resource', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 
 	let alice: any;
 	let alicesPost: any;
@@ -28,15 +26,15 @@ describe('Fetch resource', () => {
 		alicesPost = await post(alice, {
 			text: 'test',
 		});
-	}, 1000 * 30);
+	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	describe('Common', () => {
 		test('meta', async () => {
-			const res = await request('/meta', {
+			const res = await api('/meta', {
 			});
 
 			assert.strictEqual(res.status, 200);
@@ -54,36 +52,26 @@ describe('Fetch resource', () => {
 			assert.strictEqual(res.type, HTML);
 		});
 
-		test('GET api-doc', async () => {
+		test('GET api-doc (廃止)', async () => {
 			const res = await simpleGet('/api-doc');
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, HTML);
+			assert.strictEqual(res.status, 404);
 		});
 
-		test('GET api.json', async () => {
+		test('GET api.json (廃止)', async () => {
 			const res = await simpleGet('/api.json');
-			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, JSON);
+			assert.strictEqual(res.status, 404);
 		});
 
-		test('Validate api.json', async () => {
-			const config = await openapi.loadConfig();
-			const result = await openapi.bundle({
-				config,
-				ref: `http://localhost:${port}/api.json`,
-			});
-
-			for (const problem of result.problems) {
-				console.log(`${problem.message} - ${problem.location[0]?.pointer}`);
-			}
-
-			assert.strictEqual(result.problems.length, 0);
+		test('GET api/foo (存在しない)', async () => {
+			const res = await simpleGet('/api/foo');
+			assert.strictEqual(res.status, 404);
+			assert.strictEqual(res.body.error.code, 'UNKNOWN_API_ENDPOINT');
 		});
 
 		test('GET favicon.ico', async () => {
 			const res = await simpleGet('/favicon.ico');
 			assert.strictEqual(res.status, 200);
-			assert.strictEqual(res.type, 'image/x-icon');
+			assert.strictEqual(res.type, 'image/vnd.microsoft.icon');
 		});
 
 		test('GET apple-touch-icon.png', async () => {

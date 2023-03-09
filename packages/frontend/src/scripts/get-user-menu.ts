@@ -53,6 +53,14 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		}
 	}
 
+	async function toggleRenoteMute() {
+		os.apiWithDialog(user.isRenoteMuted ? 'renote-mute/delete' : 'renote-mute/create', {
+			userId: user.id,
+		}).then(() => {
+			user.isRenoteMuted = !user.isRenoteMuted;
+		});
+	}
+
 	async function toggleBlock() {
 		if (!await getConfirmed(user.isBlocking ? i18n.ts.unblockConfirm : i18n.ts.blockConfirm)) return;
 
@@ -111,7 +119,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
-			os.post({ specified: user });
+			os.post({ specified: user, initialText: `@${user.username} ` });
 		},
 	}, null, {
 		type: 'parent',
@@ -143,8 +151,32 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,
-						action: () => {
-							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id });
+						action: async () => {
+							const { canceled, result: period } = await os.select({
+								title: i18n.ts.period,
+								items: [{
+									value: 'indefinitely', text: i18n.ts.indefinitely,
+								}, {
+									value: 'oneHour', text: i18n.ts.oneHour,
+								}, {
+									value: 'oneDay', text: i18n.ts.oneDay,
+								}, {
+									value: 'oneWeek', text: i18n.ts.oneWeek,
+								}, {
+									value: 'oneMonth', text: i18n.ts.oneMonth,
+								}],
+								default: 'indefinitely',
+							});
+							if (canceled) return;
+						
+							const expiresAt = period === 'indefinitely' ? null
+								: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
+								: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
+								: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
+								: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
+								: null;
+
+							os.apiWithDialog('admin/roles/assign', { roleId: r.id, userId: user.id, expiresAt });
 						},
 					}));
 				},
@@ -155,6 +187,10 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
+		}, {
+			icon: user.isRenoteMuted ? 'ti ti-repeat' : 'ti ti-repeat-off',
+			text: user.isRenoteMuted ? i18n.ts.renoteUnmute : i18n.ts.renoteMute,
+			action: toggleRenoteMute,
 		}, {
 			icon: 'ti ti-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,
