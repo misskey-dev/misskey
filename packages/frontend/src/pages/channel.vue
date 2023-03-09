@@ -46,7 +46,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
 import * as os from '@/os';
 import { useRouter } from '@/router';
-import { $i } from '@/account';
+import { $i, iAmModerator } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
@@ -90,21 +90,30 @@ function openPostForm() {
 	});
 }
 
-const headerActions = $computed(() => channel && channel.userId ? [{
-	icon: 'ti ti-share',
-	text: i18n.ts.share,
-	handler: async (): Promise<void> => {
-		navigator.share({
-			title: channel.name,
-			text: channel.description,
-			url: `${url}/channels/${channel.id}`,
-		});
-	},
-}, {
-	icon: 'ti ti-settings',
-	text: i18n.ts.edit,
-	handler: edit,
-}] : null);
+const headerActions = $computed(() => {
+	if (channel && channel.userId) {
+		const share = {
+			icon: 'ti ti-share',
+			text: i18n.ts.share,
+			handler: async (): Promise<void> => {
+				navigator.share({
+					title: channel.name,
+					text: channel.description,
+					url: `${url}/channels/${channel.id}`,
+				});
+			},
+		};
+
+		const canEdit = ($i && $i.id === channel.userId) || iAmModerator;
+		return canEdit ? [share, {
+			icon: 'ti ti-settings',
+			text: i18n.ts.edit,
+			handler: edit,
+		}] : [share];
+	} else {
+		return null;
+	}
+});
 
 const headerTabs = $computed(() => [{
 	key: 'overview',

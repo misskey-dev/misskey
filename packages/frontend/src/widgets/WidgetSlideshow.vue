@@ -1,5 +1,5 @@
 <template>
-<div class="kvausudm _panel mkw-slideshow data-cy-mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
+<div data-cy-mkw-slideshow class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}
