@@ -19,7 +19,7 @@ You should also include the user name that made the change.
 - enhance(client): フォロー申請のボタンのデザインを改善
 
 ### Bugfixes
--
+- ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
 
 ## 13.9.2 (2023/03/06)
 
