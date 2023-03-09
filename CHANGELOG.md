@@ -2,16 +2,99 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
+-
 
 ### Bugfixes
 -
 
 You should also include the user name that made the change.
 -->
-## 13.7.4 (unreleased)
+
+## 13.x.x (unreleased)
+
+### Improvements
+- ユーザーごとにRenoteをミュートできるように
+- ノートごとに絵文字リアクションを受け取るか設定できるように
+- enhance(client): DM作成時にメンションも含むように
+- enhance(client): フォロー申請のボタンのデザインを改善
+- enhance(backend): OpenAPIエンドポイントを復旧
+
+### Bugfixes
+- ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
+- /api-consoleページにアクセスすると404が出る問題を修正
+
+## 13.9.2 (2023/03/06)
+
+### Improvements
+- クリップ、チャンネルページに共有ボタンを追加
+- チャンネルでタイムライン上部に投稿フォームを表示するかどうかのオプションを追加
+- ブラウザでメディアプロキシ(/proxy)からファイルを保存した際に、なるべくオリジナルのファイル名を継承するように
+- ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
+- Identiconがローカルとリモートで同じになるように
+  - これまでのIdenticonは異なる画像になります
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- ロールの権限で「一般ユーザー」のロールがいきなり設定できない問題を修正
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
+- fix(client): みつけるのロール一覧でコンディショナルロールが含まれるのを修正
+- macOSでDev Containerが動作しない問題を修正 @RyotaK
+
+## 13.9.1 (2023/03/03)
+
+### Bugfixes
+- ノートに添付したファイルが表示されない場合があるのを修正
+
+## 13.9.0 (2023/03/03)
+
+### Improvements
+- 時限ロール
+- アンテナでCWも検索対象にするように
+- ノートの操作部をホバー時のみ表示するオプションを追加
+- サウンドを追加
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- 外部メディアプロキシ使用時にアバタークロップができない問題を修正
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
+- プッシュ通知でカスタム絵文字リアクションを表示できなかった問題を修正
+
+## 13.8.1 (2023/02/26)
+
+### Bugfixes
+- モバイルでドロワーメニューが表示されない問題を修正
+
+## 13.8.0 (2023/02/26)
+
+### Improvements
+- チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
+- renoteした際の表示を改善
+- バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
+- enhance(client): MkUrlPreviewの閉じるボタンを見やすく
+- Add dialog to remove follower
+- enhance(client): improve clip menu ux
+- 検索画面の統合
+- enhance(client): ノートメニューからユーザーメニューを開けるように
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
+
+### Bugfixes
+- Windows環境でswcを使うと正しくビルドできない問題の修正
+- fix(client): Android ChromeでPWAとしてインストールできない問題を修正
+- 未知のユーザーが deleteActor されたら処理をスキップする
+- fix(server): notes/createで、fileIdsと見つかったファイルの数が異なる場合はエラーにする
+- fix(server): notes/createのバリデーションが機能していないのを修正
+- fix(server): エラーのスタックトレースは返さないように
+
+## 13.7.5 (2023/02/24)
 
 ### Note
 13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
 
 ### Bugfixes
 - 全ての通知が削除されてしまうのを修正
@@ -176,8 +259,8 @@ You should also include the user name that made the change.
 ## 13.3.2 (2023/02/04)
 
 ### Improvements
-- 外部メディアプロキシへの対応を強化しました  
-  外部メディアプロキシのFastify実装を作りました  
+- 外部メディアプロキシへの対応を強化しました
+  外部メディアプロキシのFastify実装を作りました
   https://github.com/misskey-dev/media-proxy
 - Server: improve performance
 
@@ -340,7 +423,7 @@ You should also include the user name that made the change.
 	- ユーザーごとのドライブ容量設定はロールに統合されました。
 	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
 	- LTL/GTLの解放状態はロールに統合されました。
-- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。
   https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
@@ -568,7 +651,7 @@ You should also include the user name that made the change.
 ## 12.112.2 (2022/07/08)
 
 ### Bugfixes
-- Fix Docker doesn't work @mei23  
+- Fix Docker doesn't work @mei23
   Still not working on arm64 environment. (See 12.112.0)
 
 ## 12.112.1 (2022/07/07)
@@ -610,7 +693,7 @@ same as 12.112.0
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
 - Server: Improve performance
-- Server: Supports IPv6 on Redis transport. @mei23  
+- Server: Supports IPv6 on Redis transport. @mei23
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0

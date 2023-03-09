@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" class="mkw-activity data-cy-mkw-activity">
+<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" data-cy-mkw-activity class="mkw-activity">
 	<template #icon><i class="ti ti-chart-line"></i></template>
 	<template #header>{{ i18n.ts._widgets.activity }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>

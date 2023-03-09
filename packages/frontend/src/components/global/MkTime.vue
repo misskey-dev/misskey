@@ -1,6 +1,7 @@
 <template>
 <time :title="absolute">
-	<template v-if="mode === 'relative'">{{ relative }}</template>
+	<template v-if="invalid">{{ i18n.ts._ago.invalid }}</template>
+	<template v-else-if="mode === 'relative'">{{ relative }}</template>
 	<template v-else-if="mode === 'absolute'">{{ absolute }}</template>
 	<template v-else-if="mode === 'detail'">{{ absolute }} ({{ relative }})</template>
 </time>
@@ -12,18 +13,24 @@ import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
 
 const props = withDefaults(defineProps<{
-	time: Date | string;
+	time: Date | string | number | null;
 	mode?: 'relative' | 'absolute' | 'detail';
 }>(), {
 	mode: 'relative',
 });
 
-const _time = typeof props.time === 'string' ? new Date(props.time) : props.time;
-const absolute = dateTimeFormat.format(_time);
+const _time = props.time == null ? NaN :
+	typeof props.time === 'number' ? props.time :
+	(props.time instanceof Date ? props.time : new Date(props.time)).getTime();
+const invalid = Number.isNaN(_time);
+const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
-let now = $shallowRef(new Date());
-const relative = $computed(() => {
-	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
+let now = $ref((new Date()).getTime());
+const relative = $computed<string>(() => {
+	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
+	if (invalid) return i18n.ts._ago.invalid;
+
+	const ago = (now - _time) / 1000/*ms*/;
 	return (
 		ago >= 31536000 ? i18n.t('_ago.yearsAgo', { n: Math.round(ago / 31536000).toString() }) :
 		ago >= 2592000 ? i18n.t('_ago.monthsAgo', { n: Math.round(ago / 2592000).toString() }) :
@@ -39,8 +46,8 @@ const relative = $computed(() => {
 let tickId: number;
 
 function tick() {
-	now = new Date();
-	const ago = (now.getTime() - _time.getTime()) / 1000/*ms*/;
+	now = (new Date()).getTime();
+	const ago = (now - _time) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
 	tickId = window.setTimeout(tick, next);

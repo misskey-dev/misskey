@@ -45,6 +45,7 @@
 				<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 			</div>
 		</div>
+		<MkInfo v-if="localOnly && channel == null" warn :class="$style.disableFederationWarn">{{ i18n.ts.disableFederationWarn }}</MkInfo>
 		<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 		<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
@@ -52,14 +53,23 @@
 		<XPostFormAttaches v-model="files" :class="$style.attaches" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 		<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 		<XNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
+		<div v-if="showingOptions" style="padding: 0 16px;">
+			<MkSelect v-model="reactionAcceptance" small>
+				<template #label>{{ i18n.ts.reactionAcceptance }}</template>
+				<option :value="null">{{ i18n.ts.all }}</option>
+				<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
+				<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
+			</MkSelect>
+		</div>
+		<button v-tooltip="i18n.ts.emoji" class="_button" :class="$style.emojiButton" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 		<footer :class="$style.footer">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-			<button v-tooltip="i18n.ts.emoji" class="_button" :class="$style.footerButton" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>
 		</footer>
 		<datalist id="hashtags">
 			<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
@@ -75,6 +85,7 @@ import * as misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
 import * as Acct from 'misskey-js/built/acct';
+import MkSelect from './MkSelect.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import XNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -150,12 +161,14 @@ let visibleUsers = $ref([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
 }
+let reactionAcceptance = $ref(defaultStore.state.reactionAcceptance);
 let autocomplete = $ref(null);
 let draghover = $ref(false);
 let quoteId = $ref(null);
 let hasNotSpecifiedMentions = $ref(false);
 let recentHashtags = $ref(JSON.parse(miLocalStorage.getItem('hashtags') ?? '[]'));
 let imeText = $ref('');
+let showingOptions = $ref(false);
 
 const draftKey = $computed((): string => {
 	let key = props.channel ? `channel:${props.channel.id}` : '';
@@ -421,6 +434,10 @@ function pushVisibleUser(user) {
 function addVisibleUser() {
 	os.selectUser().then(user => {
 		pushVisibleUser(user);
+
+		if (!text.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
+			text = `@${Acct.toString(user)} ${text}`;
+		}
 	});
 }
 
@@ -436,8 +453,8 @@ function clear() {
 }
 
 function onKeydown(ev: KeyboardEvent) {
-	if ((ev.which === 10 || ev.which === 13) && (ev.ctrlKey || ev.metaKey) && canPost) post();
-	if (ev.which === 27) emit('esc');
+	if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey) && canPost) post();
+	if (ev.key === 'Escape') emit('esc');
 }
 
 function onCompositionUpdate(ev: CompositionEvent) {
@@ -488,9 +505,9 @@ function onDragover(ev) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -609,6 +626,7 @@ async function post(ev?: MouseEvent) {
 		localOnly: localOnly,
 		visibility: visibility,
 		visibleUserIds: visibility === 'specified' ? visibleUsers.map(u => u.id) : undefined,
+		reactionAcceptance,
 	};
 
 	if (withHashtags && hashtags && hashtags.trim() !== '') {
@@ -657,7 +675,14 @@ async function post(ev?: MouseEvent) {
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
-			if (text.includes('Efrlqw8ytg4'.toLowerCase()) || text.includes('XVCwzwxdHuA'.toLowerCase())) {
+			if (
+				text.includes('https://youtu.be/Efrlqw8ytg4'.toLowerCase()) ||
+				text.includes('https://www.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
+				text.includes('https://m.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
+				text.includes('https://youtu.be/XVCwzwxdHuA'.toLowerCase()) ||
+				text.includes('https://www.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase()) ||
+				text.includes('https://m.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase())
+			) {
 				claimAchievement('brainDiver');
 			}
 
@@ -941,6 +966,10 @@ defineExpose({
 	background: var(--X4);
 }
 
+.disableFederationWarn {
+	margin: 0 20px 16px 20px;
+}
+
 .hasNotSpecifiedMentions {
 	margin: 0 20px 16px 20px;
 }
@@ -1012,6 +1041,18 @@ defineExpose({
 	&.footerButtonActive {
 		color: var(--accent);
 	}
+}
+
+.emojiButton {
+	position: absolute;
+	top: 55px;
+	right: 13px;
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	font-size: 1em;
+	width: 32px;
+	height: 32px;
 }
 
 @container (max-width: 500px) {

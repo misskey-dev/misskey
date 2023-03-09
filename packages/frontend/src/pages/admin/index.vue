@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, watch } from 'vue';
+import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -198,6 +198,13 @@ watch(narrow, () => {
 onMounted(() => {
 	ro.observe(el);
 
+	narrow = el.offsetWidth < NARROW_THRESHOLD;
+	if (currentPage?.route.name == null && !narrow) {
+		router.push('/admin/overview');
+	}
+});
+
+onActivated(() => {
 	narrow = el.offsetWidth < NARROW_THRESHOLD;
 	if (currentPage?.route.name == null && !narrow) {
 		router.push('/admin/overview');

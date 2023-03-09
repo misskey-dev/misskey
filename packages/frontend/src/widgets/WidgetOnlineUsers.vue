@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-onlineUsers data-cy-mkw-onlineUsers" :class="{ _panel: !widgetProps.transparent, pad: !widgetProps.transparent }">
+<div data-cy-mkw-onlineUsers class="mkw-onlineUsers" :class="{ _panel: !widgetProps.transparent, pad: !widgetProps.transparent }">
 	<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" text-tag="span" class="text">
 		<template #n><b>{{ number(onlineUsersCount) }}</b></template>
 	</I18n>
