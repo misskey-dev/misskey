@@ -103,7 +103,7 @@ function onTabWheel(ev: WheelEvent) {
 		ev.stopPropagation();
 		(ev.currentTarget as HTMLElement).scrollBy({
 			left: ev.deltaY,
-			behavior: 'smooth',
+			behavior: 'instant',
 		});
 	}
 	return false;

@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><XHeader :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
@@ -45,6 +45,16 @@
 			</div>
 		</FormSuspense>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+				<div class="_buttons">
+					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+					<MkButton rounded @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>
+				</div>
+			</MkSpacer>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
@@ -61,6 +71,7 @@ import * as os from '@/os';
 import { fetchInstance, instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkButton from '@/components/MkButton.vue';
 
 let enableEmail: boolean = $ref(false);
 let email: any = $ref(null);
@@ -109,17 +120,6 @@ function save() {
 	});
 }
 
-const headerActions = $computed(() => [{
-	asFullButton: true,
-	text: i18n.ts.testEmail,
-	handler: testEmail,
-}, {
-	asFullButton: true,
-	icon: 'ti ti-check',
-	text: i18n.ts.save,
-	handler: save,
-}]);
-
 const headerTabs = $computed(() => []);
 
 definePageMetadata({
@@ -127,3 +127,10 @@ definePageMetadata({
 	icon: 'ti ti-mail',
 });
 </script>
+
+<style lang="scss" module>
+.footer {
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+}
+</style>
