@@ -29,17 +29,17 @@ describe('After user signed in', () => {
 
 	it('first widget should be removed', () => {
 		cy.get('.mk-widget-edit').click();
-		cy.get('.data-cy-customize-container:first-child .data-cy-customize-container-remove._button').click();
-		cy.get('.data-cy-customize-container').should('have.length', 2);
+		cy.get('[data-cy-customize-container]:first-child [data-cy-customize-container-remove]._button').click();
+		cy.get('[data-cy-customize-container]').should('have.length', 2);
 	});
 
 	function buildWidgetTest(widgetName) {
 		it(`${widgetName} widget should get added`, () => {
 			cy.get('.mk-widget-edit').click();
 			cy.get('.mk-widget-select select').select(widgetName, { force: true });
-			cy.get('.data-cy-bg._modalBg.data-cy-transparent').click({ multiple: true, force: true });
+			cy.get('[data-cy-bg]._modalBg[data-cy-transparent]').click({ multiple: true, force: true });
 			cy.get('.mk-widget-add').click({ force: true });
-			cy.get(`.data-cy-mkw-${widgetName}`).should('exist');
+			cy.get(`[data-cy-mkw-${widgetName}]`).should('exist');
 		});
 	}
 
