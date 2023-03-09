@@ -70,9 +70,9 @@ describe('Block', () => {
 	// TODO: ユーザーリストから除外されるテスト
 
 	test('タイムライン(LTL)にブロックされているユーザーの投稿が含まれない', async () => {
-		const aliceNote = await post(alice);
-		const bobNote = await post(bob);
-		const carolNote = await post(carol);
+		const aliceNote = await post(alice, { text: 'hi' });
+		const bobNote = await post(bob, { text: 'hi' });
+		const carolNote = await post(carol, { text: 'hi' });
 
 		const res = await api('/notes/local-timeline', {}, bob);
 

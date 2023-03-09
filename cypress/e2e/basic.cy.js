@@ -62,6 +62,10 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup-submit]').click();
 
 		cy.wait('@signup');
+  });
+
+  it('signup with duplicated username', () => {
+		cy.registerUser('alice', 'alice1234');
 
 		cy.visitHome();
 
