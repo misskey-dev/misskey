@@ -506,6 +506,7 @@ objectStorageSetPublicRead: "Imposta \"visibilità pubblica\" al momento di cari
 serverLogs: "Log del server"
 deleteAll: "Cancella cronologia"
 showFixedPostForm: "Visualizzare la finestra di pubblicazione in cima alla timeline"
+showFixedPostFormInChannel: "Per i canali, mostra il modulo di pubblicazione in cima alla timeline"
 newNoteRecived: "Vedi le nuove note"
 sounds: "Impostazioni suoni"
 sound: "Impostazioni suoni"
@@ -955,7 +956,9 @@ exploreOtherServers: "Trova altre istanze"
 letsLookAtTimeline: "Sbircia la timeline"
 disableFederationWarn: "Disabilita la federazione. Questo cambiamento non rende le pubblicazioni private. Di solito non è necessario abilitare questa opzione."
 invitationRequiredToRegister: "L'accesso a questo nodo è solo ad invito. Devi inserire un codice d'invito valido. Puoi richiedere un codice all'amministratore."
+emailNotSupported: "L'istanza non supporta l'invio di email"
 postToTheChannel: "Pubblica sul canale"
+cannotBeChangedLater: "Non sarà più modificabile"
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:

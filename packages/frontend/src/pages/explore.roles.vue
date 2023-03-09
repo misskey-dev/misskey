@@ -16,7 +16,7 @@ let roles = $ref();
 os.api('roles/list', {
 	limit: 30,
 }).then(res => {
-	roles = res;
+	roles = res.filter(x => x.target === 'manual');
 });
 </script>
 

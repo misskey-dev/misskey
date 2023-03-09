@@ -21,6 +21,9 @@ describe('misc:correct-filename', () => {
     test('with same ext', () => {
         expect(correctFilename('filename.jpg', 'jpg')).toBe('filename.jpg');
     });
+    test('.ext', () => {
+        expect(correctFilename('filename.jpg', '.jpg')).toBe('filename.jpg');
+    });
     test('with different ext', () => {
         expect(correctFilename('filename.webp', 'jpg')).toBe('filename.webp.jpg');
     });
