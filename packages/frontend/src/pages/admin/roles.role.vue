@@ -11,7 +11,7 @@
 				<MkFolder>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor v-model="role" readonly/>
+					<XEditor :model-value="role" readonly/>
 				</MkFolder>
 				<MkFolder v-if="role.target === 'manual'" default-open>
 					<template #icon><i class="ti ti-users"></i></template>

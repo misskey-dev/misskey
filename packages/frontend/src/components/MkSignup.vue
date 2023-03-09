@@ -9,6 +9,7 @@
 		<template #prefix>@</template>
 		<template #suffix>@{{ host }}</template>
 		<template #caption>
+			<div><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.cannotBeChangedLater }}</div>
 			<span v-if="usernameState === 'wait'" style="color:#999"><MkLoading :em="true"/> {{ i18n.ts.checking }}</span>
 			<span v-else-if="usernameState === 'ok'" style="color: var(--success)"><i class="ti ti-check ti-fw"></i> {{ i18n.ts.available }}</span>
 			<span v-else-if="usernameState === 'unavailable'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.unavailable }}</span>
@@ -109,6 +110,8 @@ let ToSAgreement: boolean = $ref(false);
 let hCaptchaResponse = $ref(null);
 let reCaptchaResponse = $ref(null);
 let turnstileResponse = $ref(null);
+let usernameAbortController: null | AbortController = $ref(null);
+let emailAbortController: null | AbortController = $ref(null);
 
 const shouldDisableSubmitting = $computed((): boolean => {
 	return submitting ||
@@ -116,7 +119,9 @@ const shouldDisableSubmitting = $computed((): boolean => {
 		instance.enableHcaptcha && !hCaptchaResponse ||
 		instance.enableRecaptcha && !reCaptchaResponse ||
 		instance.enableTurnstile && !turnstileResponse ||
-		passwordRetypeState === 'not-match';
+		instance.emailRequiredForSignup && emailState !== 'ok' ||
+		usernameState !== 'ok' ||
+		passwordRetypeState !== 'match';
 });
 
 function onChangeUsername(): void {
@@ -138,14 +143,20 @@ function onChangeUsername(): void {
 		}
 	}
 
+	if (usernameAbortController != null) {
+		usernameAbortController.abort();
+	}
 	usernameState = 'wait';
+	usernameAbortController = new AbortController();
 
 	os.api('username/available', {
 		username,
-	}).then(result => {
+	}, undefined, usernameAbortController.signal).then(result => {
 		usernameState = result.available ? 'ok' : 'unavailable';
-	}).catch(() => {
-		usernameState = 'error';
+	}).catch((err) => {
+		if (err.name !== 'AbortError') {
+			usernameState = 'error';
+		}
 	});
 }
 
@@ -155,11 +166,15 @@ function onChangeEmail(): void {
 		return;
 	}
 
+	if (emailAbortController != null) {
+		emailAbortController.abort();
+	}
 	emailState = 'wait';
+	emailAbortController = new AbortController();
 
 	os.api('email-address/available', {
 		emailAddress: email,
-	}).then(result => {
+	}, undefined, emailAbortController.signal).then(result => {
 		emailState = result.available ? 'ok' :
 			result.reason === 'used' ? 'unavailable:used' :
 			result.reason === 'format' ? 'unavailable:format' :
@@ -167,8 +182,10 @@ function onChangeEmail(): void {
 			result.reason === 'mx' ? 'unavailable:mx' :
 			result.reason === 'smtp' ? 'unavailable:smtp' :
 			'unavailable';
-	}).catch(() => {
-		emailState = 'error';
+	}).catch((err) => {
+		if (err.name !== 'AbortError') {
+			emailState = 'error';
+		}
 	});
 }
 

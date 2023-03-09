@@ -20,7 +20,7 @@ import MkSignin from '@/components/MkSignin.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 }>(), {
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'done'): void;
+	(ev: 'done', v: any): void;
 	(ev: 'closed'): void;
 	(ev: 'cancelled'): void;
 }>();
@@ -38,11 +38,11 @@ const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
 function onClose() {
 	emit('cancelled');
-	dialog.close();
+	if (dialog) dialog.close();
 }
 
 function onLogin(res) {
 	emit('done', res);
-	dialog.close();
+	if (dialog) dialog.close();
 }
 </script>
