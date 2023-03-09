@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-memo data-cy-mkw-memo">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-memo class="mkw-memo">
 	<template #icon><i class="ti ti-note"></i></template>
 	<template #header>{{ i18n.ts._widgets.memo }}</template>
 
