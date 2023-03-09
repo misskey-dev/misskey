@@ -16,6 +16,7 @@ You should also include the user name that made the change.
 - ユーザーごとにRenoteをミュートできるように
 - ノートごとに絵文字リアクションを受け取るか設定できるように
 - enhance(client): DM作成時にメンションも含むように
+- enhance(client): フォロー申請のボタンのデザインを改善
 
 ### Bugfixes
 -
