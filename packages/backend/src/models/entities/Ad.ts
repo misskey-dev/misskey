@@ -56,7 +56,7 @@ export class Ad {
 	})
 	public memo: string;
 	@Column('integer', {
-		default: 0, nullable: true,
+		default: 0, nullable: false,
 	})
 	public dayOfWeek: number;
 	constructor(data: Partial<Ad>) {
