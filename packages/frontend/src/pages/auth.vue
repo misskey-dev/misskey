@@ -25,7 +25,10 @@
 					{{ i18n.ts._auth.callback }}
 					<MkEllipsis/>
 				</p>
-				<p v-if="!session.app.callbackUrl">{{ i18n.ts._auth.pleaseGoBack }}</p>
+				<p v-if="!session.app.callbackUrl">
+					{{ i18n.ts._auth.pleaseGoBack }}<br>
+					{{ session.token }}
+				</p>
 			</div>
 		</div>
 		<div v-else>
