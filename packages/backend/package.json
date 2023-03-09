@@ -124,6 +124,7 @@
 		"seedrandom": "3.0.5",
 		"semver": "7.3.8",
 		"sharp": "0.31.3",
+		"sharp-read-bmp": "github:misskey-dev/sharp-read-bmp",
 		"strict-event-emitter-types": "2.0.0",
 		"stringz": "2.1.0",
 		"summaly": "github:misskey-dev/summaly",

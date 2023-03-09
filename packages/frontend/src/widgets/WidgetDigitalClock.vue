@@ -1,5 +1,5 @@
 <template>
-<div class="data-cy-mkw-digitalClock _monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
+<div data-cy-mkw-digitalClock class="_monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
 	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzAbbrev }}</div>
 	<div>
 		<MkDigitalClock :show-ms="widgetProps.showMs" :offset="tzOffset"/>

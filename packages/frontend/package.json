@@ -4,6 +4,8 @@
 	"scripts": {
 		"watch": "vite",
 		"build": "vite build",
+		"test": "vitest --run",
+		"test-and-coverage": "vitest --run --coverage",
 		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -70,6 +72,7 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
+		"@testing-library/vue": "^6.6.1",
 		"@types/escape-regexp": "0.0.1",
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
@@ -85,13 +88,16 @@
 		"@types/ws": "8.5.4",
 		"@typescript-eslint/eslint-plugin": "5.53.0",
 		"@typescript-eslint/parser": "5.53.0",
+		"@vitest/coverage-c8": "^0.29.2",
 		"@vue/runtime-core": "3.2.47",
 		"cross-env": "7.0.3",
 		"cypress": "12.7.0",
 		"eslint": "8.35.0",
 		"eslint-plugin-import": "2.27.5",
 		"eslint-plugin-vue": "9.9.0",
+		"happy-dom": "8.9.0",
 		"start-server-and-test": "1.15.4",
+		"vitest": "^0.29.2",
 		"vue-eslint-parser": "9.1.0",
 		"vue-tsc": "1.2.0"
 	}
