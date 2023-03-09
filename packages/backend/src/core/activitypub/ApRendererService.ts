@@ -454,13 +454,24 @@ export class ApRendererService {
 
 				if (field.value) {
 					const ast = mfm.parse(field.value);
+
 					if (ast.length === 1 && ast[0].type === 'mention') {
-						const domain = ast[0].props.host ? `https://${ast[0].props.host}` : '';
-						url = `${domain}/@${ast[0].props.username}`;
-					} else if (field.value.match(/^https?:/)) {
+						const user = await this.usersRepository.findOneBy({
+							host: ast[0].props.host ?? IsNull(),
+							username: ast[0].props.username,
+						});
+						if (user) {
+							const userProfile = await this.userProfilesRepository.findOneBy({ userId: user.id });
+							if (userProfile?.url) {
+								url = userProfile.url;
+							}
+						}
+					}
+
+					if (url === null && field.value.match(/^https?:/)) {
 						url = field.value;
 					}
-                }
+				}
 
 				attachment.push({
 					type: 'PropertyValue',

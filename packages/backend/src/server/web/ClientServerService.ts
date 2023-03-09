@@ -417,8 +417,8 @@ export class ClientServerService {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 				const meta = await this.metaService.fetch();
 				const me = profile.fields
-					? profile.fields
-						.map(field => {
+					? (await Promise.all(profile.fields
+						.map(async field => {
 							if (!field.value) {
 								return null;
 							}
@@ -426,15 +426,25 @@ export class ClientServerService {
 							const ast = mfm.parse(field.value);
 
 							if (ast.length === 1 && ast[0].type === 'mention') {
-								const domain = ast[0].props.host ? `https://${ast[0].props.host}` : '';
-								return `${domain}/@${ast[0].props.username}`;
-							} else if (field.value.match(/^https?:/)) {
+								const user = await this.usersRepository.findOneBy({
+									host: ast[0].props.host ?? IsNull(),
+									username: ast[0].props.username,
+								});
+								if (user) {
+									const userProfile = await this.userProfilesRepository.findOneBy({ userId: user.id });
+									if (userProfile?.url) {
+										return userProfile.url;
+									}
+								}
+							}
+
+							if (field.value.match(/^https?:/)) {
 								return field.value;
 							}
 
 							return null;
 						})
-						.filter(value => value != null)
+					)).filter(value => value !== null)
 					: [];
 
 				reply.header('Cache-Control', 'public, max-age=15');
