@@ -8,7 +8,7 @@ export function genOpenapiSpec(config: Config) {
 		openapi: '3.0.0',
 
 		info: {
-			version: 'v1',
+			version: config.version,
 			title: 'Misskey API',
 			'x-logo': { url: '/static-assets/api-doc.png' },
 		},
