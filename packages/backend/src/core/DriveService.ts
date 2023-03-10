@@ -36,7 +36,7 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 import { correctFilename } from '@/misc/correct-filename.js';
-import { isMimeImage } from '@/misc/is-mime-image';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
