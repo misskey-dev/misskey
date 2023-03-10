@@ -35,6 +35,7 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
 import { correctFilename } from '@/misc/correct-filename.js';
+import { isMimeImage } from '@/misc/is-mime-image';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -274,8 +275,8 @@ export class DriveService {
 			}
 		}
 
-		if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'].includes(type)) {
-			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
+		if (!isMimeImage(type, 'sharp-convertible-image-with-bmp')) {
+			this.registerLogger.debug('web image and thumbnail not created (cannot convert by sharp)');
 			return {
 				webpublic: null,
 				thumbnail: null,
@@ -299,7 +300,8 @@ export class DriveService {
 			}
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/avif' &&
+				type !== 'image/svg+xml' && // security reason
+				type !== 'image/avif' && // not supported by Mastodon
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -319,11 +321,9 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (type === 'image/jpeg') {
-					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
-				} else if (['image/webp', 'image/avif'].includes(type)) {
+				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
-				} else if (['image/png', 'image/svg+xml'].includes(type)) {
+				} else if (['image/png', 'image/bmp', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
@@ -341,11 +341,7 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(type)) {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 280);
-			} else {
-				this.registerLogger.debug('thumbnail not created (not an required file)');
-			}
+			thumbnail = await this.imageProcessingService.convertSharpToAvif(img, 498, 422);
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
 		}
