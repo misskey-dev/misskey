@@ -124,7 +124,7 @@ export class ApNoteService {
 			throw new Error('invalid note');
 		}
 	
-		const note: IPost = object as any;
+		const note = object as IPost;
 	
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
