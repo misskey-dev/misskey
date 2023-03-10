@@ -337,7 +337,7 @@ export class DriveService {
 
 		try {
 			if (isAnimated) {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { pages: 20 }), 374, 317, { alphaQuality: 70 });
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
 			} else {
 				thumbnail = await this.imageProcessingService.convertSharpToAvif(img, 498, 422);
 			}
