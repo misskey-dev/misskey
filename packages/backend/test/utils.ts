@@ -1,9 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { isAbsolute, basename } from 'node:path';
 import WebSocket from 'ws';
-import fetch, { Blob, File, RequestInit } from 'node-fetch';
-import { DataSource } from 'typeorm';
-import { entities } from '../src/postgres.js';
+import fetch, { File, RequestInit } from 'node-fetch';
+import { createMemoryDb, entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
 
@@ -224,7 +223,9 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status:
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
 
-	const db = new DataSource({
+	const db = createMemoryDb();
+
+	const dataSource = db.adapters.createTypeormDataSource({
 		type: 'postgres',
 		host: config.db.host,
 		port: config.db.port,
@@ -236,9 +237,9 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		entities: initEntities ?? entities,
 	});
 
-	await db.initialize();
+	await dataSource.initialize();
 
-	return db;
+	return dataSource;
 }
 
 export function sleep(msec: number) {

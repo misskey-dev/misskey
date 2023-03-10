@@ -3,7 +3,7 @@ import pg from 'pg';
 pg.types.setTypeParser(20, Number);
 
 import { DataSource, DataSourceOptions, Logger } from 'typeorm';
-import { DataType, newDb } from 'pg-mem';
+import { DataType, IMemoryDb, newDb } from 'pg-mem';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
@@ -191,6 +191,66 @@ export const entities = [
 
 const log = process.env.NODE_ENV !== 'production';
 
+export function createMemoryDb(): IMemoryDb {
+	const db = newDb({ autoCreateForeignKeyIndices: true });
+
+	db.public.registerFunction({
+		name: 'version',
+		args: [],
+		returns: DataType.text,
+		implementation: (x) => `hello world: ${x}`,
+	});
+
+	db.public.registerFunction({
+		name: 'current_database',
+		implementation: () => 'test',
+	});
+
+	// HACK: As of writing, pg-mem doesn't support `array_cat`.
+	db.public.registerFunction({
+		name: 'array_cat',
+		args: [db.public.getType(DataType.text).asArray(), db.public.getType(DataType.text).asArray()],
+		returns: db.public.getType(DataType.text).asArray(),
+		implementation: (x: unknown[], y: unknown[]) => {
+			if (x instanceof Array && y instanceof Array) {
+				const result: string[] = [];
+				for (const item of x) {
+					if (typeof item === 'string') {
+						result.push(item);
+					} else {
+						throw new Error('Assertion failed.');
+					}
+				}
+				for (const item of y) {
+					if (typeof item === 'string') {
+						result.push(item);
+					} else {
+						throw new Error('Assertion failed.');
+					}
+				}
+				return result;
+			} else {
+				throw new Error('Assertion failed.');
+			}
+		},
+	});
+
+	// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
+	db.public.interceptQueries((text) => {
+		//console.log(text);
+		switch (text) {
+			case 'SELECT \'DROP VIEW IF EXISTS "\' || schemaname || \'"."\' || viewname || \'" CASCADE;\' as "query" FROM "pg_views" WHERE "schemaname" IN (current_schema()) AND "viewname" NOT IN (\'geography_columns\', \'geometry_columns\', \'raster_columns\', \'raster_overviews\')':
+			case 'SELECT \'DROP TABLE IF EXISTS "\' || schemaname || \'"."\' || tablename || \'" CASCADE;\' as "query" FROM "pg_tables" WHERE "schemaname" IN (current_schema()) AND "tablename" NOT IN (\'spatial_ref_sys\')':
+			case 'SELECT \'DROP TYPE IF EXISTS "\' || n.nspname || \'"."\' || t.typname || \'" CASCADE;\' as "query" FROM "pg_type" "t" INNER JOIN "pg_enum" "e" ON "e"."enumtypid" = "t"."oid" INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" WHERE "n"."nspname" IN (current_schema()) GROUP BY "n"."nspname", "t"."typname"':
+				return [];
+			default:
+				return null;
+		}
+	});
+
+	return db;
+}
+
 export function createPostgresDataSource(config: Config): DataSource {
 	const dataSourceOptions: DataSourceOptions = {
 		type: 'postgres',
@@ -224,32 +284,7 @@ export function createPostgresDataSource(config: Config): DataSource {
 	};
 
 	if (process.env.NODE_ENV === 'test' && process.env.VITEST === 'true') {
-		const db = newDb({ autoCreateForeignKeyIndices: true });
-
-		db.public.registerFunction({
-			name: 'version',
-			args: [],
-			returns: DataType.text,
-			implementation: (x) => `hello world: ${x}`,
-		});
-
-		db.public.registerFunction({
-			name: 'current_database',
-			implementation: () => 'test',
-		});
-
-		// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
-		db.public.interceptQueries((text) => {
-			//console.log(text);
-			switch (text) {
-				case 'SELECT \'DROP VIEW IF EXISTS "\' || schemaname || \'"."\' || viewname || \'" CASCADE;\' as "query" FROM "pg_views" WHERE "schemaname" IN (current_schema()) AND "viewname" NOT IN (\'geography_columns\', \'geometry_columns\', \'raster_columns\', \'raster_overviews\')':
-				case 'SELECT \'DROP TABLE IF EXISTS "\' || schemaname || \'"."\' || tablename || \'" CASCADE;\' as "query" FROM "pg_tables" WHERE "schemaname" IN (current_schema()) AND "tablename" NOT IN (\'spatial_ref_sys\')':
-				case 'SELECT \'DROP TYPE IF EXISTS "\' || n.nspname || \'"."\' || t.typname || \'" CASCADE;\' as "query" FROM "pg_type" "t" INNER JOIN "pg_enum" "e" ON "e"."enumtypid" = "t"."oid" INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" WHERE "n"."nspname" IN (current_schema()) GROUP BY "n"."nspname", "t"."typname"':
-					return [];
-				default:
-					return null;
-			}
-		});
+		const db = createMemoryDb();
 
 		return db.adapters.createTypeormDataSource(dataSourceOptions);
 	} else {

@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import * as lolex from '@sinonjs/fake-timers';
 import { DataSource } from 'typeorm';
-import { DataType, IMemoryDb, newDb } from 'pg-mem';
+import { IMemoryDb } from 'pg-mem';
 import { afterAll, afterEach, beforeEach, describe, test } from 'vitest';
 import TestChart from '@/core/chart/charts/test.js';
 import TestGroupedChart from '@/core/chart/charts/test-grouped.js';
@@ -16,6 +16,7 @@ import { entity as TestIntersectionChartEntity } from '@/core/chart/charts/entit
 import { loadConfig } from '@/config.js';
 import type { AppLockService } from '@/core/AppLockService';
 import Logger from '@/logger.js';
+import { createMemoryDb } from '@/postgres.js';
 
 describe('Chart', () => {
 	const config = loadConfig();
@@ -35,60 +36,7 @@ describe('Chart', () => {
 	let clock: lolex.InstalledClock;
 
 	beforeEach(async () => {
-		db = newDb({ autoCreateForeignKeyIndices: true });
-
-		db.public.registerFunction({
-			name: 'version',
-			args: [],
-			returns: DataType.text,
-			implementation: (x) => `hello world: ${x}`,
-		});
-
-		db.public.registerFunction({
-			name: 'current_database',
-			implementation: () => 'test',
-		});
-
-		// HACK: As of writing, pg-mem doesn't support `array_cat`.
-		db.public.registerFunction({
-			name: 'array_cat',
-			args: [db.public.getType(DataType.text).asArray(), db.public.getType(DataType.text).asArray()],
-			returns: db.public.getType(DataType.text).asArray(),
-			implementation: (x: unknown[], y: unknown[]) => {
-				if (x instanceof Array && y instanceof Array) {
-					const result: string[] = [];
-					for (const item of x) {
-						if (typeof item === 'string') {
-							result.push(item);
-						} else {
-							throw new Error('Assertion failed.');
-						}
-					}
-					for (const item of y) {
-						if (typeof item === 'string') {
-							result.push(item);
-						} else {
-							throw new Error('Assertion failed.');
-						}
-					}
-					return result;
-				} else {
-					throw new Error('Assertion failed.');
-				}
-			},
-		});
-
-		// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
-		db.public.interceptQueries((text) => {
-			switch (text) {
-				case 'SELECT \'DROP VIEW IF EXISTS "\' || schemaname || \'"."\' || viewname || \'" CASCADE;\' as "query" FROM "pg_views" WHERE "schemaname" IN (current_schema()) AND "viewname" NOT IN (\'geography_columns\', \'geometry_columns\', \'raster_columns\', \'raster_overviews\')':
-				case 'SELECT \'DROP TABLE IF EXISTS "\' || schemaname || \'"."\' || tablename || \'" CASCADE;\' as "query" FROM "pg_tables" WHERE "schemaname" IN (current_schema()) AND "tablename" NOT IN (\'spatial_ref_sys\')':
-				case 'SELECT \'DROP TYPE IF EXISTS "\' || n.nspname || \'"."\' || t.typname || \'" CASCADE;\' as "query" FROM "pg_type" "t" INNER JOIN "pg_enum" "e" ON "e"."enumtypid" = "t"."oid" INNER JOIN "pg_namespace" "n" ON "n"."oid" = "t"."typnamespace" WHERE "n"."nspname" IN (current_schema()) GROUP BY "n"."nspname", "t"."typname"':
-					return [];
-				default:
-					return null;
-			}
-		});
+		db = createMemoryDb();
 
 		if (dataSource) dataSource.destroy();
 
