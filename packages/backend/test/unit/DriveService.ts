@@ -6,7 +6,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { DriveService } from '@/core/DriveService.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { S3Service } from '@/core/S3Service';
-import { Meta } from '@/models';
+import type { Meta } from '@/models';
 import type { DeleteObjectOutput } from 'aws-sdk/clients/s3';
 import type { AWSError } from 'aws-sdk/lib/error';
 import type { PromiseResult, Request } from 'aws-sdk/lib/request';
