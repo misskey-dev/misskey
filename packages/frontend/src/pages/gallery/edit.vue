@@ -12,7 +12,7 @@
 			</MkTextarea>
 
 			<div class="">
-				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl })` : null }">
+				<div v-for="file in files" :key="file.id" class="wqugxsfx" :style="{ backgroundImage: file ? `url(${ file.thumbnailUrl ?? file.url })` : null }">
 					<div class="name">{{ file.name }}</div>
 					<button v-tooltip="i18n.ts.remove" class="remove _button" @click="remove(file)"><i class="ti ti-x"></i></button>
 				</div>

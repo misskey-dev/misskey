@@ -2,6 +2,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
@@ -285,19 +286,12 @@ export class DriveService {
 
 		let img: sharp.Sharp | null = null;
 		let satisfyWebpublic: boolean;
+		let isAnimated: boolean;
 
 		try {
-			img = sharp(path);
+			img = await sharpBmp(path, type);
 			const metadata = await img.metadata();
-			const isAnimated = metadata.pages && metadata.pages > 1;
-
-			// skip animated
-			if (isAnimated) {
-				return {
-					webpublic: null,
-					thumbnail: null,
-				};
-			}
+			isAnimated = !!(metadata.pages && metadata.pages > 1);
 
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
@@ -317,7 +311,7 @@ export class DriveService {
 		// #region webpublic
 		let webpublic: IImage | null = null;
 
-		if (generateWeb && !satisfyWebpublic) {
+		if (generateWeb && !satisfyWebpublic && !isAnimated) {
 			this.registerLogger.info('creating web image');
 
 			try {
@@ -333,6 +327,7 @@ export class DriveService {
 			}
 		} else {
 			if (satisfyWebpublic) this.registerLogger.info('web image not created (original satisfies webpublic)');
+			else if (isAnimated) this.registerLogger.info('web image not created (animated image)');
 			else this.registerLogger.info('web image not created (from remote)');
 		}
 		// #endregion webpublic
@@ -341,7 +336,11 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			thumbnail = await this.imageProcessingService.convertSharpToAvif(img, 498, 422);
+			if (isAnimated) {
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { pages: 20 }), 374, 317, { alphaQuality: 70 });
+			} else {
+				thumbnail = await this.imageProcessingService.convertSharpToAvif(img, 498, 422);
+			}
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
 		}

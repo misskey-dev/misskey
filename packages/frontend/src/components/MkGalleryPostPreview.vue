@@ -1,7 +1,7 @@
 <template>
 <MkA :to="`/gallery/${post.id}`" class="ttasepnz _panel" tabindex="-1">
 	<div class="thumbnail">
-		<ImgWithBlurhash class="img" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
+		<ImgWithBlurhash class="img" :src="post.files[0].thumbnailUrl ?? post.files[0].url" :hash="post.files[0].blurhash"/>
 	</div>
 	<article>
 		<header>

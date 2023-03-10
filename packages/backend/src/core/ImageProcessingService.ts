@@ -34,7 +34,7 @@ export const webpDefault: sharp.WebpOptions = {
 };
 
 export const avifDefault: sharp.AvifOptions = {
-	quality: 70,
+	quality: 60,
 	lossless: false,
 	effort: 2,
 };
@@ -113,7 +113,7 @@ export class ImageProcessingService {
 	}
 
 	@bindThis
-	public convertToWebpAvifStream(path: string, width: number, height: number, options: sharp.AvifOptions = avifDefault): IImageSharp {
+	public convertToAvifStream(path: string, width: number, height: number, options: sharp.AvifOptions = avifDefault): IImageSharp {
 		return this.convertSharpToAvifStream(sharp(path), width, height, options);
 	}
 

@@ -33,7 +33,7 @@ export class UrlPreviewService {
 	private wrap(url?: string | null): string | null {
 		return url != null
 			? url.match(/^https?:\/\//)
-				? `${this.config.mediaProxy}/preview.webp?${query({
+				? `${this.config.mediaProxy}/preview.avif?${query({
 					url,
 					preview: '1',
 				})}`

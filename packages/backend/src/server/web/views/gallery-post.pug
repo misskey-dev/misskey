@@ -16,7 +16,7 @@ block og
 	meta(property='og:title'       content= title)
 	meta(property='og:description' content= post.description)
 	meta(property='og:url'         content= url)
-	meta(property='og:image'       content= post.files[0].thumbnailUrl)
+	meta(property='og:image'       content= post.files[0].thumbnailUrl ?? post.files[0].url)
 
 block meta
 	if user.host || profile.noCrawle
