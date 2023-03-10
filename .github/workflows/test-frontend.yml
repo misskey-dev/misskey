@@ -38,7 +38,7 @@ jobs:
     - name: Build
       run: pnpm build
     - name: Test
-      run: pnpm --filter frontend test-and-coverage
+      run: pnpm vitest-and-coverage
     - name: Upload Coverage
       uses: codecov/codecov-action@v3
       with:
