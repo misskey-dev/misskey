@@ -3,8 +3,8 @@ const fs = require("fs");
 const yaml = require("js-yaml");
 const path =
 	process.env.NODE_ENV === "test"
-		? path.resolve(__dirname, "../.config/test.yml")
-		: path.resolve(__dirname, "../.config/default.yml");
+		? __dirname + "/../.config/test.yml"
+		: __dirname + "/../.config/default.yml";
 const config = yaml.load(fs.readFileSync(path, "utf-8"));
 
 const start = async () => {
