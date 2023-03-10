@@ -4,6 +4,7 @@ import {
 	addSingletonInstance,
 	buildServiceProvider,
 	getRequiredService,
+	ServiceProvider,
 } from 'yohira';
 import { NestLogger } from '@/NestLogger.js';
 import { addCoreServices } from '@/boot/CoreModule.js';
@@ -16,7 +17,7 @@ import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { DI } from '@/di-symbols.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 
-export function server(): Promise<void> {
+export function server(): Promise<ServiceProvider> {
 	return main();
 }
 

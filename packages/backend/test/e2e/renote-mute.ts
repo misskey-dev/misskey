@@ -1,11 +1,12 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, api, post, react, startServer, waitFire } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+import { ServiceProvider } from 'yohira';
+import { signup, api, post, startServer, waitFire } from '../utils.js';
 
 describe('Renote Mute', () => {
-	let p: INestApplicationContext;
+	let p: ServiceProvider;
 
 	// alice mutes carol
 	let alice: any;
@@ -20,7 +21,7 @@ describe('Renote Mute', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await p.disposeAsync();
 	});
 
 	test('ミュート作成', async () => {

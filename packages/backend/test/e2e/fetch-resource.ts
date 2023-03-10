@@ -1,8 +1,9 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+import { ServiceProvider } from 'yohira';
 import { startServer, signup, post, api, simpleGet } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 // Request Accept
 const ONLY_AP = 'application/activity+json';
@@ -16,7 +17,7 @@ const HTML = 'text/html; charset=utf-8';
 const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Fetch resource', () => {
-	let p: INestApplicationContext;
+	let p: ServiceProvider;
 
 	let alice: any;
 	let alicesPost: any;
@@ -30,7 +31,7 @@ describe('Fetch resource', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await p.disposeAsync();
 	});
 
 	describe('Common', () => {

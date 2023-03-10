@@ -1,18 +1,19 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+import { ServiceProvider } from 'yohira';
 import { signup, api, post, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 describe('API visibility', () => {
-	let p: INestApplicationContext;
+	let p: ServiceProvider;
 
 	beforeAll(async () => {
 		p = await startServer();
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await p.disposeAsync();
 	});
 
 	describe('Note visibility', () => {

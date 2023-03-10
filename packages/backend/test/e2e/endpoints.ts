@@ -4,11 +4,12 @@ import * as assert from 'assert';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+import { ServiceProvider } from 'yohira';
 import { startServer, signup, post, api, uploadFile, simpleGet } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Endpoints', () => {
-	let p: INestApplicationContext;
+	let p: ServiceProvider;
 
 	let alice: any;
 	let bob: any;
@@ -24,7 +25,7 @@ describe('Endpoints', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await p.disposeAsync();
 	});
 
 	describe('signup', () => {

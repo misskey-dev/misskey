@@ -4,6 +4,7 @@ import {
 	addSingletonInstance,
 	buildServiceProvider,
 	getRequiredService,
+	ServiceProvider,
 } from 'yohira';
 import { NestLogger } from '@/NestLogger.js';
 import { addCoreServices } from '@/boot/CoreModule.js';
@@ -20,7 +21,7 @@ import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import { DI } from '@/di-symbols.js';
 import { ServerService } from '@/server/ServerService.js';
 
-export async function main(): Promise<void> {
+export async function main(): Promise<ServiceProvider> {
 	const services = new ServiceCollection();
 
 	addSingletonInstance(services, DI.Logger, new NestLogger());
@@ -47,4 +48,6 @@ export async function main(): Promise<void> {
 	getRequiredService<JanitorService>(serviceProvider, DI.JanitorService).start();
 	getRequiredService<QueueStatsService>(serviceProvider, DI.QueueStatsService).start();
 	getRequiredService<ServerStatsService>(serviceProvider, DI.ServerStatsService).start();
+
+	return serviceProvider;
 }

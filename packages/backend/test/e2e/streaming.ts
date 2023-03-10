@@ -1,12 +1,13 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+import { ServiceProvider } from 'yohira';
 import { Following } from '@/models/entities/Following.js';
 import { connectStream, signup, api, post, startServer, initTestDb, waitFire } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Streaming', () => {
-	let p: INestApplicationContext;
+	let p: ServiceProvider;
 	let Followings: any;
 
 	const follow = async (follower: any, followee: any) => {
@@ -74,7 +75,7 @@ describe('Streaming', () => {
 		}, 1000 * 60 * 2);
 
 		afterAll(async () => {
-			await p.close();
+			await p.disposeAsync();
 		});
 
 		describe('Events', () => {
