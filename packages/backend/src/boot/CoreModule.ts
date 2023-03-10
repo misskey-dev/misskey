@@ -82,6 +82,7 @@ import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
 import { MutingEntityService } from '@/core/entities/MutingEntityService.js';
+import { RenoteMutingEntityService } from '@/core/entities/RenoteMutingEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteFavoriteEntityService } from '@/core/entities/NoteFavoriteEntityService.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
@@ -200,6 +201,7 @@ const CoreServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[DI.InstanceEntityService, InstanceEntityService],
 	[DI.ModerationLogEntityService, ModerationLogEntityService],
 	[DI.MutingEntityService, MutingEntityService],
+	[DI.RenoteMutingEntityService, RenoteMutingEntityService],
 	[DI.NoteEntityService, NoteEntityService],
 	[DI.NoteFavoriteEntityService, NoteFavoriteEntityService],
 	[DI.NoteReactionEntityService, NoteReactionEntityService],

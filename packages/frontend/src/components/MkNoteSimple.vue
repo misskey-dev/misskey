@@ -47,6 +47,9 @@ const showContent = $ref(false);
 	width: 34px;
 	height: 34px;
 	border-radius: 8px;
+	position: sticky !important;
+	top: calc(16px + var(--stickyTop, 0px));
+	left: 0;
 }
 
 .main {

@@ -57,9 +57,7 @@ export const signup = async (params?: any): Promise<any> => {
 };
 
 export const post = async (user: any, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
-	const q = Object.assign({
-		text: 'test',
-	}, params);
+	const q = params;
 
 	const res = await api('notes/create', q, user);
 
@@ -206,7 +204,12 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status:
 		redirect: 'manual',
 	});
 
-	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+	const jsonTypes = [
+		'application/json; charset=utf-8',
+		'application/activity+json; charset=utf-8',
+	];
+
+	const body = jsonTypes.includes(res.headers.get('content-type') ?? '')
 		? await res.json()
 		: null;
 

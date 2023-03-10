@@ -35,6 +35,7 @@ import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
 import { Muting } from '@/models/entities/Muting.js';
+import { RenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { Note } from '@/models/entities/Note.js';
 import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -140,6 +141,7 @@ export const entities = [
 	Following,
 	FollowRequest,
 	Muting,
+	RenoteMuting,
 	Blocking,
 	Note,
 	NoteFavorite,

@@ -2,7 +2,6 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@/di-decorators.js';
-import fastifyStatic from '@fastify/static';
 import rename from 'rename';
 import type { Config } from '@/config.js';
 import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
@@ -22,6 +21,8 @@ import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
+import { correctFilename } from '@/misc/correct-filename.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -63,24 +64,10 @@ export class FileServerService {
 	}
 
 	@bindThis
-	public commonReadableHandlerGenerator(reply: FastifyReply) {
-		return (err: Error): void => {
-			this.logger.error(err);
-			reply.code(500);
-			reply.header('Cache-Control', 'max-age=300');
-		};
-	}
-
-	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			done();
-		});
-
-		fastify.register(fastifyStatic, {
-			root: _dirname,
-			serve: false,
 		});
 
 		fastify.get('/files/app-default.jpg', (request, reply) => {
@@ -151,7 +138,7 @@ export class FileServerService {
 				let image: IImageStreamable | null = null;
 
 				if (file.fileRole === 'thumbnail') {
-					if (isMimeImage(file.mime, 'sharp-convertible-image')) {
+					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
 						const url = new URL(`${this.config.mediaProxy}/static.webp`);
@@ -201,13 +188,19 @@ export class FileServerService {
 				}
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(image.type) ? image.type : 'application/octet-stream');
+				reply.header('Content-Disposition',
+					contentDisposition(
+						'inline',
+						correctFilename(file.filename, image.ext)
+					)
+				);
 				return image.data;
 			}
 
 			if (file.fileRole !== 'original') {
-				const filename = rename(file.file.name, {
+				const filename = rename(file.filename, {
 					suffix: file.fileRole === 'thumbnail' ? '-thumb' : '-web',
-					extname: file.ext ? `.${file.ext}` : undefined,
+					extname: file.ext ? `.${file.ext}` : '.unknown',
 				}).toString();
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.mime) ? file.mime : 'application/octet-stream');
@@ -215,12 +208,10 @@ export class FileServerService {
 				reply.header('Content-Disposition', contentDisposition('inline', filename));
 				return fs.createReadStream(file.path);
 			} else {
-				const stream = fs.createReadStream(file.path);
-				stream.on('error', this.commonReadableHandlerGenerator(reply));
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.file.type) ? file.file.type : 'application/octet-stream');
 				reply.header('Cache-Control', 'max-age=31536000, immutable');
-				reply.header('Content-Disposition', contentDisposition('inline', file.file.name));
-				return stream;
+				reply.header('Content-Disposition', contentDisposition('inline', file.filename));
+				return fs.createReadStream(file.path);
 			}
 		} catch (e) {
 			if ('cleanup' in file) file.cleanup();
@@ -272,8 +263,8 @@ export class FileServerService {
 		}
 
 		try {
-			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image');
-			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image');
+			const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image-with-bmp');
+			const isAnimationConvertibleImage = isMimeImage(file.mime, 'sharp-animation-convertible-image-with-bmp');
 
 			if (
 				'emoji' in request.query ||
@@ -297,7 +288,7 @@ export class FileServerService {
 						type: file.mime,
 					};
 				} else {
-					const data = sharp(file.path, { animated: !('static' in request.query) })
+					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
 							.resize({
 								height: 'emoji' in request.query ? 128 : 320,
 								withoutEnlargement: true,
@@ -311,11 +302,11 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query) {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 498, 280);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 280);
 			} else if ('preview' in request.query) {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 200, 200);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
-				const mask = sharp(file.path)
+				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
 						fit: 'inside',
 						withoutEnlargement: false,
@@ -325,20 +316,20 @@ export class FileServerService {
 					.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 					.flatten({ background: '#000' })
 					.toColorspace('b-w');
-	
+
 				const stats = await mask.clone().stats();
-	
+
 				if (stats.entropy < 0.1) {
 					// エントロピーがあまりない場合は404にする
 					throw new StatusError('Skip to provide badge', 404);
 				}
-	
+
 				const data = sharp({
 					create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
 				})
 					.pipelineColorspace('b-w')
 					.boolean(await mask.png().toBuffer(), 'eor');
-	
+
 				image = {
 					data: await data.png().toBuffer(),
 					ext: 'png',
@@ -371,6 +362,12 @@ export class FileServerService {
 
 			reply.header('Content-Type', image.type);
 			reply.header('Cache-Control', 'max-age=31536000, immutable');
+			reply.header('Content-Disposition',
+				contentDisposition(
+					'inline',
+					correctFilename(file.filename, image.ext)
+				)
+			);
 			return image.data;
 		} catch (e) {
 			if ('cleanup' in file) file.cleanup();
@@ -380,8 +377,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getStreamAndTypeFromUrl(url: string): Promise<
-		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole?: 'thumbnail' | 'webpublic' | 'original'; file?: DriveFile; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; filename: string; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -397,18 +394,19 @@ export class FileServerService {
 
 	@bindThis
 	private async downloadAndDetectTypeFromUrl(url: string): Promise<
-		{ state: 'remote' ; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		{ state: 'remote' ; mime: string; ext: string | null; path: string; cleanup: () => void; filename: string; }
 	> {
 		const [path, cleanup] = await createTemp();
 		try {
-			await this.downloadService.downloadUrl(url, path);
+			const { filename } = await this.downloadService.downloadUrl(url, path);
 
 			const { mime, ext } = await this.fileInfoService.detectType(path);
-	
+
 			return {
 				state: 'remote',
 				mime, ext,
 				path, cleanup,
+				filename,
 			};
 		} catch (e) {
 			cleanup();
@@ -418,8 +416,8 @@ export class FileServerService {
 
 	@bindThis
 	private async getFileFromKey(key: string): Promise<
-		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; url: string; mime: string; ext: string | null; path: string; cleanup: () => void; }
-		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; mime: string; ext: string | null; path: string; }
+		{ state: 'remote'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; filename: string; url: string; mime: string; ext: string | null; path: string; cleanup: () => void; }
+		| { state: 'stored_internal'; fileRole: 'thumbnail' | 'webpublic' | 'original'; file: DriveFile; filename: string; mime: string; ext: string | null; path: string; }
 		| '404'
 		| '204'
 	> {
@@ -443,6 +441,7 @@ export class FileServerService {
 				url: file.uri,
 				fileRole: isThumbnail ? 'thumbnail' : isWebpublic ? 'webpublic' : 'original',
 				file,
+				filename: file.name,
 			};
 		}
 
@@ -454,6 +453,7 @@ export class FileServerService {
 				state: 'stored_internal',
 				fileRole: isThumbnail ? 'thumbnail' : 'webpublic',
 				file,
+				filename: file.name,
 				mime, ext,
 				path,
 			};
@@ -463,6 +463,7 @@ export class FileServerService {
 			state: 'stored_internal',
 			fileRole: 'original',
 			file,
+			filename: file.name,
 			mime: file.type,
 			ext: null,
 			path,

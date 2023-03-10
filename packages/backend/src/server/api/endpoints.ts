@@ -1,4 +1,4 @@
-import type { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
 
 export interface IEndpointMeta {

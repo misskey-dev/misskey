@@ -1,4 +1,4 @@
-name: Test
+name: Test (frontend)
 
 on:
   push:
@@ -14,12 +14,6 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-
-    services:
-      redis:
-        image: redis:6
-        ports:
-          - 56312:6379
 
     steps:
     - uses: actions/checkout@v3.3.0
@@ -44,12 +38,12 @@ jobs:
     - name: Build
       run: pnpm build
     - name: Test
-      run: pnpm coverage
+      run: pnpm --filter frontend test-and-coverage
     - name: Upload Coverage
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./packages/backend/coverage/coverage-final.json
+        files: ./packages/frontend/coverage/coverage-final.json
 
   e2e:
     runs-on: ubuntu-latest

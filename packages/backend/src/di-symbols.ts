@@ -40,6 +40,7 @@ export const DI = {
 	notificationsRepository: s('notificationsRepository'),
 	metasRepository: s('metasRepository'),
 	mutingsRepository: s('mutingsRepository'),
+	renoteMutingsRepository: s('renoteMutingsRepository'),
 	blockingsRepository: s('blockingsRepository'),
 	swSubscriptionsRepository: s('swSubscriptionsRepository'),
 	hashtagsRepository: s('hashtagsRepository'),
@@ -163,6 +164,7 @@ export const DI = {
 	MessagingMessageEntityService: s('MessagingMessageEntityService'),
 	ModerationLogEntityService: s('ModerationLogEntityService'),
 	MutingEntityService: s('MutingEntityService'),
+	RenoteMutingEntityService: s('RenoteMutingEntityService'),
 	NoteEntityService: s('NoteEntityService'),
 	NoteFavoriteEntityService: s('NoteFavoriteEntityService'),
 	NoteReactionEntityService: s('NoteReactionEntityService'),
@@ -232,6 +234,7 @@ export const DI = {
 	QueueStatsChannelService: s('QueueStatsChannelService'),
 	ServerStatsChannelService: s('ServerStatsChannelService'),
 	UserListChannelService: s('UserListChannelService'),
+	OpenApiServerService: s('OpenApiServerService'),
 
 	QueueLoggerService: s('QueueLoggerService'),
 	TickChartsProcessorService: s('TickChartsProcessorService'),

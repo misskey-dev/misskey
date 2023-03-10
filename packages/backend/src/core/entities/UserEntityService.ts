@@ -3,7 +3,7 @@ import Ajv from 'ajv';
 import { getRequiredService, IServiceProvider } from 'yohira';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
@@ -11,7 +11,7 @@ import { Cache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -71,6 +71,9 @@ export class UserEntityService {
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
+
+		@Inject(DI.renoteMutingsRepository)
+		private renoteMutingsRepository: RenoteMutingsRepository,
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -211,6 +214,13 @@ export class UserEntityService {
 				},
 				take: 1,
 			}).then(n => n > 0),
+			isRenoteMuted: this.renoteMutingsRepository.count({
+				where: {
+					muterId: me,
+					muteeId: target,
+				},
+				take: 1,
+			}).then(n => n > 0),
 		});
 	}
 
@@ -294,27 +304,27 @@ export class UserEntityService {
 	@bindThis
 	public async getAvatarUrl(user: User): Promise<string> {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
 		} else if (user.avatarId) {
 			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user);
 		} else {
-			return this.getIdenticonUrl(user.id);
+			return this.getIdenticonUrl(user);
 		}
 	}
 
 	@bindThis
 	public getAvatarUrlSync(user: User): string {
 		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user.id);
+			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
 		} else {
-			return this.getIdenticonUrl(user.id);
+			return this.getIdenticonUrl(user);
 		}
 	}
 
 	@bindThis
-	public getIdenticonUrl(userId: User['id']): string {
-		return `${this.config.url}/identicon/${userId}`;
+	public getIdenticonUrl(user: User): string {
+		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
@@ -509,6 +519,7 @@ export class UserEntityService {
 				isBlocking: relation.isBlocking,
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
+				isRenoteMuted: relation.isRenoteMuted,
 			} : {}),
 		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 

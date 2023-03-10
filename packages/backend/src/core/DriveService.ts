@@ -34,6 +34,7 @@ import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type S3 from 'aws-sdk/clients/s3.js';
+import { correctFilename } from '@/misc/correct-filename.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -199,7 +200,7 @@ export class DriveService {
 			//#region Uploads
 			this.registerLogger.info(`uploading original: ${key}`);
 			const uploads = [
-				this.upload(key, fs.createReadStream(path), type, name),
+				this.upload(key, fs.createReadStream(path), type, ext, name),
 			];
 
 			if (alts.webpublic) {
@@ -207,7 +208,7 @@ export class DriveService {
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
-				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
+				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
 			}
 
 			if (alts.thumbnail) {
@@ -215,7 +216,7 @@ export class DriveService {
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
-				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
+				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext));
 			}
 
 			await Promise.all(uploads);
@@ -329,7 +330,7 @@ export class DriveService {
 			}
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/webp' && type !== 'image/avif' &&
+				type !== 'image/svg+xml' && type !== 'image/avif' &&
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -349,11 +350,11 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
+				if (type === 'image/jpeg') {
 					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
-				} else if (['image/png'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
-				} else if (['image/svg+xml'].includes(type)) {
+				} else if (['image/webp', 'image/avif'].includes(type)) {
+					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
+				} else if (['image/png', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
@@ -391,7 +392,7 @@ export class DriveService {
 	 * Upload to ObjectStorage
 	 */
 	@bindThis
-	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
@@ -405,7 +406,12 @@ export class DriveService {
 			CacheControl: 'max-age=31536000, immutable',
 		} as S3.PutObjectRequest;
 
-		if (filename) params.ContentDisposition = contentDisposition('inline', filename);
+		if (filename) params.ContentDisposition = contentDisposition(
+			'inline',
+			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
+			// 許可されているファイル形式でしか拡張子をつけない
+			ext ? correctFilename(filename, ext) : filename,
+		);
 		if (meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
 		const s3 = this.s3Service.getS3(meta);
@@ -497,7 +503,12 @@ export class DriveService {
 		//}
 
 		// detect name
-		const detectedName = name ?? (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
+		const detectedName = correctFilename(
+			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
+			// extを付加してデータベースの文字数制限に当たることはまずない
+			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
+			info.type.ext
+		);
 
 		if (user && !force) {
 		// Check if there is a file with the same hash
@@ -767,24 +778,19 @@ export class DriveService {
 		requestIp = null,
 		requestHeaders = null,
 	}: UploadFromUrlArgs): Promise<DriveFile> {
-		let name = new URL(url).pathname.split('/').pop() ?? null;
-		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
-			name = null;
-		}
-	
-		// If the comment is same as the name, skip comment
-		// (image.name is passed in when receiving attachment)
-		if (comment !== null && name === comment) {
-			comment = null;
-		}
-	
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
-			await this.downloadService.downloadUrl(url, path);
-	
+			const { filename: name } = await this.downloadService.downloadUrl(url, path);
+
+			// If the comment is same as the name, skip comment
+			// (image.name is passed in when receiving attachment)
+			if (comment !== null && name === comment) {
+				comment = null;
+			}
+
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
 			this.downloaderLogger.succ(`Got: ${driveFile.id}`);
 			return driveFile!;

@@ -4,6 +4,7 @@ import type { DriveFilesRepository, ChannelsRepository } from '@/models/index.js
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['channels'],
@@ -62,7 +63,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.ChannelEntityService)
 		private channelEntityService: ChannelEntityService,
-	) {
+
+		@Inject(DI.RoleService)
+		private roleService: RoleService,
+		) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
@@ -72,7 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			if (channel.userId !== me.id) {
+			const iAmModerator = await this.roleService.isModerator(me);
+			if (channel.userId !== me.id && !iAmModerator) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

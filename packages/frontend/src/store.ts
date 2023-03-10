@@ -81,6 +81,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
 	},
+	reactionAcceptance: {
+		where: 'account',
+		default: null,
+	},
 	mutedWords: {
 		where: 'account',
 		default: [],
@@ -197,6 +201,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	showFixedPostFormInChannel: {
+		where: 'device',
+		default: false,
+	},
 	enableInfiniteScroll: {
 		where: 'device',
 		default: true,
@@ -271,7 +279,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	numberOfPageCache: {
 		where: 'device',
-		default: 5,
+		default: 3,
 	},
 	showNoteActionsOnlyHover: {
 		where: 'device',
@@ -320,8 +328,8 @@ export class ColdDeviceStorage {
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,
 		sound_masterVolume: 0.5,
-		sound_note: { type: 'syuilo/n-aec', volume: 0.5 },
-		sound_noteMy: { type: 'syuilo/n-cea', volume: 0.5 },
+		sound_note: { type: 'syuilo/n-eca', volume: 0.5 },
+		sound_noteMy: { type: 'syuilo/n-cea-4va', volume: 0.5 },
 		sound_notification: { type: 'syuilo/n-ea', volume: 0.5 },
 		sound_chat: { type: 'syuilo/pope1', volume: 0.5 },
 		sound_chatBg: { type: 'syuilo/waon', volume: 0.5 },

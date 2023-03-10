@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" class="mkw-timeline data-cy-mkw-timeline">
+<MkContainer :show-header="widgetProps.showHeader" :style="`height: ${widgetProps.height}px;`" :scrollable="true" data-cy-mkw-timeline class="mkw-timeline">
 	<template #icon>
 		<i v-if="widgetProps.src === 'home'" class="ti ti-home"></i>
 		<i v-else-if="widgetProps.src === 'local'" class="ti ti-planet"></i>

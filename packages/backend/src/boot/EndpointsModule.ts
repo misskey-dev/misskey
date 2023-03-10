@@ -222,6 +222,9 @@ import * as ep___miauth_genToken from '@/server/api/endpoints/miauth/gen-token.j
 import * as ep___mute_create from '@/server/api/endpoints/mute/create.js';
 import * as ep___mute_delete from '@/server/api/endpoints/mute/delete.js';
 import * as ep___mute_list from '@/server/api/endpoints/mute/list.js';
+import * as ep___renoteMute_create from '@/server/api/endpoints/renote-mute/create.js';
+import * as ep___renoteMute_delete from '@/server/api/endpoints/renote-mute/delete.js';
+import * as ep___renoteMute_list from '@/server/api/endpoints/renote-mute/list.js';
 import * as ep___my_apps from '@/server/api/endpoints/my/apps.js';
 import * as ep___notes from '@/server/api/endpoints/notes.js';
 import * as ep___notes_children from '@/server/api/endpoints/notes/children.js';
@@ -542,6 +545,9 @@ const eps = [
 	['mute/create', ep___mute_create],
 	['mute/delete', ep___mute_delete],
 	['mute/list', ep___mute_list],
+	['renote-mute/create', ep___renoteMute_create],
+	['renote-mute/delete', ep___renoteMute_delete],
+	['renote-mute/list', ep___renoteMute_list],
 	['my/apps', ep___my_apps],
 	['notes', ep___notes],
 	['notes/children', ep___notes_children],
@@ -871,6 +877,9 @@ const EndpointsServices: readonly (readonly [symbol, Ctor<object>])[] = [
 	[Symbol.for('ep:mute/create'), ep___mute_create.default],
 	[Symbol.for('ep:mute/delete'), ep___mute_delete.default],
 	[Symbol.for('ep:mute/list'), ep___mute_list.default],
+	[Symbol.for('ep:renote-mute/create'), ep___renoteMute_create.default],
+	[Symbol.for('ep:renote-mute/delete'), ep___renoteMute_delete.default],
+	[Symbol.for('ep:renote-mute/list'), ep___renoteMute_list.default],
 	[Symbol.for('ep:my/apps'), ep___my_apps.default],
 	[Symbol.for('ep:notes'), ep___notes.default],
 	[Symbol.for('ep:notes/children'), ep___notes_children.default],

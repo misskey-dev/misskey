@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { Schema } from '@/misc/schema.js';
+import { Schema } from '@/misc/json-schema.js';
 import { endpoints } from '@/boot/EndpointsModule.js';
 import { IEndpointMeta } from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
@@ -178,7 +178,7 @@ export class ApiServerService {
 		// Make sure any unknown path under /api returns HTTP 404 Not Found,
 		// because otherwise ClientServerService will return the base client HTML
 		// page with HTTP 200.
-		fastify.get('*', (request, reply) => {
+		fastify.get('/*', (request, reply) => {
 			reply.code(404);
 			// Mock ApiCallService.send's error handling
 			reply.send({
