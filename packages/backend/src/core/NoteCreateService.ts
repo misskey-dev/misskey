@@ -357,13 +357,10 @@ export class NoteCreateService implements IDisposable {
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		// FIXME: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1115459668
-		if (!(process.env.NODE_ENV === 'test' && process.env.VITEST === 'true')) {
-			setImmediate('post created', { signal: this.#shutdownController.signal }).then(
-				() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
-				() => { /* aborted, ignore this */ },
-			);
-		}
+		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
+			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
+			() => { /* aborted, ignore this */ },
+		);
 
 		return note;
 	}
