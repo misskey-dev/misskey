@@ -180,7 +180,7 @@ export class ApNoteService {
 		const reply: Note | null = note.inReplyTo
 			? await this.resolveNote(note.inReplyTo, resolver).then(x => {
 				if (x == null) {
-					this.logger.warn('Specified inReplyTo, but nout found');
+					this.logger.warn('Specified inReplyTo, but not found');
 					throw new Error('inReplyTo not found');
 				} else {
 					return x;
