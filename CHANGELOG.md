@@ -28,6 +28,7 @@ You should also include the user name that made the change.
 - ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
 - /api-consoleページにアクセスすると404が出る問題を修正
 - SMTP Login id length is too short
+- API上で`visibility`を`followers`に設定してrenoteすると連合や削除で不具合が発生する問題を修正
 
 ## 13.9.2 (2023/03/06)
 
