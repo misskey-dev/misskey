@@ -9,10 +9,11 @@ const config = yaml.load(fs.readFileSync(path, "utf-8"));
 
 const start = async () => {
 	try {
-		const exist = fs.existsSync(
-			path.resolve(__dirname, "../packages/backend/built/boot/index.js")
+		const stat = fs.statSync(
+			__dirname + "/../packages/backend/built/boot/index.js"
 		);
-		if (!exist) throw new Error("not exist yet");
+		if (!stat) throw new Error("not exist yet");
+		if (stat.size === 0) throw new Error("not built yet");
 
 		await execa(
 			"pnpm",

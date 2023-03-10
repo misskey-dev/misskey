@@ -112,12 +112,26 @@
 			],
 			"persistent": true
 		},
+		"test": {
+			"dependsOn": [
+				"jest",
+				"vitest"
+			]
+		},
 		"typecheck": {
 			"inputs": [
 				"packages/**"
 			],
 			"outputs": [
 				"packages/**"
+			]
+		},
+		"vitest": {
+			"env": [
+				"NODE_ENV"
+			],
+			"inputs": [
+				"packages/frontend/**"
 			]
 		}
 	}
