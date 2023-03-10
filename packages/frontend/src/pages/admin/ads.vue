@@ -96,6 +96,7 @@ os.api('admin/ad/list').then(adsResponse => {
 	});
 });
 
+// 選択された曜日(index)のビットフラグを操作する
 function toggleDayOfWeek(ad, index) {
 	ad.dayOfWeek ^= 1 << index;
 }

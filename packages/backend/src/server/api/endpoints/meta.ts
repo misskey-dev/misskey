@@ -263,6 +263,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.where('ads.expiresAt > :now', { now: new Date() })
 				.andWhere('ads.startsAt <= :now', { now: new Date() })
 				.andWhere(new Brackets(qb => {
+					// 曜日のビットフラグを確認する
 					qb.where('ads.dayOfWeek & :dayOfWeek > 0', { dayOfWeek: Math.pow(2, new Date().getDay()) })
 						.orWhere('ads.dayOfWeek = 0');
 				}))
@@ -306,7 +307,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					place: ad.place,
 					ratio: ad.ratio,
 					imageUrl: ad.imageUrl,
-					dayofweek: ad.dayofweek,
+					dayOfWeek: ad.dayOfWeek,
 				})),
 				enableEmail: instance.enableEmail,
 				enableServiceWorker: instance.enableServiceWorker,
