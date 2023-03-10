@@ -102,7 +102,7 @@ export class User {
 
 	@Index()
 	@Column('varchar', {
-		length: 128, array: true, default: '{}',
+		length: 128, array: true, default: () => 'array[]::varchar[]'/* REVIEW: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1118038054 */,
 	})
 	public tags: string[];
 
@@ -151,7 +151,7 @@ export class User {
 	public isDeleted: boolean;
 
 	@Column('varchar', {
-		length: 128, array: true, default: '{}',
+		length: 128, array: true, default: () => 'array[]::varchar[]'/* REVIEW: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1118038054 */,
 	})
 	public emojis: string[];
 
