@@ -31,7 +31,9 @@
 				"built/meta.json"
 			]
 		},
-		"check:connect": {},
+		"check:connect": {
+			"cache": false
+		},
 		"clean": {
 			"inputs": [
 				"**/built/**",
