@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  jest:
+  vitest:
     runs-on: ubuntu-latest
 
     strategy:
