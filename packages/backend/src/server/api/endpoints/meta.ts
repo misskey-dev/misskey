@@ -264,7 +264,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('ads.startsAt <= :now', { now: new Date() })
 				.andWhere(new Brackets(qb => {
 					// 曜日のビットフラグを確認する
-					qb.where('ads.dayOfWeek & :dayOfWeek > 0', { dayOfWeek: Math.pow(2, new Date().getDay()) })
+					qb.where('ads.dayOfWeek & :dayOfWeek > 0', { dayOfWeek: 1 << new Date().getDay() })
 						.orWhere('ads.dayOfWeek = 0');
 				}))
 				.getMany();
