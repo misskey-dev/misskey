@@ -6,29 +6,29 @@ import {
 	packedMeDetailedSchema,
 	packedUserDetailedSchema,
 	packedUserSchema,
-} from '@/models/schema/user.js';
-import { packedNoteSchema } from '@/models/schema/note.js';
-import { packedUserListSchema } from '@/models/schema/user-list.js';
-import { packedAppSchema } from '@/models/schema/app.js';
-import { packedNotificationSchema } from '@/models/schema/notification.js';
-import { packedDriveFileSchema } from '@/models/schema/drive-file.js';
-import { packedDriveFolderSchema } from '@/models/schema/drive-folder.js';
-import { packedFollowingSchema } from '@/models/schema/following.js';
-import { packedMutingSchema } from '@/models/schema/muting.js';
-import { packedRenoteMutingSchema } from '@/models/schema/renote-muting.js';
-import { packedBlockingSchema } from '@/models/schema/blocking.js';
-import { packedNoteReactionSchema } from '@/models/schema/note-reaction.js';
-import { packedHashtagSchema } from '@/models/schema/hashtag.js';
-import { packedPageSchema } from '@/models/schema/page.js';
-import { packedNoteFavoriteSchema } from '@/models/schema/note-favorite.js';
-import { packedChannelSchema } from '@/models/schema/channel.js';
-import { packedAntennaSchema } from '@/models/schema/antenna.js';
-import { packedClipSchema } from '@/models/schema/clip.js';
-import { packedFederationInstanceSchema } from '@/models/schema/federation-instance.js';
-import { packedQueueCountSchema } from '@/models/schema/queue.js';
-import { packedGalleryPostSchema } from '@/models/schema/gallery-post.js';
-import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/schema/emoji.js';
-import { packedFlashSchema } from '@/models/schema/flash.js';
+} from '@/models/json-schema/user.js';
+import { packedNoteSchema } from '@/models/json-schema/note.js';
+import { packedUserListSchema } from '@/models/json-schema/user-list.js';
+import { packedAppSchema } from '@/models/json-schema/app.js';
+import { packedNotificationSchema } from '@/models/json-schema/notification.js';
+import { packedDriveFileSchema } from '@/models/json-schema/drive-file.js';
+import { packedDriveFolderSchema } from '@/models/json-schema/drive-folder.js';
+import { packedFollowingSchema } from '@/models/json-schema/following.js';
+import { packedMutingSchema } from '@/models/json-schema/muting.js';
+import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
+import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
+import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
+import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
+import { packedPageSchema } from '@/models/json-schema/page.js';
+import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js';
+import { packedChannelSchema } from '@/models/json-schema/channel.js';
+import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
+import { packedClipSchema } from '@/models/json-schema/clip.js';
+import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
+import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
+import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
+import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
+import { packedFlashSchema } from '@/models/json-schema/flash.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
