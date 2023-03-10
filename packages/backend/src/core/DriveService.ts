@@ -299,7 +299,7 @@ export class DriveService {
 			}
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/webp' && type !== 'image/avif' &&
+				type !== 'image/svg+xml' && type !== 'image/avif' &&
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -319,11 +319,11 @@ export class DriveService {
 			this.registerLogger.info('creating web image');
 
 			try {
-				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
+				if (type === 'image/jpeg') {
 					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
-				} else if (['image/png'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
-				} else if (['image/svg+xml'].includes(type)) {
+				} else if (['image/webp', 'image/avif'].includes(type)) {
+					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
+				} else if (['image/png', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
@@ -749,7 +749,7 @@ export class DriveService {
 	}: UploadFromUrlArgs): Promise<DriveFile> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
 			const { filename: name } = await this.downloadService.downloadUrl(url, path);

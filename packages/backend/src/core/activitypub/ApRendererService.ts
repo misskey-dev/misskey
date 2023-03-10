@@ -116,7 +116,7 @@ export class ApRendererService {
 		if (block.blockee?.uri == null) {
 			throw new Error('renderBlock: missing blockee uri');
 		}
-	
+
 		return {
 			type: 'Block',
 			id: `${this.config.url}/blocks/${block.id}`,
@@ -134,10 +134,10 @@ export class ApRendererService {
 			published: note.createdAt.toISOString(),
 			object,
 		} as ICreate;
-	
+
 		if (object.to) activity.to = object.to;
 		if (object.cc) activity.cc = object.cc;
-	
+
 		return activity;
 	}
 
@@ -155,7 +155,7 @@ export class ApRendererService {
 	public renderDocument(file: DriveFile): IApDocument {
 		return {
 			type: 'Document',
-			mediaType: file.type,
+			mediaType: file.webpublicType ?? file.type,
 			url: this.driveFileEntityService.getPublicUrl(file),
 			name: file.comment,
 		};
@@ -297,16 +297,16 @@ export class ApRendererService {
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
 			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
 		};
-	
+
 		let inReplyTo;
 		let inReplyToNote: Note | null;
-	
+
 		if (note.replyId) {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
-	
+
 			if (inReplyToNote != null) {
 				const inReplyToUser = await this.usersRepository.findOneBy({ id: inReplyToNote.userId });
-	
+
 				if (inReplyToUser != null) {
 					if (inReplyToNote.uri) {
 						inReplyTo = inReplyToNote.uri;
@@ -322,24 +322,24 @@ export class ApRendererService {
 		} else {
 			inReplyTo = null;
 		}
-	
+
 		let quote;
-	
+
 		if (note.renoteId) {
 			const renote = await this.notesRepository.findOneBy({ id: note.renoteId });
-	
+
 			if (renote) {
 				quote = renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`;
 			}
 		}
-	
+
 		const attributedTo = `${this.config.url}/users/${note.userId}`;
-	
+
 		const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
-	
+
 		let to: string[] = [];
 		let cc: string[] = [];
-	
+
 		if (note.visibility === 'public') {
 			to = ['https://www.w3.org/ns/activitystreams#Public'];
 			cc = [`${attributedTo}/followers`].concat(mentions);
@@ -352,44 +352,44 @@ export class ApRendererService {
 		} else {
 			to = mentions;
 		}
-	
+
 		const mentionedUsers = note.mentions.length > 0 ? await this.usersRepository.findBy({
 			id: In(note.mentions),
 		}) : [];
-	
+
 		const hashtagTags = (note.tags ?? []).map(tag => this.renderHashtag(tag));
 		const mentionTags = mentionedUsers.map(u => this.renderMention(u));
-	
+
 		const files = await getPromisedFiles(note.fileIds);
-	
+
 		const text = note.text ?? '';
 		let poll: Poll | null = null;
-	
+
 		if (note.hasPoll) {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
-	
+
 		let apText = text;
-	
+
 		if (quote) {
 			apText += `\n\nRE: ${quote}`;
 		}
-	
+
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
-	
+
 		const content = this.apMfmService.getNoteHtml(Object.assign({}, note, {
 			text: apText,
 		}));
-	
+
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
-	
+
 		const tag = [
 			...hashtagTags,
 			...mentionTags,
 			...apemojis,
 		];
-	
+
 		const asPoll = poll ? {
 			type: 'Question',
 			content: this.apMfmService.getNoteHtml(Object.assign({}, note, {
@@ -601,7 +601,7 @@ export class ApRendererService {
 		if (typeof x === 'object' && x.id == null) {
 			x.id = `${this.config.url}/${uuid()}`;
 		}
-	
+
 		return Object.assign({
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
@@ -634,18 +634,18 @@ export class ApRendererService {
 			],
 		}, x as T & { id: string; });
 	}
-	
+
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
-	
+
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
 		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
-	
+
 		return activity;
 	}
-	
+
 	/**
 	 * Render OrderedCollectionPage
 	 * @param id URL of self
@@ -686,11 +686,11 @@ export class ApRendererService {
 			type: 'OrderedCollection',
 			totalItems,
 		};
-	
+
 		if (first) page.first = first;
 		if (last) page.last = last;
 		if (orderedItems) page.orderedItems = orderedItems;
-	
+
 		return page;
 	}
 
