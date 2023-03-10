@@ -104,7 +104,7 @@ export class DriveFileEntityService {
 
 		const url = file.webpublicUrl ?? file.url;
 
-		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? this.getProxiedUrl(url, 'static') : null);
+		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? url : null);
 	}
 
 	@bindThis

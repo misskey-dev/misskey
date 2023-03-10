@@ -42,7 +42,7 @@ let images = $ref<{
 function thumbnail(image: misskey.entities.DriveFile): string {
 	return defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(image.url)
-		: image.thumbnailUrl ?? image.url;
+		: image.thumbnailUrl;
 }
 
 onMounted(() => {
