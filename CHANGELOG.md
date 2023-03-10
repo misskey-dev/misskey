@@ -21,6 +21,7 @@ You should also include the user name that made the change.
 - 透明なWebP/AVIF映像はJPEGではなくWebPに変換するように
 - アクティブユーザー数チャートの記録上限値を拡張
 - Playのソースコード上限文字数を2倍に拡張
+- 付箋ウィジェットの高さを設定可能に
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
