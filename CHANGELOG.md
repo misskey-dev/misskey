@@ -18,6 +18,7 @@ You should also include the user name that made the change.
 - enhance(client): DM作成時にメンションも含むように
 - enhance(client): フォロー申請のボタンのデザインを改善
 - enhance(backend): OpenAPIエンドポイントを復旧
+- 透明なWebP/AVIF映像はJPEGではなくWebPに変換するように
 
 ### Bugfixes
 - ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
