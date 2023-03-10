@@ -96,7 +96,7 @@ function onTabClick(): void {
 }
 
 const calcBg = () => {
-	const rawBg = metadata?.bg ?? 'var(--bg)';
+	const rawBg = 'var(--bg)';
 	const tinyBg = tinycolor(rawBg.startsWith('var(') ? getComputedStyle(document.documentElement).getPropertyValue(rawBg.slice(4, -1)) : rawBg);
 	tinyBg.setAlpha(0.85);
 	bg.value = tinyBg.toRgbString();
@@ -147,10 +147,7 @@ onUnmounted(() => {
 
 	.tabs:first-child {
 		margin-left: auto;
-	}
-	.tabs:not(:first-child) {
-		padding-left: 16px;
-		mask-image: linear-gradient(90deg, rgba(0,0,0,0), rgb(0,0,0) 16px, rgb(0,0,0) 100%);
+		padding: 0 12px;
 	}
 	.tabs {
 		margin-right: auto;

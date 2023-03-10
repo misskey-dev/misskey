@@ -1,12 +1,12 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import * as childProcess from 'child_process';
-import { Note } from '../../src/models/entities/note.js';
-import { async, signup, request, post, uploadUrl, startServer, shutdownServer, initTestDb, api } from '../utils.js';
+import { Note } from '@/models/entities/Note.js';
+import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Note', () => {
-	let p: childProcess.ChildProcess;
+	let p: INestApplicationContext;
 	let Notes: any;
 
 	let alice: any;
@@ -18,10 +18,10 @@ describe('Note', () => {
 		Notes = connection.getRepository(Note);
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
-	}, 1000 * 30);
+	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await shutdownServer(p);
+		await p.close();
 	});
 
 	test('投稿できる', async () => {
@@ -29,7 +29,7 @@ describe('Note', () => {
 			text: 'test',
 		};
 
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -39,7 +39,7 @@ describe('Note', () => {
 	test('ファイルを添付できる', async () => {
 		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
-		const res = await request('/notes/create', {
+		const res = await api('/notes/create', {
 			fileIds: [file.id],
 		}, alice);
 
@@ -48,37 +48,37 @@ describe('Note', () => {
 		assert.deepStrictEqual(res.body.createdNote.fileIds, [file.id]);
 	}, 1000 * 10);
 
-	test('他人のファイルは無視', async () => {
+	test('他人のファイルで怒られる', async () => {
 		const file = await uploadUrl(bob, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 
-		const res = await request('/notes/create', {
+		const res = await api('/notes/create', {
 			text: 'test',
 			fileIds: [file.id],
 		}, alice);
 
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(res.body.error.code, 'NO_SUCH_FILE');
+		assert.strictEqual(res.body.error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
 	}, 1000 * 10);
 
-	test('存在しないファイルは無視', async () => {
-		const res = await request('/notes/create', {
+	test('存在しないファイルで怒られる', async () => {
+		const res = await api('/notes/create', {
 			text: 'test',
 			fileIds: ['000000000000000000000000'],
 		}, alice);
 
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(res.body.error.code, 'NO_SUCH_FILE');
+		assert.strictEqual(res.body.error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
 	});
 
-	test('不正なファイルIDは無視', async () => {
-		const res = await request('/notes/create', {
+	test('不正なファイルIDで怒られる', async () => {
+		const res = await api('/notes/create', {
 			fileIds: ['kyoppie'],
 		}, alice);
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-		assert.deepStrictEqual(res.body.createdNote.fileIds, []);
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(res.body.error.code, 'NO_SUCH_FILE');
+		assert.strictEqual(res.body.error.id, 'b6992544-63e7-67f0-fa7f-32444b1b5306');
 	});
 
 	test('返信できる', async () => {
@@ -91,7 +91,7 @@ describe('Note', () => {
 			replyId: bobPost.id,
 		};
 
-		const res = await request('/notes/create', alicePost, alice);
+		const res = await api('/notes/create', alicePost, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -109,7 +109,7 @@ describe('Note', () => {
 			renoteId: bobPost.id,
 		};
 
-		const res = await request('/notes/create', alicePost, alice);
+		const res = await api('/notes/create', alicePost, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -127,7 +127,7 @@ describe('Note', () => {
 			renoteId: bobPost.id,
 		};
 
-		const res = await request('/notes/create', alicePost, alice);
+		const res = await api('/notes/create', alicePost, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -140,7 +140,7 @@ describe('Note', () => {
 		const post = {
 			text: '!'.repeat(3000),
 		};
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 		assert.strictEqual(res.status, 200);
 	});
 
@@ -148,7 +148,7 @@ describe('Note', () => {
 		const post = {
 			text: '!'.repeat(3001),
 		};
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -157,7 +157,7 @@ describe('Note', () => {
 			text: 'test',
 			replyId: '000000000000000000000000',
 		};
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -165,7 +165,7 @@ describe('Note', () => {
 		const post = {
 			renoteId: '000000000000000000000000',
 		};
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -174,7 +174,7 @@ describe('Note', () => {
 			text: 'test',
 			replyId: 'foo',
 		};
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -182,7 +182,7 @@ describe('Note', () => {
 		const post = {
 			renoteId: 'foo',
 		};
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 		assert.strictEqual(res.status, 400);
 	});
 
@@ -191,7 +191,7 @@ describe('Note', () => {
 			text: '@ghost yo',
 		};
 
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -203,7 +203,7 @@ describe('Note', () => {
 			text: '@bob @bob @bob yo',
 		};
 
-		const res = await request('/notes/create', post, alice);
+		const res = await api('/notes/create', post, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
@@ -213,9 +213,125 @@ describe('Note', () => {
 		assert.deepStrictEqual(noteDoc.mentions, [bob.id]);
 	});
 
+	describe('添付ファイル情報', () => {
+		test('ファイルを添付した場合、投稿成功時にファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const res = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.createdNote.files.length, 1);
+			assert.strictEqual(res.body.createdNote.files[0].id, file.body.id);
+		});
+
+		test('ファイルを添付した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const res = await api('/notes', {
+				withFiles: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string; files: { id: string }[] }) => note.id === createdNote.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.files.length, 1);
+			assert.strictEqual(myNote.files[0].id, file.body.id);
+		});
+
+		test('ファイルが添付されたノートをリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const renoted = await api('/notes/create', {
+				renoteId: createdNote.body.createdNote.id,
+			}, alice);
+			assert.strictEqual(renoted.status, 200);
+
+			const res = await api('/notes', {
+				renote: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.renote.files.length, 1);
+			assert.strictEqual(myNote.renote.files[0].id, file.body.id);
+		});
+
+		test('ファイルが添付されたノートに返信した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const reply = await api('/notes/create', {
+				replyId: createdNote.body.createdNote.id,
+				text: 'this is reply',
+			}, alice);
+			assert.strictEqual(reply.status, 200);
+
+			const res = await api('/notes', {
+				reply: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string }) => note.id === reply.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.reply.files.length, 1);
+			assert.strictEqual(myNote.reply.files[0].id, file.body.id);
+		});
+
+		test('ファイルが添付されたノートへの返信をリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+			const file = await uploadFile(alice);
+			const createdNote = await api('/notes/create', {
+				fileIds: [file.body.id],
+			}, alice);
+
+			assert.strictEqual(createdNote.status, 200);
+
+			const reply = await api('/notes/create', {
+				replyId: createdNote.body.createdNote.id,
+				text: 'this is reply',
+			}, alice);
+			assert.strictEqual(reply.status, 200);
+
+			const renoted = await api('/notes/create', {
+				renoteId: reply.body.createdNote.id,
+			}, alice);
+			assert.strictEqual(renoted.status, 200);
+
+			const res = await api('/notes', {
+				renote: true,
+			}, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(Array.isArray(res.body), true);
+			const myNote = res.body.find((note: { id: string }) => note.id === renoted.body.createdNote.id);
+			assert.notEqual(myNote, null);
+			assert.strictEqual(myNote.renote.reply.files.length, 1);
+			assert.strictEqual(myNote.renote.reply.files[0].id, file.body.id);
+		});
+	});
+
 	describe('notes/create', () => {
 		test('投票を添付できる', async () => {
-			const res = await request('/notes/create', {
+			const res = await api('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['foo', 'bar'],
@@ -228,14 +344,14 @@ describe('Note', () => {
 		});
 
 		test('投票の選択肢が無くて怒られる', async () => {
-			const res = await request('/notes/create', {
+			const res = await api('/notes/create', {
 				poll: {},
 			}, alice);
 			assert.strictEqual(res.status, 400);
 		});
 
 		test('投票の選択肢が無くて怒られる (空の配列)', async () => {
-			const res = await request('/notes/create', {
+			const res = await api('/notes/create', {
 				poll: {
 					choices: [],
 				},
@@ -244,7 +360,7 @@ describe('Note', () => {
 		});
 
 		test('投票の選択肢が1つで怒られる', async () => {
-			const res = await request('/notes/create', {
+			const res = await api('/notes/create', {
 				poll: {
 					choices: ['Strawberry Pasta'],
 				},
@@ -253,14 +369,14 @@ describe('Note', () => {
 		});
 
 		test('投票できる', async () => {
-			const { body } = await request('/notes/create', {
+			const { body } = await api('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
 				},
 			}, alice);
 
-			const res = await request('/notes/polls/vote', {
+			const res = await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 1,
 			}, alice);
@@ -269,19 +385,19 @@ describe('Note', () => {
 		});
 
 		test('複数投票できない', async () => {
-			const { body } = await request('/notes/create', {
+			const { body } = await api('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
 				},
 			}, alice);
 
-			await request('/notes/polls/vote', {
+			await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 0,
 			}, alice);
 
-			const res = await request('/notes/polls/vote', {
+			const res = await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 2,
 			}, alice);
@@ -290,7 +406,7 @@ describe('Note', () => {
 		});
 
 		test('許可されている場合は複数投票できる', async () => {
-			const { body } = await request('/notes/create', {
+			const { body } = await api('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
@@ -298,17 +414,17 @@ describe('Note', () => {
 				},
 			}, alice);
 
-			await request('/notes/polls/vote', {
+			await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 0,
 			}, alice);
 
-			await request('/notes/polls/vote', {
+			await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 1,
 			}, alice);
 
-			const res = await request('/notes/polls/vote', {
+			const res = await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 2,
 			}, alice);
@@ -317,7 +433,7 @@ describe('Note', () => {
 		});
 
 		test('締め切られている場合は投票できない', async () => {
-			const { body } = await request('/notes/create', {
+			const { body } = await api('/notes/create', {
 				text: 'test',
 				poll: {
 					choices: ['sakura', 'izumi', 'ako'],
@@ -327,7 +443,7 @@ describe('Note', () => {
 
 			await new Promise(x => setTimeout(x, 2));
 
-			const res = await request('/notes/polls/vote', {
+			const res = await api('/notes/polls/vote', {
 				noteId: body.createdNote.id,
 				choice: 1,
 			}, alice);

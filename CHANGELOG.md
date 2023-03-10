@@ -2,13 +2,89 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
--
+- 
 
 ### Bugfixes
--
+- 
 
 You should also include the user name that made the change.
 -->
+
+## 13.x.x (unreleased)
+
+### Improvements
+- ユーザーごとにRenoteをミュートできるように
+- ノートごとに絵文字リアクションを受け取るか設定できるように
+- enhance(client): DM作成時にメンションも含むように
+- enhance(client): フォロー申請のボタンのデザインを改善
+
+### Bugfixes
+- ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
+
+## 13.9.2 (2023/03/06)
+
+### Improvements
+- クリップ、チャンネルページに共有ボタンを追加
+- チャンネルでタイムライン上部に投稿フォームを表示するかどうかのオプションを追加
+- ブラウザでメディアプロキシ(/proxy)からファイルを保存した際に、なるべくオリジナルのファイル名を継承するように
+- ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
+- Identiconがローカルとリモートで同じになるように
+  - これまでのIdenticonは異なる画像になります
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- ロールの権限で「一般ユーザー」のロールがいきなり設定できない問題を修正
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
+- fix(client): みつけるのロール一覧でコンディショナルロールが含まれるのを修正
+- macOSでDev Containerが動作しない問題を修正 @RyotaK
+
+## 13.9.1 (2023/03/03)
+
+### Bugfixes
+- ノートに添付したファイルが表示されない場合があるのを修正
+
+## 13.9.0 (2023/03/03)
+
+### Improvements
+- 時限ロール
+- アンテナでCWも検索対象にするように
+- ノートの操作部をホバー時のみ表示するオプションを追加
+- サウンドを追加
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- 外部メディアプロキシ使用時にアバタークロップができない問題を修正
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
+- プッシュ通知でカスタム絵文字リアクションを表示できなかった問題を修正
+
+## 13.8.1 (2023/02/26)
+
+### Bugfixes
+- モバイルでドロワーメニューが表示されない問題を修正
+
+## 13.8.0 (2023/02/26)
+
+### Improvements
+- チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
+- renoteした際の表示を改善
+- バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
+- enhance(client): MkUrlPreviewの閉じるボタンを見やすく
+- Add dialog to remove follower
+- enhance(client): improve clip menu ux
+- 検索画面の統合
+- enhance(client): ノートメニューからユーザーメニューを開けるように
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
+
+### Bugfixes
+- Windows環境でswcを使うと正しくビルドできない問題の修正
+- fix(client): Android ChromeでPWAとしてインストールできない問題を修正
+- 未知のユーザーが deleteActor されたら処理をスキップする
+- fix(server): notes/createで、fileIdsと見つかったファイルの数が異なる場合はエラーにする
+- fix(server): notes/createのバリデーションが機能していないのを修正
+- fix(server): エラーのスタックトレースは返さないように
+
 ## 13.7.5 (2023/02/24)
 
 ### Note

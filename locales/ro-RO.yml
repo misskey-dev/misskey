@@ -648,6 +648,8 @@ _sfx:
   note: "Note"
   notification: "Notificări"
   chat: "Chat"
+_ago:
+  invalid: "Nu e nimic de văzut aici"
 _widgets:
   profile: "Profil"
   instanceInfo: "Informații despre instanță"

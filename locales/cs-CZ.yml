@@ -659,6 +659,7 @@ _sfx:
 _ago:
   future: "Budoucí"
   justNow: "Teď"
+  invalid: "Nic nebylo nalezeno"
 _time:
   second: "Sekund"
   minute: "Minut"

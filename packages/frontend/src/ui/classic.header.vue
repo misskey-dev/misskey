@@ -45,11 +45,11 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
 import { openInstanceMenu } from './_common_/common';
 import { host } from '@/config';
-import { search } from '@/scripts/search';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { openAccountMenu } from '@/account';
 import MkButton from '@/components/MkButton.vue';
+import { mainRouter } from '@/router';
 
 export default defineComponent({
 	components: {
@@ -103,7 +103,7 @@ export default defineComponent({
 		},
 
 		search() {
-			search();
+			mainRouter.push('/search');
 		},
 
 		more(ev) {

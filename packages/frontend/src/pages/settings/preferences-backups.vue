@@ -59,6 +59,8 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'tl',
 	'overridedDeviceKind',
 	'serverDisconnectedBehavior',
+	'collapseRenotes',
+	'showNoteActionsOnlyHover',
 	'nsfw',
 	'animation',
 	'animatedMfm',
@@ -71,6 +73,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'useBlurEffectForModal',
 	'useBlurEffect',
 	'showFixedPostForm',
+	'showFixedPostFormInChannel',
 	'enableInfiniteScroll',
 	'useReactionPickerForContextMenu',
 	'showGapBetweenNotesInTimeline',
@@ -420,7 +423,6 @@ onUnmounted(() => {
 definePageMetadata(computed(() => ({
 	title: ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
-	bg: 'var(--bg)',
 })));
 </script>
 

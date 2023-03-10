@@ -73,8 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.email != null) {
-				const available = await this.emailService.validateEmailForAccount(ps.email);
-				if (!available) {
+				const res = await this.emailService.validateEmailForAccount(ps.email);
+				if (!res.available) {
 					throw new ApiError(meta.errors.unavailable);
 				}
 			}

@@ -1,7 +1,7 @@
 import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { miLocalStorage } from './local-storage';
-import { search } from '@/scripts/search';
+import { openInstanceMenu } from './ui/_common_/common';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
@@ -42,7 +42,7 @@ export const navbarItemDef = reactive({
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',
-		action: () => search(),
+		to: '/search',
 	},
 	lists: {
 		title: i18n.ts.lists,
@@ -120,6 +120,13 @@ export const navbarItemDef = reactive({
 					unisonReload();
 				},
 			}], ev.currentTarget ?? ev.target);
+		},
+	},
+	about: {
+		title: i18n.ts.about,
+		icon: 'ti ti-info-circle',
+		action: (ev) => {
+			openInstanceMenu(ev);
 		},
 	},
 	reload: {
