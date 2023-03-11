@@ -336,7 +336,11 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
+			if (isAnimated) {
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
+			} else {
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
+			}
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
 		}
