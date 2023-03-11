@@ -445,23 +445,26 @@ export class ClientServerService {
 					}
 				}
 
-				const userProfile = await this.userProfilesRepository.find({
-					where: Object.values(fieldData)
-						.map(f => f.user)
-						.filter((u): u is { username: string, host: string | null } => !!u)
-						.map(u => {
-							return {
-								user: {
-									usernameLower: u.username,
-									host: u.host ?? IsNull(),
-								},
-							};
-						}),
-					relations: ['user'],
-				});
+				const where = Object.values(fieldData)
+					.map(f => f.user)
+					.filter((u): u is { username: string, host: string | null } => !!u)
+					.map(u => {
+						return {
+							user: {
+								usernameLower: u.username,
+								host: u.host ?? IsNull(),
+							},
+						};
+					});
+				const userProfile = where.length > 0
+					? await this.userProfilesRepository.find({
+						where,
+						relations: ['user'],
+					})
+					: [];
 
 				for (const up of userProfile) {
-					if (!up.user || !up.url) {
+					if (!up || !up.user || !up.url) {
 						continue;
 					}
 

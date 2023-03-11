@@ -486,34 +486,37 @@ export class ApRendererService {
 				};
 			}
 
-			const userProfile = await this.userProfilesRepository.find({
-				where: Object.values(fieldData)
-					.map(f => f.user)
-					.filter((u): u is { username: string, host: string | null } => !!u)
-					.map(u => {
-						return {
-							user: {
-								usernameLower: u.username,
-								host: u.host ?? IsNull(),
-							},
-						};
-					}),
-				relations: ['user'],
-			});
+			const where = Object.values(fieldData)
+				.map(f => f.user)
+				.filter((u): u is { username: string, host: string | null } => !!u)
+				.map(u => {
+					return {
+						user: {
+							usernameLower: u.username,
+							host: u.host ?? IsNull(),
+						},
+					};
+				});
+			const userProfile = where.length > 0
+				? await this.userProfilesRepository.find({
+					where,
+					relations: ['user'],
+				})
+				: [];
 
-			for (const { user, url } of userProfile) {
-				if (!user || !url) {
+			for (const up of userProfile) {
+				if (!up || !up.user || !up.url) {
 					continue;
 				}
 
-				const host = user.host;
-				let mention = `@${user.username.toLowerCase()}`;
+				const host = up.user.host;
+				let mention = `@${up.user.username.toLowerCase()}`;
 
 				if (host) {
 					mention += `@${host}`;
 				}
 
-				fieldData[mention].url = url;
+				fieldData[mention].url = up.url;
 			}
 
 			for (const { field, url } of Object.values(fieldData)) {
