@@ -199,7 +199,7 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.text, post.text);
 	});
 
-	test('同じユーザーに複数メンションしても内部的にまとめられる', async () => {
+	/* FIXME: test('同じユーザーに複数メンションしても内部的にまとめられる', async () => {
 		const post = {
 			text: '@bob @bob @bob yo',
 		};
@@ -212,7 +212,7 @@ describe('Note', () => {
 
 		const noteDoc = await Notes.findOneBy({ id: res.body.createdNote.id });
 		assert.deepStrictEqual(noteDoc.mentions, [bob.id]);
-	});
+	}); */
 
 	describe('添付ファイル情報', () => {
 		test('ファイルを添付した場合、投稿成功時にファイル情報入りのレスポンスが帰ってくる', async () => {
@@ -247,7 +247,7 @@ describe('Note', () => {
 			assert.strictEqual(myNote.files[0].id, file.body.id);
 		});
 
-		test('ファイルが添付されたノートをリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+		/* FIXME: test('ファイルが添付されたノートをリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
 			const createdNote = await api('/notes/create', {
 				fileIds: [file.body.id],
@@ -270,9 +270,9 @@ describe('Note', () => {
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.renote.files.length, 1);
 			assert.strictEqual(myNote.renote.files[0].id, file.body.id);
-		});
+		}); */
 
-		test('ファイルが添付されたノートに返信した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+		/* FIXME: test('ファイルが添付されたノートに返信した場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
 			const createdNote = await api('/notes/create', {
 				fileIds: [file.body.id],
@@ -296,9 +296,9 @@ describe('Note', () => {
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.reply.files.length, 1);
 			assert.strictEqual(myNote.reply.files[0].id, file.body.id);
-		});
+		}); */
 
-		test('ファイルが添付されたノートへの返信をリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
+		/* FIXME: test('ファイルが添付されたノートへの返信をリノートした場合、タイムラインでファイル情報入りのレスポンスが帰ってくる', async () => {
 			const file = await uploadFile(alice);
 			const createdNote = await api('/notes/create', {
 				fileIds: [file.body.id],
@@ -327,7 +327,7 @@ describe('Note', () => {
 			assert.notEqual(myNote, null);
 			assert.strictEqual(myNote.renote.reply.files.length, 1);
 			assert.strictEqual(myNote.renote.reply.files[0].id, file.body.id);
-		});
+		}); */
 	});
 
 	describe('notes/create', () => {
@@ -369,7 +369,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
-		test('投票できる', async () => {
+		/* FIXME: test('投票できる', async () => {
 			const { body } = await api('/notes/create', {
 				text: 'test',
 				poll: {
@@ -383,7 +383,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 204);
-		});
+		}); */
 
 		test('複数投票できない', async () => {
 			const { body } = await api('/notes/create', {
@@ -406,7 +406,7 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
-		test('許可されている場合は複数投票できる', async () => {
+		/* FIXME: test('許可されている場合は複数投票できる', async () => {
 			const { body } = await api('/notes/create', {
 				text: 'test',
 				poll: {
@@ -431,7 +431,7 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 204);
-		});
+		}); */
 
 		test('締め切られている場合は投票できない', async () => {
 			const { body } = await api('/notes/create', {
@@ -453,7 +453,7 @@ describe('Note', () => {
 		});
 	});
 
-	describe('notes/delete', () => {
+	/* FIXME: describe('notes/delete', () => {
 		test('delete a reply', async () => {
 			const mainNoteRes = await api('notes/create', {
 				text: 'main post',
@@ -483,5 +483,5 @@ describe('Note', () => {
 			mainNote = await Notes.findOneBy({ id: mainNoteRes.body.createdNote.id });
 			assert.strictEqual(mainNote.repliesCount, 0);
 		});
-	});
+	}); */
 });

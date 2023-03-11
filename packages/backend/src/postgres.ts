@@ -211,17 +211,17 @@ export function createMemoryDb(): IMemoryDb {
 		name: 'array_cat',
 		args: [db.public.getType(DataType.text).asArray(), db.public.getType(DataType.text).asArray()],
 		returns: db.public.getType(DataType.text).asArray(),
-		implementation: (x: unknown[], y: unknown[]) => {
-			if (x instanceof Array && y instanceof Array) {
+		implementation: (a: unknown[], b: unknown[]) => {
+			if (a instanceof Array && b instanceof Array) {
 				const result: string[] = [];
-				for (const item of x) {
+				for (const item of a) {
 					if (typeof item === 'string') {
 						result.push(item);
 					} else {
 						throw new Error('Assertion failed.');
 					}
 				}
-				for (const item of y) {
+				for (const item of b) {
 					if (typeof item === 'string') {
 						result.push(item);
 					} else {
@@ -234,6 +234,98 @@ export function createMemoryDb(): IMemoryDb {
 			}
 		},
 	});
+
+	db.public.registerFunction({
+		name: 'array_position',
+		args: [db.public.getType(DataType.text).asArray(), DataType.text],
+		returns: DataType.integer,
+		implementation: (a: string[], b: string) => a.indexOf(b),
+	});
+
+	// TODO: remove
+	type Json = { [key: string]: Json } | Json[] | string | number | null;
+	function queryJson(a: Json, b: Json) {
+		if (!a || !b) {
+			return (a ?? null) === (b ?? null);
+		}
+		if (a === b) {
+			return true;
+		}
+
+		if (typeof a === 'string' || typeof b === 'string') {
+			return false;
+		}
+
+		if (typeof a === 'number' || typeof b === 'number') {
+			return false;
+		}
+
+		if (Array.isArray(a)) {
+			// expecting array
+			if (!Array.isArray(b)) {
+				return false;
+			}
+			// => must match all those criteria
+			const toMatch = [...a];
+			for (const be of b) {
+				for (let i = 0; i < toMatch.length; i++) {
+					if (queryJson(toMatch[i], be)) {
+						// matched this criteria
+						toMatch.splice(i, 1);
+						break;
+					}
+				}
+				if (!toMatch.length) {
+					break;
+				}
+			}
+			return !toMatch.length;
+		}
+
+		if (Array.isArray(b)) {
+			return false;
+		}
+
+		if ((typeof a === 'object') !== (typeof b === 'object')) {
+			return false;
+		}
+		const akeys = Object.keys(a);
+		const bkeys = Object.keys(b);
+		if (akeys.length > bkeys.length) {
+			return false;
+		}
+		for (const ak of akeys) {
+			if (!(ak in (b as any))) {
+				return false;
+			}
+			if (!queryJson(a[ak], b[ak])) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	db.public.registerOperator({
+		operator: '<@',
+		left: DataType.jsonb,
+		right: DataType.jsonb,
+		returns: DataType.bool,
+		implementation: (a, b) => queryJson(a, b),
+	});
+
+	db.public.registerOperator({
+		operator: '?',
+		left: DataType.jsonb,
+		right: DataType.text,
+		returns: DataType.bool,
+		implementation: (a: Record<string, unknown> | unknown[], b: string) => {
+			if (a instanceof Array) {
+					return a.includes(b);
+			} else {
+					return Object.keys(a).includes(b);
+			}
+		},
+	})
 
 	// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
 	db.public.interceptQueries((text) => {
@@ -285,7 +377,6 @@ export function createPostgresDataSource(config: Config): DataSource {
 
 	if (process.env.NODE_ENV === 'test' && process.env.VITEST === 'true') {
 		const db = createMemoryDb();
-
 		return db.adapters.createTypeormDataSource(dataSourceOptions);
 	} else {
 		return new DataSource(dataSourceOptions);
