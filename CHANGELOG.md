@@ -21,12 +21,15 @@ You should also include the user name that made the change.
 - 透明なWebP/AVIF映像はJPEGではなくWebPに変換するように
 - アクティブユーザー数チャートの記録上限値を拡張
 - Playのソースコード上限文字数を2倍に拡張
+- 付箋ウィジェットの高さを設定可能に
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
 - ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
 - /api-consoleページにアクセスすると404が出る問題を修正
 - SMTP Login id length is too short
+- AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
+- fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
 
 ## 13.9.2 (2023/03/06)
 
