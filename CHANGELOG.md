@@ -22,6 +22,7 @@ You should also include the user name that made the change.
 - アクティブユーザー数チャートの記録上限値を拡張
 - Playのソースコード上限文字数を2倍に拡張
 - 付箋ウィジェットの高さを設定可能に
+- oEmbedのサポートでSpotify等のプレビューができるように
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
