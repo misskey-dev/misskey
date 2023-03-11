@@ -4,12 +4,13 @@ import * as assert from 'assert';
 import * as crypto from 'node:crypto';
 import * as cbor from 'cbor';
 import * as OTPAuth from 'otpauth';
+import { afterAll, beforeAll, describe, test } from 'vitest';
+import { ServiceProvider } from 'yohira';
 import { loadConfig } from '../../src/config.js';
-import { signup, api, post, react, startServer, waitFire } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
+import { signup, api, startServer } from '../utils.js';
 
 describe('2要素認証', () => {
-	let p: INestApplicationContext;
+	let p: ServiceProvider;
 	let alice: unknown;
 
 	const config = loadConfig();
@@ -168,7 +169,7 @@ describe('2要素認証', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await p.disposeAsync();
 	});
 
 	test('が設定でき、OTPでログインできる。', async () => {
