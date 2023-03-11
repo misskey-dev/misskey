@@ -19,9 +19,6 @@ export class UrlPreviewService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
@@ -51,15 +48,15 @@ export class UrlPreviewService {
 			reply.code(400);
 			return;
 		}
-	
+
 		const lang = request.query.lang;
 		if (Array.isArray(lang)) {
 			reply.code(400);
 			return;
 		}
-	
+
 		const meta = await this.metaService.fetch();
-	
+
 		this.logger.info(meta.summalyProxy
 			? `(Proxy) Getting preview of ${url}@${lang} ...`
 			: `Getting preview of ${url}@${lang} ...`);
@@ -85,16 +82,16 @@ export class UrlPreviewService {
 				throw new Error('unsupported schema included');
 			}
 
-			if (summary.player?.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
+			if (summary.player.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
 				throw new Error('unsupported schema included');
 			}
-	
+
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
-	
+
 			// Cache 7days
 			reply.header('Cache-Control', 'max-age=604800, immutable');
-	
+
 			return summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);

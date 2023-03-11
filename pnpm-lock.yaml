@@ -201,7 +201,7 @@ importers:
       sharp-read-bmp: github:misskey-dev/sharp-read-bmp
       strict-event-emitter-types: 2.0.0
       stringz: 2.1.0
-      summaly: github:misskey-dev/summaly#883baf437a7401c99c1ee3af5da9ceb2a6460907
+      summaly: github:misskey-dev/summaly#e43065b426ccabca5c27373bfb94841665d6ec43
       systeminformation: 5.17.12
       tinycolor2: 1.6.0
       tmp: 0.2.1
@@ -309,7 +309,7 @@ importers:
       sharp-read-bmp: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
       strict-event-emitter-types: 2.0.0
       stringz: 2.1.0
-      summaly: github.com/misskey-dev/summaly/883baf437a7401c99c1ee3af5da9ceb2a6460907
+      summaly: github.com/misskey-dev/summaly/e43065b426ccabca5c27373bfb94841665d6ec43
       systeminformation: 5.17.12
       tinycolor2: 1.6.0
       tmp: 0.2.1
@@ -462,7 +462,7 @@ importers:
       seedrandom: 3.0.5
       start-server-and-test: 2.0.0
       strict-event-emitter-types: 2.0.0
-      summaly: github:misskey-dev/summaly#883baf437a7401c99c1ee3af5da9ceb2a6460907
+      summaly: github:misskey-dev/summaly#e43065b426ccabca5c27373bfb94841665d6ec43
       syuilo-password-strength: 0.0.1
       textarea-caret: 3.1.0
       three: 0.150.1
@@ -568,7 +568,7 @@ importers:
       eslint-plugin-vue: 9.9.0_eslint@8.35.0
       happy-dom: 8.9.0
       start-server-and-test: 2.0.0
-      summaly: github.com/misskey-dev/summaly/883baf437a7401c99c1ee3af5da9ceb2a6460907
+      summaly: github.com/misskey-dev/summaly/e43065b426ccabca5c27373bfb94841665d6ec43
       vitest: 0.29.2_zcjcryjt4bqcdu7ggonulipgea
       vue-eslint-parser: 9.1.0_eslint@8.35.0
       vue-tsc: 1.2.0_typescript@4.9.5
@@ -3900,7 +3900,7 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3908,7 +3908,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -6942,7 +6942,7 @@ packages:
       readable-stream: 2.3.7
     dev: false
 
-  /follow-redirects/1.15.2_debug@4.3.4:
+  /follow-redirects/1.15.2:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
     peerDependencies:
@@ -6950,8 +6950,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.4
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -14115,8 +14113,8 @@ packages:
       sharp: 0.31.3
     dev: false
 
-  github.com/misskey-dev/summaly/883baf437a7401c99c1ee3af5da9ceb2a6460907:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/883baf437a7401c99c1ee3af5da9ceb2a6460907}
+  github.com/misskey-dev/summaly/e43065b426ccabca5c27373bfb94841665d6ec43:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/e43065b426ccabca5c27373bfb94841665d6ec43}
     name: summaly
     version: 3.0.4
     dependencies:

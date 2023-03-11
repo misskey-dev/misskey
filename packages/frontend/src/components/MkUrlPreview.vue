@@ -1,7 +1,18 @@
 <template>
 <template v-if="player.url && playerEnabled">
-	<div :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-		<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+	<div
+		:class="$style.player"
+		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
+	>
+		<iframe
+			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
+			loading="lazy"
+			frameborder="no"
+			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
+			:class="$style.playerIframe"
+			:src="player.url"
+			:allow="player.allow.join(';')"
+		></iframe>
 		<span v-else>invalid url</span>
 	</div>
 	<div :class="$style.action">
@@ -20,23 +31,6 @@
 		</MkButton>
 	</div>
 </template>
-<template v-else-if="oEmbed && oEmbedExpanded">
-	<div>
-		<iframe
-			loading="lazy"
-			frameborder="no"
-			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
-			:style="{ position: 'relative', width: '100%', height: `${oEmbed.height}px` }"
-			:src="oEmbed.src"
-			:allow="oEmbed.allow.join(';')"
-		></iframe>
-	</div>
-	<div :class="$style.action">
-		<MkButton :small="true" inline @click="oEmbedExpanded = false">
-			<i class="ti ti-x"></i> {{ i18n.ts.close }}
-		</MkButton>
-	</div>
-</template>
 <div v-else :class="$style.urlPreview">
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substr(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail" :class="$style.thumbnail" :style="`background-image: url('${thumbnail}')`">
@@ -45,7 +39,7 @@
 			<header :class="$style.header">
 				<h1 v-if="unknownUrl" :class="$style.title">{{ url }}</h1>
 				<h1 v-else-if="fetching" :class="$style.title"><MkEllipsis/></h1>
-				<h1 v-else :class="$style.title" :title="title">{{ title }}</h1>
+				<h1 v-else :class="$style.title" :title="title ?? undefined">{{ title }}</h1>
 			</header>
 			<p v-if="unknownUrl" :class="$style.text">{{ i18n.ts.cannotLoad }}</p>
 			<p v-else-if="fetching" :class="$style.text"><MkEllipsis/></p>
@@ -54,7 +48,7 @@
 				<img v-if="icon" :class="$style.siteIcon" :src="icon"/>
 				<p v-if="unknownUrl" :class="$style.siteName">?</p>
 				<p v-else-if="fetching" :class="$style.siteName"><MkEllipsis/></p>
-				<p v-else :class="$style.siteName" :title="sitename">{{ sitename }}</p>
+				<p v-else :class="$style.siteName" :title="sitename ?? undefined">{{ sitename }}</p>
 			</footer>
 		</article>
 	</component>
@@ -69,11 +63,6 @@
 		</MkButton>
 		<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
 			<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
-		</MkButton>
-	</div>
-	<div v-if="oEmbed" :class="$style.action">
-		<MkButton :small="true" inline @click="oEmbedExpanded = true">
-			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandPreview }}
 		</MkButton>
 	</div>
 </div>
@@ -124,9 +113,6 @@ const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 let tweetHeight = $ref(150);
 let unknownUrl = $ref(false);
 
-let oEmbed = $ref(null as (SummalyResult['oEmbed'] | null));
-let oEmbedExpanded = $ref(false);
-
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
@@ -154,7 +140,6 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		sitename = info.sitename;
 		fetching = false;
 		player = info.player;
-		oEmbed = info.oEmbed;
 	});
 });
 
