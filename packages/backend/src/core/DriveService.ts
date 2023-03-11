@@ -33,8 +33,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import type S3 from 'aws-sdk/clients/s3.js';
 import { correctFilename } from '@/misc/correct-filename.js';
+import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -476,7 +476,7 @@ export class DriveService {
 			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
 			// extを付加してデータベースの文字数制限に当たることはまずない
 			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
-			info.type.ext
+			info.type.ext,
 		);
 
 		if (user && !force) {
@@ -728,10 +728,20 @@ export class DriveService {
 
 		const s3 = this.s3Service.getS3(meta);
 
-		await s3.deleteObject({
-			Bucket: meta.objectStorageBucket!,
-			Key: key,
-		}).promise();
+		try {
+			await s3.deleteObject({
+				Bucket: meta.objectStorageBucket!,
+				Key: key,
+			}).promise();
+		} catch (err: any) {
+			if (err.code === 'NoSuchKey') {
+				console.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err);
+				return;
+			}
+			throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
+				cause: err,
+			});
+		}
 	}
 
 	@bindThis
