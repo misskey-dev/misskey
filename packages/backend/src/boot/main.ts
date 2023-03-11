@@ -44,10 +44,13 @@ export async function main(): Promise<ServiceProvider> {
 	const serverService = getRequiredService<ServerService>(serviceProvider, DI.ServerService);
 	await serverService.launch();
 
-	getRequiredService<ChartManagementService>(serviceProvider, DI.ChartManagementService).start();
-	getRequiredService<JanitorService>(serviceProvider, DI.JanitorService).start();
-	getRequiredService<QueueStatsService>(serviceProvider, DI.QueueStatsService).start();
-	getRequiredService<ServerStatsService>(serviceProvider, DI.ServerStatsService).start();
+	// FIXME
+	if (!(process.env.NODE_ENV === 'test' && process.env.VITEST === 'true')) {
+		getRequiredService<ChartManagementService>(serviceProvider, DI.ChartManagementService).start();
+		getRequiredService<JanitorService>(serviceProvider, DI.JanitorService).start();
+		getRequiredService<QueueStatsService>(serviceProvider, DI.QueueStatsService).start();
+		getRequiredService<ServerStatsService>(serviceProvider, DI.ServerStatsService).start();
+	}
 
 	return serviceProvider;
 }
