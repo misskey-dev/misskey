@@ -5,6 +5,13 @@ import { Plugin } from 'rollup';
 import { createFilter, dataToEsm } from '@rollup/pluginutils';
 import { RollupJsonOptions } from '@rollup/plugin-json';
 
+// json5 extends SyntaxError with additional fields (without subclassing)
+// https://github.com/json5/json5/blob/de344f0619bda1465a6e25c76f1c0c3dda8108d9/lib/parse.js#L1111-L1112
+interface Json5SyntaxError extends SyntaxError {
+	lineNumber: number;
+	columnNumber: number;
+}
+
 export default function json5(options: RollupJsonOptions = {}): Plugin {
 	const filter = createFilter(options.include, options.exclude);
 	const indent = 'indent' in options ? options.indent : '\t';
@@ -28,9 +35,12 @@ export default function json5(options: RollupJsonOptions = {}): Plugin {
 					map: { mappings: '' },
 				};
 			} catch (err) {
-				const message = 'Could not parse JSON file';
-				const position = parseInt(/[\d]/.exec(err.message)[0], 10);
-				this.warn({ message, id, position });
+				if (!(err instanceof SyntaxError)) {
+					throw err;
+				}
+				const message = 'Could not parse JSON5 file';
+				const { lineNumber, columnNumber } = err as Json5SyntaxError;
+				this.warn({ message, id, loc: { line: lineNumber, column: columnNumber } });
 				return null;
 			}
 		},

@@ -22,15 +22,15 @@
 		<span :class="$style.title"><slot name="header"></slot></span>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body" :class="$style.body">
+	<div v-show="active" ref="body" v-container :class="$style.body">
 		<slot></slot>
 	</div>
 </section>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, Ref, watch } from 'vue';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column, deckStore } from './deck-store';
+import { onBeforeUnmount, onMounted, provide, watch } from 'vue';
+import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn, Column } from './deck-store';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { MenuItem } from '@/types/menu';

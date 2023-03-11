@@ -1,5 +1,5 @@
-import type { Schema } from '@/misc/schema.js';
-import { refs } from '@/misc/schema.js';
+import type { Schema } from '@/misc/json-schema.js';
+import { refs } from '@/misc/json-schema.js';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;

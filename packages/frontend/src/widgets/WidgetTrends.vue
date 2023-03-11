@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-trends data-cy-mkw-trends">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-trends class="mkw-trends">
 	<template #icon><i class="ti ti-hash"></i></template>
 	<template #header>{{ i18n.ts._widgets.trends }}</template>
 
@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';

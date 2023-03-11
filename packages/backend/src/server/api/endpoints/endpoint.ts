@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import endpoints from '../endpoints.js';
 
@@ -27,7 +27,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			return {
 				params: Object.entries(ep.params.properties ?? {}).map(([k, v]) => ({
 					name: k,
-					type: v.type.charAt(0).toUpperCase() + v.type.slice(1),
+					type: v.type ? v.type.charAt(0).toUpperCase() + v.type.slice(1) : 'string',
 				})),
 			};
 		});

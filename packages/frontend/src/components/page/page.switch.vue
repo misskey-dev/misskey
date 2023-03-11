@@ -7,7 +7,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue';
 import MkSwitch from '../MkSwitch.vue';
-import * as os from '@/os';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { SwitchVarBlock } from '@/scripts/hpml/block';
 

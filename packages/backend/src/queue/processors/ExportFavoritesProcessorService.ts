@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
+import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
 import type { NoteFavorite, NoteFavoritesRepository, NotesRepository, PollsRepository, User, UsersRepository } from '@/models/index.js';
@@ -148,6 +148,7 @@ function serialize(favorite: NoteFavorite & { note: Note & { user: User } }, pol
 			visibility: favorite.note.visibility,
 			visibleUserIds: favorite.note.visibleUserIds,
 			localOnly: favorite.note.localOnly,
+			reactionAcceptance: favorite.note.reactionAcceptance,
 			uri: favorite.note.uri,
 			url: favorite.note.url,
 			user: {

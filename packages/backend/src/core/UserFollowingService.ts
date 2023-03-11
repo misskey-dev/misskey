@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { CacheableUser, ILocalUser, IRemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
@@ -21,16 +21,16 @@ import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
 
-type Local = ILocalUser | {
-	id: ILocalUser['id'];
-	host: ILocalUser['host'];
-	uri: ILocalUser['uri']
+type Local = LocalUser | {
+	id: LocalUser['id'];
+	host: LocalUser['host'];
+	uri: LocalUser['uri']
 };
-type Remote = IRemoteUser | {
-	id: IRemoteUser['id'];
-	host: IRemoteUser['host'];
-	uri: IRemoteUser['uri'];
-	inbox: IRemoteUser['inbox'];
+type Remote = RemoteUser | {
+	id: RemoteUser['id'];
+	host: RemoteUser['host'];
+	uri: RemoteUser['uri'];
+	inbox: RemoteUser['inbox'];
 };
 type Both = Local | Remote;
 
@@ -81,7 +81,7 @@ export class UserFollowingService {
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocked) {
 			// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 			return;
 		} else if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocking) {
@@ -89,8 +89,8 @@ export class UserFollowingService {
 			await this.userBlockingService.unblock(follower, followee);
 		} else {
 			// それ以外は単純に例外
-			if (blocking != null) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
-			if (blocked != null) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
+			if (blocking) throw new IdentifiableError('710e8fb0-b8c3-4922-be49-d5d93d8e6a6e', 'blocking');
+			if (blocked) throw new IdentifiableError('3338392a-f764-498d-8855-db939dcf8c48', 'blocked');
 		}
 
 		const followeeProfile = await this.userProfilesRepository.findOneByOrFail({ userId: followee.id });
@@ -130,7 +130,7 @@ export class UserFollowingService {
 		await this.insertFollowingDoc(followee, follower);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 		}
 	}
@@ -293,13 +293,13 @@ export class UserFollowingService {
 		}
 	
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
 	
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
 			// local user has null host
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 		}
 	}
@@ -353,8 +353,8 @@ export class UserFollowingService {
 			this.userBlockingService.checkBlocked(followee.id, follower.id),
 		]);
 	
-		if (blocking != null) throw new Error('blocking');
-		if (blocked != null) throw new Error('blocked');
+		if (blocking) throw new Error('blocking');
+		if (blocked) throw new Error('blocked');
 	
 		const followRequest = await this.followRequestsRepository.insert({
 			id: this.idService.genId(),
@@ -388,7 +388,7 @@ export class UserFollowingService {
 		}
 	
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderFollow(follower, followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee));
 			this.queueService.deliver(follower, content, followee.inbox);
 		}
 	}
@@ -403,7 +403,7 @@ export class UserFollowingService {
 		},
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 	
 			if (this.userEntityService.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
 				this.queueService.deliver(follower, content, followee.inbox);
@@ -434,7 +434,7 @@ export class UserFollowingService {
 		followee: {
 			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
 		},
-		follower: CacheableUser,
+		follower: User,
 	): Promise<void> {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
@@ -448,7 +448,7 @@ export class UserFollowingService {
 		await this.insertFollowingDoc(followee, follower);
 	
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
 			this.queueService.deliver(followee, content, follower.inbox);
 		}
 	
@@ -556,7 +556,7 @@ export class UserFollowingService {
 			followerId: follower.id,
 		});
 
-		const content = this.apRendererService.renderActivity(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request?.requestId ?? undefined), followee));
+		const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request?.requestId ?? undefined), followee));
 		this.queueService.deliver(followee, content, follower.inbox);
 	}
 

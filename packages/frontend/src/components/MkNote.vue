@@ -4,15 +4,15 @@
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
-	:class="$style.root"
-	:tabindex="!isDeleted ? '-1' : null"
+	:class="[$style.root, { [$style.showActionsOnlyHover]: defaultStore.state.showNoteActionsOnlyHover }]"
+	:tabindex="!isDeleted ? '-1' : undefined"
 >
-	<MkNoteSub v-if="appearNote.reply" :note="appearNote.reply" :class="$style.replyTo"/>
+	<MkNoteSub v-if="appearNote.reply && !renoteCollapsed" :note="appearNote.reply" :class="$style.replyTo"/>
 	<div v-if="pinned" :class="$style.tip"><i class="ti ti-pin"></i> {{ i18n.ts.pinnedNote }}</div>
-	<!--<div v-if="appearNote._prId_" class="tip"><i class="fas fa-bullhorn"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
+	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar v-once :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
@@ -31,11 +31,16 @@
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['localOnly']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
-	<article :class="$style.article" @contextmenu.stop="onContextmenu">
-		<MkAvatar v-once :class="$style.avatar" :user="appearNote.user" link preview/>
+	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
+		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
+		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
+	</div>
+	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
+		<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
 		<div :class="$style.main">
 			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
@@ -48,7 +53,7 @@
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<Mfm v-if="appearNote.text" v-once :text="appearNote.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
+						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else :class="$style.translated">
@@ -60,7 +65,7 @@
 					<div v-if="appearNote.files.length > 0" :class="$style.files">
 						<MkMediaList :media-list="appearNote.files"/>
 					</div>
-					<MkPoll v-if="appearNote.poll" ref="pollViewer" :note="appearNote" :class="$style.poll"/>
+					<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll"/>
 					<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="false" :class="$style.urlPreview"/>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 					<button v-if="isLong && collapsed" :class="$style.collapsed" class="_button" @click="collapsed = false">
@@ -72,8 +77,14 @@
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
+			<MkReactionsViewer :note="appearNote" :max-number="16">
+				<template #more>
+					<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+						{{ i18n.ts.more }}
+					</button>
+				</template>
+			</MkReactionsViewer>
 			<footer :class="$style.footer">
-				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
 				<button :class="$style.footerButton" class="_button" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ appearNote.repliesCount }}</p>
@@ -92,7 +103,8 @@
 					<i class="ti ti-ban"></i>
 				</button>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
-					<i class="ti ti-plus"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
@@ -116,7 +128,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUnmounted, reactive, ref, shallowRef, Ref } from 'vue';
+import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -144,6 +156,9 @@ import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
+import { getNoteSummary } from '@/scripts/get-note-summary';
+import { MenuItem } from '@/types/menu';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -180,18 +195,23 @@ const reactButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
+const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.includes('$[x3')) ||
+	(appearNote.text.includes('$[x4')) ||
 	(appearNote.text.split('\n').length > 9) ||
-	(appearNote.text.length > 500)
+	(appearNote.text.length > 500) ||
+	(appearNote.files.length >= 5) ||
+	(urls && urls.length >= 4)
 ));
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
-const translation = ref(null);
+const translation = ref<any>(null);
 const translating = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
+let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId)) || (appearNote.myReaction != null)));
 
 const keymap = {
 	'r': () => reply(true),
@@ -230,12 +250,57 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
-	os.popupMenu([{
+
+	let items = [] as MenuItem[];
+
+	if (appearNote.channel) {
+		items = items.concat([{
+			text: i18n.ts.inChannelRenote,
+			icon: 'ti ti-repeat',
+			action: () => {
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+					
+				os.api('notes/create', {
+					renoteId: appearNote.id,
+					channelId: appearNote.channelId,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
+				});
+			},
+		}, {
+			text: i18n.ts.inChannelQuote,
+			icon: 'ti ti-quote',
+			action: () => {
+				os.post({
+					renote: appearNote,
+					channel: appearNote.channel,
+				});
+			},
+		}, null]);
+	}
+
+	items = items.concat([{
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
+			const el = renoteButton.value as HTMLElement | null | undefined;
+			if (el) {
+				const rect = el.getBoundingClientRect();
+				const x = rect.left + (el.offsetWidth / 2);
+				const y = rect.top + (el.offsetHeight / 2);
+				os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			}
+				
 			os.api('notes/create', {
 				renoteId: appearNote.id,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
 			});
 		},
 	}, {
@@ -246,7 +311,9 @@ function renote(viaKeyboard = false) {
 				renote: appearNote,
 			});
 		},
-	}], renoteButton.value, {
+	}]);
+
+	os.popupMenu(items, renoteButton.value, {
 		viaKeyboard,
 	});
 }
@@ -263,18 +330,32 @@ function reply(viaKeyboard = false): void {
 
 function react(viaKeyboard = false): void {
 	pleaseLogin();
-	blur();
-	reactionPicker.show(reactButton.value, reaction => {
+	if (appearNote.reactionAcceptance === 'likeOnly') {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
-			reaction: reaction,
+			reaction: '❤️',
 		});
-		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
+		const el = reactButton.value as HTMLElement | null | undefined;
+		if (el) {
+			const rect = el.getBoundingClientRect();
+			const x = rect.left + (el.offsetWidth / 2);
+			const y = rect.top + (el.offsetHeight / 2);
+			os.popup(MkRippleEffect, { x, y }, {}, 'end');
 		}
-	}, () => {
-		focus();
-	});
+	} else {
+		blur();
+		reactionPicker.show(reactButton.value, reaction => {
+			os.api('notes/reactions/create', {
+				noteId: appearNote.id,
+				reaction: reaction,
+			});
+			if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+				claimAchievement('reactWithoutRead');
+			}
+		}, () => {
+			focus();
+		});
+	}
 }
 
 function undoReact(note): void {
@@ -350,6 +431,12 @@ function readPromo() {
 	});
 	isDeleted.value = true;
 }
+
+function showReactions(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
+		noteId: appearNote.id,
+	}, {}, 'closed');
+}
 </script>
 
 <style lang="scss" module>
@@ -393,6 +480,34 @@ function readPromo() {
 	&:hover > .article > .main > .footer > .footerButton {
 		opacity: 1;
 	}
+
+	&.showActionsOnlyHover {
+		.footer {
+			visibility: hidden;
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			padding: 0 4px;
+			margin-bottom: 0 !important;
+			background: var(--popup);
+			border-radius: 8px;
+			box-shadow: 0px 4px 32px var(--shadow);
+		}
+
+		.footerButton {
+			font-size: 90%;
+
+			&:not(:last-child) {
+				margin-right: 0;
+			}
+		}
+	}
+
+	&.showActionsOnlyHover:hover {
+		.footer {
+			visibility: visible;
+		}
+	}
 }
 
 .tip {
@@ -433,7 +548,6 @@ function readPromo() {
 	width: 28px;
 	height: 28px;
 	margin: 0 8px 0 0;
-	border-radius: 6px;
 }
 
 .renoteText {
@@ -461,15 +575,46 @@ function readPromo() {
 	margin-right: 4px;
 }
 
-.article {
+.collapsedRenoteTarget {
 	display: flex;
-	padding: 28px 32px 18px;
+	align-items: center;
+	line-height: 28px;
+	white-space: pre;
+	padding: 0 32px 18px;
+}
+
+.collapsedRenoteTargetAvatar {
+	flex-shrink: 0;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	margin: 0 8px 0 0;
+}
+
+.collapsedRenoteTargetText {
+	overflow: hidden;
+	flex-shrink: 1;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 90%;
+	opacity: 0.7;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.article {
+	position: relative;
+	display: flex;
+	padding: 28px 32px;
 }
 
 .avatar {
 	flex-shrink: 0;
 	display: block !important;
-	margin: 0 14px 8px 0;
+	margin: 0 14px 0 0;
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
@@ -492,9 +637,9 @@ function readPromo() {
 
 .showLess {
 	width: 100%;
-	margin-top: 1em;
+	margin-top: 14px;
 	position: sticky;
-	bottom: 1em;
+	bottom: calc(var(--stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {
@@ -574,6 +719,10 @@ function readPromo() {
 	font-size: 80%;
 }
 
+.footer {
+	margin-bottom: -14px;
+}
+
 .footerButton {
 	margin: 0;
 	padding: 8px;
@@ -594,9 +743,17 @@ function readPromo() {
 	opacity: 0.7;
 }
 
-@container (max-width: 500px) {
+@container (max-width: 580px) {
 	.root {
-		font-size: 0.9em;
+		font-size: 0.95em;
+	}
+
+	.renote {
+		padding: 12px 26px 0 26px;
+	}
+
+	.article {
+		padding: 24px 26px;
 	}
 
 	.avatar {
@@ -605,7 +762,25 @@ function readPromo() {
 	}
 }
 
-@container (max-width: 450px) {
+@container (max-width: 500px) {
+	.root {
+		font-size: 0.9em;
+	}
+
+	.renote {
+		padding: 10px 22px 0 22px;
+	}
+
+	.article {
+		padding: 20px 22px;
+	}
+
+	.footer {
+		margin-bottom: -8px;
+	}
+}
+
+@container (max-width: 480px) {
 	.renote {
 		padding: 8px 16px 0 16px;
 	}
@@ -614,22 +789,41 @@ function readPromo() {
 		padding: 8px 16px 0 16px;
 	}
 
-	.article {
-		padding: 14px 16px 9px;
+	.collapsedRenoteTarget {
+		padding: 0 16px 9px;
+		margin-top: 4px;
 	}
 
+	.article {
+		padding: 14px 16px;
+	}
+}
+
+@container (max-width: 450px) {
 	.avatar {
-		margin: 0 10px 8px 0;
+		margin: 0 10px 0 0;
 		width: 46px;
 		height: 46px;
 		top: calc(14px + var(--stickyTop, 0px));
 	}
 }
 
+@container (max-width: 400px) {
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 18px;
+			}
+		}
+	}
+}
+
 @container (max-width: 350px) {
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 18px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
 		}
 	}
 }
@@ -640,10 +834,18 @@ function readPromo() {
 		height: 44px;
 	}
 
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 12px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 8px;
+			}
 		}
+	}
+}
+
+@container (max-width: 250px) {
+	.quoteNote {
+		padding: 12px;
 	}
 }
 
@@ -651,5 +853,20 @@ function readPromo() {
 	padding: 8px;
 	text-align: center;
 	opacity: 0.7;
+}
+
+.reactionDetailsButton {
+	display: inline-block;
+	height: 32px;
+	margin: 2px;
+	padding: 0 6px;
+	border: dashed 1px var(--divider);
+	border-radius: 4px;
+	background: transparent;
+	opacity: .8;
+
+	&:hover {
+		background: var(--X5);
+	}
 }
 </style>

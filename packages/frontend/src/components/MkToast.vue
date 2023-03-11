@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import * as os from '@/os';
 
 defineProps<{
@@ -53,7 +53,7 @@ onMounted(() => {
 	position: fixed;
 	left: 0;
 	right: 0;
-	top: 0;
+	top: 50px;
 	margin: 0 auto;
 	margin-top: 16px;
 	min-width: 300px;

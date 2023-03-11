@@ -1,7 +1,6 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { User } from './User.js';
-import { DriveFile } from './DriveFile.js';
 
 @Entity()
 export class Flash {
@@ -44,7 +43,7 @@ export class Flash {
 	public user: User | null;
 
 	@Column('varchar', {
-		length: 32768,
+		length: 65536,
 	})
 	public script: string;
 

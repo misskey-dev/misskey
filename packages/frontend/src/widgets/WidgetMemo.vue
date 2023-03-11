@@ -1,20 +1,19 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-memo data-cy-mkw-memo">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-memo class="mkw-memo">
 	<template #icon><i class="ti ti-note"></i></template>
 	<template #header>{{ i18n.ts._widgets.memo }}</template>
 
 	<div :class="$style.root">
-		<textarea v-model="text" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
+		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
 		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
 	</div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { ref, watch } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -25,6 +24,10 @@ const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean' as const,
 		default: true,
+	},
+	height: {
+		type: 'number' as const,
+		default: 100,
 	},
 };
 

@@ -23,11 +23,8 @@
 import { } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import { navbarItemDef } from '@/navbar';
-import { instanceName } from '@/config';
 import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
 import { deviceKind } from '@/scripts/device-kind';
-import * as os from '@/os';
 
 const props = withDefaults(defineProps<{
 	src?: HTMLElement;

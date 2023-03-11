@@ -1,5 +1,5 @@
 <template>
-<div class="_gaps_m">
+<div v-if="instance.enableEmail" class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts.emailAddress }}</template>
 		<MkInput v-model="emailAddress" type="email" manual-save>
@@ -34,23 +34,25 @@
 			<MkSwitch v-model="emailNotification_receiveFollowRequest">
 				{{ i18n.ts._notification._types.receiveFollowRequest }}
 			</MkSwitch>
-			<MkSwitch v-model="emailNotification_groupInvited">
-				{{ i18n.ts._notification._types.groupInvited }}
-			</MkSwitch>
 		</div>
 	</FormSection>
+</div>
+<div v-if="!instance.enableEmail" class="_gaps_m">
+	<MkInfo>{{ i18n.ts.emailNotSupported }}</MkInfo>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import FormSection from '@/components/form/section.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { instance } from '@/instance';
 
 const emailAddress = ref($i!.email);
 
@@ -78,7 +80,6 @@ const emailNotification_reply = ref($i!.emailNotificationTypes.includes('reply')
 const emailNotification_quote = ref($i!.emailNotificationTypes.includes('quote'));
 const emailNotification_follow = ref($i!.emailNotificationTypes.includes('follow'));
 const emailNotification_receiveFollowRequest = ref($i!.emailNotificationTypes.includes('receiveFollowRequest'));
-const emailNotification_groupInvited = ref($i!.emailNotificationTypes.includes('groupInvited'));
 
 const saveNotificationSettings = () => {
 	os.api('i/update', {
@@ -88,12 +89,11 @@ const saveNotificationSettings = () => {
 			...[emailNotification_quote.value ? 'quote' : null],
 			...[emailNotification_follow.value ? 'follow' : null],
 			...[emailNotification_receiveFollowRequest.value ? 'receiveFollowRequest' : null],
-			...[emailNotification_groupInvited.value ? 'groupInvited' : null],
 		].filter(x => x != null),
 	});
 };
 
-watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest, emailNotification_groupInvited], () => {
+watch([emailNotification_mention, emailNotification_reply, emailNotification_quote, emailNotification_follow, emailNotification_receiveFollowRequest], () => {
 	saveNotificationSettings();
 });
 

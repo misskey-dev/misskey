@@ -23,16 +23,15 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, watch } from 'vue';
+import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { scroll } from '@/scripts/scroll';
 import { instance } from '@/instance';
 import * as os from '@/os';
 import { lookupUser } from '@/scripts/lookup-user';
 import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver, setPageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 
@@ -199,6 +198,13 @@ watch(narrow, () => {
 onMounted(() => {
 	ro.observe(el);
 
+	narrow = el.offsetWidth < NARROW_THRESHOLD;
+	if (currentPage?.route.name == null && !narrow) {
+		router.push('/admin/overview');
+	}
+});
+
+onActivated(() => {
 	narrow = el.offsetWidth < NARROW_THRESHOLD;
 	if (currentPage?.route.name == null && !narrow) {
 		router.push('/admin/overview');

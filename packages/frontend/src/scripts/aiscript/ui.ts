@@ -1,4 +1,4 @@
-import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
+import { utils, values } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import { ref, Ref } from 'vue';
 

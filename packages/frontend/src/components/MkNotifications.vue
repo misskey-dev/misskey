@@ -17,16 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, markRaw, onUnmounted, onMounted, computed, shallowRef } from 'vue';
-import { notificationTypes } from 'misskey-js';
+import { onUnmounted, onMounted, computed, shallowRef } from 'vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import XNote from '@/components/MkNote.vue';
-import * as os from '@/os';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { notificationTypes } from '@/const';
 
 const props = defineProps<{
 	includeTypes?: typeof notificationTypes[number][];

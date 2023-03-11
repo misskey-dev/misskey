@@ -1,15 +1,13 @@
 <template>
-<div ref="el" class="sfhdhdhr">
-	<MkMenu ref="menu" :items="items" :align="align" :width="width" :as-drawer="false" @close="onChildClosed"/>
+<div ref="el" :class="$style.root">
+	<MkMenu :items="items" :align="align" :width="width" :as-drawer="false" @close="onChildClosed"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { on } from 'events';
-import { nextTick, onBeforeUnmount, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
-import * as os from '@/os';
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -27,11 +25,21 @@ const emit = defineEmits<{
 const el = shallowRef<HTMLElement>();
 const align = 'left';
 
+const SCROLLBAR_THICKNESS = 16;
+
 function setPosition() {
 	const rootRect = props.rootElement.getBoundingClientRect();
-	const rect = props.targetElement.getBoundingClientRect();
-	const left = props.targetElement.offsetWidth;
-	const top = (rect.top - rootRect.top) - 8;
+	const parentRect = props.targetElement.getBoundingClientRect();
+	const myRect = el.value.getBoundingClientRect();
+
+	let left = props.targetElement.offsetWidth;
+	let top = (parentRect.top - rootRect.top) - 8;
+	if (rootRect.left + left + myRect.width >= (window.innerWidth - SCROLLBAR_THICKNESS)) {
+		left = -myRect.width;
+	}
+	if (rootRect.top + top + myRect.height >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
+		top = top - ((rootRect.top + top + myRect.height) - (window.innerHeight - SCROLLBAR_THICKNESS));
+	}
 	el.value.style.left = left + 'px';
 	el.value.style.top = top + 'px';
 }
@@ -48,11 +56,20 @@ watch(() => props.targetElement, () => {
 	setPosition();
 });
 
+const ro = new ResizeObserver((entries, observer) => {
+	setPosition();
+});
+
 onMounted(() => {
+	ro.observe(el.value);
 	setPosition();
 	nextTick(() => {
 		setPosition();
 	});
+});
+
+onUnmounted(() => {
+	ro.disconnect();
 });
 
 defineExpose({
@@ -62,8 +79,8 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
-.sfhdhdhr {
+<style lang="scss" module>
+.root {
 	position: absolute;
 }
 </style>

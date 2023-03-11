@@ -20,6 +20,9 @@ packages/frontend/.yarn/cache
 packages/backend/.yarn/cache
 packages/sw/.yarn/cache
 
+# pnpm
+.pnpm-store
+
 # Cypress
 cypress/screenshots
 cypress/videos
@@ -33,6 +36,7 @@ coverage
 !/.config/docker_example.yml
 !/.config/docker_example.env
 docker-compose.yml
+!/.devcontainer/docker-compose.yml
 
 # misskey
 /build

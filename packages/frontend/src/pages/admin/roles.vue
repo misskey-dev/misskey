@@ -4,7 +4,6 @@
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700">
 			<div class="_gaps">
-				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
 					<div class="_gaps_s">
@@ -132,8 +131,20 @@
 						<MkButton primary rounded @click="updateBaseRole">{{ i18n.ts.save }}</MkButton>
 					</div>
 				</MkFolder>
+				<MkButton primary rounded @click="create"><i class="ti ti-plus"></i> {{ i18n.ts._role.new }}</MkButton>
 				<div class="_gaps_s">
-					<MkRolePreview v-for="role in roles" :key="role.id" :role="role"/>
+					<MkFoldableSection>
+						<template #header>Manual roles</template>
+						<div class="_gaps_s">
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :for-moderation="true"/>
+						</div>
+					</MkFoldableSection>
+					<MkFoldableSection>
+						<template #header>Conditional roles</template>
+						<div class="_gaps_s">
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :for-moderation="true"/>
+						</div>
+					</MkFoldableSection>
 				</div>
 			</div>
 		</MkSpacer>
@@ -145,8 +156,6 @@
 import { computed, reactive } from 'vue';
 import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -157,6 +166,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const ROLE_POLICIES = [
 	'gtlAvailable',

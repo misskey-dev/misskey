@@ -12,7 +12,7 @@
 				</div>
 			</div>
 
-			<XNotes :pagination="pagination" :detail="true"/>
+			<MkNotes :pagination="pagination" :detail="true"/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -21,11 +21,12 @@
 <script lang="ts" setup>
 import { computed, watch, provide } from 'vue';
 import * as misskey from 'misskey-js';
-import XNotes from '@/components/MkNotes.vue';
+import MkNotes from '@/components/MkNotes.vue';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { url } from '@/config';
 
 const props = defineProps<{
 	clipId: string,
@@ -82,7 +83,17 @@ const headerActions = $computed(() => clip && isOwned ? [{
 			...result,
 		});
 	},
-}, {
+}, ...(clip.isPublic ? [{
+	icon: 'ti ti-share',
+	text: i18n.ts.share,
+	handler: async (): Promise<void> => {
+		navigator.share({
+			title: clip.name,
+			text: clip.description,
+			url: `${url}/clips/${clip.id}`,
+		});
+	},
+}] : []), {
 	icon: 'ti ti-trash',
 	text: i18n.ts.delete,
 	danger: true,

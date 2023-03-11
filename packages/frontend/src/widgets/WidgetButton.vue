@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-button data-cy-mkw-button">
+<div data-cy-mkw-button class="mkw-button">
 	<MkButton :primary="widgetProps.colored" full @click="run">
 		{{ widgetProps.label }}
 	</MkButton>
@@ -7,9 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { Interpreter, Parser, utils } from '@syuilo/aiscript';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { Interpreter, Parser } from '@syuilo/aiscript';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
@@ -60,7 +59,11 @@ const run = async () => {
 				os.inputText({
 					title: q,
 				}).then(({ canceled, result: a }) => {
-					ok(a);
+					if (canceled) {
+						ok('');
+					} else {
+						ok(a);
+					}
 				});
 			});
 		},

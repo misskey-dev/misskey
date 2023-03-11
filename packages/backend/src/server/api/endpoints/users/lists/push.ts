@@ -45,6 +45,12 @@ export const meta = {
 			code: 'YOU_HAVE_BEEN_BLOCKED',
 			id: '990232c5-3f9d-4d83-9f3f-ef27b6332a4b',
 		},
+
+		tooManyUsers: {
+			message: 'You can not push users any more.',
+			code: 'TOO_MANY_USERS',
+			id: '2dd9752e-a338-413d-8eec-41814430989b',
+		},
 	},
 } as const;
 
@@ -110,8 +116,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.alreadyAdded);
 			}
 
-			// Push the user
-			await this.userListService.push(user, userList, me);
+			try {
+				await this.userListService.push(user, userList, me);
+			} catch (err) {
+				if (err instanceof UserListService.TooManyUsersError) {
+					throw new ApiError(meta.errors.tooManyUsers);
+				}
+
+				throw err;
+			}
 		});
 	}
 }

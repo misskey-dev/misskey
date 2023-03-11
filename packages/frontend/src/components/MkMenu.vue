@@ -36,7 +36,7 @@
 			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
-				<span :class="$style.caret"><i class="ti ti-caret-right ti-fw"></i></span>
+				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
 			</button>
 			<button v-else :tabindex="i" class="_button" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, Ref, ref, watch } from 'vue';
+import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
@@ -111,11 +111,11 @@ watch(() => props.items, () => {
 	immediate: true,
 });
 
-let childMenu = $ref<MenuItem[] | null>();
+let childMenu = ref<MenuItem[] | null>();
 let childTarget = $shallowRef<HTMLElement | null>();
 
 function closeChild() {
-	childMenu = null;
+	childMenu.value = null;
 	childShowingItem = null;
 }
 
@@ -140,13 +140,31 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
+let childrenCache = new WeakMap();
 async function showChildren(item: MenuItem, ev: MouseEvent) {
+	const children = ref([]);
+	if (childrenCache.has(item)) {
+		children.value = childrenCache.get(item);
+	} else {
+		if (typeof item.children === 'function') {
+			children.value = [{
+				type: 'pending',
+			}];
+			item.children().then(x => {
+				children.value = x;
+				childrenCache.set(item, x);
+			});
+		} else {
+			children.value = item.children;
+		}
+	}
+
 	if (props.asDrawer) {
-		os.popupMenu(item.children, ev.currentTarget ?? ev.target);
+		os.popupMenu(children, ev.currentTarget ?? ev.target);
 		close();
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
-		childMenu = item.children;
+		childMenu = children;
 		childShowingItem = item;
 	}
 }

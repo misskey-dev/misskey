@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
@@ -10,11 +10,12 @@ import { IdService } from '@/core/IdService.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
-import { ILocalUser } from '@/models/entities/User.js';
+import { LocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class SignupApiService {
@@ -30,6 +31,9 @@ export class SignupApiService {
 
 		@Inject(DI.userPendingsRepository)
 		private userPendingsRepository: UserPendingsRepository,
+
+		@Inject(DI.usedUsernamesRepository)
+		private usedUsernamesRepository: UsedUsernamesRepository,
 
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
@@ -124,12 +128,21 @@ export class SignupApiService {
 		}
 	
 		if (instance.emailRequiredForSignup) {
+			if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
+			}
+
+			// Check deleted username duplication
+			if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
+				throw new FastifyReplyError(400, 'USED_USERNAME');
+			}
+
 			const code = rndstr('a-z0-9', 16);
-	
+
 			// Generate hash of password
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
-	
+
 			await this.userPendingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
@@ -138,14 +151,15 @@ export class SignupApiService {
 				username: username,
 				password: hash,
 			});
-	
+
 			const link = `${this.config.url}/signup-complete/${code}`;
-	
+
 			this.emailService.sendEmail(emailAddress!, 'Signup',
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
-	
+
 			reply.code(204);
+			return;
 		} else {
 			try {
 				const { account, secret } = await this.signupService.signup({
@@ -162,7 +176,7 @@ export class SignupApiService {
 					token: secret,
 				};
 			} catch (err) {
-				throw new FastifyReplyError(400, err);
+				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
 	}
@@ -193,9 +207,9 @@ export class SignupApiService {
 				emailVerifyCode: null,
 			});
 
-			return this.signinService.signin(request, reply, account as ILocalUser);
+			return this.signinService.signin(request, reply, account as LocalUser);
 		} catch (err) {
-			throw new FastifyReplyError(400, err);
+			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}
 	}
 }

@@ -1,8 +1,7 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
+import { IsNull } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
-import { ulid } from 'ulid';
 import mime from 'mime-types';
 import archiver from 'archiver';
 import { DI } from '@/di-symbols.js';
@@ -12,9 +11,9 @@ import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ExportCustomEmojisProcessorService {
@@ -82,6 +81,10 @@ export class ExportCustomEmojisProcessorService {
 		});
 
 		for (const emoji of customEmojis) {
+			if (!/^[a-zA-Z0-9_]+$/.test(emoji.name)) {
+				this.logger.error(`invalid emoji name: ${emoji.name}`);
+				continue;
+			}
 			const ext = mime.extension(emoji.type ?? 'image/png');
 			const fileName = emoji.name + (ext ? '.' + ext : '');
 			const emojiPath = path + '/' + fileName;

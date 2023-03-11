@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets } from 'typeorm';
+import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { User } from '@/models/entities/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository } from '@/models/index.js';
-import type { SelectQueryBuilder } from 'typeorm';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
+import type { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class QueryService {
@@ -29,10 +29,13 @@ export class QueryService {
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
+
+		@Inject(DI.renoteMutingsRepository)
+		private renoteMutingsRepository: RenoteMutingsRepository,
 	) {
 	}
 
-	public makePaginationQuery<T>(q: SelectQueryBuilder<T>, sinceId?: string, untilId?: string, sinceDate?: number, untilDate?: number): SelectQueryBuilder<T> {
+	public makePaginationQuery<T extends ObjectLiteral>(q: SelectQueryBuilder<T>, sinceId?: string, untilId?: string, sinceDate?: number, untilDate?: number): SelectQueryBuilder<T> {
 		if (sinceId && untilId) {
 			q.andWhere(`${q.alias}.id > :sinceId`, { sinceId: sinceId });
 			q.andWhere(`${q.alias}.id < :untilId`, { untilId: untilId });
@@ -269,5 +272,24 @@ export class QueryService {
 			q.setParameters({ meId: me.id });
 		}
 	}
-}
 
+	@bindThis
+	public generateMutedUserRenotesQueryForNotes(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+		const mutingQuery = this.renoteMutingsRepository.createQueryBuilder('renote_muting')
+			.select('renote_muting.muteeId')
+			.where('renote_muting.muterId = :muterId', { muterId: me.id });
+	
+		q.andWhere(new Brackets(qb => {
+			qb
+				.where(new Brackets(qb => { 
+					qb.where('note.renoteId IS NOT NULL');
+					qb.andWhere('note.text IS NULL');
+					qb.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
+				}))
+				.orWhere('note.renoteId IS NULL')
+				.orWhere('note.text IS NOT NULL');
+		}));
+		
+		q.setParameters(mutingQuery.getParameters());
+	}
+}

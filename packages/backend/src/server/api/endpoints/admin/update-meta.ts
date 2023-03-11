@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
@@ -58,10 +56,6 @@ export const paramDef = {
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
-		pinnedPages: { type: 'array', items: {
-			type: 'string',
-		} },
-		pinnedClipId: { type: 'string', format: 'misskey:id', nullable: true },
 		langs: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -249,14 +243,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.langs = ps.langs.filter(Boolean);
 			}
 
-			if (Array.isArray(ps.pinnedPages)) {
-				set.pinnedPages = ps.pinnedPages.filter(Boolean);
-			}
-
-			if (ps.pinnedClipId !== undefined) {
-				set.pinnedClipId = ps.pinnedClipId;
-			}
-
 			if (ps.summalyProxy !== undefined) {
 				set.summalyProxy = ps.summalyProxy;
 			}
@@ -306,7 +292,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.tosUrl !== undefined) {
-				set.ToSUrl = ps.tosUrl;
+				set.termsOfServiceUrl = ps.tosUrl;
 			}
 
 			if (ps.repositoryUrl !== undefined) {

@@ -1,7 +1,7 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, NotificationsRepository } from '@/models/index.js';
-import { notificationTypes } from '@/types.js';
+import { obsoleteNotificationTypes, notificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
@@ -15,8 +15,8 @@ export const meta = {
 	requireCredential: true,
 
 	limit: {
-		duration: 60000,
-		max: 15,
+		duration: 30000,
+		max: 30,
 	},
 
 	kind: 'read:notifications',
@@ -41,11 +41,12 @@ export const paramDef = {
 		following: { type: 'boolean', default: false },
 		unreadOnly: { type: 'boolean', default: false },
 		markAsRead: { type: 'boolean', default: true },
+		// 後方互換のため、廃止された通知タイプも受け付ける
 		includeTypes: { type: 'array', items: {
-			type: 'string', enum: notificationTypes,
+			type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],
 		} },
 		excludeTypes: { type: 'array', items: {
-			type: 'string', enum: notificationTypes,
+			type: 'string', enum: [...notificationTypes, ...obsoleteNotificationTypes],
 		} },
 	},
 	required: [],
@@ -84,6 +85,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (notificationTypes.every(type => ps.excludeTypes?.includes(type))) {
 				return [];
 			}
+
+			const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
+			const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
+
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :followerId', { followerId: me.id });
@@ -143,10 +148,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				query.setParameters(followingQuery.getParameters());
 			}
 
-			if (ps.includeTypes && ps.includeTypes.length > 0) {
-				query.andWhere('notification.type IN (:...includeTypes)', { includeTypes: ps.includeTypes });
-			} else if (ps.excludeTypes && ps.excludeTypes.length > 0) {
-				query.andWhere('notification.type NOT IN (:...excludeTypes)', { excludeTypes: ps.excludeTypes });
+			if (includeTypes && includeTypes.length > 0) {
+				query.andWhere('notification.type IN (:...includeTypes)', { includeTypes });
+			} else if (excludeTypes && excludeTypes.length > 0) {
+				query.andWhere('notification.type NOT IN (:...excludeTypes)', { excludeTypes });
 			}
 
 			if (ps.unreadOnly) {

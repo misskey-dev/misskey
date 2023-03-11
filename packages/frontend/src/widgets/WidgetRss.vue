@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-rss data-cy-mkw-rss">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-rss class="mkw-rss">
 	<template #icon><i class="ti ti-rss"></i></template>
 	<template #header>RSS</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="configure"><i class="ti ti-settings"></i></button></template>
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import { url as base } from '@/config';

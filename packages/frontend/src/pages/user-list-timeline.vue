@@ -4,7 +4,7 @@
 	<div ref="rootEl" class="eqqrhokj">
 		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 		<div class="tl">
-			<XTimeline
+			<MkTimeline
 				ref="tlEl" :key="listId"
 				class="tl"
 				src="list"
@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, inject } from 'vue';
-import XTimeline from '@/components/MkTimeline.vue';
+import { computed, watch } from 'vue';
+import MkTimeline from '@/components/MkTimeline.vue';
 import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
@@ -34,7 +34,7 @@ const props = defineProps<{
 
 let list = $ref(null);
 let queue = $ref(0);
-let tlEl = $shallowRef<InstanceType<typeof XTimeline>>();
+let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
 let rootEl = $shallowRef<HTMLElement>();
 
 watch(() => props.listId, async () => {
@@ -65,7 +65,7 @@ async function timetravel() {
 }
 
 const headerActions = $computed(() => list ? [{
-	icon: 'fas fa-calendar-alt',
+	icon: 'ti ti-calendar-time',
 	text: i18n.ts.jumpToSpecifiedDate,
 	handler: timetravel,
 }, {
@@ -91,6 +91,7 @@ definePageMetadata(computed(() => list ? {
 		top: calc(var(--stickyTop, 0px) + 16px);
 		z-index: 1000;
 		width: 100%;
+		margin: calc(-0.675em - 8px - var(--margin)) 0 calc(-0.675em - 8px);
 
 		> button {
 			display: block;

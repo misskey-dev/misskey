@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, UsersRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -95,6 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateMutedNoteQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
+			if (me) this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 			if (ps.withFiles) {
 				query.andWhere('note.fileIds != \'{}\'');

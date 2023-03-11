@@ -1,10 +1,11 @@
+import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
 import Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { createRedisConnection } from '@/redis.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
-import { createPostgreDataSource } from './postgre.js';
+import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
@@ -18,7 +19,7 @@ const $config: Provider = {
 const $db: Provider = {
 	provide: DI.db,
 	useFactory: async (config) => {
-		const db = createPostgreDataSource(config);
+		const db = createPostgresDataSource(config);
 		return await db.initialize();
 	},
 	inject: [DI.config],
@@ -57,6 +58,14 @@ export class GlobalModule implements OnApplicationShutdown {
 	) {}
 
 	async onApplicationShutdown(signal: string): Promise<void> {
+		if (process.env.NODE_ENV === 'test') {
+			// XXX:
+			// Shutting down the existing connections causes errors on Jest as
+			// Misskey has asynchronous postgres/redis connections that are not
+			// awaited.
+			// Let's wait for some random time for them to finish.
+			await setTimeout(5000);
+		}
 		await Promise.all([
 			this.db.destroy(),
 			this.redisClient.disconnect(),

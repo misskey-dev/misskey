@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" class="mkw-photos data-cy-mkw-photos">
+<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
 	<template #icon><i class="ti ti-camera"></i></template>
 	<template #header>{{ i18n.ts._widgets.photos }}</template>
 
@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { onUnmounted, ref } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { stream } from '@/stream';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
@@ -67,7 +67,7 @@ const onDriveFileCreated = (file) => {
 
 const thumbnail = (image: any): string => {
 	return defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(image.thumbnailUrl)
+		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl;
 };
 

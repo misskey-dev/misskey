@@ -5,12 +5,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, nextTick, onUnmounted, PropType } from 'vue';
+import { defineComponent, onMounted, nextTick, PropType } from 'vue';
 import XBlock from './page.block.vue';
 import { Hpml } from '@/scripts/hpml/evaluator';
 import { url } from '@/config';
 import { $i } from '@/account';
-import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {

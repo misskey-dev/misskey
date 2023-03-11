@@ -8,15 +8,13 @@
 </template>
 
 <script lang="ts" setup>
-import { markRaw, version as vueVersion, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { onMounted } from 'vue';
 import { Chart } from 'chart.js';
-import tinycolor from 'tinycolor2';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
 import { chartVLine } from '@/scripts/chart-vline';
-import { alpha } from '@/scripts/color';
 import { initChart } from '@/scripts/init-chart';
 
 initChart();

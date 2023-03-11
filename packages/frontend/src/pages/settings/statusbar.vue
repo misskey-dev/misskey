@@ -10,15 +10,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { onMounted } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XStatusbar from './statusbar.statusbar.vue';
-import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
@@ -49,6 +47,5 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.statusbar,
 	icon: 'ti ti-list',
-	bg: 'var(--bg)',
 });
 </script>

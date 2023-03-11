@@ -22,7 +22,6 @@
 
 <script lang="ts" setup>
 import { toRefs, Ref } from 'vue';
-import * as os from '@/os';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

@@ -1,6 +1,6 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keyup.enter="done()">
+	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
 	<div ref="emojisEl" class="emojis">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
@@ -35,8 +35,10 @@
 					<button
 						v-for="emoji in pinned"
 						:key="emoji"
+						:data-emoji="emoji"
 						class="_button item"
 						tabindex="0"
+						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
 						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
@@ -52,6 +54,8 @@
 						v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
 						class="_button item"
+						:data-emoji="emoji"
+						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
 						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
@@ -90,12 +94,11 @@
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
+import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
-import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { customEmojiCategories, customEmojis } from '@/custom-emojis';
@@ -292,6 +295,13 @@ function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef):
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 }
 
+/** @see MkEmojiPicker.section.vue */
+function computeButtonTitle(ev: MouseEvent): void {
+	const elm = ev.target as HTMLElement;
+	const emoji = elm.dataset.emoji as string;
+	elm.title = getEmojiName(emoji) ?? emoji;
+}
+
 function chosen(emoji: any, ev?: MouseEvent) {
 	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el) {
@@ -325,6 +335,11 @@ function paste(event: ClipboardEvent): void {
 	if (done(pasted)) {
 		event.preventDefault();
 	}
+}
+
+function onEnter(ev: KeyboardEvent) {
+	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
+	done();
 }
 
 function done(query?: string): boolean | void {

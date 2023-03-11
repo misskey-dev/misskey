@@ -1,5 +1,5 @@
 <template>
-<div class="kvausudm _panel mkw-slideshow data-cy-mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
+<div data-cy-mkw-slideshow class="kvausudm _panel mkw-slideshow" :style="{ height: widgetProps.height + 'px' }">
 	<div @click="choose">
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}
@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, onUnmounted, reactive, ref, shallowRef } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { onMounted, ref, shallowRef } from 'vue';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';

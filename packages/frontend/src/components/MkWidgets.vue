@@ -19,9 +19,9 @@
 			@update:model-value="v => emit('updateWidgets', v)"
 		>
 			<template #item="{element}">
-				<div :class="[$style.widget, $style['customize-container']]" class="data-cy-customize-container">
+				<div :class="[$style.widget, $style['customize-container']]" data-cy-customize-container>
 					<button :class="$style['customize-container-config']" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button :class="$style['customize-container-remove']" class="_button data-cy-customize-container-remove" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
+					<button :class="$style['customize-container-remove']" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
 						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style['customize-container-handle-widget']" :widget="element" @update-props="updateWidget(element.id, $event)"/>
 					</div>
@@ -43,14 +43,13 @@ export type DefaultStoredWidget = {
 } & Widget;
 </script>
 <script lang="ts" setup>
-import { defineAsyncComponent, reactive, ref, computed } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import { widgets as widgetDefs } from '@/widgets';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

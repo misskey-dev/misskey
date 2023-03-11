@@ -64,12 +64,19 @@
 		</div>
 	</MkFolder>
 
+	<MkSelect v-model="reactionAcceptance">
+		<template #label>{{ i18n.ts.reactionAcceptance }}</template>
+		<option :value="null">{{ i18n.ts.all }}</option>
+		<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
+		<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
+	</MkSelect>
+
 	<MkSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -78,7 +85,6 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
-import { host } from '@/config';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
@@ -86,6 +92,9 @@ import { $i } from '@/account';
 import { langmap } from '@/scripts/langmap';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement } from '@/scripts/achievements';
+import { defaultStore } from '@/store';
+
+const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
 const profile = reactive({
 	name: $i.name,
@@ -125,10 +134,16 @@ function saveFields() {
 
 function save() {
 	os.apiWithDialog('i/update', {
+		// 空文字列をnullにしたいので??は使うな
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: profile.name || null,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		description: profile.description || null,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		location: profile.location || null,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		birthday: profile.birthday || null,
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
@@ -150,6 +165,8 @@ function changeAvatar(ev) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.t('cropImageAsk'),
+			okText: i18n.ts.cropYes,
+			cancelText: i18n.ts.cropNo,
 		});
 
 		if (!canceled) {
@@ -174,6 +191,8 @@ function changeBanner(ev) {
 		const { canceled } = await os.confirm({
 			type: 'question',
 			text: i18n.t('cropImageAsk'),
+			okText: i18n.ts.cropYes,
+			cancelText: i18n.ts.cropNo,
 		});
 
 		if (!canceled) {

@@ -1,5 +1,5 @@
 <template>
-<div class="data-cy-mkw-digitalClock _monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
+<div data-cy-mkw-digitalClock class="_monospace" :class="[$style.root, { _panel: !widgetProps.transparent }]" :style="{ fontSize: `${widgetProps.fontSize}em` }">
 	<div v-if="widgetProps.showLabel" :class="$style.label">{{ tzAbbrev }}</div>
 	<div>
 		<MkDigitalClock :show-ms="widgetProps.showMs" :offset="tzOffset"/>
@@ -9,8 +9,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref, watch } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
+import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import { timezones } from '@/scripts/timezones';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';

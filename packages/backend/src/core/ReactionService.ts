@@ -3,7 +3,7 @@ import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, BlockingsRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { IRemoteUser, User } from '@/models/entities/User.js';
+import type { RemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -85,7 +85,7 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async create(user: { id: User['id']; host: User['host']; isBot: User['isBot'] }, note: Note, reaction?: string) {
+	public async create(user: { id: User['id']; host: User['host']; isBot: User['isBot'] }, note: Note, reaction?: string | null) {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
@@ -99,8 +99,12 @@ export class ReactionService {
 			throw new IdentifiableError('68e9d2d1-48bf-42c2-b90a-b20e09fd3d48', 'Note not accessible for you.');
 		}
 	
-		// TODO: cache
-		reaction = await this.toDbReaction(reaction, user.host);
+		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote') && (user.host != null))) {
+			reaction = '❤️';
+		} else {
+			// TODO: cache
+			reaction = await this.toDbReaction(reaction, user.host);
+		}
 	
 		const record: NoteReaction = {
 			id: this.idService.genId(),
@@ -177,11 +181,11 @@ export class ReactionService {
 	
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = this.apRendererService.renderActivity(await this.apRendererService.renderLike(record, note));
+			const content = this.apRendererService.addContext(await this.apRendererService.renderLike(record, note));
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
-				dm.addDirectRecipe(reactee as IRemoteUser);
+				dm.addDirectRecipe(reactee as RemoteUser);
 			}
 	
 			if (['public', 'home', 'followers'].includes(note.visibility)) {
@@ -189,7 +193,7 @@ export class ReactionService {
 			} else if (note.visibility === 'specified') {
 				const visibleUsers = await Promise.all(note.visibleUserIds.map(id => this.usersRepository.findOneBy({ id })));
 				for (const u of visibleUsers.filter(u => u && this.userEntityService.isRemoteUser(u))) {
-					dm.addDirectRecipe(u as IRemoteUser);
+					dm.addDirectRecipe(u as RemoteUser);
 				}
 			}
 	
@@ -235,11 +239,11 @@ export class ReactionService {
 	
 		//#region 配信
 		if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-			const content = this.apRendererService.renderActivity(this.apRendererService.renderUndo(await this.apRendererService.renderLike(exist, note), user));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(await this.apRendererService.renderLike(exist, note), user));
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
-				dm.addDirectRecipe(reactee as IRemoteUser);
+				dm.addDirectRecipe(reactee as RemoteUser);
 			}
 			dm.addFollowersRecipe();
 			dm.execute();

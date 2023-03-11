@@ -2,12 +2,262 @@
 ## 13.x.x (unreleased)
 
 ### Improvements
+-
 
 ### Bugfixes
 -
 
 You should also include the user name that made the change.
 -->
+
+## 13.x.x (unreleased)
+
+### Improvements
+- ユーザーごとにRenoteをミュートできるように
+- ノートごとに絵文字リアクションを受け取るか設定できるように
+- enhance(client): DM作成時にメンションも含むように
+- enhance(client): フォロー申請のボタンのデザインを改善
+- enhance(backend): OpenAPIエンドポイントを復旧
+- 透明なWebP/AVIF映像はJPEGではなくWebPに変換するように
+- アクティブユーザー数チャートの記録上限値を拡張
+- Playのソースコード上限文字数を2倍に拡張
+- 付箋ウィジェットの高さを設定可能に
+
+### Bugfixes
+- プロフィールで設定した情報が削除できない問題を修正
+- ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
+- /api-consoleページにアクセスすると404が出る問題を修正
+- SMTP Login id length is too short
+- AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
+- fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
+
+## 13.9.2 (2023/03/06)
+
+### Improvements
+- クリップ、チャンネルページに共有ボタンを追加
+- チャンネルでタイムライン上部に投稿フォームを表示するかどうかのオプションを追加
+- ブラウザでメディアプロキシ(/proxy)からファイルを保存した際に、なるべくオリジナルのファイル名を継承するように
+- ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
+- Identiconがローカルとリモートで同じになるように
+  - これまでのIdenticonは異なる画像になります
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- ロールの権限で「一般ユーザー」のロールがいきなり設定できない問題を修正
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
+- fix(client): みつけるのロール一覧でコンディショナルロールが含まれるのを修正
+- macOSでDev Containerが動作しない問題を修正 @RyotaK
+
+## 13.9.1 (2023/03/03)
+
+### Bugfixes
+- ノートに添付したファイルが表示されない場合があるのを修正
+
+## 13.9.0 (2023/03/03)
+
+### Improvements
+- 時限ロール
+- アンテナでCWも検索対象にするように
+- ノートの操作部をホバー時のみ表示するオプションを追加
+- サウンドを追加
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- 外部メディアプロキシ使用時にアバタークロップができない問題を修正
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
+- プッシュ通知でカスタム絵文字リアクションを表示できなかった問題を修正
+
+## 13.8.1 (2023/02/26)
+
+### Bugfixes
+- モバイルでドロワーメニューが表示されない問題を修正
+
+## 13.8.0 (2023/02/26)
+
+### Improvements
+- チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
+- renoteした際の表示を改善
+- バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
+- enhance(client): MkUrlPreviewの閉じるボタンを見やすく
+- Add dialog to remove follower
+- enhance(client): improve clip menu ux
+- 検索画面の統合
+- enhance(client): ノートメニューからユーザーメニューを開けるように
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
+
+### Bugfixes
+- Windows環境でswcを使うと正しくビルドできない問題の修正
+- fix(client): Android ChromeでPWAとしてインストールできない問題を修正
+- 未知のユーザーが deleteActor されたら処理をスキップする
+- fix(server): notes/createで、fileIdsと見つかったファイルの数が異なる場合はエラーにする
+- fix(server): notes/createのバリデーションが機能していないのを修正
+- fix(server): エラーのスタックトレースは返さないように
+
+## 13.7.5 (2023/02/24)
+
+### Note
+13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
+
+### Bugfixes
+- 全ての通知が削除されてしまうのを修正
+
+## 13.7.3 (2023/02/23)
+
+### Note
+~~13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**~~
+
+### Improvements
+
+### Bugfixes
+- Client: 「キャッシュを削除」した後、ローカルのカスタム絵文字が表示されなくなるされなくなる問題を修正
+- Client: 通知設定画面で以前からグループの招待を有効化していた場合、通知の表示に失敗する問題の修正
+- Client: 通知設定画面に古いトグルが残っていた問題を修正
+
+## 13.7.2 (2023/02/23)
+
+### Note
+13.7.0以前からアップデートする場合は全ての通知が削除されます。
+
+### Improvements
+- enhance: make pwa icon maskable
+- chore(client): tweak custom emoji size
+
+### Bugfixes
+- マイグレーションが失敗することがあるのを修正
+
+## 13.7.1 (2023/02/23)
+
+### Improvements
+- pnpm buildではswcを使うように
+
+### Bugfixes
+- NODE_ENV=productionでビルドできないのを修正
+
+## 13.7.0 (2023/02/22)
+
+### Changes
+- チャット機能が削除されました
+
+### Improvements
+- Server: URLプレビュー（summaly）はプロキシを通すように
+- Client: 2FA設定のUIをまともにした
+- セキュリティキーの名前を変更できるように
+- enhance(client): add quiz preset for play
+- 広告開始時期を設定できるように
+- みつけるで公開ロール一覧とそのメンバーを閲覧できるように
+- enhance(client): MFMのx3, x4が含まれていたらノートをたたむように
+- enhance(client): make possible to reload page of window
+
+### Bugfixes
+- ユーザー検索ダイアログでローカルユーザーを絞って検索できない問題を修正
+- fix(client): MkHeader及びデッキのカラムでチャンネル一覧を選択したとき、最大5個までしか表示されない
+- 管理画面の広告を10個以上見えるように
+- Moderation note が保存できない
+- ユーザーのハッシュタグ検索が機能していないのを修正
+
+## 13.6.1 (2023/02/12)
+
+### Improvements
+- アニメーションを少なくする設定の時、MkPageHeaderのタブアニメーションを無効化
+- Backend: activitypub情報がcorsでブロックされないようヘッダーを追加
+- enhance: レートリミットを0%にできるように
+- チャンネル内Renoteを行えるように
+
+### Bugfixes
+- Client: ユーザーページでアクティビティを見ることができない問題を修正
+
+## 13.6.0 (2023/02/11)
+
+### Improvements
+- MkPageHeaderをごっそり変えた
+  * モバイルではヘッダーは上下に分割され、下段にタブが表示されるように
+  * iconOnlyのタブ項目がアクティブな場合にはタブのタイトルを表示するように
+  * メインタイムラインではタイトルを表示しない
+  * メインタイムラインかつモバイルで表示される左上のアバターを選択するとアカウントメニューが開くように
+- ユーザーページのノート一覧をタブとして分離
+- コンディショナルロールもバッジとして表示可能に
+- enhance(client): ロールをより簡単に付与できるように
+- enhance(client): 一度見たノートのRenoteは省略して表示するように
+- enhance(client): 迷惑になる可能性のある投稿を行う前に警告を表示
+- リアクションの数が多い場合の表示を改善
+- 一部のMFM構文をopt-outに
+
+### Bugfixes
+- Client: ユーザーページでタブがほとんど見れないことがないように
+
+## 13.5.6 (2023/02/10)
+
+### Improvements
+- 非ログイン時にMiAuthを踏んだ際にMiAuthであることを表示する
+- /auth/のUIをアップデート
+- 利用規約同意UIの調整
+- クロップ時の質問を分かりやすく
+
+### Bugfixes
+- fix: prevent clipping audio plyr's tooltip
+
+## 13.5.4 (2023/02/09)
+
+### Improvements
+- Server: UIのHTML（ノートなどの特別なページを除く）のキャッシュ時間を15秒から30秒に
+- i/notificationsのレートリミットを緩和
+
+### Bugfixes
+- fix(client): validate url to improve security
+- fix(client): dateの初期値が正常に入らない時がある
+
+## 13.5.3 (2023/02/09)
+
+### Improvements
+- Client: デッキにチャンネルカラムを追加
+
+## 13.5.2 (2023/02/08)
+
+### Changes
+- Revert: perf(client): do not render custom emojis in user names
+
+### Bugfixes
+- Client: register_note_view_interruptor not working
+- Client: ログイントークンの再生成が出来ない
+
+## 13.5.0 (2023/02/08)
+
+### Changes
+- perf(client): do not render custom emojis in user names
+
+### Improvements
+- Client: disableShowingAnimatedImagesのデフォルト値をprefers-reduced-motionにする
+- enhance(client): tweak medialist style
+
+### Bugfixes
+- fix docker health check
+- Client: MkEmojiPickerでもChromeで検索ダイアログで変換確定するとそのまま検索されてしまうのを修正
+- fix(mfm): default degree not used in rotate
+- fix(server): validate urls from ap to improve security
+
+## 13.4.0 (2023/02/05)
+
+### Improvements
+- ロールにアイコンを設定してユーザー名の横に表示できるように
+- feat: timeline page for non-login users
+- 実績の単なるラッキーの獲得確立を調整
+- Add Thai language support
+
+### Bugfixes
+- fix(server): 自分のノートをお気に入りに登録しても実績解除される問題を修正
+- fix(server): clean up file in FileServer
+- fix(server): Deny UNIX domain socket
+- fix(server): validate filename and emoji name to improve security
+- fix(client): validate input response in aiscript
+- fix(client): add webhook delete button
+- fix(client): tweak notification style
+- fix(client): インラインコードを折り返して表示する
 
 ## 13.3.3 (2023/02/04)
 
@@ -17,8 +267,8 @@ You should also include the user name that made the change.
 ## 13.3.2 (2023/02/04)
 
 ### Improvements
-- 外部メディアプロキシへの対応を強化しました  
-  外部メディアプロキシのFastify実装を作りました  
+- 外部メディアプロキシへの対応を強化しました
+  外部メディアプロキシのFastify実装を作りました
   https://github.com/misskey-dev/media-proxy
 - Server: improve performance
 
@@ -181,7 +431,7 @@ You should also include the user name that made the change.
 	- ユーザーごとのドライブ容量設定はロールに統合されました。
 	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
 	- LTL/GTLの解放状態はロールに統合されました。
-- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。
   https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
@@ -409,7 +659,7 @@ You should also include the user name that made the change.
 ## 12.112.2 (2022/07/08)
 
 ### Bugfixes
-- Fix Docker doesn't work @mei23  
+- Fix Docker doesn't work @mei23
   Still not working on arm64 environment. (See 12.112.0)
 
 ## 12.112.1 (2022/07/07)
@@ -451,7 +701,7 @@ same as 12.112.0
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
 - Server: Improve performance
-- Server: Supports IPv6 on Redis transport. @mei23  
+- Server: Supports IPv6 on Redis transport. @mei23
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0

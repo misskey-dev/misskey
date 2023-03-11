@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -101,7 +100,7 @@ export class NodeinfoServerService {
 						email: meta.maintainerEmail,
 					},
 					langs: meta.langs,
-					tosUrl: meta.ToSUrl,
+					tosUrl: meta.termsOfServiceUrl,
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
 					disableRegistration: meta.disableRegistration,

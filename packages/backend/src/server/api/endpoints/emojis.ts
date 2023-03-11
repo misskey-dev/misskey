@@ -1,4 +1,4 @@
-import { IsNull, MoreThan } from 'typeorm';
+import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { EmojisRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -82,11 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			return {
-				emojis: await this.emojiEntityService.packMany(emojis, {
-					omitId: true,
-					omitHost: true,
-					withUrl: true,
-				}),
+				emojis: await this.emojiEntityService.packSimpleMany(emojis),
 			};
 		});
 	}

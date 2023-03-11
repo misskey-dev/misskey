@@ -1,10 +1,9 @@
 import type { User } from '@/models/entities/User.js';
 import type { Channel as ChannelModel } from '@/models/entities/Channel.js';
-import type { FollowingsRepository, MutingsRepository, UserProfilesRepository, ChannelFollowingsRepository, BlockingsRepository } from '@/models/index.js';
+import type { FollowingsRepository, MutingsRepository, RenoteMutingsRepository, UserProfilesRepository, ChannelFollowingsRepository, BlockingsRepository } from '@/models/index.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
-import type { UserGroup } from '@/models/entities/UserGroup.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
@@ -23,6 +22,7 @@ export default class Connection {
 	public userProfile?: UserProfile | null;
 	public following: Set<User['id']> = new Set();
 	public muting: Set<User['id']> = new Set();
+	public renoteMuting: Set<User['id']> = new Set();
 	public blocking: Set<User['id']> = new Set(); // "被"blocking
 	public followingChannels: Set<ChannelModel['id']> = new Set();
 	public token?: AccessToken;
@@ -35,6 +35,7 @@ export default class Connection {
 	constructor(
 		private followingsRepository: FollowingsRepository,
 		private mutingsRepository: MutingsRepository,
+		private renoteMutingsRepository: RenoteMutingsRepository,
 		private blockingsRepository: BlockingsRepository,
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 		private userProfilesRepository: UserProfilesRepository,
@@ -67,6 +68,7 @@ export default class Connection {
 		if (this.user) {
 			this.updateFollowing();
 			this.updateMuting();
+			this.updateRenoteMuting();
 			this.updateBlocking();
 			this.updateFollowingChannels();
 			this.updateUserProfile();
@@ -94,6 +96,7 @@ export default class Connection {
 				this.muting.delete(data.body.id);
 				break;
 
+				// TODO: renote mute events
 				// TODO: block events
 
 			case 'followChannel':
@@ -147,12 +150,6 @@ export default class Connection {
 			case 'disconnect': this.onChannelDisconnectRequested(body); break;
 			case 'channel': this.onChannelMessageRequested(body); break;
 			case 'ch': this.onChannelMessageRequested(body); break; // alias
-
-			// 個々のチャンネルではなくルートレベルでこれらのメッセージを受け取る理由は、
-			// クライアントの事情を考慮したとき、入力フォームはノートチャンネルやメッセージのメインコンポーネントとは別
-			// なこともあるため、それらのコンポーネントがそれぞれ各チャンネルに接続するようにするのは面倒なため。
-			case 'typingOnChannel': this.typingOnChannel(body.channel); break;
-			case 'typingOnMessaging': this.typingOnMessaging(body); break;
 		}
 	}
 
@@ -326,24 +323,6 @@ export default class Connection {
 	}
 
 	@bindThis
-	private typingOnChannel(channel: ChannelModel['id']) {
-		if (this.user) {
-			this.globalEventService.publishChannelStream(channel, 'typing', this.user.id);
-		}
-	}
-
-	@bindThis
-	private typingOnMessaging(param: { partner?: User['id']; group?: UserGroup['id']; }) {
-		if (this.user) {
-			if (param.partner) {
-				this.globalEventService.publishMessagingStream(param.partner, this.user.id, 'typing', this.user.id);
-			} else if (param.group) {
-				this.globalEventService.publishGroupMessagingStream(param.group, 'typing', this.user.id);
-			}
-		}
-	}
-
-	@bindThis
 	private async updateFollowing() {
 		const followings = await this.followingsRepository.find({
 			where: {
@@ -365,6 +344,18 @@ export default class Connection {
 		});
 
 		this.muting = new Set<string>(mutings.map(x => x.muteeId));
+	}
+
+	@bindThis
+	private async updateRenoteMuting() {
+		const renoteMutings = await this.renoteMutingsRepository.find({
+			where: {
+				muterId: this.user!.id,
+			},
+			select: ['muteeId'],
+		});
+
+		this.renoteMuting = new Set<string>(renoteMutings.map(x => x.muteeId));
 	}
 
 	@bindThis
