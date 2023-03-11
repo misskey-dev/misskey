@@ -1,5 +1,5 @@
 <template>
-<template v-if="playerEnabled">
+<template v-if="player.url && playerEnabled">
 	<div :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
 		<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 		<span v-else>invalid url</span>
@@ -16,6 +16,23 @@
 	</div>
 	<div :class="$style.action">
 		<MkButton :small="true" inline @click="tweetExpanded = false">
+			<i class="ti ti-x"></i> {{ i18n.ts.close }}
+		</MkButton>
+	</div>
+</template>
+<template v-else-if="oEmbed && oEmbedExpanded">
+	<div>
+		<iframe
+			loading="lazy"
+			frameborder="no"
+			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
+			:style="{ position: 'relative', width: '100%', height: `${oEmbed.height}px` }"
+			:src="oEmbed.src"
+			:allow="oEmbed.allow.join(';')"
+		></iframe>
+	</div>
+	<div :class="$style.action">
+		<MkButton :small="true" inline @click="oEmbedExpanded = false">
 			<i class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
@@ -54,6 +71,11 @@
 			<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
 		</MkButton>
 	</div>
+	<div v-if="oEmbed" :class="$style.action">
+		<MkButton :small="true" inline @click="oEmbedExpanded = true">
+			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandPreview }}
+		</MkButton>
+	</div>
 </div>
 </template>
 
@@ -65,6 +87,9 @@ import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
+import type { summaly } from 'summaly';
+
+type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -91,13 +116,16 @@ let player = $ref({
 	url: null,
 	width: null,
 	height: null,
-});
+} as SummalyResult['player']);
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
 const embedId = `embed${Math.random().toString().replace(/\D/, '')}`;
 let tweetHeight = $ref(150);
 let unknownUrl = $ref(false);
+
+let oEmbed = $ref(null as (SummalyResult['oEmbed'] | null));
+let oEmbedExpanded = $ref(false);
 
 const requestUrl = new URL(props.url);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
@@ -114,7 +142,7 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 requestUrl.hash = '';
 
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
-	res.json().then(info => {
+	res.json().then((info: SummalyResult) => {
 		if (info.url == null) {
 			unknownUrl = true;
 			return;
@@ -126,6 +154,7 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		sitename = info.sitename;
 		fetching = false;
 		player = info.player;
+		oEmbed = info.oEmbed;
 	});
 });
 
