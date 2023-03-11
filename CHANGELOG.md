@@ -29,6 +29,7 @@ You should also include the user name that made the change.
 - /api-consoleページにアクセスすると404が出る問題を修正
 - SMTP Login id length is too short
 - AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
+- fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
 
 ## 13.9.2 (2023/03/06)
 
