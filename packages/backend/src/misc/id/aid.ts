@@ -6,7 +6,7 @@ import * as crypto from 'node:crypto';
 const TIME2000 = 946684800000;
 let counter = crypto.randomBytes(2).readUInt16LE(0);
 
-function getTime(time: number): string {
+export function getTimeId(time: number): string {
 	time = time - TIME2000;
 	if (time < 0) time = 0;
 
@@ -21,5 +21,5 @@ export function genAid(date: Date): string {
 	const t = date.getTime();
 	if (isNaN(t)) throw 'Failed to create AID: Invalid Date';
 	counter++;
-	return getTime(t) + getNoise();
+	return getTimeId(t) + getNoise();
 }
