@@ -6,7 +6,6 @@
 	>
 		<iframe
 			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
-			loading="lazy"
 			frameborder="no"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			:class="$style.playerIframe"
