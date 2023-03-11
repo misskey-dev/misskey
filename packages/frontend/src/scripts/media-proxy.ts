@@ -41,7 +41,7 @@ export function getStaticImageUrl(baseUrl: string): string {
 		return u.href;
 	}
 
-	return `${instance.mediaProxy}/static.avif?${query({
+	return `${instance.mediaProxy}/static.webp?${query({
 		url: u.href,
 		static: '1',
 	})}`;
