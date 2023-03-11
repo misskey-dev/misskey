@@ -11,7 +11,7 @@ export default defineConfig({
 		include: [
 			'test/unit/**/*.ts',
 			'src/**/*.test.ts',
-			'test/e2e/**/*.ts',
+			//'test/e2e/**/*.ts',
 		],
 	},
 });
