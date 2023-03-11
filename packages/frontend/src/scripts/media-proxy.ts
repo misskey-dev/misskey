@@ -11,7 +11,7 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview', mustOrigi
 	}
 
 	return `${mustOrigin ? localProxy : instance.mediaProxy}/${
-		type === 'preview' ? 'preview.avif'
+		type === 'preview' ? 'preview.webp'
 		: 'image.webp'
 	}?${query({
 		url: imageUrl,
