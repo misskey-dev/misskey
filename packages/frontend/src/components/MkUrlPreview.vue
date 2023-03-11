@@ -6,11 +6,11 @@
 	>
 		<iframe
 			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
-			frameborder="no"
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
+			:allow="player.allow.join(';')"
 			:class="$style.playerIframe"
 			:src="player.url"
-			:allow="player.allow.join(';')"
+			:style="{ border: 0 }"
 		></iframe>
 		<span v-else>invalid url</span>
 	</div>
