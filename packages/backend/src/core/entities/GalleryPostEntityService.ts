@@ -2,13 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { GalleryPost } from '@/models/entities/GalleryPost.js';
+import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class GalleryPostEntityService {

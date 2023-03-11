@@ -55,12 +55,12 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.53.0",
-		"@typescript-eslint/parser": "5.53.0",
+		"@typescript-eslint/eslint-plugin": "5.54.1",
+		"@typescript-eslint/parser": "5.54.1",
 		"cross-env": "7.0.3",
 		"cypress": "12.7.0",
 		"eslint": "8.35.0",
-		"start-server-and-test": "1.15.4"
+		"start-server-and-test": "2.0.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.2.0"
