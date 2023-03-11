@@ -8,7 +8,7 @@
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="disabled" :class="$style.disabled">
+	<div v-if="(((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
 			<i class="ti ti-minus"></i>
 			{{ i18n.ts._disabledTimeline.title }}
@@ -40,6 +40,9 @@ const emit = defineEmits<{
 }>();
 
 let disabled = $ref(false);
+
+const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
+const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
 
 onMounted(() => {
 	if (props.column.tl == null) {
