@@ -76,7 +76,7 @@ export class DriveFileEntityService {
 	@bindThis
 	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
 		return appendQuery(
-			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
+			`${this.config.mediaProxy}/${mode ?? 'image'}.${mode === 'avatar' ? 'webp' : 'avif'}`,
 			query({
 				url,
 				...(mode ? { [mode]: '1' } : {}),
@@ -104,7 +104,7 @@ export class DriveFileEntityService {
 
 		const url = file.webpublicUrl ?? file.url;
 
-		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? this.getProxiedUrl(url, 'static') : null);
+		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? url : null);
 	}
 
 	@bindThis

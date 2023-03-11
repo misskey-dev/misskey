@@ -130,7 +130,7 @@ export class FileServerService {
 					if (isMimeImage(file.mime, 'sharp-convertible-image-with-bmp')) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/static.webp`);
+						const url = new URL(`${this.config.mediaProxy}/static.avif`);
 						url.searchParams.set('url', file.url);
 						url.searchParams.set('static', '1');
 
@@ -151,7 +151,7 @@ export class FileServerService {
 					if (['image/svg+xml'].includes(file.mime)) {
 						reply.header('Cache-Control', 'max-age=31536000, immutable');
 
-						const url = new URL(`${this.config.mediaProxy}/svg.webp`);
+						const url = new URL(`${this.config.mediaProxy}/svg.avif`);
 						url.searchParams.set('url', file.url);
 
 						file.cleanup();
@@ -291,9 +291,9 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 280);
+				image = this.imageProcessingService.convertSharpToAvifStream(await sharpBmp(file.path, file.mime), 498, 422);
 			} else if ('preview' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
+				image = this.imageProcessingService.convertSharpToAvifStream(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
@@ -325,7 +325,7 @@ export class FileServerService {
 					type: 'image/png',
 				};
 			} else if (file.mime === 'image/svg+xml') {
-				image = this.imageProcessingService.convertToWebpStream(file.path, 2048, 2048);
+				image = this.imageProcessingService.convertToAvifStream(file.path, 2048, 2048);
 			} else if (!file.mime.startsWith('image/') || !FILE_TYPE_BROWSERSAFE.includes(file.mime)) {
 				throw new StatusError('Rejected type', 403, 'Rejected type');
 			}
