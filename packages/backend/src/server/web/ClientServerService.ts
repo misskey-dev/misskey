@@ -411,36 +411,73 @@ export class ClientServerService {
 			if (user != null) {
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 				const meta = await this.metaService.fetch();
-				const me = profile.fields
-					? (await Promise.all(profile.fields
-						.map(async field => {
-							if (!field.value) {
-								return null;
-							}
+				const fieldData: { [mention: string]: { field: { name: string, value?: string }, user?: { username: string, host: string | null } } } = {};
 
-							const ast = mfm.parse(field.value);
+				for (const field of profile.fields) {
+					if (field.value === null) {
+						continue;
+					}
 
-							if (ast.length === 1 && ast[0].type === 'mention') {
-								const user = await this.usersRepository.findOneBy({
-									host: ast[0].props.host ?? IsNull(),
-									username: ast[0].props.username,
-								});
-								if (user) {
-									const userProfile = await this.userProfilesRepository.findOneBy({ userId: user.id });
-									if (userProfile?.url) {
-										return userProfile.url;
-									}
-								}
-							}
+					const ast = mfm.parse(field.value);
 
-							if (field.value.match(/^https?:/)) {
-								return field.value;
-							}
+					if (ast.length === 1 && ast[0].type === 'mention') {
+						const host = ast[0].props.host;
+						const username = ast[0].props.username.toLowerCase();
+						let mention = `@${username}`;
 
-							return null;
-						})
-					)).filter(value => value !== null)
-					: [];
+						if (host) {
+							mention += `@${host}`;
+						}
+
+						fieldData[mention] = {
+							field: {
+								name: field.name,
+							},
+							user: {
+								username,
+								host,
+							},
+						};
+					} else if (field.value.match(/^https?:/)) {
+						fieldData[field.value] = {
+							field,
+						};
+					}
+				}
+
+				const userProfile = await this.userProfilesRepository.find({
+					where: Object.values(fieldData)
+						.map(f => f.user)
+						.filter((u): u is { username: string, host: string | null } => !!u)
+						.map(u => {
+							return {
+								user: {
+									usernameLower: u.username,
+									host: u.host ?? IsNull(),
+								},
+							};
+						}),
+					relations: ['user'],
+				});
+
+				for (const up of userProfile) {
+					if (!up.user || !up.url) {
+						continue;
+					}
+
+					const host = up.user.host;
+					let mention = `@${up.user.username.toLowerCase()}`;
+
+					if (host) {
+						mention += `@${host}`;
+					}
+
+					fieldData[mention].field.value = up.url;
+				}
+
+				const me = Array.from(new Set(Object.values(fieldData)
+					.map(f => f.field.value)
+					.filter((v): v is string => !!v)));
 
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await reply.view('user', {

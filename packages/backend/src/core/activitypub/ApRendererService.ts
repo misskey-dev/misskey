@@ -449,30 +449,74 @@ export class ApRendererService {
 		}[] = [];
 
 		if (profile.fields) {
-			for (const field of profile.fields) {
-				let url = null;
+			const fieldData: { [mention: string]: { field: { name: string, value: string }, user?: { username: string, host: string | null }, url?: string } } = {};
 
-				if (field.value) {
+			for (const field of profile.fields) {
+				if (field.value !== null) {
 					const ast = mfm.parse(field.value);
 
 					if (ast.length === 1 && ast[0].type === 'mention') {
-						const user = await this.usersRepository.findOneBy({
-							host: ast[0].props.host ?? IsNull(),
-							username: ast[0].props.username,
-						});
-						if (user) {
-							const userProfile = await this.userProfilesRepository.findOneBy({ userId: user.id });
-							if (userProfile?.url) {
-								url = userProfile.url;
-							}
-						}
-					}
+						const host = ast[0].props.host;
+						const username = ast[0].props.username.toLowerCase();
+						let mention = `@${username}`;
 
-					if (url === null && field.value.match(/^https?:/)) {
-						url = field.value;
+						if (host) {
+							mention += `@${host}`;
+						}
+
+						fieldData[mention] = {
+							field,
+							user: {
+								username,
+								host,
+							},
+						};
+						continue;
+					} else if (field.value.match(/^https?:/)) {
+						fieldData[field.value] = {
+							field,
+							url: field.value,
+						};
+						continue;
 					}
 				}
 
+				fieldData[field.value] = {
+					field,
+				};
+			}
+
+			const userProfile = await this.userProfilesRepository.find({
+				where: Object.values(fieldData)
+					.map(f => f.user)
+					.filter((u): u is { username: string, host: string | null } => !!u)
+					.map(u => {
+						return {
+							user: {
+								usernameLower: u.username,
+								host: u.host ?? IsNull(),
+							},
+						};
+					}),
+				relations: ['user'],
+			});
+
+			for (const { user, url } of userProfile) {
+				if (!user || !url) {
+					continue;
+				}
+
+				const host = user.host;
+				let mention = `@${user.username.toLowerCase()}`;
+
+				if (host) {
+					mention += `@${host}`;
+				}
+
+				fieldData[mention].url = url;
+			}
+
+			for (const { field, url } of Object.values(fieldData)) {
 				attachment.push({
 					type: 'PropertyValue',
 					name: field.name,
