@@ -325,7 +325,7 @@ export function createMemoryDb(): IMemoryDb {
 					return Object.keys(a).includes(b);
 			}
 		},
-	})
+	});
 
 	// https://github.com/oguimbal/pg-mem/issues/153#issuecomment-1018286090
 	db.public.interceptQueries((text) => {
