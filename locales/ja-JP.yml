@@ -506,6 +506,7 @@ objectStorageSetPublicRead: "アップロード時に'public-read'を設定す�
 serverLogs: "サーバーログ"
 deleteAll: "全て削除"
 showFixedPostForm: "タイムライン上部に投稿フォームを表示する"
+showFixedPostFormInChannel: "タイムライン上部に投稿フォームを表示する(チャンネル)"
 newNoteRecived: "新しいノートがあります"
 sounds: "サウンド"
 sound: "サウンド"
@@ -955,6 +956,9 @@ exploreOtherServers: "他のサーバーを探す"
 letsLookAtTimeline: "タイムラインを見てみる"
 disableFederationWarn: "連合が無効になっています。無効にしても投稿が非公開にはなりません。ほとんどの場合、このオプションを有効にする必要はありません。"
 invitationRequiredToRegister: "現在このサーバーは招待制です。招待コードをお持ちの方のみ登録できます。"
+emailNotSupported: "このサーバーではメール配信はサポートされていません"
+postToTheChannel: "チャンネルに投稿"
+cannotBeChangedLater: "後から変更できません。"
 
 _achievements:
   earnedAt: "獲得日時"
