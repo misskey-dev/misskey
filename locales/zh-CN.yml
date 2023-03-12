@@ -969,6 +969,8 @@ cannotBeChangedLater: "之后不能再更改。"
 reactionAcceptance: "接受表情回应"
 likeOnly: "仅点赞"
 likeOnlyForRemote: "远程仅点赞"
+rolesAssignedToMe: "指派给自己的角色"
+resetPasswordConfirm: "确定重置密码？"
 _achievements:
   earnedAt: "达成时间"
   _types:
@@ -1228,6 +1230,8 @@ _role:
   iconUrl: "图标URL"
   asBadge: "作为徽章显示"
   descriptionOfAsBadge: "开启后，用户名旁边将会出现角色图标。"
+  displayOrder: "显示顺序"
+  descriptionOfDisplayOrder: "数字越大，显示位置越靠前。"
   canEditMembersByModerator: "允许监察者编辑成员"
   descriptionOfCanEditMembersByModerator: "如果选中，监察者和管理员都能够为用户分配/取消分配角色。如果未选中，则只有管理员可以执行此操作。"
   priority: "优先级"
