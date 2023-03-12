@@ -157,7 +157,7 @@ export class Note {
 	@Index()
 	@Column({
 		...id(),
-		array: true, default: '{}',
+		array: true, default: () => 'array[]::varchar[]'/* REVIEW: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1118038054 */,
 	})
 	public mentions: User['id'][];
 

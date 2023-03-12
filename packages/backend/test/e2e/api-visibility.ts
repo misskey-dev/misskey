@@ -148,15 +148,15 @@ describe('API visibility', () => {
 			assert.strictEqual(res.body.text, 'x');
 		});
 
-		/* FIXME: test('[show] followers-postをフォロワーが見れる', async () => {
+		test('[show] followers-postをフォロワーが見れる', async () => {
 			const res = await show(fol.id, follower);
 			assert.strictEqual(res.body.text, 'x');
-		}); */
+		});
 
-		/* FIXME: test('[show] followers-postを非フォロワーが見れない', async () => {
+		test('[show] followers-postを非フォロワーが見れない', async () => {
 			const res = await show(fol.id, other);
 			assert.strictEqual(res.body.isHidden, true);
-		}); */
+		});
 
 		test('[show] followers-postを未認証が見れない', async () => {
 			const res = await show(fol.id, null);
@@ -413,12 +413,12 @@ describe('API visibility', () => {
 		//#endregion
 
 		//#region HTL
-		/* FIXME: test('[HTL] public-post が 自分が見れる', async () => {
+		test('[HTL] public-post が 自分が見れる', async () => {
 			const res = await api('/notes/timeline', { limit: 100 }, alice);
 			assert.strictEqual(res.status, 200);
 			const notes = res.body.filter((n: any) => n.id === pub.id);
 			assert.strictEqual(notes[0].text, 'x');
-		}); */
+		});
 
 		test('[HTL] public-post が 非フォロワーから見れない', async () => {
 			const res = await api('/notes/timeline', { limit: 100 }, other);
@@ -427,12 +427,12 @@ describe('API visibility', () => {
 			assert.strictEqual(notes.length, 0);
 		});
 
-		/* FIXME: test('[HTL] followers-post が フォロワーから見れる', async () => {
+		test('[HTL] followers-post が フォロワーから見れる', async () => {
 			const res = await api('/notes/timeline', { limit: 100 }, follower);
 			assert.strictEqual(res.status, 200);
 			const notes = res.body.filter((n: any) => n.id === fol.id);
 			assert.strictEqual(notes[0].text, 'x');
-		}); */
+		});
 		//#endregion
 
 		//#region RTL
