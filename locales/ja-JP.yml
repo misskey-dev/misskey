@@ -969,6 +969,7 @@ cannotBeChangedLater: "後から変更できません。"
 reactionAcceptance: "リアクションの受け入れ"
 likeOnly: "いいねのみ"
 likeOnlyForRemote: "リモートからはいいねのみ"
+rolesAssignedToMe: "自分に割り当てられたロール"
 
 _achievements:
   earnedAt: "獲得日時"
@@ -1230,6 +1231,8 @@ _role:
   iconUrl: "アイコン画像のURL"
   asBadge: "バッジとして表示"
   descriptionOfAsBadge: "オンにすると、ユーザー名の横にロールのアイコンが表示されます。"
+  displayOrder: "表示順"
+  descriptionOfDisplayOrder: "数値が大きいほどUI上で先頭に表示されます。"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
   descriptionOfCanEditMembersByModerator: "オンにすると、管理者に加えてモデレーターもこのロールへユーザーをアサイン/アサイン解除できるようになります。オフにすると管理者のみが行えます。"
   priority: "優先度"
