@@ -969,6 +969,7 @@ cannotBeChangedLater: "後から変更できません。"
 reactionAcceptance: "リアクションの受け入れ"
 likeOnly: "いいねのみ"
 likeOnlyForRemote: "リモートからはいいねのみ"
+resetPasswordConfirm: "パスワードリセットしますか？"
 
 _achievements:
   earnedAt: "獲得日時"
