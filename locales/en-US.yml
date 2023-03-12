@@ -969,6 +969,8 @@ cannotBeChangedLater: "This cannot be changed later."
 reactionAcceptance: "Reaction Acceptance"
 likeOnly: "Only likes"
 likeOnlyForRemote: "Only likes for remote instances"
+rolesAssignedToMe: "Roles assigned to me"
+resetPasswordConfirm: "Really reset your password?"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
@@ -1228,6 +1230,8 @@ _role:
   iconUrl: "Icon URL"
   asBadge: "Show as badge"
   descriptionOfAsBadge: "This role's icon will be displayed next to the username of users with this role if turned on."
+  displayOrder: "Position"
+  descriptionOfDisplayOrder: "The higher the number, the higher its UI position."
   canEditMembersByModerator: "Allow moderators to edit the list of members for this role"
   descriptionOfCanEditMembersByModerator: "When turned on, moderators as well as administrators will be able to assign and unassign users to this role. When turned off, only administrators will be able to assign users."
   priority: "Priority"
