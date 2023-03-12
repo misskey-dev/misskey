@@ -6,14 +6,14 @@ import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } fro
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Note', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 	let Notes: any;
 
 	let alice: any;
 	let bob: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(Note);
 		alice = await signup({ username: 'alice' });
@@ -21,7 +21,7 @@ describe('Note', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	test('投稿できる', async () => {

@@ -8,7 +8,7 @@ import { startServer, signup, post, api, uploadFile, simpleGet } from '../utils.
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Endpoints', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
@@ -16,7 +16,7 @@ describe('Endpoints', () => {
 	let dave: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
@@ -24,7 +24,7 @@ describe('Endpoints', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	describe('signup', () => {
