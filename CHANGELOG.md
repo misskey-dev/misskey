@@ -28,6 +28,7 @@ You should also include the user name that made the change.
 - ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
 - /api-consoleページにアクセスすると404が出る問題を修正
 - SMTP Login id length is too short
+- API上で`visibility`を`followers`に設定してrenoteすると連合や削除で不具合が発生する問題を修正
 - AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
 - fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
 
