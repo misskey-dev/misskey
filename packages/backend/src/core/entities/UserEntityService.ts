@@ -390,9 +390,10 @@ export class UserEntityService implements OnModuleInit {
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
 			// パフォーマンス上の理由でローカルユーザーのみ
-			badgeRoles: user.host == null ? this.roleService.getUserBadgeRoles(user.id).then(rs => rs.map(r => ({
+			badgeRoles: user.host == null ? this.roleService.getUserBadgeRoles(user.id).then(rs => rs.sort((a, b) => b.displayOrder - a.displayOrder).map(r => ({
 				name: r.name,
 				iconUrl: r.iconUrl,
+				displayOrder: r.displayOrder,
 			}))) : undefined,
 
 			...(opts.detail ? {
@@ -429,7 +430,7 @@ export class UserEntityService implements OnModuleInit {
 						userId: user.id,
 					}).then(result => result >= 1)
 					: false,
-				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).map(role => ({
+				roles: this.roleService.getUserRoles(user.id).then(roles => roles.filter(role => role.isPublic).sort((a, b) => b.displayOrder - a.displayOrder).map(role => ({
 					id: role.id,
 					name: role.name,
 					color: role.color,
@@ -437,6 +438,7 @@ export class UserEntityService implements OnModuleInit {
 					description: role.description,
 					isModerator: role.isModerator,
 					isAdministrator: role.isAdministrator,
+					displayOrder: role.displayOrder,
 				}))),
 			} : {}),
 

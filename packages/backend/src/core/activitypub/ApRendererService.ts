@@ -91,6 +91,9 @@ export class ApRendererService {
 		} else if (note.visibility === 'home') {
 			to = [`${attributedTo}/followers`];
 			cc = ['https://www.w3.org/ns/activitystreams#Public'];
+		} else if (note.visibility === 'followers') {
+			to = [`${attributedTo}/followers`];
+			cc = [];
 		} else {
 			throw new Error('renderAnnounce: cannot render non-public note');
 		}

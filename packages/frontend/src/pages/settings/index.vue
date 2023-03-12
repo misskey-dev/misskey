@@ -135,6 +135,11 @@ const menuDef = computed(() => [{
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
 	}, {
+		icon: 'ti ti-badges',
+		text: i18n.ts.roles,
+		to: '/settings/roles',
+		active: currentPage?.route.name === 'roles',
+	}, {
 		icon: 'ti ti-planet-off',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',

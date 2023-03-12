@@ -9,7 +9,7 @@ import { signup, api, post, react, startServer, waitFire } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('2要素認証', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 	let alice: unknown;
 
 	const config = loadConfig();
@@ -163,12 +163,12 @@ describe('2要素認証', () => {
 	};
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username, password });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	test('が設定でき、OTPでログインできる。', async () => {
