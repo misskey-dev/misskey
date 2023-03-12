@@ -970,6 +970,7 @@ reactionAcceptance: "リアクションの受け入れ"
 likeOnly: "いいねのみ"
 likeOnlyForRemote: "リモートからはいいねのみ"
 rolesAssignedToMe: "自分に割り当てられたロール"
+resetPasswordConfirm: "パスワードリセットしますか？"
 
 _achievements:
   earnedAt: "獲得日時"
