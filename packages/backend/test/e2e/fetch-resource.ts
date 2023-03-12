@@ -16,13 +16,13 @@ const HTML = 'text/html; charset=utf-8';
 const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Fetch resource', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let alicesPost: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		alicesPost = await post(alice, {
 			text: 'test',
@@ -30,7 +30,7 @@ describe('Fetch resource', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	describe('Common', () => {
