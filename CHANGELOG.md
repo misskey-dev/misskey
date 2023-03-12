@@ -28,6 +28,7 @@ You should also include the user name that made the change.
 - oEmbedをサポートしているウェブサイトのプレビューができるように
 	- YouTubeをoEmbedでロードし、プレビューで共有ボタンを押すとOSの共有画面がでるように
 	- ([FirefoxでSpotifyのプレビューを開けるとフルサイズじゃなくプレビューサイズだけ再生できる問題](https://bugzilla.mozilla.org/show_bug.cgi?id=1792395)があります)
+	- (すでにブラウザーでキャッシュされたリンクに対しては以前のプレビュー行動が行われてます。その場合、ブラウザーのキャッシュをクリアしてまた試してください。)
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
