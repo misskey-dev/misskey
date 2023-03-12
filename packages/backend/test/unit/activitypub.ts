@@ -6,6 +6,7 @@ import { buildServiceProvider, getRequiredService, ServiceCollection, ServicePro
 import { afterEach, beforeEach, describe, test, vi } from 'vitest';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { addGlobalServices, initializeGlobalServices } from '@/boot/GlobalModule.js';
@@ -14,6 +15,7 @@ import { addQueueServices } from '@/boot/QueueModule.js';
 import { addCoreServices } from '@/boot/CoreModule.js';
 import { DI } from '@/di-symbols.js';
 import type { IActor } from '@/core/activitypub/type.js';
+import { Note } from '@/models/index.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
@@ -36,6 +38,7 @@ describe('ActivityPub', () => {
 	let serviceProvider: ServiceProvider;
 	let noteService: ApNoteService;
 	let personService: ApPersonService;
+	let rendererService: ApRendererService;
 	let resolver: MockResolver;
 
 	beforeEach(async () => {
@@ -51,6 +54,7 @@ describe('ActivityPub', () => {
 
 		noteService = getRequiredService<ApNoteService>(serviceProvider, DI.ApNoteService);
 		personService = getRequiredService<ApPersonService>(serviceProvider, DI.ApPersonService);
+		rendererService = getRequiredService<ApRendererService>(serviceProvider, DI.ApRendererService);
 		resolver = new MockResolver(getRequiredService<LoggerService>(serviceProvider, DI.LoggerService));
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
@@ -121,6 +125,15 @@ describe('ActivityPub', () => {
 			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.strictEqual(user.name, null);
+		});
+	});
+
+	describe('Renderer', () => {
+		test('Render an announce with visibility: followers', () => {
+			rendererService.renderAnnounce(null, {
+				createdAt: new Date(0),
+				visibility: 'followers',
+			} as Note);
 		});
 	});
 });
