@@ -969,6 +969,8 @@ cannotBeChangedLater: "之後不能變更。"
 reactionAcceptance: "接受表情反應"
 likeOnly: "僅限讚"
 likeOnlyForRemote: "遠端僅限讚"
+rolesAssignedToMe: "指派給自己的角色"
+resetPasswordConfirm: "重設密碼？"
 _achievements:
   earnedAt: "獲得日期"
   _types:
@@ -1228,6 +1230,8 @@ _role:
   iconUrl: "圖示的URL"
   asBadge: "顯示為徽章"
   descriptionOfAsBadge: "開啟的話，角色圖示會顯示在用戶名旁邊。"
+  displayOrder: "顯示順序"
+  descriptionOfDisplayOrder: "數字越大，顯示在UI上的越上面。"
   canEditMembersByModerator: "允許編輯審查員的成員"
   descriptionOfCanEditMembersByModerator: "如果開啟，管理員與審查員都可以為使用者指派/解除指派該角色。如果關閉，則只有管理員可以執行。"
   priority: "優先級"
