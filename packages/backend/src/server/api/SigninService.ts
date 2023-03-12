@@ -7,6 +7,7 @@ import type { LocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { isVitestEnv } from '@/misc/is-vitest-env.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -31,20 +32,23 @@ export class SigninService {
 
 	@bindThis
 	public signin(request: FastifyRequest, reply: FastifyReply, user: LocalUser) {
-		setImmediate(async () => {
-			// Append signin history
-			const record = await this.signinsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				userId: user.id,
-				ip: request.ip,
-				headers: request.headers as any,
-				success: true,
-			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
-	
-			// Publish signin event
-			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
-		});
+		// FIXME: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1115459668
+		if (!isVitestEnv()) {
+			setImmediate(async () => {
+				// Append signin history
+				const record = await this.signinsRepository.insert({
+					id: this.idService.genId(),
+					createdAt: new Date(),
+					userId: user.id,
+					ip: request.ip,
+					headers: request.headers as any,
+					success: true,
+				}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
+
+				// Publish signin event
+				this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
+			});
+		}
 
 		reply.code(200);
 		return {

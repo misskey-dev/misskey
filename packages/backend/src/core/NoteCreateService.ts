@@ -1,7 +1,5 @@
-import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
-import { IDisposable } from 'yohira';
 import { Inject, Injectable } from '@/di-decorators.js';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
@@ -45,6 +43,7 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
+import { isVitestEnv } from '@/misc/is-vitest-env.js';
 
 const mutedWordsCache = new Cache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -140,9 +139,7 @@ type Option = {
 };
 
 @Injectable()
-export class NoteCreateService implements IDisposable {
-	#shutdownController = new AbortController();
-
+export class NoteCreateService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -357,10 +354,12 @@ export class NoteCreateService implements IDisposable {
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
-		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
-			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
-			() => { /* aborted, ignore this */ },
-		);
+		// FIXME: https://github.com/misskey-dev/misskey/pull/9988#discussion_r1115459668
+		if (!isVitestEnv()) {
+			setImmediate(async () => {
+				await this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!);
+			});
+		}
 
 		return note;
 	}
@@ -803,9 +802,5 @@ export class NoteCreateService implements IDisposable {
 		);
 
 		return mentionedUsers;
-	}
-
-	dispose(): void {
-		this.#shutdownController.abort();
 	}
 }
