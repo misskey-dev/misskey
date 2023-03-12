@@ -20,6 +20,7 @@ import { QueueStatsService } from '@/daemons/QueueStatsService.js';
 import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import { DI } from '@/di-symbols.js';
 import { ServerService } from '@/server/ServerService.js';
+import { isVitestEnv } from '@/misc/is-vitest-env.js';
 
 export async function main(): Promise<ServiceProvider> {
 	const services = new ServiceCollection();
@@ -45,7 +46,7 @@ export async function main(): Promise<ServiceProvider> {
 	await serverService.launch();
 
 	// FIXME
-	if (!(process.env.NODE_ENV === 'test' && process.env.VITEST === 'true')) {
+	if (!isVitestEnv()) {
 		getRequiredService<ChartManagementService>(serviceProvider, DI.ChartManagementService).start();
 		getRequiredService<JanitorService>(serviceProvider, DI.JanitorService).start();
 		getRequiredService<QueueStatsService>(serviceProvider, DI.QueueStatsService).start();

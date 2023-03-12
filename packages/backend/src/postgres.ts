@@ -76,6 +76,7 @@ import { FlashLike } from '@/models/entities/FlashLike.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { isVitestEnv } from '@/misc/is-vitest-env.js';
 
 export const dbLogger = new MisskeyLogger('db');
 
@@ -244,7 +245,7 @@ export function createMemoryDb(): IMemoryDb {
 
 	// TODO: remove
 	type Json = { [key: string]: Json } | Json[] | string | number | null;
-	function queryJson(a: Json, b: Json) {
+	function queryJson(a: Json, b: Json): boolean {
 		if (!a || !b) {
 			return (a ?? null) === (b ?? null);
 		}
@@ -320,9 +321,9 @@ export function createMemoryDb(): IMemoryDb {
 		returns: DataType.bool,
 		implementation: (a: Record<string, unknown> | unknown[], b: string) => {
 			if (a instanceof Array) {
-					return a.includes(b);
+				return a.includes(b);
 			} else {
-					return Object.keys(a).includes(b);
+				return Object.keys(a).includes(b);
 			}
 		},
 	});
@@ -375,7 +376,7 @@ export function createPostgresDataSource(config: Config): DataSource {
 		migrations: ['../../migration/*.js'],
 	};
 
-	if (process.env.NODE_ENV === 'test' && process.env.VITEST === 'true') {
+	if (isVitestEnv()) {
 		const db = createMemoryDb();
 		return db.adapters.createTypeormDataSource(dataSourceOptions);
 	} else {
