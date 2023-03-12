@@ -476,6 +476,7 @@ importers:
       vanilla-tilt: 1.8.0
       vite: 4.1.4
       vitest: ^0.29.2
+      vitest-fetch-mock: ^0.2.2
       vue: 3.2.47
       vue-eslint-parser: 9.1.0
       vue-plyr: 7.0.0
@@ -570,6 +571,7 @@ importers:
       start-server-and-test: 2.0.0
       summaly: github.com/misskey-dev/summaly/e43065b426ccabca5c27373bfb94841665d6ec43
       vitest: 0.29.2_zcjcryjt4bqcdu7ggonulipgea
+      vitest-fetch-mock: 0.2.2_vitest@0.29.2
       vue-eslint-parser: 9.1.0_eslint@8.35.0
       vue-tsc: 1.2.0_typescript@4.9.5
 
@@ -3908,7 +3910,7 @@ packages:
   /axios/0.27.2_debug@4.3.4:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.2_debug@4.3.4
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -5009,6 +5011,14 @@ packages:
     engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
     dependencies:
       cross-spawn: 7.0.3
+    dev: true
+
+  /cross-fetch/3.1.5:
+    resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
+    dependencies:
+      node-fetch: 2.6.7
+    transitivePeerDependencies:
+      - encoding
     dev: true
 
   /cross-spawn/5.1.0:
@@ -6950,6 +6960,19 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /follow-redirects/1.15.2_debug@4.3.4:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.4
+    dev: true
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -13554,6 +13577,18 @@ packages:
       sass: 1.58.3
     optionalDependencies:
       fsevents: 2.3.2
+
+  /vitest-fetch-mock/0.2.2_vitest@0.29.2:
+    resolution: {integrity: sha512-XmH6QgTSjCWrqXoPREIdbj40T7i1xnGmAsTAgfckoO75W1IEHKR8hcPCQ7SO16RsdW1t85oUm6pcQRLeBgjVYQ==}
+    engines: {node: '>=14.14.0'}
+    peerDependencies:
+      vitest: '>=0.16.0'
+    dependencies:
+      cross-fetch: 3.1.5
+      vitest: 0.29.2_zcjcryjt4bqcdu7ggonulipgea
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /vitest/0.29.2_zcjcryjt4bqcdu7ggonulipgea:
     resolution: {integrity: sha512-ydK9IGbAvoY8wkg29DQ4ivcVviCaUi3ivuPKfZEVddMTenFHUfB8EEDXQV8+RasEk1ACFLgMUqAaDuQ/Nk+mQA==}

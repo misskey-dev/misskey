@@ -69,13 +69,13 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted } from 'vue';
+import type { summaly } from 'summaly';
 import { url as local } from '@/config';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
-import type { summaly } from 'summaly';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -128,10 +128,6 @@ requestUrl.hash = '';
 
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
 	res.json().then((info: SummalyResult) => {
-		if (info.url == null) {
-			unknownUrl = true;
-			return;
-		}
 		title = info.title;
 		description = info.description;
 		thumbnail = info.thumbnail;

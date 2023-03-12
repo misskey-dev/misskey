@@ -99,6 +99,7 @@
 		"start-server-and-test": "2.0.0",
 		"summaly": "github:misskey-dev/summaly#e43065b426ccabca5c27373bfb94841665d6ec43",
 		"vitest": "^0.29.2",
+		"vitest-fetch-mock": "^0.2.2",
 		"vue-eslint-parser": "9.1.0",
 		"vue-tsc": "1.2.0"
 	}
