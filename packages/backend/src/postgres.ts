@@ -240,7 +240,7 @@ export function createMemoryDb(): IMemoryDb {
 		name: 'array_position',
 		args: [db.public.getType(DataType.text).asArray(), DataType.text],
 		returns: DataType.integer,
-		implementation: (a: string[], b: string) => a.indexOf(b),
+		implementation: (a: string[], b: string) => a.indexOf(b) + 1,
 	});
 
 	// TODO: remove
