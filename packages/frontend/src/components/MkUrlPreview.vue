@@ -9,7 +9,7 @@
 			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
 			:allow="player.allow.join(';')"
 			:class="$style.playerIframe"
-			:src="player.url"
+			:src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')"
 			:style="{ border: 0 }"
 		></iframe>
 		<span v-else>invalid url</span>
