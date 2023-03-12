@@ -15,10 +15,13 @@ You should also include the user name that made the change.
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
 - ノートごとに絵文字リアクションを受け取るか設定できるように
+- ロールの並び順を設定可能に
+- enhance(client): 設定から自分のロールを確認できるように
 - enhance(client): DM作成時にメンションも含むように
 - enhance(client): フォロー申請のボタンのデザインを改善
 - enhance(backend): OpenAPIエンドポイントを復旧
-- 透明なWebP/AVIF映像はJPEGではなくWebPに変換するように
+- WebP/AVIF/JPEGのweb公開用画像は、サーバーサイドではJPEGではなくWebPに変換するように
+- アニメーション画像のサムネイルを生成するように
 - アクティブユーザー数チャートの記録上限値を拡張
 - Playのソースコード上限文字数を2倍に拡張
 - 付箋ウィジェットの高さを設定可能に
@@ -31,6 +34,7 @@ You should also include the user name that made the change.
 - ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
 - /api-consoleページにアクセスすると404が出る問題を修正
 - SMTP Login id length is too short
+- API上で`visibility`を`followers`に設定してrenoteすると連合や削除で不具合が発生する問題を修正
 - AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
 - fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
 

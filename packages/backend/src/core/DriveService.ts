@@ -295,7 +295,7 @@ export class DriveService {
 
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
-				type !== 'image/avif' && // not supported by Mastodon
+				type !== 'image/avif' && // not supported by Mastodon and MS Edge
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -339,7 +339,7 @@ export class DriveService {
 			if (isAnimated) {
 				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
 			} else {
-				thumbnail = await this.imageProcessingService.convertSharpToAvif(img, 498, 422);
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
 			}
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);

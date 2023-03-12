@@ -136,6 +136,31 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
 	});
 
+	test('visibility: followersでrenoteできる', async () => {
+		const createRes = await api('/notes/create', {
+			text: 'test',
+			visibility: 'followers',
+		}, alice);
+
+		assert.strictEqual(createRes.status, 200);
+
+		const renoteId = createRes.body.createdNote.id;
+		const renoteRes = await api('/notes/create', {
+			visibility: 'followers',
+			renoteId,
+		}, alice);
+
+		assert.strictEqual(renoteRes.status, 200);
+		assert.strictEqual(renoteRes.body.createdNote.renoteId, renoteId);
+		assert.strictEqual(renoteRes.body.createdNote.visibility, 'followers');
+
+		const deleteRes = await api('/notes/delete', {
+			noteId: renoteRes.body.createdNote.id,
+		}, alice);
+
+		assert.strictEqual(deleteRes.status, 204);
+	});
+
 	test('文字数ぎりぎりで怒られない', async () => {
 		const post = {
 			text: '!'.repeat(3000),

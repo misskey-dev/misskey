@@ -11,7 +11,7 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview', mustOrigi
 	}
 
 	return `${mustOrigin ? localProxy : instance.mediaProxy}/${
-		type === 'preview' ? 'preview.avif'
+		type === 'preview' ? 'preview.webp'
 		: 'image.webp'
 	}?${query({
 		url: imageUrl,
@@ -41,7 +41,7 @@ export function getStaticImageUrl(baseUrl: string): string {
 		return u.href;
 	}
 
-	return `${instance.mediaProxy}/static.avif?${query({
+	return `${instance.mediaProxy}/static.webp?${query({
 		url: u.href,
 		static: '1',
 	})}`;
