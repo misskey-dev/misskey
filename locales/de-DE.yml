@@ -971,6 +971,8 @@ likeOnly: "Nur \"Gefällt mir\""
 likeOnlyForRemote: "Nur \"Gefällt mir\" für fremde Instanzen"
 rolesAssignedToMe: "Mir zugewiesene Rollen"
 resetPasswordConfirm: "Wirklich Passwort zurücksetzen?"
+sensitiveWords: "Sensible Wörter"
+sensitiveWordsDescription: "Die Notizsichtbarkeit aller Notizen, die diese Wörter enthalten, wird automatisch auf \"Startseite\" gesetzt. Durch Zeilenumbrüche können mehrere konfiguriert werden."
 _achievements:
   earnedAt: "Freigeschaltet am"
   _types:
@@ -1257,6 +1259,7 @@ _role:
     rateLimitFactor: "Versuchsanzahl"
     descriptionOfRateLimitFactor: "Je niedriger desto weniger restriktiv, je höher destro restriktiver."
     canHideAds: "Kann Werbung ausblenden"
+    canSearchNotes: "Nutzung der Notizsuchfunktion"
   _condition:
     isLocal: "Lokaler Benutzer"
     isRemote: "Benutzer fremder Instanz"
