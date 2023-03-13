@@ -19,12 +19,14 @@ export class S3Service {
 
 	@bindThis
 	public getS3(meta: Meta) {
-		const u = meta.objectStorageEndpoint != null
+		const u = meta.objectStorageEndpoint
 			? `${meta.objectStorageUseSSL ? 'https://' : 'http://'}${meta.objectStorageEndpoint}`
 			: `${meta.objectStorageUseSSL ? 'https://' : 'http://'}example.net`;
-	
+
 		return new S3({
-			endpoint: meta.objectStorageEndpoint ?? undefined,
+			endpoint: meta.objectStorageEndpoint && meta.objectStorageEndpoint.length > 0
+				? meta.objectStorageEndpoint
+				: undefined,
 			accessKeyId: meta.objectStorageAccessKey!,
 			secretAccessKey: meta.objectStorageSecretKey!,
 			region: meta.objectStorageRegion ?? undefined,
