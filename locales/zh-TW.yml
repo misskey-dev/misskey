@@ -971,6 +971,7 @@ likeOnly: "僅限讚"
 likeOnlyForRemote: "遠端僅限讚"
 rolesAssignedToMe: "指派給自己的角色"
 resetPasswordConfirm: "重設密碼？"
+sensitiveWords: "敏感詞"
 _achievements:
   earnedAt: "獲得日期"
   _types:
