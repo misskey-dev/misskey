@@ -144,6 +144,11 @@ const menuDef = $computed(() => [{
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
 	}, {
+		icon: 'ti ti-shield',
+		text: i18n.ts.moderation,
+		to: '/admin/moderation',
+		active: currentPage?.route.name === 'moderation',
+	}, {
 		icon: 'ti ti-mail',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',

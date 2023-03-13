@@ -15,7 +15,9 @@ You should also include the user name that made the change.
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
 - ノートごとに絵文字リアクションを受け取るか設定できるように
+- ノート検索の利用可否をロールで制御可能に(デフォルトでオフ)
 - ロールの並び順を設定可能に
+- 指定した文字列を含む投稿の公開範囲をホームにできるように
 - enhance(client): 設定から自分のロールを確認できるように
 - enhance(client): DM作成時にメンションも含むように
 - enhance(client): フォロー申請のボタンのデザインを改善
