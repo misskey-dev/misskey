@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				aliases: ps.aliases,
 			});
 
-			await this.db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache?.remove(['meta_emojis']);
 
 			const updated = await this.emojiEntityService.packDetailed(emoji.id);
 
