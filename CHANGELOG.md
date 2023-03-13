@@ -28,6 +28,7 @@ You should also include the user name that made the change.
 - Playのソースコード上限文字数を2倍に拡張
 - 付箋ウィジェットの高さを設定可能に
 - 配送先サーバーが410 Goneで応答してきた場合は自動で配送停止をするように
+- avatarBlurHash/bannerBlurHashの型をstringに限定
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
