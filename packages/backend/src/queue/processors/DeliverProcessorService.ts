@@ -116,7 +116,7 @@ export class DeliverProcessorService {
 				// 4xx
 				if (res.isClientError) {
 					// 相手が閉鎖していることを明示しているため、配送停止する
-					if (res.statusCode === 410) {
+					if (job.data.isSharedInbox && res.statusCode === 410) {
 						this.federatedInstanceService.fetch(host).then(i => {
 							this.instancesRepository.update(i.id, {
 								isSuspended: true,

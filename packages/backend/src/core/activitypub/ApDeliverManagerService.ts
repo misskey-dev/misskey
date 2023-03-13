@@ -157,7 +157,7 @@ class DeliverManager {
 	public async execute() {
 		if (!this.userEntityService.isLocalUser(this.actor)) return;
 
-		const inboxes = new Set<string>();
+		const inboxes = new Set<{inbox: string; isSharedInbox: boolean;}>();
 
 		/*
 		build inbox list
@@ -185,7 +185,10 @@ class DeliverManager {
 
 			for (const following of followers) {
 				const inbox = following.followerSharedInbox ?? following.followerInbox;
-				inboxes.add(inbox);
+				inboxes.add({
+					inbox,
+					isSharedInbox: following.followerSharedInbox === null,
+				});
 			}
 		}
 
@@ -193,15 +196,19 @@ class DeliverManager {
 			// followers recipes have already been processed
 			isDirect(recipe)
 			// check that shared inbox has not been added yet
-			&& !(recipe.to.sharedInbox && inboxes.has(recipe.to.sharedInbox))
+			//&& !(recipe.to.sharedInbox && inboxes.has(recipe.to.sharedInbox))
+			&& !(recipe.to.sharedInbox && [...inboxes.values()].some((v) => v.inbox === recipe.to.sharedInbox))
 			// check that they actually have an inbox
 			&& recipe.to.inbox != null,
 		)
-			.forEach(recipe => inboxes.add(recipe.to.inbox!));
+			.forEach(recipe => inboxes.add({
+				inbox: recipe.to.inbox!,
+				isSharedInbox: false,
+			}));
 
 		// deliver
 		for (const inbox of inboxes) {
-			this.queueService.deliver(this.actor, this.activity, inbox);
+			this.queueService.deliver(this.actor, this.activity, inbox.inbox, inbox.isSharedInbox);
 		}
 	}
 }

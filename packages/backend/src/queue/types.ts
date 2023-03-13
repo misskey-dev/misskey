@@ -12,6 +12,8 @@ export type DeliverJobData = {
 	content: unknown;
 	/** inbox URL to deliver */
 	to: string;
+	/** whether it is SharedInbox **/
+	isSharedInbox: boolean;
 };
 
 export type InboxJobData = {
