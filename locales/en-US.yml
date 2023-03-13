@@ -971,6 +971,8 @@ likeOnly: "Only likes"
 likeOnlyForRemote: "Only likes for remote instances"
 rolesAssignedToMe: "Roles assigned to me"
 resetPasswordConfirm: "Really reset your password?"
+sensitiveWords: "Sensitive words"
+sensitiveWordsDescription: "The visibility of all notes containing any of the configured words will be set to \"Home\" automatically. You can list multiple by separating them via line breaks."
 _achievements:
   earnedAt: "Unlocked at"
   _types:
@@ -1257,6 +1259,7 @@ _role:
     rateLimitFactor: "Rate limit"
     descriptionOfRateLimitFactor: "Lower rate limits are less restrictive, higher ones more restrictive. "
     canHideAds: "Can hide ads"
+    canSearchNotes: "Usage of note search"
   _condition:
     isLocal: "Local user"
     isRemote: "Remote user"
