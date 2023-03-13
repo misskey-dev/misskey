@@ -56,6 +56,14 @@
 						</MkFolder>
 
 						<MkFolder>
+							<template #label>{{ i18n.ts._role._options.canSearchNotes }}</template>
+							<template #suffix>{{ policies.canSearchNotes ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canSearchNotes">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder>
 							<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 							<template #suffix>{{ policies.driveCapacityMb }}MB</template>
 							<MkInput v-model="policies.driveCapacityMb" type="number">
@@ -167,25 +175,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { instance } from '@/instance';
 import { useRouter } from '@/router';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-
-const ROLE_POLICIES = [
-	'gtlAvailable',
-	'ltlAvailable',
-	'canPublicNote',
-	'canInvite',
-	'canManageCustomEmojis',
-	'canHideAds',
-	'driveCapacityMb',
-	'pinLimit',
-	'antennaLimit',
-	'wordMuteLimit',
-	'webhookLimit',
-	'clipLimit',
-	'noteEachClipsLimit',
-	'userListLimit',
-	'userEachUserListsLimit',
-	'rateLimitFactor',
-] as const;
+import { ROLE_POLICIES } from '@/const';
 
 const router = useRouter();
 
