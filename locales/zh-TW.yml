@@ -1731,7 +1731,7 @@ _instanceCharts:
 _timelines:
   home: "首頁"
   local: "本地"
-  social: "社群"
+  social: "社交"
   global: "公開"
 _play:
   new: "新增Play"
