@@ -161,7 +161,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (note.userHost != null) {
 				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as RemoteUser;
 
-				this.queueService.deliver(me, this.apRendererService.addContext(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
+				this.queueService.deliver(me, this.apRendererService.addContext(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox, false);
 			}
 
 			// リモートフォロワーにUpdate配信

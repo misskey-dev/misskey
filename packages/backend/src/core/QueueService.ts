@@ -26,7 +26,7 @@ export class QueueService {
 	) {}
 
 	@bindThis
-	public deliver(user: ThinUser, content: IActivity | null, to: string | null) {
+	public deliver(user: ThinUser, content: IActivity | null, to: string | null, isSharedInbox: boolean) {
 		if (content == null) return null;
 		if (to == null) return null;
 
@@ -36,6 +36,7 @@ export class QueueService {
 			},
 			content,
 			to,
+			isSharedInbox,
 		};
 
 		return this.deliverQueue.add(data, {
