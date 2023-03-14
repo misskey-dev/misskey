@@ -972,6 +972,7 @@ likeOnlyForRemote: "遠端僅限讚"
 rolesAssignedToMe: "指派給自己的角色"
 resetPasswordConfirm: "重設密碼？"
 sensitiveWords: "敏感詞"
+sensitiveWordsDescription: "將含有設定詞彙的貼文可見性設為發送至首頁。可以用換行來進行複數的設定。"
 _achievements:
   earnedAt: "獲得日期"
   _types:
@@ -1258,6 +1259,7 @@ _role:
     rateLimitFactor: "速率限制"
     descriptionOfRateLimitFactor: "值越小限制越少，值越大限制越多。"
     canHideAds: "不顯示廣告"
+    canSearchNotes: "可否搜尋貼文"
   _condition:
     isLocal: "本地使用者"
     isRemote: "遠端使用者"
@@ -1859,3 +1861,6 @@ _deck:
 _dialog:
   charactersExceeded: "已超過最大字數！現在 {current} / 限制 {max}"
   charactersBelow: "低於最少字數！現在 {current} / 限制 {max}"
+_disabledTimeline:
+  title: "停用的時間軸"
+  description: "目前的角色無法使用這個時間軸。"
