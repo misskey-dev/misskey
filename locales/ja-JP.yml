@@ -971,6 +971,8 @@ likeOnly: "いいねのみ"
 likeOnlyForRemote: "リモートからはいいねのみ"
 rolesAssignedToMe: "自分に割り当てられたロール"
 resetPasswordConfirm: "パスワードリセットしますか？"
+sensitiveWords: "センシティブワード"
+sensitiveWordsDescription: "設定したワードが含まれるノートの公開範囲をホームにします。改行で区切って複数設定できます。"
 
 _achievements:
   earnedAt: "獲得日時"
@@ -1259,6 +1261,7 @@ _role:
     rateLimitFactor: "レートリミット"
     descriptionOfRateLimitFactor: "小さいほど制限が緩和され、大きいほど制限が強化されます。"
     canHideAds: "広告の非表示"
+    canSearchNotes: "ノート検索の利用可否"
   _condition:
     isLocal: "ローカルユーザー"
     isRemote: "リモートユーザー"

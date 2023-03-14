@@ -15,7 +15,9 @@ You should also include the user name that made the change.
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
 - ノートごとに絵文字リアクションを受け取るか設定できるように
+- ノート検索の利用可否をロールで制御可能に(デフォルトでオフ)
 - ロールの並び順を設定可能に
+- 指定した文字列を含む投稿の公開範囲をホームにできるように
 - enhance(client): 設定から自分のロールを確認できるように
 - enhance(client): DM作成時にメンションも含むように
 - enhance(client): フォロー申請のボタンのデザインを改善
@@ -26,6 +28,7 @@ You should also include the user name that made the change.
 - Playのソースコード上限文字数を2倍に拡張
 - 付箋ウィジェットの高さを設定可能に
 - 配送先サーバーが410 Goneで応答してきた場合は自動で配送停止をするように
+- avatarBlurHash/bannerBlurHashの型をstringに限定
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
@@ -36,6 +39,7 @@ You should also include the user name that made the change.
 - AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
 - fix(frontend): Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
 - Bookwyrmのユーザーのプロフィールページで「リモートで表示」をタップしても反応がない問題を修正
+- `disableCache: true`を設定している場合に絵文字管理操作でエラーが出る問題を修正
 
 ## 13.9.2 (2023/03/06)
 
