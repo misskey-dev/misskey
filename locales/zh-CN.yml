@@ -971,6 +971,8 @@ likeOnly: "仅点赞"
 likeOnlyForRemote: "远程仅点赞"
 rolesAssignedToMe: "指派给自己的角色"
 resetPasswordConfirm: "确定重置密码？"
+sensitiveWords: "敏感词"
+sensitiveWordsDescription: "将包含设置词的帖子的可见范围设置为首页。可以通过用换行符分隔来设置多个。"
 _achievements:
   earnedAt: "达成时间"
   _types:
@@ -1257,6 +1259,7 @@ _role:
     rateLimitFactor: "速率限制"
     descriptionOfRateLimitFactor: "值越小限制越少，值越大限制越多。"
     canHideAds: "可以隐藏广告"
+    canSearchNotes: "是否可以搜索帖子"
   _condition:
     isLocal: "是本地用户"
     isRemote: "是远程用户"
