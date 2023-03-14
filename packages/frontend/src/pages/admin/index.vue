@@ -224,7 +224,7 @@ watch(router.currentRef, (to) => {
 	if (to.route.path == "/admin" && to.child?.route.name == null && !narrow) {
 		router.replace('/admin/overview');
 	}
-})
+});
 
 provideMetadataReceiver((info) => {
 	if (info == null) {

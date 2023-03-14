@@ -234,7 +234,7 @@ watch(router.currentRef, (to) => {
 	if (to.route.name == "settings" && to.child?.route.name == null && !narrow) {
 		router.replace('/settings/profile');
 	}
-})
+});
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));
 
