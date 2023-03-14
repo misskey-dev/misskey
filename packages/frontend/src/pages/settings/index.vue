@@ -231,7 +231,7 @@ onUnmounted(() => {
 });
 
 watch(router.currentRef, (to) => {
-	if (to.route.name == "settings" && to.child?.route.name == null && !narrow) {
+	if (to.route.name === "settings" && to.child?.route.name == null && !narrow) {
 		router.replace('/settings/profile');
 	}
 });
