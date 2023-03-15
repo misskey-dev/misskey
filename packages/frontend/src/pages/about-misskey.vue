@@ -265,7 +265,7 @@ async function iLoveMisskey() {
 				text: i18n.ts.login,
 			}, {
 				value: 'cancel',
-				text: i18n.ts.noThankYou,
+				text: i18n.ts.cancel,
 			}]
 		});
 
