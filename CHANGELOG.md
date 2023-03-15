@@ -31,6 +31,7 @@ You should also include the user name that made the change.
 - avatarBlurHash/bannerBlurHashの型をstringに限定
 - ナビゲーションバーの項目に「プロフィール」を追加できるように
 - AiScriptを0.13.0に更新
+- 管理画面の絵文字検索が絵文字ピッカーを使用できるように
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
