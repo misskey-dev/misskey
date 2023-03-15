@@ -63,7 +63,9 @@ export class AggregateRetentionProcessorService {
 			if (isDuplicateKeyValueError(err)) {
 				this.logger.succ('Skip because it has already been processed by another worker.');
 				done();
+				return;
 			}
+			throw err;
 		}
 
 		// 今日活動したユーザーを全て取得
