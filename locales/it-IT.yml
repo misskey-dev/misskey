@@ -1257,6 +1257,7 @@ _role:
     rateLimitFactor: "Limite del rapporto"
     descriptionOfRateLimitFactor: "I rapporti più bassi sono meno restrittivi, quelli più alti lo sono di più."
     canHideAds: "Può nascondere i banner"
+    canSearchNotes: "Ricercare nelle Note"
   _condition:
     isLocal: "Profilo locale"
     isRemote: "Profilo remoto"
