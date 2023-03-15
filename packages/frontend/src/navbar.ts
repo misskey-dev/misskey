@@ -136,4 +136,10 @@ export const navbarItemDef = reactive({
 			location.reload();
 		},
 	},
+	profile: {
+		title: i18n.ts.profile,
+		icon: 'ti ti-user',
+		show: computed(() => $i != null),
+		to: `/@${$i?.username}`,
+	},
 });

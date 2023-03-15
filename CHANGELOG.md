@@ -29,6 +29,8 @@ You should also include the user name that made the change.
 - 付箋ウィジェットの高さを設定可能に
 - 配送先サーバーが410 Goneで応答してきた場合は自動で配送停止をするように
 - avatarBlurHash/bannerBlurHashの型をstringに限定
+- ナビゲーションバーの項目に「プロフィール」を追加できるように
+- AiScriptを0.13.0に更新
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
@@ -41,6 +43,8 @@ You should also include the user name that made the change.
 - Bookwyrmのユーザーのプロフィールページで「リモートで表示」をタップしても反応がない問題を修正
 - `disableCache: true`を設定している場合に絵文字管理操作でエラーが出る問題を修正
 - 非ログイン時に「Misskeyについて」から投稿フォームを表示できてしまう問題を修正
+- リテンション分析が上手く機能しないことがあるのを修正
+- 空のアンテナが作成できないように修正
 
 ## 13.9.2 (2023/03/06)
 
