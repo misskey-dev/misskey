@@ -79,6 +79,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.keywords.length === 0) {
+				throw new Error('invalid param');
+			}
+
 			const currentAntennasCount = await this.antennasRepository.countBy({
 				userId: me.id,
 			});
