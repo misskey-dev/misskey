@@ -87,12 +87,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				//const emojis = await q.take(ps.limit).getMany();
 
 				emojis = await q.getMany();
+				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
 
-				emojis = emojis.filter(emoji =>
-					emoji.name.includes(ps.query!) ||
-					emoji.aliases.some(a => a.includes(ps.query!)) ||
-					emoji.category?.includes(ps.query!));
-
+				if (queryarry) {
+					emojis = emojis.filter(emoji => 
+						queryarry.includes(`:${emoji.name}:`)
+					);
+				} else {
+					emojis = emojis.filter(emoji =>
+						emoji.name.includes(ps.query!) ||
+						emoji.aliases.some(a => a.includes(ps.query!)) ||
+						emoji.category?.includes(ps.query!));
+				}
 				emojis.splice(ps.limit + 1);
 			} else {
 				emojis = await q.take(ps.limit).getMany();
