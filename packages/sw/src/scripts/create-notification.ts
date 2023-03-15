@@ -170,7 +170,7 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 
 				case 'pollEnded':
 					return [t('_notification.pollEnded'), {
-						body: data.body.note.text || '',
+						body: data.body.note.text ?? '',
 						badge: iconUrl('chart-arrows'),
 						tag: `poll:${data.body.note.id}`,
 						data,
