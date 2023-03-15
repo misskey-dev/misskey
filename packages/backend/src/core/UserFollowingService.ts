@@ -82,7 +82,7 @@ export class UserFollowingService {
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocked) {
 			// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
 			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 			return;
 		} else if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocking) {
 			// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
@@ -131,7 +131,7 @@ export class UserFollowingService {
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
 
@@ -294,13 +294,13 @@ export class UserFollowingService {
 	
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
-			this.queueService.deliver(follower, content, followee.inbox);
+			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
 			// local user has null host
 			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
 	
@@ -389,7 +389,7 @@ export class UserFollowingService {
 	
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee));
-			this.queueService.deliver(follower, content, followee.inbox);
+			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	}
 
@@ -406,7 +406,7 @@ export class UserFollowingService {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
 	
 			if (this.userEntityService.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
-				this.queueService.deliver(follower, content, followee.inbox);
+				this.queueService.deliver(follower, content, followee.inbox, false);
 			}
 		}
 	
@@ -449,7 +449,7 @@ export class UserFollowingService {
 	
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	
 		this.userEntityService.pack(followee.id, followee, {
@@ -557,7 +557,7 @@ export class UserFollowingService {
 		});
 
 		const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request?.requestId ?? undefined), followee));
-		this.queueService.deliver(followee, content, follower.inbox);
+		this.queueService.deliver(followee, content, follower.inbox, false);
 	}
 
 	/**
