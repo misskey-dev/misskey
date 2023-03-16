@@ -973,6 +973,10 @@ rolesAssignedToMe: "自分に割り当てられたロール"
 resetPasswordConfirm: "パスワード作り直すんでええな？"
 sensitiveWords: "けったいな単語"
 sensitiveWordsDescription: "設定した単語が入っとるノートの公開範囲をホームにしたるわ。改行で区切ったら複数設定できるで。"
+notesSearchNotAvailable: "ノート検索は使われへんで。"
+license: "ライセンス"
+unfavoriteConfirm: "ほんまに気に入らんの？"
+myClips: "自分のクリップ"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
