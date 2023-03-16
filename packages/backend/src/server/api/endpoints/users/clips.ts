@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await this.clipEntityService.packMany(clips);
+			return await this.clipEntityService.packMany(clips, me);
 		});
 	}
 }
