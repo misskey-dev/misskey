@@ -28,13 +28,13 @@ jobs:
           version: 7
           run_install: false
 
+      - run: corepack enable
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3.6.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
-
-      - run: corepack enable
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile

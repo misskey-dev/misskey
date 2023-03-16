@@ -11,13 +11,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
 
+      - run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v3.6.0
         with:
           node-version: 18.x
           cache: 'pnpm'
-
-      - run: corepack enable
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
