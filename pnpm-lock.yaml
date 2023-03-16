@@ -166,7 +166,7 @@ importers:
       jsrsasign: 10.6.1
       mfm-js: 0.23.3
       mime-types: 2.1.35
-      misskey-js: 0.0.15
+      misskey-js: ../misskey-js
       ms: 3.0.0-canary.1
       nested-property: 4.0.0
       node-fetch: 3.3.0
