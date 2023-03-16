@@ -8,7 +8,7 @@ import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import { ApiError } from '../api/error';
+import { ApiError } from '@/server/api/error.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
