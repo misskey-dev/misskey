@@ -23,7 +23,7 @@
 	"devDependencies": {
 		"@microsoft/api-extractor": "^7.19.3",
 		"@types/jest": "^29.5.0",
-		"@types/node": "18.11.18",
+		"@types/node": "18.15.0",
 		"@typescript-eslint/eslint-plugin": "5.8.1",
 		"@typescript-eslint/parser": "5.8.1",
 		"eslint": "8.6.0",
