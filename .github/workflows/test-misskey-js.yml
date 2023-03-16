@@ -23,11 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
-          run_install: false
-
       - run: corepack enable
 
       - name: Setup Node.js ${{ matrix.node-version }}
