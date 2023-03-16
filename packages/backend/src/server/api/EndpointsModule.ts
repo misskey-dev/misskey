@@ -114,6 +114,9 @@ import * as ep___clips_list from './endpoints/clips/list.js';
 import * as ep___clips_notes from './endpoints/clips/notes.js';
 import * as ep___clips_show from './endpoints/clips/show.js';
 import * as ep___clips_update from './endpoints/clips/update.js';
+import * as ep___clips_favorite from './endpoints/clips/favorite.js';
+import * as ep___clips_unfavorite from './endpoints/clips/unfavorite.js';
+import * as ep___clips_myFavorites from './endpoints/clips/my-favorites.js';
 import * as ep___drive from './endpoints/drive.js';
 import * as ep___drive_files from './endpoints/drive/files.js';
 import * as ep___drive_files_attachedNotes from './endpoints/drive/files/attached-notes.js';
@@ -438,6 +441,9 @@ const $clips_list: Provider = { provide: 'ep:clips/list', useClass: ep___clips_l
 const $clips_notes: Provider = { provide: 'ep:clips/notes', useClass: ep___clips_notes.default };
 const $clips_show: Provider = { provide: 'ep:clips/show', useClass: ep___clips_show.default };
 const $clips_update: Provider = { provide: 'ep:clips/update', useClass: ep___clips_update.default };
+const $clips_favorite: Provider = { provide: 'ep:clips/favorite', useClass: ep___clips_favorite.default };
+const $clips_unfavorite: Provider = { provide: 'ep:clips/unfavorite', useClass: ep___clips_unfavorite.default };
+const $clips_myFavorites: Provider = { provide: 'ep:clips/my-favorites', useClass: ep___clips_myFavorites.default };
 const $drive: Provider = { provide: 'ep:drive', useClass: ep___drive.default };
 const $drive_files: Provider = { provide: 'ep:drive/files', useClass: ep___drive_files.default };
 const $drive_files_attachedNotes: Provider = { provide: 'ep:drive/files/attached-notes', useClass: ep___drive_files_attachedNotes.default };
@@ -766,6 +772,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$clips_notes,
 		$clips_show,
 		$clips_update,
+		$clips_favorite,
+		$clips_unfavorite,
+		$clips_myFavorites,
 		$drive,
 		$drive_files,
 		$drive_files_attachedNotes,
@@ -1088,6 +1097,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$clips_notes,
 		$clips_show,
 		$clips_update,
+		$clips_favorite,
+		$clips_unfavorite,
+		$clips_myFavorites,
 		$drive,
 		$drive_files,
 		$drive_files_attachedNotes,
