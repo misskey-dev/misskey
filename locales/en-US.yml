@@ -973,6 +973,10 @@ rolesAssignedToMe: "Roles assigned to me"
 resetPasswordConfirm: "Really reset your password?"
 sensitiveWords: "Sensitive words"
 sensitiveWordsDescription: "The visibility of all notes containing any of the configured words will be set to \"Home\" automatically. You can list multiple by separating them via line breaks."
+notesSearchNotAvailable: "Note search is unavailable."
+license: "License"
+unfavoriteConfirm: "Really remove from favorites?"
+myClips: "My clips"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
