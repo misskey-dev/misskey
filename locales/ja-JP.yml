@@ -974,6 +974,7 @@ resetPasswordConfirm: "パスワードリセットしますか？"
 sensitiveWords: "センシティブワード"
 sensitiveWordsDescription: "設定したワードが含まれるノートの公開範囲をホームにします。改行で区切って複数設定できます。"
 notesSearchNotAvailable: "ノート検索は利用できません。"
+license: "ライセンス"
 
 _achievements:
   earnedAt: "獲得日時"
