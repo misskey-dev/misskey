@@ -399,7 +399,7 @@ importers:
       '@rollup/plugin-json': 6.0.0
       '@rollup/pluginutils': 5.0.2
       '@syuilo/aiscript': 0.13.0
-      '@tabler/icons-webfont': 2.2.0
+      '@tabler/icons-webfont': 2.10.0
       '@testing-library/vue': ^6.6.1
       '@types/escape-regexp': 0.0.1
       '@types/gulp': 4.0.10
@@ -487,7 +487,7 @@ importers:
       '@rollup/plugin-json': 6.0.0_rollup@3.19.0
       '@rollup/pluginutils': 5.0.2_rollup@3.19.0
       '@syuilo/aiscript': 0.13.0
-      '@tabler/icons-webfont': 2.2.0
+      '@tabler/icons-webfont': 2.10.0
       '@vitejs/plugin-vue': 4.0.0_vite@4.1.4+vue@3.2.47
       '@vue/compiler-sfc': 3.2.47
       autobind-decorator: 2.4.0
@@ -2318,14 +2318,14 @@ packages:
       defer-to-connect: 2.0.1
     dev: false
 
-  /@tabler/icons-webfont/2.2.0:
-    resolution: {integrity: sha512-rAok1gpbi3XzsgyXGAg1jNueXm1L5YGR2ab0RWMR8T8W8x6Kl2IlCOPZ5mHTJoac+2BA3s9dAPRsMM47nfPMYw==}
+  /@tabler/icons-webfont/2.10.0:
+    resolution: {integrity: sha512-5WvGhztlM3la7NWf8Y6ktT+KD7zb/Hz/zdMeFjExXvEFupGvuANEnbGo1wXI4ADdSWUaRDtnQHcSGIjZ+gZ+OQ==}
     dependencies:
-      '@tabler/icons': 2.2.0
+      '@tabler/icons': 2.10.0
     dev: false
 
-  /@tabler/icons/2.2.0:
-    resolution: {integrity: sha512-s2mm+7JqmLObKdU89Dtiy+USmUpOlACsoXZZPykjAJZC4pK3wMYxLsclJxViWLeLTb6Bc0oga92V7R+9nrj1ZQ==}
+  /@tabler/icons/2.10.0:
+    resolution: {integrity: sha512-rj9xrHTSw7bPpylx8g9xhhUgO9NYKX1wGnGrMaFS5CQ9KS+jhwhKFqbZaQKhXNhpvI0cLEEW6GaRXdrC3iBs1A==}
     dev: false
 
   /@tensorflow/tfjs-backend-cpu/4.2.0_tkoh6rxfpzme3tc2ndqbqcrg7y:

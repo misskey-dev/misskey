@@ -44,6 +44,7 @@ export class CustomEmojiService {
 		category: string | null;
 		aliases: string[];
 		host: string | null;
+		license: string | null;
 	}): Promise<Emoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: this.idService.genId(),
@@ -55,6 +56,7 @@ export class CustomEmojiService {
 			originalUrl: data.driveFile.url,
 			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
 			type: data.driveFile.webpublicType ?? data.driveFile.type,
+			license: data.license,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {

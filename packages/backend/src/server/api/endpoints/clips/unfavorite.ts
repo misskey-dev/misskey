@@ -1,29 +1,28 @@
 import { Inject, Injectable } from '@nestjs/common';
+import type { ClipsRepository, ClipFavoritesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ClipsRepository } from '@/models/index.js';
-import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
-	tags: ['clips', 'account'],
+	tags: ['clip'],
 
-	requireCredential: false,
+	requireCredential: true,
 
-	kind: 'read:account',
+	kind: 'write:clip-favorite',
 
 	errors: {
 		noSuchClip: {
 			message: 'No such clip.',
 			code: 'NO_SUCH_CLIP',
-			id: 'c3c5fe33-d62c-44d2-9ea5-d997703f5c20',
+			id: '2603966e-b865-426c-94a7-af4a01241dc1',
 		},
-	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Clip',
+		notFavorited: {
+			message: 'You have not favorited the clip.',
+			code: 'NOT_FAVORITED',
+			id: '90c3a9e8-b321-4dae-bf57-2bf79bbcc187',
+		},
 	},
 } as const;
 
@@ -42,23 +41,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
-		private clipEntityService: ClipEntityService,
+		@Inject(DI.clipFavoritesRepository)
+		private clipFavoritesRepository: ClipFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// Fetch the clip
-			const clip = await this.clipsRepository.findOneBy({
-				id: ps.clipId,
-			});
-
+			const clip = await this.clipsRepository.findOneBy({ id: ps.clipId });
 			if (clip == null) {
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			if (!clip.isPublic && (me == null || (clip.userId !== me.id))) {
-				throw new ApiError(meta.errors.noSuchClip);
+			const exist = await this.clipFavoritesRepository.findOneBy({
+				clipId: clip.id,
+				userId: me.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notFavorited);
 			}
 
-			return await this.clipEntityService.pack(clip, me);
+			await this.clipFavoritesRepository.delete(exist.id);
 		});
 	}
 }

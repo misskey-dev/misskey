@@ -35,6 +35,7 @@ export const paramDef = {
 		aliases: { type: 'array', items: {
 			type: 'string',
 		} },
+		license: { type: 'string', nullable: true },
 	},
 	required: ['id', 'name', 'aliases'],
 } as const;
@@ -64,6 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				category: ps.category,
 				aliases: ps.aliases,
+				license: ps.license,
 			});
 
 			await this.db.queryResultCache?.remove(['meta_emojis']);
