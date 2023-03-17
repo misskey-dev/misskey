@@ -309,7 +309,7 @@ importers:
       sharp-read-bmp: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
       strict-event-emitter-types: 2.0.0
       stringz: 2.1.0
-      summaly: github.com/misskey-dev/summaly/028b2fed2fd4f5ea7b6a8d55024825c815434f7d
+      summaly: github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992
       systeminformation: 5.17.12
       tinycolor2: 1.6.0
       tmp: 0.2.1
@@ -398,7 +398,7 @@ importers:
       '@rollup/plugin-alias': 4.0.3
       '@rollup/plugin-json': 6.0.0
       '@rollup/pluginutils': 5.0.2
-      '@syuilo/aiscript': 0.13.0
+      '@syuilo/aiscript': 0.13.1
       '@tabler/icons-webfont': 2.10.0
       '@testing-library/vue': ^6.6.1
       '@types/escape-regexp': 0.0.1
@@ -486,7 +486,7 @@ importers:
       '@rollup/plugin-alias': 4.0.3_rollup@3.19.0
       '@rollup/plugin-json': 6.0.0_rollup@3.19.0
       '@rollup/pluginutils': 5.0.2_rollup@3.19.0
-      '@syuilo/aiscript': 0.13.0
+      '@syuilo/aiscript': 0.13.1
       '@tabler/icons-webfont': 2.10.0
       '@vitejs/plugin-vue': 4.0.0_vite@4.1.4+vue@3.2.47
       '@vue/compiler-sfc': 3.2.47
@@ -2295,8 +2295,8 @@ packages:
     dev: false
     optional: true
 
-  /@syuilo/aiscript/0.13.0:
-    resolution: {integrity: sha512-zikuEpQEp1lyNoLxsqNnR2UqyRVV1ZdTOTIyKkEU/4gX90M4t1LIvevbzfyiwoUqLkOMqhdU/poARPL3pCwygg==}
+  /@syuilo/aiscript/0.13.1:
+    resolution: {integrity: sha512-WJduqlsm7pq8r1oYbPSAf5cqR6Pve6ipGoPUUSgti51dMytMnxE2dn7d7i8759RF3yftyoclZbL/DC7IjPsTng==}
     dependencies:
       autobind-decorator: 2.4.0
       seedrandom: 3.0.5
@@ -14146,10 +14146,10 @@ packages:
       sharp: 0.31.3
     dev: false
 
-  github.com/misskey-dev/summaly/028b2fed2fd4f5ea7b6a8d55024825c815434f7d:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/028b2fed2fd4f5ea7b6a8d55024825c815434f7d}
+  github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992}
     name: summaly
-    version: 4.0.0
+    version: 4.0.1
     dependencies:
       cheerio: 1.0.0-rc.12
       escape-regexp: 0.0.1
