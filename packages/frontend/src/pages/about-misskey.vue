@@ -250,7 +250,7 @@ function gravity() {
 	easterEggEngine = physics(containerEl);
 }
 
-async function iLoveMisskey() {
+function iLoveMisskey() {
 	pleaseLogin();
 
 	os.post({
