@@ -103,8 +103,7 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
-import XSigninDialog from '@/components/MkSigninDialog.vue';
-import XSignupDialog from '@/components/MkSignupDialog.vue';
+import { pleaseLogin } from '@/scripts/please-login';
 import { physics } from '@/scripts/physics';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
@@ -252,35 +251,8 @@ function gravity() {
 }
 
 async function iLoveMisskey() {
-	if ($i === null) {
-		const { result } = await os.actions({
-			type: "error",
-			text: i18n.ts.signinRequired,
-			actions: [{
-				value: 'signup',
-				text: i18n.ts.signup,
-				primary: true,
-			}, {
-				value: 'login',
-				text: i18n.ts.login,
-			}, {
-				value: 'cancel',
-				text: i18n.ts.cancel,
-			}]
-		});
+	pleaseLogin();
 
-		if (result === 'login') {
-			os.popup(XSigninDialog, {
-				autoSet: true,
-			}, {}, 'closed');
-		}
-		if (result === 'signup') {
-			os.popup(XSignupDialog, {
-				autoSet: true,
-			}, {}, 'closed');
-		}
-		return;
-	}
 	os.post({
 		initialText: 'I $[jelly ❤] #Misskey',
 		instant: true,
