@@ -5,42 +5,66 @@ on:
     branches:
       - misskey-na2na-deploy
     types: [closed]
+  push:
+    branches:
+      - misskey-na2na
   workflow_dispatch:
 
+env:
+  DOCKER_TAG_API_URI: https://registry.hub.docker.com/v2/repositories/na2na/misskey-na2na/tags
+
 jobs:
+  Check-image-already-exists:
+    name: Check image already exists
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3.3.0
+      - name: Get current version
+        id: get_version
+        run: |
+          echo "MISSKEY_VERSION=$(cat package.json | jq -r '.version')" >> $GITHUB_ENV
+      - name: Check Docker Hub
+        id: check_docker_hub
+        run: |
+          DOCKER_HUB_TAG=$(curl -s ${{ env.DOCKER_TAG_API_URI }} | jq -r '.results[] | select(.name == "${{ env.MISSKEY_VERSION }}") | .name')
+          echo $DOCKER_HUB_TAG
+          if [ -z "$DOCKER_HUB_TAG" ]; then
+            echo "Tag $DOCKER_HUB_TAG already exists on Docker Hub."
+          else
+            echo "Tag $DOCKER_HUB_TAG does not exist on Docker Hub."
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
   Build-and-Push-to-Docker-Hub:
     name: Build and Push to Docker Hub
     runs-on: ubuntu-latest
-
+    needs: Check-image-already-exists
+    if: needs.Check-image-already-exists.outputs.tag_exists == 'false'
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.3.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+        id: buildx
+        uses: docker/setup-buildx-action@v2.4.1
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          platforms: linux/amd64,linux/arm64
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: na2na/misskey-na2na:release
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      - # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-        name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          platforms: ${{ steps.buildx.outputs.platforms }}
+          provenance: false
+          tags: |
+            na2na/misskey-na2na:release
+            na2na/misskey-na2na:${{ env.MISSKEY_VERSION }}
+          labels: |
+            dev.na2na.misskey-na2na.version=${{ env.MISSKEY_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
