@@ -17,6 +17,9 @@ jobs:
   Check-image-already-exists:
     name: Check image already exists
     runs-on: ubuntu-latest
+    outputs:
+      tag_exists: ${{ steps.check_docker_hub.outputs.tag_exists }}
+      MISSKEY_VERSION: ${{ env.MISSKEY_VERSION }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3.3.0
@@ -27,20 +30,22 @@ jobs:
       - name: Check Docker Hub
         id: check_docker_hub
         run: |
-          DOCKER_HUB_TAG=$(curl -s ${{ env.DOCKER_TAG_API_URI }} | jq -r '.results[] | select(.name == "${{ env.MISSKEY_VERSION }}") | .name')
-          echo $DOCKER_HUB_TAG
-          if [ -z "$DOCKER_HUB_TAG" ]; then
-            echo "Tag $DOCKER_HUB_TAG already exists on Docker Hub."
+          DOCKER_HUB_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/na2na/misskey-na2na/tags | jq -r '.results[] | .name')
+          if [ $(echo $DOCKER_HUB_TAGS | grep -c $MISSKEY_VERSION) -eq 1 ]; then
+            echo "Tag $MISSKEY_VERSION already exists on Docker Hub."
           else
-            echo "Tag $DOCKER_HUB_TAG does not exist on Docker Hub."
+            echo "Tag $MISSKEY_VERSION does not exist on Docker Hub."
             echo "tag_exists=false" >> $GITHUB_OUTPUT
+            echo "MISSKEY_VERSION=$MISSKEY_VERSION" >> $GITHUB_ENV
           fi
 
   Build-and-Push-to-Docker-Hub:
     name: Build and Push to Docker Hub
     runs-on: ubuntu-latest
     needs: Check-image-already-exists
-    if: needs.Check-image-already-exists.outputs.tag_exists == 'false'
+    env:
+      MISSKEY_VERSION: ${{ needs.Check-image-already-exists.outputs.MISSKEY_VERSION }}
+    if: ${{ needs.Check-image-already-exists.outputs.tag_exists == 'false' }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3.3.0
