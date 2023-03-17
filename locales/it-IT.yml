@@ -973,6 +973,10 @@ rolesAssignedToMe: "I miei ruoli"
 resetPasswordConfirm: "Vuoi reimpostare la password?"
 sensitiveWords: "Parole sensibili"
 sensitiveWordsDescription: "Imposta automaticamente \"Home\" alla visibilità delle Note che contengono una qualsiasi parola tra queste configurate. Puoi separarle per riga."
+notesSearchNotAvailable: "Non è possibile cercare tra le Note."
+license: "Licenza"
+unfavoriteConfirm: "Vuoi davvero rimuovere la preferenza?"
+myClips: "Le mie Clip"
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
