@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "13.9.2",
+	"version": "13.10.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@7.27.0",
+	"packageManager": "pnpm@7.29.3",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
