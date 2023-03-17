@@ -1,7 +1,7 @@
 services:
   web:
-    build: .
-    # image: na2na/misskey-na2na:release
+    # build: .
+    image: na2na/misskey-na2na:release
     restart: always
     links:
       - redis
