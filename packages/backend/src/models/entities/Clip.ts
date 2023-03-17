@@ -13,6 +13,12 @@ export class Clip {
 	public createdAt: Date;
 
 	@Index()
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public lastClippedAt: Date | null;
+
+	@Index()
 	@Column({
 		...id(),
 		comment: 'The owner ID.',

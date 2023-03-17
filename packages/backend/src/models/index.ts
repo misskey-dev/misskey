@@ -13,6 +13,7 @@ import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
 import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
+import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { Emoji } from '@/models/entities/Emoji.js';
@@ -81,6 +82,7 @@ export {
 	ChannelNotePining,
 	Clip,
 	ClipNote,
+	ClipFavorite,
 	DriveFile,
 	DriveFolder,
 	Emoji,
@@ -148,6 +150,7 @@ export type ChannelFollowingsRepository = Repository<ChannelFollowing>;
 export type ChannelNotePiningsRepository = Repository<ChannelNotePining>;
 export type ClipsRepository = Repository<Clip>;
 export type ClipNotesRepository = Repository<ClipNote>;
+export type ClipFavoritesRepository = Repository<ClipFavorite>;
 export type DriveFilesRepository = Repository<DriveFile>;
 export type DriveFoldersRepository = Repository<DriveFolder>;
 export type EmojisRepository = Repository<Emoji>;

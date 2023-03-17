@@ -15,8 +15,10 @@ You should also include the user name that made the change.
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
 - ノートごとに絵文字リアクションを受け取るか設定できるように
+- クリップをお気に入りに登録できるように
 - ノート検索の利用可否をロールで制御可能に(デフォルトでオフ)
 - ロールの並び順を設定可能に
+- カスタム絵文字にライセンス情報を付与できるように
 - 指定した文字列を含む投稿の公開範囲をホームにできるように
 - enhance(client): 設定から自分のロールを確認できるように
 - enhance(client): DM作成時にメンションも含むように
@@ -29,6 +31,7 @@ You should also include the user name that made the change.
 - 付箋ウィジェットの高さを設定可能に
 - 配送先サーバーが410 Goneで応答してきた場合は自動で配送停止をするように
 - avatarBlurHash/bannerBlurHashの型をstringに限定
+- APオブジェクトを入力してフェッチする機能とユーザーやノートの検索機能を分離
 - ナビゲーションバーの項目に「プロフィール」を追加できるように
 - AiScriptを0.13.0に更新
 

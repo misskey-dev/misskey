@@ -30,7 +30,7 @@ import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { AntennaService } from '@/core/AntennaService.js';
@@ -60,7 +60,7 @@ class NotificationManager {
 
 	constructor(
 		private mutingsRepository: MutingsRepository,
-		private createNotificationService: CreateNotificationService,
+		private notificationService: NotificationService,
 		notifier: { id: User['id']; },
 		note: Note,
 	) {
@@ -101,7 +101,7 @@ class NotificationManager {
 
 			// 通知される側のユーザーが通知する側のユーザーをミュートしていない限りは通知する
 			if (!mentioneesMutedUserIds.includes(this.notifier.id)) {
-				this.createNotificationService.createNotification(x.target, x.reason, {
+				this.notificationService.createNotification(x.target, x.reason, {
 					notifierId: this.notifier.id,
 					noteId: this.note.id,
 				});
@@ -183,7 +183,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private queueService: QueueService,
 		private noteReadService: NoteReadService,
-		private createNotificationService: CreateNotificationService,
+		private notificationService: NotificationService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
 		private hashtagService: HashtagService,
@@ -198,7 +198,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
 		private instanceChart: InstanceChart,
-	) {}
+	) { }
 
 	@bindThis
 	public async create(user: {
@@ -391,7 +391,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// 投稿を作成
 		try {
 			if (insert.hasPoll) {
-			// Start transaction
+				// Start transaction
 				await this.db.transaction(async transactionalEntityManager => {
 					await transactionalEntityManager.insert(Note, insert);
 
@@ -414,7 +414,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			return insert;
 		} catch (e) {
-		// duplicate key error
+			// duplicate key error
 			if (isDuplicateKeyValueError(e)) {
 				const err = new Error('Duplicated note');
 				err.name = 'duplicated';
@@ -558,7 +558,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				}
 			});
 
-			const nm = new NotificationManager(this.mutingsRepository, this.createNotificationService, user, note);
+			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 
