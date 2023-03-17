@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.10.0 (2023/03/18)
 
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
