@@ -16,25 +16,18 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		properties: {
-			emojis: {
-				type: 'array',
-				optional: false, nullable: false,
-				items: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'EmojiSimple',
-				},
-			},
-		},
+		ref: 'EmojiDetailed',
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
 	properties: {
+		name: {
+			type: 'string',
+		},
 	},
-	required: [],
+	required: ['name'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -50,23 +43,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private emojiEntityService: EmojiEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const emojis = await this.emojisRepository.find({
+			const emoji = await this.emojisRepository.findOneOrFail({
 				where: {
+					name: ps.name,
 					host: IsNull(),
-				},
-				order: {
-					category: 'ASC',
-					name: 'ASC',
-				},
-				cache: {
-					id: 'meta_emojis',
-					milliseconds: 3600000,	// 1 hour
 				},
 			});
 
-			return {
-				emojis: await this.emojiEntityService.packSimpleMany(emojis),
-			};
+			return this.emojiEntityService.packDetailed(emoji);
 		});
 	}
 }

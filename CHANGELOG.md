@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
+## 13.10.0 (2023/03/18)
 
 ### Improvements
 - ユーザーごとにRenoteをミュートできるように
@@ -33,7 +33,7 @@ You should also include the user name that made the change.
 - avatarBlurHash/bannerBlurHashの型をstringに限定
 - APオブジェクトを入力してフェッチする機能とユーザーやノートの検索機能を分離
 - ナビゲーションバーの項目に「プロフィール」を追加できるように
-- AiScriptを0.13.0に更新
+- AiScriptを0.13.1に更新
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
