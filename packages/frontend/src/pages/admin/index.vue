@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, watch } from 'vue';
+import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
 import { i18n } from '@/i18n';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -144,6 +144,11 @@ const menuDef = $computed(() => [{
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
 	}, {
+		icon: 'ti ti-shield',
+		text: i18n.ts.moderation,
+		to: '/admin/moderation',
+		active: currentPage?.route.name === 'moderation',
+	}, {
 		icon: 'ti ti-mail',
 		text: i18n.ts.emailServer,
 		to: '/admin/email-settings',
@@ -198,6 +203,13 @@ watch(narrow, () => {
 onMounted(() => {
 	ro.observe(el);
 
+	narrow = el.offsetWidth < NARROW_THRESHOLD;
+	if (currentPage?.route.name == null && !narrow) {
+		router.push('/admin/overview');
+	}
+});
+
+onActivated(() => {
 	narrow = el.offsetWidth < NARROW_THRESHOLD;
 	if (currentPage?.route.name == null && !narrow) {
 		router.push('/admin/overview');

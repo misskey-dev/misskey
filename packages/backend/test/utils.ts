@@ -204,7 +204,12 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status:
 		redirect: 'manual',
 	});
 
-	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+	const jsonTypes = [
+		'application/json; charset=utf-8',
+		'application/activity+json; charset=utf-8',
+	];
+
+	const body = jsonTypes.includes(res.headers.get('content-type') ?? '')
 		? await res.json()
 		: null;
 

@@ -4,8 +4,8 @@ import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['clips', 'notes'],
@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isPublic: true,
 			});
 
-			return await Promise.all(clips.map(x => this.clipEntityService.pack(x)));
+			return await this.clipEntityService.packMany(clips, me);
 		});
 	}
 }

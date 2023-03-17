@@ -75,6 +75,8 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { pageViewInterruptors } from '@/store';
+import { deepClone } from '@/scripts/clone';
 
 const props = defineProps<{
 	pageName: string;
@@ -97,8 +99,17 @@ function fetchPage() {
 	os.api('pages/show', {
 		name: props.pageName,
 		username: props.username,
-	}).then(_page => {
+	}).then(async _page => {
 		page = _page;
+
+		// plugin
+		if (pageViewInterruptors.length > 0) {
+			let result = deepClone(_page);
+			for (const interruptor of pageViewInterruptors) {
+				result = await interruptor.handler(result);
+			}
+			page = result;
+		}
 	}).catch(err => {
 		error = err;
 	});

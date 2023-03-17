@@ -64,7 +64,7 @@ export class InboxProcessorService {
 		const activity = job.data.activity;
 
 		//#region Log
-		const info = Object.assign({}, activity) as any;
+		const info = Object.assign({}, activity);
 		delete info['@context'];
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion

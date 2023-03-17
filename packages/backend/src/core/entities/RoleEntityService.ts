@@ -61,6 +61,7 @@ export class RoleEntityService {
 			isModerator: role.isModerator,
 			asBadge: role.asBadge,
 			canEditMembersByModerator: role.canEditMembersByModerator,
+			displayOrder: role.displayOrder,
 			policies: policies,
 			usersCount: assignedCount,
 		});

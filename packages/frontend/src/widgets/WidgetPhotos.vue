@@ -67,7 +67,7 @@ const onDriveFileCreated = (file) => {
 
 const thumbnail = (image: any): string => {
 	return defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(image.thumbnailUrl)
+		? getStaticImageUrl(image.url)
 		: image.thumbnailUrl;
 };
 

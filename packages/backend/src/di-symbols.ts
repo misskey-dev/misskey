@@ -52,6 +52,7 @@ export const DI = {
 	moderationLogsRepository: Symbol('moderationLogsRepository'),
 	clipsRepository: Symbol('clipsRepository'),
 	clipNotesRepository: Symbol('clipNotesRepository'),
+	clipFavoritesRepository: Symbol('clipFavoritesRepository'),
 	antennasRepository: Symbol('antennasRepository'),
 	antennaNotesRepository: Symbol('antennaNotesRepository'),
 	promoNotesRepository: Symbol('promoNotesRepository'),

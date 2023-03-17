@@ -13,15 +13,16 @@ const UNSPECIFIED = '*/*';
 // Response Content-Type
 const AP = 'application/activity+json; charset=utf-8';
 const HTML = 'text/html; charset=utf-8';
+const JSON_UTF8 = 'application/json; charset=utf-8';
 
 describe('Fetch resource', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let alicesPost: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		alicesPost = await post(alice, {
 			text: 'test',
@@ -29,7 +30,7 @@ describe('Fetch resource', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	describe('Common', () => {
@@ -52,20 +53,29 @@ describe('Fetch resource', () => {
 			assert.strictEqual(res.type, HTML);
 		});
 
-		test('GET api-doc (廃止)', async () => {
+		test('GET api-doc', async () => {
 			const res = await simpleGet('/api-doc');
-			assert.strictEqual(res.status, 404);
+			assert.strictEqual(res.status, 200);
+			// fastify-static gives charset=UTF-8 instead of utf-8 and that's okay
+			assert.strictEqual(res.type?.toLowerCase(), HTML);
 		});
 
-		test('GET api.json (廃止)', async () => {
+		test('GET api.json', async () => {
 			const res = await simpleGet('/api.json');
-			assert.strictEqual(res.status, 404);
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.type, JSON_UTF8);
 		});
 
 		test('GET api/foo (存在しない)', async () => {
 			const res = await simpleGet('/api/foo');
 			assert.strictEqual(res.status, 404);
 			assert.strictEqual(res.body.error.code, 'UNKNOWN_API_ENDPOINT');
+		});
+
+		test('GET api-console (client page)', async () => {
+			const res = await simpleGet('/api-console');
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(res.type, HTML);
 		});
 
 		test('GET favicon.ico', async () => {

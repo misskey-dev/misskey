@@ -55,4 +55,9 @@ export class Emoji {
 		array: true, length: 128, default: '{}',
 	})
 	public aliases: string[];
+
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public license: string | null;
 }
