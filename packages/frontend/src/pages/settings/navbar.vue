@@ -1,9 +1,32 @@
 <template>
 <div class="_gaps_m">
-	<MkTextarea v-model="items" tall manual-save>
+	<FormSlot v-model="items">
 		<template #label>{{ i18n.ts.navbar }}</template>
-		<template #caption><button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button></template>
-	</MkTextarea>
+		<MkContainer v-model="items" :show-header="false">
+			<Sortable 
+				v-model="items"
+				:animation="150"
+				class="navbar_items"
+				@start="e=>e.item.classList.add('active')"
+				@end="e=>e.item.classList.remove('active')"
+			>
+				<template #item="{element,index}">
+					<component
+						v-if="element === '-' || navbarItemDef[element]"
+						class="item _button"
+					>
+						<i class="icon ti-fw" :class="navbarItemDef[element]?.icon"></i><span class="text">{{ navbarItemDef[element]?.title ?? i18n.ts.divider }}</span>
+						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-x"></i></button>
+					</component>
+				</template>
+			</Sortable>
+		</MkContainer>
+		<template #caption>
+			<button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button>
+		</template>
+	</FormSlot>
+	<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+	<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 
 	<MkRadios v-model="menuDisplay">
 		<template #label>{{ i18n.ts.display }}</template>
@@ -12,16 +35,15 @@
 		<option value="top">{{ i18n.ts._menuDisplay.top }}</option>
 		<!-- <MkRadio v-model="menuDisplay" value="hide" disabled>{{ i18n.ts._menuDisplay.hide }}</MkRadio>--> <!-- TODO: サイドバーを完全に隠せるようにすると、別途ハンバーガーボタンのようなものをUIに表示する必要があり面倒 -->
 	</MkRadios>
-
-	<MkButton danger @click="reset()"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
+import FormSlot from '@/components/form/slot.vue';
+import MkContainer from '@/components/MkContainer.vue';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { defaultStore } from '@/store';
@@ -29,9 +51,12 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const items = ref(defaultStore.state.menu.join('\n'));
 
-const split = computed(() => items.value.trim().split('\n').filter(x => x.trim() !== ''));
+
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+
+const items = ref(defaultStore.state.menu);
+
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 
 async function reloadAsk() {
@@ -55,22 +80,21 @@ async function addItem() {
 		}],
 	});
 	if (canceled) return;
-	items.value = [...split.value, item].join('\n');
+	items.value = [...items.value, item];
+}
+
+function removeItem(index: number) {
+	items.value.splice(index, 1);
 }
 
 async function save() {
-	defaultStore.set('menu', split.value);
+	defaultStore.set('menu', items.value);
 	await reloadAsk();
 }
 
 function reset() {
-	defaultStore.reset('menu');
-	items.value = defaultStore.state.menu.join('\n');
+	items.value = defaultStore.def.menu.default;
 }
-
-watch(items, async () => {
-	await save();
-});
 
 watch(menuDisplay, async () => {
 	await reloadAsk();
@@ -85,3 +109,69 @@ definePageMetadata({
 	icon: 'ti ti-list',
 });
 </script>
+<style lang="scss">
+.navbar_items {
+	flex: 1;
+
+	.item {
+		cursor: move;
+		position: relative;
+		display: block;
+		line-height: 2.85rem;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+		width: 100%;
+		text-align: left;
+		box-sizing: border-box;
+		color: var(--navFg);
+
+		.icon {
+			position: relative;
+			width: 32px;
+			margin-right: 8px;
+		}
+
+		.text {
+			position: relative;
+			font-size: 0.9em;
+		}
+
+		&.active {
+			text-decoration: none;
+			color: var(--accent);
+
+			&:before {
+				content: "";
+				display: block;
+				height: 100%;
+				width: 100%;
+				aspect-ratio: 1;
+				margin: auto;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				border-radius: 999px;
+				background: var(--accentedBg);
+			}
+
+			> .icon, > .text {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+.navbar_item_remove {
+	position: absolute;
+	z-index: 10000;
+	width: 32px;
+	height: 32px;
+	color: #ff2a2a;
+	border-radius: 4px;
+	right: 8px;
+}
+
+</style>
