@@ -9,12 +9,14 @@
 				class="navbar_items"
 				@start="e=>e.item.classList.add('active')"
 				@end="e=>e.item.classList.remove('active')"
+				handle=".item_handle"
 			>
 				<template #item="{element,index}">
 					<div
 						v-if="element === '-' || navbarItemDef[element]"
 						class="item _button"
 					>
+						<button class="item_handle _button" ><i class="ti ti-menu-2"></i></button>
 						<i class="icon ti-fw" :class="navbarItemDef[element]?.icon"></i><span class="text">{{ navbarItemDef[element]?.title ?? i18n.ts.divider }}</span>
 						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-x"></i></button>
 					</div>
@@ -112,7 +114,6 @@ definePageMetadata({
 	flex: 1;
 
 	.item {
-		cursor: move;
 		position: relative;
 		display: block;
 		line-height: 2.85rem;
@@ -133,6 +134,23 @@ definePageMetadata({
 		.text {
 			position: relative;
 			font-size: 0.9em;
+		}
+
+		.navbar_item_remove {
+			position: absolute;
+			z-index: 10000;
+			width: 32px;
+			height: 32px;
+			color: #ff2a2a;
+			right: 8px;
+		}
+
+		.item_handle{
+			cursor: move;
+			width: 32px;
+			height: 32px;
+			margin: 0 8px;
+			opacity: 0.5;
 		}
 
 		&.active {
@@ -161,15 +179,4 @@ definePageMetadata({
 		}
 	}
 }
-
-.navbar_item_remove {
-	position: absolute;
-	z-index: 10000;
-	width: 32px;
-	height: 32px;
-	color: #ff2a2a;
-	border-radius: 4px;
-	right: 8px;
-}
-
 </style>
