@@ -117,6 +117,7 @@
 		"nodemailer": "6.9.3",
 		"nsfwjs": "2.4.2",
 		"oauth": "0.10.0",
+		"oidc-provider": "^8.1.1",
 		"os-utils": "0.0.14",
 		"otpauth": "9.1.2",
 		"parse5": "7.1.2",
