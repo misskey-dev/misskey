@@ -3,6 +3,7 @@ import { isAbsolute, basename } from 'node:path';
 import WebSocket from 'ws';
 import fetch, { Blob, File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
+import { JSDOM } from 'jsdom';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
@@ -11,6 +12,10 @@ export { server as startServer } from '@/boot/common.js';
 
 const config = loadConfig();
 export const port = config.port;
+
+export const cookie = (me: any): string => {
+	return `token=${me.token};`;
+};
 
 export const api = async (endpoint: string, params: any, me?: any) => {
 	const normalized = endpoint.replace(/^\//, '');
@@ -69,6 +74,71 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 		noteId: note.id,
 		reaction: reaction,
 	}, user);
+};
+
+export const page = async (user: any, page: any = {}): Promise<any> => {
+	const res = await api('pages/create', {
+		alignCenter: false,
+		content: [
+			{
+				id: '2be9a64b-5ada-43a3-85f3-ec3429551ded',
+				text: 'Hello World!',
+				type: 'text',
+			},
+		],
+		eyeCatchingImageId: null,
+		font: 'sans-serif',
+		hideTitleWhenPinned: false,
+		name: '1678594845072',
+		script: '',
+		summary: null,
+		title: '',
+		variables: [],
+		...page,
+	}, user);
+	return res.body;
+};
+
+export const play = async (user: any, play: any = {}): Promise<any> => {
+	const res = await api('flash/create', {
+		permissions: [],
+		script: 'test',
+		summary: '',
+		title: 'test',
+		...play,
+	}, user);
+	return res.body;
+};
+
+export const clip = async (user: any, clip: any = {}): Promise<any> => {
+	const res = await api('clips/create', {
+		description: null,
+		isPublic: true,
+		name: 'test',
+		...clip,
+	}, user);
+	return res.body;
+};
+
+export const galleryPost = async (user: any, channel: any = {}): Promise<any> => {
+	const res = await api('gallery/posts/create', {
+		description: null,
+		fileIds: [],
+		isSensitive: false,
+		title: 'test',
+		...channel,
+	}, user);
+	return res.body;
+};
+
+export const channel = async (user: any, channel: any = {}): Promise<any> => {
+	const res = await api('channels/create', {
+		bannerId: null,
+		description: null,
+		name: 'test',
+		...channel,
+	}, user);
+	return res.body;
 };
 
 interface UploadOptions {
@@ -196,10 +266,17 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status: number, body: any, type: string | null, location: string | null }> => {
+export type SimpleGetResponse = { 
+	status: number, 
+	body: any | JSDOM | null, 
+	type: string | null, 
+	location: string | null 
+};
+export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
 		headers: {
 			Accept: accept,
+			Cookie: cookie,
 		},
 		redirect: 'manual',
 	});
@@ -208,10 +285,14 @@ export const simpleGet = async (path: string, accept = '*/*'): Promise<{ status:
 		'application/json; charset=utf-8',
 		'application/activity+json; charset=utf-8',
 	];
+	const htmlTypes = [
+		'text/html; charset=utf-8',
+	];
 
-	const body = jsonTypes.includes(res.headers.get('content-type') ?? '')
-		? await res.json()
-		: null;
+	const body = 
+		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() : 
+		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) : 
+		null;
 
 	return {
 		status: res.status,
