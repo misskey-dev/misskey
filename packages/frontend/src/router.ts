@@ -198,6 +198,9 @@ export const routes = [{
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
 }, {
+	path: '/ads',
+	component: page(() => import('./pages/ads.vue')),
+}, {
 	path: '/theme-editor',
 	component: page(() => import('./pages/theme-editor.vue')),
 	loginRequired: true,

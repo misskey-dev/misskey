@@ -20,9 +20,10 @@ You should also include the user name that made the change.
 - ロールの並び順を設定可能に
 - カスタム絵文字にライセンス情報を付与できるように
 - 指定した文字列を含む投稿の公開範囲をホームにできるように
-- enhance(client): 設定から自分のロールを確認できるように
-- enhance(client): DM作成時にメンションも含むように
-- enhance(client): フォロー申請のボタンのデザインを改善
+- 設定から自分のロールを確認できるように
+- 広告一覧ページを追加
+- DM作成時にメンションも含むように
+- フォロー申請のボタンのデザインを改善
 - enhance(backend): OpenAPIエンドポイントを復旧
 - WebP/AVIF/JPEGのweb公開用画像は、サーバーサイドではJPEGではなくWebPに変換するように
 - アニメーション画像のサムネイルを生成するように
