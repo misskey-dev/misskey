@@ -11,13 +11,13 @@
 				@end="e=>e.item.classList.remove('active')"
 			>
 				<template #item="{element,index}">
-					<component
+					<div
 						v-if="element === '-' || navbarItemDef[element]"
 						class="item _button"
 					>
 						<i class="icon ti-fw" :class="navbarItemDef[element]?.icon"></i><span class="text">{{ navbarItemDef[element]?.title ?? i18n.ts.divider }}</span>
 						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-x"></i></button>
-					</component>
+					</div>
 				</template>
 			</Sortable>
 		</MkContainer>
@@ -50,8 +50,6 @@ import { defaultStore } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-
-
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
