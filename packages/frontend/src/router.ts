@@ -50,6 +50,10 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/profile.vue')),
 	}, {
+		path: '/roles',
+		name: 'roles',
+		component: page(() => import('./pages/settings/roles.vue')),
+	}, {
 		path: '/privacy',
 		name: 'privacy',
 		component: page(() => import('./pages/settings/privacy.vue')),
@@ -193,6 +197,9 @@ export const routes = [{
 }, {
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
+}, {
+	path: '/ads',
+	component: page(() => import('./pages/ads.vue')),
 }, {
 	path: '/theme-editor',
 	component: page(() => import('./pages/theme-editor.vue')),
@@ -380,6 +387,10 @@ export const routes = [{
 		path: '/settings',
 		name: 'settings',
 		component: page(() => import('./pages/admin/settings.vue')),
+	}, {
+		path: '/moderation',
+		name: 'moderation',
+		component: page(() => import('./pages/admin/moderation.vue')),
 	}, {
 		path: '/email-settings',
 		name: 'email-settings',

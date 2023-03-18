@@ -5,7 +5,6 @@ import { AntennaService } from './AntennaService.js';
 import { AppLockService } from './AppLockService.js';
 import { AchievementService } from './AchievementService.js';
 import { CaptchaService } from './CaptchaService.js';
-import { CreateNotificationService } from './CreateNotificationService.js';
 import { CreateSystemUserService } from './CreateSystemUserService.js';
 import { CustomEmojiService } from './CustomEmojiService.js';
 import { DeleteAccountService } from './DeleteAccountService.js';
@@ -126,7 +125,6 @@ const $AntennaService: Provider = { provide: 'AntennaService', useExisting: Ante
 const $AppLockService: Provider = { provide: 'AppLockService', useExisting: AppLockService };
 const $AchievementService: Provider = { provide: 'AchievementService', useExisting: AchievementService };
 const $CaptchaService: Provider = { provide: 'CaptchaService', useExisting: CaptchaService };
-const $CreateNotificationService: Provider = { provide: 'CreateNotificationService', useExisting: CreateNotificationService };
 const $CreateSystemUserService: Provider = { provide: 'CreateSystemUserService', useExisting: CreateSystemUserService };
 const $CustomEmojiService: Provider = { provide: 'CustomEmojiService', useExisting: CustomEmojiService };
 const $DeleteAccountService: Provider = { provide: 'DeleteAccountService', useExisting: DeleteAccountService };
@@ -250,7 +248,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AppLockService,
 		AchievementService,
 		CaptchaService,
-		CreateNotificationService,
 		CreateSystemUserService,
 		CustomEmojiService,
 		DeleteAccountService,
@@ -368,7 +365,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AppLockService,
 		$AchievementService,
 		$CaptchaService,
-		$CreateNotificationService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
 		$DeleteAccountService,
@@ -487,7 +483,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AppLockService,
 		AchievementService,
 		CaptchaService,
-		CreateNotificationService,
 		CreateSystemUserService,
 		CustomEmojiService,
 		DeleteAccountService,
@@ -604,7 +599,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AppLockService,
 		$AchievementService,
 		$CaptchaService,
-		$CreateNotificationService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
 		$DeleteAccountService,
@@ -714,4 +708,4 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#endregion
 	],
 })
-export class CoreModule {}
+export class CoreModule { }

@@ -27,6 +27,9 @@ export const paramDef = {
 		blockedHosts: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
+		sensitiveWords: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -127,6 +130,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.blockedHosts = ps.blockedHosts.filter(Boolean).map(x => x.toLowerCase());
 			}
 
+			if (Array.isArray(ps.sensitiveWords)) {
+				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
+			}
+		
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}

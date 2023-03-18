@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				description: ps.description,
 			}).then(x => this.clipsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await this.clipEntityService.pack(clip);
+			return await this.clipEntityService.pack(clip, me);
 		});
 	}
 }
