@@ -7,9 +7,9 @@
 				v-model="items"
 				:animation="150"
 				class="navbar_items"
+				handle=".item_handle"
 				@start="e=>e.item.classList.add('active')"
 				@end="e=>e.item.classList.remove('active')"
-				handle=".item_handle"
 			>
 				<template #item="{element,index}">
 					<div
