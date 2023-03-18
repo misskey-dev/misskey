@@ -14,21 +14,21 @@
 				<template #item="{element,index}">
 					<div
 						v-if="element === '-' || navbarItemDef[element]"
-						class="item _button"
+						class="item"
 					>
 						<button class="item_handle _button" ><i class="ti ti-menu-2"></i></button>
 						<i class="icon ti-fw" :class="navbarItemDef[element]?.icon"></i><span class="text">{{ navbarItemDef[element]?.title ?? i18n.ts.divider }}</span>
-						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-x"></i></button>
+						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-trash"></i></button>
 					</div>
 				</template>
 			</Sortable>
 		</MkContainer>
-		<template #caption>
-			<button class="_textButton" @click="addItem">{{ i18n.ts.addItem }}</button>
-		</template>
 	</FormSlot>
-	<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
-	<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	<div class="_buttons">
+		<MkButton @click="addItem">{{ i18n.ts.addItem }}</MkButton>
+		<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
+		<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+	</div>
 
 	<MkRadios v-model="menuDisplay">
 		<template #label>{{ i18n.ts.display }}</template>
@@ -143,6 +143,7 @@ definePageMetadata({
 			height: 32px;
 			color: #ff2a2a;
 			right: 8px;
+			opacity: 0.8;
 		}
 
 		.item_handle{
