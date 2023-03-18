@@ -19,7 +19,7 @@
 				<div style="text-align: center;">
 					{{ i18n.ts._aboutMisskey.about }}<br><a href="https://misskey-hub.net/docs/misskey.html" target="_blank" class="_link">{{ i18n.ts.learnMore }}</a>
 				</div>
-				<div style="text-align: center;">
+				<div v-if="$i != null" style="text-align: center;">
 					<MkButton primary rounded inline @click="iLoveMisskey">I <Mfm text="$[jelly ❤]"/> #Misskey</MkButton>
 				</div>
 				<FormSection>
@@ -103,7 +103,6 @@ import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkLink from '@/components/MkLink.vue';
-import { pleaseLogin } from '@/scripts/please-login';
 import { physics } from '@/scripts/physics';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
@@ -251,8 +250,6 @@ function gravity() {
 }
 
 function iLoveMisskey() {
-	pleaseLogin();
-
 	os.post({
 		initialText: 'I $[jelly ❤] #Misskey',
 		instant: true,
