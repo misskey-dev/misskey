@@ -1,5 +1,6 @@
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { randomBytes } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
@@ -174,12 +175,17 @@ export class ClientServerService {
 			reply.header('X-Frame-Options', 'DENY');
 
 			// XSSが存在した場合に影響を軽減する
-			// (script-srcにunsafe-inline等を追加すると意味が無くなるので注意)
+			// (インラインスクリプトはreply.cspNonce内の値をnonce属性に設定することで使える)
+			const scriptNonce = randomBytes(16).toString('hex');
+			reply.cspNonce = {
+				script: scriptNonce,
+			};
 			const csp = this.config.contentSecurityPolicy
 				?? 'script-src \'self\' ' +
-				'https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/; ' +
+				'https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/ {scriptNonce}; ' +
+				'worker-src blob: \'self\'; ' + 
 				'base-uri \'self\'; object-src \'self\'; report-uri /csp-error';
-			reply.header('Content-Security-Policy-Report-Only', csp);
+			reply.header('Content-Security-Policy-Report-Only', csp.replace('{scriptNonce}', `'nonce-${scriptNonce}'`));
 			done();
 		});
 
