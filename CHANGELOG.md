@@ -30,6 +30,10 @@ You should also include the user name that made the change.
 - アクティブユーザー数チャートの記録上限値を拡張
 - Playのソースコード上限文字数を2倍に拡張
 - 付箋ウィジェットの高さを設定可能に
+- oEmbedをサポートしているウェブサイトのプレビューができるように
+	- YouTubeをoEmbedでロードし、プレビューで共有ボタンを押すとOSの共有画面がでるように
+	- ([FirefoxでSpotifyのプレビューを開けるとフルサイズじゃなくプレビューサイズだけ再生できる問題](https://bugzilla.mozilla.org/show_bug.cgi?id=1792395)があります)
+	- (すでにブラウザーでキャッシュされたリンクに対しては以前のプレビュー行動が行われてます。その場合、ブラウザーのキャッシュをクリアしてまた試してください。)
 - 配送先サーバーが410 Goneで応答してきた場合は自動で配送停止をするように
 - avatarBlurHash/bannerBlurHashの型をstringに限定
 - APオブジェクトを入力してフェッチする機能とユーザーやノートの検索機能を分離
