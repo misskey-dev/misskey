@@ -1,13 +1,15 @@
 <!--
 ## 13.x.x (unreleased)
 
-### Improvements
+### General
 -
 
-### Bugfixes
+### Client
 -
 
-You should also include the user name that made the change.
+### Server
+-
+
 -->
 
 ## 13.10.0
