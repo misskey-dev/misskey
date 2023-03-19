@@ -1,0 +1,5 @@
+# (cd .; pnpm tsc --jsx react --jsxFactory h ./generate.tsx && node ./generate.js)
+/generate.js
+# (cd .; pnpm tsc ./preload-theme.ts && node ./preload-theme.js)
+/preload-theme.js
+/theme.ts

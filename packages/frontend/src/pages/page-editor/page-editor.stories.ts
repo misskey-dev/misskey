@@ -1,0 +1,13 @@
+import { Meta, Story } from '@storybook/vue3';
+import page_editor from './page-editor.vue';
+const meta = {
+	title: 'pages/page-editor/page-editor',
+	component: page_editor,
+};
+export const Default = {
+	components: {
+		page_editor,
+	},
+	template: '<page-editor />',
+};
+export default meta;
