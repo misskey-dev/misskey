@@ -48,6 +48,7 @@ You should also include the user name that made the change.
 - `disableCache: true`を設定している場合に絵文字管理操作でエラーが出る問題を修正
 - リテンション分析が上手く機能しないことがあるのを修正
 - 空のアンテナが作成できないように修正
+- 特定の条件で通報が見れない問題を修正
 
 ## 13.9.2 (2023/03/06)
 
