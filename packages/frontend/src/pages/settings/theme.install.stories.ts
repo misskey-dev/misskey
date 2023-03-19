@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		theme_install,
 	},
-	template: '<theme.install />',
+	template: '<theme_install />',
 };
 export default meta;

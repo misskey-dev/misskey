@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		proxy_account,
 	},
-	template: '<proxy-account />',
+	template: '<proxy_account />',
 };
 export default meta;

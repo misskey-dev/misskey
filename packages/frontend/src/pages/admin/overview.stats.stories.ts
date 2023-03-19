@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_stats,
 	},
-	template: '<overview.stats />',
+	template: '<overview_stats />',
 };
 export default meta;

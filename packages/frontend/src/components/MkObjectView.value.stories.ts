@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkObjectView_value,
 	},
-	template: '<MkObjectView.value />',
+	template: '<MkObjectView_value />',
 };
 export default meta;

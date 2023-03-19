@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		notifications_column,
 	},
-	template: '<notifications-column />',
+	template: '<notifications_column />',
 };
 export default meta;

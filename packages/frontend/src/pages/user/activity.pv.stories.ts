@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		activity_pv,
 	},
-	template: '<activity.pv />',
+	template: '<activity_pv />',
 };
 export default meta;

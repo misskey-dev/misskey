@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		roles_role,
 	},
-	template: '<roles.role />',
+	template: '<roles_role />',
 };
 export default meta;

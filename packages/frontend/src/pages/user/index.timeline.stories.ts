@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		index_timeline,
 	},
-	template: '<index.timeline />',
+	template: '<index_timeline />',
 };
 export default meta;

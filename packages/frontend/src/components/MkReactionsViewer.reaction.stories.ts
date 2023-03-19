@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkReactionsViewer_reaction,
 	},
-	template: '<MkReactionsViewer.reaction />',
+	template: '<MkReactionsViewer_reaction />',
 };
 export default meta;

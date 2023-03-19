@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_moderators,
 	},
-	template: '<overview.moderators />',
+	template: '<overview_moderators />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		channel_editor,
 	},
-	template: '<channel-editor />',
+	template: '<channel_editor />',
 };
 export default meta;

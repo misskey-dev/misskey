@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		plugin_install,
 	},
-	template: '<plugin.install />',
+	template: '<plugin_install />',
 };
 export default meta;

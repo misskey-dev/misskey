@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		sounds_sound,
 	},
-	template: '<sounds.sound />',
+	template: '<sounds_sound />',
 };
 export default meta;

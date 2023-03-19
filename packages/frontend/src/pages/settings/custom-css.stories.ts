@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		custom_css,
 	},
-	template: '<custom-css />',
+	template: '<custom_css />',
 };
 export default meta;

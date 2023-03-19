@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		_2fa,
 	},
-	template: '<2fa />',
+	template: '<_2fa />',
 };
 export default meta;

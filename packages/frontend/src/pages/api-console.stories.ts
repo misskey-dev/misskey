@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		api_console,
 	},
-	template: '<api-console />',
+	template: '<api_console />',
 };
 export default meta;

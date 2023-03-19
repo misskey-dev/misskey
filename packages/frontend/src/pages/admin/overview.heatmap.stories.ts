@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_heatmap,
 	},
-	template: '<overview.heatmap />',
+	template: '<overview_heatmap />',
 };
 export default meta;

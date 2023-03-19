@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_retention,
 	},
-	template: '<overview.retention />',
+	template: '<overview_retention />',
 };
 export default meta;

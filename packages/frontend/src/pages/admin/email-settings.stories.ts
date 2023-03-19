@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		email_settings,
 	},
-	template: '<email-settings />',
+	template: '<email_settings />',
 };
 export default meta;

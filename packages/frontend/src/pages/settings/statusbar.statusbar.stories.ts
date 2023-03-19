@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		statusbar_statusbar,
 	},
-	template: '<statusbar.statusbar />',
+	template: '<statusbar_statusbar />',
 };
 export default meta;

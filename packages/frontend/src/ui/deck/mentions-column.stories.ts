@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		mentions_column,
 	},
-	template: '<mentions-column />',
+	template: '<mentions_column />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		theme_editor,
 	},
-	template: '<theme-editor />',
+	template: '<theme_editor />',
 };
 export default meta;

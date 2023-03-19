@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_section,
 	},
-	template: '<page.section />',
+	template: '<page_section />',
 };
 export default meta;

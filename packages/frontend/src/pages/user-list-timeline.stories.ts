@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		user_list_timeline,
 	},
-	template: '<user-list-timeline />',
+	template: '<user_list_timeline />',
 };
 export default meta;

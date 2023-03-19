@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		direct_column,
 	},
-	template: '<direct-column />',
+	template: '<direct_column />',
 };
 export default meta;

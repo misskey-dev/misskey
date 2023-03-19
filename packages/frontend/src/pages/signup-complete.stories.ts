@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		signup_complete,
 	},
-	template: '<signup-complete />',
+	template: '<signup_complete />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_editor_blocks,
 	},
-	template: '<page-editor.blocks />',
+	template: '<page_editor_blocks />',
 };
 export default meta;

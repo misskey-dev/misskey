@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkDrive_file,
 	},
-	template: '<MkDrive.file />',
+	template: '<MkDrive_file />',
 };
 export default meta;

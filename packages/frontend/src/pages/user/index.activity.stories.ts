@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		index_activity,
 	},
-	template: '<index.activity />',
+	template: '<index_activity />',
 };
 export default meta;

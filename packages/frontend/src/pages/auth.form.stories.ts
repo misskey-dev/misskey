@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		auth_form,
 	},
-	template: '<auth.form />',
+	template: '<auth_form />',
 };
 export default meta;

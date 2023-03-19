@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_instances,
 	},
-	template: '<overview.instances />',
+	template: '<overview_instances />',
 };
 export default meta;

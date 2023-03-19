@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		user_tag,
 	},
-	template: '<user-tag />',
+	template: '<user_tag />',
 };
 export default meta;

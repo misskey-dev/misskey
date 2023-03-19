@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		statusbar_federation,
 	},
-	template: '<statusbar-federation />',
+	template: '<statusbar_federation />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_counter,
 	},
-	template: '<page.counter />',
+	template: '<page_counter />',
 };
 export default meta;

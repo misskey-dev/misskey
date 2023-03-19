@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		cpu_mem,
 	},
-	template: '<cpu-mem />',
+	template: '<cpu_mem />',
 };
 export default meta;

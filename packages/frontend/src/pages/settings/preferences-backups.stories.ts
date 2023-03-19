@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		preferences_backups,
 	},
-	template: '<preferences-backups />',
+	template: '<preferences_backups />',
 };
 export default meta;

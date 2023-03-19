@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkMenu_child,
 	},
-	template: '<MkMenu.child />',
+	template: '<MkMenu_child />',
 };
 export default meta;

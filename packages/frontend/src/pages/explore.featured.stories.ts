@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		explore_featured,
 	},
-	template: '<explore.featured />',
+	template: '<explore_featured />',
 };
 export default meta;

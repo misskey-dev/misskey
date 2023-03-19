@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		welcome_setup,
 	},
-	template: '<welcome.setup />',
+	template: '<welcome_setup />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		delete_account,
 	},
-	template: '<delete-account />',
+	template: '<delete_account />',
 };
 export default meta;

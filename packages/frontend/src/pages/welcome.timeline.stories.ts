@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		welcome_timeline,
 	},
-	template: '<welcome.timeline />',
+	template: '<welcome_timeline />',
 };
 export default meta;

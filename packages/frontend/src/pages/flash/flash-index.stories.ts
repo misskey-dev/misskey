@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		flash_index,
 	},
-	template: '<flash-index />',
+	template: '<flash_index />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_editor_el_image,
 	},
-	template: '<page-editor.el.image />',
+	template: '<page_editor_el_image />',
 };
 export default meta;

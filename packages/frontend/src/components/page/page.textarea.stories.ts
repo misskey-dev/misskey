@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_textarea,
 	},
-	template: '<page.textarea />',
+	template: '<page_textarea />',
 };
 export default meta;

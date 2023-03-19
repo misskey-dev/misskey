@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkPageHeader_tabs,
 	},
-	template: '<MkPageHeader.tabs />',
+	template: '<MkPageHeader_tabs />',
 };
 export default meta;

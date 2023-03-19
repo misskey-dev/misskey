@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_ap_requests,
 	},
-	template: '<overview.ap-requests />',
+	template: '<overview_ap_requests />',
 };
 export default meta;

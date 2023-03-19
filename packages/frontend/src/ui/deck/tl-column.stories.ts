@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		tl_column,
 	},
-	template: '<tl-column />',
+	template: '<tl_column />',
 };
 export default meta;

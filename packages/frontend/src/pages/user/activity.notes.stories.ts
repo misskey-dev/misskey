@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		activity_notes,
 	},
-	template: '<activity.notes />',
+	template: '<activity_notes />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		overview_pie,
 	},
-	template: '<overview.pie />',
+	template: '<overview_pie />',
 };
 export default meta;

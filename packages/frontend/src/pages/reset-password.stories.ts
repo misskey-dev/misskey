@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		reset_password,
 	},
-	template: '<reset-password />',
+	template: '<reset_password />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		channel_column,
 	},
-	template: '<channel-column />',
+	template: '<channel_column />',
 };
 export default meta;

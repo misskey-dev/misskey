@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		WidgetActivity_chart,
 	},
-	template: '<WidgetActivity.chart />',
+	template: '<WidgetActivity_chart />',
 };
 export default meta;

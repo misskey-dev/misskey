@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		classic_header,
 	},
-	template: '<classic.header />',
+	template: '<classic_header />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		not_found,
 	},
-	template: '<not-found />',
+	template: '<not_found />',
 };
 export default meta;

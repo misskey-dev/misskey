@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		emoji_edit_dialog,
 	},
-	template: '<emoji-edit-dialog />',
+	template: '<emoji_edit_dialog />',
 };
 export default meta;

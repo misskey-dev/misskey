@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		other_settings,
 	},
-	template: '<other-settings />',
+	template: '<other_settings />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		instance_info,
 	},
-	template: '<instance-info />',
+	template: '<instance_info />',
 };
 export default meta;

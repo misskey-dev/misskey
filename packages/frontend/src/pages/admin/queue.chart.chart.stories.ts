@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		queue_chart_chart,
 	},
-	template: '<queue.chart.chart />',
+	template: '<queue_chart_chart />',
 };
 export default meta;

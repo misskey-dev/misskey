@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		WidgetActivity_calendar,
 	},
-	template: '<WidgetActivity.calendar />',
+	template: '<WidgetActivity_calendar />',
 };
 export default meta;

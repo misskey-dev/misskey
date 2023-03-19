@@ -95,7 +95,7 @@ function toStories(component: string, location: string): string {
 												/>,
 												<property
 													key={<identifier name="template" />}
-													value={<literal value={`<${component.slice(0, -4)} />`} />}
+													value={<literal value={`<${identifier.name} />`} />}
 													kind="init"
 												/>,
 											]}

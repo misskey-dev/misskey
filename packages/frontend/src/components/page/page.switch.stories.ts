@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_switch,
 	},
-	template: '<page.switch />',
+	template: '<page_switch />',
 };
 export default meta;

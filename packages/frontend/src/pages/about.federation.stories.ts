@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		about_federation,
 	},
-	template: '<about.federation />',
+	template: '<about_federation />',
 };
 export default meta;

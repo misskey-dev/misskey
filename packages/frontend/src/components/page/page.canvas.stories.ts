@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_canvas,
 	},
-	template: '<page.canvas />',
+	template: '<page_canvas />',
 };
 export default meta;

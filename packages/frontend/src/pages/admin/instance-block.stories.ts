@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		instance_block,
 	},
-	template: '<instance-block />',
+	template: '<instance_block />',
 };
 export default meta;

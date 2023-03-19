@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		object_storage,
 	},
-	template: '<object-storage />',
+	template: '<object_storage />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		_2fa_qrdialog,
 	},
-	template: '<2fa.qrdialog />',
+	template: '<_2fa_qrdialog />',
 };
 export default meta;

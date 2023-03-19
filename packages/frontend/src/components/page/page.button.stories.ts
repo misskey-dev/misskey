@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_button,
 	},
-	template: '<page.button />',
+	template: '<page_button />',
 };
 export default meta;

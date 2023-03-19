@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		admin_file,
 	},
-	template: '<admin-file />',
+	template: '<admin_file />',
 };
 export default meta;

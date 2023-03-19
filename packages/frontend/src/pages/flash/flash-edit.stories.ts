@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		flash_edit,
 	},
-	template: '<flash-edit />',
+	template: '<flash_edit />',
 };
 export default meta;

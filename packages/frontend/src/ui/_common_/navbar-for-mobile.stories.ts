@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		navbar_for_mobile,
 	},
-	template: '<navbar-for-mobile />',
+	template: '<navbar_for_mobile />',
 };
 export default meta;

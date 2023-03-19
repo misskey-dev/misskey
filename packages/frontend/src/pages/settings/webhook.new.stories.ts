@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		webhook_new,
 	},
-	template: '<webhook.new />',
+	template: '<webhook_new />',
 };
 export default meta;

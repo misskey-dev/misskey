@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkCode_core,
 	},
-	template: '<MkCode.core />',
+	template: '<MkCode_core />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		list_column,
 	},
-	template: '<list-column />',
+	template: '<list_column />',
 };
 export default meta;

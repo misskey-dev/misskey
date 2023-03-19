@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		welcome_entrance_a,
 	},
-	template: '<welcome.entrance.a />',
+	template: '<welcome_entrance_a />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		instance_mute,
 	},
-	template: '<instance-mute />',
+	template: '<instance_mute />',
 };
 export default meta;

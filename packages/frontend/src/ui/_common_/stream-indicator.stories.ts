@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		stream_indicator,
 	},
-	template: '<stream-indicator />',
+	template: '<stream_indicator />',
 };
 export default meta;

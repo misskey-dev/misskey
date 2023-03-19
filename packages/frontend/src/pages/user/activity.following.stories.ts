@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		activity_following,
 	},
-	template: '<activity.following />',
+	template: '<activity_following />',
 };
 export default meta;

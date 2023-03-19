@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		follow_requests,
 	},
-	template: '<follow-requests />',
+	template: '<follow_requests />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		widgets_column,
 	},
-	template: '<widgets-column />',
+	template: '<widgets_column />',
 };
 export default meta;

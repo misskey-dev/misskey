@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		MkEmojiPicker_section,
 	},
-	template: '<MkEmojiPicker.section />',
+	template: '<MkEmojiPicker_section />',
 };
 export default meta;

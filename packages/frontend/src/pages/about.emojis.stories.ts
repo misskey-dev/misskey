@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		about_emojis,
 	},
-	template: '<about.emojis />',
+	template: '<about_emojis />',
 };
 export default meta;

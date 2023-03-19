@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		about_misskey,
 	},
-	template: '<about-misskey />',
+	template: '<about_misskey />',
 };
 export default meta;

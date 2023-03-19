@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		antenna_column,
 	},
-	template: '<antenna-column />',
+	template: '<antenna_column />',
 };
 export default meta;

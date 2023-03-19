@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		registry_value,
 	},
-	template: '<registry.value />',
+	template: '<registry_value />',
 };
 export default meta;

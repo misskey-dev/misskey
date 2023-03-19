@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		classic_sidebar,
 	},
-	template: '<classic.sidebar />',
+	template: '<classic_sidebar />',
 };
 export default meta;

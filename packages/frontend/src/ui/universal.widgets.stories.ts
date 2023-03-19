@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		universal_widgets,
 	},
-	template: '<universal.widgets />',
+	template: '<universal_widgets />',
 };
 export default meta;

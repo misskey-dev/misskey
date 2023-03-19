@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		antenna_timeline,
 	},
-	template: '<antenna-timeline />',
+	template: '<antenna_timeline />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		import_export,
 	},
-	template: '<import-export />',
+	template: '<import_export />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		bot_protection,
 	},
-	template: '<bot-protection />',
+	template: '<bot_protection />',
 };
 export default meta;

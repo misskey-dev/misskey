@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_note,
 	},
-	template: '<page.note />',
+	template: '<page_note />',
 };
 export default meta;

@@ -8,6 +8,6 @@ export const Default = {
 	components: {
 		page_radio_button,
 	},
-	template: '<page.radio-button />',
+	template: '<page_radio_button />',
 };
 export default meta;
