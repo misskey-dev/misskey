@@ -977,6 +977,7 @@ notesSearchNotAvailable: "ノート検索は利用できません。"
 license: "ライセンス"
 unfavoriteConfirm: "お気に入り解除しますか？"
 myClips: "自分のクリップ"
+drivecleaner: "ドライブクリーナー"
 
 _achievements:
   earnedAt: "獲得日時"
@@ -1922,3 +1923,7 @@ _dialog:
 _disabledTimeline:
   title: "無効化されたタイムライン"
   description: "現在のロールでは、このタイムラインを使用することはできません。"
+
+_drivecleaner:
+  orderBySizeDesc: "サイズが大きい順"
+  orderByCreatedAtAsc: "追加日が古い順"
