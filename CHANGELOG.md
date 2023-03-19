@@ -10,14 +10,6 @@
 You should also include the user name that made the change.
 -->
 
-## 13.x.x (unreleased)
-
-### Improvements
-- ナビゲーションバーのカスタマイズをドラッグ&ドロップで行えるように
-
-### Bugfixes
--
-
 ## 13.10.0 (2023/03/18)
 
 ### Improvements
@@ -43,6 +35,7 @@ You should also include the user name that made the change.
 - APオブジェクトを入力してフェッチする機能とユーザーやノートの検索機能を分離
 - ナビゲーションバーの項目に「プロフィール」を追加できるように
 - AiScriptを0.13.1に更新
+- ナビゲーションバーのカスタマイズをドラッグ&ドロップで行えるように
 
 ### Bugfixes
 - プロフィールで設定した情報が削除できない問題を修正
