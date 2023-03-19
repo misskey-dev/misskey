@@ -10,7 +10,7 @@
 You should also include the user name that made the change.
 -->
 
-## 13.10.0 (2023/03/18)
+## 13.10.0
 
 ### General
 - ユーザーごとにRenoteをミュートできるように
@@ -39,6 +39,7 @@ You should also include the user name that made the change.
 - /api-consoleページにアクセスすると404が出る問題を修正
 - Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
 - Bookwyrmのユーザーのプロフィールページで「リモートで表示」をタップしても反応がない問題を修正
+- 非ログイン時の「Misskeyについて」の表示を修正
 
 ### Server
 - OpenAPIエンドポイントを復旧
@@ -56,7 +57,6 @@ You should also include the user name that made the change.
 - リテンション分析が上手く機能しないことがあるのを修正
 - 空のアンテナが作成できないように修正
 - 特定の条件で通報が見れない問題を修正
-- 非ログイン時に「Misskeyについて」から投稿フォームを表示できてしまう問題を修正
 
 ## 13.9.2 (2023/03/06)
 
