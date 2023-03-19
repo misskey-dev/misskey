@@ -1,17 +1,28 @@
 import dns from 'node:dns/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import Provider, { type Adapter, type Account, AdapterPayload } from 'oidc-provider';
-import fastifyMiddie from '@fastify/middie';
+import fastifyMiddie, { IncomingMessageExtended } from '@fastify/middie';
 import { JSDOM } from 'jsdom';
 import parseLinkHeader from 'parse-link-header';
 import ipaddr from 'ipaddr.js';
+import oauth2orize from 'oauth2orize';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { kinds } from '@/misc/api-permissions.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { FastifyInstance } from 'fastify';
+import fastifyCookie from '@fastify/cookie';
+import fastifySession from '@fastify/session';
 import type Redis from 'ioredis';
+import oauth2Pkce from 'oauth2orize-pkce';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import expressSession from 'express-session';
+import http from 'node:http';
+import fastifyView from '@fastify/view';
+import pug from 'pug';
+import { fileURLToPath } from 'node:url';
+import { MetaService } from '@/core/MetaService.js';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
 function validateClientId(raw: string): URL {
@@ -63,32 +74,32 @@ function validateClientId(raw: string): URL {
 	return url;
 }
 
-const grantable = new Set([
-	'AccessToken',
-	'AuthorizationCode',
-	'RefreshToken',
-	'DeviceCode',
-	'BackchannelAuthenticationRequest',
-]);
+// const grantable = new Set([
+// 	'AccessToken',
+// 	'AuthorizationCode',
+// 	'RefreshToken',
+// 	'DeviceCode',
+// 	'BackchannelAuthenticationRequest',
+// ]);
 
-const consumable = new Set([
-	'AuthorizationCode',
-	'RefreshToken',
-	'DeviceCode',
-	'BackchannelAuthenticationRequest',
-]);
+// const consumable = new Set([
+// 	'AuthorizationCode',
+// 	'RefreshToken',
+// 	'DeviceCode',
+// 	'BackchannelAuthenticationRequest',
+// ]);
 
-function grantKeyFor(id: string): string {
-	return `grant:${id}`;
-}
+// function grantKeyFor(id: string): string {
+// 	return `grant:${id}`;
+// }
 
-function userCodeKeyFor(userCode: string): string {
-	return `userCode:${userCode}`;
-}
+// function userCodeKeyFor(userCode: string): string {
+// 	return `userCode:${userCode}`;
+// }
 
-function uidKeyFor(uid: string): string {
-	return `uid:${uid}`;
-}
+// function uidKeyFor(uid: string): string {
+// 	return `uid:${uid}`;
+// }
 
 async function fetchFromClientId(httpRequestService: HttpRequestService, id: string): Promise<string | void> {
 	try {
@@ -107,179 +118,201 @@ async function fetchFromClientId(httpRequestService: HttpRequestService, id: str
 	}
 }
 
-class MisskeyAdapter implements Adapter {
-	name = 'oauth2';
+// class MisskeyAdapter implements Adapter {
+// 	name = 'oauth2';
 
-	constructor(private redisClient: Redis.Redis, private httpRequestService: HttpRequestService) { }
+// 	constructor(private redisClient: Redis.Redis, private httpRequestService: HttpRequestService) { }
 
-	key(id: string): string {
-		return `oauth2:${id}`;
-	}
+// 	key(id: string): string {
+// 		return `oauth2:${id}`;
+// 	}
 
-	async upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
-		console.log('oauth upsert', id, payload, expiresIn);
+// 	async upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
+// 		console.log('oauth upsert', id, payload, expiresIn);
 
-		const key = this.key(id);
+// 		const key = this.key(id);
 
-		const multi = this.redisClient.multi();
-		if (consumable.has(this.name)) {
-			multi.hset(key, { payload: JSON.stringify(payload) });
-		} else {
-			multi.set(key, JSON.stringify(payload));
-		}
+// 		const multi = this.redisClient.multi();
+// 		if (consumable.has(this.name)) {
+// 			multi.hset(key, { payload: JSON.stringify(payload) });
+// 		} else {
+// 			multi.set(key, JSON.stringify(payload));
+// 		}
 
-		if (expiresIn) {
-			multi.expire(key, expiresIn);
-		}
+// 		if (expiresIn) {
+// 			multi.expire(key, expiresIn);
+// 		}
 
-		if (grantable.has(this.name) && payload.grantId) {
-			const grantKey = grantKeyFor(payload.grantId);
-			multi.rpush(grantKey, key);
-			// if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
-			// here to trim the list to an appropriate length
-			const ttl = await this.redisClient.ttl(grantKey);
-			if (expiresIn > ttl) {
-				multi.expire(grantKey, expiresIn);
-			}
-		}
+// 		if (grantable.has(this.name) && payload.grantId) {
+// 			const grantKey = grantKeyFor(payload.grantId);
+// 			multi.rpush(grantKey, key);
+// 			// if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
+// 			// here to trim the list to an appropriate length
+// 			const ttl = await this.redisClient.ttl(grantKey);
+// 			if (expiresIn > ttl) {
+// 				multi.expire(grantKey, expiresIn);
+// 			}
+// 		}
 
-		if (payload.userCode) {
-			const userCodeKey = userCodeKeyFor(payload.userCode);
-			multi.set(userCodeKey, id);
-			multi.expire(userCodeKey, expiresIn);
-		}
+// 		if (payload.userCode) {
+// 			const userCodeKey = userCodeKeyFor(payload.userCode);
+// 			multi.set(userCodeKey, id);
+// 			multi.expire(userCodeKey, expiresIn);
+// 		}
 
-		if (payload.uid) {
-			const uidKey = uidKeyFor(payload.uid);
-			multi.set(uidKey, id);
-			multi.expire(uidKey, expiresIn);
-		}
+// 		if (payload.uid) {
+// 			const uidKey = uidKeyFor(payload.uid);
+// 			multi.set(uidKey, id);
+// 			multi.expire(uidKey, expiresIn);
+// 		}
 
-		await multi.exec();
-	}
+// 		await multi.exec();
+// 	}
 
-	async find(id: string): Promise<void | AdapterPayload> {
-		console.log('oauth find', id);
+// async find(id: string): Promise<void | AdapterPayload> {
+// 	console.log('oauth find', id);
 
-		// XXX: really?
-		const fromRedis = await this.findRedis(id);
-		if (fromRedis) {
-			return fromRedis;
-		}
+// 	// XXX: really?
+// 	const fromRedis = await this.findRedis(id);
+// 	if (fromRedis) {
+// 		return fromRedis;
+// 	}
 
-		// Find client information from the remote.
-		const url = validateClientId(id);
+// 	// Find client information from the remote.
+// 	const url = validateClientId(id);
 
-		if (process.env.NODE_ENV !== 'test') {
-			const lookup = await dns.lookup(url.hostname);
-			if (ipaddr.parse(lookup.address).range() === 'loopback') {
-				throw new Error('client_id unexpectedly resolves to loopback IP.');
-			}
-		}
+// 	if (process.env.NODE_ENV !== 'test') {
+// 		const lookup = await dns.lookup(url.hostname);
+// 		if (ipaddr.parse(lookup.address).range() === 'loopback') {
+// 			throw new Error('client_id unexpectedly resolves to loopback IP.');
+// 		}
+// 	}
 
-		const redirectUri = await fetchFromClientId(this.httpRequestService, id);
-		if (!redirectUri) {
-			// IndieAuth also implicitly allows any path under the same scheme+host,
-			// but oidc-provider requires explicit list of uris.
-			throw new Error('The URL of client_id must provide `redirect_uri` as HTTP Link header or HTML <link> element.');
-		}
+// 	const redirectUri = await fetchFromClientId(this.httpRequestService, id);
+// 	if (!redirectUri) {
+// 		// IndieAuth also implicitly allows any path under the same scheme+host,
+// 		// but oidc-provider requires explicit list of uris.
+// 		throw new Error('The URL of client_id must provide `redirect_uri` as HTTP Link header or HTML <link> element.');
+// 	}
 
-		return {
-			client_id: id,
-			token_endpoint_auth_method: 'none',
-			redirect_uris: [redirectUri],
-		};
-	}
+// 	return {
+// 		client_id: id,
+// 		token_endpoint_auth_method: 'none',
+// 		redirect_uris: [redirectUri],
+// 	};
+// }
 
-	async findRedis(id: string | null): Promise<void | AdapterPayload> {
-		if (!id) {
-			return;
-		}
+// 	async findRedis(id: string | null): Promise<void | AdapterPayload> {
+// 		if (!id) {
+// 			return;
+// 		}
 
-		const data = consumable.has(this.name)
-			? await this.redisClient.hgetall(this.key(id))
-			: await this.redisClient.get(this.key(id));
+// 		const data = consumable.has(this.name)
+// 			? await this.redisClient.hgetall(this.key(id))
+// 			: await this.redisClient.get(this.key(id));
 
-		if (!data || (typeof data === 'object' && !Object.entries(data).length)) {
-			return undefined;
-		}
+// 		if (!data || (typeof data === 'object' && !Object.entries(data).length)) {
+// 			return undefined;
+// 		}
 
-		if (typeof data === 'string') {
-			return JSON.parse(data);
-		}
-		const { payload, ...rest } = data as any;
-		return {
-			...rest,
-			...JSON.parse(payload),
-		};
-	}
+// 		if (typeof data === 'string') {
+// 			return JSON.parse(data);
+// 		}
+// 		const { payload, ...rest } = data as any;
+// 		return {
+// 			...rest,
+// 			...JSON.parse(payload),
+// 		};
+// 	}
 
-	async findByUserCode(userCode: string): Promise<void | AdapterPayload> {
-		console.log('oauth findByUserCode', userCode);
-		const id = await this.redisClient.get(userCodeKeyFor(userCode));
-		return this.findRedis(id);
-	}
+// 	async findByUserCode(userCode: string): Promise<void | AdapterPayload> {
+// 		console.log('oauth findByUserCode', userCode);
+// 		const id = await this.redisClient.get(userCodeKeyFor(userCode));
+// 		return this.findRedis(id);
+// 	}
 
-	async findByUid(uid: string): Promise<void | AdapterPayload> {
-		console.log('oauth findByUid', uid);
-		const id = await this.redisClient.get(uidKeyFor(uid));
-		return this.findRedis(id);
-	}
+// 	async findByUid(uid: string): Promise<void | AdapterPayload> {
+// 		console.log('oauth findByUid', uid);
+// 		const id = await this.redisClient.get(uidKeyFor(uid));
+// 		return this.findRedis(id);
+// 	}
 
-	async consume(id: string): Promise<void> {
-		console.log('oauth consume', id);
-		await this.redisClient.hset(this.key(id), 'consumed', Math.floor(Date.now() / 1000));
-	}
+// 	async consume(id: string): Promise<void> {
+// 		console.log('oauth consume', id);
+// 		await this.redisClient.hset(this.key(id), 'consumed', Math.floor(Date.now() / 1000));
+// 	}
 
-	async destroy(id: string): Promise<void | undefined> {
-		console.log('oauth destroy', id);
-		const key = this.key(id);
-		await this.redisClient.del(key);
-	}
+// 	async destroy(id: string): Promise<void | undefined> {
+// 		console.log('oauth destroy', id);
+// 		const key = this.key(id);
+// 		await this.redisClient.del(key);
+// 	}
 
-	async revokeByGrantId(grantId: string): Promise<void | undefined> {
-		console.log('oauth revokeByGrandId', grantId);
-		const multi = this.redisClient.multi();
-		const tokens = await this.redisClient.lrange(grantKeyFor(grantId), 0, -1);
-		tokens.forEach((token) => multi.del(token));
-		multi.del(grantKeyFor(grantId));
-		await multi.exec();
-	}
-}
+// 	async revokeByGrantId(grantId: string): Promise<void | undefined> {
+// 		console.log('oauth revokeByGrandId', grantId);
+// 		const multi = this.redisClient.multi();
+// 		const tokens = await this.redisClient.lrange(grantKeyFor(grantId), 0, -1);
+// 		tokens.forEach((token) => multi.del(token));
+// 		multi.del(grantKeyFor(grantId));
+// 		await multi.exec();
+// 	}
+// }
+
+// function promisify<T>(callback: T) {
+// 	return (...args: Parameters<T>) => {
+
+// 		args[args.length - 1]();
+// 	};
+// }
+
+type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
+	? R
+	: [];
 
 @Injectable()
 export class OAuth2ProviderService {
-	#provider: Provider;
+	// #provider: Provider;
+	#server = oauth2orize.createServer();
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		@Inject(DI.redis) redisClient: Redis.Redis,
-		httpRequestService: HttpRequestService,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+		private httpRequestService: HttpRequestService,
+		private metaService: MetaService,
 	) {
-		this.#provider = new Provider(config.url, {
-			clientAuthMethods: ['none'],
-			pkce: {
-				// This is the default, but be explicit here as we announce it below
-				methods: ['S256'],
-			},
-			routes: {
-				// defaults to '/auth' but '/authorize' is more consistent with many
-				// other services eg. Mastodon/Twitter/Facebook/GitLab/GitHub/etc.
-				authorization: '/authorize',
-			},
-			scopes: kinds,
-			async findAccount(ctx, id): Promise<Account | undefined> {
-				console.log(id);
-				return undefined;
-			},
-			adapter(): MisskeyAdapter {
-				return new MisskeyAdapter(redisClient, httpRequestService);
-			},
-			async renderError(ctx, out, error): Promise<void> {
-				console.log(error);
-			},
-		});
+		// this.#provider = new Provider(config.url, {
+		// 	clientAuthMethods: ['none'],
+		// 	pkce: {
+		// 		// This is the default, but be explicit here as we announce it below
+		// 		methods: ['S256'],
+		// 	},
+		// 	routes: {
+		// 		// defaults to '/auth' but '/authorize' is more consistent with many
+		// 		// other services eg. Mastodon/Twitter/Facebook/GitLab/GitHub/etc.
+		// 		authorization: '/authorize',
+		// 	},
+		// 	scopes: kinds,
+		// 	async findAccount(ctx, id): Promise<Account | undefined> {
+		// 		console.log(id);
+		// 		return undefined;
+		// 	},
+		// 	adapter(): MisskeyAdapter {
+		// 		return new MisskeyAdapter(redisClient, httpRequestService);
+		// 	},
+		// 	async renderError(ctx, out, error): Promise<void> {
+		// 		console.log(error);
+		// 	},
+		// });
+		this.#server.grant(oauth2Pkce.extensions());
+		this.#server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
+			console.log(client, redirectUri, user, ares);
+			const code = secureRndstr(32, true);
+			done(null, code);
+		}));
+		this.#server.serializeClient((client, done) => done(null, client));
+		this.#server.deserializeClient((id, done) => done(null, id));
 	}
 
 	// Return 404 for any unknown paths under /oauth so that clients can know
@@ -316,12 +349,65 @@ export class OAuth2ProviderService {
 		// no way to turn it off.
 		// For now only allow the basic OAuth endpoints, to start small and evaluate
 		// this feature for some time, given that this is security related.
-		fastify.get('/oauth/authorize', async () => { });
+		fastify.get<{ Querystring: { code_challenge?: string, code_challenge_method?: string } }>('/oauth/authorize', async (request, reply) => {
+			console.log('HIT /oauth/authorize', request.query);
+			if (typeof request.query.code_challenge !== 'string') {
+				throw new Error('`code_challenge` parameter is required');
+			}
+			if (request.query.code_challenge_method !== 'S256') {
+				throw new Error('`code_challenge_method` parameter must be set as S256');
+			}
+
+			const meta = await this.metaService.fetch();
+			return await reply.view('base', {
+				img: meta.bannerUrl,
+				title: meta.name ?? 'Misskey',
+				instanceName: meta.name ?? 'Misskey',
+				url: this.config.url,
+				desc: meta.description,
+				icon: meta.iconUrl,
+				themeColor: meta.themeColor,
+			});
+		});
 		fastify.post('/oauth/token', async () => { });
-		fastify.get('/oauth/interaction/:uid', async () => { });
-		fastify.get('/oauth/interaction/:uid/login', async () => { });
+		// fastify.get('/oauth/interaction/:uid', async () => { });
+		// fastify.get('/oauth/interaction/:uid/login', async () => { });
+
+		fastify.register(fastifyView, {
+			root: fileURLToPath(new URL('../web/views', import.meta.url)),
+			engine: { pug },
+			defaultContext: {
+				version: this.config.version,
+				config: this.config,
+			},
+		});
 
 		await fastify.register(fastifyMiddie);
-		fastify.use('/oauth', this.#provider.callback());
+		fastify.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }) as any);
+		fastify.use('/oauth/authorize', this.#server.authorization((clientId, redirectUri, done) => {
+			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
+				console.log('HIT /oauth/authorize validation middleware');
+
+				// Find client information from the remote.
+				const clientUrl = validateClientId(clientId);
+				const redirectUrl = new URL(redirectUri);
+
+				if (process.env.NODE_ENV !== 'test') {
+					const lookup = await dns.lookup(clientUrl.hostname);
+					if (ipaddr.parse(lookup.address).range() === 'loopback') {
+						throw new Error('client_id unexpectedly resolves to loopback IP.');
+					}
+				}
+
+				if (redirectUrl.protocol !== clientUrl.protocol || redirectUrl.host !== clientUrl.host) {
+					// TODO: allow more redirect_uri by Client Information Discovery
+					throw new Error('cross-origin redirect_uri is not supported yet.');
+				}
+
+				return [clientId, redirectUri];
+			})().then(args => done(null, ...args), err => done(err));
+		}));
+
+		// fastify.use('/oauth', this.#provider.callback());
 	}
 }
