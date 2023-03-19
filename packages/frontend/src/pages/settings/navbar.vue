@@ -1,8 +1,8 @@
 <template>
 <div class="_gaps_m">
-	<FormSlot v-model="items">
+	<FormSlot>
 		<template #label>{{ i18n.ts.navbar }}</template>
-		<MkContainer v-model="items" :show-header="false">
+		<MkContainer :show-header="false">
 			<Sortable 
 				v-model="items"
 				:animation="150"
@@ -52,10 +52,11 @@ import { defaultStore } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { deepClone } from '@/scripts/clone';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(defaultStore.state.menu);
+const items = ref(deepClone(defaultStore.state.menu));
 
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 
