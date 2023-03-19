@@ -7,6 +7,8 @@
 				<div v-if="clip.description" class="description">
 					<Mfm :text="clip.description" :is-note="false" :i="$i"/>
 				</div>
+				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
+				<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
 				<div class="user">
 					<MkAvatar :user="clip.user" class="avatar" indicator link preview/> <MkUserName :user="clip.user" :nowrap="false"/>
 				</div>
@@ -27,12 +29,14 @@ import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { url } from '@/config';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
 	clipId: string,
 }>();
 
 let clip: misskey.entities.Clip = $ref<misskey.entities.Clip>();
+let favorited = $ref(false);
 const pagination = {
 	endpoint: 'clips/notes' as const,
 	limit: 10,
@@ -47,11 +51,33 @@ watch(() => props.clipId, async () => {
 	clip = await os.api('clips/show', {
 		clipId: props.clipId,
 	});
+	favorited = clip.isFavorited;
 }, {
 	immediate: true,
 }); 
 
 provide('currentClipPage', $$(clip));
+
+function favorite() {
+	os.apiWithDialog('clips/favorite', {
+		clipId: props.clipId,
+	}).then(() => {
+		favorited = true;
+	});
+}
+
+async function unfavorite() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unfavoriteConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('clips/unfavorite', {
+		clipId: props.clipId,
+	}).then(() => {
+		favorited = false;
+	});
+}
 
 const headerActions = $computed(() => clip && isOwned ? [{
 	icon: 'ti ti-pencil',

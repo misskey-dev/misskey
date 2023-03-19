@@ -1,15 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ClipsRepository } from '@/models/index.js';
-import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import type { ClipFavoritesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 
 export const meta = {
-	tags: ['clips', 'account'],
+	tags: ['account', 'clip'],
 
 	requireCredential: true,
 
-	kind: 'read:account',
+	kind: 'read:clip-favorite',
 
 	res: {
 		type: 'array',
@@ -24,7 +24,8 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
+	properties: {
+	},
 	required: [],
 } as const;
 
@@ -32,17 +33,20 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.clipsRepository)
-		private clipsRepository: ClipsRepository,
+		@Inject(DI.clipFavoritesRepository)
+		private clipFavoritesRepository: ClipFavoritesRepository,
 
 		private clipEntityService: ClipEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const clips = await this.clipsRepository.findBy({
-				userId: me.id,
-			});
+			const query = this.clipFavoritesRepository.createQueryBuilder('favorite')
+				.andWhere('favorite.userId = :meId', { meId: me.id })
+				.leftJoinAndSelect('favorite.clip', 'clip');
 
-			return await this.clipEntityService.packMany(clips, me);
+			const favorites = await query
+				.getMany();
+
+			return this.clipEntityService.packMany(favorites.map(x => x.clip!), me);
 		});
 	}
 }
