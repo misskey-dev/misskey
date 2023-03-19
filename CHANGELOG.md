@@ -34,6 +34,7 @@ You should also include the user name that made the change.
 - avatarBlurHash/bannerBlurHashの型をstringに限定
 - APオブジェクトを入力してフェッチする機能とユーザーやノートの検索機能を分離
 - ナビゲーションバーの項目に「プロフィール」を追加できるように
+- サーバーのタイムライン取得時のパフォーマンスを改善
 - AiScriptを0.13.1に更新
 
 ### Bugfixes
