@@ -973,6 +973,10 @@ rolesAssignedToMe: "指派给自己的角色"
 resetPasswordConfirm: "确定重置密码？"
 sensitiveWords: "敏感词"
 sensitiveWordsDescription: "将包含设置词的帖子的可见范围设置为首页。可以通过用换行符分隔来设置多个。"
+notesSearchNotAvailable: "帖子检索不可用"
+license: "许可信息"
+unfavoriteConfirm: "确定要取消收藏吗？"
+myClips: "我的便签"
 _achievements:
   earnedAt: "达成时间"
   _types:
