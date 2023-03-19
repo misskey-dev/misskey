@@ -11,11 +11,7 @@ import type { Config } from '@/config.js';
 import { kinds } from '@/misc/api-permissions.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { FastifyInstance } from 'fastify';
-
-
-// TODO: For now let's focus on letting oidc-provider use the existing miauth infra.
-// Supporting IndieAuth is a separate project.
-// Allow client_id created by apps/create or not? It's already marked as old method.
+import type Redis from 'ioredis';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
 function validateClientId(raw: string): URL {
@@ -27,6 +23,7 @@ function validateClientId(raw: string): URL {
 	})();
 
 	// Client identifier URLs MUST have either an https or http scheme
+	// XXX: but why allow http in 2023?
 	if (!['http:', 'https:'].includes(url.protocol)) {
 		throw new Error('client_id must be either https or http URL');
 	}
@@ -66,6 +63,33 @@ function validateClientId(raw: string): URL {
 	return url;
 }
 
+const grantable = new Set([
+	'AccessToken',
+	'AuthorizationCode',
+	'RefreshToken',
+	'DeviceCode',
+	'BackchannelAuthenticationRequest',
+]);
+
+const consumable = new Set([
+	'AuthorizationCode',
+	'RefreshToken',
+	'DeviceCode',
+	'BackchannelAuthenticationRequest',
+]);
+
+function grantKeyFor(id: string): string {
+	return `grant:${id}`;
+}
+
+function userCodeKeyFor(userCode: string): string {
+	return `userCode:${userCode}`;
+}
+
+function uidKeyFor(uid: string): string {
+	return `uid:${uid}`;
+}
+
 async function fetchFromClientId(httpRequestService: HttpRequestService, id: string): Promise<string | void> {
 	try {
 		const res = await httpRequestService.send(id);
@@ -74,8 +98,7 @@ async function fetchFromClientId(httpRequestService: HttpRequestService, id: str
 			return new URL(redirectUri, res.url).toString();
 		}
 
-		const { window } = new JSDOM(await res.text());
-		redirectUri = window.document.querySelector<HTMLLinkElement>('link[rel=redirect_uri][href]')?.href;
+		redirectUri = JSDOM.fragment(await res.text()).querySelector<HTMLLinkElement>('link[rel=redirect_uri][href]')?.href;
 		if (redirectUri) {
 			return new URL(redirectUri, res.url).toString();
 		}
@@ -85,16 +108,66 @@ async function fetchFromClientId(httpRequestService: HttpRequestService, id: str
 }
 
 class MisskeyAdapter implements Adapter {
-	constructor(private httpRequestService: HttpRequestService) { }
+	name = 'oauth2';
 
-	upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
-		console.log('oauth upsert', id, payload, expiresIn);
-		throw new Error('Method not implemented.');
+	constructor(private redisClient: Redis.Redis, private httpRequestService: HttpRequestService) { }
+
+	key(id: string): string {
+		return `oauth2:${id}`;
 	}
-	async find(id: string): Promise<void | AdapterPayload> {
-		// Find client information from the remote.
 
+	async upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
+		console.log('oauth upsert', id, payload, expiresIn);
+
+		const key = this.key(id);
+
+		const multi = this.redisClient.multi();
+		if (consumable.has(this.name)) {
+			multi.hset(key, { payload: JSON.stringify(payload) });
+		} else {
+			multi.set(key, JSON.stringify(payload));
+		}
+
+		if (expiresIn) {
+			multi.expire(key, expiresIn);
+		}
+
+		if (grantable.has(this.name) && payload.grantId) {
+			const grantKey = grantKeyFor(payload.grantId);
+			multi.rpush(grantKey, key);
+			// if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
+			// here to trim the list to an appropriate length
+			const ttl = await this.redisClient.ttl(grantKey);
+			if (expiresIn > ttl) {
+				multi.expire(grantKey, expiresIn);
+			}
+		}
+
+		if (payload.userCode) {
+			const userCodeKey = userCodeKeyFor(payload.userCode);
+			multi.set(userCodeKey, id);
+			multi.expire(userCodeKey, expiresIn);
+		}
+
+		if (payload.uid) {
+			const uidKey = uidKeyFor(payload.uid);
+			multi.set(uidKey, id);
+			multi.expire(uidKey, expiresIn);
+		}
+
+		await multi.exec();
+	}
+
+	async find(id: string): Promise<void | AdapterPayload> {
 		console.log('oauth find', id);
+
+		// XXX: really?
+		const fromRedis = await this.findRedis(id);
+		if (fromRedis) {
+			return fromRedis;
+		}
+
+		// Find client information from the remote.
 		const url = validateClientId(id);
 
 		if (process.env.NODE_ENV !== 'test') {
@@ -107,7 +180,7 @@ class MisskeyAdapter implements Adapter {
 		const redirectUri = await fetchFromClientId(this.httpRequestService, id);
 		if (!redirectUri) {
 			// IndieAuth also implicitly allows any path under the same scheme+host,
-			// but oidc-provider does not have such option.
+			// but oidc-provider requires explicit list of uris.
 			throw new Error('The URL of client_id must provide `redirect_uri` as HTTP Link header or HTML <link> element.');
 		}
 
@@ -117,25 +190,60 @@ class MisskeyAdapter implements Adapter {
 			redirect_uris: [redirectUri],
 		};
 	}
+
+	async findRedis(id: string | null): Promise<void | AdapterPayload> {
+		if (!id) {
+			return;
+		}
+
+		const data = consumable.has(this.name)
+			? await this.redisClient.hgetall(this.key(id))
+			: await this.redisClient.get(this.key(id));
+
+		if (!data || (typeof data === 'object' && !Object.entries(data).length)) {
+			return undefined;
+		}
+
+		if (typeof data === 'string') {
+			return JSON.parse(data);
+		}
+		const { payload, ...rest } = data as any;
+		return {
+			...rest,
+			...JSON.parse(payload),
+		};
+	}
+
 	async findByUserCode(userCode: string): Promise<void | AdapterPayload> {
 		console.log('oauth findByUserCode', userCode);
-		throw new Error('Method not implemented.');
+		const id = await this.redisClient.get(userCodeKeyFor(userCode));
+		return this.findRedis(id);
 	}
+
 	async findByUid(uid: string): Promise<void | AdapterPayload> {
 		console.log('oauth findByUid', uid);
-		throw new Error('Method not implemented.');
+		const id = await this.redisClient.get(uidKeyFor(uid));
+		return this.findRedis(id);
 	}
+
 	async consume(id: string): Promise<void> {
 		console.log('oauth consume', id);
-		throw new Error('Method not implemented.');
+		await this.redisClient.hset(this.key(id), 'consumed', Math.floor(Date.now() / 1000));
 	}
+
 	async destroy(id: string): Promise<void | undefined> {
 		console.log('oauth destroy', id);
-		throw new Error('Method not implemented.');
+		const key = this.key(id);
+		await this.redisClient.del(key);
 	}
+
 	async revokeByGrantId(grantId: string): Promise<void | undefined> {
 		console.log('oauth revokeByGrandId', grantId);
-		throw new Error('Method not implemented.');
+		const multi = this.redisClient.multi();
+		const tokens = await this.redisClient.lrange(grantKeyFor(grantId), 0, -1);
+		tokens.forEach((token) => multi.del(token));
+		multi.del(grantKeyFor(grantId));
+		await multi.exec();
 	}
 }
 
@@ -146,6 +254,7 @@ export class OAuth2ProviderService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+		@Inject(DI.redis) redisClient: Redis.Redis,
 		httpRequestService: HttpRequestService,
 	) {
 		this.#provider = new Provider(config.url, {
@@ -165,7 +274,7 @@ export class OAuth2ProviderService {
 				return undefined;
 			},
 			adapter(): MisskeyAdapter {
-				return new MisskeyAdapter(httpRequestService);
+				return new MisskeyAdapter(redisClient, httpRequestService);
 			},
 			async renderError(ctx, out, error): Promise<void> {
 				console.log(error);
@@ -209,6 +318,8 @@ export class OAuth2ProviderService {
 		// this feature for some time, given that this is security related.
 		fastify.get('/oauth/authorize', async () => { });
 		fastify.post('/oauth/token', async () => { });
+		fastify.get('/oauth/interaction/:uid', async () => { });
+		fastify.get('/oauth/interaction/:uid/login', async () => { });
 
 		await fastify.register(fastifyMiddie);
 		fastify.use('/oauth', this.#provider.callback());
