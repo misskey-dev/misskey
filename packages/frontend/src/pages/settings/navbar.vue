@@ -16,7 +16,7 @@
 						v-if="element === '-' || navbarItemDef[element]"
 						class="item"
 					>
-						<button class="item_handle _button" ><i class="ti ti-menu-2"></i></button>
+						<button class="item_handle _button" ><i class="ti ti-menu"></i></button>
 						<i class="icon ti-fw" :class="navbarItemDef[element]?.icon"></i><span class="text">{{ navbarItemDef[element]?.title ?? i18n.ts.divider }}</span>
 						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-trash"></i></button>
 					</div>
