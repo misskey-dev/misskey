@@ -103,9 +103,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
+			const now = new Date();
+
 			const antenna = await this.antennasRepository.insert({
 				id: this.idService.genId(),
-				createdAt: new Date(),
+				createdAt: now,
+				lastUsedAt: now,
 				userId: me.id,
 				name: ps.name,
 				src: ps.src,
