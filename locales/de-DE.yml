@@ -977,6 +977,7 @@ notesSearchNotAvailable: "Die Notizsuche ist nicht verfügbar."
 license: "Lizenz"
 unfavoriteConfirm: "Wirklich aus Favoriten entfernen?"
 myClips: "Meine Clips"
+drivecleaner: "Drive-Reiniger"
 _achievements:
   earnedAt: "Freigeschaltet am"
   _types:
@@ -1868,3 +1869,6 @@ _dialog:
 _disabledTimeline:
   title: "Chronik deaktiviert"
   description: "Mit deinen jetzigen Rollen ist diese Chronik nicht verfügbar."
+_drivecleaner:
+  orderBySizeDesc: "Absteigende Dateigrößen"
+  orderByCreatedAtAsc: "Aufsteigendes Erstelldatum"
