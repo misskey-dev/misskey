@@ -1,17 +1,17 @@
 import { Meta, Story } from '@storybook/vue3';
-import MkYoutubePlayer from './MkYoutubePlayer.vue';
+import MkYouTubePlayer from './MkYouTubePlayer.vue';
 const meta = {
-	title: 'components/MkYoutubePlayer',
-	component: MkYoutubePlayer,
+	title: 'components/MkYouTubePlayer',
+	component: MkYouTubePlayer,
 };
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				MkYoutubePlayer,
+				MkYouTubePlayer,
 			},
 			props: Object.keys(argTypes),
-			template: '<MkYoutubePlayer v-bind="$props" />',
+			template: '<MkYouTubePlayer v-bind="$props" />',
 		};
 	},
 	parameters: {
