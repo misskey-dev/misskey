@@ -8,6 +8,7 @@ const config = {
 		'@storybook/addon-links',
 		'@storybook/addon-essentials',
 		'@storybook/addon-interactions',
+		'../node_modules/storybook-addon-misskey-theme',
 	],
 	framework: {
 		name: '@storybook/vue3-vite',
