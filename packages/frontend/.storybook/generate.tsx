@@ -30,7 +30,7 @@ function toStories(component: string): string {
 			properties={[
 				<property
 					key={<identifier name="layout" />}
-					value={<literal value={`${dir}/`.startsWith('src/pages/') || base === 'MkAnalogClock.vue' ? 'fullscreen' : 'centered'} />}
+					value={<literal value={`${dir}/`.startsWith('src/pages/') ? 'fullscreen' : 'centered'} />}
 					kind="init"
 				/>,
 				...hasMsw
