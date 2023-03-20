@@ -23,16 +23,6 @@ const preview = {
 	decorators: [
 		mswDecorator,
 	],
-	parameters: {
-		layout: 'centered',
-	},
-	argTypes: {
-		default: {
-			control: {
-				type: 'text',
-			},
-		},
-	},
 } satisfies Preview;
 
 export default preview;
