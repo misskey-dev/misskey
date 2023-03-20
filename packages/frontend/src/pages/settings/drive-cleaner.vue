@@ -1,49 +1,44 @@
 <template>
-<MkSelect v-model="sortModeSelect">
-	<template #label>{{ i18n.ts.sort }}</template>
-	<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
-</MkSelect>
-<br>
-<div v-if="!fetching" class="_gap_m">
-	<MkPagination v-slot="{items}" :pagination="pagination" class="driveitem list">
-		<div
-			v-for="file in items"
-			:key="file.id"
-		>
-			<MkA
-				v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${dateString(file.createdAt)}`"
-				class="_button"
-				:to="`${file.url}`"
-				behavior="browser"
-				@contextmenu.stop="$event => onContextMenu($event, file.id)"
-			>
-				<div class="file">
-					<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
-					<MkDriveFileThumbnail class="thumbnail" :file="file" fit="contain"/>
-					<div class="body">
-						<div style="margin-bottom: 4px;">
-							{{ file.name }}
-						</div>
-						<div>
-							<span style="margin-right: 1em;">{{ file.type }}</span>
-							<span>{{ bytes(file.size) }}</span>
-						</div>
-						<div>
-							<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
-						</div>
-						<div v-if="sortModeSelect === 'sizeDesc'">
-							<div class="uawsfosz">
-								<div class="meter"><div :style="genUsageBar(file.size)"></div></div>
+<div class="_gaps">
+	<MkSelect v-model="sortModeSelect">
+		<template #label>{{ i18n.ts.sort }}</template>
+		<option v-for="x in sortOptions" :key="x.value" :value="x.value">{{ x.displayName }}</option>
+	</MkSelect>
+	<div v-if="!fetching">
+		<MkPagination v-slot="{items}" :pagination="pagination">
+			<div class="_gaps">
+				<div
+					v-for="file in items" :key="file.id"
+					class="_button"
+					@click="$event => onClick($event, file)"
+					@contextmenu.stop="$event => onContextMenu($event, file)"
+				>
+					<div :class="$style.file">
+						<div v-if="file.isSensitive" class="sensitive-label">{{ i18n.ts.sensitive }}</div>
+						<MkDriveFileThumbnail :class="$style.fileThumbnail" :file="file" fit="contain"/>
+						<div :class="$style.fileBody">
+							<div style="margin-bottom: 4px;">
+								{{ file.name }}
+							</div>
+							<div>
+								<span style="margin-right: 1em;">{{ file.type }}</span>
+								<span>{{ bytes(file.size) }}</span>
+							</div>
+							<div>
+								<span>{{ i18n.ts.registeredDate }}: <MkTime :time="file.createdAt" mode="detail"/></span>
+							</div>
+							<div v-if="sortModeSelect === 'sizeDesc'">
+								<div :class="$style.meter"><div :class="$style.meterValue" :style="genUsageBar(file.size)"></div></div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</MkA>
-		</div>
-	</MkPagination>
-</div>
-<div v-else class="gap_m">
-	{{ i18n.ts.checking }} <MkEllipsis/>
+			</div>
+		</MkPagination>
+	</div>
+	<div v-else>
+		<MkLoading/>
+	</div>
 </div>
 </template>
 
@@ -58,6 +53,7 @@ import bytes from '@/filters/bytes';
 import { dateString } from '@/filters/date';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkSelect from '@/components/MkSelect.vue';
+import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
 
 let sortMode = '+size';
 const pagination = {
@@ -78,27 +74,22 @@ const sortModeSelect = ref('sizeDesc');
 
 fetchDriveInfo();
 
-watch(fetching, () => {
-	if (fetching.value) {
-		fetchDriveInfo();
-	}
-});
-
 watch(sortModeSelect, () => {
 	switch (sortModeSelect.value) {
 		case 'sizeDesc':
 			sortMode = '+size';
-			fetching.value = true;
+			fetchDriveInfo();
 			break;
 		
 		case 'createdAtAsc':
 			sortMode = '-createdAt';
-			fetching.value = true;
+			fetchDriveInfo();
 			break;
 	}
 });
 
 function fetchDriveInfo(): void {
+	fetching.value = true;
 	os.api('drive').then(info => {
 		capacity.value = info.capacity;
 		usage.value = info.usage;
@@ -113,30 +104,12 @@ function genUsageBar(fsize: number): object {
 	};
 }
 
-function onContextMenu(ev: MouseEvent, fileId: string): void {
-	const target = ev.target as HTMLElement;
-	const items = [
-		{
-			text: i18n.ts.delete,
-			icon: 'ti ti-trash-x',
-			danger: true,
-			action: async (): Promise<void> => {
-				const res = await os.confirm({
-					type: 'warning',
-					title: i18n.ts.delete,
-					text: i18n.ts.deleteConfirm,
-				});
-				if (!res.canceled) {
-					await os.apiWithDialog('drive/files/delete', { fileId: fileId });
-					fetching.value = true;
-				}
-			},
-		},
-	];
-	ev.preventDefault();
-	os.popupMenu(items, target, {
-		viaKeyboard: false,
-	});
+function onClick(ev: MouseEvent, file) {
+	os.popupMenu(getDriveFileMenu(file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function onContextMenu(ev: MouseEvent, file): void {
+	os.contextMenu(getDriveFileMenu(file), ev);
 }
 
 definePageMetadata({
@@ -145,49 +118,39 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-
-@use "sass:math";
-
+<style lang="scss" module>
 .file {
 	display: flex;
 	width: 100%;
 	box-sizing: border-box;
 	text-align: left;
 	align-items: center;
-	margin-bottom: 16px;
 
 	&:hover {
 		color: var(--accent);
 	}
-
-	> .thumbnail {
-		width: 128px;
-		height: 128px;
-	}
-
-	> .body {
-		margin-left: 0.3em;
-		padding: 8px;
-		flex: 1;
-
-		@media (max-width: 500px) {
-			font-size: 14px;
-		}
-	}
 }
 
-.uawsfosz {
-	> .meter {
-		$size: 12px;
-		background: rgba(0, 0, 0, 0.1);
-		border-radius: math.div($size, 2);
-		overflow: hidden;
+.fileThumbnail {
+	width: 100px;
+	height: 100px;
+}
 
-		> div {
-			height: $size;
-			border-radius: math.div($size, 2);
-		}
-	}
+.fileBody {
+	margin-left: 0.3em;
+	padding: 8px;
+	flex: 1;
+}
+
+.meter {
+	margin-top: 8px;
+	height: 12px;
+	background: rgba(0, 0, 0, 0.1);
+	overflow: clip;
+	border-radius: 999px;
+}
+
+.meterValue {
+	height: 100%;
 }
 </style>
