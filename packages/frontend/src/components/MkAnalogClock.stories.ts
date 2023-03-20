@@ -1,9 +1,10 @@
 import { Meta, Story } from '@storybook/vue3';
-import MkAnalogClock from './MkAnalogClock.vue';
 const meta = {
 	title: 'components/MkAnalogClock',
 	component: MkAnalogClock,
 };
+export default meta;
+import MkAnalogClock from './MkAnalogClock.vue';
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -18,4 +19,3 @@ export const Default = {
 		layout: 'fullscreen',
 	},
 };
-export default meta;

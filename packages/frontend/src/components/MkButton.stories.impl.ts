@@ -1,3 +1,4 @@
+import MkButton from './MkButton.vue';
 export const Default = {
 	render(args, { argTypes }) {
 		return {

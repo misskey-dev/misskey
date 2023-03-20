@@ -74,15 +74,19 @@ function toStories(component: string): string {
 							/>,
 						]
 					: [],
-				<import-declaration
-					source={<literal value={`./${base}`} />}
-					specifiers={[
-						<import-default-specifier
-							local={identifier}
-							imported={identifier}
-						/>,
-					]}
-				/>,
+				...hasImplStories
+					? []
+					: [
+							<import-declaration
+								source={<literal value={`./${base}`} />}
+								specifiers={[
+									<import-default-specifier
+										local={identifier}
+										imported={identifier}
+									/>,
+								]}
+							/>,
+						],
 				<variable-declaration
 					kind="const"
 					declarations={[

@@ -1,3 +1,4 @@
+import MkAnalogClock from './MkAnalogClock.vue';
 export const Default = {
 	render(args, { argTypes }) {
 		return {

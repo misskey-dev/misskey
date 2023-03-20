@@ -1,10 +1,10 @@
 import { Meta, Story } from '@storybook/vue3';
-import MkButton from './MkButton.vue';
 const meta = {
 	title: 'components/MkButton',
 	component: MkButton,
 };
 export default meta;
+import MkButton from './MkButton.vue';
 export const Default = {
 	render(args, { argTypes }) {
 		return {
