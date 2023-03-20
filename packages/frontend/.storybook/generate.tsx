@@ -1,5 +1,5 @@
 import * as fs from 'node:fs/promises';
-import { basename, dirname, join } from 'node:path/posix';
+import { basename, dirname } from 'node:path/posix';
 import { promisify } from 'node:util';
 import { generate } from 'astring';
 import type * as estree from 'estree';
