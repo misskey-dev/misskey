@@ -5,10 +5,15 @@ const meta = {
 	component: files,
 };
 export const Default = {
-	components: {
-		files,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				files,
+			},
+			props: Object.keys(argTypes),
+			template: '<files v-bind="$props" />',
+		};
 	},
-	template: '<files />',
 	parameters: {
 		layout: 'fullscreen',
 	},

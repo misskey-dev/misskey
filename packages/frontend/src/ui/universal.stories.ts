@@ -5,10 +5,15 @@ const meta = {
 	component: universal,
 };
 export const Default = {
-	components: {
-		universal,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				universal,
+			},
+			props: Object.keys(argTypes),
+			template: '<universal v-bind="$props" />',
+		};
 	},
-	template: '<universal />',
 	parameters: {
 		layout: 'centered',
 	},

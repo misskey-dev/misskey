@@ -5,10 +5,15 @@ const meta = {
 	component: gallery,
 };
 export const Default = {
-	components: {
-		gallery,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				gallery,
+			},
+			props: Object.keys(argTypes),
+			template: '<gallery v-bind="$props" />',
+		};
 	},
-	template: '<gallery />',
 	parameters: {
 		layout: 'fullscreen',
 	},

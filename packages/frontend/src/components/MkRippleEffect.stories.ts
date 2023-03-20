@@ -5,10 +5,15 @@ const meta = {
 	component: MkRippleEffect,
 };
 export const Default = {
-	components: {
-		MkRippleEffect,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkRippleEffect,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkRippleEffect v-bind="$props" />',
+		};
 	},
-	template: '<MkRippleEffect />',
 	parameters: {
 		layout: 'centered',
 	},

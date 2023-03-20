@@ -5,10 +5,15 @@ const meta = {
 	component: plugin,
 };
 export const Default = {
-	components: {
-		plugin,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				plugin,
+			},
+			props: Object.keys(argTypes),
+			template: '<plugin v-bind="$props" />',
+		};
 	},
-	template: '<plugin />',
 	parameters: {
 		layout: 'fullscreen',
 	},

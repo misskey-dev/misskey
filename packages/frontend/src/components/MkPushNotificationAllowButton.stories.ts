@@ -5,10 +5,15 @@ const meta = {
 	component: MkPushNotificationAllowButton,
 };
 export const Default = {
-	components: {
-		MkPushNotificationAllowButton,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPushNotificationAllowButton,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPushNotificationAllowButton v-bind="$props" />',
+		};
 	},
-	template: '<MkPushNotificationAllowButton />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkFollowButton,
 };
 export const Default = {
-	components: {
-		MkFollowButton,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFollowButton,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFollowButton v-bind="$props" />',
+		};
 	},
-	template: '<MkFollowButton />',
 	parameters: {
 		layout: 'centered',
 	},

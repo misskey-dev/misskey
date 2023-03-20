@@ -5,10 +5,15 @@ const meta = {
 	component: page_image,
 };
 export const Default = {
-	components: {
-		page_image,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_image,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_image v-bind="$props" />',
+		};
 	},
-	template: '<page_image />',
 	parameters: {
 		layout: 'centered',
 	},

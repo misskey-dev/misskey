@@ -5,10 +5,15 @@ const meta = {
 	component: MkSparkle,
 };
 export const Default = {
-	components: {
-		MkSparkle,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSparkle,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSparkle v-bind="$props" />',
+		};
 	},
-	template: '<MkSparkle />',
 	parameters: {
 		layout: 'centered',
 	},

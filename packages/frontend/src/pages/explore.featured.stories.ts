@@ -5,10 +5,15 @@ const meta = {
 	component: explore_featured,
 };
 export const Default = {
-	components: {
-		explore_featured,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				explore_featured,
+			},
+			props: Object.keys(argTypes),
+			template: '<explore_featured v-bind="$props" />',
+		};
 	},
-	template: '<explore_featured />',
 	parameters: {
 		layout: 'fullscreen',
 	},

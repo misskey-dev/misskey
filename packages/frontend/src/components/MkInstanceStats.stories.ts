@@ -5,10 +5,15 @@ const meta = {
 	component: MkInstanceStats,
 };
 export const Default = {
-	components: {
-		MkInstanceStats,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkInstanceStats,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkInstanceStats v-bind="$props" />',
+		};
 	},
-	template: '<MkInstanceStats />',
 	parameters: {
 		layout: 'centered',
 	},

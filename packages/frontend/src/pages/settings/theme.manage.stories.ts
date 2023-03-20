@@ -5,10 +5,15 @@ const meta = {
 	component: theme_manage,
 };
 export const Default = {
-	components: {
-		theme_manage,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				theme_manage,
+			},
+			props: Object.keys(argTypes),
+			template: '<theme_manage v-bind="$props" />',
+		};
 	},
-	template: '<theme_manage />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkMention,
 };
 export const Default = {
-	components: {
-		MkMention,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkMention,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkMention v-bind="$props" />',
+		};
 	},
-	template: '<MkMention />',
 	parameters: {
 		layout: 'centered',
 	},

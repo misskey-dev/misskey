@@ -5,10 +5,15 @@ const meta = {
 	component: MkChannelPreview,
 };
 export const Default = {
-	components: {
-		MkChannelPreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkChannelPreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkChannelPreview v-bind="$props" />',
+		};
 	},
-	template: '<MkChannelPreview />',
 	parameters: {
 		layout: 'centered',
 	},

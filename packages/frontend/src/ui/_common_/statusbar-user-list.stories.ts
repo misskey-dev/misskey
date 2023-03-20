@@ -5,10 +5,15 @@ const meta = {
 	component: statusbar_user_list,
 };
 export const Default = {
-	components: {
-		statusbar_user_list,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				statusbar_user_list,
+			},
+			props: Object.keys(argTypes),
+			template: '<statusbar_user_list v-bind="$props" />',
+		};
 	},
-	template: '<statusbar_user_list />',
 	parameters: {
 		layout: 'centered',
 	},

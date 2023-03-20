@@ -5,10 +5,15 @@ const meta = {
 	component: page_editor_el_image,
 };
 export const Default = {
-	components: {
-		page_editor_el_image,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_editor_el_image,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_editor_el_image v-bind="$props" />',
+		};
 	},
-	template: '<page_editor_el_image />',
 	parameters: {
 		layout: 'fullscreen',
 	},

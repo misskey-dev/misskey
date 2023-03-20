@@ -5,10 +5,15 @@ const meta = {
 	component: page_text_input,
 };
 export const Default = {
-	components: {
-		page_text_input,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_text_input,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_text_input v-bind="$props" />',
+		};
 	},
-	template: '<page_text_input />',
 	parameters: {
 		layout: 'centered',
 	},

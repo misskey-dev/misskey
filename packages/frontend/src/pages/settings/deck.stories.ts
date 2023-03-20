@@ -5,10 +5,15 @@ const meta = {
 	component: deck,
 };
 export const Default = {
-	components: {
-		deck,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				deck,
+			},
+			props: Object.keys(argTypes),
+			template: '<deck v-bind="$props" />',
+		};
 	},
-	template: '<deck />',
 	parameters: {
 		layout: 'fullscreen',
 	},

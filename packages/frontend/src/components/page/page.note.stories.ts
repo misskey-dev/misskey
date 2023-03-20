@@ -5,10 +5,15 @@ const meta = {
 	component: page_note,
 };
 export const Default = {
-	components: {
-		page_note,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_note,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_note v-bind="$props" />',
+		};
 	},
-	template: '<page_note />',
 	parameters: {
 		layout: 'centered',
 	},

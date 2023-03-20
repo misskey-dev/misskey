@@ -5,10 +5,15 @@ const meta = {
 	component: kanban,
 };
 export const Default = {
-	components: {
-		kanban,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				kanban,
+			},
+			props: Object.keys(argTypes),
+			template: '<kanban v-bind="$props" />',
+		};
 	},
-	template: '<kanban />',
 	parameters: {
 		layout: 'centered',
 	},

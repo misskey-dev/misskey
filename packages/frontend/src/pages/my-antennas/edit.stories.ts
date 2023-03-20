@@ -5,10 +5,15 @@ const meta = {
 	component: edit,
 };
 export const Default = {
-	components: {
-		edit,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				edit,
+			},
+			props: Object.keys(argTypes),
+			template: '<edit v-bind="$props" />',
+		};
 	},
-	template: '<edit />',
 	parameters: {
 		layout: 'fullscreen',
 	},

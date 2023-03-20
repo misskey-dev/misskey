@@ -5,10 +5,15 @@ const meta = {
 	component: MkFileListForAdmin,
 };
 export const Default = {
-	components: {
-		MkFileListForAdmin,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFileListForAdmin,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFileListForAdmin v-bind="$props" />',
+		};
 	},
-	template: '<MkFileListForAdmin />',
 	parameters: {
 		layout: 'centered',
 	},

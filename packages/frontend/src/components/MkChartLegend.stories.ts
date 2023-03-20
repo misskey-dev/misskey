@@ -5,10 +5,15 @@ const meta = {
 	component: MkChartLegend,
 };
 export const Default = {
-	components: {
-		MkChartLegend,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkChartLegend,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkChartLegend v-bind="$props" />',
+		};
 	},
-	template: '<MkChartLegend />',
 	parameters: {
 		layout: 'centered',
 	},

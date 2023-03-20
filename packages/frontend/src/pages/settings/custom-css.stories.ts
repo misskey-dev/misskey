@@ -5,10 +5,15 @@ const meta = {
 	component: custom_css,
 };
 export const Default = {
-	components: {
-		custom_css,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				custom_css,
+			},
+			props: Object.keys(argTypes),
+			template: '<custom_css v-bind="$props" />',
+		};
 	},
-	template: '<custom_css />',
 	parameters: {
 		layout: 'fullscreen',
 	},

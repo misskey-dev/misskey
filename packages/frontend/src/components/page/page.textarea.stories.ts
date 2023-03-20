@@ -5,10 +5,15 @@ const meta = {
 	component: page_textarea,
 };
 export const Default = {
-	components: {
-		page_textarea,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_textarea,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_textarea v-bind="$props" />',
+		};
 	},
-	template: '<page_textarea />',
 	parameters: {
 		layout: 'centered',
 	},

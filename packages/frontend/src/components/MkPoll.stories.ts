@@ -5,10 +5,15 @@ const meta = {
 	component: MkPoll,
 };
 export const Default = {
-	components: {
-		MkPoll,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPoll,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPoll v-bind="$props" />',
+		};
 	},
-	template: '<MkPoll />',
 	parameters: {
 		layout: 'centered',
 	},

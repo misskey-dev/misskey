@@ -5,10 +5,15 @@ const meta = {
 	component: MkMiniChart,
 };
 export const Default = {
-	components: {
-		MkMiniChart,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkMiniChart,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkMiniChart v-bind="$props" />',
+		};
 	},
-	template: '<MkMiniChart />',
 	parameters: {
 		layout: 'centered',
 	},

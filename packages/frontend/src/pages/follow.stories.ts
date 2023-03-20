@@ -5,10 +5,15 @@ const meta = {
 	component: follow,
 };
 export const Default = {
-	components: {
-		follow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				follow,
+			},
+			props: Object.keys(argTypes),
+			template: '<follow v-bind="$props" />',
+		};
 	},
-	template: '<follow />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: statusbar_rss,
 };
 export const Default = {
-	components: {
-		statusbar_rss,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				statusbar_rss,
+			},
+			props: Object.keys(argTypes),
+			template: '<statusbar_rss v-bind="$props" />',
+		};
 	},
-	template: '<statusbar_rss />',
 	parameters: {
 		layout: 'centered',
 	},

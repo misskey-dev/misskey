@@ -5,10 +5,15 @@ const meta = {
 	component: MkDateSeparatedList,
 };
 export const Default = {
-	components: {
-		MkDateSeparatedList,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkDateSeparatedList,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkDateSeparatedList v-bind="$props" />',
+		};
 	},
-	template: '<MkDateSeparatedList />',
 	parameters: {
 		layout: 'centered',
 	},

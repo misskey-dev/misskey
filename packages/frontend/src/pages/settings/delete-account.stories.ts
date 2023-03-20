@@ -5,10 +5,15 @@ const meta = {
 	component: delete_account,
 };
 export const Default = {
-	components: {
-		delete_account,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				delete_account,
+			},
+			props: Object.keys(argTypes),
+			template: '<delete_account v-bind="$props" />',
+		};
 	},
-	template: '<delete_account />',
 	parameters: {
 		layout: 'fullscreen',
 	},

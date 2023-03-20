@@ -5,10 +5,15 @@ const meta = {
 	component: MkMediaImage,
 };
 export const Default = {
-	components: {
-		MkMediaImage,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkMediaImage,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkMediaImage v-bind="$props" />',
+		};
 	},
-	template: '<MkMediaImage />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: notifications_column,
 };
 export const Default = {
-	components: {
-		notifications_column,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				notifications_column,
+			},
+			props: Object.keys(argTypes),
+			template: '<notifications_column v-bind="$props" />',
+		};
 	},
-	template: '<notifications_column />',
 	parameters: {
 		layout: 'centered',
 	},

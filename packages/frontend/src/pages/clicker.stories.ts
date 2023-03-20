@@ -5,10 +5,15 @@ const meta = {
 	component: clicker,
 };
 export const Default = {
-	components: {
-		clicker,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				clicker,
+			},
+			props: Object.keys(argTypes),
+			template: '<clicker v-bind="$props" />',
+		};
 	},
-	template: '<clicker />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkOmit,
 };
 export const Default = {
-	components: {
-		MkOmit,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkOmit,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkOmit v-bind="$props" />',
+		};
 	},
-	template: '<MkOmit />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetInstanceInfo,
 };
 export const Default = {
-	components: {
-		WidgetInstanceInfo,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetInstanceInfo,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetInstanceInfo v-bind="$props" />',
+		};
 	},
-	template: '<WidgetInstanceInfo />',
 	parameters: {
 		layout: 'centered',
 	},

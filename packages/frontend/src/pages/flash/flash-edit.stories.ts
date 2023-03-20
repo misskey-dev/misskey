@@ -5,10 +5,15 @@ const meta = {
 	component: flash_edit,
 };
 export const Default = {
-	components: {
-		flash_edit,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				flash_edit,
+			},
+			props: Object.keys(argTypes),
+			template: '<flash_edit v-bind="$props" />',
+		};
 	},
-	template: '<flash_edit />',
 	parameters: {
 		layout: 'fullscreen',
 	},

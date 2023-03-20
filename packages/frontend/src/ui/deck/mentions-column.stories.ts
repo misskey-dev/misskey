@@ -5,10 +5,15 @@ const meta = {
 	component: mentions_column,
 };
 export const Default = {
-	components: {
-		mentions_column,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				mentions_column,
+			},
+			props: Object.keys(argTypes),
+			template: '<mentions_column v-bind="$props" />',
+		};
 	},
-	template: '<mentions_column />',
 	parameters: {
 		layout: 'centered',
 	},

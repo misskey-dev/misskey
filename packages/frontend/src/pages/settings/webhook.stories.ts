@@ -5,10 +5,15 @@ const meta = {
 	component: webhook,
 };
 export const Default = {
-	components: {
-		webhook,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				webhook,
+			},
+			props: Object.keys(argTypes),
+			template: '<webhook v-bind="$props" />',
+		};
 	},
-	template: '<webhook />',
 	parameters: {
 		layout: 'fullscreen',
 	},

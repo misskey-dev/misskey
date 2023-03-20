@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetTimeline,
 };
 export const Default = {
-	components: {
-		WidgetTimeline,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetTimeline,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetTimeline v-bind="$props" />',
+		};
 	},
-	template: '<WidgetTimeline />',
 	parameters: {
 		layout: 'centered',
 	},

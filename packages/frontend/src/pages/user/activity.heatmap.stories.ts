@@ -5,10 +5,15 @@ const meta = {
 	component: activity_heatmap,
 };
 export const Default = {
-	components: {
-		activity_heatmap,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				activity_heatmap,
+			},
+			props: Object.keys(argTypes),
+			template: '<activity_heatmap v-bind="$props" />',
+		};
 	},
-	template: '<activity_heatmap />',
 	parameters: {
 		layout: 'fullscreen',
 	},

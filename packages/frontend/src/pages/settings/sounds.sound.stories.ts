@@ -5,10 +5,15 @@ const meta = {
 	component: sounds_sound,
 };
 export const Default = {
-	components: {
-		sounds_sound,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				sounds_sound,
+			},
+			props: Object.keys(argTypes),
+			template: '<sounds_sound v-bind="$props" />',
+		};
 	},
-	template: '<sounds_sound />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkReactedUsersDialog,
 };
 export const Default = {
-	components: {
-		MkReactedUsersDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkReactedUsersDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkReactedUsersDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkReactedUsersDialog />',
 	parameters: {
 		layout: 'centered',
 	},

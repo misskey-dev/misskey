@@ -5,10 +5,15 @@ const meta = {
 	component: MkTextarea,
 };
 export const Default = {
-	components: {
-		MkTextarea,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkTextarea,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkTextarea v-bind="$props" />',
+		};
 	},
-	template: '<MkTextarea />',
 	parameters: {
 		layout: 'centered',
 	},

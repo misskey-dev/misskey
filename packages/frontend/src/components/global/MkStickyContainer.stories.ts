@@ -5,10 +5,15 @@ const meta = {
 	component: MkStickyContainer,
 };
 export const Default = {
-	components: {
-		MkStickyContainer,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkStickyContainer,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkStickyContainer v-bind="$props" />',
+		};
 	},
-	template: '<MkStickyContainer />',
 	parameters: {
 		layout: 'centered',
 	},

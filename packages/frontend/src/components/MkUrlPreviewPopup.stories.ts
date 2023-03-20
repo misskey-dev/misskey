@@ -5,10 +5,15 @@ const meta = {
 	component: MkUrlPreviewPopup,
 };
 export const Default = {
-	components: {
-		MkUrlPreviewPopup,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkUrlPreviewPopup,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkUrlPreviewPopup v-bind="$props" />',
+		};
 	},
-	template: '<MkUrlPreviewPopup />',
 	parameters: {
 		layout: 'centered',
 	},

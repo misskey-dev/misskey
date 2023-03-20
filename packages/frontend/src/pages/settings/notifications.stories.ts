@@ -5,10 +5,15 @@ const meta = {
 	component: notifications,
 };
 export const Default = {
-	components: {
-		notifications,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				notifications,
+			},
+			props: Object.keys(argTypes),
+			template: '<notifications v-bind="$props" />',
+		};
 	},
-	template: '<notifications />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetInstanceCloud,
 };
 export const Default = {
-	components: {
-		WidgetInstanceCloud,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetInstanceCloud,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetInstanceCloud v-bind="$props" />',
+		};
 	},
-	template: '<WidgetInstanceCloud />',
 	parameters: {
 		layout: 'centered',
 	},

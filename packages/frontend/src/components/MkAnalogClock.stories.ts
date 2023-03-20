@@ -5,10 +5,15 @@ const meta = {
 	component: MkAnalogClock,
 };
 export const Default = {
-	components: {
-		MkAnalogClock,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkAnalogClock,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkAnalogClock v-bind="$props" />',
+		};
 	},
-	template: '<MkAnalogClock />',
 	parameters: {
 		layout: 'fullscreen',
 	},

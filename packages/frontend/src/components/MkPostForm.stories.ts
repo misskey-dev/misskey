@@ -5,10 +5,15 @@ const meta = {
 	component: MkPostForm,
 };
 export const Default = {
-	components: {
-		MkPostForm,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPostForm,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPostForm v-bind="$props" />',
+		};
 	},
-	template: '<MkPostForm />',
 	parameters: {
 		layout: 'centered',
 	},

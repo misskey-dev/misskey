@@ -5,10 +5,15 @@ const meta = {
 	component: MkModal,
 };
 export const Default = {
-	components: {
-		MkModal,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkModal,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkModal v-bind="$props" />',
+		};
 	},
-	template: '<MkModal />',
 	parameters: {
 		layout: 'centered',
 	},

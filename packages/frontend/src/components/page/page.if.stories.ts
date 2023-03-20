@@ -5,10 +5,15 @@ const meta = {
 	component: page_if,
 };
 export const Default = {
-	components: {
-		page_if,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_if,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_if v-bind="$props" />',
+		};
 	},
-	template: '<page_if />',
 	parameters: {
 		layout: 'centered',
 	},

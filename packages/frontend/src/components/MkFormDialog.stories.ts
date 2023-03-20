@@ -5,10 +5,15 @@ const meta = {
 	component: MkFormDialog,
 };
 export const Default = {
-	components: {
-		MkFormDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFormDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFormDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkFormDialog />',
 	parameters: {
 		layout: 'centered',
 	},

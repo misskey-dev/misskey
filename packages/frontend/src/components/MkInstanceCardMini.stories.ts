@@ -5,10 +5,15 @@ const meta = {
 	component: MkInstanceCardMini,
 };
 export const Default = {
-	components: {
-		MkInstanceCardMini,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkInstanceCardMini,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkInstanceCardMini v-bind="$props" />',
+		};
 	},
-	template: '<MkInstanceCardMini />',
 	parameters: {
 		layout: 'centered',
 	},

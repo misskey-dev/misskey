@@ -5,10 +5,15 @@ const meta = {
 	component: user_tag,
 };
 export const Default = {
-	components: {
-		user_tag,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				user_tag,
+			},
+			props: Object.keys(argTypes),
+			template: '<user_tag v-bind="$props" />',
+		};
 	},
-	template: '<user_tag />',
 	parameters: {
 		layout: 'fullscreen',
 	},

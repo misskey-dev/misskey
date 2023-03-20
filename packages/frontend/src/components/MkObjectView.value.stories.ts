@@ -5,10 +5,15 @@ const meta = {
 	component: MkObjectView_value,
 };
 export const Default = {
-	components: {
-		MkObjectView_value,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkObjectView_value,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkObjectView_value v-bind="$props" />',
+		};
 	},
-	template: '<MkObjectView_value />',
 	parameters: {
 		layout: 'centered',
 	},

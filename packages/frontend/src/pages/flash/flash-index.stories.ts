@@ -5,10 +5,15 @@ const meta = {
 	component: flash_index,
 };
 export const Default = {
-	components: {
-		flash_index,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				flash_index,
+			},
+			props: Object.keys(argTypes),
+			template: '<flash_index v-bind="$props" />',
+		};
 	},
-	template: '<flash_index />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkTokenGenerateWindow,
 };
 export const Default = {
-	components: {
-		MkTokenGenerateWindow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkTokenGenerateWindow,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkTokenGenerateWindow v-bind="$props" />',
+		};
 	},
-	template: '<MkTokenGenerateWindow />',
 	parameters: {
 		layout: 'centered',
 	},

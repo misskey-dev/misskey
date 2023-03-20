@@ -5,10 +5,15 @@ const meta = {
 	component: MkPageHeader,
 };
 export const Default = {
-	components: {
-		MkPageHeader,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPageHeader,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPageHeader v-bind="$props" />',
+		};
 	},
-	template: '<MkPageHeader />',
 	parameters: {
 		layout: 'centered',
 	},

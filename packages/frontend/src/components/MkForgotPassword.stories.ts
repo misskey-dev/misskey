@@ -5,10 +5,15 @@ const meta = {
 	component: MkForgotPassword,
 };
 export const Default = {
-	components: {
-		MkForgotPassword,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkForgotPassword,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkForgotPassword v-bind="$props" />',
+		};
 	},
-	template: '<MkForgotPassword />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkCheckbox,
 };
 export const Default = {
-	components: {
-		MkCheckbox,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkCheckbox,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkCheckbox v-bind="$props" />',
+		};
 	},
-	template: '<MkCheckbox />',
 	parameters: {
 		layout: 'centered',
 	},

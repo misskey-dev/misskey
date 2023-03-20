@@ -5,10 +5,15 @@ const meta = {
 	component: net,
 };
 export const Default = {
-	components: {
-		net,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				net,
+			},
+			props: Object.keys(argTypes),
+			template: '<net v-bind="$props" />',
+		};
 	},
-	template: '<net />',
 	parameters: {
 		layout: 'centered',
 	},

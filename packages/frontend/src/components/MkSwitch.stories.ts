@@ -5,10 +5,15 @@ const meta = {
 	component: MkSwitch,
 };
 export const Default = {
-	components: {
-		MkSwitch,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSwitch,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSwitch v-bind="$props" />',
+		};
 	},
-	template: '<MkSwitch />',
 	parameters: {
 		layout: 'centered',
 	},

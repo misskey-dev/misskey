@@ -5,10 +5,15 @@ const meta = {
 	component: MkLink,
 };
 export const Default = {
-	components: {
-		MkLink,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkLink,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkLink v-bind="$props" />',
+		};
 	},
-	template: '<MkLink />',
 	parameters: {
 		layout: 'centered',
 	},

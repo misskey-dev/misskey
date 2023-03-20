@@ -5,10 +5,15 @@ const meta = {
 	component: database,
 };
 export const Default = {
-	components: {
-		database,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				database,
+			},
+			props: Object.keys(argTypes),
+			template: '<database v-bind="$props" />',
+		};
 	},
-	template: '<database />',
 	parameters: {
 		layout: 'fullscreen',
 	},

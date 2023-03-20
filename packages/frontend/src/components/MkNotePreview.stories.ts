@@ -5,10 +5,15 @@ const meta = {
 	component: MkNotePreview,
 };
 export const Default = {
-	components: {
-		MkNotePreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkNotePreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkNotePreview v-bind="$props" />',
+		};
 	},
-	template: '<MkNotePreview />',
 	parameters: {
 		layout: 'centered',
 	},

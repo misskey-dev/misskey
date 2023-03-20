@@ -5,10 +5,15 @@ const meta = {
 	component: MkAchievements,
 };
 export const Default = {
-	components: {
-		MkAchievements,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkAchievements,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkAchievements v-bind="$props" />',
+		};
 	},
-	template: '<MkAchievements />',
 	parameters: {
 		layout: 'centered',
 	},

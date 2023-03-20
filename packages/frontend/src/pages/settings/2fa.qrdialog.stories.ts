@@ -5,10 +5,15 @@ const meta = {
 	component: _2fa_qrdialog,
 };
 export const Default = {
-	components: {
-		_2fa_qrdialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				_2fa_qrdialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<_2fa_qrdialog v-bind="$props" />',
+		};
 	},
-	template: '<_2fa_qrdialog />',
 	parameters: {
 		layout: 'fullscreen',
 	},

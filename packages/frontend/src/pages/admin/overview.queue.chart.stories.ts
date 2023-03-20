@@ -5,10 +5,15 @@ const meta = {
 	component: overview_queue_chart,
 };
 export const Default = {
-	components: {
-		overview_queue_chart,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview_queue_chart,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview_queue_chart v-bind="$props" />',
+		};
 	},
-	template: '<overview_queue_chart />',
 	parameters: {
 		layout: 'fullscreen',
 	},

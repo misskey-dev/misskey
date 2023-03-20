@@ -5,10 +5,15 @@ const meta = {
 	component: MkYoutubePlayer,
 };
 export const Default = {
-	components: {
-		MkYoutubePlayer,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkYoutubePlayer,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkYoutubePlayer v-bind="$props" />',
+		};
 	},
-	template: '<MkYoutubePlayer />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: overview_ap_requests,
 };
 export const Default = {
-	components: {
-		overview_ap_requests,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview_ap_requests,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview_ap_requests v-bind="$props" />',
+		};
 	},
-	template: '<overview_ap_requests />',
 	parameters: {
 		layout: 'fullscreen',
 	},

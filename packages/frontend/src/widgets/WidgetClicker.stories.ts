@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetClicker,
 };
 export const Default = {
-	components: {
-		WidgetClicker,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetClicker,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetClicker v-bind="$props" />',
+		};
 	},
-	template: '<WidgetClicker />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkTab,
 };
 export const Default = {
-	components: {
-		MkTab,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkTab,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkTab v-bind="$props" />',
+		};
 	},
-	template: '<MkTab />',
 	parameters: {
 		layout: 'centered',
 	},

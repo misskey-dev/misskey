@@ -5,10 +5,15 @@ const meta = {
 	component: object_storage,
 };
 export const Default = {
-	components: {
-		object_storage,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				object_storage,
+			},
+			props: Object.keys(argTypes),
+			template: '<object_storage v-bind="$props" />',
+		};
 	},
-	template: '<object_storage />',
 	parameters: {
 		layout: 'fullscreen',
 	},

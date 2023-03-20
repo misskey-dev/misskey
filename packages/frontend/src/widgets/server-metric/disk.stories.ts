@@ -5,10 +5,15 @@ const meta = {
 	component: disk,
 };
 export const Default = {
-	components: {
-		disk,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				disk,
+			},
+			props: Object.keys(argTypes),
+			template: '<disk v-bind="$props" />',
+		};
 	},
-	template: '<disk />',
 	parameters: {
 		layout: 'centered',
 	},

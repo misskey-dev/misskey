@@ -5,10 +5,15 @@ const meta = {
 	component: MkTimeline,
 };
 export const Default = {
-	components: {
-		MkTimeline,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkTimeline,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkTimeline v-bind="$props" />',
+		};
 	},
-	template: '<MkTimeline />',
 	parameters: {
 		layout: 'centered',
 	},

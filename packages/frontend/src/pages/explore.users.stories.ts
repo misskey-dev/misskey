@@ -5,10 +5,15 @@ const meta = {
 	component: explore_users,
 };
 export const Default = {
-	components: {
-		explore_users,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				explore_users,
+			},
+			props: Object.keys(argTypes),
+			template: '<explore_users v-bind="$props" />',
+		};
 	},
-	template: '<explore_users />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkLaunchPad,
 };
 export const Default = {
-	components: {
-		MkLaunchPad,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkLaunchPad,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkLaunchPad v-bind="$props" />',
+		};
 	},
-	template: '<MkLaunchPad />',
 	parameters: {
 		layout: 'centered',
 	},

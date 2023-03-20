@@ -5,10 +5,15 @@ const meta = {
 	component: page_editor_blocks,
 };
 export const Default = {
-	components: {
-		page_editor_blocks,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_editor_blocks,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_editor_blocks v-bind="$props" />',
+		};
 	},
-	template: '<page_editor_blocks />',
 	parameters: {
 		layout: 'fullscreen',
 	},

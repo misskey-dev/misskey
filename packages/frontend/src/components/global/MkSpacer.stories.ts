@@ -5,10 +5,15 @@ const meta = {
 	component: MkSpacer,
 };
 export const Default = {
-	components: {
-		MkSpacer,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSpacer,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSpacer v-bind="$props" />',
+		};
 	},
-	template: '<MkSpacer />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: reaction,
 };
 export const Default = {
-	components: {
-		reaction,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				reaction,
+			},
+			props: Object.keys(argTypes),
+			template: '<reaction v-bind="$props" />',
+		};
 	},
-	template: '<reaction />',
 	parameters: {
 		layout: 'fullscreen',
 	},

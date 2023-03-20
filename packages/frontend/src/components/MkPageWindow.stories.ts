@@ -5,10 +5,15 @@ const meta = {
 	component: MkPageWindow,
 };
 export const Default = {
-	components: {
-		MkPageWindow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPageWindow,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPageWindow v-bind="$props" />',
+		};
 	},
-	template: '<MkPageWindow />',
 	parameters: {
 		layout: 'centered',
 	},

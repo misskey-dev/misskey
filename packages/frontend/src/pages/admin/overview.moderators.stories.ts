@@ -5,10 +5,15 @@ const meta = {
 	component: overview_moderators,
 };
 export const Default = {
-	components: {
-		overview_moderators,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview_moderators,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview_moderators v-bind="$props" />',
+		};
 	},
-	template: '<overview_moderators />',
 	parameters: {
 		layout: 'fullscreen',
 	},

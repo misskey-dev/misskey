@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetActivity_chart,
 };
 export const Default = {
-	components: {
-		WidgetActivity_chart,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetActivity_chart,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetActivity_chart v-bind="$props" />',
+		};
 	},
-	template: '<WidgetActivity_chart />',
 	parameters: {
 		layout: 'centered',
 	},

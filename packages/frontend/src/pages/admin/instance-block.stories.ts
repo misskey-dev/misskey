@@ -5,10 +5,15 @@ const meta = {
 	component: instance_block,
 };
 export const Default = {
-	components: {
-		instance_block,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				instance_block,
+			},
+			props: Object.keys(argTypes),
+			template: '<instance_block v-bind="$props" />',
+		};
 	},
-	template: '<instance_block />',
 	parameters: {
 		layout: 'fullscreen',
 	},

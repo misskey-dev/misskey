@@ -5,10 +5,15 @@ const meta = {
 	component: MkError,
 };
 export const Default = {
-	components: {
-		MkError,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkError,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkError v-bind="$props" />',
+		};
 	},
-	template: '<MkError />',
 	parameters: {
 		layout: 'centered',
 	},

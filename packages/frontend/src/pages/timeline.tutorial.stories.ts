@@ -5,10 +5,15 @@ const meta = {
 	component: timeline_tutorial,
 };
 export const Default = {
-	components: {
-		timeline_tutorial,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				timeline_tutorial,
+			},
+			props: Object.keys(argTypes),
+			template: '<timeline_tutorial v-bind="$props" />',
+		};
 	},
-	template: '<timeline_tutorial />',
 	parameters: {
 		layout: 'fullscreen',
 	},

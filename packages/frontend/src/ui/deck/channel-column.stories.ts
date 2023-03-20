@@ -5,10 +5,15 @@ const meta = {
 	component: channel_column,
 };
 export const Default = {
-	components: {
-		channel_column,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				channel_column,
+			},
+			props: Object.keys(argTypes),
+			template: '<channel_column v-bind="$props" />',
+		};
 	},
-	template: '<channel_column />',
 	parameters: {
 		layout: 'centered',
 	},

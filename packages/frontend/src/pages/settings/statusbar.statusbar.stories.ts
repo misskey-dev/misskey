@@ -5,10 +5,15 @@ const meta = {
 	component: statusbar_statusbar,
 };
 export const Default = {
-	components: {
-		statusbar_statusbar,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				statusbar_statusbar,
+			},
+			props: Object.keys(argTypes),
+			template: '<statusbar_statusbar v-bind="$props" />',
+		};
 	},
-	template: '<statusbar_statusbar />',
 	parameters: {
 		layout: 'fullscreen',
 	},

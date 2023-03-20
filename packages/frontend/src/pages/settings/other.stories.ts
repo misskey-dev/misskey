@@ -5,10 +5,15 @@ const meta = {
 	component: other,
 };
 export const Default = {
-	components: {
-		other,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				other,
+			},
+			props: Object.keys(argTypes),
+			template: '<other v-bind="$props" />',
+		};
 	},
-	template: '<other />',
 	parameters: {
 		layout: 'fullscreen',
 	},

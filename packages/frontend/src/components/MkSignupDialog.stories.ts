@@ -5,10 +5,15 @@ const meta = {
 	component: MkSignupDialog,
 };
 export const Default = {
-	components: {
-		MkSignupDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSignupDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSignupDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkSignupDialog />',
 	parameters: {
 		layout: 'centered',
 	},

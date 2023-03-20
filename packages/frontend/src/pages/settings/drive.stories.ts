@@ -5,10 +5,15 @@ const meta = {
 	component: drive,
 };
 export const Default = {
-	components: {
-		drive,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				drive,
+			},
+			props: Object.keys(argTypes),
+			template: '<drive v-bind="$props" />',
+		};
 	},
-	template: '<drive />',
 	parameters: {
 		layout: 'fullscreen',
 	},

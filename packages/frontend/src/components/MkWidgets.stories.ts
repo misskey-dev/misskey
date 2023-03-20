@@ -5,10 +5,15 @@ const meta = {
 	component: MkWidgets,
 };
 export const Default = {
-	components: {
-		MkWidgets,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkWidgets,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkWidgets v-bind="$props" />',
+		};
 	},
-	template: '<MkWidgets />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: index,
 };
 export const Default = {
-	components: {
-		index,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				index,
+			},
+			props: Object.keys(argTypes),
+			template: '<index v-bind="$props" />',
+		};
 	},
-	template: '<index />',
 	parameters: {
 		layout: 'centered',
 	},

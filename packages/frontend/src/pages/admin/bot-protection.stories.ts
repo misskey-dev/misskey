@@ -5,10 +5,15 @@ const meta = {
 	component: bot_protection,
 };
 export const Default = {
-	components: {
-		bot_protection,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				bot_protection,
+			},
+			props: Object.keys(argTypes),
+			template: '<bot_protection v-bind="$props" />',
+		};
 	},
-	template: '<bot_protection />',
 	parameters: {
 		layout: 'fullscreen',
 	},

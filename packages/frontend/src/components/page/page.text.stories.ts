@@ -5,10 +5,15 @@ const meta = {
 	component: page_text,
 };
 export const Default = {
-	components: {
-		page_text,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_text,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_text v-bind="$props" />',
+		};
 	},
-	template: '<page_text />',
 	parameters: {
 		layout: 'centered',
 	},

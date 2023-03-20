@@ -5,10 +5,15 @@ const meta = {
 	component: overview_stats,
 };
 export const Default = {
-	components: {
-		overview_stats,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview_stats,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview_stats v-bind="$props" />',
+		};
 	},
-	template: '<overview_stats />',
 	parameters: {
 		layout: 'fullscreen',
 	},

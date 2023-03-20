@@ -5,10 +5,15 @@ const meta = {
 	component: slot,
 };
 export const Default = {
-	components: {
-		slot,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				slot,
+			},
+			props: Object.keys(argTypes),
+			template: '<slot v-bind="$props" />',
+		};
 	},
-	template: '<slot />',
 	parameters: {
 		layout: 'centered',
 	},

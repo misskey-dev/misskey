@@ -5,10 +5,15 @@ const meta = {
 	component: emoji_edit_dialog,
 };
 export const Default = {
-	components: {
-		emoji_edit_dialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				emoji_edit_dialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<emoji_edit_dialog v-bind="$props" />',
+		};
 	},
-	template: '<emoji_edit_dialog />',
 	parameters: {
 		layout: 'fullscreen',
 	},

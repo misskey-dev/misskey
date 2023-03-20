@@ -5,10 +5,15 @@ const meta = {
 	component: federation,
 };
 export const Default = {
-	components: {
-		federation,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				federation,
+			},
+			props: Object.keys(argTypes),
+			template: '<federation v-bind="$props" />',
+		};
 	},
-	template: '<federation />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: link,
 };
 export const Default = {
-	components: {
-		link,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				link,
+			},
+			props: Object.keys(argTypes),
+			template: '<link v-bind="$props" />',
+		};
 	},
-	template: '<link />',
 	parameters: {
 		layout: 'centered',
 	},

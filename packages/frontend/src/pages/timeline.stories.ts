@@ -5,10 +5,15 @@ const meta = {
 	component: timeline,
 };
 export const Default = {
-	components: {
-		timeline,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				timeline,
+			},
+			props: Object.keys(argTypes),
+			template: '<timeline v-bind="$props" />',
+		};
 	},
-	template: '<timeline />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: overview,
 };
 export const Default = {
-	components: {
-		overview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview v-bind="$props" />',
+		};
 	},
-	template: '<overview />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkSubNoteContent,
 };
 export const Default = {
-	components: {
-		MkSubNoteContent,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSubNoteContent,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSubNoteContent v-bind="$props" />',
+		};
 	},
-	template: '<MkSubNoteContent />',
 	parameters: {
 		layout: 'centered',
 	},

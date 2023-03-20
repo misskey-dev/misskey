@@ -5,10 +5,15 @@ const meta = {
 	component: _2fa,
 };
 export const Default = {
-	components: {
-		_2fa,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				_2fa,
+			},
+			props: Object.keys(argTypes),
+			template: '<_2fa v-bind="$props" />',
+		};
 	},
-	template: '<_2fa />',
 	parameters: {
 		layout: 'fullscreen',
 	},

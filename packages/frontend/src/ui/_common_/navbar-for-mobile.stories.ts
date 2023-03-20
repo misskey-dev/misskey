@@ -5,10 +5,15 @@ const meta = {
 	component: navbar_for_mobile,
 };
 export const Default = {
-	components: {
-		navbar_for_mobile,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				navbar_for_mobile,
+			},
+			props: Object.keys(argTypes),
+			template: '<navbar_for_mobile v-bind="$props" />',
+		};
 	},
-	template: '<navbar_for_mobile />',
 	parameters: {
 		layout: 'centered',
 	},

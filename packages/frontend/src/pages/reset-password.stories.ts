@@ -5,10 +5,15 @@ const meta = {
 	component: reset_password,
 };
 export const Default = {
-	components: {
-		reset_password,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				reset_password,
+			},
+			props: Object.keys(argTypes),
+			template: '<reset_password v-bind="$props" />',
+		};
 	},
-	template: '<reset_password />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: index_activity,
 };
 export const Default = {
-	components: {
-		index_activity,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				index_activity,
+			},
+			props: Object.keys(argTypes),
+			template: '<index_activity v-bind="$props" />',
+		};
 	},
-	template: '<index_activity />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkSignin,
 };
 export const Default = {
-	components: {
-		MkSignin,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSignin,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSignin v-bind="$props" />',
+		};
 	},
-	template: '<MkSignin />',
 	parameters: {
 		layout: 'centered',
 	},

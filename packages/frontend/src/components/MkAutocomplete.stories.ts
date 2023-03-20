@@ -5,10 +5,15 @@ const meta = {
 	component: MkAutocomplete,
 };
 export const Default = {
-	components: {
-		MkAutocomplete,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkAutocomplete,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkAutocomplete v-bind="$props" />',
+		};
 	},
-	template: '<MkAutocomplete />',
 	parameters: {
 		layout: 'centered',
 	},

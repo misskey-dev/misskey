@@ -5,10 +5,15 @@ const meta = {
 	component: user_list_timeline,
 };
 export const Default = {
-	components: {
-		user_list_timeline,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				user_list_timeline,
+			},
+			props: Object.keys(argTypes),
+			template: '<user_list_timeline v-bind="$props" />',
+		};
 	},
-	template: '<user_list_timeline />',
 	parameters: {
 		layout: 'fullscreen',
 	},

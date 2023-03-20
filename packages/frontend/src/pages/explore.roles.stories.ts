@@ -5,10 +5,15 @@ const meta = {
 	component: explore_roles,
 };
 export const Default = {
-	components: {
-		explore_roles,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				explore_roles,
+			},
+			props: Object.keys(argTypes),
+			template: '<explore_roles v-bind="$props" />',
+		};
 	},
-	template: '<explore_roles />',
 	parameters: {
 		layout: 'fullscreen',
 	},

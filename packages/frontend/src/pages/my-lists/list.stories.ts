@@ -5,10 +5,15 @@ const meta = {
 	component: list,
 };
 export const Default = {
-	components: {
-		list,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				list,
+			},
+			props: Object.keys(argTypes),
+			template: '<list v-bind="$props" />',
+		};
 	},
-	template: '<list />',
 	parameters: {
 		layout: 'fullscreen',
 	},

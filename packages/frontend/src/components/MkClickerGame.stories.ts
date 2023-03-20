@@ -5,10 +5,15 @@ const meta = {
 	component: MkClickerGame,
 };
 export const Default = {
-	components: {
-		MkClickerGame,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkClickerGame,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkClickerGame v-bind="$props" />',
+		};
 	},
-	template: '<MkClickerGame />',
 	parameters: {
 		layout: 'centered',
 	},

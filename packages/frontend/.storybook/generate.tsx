@@ -1,4 +1,5 @@
-import * as fs from 'node:fs/promises';
+import { existsSync, readFileSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
 import { promisify } from 'node:util';
 import { generate } from 'astring';
@@ -12,6 +13,10 @@ function h<T extends estree.Node>(component: T['type'], props: Omit<T, 'type'>):
 }
 
 function toStories(component: string): string {
+	const msw = `${component.slice(0, -'.vue'.length)}.msw`;
+	const implStories = `${component.slice(0, -'.vue'.length)}.stories.impl`;
+	const hasMsw = existsSync(`${msw}.ts`);
+	const hasImplStories = existsSync(`${implStories}.ts`);
 	const base = basename(component);
 	const dir = dirname(component);
 	const literal = (
@@ -27,7 +32,17 @@ function toStories(component: string): string {
 					key={<identifier name="layout" />}
 					value={<literal value={`${dir}/`.startsWith('src/pages/') || base === 'MkAnalogClock.vue' ? 'fullscreen' : 'centered'} />}
 					kind="init"
-				/>
+				/>,
+				...hasMsw
+					? [
+							<property
+								key={<identifier name="msw" />}
+								value={<identifier name="msw" />}
+								kind="init"
+								shorthand
+							/>,
+						]
+					: [],
 			]}
 		/>
 	);
@@ -47,6 +62,18 @@ function toStories(component: string): string {
 						/>,
 					]}
 				/>,
+				...hasMsw
+					? [
+							<import-declaration
+								source={<literal value={`./${basename(msw)}`} />}
+								specifiers={[
+									<import-namespace-specifier
+										local={<identifier name="msw" />}
+									/>,
+								]}
+							/>,
+						]
+					: [],
 				<import-declaration
 					source={<literal value={`./${base}`} />}
 					specifiers={[
@@ -80,50 +107,109 @@ function toStories(component: string): string {
 						/>,
 					]}
 				/>,
-				<export-named-declaration
-					declaration={
-						<variable-declaration
-							kind="const"
-							declarations={[
-								<variable-declarator
-									id={<identifier name="Default" />}
-									init={
-										<object-expression
-											properties={[
-												<property
-													key={<identifier name="components" />}
-													value={
-														<object-expression
-															properties={[
-																<property
-																	key={identifier}
-																	value={identifier}
-																	kind="init"
-																	shorthand
-																/>,
-															]}
-														/>
-													}
-													kind="init"
-												/>,
-												<property
-													key={<identifier name="template" />}
-													value={<literal value={`<${identifier.name} />`} />}
-													kind="init"
-												/>,
-												<property
-													key={<identifier name="parameters" />}
-													value={parameters}
-													kind="init"
-												/>,
-											]}
-										/>
-									}
-								/>,
-							]}
-						/>
-					}
-				/>,
+				...hasImplStories
+					? [
+						]
+					: [
+							<export-named-declaration
+								declaration={
+									<variable-declaration
+										kind="const"
+										declarations={[
+											<variable-declarator
+												id={<identifier name="Default" />}
+												init={
+													<object-expression
+														properties={[
+															<property
+																key={<identifier name="render" />}
+																value={
+																	<function-expression
+																		id={<identifier name="render" />}
+																		params={[
+																			<identifier name="args" />,
+																			<object-pattern
+																				properties={[
+																					<property
+																						key={<identifier name="argTypes" />}
+																						value={<identifier name="argTypes" />}
+																						kind="init"
+																						shorthand
+																					/>,
+																				]}
+																			/>,
+																		]}
+																		body={
+																			<block-statement
+																				body={[
+																					<return-statement
+																						argument={
+																							<object-expression
+																								properties={[
+																									<property
+																										key={<identifier name="components" />}
+																										value={
+																											<object-expression
+																												properties={[
+																													<property
+																														key={identifier}
+																														value={identifier}
+																														kind="init"
+																														shorthand
+																													/>,
+																												]}
+																											/>
+																										}
+																										kind="init"
+																									/>,
+																									<property
+																										key={<identifier name="props" />}
+																										value={
+																											<call-expression
+																												callee={
+																													<member-expression
+																														object={<identifier name="Object" />}
+																														property={<identifier name="keys" />}
+																													/>
+																												}
+																												arguments={[
+																													<identifier name="argTypes" />,
+																												]}
+																											/>
+																										}
+																										kind="init"
+																									/>,
+																									<property
+																										key={<identifier name="template" />}
+																										value={<literal value={`<${identifier.name} v-bind="$props" />`} />}
+																										kind="init"
+																									/>,
+																								]}
+																							/>
+																						}
+																					/>,
+																				]}
+																			/>
+																		}
+																	/>
+																}
+																method
+																kind="init"
+															/>,
+															<property
+																key={<identifier name="parameters" />}
+																value={parameters}
+																kind="init"
+															/>,
+														]}
+													/>
+												}
+											/>,
+										]}
+									/>
+								}
+							/>,
+						],
 				<export-default-declaration
 					declaration={<identifier name="meta" />}
 				/>,
@@ -131,7 +217,7 @@ function toStories(component: string): string {
 		/>
 	) as unknown as estree.Program;
 	return format(
-		generate(program),
+		generate(program) + (hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
 		{
 			parser: 'babel-ts',
 			singleQuote: true,
@@ -143,11 +229,6 @@ function toStories(component: string): string {
 promisify(glob)('src/{components,pages,ui,widgets}/**/*.vue').then((components) => Promise.all(
 	components.map((component) => {
 		const stories = component.replace(/\.vue$/, '.stories.ts');
-		fs.stat(stories).then(
-			() => {},
-			() => {
-				fs.writeFile(stories, toStories(component));
-			}
-		);
+		return writeFile(stories, toStories(component));
 	})
 ));

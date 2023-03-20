@@ -5,10 +5,15 @@ const meta = {
 	component: MkRetentionHeatmap,
 };
 export const Default = {
-	components: {
-		MkRetentionHeatmap,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkRetentionHeatmap,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkRetentionHeatmap v-bind="$props" />',
+		};
 	},
-	template: '<MkRetentionHeatmap />',
 	parameters: {
 		layout: 'centered',
 	},

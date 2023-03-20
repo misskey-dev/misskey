@@ -5,10 +5,15 @@ const meta = {
 	component: MkUsersTooltip,
 };
 export const Default = {
-	components: {
-		MkUsersTooltip,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkUsersTooltip,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkUsersTooltip v-bind="$props" />',
+		};
 	},
-	template: '<MkUsersTooltip />',
 	parameters: {
 		layout: 'centered',
 	},

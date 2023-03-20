@@ -5,10 +5,15 @@ const meta = {
 	component: MkHeatmap,
 };
 export const Default = {
-	components: {
-		MkHeatmap,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkHeatmap,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkHeatmap v-bind="$props" />',
+		};
 	},
-	template: '<MkHeatmap />',
 	parameters: {
 		layout: 'centered',
 	},

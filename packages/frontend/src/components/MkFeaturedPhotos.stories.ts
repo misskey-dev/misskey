@@ -5,10 +5,15 @@ const meta = {
 	component: MkFeaturedPhotos,
 };
 export const Default = {
-	components: {
-		MkFeaturedPhotos,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFeaturedPhotos,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFeaturedPhotos v-bind="$props" />',
+		};
 	},
-	template: '<MkFeaturedPhotos />',
 	parameters: {
 		layout: 'centered',
 	},

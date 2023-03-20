@@ -5,10 +5,15 @@ const meta = {
 	component: scratchpad,
 };
 export const Default = {
-	components: {
-		scratchpad,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				scratchpad,
+			},
+			props: Object.keys(argTypes),
+			template: '<scratchpad v-bind="$props" />',
+		};
 	},
-	template: '<scratchpad />',
 	parameters: {
 		layout: 'fullscreen',
 	},

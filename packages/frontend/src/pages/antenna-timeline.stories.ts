@@ -5,10 +5,15 @@ const meta = {
 	component: antenna_timeline,
 };
 export const Default = {
-	components: {
-		antenna_timeline,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				antenna_timeline,
+			},
+			props: Object.keys(argTypes),
+			template: '<antenna_timeline v-bind="$props" />',
+		};
 	},
-	template: '<antenna_timeline />',
 	parameters: {
 		layout: 'fullscreen',
 	},

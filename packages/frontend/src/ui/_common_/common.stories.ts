@@ -5,10 +5,15 @@ const meta = {
 	component: common,
 };
 export const Default = {
-	components: {
-		common,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				common,
+			},
+			props: Object.keys(argTypes),
+			template: '<common v-bind="$props" />',
+		};
 	},
-	template: '<common />',
 	parameters: {
 		layout: 'centered',
 	},

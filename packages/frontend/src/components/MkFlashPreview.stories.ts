@@ -5,10 +5,15 @@ const meta = {
 	component: MkFlashPreview,
 };
 export const Default = {
-	components: {
-		MkFlashPreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFlashPreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFlashPreview v-bind="$props" />',
+		};
 	},
-	template: '<MkFlashPreview />',
 	parameters: {
 		layout: 'centered',
 	},

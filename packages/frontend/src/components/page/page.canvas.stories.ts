@@ -5,10 +5,15 @@ const meta = {
 	component: page_canvas,
 };
 export const Default = {
-	components: {
-		page_canvas,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_canvas,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_canvas v-bind="$props" />',
+		};
 	},
-	template: '<page_canvas />',
 	parameters: {
 		layout: 'centered',
 	},

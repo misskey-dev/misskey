@@ -5,10 +5,15 @@ const meta = {
 	component: MkClipPreview,
 };
 export const Default = {
-	components: {
-		MkClipPreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkClipPreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkClipPreview v-bind="$props" />',
+		};
 	},
-	template: '<MkClipPreview />',
 	parameters: {
 		layout: 'centered',
 	},

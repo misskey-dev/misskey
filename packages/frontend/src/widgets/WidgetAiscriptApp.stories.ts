@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetAiscriptApp,
 };
 export const Default = {
-	components: {
-		WidgetAiscriptApp,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetAiscriptApp,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetAiscriptApp v-bind="$props" />',
+		};
 	},
-	template: '<WidgetAiscriptApp />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: _error_,
 };
 export const Default = {
-	components: {
-		_error_,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				_error_,
+			},
+			props: Object.keys(argTypes),
+			template: '<_error_ v-bind="$props" />',
+		};
 	},
-	template: '<_error_ />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: classic_sidebar,
 };
 export const Default = {
-	components: {
-		classic_sidebar,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				classic_sidebar,
+			},
+			props: Object.keys(argTypes),
+			template: '<classic_sidebar v-bind="$props" />',
+		};
 	},
-	template: '<classic_sidebar />',
 	parameters: {
 		layout: 'centered',
 	},

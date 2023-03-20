@@ -5,10 +5,15 @@ const meta = {
 	component: signup_complete,
 };
 export const Default = {
-	components: {
-		signup_complete,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				signup_complete,
+			},
+			props: Object.keys(argTypes),
+			template: '<signup_complete v-bind="$props" />',
+		};
 	},
-	template: '<signup_complete />',
 	parameters: {
 		layout: 'fullscreen',
 	},

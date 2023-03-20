@@ -5,10 +5,15 @@ const meta = {
 	component: about_misskey,
 };
 export const Default = {
-	components: {
-		about_misskey,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				about_misskey,
+			},
+			props: Object.keys(argTypes),
+			template: '<about_misskey v-bind="$props" />',
+		};
 	},
-	template: '<about_misskey />',
 	parameters: {
 		layout: 'fullscreen',
 	},

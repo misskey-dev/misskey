@@ -5,10 +5,15 @@ const meta = {
 	component: stream_indicator,
 };
 export const Default = {
-	components: {
-		stream_indicator,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				stream_indicator,
+			},
+			props: Object.keys(argTypes),
+			template: '<stream_indicator v-bind="$props" />',
+		};
 	},
-	template: '<stream_indicator />',
 	parameters: {
 		layout: 'centered',
 	},

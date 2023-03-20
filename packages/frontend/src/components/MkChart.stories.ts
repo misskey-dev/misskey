@@ -5,10 +5,15 @@ const meta = {
 	component: MkChart,
 };
 export const Default = {
-	components: {
-		MkChart,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkChart,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkChart v-bind="$props" />',
+		};
 	},
-	template: '<MkChart />',
 	parameters: {
 		layout: 'centered',
 	},

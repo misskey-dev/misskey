@@ -5,10 +5,15 @@ const meta = {
 	component: page_editor_el_note,
 };
 export const Default = {
-	components: {
-		page_editor_el_note,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_editor_el_note,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_editor_el_note v-bind="$props" />',
+		};
 	},
-	template: '<page_editor_el_note />',
 	parameters: {
 		layout: 'fullscreen',
 	},

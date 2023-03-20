@@ -5,10 +5,15 @@ const meta = {
 	component: MkAd,
 };
 export const Default = {
-	components: {
-		MkAd,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkAd,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkAd v-bind="$props" />',
+		};
 	},
-	template: '<MkAd />',
 	parameters: {
 		layout: 'centered',
 	},

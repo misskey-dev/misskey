@@ -5,10 +5,15 @@ const meta = {
 	component: MkSuperMenu,
 };
 export const Default = {
-	components: {
-		MkSuperMenu,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkSuperMenu,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkSuperMenu v-bind="$props" />',
+		};
 	},
-	template: '<MkSuperMenu />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: activity_following,
 };
 export const Default = {
-	components: {
-		activity_following,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				activity_following,
+			},
+			props: Object.keys(argTypes),
+			template: '<activity_following v-bind="$props" />',
+		};
 	},
-	template: '<activity_following />',
 	parameters: {
 		layout: 'fullscreen',
 	},

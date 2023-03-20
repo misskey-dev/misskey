@@ -5,10 +5,15 @@ const meta = {
 	component: MkRadio,
 };
 export const Default = {
-	components: {
-		MkRadio,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkRadio,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkRadio v-bind="$props" />',
+		};
 	},
-	template: '<MkRadio />',
 	parameters: {
 		layout: 'centered',
 	},

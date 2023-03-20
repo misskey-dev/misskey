@@ -5,10 +5,15 @@ const meta = {
 	component: RolesEditorFormula,
 };
 export const Default = {
-	components: {
-		RolesEditorFormula,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				RolesEditorFormula,
+			},
+			props: Object.keys(argTypes),
+			template: '<RolesEditorFormula v-bind="$props" />',
+		};
 	},
-	template: '<RolesEditorFormula />',
 	parameters: {
 		layout: 'fullscreen',
 	},

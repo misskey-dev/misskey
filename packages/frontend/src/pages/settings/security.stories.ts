@@ -5,10 +5,15 @@ const meta = {
 	component: security,
 };
 export const Default = {
-	components: {
-		security,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				security,
+			},
+			props: Object.keys(argTypes),
+			template: '<security v-bind="$props" />',
+		};
 	},
-	template: '<security />',
 	parameters: {
 		layout: 'fullscreen',
 	},

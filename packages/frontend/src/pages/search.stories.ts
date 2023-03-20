@@ -5,10 +5,15 @@ const meta = {
 	component: search,
 };
 export const Default = {
-	components: {
-		search,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				search,
+			},
+			props: Object.keys(argTypes),
+			template: '<search v-bind="$props" />',
+		};
 	},
-	template: '<search />',
 	parameters: {
 		layout: 'fullscreen',
 	},

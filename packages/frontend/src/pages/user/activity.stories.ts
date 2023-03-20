@@ -5,10 +5,15 @@ const meta = {
 	component: activity,
 };
 export const Default = {
-	components: {
-		activity,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				activity,
+			},
+			props: Object.keys(argTypes),
+			template: '<activity v-bind="$props" />',
+		};
 	},
-	template: '<activity />',
 	parameters: {
 		layout: 'fullscreen',
 	},

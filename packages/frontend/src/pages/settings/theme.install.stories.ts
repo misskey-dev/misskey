@@ -5,10 +5,15 @@ const meta = {
 	component: theme_install,
 };
 export const Default = {
-	components: {
-		theme_install,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				theme_install,
+			},
+			props: Object.keys(argTypes),
+			template: '<theme_install v-bind="$props" />',
+		};
 	},
-	template: '<theme_install />',
 	parameters: {
 		layout: 'fullscreen',
 	},

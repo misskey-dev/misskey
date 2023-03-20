@@ -5,10 +5,15 @@ const meta = {
 	component: upload,
 };
 export const Default = {
-	components: {
-		upload,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				upload,
+			},
+			props: Object.keys(argTypes),
+			template: '<upload v-bind="$props" />',
+		};
 	},
-	template: '<upload />',
 	parameters: {
 		layout: 'centered',
 	},

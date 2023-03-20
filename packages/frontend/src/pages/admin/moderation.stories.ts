@@ -5,10 +5,15 @@ const meta = {
 	component: moderation,
 };
 export const Default = {
-	components: {
-		moderation,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				moderation,
+			},
+			props: Object.keys(argTypes),
+			template: '<moderation v-bind="$props" />',
+		};
 	},
-	template: '<moderation />',
 	parameters: {
 		layout: 'fullscreen',
 	},

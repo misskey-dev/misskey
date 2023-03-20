@@ -5,10 +5,15 @@ const meta = {
 	component: privacy,
 };
 export const Default = {
-	components: {
-		privacy,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				privacy,
+			},
+			props: Object.keys(argTypes),
+			template: '<privacy v-bind="$props" />',
+		};
 	},
-	template: '<privacy />',
 	parameters: {
 		layout: 'fullscreen',
 	},

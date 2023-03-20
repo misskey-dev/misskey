@@ -5,10 +5,15 @@ const meta = {
 	component: MkFileCaptionEditWindow,
 };
 export const Default = {
-	components: {
-		MkFileCaptionEditWindow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFileCaptionEditWindow,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFileCaptionEditWindow v-bind="$props" />',
+		};
 	},
-	template: '<MkFileCaptionEditWindow />',
 	parameters: {
 		layout: 'centered',
 	},

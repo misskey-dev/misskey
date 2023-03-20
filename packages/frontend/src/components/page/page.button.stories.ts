@@ -5,10 +5,15 @@ const meta = {
 	component: page_button,
 };
 export const Default = {
-	components: {
-		page_button,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_button,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_button v-bind="$props" />',
+		};
 	},
-	template: '<page_button />',
 	parameters: {
 		layout: 'centered',
 	},

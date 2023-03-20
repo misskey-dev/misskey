@@ -5,10 +5,15 @@ const meta = {
 	component: MkContainer,
 };
 export const Default = {
-	components: {
-		MkContainer,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkContainer,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkContainer v-bind="$props" />',
+		};
 	},
-	template: '<MkContainer />',
 	parameters: {
 		layout: 'centered',
 	},

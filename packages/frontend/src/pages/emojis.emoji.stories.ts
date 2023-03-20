@@ -5,10 +5,15 @@ const meta = {
 	component: emojis_emoji,
 };
 export const Default = {
-	components: {
-		emojis_emoji,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				emojis_emoji,
+			},
+			props: Object.keys(argTypes),
+			template: '<emojis_emoji v-bind="$props" />',
+		};
 	},
-	template: '<emojis_emoji />',
 	parameters: {
 		layout: 'fullscreen',
 	},

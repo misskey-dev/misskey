@@ -5,10 +5,15 @@ const meta = {
 	component: clips,
 };
 export const Default = {
-	components: {
-		clips,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				clips,
+			},
+			props: Object.keys(argTypes),
+			template: '<clips v-bind="$props" />',
+		};
 	},
-	template: '<clips />',
 	parameters: {
 		layout: 'fullscreen',
 	},

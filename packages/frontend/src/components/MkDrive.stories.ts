@@ -5,10 +5,15 @@ const meta = {
 	component: MkDrive,
 };
 export const Default = {
-	components: {
-		MkDrive,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkDrive,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkDrive v-bind="$props" />',
+		};
 	},
-	template: '<MkDrive />',
 	parameters: {
 		layout: 'centered',
 	},

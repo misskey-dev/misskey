@@ -5,10 +5,15 @@ const meta = {
 	component: favorites,
 };
 export const Default = {
-	components: {
-		favorites,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				favorites,
+			},
+			props: Object.keys(argTypes),
+			template: '<favorites v-bind="$props" />',
+		};
 	},
-	template: '<favorites />',
 	parameters: {
 		layout: 'fullscreen',
 	},

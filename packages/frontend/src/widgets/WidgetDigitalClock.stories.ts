@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetDigitalClock,
 };
 export const Default = {
-	components: {
-		WidgetDigitalClock,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetDigitalClock,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetDigitalClock v-bind="$props" />',
+		};
 	},
-	template: '<WidgetDigitalClock />',
 	parameters: {
 		layout: 'centered',
 	},

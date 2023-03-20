@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetAichan,
 };
 export const Default = {
-	components: {
-		WidgetAichan,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetAichan,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetAichan v-bind="$props" />',
+		};
 	},
-	template: '<WidgetAichan />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: word_mute,
 };
 export const Default = {
-	components: {
-		word_mute,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				word_mute,
+			},
+			props: Object.keys(argTypes),
+			template: '<word_mute v-bind="$props" />',
+		};
 	},
-	template: '<word_mute />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkUserSelectDialog,
 };
 export const Default = {
-	components: {
-		MkUserSelectDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkUserSelectDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkUserSelectDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkUserSelectDialog />',
 	parameters: {
 		layout: 'centered',
 	},

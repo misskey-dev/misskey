@@ -5,10 +5,15 @@ const meta = {
 	component: MkReactionsViewer_reaction,
 };
 export const Default = {
-	components: {
-		MkReactionsViewer_reaction,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkReactionsViewer_reaction,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkReactionsViewer_reaction v-bind="$props" />',
+		};
 	},
-	template: '<MkReactionsViewer_reaction />',
 	parameters: {
 		layout: 'centered',
 	},

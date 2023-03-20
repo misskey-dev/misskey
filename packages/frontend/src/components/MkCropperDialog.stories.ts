@@ -5,10 +5,15 @@ const meta = {
 	component: MkCropperDialog,
 };
 export const Default = {
-	components: {
-		MkCropperDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkCropperDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkCropperDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkCropperDialog />',
 	parameters: {
 		layout: 'centered',
 	},

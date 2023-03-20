@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetPhotos,
 };
 export const Default = {
-	components: {
-		WidgetPhotos,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetPhotos,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetPhotos v-bind="$props" />',
+		};
 	},
-	template: '<WidgetPhotos />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkUrlPreview,
 };
 export const Default = {
-	components: {
-		MkUrlPreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkUrlPreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkUrlPreview v-bind="$props" />',
+		};
 	},
-	template: '<MkUrlPreview />',
 	parameters: {
 		layout: 'centered',
 	},

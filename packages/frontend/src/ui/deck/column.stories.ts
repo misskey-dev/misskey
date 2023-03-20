@@ -5,10 +5,15 @@ const meta = {
 	component: column,
 };
 export const Default = {
-	components: {
-		column,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				column,
+			},
+			props: Object.keys(argTypes),
+			template: '<column v-bind="$props" />',
+		};
 	},
-	template: '<column />',
 	parameters: {
 		layout: 'centered',
 	},

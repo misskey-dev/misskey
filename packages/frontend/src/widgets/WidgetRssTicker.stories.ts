@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetRssTicker,
 };
 export const Default = {
-	components: {
-		WidgetRssTicker,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetRssTicker,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetRssTicker v-bind="$props" />',
+		};
 	},
-	template: '<WidgetRssTicker />',
 	parameters: {
 		layout: 'centered',
 	},

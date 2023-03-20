@@ -5,10 +5,15 @@ const meta = {
 	component: MkUserOnlineIndicator,
 };
 export const Default = {
-	components: {
-		MkUserOnlineIndicator,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkUserOnlineIndicator,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkUserOnlineIndicator v-bind="$props" />',
+		};
 	},
-	template: '<MkUserOnlineIndicator />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: achievements,
 };
 export const Default = {
-	components: {
-		achievements,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				achievements,
+			},
+			props: Object.keys(argTypes),
+			template: '<achievements v-bind="$props" />',
+		};
 	},
-	template: '<achievements />',
 	parameters: {
 		layout: 'fullscreen',
 	},

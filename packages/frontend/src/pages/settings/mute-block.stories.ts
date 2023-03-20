@@ -5,10 +5,15 @@ const meta = {
 	component: mute_block,
 };
 export const Default = {
-	components: {
-		mute_block,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				mute_block,
+			},
+			props: Object.keys(argTypes),
+			template: '<mute_block v-bind="$props" />',
+		};
 	},
-	template: '<mute_block />',
 	parameters: {
 		layout: 'fullscreen',
 	},

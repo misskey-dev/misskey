@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetMemo,
 };
 export const Default = {
-	components: {
-		WidgetMemo,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetMemo,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetMemo v-bind="$props" />',
+		};
 	},
-	template: '<WidgetMemo />',
 	parameters: {
 		layout: 'centered',
 	},

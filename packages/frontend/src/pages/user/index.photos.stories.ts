@@ -5,10 +5,15 @@ const meta = {
 	component: index_photos,
 };
 export const Default = {
-	components: {
-		index_photos,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				index_photos,
+			},
+			props: Object.keys(argTypes),
+			template: '<index_photos v-bind="$props" />',
+		};
 	},
-	template: '<index_photos />',
 	parameters: {
 		layout: 'fullscreen',
 	},

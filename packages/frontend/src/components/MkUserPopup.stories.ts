@@ -5,10 +5,15 @@ const meta = {
 	component: MkUserPopup,
 };
 export const Default = {
-	components: {
-		MkUserPopup,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkUserPopup,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkUserPopup v-bind="$props" />',
+		};
 	},
-	template: '<MkUserPopup />',
 	parameters: {
 		layout: 'centered',
 	},

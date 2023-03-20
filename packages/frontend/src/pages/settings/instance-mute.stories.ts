@@ -5,10 +5,15 @@ const meta = {
 	component: instance_mute,
 };
 export const Default = {
-	components: {
-		instance_mute,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				instance_mute,
+			},
+			props: Object.keys(argTypes),
+			template: '<instance_mute v-bind="$props" />',
+		};
 	},
-	template: '<instance_mute />',
 	parameters: {
 		layout: 'fullscreen',
 	},

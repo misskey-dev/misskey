@@ -5,10 +5,15 @@ const meta = {
 	component: _header_,
 };
 export const Default = {
-	components: {
-		_header_,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				_header_,
+			},
+			props: Object.keys(argTypes),
+			template: '<_header_ v-bind="$props" />',
+		};
 	},
-	template: '<_header_ />',
 	parameters: {
 		layout: 'fullscreen',
 	},

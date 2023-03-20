@@ -5,10 +5,15 @@ const meta = {
 	component: channel,
 };
 export const Default = {
-	components: {
-		channel,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				channel,
+			},
+			props: Object.keys(argTypes),
+			template: '<channel v-bind="$props" />',
+		};
 	},
-	template: '<channel />',
 	parameters: {
 		layout: 'fullscreen',
 	},

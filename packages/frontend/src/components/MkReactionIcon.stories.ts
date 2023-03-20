@@ -5,10 +5,15 @@ const meta = {
 	component: MkReactionIcon,
 };
 export const Default = {
-	components: {
-		MkReactionIcon,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkReactionIcon,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkReactionIcon v-bind="$props" />',
+		};
 	},
-	template: '<MkReactionIcon />',
 	parameters: {
 		layout: 'centered',
 	},

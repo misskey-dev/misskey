@@ -5,10 +5,15 @@ const meta = {
 	component: roles,
 };
 export const Default = {
-	components: {
-		roles,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				roles,
+			},
+			props: Object.keys(argTypes),
+			template: '<roles v-bind="$props" />',
+		};
 	},
-	template: '<roles />',
 	parameters: {
 		layout: 'fullscreen',
 	},

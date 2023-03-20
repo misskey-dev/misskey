@@ -5,10 +5,15 @@ const meta = {
 	component: relays,
 };
 export const Default = {
-	components: {
-		relays,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				relays,
+			},
+			props: Object.keys(argTypes),
+			template: '<relays v-bind="$props" />',
+		};
 	},
-	template: '<relays />',
 	parameters: {
 		layout: 'fullscreen',
 	},

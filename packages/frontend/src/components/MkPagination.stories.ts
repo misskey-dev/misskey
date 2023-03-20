@@ -5,10 +5,15 @@ const meta = {
 	component: MkPagination,
 };
 export const Default = {
-	components: {
-		MkPagination,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPagination,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPagination v-bind="$props" />',
+		};
 	},
-	template: '<MkPagination />',
 	parameters: {
 		layout: 'centered',
 	},

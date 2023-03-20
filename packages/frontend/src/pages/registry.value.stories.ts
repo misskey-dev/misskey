@@ -5,10 +5,15 @@ const meta = {
 	component: registry_value,
 };
 export const Default = {
-	components: {
-		registry_value,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				registry_value,
+			},
+			props: Object.keys(argTypes),
+			template: '<registry_value v-bind="$props" />',
+		};
 	},
-	template: '<registry_value />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetTrends,
 };
 export const Default = {
-	components: {
-		WidgetTrends,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetTrends,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetTrends v-bind="$props" />',
+		};
 	},
-	template: '<WidgetTrends />',
 	parameters: {
 		layout: 'centered',
 	},

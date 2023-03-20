@@ -5,10 +5,15 @@ const meta = {
 	component: MkWindow,
 };
 export const Default = {
-	components: {
-		MkWindow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkWindow,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkWindow v-bind="$props" />',
+		};
 	},
-	template: '<MkWindow />',
 	parameters: {
 		layout: 'centered',
 	},

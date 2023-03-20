@@ -5,10 +5,15 @@ const meta = {
 	component: MkCode_core,
 };
 export const Default = {
-	components: {
-		MkCode_core,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkCode_core,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkCode_core v-bind="$props" />',
+		};
 	},
-	template: '<MkCode_core />',
 	parameters: {
 		layout: 'centered',
 	},

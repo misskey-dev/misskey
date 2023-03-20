@@ -5,10 +5,15 @@ const meta = {
 	component: proxy_account,
 };
 export const Default = {
-	components: {
-		proxy_account,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				proxy_account,
+			},
+			props: Object.keys(argTypes),
+			template: '<proxy_account v-bind="$props" />',
+		};
 	},
-	template: '<proxy_account />',
 	parameters: {
 		layout: 'fullscreen',
 	},

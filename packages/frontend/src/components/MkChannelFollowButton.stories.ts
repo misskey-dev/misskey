@@ -5,10 +5,15 @@ const meta = {
 	component: MkChannelFollowButton,
 };
 export const Default = {
-	components: {
-		MkChannelFollowButton,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkChannelFollowButton,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkChannelFollowButton v-bind="$props" />',
+		};
 	},
-	template: '<MkChannelFollowButton />',
 	parameters: {
 		layout: 'centered',
 	},

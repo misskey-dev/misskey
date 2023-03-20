@@ -5,10 +5,15 @@ const meta = {
 	component: welcome_setup,
 };
 export const Default = {
-	components: {
-		welcome_setup,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				welcome_setup,
+			},
+			props: Object.keys(argTypes),
+			template: '<welcome_setup v-bind="$props" />',
+		};
 	},
-	template: '<welcome_setup />',
 	parameters: {
 		layout: 'fullscreen',
 	},

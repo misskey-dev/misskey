@@ -5,10 +5,15 @@ const meta = {
 	component: auth_form,
 };
 export const Default = {
-	components: {
-		auth_form,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				auth_form,
+			},
+			props: Object.keys(argTypes),
+			template: '<auth_form v-bind="$props" />',
+		};
 	},
-	template: '<auth_form />',
 	parameters: {
 		layout: 'fullscreen',
 	},

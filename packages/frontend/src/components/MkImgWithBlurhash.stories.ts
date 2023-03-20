@@ -5,10 +5,15 @@ const meta = {
 	component: MkImgWithBlurhash,
 };
 export const Default = {
-	components: {
-		MkImgWithBlurhash,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkImgWithBlurhash,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkImgWithBlurhash v-bind="$props" />',
+		};
 	},
-	template: '<MkImgWithBlurhash />',
 	parameters: {
 		layout: 'centered',
 	},

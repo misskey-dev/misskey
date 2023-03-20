@@ -5,10 +5,15 @@ const meta = {
 	component: MkGalleryPostPreview,
 };
 export const Default = {
-	components: {
-		MkGalleryPostPreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkGalleryPostPreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkGalleryPostPreview v-bind="$props" />',
+		};
 	},
-	template: '<MkGalleryPostPreview />',
 	parameters: {
 		layout: 'centered',
 	},

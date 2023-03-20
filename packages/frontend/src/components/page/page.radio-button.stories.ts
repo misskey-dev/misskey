@@ -5,10 +5,15 @@ const meta = {
 	component: page_radio_button,
 };
 export const Default = {
-	components: {
-		page_radio_button,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_radio_button,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_radio_button v-bind="$props" />',
+		};
 	},
-	template: '<page_radio_button />',
 	parameters: {
 		layout: 'centered',
 	},

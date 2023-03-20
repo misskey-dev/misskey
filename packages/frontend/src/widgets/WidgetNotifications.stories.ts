@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetNotifications,
 };
 export const Default = {
-	components: {
-		WidgetNotifications,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetNotifications,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetNotifications v-bind="$props" />',
+		};
 	},
-	template: '<WidgetNotifications />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: queue,
 };
 export const Default = {
-	components: {
-		queue,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				queue,
+			},
+			props: Object.keys(argTypes),
+			template: '<queue v-bind="$props" />',
+		};
 	},
-	template: '<queue />',
 	parameters: {
 		layout: 'fullscreen',
 	},

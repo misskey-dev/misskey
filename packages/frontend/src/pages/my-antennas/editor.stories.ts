@@ -5,10 +5,15 @@ const meta = {
 	component: editor,
 };
 export const Default = {
-	components: {
-		editor,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				editor,
+			},
+			props: Object.keys(argTypes),
+			template: '<editor v-bind="$props" />',
+		};
 	},
-	template: '<editor />',
 	parameters: {
 		layout: 'fullscreen',
 	},

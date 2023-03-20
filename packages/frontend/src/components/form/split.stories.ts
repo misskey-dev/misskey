@@ -5,10 +5,15 @@ const meta = {
 	component: split,
 };
 export const Default = {
-	components: {
-		split,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				split,
+			},
+			props: Object.keys(argTypes),
+			template: '<split v-bind="$props" />',
+		};
 	},
-	template: '<split />',
 	parameters: {
 		layout: 'centered',
 	},

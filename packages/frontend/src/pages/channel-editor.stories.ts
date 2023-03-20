@@ -5,10 +5,15 @@ const meta = {
 	component: channel_editor,
 };
 export const Default = {
-	components: {
-		channel_editor,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				channel_editor,
+			},
+			props: Object.keys(argTypes),
+			template: '<channel_editor v-bind="$props" />',
+		};
 	},
-	template: '<channel_editor />',
 	parameters: {
 		layout: 'fullscreen',
 	},

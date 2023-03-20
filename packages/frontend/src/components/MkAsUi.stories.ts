@@ -5,10 +5,15 @@ const meta = {
 	component: MkAsUi,
 };
 export const Default = {
-	components: {
-		MkAsUi,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkAsUi,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkAsUi v-bind="$props" />',
+		};
 	},
-	template: '<MkAsUi />',
 	parameters: {
 		layout: 'centered',
 	},

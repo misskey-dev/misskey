@@ -5,10 +5,15 @@ const meta = {
 	component: zen,
 };
 export const Default = {
-	components: {
-		zen,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				zen,
+			},
+			props: Object.keys(argTypes),
+			template: '<zen v-bind="$props" />',
+		};
 	},
-	template: '<zen />',
 	parameters: {
 		layout: 'centered',
 	},

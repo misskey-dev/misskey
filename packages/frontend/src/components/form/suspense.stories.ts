@@ -5,10 +5,15 @@ const meta = {
 	component: suspense,
 };
 export const Default = {
-	components: {
-		suspense,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				suspense,
+			},
+			props: Object.keys(argTypes),
+			template: '<suspense v-bind="$props" />',
+		};
 	},
-	template: '<suspense />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: notification,
 };
 export const Default = {
-	components: {
-		notification,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				notification,
+			},
+			props: Object.keys(argTypes),
+			template: '<notification v-bind="$props" />',
+		};
 	},
-	template: '<notification />',
 	parameters: {
 		layout: 'centered',
 	},

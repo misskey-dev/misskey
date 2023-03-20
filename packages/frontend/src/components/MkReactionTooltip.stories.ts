@@ -5,10 +5,15 @@ const meta = {
 	component: MkReactionTooltip,
 };
 export const Default = {
-	components: {
-		MkReactionTooltip,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkReactionTooltip,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkReactionTooltip v-bind="$props" />',
+		};
 	},
-	template: '<MkReactionTooltip />',
 	parameters: {
 		layout: 'centered',
 	},

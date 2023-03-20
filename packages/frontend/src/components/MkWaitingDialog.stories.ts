@@ -5,10 +5,15 @@ const meta = {
 	component: MkWaitingDialog,
 };
 export const Default = {
-	components: {
-		MkWaitingDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkWaitingDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkWaitingDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkWaitingDialog />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkImageViewer,
 };
 export const Default = {
-	components: {
-		MkImageViewer,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkImageViewer,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkImageViewer v-bind="$props" />',
+		};
 	},
-	template: '<MkImageViewer />',
 	parameters: {
 		layout: 'centered',
 	},

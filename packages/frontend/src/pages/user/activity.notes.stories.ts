@@ -5,10 +5,15 @@ const meta = {
 	component: activity_notes,
 };
 export const Default = {
-	components: {
-		activity_notes,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				activity_notes,
+			},
+			props: Object.keys(argTypes),
+			template: '<activity_notes v-bind="$props" />',
+		};
 	},
-	template: '<activity_notes />',
 	parameters: {
 		layout: 'fullscreen',
 	},

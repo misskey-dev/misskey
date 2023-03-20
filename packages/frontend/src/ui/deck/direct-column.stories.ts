@@ -5,10 +5,15 @@ const meta = {
 	component: direct_column,
 };
 export const Default = {
-	components: {
-		direct_column,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				direct_column,
+			},
+			props: Object.keys(argTypes),
+			template: '<direct_column v-bind="$props" />',
+		};
 	},
-	template: '<direct_column />',
 	parameters: {
 		layout: 'centered',
 	},

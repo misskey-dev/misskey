@@ -5,10 +5,15 @@ const meta = {
 	component: page_switch,
 };
 export const Default = {
-	components: {
-		page_switch,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_switch,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_switch v-bind="$props" />',
+		};
 	},
-	template: '<page_switch />',
 	parameters: {
 		layout: 'centered',
 	},

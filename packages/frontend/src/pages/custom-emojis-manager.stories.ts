@@ -5,10 +5,15 @@ const meta = {
 	component: custom_emojis_manager,
 };
 export const Default = {
-	components: {
-		custom_emojis_manager,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				custom_emojis_manager,
+			},
+			props: Object.keys(argTypes),
+			template: '<custom_emojis_manager v-bind="$props" />',
+		};
 	},
-	template: '<custom_emojis_manager />',
 	parameters: {
 		layout: 'fullscreen',
 	},

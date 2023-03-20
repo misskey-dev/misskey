@@ -5,10 +5,15 @@ const meta = {
 	component: miauth,
 };
 export const Default = {
-	components: {
-		miauth,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				miauth,
+			},
+			props: Object.keys(argTypes),
+			template: '<miauth v-bind="$props" />',
+		};
 	},
-	template: '<miauth />',
 	parameters: {
 		layout: 'fullscreen',
 	},

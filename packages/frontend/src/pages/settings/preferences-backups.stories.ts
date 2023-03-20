@@ -5,10 +5,15 @@ const meta = {
 	component: preferences_backups,
 };
 export const Default = {
-	components: {
-		preferences_backups,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				preferences_backups,
+			},
+			props: Object.keys(argTypes),
+			template: '<preferences_backups v-bind="$props" />',
+		};
 	},
-	template: '<preferences_backups />',
 	parameters: {
 		layout: 'fullscreen',
 	},

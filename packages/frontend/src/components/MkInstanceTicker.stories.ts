@@ -5,10 +5,15 @@ const meta = {
 	component: MkInstanceTicker,
 };
 export const Default = {
-	components: {
-		MkInstanceTicker,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkInstanceTicker,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkInstanceTicker v-bind="$props" />',
+		};
 	},
-	template: '<MkInstanceTicker />',
 	parameters: {
 		layout: 'centered',
 	},

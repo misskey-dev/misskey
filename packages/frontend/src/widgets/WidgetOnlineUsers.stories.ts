@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetOnlineUsers,
 };
 export const Default = {
-	components: {
-		WidgetOnlineUsers,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetOnlineUsers,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetOnlineUsers v-bind="$props" />',
+		};
 	},
-	template: '<WidgetOnlineUsers />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: overview_pie,
 };
 export const Default = {
-	components: {
-		overview_pie,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview_pie,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview_pie v-bind="$props" />',
+		};
 	},
-	template: '<overview_pie />',
 	parameters: {
 		layout: 'fullscreen',
 	},

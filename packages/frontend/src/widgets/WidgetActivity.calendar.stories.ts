@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetActivity_calendar,
 };
 export const Default = {
-	components: {
-		WidgetActivity_calendar,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetActivity_calendar,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetActivity_calendar v-bind="$props" />',
+		};
 	},
-	template: '<WidgetActivity_calendar />',
 	parameters: {
 		layout: 'centered',
 	},

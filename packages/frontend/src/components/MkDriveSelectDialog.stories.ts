@@ -5,10 +5,15 @@ const meta = {
 	component: MkDriveSelectDialog,
 };
 export const Default = {
-	components: {
-		MkDriveSelectDialog,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkDriveSelectDialog,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkDriveSelectDialog v-bind="$props" />',
+		};
 	},
-	template: '<MkDriveSelectDialog />',
 	parameters: {
 		layout: 'centered',
 	},

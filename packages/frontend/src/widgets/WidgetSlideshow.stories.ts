@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetSlideshow,
 };
 export const Default = {
-	components: {
-		WidgetSlideshow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetSlideshow,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetSlideshow v-bind="$props" />',
+		};
 	},
-	template: '<WidgetSlideshow />',
 	parameters: {
 		layout: 'centered',
 	},

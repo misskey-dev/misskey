@@ -5,10 +5,15 @@ const meta = {
 	component: MkRemoteCaution,
 };
 export const Default = {
-	components: {
-		MkRemoteCaution,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkRemoteCaution,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkRemoteCaution v-bind="$props" />',
+		};
 	},
-	template: '<MkRemoteCaution />',
 	parameters: {
 		layout: 'centered',
 	},

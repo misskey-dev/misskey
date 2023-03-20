@@ -5,10 +5,15 @@ const meta = {
 	component: MkContextMenu,
 };
 export const Default = {
-	components: {
-		MkContextMenu,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkContextMenu,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkContextMenu v-bind="$props" />',
+		};
 	},
-	template: '<MkContextMenu />',
 	parameters: {
 		layout: 'centered',
 	},

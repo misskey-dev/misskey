@@ -5,10 +5,15 @@ const meta = {
 	component: MkTagCloud,
 };
 export const Default = {
-	components: {
-		MkTagCloud,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkTagCloud,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkTagCloud v-bind="$props" />',
+		};
 	},
-	template: '<MkTagCloud />',
 	parameters: {
 		layout: 'centered',
 	},

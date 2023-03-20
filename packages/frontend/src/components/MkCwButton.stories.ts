@@ -5,10 +5,15 @@ const meta = {
 	component: MkCwButton,
 };
 export const Default = {
-	components: {
-		MkCwButton,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkCwButton,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkCwButton v-bind="$props" />',
+		};
 	},
-	template: '<MkCwButton />',
 	parameters: {
 		layout: 'centered',
 	},

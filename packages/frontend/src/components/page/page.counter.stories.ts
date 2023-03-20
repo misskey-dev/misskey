@@ -5,10 +5,15 @@ const meta = {
 	component: page_counter,
 };
 export const Default = {
-	components: {
-		page_counter,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				page_counter,
+			},
+			props: Object.keys(argTypes),
+			template: '<page_counter v-bind="$props" />',
+		};
 	},
-	template: '<page_counter />',
 	parameters: {
 		layout: 'centered',
 	},

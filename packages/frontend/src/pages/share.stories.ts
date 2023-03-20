@@ -5,10 +5,15 @@ const meta = {
 	component: share,
 };
 export const Default = {
-	components: {
-		share,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				share,
+			},
+			props: Object.keys(argTypes),
+			template: '<share v-bind="$props" />',
+		};
 	},
-	template: '<share />',
 	parameters: {
 		layout: 'fullscreen',
 	},

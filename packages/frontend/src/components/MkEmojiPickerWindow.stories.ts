@@ -5,10 +5,15 @@ const meta = {
 	component: MkEmojiPickerWindow,
 };
 export const Default = {
-	components: {
-		MkEmojiPickerWindow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkEmojiPickerWindow,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkEmojiPickerWindow v-bind="$props" />',
+		};
 	},
-	template: '<MkEmojiPickerWindow />',
 	parameters: {
 		layout: 'centered',
 	},

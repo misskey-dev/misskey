@@ -5,10 +5,15 @@ const meta = {
 	component: RouterView,
 };
 export const Default = {
-	components: {
-		RouterView,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				RouterView,
+			},
+			props: Object.keys(argTypes),
+			template: '<RouterView v-bind="$props" />',
+		};
 	},
-	template: '<RouterView />',
 	parameters: {
 		layout: 'centered',
 	},

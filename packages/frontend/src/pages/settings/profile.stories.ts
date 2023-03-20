@@ -5,10 +5,15 @@ const meta = {
 	component: profile,
 };
 export const Default = {
-	components: {
-		profile,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				profile,
+			},
+			props: Object.keys(argTypes),
+			template: '<profile v-bind="$props" />',
+		};
 	},
-	template: '<profile />',
 	parameters: {
 		layout: 'fullscreen',
 	},

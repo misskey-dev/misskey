@@ -5,10 +5,15 @@ const meta = {
 	component: MkAbuseReportWindow,
 };
 export const Default = {
-	components: {
-		MkAbuseReportWindow,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkAbuseReportWindow,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkAbuseReportWindow v-bind="$props" />',
+		};
 	},
-	template: '<MkAbuseReportWindow />',
 	parameters: {
 		layout: 'centered',
 	},

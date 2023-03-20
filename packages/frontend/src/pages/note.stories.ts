@@ -5,10 +5,15 @@ const meta = {
 	component: note,
 };
 export const Default = {
-	components: {
-		note,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				note,
+			},
+			props: Object.keys(argTypes),
+			template: '<note v-bind="$props" />',
+		};
 	},
-	template: '<note />',
 	parameters: {
 		layout: 'fullscreen',
 	},

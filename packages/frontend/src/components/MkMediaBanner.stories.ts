@@ -5,10 +5,15 @@ const meta = {
 	component: MkMediaBanner,
 };
 export const Default = {
-	components: {
-		MkMediaBanner,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkMediaBanner,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkMediaBanner v-bind="$props" />',
+		};
 	},
-	template: '<MkMediaBanner />',
 	parameters: {
 		layout: 'centered',
 	},

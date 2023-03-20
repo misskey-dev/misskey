@@ -5,10 +5,15 @@ const meta = {
 	component: MkFoldableSection,
 };
 export const Default = {
-	components: {
-		MkFoldableSection,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkFoldableSection,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkFoldableSection v-bind="$props" />',
+		};
 	},
-	template: '<MkFoldableSection />',
 	parameters: {
 		layout: 'centered',
 	},

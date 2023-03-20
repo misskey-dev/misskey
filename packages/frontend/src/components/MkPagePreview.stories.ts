@@ -5,10 +5,15 @@ const meta = {
 	component: MkPagePreview,
 };
 export const Default = {
-	components: {
-		MkPagePreview,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkPagePreview,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkPagePreview v-bind="$props" />',
+		};
 	},
-	template: '<MkPagePreview />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: not_found,
 };
 export const Default = {
-	components: {
-		not_found,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				not_found,
+			},
+			props: Object.keys(argTypes),
+			template: '<not_found v-bind="$props" />',
+		};
 	},
-	template: '<not_found />',
 	parameters: {
 		layout: 'fullscreen',
 	},

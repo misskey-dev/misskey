@@ -5,10 +5,15 @@ const meta = {
 	component: overview_retention,
 };
 export const Default = {
-	components: {
-		overview_retention,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				overview_retention,
+			},
+			props: Object.keys(argTypes),
+			template: '<overview_retention v-bind="$props" />',
+		};
 	},
-	template: '<overview_retention />',
 	parameters: {
 		layout: 'fullscreen',
 	},

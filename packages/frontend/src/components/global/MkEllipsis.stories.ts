@@ -5,10 +5,15 @@ const meta = {
 	component: MkEllipsis,
 };
 export const Default = {
-	components: {
-		MkEllipsis,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkEllipsis,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkEllipsis v-bind="$props" />',
+		};
 	},
-	template: '<MkEllipsis />',
 	parameters: {
 		layout: 'centered',
 	},

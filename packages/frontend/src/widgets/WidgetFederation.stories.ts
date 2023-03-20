@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetFederation,
 };
 export const Default = {
-	components: {
-		WidgetFederation,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetFederation,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetFederation v-bind="$props" />',
+		};
 	},
-	template: '<WidgetFederation />',
 	parameters: {
 		layout: 'centered',
 	},

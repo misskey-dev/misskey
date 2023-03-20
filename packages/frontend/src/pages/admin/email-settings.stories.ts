@@ -5,10 +5,15 @@ const meta = {
 	component: email_settings,
 };
 export const Default = {
-	components: {
-		email_settings,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				email_settings,
+			},
+			props: Object.keys(argTypes),
+			template: '<email_settings v-bind="$props" />',
+		};
 	},
-	template: '<email_settings />',
 	parameters: {
 		layout: 'fullscreen',
 	},

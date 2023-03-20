@@ -5,10 +5,15 @@ const meta = {
 	component: MkNotifications,
 };
 export const Default = {
-	components: {
-		MkNotifications,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkNotifications,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkNotifications v-bind="$props" />',
+		};
 	},
-	template: '<MkNotifications />',
 	parameters: {
 		layout: 'centered',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkMediaList,
 };
 export const Default = {
-	components: {
-		MkMediaList,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkMediaList,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkMediaList v-bind="$props" />',
+		};
 	},
-	template: '<MkMediaList />',
 	parameters: {
 		layout: 'centered',
 	},

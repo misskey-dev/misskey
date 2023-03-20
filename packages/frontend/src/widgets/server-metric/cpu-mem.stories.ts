@@ -5,10 +5,15 @@ const meta = {
 	component: cpu_mem,
 };
 export const Default = {
-	components: {
-		cpu_mem,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				cpu_mem,
+			},
+			props: Object.keys(argTypes),
+			template: '<cpu_mem v-bind="$props" />',
+		};
 	},
-	template: '<cpu_mem />',
 	parameters: {
 		layout: 'centered',
 	},

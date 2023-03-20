@@ -5,10 +5,15 @@ const meta = {
 	component: MkVisibilityPicker,
 };
 export const Default = {
-	components: {
-		MkVisibilityPicker,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkVisibilityPicker,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkVisibilityPicker v-bind="$props" />',
+		};
 	},
-	template: '<MkVisibilityPicker />',
 	parameters: {
 		layout: 'centered',
 	},

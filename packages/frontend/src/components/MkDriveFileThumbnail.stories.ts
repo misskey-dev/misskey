@@ -5,10 +5,15 @@ const meta = {
 	component: MkDriveFileThumbnail,
 };
 export const Default = {
-	components: {
-		MkDriveFileThumbnail,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkDriveFileThumbnail,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkDriveFileThumbnail v-bind="$props" />',
+		};
 	},
-	template: '<MkDriveFileThumbnail />',
 	parameters: {
 		layout: 'centered',
 	},

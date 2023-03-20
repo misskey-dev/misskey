@@ -5,10 +5,15 @@ const meta = {
 	component: api_console,
 };
 export const Default = {
-	components: {
-		api_console,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				api_console,
+			},
+			props: Object.keys(argTypes),
+			template: '<api_console v-bind="$props" />',
+		};
 	},
-	template: '<api_console />',
 	parameters: {
 		layout: 'fullscreen',
 	},

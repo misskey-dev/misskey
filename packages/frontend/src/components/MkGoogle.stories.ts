@@ -5,10 +5,15 @@ const meta = {
 	component: MkGoogle,
 };
 export const Default = {
-	components: {
-		MkGoogle,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkGoogle,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkGoogle v-bind="$props" />',
+		};
 	},
-	template: '<MkGoogle />',
 	parameters: {
 		layout: 'centered',
 	},

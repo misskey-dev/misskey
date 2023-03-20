@@ -5,10 +5,15 @@ const meta = {
 	component: admin_file,
 };
 export const Default = {
-	components: {
-		admin_file,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				admin_file,
+			},
+			props: Object.keys(argTypes),
+			template: '<admin_file v-bind="$props" />',
+		};
 	},
-	template: '<admin_file />',
 	parameters: {
 		layout: 'fullscreen',
 	},

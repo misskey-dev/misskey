@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetJobQueue,
 };
 export const Default = {
-	components: {
-		WidgetJobQueue,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetJobQueue,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetJobQueue v-bind="$props" />',
+		};
 	},
-	template: '<WidgetJobQueue />',
 	parameters: {
 		layout: 'centered',
 	},

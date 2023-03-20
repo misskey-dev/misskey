@@ -5,10 +5,15 @@ const meta = {
 	component: index_timeline,
 };
 export const Default = {
-	components: {
-		index_timeline,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				index_timeline,
+			},
+			props: Object.keys(argTypes),
+			template: '<index_timeline v-bind="$props" />',
+		};
 	},
-	template: '<index_timeline />',
 	parameters: {
 		layout: 'fullscreen',
 	},

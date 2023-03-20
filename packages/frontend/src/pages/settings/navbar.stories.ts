@@ -5,10 +5,15 @@ const meta = {
 	component: navbar,
 };
 export const Default = {
-	components: {
-		navbar,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				navbar,
+			},
+			props: Object.keys(argTypes),
+			template: '<navbar v-bind="$props" />',
+		};
 	},
-	template: '<navbar />',
 	parameters: {
 		layout: 'fullscreen',
 	},

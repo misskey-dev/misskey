@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetActivity,
 };
 export const Default = {
-	components: {
-		WidgetActivity,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetActivity,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetActivity v-bind="$props" />',
+		};
 	},
-	template: '<WidgetActivity />',
 	parameters: {
 		layout: 'centered',
 	},

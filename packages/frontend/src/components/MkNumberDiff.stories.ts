@@ -5,10 +5,15 @@ const meta = {
 	component: MkNumberDiff,
 };
 export const Default = {
-	components: {
-		MkNumberDiff,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkNumberDiff,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkNumberDiff v-bind="$props" />',
+		};
 	},
-	template: '<MkNumberDiff />',
 	parameters: {
 		layout: 'centered',
 	},

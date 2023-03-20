@@ -5,10 +5,15 @@ const meta = {
 	component: section,
 };
 export const Default = {
-	components: {
-		section,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				section,
+			},
+			props: Object.keys(argTypes),
+			template: '<section v-bind="$props" />',
+		};
 	},
-	template: '<section />',
 	parameters: {
 		layout: 'centered',
 	},

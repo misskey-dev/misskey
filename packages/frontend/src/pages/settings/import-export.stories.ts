@@ -5,10 +5,15 @@ const meta = {
 	component: import_export,
 };
 export const Default = {
-	components: {
-		import_export,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				import_export,
+			},
+			props: Object.keys(argTypes),
+			template: '<import_export v-bind="$props" />',
+		};
 	},
-	template: '<import_export />',
 	parameters: {
 		layout: 'fullscreen',
 	},

@@ -5,10 +5,15 @@ const meta = {
 	component: MkMarquee,
 };
 export const Default = {
-	components: {
-		MkMarquee,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				MkMarquee,
+			},
+			props: Object.keys(argTypes),
+			template: '<MkMarquee v-bind="$props" />',
+		};
 	},
-	template: '<MkMarquee />',
 	parameters: {
 		layout: 'centered',
 	},

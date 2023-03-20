@@ -5,10 +5,15 @@ const meta = {
 	component: pie,
 };
 export const Default = {
-	components: {
-		pie,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				pie,
+			},
+			props: Object.keys(argTypes),
+			template: '<pie v-bind="$props" />',
+		};
 	},
-	template: '<pie />',
 	parameters: {
 		layout: 'centered',
 	},

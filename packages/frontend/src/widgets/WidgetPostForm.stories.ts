@@ -5,10 +5,15 @@ const meta = {
 	component: WidgetPostForm,
 };
 export const Default = {
-	components: {
-		WidgetPostForm,
+	render(args, { argTypes }) {
+		return {
+			components: {
+				WidgetPostForm,
+			},
+			props: Object.keys(argTypes),
+			template: '<WidgetPostForm v-bind="$props" />',
+		};
 	},
-	template: '<WidgetPostForm />',
 	parameters: {
 		layout: 'centered',
 	},
