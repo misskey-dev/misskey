@@ -32,14 +32,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
 import bytes from '@/filters/bytes';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
@@ -60,48 +60,16 @@ const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
 
-function getMenu() {
-	return [{
-		text: i18n.ts.rename,
-		icon: 'ti ti-forms',
-		action: rename,
-	}, {
-		text: props.file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: props.file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-off',
-		action: toggleSensitive,
-	}, {
-		text: i18n.ts.describeFile,
-		icon: 'ti ti-text-caption',
-		action: describe,
-	}, null, {
-		text: i18n.ts.copyUrl,
-		icon: 'ti ti-link',
-		action: copyUrl,
-	}, {
-		type: 'a',
-		href: props.file.url,
-		target: '_blank',
-		text: i18n.ts.download,
-		icon: 'ti ti-download',
-		download: props.file.name,
-	}, null, {
-		text: i18n.ts.delete,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: deleteFile,
-	}];
-}
-
 function onClick(ev: MouseEvent) {
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
-		os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+		os.popupMenu(getDriveFileMenu(props.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	}
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu(getMenu(), ev);
+	os.contextMenu(getDriveFileMenu(props.file), ev);
 }
 
 function onDragstart(ev: DragEvent) {
@@ -117,62 +85,6 @@ function onDragstart(ev: DragEvent) {
 function onDragend() {
 	isDragging.value = false;
 	emit('dragend');
-}
-
-function rename() {
-	os.inputText({
-		title: i18n.ts.renameFile,
-		placeholder: i18n.ts.inputNewFileName,
-		default: props.file.name,
-	}).then(({ canceled, result: name }) => {
-		if (canceled) return;
-		os.api('drive/files/update', {
-			fileId: props.file.id,
-			name: name,
-		});
-	});
-}
-
-function describe() {
-	os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
-		default: props.file.comment != null ? props.file.comment : '',
-		file: props.file,
-	}, {
-		done: caption => {
-			os.api('drive/files/update', {
-				fileId: props.file.id,
-				comment: caption.length === 0 ? null : caption,
-			});
-		},
-	}, 'closed');
-}
-
-function toggleSensitive() {
-	os.api('drive/files/update', {
-		fileId: props.file.id,
-		isSensitive: !props.file.isSensitive,
-	});
-}
-
-function copyUrl() {
-	copyToClipboard(props.file.url);
-	os.success();
-}
-/*
-function addApp() {
-	alert('not implemented yet');
-}
-*/
-async function deleteFile() {
-	const { canceled } = await os.confirm({
-		type: 'warning',
-		text: i18n.t('driveFileDeleteConfirm', { name: props.file.name }),
-	});
-
-	if (canceled) return;
-	os.api('drive/files/delete', {
-		fileId: props.file.id,
-	});
 }
 </script>
 

@@ -1,5 +1,7 @@
+import * as assert from 'assert';
 import { readFile } from 'node:fs/promises';
 import { isAbsolute, basename } from 'node:path';
+import { inspect } from 'node:util';
 import WebSocket from 'ws';
 import fetch, { Blob, File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
@@ -20,6 +22,36 @@ export const cookie = (me: any): string => {
 export const api = async (endpoint: string, params: any, me?: any) => {
 	const normalized = endpoint.replace(/^\//, '');
 	return await request(`api/${normalized}`, params, me);
+};
+
+export type ApiRequest = {
+	endpoint: string,
+	parameters: object,
+	user: object | undefined,
+};
+
+export const successfulApiCall = async <T, >(request: ApiRequest, assertion: {
+	status: number,
+} = { status: 200 }): Promise<T> => {
+	const { endpoint, parameters, user } = request;
+	const { status } = assertion;
+	const res = await api(endpoint, parameters, user);
+	assert.strictEqual(res.status, status, inspect(res.body));
+	return res.body;
+};
+
+export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
+	status: number,
+	code: string,
+	id: string
+}): Promise<T> => {
+	const { endpoint, parameters, user } = request;
+	const { status, code, id } = assertion;
+	const res = await api(endpoint, parameters, user);
+	assert.strictEqual(res.status, status, inspect(res.body));
+	assert.strictEqual(res.body.error.code, code, inspect(res.body));
+	assert.strictEqual(res.body.error.id, id, inspect(res.body));
+	return res.body;
 };
 
 const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
@@ -67,6 +99,21 @@ export const post = async (user: any, params?: misskey.Endpoints['notes/create']
 	const res = await api('notes/create', q, user);
 
 	return res.body ? res.body.createdNote : null;
+};
+
+// 非公開ノートをAPI越しに見たときのノート NoteEntityService.ts
+export const hiddenNote = (note: any): any => {
+	const temp = {
+		...note,
+		fileIds: [],
+		files: [],
+		text: null,
+		cw: null,
+		isHidden: true,
+	};
+	delete temp.visibleUserIds;
+	delete temp.poll;
+	return temp;
 };
 
 export const react = async (user: any, note: any, reaction: string): Promise<any> => {
