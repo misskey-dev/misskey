@@ -5,7 +5,7 @@ import { signup, api, post, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Block', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	// alice blocks bob
 	let alice: any;
@@ -13,14 +13,14 @@ describe('Block', () => {
 	let carol: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	test('Block作成', async () => {

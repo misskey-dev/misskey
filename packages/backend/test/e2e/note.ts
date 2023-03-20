@@ -6,14 +6,14 @@ import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } fro
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Note', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 	let Notes: any;
 
 	let alice: any;
 	let bob: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		const connection = await initTestDb(true);
 		Notes = connection.getRepository(Note);
 		alice = await signup({ username: 'alice' });
@@ -21,7 +21,7 @@ describe('Note', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	test('投稿できる', async () => {
@@ -134,6 +134,31 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.text, alicePost.text);
 		assert.strictEqual(res.body.createdNote.renoteId, alicePost.renoteId);
 		assert.strictEqual(res.body.createdNote.renote.text, bobPost.text);
+	});
+
+	test('visibility: followersでrenoteできる', async () => {
+		const createRes = await api('/notes/create', {
+			text: 'test',
+			visibility: 'followers',
+		}, alice);
+
+		assert.strictEqual(createRes.status, 200);
+
+		const renoteId = createRes.body.createdNote.id;
+		const renoteRes = await api('/notes/create', {
+			visibility: 'followers',
+			renoteId,
+		}, alice);
+
+		assert.strictEqual(renoteRes.status, 200);
+		assert.strictEqual(renoteRes.body.createdNote.renoteId, renoteId);
+		assert.strictEqual(renoteRes.body.createdNote.visibility, 'followers');
+
+		const deleteRes = await api('/notes/delete', {
+			noteId: renoteRes.body.createdNote.id,
+		}, alice);
+
+		assert.strictEqual(deleteRes.status, 204);
 	});
 
 	test('文字数ぎりぎりで怒られない', async () => {

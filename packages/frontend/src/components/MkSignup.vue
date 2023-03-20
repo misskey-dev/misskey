@@ -72,7 +72,7 @@ import { toUnicode } from 'punycode/';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
-import MkCaptcha from '@/components/MkCaptcha.vue';
+import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 import * as config from '@/config';
 import * as os from '@/os';
 import { login } from '@/account';
@@ -92,9 +92,9 @@ const emit = defineEmits<{
 
 const host = toUnicode(config.host);
 
-let hcaptcha = $ref();
-let recaptcha = $ref();
-let turnstile = $ref();
+let hcaptcha = $ref<Captcha | undefined>();
+let recaptcha = $ref<Captcha | undefined>();
+let turnstile = $ref<Captcha | undefined>();
 
 let username: string = $ref('');
 let password: string = $ref('');
@@ -208,19 +208,20 @@ function onChangePasswordRetype(): void {
 	passwordRetypeState = password === retypedPassword ? 'match' : 'not-match';
 }
 
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
 	if (submitting) return;
 	submitting = true;
 
-	os.api('signup', {
-		username,
-		password,
-		emailAddress: email,
-		invitationCode,
-		'hcaptcha-response': hCaptchaResponse,
-		'g-recaptcha-response': reCaptchaResponse,
-		'turnstile-response': turnstileResponse,
-	}).then(() => {
+	try {
+		await os.api('signup', {
+			username,
+			password,
+			emailAddress: email,
+			invitationCode,
+			'hcaptcha-response': hCaptchaResponse,
+			'g-recaptcha-response': reCaptchaResponse,
+			'turnstile-response': turnstileResponse,
+		});
 		if (instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',
@@ -229,28 +230,27 @@ function onSubmit(): void {
 			});
 			emit('signupEmailPending');
 		} else {
-			os.api('signin', {
+			const res = await os.api('signin', {
 				username,
 				password,
-			}).then(res => {
-				emit('signup', res);
-
-				if (props.autoSet) {
-					login(res.i);
-				}
 			});
+			emit('signup', res);
+
+			if (props.autoSet) {
+				return login(res.i);
+			}
 		}
-	}).catch(() => {
+	} catch {
 		submitting = false;
-		hcaptcha.reset?.();
-		recaptcha.reset?.();
-		turnstile.reset?.();
+		hcaptcha?.reset?.();
+		recaptcha?.reset?.();
+		turnstile?.reset?.();
 
 		os.alert({
 			type: 'error',
 			text: i18n.ts.somethingHappened,
 		});
-	});
+	}
 }
 </script>
 

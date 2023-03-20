@@ -1,4 +1,4 @@
-import type { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
@@ -114,6 +114,9 @@ import * as ep___clips_list from './endpoints/clips/list.js';
 import * as ep___clips_notes from './endpoints/clips/notes.js';
 import * as ep___clips_show from './endpoints/clips/show.js';
 import * as ep___clips_update from './endpoints/clips/update.js';
+import * as ep___clips_favorite from './endpoints/clips/favorite.js';
+import * as ep___clips_unfavorite from './endpoints/clips/unfavorite.js';
+import * as ep___clips_myFavorites from './endpoints/clips/my-favorites.js';
 import * as ep___drive from './endpoints/drive.js';
 import * as ep___drive_files from './endpoints/drive/files.js';
 import * as ep___drive_files_attachedNotes from './endpoints/drive/files/attached-notes.js';
@@ -220,6 +223,7 @@ import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
+import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
@@ -436,6 +440,9 @@ const eps = [
 	['clips/notes', ep___clips_notes],
 	['clips/show', ep___clips_show],
 	['clips/update', ep___clips_update],
+	['clips/favorite', ep___clips_favorite],
+	['clips/unfavorite', ep___clips_unfavorite],
+	['clips/my-favorites', ep___clips_myFavorites],
 	['drive', ep___drive],
 	['drive/files', ep___drive_files],
 	['drive/files/attached-notes', ep___drive_files_attachedNotes],
@@ -542,6 +549,7 @@ const eps = [
 	['i/webhooks/delete', ep___i_webhooks_delete],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
+	['emoji', ep___emoji],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],
 	['mute/delete', ep___mute_delete],

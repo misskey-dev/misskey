@@ -43,7 +43,7 @@ let darkMode = $ref(defaultStore.state.darkMode);
 const url = (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
-		? getStaticImageUrl(props.image.thumbnailUrl)
+		? getStaticImageUrl(props.image.url)
 		: props.image.thumbnailUrl;
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする

@@ -33,7 +33,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
 import { useRouter } from '@/router';
 
-const PRESET_DEFAULT = `/// @ 0.12.4
+const PRESET_DEFAULT = `/// @ 0.13.1
 
 var name = ""
 
@@ -51,7 +51,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_OMIKUJI = `/// @ 0.12.4
+const PRESET_OMIKUJI = `/// @ 0.13.1
 // ユーザーごとに日替わりのおみくじのプリセット
 
 // 選択肢
@@ -94,7 +94,7 @@ Ui:render([
 ])
 `;
 
-const PRESET_SHUFFLE = `/// @ 0.12.4
+const PRESET_SHUFFLE = `/// @ 0.13.1
 // 巻き戻し可能な文字シャッフルのプリセット
 
 let string = "ペペロンチーノ"
@@ -173,7 +173,7 @@ var cursor = 0
 do()
 `;
 
-const PRESET_QUIZ = `/// @ 0.12.4
+const PRESET_QUIZ = `/// @ 0.13.1
 let title = '地理クイズ'
 
 let qas = [{
@@ -286,7 +286,7 @@ qaEls.push(Ui:C:container({
 Ui:render(qaEls)
 `;
 
-const PRESET_TIMELINE = `/// @ 0.12.4
+const PRESET_TIMELINE = `/// @ 0.13.1
 // APIリクエストを行いローカルタイムラインを表示するプリセット
 
 @fetch() {

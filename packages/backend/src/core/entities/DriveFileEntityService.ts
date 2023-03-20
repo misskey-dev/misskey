@@ -3,7 +3,7 @@ import { DataSource, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
@@ -104,7 +104,7 @@ export class DriveFileEntityService {
 
 		const url = file.webpublicUrl ?? file.url;
 
-		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? this.getProxiedUrl(url, 'static') : null);
+		return file.thumbnailUrl ?? (isMimeImage(file.type, 'sharp-convertible-image') ? url : null);
 	}
 
 	@bindThis

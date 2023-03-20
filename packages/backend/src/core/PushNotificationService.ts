@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/schema';
+import type { Packed } from '@/misc/json-schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { SwSubscriptionsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';

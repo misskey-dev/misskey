@@ -27,6 +27,9 @@ export const paramDef = {
 		blockedHosts: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
+		sensitiveWords: { type: 'array', nullable: true, items: {
+			type: 'string',
+		} },
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -56,10 +59,6 @@ export const paramDef = {
 		proxyAccountId: { type: 'string', format: 'misskey:id', nullable: true },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
-		pinnedPages: { type: 'array', items: {
-			type: 'string',
-		} },
-		pinnedClipId: { type: 'string', format: 'misskey:id', nullable: true },
 		langs: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -131,6 +130,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.blockedHosts = ps.blockedHosts.filter(Boolean).map(x => x.toLowerCase());
 			}
 
+			if (Array.isArray(ps.sensitiveWords)) {
+				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
+			}
+		
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
@@ -247,14 +250,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.langs = ps.langs.filter(Boolean);
 			}
 
-			if (Array.isArray(ps.pinnedPages)) {
-				set.pinnedPages = ps.pinnedPages.filter(Boolean);
-			}
-
-			if (ps.pinnedClipId !== undefined) {
-				set.pinnedClipId = ps.pinnedClipId;
-			}
-
 			if (ps.summalyProxy !== undefined) {
 				set.summalyProxy = ps.summalyProxy;
 			}
@@ -304,7 +299,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.tosUrl !== undefined) {
-				set.ToSUrl = ps.tosUrl;
+				set.termsOfServiceUrl = ps.tosUrl;
 			}
 
 			if (ps.repositoryUrl !== undefined) {
