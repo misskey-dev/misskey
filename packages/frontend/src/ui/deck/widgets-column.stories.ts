@@ -9,5 +9,8 @@ export const Default = {
 		widgets_column,
 	},
 	template: '<widgets_column />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

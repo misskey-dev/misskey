@@ -9,5 +9,8 @@ export const Default = {
 		suspense,
 	},
 	template: '<suspense />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		miauth,
 	},
 	template: '<miauth />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

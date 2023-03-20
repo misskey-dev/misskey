@@ -9,5 +9,8 @@ export const Default = {
 		timeline_tutorial,
 	},
 	template: '<timeline_tutorial />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

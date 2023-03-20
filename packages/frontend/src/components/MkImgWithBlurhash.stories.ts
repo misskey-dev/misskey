@@ -9,5 +9,8 @@ export const Default = {
 		MkImgWithBlurhash,
 	},
 	template: '<MkImgWithBlurhash />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

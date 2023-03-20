@@ -9,5 +9,8 @@ export const Default = {
 		page_switch,
 	},
 	template: '<page_switch />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

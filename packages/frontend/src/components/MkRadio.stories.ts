@@ -9,5 +9,8 @@ export const Default = {
 		MkRadio,
 	},
 	template: '<MkRadio />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

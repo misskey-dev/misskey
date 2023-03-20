@@ -9,5 +9,8 @@ export const Default = {
 		MkRolePreview,
 	},
 	template: '<MkRolePreview />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

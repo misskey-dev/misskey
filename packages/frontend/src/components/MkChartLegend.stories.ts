@@ -9,5 +9,8 @@ export const Default = {
 		MkChartLegend,
 	},
 	template: '<MkChartLegend />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		zen,
 	},
 	template: '<zen />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

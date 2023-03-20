@@ -9,5 +9,8 @@ export const Default = {
 		favorites,
 	},
 	template: '<favorites />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

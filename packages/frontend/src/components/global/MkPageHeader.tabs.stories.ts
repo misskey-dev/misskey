@@ -9,5 +9,8 @@ export const Default = {
 		MkPageHeader_tabs,
 	},
 	template: '<MkPageHeader_tabs />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

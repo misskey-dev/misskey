@@ -9,5 +9,8 @@ export const Default = {
 		MkPopupMenu,
 	},
 	template: '<MkPopupMenu />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

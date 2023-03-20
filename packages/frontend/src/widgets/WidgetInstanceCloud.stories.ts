@@ -9,5 +9,8 @@ export const Default = {
 		WidgetInstanceCloud,
 	},
 	template: '<WidgetInstanceCloud />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

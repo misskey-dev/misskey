@@ -9,5 +9,8 @@ export const Default = {
 		MkSelect,
 	},
 	template: '<MkSelect />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

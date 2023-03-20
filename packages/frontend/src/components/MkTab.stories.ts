@@ -9,5 +9,8 @@ export const Default = {
 		MkTab,
 	},
 	template: '<MkTab />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

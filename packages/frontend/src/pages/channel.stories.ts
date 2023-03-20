@@ -9,5 +9,8 @@ export const Default = {
 		channel,
 	},
 	template: '<channel />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

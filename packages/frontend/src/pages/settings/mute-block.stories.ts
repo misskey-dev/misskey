@@ -9,5 +9,8 @@ export const Default = {
 		mute_block,
 	},
 	template: '<mute_block />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

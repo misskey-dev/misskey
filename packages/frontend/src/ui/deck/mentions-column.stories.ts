@@ -9,5 +9,8 @@ export const Default = {
 		mentions_column,
 	},
 	template: '<mentions_column />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

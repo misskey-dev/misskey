@@ -9,5 +9,8 @@ export const Default = {
 		reset_password,
 	},
 	template: '<reset_password />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

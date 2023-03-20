@@ -9,5 +9,8 @@ export const Default = {
 		MkEmoji,
 	},
 	template: '<MkEmoji />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

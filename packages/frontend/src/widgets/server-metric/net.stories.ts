@@ -9,5 +9,8 @@ export const Default = {
 		net,
 	},
 	template: '<net />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

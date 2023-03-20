@@ -9,5 +9,8 @@ export const Default = {
 		MkAcct,
 	},
 	template: '<MkAcct />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

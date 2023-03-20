@@ -9,5 +9,8 @@ export const Default = {
 		bot_protection,
 	},
 	template: '<bot_protection />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		webhook_edit,
 	},
 	template: '<webhook_edit />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

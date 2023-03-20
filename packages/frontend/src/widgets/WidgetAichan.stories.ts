@@ -9,5 +9,8 @@ export const Default = {
 		WidgetAichan,
 	},
 	template: '<WidgetAichan />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

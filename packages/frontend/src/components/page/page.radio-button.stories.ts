@@ -9,5 +9,8 @@ export const Default = {
 		page_radio_button,
 	},
 	template: '<page_radio_button />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

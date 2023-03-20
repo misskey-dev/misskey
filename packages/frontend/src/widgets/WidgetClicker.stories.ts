@@ -9,5 +9,8 @@ export const Default = {
 		WidgetClicker,
 	},
 	template: '<WidgetClicker />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

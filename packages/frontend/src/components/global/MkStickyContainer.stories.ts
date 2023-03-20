@@ -9,5 +9,8 @@ export const Default = {
 		MkStickyContainer,
 	},
 	template: '<MkStickyContainer />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		WidgetPhotos,
 	},
 	template: '<WidgetPhotos />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

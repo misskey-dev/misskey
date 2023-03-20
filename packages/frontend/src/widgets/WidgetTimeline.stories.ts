@@ -9,5 +9,8 @@ export const Default = {
 		WidgetTimeline,
 	},
 	template: '<WidgetTimeline />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

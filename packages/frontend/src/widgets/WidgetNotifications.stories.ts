@@ -9,5 +9,8 @@ export const Default = {
 		WidgetNotifications,
 	},
 	template: '<WidgetNotifications />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

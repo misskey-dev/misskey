@@ -9,5 +9,8 @@ export const Default = {
 		tl_column,
 	},
 	template: '<tl_column />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

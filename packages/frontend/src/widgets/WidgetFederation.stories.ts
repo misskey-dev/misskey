@@ -9,5 +9,8 @@ export const Default = {
 		WidgetFederation,
 	},
 	template: '<WidgetFederation />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

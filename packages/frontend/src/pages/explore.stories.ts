@@ -9,5 +9,8 @@ export const Default = {
 		explore,
 	},
 	template: '<explore />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

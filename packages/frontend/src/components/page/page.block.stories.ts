@@ -9,5 +9,8 @@ export const Default = {
 		page_block,
 	},
 	template: '<page_block />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

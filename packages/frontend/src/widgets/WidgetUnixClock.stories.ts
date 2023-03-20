@@ -9,5 +9,8 @@ export const Default = {
 		WidgetUnixClock,
 	},
 	template: '<WidgetUnixClock />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		flash,
 	},
 	template: '<flash />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkA,
 	},
 	template: '<MkA />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

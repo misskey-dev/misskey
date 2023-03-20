@@ -9,5 +9,8 @@ export const Default = {
 		MkSignupDialog,
 	},
 	template: '<MkSignupDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

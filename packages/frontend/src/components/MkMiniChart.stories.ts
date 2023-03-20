@@ -9,5 +9,8 @@ export const Default = {
 		MkMiniChart,
 	},
 	template: '<MkMiniChart />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

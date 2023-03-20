@@ -9,5 +9,8 @@ export const Default = {
 		WidgetClock,
 	},
 	template: '<WidgetClock />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

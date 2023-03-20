@@ -9,5 +9,8 @@ export const Default = {
 		MkUpdated,
 	},
 	template: '<MkUpdated />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

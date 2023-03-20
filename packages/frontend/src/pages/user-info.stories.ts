@@ -9,5 +9,8 @@ export const Default = {
 		user_info,
 	},
 	template: '<user_info />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

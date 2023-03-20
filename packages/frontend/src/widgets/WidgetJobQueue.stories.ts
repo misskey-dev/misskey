@@ -9,5 +9,8 @@ export const Default = {
 		WidgetJobQueue,
 	},
 	template: '<WidgetJobQueue />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

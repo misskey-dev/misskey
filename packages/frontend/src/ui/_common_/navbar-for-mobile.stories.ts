@@ -9,5 +9,8 @@ export const Default = {
 		navbar_for_mobile,
 	},
 	template: '<navbar_for_mobile />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

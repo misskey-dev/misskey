@@ -9,5 +9,8 @@ export const Default = {
 		upload,
 	},
 	template: '<upload />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

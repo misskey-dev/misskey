@@ -9,5 +9,8 @@ export const Default = {
 		MkNumberDiff,
 	},
 	template: '<MkNumberDiff />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

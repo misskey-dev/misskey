@@ -9,5 +9,8 @@ export const Default = {
 		explore_featured,
 	},
 	template: '<explore_featured />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

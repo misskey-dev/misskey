@@ -9,5 +9,8 @@ export const Default = {
 		pie,
 	},
 	template: '<pie />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

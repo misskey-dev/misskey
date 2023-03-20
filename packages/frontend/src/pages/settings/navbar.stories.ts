@@ -9,5 +9,8 @@ export const Default = {
 		navbar,
 	},
 	template: '<navbar />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkRetentionHeatmap,
 	},
 	template: '<MkRetentionHeatmap />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		page_textarea,
 	},
 	template: '<page_textarea />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

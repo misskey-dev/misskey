@@ -9,5 +9,8 @@ export const Default = {
 		MkWidgets,
 	},
 	template: '<MkWidgets />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

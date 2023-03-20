@@ -9,5 +9,8 @@ export const Default = {
 		_2fa_qrdialog,
 	},
 	template: '<_2fa_qrdialog />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

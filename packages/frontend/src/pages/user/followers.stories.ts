@@ -9,5 +9,8 @@ export const Default = {
 		followers,
 	},
 	template: '<followers />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkUserList,
 	},
 	template: '<MkUserList />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

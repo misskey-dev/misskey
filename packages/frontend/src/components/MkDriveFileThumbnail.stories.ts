@@ -9,5 +9,8 @@ export const Default = {
 		MkDriveFileThumbnail,
 	},
 	template: '<MkDriveFileThumbnail />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

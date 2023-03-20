@@ -9,5 +9,8 @@ export const Default = {
 		MkRange,
 	},
 	template: '<MkRange />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

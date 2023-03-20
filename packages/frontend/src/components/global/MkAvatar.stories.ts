@@ -9,5 +9,8 @@ export const Default = {
 		MkAvatar,
 	},
 	template: '<MkAvatar />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		overview_moderators,
 	},
 	template: '<overview_moderators />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

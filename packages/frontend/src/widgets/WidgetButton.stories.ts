@@ -9,5 +9,8 @@ export const Default = {
 		WidgetButton,
 	},
 	template: '<WidgetButton />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

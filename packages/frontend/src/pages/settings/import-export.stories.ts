@@ -9,5 +9,8 @@ export const Default = {
 		import_export,
 	},
 	template: '<import_export />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

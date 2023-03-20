@@ -9,5 +9,8 @@ export const Default = {
 		MkPagination,
 	},
 	template: '<MkPagination />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

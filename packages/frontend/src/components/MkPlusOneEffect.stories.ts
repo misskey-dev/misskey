@@ -9,5 +9,8 @@ export const Default = {
 		MkPlusOneEffect,
 	},
 	template: '<MkPlusOneEffect />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		drive,
 	},
 	template: '<drive />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

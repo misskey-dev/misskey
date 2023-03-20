@@ -9,5 +9,8 @@ export const Default = {
 		MkOmit,
 	},
 	template: '<MkOmit />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

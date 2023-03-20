@@ -9,5 +9,8 @@ export const Default = {
 		MkDriveSelectDialog,
 	},
 	template: '<MkDriveSelectDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

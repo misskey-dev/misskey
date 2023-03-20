@@ -9,5 +9,8 @@ export const Default = {
 		page_number_input,
 	},
 	template: '<page_number_input />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

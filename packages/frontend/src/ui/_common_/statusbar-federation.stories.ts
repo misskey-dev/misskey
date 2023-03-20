@@ -9,5 +9,8 @@ export const Default = {
 		statusbar_federation,
 	},
 	template: '<statusbar_federation />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		activity_notes,
 	},
 	template: '<activity_notes />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

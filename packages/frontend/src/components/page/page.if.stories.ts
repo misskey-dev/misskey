@@ -9,5 +9,8 @@ export const Default = {
 		page_if,
 	},
 	template: '<page_if />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

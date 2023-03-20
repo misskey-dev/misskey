@@ -9,5 +9,8 @@ export const Default = {
 		MkClickerGame,
 	},
 	template: '<MkClickerGame />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

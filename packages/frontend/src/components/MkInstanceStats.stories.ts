@@ -9,5 +9,8 @@ export const Default = {
 		MkInstanceStats,
 	},
 	template: '<MkInstanceStats />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

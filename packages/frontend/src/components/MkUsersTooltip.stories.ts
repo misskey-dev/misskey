@@ -9,5 +9,8 @@ export const Default = {
 		MkUsersTooltip,
 	},
 	template: '<MkUsersTooltip />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

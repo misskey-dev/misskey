@@ -9,5 +9,8 @@ export const Default = {
 		MkMediaImage,
 	},
 	template: '<MkMediaImage />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

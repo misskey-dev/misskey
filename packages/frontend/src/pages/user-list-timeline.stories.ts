@@ -9,5 +9,8 @@ export const Default = {
 		user_list_timeline,
 	},
 	template: '<user_list_timeline />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

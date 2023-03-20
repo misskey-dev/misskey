@@ -9,5 +9,8 @@ export const Default = {
 		delete_account,
 	},
 	template: '<delete_account />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

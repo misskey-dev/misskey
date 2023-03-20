@@ -9,5 +9,8 @@ export const Default = {
 		word_mute,
 	},
 	template: '<word_mute />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

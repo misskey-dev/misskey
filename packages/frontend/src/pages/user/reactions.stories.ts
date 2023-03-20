@@ -9,5 +9,8 @@ export const Default = {
 		reactions,
 	},
 	template: '<reactions />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

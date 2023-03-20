@@ -9,5 +9,8 @@ export const Default = {
 		MkInput,
 	},
 	template: '<MkInput />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

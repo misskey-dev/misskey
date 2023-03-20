@@ -9,5 +9,8 @@ export const Default = {
 		MkInfo,
 	},
 	template: '<MkInfo />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

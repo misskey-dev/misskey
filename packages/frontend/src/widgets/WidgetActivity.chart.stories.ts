@@ -9,5 +9,8 @@ export const Default = {
 		WidgetActivity_chart,
 	},
 	template: '<WidgetActivity_chart />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

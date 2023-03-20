@@ -9,5 +9,8 @@ export const Default = {
 		MkReactionTooltip,
 	},
 	template: '<MkReactionTooltip />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

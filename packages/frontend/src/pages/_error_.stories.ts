@@ -9,5 +9,8 @@ export const Default = {
 		_error_,
 	},
 	template: '<_error_ />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

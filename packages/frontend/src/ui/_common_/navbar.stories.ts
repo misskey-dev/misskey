@@ -9,5 +9,8 @@ export const Default = {
 		navbar,
 	},
 	template: '<navbar />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		emoji_edit_dialog,
 	},
 	template: '<emoji_edit_dialog />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

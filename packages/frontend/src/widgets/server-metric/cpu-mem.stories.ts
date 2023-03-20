@@ -9,5 +9,8 @@ export const Default = {
 		cpu_mem,
 	},
 	template: '<cpu_mem />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

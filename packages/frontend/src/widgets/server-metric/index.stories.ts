@@ -9,5 +9,8 @@ export const Default = {
 		index,
 	},
 	template: '<index />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

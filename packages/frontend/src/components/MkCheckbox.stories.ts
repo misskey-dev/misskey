@@ -9,5 +9,8 @@ export const Default = {
 		MkCheckbox,
 	},
 	template: '<MkCheckbox />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

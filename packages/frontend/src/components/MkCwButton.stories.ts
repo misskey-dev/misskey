@@ -9,5 +9,8 @@ export const Default = {
 		MkCwButton,
 	},
 	template: '<MkCwButton />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

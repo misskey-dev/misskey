@@ -9,5 +9,8 @@ export const Default = {
 		classic_sidebar,
 	},
 	template: '<classic_sidebar />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

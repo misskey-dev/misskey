@@ -9,5 +9,8 @@ export const Default = {
 		MkSignup,
 	},
 	template: '<MkSignup />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

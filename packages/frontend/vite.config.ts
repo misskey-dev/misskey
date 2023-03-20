@@ -38,7 +38,7 @@ function toBase62(n: number): string {
 	return result;
 }
 
-export default defineConfig(({ command, mode }) => {
+export function getConfig() {
 	return {
 		base: '/vite/',
 
@@ -122,4 +122,8 @@ export default defineConfig(({ command, mode }) => {
 			},
 		},
 	};
-});
+}
+
+const config = defineConfig(({ command, mode }) => getConfig());
+
+export default config;

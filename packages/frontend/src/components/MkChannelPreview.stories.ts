@@ -9,5 +9,8 @@ export const Default = {
 		MkChannelPreview,
 	},
 	template: '<MkChannelPreview />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

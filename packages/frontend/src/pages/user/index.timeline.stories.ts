@@ -9,5 +9,8 @@ export const Default = {
 		index_timeline,
 	},
 	template: '<index_timeline />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

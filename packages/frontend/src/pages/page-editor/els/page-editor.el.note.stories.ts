@@ -9,5 +9,8 @@ export const Default = {
 		page_editor_el_note,
 	},
 	template: '<page_editor_el_note />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

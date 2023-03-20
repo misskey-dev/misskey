@@ -9,5 +9,8 @@ export const Default = {
 		MkUserOnlineIndicator,
 	},
 	template: '<MkUserOnlineIndicator />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

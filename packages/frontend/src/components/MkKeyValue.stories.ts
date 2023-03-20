@@ -9,5 +9,8 @@ export const Default = {
 		MkKeyValue,
 	},
 	template: '<MkKeyValue />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

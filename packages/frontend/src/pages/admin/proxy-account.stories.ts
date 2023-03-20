@@ -9,5 +9,8 @@ export const Default = {
 		proxy_account,
 	},
 	template: '<proxy_account />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

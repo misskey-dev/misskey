@@ -9,5 +9,8 @@ export const Default = {
 		sounds_sound,
 	},
 	template: '<sounds_sound />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkUserPopup,
 	},
 	template: '<MkUserPopup />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

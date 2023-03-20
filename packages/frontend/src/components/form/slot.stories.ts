@@ -9,5 +9,8 @@ export const Default = {
 		slot,
 	},
 	template: '<slot />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

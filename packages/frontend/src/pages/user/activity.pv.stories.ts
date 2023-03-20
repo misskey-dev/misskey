@@ -9,5 +9,8 @@ export const Default = {
 		activity_pv,
 	},
 	template: '<activity_pv />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

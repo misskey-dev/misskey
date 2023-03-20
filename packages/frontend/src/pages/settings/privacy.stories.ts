@@ -9,5 +9,8 @@ export const Default = {
 		privacy,
 	},
 	template: '<privacy />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

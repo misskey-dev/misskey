@@ -9,5 +9,8 @@ export const Default = {
 		MkNotification,
 	},
 	template: '<MkNotification />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

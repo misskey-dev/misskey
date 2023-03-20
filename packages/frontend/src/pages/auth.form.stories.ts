@@ -9,5 +9,8 @@ export const Default = {
 		auth_form,
 	},
 	template: '<auth_form />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		page_counter,
 	},
 	template: '<page_counter />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		WidgetPostForm,
 	},
 	template: '<WidgetPostForm />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

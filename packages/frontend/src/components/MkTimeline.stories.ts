@@ -9,5 +9,8 @@ export const Default = {
 		MkTimeline,
 	},
 	template: '<MkTimeline />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkMediaBanner,
 	},
 	template: '<MkMediaBanner />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

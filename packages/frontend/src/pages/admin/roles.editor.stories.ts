@@ -9,5 +9,8 @@ export const Default = {
 		roles_editor,
 	},
 	template: '<roles_editor />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

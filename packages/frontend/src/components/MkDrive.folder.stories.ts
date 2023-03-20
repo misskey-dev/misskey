@@ -9,5 +9,8 @@ export const Default = {
 		MkDrive_folder,
 	},
 	template: '<MkDrive_folder />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

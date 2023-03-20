@@ -9,5 +9,8 @@ export const Default = {
 		MkAbuseReport,
 	},
 	template: '<MkAbuseReport />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

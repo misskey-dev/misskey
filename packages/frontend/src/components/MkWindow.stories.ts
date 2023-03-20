@@ -9,5 +9,8 @@ export const Default = {
 		MkWindow,
 	},
 	template: '<MkWindow />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

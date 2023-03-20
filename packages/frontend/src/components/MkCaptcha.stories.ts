@@ -9,5 +9,8 @@ export const Default = {
 		MkCaptcha,
 	},
 	template: '<MkCaptcha />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		activity,
 	},
 	template: '<activity />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

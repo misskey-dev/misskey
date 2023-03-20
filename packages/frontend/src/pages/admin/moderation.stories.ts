@@ -9,5 +9,8 @@ export const Default = {
 		moderation,
 	},
 	template: '<moderation />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

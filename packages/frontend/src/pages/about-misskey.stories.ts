@@ -9,5 +9,8 @@ export const Default = {
 		about_misskey,
 	},
 	template: '<about_misskey />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

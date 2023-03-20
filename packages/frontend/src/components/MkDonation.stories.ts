@@ -9,5 +9,8 @@ export const Default = {
 		MkDonation,
 	},
 	template: '<MkDonation />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

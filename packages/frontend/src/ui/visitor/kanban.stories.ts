@@ -9,5 +9,8 @@ export const Default = {
 		kanban,
 	},
 	template: '<kanban />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

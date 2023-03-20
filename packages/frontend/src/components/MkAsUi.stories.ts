@@ -9,5 +9,8 @@ export const Default = {
 		MkAsUi,
 	},
 	template: '<MkAsUi />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

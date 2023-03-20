@@ -9,5 +9,8 @@ export const Default = {
 		classic_header,
 	},
 	template: '<classic_header />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		overview_ap_requests,
 	},
 	template: '<overview_ap_requests />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkPushNotificationAllowButton,
 	},
 	template: '<MkPushNotificationAllowButton />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

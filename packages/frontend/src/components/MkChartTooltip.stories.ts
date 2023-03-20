@@ -9,5 +9,8 @@ export const Default = {
 		MkChartTooltip,
 	},
 	template: '<MkChartTooltip />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

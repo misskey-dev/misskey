@@ -9,5 +9,8 @@ export const Default = {
 		MkDateSeparatedList,
 	},
 	template: '<MkDateSeparatedList />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

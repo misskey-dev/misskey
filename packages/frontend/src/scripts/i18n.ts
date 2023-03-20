@@ -3,6 +3,7 @@ export class I18n<T extends Record<string, any>> {
 
 	constructor(locale: T) {
 		this.ts = locale;
+		console.log(this);
 
 		//#region BIND
 		this.t = this.t.bind(this);

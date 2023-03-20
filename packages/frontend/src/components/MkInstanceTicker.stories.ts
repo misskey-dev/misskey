@@ -9,5 +9,8 @@ export const Default = {
 		MkInstanceTicker,
 	},
 	template: '<MkInstanceTicker />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

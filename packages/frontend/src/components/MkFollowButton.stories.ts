@@ -9,5 +9,8 @@ export const Default = {
 		MkFollowButton,
 	},
 	template: '<MkFollowButton />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

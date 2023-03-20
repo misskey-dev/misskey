@@ -9,5 +9,8 @@ export const Default = {
 		MkYoutubePlayer,
 	},
 	template: '<MkYoutubePlayer />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

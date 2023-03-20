@@ -9,5 +9,8 @@ export const Default = {
 		security,
 	},
 	template: '<security />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

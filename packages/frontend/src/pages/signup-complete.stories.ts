@@ -9,5 +9,8 @@ export const Default = {
 		signup_complete,
 	},
 	template: '<signup_complete />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

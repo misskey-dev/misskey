@@ -9,5 +9,8 @@ export const Default = {
 		preferences_backups,
 	},
 	template: '<preferences_backups />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

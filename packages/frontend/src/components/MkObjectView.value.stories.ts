@@ -9,5 +9,8 @@ export const Default = {
 		MkObjectView_value,
 	},
 	template: '<MkObjectView_value />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

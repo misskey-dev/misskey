@@ -9,5 +9,8 @@ export const Default = {
 		MkMention,
 	},
 	template: '<MkMention />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

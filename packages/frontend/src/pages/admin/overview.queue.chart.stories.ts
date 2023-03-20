@@ -9,5 +9,8 @@ export const Default = {
 		overview_queue_chart,
 	},
 	template: '<overview_queue_chart />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

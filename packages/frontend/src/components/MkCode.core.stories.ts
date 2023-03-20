@@ -9,5 +9,8 @@ export const Default = {
 		MkCode_core,
 	},
 	template: '<MkCode_core />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

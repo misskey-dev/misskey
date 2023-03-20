@@ -9,5 +9,8 @@ export const Default = {
 		clips,
 	},
 	template: '<clips />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

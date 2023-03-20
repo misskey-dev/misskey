@@ -9,5 +9,8 @@ export const Default = {
 		notification,
 	},
 	template: '<notification />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

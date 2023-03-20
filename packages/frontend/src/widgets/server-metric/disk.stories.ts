@@ -9,5 +9,8 @@ export const Default = {
 		disk,
 	},
 	template: '<disk />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

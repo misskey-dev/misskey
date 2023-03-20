@@ -9,5 +9,8 @@ export const Default = {
 		WidgetTrends,
 	},
 	template: '<WidgetTrends />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

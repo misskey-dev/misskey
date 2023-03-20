@@ -9,5 +9,8 @@ export const Default = {
 		MkPoll,
 	},
 	template: '<MkPoll />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

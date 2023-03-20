@@ -9,5 +9,8 @@ export const Default = {
 		WidgetRssTicker,
 	},
 	template: '<WidgetRssTicker />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

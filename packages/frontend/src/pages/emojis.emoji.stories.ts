@@ -9,5 +9,8 @@ export const Default = {
 		emojis_emoji,
 	},
 	template: '<emojis_emoji />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

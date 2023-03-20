@@ -9,5 +9,8 @@ export const Default = {
 		column_core,
 	},
 	template: '<column_core />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

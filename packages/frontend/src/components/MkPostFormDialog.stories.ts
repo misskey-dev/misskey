@@ -9,5 +9,8 @@ export const Default = {
 		MkPostFormDialog,
 	},
 	template: '<MkPostFormDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

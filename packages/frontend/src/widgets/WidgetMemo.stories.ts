@@ -9,5 +9,8 @@ export const Default = {
 		WidgetMemo,
 	},
 	template: '<WidgetMemo />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

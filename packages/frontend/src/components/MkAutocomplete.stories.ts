@@ -9,5 +9,8 @@ export const Default = {
 		MkAutocomplete,
 	},
 	template: '<MkAutocomplete />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

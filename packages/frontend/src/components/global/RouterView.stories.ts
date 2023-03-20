@@ -9,5 +9,8 @@ export const Default = {
 		RouterView,
 	},
 	template: '<RouterView />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

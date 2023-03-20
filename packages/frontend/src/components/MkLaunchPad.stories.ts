@@ -9,5 +9,8 @@ export const Default = {
 		MkLaunchPad,
 	},
 	template: '<MkLaunchPad />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

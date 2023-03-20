@@ -9,5 +9,8 @@ export const Default = {
 		MkReactionsViewer,
 	},
 	template: '<MkReactionsViewer />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

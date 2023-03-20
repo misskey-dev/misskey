@@ -9,5 +9,8 @@ export const Default = {
 		MkImageViewer,
 	},
 	template: '<MkImageViewer />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

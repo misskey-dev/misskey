@@ -9,5 +9,8 @@ export const Default = {
 		database,
 	},
 	template: '<database />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

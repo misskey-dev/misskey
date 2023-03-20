@@ -9,5 +9,8 @@ export const Default = {
 		notifications,
 	},
 	template: '<notifications />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

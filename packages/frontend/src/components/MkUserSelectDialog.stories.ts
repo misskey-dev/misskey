@@ -9,5 +9,8 @@ export const Default = {
 		MkUserSelectDialog,
 	},
 	template: '<MkUserSelectDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

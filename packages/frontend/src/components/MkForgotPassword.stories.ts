@@ -9,5 +9,8 @@ export const Default = {
 		MkForgotPassword,
 	},
 	template: '<MkForgotPassword />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

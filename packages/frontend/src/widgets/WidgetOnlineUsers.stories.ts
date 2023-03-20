@@ -9,5 +9,8 @@ export const Default = {
 		WidgetOnlineUsers,
 	},
 	template: '<WidgetOnlineUsers />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkMisskeyFlavoredMarkdown,
 	},
 	template: '<MkMisskeyFlavoredMarkdown />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

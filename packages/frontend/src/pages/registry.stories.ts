@@ -9,5 +9,8 @@ export const Default = {
 		registry,
 	},
 	template: '<registry />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

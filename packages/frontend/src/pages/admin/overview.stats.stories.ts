@@ -9,5 +9,8 @@ export const Default = {
 		overview_stats,
 	},
 	template: '<overview_stats />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		other,
 	},
 	template: '<other />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

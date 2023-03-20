@@ -9,5 +9,8 @@ export const Default = {
 		MkRemoteCaution,
 	},
 	template: '<MkRemoteCaution />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

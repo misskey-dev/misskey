@@ -9,5 +9,8 @@ export const Default = {
 		MkTime,
 	},
 	template: '<MkTime />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

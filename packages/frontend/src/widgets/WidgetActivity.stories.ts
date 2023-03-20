@@ -9,5 +9,8 @@ export const Default = {
 		WidgetActivity,
 	},
 	template: '<WidgetActivity />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

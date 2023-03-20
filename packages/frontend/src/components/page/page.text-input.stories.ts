@@ -9,5 +9,8 @@ export const Default = {
 		page_text_input,
 	},
 	template: '<page_text_input />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

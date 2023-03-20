@@ -9,5 +9,8 @@ export const Default = {
 		object_storage,
 	},
 	template: '<object_storage />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

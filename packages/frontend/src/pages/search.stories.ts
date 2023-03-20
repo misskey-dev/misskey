@@ -9,5 +9,8 @@ export const Default = {
 		search,
 	},
 	template: '<search />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

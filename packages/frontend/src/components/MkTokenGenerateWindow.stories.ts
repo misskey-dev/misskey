@@ -9,5 +9,8 @@ export const Default = {
 		MkTokenGenerateWindow,
 	},
 	template: '<MkTokenGenerateWindow />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

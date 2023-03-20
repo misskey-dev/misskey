@@ -9,5 +9,8 @@ export const Default = {
 		WidgetRss,
 	},
 	template: '<WidgetRss />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

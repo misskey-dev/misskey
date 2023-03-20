@@ -9,5 +9,8 @@ export const Default = {
 		MkSample,
 	},
 	template: '<MkSample />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

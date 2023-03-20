@@ -9,5 +9,8 @@ export const Default = {
 		MkToast,
 	},
 	template: '<MkToast />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

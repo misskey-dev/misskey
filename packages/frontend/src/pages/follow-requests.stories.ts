@@ -9,5 +9,8 @@ export const Default = {
 		follow_requests,
 	},
 	template: '<follow_requests />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

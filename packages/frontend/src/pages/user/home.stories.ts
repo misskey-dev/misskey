@@ -9,5 +9,8 @@ export const Default = {
 		home,
 	},
 	template: '<home />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

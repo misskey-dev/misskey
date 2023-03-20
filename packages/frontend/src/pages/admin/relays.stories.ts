@@ -9,5 +9,8 @@ export const Default = {
 		relays,
 	},
 	template: '<relays />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

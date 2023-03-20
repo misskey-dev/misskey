@@ -9,5 +9,8 @@ export const Default = {
 		deck,
 	},
 	template: '<deck />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

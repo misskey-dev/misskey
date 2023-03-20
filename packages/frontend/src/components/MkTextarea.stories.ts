@@ -9,5 +9,8 @@ export const Default = {
 		MkTextarea,
 	},
 	template: '<MkTextarea />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

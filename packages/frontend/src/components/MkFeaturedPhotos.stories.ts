@@ -9,5 +9,8 @@ export const Default = {
 		MkFeaturedPhotos,
 	},
 	template: '<MkFeaturedPhotos />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

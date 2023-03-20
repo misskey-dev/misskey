@@ -9,5 +9,8 @@ export const Default = {
 		MkGalleryPostPreview,
 	},
 	template: '<MkGalleryPostPreview />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

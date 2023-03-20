@@ -9,5 +9,8 @@ export const Default = {
 		MkWaitingDialog,
 	},
 	template: '<MkWaitingDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

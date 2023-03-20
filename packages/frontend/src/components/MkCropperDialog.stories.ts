@@ -9,5 +9,8 @@ export const Default = {
 		MkCropperDialog,
 	},
 	template: '<MkCropperDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

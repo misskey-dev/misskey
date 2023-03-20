@@ -9,5 +9,8 @@ export const Default = {
 		activity_heatmap,
 	},
 	template: '<activity_heatmap />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

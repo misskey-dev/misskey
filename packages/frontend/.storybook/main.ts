@@ -1,5 +1,7 @@
 import type { StorybookConfig } from '@storybook/vue3-vite';
-const config: StorybookConfig = {
+import { mergeConfig } from 'vite';
+import { getConfig } from '../vite.config';
+const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
 		'@storybook/addon-links',
@@ -13,5 +15,16 @@ const config: StorybookConfig = {
 	docs: {
 		autodocs: 'tag',
 	},
-};
+	core: {
+		disableTelemetry: true,
+	},
+	async viteFinal(config, options) {
+		const { plugins, build: { rollupOptions, ...build }, ...original } = getConfig();
+		const x = mergeConfig(config, {
+			...original,
+			build,
+		});
+		return x;
+	},
+} satisfies StorybookConfig;
 export default config;

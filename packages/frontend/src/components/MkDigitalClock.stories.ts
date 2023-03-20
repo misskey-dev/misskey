@@ -9,5 +9,8 @@ export const Default = {
 		MkDigitalClock,
 	},
 	template: '<MkDigitalClock />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkModal,
 	},
 	template: '<MkModal />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

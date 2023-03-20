@@ -9,5 +9,8 @@ export const Default = {
 		MkTagCloud,
 	},
 	template: '<MkTagCloud />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		WidgetProfile,
 	},
 	template: '<WidgetProfile />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

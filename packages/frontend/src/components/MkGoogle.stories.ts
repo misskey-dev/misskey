@@ -9,5 +9,8 @@ export const Default = {
 		MkGoogle,
 	},
 	template: '<MkGoogle />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

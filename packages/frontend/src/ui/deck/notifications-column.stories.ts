@@ -9,5 +9,8 @@ export const Default = {
 		notifications_column,
 	},
 	template: '<notifications_column />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

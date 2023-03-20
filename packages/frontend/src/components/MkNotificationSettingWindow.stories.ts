@@ -9,5 +9,8 @@ export const Default = {
 		MkNotificationSettingWindow,
 	},
 	template: '<MkNotificationSettingWindow />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

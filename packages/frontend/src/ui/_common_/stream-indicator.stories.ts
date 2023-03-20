@@ -9,5 +9,8 @@ export const Default = {
 		stream_indicator,
 	},
 	template: '<stream_indicator />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

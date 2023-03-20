@@ -9,5 +9,8 @@ export const Default = {
 		MkLoading,
 	},
 	template: '<MkLoading />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

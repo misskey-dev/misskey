@@ -9,5 +9,8 @@ export const Default = {
 		MkFileListForAdmin,
 	},
 	template: '<MkFileListForAdmin />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

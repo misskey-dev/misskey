@@ -9,5 +9,8 @@ export const Default = {
 		antenna_timeline,
 	},
 	template: '<antenna_timeline />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

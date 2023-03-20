@@ -9,5 +9,8 @@ export const Default = {
 		MkFileCaptionEditWindow,
 	},
 	template: '<MkFileCaptionEditWindow />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

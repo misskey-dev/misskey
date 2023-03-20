@@ -9,5 +9,8 @@ export const Default = {
 		MkFoldableSection,
 	},
 	template: '<MkFoldableSection />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

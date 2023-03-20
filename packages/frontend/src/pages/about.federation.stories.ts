@@ -9,5 +9,8 @@ export const Default = {
 		about_federation,
 	},
 	template: '<about_federation />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkFolder,
 	},
 	template: '<MkFolder />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

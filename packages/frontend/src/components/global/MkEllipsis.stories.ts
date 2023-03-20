@@ -9,5 +9,8 @@ export const Default = {
 		MkEllipsis,
 	},
 	template: '<MkEllipsis />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		activity_following,
 	},
 	template: '<activity_following />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

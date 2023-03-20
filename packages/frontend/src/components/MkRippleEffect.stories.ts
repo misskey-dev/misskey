@@ -9,5 +9,8 @@ export const Default = {
 		MkRippleEffect,
 	},
 	template: '<MkRippleEffect />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

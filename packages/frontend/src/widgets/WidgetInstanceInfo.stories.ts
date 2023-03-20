@@ -9,5 +9,8 @@ export const Default = {
 		WidgetInstanceInfo,
 	},
 	template: '<WidgetInstanceInfo />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

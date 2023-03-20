@@ -9,5 +9,8 @@ export const Default = {
 		WidgetActivity_calendar,
 	},
 	template: '<WidgetActivity_calendar />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

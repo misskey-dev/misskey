@@ -9,5 +9,8 @@ export const Default = {
 		visitor,
 	},
 	template: '<visitor />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

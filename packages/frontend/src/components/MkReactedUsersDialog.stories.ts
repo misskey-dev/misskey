@@ -9,5 +9,8 @@ export const Default = {
 		MkReactedUsersDialog,
 	},
 	template: '<MkReactedUsersDialog />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

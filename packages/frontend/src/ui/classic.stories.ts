@@ -9,5 +9,8 @@ export const Default = {
 		classic,
 	},
 	template: '<classic />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

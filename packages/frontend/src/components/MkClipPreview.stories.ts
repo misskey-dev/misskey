@@ -9,5 +9,8 @@ export const Default = {
 		MkClipPreview,
 	},
 	template: '<MkClipPreview />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkSpacer,
 	},
 	template: '<MkSpacer />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

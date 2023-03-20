@@ -9,5 +9,8 @@ export const Default = {
 		overview_pie,
 	},
 	template: '<overview_pie />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

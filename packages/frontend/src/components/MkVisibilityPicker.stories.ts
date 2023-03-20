@@ -9,5 +9,8 @@ export const Default = {
 		MkVisibilityPicker,
 	},
 	template: '<MkVisibilityPicker />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

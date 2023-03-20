@@ -9,5 +9,8 @@ export const Default = {
 		MkSwitch,
 	},
 	template: '<MkSwitch />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

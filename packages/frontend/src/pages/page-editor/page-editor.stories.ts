@@ -9,5 +9,8 @@ export const Default = {
 		page_editor,
 	},
 	template: '<page_editor />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

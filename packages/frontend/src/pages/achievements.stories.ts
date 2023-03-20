@@ -9,5 +9,8 @@ export const Default = {
 		achievements,
 	},
 	template: '<achievements />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

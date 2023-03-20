@@ -9,5 +9,8 @@ export const Default = {
 		MkPostFormAttaches,
 	},
 	template: '<MkPostFormAttaches />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

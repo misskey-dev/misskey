@@ -9,5 +9,8 @@ export const Default = {
 		api,
 	},
 	template: '<api />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

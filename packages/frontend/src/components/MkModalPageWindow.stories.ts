@@ -9,5 +9,8 @@ export const Default = {
 		MkModalPageWindow,
 	},
 	template: '<MkModalPageWindow />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

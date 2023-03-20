@@ -9,5 +9,8 @@ export const Default = {
 		MkPagePreview,
 	},
 	template: '<MkPagePreview />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

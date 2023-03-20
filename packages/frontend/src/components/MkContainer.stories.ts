@@ -9,5 +9,8 @@ export const Default = {
 		MkContainer,
 	},
 	template: '<MkContainer />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

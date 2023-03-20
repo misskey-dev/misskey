@@ -11,13 +11,26 @@ function h<T extends estree.Node>(component: T['type'], props: Omit<T, 'type'>):
 	return Object.assign(props, { type }) as T;
 }
 
-function toStories(component: string, location: string): string {
+function toStories(component: string): string {
+	const base = basename(component);
+	const dir = dirname(component);
 	const literal = (
-		<literal value={join(location, component).slice(4, -4)} />
+		<literal value={component.slice('src/'.length, -'.vue'.length)} />
 	) as unknown as estree.Literal;
 	const identifier = (
-		<identifier name={component.slice(0, -4).replace(/[-.]|^(?=\d)/g, '_')} />
+		<identifier name={base.slice(0, -'.vue'.length).replace(/[-.]|^(?=\d)/g, '_')} />
 	) as unknown as estree.Identifier;
+	const parameters = (
+		<object-expression
+			properties={[
+				<property
+					key={<identifier name="layout" />}
+					value={<literal value={`${dir}/`.startsWith('src/pages/') || base === 'MkAnalogClock.vue' ? 'fullscreen' : 'centered'} />}
+					kind="init"
+				/>
+			]}
+		/>
+	);
 	const program = (
 		<program
 			body={[
@@ -35,7 +48,7 @@ function toStories(component: string, location: string): string {
 					]}
 				/>,
 				<import-declaration
-					source={<literal value={`./${component}`} />}
+					source={<literal value={`./${base}`} />}
 					specifiers={[
 						<import-default-specifier
 							local={identifier}
@@ -98,6 +111,11 @@ function toStories(component: string, location: string): string {
 													value={<literal value={`<${identifier.name} />`} />}
 													kind="init"
 												/>,
+												<property
+													key={<identifier name="parameters" />}
+													value={parameters}
+													kind="init"
+												/>,
 											]}
 										/>
 									}
@@ -128,7 +146,7 @@ promisify(glob)('src/{components,pages,ui,widgets}/**/*.vue').then((components) 
 		fs.stat(stories).then(
 			() => {},
 			() => {
-				fs.writeFile(stories, toStories(basename(component), dirname(component)));
+				fs.writeFile(stories, toStories(component));
 			}
 		);
 	})

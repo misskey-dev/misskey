@@ -9,5 +9,8 @@ export const Default = {
 		universal_widgets,
 	},
 	template: '<universal_widgets />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

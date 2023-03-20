@@ -9,5 +9,8 @@ export const Default = {
 		abuses,
 	},
 	template: '<abuses />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

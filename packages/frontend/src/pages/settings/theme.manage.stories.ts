@@ -9,5 +9,8 @@ export const Default = {
 		theme_manage,
 	},
 	template: '<theme_manage />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkSparkle,
 	},
 	template: '<MkSparkle />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		page_button,
 	},
 	template: '<page_button />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

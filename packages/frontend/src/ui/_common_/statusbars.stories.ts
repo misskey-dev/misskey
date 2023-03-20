@@ -9,5 +9,8 @@ export const Default = {
 		statusbars,
 	},
 	template: '<statusbars />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

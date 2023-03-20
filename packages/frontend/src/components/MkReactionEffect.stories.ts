@@ -9,5 +9,8 @@ export const Default = {
 		MkReactionEffect,
 	},
 	template: '<MkReactionEffect />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		note,
 	},
 	template: '<note />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		plugin_install,
 	},
 	template: '<plugin_install />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

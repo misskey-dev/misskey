@@ -9,5 +9,8 @@ export const Default = {
 		MkUrlPreviewPopup,
 	},
 	template: '<MkUrlPreviewPopup />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

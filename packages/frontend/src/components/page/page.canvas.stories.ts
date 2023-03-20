@@ -9,5 +9,8 @@ export const Default = {
 		page_canvas,
 	},
 	template: '<page_canvas />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

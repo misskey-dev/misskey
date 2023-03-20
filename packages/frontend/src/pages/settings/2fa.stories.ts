@@ -9,5 +9,8 @@ export const Default = {
 		_2fa,
 	},
 	template: '<_2fa />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

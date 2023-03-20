@@ -9,5 +9,8 @@ export const Default = {
 		MkMarquee,
 	},
 	template: '<MkMarquee />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

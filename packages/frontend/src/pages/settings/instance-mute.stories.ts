@@ -9,5 +9,8 @@ export const Default = {
 		instance_mute,
 	},
 	template: '<instance_mute />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		overview_retention,
 	},
 	template: '<overview_retention />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

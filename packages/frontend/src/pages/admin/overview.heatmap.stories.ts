@@ -9,5 +9,8 @@ export const Default = {
 		overview_heatmap,
 	},
 	template: '<overview_heatmap />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

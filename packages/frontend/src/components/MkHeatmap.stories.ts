@@ -9,5 +9,8 @@ export const Default = {
 		MkHeatmap,
 	},
 	template: '<MkHeatmap />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

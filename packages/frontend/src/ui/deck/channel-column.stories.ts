@@ -9,5 +9,8 @@ export const Default = {
 		channel_column,
 	},
 	template: '<channel_column />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

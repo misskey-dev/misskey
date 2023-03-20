@@ -9,5 +9,8 @@ export const Default = {
 		MkInstanceCardMini,
 	},
 	template: '<MkInstanceCardMini />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		MkNotes,
 	},
 	template: '<MkNotes />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

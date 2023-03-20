@@ -9,5 +9,8 @@ export const Default = {
 		MkAnalogClock,
 	},
 	template: '<MkAnalogClock />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

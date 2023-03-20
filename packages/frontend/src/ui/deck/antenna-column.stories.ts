@@ -9,5 +9,8 @@ export const Default = {
 		antenna_column,
 	},
 	template: '<antenna_column />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

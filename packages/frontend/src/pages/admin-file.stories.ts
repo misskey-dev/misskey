@@ -9,5 +9,8 @@ export const Default = {
 		admin_file,
 	},
 	template: '<admin_file />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

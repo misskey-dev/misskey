@@ -9,5 +9,8 @@ export const Default = {
 		WidgetSlideshow,
 	},
 	template: '<WidgetSlideshow />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

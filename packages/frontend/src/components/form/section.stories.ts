@@ -9,5 +9,8 @@ export const Default = {
 		section,
 	},
 	template: '<section />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

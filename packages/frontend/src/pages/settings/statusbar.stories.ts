@@ -9,5 +9,8 @@ export const Default = {
 		statusbar,
 	},
 	template: '<statusbar />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

@@ -9,5 +9,8 @@ export const Default = {
 		email_settings,
 	},
 	template: '<email_settings />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

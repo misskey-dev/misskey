@@ -9,5 +9,8 @@ export const Default = {
 		MkUrl,
 	},
 	template: '<MkUrl />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

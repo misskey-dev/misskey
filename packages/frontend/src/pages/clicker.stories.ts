@@ -9,5 +9,8 @@ export const Default = {
 		clicker,
 	},
 	template: '<clicker />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

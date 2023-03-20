@@ -9,5 +9,8 @@ export const Default = {
 		MkContextMenu,
 	},
 	template: '<MkContextMenu />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

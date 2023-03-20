@@ -9,5 +9,8 @@ export const Default = {
 		RolesEditorFormula,
 	},
 	template: '<RolesEditorFormula />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

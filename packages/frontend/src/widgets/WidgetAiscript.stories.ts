@@ -9,5 +9,8 @@ export const Default = {
 		WidgetAiscript,
 	},
 	template: '<WidgetAiscript />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

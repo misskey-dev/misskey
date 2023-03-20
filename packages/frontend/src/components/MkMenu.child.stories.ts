@@ -9,5 +9,8 @@ export const Default = {
 		MkMenu_child,
 	},
 	template: '<MkMenu_child />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;

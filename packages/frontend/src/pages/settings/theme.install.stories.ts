@@ -9,5 +9,8 @@ export const Default = {
 		theme_install,
 	},
 	template: '<theme_install />',
+	parameters: {
+		layout: 'fullscreen',
+	},
 };
 export default meta;

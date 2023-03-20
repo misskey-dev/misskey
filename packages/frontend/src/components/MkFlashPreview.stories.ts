@@ -9,5 +9,8 @@ export const Default = {
 		MkFlashPreview,
 	},
 	template: '<MkFlashPreview />',
+	parameters: {
+		layout: 'centered',
+	},
 };
 export default meta;
