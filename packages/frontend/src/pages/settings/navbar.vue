@@ -5,27 +5,27 @@
 		<MkContainer :show-header="false">
 			<Sortable 
 				v-model="items"
+				item-key="id"
 				:animation="150"
-				class="navbar_items"
-				handle=".item_handle"
-				@start="e=>e.item.classList.add('active')"
-				@end="e=>e.item.classList.remove('active')"
+				:handle="'.' + $style.itemHandle"
+				@start="e => e.item.classList.add('active')"
+				@end="e => e.item.classList.remove('active')"
 			>
 				<template #item="{element,index}">
 					<div
-						v-if="element === '-' || navbarItemDef[element]"
-						class="item"
+						v-if="element.type === '-' || navbarItemDef[element.type]"
+						:class="$style.item"
 					>
-						<button class="item_handle _button" ><i class="ti ti-menu"></i></button>
-						<i class="icon ti-fw" :class="navbarItemDef[element]?.icon"></i><span class="text">{{ navbarItemDef[element]?.title ?? i18n.ts.divider }}</span>
-						<button class="navbar_item_remove _button" @click="removeItem(index)"><i class="ti ti-trash"></i></button>
+						<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
+						<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[element.type]?.title ?? i18n.ts.divider }}</span>
+						<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
 					</div>
 				</template>
 			</Sortable>
 		</MkContainer>
 	</FormSlot>
 	<div class="_buttons">
-		<MkButton @click="addItem">{{ i18n.ts.addItem }}</MkButton>
+		<MkButton @click="addItem"><i class="ti ti-plus"></i> {{ i18n.ts.addItem }}</MkButton>
 		<MkButton danger @click="reset"><i class="ti ti-reload"></i> {{ i18n.ts.default }}</MkButton>
 		<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 	</div>
@@ -56,7 +56,10 @@ import { deepClone } from '@/scripts/clone';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const items = ref(deepClone(defaultStore.state.menu));
+const items = ref(defaultStore.state.menu.map(x => ({
+	id: Math.random().toString(),
+	type: x,
+})));
 
 const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
 
@@ -81,7 +84,10 @@ async function addItem() {
 		}],
 	});
 	if (canceled) return;
-	items.value = [...items.value, item];
+	items.value = [...items.value, {
+		id: Math.random().toString(),
+		type: item,
+	}];
 }
 
 function removeItem(index: number) {
@@ -89,12 +95,15 @@ function removeItem(index: number) {
 }
 
 async function save() {
-	defaultStore.set('menu', items.value);
+	defaultStore.set('menu', items.value.map(x => x.type));
 	await reloadAsk();
 }
 
 function reset() {
-	items.value = defaultStore.def.menu.default;
+	items.value = defaultStore.def.menu.default.map(x => ({
+		id: Math.random().toString(),
+		type: x,
+	}));
 }
 
 watch(menuDisplay, async () => {
@@ -110,75 +119,44 @@ definePageMetadata({
 	icon: 'ti ti-list',
 });
 </script>
-<style lang="scss">
-.navbar_items {
-	flex: 1;
 
-	.item {
-		position: relative;
-		display: block;
-		line-height: 2.85rem;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		white-space: nowrap;
-		width: 100%;
-		text-align: left;
-		box-sizing: border-box;
-		color: var(--navFg);
+<style lang="scss" module>
+.item {
+	position: relative;
+	display: block;
+	line-height: 2.85rem;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	color: var(--navFg);
+}
 
-		.icon {
-			position: relative;
-			width: 32px;
-			margin-right: 8px;
-		}
+.itemIcon {
+	position: relative;
+	width: 32px;
+	margin-right: 8px;
+}
 
-		.text {
-			position: relative;
-			font-size: 0.9em;
-		}
+.itemText {
+	position: relative;
+	font-size: 0.9em;
+}
 
-		.navbar_item_remove {
-			position: absolute;
-			z-index: 10000;
-			width: 32px;
-			height: 32px;
-			color: #ff2a2a;
-			right: 8px;
-			opacity: 0.8;
-		}
+.itemRemove {
+	position: absolute;
+	z-index: 10000;
+	width: 32px;
+	height: 32px;
+	color: #ff2a2a;
+	right: 8px;
+	opacity: 0.8;
+}
 
-		.item_handle{
-			cursor: move;
-			width: 32px;
-			height: 32px;
-			margin: 0 8px;
-			opacity: 0.5;
-		}
-
-		&.active {
-			text-decoration: none;
-			color: var(--accent);
-
-			&:before {
-				content: "";
-				display: block;
-				height: 100%;
-				width: 100%;
-				aspect-ratio: 1;
-				margin: auto;
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				border-radius: 999px;
-				background: var(--accentedBg);
-			}
-
-			> .icon, > .text {
-				opacity: 1;
-			}
-		}
-	}
+.itemHandle {
+	cursor: move;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px;
+	opacity: 0.5;
 }
 </style>
