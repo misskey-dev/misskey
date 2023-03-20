@@ -530,7 +530,7 @@ nothing: "There's nothing to see here"
 installedDate: "Authorized at"
 lastUsedDate: "Last used at"
 state: "State"
-sort: "Sort"
+sort: "Sorting order"
 ascendingOrder: "Ascending"
 descendingOrder: "Descending"
 scratchpad: "Scratchpad"
@@ -977,6 +977,7 @@ notesSearchNotAvailable: "Note search is unavailable."
 license: "License"
 unfavoriteConfirm: "Really remove from favorites?"
 myClips: "My clips"
+drivecleaner: "Drive Cleaner"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
@@ -1868,3 +1869,6 @@ _dialog:
 _disabledTimeline:
   title: "Timeline disabled"
   description: "You cannot use this timeline under your current roles."
+_drivecleaner:
+  orderBySizeDesc: "Descending Filesizes"
+  orderByCreatedAtAsc: "Ascending Dates"
