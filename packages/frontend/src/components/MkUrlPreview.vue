@@ -1,7 +1,18 @@
 <template>
-<template v-if="playerEnabled">
-	<div :class="$style.player" :style="`padding: ${(player.height || 0) / (player.width || 1) * 100}% 0 0`">
-		<iframe v-if="player.url.startsWith('http://') || player.url.startsWith('https://')" :class="$style.playerIframe" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" :width="player.width || '100%'" :heigth="player.height || 250" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
+<template v-if="player.url && playerEnabled">
+	<div
+		:class="$style.player"
+		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
+	>
+		<iframe
+			v-if="player.url.startsWith('http://') || player.url.startsWith('https://')"
+			sandbox="allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin"
+			scrolling="no"
+			:allow="player.allow.join(';')"
+			:class="$style.playerIframe"
+			:src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')"
+			:style="{ border: 0 }"
+		></iframe>
 		<span v-else>invalid url</span>
 	</div>
 	<div :class="$style.action">
@@ -28,7 +39,7 @@
 			<header :class="$style.header">
 				<h1 v-if="unknownUrl" :class="$style.title">{{ url }}</h1>
 				<h1 v-else-if="fetching" :class="$style.title"><MkEllipsis/></h1>
-				<h1 v-else :class="$style.title" :title="title">{{ title }}</h1>
+				<h1 v-else :class="$style.title" :title="title ?? undefined">{{ title }}</h1>
 			</header>
 			<p v-if="unknownUrl" :class="$style.text">{{ i18n.ts.cannotLoad }}</p>
 			<p v-else-if="fetching" :class="$style.text"><MkEllipsis/></p>
@@ -37,7 +48,7 @@
 				<img v-if="icon" :class="$style.siteIcon" :src="icon"/>
 				<p v-if="unknownUrl" :class="$style.siteName">?</p>
 				<p v-else-if="fetching" :class="$style.siteName"><MkEllipsis/></p>
-				<p v-else :class="$style.siteName" :title="sitename">{{ sitename }}</p>
+				<p v-else :class="$style.siteName" :title="sitename ?? undefined">{{ sitename }}</p>
 			</footer>
 		</article>
 	</component>
@@ -59,12 +70,15 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted } from 'vue';
+import type { summaly } from 'summaly';
 import { url as local } from '@/config';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
+
+type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
 const props = withDefaults(defineProps<{
 	url: string;
@@ -91,7 +105,7 @@ let player = $ref({
 	url: null,
 	width: null,
 	height: null,
-});
+} as SummalyResult['player']);
 let playerEnabled = $ref(false);
 let tweetId = $ref<string | null>(null);
 let tweetExpanded = $ref(props.detail);
@@ -114,11 +128,7 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 requestUrl.hash = '';
 
 window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
-	res.json().then(info => {
-		if (info.url == null) {
-			unknownUrl = true;
-			return;
-		}
+	res.json().then((info: SummalyResult) => {
 		title = info.title;
 		description = info.description;
 		thumbnail = info.thumbnail;
