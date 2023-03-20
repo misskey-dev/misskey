@@ -1,7 +1,6 @@
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
-import { configDefaults as vitestConfigDefaults } from 'vitest/config';
+import { type UserConfig, defineConfig } from 'vite';
 
 import locales from '../../locales';
 import meta from '../../package.json';
@@ -38,7 +37,7 @@ function toBase62(n: number): string {
 	return result;
 }
 
-export function getConfig() {
+export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
@@ -62,7 +61,7 @@ export function getConfig() {
 
 		css: {
 			modules: {
-				generateScopedName: (name, filename, css) => {
+				generateScopedName(name, filename, _css): string {
 					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
 						return 'x' + toBase62(hash(id)).substring(0, 4);

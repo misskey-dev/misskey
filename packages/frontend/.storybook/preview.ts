@@ -1,10 +1,13 @@
 import { type Preview, setup } from '@storybook/vue3';
 import { initialize, mswDecorator } from 'msw-storybook-addon';
 import locale from './locale';
+import { commonHandlers, onUnhandledRequest } from './mocks';
 import theme from './theme';
 import '../src/style.scss';
 
-initialize();
+initialize({
+	onUnhandledRequest,
+});
 localStorage.setItem("locale", JSON.stringify(locale));
 Promise.all([
 	import('../src/components'),
@@ -23,6 +26,11 @@ const preview = {
 	decorators: [
 		mswDecorator,
 	],
+	parameters: {
+		msw: {
+			handlers: commonHandlers,
+		},
+	},
 } satisfies Preview;
 
 export default preview;

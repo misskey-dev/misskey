@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
 import { getConfig } from '../vite.config';
@@ -23,6 +24,7 @@ const config = {
 		const x = mergeConfig(config, {
 			...original,
 			build,
+			assetsInclude: [resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}')],
 		});
 		return x;
 	},
