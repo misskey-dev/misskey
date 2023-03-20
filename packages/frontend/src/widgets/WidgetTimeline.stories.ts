@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetTimeline from './WidgetTimeline.vue';
 const meta = {
 	title: 'widgets/WidgetTimeline',
 	component: WidgetTimeline,
-};
+} satisfies Meta<typeof WidgetTimeline>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetTimeline>;
 export default meta;

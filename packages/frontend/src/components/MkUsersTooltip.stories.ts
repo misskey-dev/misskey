@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkUsersTooltip from './MkUsersTooltip.vue';
 const meta = {
 	title: 'components/MkUsersTooltip',
 	component: MkUsersTooltip,
-};
+} satisfies Meta<typeof MkUsersTooltip>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkUsersTooltip>;
 export default meta;

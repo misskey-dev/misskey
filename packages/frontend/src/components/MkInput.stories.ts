@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkInput from './MkInput.vue';
 const meta = {
 	title: 'components/MkInput',
 	component: MkInput,
-};
+} satisfies Meta<typeof MkInput>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkInput>;
 export default meta;

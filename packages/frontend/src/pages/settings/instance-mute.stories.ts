@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import instance_mute from './instance-mute.vue';
 const meta = {
 	title: 'pages/settings/instance-mute',
 	component: instance_mute,
-};
+} satisfies Meta<typeof instance_mute>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof instance_mute>;
 export default meta;

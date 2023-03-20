@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import email from './email.vue';
 const meta = {
 	title: 'pages/settings/email',
 	component: email,
-};
+} satisfies Meta<typeof email>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof email>;
 export default meta;

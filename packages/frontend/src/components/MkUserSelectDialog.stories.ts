@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkUserSelectDialog from './MkUserSelectDialog.vue';
 const meta = {
 	title: 'components/MkUserSelectDialog',
 	component: MkUserSelectDialog,
-};
+} satisfies Meta<typeof MkUserSelectDialog>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkUserSelectDialog>;
 export default meta;

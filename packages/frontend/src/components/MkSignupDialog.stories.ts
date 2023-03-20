@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkSignupDialog from './MkSignupDialog.vue';
 const meta = {
 	title: 'components/MkSignupDialog',
 	component: MkSignupDialog,
-};
+} satisfies Meta<typeof MkSignupDialog>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkSignupDialog>;
 export default meta;

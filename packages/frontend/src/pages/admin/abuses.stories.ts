@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import abuses from './abuses.vue';
 const meta = {
 	title: 'pages/admin/abuses',
 	component: abuses,
-};
+} satisfies Meta<typeof abuses>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof abuses>;
 export default meta;

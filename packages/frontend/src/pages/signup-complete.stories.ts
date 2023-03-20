@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import signup_complete from './signup-complete.vue';
 const meta = {
 	title: 'pages/signup-complete',
 	component: signup_complete,
-};
+} satisfies Meta<typeof signup_complete>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof signup_complete>;
 export default meta;

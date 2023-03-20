@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import page_text from './page.text.vue';
 const meta = {
 	title: 'components/page/page.text',
 	component: page_text,
-};
+} satisfies Meta<typeof page_text>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof page_text>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import preferences_backups from './preferences-backups.vue';
 const meta = {
 	title: 'pages/settings/preferences-backups',
 	component: preferences_backups,
-};
+} satisfies Meta<typeof preferences_backups>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof preferences_backups>;
 export default meta;

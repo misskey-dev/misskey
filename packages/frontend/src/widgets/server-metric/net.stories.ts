@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import net from './net.vue';
 const meta = {
 	title: 'widgets/server-metric/net',
 	component: net,
-};
+} satisfies Meta<typeof net>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof net>;
 export default meta;

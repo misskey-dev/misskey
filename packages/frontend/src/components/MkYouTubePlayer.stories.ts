@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkYouTubePlayer from './MkYouTubePlayer.vue';
 const meta = {
 	title: 'components/MkYouTubePlayer',
 	component: MkYouTubePlayer,
-};
+} satisfies Meta<typeof MkYouTubePlayer>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkYouTubePlayer>;
 export default meta;

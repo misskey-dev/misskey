@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import activity_pv from './activity.pv.vue';
 const meta = {
 	title: 'pages/user/activity.pv',
 	component: activity_pv,
-};
+} satisfies Meta<typeof activity_pv>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof activity_pv>;
 export default meta;

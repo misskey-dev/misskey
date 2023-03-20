@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import list_column from './list-column.vue';
 const meta = {
 	title: 'ui/deck/list-column',
 	component: list_column,
-};
+} satisfies Meta<typeof list_column>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof list_column>;
 export default meta;

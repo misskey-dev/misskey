@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkDrive_file from './MkDrive.file.vue';
 const meta = {
 	title: 'components/MkDrive.file',
 	component: MkDrive_file,
-};
+} satisfies Meta<typeof MkDrive_file>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkDrive_file>;
 export default meta;

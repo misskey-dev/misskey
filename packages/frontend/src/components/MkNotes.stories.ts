@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkNotes from './MkNotes.vue';
 const meta = {
 	title: 'components/MkNotes',
 	component: MkNotes,
-};
+} satisfies Meta<typeof MkNotes>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkNotes>;
 export default meta;

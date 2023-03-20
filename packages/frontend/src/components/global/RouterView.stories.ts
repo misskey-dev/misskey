@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import RouterView from './RouterView.vue';
 const meta = {
 	title: 'components/global/RouterView',
 	component: RouterView,
-};
+} satisfies Meta<typeof RouterView>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof RouterView>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkRadio from './MkRadio.vue';
 const meta = {
 	title: 'components/MkRadio',
 	component: MkRadio,
-};
+} satisfies Meta<typeof MkRadio>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkRadio>;
 export default meta;

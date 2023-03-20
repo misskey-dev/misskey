@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import activity_following from './activity.following.vue';
 const meta = {
 	title: 'pages/user/activity.following',
 	component: activity_following,
-};
+} satisfies Meta<typeof activity_following>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof activity_following>;
 export default meta;

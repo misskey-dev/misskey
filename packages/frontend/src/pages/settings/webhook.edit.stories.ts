@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import webhook_edit from './webhook.edit.vue';
 const meta = {
 	title: 'pages/settings/webhook.edit',
 	component: webhook_edit,
-};
+} satisfies Meta<typeof webhook_edit>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof webhook_edit>;
 export default meta;

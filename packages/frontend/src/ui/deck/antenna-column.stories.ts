@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import antenna_column from './antenna-column.vue';
 const meta = {
 	title: 'ui/deck/antenna-column',
 	component: antenna_column,
-};
+} satisfies Meta<typeof antenna_column>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof antenna_column>;
 export default meta;

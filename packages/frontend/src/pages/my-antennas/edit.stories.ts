@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import edit from './edit.vue';
 const meta = {
 	title: 'pages/my-antennas/edit',
 	component: edit,
-};
+} satisfies Meta<typeof edit>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof edit>;
 export default meta;

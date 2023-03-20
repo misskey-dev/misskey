@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetPhotos from './WidgetPhotos.vue';
 const meta = {
 	title: 'widgets/WidgetPhotos',
 	component: WidgetPhotos,
-};
+} satisfies Meta<typeof WidgetPhotos>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetPhotos>;
 export default meta;

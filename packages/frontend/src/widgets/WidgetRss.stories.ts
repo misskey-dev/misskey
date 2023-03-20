@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetRss from './WidgetRss.vue';
 const meta = {
 	title: 'widgets/WidgetRss',
 	component: WidgetRss,
-};
+} satisfies Meta<typeof WidgetRss>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetRss>;
 export default meta;

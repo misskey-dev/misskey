@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkNoteSub from './MkNoteSub.vue';
 const meta = {
 	title: 'components/MkNoteSub',
 	component: MkNoteSub,
-};
+} satisfies Meta<typeof MkNoteSub>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkNoteSub>;
 export default meta;

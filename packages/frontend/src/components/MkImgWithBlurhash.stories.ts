@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkImgWithBlurhash from './MkImgWithBlurhash.vue';
 const meta = {
 	title: 'components/MkImgWithBlurhash',
 	component: MkImgWithBlurhash,
-};
+} satisfies Meta<typeof MkImgWithBlurhash>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkImgWithBlurhash>;
 export default meta;

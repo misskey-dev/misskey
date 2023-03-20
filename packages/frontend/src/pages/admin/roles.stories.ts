@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import roles from './roles.vue';
 const meta = {
 	title: 'pages/admin/roles',
 	component: roles,
-};
+} satisfies Meta<typeof roles>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof roles>;
 export default meta;

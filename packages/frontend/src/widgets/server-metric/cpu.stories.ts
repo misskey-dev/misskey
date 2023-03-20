@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import cpu from './cpu.vue';
 const meta = {
 	title: 'widgets/server-metric/cpu',
 	component: cpu,
-};
+} satisfies Meta<typeof cpu>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof cpu>;
 export default meta;

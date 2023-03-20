@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import import_export from './import-export.vue';
 const meta = {
 	title: 'pages/settings/import-export',
 	component: import_export,
-};
+} satisfies Meta<typeof import_export>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof import_export>;
 export default meta;

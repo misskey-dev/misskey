@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkEllipsis from './MkEllipsis.vue';
 const meta = {
 	title: 'components/global/MkEllipsis',
 	component: MkEllipsis,
-};
+} satisfies Meta<typeof MkEllipsis>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkEllipsis>;
 export default meta;

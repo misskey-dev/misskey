@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkReactionsViewer_details from './MkReactionsViewer.details.vue';
 const meta = {
 	title: 'components/MkReactionsViewer.details',
 	component: MkReactionsViewer_details,
-};
+} satisfies Meta<typeof MkReactionsViewer_details>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkReactionsViewer_details>;
 export default meta;

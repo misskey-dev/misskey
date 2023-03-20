@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import classic_header from './classic.header.vue';
 const meta = {
 	title: 'ui/classic.header',
 	component: classic_header,
-};
+} satisfies Meta<typeof classic_header>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof classic_header>;
 export default meta;

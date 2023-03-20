@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import overview_active_users from './overview.active-users.vue';
 const meta = {
 	title: 'pages/admin/overview.active-users',
 	component: overview_active_users,
-};
+} satisfies Meta<typeof overview_active_users>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof overview_active_users>;
 export default meta;

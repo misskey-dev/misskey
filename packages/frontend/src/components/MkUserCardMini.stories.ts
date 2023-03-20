@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkUserCardMini from './MkUserCardMini.vue';
 const meta = {
 	title: 'components/MkUserCardMini',
 	component: MkUserCardMini,
-};
+} satisfies Meta<typeof MkUserCardMini>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkUserCardMini>;
 export default meta;

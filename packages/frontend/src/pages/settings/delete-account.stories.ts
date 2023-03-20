@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import delete_account from './delete-account.vue';
 const meta = {
 	title: 'pages/settings/delete-account',
 	component: delete_account,
-};
+} satisfies Meta<typeof delete_account>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof delete_account>;
 export default meta;

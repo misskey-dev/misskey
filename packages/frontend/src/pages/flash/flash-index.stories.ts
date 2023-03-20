@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import flash_index from './flash-index.vue';
 const meta = {
 	title: 'pages/flash/flash-index',
 	component: flash_index,
-};
+} satisfies Meta<typeof flash_index>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof flash_index>;
 export default meta;

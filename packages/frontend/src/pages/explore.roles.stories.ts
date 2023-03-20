@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import explore_roles from './explore.roles.vue';
 const meta = {
 	title: 'pages/explore.roles',
 	component: explore_roles,
-};
+} satisfies Meta<typeof explore_roles>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof explore_roles>;
 export default meta;

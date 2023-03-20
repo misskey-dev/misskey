@@ -1,8 +1,8 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta } from '@storybook/vue3';
 const meta = {
 	title: 'components/MkAnalogClock',
 	component: MkAnalogClock,
-};
+} satisfies Meta<typeof MkAnalogClock>;
 export default meta;
 import MkAnalogClock from './MkAnalogClock.vue';
 export const Default = {

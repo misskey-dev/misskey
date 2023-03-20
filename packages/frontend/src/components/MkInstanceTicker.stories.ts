@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkInstanceTicker from './MkInstanceTicker.vue';
 const meta = {
 	title: 'components/MkInstanceTicker',
 	component: MkInstanceTicker,
-};
+} satisfies Meta<typeof MkInstanceTicker>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkInstanceTicker>;
 export default meta;

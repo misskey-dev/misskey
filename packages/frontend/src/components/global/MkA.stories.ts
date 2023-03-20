@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkA from './MkA.vue';
 const meta = {
 	title: 'components/global/MkA',
 	component: MkA,
-};
+} satisfies Meta<typeof MkA>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkA>;
 export default meta;

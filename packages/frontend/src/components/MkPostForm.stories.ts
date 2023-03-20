@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkPostForm from './MkPostForm.vue';
 const meta = {
 	title: 'components/MkPostForm',
 	component: MkPostForm,
-};
+} satisfies Meta<typeof MkPostForm>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkPostForm>;
 export default meta;

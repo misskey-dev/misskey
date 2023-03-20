@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkInstanceStats from './MkInstanceStats.vue';
 const meta = {
 	title: 'components/MkInstanceStats',
 	component: MkInstanceStats,
-};
+} satisfies Meta<typeof MkInstanceStats>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkInstanceStats>;
 export default meta;

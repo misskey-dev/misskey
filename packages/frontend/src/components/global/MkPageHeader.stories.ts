@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkPageHeader from './MkPageHeader.vue';
 const meta = {
 	title: 'components/global/MkPageHeader',
 	component: MkPageHeader,
-};
+} satisfies Meta<typeof MkPageHeader>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkPageHeader>;
 export default meta;

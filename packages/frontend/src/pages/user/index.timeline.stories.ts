@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import index_timeline from './index.timeline.vue';
 const meta = {
 	title: 'pages/user/index.timeline',
 	component: index_timeline,
-};
+} satisfies Meta<typeof index_timeline>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof index_timeline>;
 export default meta;

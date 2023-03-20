@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetTrends from './WidgetTrends.vue';
 const meta = {
 	title: 'widgets/WidgetTrends',
 	component: WidgetTrends,
-};
+} satisfies Meta<typeof WidgetTrends>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetTrends>;
 export default meta;

@@ -2,10 +2,25 @@ import { existsSync, readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
 import { promisify } from 'node:util';
-import { generate } from 'astring';
+import { GENERATOR, type State, generate } from 'astring';
 import type * as estree from 'estree';
 import * as glob from 'glob';
 import { format } from 'prettier';
+
+interface SatisfiesExpression extends estree.BaseExpression {
+	type: 'SatisfiesExpression';
+	expression: estree.Expression;
+	reference: estree.Identifier;
+}
+
+const generator = {
+	...GENERATOR,
+	SatisfiesExpression(node: SatisfiesExpression, state: State) {
+		this[node.expression.type](node.expression, state);
+		state.write(' satisfies ');
+		this[node.reference.type](node.reference, state);
+	},
+}
 
 function h<T extends estree.Node>(component: T['type'], props: Omit<T, 'type'>): T {
 	const type = component.replace(/(?:^|-)([a-z])/g, (_, c) => c.toUpperCase());
@@ -56,10 +71,14 @@ function toStories(component: string): string {
 							local={<identifier name="Meta" />}
 							imported={<identifier name="Meta" />}
 						/>,
-						<import-specifier
-							local={<identifier name="Story" />}
-							imported={<identifier name="Story" />}
-						/>,
+						...hasImplStories
+							? []
+							: [
+									<import-specifier
+										local={<identifier name="StoryObj" />}
+										imported={<identifier name="StoryObj" />}
+									/>,
+								],
 					]}
 				/>,
 				...hasMsw
@@ -93,19 +112,24 @@ function toStories(component: string): string {
 						<variable-declarator
 							id={<identifier name="meta" />}
 							init={
-								<object-expression
-									properties={[
-										<property
-											key={<identifier name="title" />}
-											value={literal}
-											kind="init"
-										/>,
-										<property
-											key={<identifier name="component" />}
-											value={identifier}
-											kind="init"
-										/>,
-									]}
+								<satisfies-expression
+									expression={
+										<object-expression
+											properties={[
+												<property
+													key={<identifier name="title" />}
+													value={literal}
+													kind="init"
+												/>,
+												<property
+													key={<identifier name="component" />}
+													value={identifier}
+													kind="init"
+												/>,
+											]}
+										/>
+									}
+									reference={<identifier name={`Meta<typeof ${identifier.name}>`} />}
 								/>
 							}
 						/>,
@@ -123,89 +147,94 @@ function toStories(component: string): string {
 											<variable-declarator
 												id={<identifier name="Default" />}
 												init={
-													<object-expression
-														properties={[
-															<property
-																key={<identifier name="render" />}
-																value={
-																	<function-expression
-																		id={<identifier name="render" />}
-																		params={[
-																			<identifier name="args" />,
-																			<object-pattern
-																				properties={[
-																					<property
-																						key={<identifier name="argTypes" />}
-																						value={<identifier name="argTypes" />}
-																						kind="init"
-																						shorthand
+													<satisfies-expression
+														expression={
+															<object-expression
+																properties={[
+																	<property
+																		key={<identifier name="render" />}
+																		value={
+																			<function-expression
+																				id={<identifier name="render" />}
+																				params={[
+																					<identifier name="args" />,
+																					<object-pattern
+																						properties={[
+																							<property
+																								key={<identifier name="argTypes" />}
+																								value={<identifier name="argTypes" />}
+																								kind="init"
+																								shorthand
+																							/>,
+																						]}
 																					/>,
 																				]}
-																			/>,
-																		]}
-																		body={
-																			<block-statement
-																				body={[
-																					<return-statement
-																						argument={
-																							<object-expression
-																								properties={[
-																									<property
-																										key={<identifier name="components" />}
-																										value={
-																											<object-expression
-																												properties={[
-																													<property
-																														key={identifier}
-																														value={identifier}
-																														kind="init"
-																														shorthand
-																													/>,
-																												]}
-																											/>
-																										}
-																										kind="init"
-																									/>,
-																									<property
-																										key={<identifier name="props" />}
-																										value={
-																											<call-expression
-																												callee={
-																													<member-expression
-																														object={<identifier name="Object" />}
-																														property={<identifier name="keys" />}
+																				body={
+																					<block-statement
+																						body={[
+																							<return-statement
+																								argument={
+																									<object-expression
+																										properties={[
+																											<property
+																												key={<identifier name="components" />}
+																												value={
+																													<object-expression
+																														properties={[
+																															<property
+																																key={identifier}
+																																value={identifier}
+																																kind="init"
+																																shorthand
+																															/>,
+																														]}
 																													/>
 																												}
-																												arguments={[
-																													<identifier name="argTypes" />,
-																												]}
-																											/>
-																										}
-																										kind="init"
-																									/>,
-																									<property
-																										key={<identifier name="template" />}
-																										value={<literal value={`<${identifier.name} v-bind="$props" />`} />}
-																										kind="init"
-																									/>,
-																								]}
-																							/>
-																						}
-																					/>,
-																				]}
+																												kind="init"
+																											/>,
+																											<property
+																												key={<identifier name="props" />}
+																												value={
+																													<call-expression
+																														callee={
+																															<member-expression
+																																object={<identifier name="Object" />}
+																																property={<identifier name="keys" />}
+																															/>
+																														}
+																														arguments={[
+																															<identifier name="argTypes" />,
+																														]}
+																													/>
+																												}
+																												kind="init"
+																											/>,
+																											<property
+																												key={<identifier name="template" />}
+																												value={<literal value={`<${identifier.name} v-bind="$props" />`} />}
+																												kind="init"
+																											/>,
+																										]}
+																									/>
+																								}
+																							/>,
+																						]}
+																					/>
+																				}
 																			/>
 																		}
-																	/>
-																}
-																method
-																kind="init"
-															/>,
-															<property
-																key={<identifier name="parameters" />}
-																value={parameters}
-																kind="init"
-															/>,
-														]}
+																		method
+																		kind="init"
+																	/>,
+																	<property
+																		key={<identifier name="parameters" />}
+																		value={parameters}
+																		kind="init"
+																	/>,
+																]}
+															/>
+														}
+														reference={<identifier name={`StoryObj<typeof ${identifier.name}>`} />}
 													/>
 												}
 											/>,
@@ -221,7 +250,7 @@ function toStories(component: string): string {
 		/>
 	) as unknown as estree.Program;
 	return format(
-		generate(program) + (hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
+		generate(program, { generator }) + (hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
 		{
 			parser: 'babel-ts',
 			singleQuote: true,

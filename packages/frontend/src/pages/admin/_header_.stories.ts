@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import _header_ from './_header_.vue';
 const meta = {
 	title: 'pages/admin/_header_',
 	component: _header_,
-};
+} satisfies Meta<typeof _header_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof _header_>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkPoll from './MkPoll.vue';
 const meta = {
 	title: 'components/MkPoll',
 	component: MkPoll,
-};
+} satisfies Meta<typeof MkPoll>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkPoll>;
 export default meta;

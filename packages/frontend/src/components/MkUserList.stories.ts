@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkUserList from './MkUserList.vue';
 const meta = {
 	title: 'components/MkUserList',
 	component: MkUserList,
-};
+} satisfies Meta<typeof MkUserList>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkUserList>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import scratchpad from './scratchpad.vue';
 const meta = {
 	title: 'pages/scratchpad',
 	component: scratchpad,
-};
+} satisfies Meta<typeof scratchpad>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof scratchpad>;
 export default meta;

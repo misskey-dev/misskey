@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetMemo from './WidgetMemo.vue';
 const meta = {
 	title: 'widgets/WidgetMemo',
 	component: WidgetMemo,
-};
+} satisfies Meta<typeof WidgetMemo>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetMemo>;
 export default meta;

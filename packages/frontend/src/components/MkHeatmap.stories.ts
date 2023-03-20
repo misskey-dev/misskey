@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkHeatmap from './MkHeatmap.vue';
 const meta = {
 	title: 'components/MkHeatmap',
 	component: MkHeatmap,
-};
+} satisfies Meta<typeof MkHeatmap>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkHeatmap>;
 export default meta;

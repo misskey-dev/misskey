@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import other_settings from './other-settings.vue';
 const meta = {
 	title: 'pages/admin/other-settings',
 	component: other_settings,
-};
+} satisfies Meta<typeof other_settings>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof other_settings>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import clicker from './clicker.vue';
 const meta = {
 	title: 'pages/clicker',
 	component: clicker,
-};
+} satisfies Meta<typeof clicker>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof clicker>;
 export default meta;

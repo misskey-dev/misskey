@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkObjectView_value from './MkObjectView.value.vue';
 const meta = {
 	title: 'components/MkObjectView.value',
 	component: MkObjectView_value,
-};
+} satisfies Meta<typeof MkObjectView_value>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkObjectView_value>;
 export default meta;

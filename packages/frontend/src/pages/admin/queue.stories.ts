@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import queue from './queue.vue';
 const meta = {
 	title: 'pages/admin/queue',
 	component: queue,
-};
+} satisfies Meta<typeof queue>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof queue>;
 export default meta;

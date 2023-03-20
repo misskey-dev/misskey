@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkRemoteCaution from './MkRemoteCaution.vue';
 const meta = {
 	title: 'components/MkRemoteCaution',
 	component: MkRemoteCaution,
-};
+} satisfies Meta<typeof MkRemoteCaution>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkRemoteCaution>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetAichan from './WidgetAichan.vue';
 const meta = {
 	title: 'widgets/WidgetAichan',
 	component: WidgetAichan,
-};
+} satisfies Meta<typeof WidgetAichan>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetAichan>;
 export default meta;

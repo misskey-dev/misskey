@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkDigitalClock from './MkDigitalClock.vue';
 const meta = {
 	title: 'components/MkDigitalClock',
 	component: MkDigitalClock,
-};
+} satisfies Meta<typeof MkDigitalClock>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkDigitalClock>;
 export default meta;

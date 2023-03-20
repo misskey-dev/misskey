@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import statusbar from './statusbar.vue';
 const meta = {
 	title: 'pages/settings/statusbar',
 	component: statusbar,
-};
+} satisfies Meta<typeof statusbar>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof statusbar>;
 export default meta;

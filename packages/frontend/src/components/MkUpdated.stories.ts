@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkUpdated from './MkUpdated.vue';
 const meta = {
 	title: 'components/MkUpdated',
 	component: MkUpdated,
-};
+} satisfies Meta<typeof MkUpdated>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkUpdated>;
 export default meta;

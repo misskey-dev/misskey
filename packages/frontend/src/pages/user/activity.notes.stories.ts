@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import activity_notes from './activity.notes.vue';
 const meta = {
 	title: 'pages/user/activity.notes',
 	component: activity_notes,
-};
+} satisfies Meta<typeof activity_notes>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof activity_notes>;
 export default meta;

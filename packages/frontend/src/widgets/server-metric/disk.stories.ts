@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import disk from './disk.vue';
 const meta = {
 	title: 'widgets/server-metric/disk',
 	component: disk,
-};
+} satisfies Meta<typeof disk>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof disk>;
 export default meta;

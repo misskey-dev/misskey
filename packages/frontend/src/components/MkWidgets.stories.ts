@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkWidgets from './MkWidgets.vue';
 const meta = {
 	title: 'components/MkWidgets',
 	component: MkWidgets,
-};
+} satisfies Meta<typeof MkWidgets>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkWidgets>;
 export default meta;

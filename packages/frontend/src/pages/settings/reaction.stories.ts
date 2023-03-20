@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import reaction from './reaction.vue';
 const meta = {
 	title: 'pages/settings/reaction',
 	component: reaction,
-};
+} satisfies Meta<typeof reaction>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof reaction>;
 export default meta;

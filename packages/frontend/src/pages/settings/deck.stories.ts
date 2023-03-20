@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import deck from './deck.vue';
 const meta = {
 	title: 'pages/settings/deck',
 	component: deck,
-};
+} satisfies Meta<typeof deck>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof deck>;
 export default meta;

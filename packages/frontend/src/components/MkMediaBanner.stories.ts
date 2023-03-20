@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkMediaBanner from './MkMediaBanner.vue';
 const meta = {
 	title: 'components/MkMediaBanner',
 	component: MkMediaBanner,
-};
+} satisfies Meta<typeof MkMediaBanner>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkMediaBanner>;
 export default meta;

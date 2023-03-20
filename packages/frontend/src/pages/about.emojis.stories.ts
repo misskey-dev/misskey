@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import about_emojis from './about.emojis.vue';
 const meta = {
 	title: 'pages/about.emojis',
 	component: about_emojis,
-};
+} satisfies Meta<typeof about_emojis>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof about_emojis>;
 export default meta;

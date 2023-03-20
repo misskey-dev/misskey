@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetActivity_chart from './WidgetActivity.chart.vue';
 const meta = {
 	title: 'widgets/WidgetActivity.chart',
 	component: WidgetActivity_chart,
-};
+} satisfies Meta<typeof WidgetActivity_chart>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetActivity_chart>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import overview_heatmap from './overview.heatmap.vue';
 const meta = {
 	title: 'pages/admin/overview.heatmap',
 	component: overview_heatmap,
-};
+} satisfies Meta<typeof overview_heatmap>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof overview_heatmap>;
 export default meta;

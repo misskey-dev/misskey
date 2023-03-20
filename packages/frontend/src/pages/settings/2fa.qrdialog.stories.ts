@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import _2fa_qrdialog from './2fa.qrdialog.vue';
 const meta = {
 	title: 'pages/settings/2fa.qrdialog',
 	component: _2fa_qrdialog,
-};
+} satisfies Meta<typeof _2fa_qrdialog>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof _2fa_qrdialog>;
 export default meta;

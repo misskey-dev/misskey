@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import classic_sidebar from './classic.sidebar.vue';
 const meta = {
 	title: 'ui/classic.sidebar',
 	component: classic_sidebar,
-};
+} satisfies Meta<typeof classic_sidebar>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof classic_sidebar>;
 export default meta;

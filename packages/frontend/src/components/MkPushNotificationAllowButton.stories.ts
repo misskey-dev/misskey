@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkPushNotificationAllowButton from './MkPushNotificationAllowButton.vue';
 const meta = {
 	title: 'components/MkPushNotificationAllowButton',
 	component: MkPushNotificationAllowButton,
-};
+} satisfies Meta<typeof MkPushNotificationAllowButton>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkPushNotificationAllowButton>;
 export default meta;

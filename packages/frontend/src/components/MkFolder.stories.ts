@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkFolder from './MkFolder.vue';
 const meta = {
 	title: 'components/MkFolder',
 	component: MkFolder,
-};
+} satisfies Meta<typeof MkFolder>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkFolder>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkReactionTooltip from './MkReactionTooltip.vue';
 const meta = {
 	title: 'components/MkReactionTooltip',
 	component: MkReactionTooltip,
-};
+} satisfies Meta<typeof MkReactionTooltip>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkReactionTooltip>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import registry_value from './registry.value.vue';
 const meta = {
 	title: 'pages/registry.value',
 	component: registry_value,
-};
+} satisfies Meta<typeof registry_value>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof registry_value>;
 export default meta;

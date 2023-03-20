@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import queue_chart_chart from './queue.chart.chart.vue';
 const meta = {
 	title: 'pages/admin/queue.chart.chart',
 	component: queue_chart_chart,
-};
+} satisfies Meta<typeof queue_chart_chart>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof queue_chart_chart>;
 export default meta;

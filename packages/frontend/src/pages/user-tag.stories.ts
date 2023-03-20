@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import user_tag from './user-tag.vue';
 const meta = {
 	title: 'pages/user-tag',
 	component: user_tag,
-};
+} satisfies Meta<typeof user_tag>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof user_tag>;
 export default meta;

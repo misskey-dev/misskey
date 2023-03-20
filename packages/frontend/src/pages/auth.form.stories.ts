@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import auth_form from './auth.form.vue';
 const meta = {
 	title: 'pages/auth.form',
 	component: auth_form,
-};
+} satisfies Meta<typeof auth_form>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof auth_form>;
 export default meta;

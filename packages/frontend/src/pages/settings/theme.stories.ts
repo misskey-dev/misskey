@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import theme from './theme.vue';
 const meta = {
 	title: 'pages/settings/theme',
 	component: theme,
-};
+} satisfies Meta<typeof theme>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof theme>;
 export default meta;

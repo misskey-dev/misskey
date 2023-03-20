@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkSpacer from './MkSpacer.vue';
 const meta = {
 	title: 'components/global/MkSpacer',
 	component: MkSpacer,
-};
+} satisfies Meta<typeof MkSpacer>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkSpacer>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkDrive_navFolder from './MkDrive.navFolder.vue';
 const meta = {
 	title: 'components/MkDrive.navFolder',
 	component: MkDrive_navFolder,
-};
+} satisfies Meta<typeof MkDrive_navFolder>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkDrive_navFolder>;
 export default meta;

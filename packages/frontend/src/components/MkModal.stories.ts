@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkModal from './MkModal.vue';
 const meta = {
 	title: 'components/MkModal',
 	component: MkModal,
-};
+} satisfies Meta<typeof MkModal>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkModal>;
 export default meta;

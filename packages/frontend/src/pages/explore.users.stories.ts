@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import explore_users from './explore.users.vue';
 const meta = {
 	title: 'pages/explore.users',
 	component: explore_users,
-};
+} satisfies Meta<typeof explore_users>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof explore_users>;
 export default meta;

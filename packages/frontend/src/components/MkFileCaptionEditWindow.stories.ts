@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkFileCaptionEditWindow from './MkFileCaptionEditWindow.vue';
 const meta = {
 	title: 'components/MkFileCaptionEditWindow',
 	component: MkFileCaptionEditWindow,
-};
+} satisfies Meta<typeof MkFileCaptionEditWindow>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkFileCaptionEditWindow>;
 export default meta;

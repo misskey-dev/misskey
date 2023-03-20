@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkOmit from './MkOmit.vue';
 const meta = {
 	title: 'components/MkOmit',
 	component: MkOmit,
-};
+} satisfies Meta<typeof MkOmit>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkOmit>;
 export default meta;

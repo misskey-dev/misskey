@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import explore_featured from './explore.featured.vue';
 const meta = {
 	title: 'pages/explore.featured',
 	component: explore_featured,
-};
+} satisfies Meta<typeof explore_featured>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof explore_featured>;
 export default meta;

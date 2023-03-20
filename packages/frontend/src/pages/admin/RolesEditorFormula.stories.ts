@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 const meta = {
 	title: 'pages/admin/RolesEditorFormula',
 	component: RolesEditorFormula,
-};
+} satisfies Meta<typeof RolesEditorFormula>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof RolesEditorFormula>;
 export default meta;

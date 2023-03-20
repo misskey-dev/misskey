@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import page_editor from './page-editor.vue';
 const meta = {
 	title: 'pages/page-editor/page-editor',
 	component: page_editor,
-};
+} satisfies Meta<typeof page_editor>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof page_editor>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import visitor from './visitor.vue';
 const meta = {
 	title: 'ui/visitor',
 	component: visitor,
-};
+} satisfies Meta<typeof visitor>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof visitor>;
 export default meta;

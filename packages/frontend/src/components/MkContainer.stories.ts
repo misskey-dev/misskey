@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkContainer from './MkContainer.vue';
 const meta = {
 	title: 'components/MkContainer',
 	component: MkContainer,
-};
+} satisfies Meta<typeof MkContainer>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkContainer>;
 export default meta;

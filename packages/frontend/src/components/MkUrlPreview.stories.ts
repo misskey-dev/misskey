@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkUrlPreview from './MkUrlPreview.vue';
 const meta = {
 	title: 'components/MkUrlPreview',
 	component: MkUrlPreview,
-};
+} satisfies Meta<typeof MkUrlPreview>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkUrlPreview>;
 export default meta;

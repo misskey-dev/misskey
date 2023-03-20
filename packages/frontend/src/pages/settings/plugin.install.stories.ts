@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import plugin_install from './plugin.install.vue';
 const meta = {
 	title: 'pages/settings/plugin.install',
 	component: plugin_install,
-};
+} satisfies Meta<typeof plugin_install>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof plugin_install>;
 export default meta;

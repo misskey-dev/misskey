@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import deck from './deck.vue';
 const meta = {
 	title: 'ui/deck',
 	component: deck,
-};
+} satisfies Meta<typeof deck>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof deck>;
 export default meta;

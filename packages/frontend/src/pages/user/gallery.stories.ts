@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import gallery from './gallery.vue';
 const meta = {
 	title: 'pages/user/gallery',
 	component: gallery,
-};
+} satisfies Meta<typeof gallery>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof gallery>;
 export default meta;

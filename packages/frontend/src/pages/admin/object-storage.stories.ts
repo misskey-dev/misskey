@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import object_storage from './object-storage.vue';
 const meta = {
 	title: 'pages/admin/object-storage',
 	component: object_storage,
-};
+} satisfies Meta<typeof object_storage>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof object_storage>;
 export default meta;

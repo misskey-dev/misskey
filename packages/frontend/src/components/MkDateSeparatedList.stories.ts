@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkDateSeparatedList from './MkDateSeparatedList.vue';
 const meta = {
 	title: 'components/MkDateSeparatedList',
 	component: MkDateSeparatedList,
-};
+} satisfies Meta<typeof MkDateSeparatedList>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkDateSeparatedList>;
 export default meta;

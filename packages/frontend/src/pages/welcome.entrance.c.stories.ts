@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import welcome_entrance_c from './welcome.entrance.c.vue';
 const meta = {
 	title: 'pages/welcome.entrance.c',
 	component: welcome_entrance_c,
-};
+} satisfies Meta<typeof welcome_entrance_c>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof welcome_entrance_c>;
 export default meta;

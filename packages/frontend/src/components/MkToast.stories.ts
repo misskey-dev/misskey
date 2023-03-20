@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkToast from './MkToast.vue';
 const meta = {
 	title: 'components/MkToast',
 	component: MkToast,
-};
+} satisfies Meta<typeof MkToast>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkToast>;
 export default meta;

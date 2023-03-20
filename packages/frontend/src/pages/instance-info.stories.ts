@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import instance_info from './instance-info.vue';
 const meta = {
 	title: 'pages/instance-info',
 	component: instance_info,
-};
+} satisfies Meta<typeof instance_info>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof instance_info>;
 export default meta;

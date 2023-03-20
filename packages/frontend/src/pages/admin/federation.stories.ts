@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import federation from './federation.vue';
 const meta = {
 	title: 'pages/admin/federation',
 	component: federation,
-};
+} satisfies Meta<typeof federation>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof federation>;
 export default meta;

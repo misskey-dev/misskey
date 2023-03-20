@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkPagination from './MkPagination.vue';
 const meta = {
 	title: 'components/MkPagination',
 	component: MkPagination,
-};
+} satisfies Meta<typeof MkPagination>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkPagination>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import notifications from './notifications.vue';
 const meta = {
 	title: 'pages/notifications',
 	component: notifications,
-};
+} satisfies Meta<typeof notifications>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof notifications>;
 export default meta;

@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkNumberDiff from './MkNumberDiff.vue';
 const meta = {
 	title: 'components/MkNumberDiff',
 	component: MkNumberDiff,
-};
+} satisfies Meta<typeof MkNumberDiff>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkNumberDiff>;
 export default meta;

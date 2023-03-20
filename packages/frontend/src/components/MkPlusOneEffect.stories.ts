@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkPlusOneEffect from './MkPlusOneEffect.vue';
 const meta = {
 	title: 'components/MkPlusOneEffect',
 	component: MkPlusOneEffect,
-};
+} satisfies Meta<typeof MkPlusOneEffect>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkPlusOneEffect>;
 export default meta;

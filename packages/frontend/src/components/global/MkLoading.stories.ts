@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkLoading from './MkLoading.vue';
 const meta = {
 	title: 'components/global/MkLoading',
 	component: MkLoading,
-};
+} satisfies Meta<typeof MkLoading>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkLoading>;
 export default meta;

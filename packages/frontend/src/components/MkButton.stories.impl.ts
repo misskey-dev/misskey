@@ -1,3 +1,4 @@
+import { StoryObj } from '@storybook/vue3';
 import MkButton from './MkButton.vue';
 export const Default = {
 	render(args, { argTypes }) {
@@ -12,4 +13,4 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkButton>;

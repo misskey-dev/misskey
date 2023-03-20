@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import mute_block from './mute-block.vue';
 const meta = {
 	title: 'pages/settings/mute-block',
 	component: mute_block,
-};
+} satisfies Meta<typeof mute_block>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof mute_block>;
 export default meta;

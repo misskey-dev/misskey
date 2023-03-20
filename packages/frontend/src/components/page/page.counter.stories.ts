@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import page_counter from './page.counter.vue';
 const meta = {
 	title: 'components/page/page.counter',
 	component: page_counter,
-};
+} satisfies Meta<typeof page_counter>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof page_counter>;
 export default meta;

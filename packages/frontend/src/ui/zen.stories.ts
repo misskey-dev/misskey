@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import zen from './zen.vue';
 const meta = {
 	title: 'ui/zen',
 	component: zen,
-};
+} satisfies Meta<typeof zen>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof zen>;
 export default meta;

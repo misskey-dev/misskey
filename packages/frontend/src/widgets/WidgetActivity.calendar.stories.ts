@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetActivity_calendar from './WidgetActivity.calendar.vue';
 const meta = {
 	title: 'widgets/WidgetActivity.calendar',
 	component: WidgetActivity_calendar,
-};
+} satisfies Meta<typeof WidgetActivity_calendar>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetActivity_calendar>;
 export default meta;

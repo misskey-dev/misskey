@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetUserList from './WidgetUserList.vue';
 const meta = {
 	title: 'widgets/WidgetUserList',
 	component: WidgetUserList,
-};
+} satisfies Meta<typeof WidgetUserList>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetUserList>;
 export default meta;

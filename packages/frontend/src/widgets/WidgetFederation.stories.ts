@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetFederation from './WidgetFederation.vue';
 const meta = {
 	title: 'widgets/WidgetFederation',
 	component: WidgetFederation,
-};
+} satisfies Meta<typeof WidgetFederation>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetFederation>;
 export default meta;

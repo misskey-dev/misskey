@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkMenu_child from './MkMenu.child.vue';
 const meta = {
 	title: 'components/MkMenu.child',
 	component: MkMenu_child,
-};
+} satisfies Meta<typeof MkMenu_child>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkMenu_child>;
 export default meta;

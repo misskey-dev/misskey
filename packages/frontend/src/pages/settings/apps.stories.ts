@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import apps from './apps.vue';
 const meta = {
 	title: 'pages/settings/apps',
 	component: apps,
-};
+} satisfies Meta<typeof apps>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof apps>;
 export default meta;

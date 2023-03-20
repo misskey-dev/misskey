@@ -1,9 +1,10 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta } from '@storybook/vue3';
 const meta = {
 	title: 'components/MkButton',
 	component: MkButton,
-};
+} satisfies Meta<typeof MkButton>;
 export default meta;
+import { StoryObj } from '@storybook/vue3';
 import MkButton from './MkButton.vue';
 export const Default = {
 	render(args, { argTypes }) {
@@ -18,4 +19,4 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkButton>;

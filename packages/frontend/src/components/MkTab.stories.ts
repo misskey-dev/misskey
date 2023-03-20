@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkTab from './MkTab.vue';
 const meta = {
 	title: 'components/MkTab',
 	component: MkTab,
-};
+} satisfies Meta<typeof MkTab>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkTab>;
 export default meta;

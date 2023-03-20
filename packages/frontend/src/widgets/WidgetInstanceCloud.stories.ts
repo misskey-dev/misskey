@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetInstanceCloud from './WidgetInstanceCloud.vue';
 const meta = {
 	title: 'widgets/WidgetInstanceCloud',
 	component: WidgetInstanceCloud,
-};
+} satisfies Meta<typeof WidgetInstanceCloud>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetInstanceCloud>;
 export default meta;

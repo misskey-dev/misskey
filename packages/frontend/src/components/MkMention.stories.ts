@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkMention from './MkMention.vue';
 const meta = {
 	title: 'components/MkMention',
 	component: MkMention,
-};
+} satisfies Meta<typeof MkMention>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkMention>;
 export default meta;

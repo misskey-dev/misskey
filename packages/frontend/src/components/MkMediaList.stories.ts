@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkMediaList from './MkMediaList.vue';
 const meta = {
 	title: 'components/MkMediaList',
 	component: MkMediaList,
-};
+} satisfies Meta<typeof MkMediaList>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkMediaList>;
 export default meta;

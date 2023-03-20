@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import antenna_timeline from './antenna-timeline.vue';
 const meta = {
 	title: 'pages/antenna-timeline',
 	component: antenna_timeline,
-};
+} satisfies Meta<typeof antenna_timeline>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof antenna_timeline>;
 export default meta;

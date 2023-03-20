@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import activity_heatmap from './activity.heatmap.vue';
 const meta = {
 	title: 'pages/user/activity.heatmap',
 	component: activity_heatmap,
-};
+} satisfies Meta<typeof activity_heatmap>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof activity_heatmap>;
 export default meta;

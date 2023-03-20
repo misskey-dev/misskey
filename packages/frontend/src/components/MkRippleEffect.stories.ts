@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkRippleEffect from './MkRippleEffect.vue';
 const meta = {
 	title: 'components/MkRippleEffect',
 	component: MkRippleEffect,
-};
+} satisfies Meta<typeof MkRippleEffect>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkRippleEffect>;
 export default meta;

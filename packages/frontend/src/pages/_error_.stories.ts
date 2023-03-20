@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import _error_ from './_error_.vue';
 const meta = {
 	title: 'pages/_error_',
 	component: _error_,
-};
+} satisfies Meta<typeof _error_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-};
+} satisfies StoryObj<typeof _error_>;
 export default meta;

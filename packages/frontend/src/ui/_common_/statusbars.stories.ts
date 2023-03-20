@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import statusbars from './statusbars.vue';
 const meta = {
 	title: 'ui/_common_/statusbars',
 	component: statusbars,
-};
+} satisfies Meta<typeof statusbars>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof statusbars>;
 export default meta;

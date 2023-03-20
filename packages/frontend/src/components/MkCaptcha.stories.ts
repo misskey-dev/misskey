@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import MkCaptcha from './MkCaptcha.vue';
 const meta = {
 	title: 'components/MkCaptcha',
 	component: MkCaptcha,
-};
+} satisfies Meta<typeof MkCaptcha>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof MkCaptcha>;
 export default meta;

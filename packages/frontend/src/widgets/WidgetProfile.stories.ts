@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import WidgetProfile from './WidgetProfile.vue';
 const meta = {
 	title: 'widgets/WidgetProfile',
 	component: WidgetProfile,
-};
+} satisfies Meta<typeof WidgetProfile>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof WidgetProfile>;
 export default meta;

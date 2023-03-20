@@ -1,9 +1,9 @@
-import { Meta, Story } from '@storybook/vue3';
+import { Meta, StoryObj } from '@storybook/vue3';
 import direct_column from './direct-column.vue';
 const meta = {
 	title: 'ui/deck/direct-column',
 	component: direct_column,
-};
+} satisfies Meta<typeof direct_column>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
@@ -17,5 +17,5 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-};
+} satisfies StoryObj<typeof direct_column>;
 export default meta;
