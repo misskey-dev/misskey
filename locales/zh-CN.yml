@@ -977,6 +977,7 @@ notesSearchNotAvailable: "帖子检索不可用"
 license: "许可信息"
 unfavoriteConfirm: "确定要取消收藏吗？"
 myClips: "我的便签"
+drivecleaner: "网盘整理"
 _achievements:
   earnedAt: "达成时间"
   _types:
@@ -1868,3 +1869,6 @@ _dialog:
 _disabledTimeline:
   title: "时间线已禁用"
   description: "您不能在当前角色使用时间线。"
+_drivecleaner:
+  orderBySizeDesc: "按大小降序排列"
+  orderByCreatedAtAsc: "按添加日期降序排列"
