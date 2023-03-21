@@ -42,6 +42,7 @@ import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
 import * as ep___admin_queue_inboxDelayed from './endpoints/admin/queue/inbox-delayed.js';
+import * as ep___admin_queue_promote from './endpoints/admin/queue/promote.js';
 import * as ep___admin_queue_stats from './endpoints/admin/queue/stats.js';
 import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
@@ -370,6 +371,7 @@ const $admin_promo_create: Provider = { provide: 'ep:admin/promo/create', useCla
 const $admin_queue_clear: Provider = { provide: 'ep:admin/queue/clear', useClass: ep___admin_queue_clear.default };
 const $admin_queue_deliverDelayed: Provider = { provide: 'ep:admin/queue/deliver-delayed', useClass: ep___admin_queue_deliverDelayed.default };
 const $admin_queue_inboxDelayed: Provider = { provide: 'ep:admin/queue/inbox-delayed', useClass: ep___admin_queue_inboxDelayed.default };
+const $admin_queue_promote: Provider = { provide: 'ep:admin/queue/promote', useClass: ep___admin_queue_promote.default };
 const $admin_queue_stats: Provider = { provide: 'ep:admin/queue/stats', useClass: ep___admin_queue_stats.default };
 const $admin_relays_add: Provider = { provide: 'ep:admin/relays/add', useClass: ep___admin_relays_add.default };
 const $admin_relays_list: Provider = { provide: 'ep:admin/relays/list', useClass: ep___admin_relays_list.default };
@@ -702,6 +704,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
 		$admin_queue_inboxDelayed,
+		$admin_queue_promote,
 		$admin_queue_stats,
 		$admin_relays_add,
 		$admin_relays_list,
@@ -1028,6 +1031,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
 		$admin_queue_inboxDelayed,
+		$admin_queue_promote,
 		$admin_queue_stats,
 		$admin_relays_add,
 		$admin_relays_list,
