@@ -16,7 +16,13 @@ interface SatisfiesExpression extends estree.BaseExpression {
 const generator = {
 	...GENERATOR,
 	SatisfiesExpression(node: SatisfiesExpression, state: State) {
-		this[node.expression.type](node.expression, state);
+		if (node.expression.type === 'ArrowFunctionExpression') {
+			state.write('(');
+			this[node.expression.type](node.expression, state);
+			state.write(')');
+		} else {
+			this[node.expression.type](node.expression, state);
+		}
 		state.write(' satisfies ');
 		this[node.reference.type](node.reference, state);
 	},

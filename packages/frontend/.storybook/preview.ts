@@ -64,7 +64,7 @@ const preview = {
 			const story = Story();
 			if (!initialized) {
 				const channel = addons.getChannel();
-				requestIdleCallback(() => {
+				(globalThis.requestIdleCallback || setTimeout)(() => {
 					channel.emit(FORCE_REMOUNT, { storyId: context.id });
 				});
 			}
