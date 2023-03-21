@@ -96,16 +96,16 @@ function toStories(component: string): string {
 		<object-expression
 			properties={[
 				<property
-					key={<identifier name="layout" />}
+					key={<identifier name='layout' />}
 					value={<literal value={`${dir}/`.startsWith('src/pages/') ? 'fullscreen' : 'centered'} />}
-					kind={"init" as const}
+					kind={'init' as const}
 				/>,
 				...hasMsw
 					? [
 							<property
-								key={<identifier name="msw" />}
-								value={<identifier name="msw" />}
-								kind={"init" as const}
+								key={<identifier name='msw' />}
+								value={<identifier name='msw' />}
+								kind={'init' as const}
 								shorthand
 							/>,
 						]
@@ -117,18 +117,18 @@ function toStories(component: string): string {
 		<program
 			body={[
 				<import-declaration
-					source={<literal value="@storybook/vue3" />}
+					source={<literal value='@storybook/vue3' />}
 					specifiers={[
 						<import-specifier
-							local={<identifier name="Meta" />}
-							imported={<identifier name="Meta" />}
+							local={<identifier name='Meta' />}
+							imported={<identifier name='Meta' />}
 						/>,
 						...hasImplStories
 							? []
 							: [
 									<import-specifier
-										local={<identifier name="StoryObj" />}
-										imported={<identifier name="StoryObj" />}
+										local={<identifier name='StoryObj' />}
+										imported={<identifier name='StoryObj' />}
 									/>,
 								],
 					]}
@@ -139,7 +139,7 @@ function toStories(component: string): string {
 								source={<literal value={`./${basename(msw)}`} />}
 								specifiers={[
 									<import-namespace-specifier
-										local={<identifier name="msw" />}
+										local={<identifier name='msw' />}
 									/>,
 								]}
 							/>,
@@ -158,24 +158,24 @@ function toStories(component: string): string {
 							/>,
 						],
 				<variable-declaration
-					kind={"const" as const}
+					kind={'const' as const}
 					declarations={[
 						<variable-declarator
-							id={<identifier name="meta" />}
+							id={<identifier name='meta' />}
 							init={
 								<satisfies-expression
 									expression={
 										<object-expression
 											properties={[
 												<property
-													key={<identifier name="title" />}
+													key={<identifier name='title' />}
 													value={literal}
-													kind={"init" as const}
+													kind={'init' as const}
 												/>,
 												<property
-													key={<identifier name="component" />}
+													key={<identifier name='component' />}
 													value={identifier}
-													kind={"init" as const}
+													kind={'init' as const}
 												/>,
 											]}
 										/>
@@ -193,28 +193,28 @@ function toStories(component: string): string {
 							<export-named-declaration
 								declaration={
 									<variable-declaration
-										kind={"const" as const}
+										kind={'const' as const}
 										declarations={[
 											<variable-declarator
-												id={<identifier name="Default" />}
+												id={<identifier name='Default' />}
 												init={
 													<satisfies-expression
 														expression={
 															<object-expression
 																properties={[
 																	<property
-																		key={<identifier name="render" />}
+																		key={<identifier name='render' />}
 																		value={
 																			<function-expression
-																				id={<identifier name="render" />}
+																				id={<identifier name='render' />}
 																				params={[
-																					<identifier name="args" />,
+																					<identifier name='args' />,
 																					<object-pattern
 																						properties={[
 																							<property
-																								key={<identifier name="argTypes" />}
-																								value={<identifier name="argTypes" />}
-																								kind={"init" as const}
+																								key={<identifier name='argTypes' />}
+																								value={<identifier name='argTypes' />}
+																								kind={'init' as const}
 																								shorthand
 																							/>,
 																						]}
@@ -228,42 +228,42 @@ function toStories(component: string): string {
 																									<object-expression
 																										properties={[
 																											<property
-																												key={<identifier name="components" />}
+																												key={<identifier name='components' />}
 																												value={
 																													<object-expression
 																														properties={[
 																															<property
 																																key={identifier}
 																																value={identifier}
-																																kind={"init" as const}
+																																kind={'init' as const}
 																																shorthand
 																															/>,
 																														]}
 																													/>
 																												}
-																												kind={"init" as const}
+																												kind={'init' as const}
 																											/>,
 																											<property
-																												key={<identifier name="props" />}
+																												key={<identifier name='props' />}
 																												value={
 																													<call-expression
 																														callee={
 																															<member-expression
-																																object={<identifier name="Object" />}
-																																property={<identifier name="keys" />}
+																																object={<identifier name='Object' />}
+																																property={<identifier name='keys' />}
 																															/>
 																														}
 																														arguments={[
-																															<identifier name="argTypes" />,
+																															<identifier name='argTypes' />,
 																														]}
 																													/>
 																												}
-																												kind={"init" as const}
+																												kind={'init' as const}
 																											/>,
 																											<property
-																												key={<identifier name="template" />}
-																												value={<literal value={`<${identifier.name} v-bind="$props" />`} />}
-																												kind={"init" as const}
+																												key={<identifier name='template' />}
+																												value={<literal value={`<${identifier.name} v-bind='$props' />`} />}
+																												kind={'init' as const}
 																											/>,
 																										]}
 																									/>
@@ -275,12 +275,12 @@ function toStories(component: string): string {
 																			/>
 																		}
 																		method
-																		kind={"init" as const}
+																		kind={'init' as const}
 																	/>,
 																	<property
-																		key={<identifier name="parameters" />}
+																		key={<identifier name='parameters' />}
 																		value={parameters}
-																		kind={"init" as const}
+																		kind={'init' as const}
 																	/>,
 																]}
 															/>
@@ -295,7 +295,7 @@ function toStories(component: string): string {
 							/>,
 						],
 				<export-default-declaration
-					declaration={<identifier name="meta" />}
+					declaration={<identifier name='meta' />}
 				/>,
 			]}
 		/>
