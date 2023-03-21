@@ -1031,6 +1031,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
 		$admin_queue_inboxDelayed,
+		$admin_queue_promote,
 		$admin_queue_stats,
 		$admin_relays_add,
 		$admin_relays_list,
