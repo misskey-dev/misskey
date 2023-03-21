@@ -978,6 +978,9 @@ license: "ライセンス"
 unfavoriteConfirm: "お気に入り解除しますか？"
 myClips: "自分のクリップ"
 drivecleaner: "ドライブクリーナー"
+retryAllQueuesNow: "すべてのキューを今すぐ再試行"
+retryAllQueuesConfirmTitle: "今すぐ再試行しますか？"
+retryAllQueuesConfirmText: "一時的にサーバーの負荷が増大することがあります。"
 
 _achievements:
   earnedAt: "獲得日時"
