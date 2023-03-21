@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import abuses from './abuses.vue';
+import abuses_ from './abuses.vue';
 const meta = {
 	title: 'pages/admin/abuses',
-	component: abuses,
-} satisfies Meta<typeof abuses>;
+	component: abuses_,
+} satisfies Meta<typeof abuses_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				abuses,
+				abuses_,
 			},
 			props: Object.keys(argTypes),
-			template: '<abuses v-bind="$props" />',
+			template: '<abuses_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof abuses>;
+} satisfies StoryObj<typeof abuses_>;
 export default meta;

@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import general from './general.vue';
+import general_ from './general.vue';
 const meta = {
 	title: 'pages/settings/general',
-	component: general,
-} satisfies Meta<typeof general>;
+	component: general_,
+} satisfies Meta<typeof general_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				general,
+				general_,
 			},
 			props: Object.keys(argTypes),
-			template: '<general v-bind="$props" />',
+			template: '<general_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof general>;
+} satisfies StoryObj<typeof general_>;
 export default meta;

@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import webhook from './webhook.vue';
+import webhook_ from './webhook.vue';
 const meta = {
 	title: 'pages/settings/webhook',
-	component: webhook,
-} satisfies Meta<typeof webhook>;
+	component: webhook_,
+} satisfies Meta<typeof webhook_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				webhook,
+				webhook_,
 			},
 			props: Object.keys(argTypes),
-			template: '<webhook v-bind="$props" />',
+			template: '<webhook_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof webhook>;
+} satisfies StoryObj<typeof webhook_>;
 export default meta;

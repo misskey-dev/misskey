@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import other from './other.vue';
+import other_ from './other.vue';
 const meta = {
 	title: 'pages/settings/other',
-	component: other,
-} satisfies Meta<typeof other>;
+	component: other_,
+} satisfies Meta<typeof other_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				other,
+				other_,
 			},
 			props: Object.keys(argTypes),
-			template: '<other v-bind="$props" />',
+			template: '<other_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof other>;
+} satisfies StoryObj<typeof other_>;
 export default meta;

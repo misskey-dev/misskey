@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import miauth from './miauth.vue';
+import miauth_ from './miauth.vue';
 const meta = {
 	title: 'pages/miauth',
-	component: miauth,
-} satisfies Meta<typeof miauth>;
+	component: miauth_,
+} satisfies Meta<typeof miauth_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				miauth,
+				miauth_,
 			},
 			props: Object.keys(argTypes),
-			template: '<miauth v-bind="$props" />',
+			template: '<miauth_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof miauth>;
+} satisfies StoryObj<typeof miauth_>;
 export default meta;

@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import page from './page.vue';
+import page_ from './page.vue';
 const meta = {
 	title: 'components/page/page',
-	component: page,
-} satisfies Meta<typeof page>;
+	component: page_,
+} satisfies Meta<typeof page_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				page,
+				page_,
 			},
 			props: Object.keys(argTypes),
-			template: '<page v-bind="$props" />',
+			template: '<page_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof page>;
+} satisfies StoryObj<typeof page_>;
 export default meta;

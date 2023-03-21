@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import roles from './roles.vue';
+import roles_ from './roles.vue';
 const meta = {
 	title: 'pages/settings/roles',
-	component: roles,
-} satisfies Meta<typeof roles>;
+	component: roles_,
+} satisfies Meta<typeof roles_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				roles,
+				roles_,
 			},
 			props: Object.keys(argTypes),
-			template: '<roles v-bind="$props" />',
+			template: '<roles_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof roles>;
+} satisfies StoryObj<typeof roles_>;
 export default meta;

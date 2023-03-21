@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import followers from './followers.vue';
+import followers_ from './followers.vue';
 const meta = {
 	title: 'pages/user/followers',
-	component: followers,
-} satisfies Meta<typeof followers>;
+	component: followers_,
+} satisfies Meta<typeof followers_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				followers,
+				followers_,
 			},
 			props: Object.keys(argTypes),
-			template: '<followers v-bind="$props" />',
+			template: '<followers_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof followers>;
+} satisfies StoryObj<typeof followers_>;
 export default meta;

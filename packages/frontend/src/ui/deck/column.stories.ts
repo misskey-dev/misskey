@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import column from './column.vue';
+import column_ from './column.vue';
 const meta = {
 	title: 'ui/deck/column',
-	component: column,
-} satisfies Meta<typeof column>;
+	component: column_,
+} satisfies Meta<typeof column_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				column,
+				column_,
 			},
 			props: Object.keys(argTypes),
-			template: '<column v-bind="$props" />',
+			template: '<column_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof column>;
+} satisfies StoryObj<typeof column_>;
 export default meta;

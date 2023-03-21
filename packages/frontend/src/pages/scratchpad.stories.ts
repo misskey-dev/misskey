@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import scratchpad from './scratchpad.vue';
+import scratchpad_ from './scratchpad.vue';
 const meta = {
 	title: 'pages/scratchpad',
-	component: scratchpad,
-} satisfies Meta<typeof scratchpad>;
+	component: scratchpad_,
+} satisfies Meta<typeof scratchpad_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				scratchpad,
+				scratchpad_,
 			},
 			props: Object.keys(argTypes),
-			template: '<scratchpad v-bind="$props" />',
+			template: '<scratchpad_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof scratchpad>;
+} satisfies StoryObj<typeof scratchpad_>;
 export default meta;

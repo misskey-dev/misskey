@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import classic from './classic.vue';
+import classic_ from './classic.vue';
 const meta = {
 	title: 'ui/classic',
-	component: classic,
-} satisfies Meta<typeof classic>;
+	component: classic_,
+} satisfies Meta<typeof classic_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				classic,
+				classic_,
 			},
 			props: Object.keys(argTypes),
-			template: '<classic v-bind="$props" />',
+			template: '<classic_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof classic>;
+} satisfies StoryObj<typeof classic_>;
 export default meta;

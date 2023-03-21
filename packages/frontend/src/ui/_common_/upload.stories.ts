@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import upload from './upload.vue';
+import upload_ from './upload.vue';
 const meta = {
 	title: 'ui/_common_/upload',
-	component: upload,
-} satisfies Meta<typeof upload>;
+	component: upload_,
+} satisfies Meta<typeof upload_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				upload,
+				upload_,
 			},
 			props: Object.keys(argTypes),
-			template: '<upload v-bind="$props" />',
+			template: '<upload_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof upload>;
+} satisfies StoryObj<typeof upload_>;
 export default meta;

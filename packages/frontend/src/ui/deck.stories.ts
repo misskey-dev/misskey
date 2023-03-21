@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import deck from './deck.vue';
+import deck_ from './deck.vue';
 const meta = {
 	title: 'ui/deck',
-	component: deck,
-} satisfies Meta<typeof deck>;
+	component: deck_,
+} satisfies Meta<typeof deck_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				deck,
+				deck_,
 			},
 			props: Object.keys(argTypes),
-			template: '<deck v-bind="$props" />',
+			template: '<deck_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof deck>;
+} satisfies StoryObj<typeof deck_>;
 export default meta;

@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import split from './split.vue';
+import split_ from './split.vue';
 const meta = {
 	title: 'components/form/split',
-	component: split,
-} satisfies Meta<typeof split>;
+	component: split_,
+} satisfies Meta<typeof split_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				split,
+				split_,
 			},
 			props: Object.keys(argTypes),
-			template: '<split v-bind="$props" />',
+			template: '<split_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof split>;
+} satisfies StoryObj<typeof split_>;
 export default meta;

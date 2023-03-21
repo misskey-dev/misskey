@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import sounds from './sounds.vue';
+import sounds_ from './sounds.vue';
 const meta = {
 	title: 'pages/settings/sounds',
-	component: sounds,
-} satisfies Meta<typeof sounds>;
+	component: sounds_,
+} satisfies Meta<typeof sounds_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				sounds,
+				sounds_,
 			},
 			props: Object.keys(argTypes),
-			template: '<sounds v-bind="$props" />',
+			template: '<sounds_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof sounds>;
+} satisfies StoryObj<typeof sounds_>;
 export default meta;

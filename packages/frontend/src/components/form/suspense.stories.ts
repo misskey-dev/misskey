@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import suspense from './suspense.vue';
+import suspense_ from './suspense.vue';
 const meta = {
 	title: 'components/form/suspense',
-	component: suspense,
-} satisfies Meta<typeof suspense>;
+	component: suspense_,
+} satisfies Meta<typeof suspense_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				suspense,
+				suspense_,
 			},
 			props: Object.keys(argTypes),
-			template: '<suspense v-bind="$props" />',
+			template: '<suspense_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof suspense>;
+} satisfies StoryObj<typeof suspense_>;
 export default meta;

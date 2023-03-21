@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import section from './section.vue';
+import section_ from './section.vue';
 const meta = {
 	title: 'components/form/section',
-	component: section,
-} satisfies Meta<typeof section>;
+	component: section_,
+} satisfies Meta<typeof section_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				section,
+				section_,
 			},
 			props: Object.keys(argTypes),
-			template: '<section v-bind="$props" />',
+			template: '<section_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof section>;
+} satisfies StoryObj<typeof section_>;
 export default meta;

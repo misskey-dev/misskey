@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import explore from './explore.vue';
+import explore_ from './explore.vue';
 const meta = {
 	title: 'pages/explore',
-	component: explore,
-} satisfies Meta<typeof explore>;
+	component: explore_,
+} satisfies Meta<typeof explore_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				explore,
+				explore_,
 			},
 			props: Object.keys(argTypes),
-			template: '<explore v-bind="$props" />',
+			template: '<explore_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof explore>;
+} satisfies StoryObj<typeof explore_>;
 export default meta;

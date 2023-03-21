@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import overview from './overview.vue';
+import overview_ from './overview.vue';
 const meta = {
 	title: 'pages/admin/overview',
-	component: overview,
-} satisfies Meta<typeof overview>;
+	component: overview_,
+} satisfies Meta<typeof overview_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				overview,
+				overview_,
 			},
 			props: Object.keys(argTypes),
-			template: '<overview v-bind="$props" />',
+			template: '<overview_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof overview>;
+} satisfies StoryObj<typeof overview_>;
 export default meta;

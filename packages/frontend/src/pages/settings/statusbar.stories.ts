@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import statusbar from './statusbar.vue';
+import statusbar_ from './statusbar.vue';
 const meta = {
 	title: 'pages/settings/statusbar',
-	component: statusbar,
-} satisfies Meta<typeof statusbar>;
+	component: statusbar_,
+} satisfies Meta<typeof statusbar_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				statusbar,
+				statusbar_,
 			},
 			props: Object.keys(argTypes),
-			template: '<statusbar v-bind="$props" />',
+			template: '<statusbar_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof statusbar>;
+} satisfies StoryObj<typeof statusbar_>;
 export default meta;

@@ -90,7 +90,7 @@ function toStories(component: string): string {
 		<literal value={component.slice('src/'.length, -'.vue'.length)} />
 	) as unknown as estree.Literal;
 	const identifier = (
-		<identifier name={base.slice(0, -'.vue'.length).replace(/[-.]|^(?=\d)/g, '_')} />
+		<identifier name={base.slice(0, -'.vue'.length).replace(/[-.]|^(?=\d)/g, '_').replace(/(?<=^[^A-Z_]*$)/, '_')} />
 	) as unknown as estree.Identifier;
 	const parameters = (
 		<object-expression
@@ -262,7 +262,7 @@ function toStories(component: string): string {
 																											/>,
 																											<property
 																												key={<identifier name='template' />}
-																												value={<literal value={`<${identifier.name} v-bind='$props' />`} />}
+																												value={<literal value={`<${identifier.name} v-bind="$props" />`} />}
 																												kind={'init' as const}
 																											/>,
 																										]}

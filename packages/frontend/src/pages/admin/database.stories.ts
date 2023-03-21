@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import database from './database.vue';
+import database_ from './database.vue';
 const meta = {
 	title: 'pages/admin/database',
-	component: database,
-} satisfies Meta<typeof database>;
+	component: database_,
+} satisfies Meta<typeof database_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				database,
+				database_,
 			},
 			props: Object.keys(argTypes),
-			template: '<database v-bind="$props" />',
+			template: '<database_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof database>;
+} satisfies StoryObj<typeof database_>;
 export default meta;

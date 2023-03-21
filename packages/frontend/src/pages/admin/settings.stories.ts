@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import settings from './settings.vue';
+import settings_ from './settings.vue';
 const meta = {
 	title: 'pages/admin/settings',
-	component: settings,
-} satisfies Meta<typeof settings>;
+	component: settings_,
+} satisfies Meta<typeof settings_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				settings,
+				settings_,
 			},
 			props: Object.keys(argTypes),
-			template: '<settings v-bind="$props" />',
+			template: '<settings_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof settings>;
+} satisfies StoryObj<typeof settings_>;
 export default meta;

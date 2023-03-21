@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import drive from './drive.vue';
+import drive_ from './drive.vue';
 const meta = {
 	title: 'pages/drive',
-	component: drive,
-} satisfies Meta<typeof drive>;
+	component: drive_,
+} satisfies Meta<typeof drive_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				drive,
+				drive_,
 			},
 			props: Object.keys(argTypes),
-			template: '<drive v-bind="$props" />',
+			template: '<drive_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof drive>;
+} satisfies StoryObj<typeof drive_>;
 export default meta;

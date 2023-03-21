@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import auth from './auth.vue';
+import auth_ from './auth.vue';
 const meta = {
 	title: 'pages/auth',
-	component: auth,
-} satisfies Meta<typeof auth>;
+	component: auth_,
+} satisfies Meta<typeof auth_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				auth,
+				auth_,
 			},
 			props: Object.keys(argTypes),
-			template: '<auth v-bind="$props" />',
+			template: '<auth_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof auth>;
+} satisfies StoryObj<typeof auth_>;
 export default meta;

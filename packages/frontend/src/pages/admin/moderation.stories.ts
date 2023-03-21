@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import moderation from './moderation.vue';
+import moderation_ from './moderation.vue';
 const meta = {
 	title: 'pages/admin/moderation',
-	component: moderation,
-} satisfies Meta<typeof moderation>;
+	component: moderation_,
+} satisfies Meta<typeof moderation_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				moderation,
+				moderation_,
 			},
 			props: Object.keys(argTypes),
-			template: '<moderation v-bind="$props" />',
+			template: '<moderation_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof moderation>;
+} satisfies StoryObj<typeof moderation_>;
 export default meta;

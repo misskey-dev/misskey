@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import security from './security.vue';
+import security_ from './security.vue';
 const meta = {
 	title: 'pages/settings/security',
-	component: security,
-} satisfies Meta<typeof security>;
+	component: security_,
+} satisfies Meta<typeof security_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				security,
+				security_,
 			},
 			props: Object.keys(argTypes),
-			template: '<security v-bind="$props" />',
+			template: '<security_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof security>;
+} satisfies StoryObj<typeof security_>;
 export default meta;

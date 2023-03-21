@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import post from './post.vue';
+import post_ from './post.vue';
 const meta = {
 	title: 'pages/gallery/post',
-	component: post,
-} satisfies Meta<typeof post>;
+	component: post_,
+} satisfies Meta<typeof post_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				post,
+				post_,
 			},
 			props: Object.keys(argTypes),
-			template: '<post v-bind="$props" />',
+			template: '<post_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof post>;
+} satisfies StoryObj<typeof post_>;
 export default meta;

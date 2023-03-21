@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import notification from './notification.vue';
+import notification_ from './notification.vue';
 const meta = {
 	title: 'ui/_common_/notification',
-	component: notification,
-} satisfies Meta<typeof notification>;
+	component: notification_,
+} satisfies Meta<typeof notification_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				notification,
+				notification_,
 			},
 			props: Object.keys(argTypes),
-			template: '<notification v-bind="$props" />',
+			template: '<notification_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof notification>;
+} satisfies StoryObj<typeof notification_>;
 export default meta;

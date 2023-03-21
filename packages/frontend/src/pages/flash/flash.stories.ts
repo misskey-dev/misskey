@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import flash from './flash.vue';
+import flash_ from './flash.vue';
 const meta = {
 	title: 'pages/flash/flash',
-	component: flash,
-} satisfies Meta<typeof flash>;
+	component: flash_,
+} satisfies Meta<typeof flash_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				flash,
+				flash_,
 			},
 			props: Object.keys(argTypes),
-			template: '<flash v-bind="$props" />',
+			template: '<flash_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof flash>;
+} satisfies StoryObj<typeof flash_>;
 export default meta;

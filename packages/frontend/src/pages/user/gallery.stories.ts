@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import gallery from './gallery.vue';
+import gallery_ from './gallery.vue';
 const meta = {
 	title: 'pages/user/gallery',
-	component: gallery,
-} satisfies Meta<typeof gallery>;
+	component: gallery_,
+} satisfies Meta<typeof gallery_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				gallery,
+				gallery_,
 			},
 			props: Object.keys(argTypes),
-			template: '<gallery v-bind="$props" />',
+			template: '<gallery_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof gallery>;
+} satisfies StoryObj<typeof gallery_>;
 export default meta;

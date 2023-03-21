@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import favorites from './favorites.vue';
+import favorites_ from './favorites.vue';
 const meta = {
 	title: 'pages/favorites',
-	component: favorites,
-} satisfies Meta<typeof favorites>;
+	component: favorites_,
+} satisfies Meta<typeof favorites_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				favorites,
+				favorites_,
 			},
 			props: Object.keys(argTypes),
-			template: '<favorites v-bind="$props" />',
+			template: '<favorites_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof favorites>;
+} satisfies StoryObj<typeof favorites_>;
 export default meta;

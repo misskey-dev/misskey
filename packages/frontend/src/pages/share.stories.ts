@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import share from './share.vue';
+import share_ from './share.vue';
 const meta = {
 	title: 'pages/share',
-	component: share,
-} satisfies Meta<typeof share>;
+	component: share_,
+} satisfies Meta<typeof share_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				share,
+				share_,
 			},
 			props: Object.keys(argTypes),
-			template: '<share v-bind="$props" />',
+			template: '<share_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof share>;
+} satisfies StoryObj<typeof share_>;
 export default meta;

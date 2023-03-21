@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import navbar from './navbar.vue';
+import navbar_ from './navbar.vue';
 const meta = {
 	title: 'ui/_common_/navbar',
-	component: navbar,
-} satisfies Meta<typeof navbar>;
+	component: navbar_,
+} satisfies Meta<typeof navbar_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				navbar,
+				navbar_,
 			},
 			props: Object.keys(argTypes),
-			template: '<navbar v-bind="$props" />',
+			template: '<navbar_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof navbar>;
+} satisfies StoryObj<typeof navbar_>;
 export default meta;

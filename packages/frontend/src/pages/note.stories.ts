@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import note from './note.vue';
+import note_ from './note.vue';
 const meta = {
 	title: 'pages/note',
-	component: note,
-} satisfies Meta<typeof note>;
+	component: note_,
+} satisfies Meta<typeof note_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				note,
+				note_,
 			},
 			props: Object.keys(argTypes),
-			template: '<note v-bind="$props" />',
+			template: '<note_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof note>;
+} satisfies StoryObj<typeof note_>;
 export default meta;

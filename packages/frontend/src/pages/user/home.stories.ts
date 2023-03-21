@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import home from './home.vue';
+import home_ from './home.vue';
 const meta = {
 	title: 'pages/user/home',
-	component: home,
-} satisfies Meta<typeof home>;
+	component: home_,
+} satisfies Meta<typeof home_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				home,
+				home_,
 			},
 			props: Object.keys(argTypes),
-			template: '<home v-bind="$props" />',
+			template: '<home_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof home>;
+} satisfies StoryObj<typeof home_>;
 export default meta;

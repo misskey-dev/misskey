@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import privacy from './privacy.vue';
+import privacy_ from './privacy.vue';
 const meta = {
 	title: 'pages/settings/privacy',
-	component: privacy,
-} satisfies Meta<typeof privacy>;
+	component: privacy_,
+} satisfies Meta<typeof privacy_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				privacy,
+				privacy_,
 			},
 			props: Object.keys(argTypes),
-			template: '<privacy v-bind="$props" />',
+			template: '<privacy_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof privacy>;
+} satisfies StoryObj<typeof privacy_>;
 export default meta;

@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import cpu from './cpu.vue';
+import cpu_ from './cpu.vue';
 const meta = {
 	title: 'widgets/server-metric/cpu',
-	component: cpu,
-} satisfies Meta<typeof cpu>;
+	component: cpu_,
+} satisfies Meta<typeof cpu_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				cpu,
+				cpu_,
 			},
 			props: Object.keys(argTypes),
-			template: '<cpu v-bind="$props" />',
+			template: '<cpu_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof cpu>;
+} satisfies StoryObj<typeof cpu_>;
 export default meta;

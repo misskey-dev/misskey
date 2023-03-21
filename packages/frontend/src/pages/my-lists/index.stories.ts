@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import index from './index.vue';
+import index_ from './index.vue';
 const meta = {
 	title: 'pages/my-lists/index',
-	component: index,
-} satisfies Meta<typeof index>;
+	component: index_,
+} satisfies Meta<typeof index_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				index,
+				index_,
 			},
 			props: Object.keys(argTypes),
-			template: '<index v-bind="$props" />',
+			template: '<index_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof index>;
+} satisfies StoryObj<typeof index_>;
 export default meta;

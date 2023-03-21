@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import link from './link.vue';
+import link_ from './link.vue';
 const meta = {
 	title: 'components/form/link',
-	component: link,
-} satisfies Meta<typeof link>;
+	component: link_,
+} satisfies Meta<typeof link_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				link,
+				link_,
 			},
 			props: Object.keys(argTypes),
-			template: '<link v-bind="$props" />',
+			template: '<link_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof link>;
+} satisfies StoryObj<typeof link_>;
 export default meta;

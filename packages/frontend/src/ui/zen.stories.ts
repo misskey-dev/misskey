@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import zen from './zen.vue';
+import zen_ from './zen.vue';
 const meta = {
 	title: 'ui/zen',
-	component: zen,
-} satisfies Meta<typeof zen>;
+	component: zen_,
+} satisfies Meta<typeof zen_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				zen,
+				zen_,
 			},
 			props: Object.keys(argTypes),
-			template: '<zen v-bind="$props" />',
+			template: '<zen_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof zen>;
+} satisfies StoryObj<typeof zen_>;
 export default meta;

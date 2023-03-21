@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import registry from './registry.vue';
+import registry_ from './registry.vue';
 const meta = {
 	title: 'pages/registry',
-	component: registry,
-} satisfies Meta<typeof registry>;
+	component: registry_,
+} satisfies Meta<typeof registry_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				registry,
+				registry_,
 			},
 			props: Object.keys(argTypes),
-			template: '<registry v-bind="$props" />',
+			template: '<registry_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof registry>;
+} satisfies StoryObj<typeof registry_>;
 export default meta;

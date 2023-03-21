@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import pie from './pie.vue';
+import pie_ from './pie.vue';
 const meta = {
 	title: 'widgets/server-metric/pie',
-	component: pie,
-} satisfies Meta<typeof pie>;
+	component: pie_,
+} satisfies Meta<typeof pie_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				pie,
+				pie_,
 			},
 			props: Object.keys(argTypes),
-			template: '<pie v-bind="$props" />',
+			template: '<pie_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof pie>;
+} satisfies StoryObj<typeof pie_>;
 export default meta;

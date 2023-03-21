@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import tag from './tag.vue';
+import tag_ from './tag.vue';
 const meta = {
 	title: 'pages/tag',
-	component: tag,
-} satisfies Meta<typeof tag>;
+	component: tag_,
+} satisfies Meta<typeof tag_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				tag,
+				tag_,
 			},
 			props: Object.keys(argTypes),
-			template: '<tag v-bind="$props" />',
+			template: '<tag_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'fullscreen',
 	},
-} satisfies StoryObj<typeof tag>;
+} satisfies StoryObj<typeof tag_>;
 export default meta;

@@ -1,21 +1,21 @@
 import { Meta, StoryObj } from '@storybook/vue3';
-import visitor from './visitor.vue';
+import visitor_ from './visitor.vue';
 const meta = {
 	title: 'ui/visitor',
-	component: visitor,
-} satisfies Meta<typeof visitor>;
+	component: visitor_,
+} satisfies Meta<typeof visitor_>;
 export const Default = {
 	render(args, { argTypes }) {
 		return {
 			components: {
-				visitor,
+				visitor_,
 			},
 			props: Object.keys(argTypes),
-			template: '<visitor v-bind="$props" />',
+			template: '<visitor_ v-bind="$props" />',
 		};
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof visitor>;
+} satisfies StoryObj<typeof visitor_>;
 export default meta;
