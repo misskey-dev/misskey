@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable import/no-default-export */
 import { Meta, StoryObj } from '@storybook/vue3';
 import webhook_new from './webhook.new.vue';
 const meta = {

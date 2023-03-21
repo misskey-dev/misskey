@@ -29,7 +29,7 @@ const generator = {
 				break;
 			}
 		}
-		state.write(' satisfies ');
+		state.write(' satisfies ', node as unknown as estree.Expression);
 		this[node.reference.type](node.reference, state);
 	},
 }
@@ -206,7 +206,6 @@ function toStories(component: string): string {
 																		key={<identifier name='render' />}
 																		value={
 																			<function-expression
-																				id={<identifier name='render' />}
 																				params={[
 																					<identifier name='args' />,
 																					<object-pattern
@@ -301,7 +300,10 @@ function toStories(component: string): string {
 		/>
 	) as unknown as estree.Program;
 	return format(
-		generate(program, { generator }) + (hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
+		'/* eslint-disable @typescript-eslint/explicit-function-return-type */\n' +
+			'/* eslint-disable import/no-default-export */\n' +
+			generate(program, { generator }) +
+			(hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
 		{
 			parser: 'babel-ts',
 			singleQuote: true,

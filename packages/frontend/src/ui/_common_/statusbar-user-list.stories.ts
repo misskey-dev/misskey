@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable import/no-default-export */
 import { Meta, StoryObj } from '@storybook/vue3';
 import statusbar_user_list from './statusbar-user-list.vue';
 const meta = {

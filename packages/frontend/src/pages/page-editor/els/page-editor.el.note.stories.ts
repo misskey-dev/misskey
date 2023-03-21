@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable import/no-default-export */
 import { Meta, StoryObj } from '@storybook/vue3';
 import page_editor_el_note from './page-editor.el.note.vue';
 const meta = {

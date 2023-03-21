@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable import/no-default-export */
 import { Meta, StoryObj } from '@storybook/vue3';
 import sounds_sound from './sounds.sound.vue';
 const meta = {

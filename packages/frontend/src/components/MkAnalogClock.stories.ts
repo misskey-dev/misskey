@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable import/no-default-export */
 import { Meta } from '@storybook/vue3';
 const meta = {
 	title: 'components/MkAnalogClock',
