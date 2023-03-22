@@ -977,6 +977,7 @@ notesSearchNotAvailable: "Non è possibile cercare tra le Note."
 license: "Licenza"
 unfavoriteConfirm: "Vuoi davvero rimuovere la preferenza?"
 myClips: "Le mie Clip"
+drivecleaner: "Drive cleaner"
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
@@ -1868,3 +1869,6 @@ _dialog:
 _disabledTimeline:
   title: "Timeline disabilitata"
   description: "Il tuo ruolo non ha i permessi per accedere a questa timeline"
+_drivecleaner:
+  orderBySizeDesc: "Dal più grande al più piccolo"
+  orderByCreatedAtAsc: "Dal più vecchio al più recente"
