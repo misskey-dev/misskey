@@ -1,18 +1,82 @@
 <template>
-<span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }]">
-		<div :class="$style.earLeft"/>
-		<div :class="$style.earRight"/>
+	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
+		<div :class="$style.earLeft">
+			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
+				<mask id="mk-avatar-cat-left-mask" x="-20%" y="-20%" width="140%" height="140%">
+					<circle cx="7" cy="7" r="5" fill="white"/>
+					<rect x="0" y="2.1" width="14" height="11.9"/>
+					<rect x="7" y="0" width="7" height="14"/>
+					<circle cx="7" cy="7" r="4.9"/>
+				</mask>
+				<filter id="mk-avatar-cat-left-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
+					<feOffset dx="2"/>
+					<feMorphology operator="dilate" radius="7"/>
+				</filter>
+				<g filter="url(#mk-avatar-cat-left-filter)">
+					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-left-mask)"/>
+				</g>
+			</svg>
+		</div>
+		<div :class="$style.earRight">
+			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
+				<mask id="mk-avatar-cat-right-mask" x="-20%" y="-20%" width="140%" height="140%">
+					<circle cx="7" cy="7" r="5" fill="white"/>
+					<rect x="0" y="2.1" width="14" height="11.9"/>
+					<rect x="0" y="0" width="7" height="14"/>
+					<circle cx="7" cy="7" r="4.9"/>
+				</mask>
+				<filter id="mk-avatar-cat-right-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
+					<feOffset dx="-2"/>
+					<feMorphology operator="dilate" radius="7"/>
+				</filter>
+				<g filter="url(#mk-avatar-cat-right-filter)">
+					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-right-mask)"/>
+				</g>
+			</svg>
+		</div>
 	</div>
 </span>
-<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
+<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: $store.state.useBlurEffect }]">
-		<div :class="$style.earLeft"/>
-		<div :class="$style.earRight"/>
+	<div v-if="user.isCat" :class="$style.ears">
+		<div :class="$style.earLeft">
+			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
+				<mask id="mk-avatar-cat-left-mask" x="-20%" y="-20%" width="140%" height="140%">
+					<circle cx="7" cy="7" r="5" fill="white"/>
+					<rect x="0" y="2.1" width="14" height="11.9"/>
+					<rect x="7" y="0" width="7" height="14"/>
+					<circle cx="7" cy="7" r="4.9"/>
+				</mask>
+				<filter id="mk-avatar-cat-left-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
+					<feOffset dx="2"/>
+					<feMorphology operator="dilate" radius="7"/>
+				</filter>
+				<g filter="url(#mk-avatar-cat-left-filter)">
+					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-left-mask)"/>
+				</g>
+			</svg>
+		</div>
+		<div :class="$style.earRight">
+			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
+				<mask id="mk-avatar-cat-right-mask" x="-20%" y="-20%" width="140%" height="140%">
+					<circle cx="7" cy="7" r="5" fill="white"/>
+					<rect x="0" y="2.1" width="14" height="11.9"/>
+					<rect x="0" y="0" width="7" height="14"/>
+					<circle cx="7" cy="7" r="4.9"/>
+				</mask>
+				<filter id="mk-avatar-cat-right-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
+					<feOffset dx="-2"/>
+					<feMorphology operator="dilate" radius="7"/>
+				</filter>
+				<g filter="url(#mk-avatar-cat-right-filter)">
+					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-right-mask)"/>
+				</g>
+			</svg>
+		</div>
 	</div>
 </MkA>
 </template>
@@ -25,6 +89,9 @@ import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-bl
 import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store';
+
+const squareAvatars = $ref(defaultStore.state.squareAvatars);
+const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
@@ -47,11 +114,11 @@ const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
 
-function onClick(ev: MouseEvent) {
+function onClick(ev: MouseEvent): void {
 	emit('click', ev);
 }
 
-let color = $ref();
+let color = $ref<string | undefined>();
 
 watch(() => props.user.avatarBlurhash, () => {
 	color = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
@@ -129,12 +196,17 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		&.mask {
 			-webkit-mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"></feGaussianBlur></filter><circle cx="16" cy="16" r="12" filter="url(#a)"></circle></svg>') center / 50% 50%,
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') center / 50% 50%,
 				linear-gradient(#fff, #fff);
 			-webkit-mask-composite: destination-out, source-over;
 			mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"></feGaussianBlur></filter><circle cx="16" cy="16" r="12" filter="url(#a)"></circle></svg>') exclude center / 50% 50%,
+				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') exclude center / 50% 50%,
 				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
+
+			> .earLeft,
+			> .earRight {
+				background: transparent;
+			}
 		}
 
 		> .earLeft,
@@ -145,7 +217,7 @@ watch(() => props.user.avatarBlurhash, () => {
 			width: 50%;
 			background: currentColor;
 
-			&::before {
+			&::after {
 				contain: strict;
 				content: '';
 				display: block;
@@ -154,21 +226,43 @@ watch(() => props.user.avatarBlurhash, () => {
 				margin: 20%;
 				background: #df548f;
 			}
+
+			> .layer {
+				contain: strict;
+				position: absolute;
+				top: 0;
+				width: 280%;
+				height: 280%;
+			}
 		}
 
 		> .earLeft {
 			transform: rotate(37.5deg) skew(30deg);
 
-			&, &::before {
+			&, &::after {
 				border-radius: 0 75% 75%;
+			}
+
+			> .layer {
+				left: 0;
+				transform:
+					skew(-30deg)
+					rotate(-37.5deg)
+					translate(-2.82842712475%, /* -2 * sqrt(2) */
+										-38.5857864376%); /* 40 - 2 * sqrt(2) */
 			}
 		}
 
 		> .earRight {
 			transform: rotate(-37.5deg) skew(-30deg);
 
-			&, &::before {
+			&, &::after {
 				border-radius: 75% 0 75% 75%;
+			}
+
+			> .layer {
+				right: 0;
+				transform: skew(30deg) rotate(37.5deg) translate(2.82842712475%, -38.5857864376%);
 			}
 		}
 	}
