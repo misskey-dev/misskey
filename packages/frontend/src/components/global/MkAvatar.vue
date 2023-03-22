@@ -262,7 +262,11 @@ watch(() => props.user.avatarBlurhash, () => {
 
 			> .layer {
 				right: 0;
-				transform: skew(30deg) rotate(37.5deg) translate(2.82842712475%, -38.5857864376%);
+				transform:
+					skew(30deg)
+					rotate(37.5deg)
+					translate(2.82842712475%, /* 2 * sqrt(2) */
+										-38.5857864376%); /* 40 - 2 * sqrt(2) */
 			}
 		}
 	}
