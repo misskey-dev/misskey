@@ -8,12 +8,12 @@
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="disabled" :class="$style.disabled">
+	<div v-if="(((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
 		<p :class="$style.disabledTitle">
-			<i class="ti ti-minus-circle"></i>
-			{{ $t('disabled-timeline.title') }}
+			<i class="ti ti-circle-minus"></i>
+			{{ i18n.ts._disabledTimeline.title }}
 		</p>
-		<p :class="$style.disabledDescription">{{ $t('disabled-timeline.description') }}</p>
+		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
 	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
 </XColumn>
@@ -27,6 +27,7 @@ import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	column: Column;
@@ -40,11 +41,16 @@ const emit = defineEmits<{
 
 let disabled = $ref(false);
 
+const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
+const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
+
 onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
 	} else if ($i) {
-		disabled = false; // TODO
+		disabled = (
+			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
+			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)));
 	}
 });
 
