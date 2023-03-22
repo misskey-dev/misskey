@@ -978,6 +978,9 @@ license: "Licencia"
 unfavoriteConfirm: "¿Desea quitar de favoritos?"
 myClips: "Mis clips"
 drivecleaner: "Limpiador del Drive"
+retryAllQueuesNow: "Reintentar inmediatamente todas las colas"
+retryAllQueuesConfirmTitle: "Desea ¿reintentar inmediatamente todas las colas?"
+retryAllQueuesConfirmText: "La carga del servidor está incrementándose temporalmente "
 _achievements:
   earnedAt: "Desbloqueado el"
   _types:
