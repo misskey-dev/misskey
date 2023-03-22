@@ -977,6 +977,10 @@ notesSearchNotAvailable: "ノート検索は使われへんで。"
 license: "ライセンス"
 unfavoriteConfirm: "ほんまに気に入らんの？"
 myClips: "自分のクリップ"
+drivecleaner: "ドライブキレイキレイ"
+retryAllQueuesNow: "キューを全部もっかいやり直す"
+retryAllQueuesConfirmTitle: "もっかいやってみるか？"
+retryAllQueuesConfirmText: "一時的にサーバー重なるかもしれへんで。"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
@@ -1868,3 +1872,6 @@ _dialog:
 _disabledTimeline:
   title: "使われへんタイムライン"
   description: "あんたの今のロールやったら、このタイムラインは使われへんで。"
+_drivecleaner:
+  orderBySizeDesc: "サイズのでかい順"
+  orderByCreatedAtAsc: "追加日の古い順"
