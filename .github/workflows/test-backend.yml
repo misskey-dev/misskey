@@ -1,0 +1,59 @@
+name: Test (backend)
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  jest:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:6
+        ports:
+          - 56312:6379
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .github/misskey/test.yml .config
+    - name: Build
+      run: pnpm build
+    - name: Test
+      run: pnpm jest-and-coverage
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./packages/backend/coverage/coverage-final.json

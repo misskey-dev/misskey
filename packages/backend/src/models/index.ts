@@ -13,6 +13,7 @@ import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
 import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
+import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { Emoji } from '@/models/entities/Emoji.js';
@@ -26,6 +27,7 @@ import { Meta } from '@/models/entities/Meta.js';
 import { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { MutedNote } from '@/models/entities/MutedNote.js';
 import { Muting } from '@/models/entities/Muting.js';
+import { RenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { Note } from '@/models/entities/Note.js';
 import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
@@ -80,6 +82,7 @@ export {
 	ChannelNotePining,
 	Clip,
 	ClipNote,
+	ClipFavorite,
 	DriveFile,
 	DriveFolder,
 	Emoji,
@@ -93,6 +96,7 @@ export {
 	ModerationLog,
 	MutedNote,
 	Muting,
+	RenoteMuting,
 	Note,
 	NoteFavorite,
 	NoteReaction,
@@ -146,6 +150,7 @@ export type ChannelFollowingsRepository = Repository<ChannelFollowing>;
 export type ChannelNotePiningsRepository = Repository<ChannelNotePining>;
 export type ClipsRepository = Repository<Clip>;
 export type ClipNotesRepository = Repository<ClipNote>;
+export type ClipFavoritesRepository = Repository<ClipFavorite>;
 export type DriveFilesRepository = Repository<DriveFile>;
 export type DriveFoldersRepository = Repository<DriveFolder>;
 export type EmojisRepository = Repository<Emoji>;
@@ -159,6 +164,7 @@ export type MetasRepository = Repository<Meta>;
 export type ModerationLogsRepository = Repository<ModerationLog>;
 export type MutedNotesRepository = Repository<MutedNote>;
 export type MutingsRepository = Repository<Muting>;
+export type RenoteMutingsRepository = Repository<RenoteMuting>;
 export type NotesRepository = Repository<Note>;
 export type NoteFavoritesRepository = Repository<NoteFavorite>;
 export type NoteReactionsRepository = Repository<NoteReaction>;

@@ -55,6 +55,7 @@ if (props.id) {
 		isPublic: false,
 		asBadge: false,
 		canEditMembersByModerator: false,
+		displayOrder: 0,
 		policies: {},
 	};
 }

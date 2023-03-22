@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" class="mkw-aiscript data-cy-mkw-aiscript">
+<MkContainer :show-header="widgetProps.showHeader" data-cy-mkw-aiscript class="mkw-aiscript">
 	<template #icon><i class="ti ti-terminal-2"></i></template>
 	<template #header>{{ i18n.ts._widgets.aiscript }}</template>
 

@@ -29,7 +29,7 @@ export const packedUserLiteSchema = {
 			nullable: true, optional: false,
 		},
 		avatarBlurhash: {
-			type: 'any',
+			type: 'string',
 			nullable: true, optional: false,
 		},
 		isAdmin: {
@@ -93,7 +93,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 			nullable: true, optional: false,
 		},
 		bannerBlurhash: {
-			type: 'any',
+			type: 'string',
 			nullable: true, optional: false,
 		},
 		isLocked: {
@@ -231,6 +231,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			nullable: false, optional: true,
 		},
 		isMuted: {
+			type: 'boolean',
+			nullable: false, optional: true,
+		},
+		isRenoteMuted: {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},

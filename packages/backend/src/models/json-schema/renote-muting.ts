@@ -1,4 +1,4 @@
-export const packedClipSchema = {
+export const packedRenoteMutingSchema = {
 	type: 'object',
 	properties: {
 		id: {
@@ -12,27 +12,15 @@ export const packedClipSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		userId: {
+		muteeId: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'id',
 		},
-		user: {
+		mutee: {
 			type: 'object',
-			ref: 'UserLite',
 			optional: false, nullable: false,
-		},
-		name: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		description: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
-		isPublic: {
-			type: 'boolean',
-			optional: false, nullable: false,
+			ref: 'UserDetailed',
 		},
 	},
 } as const;

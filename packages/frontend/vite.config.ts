@@ -1,6 +1,7 @@
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
+import { configDefaults as vitestConfigDefaults } from 'vitest/config';
 
 import locales from '../../locales';
 import meta from '../../package.json';
@@ -16,10 +17,10 @@ const hash = (str: string, seed = 0): number => {
 		h1 = Math.imul(h1 ^ ch, 2654435761);
 		h2 = Math.imul(h2 ^ ch, 1597334677);
 	}
-	
+
 	h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
 	h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-	
+
 	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
 
@@ -28,12 +29,12 @@ function toBase62(n: number): string {
 	if (n === 0) {
 		return '0';
 	}
-	let result = ''; 
+	let result = '';
 	while (n > 0) {
 		result = BASE62_DIGITS[n % BASE62_DIGITS.length] + result;
 		n = Math.floor(n / BASE62_DIGITS.length);
 	}
-	
+
 	return result;
 }
 
@@ -109,6 +110,16 @@ export default defineConfig(({ command, mode }) => {
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',
 			reportCompressedSize: false,
+		},
+
+		test: {
+			environment: 'happy-dom',
+			deps: {
+				inline: [
+					// XXX: misskey-dev/browser-image-resizer has no "type": "module"
+					'browser-image-resizer',
+				],
+			},
 		},
 	};
 });
