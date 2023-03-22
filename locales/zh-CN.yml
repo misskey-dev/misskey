@@ -978,6 +978,9 @@ license: "许可信息"
 unfavoriteConfirm: "确定要取消收藏吗？"
 myClips: "我的便签"
 drivecleaner: "网盘整理"
+retryAllQueuesNow: "立刻重试所有队列"
+retryAllQueuesConfirmTitle: "要再尝试一次吗？"
+retryAllQueuesConfirmText: "可能会使服务器负荷在一定时间内增加"
 _achievements:
   earnedAt: "达成时间"
   _types:
