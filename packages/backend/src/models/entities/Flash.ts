@@ -43,7 +43,7 @@ export class Flash {
 	public user: User | null;
 
 	@Column('varchar', {
-		length: 32768,
+		length: 65536,
 	})
 	public script: string;
 

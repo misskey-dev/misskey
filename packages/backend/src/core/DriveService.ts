@@ -2,6 +2,7 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
@@ -33,8 +34,9 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import type S3 from 'aws-sdk/clients/s3.js';
 import { correctFilename } from '@/misc/correct-filename.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -274,8 +276,8 @@ export class DriveService {
 			}
 		}
 
-		if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'].includes(type)) {
-			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
+		if (!isMimeImage(type, 'sharp-convertible-image-with-bmp')) {
+			this.registerLogger.debug('web image and thumbnail not created (cannot convert by sharp)');
 			return {
 				webpublic: null,
 				thumbnail: null,
@@ -284,22 +286,16 @@ export class DriveService {
 
 		let img: sharp.Sharp | null = null;
 		let satisfyWebpublic: boolean;
+		let isAnimated: boolean;
 
 		try {
-			img = sharp(path);
+			img = await sharpBmp(path, type);
 			const metadata = await img.metadata();
-			const isAnimated = metadata.pages && metadata.pages > 1;
-
-			// skip animated
-			if (isAnimated) {
-				return {
-					webpublic: null,
-					thumbnail: null,
-				};
-			}
+			isAnimated = !!(metadata.pages && metadata.pages > 1);
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/webp' && type !== 'image/avif' &&
+				type !== 'image/svg+xml' && // security reason
+				type !== 'image/avif' && // not supported by Mastodon and MS Edge
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -315,15 +311,13 @@ export class DriveService {
 		// #region webpublic
 		let webpublic: IImage | null = null;
 
-		if (generateWeb && !satisfyWebpublic) {
+		if (generateWeb && !satisfyWebpublic && !isAnimated) {
 			this.registerLogger.info('creating web image');
 
 			try {
 				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
-				} else if (['image/png'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
-				} else if (['image/svg+xml'].includes(type)) {
+					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
+				} else if (['image/png', 'image/bmp', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
@@ -333,6 +327,7 @@ export class DriveService {
 			}
 		} else {
 			if (satisfyWebpublic) this.registerLogger.info('web image not created (original satisfies webpublic)');
+			else if (isAnimated) this.registerLogger.info('web image not created (animated image)');
 			else this.registerLogger.info('web image not created (from remote)');
 		}
 		// #endregion webpublic
@@ -341,10 +336,10 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(type)) {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 280);
+			if (isAnimated) {
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
 			} else {
-				this.registerLogger.debug('thumbnail not created (not an required file)');
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
 			}
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
@@ -476,7 +471,7 @@ export class DriveService {
 			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
 			// extを付加してデータベースの文字数制限に当たることはまずない
 			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
-			info.type.ext
+			info.type.ext,
 		);
 
 		if (user && !force) {
@@ -728,10 +723,20 @@ export class DriveService {
 
 		const s3 = this.s3Service.getS3(meta);
 
-		await s3.deleteObject({
-			Bucket: meta.objectStorageBucket!,
-			Key: key,
-		}).promise();
+		try {
+			await s3.deleteObject({
+				Bucket: meta.objectStorageBucket!,
+				Key: key,
+			}).promise();
+		} catch (err: any) {
+			if (err.code === 'NoSuchKey') {
+				console.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err);
+				return;
+			}
+			throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
+				cause: err,
+			});
+		}
 	}
 
 	@bindThis
@@ -749,7 +754,7 @@ export class DriveService {
 	}: UploadFromUrlArgs): Promise<DriveFile> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
 			const { filename: name } = await this.downloadService.downloadUrl(url, path);

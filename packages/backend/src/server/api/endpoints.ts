@@ -1,4 +1,4 @@
-import type { Schema } from '@/misc/schema.js';
+import type { Schema } from '@/misc/json-schema.js';
 import { RolePolicies } from '@/core/RoleService.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
@@ -42,6 +42,7 @@ import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
 import * as ep___admin_queue_inboxDelayed from './endpoints/admin/queue/inbox-delayed.js';
+import * as ep___admin_queue_promote from './endpoints/admin/queue/promote.js';
 import * as ep___admin_queue_stats from './endpoints/admin/queue/stats.js';
 import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
@@ -114,6 +115,9 @@ import * as ep___clips_list from './endpoints/clips/list.js';
 import * as ep___clips_notes from './endpoints/clips/notes.js';
 import * as ep___clips_show from './endpoints/clips/show.js';
 import * as ep___clips_update from './endpoints/clips/update.js';
+import * as ep___clips_favorite from './endpoints/clips/favorite.js';
+import * as ep___clips_unfavorite from './endpoints/clips/unfavorite.js';
+import * as ep___clips_myFavorites from './endpoints/clips/my-favorites.js';
 import * as ep___drive from './endpoints/drive.js';
 import * as ep___drive_files from './endpoints/drive/files.js';
 import * as ep___drive_files_attachedNotes from './endpoints/drive/files/attached-notes.js';
@@ -220,10 +224,14 @@ import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
+import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
 import * as ep___mute_list from './endpoints/mute/list.js';
+import * as ep___renoteMute_create from './endpoints/renote-mute/create.js';
+import * as ep___renoteMute_delete from './endpoints/renote-mute/delete.js';
+import * as ep___renoteMute_list from './endpoints/renote-mute/list.js';
 import * as ep___my_apps from './endpoints/my/apps.js';
 import * as ep___notes from './endpoints/notes.js';
 import * as ep___notes_children from './endpoints/notes/children.js';
@@ -361,6 +369,7 @@ const eps = [
 	['admin/queue/clear', ep___admin_queue_clear],
 	['admin/queue/deliver-delayed', ep___admin_queue_deliverDelayed],
 	['admin/queue/inbox-delayed', ep___admin_queue_inboxDelayed],
+	['admin/queue/promote', ep___admin_queue_promote],
 	['admin/queue/stats', ep___admin_queue_stats],
 	['admin/relays/add', ep___admin_relays_add],
 	['admin/relays/list', ep___admin_relays_list],
@@ -433,6 +442,9 @@ const eps = [
 	['clips/notes', ep___clips_notes],
 	['clips/show', ep___clips_show],
 	['clips/update', ep___clips_update],
+	['clips/favorite', ep___clips_favorite],
+	['clips/unfavorite', ep___clips_unfavorite],
+	['clips/my-favorites', ep___clips_myFavorites],
 	['drive', ep___drive],
 	['drive/files', ep___drive_files],
 	['drive/files/attached-notes', ep___drive_files_attachedNotes],
@@ -539,10 +551,14 @@ const eps = [
 	['i/webhooks/delete', ep___i_webhooks_delete],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
+	['emoji', ep___emoji],
 	['miauth/gen-token', ep___miauth_genToken],
 	['mute/create', ep___mute_create],
 	['mute/delete', ep___mute_delete],
 	['mute/list', ep___mute_list],
+	['renote-mute/create', ep___renoteMute_create],
+	['renote-mute/delete', ep___renoteMute_delete],
+	['renote-mute/list', ep___renoteMute_list],
 	['my/apps', ep___my_apps],
 	['notes', ep___notes],
 	['notes/children', ep___notes_children],

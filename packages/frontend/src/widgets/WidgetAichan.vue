@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="false" class="mkw-aichan data-cy-mkw-aichan">
+<MkContainer :naked="widgetProps.transparent" :show-header="false" data-cy-mkw-aichan class="mkw-aichan">
 	<iframe ref="live2d" class="dedjhjmo" src="https://ao.nya.one/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
 </MkContainer>
 </template>

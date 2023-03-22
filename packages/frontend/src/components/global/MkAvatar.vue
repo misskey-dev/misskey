@@ -1,5 +1,5 @@
 <template>
-<span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<template v-if="user.isCat">
@@ -7,7 +7,7 @@
 		<div :class="$style.earRight"/>
 	</template>
 </span>
-<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: $store.state.squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
+<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<template v-if="user.isCat">
@@ -25,6 +25,8 @@ import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-bl
 import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store';
+
+const squareAvatars = $ref(defaultStore.state.squareAvatars);
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;

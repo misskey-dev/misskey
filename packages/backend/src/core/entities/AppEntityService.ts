@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository } from '@/models/index.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { App } from '@/models/entities/App.js';
 import type { User } from '@/models/entities/User.js';
 import { bindThis } from '@/decorators.js';

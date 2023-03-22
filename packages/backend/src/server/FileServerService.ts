@@ -2,7 +2,6 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
-import fastifyStatic from '@fastify/static';
 import rename from 'rename';
 import type { Config } from '@/config.js';
 import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
@@ -58,11 +57,6 @@ export class FileServerService {
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			done();
-		});
-
-		fastify.register(fastifyStatic, {
-			root: _dirname,
-			serve: false,
 		});
 
 		fastify.get('/files/app-default.jpg', (request, reply) => {
@@ -297,7 +291,7 @@ export class FileServerService {
 					};
 				}
 			} else if ('static' in request.query) {
-				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 280);
+				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 498, 422);
 			} else if ('preview' in request.query) {
 				image = this.imageProcessingService.convertSharpToWebpStream(await sharpBmp(file.path, file.mime), 200, 200);
 			} else if ('badge' in request.query) {
@@ -311,20 +305,20 @@ export class FileServerService {
 					.linear(1.75, -(128 * 1.75) + 128) // 1.75x contrast
 					.flatten({ background: '#000' })
 					.toColorspace('b-w');
-	
+
 				const stats = await mask.clone().stats();
-	
+
 				if (stats.entropy < 0.1) {
 					// エントロピーがあまりない場合は404にする
 					throw new StatusError('Skip to provide badge', 404);
 				}
-	
+
 				const data = sharp({
 					create: { width: 96, height: 96, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
 				})
 					.pipelineColorspace('b-w')
 					.boolean(await mask.png().toBuffer(), 'eor');
-	
+
 				image = {
 					data: await data.png().toBuffer(),
 					ext: 'png',
@@ -396,7 +390,7 @@ export class FileServerService {
 			const { filename } = await this.downloadService.downloadUrl(url, path);
 
 			const { mime, ext } = await this.fileInfoService.detectType(path);
-	
+
 			return {
 				state: 'remote',
 				mime, ext,
