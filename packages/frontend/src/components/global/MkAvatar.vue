@@ -5,16 +5,6 @@
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
 		<div :class="$style.earLeft">
 			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
-				<mask id="mk-avatar-cat-left-mask" x="-20%" y="-20%" width="140%" height="140%">
-					<circle cx="7" cy="7" r="5" fill="white"/>
-					<rect x="0" y="2.1" width="14" height="11.9"/>
-					<rect x="7" y="0" width="7" height="14"/>
-					<circle cx="7" cy="7" r="4.9"/>
-				</mask>
-				<filter id="mk-avatar-cat-left-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
-					<feOffset dx="2"/>
-					<feMorphology operator="dilate" radius="7"/>
-				</filter>
 				<g filter="url(#mk-avatar-cat-left-filter)">
 					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-left-mask)"/>
 				</g>
@@ -22,16 +12,6 @@
 		</div>
 		<div :class="$style.earRight">
 			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
-				<mask id="mk-avatar-cat-right-mask" x="-20%" y="-20%" width="140%" height="140%">
-					<circle cx="7" cy="7" r="5" fill="white"/>
-					<rect x="0" y="2.1" width="14" height="11.9"/>
-					<rect x="0" y="0" width="7" height="14"/>
-					<circle cx="7" cy="7" r="4.9"/>
-				</mask>
-				<filter id="mk-avatar-cat-right-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
-					<feOffset dx="-2"/>
-					<feMorphology operator="dilate" radius="7"/>
-				</filter>
 				<g filter="url(#mk-avatar-cat-right-filter)">
 					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-right-mask)"/>
 				</g>
@@ -42,9 +22,10 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { onBeforeMount, render, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkA from './MkA.vue';
+import MkAvatarCatDefiner from './MkAvatar.catDefiner.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
@@ -90,6 +71,14 @@ watch(() => props.user.avatarBlurhash, () => {
 	color = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
+});
+
+onBeforeMount(() => {
+	if (!document.getElementById('mk-avatar-cat-definer')) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const vnode = MkAvatarCatDefiner.render!();
+		render(vnode, document.body, true);
+	}
 });
 </script>
 
