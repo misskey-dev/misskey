@@ -978,6 +978,9 @@ license: "License"
 unfavoriteConfirm: "Really remove from favorites?"
 myClips: "My clips"
 drivecleaner: "Drive Cleaner"
+retryAllQueuesNow: "Retry running all queues"
+retryAllQueuesConfirmTitle: "Really retry all?"
+retryAllQueuesConfirmText: "This will temporarily increase the server load."
 _achievements:
   earnedAt: "Unlocked at"
   _types:
