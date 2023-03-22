@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const actor = await this.instanceActorService.getInstanceActor();
 				const targetUser = await this.usersRepository.findOneByOrFail({ id: report.targetUserId });
 
-				this.queueService.deliver(actor, this.apRendererService.addContext(this.apRendererService.renderFlag(actor, targetUser.uri!, report.comment)), targetUser.inbox);
+				this.queueService.deliver(actor, this.apRendererService.addContext(this.apRendererService.renderFlag(actor, targetUser.uri!, report.comment)), targetUser.inbox, false);
 			}
 
 			await this.abuseUserReportsRepository.update(report.id, {

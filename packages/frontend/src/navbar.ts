@@ -2,6 +2,7 @@ import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { miLocalStorage } from './local-storage';
 import { openInstanceMenu } from './ui/_common_/common';
+import { lookup } from './scripts/lookup';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
@@ -43,6 +44,13 @@ export const navbarItemDef = reactive({
 		title: i18n.ts.search,
 		icon: 'ti ti-search',
 		to: '/search',
+	},
+	lookup: {
+		title: i18n.ts.lookup,
+		icon: 'ti ti-world-search',
+		action: (ev) => {
+			lookup();
+		},
 	},
 	lists: {
 		title: i18n.ts.lists,
@@ -135,5 +143,11 @@ export const navbarItemDef = reactive({
 		action: (ev) => {
 			location.reload();
 		},
+	},
+	profile: {
+		title: i18n.ts.profile,
+		icon: 'ti ti-user',
+		show: computed(() => $i != null),
+		to: `/@${$i?.username}`,
 	},
 });

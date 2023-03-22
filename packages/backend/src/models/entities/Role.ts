@@ -144,6 +144,12 @@ export class Role {
 	})
 	public canEditMembersByModerator: boolean;
 
+	// UIに表示する際の並び順用(大きいほど先頭)
+	@Column('integer', {
+		default: 0,
+	})
+	public displayOrder: number;
+
 	@Column('jsonb', {
 		default: { },
 	})

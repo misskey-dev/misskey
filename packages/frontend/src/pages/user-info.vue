@@ -262,14 +262,21 @@ async function updateRemoteUser() {
 }
 
 async function resetPassword() {
-	const { password } = await os.api('admin/reset-password', {
-		userId: user.id,
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.resetPasswordConfirm,
 	});
-
-	os.alert({
-		type: 'success',
-		text: i18n.t('newPasswordIs', { password }),
-	});
+	if (confirm.canceled) {
+		return;
+	} else {
+		const { password } = await os.api('admin/reset-password', {
+			userId: user.id,
+		});
+		os.alert({
+			type: 'success',
+			text: i18n.t('newPasswordIs', { password }),
+		});
+	}
 }
 
 async function toggleSuspend(v) {

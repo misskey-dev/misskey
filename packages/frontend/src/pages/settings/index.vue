@@ -7,7 +7,7 @@
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 					<div class="baaadecd">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
-						<MkSuperMenu :def="menuDef" :grid="currentPage?.route.name == null"></MkSuperMenu>
+						<MkSuperMenu :def="menuDef" :grid="narrow"></MkSuperMenu>
 					</div>
 				</div>
 				<div v-if="!(narrow && currentPage?.route.name == null)" class="main">
@@ -135,6 +135,11 @@ const menuDef = computed(() => [{
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
 	}, {
+		icon: 'ti ti-badges',
+		text: i18n.ts.roles,
+		to: '/settings/roles',
+		active: currentPage?.route.name === 'roles',
+	}, {
 		icon: 'ti ti-planet-off',
 		text: i18n.ts.instanceMute,
 		to: '/settings/instance-mute',
@@ -223,6 +228,12 @@ onActivated(() => {
 
 onUnmounted(() => {
 	ro.disconnect();
+});
+
+watch(router.currentRef, (to) => {
+	if (to.route.name === "settings" && to.child?.route.name == null && !narrow) {
+		router.replace('/settings/profile');
+	}
 });
 
 const emailNotConfigured = computed(() => instance.enableEmail && ($i.email == null || !$i.emailVerified));

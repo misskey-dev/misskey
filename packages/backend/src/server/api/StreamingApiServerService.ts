@@ -3,17 +3,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import * as websocket from 'websocket';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository } from '@/models/index.js';
+import type { UsersRepository, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, RenoteMutingsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
+import { bindThis } from '@/decorators.js';
 import { AuthenticateService } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type { ParsedUrlQuery } from 'querystring';
 import type * as http from 'node:http';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class StreamingApiServerService {
@@ -32,6 +32,9 @@ export class StreamingApiServerService {
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
+
+		@Inject(DI.renoteMutingsRepository)
+		private renoteMutingsRepository: RenoteMutingsRepository,
 
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
@@ -84,6 +87,7 @@ export class StreamingApiServerService {
 			const main = new MainStreamConnection(
 				this.followingsRepository,
 				this.mutingsRepository,
+				this.renoteMutingsRepository,
 				this.blockingsRepository,
 				this.channelFollowingsRepository,
 				this.userProfilesRepository,
