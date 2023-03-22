@@ -1,5 +1,5 @@
 <template>
-<span v-if="!link" v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
@@ -38,52 +38,13 @@
 			</svg>
 		</div>
 	</div>
-</span>
-<MkA v-else v-user-preview="preview ? user.id : undefined" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" :to="userPage(user)" :target="target">
-	<img :class="$style.inner" :src="url" decoding="async"/>
-	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="$style.ears">
-		<div :class="$style.earLeft">
-			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
-				<mask id="mk-avatar-cat-left-mask" x="-20%" y="-20%" width="140%" height="140%">
-					<circle cx="7" cy="7" r="5" fill="white"/>
-					<rect x="0" y="2.1" width="14" height="11.9"/>
-					<rect x="7" y="0" width="7" height="14"/>
-					<circle cx="7" cy="7" r="4.9"/>
-				</mask>
-				<filter id="mk-avatar-cat-left-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
-					<feOffset dx="2"/>
-					<feMorphology operator="dilate" radius="7"/>
-				</filter>
-				<g filter="url(#mk-avatar-cat-left-filter)">
-					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-left-mask)"/>
-				</g>
-			</svg>
-		</div>
-		<div :class="$style.earRight">
-			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
-				<mask id="mk-avatar-cat-right-mask" x="-20%" y="-20%" width="140%" height="140%">
-					<circle cx="7" cy="7" r="5" fill="white"/>
-					<rect x="0" y="2.1" width="14" height="11.9"/>
-					<rect x="0" y="0" width="7" height="14"/>
-					<circle cx="7" cy="7" r="4.9"/>
-				</mask>
-				<filter id="mk-avatar-cat-right-filter" colorInterpolationFilters="sRGB" x="-20%" y="-20%" width="140%" height="140%">
-					<feOffset dx="-2"/>
-					<feMorphology operator="dilate" radius="7"/>
-				</filter>
-				<g filter="url(#mk-avatar-cat-right-filter)">
-					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-right-mask)"/>
-				</g>
-			</svg>
-		</div>
-	</div>
-</MkA>
+</component>
 </template>
 
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
+import MkA from './MkA.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
@@ -110,11 +71,16 @@ const emit = defineEmits<{
 	(ev: 'click', v: MouseEvent): void;
 }>();
 
+const bound = $computed(() => props.link
+	? { to: userPage(props.user), target: props.target }
+	: {});
+
 const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
 
 function onClick(ev: MouseEvent): void {
+	if (props.link) return;
 	emit('click', ev);
 }
 
