@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import tinycolor from 'tinycolor2';
 import * as os from '@/os';
 import MkPagination from '@/components/MkPagination.vue';
@@ -55,11 +55,11 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import MkSelect from '@/components/MkSelect.vue';
 import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
 
-let sortMode = '+size';
+let sortMode = ref('+size');
 const pagination = {
 	endpoint: 'drive/files' as const,
 	limit: 10,
-	params: { sort: sortMode },
+	params: computed(() => ({ sort: sortMode.value })),
 };
 
 const sortOptions = [
@@ -77,12 +77,12 @@ fetchDriveInfo();
 watch(sortModeSelect, () => {
 	switch (sortModeSelect.value) {
 		case 'sizeDesc':
-			sortMode = '+size';
+			sortMode.value = '+size';
 			fetchDriveInfo();
 			break;
 		
 		case 'createdAtAsc':
-			sortMode = '-createdAt';
+			sortMode.value = '-createdAt';
 			fetchDriveInfo();
 			break;
 	}
