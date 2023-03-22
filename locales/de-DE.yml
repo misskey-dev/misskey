@@ -978,6 +978,9 @@ license: "Lizenz"
 unfavoriteConfirm: "Wirklich aus Favoriten entfernen?"
 myClips: "Meine Clips"
 drivecleaner: "Drive-Reiniger"
+retryAllQueuesNow: "Sofort Warteschlangen erneut ausführen"
+retryAllQueuesConfirmTitle: "Wirklich erneut versuchen?"
+retryAllQueuesConfirmText: "Dies wird zu einer temporären Erhöhung der Serverlast führen."
 _achievements:
   earnedAt: "Freigeschaltet am"
   _types:
