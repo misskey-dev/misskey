@@ -1,13 +1,184 @@
 <!--
 ## 13.x.x (unreleased)
 
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+-->
+
+## 13.10.2
+
+### Server
+- 絵文字を編集すると保存できないことがある問題を修正
+
+### Client
+- ドライブファイルのメニューが正常に動作しない問題を修正
+
+## 13.10.1
+
+### Client
+- Misskey PlayのPlayボタンを押した時にエラーが発生する問題を修正
+
+## 13.10.0
+
+### General
+- ユーザーごとにRenoteをミュートできるように
+- ノートごとに絵文字リアクションを受け取るか設定できるように
+- クリップをお気に入りに登録できるように
+- ノート検索の利用可否をロールで制御可能に(デフォルトでオフ)
+- ロールの並び順を設定可能に
+- カスタム絵文字にライセンス情報を付与できるように
+- 指定した文字列を含む投稿の公開範囲をホームにできるように
+- 使われてないアンテナは自動停止されるように
+
+### Client
+- 設定から自分のロールを確認できるように
+- 広告一覧ページを追加
+- ドライブクリーナーを追加
+- DM作成時にメンションも含むように
+- フォロー申請のボタンのデザインを改善
+- 付箋ウィジェットの高さを設定可能に
+- APオブジェクトを入力してフェッチする機能とユーザーやノートの検索機能を分離
+- ナビゲーションバーの項目に「プロフィール」を追加できるように
+- ナビゲーションバーのカスタマイズをドラッグ&ドロップで行えるように
+- ジョブキューの再試行をワンクリックでできるように
+- AiScriptを0.13.1に更新
+- oEmbedをサポートしているウェブサイトのプレビューができるように
+	- YouTubeをoEmbedでロードし、プレビューで共有ボタンを押すとOSの共有画面がでるように
+	- ([FirefoxでSpotifyのプレビューを開けるとフルサイズじゃなくプレビューサイズだけ再生できる問題](https://bugzilla.mozilla.org/show_bug.cgi?id=1792395)があります)
+	- (すでにブラウザーでキャッシュされたリンクに対しては以前のプレビュー行動が行われてます。その場合、ブラウザーのキャッシュをクリアしてまた試してください。)
+- プロフィールで設定した情報が削除できない問題を修正
+- ロールで広告を無効にするとadmin/adsでプレビューがでてこない問題を修正
+- /api-consoleページにアクセスすると404が出る問題を修正
+- Safariでプラグインが複数ある場合に正常に読み込まれない問題を修正
+- Bookwyrmのユーザーのプロフィールページで「リモートで表示」をタップしても反応がない問題を修正
+- 非ログイン時の「Misskeyについて」の表示を修正
+- PC版にて「設定」「コントロールパネル」のリンクを2度以上続けてクリックした際に空白のページが表示される問題を修正
+
+### Server
+- OpenAPIエンドポイントを復旧
+- WebP/AVIF/JPEGのweb公開用画像は、サーバーサイドではJPEGではなくWebPに変換するように
+- アニメーション画像のサムネイルを生成するように
+- アクティブユーザー数チャートの記録上限値を拡張
+- Playのソースコード上限文字数を2倍に拡張
+- 配送先サーバーが410 Goneで応答してきた場合は自動で配送停止をするように
+- avatarBlurHash/bannerBlurHashの型をstringに限定
+- タイムライン取得時のパフォーマンスを改善
+- SMTP Login id length is too short
+- API上で`visibility`を`followers`に設定してrenoteすると連合や削除で不具合が発生する問題を修正
+- AWS S3からのファイル削除でNoSuchKeyエラーが出ると進めらない状態になる問題を修正
+- `disableCache: true`を設定している場合に絵文字管理操作でエラーが出る問題を修正
+- リテンション分析が上手く機能しないことがあるのを修正
+- 空のアンテナが作成できないように修正
+- 特定の条件で通報が見れない問題を修正
+- 絵文字の名前に任意の文字が使用できる問題を修正
+
+## 13.9.2 (2023/03/06)
+
+### Improvements
+- クリップ、チャンネルページに共有ボタンを追加
+- チャンネルでタイムライン上部に投稿フォームを表示するかどうかのオプションを追加
+- ブラウザでメディアプロキシ(/proxy)からファイルを保存した際に、なるべくオリジナルのファイル名を継承するように
+- ドライブの「URLからアップロード」で、content-dispositionのfilenameがあればそれをファイル名に
+- Identiconがローカルとリモートで同じになるように
+  - これまでのIdenticonは異なる画像になります
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- ロールの権限で「一般ユーザー」のロールがいきなり設定できない問題を修正
+- ユーザーページのバッジ表示を適切に折り返すように @arrow2nd
+- fix(client): みつけるのロール一覧でコンディショナルロールが含まれるのを修正
+- macOSでDev Containerが動作しない問題を修正 @RyotaK
+
+## 13.9.1 (2023/03/03)
+
+### Bugfixes
+- ノートに添付したファイルが表示されない場合があるのを修正
+
+## 13.9.0 (2023/03/03)
+
+### Improvements
+- 時限ロール
+- アンテナでCWも検索対象にするように
+- ノートの操作部をホバー時のみ表示するオプションを追加
+- サウンドを追加
+- サーバーのパフォーマンスを改善
+
+### Bugfixes
+- 外部メディアプロキシ使用時にアバタークロップができない問題を修正
+- fix(server): メールアドレス更新時にバリデーションが正しく行われていないのを修正
+- fix(server): チャンネルでミュートが正しく機能していないのを修正
+- プッシュ通知でカスタム絵文字リアクションを表示できなかった問題を修正
+
+## 13.8.1 (2023/02/26)
+
+### Bugfixes
+- モバイルでドロワーメニューが表示されない問題を修正
+
+## 13.8.0 (2023/02/26)
+
+### Improvements
+- チャンネル内ハイライト
+- ホームタイムラインのパフォーマンスを改善
+- renoteした際の表示を改善
+- バックグラウンドで一定時間経過したらページネーションのアイテム更新をしない
+- enhance(client): MkUrlPreviewの閉じるボタンを見やすく
+- Add dialog to remove follower
+- enhance(client): improve clip menu ux
+- 検索画面の統合
+- enhance(client): ノートメニューからユーザーメニューを開けるように
+- photoswipe 表示時に戻る操作をしても前の画面に戻らないように
+
+### Bugfixes
+- Windows環境でswcを使うと正しくビルドできない問題の修正
+- fix(client): Android ChromeでPWAとしてインストールできない問題を修正
+- 未知のユーザーが deleteActor されたら処理をスキップする
+- fix(server): notes/createで、fileIdsと見つかったファイルの数が異なる場合はエラーにする
+- fix(server): notes/createのバリデーションが機能していないのを修正
+- fix(server): エラーのスタックトレースは返さないように
+
+## 13.7.5 (2023/02/24)
+
+### Note
+13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**
+
+### Improvements
+- 紛らわしいため公開範囲の「ローカルのみ」オプションの名称を「連合なし」に変更
+- Frontend: スマホ・タブレットの場合、チャンネルの投稿フォームに自動でフォーカスしないように
+
+### Bugfixes
+- 全ての通知が削除されてしまうのを修正
+
+## 13.7.3 (2023/02/23)
+
+### Note
+~~13.7.0以前から直接このバージョンにアップデートする場合は全ての通知が削除**されません。**~~
+
 ### Improvements
 
 ### Bugfixes
--
+- Client: 「キャッシュを削除」した後、ローカルのカスタム絵文字が表示されなくなるされなくなる問題を修正
+- Client: 通知設定画面で以前からグループの招待を有効化していた場合、通知の表示に失敗する問題の修正
+- Client: 通知設定画面に古いトグルが残っていた問題を修正
 
-You should also include the user name that made the change.
--->
+## 13.7.2 (2023/02/23)
+
+### Note
+13.7.0以前からアップデートする場合は全ての通知が削除されます。
+
+### Improvements
+- enhance: make pwa icon maskable
+- chore(client): tweak custom emoji size
+
+### Bugfixes
+- マイグレーションが失敗することがあるのを修正
+
 ## 13.7.1 (2023/02/23)
 
 ### Improvements
@@ -144,8 +315,8 @@ You should also include the user name that made the change.
 ## 13.3.2 (2023/02/04)
 
 ### Improvements
-- 外部メディアプロキシへの対応を強化しました  
-  外部メディアプロキシのFastify実装を作りました  
+- 外部メディアプロキシへの対応を強化しました
+  外部メディアプロキシのFastify実装を作りました
   https://github.com/misskey-dev/media-proxy
 - Server: improve performance
 
@@ -308,7 +479,7 @@ You should also include the user name that made the change.
 	- ユーザーごとのドライブ容量設定はロールに統合されました。
 	- インスタンスデフォルトのドライブ容量設定はロールに統合されました。アップデート後、ベースロールもしくはコンディショナルロールでドライブ容量を編集してください。
 	- LTL/GTLの解放状態はロールに統合されました。
-- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。  
+- Dockerの実行をrootで行わないようにしました。Dockerかつオブジェクトストレージを使用していない場合は`chown -hR 991.991 ./files`を実行してください。
   https://github.com/misskey-dev/misskey/pull/9560
 
 #### For users
@@ -536,7 +707,7 @@ You should also include the user name that made the change.
 ## 12.112.2 (2022/07/08)
 
 ### Bugfixes
-- Fix Docker doesn't work @mei23  
+- Fix Docker doesn't work @mei23
   Still not working on arm64 environment. (See 12.112.0)
 
 ## 12.112.1 (2022/07/07)
@@ -578,7 +749,7 @@ same as 12.112.0
 - Improve player detection in URL preview @mei23
 - Add Badge Image to Push Notification #8012 @tamaina
 - Server: Improve performance
-- Server: Supports IPv6 on Redis transport. @mei23  
+- Server: Supports IPv6 on Redis transport. @mei23
   IPv4/IPv6 is used by default. You can tune this behavior via `redis.family`.
 - Server: Add possibility to log IP addresses of users @syuilo
 - Add additional drive capacity change support @CyberRex0

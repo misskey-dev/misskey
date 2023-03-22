@@ -4,6 +4,27 @@ const cache = new Map<string, HTMLAudioElement>();
 
 export const soundsTypes = [
 	null,
+	'syuilo/n-aec',
+	'syuilo/n-aec-4va',
+	'syuilo/n-aec-4vb',
+	'syuilo/n-aec-8va',
+	'syuilo/n-aec-8vb',
+	'syuilo/n-cea',
+	'syuilo/n-cea-4va',
+	'syuilo/n-cea-4vb',
+	'syuilo/n-cea-8va',
+	'syuilo/n-cea-8vb',
+	'syuilo/n-eca',
+	'syuilo/n-eca-4va',
+	'syuilo/n-eca-4vb',
+	'syuilo/n-eca-8va',
+	'syuilo/n-eca-8vb',
+	'syuilo/n-ea',
+	'syuilo/n-ea-4va',
+	'syuilo/n-ea-4vb',
+	'syuilo/n-ea-8va',
+	'syuilo/n-ea-8vb',
+	'syuilo/n-ea-harmony',
 	'syuilo/up',
 	'syuilo/down',
 	'syuilo/pope1',
@@ -51,8 +72,8 @@ export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioEle
 	return audio;
 }
 
-export function play(type: string) {
-	const sound = ColdDeviceStorage.get('sound_' + type as any);
+export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
+	const sound = ColdDeviceStorage.get(`sound_${type}`);
 	if (sound.type == null) return;
 	playFile(sound.type, sound.volume);
 }

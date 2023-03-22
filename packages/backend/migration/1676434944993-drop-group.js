@@ -2,7 +2,6 @@ export class dropGroup1676434944993 {
     name = 'dropGroup1676434944993'
 
     async up(queryRunner) {
-		await queryRunner.query(`TRUNCATE TABLE "notification"`, undefined);
         await queryRunner.query(`ALTER TABLE "antenna" DROP CONSTRAINT "FK_ccbf5a8c0be4511133dcc50ddeb"`);
         await queryRunner.query(`ALTER TABLE "notification" DROP CONSTRAINT "FK_8fe87814e978053a53b1beb7e98"`);
         await queryRunner.query(`ALTER TABLE "antenna" DROP COLUMN "userGroupJoiningId"`);
@@ -11,19 +10,11 @@ export class dropGroup1676434944993 {
         await queryRunner.query(`CREATE TYPE "public"."antenna_src_enum" AS ENUM('home', 'all', 'users', 'list')`);
         await queryRunner.query(`ALTER TABLE "antenna" ALTER COLUMN "src" TYPE "public"."antenna_src_enum" USING "src"::"text"::"public"."antenna_src_enum"`);
         await queryRunner.query(`DROP TYPE "public"."antenna_src_enum_old"`);
-        await queryRunner.query(`ALTER TYPE "public"."notification_type_enum" RENAME TO "notification_type_enum_old"`);
-        await queryRunner.query(`CREATE TYPE "public"."notification_type_enum" AS ENUM('follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'achievementEarned', 'app')`);
-        await queryRunner.query(`ALTER TABLE "notification" ALTER COLUMN "type" TYPE "public"."notification_type_enum" USING "type"::"text"::"public"."notification_type_enum"`);
-        await queryRunner.query(`DROP TYPE "public"."notification_type_enum_old"`);
         await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "emailNotificationTypes" SET DEFAULT '["follow","receiveFollowRequest"]'`);
     }
 
     async down(queryRunner) {
         await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "emailNotificationTypes" SET DEFAULT '["follow", "receiveFollowRequest", "groupInvited"]'`);
-        await queryRunner.query(`CREATE TYPE "public"."notification_type_enum_old" AS ENUM('follow', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollVote', 'pollEnded', 'receiveFollowRequest', 'followRequestAccepted', 'groupInvited', 'achievementEarned', 'app')`);
-        await queryRunner.query(`ALTER TABLE "notification" ALTER COLUMN "type" TYPE "public"."notification_type_enum_old" USING "type"::"text"::"public"."notification_type_enum_old"`);
-        await queryRunner.query(`DROP TYPE "public"."notification_type_enum"`);
-        await queryRunner.query(`ALTER TYPE "public"."notification_type_enum_old" RENAME TO "notification_type_enum"`);
         await queryRunner.query(`CREATE TYPE "public"."antenna_src_enum_old" AS ENUM('home', 'all', 'users', 'list', 'group')`);
         await queryRunner.query(`ALTER TABLE "antenna" ALTER COLUMN "src" TYPE "public"."antenna_src_enum_old" USING "src"::"text"::"public"."antenna_src_enum_old"`);
         await queryRunner.query(`DROP TYPE "public"."antenna_src_enum"`);

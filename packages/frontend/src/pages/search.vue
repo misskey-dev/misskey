@@ -1,63 +1,126 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800">
-		<MkNotes ref="notes" :pagination="pagination"/>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer v-if="tab === 'note'" :content-max="800">
+		<div v-if="notesSearchAvailable" class="_gaps">
+			<div class="_gaps">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
+				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+			</div>
+
+			<MkFoldableSection v-if="notePagination">
+				<template #header>{{ i18n.ts.searchResult }}</template>
+				<MkNotes :key="key" :pagination="notePagination"/>
+			</MkFoldableSection>
+		</div>
+		<div v-else>
+			<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
+		</div>
+	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'user'" :content-max="800">
+		<div class="_gaps">
+			<div class="_gaps">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
+				<MkRadios v-model="searchOrigin" @update:model-value="search()">
+					<option value="combined">{{ i18n.ts.all }}</option>
+					<option value="local">{{ i18n.ts.local }}</option>
+					<option value="remote">{{ i18n.ts.remote }}</option>
+				</MkRadios>
+				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+			</div>
+
+			<MkFoldableSection v-if="userPagination">
+				<template #header>{{ i18n.ts.searchResult }}</template>
+				<MkUserList :key="key" :pagination="userPagination"/>
+			</MkFoldableSection>
+		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
+import MkUserList from '@/components/MkUserList.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import { useRouter } from '@/router';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { $i } from '@/account';
-
-const router = useRouter();
+import { instance } from '@/instance';
+import MkInfo from '@/components/MkInfo.vue';
 
 const props = defineProps<{
 	query: string;
 	channel?: string;
+	type?: string;
+	origin?: string;
 }>();
 
-const query = props.query;
+let key = $ref('');
+let tab = $ref('note');
+let searchQuery = $ref('');
+let searchOrigin = $ref('combined');
+let notePagination = $ref();
+let userPagination = $ref();
 
-if ($i != null) {
-	if (query.startsWith('https://') || (query.startsWith('@') && !query.includes(' '))) {
-		const promise = os.api('ap/show', {
-			uri: props.query,
-		});
+const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
-		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+onMounted(() => {
+	tab = props.type ?? 'note';
+	searchQuery = props.query ?? '';
+	searchOrigin = props.origin ?? 'combined';
+});
 
-		const res = await promise;
+async function search() {
+	const query = searchQuery.toString().trim();
 
-		if (res.type === 'User') {
-			router.replace(`/@${res.object.username}@${res.object.host}`);
-		} else if (res.type === 'Note') {
-			router.replace(`/notes/${res.object.id}`);
-		}
+	if (query == null || query === '') return;
+
+	if (tab === 'note') {
+		notePagination = {
+			endpoint: 'notes/search',
+			limit: 10,
+			params: {
+				query: searchQuery,
+				channelId: props.channel,
+			},
+		};
+	} else if (tab === 'user') {
+		userPagination = {
+			endpoint: 'users/search',
+			limit: 10,
+			params: {
+				query: searchQuery,
+				origin: searchOrigin,
+			},
+		};
 	}
-}
 
-const pagination = {
-	endpoint: 'notes/search' as const,
-	limit: 10,
-	params: computed(() => ({
-		query: props.query,
-		channelId: props.channel,
-	})),
-};
+	key = query;
+}
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	key: 'note',
+	title: i18n.ts.notes,
+	icon: 'ti ti-pencil',
+}, {
+	key: 'user',
+	title: i18n.ts.users,
+	icon: 'ti ti-users',
+}]);
 
 definePageMetadata(computed(() => ({
-	title: i18n.t('searchWith', { q: props.query }),
+	title: searchQuery ? i18n.t('searchWith', { q: searchQuery }) : i18n.ts.search,
 	icon: 'ti ti-search',
 })));
 </script>

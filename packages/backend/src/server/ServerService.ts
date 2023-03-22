@@ -1,7 +1,9 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import { Inject, Injectable } from '@nestjs/common';
-import Fastify from 'fastify';
+import { fileURLToPath } from 'node:url';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import Fastify, { FastifyInstance } from 'fastify';
+import fastifyStatic from '@fastify/static';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
@@ -21,10 +23,14 @@ import { StreamingApiServerService } from './api/StreamingApiServerService.js';
 import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
+import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+
+const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
 @Injectable()
-export class ServerService {
+export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
+	#fastify: FastifyInstance;
 
 	constructor(
 		@Inject(DI.config)
@@ -41,6 +47,7 @@ export class ServerService {
 
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
+		private openApiServerService: OpenApiServerService,
 		private streamingApiServerService: StreamingApiServerService,
 		private activityPubServerService: ActivityPubServerService,
 		private wellKnownServerService: WellKnownServerService,
@@ -54,11 +61,12 @@ export class ServerService {
 	}
 
 	@bindThis
-	public launch() {
+	public async launch() {
 		const fastify = Fastify({
 			trustProxy: true,
 			logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
 		});
+		this.#fastify = fastify;
 
 		// HSTS
 		// 6months (15552000sec)
@@ -69,13 +77,21 @@ export class ServerService {
 			});
 		}
 
+		// Register non-serving static server so that the child services can use reply.sendFile.
+		// `root` here is just a placeholder and each call must use its own `rootPath`.
+		fastify.register(fastifyStatic, {
+			root: _dirname,
+			serve: false,
+		});
+
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
+		fastify.register(this.openApiServerService.createServer);
 		fastify.register(this.fileServerService.createServer);
 		fastify.register(this.activityPubServerService.createServer);
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
 
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
+		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
 
 			reply.header('Cache-Control', 'public, max-age=86400');
@@ -105,11 +121,19 @@ export class ServerService {
 				}
 			}
 
-			const url = new URL(`${this.config.mediaProxy}/emoji.webp`);
-			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-			url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
-			url.searchParams.set('emoji', '1');
-			if ('static' in request.query) url.searchParams.set('static', '1');
+			let url: URL;
+			if ('badge' in request.query) {
+				url = new URL(`${this.config.mediaProxy}/emoji.png`);
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('badge', '1');
+			} else {
+				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
+				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
+				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
+				url.searchParams.set('emoji', '1');
+				if ('static' in request.query) url.searchParams.set('static', '1');
+			}
 
 			return await reply.redirect(
 				301,
@@ -195,5 +219,11 @@ export class ServerService {
 		});
 
 		fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+
+		await fastify.ready();
+	}
+
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.#fastify.close();
 	}
 }

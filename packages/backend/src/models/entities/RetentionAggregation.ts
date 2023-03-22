@@ -18,6 +18,12 @@ export class RetentionAggregation {
 	})
 	public updatedAt: Date;
 
+	@Index({ unique: true })
+	@Column('varchar', {
+		length: 512, nullable: false,
+	})
+	public dateKey: string;
+
 	@Column({
 		...id(),
 		array: true,

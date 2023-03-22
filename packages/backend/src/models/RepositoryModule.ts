@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment } from './index.js';
+import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, RenoteMuting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, AntennaNote, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelNotePining, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment, ClipFavorite } from './index.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
@@ -190,6 +190,12 @@ const $mutingsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $renoteMutingsRepository: Provider = {
+	provide: DI.renoteMutingsRepository,
+	useFactory: (db: DataSource) => db.getRepository(RenoteMuting),
+	inject: [DI.db],
+};
+
 const $blockingsRepository: Provider = {
 	provide: DI.blockingsRepository,
 	useFactory: (db: DataSource) => db.getRepository(Blocking),
@@ -277,6 +283,12 @@ const $clipsRepository: Provider = {
 const $clipNotesRepository: Provider = {
 	provide: DI.clipNotesRepository,
 	useFactory: (db: DataSource) => db.getRepository(ClipNote),
+	inject: [DI.db],
+};
+
+const $clipFavoritesRepository: Provider = {
+	provide: DI.clipFavoritesRepository,
+	useFactory: (db: DataSource) => db.getRepository(ClipFavorite),
 	inject: [DI.db],
 };
 
@@ -423,6 +435,7 @@ const $roleAssignmentsRepository: Provider = {
 		$notificationsRepository,
 		$metasRepository,
 		$mutingsRepository,
+		$renoteMutingsRepository,
 		$blockingsRepository,
 		$swSubscriptionsRepository,
 		$hashtagsRepository,
@@ -438,6 +451,7 @@ const $roleAssignmentsRepository: Provider = {
 		$moderationLogsRepository,
 		$clipsRepository,
 		$clipNotesRepository,
+		$clipFavoritesRepository,
 		$antennasRepository,
 		$antennaNotesRepository,
 		$promoNotesRepository,
@@ -489,6 +503,7 @@ const $roleAssignmentsRepository: Provider = {
 		$notificationsRepository,
 		$metasRepository,
 		$mutingsRepository,
+		$renoteMutingsRepository,
 		$blockingsRepository,
 		$swSubscriptionsRepository,
 		$hashtagsRepository,
@@ -504,6 +519,7 @@ const $roleAssignmentsRepository: Provider = {
 		$moderationLogsRepository,
 		$clipsRepository,
 		$clipNotesRepository,
+		$clipFavoritesRepository,
 		$antennasRepository,
 		$antennaNotesRepository,
 		$promoNotesRepository,

@@ -29,6 +29,11 @@ export function openInstanceMenu(ev: MouseEvent) {
 		icon: 'ti ti-chart-line',
 		to: '/about#charts',
 	}, null, {
+		type: 'link',
+		text: i18n.ts.ads,
+		icon: 'ti ti-ad',
+		to: '/ads',
+	}, {
 		type: 'parent',
 		text: i18n.ts.tools,
 		icon: 'ti ti-tool',

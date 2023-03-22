@@ -24,11 +24,16 @@ interface NotePostInterruptor {
 	handler: (note: FIXME) => unknown;
 }
 
+interface PageViewInterruptor {
+	handler: (page: Page) => unknown;
+}
+
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
+export const pageViewInterruptors: PageViewInterruptor[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -80,6 +85,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	reactions: {
 		where: 'account',
 		default: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+	},
+	reactionAcceptance: {
+		where: 'account',
+		default: null,
 	},
 	mutedWords: {
 		where: 'account',
@@ -197,6 +206,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	showFixedPostFormInChannel: {
+		where: 'device',
+		default: false,
+	},
 	enableInfiniteScroll: {
 		where: 'device',
 		default: true,
@@ -271,7 +284,11 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	numberOfPageCache: {
 		where: 'device',
-		default: 5,
+		default: 3,
+	},
+	showNoteActionsOnlyHover: {
+		where: 'device',
+		default: false,
 	},
 	aiChanMode: {
 		where: 'device',
@@ -283,12 +300,15 @@ export const defaultStore = markRaw(new Storage('base', {
 
 const PREFIX = 'miux:' as const;
 
-type Plugin = {
+export type Plugin = {
 	id: string;
 	name: string;
 	active: boolean;
+	config?: Record<string, { default: any }>;
 	configData: Record<string, any>;
 	token: string;
+	src: string | null;
+	version: string;
 	ast: any[];
 };
 
@@ -303,7 +323,7 @@ interface Watcher {
 import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
-import { Note, UserDetailed } from 'misskey-js/built/entities';
+import { Note, UserDetailed, Page } from 'misskey-js/built/entities';
 
 export class ColdDeviceStorage {
 	public static default = {
@@ -312,14 +332,14 @@ export class ColdDeviceStorage {
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
 		mediaVolume: 0.5,
-		sound_masterVolume: 0.3,
-		sound_note: { type: 'syuilo/down', volume: 1 },
-		sound_noteMy: { type: 'syuilo/up', volume: 1 },
-		sound_notification: { type: 'syuilo/pope2', volume: 1 },
-		sound_chat: { type: 'syuilo/pope1', volume: 1 },
-		sound_chatBg: { type: 'syuilo/waon', volume: 1 },
-		sound_antenna: { type: 'syuilo/triple', volume: 1 },
-		sound_channel: { type: 'syuilo/square-pico', volume: 1 },
+		sound_masterVolume: 0.5,
+		sound_note: { type: 'syuilo/n-eca', volume: 0.5 },
+		sound_noteMy: { type: 'syuilo/n-cea-4va', volume: 0.5 },
+		sound_notification: { type: 'syuilo/n-ea', volume: 0.5 },
+		sound_chat: { type: 'syuilo/pope1', volume: 0.5 },
+		sound_chatBg: { type: 'syuilo/waon', volume: 0.5 },
+		sound_antenna: { type: 'syuilo/triple', volume: 0.5 },
+		sound_channel: { type: 'syuilo/square-pico', volume: 0.5 },
 	};
 
 	public static watchers: Watcher[] = [];

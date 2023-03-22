@@ -9,7 +9,7 @@ import type { UserList } from '@/models/entities/UserList.js';
 import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import type { Signin } from '@/models/entities/Signin.js';
 import type { Page } from '@/models/entities/Page.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import type { Meta } from '@/models/entities/Meta.js';
 import { Role, RoleAssignment } from '@/models';
@@ -178,7 +178,14 @@ type EventUnionFromDictionary<
 
 // redis通すとDateのインスタンスはstringに変換されるので
 type Serialized<T> = {
-	[K in keyof T]: T[K] extends Date ? string : T[K] extends Record<string, any> ? Serialized<T[K]> : T[K];
+	[K in keyof T]:
+		T[K] extends Date
+			? string
+			: T[K] extends (Date | null)
+				? (string | null)
+				: T[K] extends Record<string, any>
+					? Serialized<T[K]>
+					: T[K];
 };
 
 type SerializedAll<T> = {

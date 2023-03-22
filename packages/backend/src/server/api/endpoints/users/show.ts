@@ -48,38 +48,29 @@ export const meta = {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
 			id: '4362f8dc-731f-4ad8-a694-be5a88922a24',
+			httpStatusCode: 404,
 		},
 	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		userIds: { type: 'array', uniqueItems: true, items: {
+			type: 'string', format: 'misskey:id',
+		} },
+		username: { type: 'string' },
+		host: {
+			type: 'string',
+			nullable: true,
+			description: 'The local host is represented with `null`.',
+		},
+	},
 	anyOf: [
-		{
-			properties: {
-				userId: { type: 'string', format: 'misskey:id' },
-			},
-			required: ['userId'],
-		},
-		{
-			properties: {
-				userIds: { type: 'array', uniqueItems: true, items: {
-					type: 'string', format: 'misskey:id',
-				} },
-			},
-			required: ['userIds'],
-		},
-		{
-			properties: {
-				username: { type: 'string' },
-				host: {
-					type: 'string',
-					nullable: true,
-					description: 'The local host is represented with `null`.',
-				},
-			},
-			required: ['username'],
-		},
+		{ required: ['userId'] },
+		{ required: ['userIds'] },
+		{ required: ['username'] },
 	],
 } as const;
 

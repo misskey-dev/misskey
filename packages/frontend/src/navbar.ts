@@ -1,7 +1,8 @@
 import { computed, reactive } from 'vue';
 import { $i } from './account';
 import { miLocalStorage } from './local-storage';
-import { search } from '@/scripts/search';
+import { openInstanceMenu } from './ui/_common_/common';
+import { lookup } from './scripts/lookup';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { ui } from '@/config';
@@ -42,7 +43,14 @@ export const navbarItemDef = reactive({
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',
-		action: () => search(),
+		to: '/search',
+	},
+	lookup: {
+		title: i18n.ts.lookup,
+		icon: 'ti ti-world-search',
+		action: (ev) => {
+			lookup();
+		},
 	},
 	lists: {
 		title: i18n.ts.lists,
@@ -122,11 +130,24 @@ export const navbarItemDef = reactive({
 			}], ev.currentTarget ?? ev.target);
 		},
 	},
+	about: {
+		title: i18n.ts.about,
+		icon: 'ti ti-info-circle',
+		action: (ev) => {
+			openInstanceMenu(ev);
+		},
+	},
 	reload: {
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
 		action: (ev) => {
 			location.reload();
 		},
+	},
+	profile: {
+		title: i18n.ts.profile,
+		icon: 'ti ti-user',
+		show: computed(() => $i != null),
+		to: `/@${$i?.username}`,
 	},
 });
