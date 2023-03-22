@@ -973,6 +973,14 @@ rolesAssignedToMe: "Roles asignados a mí"
 resetPasswordConfirm: "¿Realmente quieres cambiar la contraseña?"
 sensitiveWords: "Palabras sensibles"
 sensitiveWordsDescription: "La visibilidad de todas las notas que contienen cualquiera de las palabras configuradas serán puestas en \"Inicio\" automáticamente. Puedes enumerás varias separándolas con saltos de línea"
+notesSearchNotAvailable: "No se puede buscar una nota"
+license: "Licencia"
+unfavoriteConfirm: "¿Desea quitar de favoritos?"
+myClips: "Mis clips"
+drivecleaner: "Limpiador del Drive"
+retryAllQueuesNow: "Reintentar inmediatamente todas las colas"
+retryAllQueuesConfirmTitle: "Desea ¿reintentar inmediatamente todas las colas?"
+retryAllQueuesConfirmText: "La carga del servidor está incrementándose temporalmente "
 _achievements:
   earnedAt: "Desbloqueado el"
   _types:
@@ -1864,3 +1872,6 @@ _dialog:
 _disabledTimeline:
   title: "Línea de tiempo deshabilitada"
   description: "No puedes usar esta línea de tiempo con tus roles actuales."
+_drivecleaner:
+  orderBySizeDesc: "Más grandes"
+  orderByCreatedAtAsc: "Más antiguos"
