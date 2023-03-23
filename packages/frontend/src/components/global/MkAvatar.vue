@@ -21,7 +21,6 @@
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkA from './MkA.vue';
-import MkAvatarCatDefiner from './MkAvatar.catDefiner.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
