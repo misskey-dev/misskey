@@ -176,7 +176,7 @@ watch(() => props.user.avatarBlurhash, () => {
 					contain: strict;
 					width: 100%;
 					height: 100%;
-					clip-path: path('M0 0H1V1H0V0z');
+					clip-path: path('M0 0H1V1H0z');
 					transform: scale(32767);
 					transform-origin: 0 0;
 				}
