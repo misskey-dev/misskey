@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, render, watch } from 'vue';
+import { watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkA from './MkA.vue';
 import MkAvatarCatDefiner from './MkAvatar.catDefiner.vue';
@@ -67,14 +67,6 @@ watch(() => props.user.avatarBlurhash, () => {
 	color = extractAvgColorFromBlurhash(props.user.avatarBlurhash);
 }, {
 	immediate: true,
-});
-
-onBeforeMount(() => {
-	if (!document.getElementById('mk-avatar-cat-definer')) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const vnode = MkAvatarCatDefiner.render!();
-		render(vnode, document.body, true);
-	}
 });
 </script>
 
