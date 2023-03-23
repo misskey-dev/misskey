@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetMemo,
 } satisfies Meta<typeof WidgetMemo>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetMemo,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetMemo v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetMemo v-bind="props" />',
 		};
 	},
 	parameters: {

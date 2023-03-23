@@ -7,13 +7,24 @@ const meta = {
 	component: MkRemoteCaution,
 } satisfies Meta<typeof MkRemoteCaution>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkRemoteCaution,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkRemoteCaution v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkRemoteCaution v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetAiscript,
 } satisfies Meta<typeof WidgetAiscript>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetAiscript,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetAiscript v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetAiscript v-bind="props" />',
 		};
 	},
 	parameters: {

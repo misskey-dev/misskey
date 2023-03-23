@@ -7,13 +7,24 @@ const meta = {
 	component: MkClickerGame,
 } satisfies Meta<typeof MkClickerGame>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkClickerGame,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkClickerGame v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkClickerGame v-bind="props" />',
 		};
 	},
 	parameters: {

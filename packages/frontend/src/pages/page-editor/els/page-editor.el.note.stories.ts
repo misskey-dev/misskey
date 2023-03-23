@@ -7,13 +7,24 @@ const meta = {
 	component: page_editor_el_note,
 } satisfies Meta<typeof page_editor_el_note>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_editor_el_note,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_editor_el_note v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_editor_el_note v-bind="props" />',
 		};
 	},
 	parameters: {

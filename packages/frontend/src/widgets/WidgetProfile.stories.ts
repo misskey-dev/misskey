@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetProfile,
 } satisfies Meta<typeof WidgetProfile>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetProfile,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetProfile v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetProfile v-bind="props" />',
 		};
 	},
 	parameters: {

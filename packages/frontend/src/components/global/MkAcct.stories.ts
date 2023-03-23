@@ -7,13 +7,24 @@ const meta = {
 	component: MkAcct,
 } satisfies Meta<typeof MkAcct>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkAcct,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkAcct v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkAcct v-bind="props" />',
 		};
 	},
 	parameters: {

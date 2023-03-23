@@ -7,13 +7,24 @@ const meta = {
 	component: note_,
 } satisfies Meta<typeof note_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				note_,
 			},
-			props: Object.keys(argTypes),
-			template: '<note_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<note_ v-bind="props" />',
 		};
 	},
 	parameters: {

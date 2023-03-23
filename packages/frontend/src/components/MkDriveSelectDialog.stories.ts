@@ -7,13 +7,24 @@ const meta = {
 	component: MkDriveSelectDialog,
 } satisfies Meta<typeof MkDriveSelectDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDriveSelectDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDriveSelectDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDriveSelectDialog v-bind="props" />',
 		};
 	},
 	parameters: {

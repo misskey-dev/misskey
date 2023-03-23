@@ -7,13 +7,24 @@ const meta = {
 	component: announcements_,
 } satisfies Meta<typeof announcements_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				announcements_,
 			},
-			props: Object.keys(argTypes),
-			template: '<announcements_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<announcements_ v-bind="props" />',
 		};
 	},
 	parameters: {

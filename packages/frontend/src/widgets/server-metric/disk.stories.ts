@@ -7,13 +7,24 @@ const meta = {
 	component: disk_,
 } satisfies Meta<typeof disk_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				disk_,
 			},
-			props: Object.keys(argTypes),
-			template: '<disk_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<disk_ v-bind="props" />',
 		};
 	},
 	parameters: {

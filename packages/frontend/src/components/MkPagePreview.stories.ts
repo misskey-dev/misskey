@@ -7,13 +7,24 @@ const meta = {
 	component: MkPagePreview,
 } satisfies Meta<typeof MkPagePreview>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPagePreview,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPagePreview v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPagePreview v-bind="props" />',
 		};
 	},
 	parameters: {

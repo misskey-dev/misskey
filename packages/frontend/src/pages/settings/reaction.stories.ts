@@ -7,13 +7,24 @@ const meta = {
 	component: reaction_,
 } satisfies Meta<typeof reaction_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				reaction_,
 			},
-			props: Object.keys(argTypes),
-			template: '<reaction_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<reaction_ v-bind="props" />',
 		};
 	},
 	parameters: {

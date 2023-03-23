@@ -7,13 +7,24 @@ const meta = {
 	component: MkCheckbox,
 } satisfies Meta<typeof MkCheckbox>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkCheckbox,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkCheckbox v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkCheckbox v-bind="props" />',
 		};
 	},
 	parameters: {

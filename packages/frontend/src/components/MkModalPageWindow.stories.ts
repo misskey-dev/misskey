@@ -7,13 +7,24 @@ const meta = {
 	component: MkModalPageWindow,
 } satisfies Meta<typeof MkModalPageWindow>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkModalPageWindow,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkModalPageWindow v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkModalPageWindow v-bind="props" />',
 		};
 	},
 	parameters: {

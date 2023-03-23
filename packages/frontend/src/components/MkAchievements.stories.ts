@@ -7,13 +7,24 @@ const meta = {
 	component: MkAchievements,
 } satisfies Meta<typeof MkAchievements>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkAchievements,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkAchievements v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkAchievements v-bind="props" />',
 		};
 	},
 	parameters: {

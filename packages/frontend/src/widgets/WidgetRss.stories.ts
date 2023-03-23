@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetRss,
 } satisfies Meta<typeof WidgetRss>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetRss,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetRss v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetRss v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: zen_,
 } satisfies Meta<typeof zen_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				zen_,
 			},
-			props: Object.keys(argTypes),
-			template: '<zen_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<zen_ v-bind="props" />',
 		};
 	},
 	parameters: {

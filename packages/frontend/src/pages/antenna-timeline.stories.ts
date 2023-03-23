@@ -7,13 +7,24 @@ const meta = {
 	component: antenna_timeline,
 } satisfies Meta<typeof antenna_timeline>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				antenna_timeline,
 			},
-			props: Object.keys(argTypes),
-			template: '<antenna_timeline v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<antenna_timeline v-bind="props" />',
 		};
 	},
 	parameters: {

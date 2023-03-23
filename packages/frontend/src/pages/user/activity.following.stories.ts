@@ -7,13 +7,24 @@ const meta = {
 	component: activity_following,
 } satisfies Meta<typeof activity_following>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				activity_following,
 			},
-			props: Object.keys(argTypes),
-			template: '<activity_following v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<activity_following v-bind="props" />',
 		};
 	},
 	parameters: {

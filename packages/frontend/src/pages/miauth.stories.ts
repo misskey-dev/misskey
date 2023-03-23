@@ -7,13 +7,24 @@ const meta = {
 	component: miauth_,
 } satisfies Meta<typeof miauth_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				miauth_,
 			},
-			props: Object.keys(argTypes),
-			template: '<miauth_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<miauth_ v-bind="props" />',
 		};
 	},
 	parameters: {

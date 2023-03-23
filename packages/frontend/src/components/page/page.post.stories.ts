@@ -7,13 +7,24 @@ const meta = {
 	component: page_post,
 } satisfies Meta<typeof page_post>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_post,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_post v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_post v-bind="props" />',
 		};
 	},
 	parameters: {

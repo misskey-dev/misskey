@@ -7,13 +7,24 @@ const meta = {
 	component: page_counter,
 } satisfies Meta<typeof page_counter>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_counter,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_counter v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_counter v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: webhook_edit,
 } satisfies Meta<typeof webhook_edit>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				webhook_edit,
 			},
-			props: Object.keys(argTypes),
-			template: '<webhook_edit v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<webhook_edit v-bind="props" />',
 		};
 	},
 	parameters: {

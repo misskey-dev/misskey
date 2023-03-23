@@ -7,13 +7,24 @@ const meta = {
 	component: MkCwButton,
 } satisfies Meta<typeof MkCwButton>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkCwButton,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkCwButton v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkCwButton v-bind="props" />',
 		};
 	},
 	parameters: {

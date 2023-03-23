@@ -8,6 +8,7 @@ const config = {
 		'@storybook/addon-links',
 		'@storybook/addon-essentials',
 		'@storybook/addon-interactions',
+		'@storybook/addon-storysource',
 		'../node_modules/storybook-addon-misskey-theme',
 	],
 	framework: {
@@ -22,10 +23,15 @@ const config = {
 	},
 	async viteFinal(config, options) {
 		const { plugins, build: { rollupOptions, ...build }, ...original } = getConfig();
+		console.dir(config, {depth:Infinity});
+		console.dir(original, {depth:Infinity});
 		const x = mergeConfig(config, {
 			...original,
 			build,
 			assetsInclude: [resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}')],
+			server: {
+				hmr: false,
+			},
 		});
 		return x;
 	},

@@ -7,13 +7,24 @@ const meta = {
 	component: split_,
 } satisfies Meta<typeof split_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				split_,
 			},
-			props: Object.keys(argTypes),
-			template: '<split_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<split_ v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkObjectView_value,
 } satisfies Meta<typeof MkObjectView_value>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkObjectView_value,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkObjectView_value v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkObjectView_value v-bind="props" />',
 		};
 	},
 	parameters: {

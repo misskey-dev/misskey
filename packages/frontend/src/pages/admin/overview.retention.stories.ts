@@ -7,13 +7,24 @@ const meta = {
 	component: overview_retention,
 } satisfies Meta<typeof overview_retention>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_retention,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_retention v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_retention v-bind="props" />',
 		};
 	},
 	parameters: {

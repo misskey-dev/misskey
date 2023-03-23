@@ -7,13 +7,24 @@ const meta = {
 	component: follow_,
 } satisfies Meta<typeof follow_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				follow_,
 			},
-			props: Object.keys(argTypes),
-			template: '<follow_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<follow_ v-bind="props" />',
 		};
 	},
 	parameters: {

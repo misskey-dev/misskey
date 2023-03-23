@@ -7,13 +7,24 @@ const meta = {
 	component: page_textarea_input,
 } satisfies Meta<typeof page_textarea_input>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_textarea_input,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_textarea_input v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_textarea_input v-bind="props" />',
 		};
 	},
 	parameters: {

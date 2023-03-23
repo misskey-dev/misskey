@@ -7,13 +7,24 @@ const meta = {
 	component: MkInstanceStats,
 } satisfies Meta<typeof MkInstanceStats>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkInstanceStats,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkInstanceStats v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkInstanceStats v-bind="props" />',
 		};
 	},
 	parameters: {

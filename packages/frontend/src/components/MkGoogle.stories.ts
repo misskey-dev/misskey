@@ -7,13 +7,24 @@ const meta = {
 	component: MkGoogle,
 } satisfies Meta<typeof MkGoogle>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkGoogle,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkGoogle v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkGoogle v-bind="props" />',
 		};
 	},
 	parameters: {

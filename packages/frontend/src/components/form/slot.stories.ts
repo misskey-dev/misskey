@@ -7,13 +7,24 @@ const meta = {
 	component: slot_,
 } satisfies Meta<typeof slot_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				slot_,
 			},
-			props: Object.keys(argTypes),
-			template: '<slot_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<slot_ v-bind="props" />',
 		};
 	},
 	parameters: {

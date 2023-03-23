@@ -7,13 +7,24 @@ const meta = {
 	component: MkUserPopup,
 } satisfies Meta<typeof MkUserPopup>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkUserPopup,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkUserPopup v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkUserPopup v-bind="props" />',
 		};
 	},
 	parameters: {

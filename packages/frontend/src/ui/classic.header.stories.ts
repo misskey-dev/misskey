@@ -7,13 +7,24 @@ const meta = {
 	component: classic_header,
 } satisfies Meta<typeof classic_header>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				classic_header,
 			},
-			props: Object.keys(argTypes),
-			template: '<classic_header v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<classic_header v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: classic_sidebar,
 } satisfies Meta<typeof classic_sidebar>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				classic_sidebar,
 			},
-			props: Object.keys(argTypes),
-			template: '<classic_sidebar v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<classic_sidebar v-bind="props" />',
 		};
 	},
 	parameters: {

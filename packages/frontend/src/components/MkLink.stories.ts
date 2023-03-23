@@ -7,13 +7,24 @@ const meta = {
 	component: MkLink,
 } satisfies Meta<typeof MkLink>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkLink,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkLink v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkLink v-bind="props" />',
 		};
 	},
 	parameters: {

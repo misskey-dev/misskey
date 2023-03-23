@@ -7,13 +7,24 @@ const meta = {
 	component: custom_css,
 } satisfies Meta<typeof custom_css>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				custom_css,
 			},
-			props: Object.keys(argTypes),
-			template: '<custom_css v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<custom_css v-bind="props" />',
 		};
 	},
 	parameters: {

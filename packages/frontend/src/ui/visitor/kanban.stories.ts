@@ -7,13 +7,24 @@ const meta = {
 	component: kanban_,
 } satisfies Meta<typeof kanban_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				kanban_,
 			},
-			props: Object.keys(argTypes),
-			template: '<kanban_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<kanban_ v-bind="props" />',
 		};
 	},
 	parameters: {

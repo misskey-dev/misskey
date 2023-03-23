@@ -7,13 +7,24 @@ const meta = {
 	component: MkDonation,
 } satisfies Meta<typeof MkDonation>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDonation,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDonation v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDonation v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: notification_,
 } satisfies Meta<typeof notification_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				notification_,
 			},
-			props: Object.keys(argTypes),
-			template: '<notification_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<notification_ v-bind="props" />',
 		};
 	},
 	parameters: {

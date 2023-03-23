@@ -7,13 +7,24 @@ const meta = {
 	component: index_photos,
 } satisfies Meta<typeof index_photos>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				index_photos,
 			},
-			props: Object.keys(argTypes),
-			template: '<index_photos v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<index_photos v-bind="props" />',
 		};
 	},
 	parameters: {

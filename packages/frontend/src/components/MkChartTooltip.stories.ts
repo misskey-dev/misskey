@@ -7,13 +7,24 @@ const meta = {
 	component: MkChartTooltip,
 } satisfies Meta<typeof MkChartTooltip>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkChartTooltip,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkChartTooltip v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkChartTooltip v-bind="props" />',
 		};
 	},
 	parameters: {

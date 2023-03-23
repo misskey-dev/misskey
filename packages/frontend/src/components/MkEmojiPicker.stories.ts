@@ -7,13 +7,24 @@ const meta = {
 	component: MkEmojiPicker,
 } satisfies Meta<typeof MkEmojiPicker>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkEmojiPicker,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkEmojiPicker v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkEmojiPicker v-bind="props" />',
 		};
 	},
 	parameters: {

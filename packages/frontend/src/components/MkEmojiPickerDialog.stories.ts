@@ -7,13 +7,24 @@ const meta = {
 	component: MkEmojiPickerDialog,
 } satisfies Meta<typeof MkEmojiPickerDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkEmojiPickerDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkEmojiPickerDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkEmojiPickerDialog v-bind="props" />',
 		};
 	},
 	parameters: {

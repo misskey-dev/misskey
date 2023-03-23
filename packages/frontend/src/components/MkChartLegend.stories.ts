@@ -7,13 +7,24 @@ const meta = {
 	component: MkChartLegend,
 } satisfies Meta<typeof MkChartLegend>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkChartLegend,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkChartLegend v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkChartLegend v-bind="props" />',
 		};
 	},
 	parameters: {

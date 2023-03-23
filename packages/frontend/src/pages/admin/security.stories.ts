@@ -7,13 +7,24 @@ const meta = {
 	component: security_,
 } satisfies Meta<typeof security_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				security_,
 			},
-			props: Object.keys(argTypes),
-			template: '<security_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<security_ v-bind="props" />',
 		};
 	},
 	parameters: {

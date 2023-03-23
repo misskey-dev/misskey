@@ -7,13 +7,24 @@ const meta = {
 	component: MkMediaBanner,
 } satisfies Meta<typeof MkMediaBanner>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkMediaBanner,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkMediaBanner v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkMediaBanner v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: privacy_,
 } satisfies Meta<typeof privacy_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				privacy_,
 			},
-			props: Object.keys(argTypes),
-			template: '<privacy_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<privacy_ v-bind="props" />',
 		};
 	},
 	parameters: {

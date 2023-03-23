@@ -7,13 +7,24 @@ const meta = {
 	component: activity_heatmap,
 } satisfies Meta<typeof activity_heatmap>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				activity_heatmap,
 			},
-			props: Object.keys(argTypes),
-			template: '<activity_heatmap v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<activity_heatmap v-bind="props" />',
 		};
 	},
 	parameters: {

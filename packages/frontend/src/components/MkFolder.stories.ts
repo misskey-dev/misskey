@@ -7,13 +7,24 @@ const meta = {
 	component: MkFolder,
 } satisfies Meta<typeof MkFolder>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkFolder,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkFolder v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkFolder v-bind="props" />',
 		};
 	},
 	parameters: {

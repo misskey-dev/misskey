@@ -7,13 +7,24 @@ const meta = {
 	component: welcome_timeline,
 } satisfies Meta<typeof welcome_timeline>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				welcome_timeline,
 			},
-			props: Object.keys(argTypes),
-			template: '<welcome_timeline v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<welcome_timeline v-bind="props" />',
 		};
 	},
 	parameters: {

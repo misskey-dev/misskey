@@ -7,13 +7,24 @@ const meta = {
 	component: MkError,
 } satisfies Meta<typeof MkError>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkError,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkError v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkError v-bind="props" />',
 		};
 	},
 	parameters: {

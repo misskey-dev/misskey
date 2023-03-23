@@ -7,13 +7,24 @@ const meta = {
 	component: MkForgotPassword,
 } satisfies Meta<typeof MkForgotPassword>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkForgotPassword,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkForgotPassword v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkForgotPassword v-bind="props" />',
 		};
 	},
 	parameters: {

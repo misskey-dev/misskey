@@ -7,13 +7,24 @@ const meta = {
 	component: MkNumberDiff,
 } satisfies Meta<typeof MkNumberDiff>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkNumberDiff,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkNumberDiff v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkNumberDiff v-bind="props" />',
 		};
 	},
 	parameters: {

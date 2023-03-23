@@ -7,13 +7,24 @@ const meta = {
 	component: MkMediaVideo,
 } satisfies Meta<typeof MkMediaVideo>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkMediaVideo,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkMediaVideo v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkMediaVideo v-bind="props" />',
 		};
 	},
 	parameters: {

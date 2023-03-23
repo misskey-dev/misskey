@@ -7,13 +7,24 @@ const meta = {
 	component: favorites_,
 } satisfies Meta<typeof favorites_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				favorites_,
 			},
-			props: Object.keys(argTypes),
-			template: '<favorites_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<favorites_ v-bind="props" />',
 		};
 	},
 	parameters: {

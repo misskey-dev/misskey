@@ -7,13 +7,24 @@ const meta = {
 	component: MkDrive_file,
 } satisfies Meta<typeof MkDrive_file>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDrive_file,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDrive_file v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDrive_file v-bind="props" />',
 		};
 	},
 	parameters: {

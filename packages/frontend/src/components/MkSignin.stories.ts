@@ -7,13 +7,24 @@ const meta = {
 	component: MkSignin,
 } satisfies Meta<typeof MkSignin>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSignin,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSignin v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSignin v-bind="props" />',
 		};
 	},
 	parameters: {

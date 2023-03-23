@@ -7,13 +7,24 @@ const meta = {
 	component: main_column,
 } satisfies Meta<typeof main_column>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				main_column,
 			},
-			props: Object.keys(argTypes),
-			template: '<main_column v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<main_column v-bind="props" />',
 		};
 	},
 	parameters: {

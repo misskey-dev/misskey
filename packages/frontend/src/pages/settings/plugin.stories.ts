@@ -7,13 +7,24 @@ const meta = {
 	component: plugin_,
 } satisfies Meta<typeof plugin_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				plugin_,
 			},
-			props: Object.keys(argTypes),
-			template: '<plugin_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<plugin_ v-bind="props" />',
 		};
 	},
 	parameters: {

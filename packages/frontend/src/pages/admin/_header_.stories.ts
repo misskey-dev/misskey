@@ -7,13 +7,24 @@ const meta = {
 	component: _header_,
 } satisfies Meta<typeof _header_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				_header_,
 			},
-			props: Object.keys(argTypes),
-			template: '<_header_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<_header_ v-bind="props" />',
 		};
 	},
 	parameters: {

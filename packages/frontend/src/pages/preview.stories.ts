@@ -7,13 +7,24 @@ const meta = {
 	component: preview_,
 } satisfies Meta<typeof preview_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				preview_,
 			},
-			props: Object.keys(argTypes),
-			template: '<preview_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<preview_ v-bind="props" />',
 		};
 	},
 	parameters: {

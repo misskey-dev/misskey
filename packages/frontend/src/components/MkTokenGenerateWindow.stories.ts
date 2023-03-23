@@ -7,13 +7,24 @@ const meta = {
 	component: MkTokenGenerateWindow,
 } satisfies Meta<typeof MkTokenGenerateWindow>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTokenGenerateWindow,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTokenGenerateWindow v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTokenGenerateWindow v-bind="props" />',
 		};
 	},
 	parameters: {

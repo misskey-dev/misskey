@@ -7,13 +7,24 @@ const meta = {
 	component: MkDriveFileThumbnail,
 } satisfies Meta<typeof MkDriveFileThumbnail>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDriveFileThumbnail,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDriveFileThumbnail v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDriveFileThumbnail v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: custom_emojis_manager,
 } satisfies Meta<typeof custom_emojis_manager>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				custom_emojis_manager,
 			},
-			props: Object.keys(argTypes),
-			template: '<custom_emojis_manager v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<custom_emojis_manager v-bind="props" />',
 		};
 	},
 	parameters: {

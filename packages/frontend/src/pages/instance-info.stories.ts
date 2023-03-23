@@ -7,13 +7,24 @@ const meta = {
 	component: instance_info,
 } satisfies Meta<typeof instance_info>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				instance_info,
 			},
-			props: Object.keys(argTypes),
-			template: '<instance_info v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<instance_info v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: common_,
 } satisfies Meta<typeof common_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				common_,
 			},
-			props: Object.keys(argTypes),
-			template: '<common_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<common_ v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetOnlineUsers,
 } satisfies Meta<typeof WidgetOnlineUsers>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetOnlineUsers,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetOnlineUsers v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetOnlineUsers v-bind="props" />',
 		};
 	},
 	parameters: {

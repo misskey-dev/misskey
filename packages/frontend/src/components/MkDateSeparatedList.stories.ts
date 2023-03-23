@@ -7,13 +7,24 @@ const meta = {
 	component: MkDateSeparatedList,
 } satisfies Meta<typeof MkDateSeparatedList>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDateSeparatedList,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDateSeparatedList v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDateSeparatedList v-bind="props" />',
 		};
 	},
 	parameters: {

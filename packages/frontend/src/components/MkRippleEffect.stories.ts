@@ -7,13 +7,24 @@ const meta = {
 	component: MkRippleEffect,
 } satisfies Meta<typeof MkRippleEffect>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkRippleEffect,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkRippleEffect v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkRippleEffect v-bind="props" />',
 		};
 	},
 	parameters: {

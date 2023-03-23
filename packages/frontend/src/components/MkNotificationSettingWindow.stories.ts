@@ -7,13 +7,24 @@ const meta = {
 	component: MkNotificationSettingWindow,
 } satisfies Meta<typeof MkNotificationSettingWindow>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkNotificationSettingWindow,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkNotificationSettingWindow v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkNotificationSettingWindow v-bind="props" />',
 		};
 	},
 	parameters: {

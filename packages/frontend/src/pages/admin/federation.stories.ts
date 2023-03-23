@@ -7,13 +7,24 @@ const meta = {
 	component: federation_,
 } satisfies Meta<typeof federation_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				federation_,
 			},
-			props: Object.keys(argTypes),
-			template: '<federation_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<federation_ v-bind="props" />',
 		};
 	},
 	parameters: {

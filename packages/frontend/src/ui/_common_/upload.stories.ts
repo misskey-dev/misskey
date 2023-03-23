@@ -7,13 +7,24 @@ const meta = {
 	component: upload_,
 } satisfies Meta<typeof upload_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				upload_,
 			},
-			props: Object.keys(argTypes),
-			template: '<upload_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<upload_ v-bind="props" />',
 		};
 	},
 	parameters: {

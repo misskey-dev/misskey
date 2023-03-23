@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetUserList,
 } satisfies Meta<typeof WidgetUserList>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetUserList,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetUserList v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetUserList v-bind="props" />',
 		};
 	},
 	parameters: {

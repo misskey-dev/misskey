@@ -7,13 +7,24 @@ const meta = {
 	component: MkWidgets,
 } satisfies Meta<typeof MkWidgets>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkWidgets,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkWidgets v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkWidgets v-bind="props" />',
 		};
 	},
 	parameters: {

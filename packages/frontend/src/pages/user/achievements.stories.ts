@@ -7,13 +7,24 @@ const meta = {
 	component: achievements_,
 } satisfies Meta<typeof achievements_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				achievements_,
 			},
-			props: Object.keys(argTypes),
-			template: '<achievements_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<achievements_ v-bind="props" />',
 		};
 	},
 	parameters: {

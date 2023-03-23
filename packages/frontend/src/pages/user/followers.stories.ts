@@ -7,13 +7,24 @@ const meta = {
 	component: followers_,
 } satisfies Meta<typeof followers_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				followers_,
 			},
-			props: Object.keys(argTypes),
-			template: '<followers_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<followers_ v-bind="props" />',
 		};
 	},
 	parameters: {

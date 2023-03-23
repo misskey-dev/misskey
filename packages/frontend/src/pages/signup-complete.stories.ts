@@ -7,13 +7,24 @@ const meta = {
 	component: signup_complete,
 } satisfies Meta<typeof signup_complete>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				signup_complete,
 			},
-			props: Object.keys(argTypes),
-			template: '<signup_complete v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<signup_complete v-bind="props" />',
 		};
 	},
 	parameters: {

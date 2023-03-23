@@ -7,13 +7,24 @@ const meta = {
 	component: page_block,
 } satisfies Meta<typeof page_block>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_block,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_block v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_block v-bind="props" />',
 		};
 	},
 	parameters: {

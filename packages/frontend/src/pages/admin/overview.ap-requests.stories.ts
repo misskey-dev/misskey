@@ -7,13 +7,24 @@ const meta = {
 	component: overview_ap_requests,
 } satisfies Meta<typeof overview_ap_requests>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_ap_requests,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_ap_requests v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_ap_requests v-bind="props" />',
 		};
 	},
 	parameters: {

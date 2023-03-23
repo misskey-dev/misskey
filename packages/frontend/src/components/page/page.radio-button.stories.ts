@@ -7,13 +7,24 @@ const meta = {
 	component: page_radio_button,
 } satisfies Meta<typeof page_radio_button>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_radio_button,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_radio_button v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_radio_button v-bind="props" />',
 		};
 	},
 	parameters: {

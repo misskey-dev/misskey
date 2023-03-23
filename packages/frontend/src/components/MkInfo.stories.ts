@@ -7,13 +7,24 @@ const meta = {
 	component: MkInfo,
 } satisfies Meta<typeof MkInfo>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkInfo,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkInfo v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkInfo v-bind="props" />',
 		};
 	},
 	parameters: {

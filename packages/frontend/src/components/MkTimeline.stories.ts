@@ -7,13 +7,24 @@ const meta = {
 	component: MkTimeline,
 } satisfies Meta<typeof MkTimeline>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTimeline,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTimeline v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTimeline v-bind="props" />',
 		};
 	},
 	parameters: {

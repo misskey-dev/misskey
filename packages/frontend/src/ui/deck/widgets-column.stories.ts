@@ -7,13 +7,24 @@ const meta = {
 	component: widgets_column,
 } satisfies Meta<typeof widgets_column>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				widgets_column,
 			},
-			props: Object.keys(argTypes),
-			template: '<widgets_column v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<widgets_column v-bind="props" />',
 		};
 	},
 	parameters: {

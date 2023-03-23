@@ -7,13 +7,24 @@ const meta = {
 	component: MkCaptcha,
 } satisfies Meta<typeof MkCaptcha>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkCaptcha,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkCaptcha v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkCaptcha v-bind="props" />',
 		};
 	},
 	parameters: {

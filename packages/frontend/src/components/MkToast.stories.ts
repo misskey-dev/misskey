@@ -7,13 +7,24 @@ const meta = {
 	component: MkToast,
 } satisfies Meta<typeof MkToast>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkToast,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkToast v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkToast v-bind="props" />',
 		};
 	},
 	parameters: {

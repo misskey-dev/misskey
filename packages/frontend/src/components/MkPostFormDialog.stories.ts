@@ -7,13 +7,24 @@ const meta = {
 	component: MkPostFormDialog,
 } satisfies Meta<typeof MkPostFormDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPostFormDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPostFormDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPostFormDialog v-bind="props" />',
 		};
 	},
 	parameters: {

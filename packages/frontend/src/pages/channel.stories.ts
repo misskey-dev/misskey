@@ -7,13 +7,24 @@ const meta = {
 	component: channel_,
 } satisfies Meta<typeof channel_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				channel_,
 			},
-			props: Object.keys(argTypes),
-			template: '<channel_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<channel_ v-bind="props" />',
 		};
 	},
 	parameters: {

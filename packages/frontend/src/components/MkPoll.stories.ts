@@ -7,13 +7,24 @@ const meta = {
 	component: MkPoll,
 } satisfies Meta<typeof MkPoll>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPoll,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPoll v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPoll v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkFollowButton,
 } satisfies Meta<typeof MkFollowButton>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkFollowButton,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkFollowButton v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkFollowButton v-bind="props" />',
 		};
 	},
 	parameters: {

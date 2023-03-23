@@ -7,13 +7,24 @@ const meta = {
 	component: MkLaunchPad,
 } satisfies Meta<typeof MkLaunchPad>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkLaunchPad,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkLaunchPad v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkLaunchPad v-bind="props" />',
 		};
 	},
 	parameters: {

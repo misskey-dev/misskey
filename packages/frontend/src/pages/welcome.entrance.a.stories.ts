@@ -7,13 +7,24 @@ const meta = {
 	component: welcome_entrance_a,
 } satisfies Meta<typeof welcome_entrance_a>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				welcome_entrance_a,
 			},
-			props: Object.keys(argTypes),
-			template: '<welcome_entrance_a v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<welcome_entrance_a v-bind="props" />',
 		};
 	},
 	parameters: {

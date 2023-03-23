@@ -7,13 +7,24 @@ const meta = {
 	component: MkDriveWindow,
 } satisfies Meta<typeof MkDriveWindow>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDriveWindow,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDriveWindow v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDriveWindow v-bind="props" />',
 		};
 	},
 	parameters: {

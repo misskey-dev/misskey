@@ -7,13 +7,24 @@ const meta = {
 	component: sounds_,
 } satisfies Meta<typeof sounds_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				sounds_,
 			},
-			props: Object.keys(argTypes),
-			template: '<sounds_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<sounds_ v-bind="props" />',
 		};
 	},
 	parameters: {

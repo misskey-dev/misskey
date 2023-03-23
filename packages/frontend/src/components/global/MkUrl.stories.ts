@@ -7,13 +7,24 @@ const meta = {
 	component: MkUrl,
 } satisfies Meta<typeof MkUrl>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkUrl,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkUrl v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkUrl v-bind="props" />',
 		};
 	},
 	parameters: {

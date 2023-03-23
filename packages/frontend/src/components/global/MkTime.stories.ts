@@ -7,13 +7,24 @@ const meta = {
 	component: MkTime,
 } satisfies Meta<typeof MkTime>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTime,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTime v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTime v-bind="props" />',
 		};
 	},
 	parameters: {

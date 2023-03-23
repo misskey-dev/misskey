@@ -7,13 +7,24 @@ const meta = {
 	component: MkWaitingDialog,
 } satisfies Meta<typeof MkWaitingDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkWaitingDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkWaitingDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkWaitingDialog v-bind="props" />',
 		};
 	},
 	parameters: {

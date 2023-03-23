@@ -7,13 +7,24 @@ const meta = {
 	component: emoji_edit_dialog,
 } satisfies Meta<typeof emoji_edit_dialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				emoji_edit_dialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<emoji_edit_dialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<emoji_edit_dialog v-bind="props" />',
 		};
 	},
 	parameters: {

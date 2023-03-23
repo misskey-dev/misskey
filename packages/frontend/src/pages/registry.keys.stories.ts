@@ -7,13 +7,24 @@ const meta = {
 	component: registry_keys,
 } satisfies Meta<typeof registry_keys>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				registry_keys,
 			},
-			props: Object.keys(argTypes),
-			template: '<registry_keys v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<registry_keys v-bind="props" />',
 		};
 	},
 	parameters: {

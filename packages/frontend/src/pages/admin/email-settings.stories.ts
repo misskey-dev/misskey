@@ -7,13 +7,24 @@ const meta = {
 	component: email_settings,
 } satisfies Meta<typeof email_settings>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				email_settings,
 			},
-			props: Object.keys(argTypes),
-			template: '<email_settings v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<email_settings v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: activity_notes,
 } satisfies Meta<typeof activity_notes>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				activity_notes,
 			},
-			props: Object.keys(argTypes),
-			template: '<activity_notes v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<activity_notes v-bind="props" />',
 		};
 	},
 	parameters: {

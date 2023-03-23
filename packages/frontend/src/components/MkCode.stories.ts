@@ -7,13 +7,24 @@ const meta = {
 	component: MkCode,
 } satisfies Meta<typeof MkCode>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkCode,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkCode v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkCode v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: gallery_,
 } satisfies Meta<typeof gallery_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				gallery_,
 			},
-			props: Object.keys(argTypes),
-			template: '<gallery_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<gallery_ v-bind="props" />',
 		};
 	},
 	parameters: {

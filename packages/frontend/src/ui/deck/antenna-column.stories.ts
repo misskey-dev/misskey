@@ -7,13 +7,24 @@ const meta = {
 	component: antenna_column,
 } satisfies Meta<typeof antenna_column>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				antenna_column,
 			},
-			props: Object.keys(argTypes),
-			template: '<antenna_column v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<antenna_column v-bind="props" />',
 		};
 	},
 	parameters: {

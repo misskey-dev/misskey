@@ -7,13 +7,24 @@ const meta = {
 	component: mem_,
 } satisfies Meta<typeof mem_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				mem_,
 			},
-			props: Object.keys(argTypes),
-			template: '<mem_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<mem_ v-bind="props" />',
 		};
 	},
 	parameters: {

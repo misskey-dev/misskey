@@ -7,13 +7,24 @@ const meta = {
 	component: index_timeline,
 } satisfies Meta<typeof index_timeline>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				index_timeline,
 			},
-			props: Object.keys(argTypes),
-			template: '<index_timeline v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<index_timeline v-bind="props" />',
 		};
 	},
 	parameters: {

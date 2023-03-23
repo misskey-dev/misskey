@@ -7,13 +7,24 @@ const meta = {
 	component: MkPostFormAttaches,
 } satisfies Meta<typeof MkPostFormAttaches>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPostFormAttaches,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPostFormAttaches v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPostFormAttaches v-bind="props" />',
 		};
 	},
 	parameters: {

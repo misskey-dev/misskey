@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetActivity_calendar,
 } satisfies Meta<typeof WidgetActivity_calendar>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetActivity_calendar,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetActivity_calendar v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetActivity_calendar v-bind="props" />',
 		};
 	},
 	parameters: {

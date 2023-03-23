@@ -7,13 +7,24 @@ const meta = {
 	component: MkModal,
 } satisfies Meta<typeof MkModal>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkModal,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkModal v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkModal v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: channel_editor,
 } satisfies Meta<typeof channel_editor>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				channel_editor,
 			},
-			props: Object.keys(argTypes),
-			template: '<channel_editor v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<channel_editor v-bind="props" />',
 		};
 	},
 	parameters: {

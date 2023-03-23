@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetNotifications,
 } satisfies Meta<typeof WidgetNotifications>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetNotifications,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetNotifications v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetNotifications v-bind="props" />',
 		};
 	},
 	parameters: {

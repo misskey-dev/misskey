@@ -7,13 +7,24 @@ const meta = {
 	component: overview_stats,
 } satisfies Meta<typeof overview_stats>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_stats,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_stats v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_stats v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: classic_,
 } satisfies Meta<typeof classic_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				classic_,
 			},
-			props: Object.keys(argTypes),
-			template: '<classic_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<classic_ v-bind="props" />',
 		};
 	},
 	parameters: {

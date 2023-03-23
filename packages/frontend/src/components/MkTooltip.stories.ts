@@ -7,13 +7,24 @@ const meta = {
 	component: MkTooltip,
 } satisfies Meta<typeof MkTooltip>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTooltip,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTooltip v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTooltip v-bind="props" />',
 		};
 	},
 	parameters: {

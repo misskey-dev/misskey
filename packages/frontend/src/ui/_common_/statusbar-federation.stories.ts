@@ -7,13 +7,24 @@ const meta = {
 	component: statusbar_federation,
 } satisfies Meta<typeof statusbar_federation>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				statusbar_federation,
 			},
-			props: Object.keys(argTypes),
-			template: '<statusbar_federation v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<statusbar_federation v-bind="props" />',
 		};
 	},
 	parameters: {

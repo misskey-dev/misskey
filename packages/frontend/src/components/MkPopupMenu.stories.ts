@@ -7,13 +7,24 @@ const meta = {
 	component: MkPopupMenu,
 } satisfies Meta<typeof MkPopupMenu>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPopupMenu,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPopupMenu v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPopupMenu v-bind="props" />',
 		};
 	},
 	parameters: {

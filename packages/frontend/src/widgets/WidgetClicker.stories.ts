@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetClicker,
 } satisfies Meta<typeof WidgetClicker>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetClicker,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetClicker v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetClicker v-bind="props" />',
 		};
 	},
 	parameters: {

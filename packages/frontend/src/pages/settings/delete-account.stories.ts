@@ -7,13 +7,24 @@ const meta = {
 	component: delete_account,
 } satisfies Meta<typeof delete_account>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				delete_account,
 			},
-			props: Object.keys(argTypes),
-			template: '<delete_account v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<delete_account v-bind="props" />',
 		};
 	},
 	parameters: {

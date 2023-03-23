@@ -7,13 +7,24 @@ const meta = {
 	component: RouterView,
 } satisfies Meta<typeof RouterView>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				RouterView,
 			},
-			props: Object.keys(argTypes),
-			template: '<RouterView v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<RouterView v-bind="props" />',
 		};
 	},
 	parameters: {

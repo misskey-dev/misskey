@@ -7,13 +7,24 @@ const meta = {
 	component: stream_indicator,
 } satisfies Meta<typeof stream_indicator>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				stream_indicator,
 			},
-			props: Object.keys(argTypes),
-			template: '<stream_indicator v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<stream_indicator v-bind="props" />',
 		};
 	},
 	parameters: {

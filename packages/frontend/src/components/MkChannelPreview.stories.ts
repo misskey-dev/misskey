@@ -7,13 +7,24 @@ const meta = {
 	component: MkChannelPreview,
 } satisfies Meta<typeof MkChannelPreview>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkChannelPreview,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkChannelPreview v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkChannelPreview v-bind="props" />',
 		};
 	},
 	parameters: {

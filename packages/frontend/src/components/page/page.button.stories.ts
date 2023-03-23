@@ -7,13 +7,24 @@ const meta = {
 	component: page_button,
 } satisfies Meta<typeof page_button>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_button,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_button v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_button v-bind="props" />',
 		};
 	},
 	parameters: {

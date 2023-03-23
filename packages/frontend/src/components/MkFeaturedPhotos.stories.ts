@@ -7,13 +7,24 @@ const meta = {
 	component: MkFeaturedPhotos,
 } satisfies Meta<typeof MkFeaturedPhotos>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkFeaturedPhotos,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkFeaturedPhotos v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkFeaturedPhotos v-bind="props" />',
 		};
 	},
 	parameters: {

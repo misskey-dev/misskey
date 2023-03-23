@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetActivity_chart,
 } satisfies Meta<typeof WidgetActivity_chart>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetActivity_chart,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetActivity_chart v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetActivity_chart v-bind="props" />',
 		};
 	},
 	parameters: {

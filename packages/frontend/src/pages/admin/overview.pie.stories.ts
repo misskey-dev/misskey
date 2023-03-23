@@ -7,13 +7,24 @@ const meta = {
 	component: overview_pie,
 } satisfies Meta<typeof overview_pie>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_pie,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_pie v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_pie v-bind="props" />',
 		};
 	},
 	parameters: {

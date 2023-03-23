@@ -305,30 +305,6 @@ function toStories(component: string): string {
 																												(
 																													<identifier name='args' />
 																												) as estree.Identifier,
-																												(
-																													<object-pattern
-																														properties={[
-																															(
-																																<property
-																																	key={
-																																		(
-																																			<identifier name='argTypes' />
-																																		) as estree.Identifier
-																																	}
-																																	value={
-																																		(
-																																			<identifier name='argTypes' />
-																																		) as estree.Identifier
-																																	}
-																																	kind={
-																																		'init' as const
-																																	}
-																																	shorthand
-																																/>
-																															) as estree.AssignmentProperty,
-																														]}
-																													/>
-																												) as estree.ObjectPattern,
 																											]}
 																											body={
 																												(
@@ -378,35 +354,123 @@ function toStories(component: string): string {
 																																						<property
 																																							key={
 																																								(
-																																									<identifier name='props' />
+																																									<identifier name='setup' />
 																																								) as estree.Identifier
 																																							}
 																																							value={
 																																								(
-																																									<call-expression
-																																										callee={
+																																									<function-expression
+																																										params={[]}
+																																										body={
 																																											(
-																																												<member-expression
-																																													object={
+																																												<block-statement
+																																													body={[
 																																														(
-																																															<identifier name='Object' />
+																																															<return-statement
+																																																argument={
+																																																	(
+																																																		<object-expression
+																																																			properties={[
+																																																				(
+																																																					<property
+																																																						key={
+																																																							(
+																																																								<identifier name='args' />
+																																																							) as estree.Identifier
+																																																						}
+																																																						value={
+																																																							(
+																																																								<identifier name='args' />
+																																																							) as estree.Identifier
+																																																						}
+																																																						kind={
+																																																							'init' as const
+																																																						}
+																																																						shorthand
+																																																					/>
+																																																				) as estree.Property,
+																																																			]}
+																																																		/>
+																																																	) as estree.ObjectExpression
+																																																}
+																																															/>
+																																														) as estree.ReturnStatement,
+																																													]}
+																																												/>
+																																											) as estree.BlockStatement
+																																										}
+																																									/>
+																																								) as estree.FunctionExpression
+																																							}
+																																							method
+																																							kind={
+																																								'init' as const
+																																							}
+																																						/>
+																																					) as estree.Property,
+																																					(
+																																						<property
+																																							key={
+																																								(
+																																									<identifier name='computed' />
+																																								) as estree.Identifier
+																																							}
+																																							value={
+																																								(
+																																									<object-expression
+																																										properties={[
+																																											(
+																																												<property
+																																													key={
+																																														(
+																																															<identifier name='props' />
 																																														) as estree.Identifier
 																																													}
-																																													property={
+																																													value={
 																																														(
-																																															<identifier name='keys' />
-																																														) as estree.Identifier
+																																															<function-expression
+																																																params={[]}
+																																																body={
+																																																	(
+																																																		<block-statement
+																																																			body={[
+																																																				(
+																																																					<return-statement
+																																																						argument={
+																																																							(
+																																																								<object-expression
+																																																									properties={[
+																																																										(
+																																																											<spread-element
+																																																												argument={
+																																																													(
+																																																														<identifier name='args' />
+																																																													) as estree.Identifier
+																																																												}
+																																																											/>
+																																																										) as estree.SpreadElement,
+																																																									]}
+																																																								/>
+																																																							) as estree.ObjectExpression
+																																																						}
+																																																					/>
+																																																				) as estree.ReturnStatement,
+																																																			]}
+																																																		/>
+																																																	) as estree.BlockStatement
+																																																}
+																																															/>
+																																														) as estree.FunctionExpression
+																																													}
+																																													method
+																																													kind={
+																																														'init' as const
 																																													}
 																																												/>
-																																											) as estree.MemberExpression
-																																										}
-																																										arguments={[
-																																											(
-																																												<identifier name='argTypes' />
-																																											) as estree.Identifier,
+																																											) as estree.Property,
 																																										]}
 																																									/>
-																																								) as estree.CallExpression
+																																								) as estree.ObjectExpression
 																																							}
 																																							kind={
 																																								'init' as const
@@ -423,7 +487,7 @@ function toStories(component: string): string {
 																																							value={
 																																								(
 																																									<literal
-																																										value={`<${identifier.name} v-bind="$props" />`}
+																																										value={`<${identifier.name} v-bind="props" />`}
 																																									/>
 																																								) as estree.Literal
 																																							}

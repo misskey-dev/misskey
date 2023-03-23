@@ -7,13 +7,24 @@ const meta = {
 	component: MkAsUi,
 } satisfies Meta<typeof MkAsUi>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkAsUi,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkAsUi v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkAsUi v-bind="props" />',
 		};
 	},
 	parameters: {

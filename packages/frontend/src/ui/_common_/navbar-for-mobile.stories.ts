@@ -7,13 +7,24 @@ const meta = {
 	component: navbar_for_mobile,
 } satisfies Meta<typeof navbar_for_mobile>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				navbar_for_mobile,
 			},
-			props: Object.keys(argTypes),
-			template: '<navbar_for_mobile v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<navbar_for_mobile v-bind="props" />',
 		};
 	},
 	parameters: {

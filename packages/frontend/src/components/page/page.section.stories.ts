@@ -7,13 +7,24 @@ const meta = {
 	component: page_section,
 } satisfies Meta<typeof page_section>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_section,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_section v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_section v-bind="props" />',
 		};
 	},
 	parameters: {

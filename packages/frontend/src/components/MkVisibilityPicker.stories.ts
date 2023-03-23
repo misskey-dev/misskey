@@ -7,13 +7,24 @@ const meta = {
 	component: MkVisibilityPicker,
 } satisfies Meta<typeof MkVisibilityPicker>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkVisibilityPicker,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkVisibilityPicker v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkVisibilityPicker v-bind="props" />',
 		};
 	},
 	parameters: {

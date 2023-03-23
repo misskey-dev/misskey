@@ -7,13 +7,24 @@ const meta = {
 	component: MkSwitch,
 } satisfies Meta<typeof MkSwitch>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSwitch,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSwitch v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSwitch v-bind="props" />',
 		};
 	},
 	parameters: {

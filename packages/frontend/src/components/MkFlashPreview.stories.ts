@@ -7,13 +7,24 @@ const meta = {
 	component: MkFlashPreview,
 } satisfies Meta<typeof MkFlashPreview>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkFlashPreview,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkFlashPreview v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkFlashPreview v-bind="props" />',
 		};
 	},
 	parameters: {

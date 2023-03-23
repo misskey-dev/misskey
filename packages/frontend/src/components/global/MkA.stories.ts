@@ -7,13 +7,24 @@ const meta = {
 	component: MkA,
 } satisfies Meta<typeof MkA>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkA,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkA v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkA v-bind="props" />',
 		};
 	},
 	parameters: {

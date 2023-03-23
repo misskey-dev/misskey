@@ -1,13 +1,18 @@
 import { addons } from '@storybook/addons';
 import { FORCE_REMOUNT } from '@storybook/core-events';
-import { type Preview, forceReRender, setup } from '@storybook/vue3';
+import { type Preview, setup } from '@storybook/vue3';
 import { initialize, mswDecorator } from 'msw-storybook-addon';
 import locale from './locale';
 import { commonHandlers, onUnhandledRequest } from './mocks';
 import themes from './themes';
 import '../src/style.scss';
 
-let initialized = false;
+// TODO: HMR が壊れているのを直す
+import.meta.hot.invalidate();
+
+const appInitialized = Symbol();
+
+let moduleInitialized = false;
 let unobserve = () => {};
 
 function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
@@ -48,7 +53,11 @@ queueMicrotask(() => {
 		import('../src/scripts/theme'),
 	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }]) => {
 		setup((app) => {
-			initialized = true;
+			moduleInitialized = true;
+			if (app[appInitialized]) {
+				return;
+			}
+			app[appInitialized] = true;
 			loadTheme(applyTheme);
 			components(app);
 			directives(app);
@@ -59,17 +68,17 @@ queueMicrotask(() => {
 
 const preview = {
 	decorators: [
-		mswDecorator,
 		(Story, context) => {
 			const story = Story();
-			if (!initialized) {
+			if (!moduleInitialized) {
 				const channel = addons.getChannel();
 				(globalThis.requestIdleCallback || setTimeout)(() => {
 					channel.emit(FORCE_REMOUNT, { storyId: context.id });
 				});
 			}
 			return story;
-		}
+		},
+		mswDecorator,
 	],
 	parameters: {
 		msw: {

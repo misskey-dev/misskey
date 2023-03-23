@@ -7,13 +7,24 @@ const meta = {
 	component: overview_moderators,
 } satisfies Meta<typeof overview_moderators>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_moderators,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_moderators v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_moderators v-bind="props" />',
 		};
 	},
 	parameters: {

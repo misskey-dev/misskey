@@ -7,13 +7,24 @@ const meta = {
 	component: MkReactionIcon,
 } satisfies Meta<typeof MkReactionIcon>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkReactionIcon,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkReactionIcon v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkReactionIcon v-bind="props" />',
 		};
 	},
 	parameters: {

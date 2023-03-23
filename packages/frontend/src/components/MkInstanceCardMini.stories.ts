@@ -7,13 +7,24 @@ const meta = {
 	component: MkInstanceCardMini,
 } satisfies Meta<typeof MkInstanceCardMini>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkInstanceCardMini,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkInstanceCardMini v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkInstanceCardMini v-bind="props" />',
 		};
 	},
 	parameters: {

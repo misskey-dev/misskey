@@ -7,13 +7,24 @@ const meta = {
 	component: page_switch,
 } satisfies Meta<typeof page_switch>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_switch,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_switch v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_switch v-bind="props" />',
 		};
 	},
 	parameters: {

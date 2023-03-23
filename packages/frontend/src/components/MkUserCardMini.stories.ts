@@ -7,13 +7,24 @@ const meta = {
 	component: MkUserCardMini,
 } satisfies Meta<typeof MkUserCardMini>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkUserCardMini,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkUserCardMini v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkUserCardMini v-bind="props" />',
 		};
 	},
 	parameters: {

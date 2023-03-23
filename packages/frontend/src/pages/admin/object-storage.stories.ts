@@ -7,13 +7,24 @@ const meta = {
 	component: object_storage,
 } satisfies Meta<typeof object_storage>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				object_storage,
 			},
-			props: Object.keys(argTypes),
-			template: '<object_storage v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<object_storage v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkTextarea,
 } satisfies Meta<typeof MkTextarea>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTextarea,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTextarea v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTextarea v-bind="props" />',
 		};
 	},
 	parameters: {

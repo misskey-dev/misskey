@@ -7,13 +7,24 @@ const meta = {
 	component: MkPushNotificationAllowButton,
 } satisfies Meta<typeof MkPushNotificationAllowButton>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPushNotificationAllowButton,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPushNotificationAllowButton v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPushNotificationAllowButton v-bind="props" />',
 		};
 	},
 	parameters: {

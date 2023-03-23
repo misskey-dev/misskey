@@ -7,13 +7,24 @@ const meta = {
 	component: overview_instances,
 } satisfies Meta<typeof overview_instances>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_instances,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_instances v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_instances v-bind="props" />',
 		};
 	},
 	parameters: {

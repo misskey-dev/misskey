@@ -7,13 +7,24 @@ const meta = {
 	component: MkAbuseReport,
 } satisfies Meta<typeof MkAbuseReport>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkAbuseReport,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkAbuseReport v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkAbuseReport v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkSparkle,
 } satisfies Meta<typeof MkSparkle>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSparkle,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSparkle v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSparkle v-bind="props" />',
 		};
 	},
 	parameters: {

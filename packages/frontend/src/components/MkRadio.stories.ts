@@ -7,13 +7,24 @@ const meta = {
 	component: MkRadio,
 } satisfies Meta<typeof MkRadio>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkRadio,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkRadio v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkRadio v-bind="props" />',
 		};
 	},
 	parameters: {

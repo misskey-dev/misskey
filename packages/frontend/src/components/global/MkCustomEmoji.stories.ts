@@ -7,13 +7,24 @@ const meta = {
 	component: MkCustomEmoji,
 } satisfies Meta<typeof MkCustomEmoji>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkCustomEmoji,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkCustomEmoji v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkCustomEmoji v-bind="props" />',
 		};
 	},
 	parameters: {

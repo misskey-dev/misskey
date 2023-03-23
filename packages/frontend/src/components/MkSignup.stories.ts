@@ -7,13 +7,24 @@ const meta = {
 	component: MkSignup,
 } satisfies Meta<typeof MkSignup>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSignup,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSignup v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSignup v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: overview_users,
 } satisfies Meta<typeof overview_users>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_users,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_users v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_users v-bind="props" />',
 		};
 	},
 	parameters: {

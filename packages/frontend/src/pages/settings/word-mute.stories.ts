@@ -7,13 +7,24 @@ const meta = {
 	component: word_mute,
 } satisfies Meta<typeof word_mute>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				word_mute,
 			},
-			props: Object.keys(argTypes),
-			template: '<word_mute v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<word_mute v-bind="props" />',
 		};
 	},
 	parameters: {

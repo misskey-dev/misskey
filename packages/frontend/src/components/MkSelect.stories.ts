@@ -7,13 +7,24 @@ const meta = {
 	component: MkSelect,
 } satisfies Meta<typeof MkSelect>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSelect,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSelect v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSelect v-bind="props" />',
 		};
 	},
 	parameters: {

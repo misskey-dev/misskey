@@ -7,13 +7,24 @@ const meta = {
 	component: explore_featured,
 } satisfies Meta<typeof explore_featured>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				explore_featured,
 			},
-			props: Object.keys(argTypes),
-			template: '<explore_featured v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<explore_featured v-bind="props" />',
 		};
 	},
 	parameters: {

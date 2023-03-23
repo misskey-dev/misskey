@@ -7,13 +7,24 @@ const meta = {
 	component: MkMediaList,
 } satisfies Meta<typeof MkMediaList>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkMediaList,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkMediaList v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkMediaList v-bind="props" />',
 		};
 	},
 	parameters: {

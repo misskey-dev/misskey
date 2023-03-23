@@ -7,13 +7,24 @@ const meta = {
 	component: user_list_timeline,
 } satisfies Meta<typeof user_list_timeline>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				user_list_timeline,
 			},
-			props: Object.keys(argTypes),
-			template: '<user_list_timeline v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<user_list_timeline v-bind="props" />',
 		};
 	},
 	parameters: {

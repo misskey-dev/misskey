@@ -7,13 +7,24 @@ const meta = {
 	component: clips_,
 } satisfies Meta<typeof clips_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				clips_,
 			},
-			props: Object.keys(argTypes),
-			template: '<clips_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<clips_ v-bind="props" />',
 		};
 	},
 	parameters: {

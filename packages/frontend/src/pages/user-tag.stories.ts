@@ -7,13 +7,24 @@ const meta = {
 	component: user_tag,
 } satisfies Meta<typeof user_tag>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				user_tag,
 			},
-			props: Object.keys(argTypes),
-			template: '<user_tag v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<user_tag v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: edit_,
 } satisfies Meta<typeof edit_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				edit_,
 			},
-			props: Object.keys(argTypes),
-			template: '<edit_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<edit_ v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkReactionsViewer_reaction,
 } satisfies Meta<typeof MkReactionsViewer_reaction>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkReactionsViewer_reaction,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkReactionsViewer_reaction v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkReactionsViewer_reaction v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: instance_mute,
 } satisfies Meta<typeof instance_mute>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				instance_mute,
 			},
-			props: Object.keys(argTypes),
-			template: '<instance_mute v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<instance_mute v-bind="props" />',
 		};
 	},
 	parameters: {

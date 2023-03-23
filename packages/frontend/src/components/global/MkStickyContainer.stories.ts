@@ -7,13 +7,24 @@ const meta = {
 	component: MkStickyContainer,
 } satisfies Meta<typeof MkStickyContainer>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkStickyContainer,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkStickyContainer v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkStickyContainer v-bind="props" />',
 		};
 	},
 	parameters: {

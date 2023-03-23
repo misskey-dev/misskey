@@ -7,13 +7,24 @@ const meta = {
 	component: list_,
 } satisfies Meta<typeof list_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				list_,
 			},
-			props: Object.keys(argTypes),
-			template: '<list_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<list_ v-bind="props" />',
 		};
 	},
 	parameters: {

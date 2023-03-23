@@ -7,13 +7,24 @@ const meta = {
 	component: MkTagCloud,
 } satisfies Meta<typeof MkTagCloud>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTagCloud,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTagCloud v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTagCloud v-bind="props" />',
 		};
 	},
 	parameters: {

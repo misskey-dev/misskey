@@ -7,13 +7,24 @@ const meta = {
 	component: mute_block,
 } satisfies Meta<typeof mute_block>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				mute_block,
 			},
-			props: Object.keys(argTypes),
-			template: '<mute_block v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<mute_block v-bind="props" />',
 		};
 	},
 	parameters: {

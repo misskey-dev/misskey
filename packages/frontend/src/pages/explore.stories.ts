@@ -7,13 +7,24 @@ const meta = {
 	component: explore_,
 } satisfies Meta<typeof explore_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				explore_,
 			},
-			props: Object.keys(argTypes),
-			template: '<explore_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<explore_ v-bind="props" />',
 		};
 	},
 	parameters: {

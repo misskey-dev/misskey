@@ -7,13 +7,24 @@ const meta = {
 	component: page_image,
 } satisfies Meta<typeof page_image>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_image,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_image v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_image v-bind="props" />',
 		};
 	},
 	parameters: {

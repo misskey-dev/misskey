@@ -7,13 +7,24 @@ const meta = {
 	component: ads_,
 } satisfies Meta<typeof ads_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				ads_,
 			},
-			props: Object.keys(argTypes),
-			template: '<ads_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<ads_ v-bind="props" />',
 		};
 	},
 	parameters: {

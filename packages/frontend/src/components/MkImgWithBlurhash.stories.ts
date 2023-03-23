@@ -7,13 +7,24 @@ const meta = {
 	component: MkImgWithBlurhash,
 } satisfies Meta<typeof MkImgWithBlurhash>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkImgWithBlurhash,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkImgWithBlurhash v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkImgWithBlurhash v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetJobQueue,
 } satisfies Meta<typeof WidgetJobQueue>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetJobQueue,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetJobQueue v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetJobQueue v-bind="props" />',
 		};
 	},
 	parameters: {

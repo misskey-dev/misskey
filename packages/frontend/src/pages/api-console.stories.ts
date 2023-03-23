@@ -7,13 +7,24 @@ const meta = {
 	component: api_console,
 } satisfies Meta<typeof api_console>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				api_console,
 			},
-			props: Object.keys(argTypes),
-			template: '<api_console v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<api_console v-bind="props" />',
 		};
 	},
 	parameters: {

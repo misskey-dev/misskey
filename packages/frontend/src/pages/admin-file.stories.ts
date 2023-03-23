@@ -7,13 +7,24 @@ const meta = {
 	component: admin_file,
 } satisfies Meta<typeof admin_file>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				admin_file,
 			},
-			props: Object.keys(argTypes),
-			template: '<admin_file v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<admin_file v-bind="props" />',
 		};
 	},
 	parameters: {

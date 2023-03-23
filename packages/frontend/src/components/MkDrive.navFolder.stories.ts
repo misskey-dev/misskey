@@ -7,13 +7,24 @@ const meta = {
 	component: MkDrive_navFolder,
 } satisfies Meta<typeof MkDrive_navFolder>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDrive_navFolder,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDrive_navFolder v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDrive_navFolder v-bind="props" />',
 		};
 	},
 	parameters: {

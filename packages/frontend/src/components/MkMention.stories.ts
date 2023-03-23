@@ -7,13 +7,24 @@ const meta = {
 	component: MkMention,
 } satisfies Meta<typeof MkMention>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkMention,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkMention v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkMention v-bind="props" />',
 		};
 	},
 	parameters: {

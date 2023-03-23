@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetAichan,
 } satisfies Meta<typeof WidgetAichan>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetAichan,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetAichan v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetAichan v-bind="props" />',
 		};
 	},
 	parameters: {

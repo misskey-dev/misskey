@@ -7,13 +7,24 @@ const meta = {
 	component: MkCropperDialog,
 } satisfies Meta<typeof MkCropperDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkCropperDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkCropperDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkCropperDialog v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetClock,
 } satisfies Meta<typeof WidgetClock>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetClock,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetClock v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetClock v-bind="props" />',
 		};
 	},
 	parameters: {

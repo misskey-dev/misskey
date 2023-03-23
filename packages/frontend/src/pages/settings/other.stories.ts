@@ -7,13 +7,24 @@ const meta = {
 	component: other_,
 } satisfies Meta<typeof other_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				other_,
 			},
-			props: Object.keys(argTypes),
-			template: '<other_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<other_ v-bind="props" />',
 		};
 	},
 	parameters: {

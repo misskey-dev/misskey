@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetPostForm,
 } satisfies Meta<typeof WidgetPostForm>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetPostForm,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetPostForm v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetPostForm v-bind="props" />',
 		};
 	},
 	parameters: {

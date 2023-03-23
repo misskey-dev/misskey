@@ -7,13 +7,24 @@ const meta = {
 	component: pie_,
 } satisfies Meta<typeof pie_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				pie_,
 			},
-			props: Object.keys(argTypes),
-			template: '<pie_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<pie_ v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: _loading_,
 } satisfies Meta<typeof _loading_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				_loading_,
 			},
-			props: Object.keys(argTypes),
-			template: '<_loading_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<_loading_ v-bind="props" />',
 		};
 	},
 	parameters: {

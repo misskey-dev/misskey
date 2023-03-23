@@ -7,13 +7,24 @@ const meta = {
 	component: universal_widgets,
 } satisfies Meta<typeof universal_widgets>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				universal_widgets,
 			},
-			props: Object.keys(argTypes),
-			template: '<universal_widgets v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<universal_widgets v-bind="props" />',
 		};
 	},
 	parameters: {

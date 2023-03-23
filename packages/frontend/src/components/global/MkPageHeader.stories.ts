@@ -7,13 +7,24 @@ const meta = {
 	component: MkPageHeader,
 } satisfies Meta<typeof MkPageHeader>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPageHeader,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPageHeader v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPageHeader v-bind="props" />',
 		};
 	},
 	parameters: {

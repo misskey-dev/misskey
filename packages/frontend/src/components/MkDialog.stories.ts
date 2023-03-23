@@ -7,13 +7,24 @@ const meta = {
 	component: MkDialog,
 } satisfies Meta<typeof MkDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkDialog v-bind="props" />',
 		};
 	},
 	parameters: {

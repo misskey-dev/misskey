@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetButton,
 } satisfies Meta<typeof WidgetButton>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetButton,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetButton v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetButton v-bind="props" />',
 		};
 	},
 	parameters: {

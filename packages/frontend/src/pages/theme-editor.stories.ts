@@ -7,13 +7,24 @@ const meta = {
 	component: theme_editor,
 } satisfies Meta<typeof theme_editor>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				theme_editor,
 			},
-			props: Object.keys(argTypes),
-			template: '<theme_editor v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<theme_editor v-bind="props" />',
 		};
 	},
 	parameters: {

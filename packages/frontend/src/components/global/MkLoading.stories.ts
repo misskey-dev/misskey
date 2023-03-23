@@ -7,13 +7,24 @@ const meta = {
 	component: MkLoading,
 } satisfies Meta<typeof MkLoading>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkLoading,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkLoading v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkLoading v-bind="props" />',
 		};
 	},
 	parameters: {

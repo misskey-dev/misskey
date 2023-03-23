@@ -7,13 +7,24 @@ const meta = {
 	component: _error_,
 } satisfies Meta<typeof _error_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				_error_,
 			},
-			props: Object.keys(argTypes),
-			template: '<_error_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<_error_ v-bind="props" />',
 		};
 	},
 	parameters: {

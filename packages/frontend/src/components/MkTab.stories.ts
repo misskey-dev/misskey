@@ -7,13 +7,24 @@ const meta = {
 	component: MkTab,
 } satisfies Meta<typeof MkTab>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkTab,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkTab v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkTab v-bind="props" />',
 		};
 	},
 	parameters: {

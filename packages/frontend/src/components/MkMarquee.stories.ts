@@ -7,13 +7,24 @@ const meta = {
 	component: MkMarquee,
 } satisfies Meta<typeof MkMarquee>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkMarquee,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkMarquee v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkMarquee v-bind="props" />',
 		};
 	},
 	parameters: {

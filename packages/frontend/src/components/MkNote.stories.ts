@@ -7,13 +7,24 @@ const meta = {
 	component: MkNote,
 } satisfies Meta<typeof MkNote>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkNote,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkNote v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkNote v-bind="props" />',
 		};
 	},
 	parameters: {

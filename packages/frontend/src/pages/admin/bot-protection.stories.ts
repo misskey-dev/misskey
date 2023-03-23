@@ -7,13 +7,24 @@ const meta = {
 	component: bot_protection,
 } satisfies Meta<typeof bot_protection>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				bot_protection,
 			},
-			props: Object.keys(argTypes),
-			template: '<bot_protection v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<bot_protection v-bind="props" />',
 		};
 	},
 	parameters: {

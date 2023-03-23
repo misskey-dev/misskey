@@ -7,13 +7,24 @@ const meta = {
 	component: MkInstanceTicker,
 } satisfies Meta<typeof MkInstanceTicker>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkInstanceTicker,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkInstanceTicker v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkInstanceTicker v-bind="props" />',
 		};
 	},
 	parameters: {

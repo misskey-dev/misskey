@@ -7,13 +7,24 @@ const meta = {
 	component: explore_roles,
 } satisfies Meta<typeof explore_roles>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				explore_roles,
 			},
-			props: Object.keys(argTypes),
-			template: '<explore_roles v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<explore_roles v-bind="props" />',
 		};
 	},
 	parameters: {

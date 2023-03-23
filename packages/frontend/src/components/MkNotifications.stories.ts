@@ -7,13 +7,24 @@ const meta = {
 	component: MkNotifications,
 } satisfies Meta<typeof MkNotifications>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkNotifications,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkNotifications v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkNotifications v-bind="props" />',
 		};
 	},
 	parameters: {

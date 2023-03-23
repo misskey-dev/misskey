@@ -7,13 +7,24 @@ const meta = {
 	component: registry_value,
 } satisfies Meta<typeof registry_value>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				registry_value,
 			},
-			props: Object.keys(argTypes),
-			template: '<registry_value v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<registry_value v-bind="props" />',
 		};
 	},
 	parameters: {

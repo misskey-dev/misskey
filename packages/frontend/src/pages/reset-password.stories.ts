@@ -7,13 +7,24 @@ const meta = {
 	component: reset_password,
 } satisfies Meta<typeof reset_password>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				reset_password,
 			},
-			props: Object.keys(argTypes),
-			template: '<reset_password v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<reset_password v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: column_core,
 } satisfies Meta<typeof column_core>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				column_core,
 			},
-			props: Object.keys(argTypes),
-			template: '<column_core v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<column_core v-bind="props" />',
 		};
 	},
 	parameters: {

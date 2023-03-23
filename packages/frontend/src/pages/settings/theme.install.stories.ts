@@ -7,13 +7,24 @@ const meta = {
 	component: theme_install,
 } satisfies Meta<typeof theme_install>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				theme_install,
 			},
-			props: Object.keys(argTypes),
-			template: '<theme_install v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<theme_install v-bind="props" />',
 		};
 	},
 	parameters: {

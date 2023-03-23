@@ -7,13 +7,24 @@ const meta = {
 	component: MkPagination,
 } satisfies Meta<typeof MkPagination>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPagination,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPagination v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPagination v-bind="props" />',
 		};
 	},
 	parameters: {

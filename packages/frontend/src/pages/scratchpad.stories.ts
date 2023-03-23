@@ -7,13 +7,24 @@ const meta = {
 	component: scratchpad_,
 } satisfies Meta<typeof scratchpad_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				scratchpad_,
 			},
-			props: Object.keys(argTypes),
-			template: '<scratchpad_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<scratchpad_ v-bind="props" />',
 		};
 	},
 	parameters: {

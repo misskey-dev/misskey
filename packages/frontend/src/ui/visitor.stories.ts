@@ -7,13 +7,24 @@ const meta = {
 	component: visitor_,
 } satisfies Meta<typeof visitor_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				visitor_,
 			},
-			props: Object.keys(argTypes),
-			template: '<visitor_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<visitor_ v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: _2fa_qrdialog,
 } satisfies Meta<typeof _2fa_qrdialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				_2fa_qrdialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<_2fa_qrdialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<_2fa_qrdialog v-bind="props" />',
 		};
 	},
 	parameters: {

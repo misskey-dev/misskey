@@ -7,13 +7,24 @@ const meta = {
 	component: auth_form,
 } satisfies Meta<typeof auth_form>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				auth_form,
 			},
-			props: Object.keys(argTypes),
-			template: '<auth_form v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<auth_form v-bind="props" />',
 		};
 	},
 	parameters: {

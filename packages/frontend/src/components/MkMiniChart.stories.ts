@@ -7,13 +7,24 @@ const meta = {
 	component: MkMiniChart,
 } satisfies Meta<typeof MkMiniChart>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkMiniChart,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkMiniChart v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkMiniChart v-bind="props" />',
 		};
 	},
 	parameters: {

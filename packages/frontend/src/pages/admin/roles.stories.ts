@@ -7,13 +7,24 @@ const meta = {
 	component: roles_,
 } satisfies Meta<typeof roles_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				roles_,
 			},
-			props: Object.keys(argTypes),
-			template: '<roles_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<roles_ v-bind="props" />',
 		};
 	},
 	parameters: {

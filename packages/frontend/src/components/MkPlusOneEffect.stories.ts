@@ -7,13 +7,24 @@ const meta = {
 	component: MkPlusOneEffect,
 } satisfies Meta<typeof MkPlusOneEffect>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPlusOneEffect,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPlusOneEffect v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPlusOneEffect v-bind="props" />',
 		};
 	},
 	parameters: {

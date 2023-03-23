@@ -7,13 +7,24 @@ const meta = {
 	component: import_export,
 } satisfies Meta<typeof import_export>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				import_export,
 			},
-			props: Object.keys(argTypes),
-			template: '<import_export v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<import_export v-bind="props" />',
 		};
 	},
 	parameters: {

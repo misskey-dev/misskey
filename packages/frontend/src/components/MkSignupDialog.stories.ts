@@ -7,13 +7,24 @@ const meta = {
 	component: MkSignupDialog,
 } satisfies Meta<typeof MkSignupDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSignupDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSignupDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSignupDialog v-bind="props" />',
 		};
 	},
 	parameters: {

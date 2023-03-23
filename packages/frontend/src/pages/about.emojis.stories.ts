@@ -7,13 +7,24 @@ const meta = {
 	component: about_emojis,
 } satisfies Meta<typeof about_emojis>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				about_emojis,
 			},
-			props: Object.keys(argTypes),
-			template: '<about_emojis v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<about_emojis v-bind="props" />',
 		};
 	},
 	parameters: {

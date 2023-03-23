@@ -7,13 +7,24 @@ const meta = {
 	component: a_,
 } satisfies Meta<typeof a_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				a_,
 			},
-			props: Object.keys(argTypes),
-			template: '<a_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<a_ v-bind="props" />',
 		};
 	},
 	parameters: {

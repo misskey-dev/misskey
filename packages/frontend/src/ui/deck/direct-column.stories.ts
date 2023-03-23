@@ -7,13 +7,24 @@ const meta = {
 	component: direct_column,
 } satisfies Meta<typeof direct_column>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				direct_column,
 			},
-			props: Object.keys(argTypes),
-			template: '<direct_column v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<direct_column v-bind="props" />',
 		};
 	},
 	parameters: {

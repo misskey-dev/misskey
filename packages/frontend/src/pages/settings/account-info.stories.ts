@@ -7,13 +7,24 @@ const meta = {
 	component: account_info,
 } satisfies Meta<typeof account_info>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				account_info,
 			},
-			props: Object.keys(argTypes),
-			template: '<account_info v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<account_info v-bind="props" />',
 		};
 	},
 	parameters: {

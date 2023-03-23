@@ -7,13 +7,24 @@ const meta = {
 	component: abuses_,
 } satisfies Meta<typeof abuses_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				abuses_,
 			},
-			props: Object.keys(argTypes),
-			template: '<abuses_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<abuses_ v-bind="props" />',
 		};
 	},
 	parameters: {

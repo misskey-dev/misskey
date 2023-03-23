@@ -7,13 +7,24 @@ const meta = {
 	component: MkAutocomplete,
 } satisfies Meta<typeof MkAutocomplete>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkAutocomplete,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkAutocomplete v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkAutocomplete v-bind="props" />',
 		};
 	},
 	parameters: {

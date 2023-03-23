@@ -7,13 +7,24 @@ const meta = {
 	component: page_canvas,
 } satisfies Meta<typeof page_canvas>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_canvas,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_canvas v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_canvas v-bind="props" />',
 		};
 	},
 	parameters: {

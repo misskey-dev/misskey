@@ -7,13 +7,24 @@ const meta = {
 	component: page_if,
 } satisfies Meta<typeof page_if>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_if,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_if v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_if v-bind="props" />',
 		};
 	},
 	parameters: {

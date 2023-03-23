@@ -7,13 +7,24 @@ const meta = {
 	component: MkUserSelectDialog,
 } satisfies Meta<typeof MkUserSelectDialog>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkUserSelectDialog,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkUserSelectDialog v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkUserSelectDialog v-bind="props" />',
 		};
 	},
 	parameters: {

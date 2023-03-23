@@ -7,13 +7,24 @@ const meta = {
 	component: welcome_setup,
 } satisfies Meta<typeof welcome_setup>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				welcome_setup,
 			},
-			props: Object.keys(argTypes),
-			template: '<welcome_setup v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<welcome_setup v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkUrlPreviewPopup,
 } satisfies Meta<typeof MkUrlPreviewPopup>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkUrlPreviewPopup,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkUrlPreviewPopup v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkUrlPreviewPopup v-bind="props" />',
 		};
 	},
 	parameters: {

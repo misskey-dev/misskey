@@ -7,13 +7,24 @@ const meta = {
 	component: MkAvatars,
 } satisfies Meta<typeof MkAvatars>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkAvatars,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkAvatars v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkAvatars v-bind="props" />',
 		};
 	},
 	parameters: {

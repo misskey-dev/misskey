@@ -7,13 +7,24 @@ const meta = {
 	component: MkSpacer,
 } satisfies Meta<typeof MkSpacer>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSpacer,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSpacer v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSpacer v-bind="props" />',
 		};
 	},
 	parameters: {

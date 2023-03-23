@@ -7,13 +7,24 @@ const meta = {
 	component: overview_heatmap,
 } satisfies Meta<typeof overview_heatmap>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				overview_heatmap,
 			},
-			props: Object.keys(argTypes),
-			template: '<overview_heatmap v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<overview_heatmap v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: search_,
 } satisfies Meta<typeof search_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				search_,
 			},
-			props: Object.keys(argTypes),
-			template: '<search_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<search_ v-bind="props" />',
 		};
 	},
 	parameters: {

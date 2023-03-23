@@ -7,13 +7,24 @@ const meta = {
 	component: cpu_,
 } satisfies Meta<typeof cpu_>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				cpu_,
 			},
-			props: Object.keys(argTypes),
-			template: '<cpu_ v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<cpu_ v-bind="props" />',
 		};
 	},
 	parameters: {

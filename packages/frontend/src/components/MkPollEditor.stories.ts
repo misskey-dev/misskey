@@ -7,13 +7,24 @@ const meta = {
 	component: MkPollEditor,
 } satisfies Meta<typeof MkPollEditor>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPollEditor,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPollEditor v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPollEditor v-bind="props" />',
 		};
 	},
 	parameters: {

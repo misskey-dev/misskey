@@ -7,13 +7,24 @@ const meta = {
 	component: page_number_input,
 } satisfies Meta<typeof page_number_input>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				page_number_input,
 			},
-			props: Object.keys(argTypes),
-			template: '<page_number_input v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<page_number_input v-bind="props" />',
 		};
 	},
 	parameters: {

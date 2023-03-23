@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetSlideshow,
 } satisfies Meta<typeof WidgetSlideshow>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetSlideshow,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetSlideshow v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetSlideshow v-bind="props" />',
 		};
 	},
 	parameters: {

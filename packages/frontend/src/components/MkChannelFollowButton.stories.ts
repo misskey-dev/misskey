@@ -7,13 +7,24 @@ const meta = {
 	component: MkChannelFollowButton,
 } satisfies Meta<typeof MkChannelFollowButton>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkChannelFollowButton,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkChannelFollowButton v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkChannelFollowButton v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetInstanceInfo,
 } satisfies Meta<typeof WidgetInstanceInfo>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetInstanceInfo,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetInstanceInfo v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetInstanceInfo v-bind="props" />',
 		};
 	},
 	parameters: {

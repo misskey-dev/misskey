@@ -6,16 +6,30 @@ const meta = {
 	component: MkButton,
 } satisfies Meta<typeof MkButton>;
 export default meta;
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable import/no-default-export */
+/* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import MkButton from './MkButton.vue';
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkButton,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkButton v-bind="$props">Text</MkButton>',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkButton v-bind="props">Text</MkButton>',
 		};
 	},
 	parameters: {

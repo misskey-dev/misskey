@@ -7,13 +7,24 @@ const meta = {
 	component: WidgetDigitalClock,
 } satisfies Meta<typeof WidgetDigitalClock>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				WidgetDigitalClock,
 			},
-			props: Object.keys(argTypes),
-			template: '<WidgetDigitalClock v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<WidgetDigitalClock v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkOmit,
 } satisfies Meta<typeof MkOmit>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkOmit,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkOmit v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkOmit v-bind="props" />',
 		};
 	},
 	parameters: {

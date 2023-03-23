@@ -7,13 +7,24 @@ const meta = {
 	component: MkPageHeader_tabs,
 } satisfies Meta<typeof MkPageHeader_tabs>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkPageHeader_tabs,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkPageHeader_tabs v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkPageHeader_tabs v-bind="props" />',
 		};
 	},
 	parameters: {

@@ -7,13 +7,24 @@ const meta = {
 	component: MkSample,
 } satisfies Meta<typeof MkSample>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				MkSample,
 			},
-			props: Object.keys(argTypes),
-			template: '<MkSample v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<MkSample v-bind="props" />',
 		};
 	},
 	parameters: {

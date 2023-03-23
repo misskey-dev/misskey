@@ -7,13 +7,24 @@ const meta = {
 	component: index_activity,
 } satisfies Meta<typeof index_activity>;
 export const Default = {
-	render(args, { argTypes }) {
+	render(args) {
 		return {
 			components: {
 				index_activity,
 			},
-			props: Object.keys(argTypes),
-			template: '<index_activity v-bind="$props" />',
+			setup() {
+				return {
+					args,
+				};
+			},
+			computed: {
+				props() {
+					return {
+						...args,
+					};
+				},
+			},
+			template: '<index_activity v-bind="props" />',
 		};
 	},
 	parameters: {
