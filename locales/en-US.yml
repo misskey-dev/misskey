@@ -1278,7 +1278,7 @@ _role:
     followingLessThanOrEq: "Follows X or fewer accounts"
     followingMoreThanOrEq: "Follows X or more accounts"
     notesLessThanOrEq: "Post count is less than/equal to"
-    notesMoreThanOrEq: "Post count is >="
+    notesMoreThanOrEq: "Post count is greater than/equal to"
     and: "AND-Condition"
     or: "OR-Condition"
     not: "NOT-Condition"
