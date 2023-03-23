@@ -4,18 +4,14 @@
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
 		<div :class="$style.earLeft">
-			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
-				<g filter="url(#mk-avatar-cat-left-filter)">
-					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-left-mask)"/>
-				</g>
-			</svg>
+			<div v-if="useBlurEffect" :class="$style.layer">
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
+			</div>
 		</div>
 		<div :class="$style.earRight">
-			<svg v-if="useBlurEffect" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" :class="$style.layer">
-				<g filter="url(#mk-avatar-cat-right-filter)">
-					<image :href="url" x="2" y="2" width="10" height="10" mask="url(#mk-avatar-cat-right-mask)"/>
-				</g>
-			</svg>
+			<div v-if="useBlurEffect" :class="$style.layer">
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
+			</div>
 		</div>
 	</div>
 </component>
@@ -188,6 +184,15 @@ onBeforeMount(() => {
 				top: 0;
 				width: 280%;
 				height: 280%;
+
+				> .plot {
+					contain: strict;
+					width: 100%;
+					height: 100%;
+					clip-path: path('M0 0H1V1H0V0z');
+					transform: scale(32767);
+					transform-origin: 0 0;
+				}
 			}
 		}
 
@@ -205,6 +210,10 @@ onBeforeMount(() => {
 					rotate(-37.5deg)
 					translate(-2.82842712475%, /* -2 * sqrt(2) */
 										-38.5857864376%); /* 40 - 2 * sqrt(2) */
+
+				> .plot {
+					background-position: 20% 10%; /* ~= 37.5deg */
+				}
 			}
 		}
 
@@ -222,6 +231,10 @@ onBeforeMount(() => {
 					rotate(37.5deg)
 					translate(2.82842712475%, /* 2 * sqrt(2) */
 										-38.5857864376%); /* 40 - 2 * sqrt(2) */
+
+				> .plot {
+					background-position: 80% 10%; /* ~= 37.5deg */
+				}
 			}
 		}
 	}
