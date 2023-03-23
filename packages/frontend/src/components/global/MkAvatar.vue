@@ -145,11 +145,6 @@ watch(() => props.user.avatarBlurhash, () => {
 			mask:
 				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') exclude center / 50% 50%,
 				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
-
-			> .earLeft,
-			> .earRight {
-				background: transparent;
-			}
 		}
 
 		> .earLeft,
