@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { sharpBmp } from 'sharp-read-bmp';
 import { IsNull } from 'typeorm';
+import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -36,7 +37,6 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import type S3 from 'aws-sdk/clients/s3.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -81,6 +81,7 @@ type UploadFromUrlArgs = {
 export class DriveService {
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
+	private deleteLogger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -118,6 +119,7 @@ export class DriveService {
 		const logger = new Logger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
 		this.downloaderLogger = logger.createSubLogger('downloader');
+		this.deleteLogger = logger.createSubLogger('delete');
 	}
 
 	/***
@@ -368,7 +370,7 @@ export class DriveService {
 			Body: stream,
 			ContentType: type,
 			CacheControl: 'max-age=31536000, immutable',
-		} as S3.PutObjectRequest;
+		} as PutObjectCommandInput;
 
 		if (filename) params.ContentDisposition = contentDisposition(
 			'inline',
@@ -378,21 +380,16 @@ export class DriveService {
 		);
 		if (meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
-		const s3 = this.s3Service.getS3(meta);
-
-		const upload = s3.upload(params, {
-			partSize: s3.endpoint.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
-		});
-
-		await upload.promise()
+		await this.s3Service.upload(meta, params)
 			.then(
 				result => {
-					if (result) {
+					if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
 						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
-					} else {
-						this.registerLogger.error(`Upload Result Empty: key = ${key}, filename = ${filename}`);
+					} else { // AbortMultipartUploadCommandOutput
+						this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
 					}
-				},
+				})
+			.catch(
 				err => {
 					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
 				},
@@ -528,10 +525,10 @@ export class DriveService {
 		};
 
 		const properties: {
-		width?: number;
-		height?: number;
-		orientation?: number;
-	} = {};
+			width?: number;
+			height?: number;
+			orientation?: number;
+		} = {};
 
 		if (info.width) {
 			properties['width'] = info.width;
@@ -720,22 +717,22 @@ export class DriveService {
 	@bindThis
 	public async deleteObjectStorageFile(key: string) {
 		const meta = await this.metaService.fetch();
-
-		const s3 = this.s3Service.getS3(meta);
-
 		try {
-			await s3.deleteObject({
-				Bucket: meta.objectStorageBucket!,
+			const param = {
+				Bucket: meta.objectStorageBucket,
 				Key: key,
-			}).promise();
+			} as DeleteObjectCommandInput;
+
+			await this.s3Service.delete(meta, param);
 		} catch (err: any) {
-			if (err.code === 'NoSuchKey') {
-				console.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err);
+			if (err.name === 'NoSuchKey') {
+				this.deleteLogger.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err as Error);
 				return;
+			} else {
+				throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
+					cause: err,
+				});
 			}
-			throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
-				cause: err,
-			});
 		}
 	}
 
