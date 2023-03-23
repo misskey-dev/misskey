@@ -42,7 +42,7 @@
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
 		"cleanall": "pnpm clean-all",
-		"server-update": "git fetch && git reset --hard origin/deploy/on-premise && git submodule update --init && docker compose build && docker compose down && docker compose up -d",
+		"server-update": "git fetch && git reset --hard origin/deploy/on-premise && git submodule update --init && docker compose build && docker compose pull && docker compose down && docker compose up -d",
 		"db-backup": "source .config/docker.env && docker compose exec -T db pg_dump -U $POSTGRES_USER -Ft misskey -f /misskey-na2na-db/`date +%y%m%d-%H%M`.tar"
 	},
 	"resolutions": {
