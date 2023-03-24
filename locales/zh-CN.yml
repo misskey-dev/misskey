@@ -1875,3 +1875,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "按大小降序排列"
   orderByCreatedAtAsc: "按添加日期降序排列"
+_webhookSettings:
+  name: "名称"
+  active: "已启用"
+

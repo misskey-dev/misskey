@@ -1354,3 +1354,7 @@ _deck:
     channel: "চ্যানেলগুলি"
     mentions: "উল্লেখসমূহ"
     direct: "ডাইরেক্ট নোটগুলি"
+_webhookSettings:
+  name: "নাম"
+  active: "চালু"
+

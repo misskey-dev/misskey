@@ -1804,3 +1804,7 @@ _deck:
     channel: "Kanal"
     mentions: "Sebutan"
     direct: "Langsung"
+_webhookSettings:
+  name: "Nama"
+  active: "Aktif"
+

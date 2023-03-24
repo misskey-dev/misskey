@@ -1468,3 +1468,7 @@ _deck:
     channel: "Canaux"
     mentions: "Mentions"
     direct: "Direct"
+_webhookSettings:
+  name: "Nom"
+  active: "Activé"
+

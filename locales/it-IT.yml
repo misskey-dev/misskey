@@ -565,8 +565,8 @@ enableInfiniteScroll: "Abilita scorrimento infinito"
 visibility: "Visibilità"
 poll: "Sondaggio"
 useCw: "Nascondere media"
-enablePlayer: "Apri in lettore video"
-disablePlayer: "Chiudi il lettore"
+enablePlayer: "Visualizza"
+disablePlayer: "Chiudi"
 expandTweet: "Espandi tweet"
 themeEditor: "Editor di temi"
 description: "Descrizione"
@@ -978,6 +978,9 @@ license: "Licenza"
 unfavoriteConfirm: "Vuoi davvero rimuovere la preferenza?"
 myClips: "Le mie Clip"
 drivecleaner: "Drive cleaner"
+retryAllQueuesNow: "Ritenta di consumare tutte le code"
+retryAllQueuesConfirmTitle: "Vuoi ritentare adesso?"
+retryAllQueuesConfirmText: "Potrebbe sovraccaricare il server temporaneamente."
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
@@ -1872,3 +1875,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "Dal più grande al più piccolo"
   orderByCreatedAtAsc: "Dal più vecchio al più recente"
+_webhookSettings:
+  name: "Nome"
+  active: "Attivo"
+
