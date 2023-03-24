@@ -65,6 +65,8 @@ async function create() {
 
 	os.apiWithDialog('clips/create', result);
 
+	clipsCache.delete();
+
 	pagingComponent.reload();
 }
 
