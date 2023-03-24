@@ -1875,3 +1875,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "Dal più grande al più piccolo"
   orderByCreatedAtAsc: "Dal più vecchio al più recente"
+_webhookSettings:
+  name: "Nome"
+  active: "Attivo"
+
