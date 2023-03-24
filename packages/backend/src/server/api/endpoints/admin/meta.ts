@@ -239,6 +239,10 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			enableChartsForRemoteUser: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			policies: {
 				type: 'object',
 				optional: false, nullable: false,
@@ -337,6 +341,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 			};
 		});

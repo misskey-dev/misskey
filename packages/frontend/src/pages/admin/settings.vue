@@ -43,6 +43,10 @@
 							<MkSwitch v-model="emailRequiredForSignup">
 								<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
 							</MkSwitch>
+
+							<MkSwitch v-model="enableChartsForRemoteUser">
+								<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
+							</MkSwitch>
 						</div>
 					</FormSection>
 
@@ -175,6 +179,7 @@ let cacheRemoteFiles: boolean = $ref(false);
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
+let enableChartsForRemoteUser: boolean = $ref(false);
 let swPublicKey: any = $ref(null);
 let swPrivateKey: any = $ref(null);
 let deeplAuthKey: string = $ref('');
@@ -198,6 +203,7 @@ async function init() {
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
 	enableServiceWorker = meta.enableServiceWorker;
+	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
 	swPublicKey = meta.swPublickey;
 	swPrivateKey = meta.swPrivateKey;
 	deeplAuthKey = meta.deeplAuthKey;
@@ -222,6 +228,7 @@ function save() {
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,
 		enableServiceWorker,
+		enableChartsForRemoteUser,
 		swPublicKey,
 		swPrivateKey,
 		deeplAuthKey,

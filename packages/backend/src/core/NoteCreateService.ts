@@ -435,9 +435,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 		createdAt: User['createdAt'];
 		isBot: User['isBot'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
-		// 統計を更新
+		const meta = await this.metaService.fetch();
+
 		this.notesChart.update(note, true);
-		this.perUserNotesChart.update(user, note, true);
+		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+			this.perUserNotesChart.update(user, note, true);
+		}
 
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {

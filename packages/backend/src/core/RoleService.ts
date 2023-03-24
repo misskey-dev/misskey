@@ -192,6 +192,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'followingMoreThanOrEq': {
 					return user.followingCount >= value.value;
 				}
+				case 'notesLessThanOrEq': {
+					return user.notesCount <= value.value;
+				}
+				case 'notesMoreThanOrEq': {
+					return user.notesCount >= value.value;
+				}
 				default:
 					return false;
 			}
