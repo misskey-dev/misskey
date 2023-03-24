@@ -1875,3 +1875,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "サイズのでかい順"
   orderByCreatedAtAsc: "追加日の古い順"
+_webhookSettings:
+  name: "名前"
+  active: "有効"
+
