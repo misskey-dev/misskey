@@ -1877,3 +1877,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "Absteigende Dateigrößen"
   orderByCreatedAtAsc: "Aufsteigendes Erstelldatum"
+_webhookSettings:
+  name: "Name"
+  active: "Aktiviert"
+
