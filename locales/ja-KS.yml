@@ -594,7 +594,6 @@ tokenRequested: "アカウントへのアクセス許してやったらどうや
 pluginTokenRequestedDescription: "このプラグインはここで設定した権限を使えるようになるで。"
 notificationType: "通知の種類"
 edit: "編集"
-useStarForReactionFallback: "リアクションがようわからん場合、★を使う"
 emailServer: "メールサーバー"
 enableEmail: "メール配信を受け取る"
 emailConfigInfo: "メールアドレスの確認とかパスワードリセットの時に使うで"
