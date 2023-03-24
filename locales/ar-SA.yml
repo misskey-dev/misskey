@@ -1275,3 +1275,7 @@ _deck:
     channel: "القنوات"
     mentions: "الإشارات"
     direct: "مباشرة"
+_webhookSettings:
+  name: "الإسم"
+  active: "مفعّل"
+
