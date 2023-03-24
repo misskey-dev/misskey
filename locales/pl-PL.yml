@@ -1358,3 +1358,7 @@ _deck:
     channel: "Kanały"
     mentions: "Wspomnienia"
     direct: "Bezpośredni"
+_webhookSettings:
+  name: "Nazwa"
+  active: "Właczono"
+
