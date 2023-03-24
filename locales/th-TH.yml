@@ -589,7 +589,6 @@ tokenRequested: "ให้สิทธิ์การเข้าถึงบั
 pluginTokenRequestedDescription: "ปลั๊กอินนี้จะสามารถใช้การอนุญาตที่ตั้งค่าไว้ที่นี่นะ"
 notificationType: "ประเภทการแจ้งเตือน"
 edit: "แก้ไข"
-useStarForReactionFallback: "ใช้ ★ เป็นทางเลือกแทนถ้าหากไม่ทราบอิโมจิ"
 emailServer: "อีเมล์เซิร์ฟเวอร์"
 enableEmail: "เปิดใช้งานการกระจายอีเมล"
 emailConfigInfo: "ใช้เพื่อยืนยันอีเมลของคุณระหว่างการสมัครหรือถ้าหากคุณลืมรหัสผ่าน"
