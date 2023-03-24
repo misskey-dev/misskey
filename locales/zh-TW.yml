@@ -1875,3 +1875,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "檔案由大到小"
   orderByCreatedAtAsc: "依照加入的日期順序"
+_webhookSettings:
+  name: "名稱"
+  active: "已啟用"
+
