@@ -7,7 +7,6 @@ const meta = {
 } satisfies Meta<typeof MkAvatar>;
 export default meta;
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
 /* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import MkAvatar from './MkAvatar.vue';
@@ -68,13 +67,6 @@ export const ProfilePageCat = {
 		user: {
 			...ProfilePage.args.user,
 			isCat: true,
-			// avatarUrl: 'https://millionlive-theaterdays.idolmaster-official.jp/assets/data/webp/common/footer/icon_app.png.webp',
-			// avatarUrl: 'https://cdn.imastodon.net/accounts/avatars/000/144/021/original/8137afa4114ab85f.png',
-			// avatarUrl: 'https://avatars.githubusercontent.com/u/4439005?v=4',
-			// avatarUrl: 'https://avatars.githubusercontent.com/u/7973572?v=4',
-			// avatarUrl: 'https://avatars.githubusercontent.com/u/6533808?v=4',
-			// avatarUrl: 'https://avatars.githubusercontent.com/u/7106976?v=4',
-			avatarUrl: 'https://avatars.githubusercontent.com/u/3396686?v=4',
 		},
 	},
 };
