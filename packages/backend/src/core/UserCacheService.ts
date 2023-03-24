@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import type { UsersRepository } from '@/models/index.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -11,10 +11,10 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class UserCacheService implements OnApplicationShutdown {
-	public userByIdCache: Cache<User>;
-	public localUserByNativeTokenCache: Cache<LocalUser | null>;
-	public localUserByIdCache: Cache<LocalUser>;
-	public uriPersonCache: Cache<User | null>;
+	public userByIdCache: KVCache<User>;
+	public localUserByNativeTokenCache: KVCache<LocalUser | null>;
+	public localUserByIdCache: KVCache<LocalUser>;
+	public uriPersonCache: KVCache<User | null>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -27,10 +27,10 @@ export class UserCacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new Cache<User>(Infinity);
-		this.localUserByNativeTokenCache = new Cache<LocalUser | null>(Infinity);
-		this.localUserByIdCache = new Cache<LocalUser>(Infinity);
-		this.uriPersonCache = new Cache<User | null>(Infinity);
+		this.userByIdCache = new KVCache<User>(Infinity);
+		this.localUserByNativeTokenCache = new KVCache<LocalUser | null>(Infinity);
+		this.localUserByIdCache = new KVCache<LocalUser>(Infinity);
+		this.uriPersonCache = new KVCache<User | null>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}

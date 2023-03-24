@@ -162,14 +162,14 @@ describe('Endpoints', () => {
 			const res = await api('/users/show', {
 				userId: '000000000000000000000000',
 			});
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 404);
 		});
 
 		test('間違ったIDで怒られる', async () => {
 			const res = await api('/users/show', {
 				userId: 'kyoppie',
 			});
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 404);
 		});
 	});
 
