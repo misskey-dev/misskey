@@ -23,24 +23,7 @@ export const meta = {
 				items: {
 					type: 'object',
 					optional: false, nullable: false,
-					properties: {
-						name: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-						aliases: {
-							type: 'array',
-							optional: false, nullable: false,
-							items: {
-								type: 'string',
-								optional: false, nullable: false,
-							},
-						},
-						category: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-					},
+					ref: 'EmojiSimple',
 				},
 			},
 		},

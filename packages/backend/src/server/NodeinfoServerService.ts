@@ -100,7 +100,7 @@ export class NodeinfoServerService {
 						email: meta.maintainerEmail,
 					},
 					langs: meta.langs,
-					tosUrl: meta.ToSUrl,
+					tosUrl: meta.termsOfServiceUrl,
 					repositoryUrl: meta.repositoryUrl,
 					feedbackUrl: meta.feedbackUrl,
 					disableRegistration: meta.disableRegistration,

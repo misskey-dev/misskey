@@ -6,11 +6,11 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -57,7 +57,7 @@ export class UserFollowingService {
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
-		private createNotificationService: CreateNotificationService,
+		private notificationService: NotificationService,
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
@@ -82,7 +82,7 @@ export class UserFollowingService {
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocked) {
 			// リモートフォローを受けてブロックしていた場合は、エラーにするのではなくRejectを送り返しておしまい。
 			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, requestId), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 			return;
 		} else if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee) && blocking) {
 			// リモートフォローを受けてブロックされているはずの場合だったら、ブロック解除しておく。
@@ -131,7 +131,7 @@ export class UserFollowingService {
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
 
@@ -145,15 +145,15 @@ export class UserFollowingService {
 		},
 	): Promise<void> {
 		if (follower.id === followee.id) return;
-	
+
 		let alreadyFollowed = false as boolean;
-	
+
 		await this.followingsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			followerId: follower.id,
 			followeeId: followee.id,
-	
+
 			// 非正規化
 			followerHost: follower.host,
 			followerInbox: this.userEntityService.isRemoteUser(follower) ? follower.inbox : null,
@@ -169,35 +169,35 @@ export class UserFollowingService {
 				throw err;
 			}
 		});
-	
+
 		const req = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
 		});
-	
+
 		if (req) {
 			await this.followRequestsRepository.delete({
 				followeeId: followee.id,
 				followerId: follower.id,
 			});
-	
+
 			// 通知を作成
-			this.createNotificationService.createNotification(follower.id, 'followRequestAccepted', {
+			this.notificationService.createNotification(follower.id, 'followRequestAccepted', {
 				notifierId: followee.id,
 			});
 		}
-	
+
 		if (alreadyFollowed) return;
 
 		this.globalEventService.publishInternalEvent('follow', { followerId: follower.id, followeeId: followee.id });
-	
+
 		//#region Increment counts
 		await Promise.all([
 			this.usersRepository.increment({ id: follower.id }, 'followingCount', 1),
 			this.usersRepository.increment({ id: followee.id }, 'followersCount', 1),
 		]);
 		//#endregion
-	
+
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			this.federatedInstanceService.fetch(follower.host).then(i => {
@@ -211,9 +211,9 @@ export class UserFollowingService {
 			});
 		}
 		//#endregion
-	
+
 		this.perUserFollowingChart.update(follower, followee, true);
-	
+
 		// Publish follow event
 		if (this.userEntityService.isLocalUser(follower)) {
 			this.userEntityService.pack(followee.id, follower, {
@@ -221,7 +221,7 @@ export class UserFollowingService {
 			}).then(async packed => {
 				this.globalEventService.publishUserEvent(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
-	
+
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'follow', {
@@ -230,12 +230,12 @@ export class UserFollowingService {
 				}
 			});
 		}
-	
+
 		// Publish followed event
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(async packed => {
 				this.globalEventService.publishMainStream(followee.id, 'followed', packed);
-	
+
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === followee.id && x.on.includes('followed'));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'followed', {
@@ -243,9 +243,9 @@ export class UserFollowingService {
 					});
 				}
 			});
-	
+
 			// 通知を作成
-			this.createNotificationService.createNotification(followee.id, 'follow', {
+			this.notificationService.createNotification(followee.id, 'follow', {
 				notifierId: follower.id,
 			});
 		}
@@ -265,16 +265,16 @@ export class UserFollowingService {
 			followerId: follower.id,
 			followeeId: followee.id,
 		});
-	
+
 		if (following == null) {
 			logger.warn('フォロー解除がリクエストされましたがフォローしていませんでした');
 			return;
 		}
-	
+
 		await this.followingsRepository.delete(following.id);
-	
+
 		this.decrementFollowing(follower, followee);
-	
+
 		// Publish unfollow event
 		if (!silent && this.userEntityService.isLocalUser(follower)) {
 			this.userEntityService.pack(followee.id, follower, {
@@ -282,7 +282,7 @@ export class UserFollowingService {
 			}).then(async packed => {
 				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
-	
+
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'unfollow', {
@@ -291,33 +291,33 @@ export class UserFollowingService {
 				}
 			});
 		}
-	
+
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
-			this.queueService.deliver(follower, content, followee.inbox);
+			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
-	
+
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
 			// local user has null host
 			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
-	
+
 	@bindThis
 	private async decrementFollowing(
-		follower: {id: User['id']; host: User['host']; },
+		follower: { id: User['id']; host: User['host']; },
 		followee: { id: User['id']; host: User['host']; },
 	): Promise<void> {
 		this.globalEventService.publishInternalEvent('unfollow', { followerId: follower.id, followeeId: followee.id });
-	
+
 		//#region Decrement following / followers counts
 		await Promise.all([
 			this.usersRepository.decrement({ id: follower.id }, 'followingCount', 1),
 			this.usersRepository.decrement({ id: followee.id }, 'followersCount', 1),
 		]);
 		//#endregion
-	
+
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			this.federatedInstanceService.fetch(follower.host).then(i => {
@@ -331,7 +331,7 @@ export class UserFollowingService {
 			});
 		}
 		//#endregion
-	
+
 		this.perUserFollowingChart.update(follower, followee, false);
 	}
 
@@ -346,23 +346,23 @@ export class UserFollowingService {
 		requestId?: string,
 	): Promise<void> {
 		if (follower.id === followee.id) return;
-	
+
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
 			this.userBlockingService.checkBlocked(follower.id, followee.id),
 			this.userBlockingService.checkBlocked(followee.id, follower.id),
 		]);
-	
+
 		if (blocking) throw new Error('blocking');
 		if (blocked) throw new Error('blocked');
-	
+
 		const followRequest = await this.followRequestsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			followerId: follower.id,
 			followeeId: followee.id,
 			requestId,
-	
+
 			// 非正規化
 			followerHost: follower.host,
 			followerInbox: this.userEntityService.isRemoteUser(follower) ? follower.inbox : undefined,
@@ -371,25 +371,25 @@ export class UserFollowingService {
 			followeeInbox: this.userEntityService.isRemoteUser(followee) ? followee.inbox : undefined,
 			followeeSharedInbox: this.userEntityService.isRemoteUser(followee) ? followee.sharedInbox : undefined,
 		}).then(x => this.followRequestsRepository.findOneByOrFail(x.identifiers[0]));
-	
+
 		// Publish receiveRequest event
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(follower.id, followee).then(packed => this.globalEventService.publishMainStream(followee.id, 'receiveFollowRequest', packed));
-	
+
 			this.userEntityService.pack(followee.id, followee, {
 				detail: true,
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
-	
+
 			// 通知を作成
-			this.createNotificationService.createNotification(followee.id, 'receiveFollowRequest', {
+			this.notificationService.createNotification(followee.id, 'receiveFollowRequest', {
 				notifierId: follower.id,
 				followRequestId: followRequest.id,
 			});
 		}
-	
+
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee));
-			this.queueService.deliver(follower, content, followee.inbox);
+			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	}
 
@@ -404,26 +404,26 @@ export class UserFollowingService {
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
-	
+
 			if (this.userEntityService.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
-				this.queueService.deliver(follower, content, followee.inbox);
+				this.queueService.deliver(follower, content, followee.inbox, false);
 			}
 		}
-	
+
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
 		});
-	
+
 		if (request == null) {
 			throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
 		}
-	
+
 		await this.followRequestsRepository.delete({
 			followeeId: followee.id,
 			followerId: follower.id,
 		});
-	
+
 		this.userEntityService.pack(followee.id, followee, {
 			detail: true,
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
@@ -440,18 +440,18 @@ export class UserFollowingService {
 			followeeId: followee.id,
 			followerId: follower.id,
 		});
-	
+
 		if (request == null) {
 			throw new IdentifiableError('8884c2dd-5795-4ac9-b27e-6a01d38190f9', 'No follow request.');
 		}
-	
+
 		await this.insertFollowingDoc(followee, follower);
-	
+
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
-			this.queueService.deliver(followee, content, follower.inbox);
+			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
-	
+
 		this.userEntityService.pack(followee.id, followee, {
 			detail: true,
 		}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
@@ -466,13 +466,13 @@ export class UserFollowingService {
 		const requests = await this.followRequestsRepository.findBy({
 			followeeId: user.id,
 		});
-	
+
 		for (const request of requests) {
 			const follower = await this.usersRepository.findOneByOrFail({ id: request.followerId });
 			this.acceptFollowRequest(user, follower);
 		}
 	}
-	
+
 	/**
 	 * API following/request/reject
 	 */
@@ -557,7 +557,7 @@ export class UserFollowingService {
 		});
 
 		const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee, request?.requestId ?? undefined), followee));
-		this.queueService.deliver(followee, content, follower.inbox);
+		this.queueService.deliver(followee, content, follower.inbox, false);
 	}
 
 	/**

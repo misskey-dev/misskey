@@ -17,13 +17,11 @@
 						</div>
 						<div v-if="clips && clips.length > 0" class="clips _margin">
 							<div class="title">{{ i18n.ts.clip }}</div>
-							<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`" class="item _panel _margin">
-								<b>{{ item.name }}</b>
-								<div v-if="item.description" class="description">{{ item.description }}</div>
-								<div class="user">
-									<MkAvatar :user="item.user" class="avatar" indicator link preview/> <MkUserName :user="item.user" :nowrap="false"/>
-								</div>
-							</MkA>
+							<div class="_gaps">
+								<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`">
+									<MkClipPreview :clip="item"/>
+								</MkA>
+							</div>
 						</div>
 						<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
 					</div>
@@ -51,6 +49,7 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { dateString } from '@/filters/date';
+import MkClipPreview from '@/components/MkClipPreview.vue';
 
 const props = defineProps<{
 	noteId: string;
@@ -177,27 +176,6 @@ definePageMetadata(computed(() => note ? {
 				> .title {
 					font-weight: bold;
 					padding: 12px;
-				}
-
-				> .item {
-					display: block;
-					padding: 16px;
-
-					> .description {
-						padding: 8px 0;
-					}
-
-					> .user {
-						$height: 32px;
-						padding-top: 16px;
-						border-top: solid 0.5px var(--divider);
-						line-height: $height;
-
-						> .avatar {
-							width: $height;
-							height: $height;
-						}
-					}
 				}
 			}
 		}

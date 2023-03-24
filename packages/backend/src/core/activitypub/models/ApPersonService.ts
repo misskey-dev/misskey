@@ -164,6 +164,9 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('invalid Actor: wrong name');
 			}
 			x.name = truncate(x.name, nameLength);
+		} else if (x.name === '') {
+			// Mastodon emits empty string when the name is not set.
+			x.name = undefined;
 		}
 		if (x.summary) {
 			if (!(typeof x.summary === 'string' && x.summary.length > 0)) {

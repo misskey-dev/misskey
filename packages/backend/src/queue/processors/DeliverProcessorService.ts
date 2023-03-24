@@ -115,6 +115,18 @@ export class DeliverProcessorService {
 			if (res instanceof StatusError) {
 				// 4xx
 				if (res.isClientError) {
+					// 相手が閉鎖していることを明示しているため、配送停止する
+					if (job.data.isSharedInbox && res.statusCode === 410) {
+						this.federatedInstanceService.fetch(host).then(i => {
+							this.instancesRepository.update(i.id, {
+								isSuspended: true,
+							});
+							this.federatedInstanceService.updateCachePartial(host, {
+								isSuspended: true,
+							});
+						});
+						return `${host} is gone`;
+					}
 					// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
 					// 何回再送しても成功することはないということなのでエラーにはしないでおく
 					return `${res.statusCode} ${res.statusMessage}`;
