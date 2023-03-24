@@ -1475,3 +1475,7 @@ _deck:
     channel: "Kanály"
     mentions: "Zmienky"
     direct: "Priame poznámky"
+_webhookSettings:
+  name: "Názov"
+  active: "Zapnuté"
+
