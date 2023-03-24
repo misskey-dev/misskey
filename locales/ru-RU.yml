@@ -1837,3 +1837,7 @@ _deck:
 _dialog:
   charactersExceeded: "Превышено максимальное количество символов! У вас {current} / из   {max}"
   charactersBelow: "Это ниже минимального количества символов! У вас {current} / из {min}"
+_webhookSettings:
+  name: "Название"
+  active: "Вкл."
+

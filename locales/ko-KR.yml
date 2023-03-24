@@ -1849,3 +1849,7 @@ _deck:
 _dialog:
   charactersExceeded: "최대 글자수를 초과하였습니다! 현재 {current} / 최대 {min}"
   charactersBelow: "최소 글자수 미만입니다! 현재 {current} / 최소 {min}"
+_webhookSettings:
+  name: "이름"
+  active: "활성화"
+

@@ -702,3 +702,6 @@ _deck:
     list: "Liste"
     channel: "Canale"
     mentions: "Mențiuni"
+_webhookSettings:
+  name: "Nume"
+
