@@ -17,7 +17,6 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
-		useStarForReactionFallback: { type: 'boolean', nullable: true },
 		pinnedUsers: { type: 'array', nullable: true, items: {
 			type: 'string',
 		} },
@@ -113,10 +112,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (typeof ps.disableRegistration === 'boolean') {
 				set.disableRegistration = ps.disableRegistration;
-			}
-
-			if (typeof ps.useStarForReactionFallback === 'boolean') {
-				set.useStarForReactionFallback = ps.useStarForReactionFallback;
 			}
 
 			if (Array.isArray(ps.pinnedUsers)) {

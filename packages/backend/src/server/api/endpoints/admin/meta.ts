@@ -303,7 +303,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				enableServiceWorker: instance.enableServiceWorker,
 				translatorAvailable: instance.deeplAuthKey != null,
 				cacheRemoteFiles: instance.cacheRemoteFiles,
-				useStarForReactionFallback: instance.useStarForReactionFallback,
 				pinnedUsers: instance.pinnedUsers,
 				hiddenTags: instance.hiddenTags,
 				blockedHosts: instance.blockedHosts,
