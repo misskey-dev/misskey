@@ -11,7 +11,7 @@
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div v-if="note" class="_gaps">
 			<div v-if="reactions.length === 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<img src="https://ca.nfs.pub/misskey-notice-assets/info.png" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 			<template v-else>
