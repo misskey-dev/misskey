@@ -396,6 +396,11 @@ export class Meta {
 	})
 	public enableActiveEmailValidation: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public enableChartsForRemoteUser: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})

@@ -93,6 +93,7 @@ export const paramDef = {
 		objectStorageS3ForcePathStyle: { type: 'boolean' },
 		enableIpLogging: { type: 'boolean' },
 		enableActiveEmailValidation: { type: 'boolean' },
+		enableChartsForRemoteUser: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -380,6 +381,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableActiveEmailValidation !== undefined) {
 				set.enableActiveEmailValidation = ps.enableActiveEmailValidation;
+			}
+
+			if (ps.enableChartsForRemoteUser !== undefined) {
+				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
 			}
 
 			await this.metaService.update(set);
