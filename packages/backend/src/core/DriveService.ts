@@ -624,7 +624,9 @@ export class DriveService {
 			// ローカルユーザーのみ
 			this.perUserDriveChart.update(file, true);
 		} else {
-			this.instanceChart.updateDrive(file, true);
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.updateDrive(file, true);
+			}
 		}
 
 		return file;
@@ -712,7 +714,9 @@ export class DriveService {
 			// ローカルユーザーのみ
 			this.perUserDriveChart.update(file, false);
 		} else {
-			this.instanceChart.updateDrive(file, false);
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.updateDrive(file, false);
+			}
 		}
 	}
 

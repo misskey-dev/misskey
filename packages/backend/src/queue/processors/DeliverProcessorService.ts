@@ -88,10 +88,12 @@ export class DeliverProcessorService {
 				}
 
 				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-
-				this.instanceChart.requestSent(i.host, true);
 				this.apRequestChart.deliverSucc();
 				this.federationChart.deliverd(i.host, true);
+
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, true);
+				}
 			});
 
 			return 'Success';
@@ -107,9 +109,12 @@ export class DeliverProcessorService {
 					});
 				}
 
-				this.instanceChart.requestSent(i.host, false);
 				this.apRequestChart.deliverFail();
 				this.federationChart.deliverd(i.host, false);
+
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, false);
+				}
 			});
 
 			if (res instanceof StatusError) {

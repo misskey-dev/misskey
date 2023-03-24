@@ -444,9 +444,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// Register host
 		if (this.userEntityService.isRemoteUser(user)) {
-			this.federatedInstanceService.fetch(user.host).then(i => {
+			this.federatedInstanceService.fetch(user.host).then(async i => {
 				this.instancesRepository.increment({ id: i.id }, 'notesCount', 1);
-				this.instanceChart.updateNote(i.host, note, true);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateNote(i.host, note, true);
+				}
 			});
 		}
 

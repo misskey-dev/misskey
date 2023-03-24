@@ -105,9 +105,11 @@ export class NoteDeleteService {
 			}
 
 			if (this.userEntityService.isRemoteUser(user)) {
-				this.federatedInstanceService.fetch(user.host).then(i => {
+				this.federatedInstanceService.fetch(user.host).then(async i => {
 					this.instancesRepository.decrement({ id: i.id }, 'notesCount', 1);
-					this.instanceChart.updateNote(i.host, note, false);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateNote(i.host, note, false);
+					}
 				});
 			}
 		}

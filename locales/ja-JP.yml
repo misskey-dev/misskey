@@ -981,6 +981,7 @@ retryAllQueuesNow: "すべてのキューを今すぐ再試行"
 retryAllQueuesConfirmTitle: "今すぐ再試行しますか？"
 retryAllQueuesConfirmText: "一時的にサーバーの負荷が増大することがあります。"
 enableChartsForRemoteUser: "リモートユーザーのチャートを生成"
+enableChartsForFederatedInstances: "リモートサーバーのチャートを生成"
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 
 _achievements:

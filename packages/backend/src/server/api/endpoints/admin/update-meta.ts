@@ -93,6 +93,7 @@ export const paramDef = {
 		enableIpLogging: { type: 'boolean' },
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableChartsForRemoteUser: { type: 'boolean' },
+		enableChartsForFederatedInstances: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -380,6 +381,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableChartsForRemoteUser !== undefined) {
 				set.enableChartsForRemoteUser = ps.enableChartsForRemoteUser;
+			}
+
+			if (ps.enableChartsForFederatedInstances !== undefined) {
+				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
 			}
 
 			await this.metaService.update(set);

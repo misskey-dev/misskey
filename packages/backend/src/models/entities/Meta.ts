@@ -396,6 +396,11 @@ export class Meta {
 	})
 	public enableChartsForRemoteUser: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public enableChartsForFederatedInstances: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})
