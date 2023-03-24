@@ -16,6 +16,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -39,6 +40,7 @@ export class NoteDeleteService {
 		private federatedInstanceService: FederatedInstanceService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
+		private metaService: MetaService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
@@ -95,14 +97,19 @@ export class NoteDeleteService {
 			}
 			//#endregion
 
-			// 統計を更新
+			const meta = await this.metaService.fetch();
+
 			this.notesChart.update(note, false);
-			this.perUserNotesChart.update(user, note, false);
+			if (meta.enableChartsForRemoteUser || (user.host == null)) {
+				this.perUserNotesChart.update(user, note, false);
+			}
 
 			if (this.userEntityService.isRemoteUser(user)) {
-				this.federatedInstanceService.fetch(user.host).then(i => {
+				this.federatedInstanceService.fetch(user.host).then(async i => {
 					this.instancesRepository.decrement({ id: i.id }, 'notesCount', 1);
-					this.instanceChart.updateNote(i.host, note, false);
+					if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+						this.instanceChart.updateNote(i.host, note, false);
+					}
 				});
 			}
 		}

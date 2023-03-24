@@ -42,11 +42,6 @@ export class Meta {
 	})
 	public disableRegistration: boolean;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public useStarForReactionFallback: boolean;
-
 	@Column('varchar', {
 		length: 1024, array: true, default: '{}',
 	})
@@ -395,6 +390,16 @@ export class Meta {
 		default: true,
 	})
 	public enableActiveEmailValidation: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableChartsForRemoteUser: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableChartsForFederatedInstances: boolean;
 
 	@Column('jsonb', {
 		default: { },

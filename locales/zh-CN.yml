@@ -594,7 +594,6 @@ tokenRequested: "允许访问账户"
 pluginTokenRequestedDescription: "此插件将能够拥有此处设置的权限"
 notificationType: "通知类型"
 edit: "编辑"
-useStarForReactionFallback: "如果回应的是未知表情符号，则使用★作为代替"
 emailServer: "邮件服务器"
 enableEmail: "启用发送邮件功能"
 emailConfigInfo: "用于确认电子邮件和密码重置"
@@ -1875,3 +1874,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "按大小降序排列"
   orderByCreatedAtAsc: "按添加日期降序排列"
+_webhookSettings:
+  name: "名称"
+  active: "已启用"
+

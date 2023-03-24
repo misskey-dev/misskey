@@ -10,6 +10,81 @@ import { url } from '@/config';
 import { noteActions } from '@/store';
 import { miLocalStorage } from '@/local-storage';
 import { getUserMenu } from '@/scripts/get-user-menu';
+import { clipsCache } from '@/cache';
+
+export async function getNoteClipMenu(props: {
+	note: misskey.entities.Note;
+	isDeleted: Ref<boolean>;
+	currentClipPage?: Ref<misskey.entities.Clip>;
+}) {
+	const isRenote = (
+		props.note.renote != null &&
+		props.note.text == null &&
+		props.note.fileIds.length === 0 &&
+		props.note.poll == null
+	);
+
+	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+
+	const clips = await clipsCache.fetch(() => os.api('clips/list'));
+	return [...clips.map(clip => ({
+		text: clip.name,
+		action: () => {
+			claimAchievement('noteClipped1');
+			os.promiseDialog(
+				os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
+				null,
+				async (err) => {
+					if (err.id === '734806c4-542c-463a-9311-15c512803965') {
+						const confirm = await os.confirm({
+							type: 'warning',
+							text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
+						});
+						if (!confirm.canceled) {
+							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
+							if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
+						}
+					} else {
+						os.alert({
+							type: 'error',
+							text: err.message + '\n' + err.id,
+						});
+					}
+				},
+			);
+		},
+	})), null, {
+		icon: 'ti ti-plus',
+		text: i18n.ts.createNew,
+		action: async () => {
+			const { canceled, result } = await os.form(i18n.ts.createNewClip, {
+				name: {
+					type: 'string',
+					label: i18n.ts.name,
+				},
+				description: {
+					type: 'string',
+					required: false,
+					multiline: true,
+					label: i18n.ts.description,
+				},
+				isPublic: {
+					type: 'boolean',
+					label: i18n.ts.public,
+					default: false,
+				},
+			});
+			if (canceled) return;
+
+			const clip = await os.apiWithDialog('clips/create', result);
+
+			clipsCache.delete();
+
+			claimAchievement('noteClipped1');
+			os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
+		},
+	}];
+}
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
@@ -208,64 +283,7 @@ export function getNoteMenu(props: {
 				type: 'parent',
 				icon: 'ti ti-paperclip',
 				text: i18n.ts.clip,
-				children: async () => {
-					const clips = await os.api('clips/list');
-					return [{
-						icon: 'ti ti-plus',
-						text: i18n.ts.createNew,
-						action: async () => {
-							const { canceled, result } = await os.form(i18n.ts.createNewClip, {
-								name: {
-									type: 'string',
-									label: i18n.ts.name,
-								},
-								description: {
-									type: 'string',
-									required: false,
-									multiline: true,
-									label: i18n.ts.description,
-								},
-								isPublic: {
-									type: 'boolean',
-									label: i18n.ts.public,
-									default: false,
-								},
-							});
-							if (canceled) return;
-
-							const clip = await os.apiWithDialog('clips/create', result);
-
-							claimAchievement('noteClipped1');
-							os.apiWithDialog('clips/add-note', { clipId: clip.id, noteId: appearNote.id });
-						},
-					}, null, ...clips.map(clip => ({
-						text: clip.name,
-						action: () => {
-							claimAchievement('noteClipped1');
-							os.promiseDialog(
-								os.api('clips/add-note', { clipId: clip.id, noteId: appearNote.id }),
-								null,
-								async (err) => {
-									if (err.id === '734806c4-542c-463a-9311-15c512803965') {
-										const confirm = await os.confirm({
-											type: 'warning',
-											text: i18n.t('confirmToUnclipAlreadyClippedNote', { name: clip.name }),
-										});
-										if (!confirm.canceled) {
-											os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
-											if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
-										}
-									} else {
-										os.alert({
-											type: 'error',
-											text: err.message + '\n' + err.id,
-										});
-									}
-								},
-							);
-						},
-					}))];
-				},
+				children: () => getNoteClipMenu(props),
 			},
 			statePromise.then(state => state.isMutedThread ? {
 				icon: 'ti ti-message-off',

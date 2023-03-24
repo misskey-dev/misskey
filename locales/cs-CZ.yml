@@ -776,3 +776,7 @@ _deck:
     list: "Seznamy"
     channel: "Kanály"
     mentions: "Zmínění"
+_webhookSettings:
+  name: "Jméno"
+  active: "Zapnuto"
+

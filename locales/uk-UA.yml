@@ -576,7 +576,6 @@ tokenRequested: "Надати доступ до акаунту"
 pluginTokenRequestedDescription: "Цей плагін зможе використовувати дозволи які тут вказані."
 notificationType: "Тип сповіщення"
 edit: "Редагувати"
-useStarForReactionFallback: "Використовувати ★ як запасний варіант, якщо емодзі реакції невідомий"
 emailServer: "Email сервер"
 enableEmail: "Увімкнути функцію доставки пошти"
 emailConfigInfo: "Використовується для підтвердження електронної пошти підчас реєстрації, а також для відновлення паролю."
@@ -1639,3 +1638,7 @@ _deck:
     channel: "Канали"
     mentions: "Згадки"
     direct: "Особисте"
+_webhookSettings:
+  name: "Ім'я"
+  active: "Увімкнено"
+
