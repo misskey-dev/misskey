@@ -147,7 +147,11 @@ export class ReactionService {
 			.where('id = :id', { id: note.id })
 			.execute();
 
-		this.perUserReactionsChart.update(user, note);
+		const meta = await this.metaService.fetch();
+
+		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+			this.perUserReactionsChart.update(user, note);
+		}
 
 		// カスタム絵文字リアクションだったら絵文字情報も送る
 		const decodedReaction = this.decodeReaction(reaction);
