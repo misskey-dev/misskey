@@ -1933,3 +1933,19 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "サイズが大きい順"
   orderByCreatedAtAsc: "追加日が古い順"
+
+_webhookSettings:
+  createWebhook: "Webhookを作成"
+  name: "名前"
+  secret: "シークレット"
+  events: "Webhookを実行するタイミング"
+  active: "有効"
+  _events:
+    follow: "フォローしたとき"
+    followed: "フォローされたとき"
+    note: "ノートを投稿したとき"
+    reply: "返信されたとき"
+    renote: "Renoteされたとき"
+    reaction: "リアクションがあったとき"
+    mention: "メンションされたとき"
+
