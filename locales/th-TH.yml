@@ -1867,3 +1867,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "ขนาดไฟล์จากมากไปหาน้อย"
   orderByCreatedAtAsc: "วันที่จากน้อยไปหามาก"
+_webhookSettings:
+  name: "ชื่อ"
+  active: "เปิดใช้งาน"
+
