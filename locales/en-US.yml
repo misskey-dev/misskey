@@ -980,6 +980,9 @@ drivecleaner: "Drive Cleaner"
 retryAllQueuesNow: "Retry running all queues"
 retryAllQueuesConfirmTitle: "Really retry all?"
 retryAllQueuesConfirmText: "This will temporarily increase the server load."
+enableChartsForRemoteUser: "Generate remote user data charts"
+enableChartsForFederatedInstances: "Generate remote instance data charts"
+showClipButtonInNoteFooter: "Add \"Clip\" to note action menu"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
@@ -1877,6 +1880,17 @@ _drivecleaner:
   orderBySizeDesc: "Descending Filesizes"
   orderByCreatedAtAsc: "Ascending Dates"
 _webhookSettings:
+  createWebhook: "Create Webhook"
   name: "Name"
+  secret: "Secret"
+  events: "Webhook Events"
   active: "Enabled"
+  _events:
+    follow: "When following a user"
+    followed: "When being followed"
+    note: "When posting a note"
+    reply: "When receiving a reply"
+    renote: "When renoted"
+    reaction: "When receiving a reaction"
+    mention: "When being mentioned"
 
