@@ -1,4 +1,4 @@
-import type { Endpoints } from './api.types';
+import { Endpoints } from './api.types';
 
 const MK_API_ERROR = Symbol();
 
@@ -83,7 +83,7 @@ export class APIClient {
 				cache: 'no-cache',
 			}).then(async (res) => {
 				const body = res.status === 204 ? null : await res.json();
-
+	
 				if (res.status === 200) {
 					resolve(body);
 				} else if (res.status === 204) {
@@ -96,7 +96,7 @@ export class APIClient {
 				}
 			}).catch(reject);
 		});
-
+	
 		return promise as any;
 	}
 }

@@ -36,7 +36,6 @@ jobs:
         - backend
         - frontend
         - sw
-        - misskey-js
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -62,7 +61,6 @@ jobs:
       matrix:
         workspace:
         - backend
-        - misskey-js
     steps:
     - uses: actions/checkout@v3.3.0
       with:
