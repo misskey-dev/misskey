@@ -1,12 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
-import { Meta } from '@storybook/vue3';
-const meta = {
-	title: 'components/global/MkA',
-	component: MkA,
-} satisfies Meta<typeof MkA>;
-export default meta;
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
@@ -33,6 +25,15 @@ export const Default = {
 			template: '<MkA v-bind="props">Text</MkA>',
 		};
 	},
+	args: {
+		to: '#test',
+	},
+	parameters: {
+		layout: 'centered',
+	},
+} satisfies StoryObj<typeof MkA>;
+export const ContextMenu = {
+	...Default,
 	async play({ canvasElement }) {
 		const canvas = within(canvasElement);
 		const a = canvas.getByRole<HTMLAnchorElement>('link');
@@ -41,11 +42,5 @@ export const Default = {
 		await tick();
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
-	},
-	args: {
-		to: '#test',
-	},
-	parameters: {
-		layout: 'centered',
 	},
 } satisfies StoryObj<typeof MkA>;

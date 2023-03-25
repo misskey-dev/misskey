@@ -90,7 +90,9 @@ const preview = {
 						popups: misskeyOS.popups,
 					};
 				},
-				template: '<component :is="popup.component" v-for="popup in popups" :key="popup.id" v-bind="popup.props" v-on="popup.events"/><story />',
+				template:
+					'<component :is="popup.component" v-for="popup in popups" :key="popup.id" v-bind="popup.props" v-on="popup.events"/>' +
+					'<story />',
 			};
 		},
 	],

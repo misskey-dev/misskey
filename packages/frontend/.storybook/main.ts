@@ -5,9 +5,9 @@ import restart from 'vite-plugin-restart';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
-		'@storybook/addon-links',
 		'@storybook/addon-essentials',
 		'@storybook/addon-interactions',
+		'@storybook/addon-links',
 		'@storybook/addon-storysource',
 		'../node_modules/storybook-addon-misskey-theme',
 	],
@@ -20,6 +20,9 @@ const config = {
 	},
 	core: {
 		disableTelemetry: true,
+	},
+	features: {
+		interactionsDebugger: true,
 	},
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
