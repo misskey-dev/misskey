@@ -5,7 +5,7 @@ import fastifyMiddie, { IncomingMessageExtended } from '@fastify/middie';
 import { JSDOM } from 'jsdom';
 import parseLinkHeader from 'parse-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize from 'oauth2orize';
+import oauth2orize, { OAuth2 } from 'oauth2orize';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -23,6 +23,9 @@ import fastifyView from '@fastify/view';
 import pug from 'pug';
 import { fileURLToPath } from 'node:url';
 import { MetaService } from '@/core/MetaService.js';
+import fastifyFormbody from '@fastify/formbody';
+import bodyParser from 'body-parser';
+import fastifyExpress from '@fastify/express';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
 function validateClientId(raw: string): URL {
@@ -58,16 +61,11 @@ function validateClientId(raw: string): URL {
 		throw new Error('client_id must not contain a username or a password');
 	}
 
-	// MUST NOT contain a port
-	if (url.port) {
-		throw new Error('client_id must not contain a port');
-	}
+	// (MAY contain a port)
 
 	// host names MUST be domain names or a loopback interface and MUST NOT be
 	// IPv4 or IPv6 addresses except for IPv4 127.0.0.1 or IPv6 [::1].
-	// (But in https://indieauth.spec.indieweb.org/#redirect-url we need to only
-	// fetch non-loopback URLs, so exclude them here.)
-	if (!url.hostname.match(/\.\w+$/)) {
+	if (!url.hostname.match(/\.\w+$/) && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {
 		throw new Error('client_id must have a domain name as a host name');
 	}
 
@@ -351,6 +349,9 @@ export class OAuth2ProviderService {
 		// this feature for some time, given that this is security related.
 		fastify.get<{ Querystring: { code_challenge?: string, code_challenge_method?: string } }>('/oauth/authorize', async (request, reply) => {
 			console.log('HIT /oauth/authorize', request.query);
+			const oauth2 = (request.raw as any).oauth2 as (OAuth2 | undefined);
+			console.log(oauth2);
+
 			if (typeof request.query.code_challenge !== 'string') {
 				throw new Error('`code_challenge` parameter is required');
 			}
@@ -358,17 +359,11 @@ export class OAuth2ProviderService {
 				throw new Error('`code_challenge_method` parameter must be set as S256');
 			}
 
-			const meta = await this.metaService.fetch();
-			return await reply.view('base', {
-				img: meta.bannerUrl,
-				title: meta.name ?? 'Misskey',
-				instanceName: meta.name ?? 'Misskey',
-				url: this.config.url,
-				desc: meta.description,
-				icon: meta.iconUrl,
-				themeColor: meta.themeColor,
+			return await reply.view('oauth', {
+				transactionId: oauth2?.transactionID,
 			});
 		});
+		fastify.post('/oauth/decision', async (request, reply) => { });
 		fastify.post('/oauth/token', async () => { });
 		// fastify.get('/oauth/interaction/:uid', async () => { });
 		// fastify.get('/oauth/interaction/:uid/login', async () => { });
@@ -382,7 +377,7 @@ export class OAuth2ProviderService {
 			},
 		});
 
-		await fastify.register(fastifyMiddie);
+		await fastify.register(fastifyExpress);
 		fastify.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }) as any);
 		fastify.use('/oauth/authorize', this.#server.authorization((clientId, redirectUri, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
@@ -392,13 +387,8 @@ export class OAuth2ProviderService {
 				const clientUrl = validateClientId(clientId);
 				const redirectUrl = new URL(redirectUri);
 
-				if (process.env.NODE_ENV !== 'test') {
-					const lookup = await dns.lookup(clientUrl.hostname);
-					if (ipaddr.parse(lookup.address).range() === 'loopback') {
-						throw new Error('client_id unexpectedly resolves to loopback IP.');
-					}
-				}
-
+				// https://indieauth.spec.indieweb.org/#authorization-request
+				// Allow same-origin redirection
 				if (redirectUrl.protocol !== clientUrl.protocol || redirectUrl.host !== clientUrl.host) {
 					// TODO: allow more redirect_uri by Client Information Discovery
 					throw new Error('cross-origin redirect_uri is not supported yet.');
@@ -407,6 +397,13 @@ export class OAuth2ProviderService {
 				return [clientId, redirectUri];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
+		// for (const middleware of this.#server.decision()) {
+
+		fastify.use('/oauth/decision', bodyParser.urlencoded({
+			extend: false,
+		}));
+		fastify.use('/oauth/decision', this.#server.decision());
+		// }
 
 		// fastify.use('/oauth', this.#provider.callback());
 	}

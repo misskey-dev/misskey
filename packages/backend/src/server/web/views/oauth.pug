@@ -1,0 +1,10 @@
+extends ./base
+
+block meta
+	//- Should be removed by the page when it loads, so that it won't leak when
+	//- user navigates away via the navigation bar
+	//- XXX: Remove navigation bar in auth page?
+	meta(name='misskey:oauth:transaction-id' content=transactionId)
+	meta(name='misskey:oauth:client-id' content=clientId)
+	meta(name='misskey:oauth:scope' content=scope)
+	meta(name='misskey:oauth:redirection-uri' content=redirectionUri)
