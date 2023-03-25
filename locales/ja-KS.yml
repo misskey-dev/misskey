@@ -594,7 +594,6 @@ tokenRequested: "アカウントへのアクセス許してやったらどうや
 pluginTokenRequestedDescription: "このプラグインはここで設定した権限を使えるようになるで。"
 notificationType: "通知の種類"
 edit: "編集"
-useStarForReactionFallback: "リアクションがようわからん場合、★を使う"
 emailServer: "メールサーバー"
 enableEmail: "メール配信を受け取る"
 emailConfigInfo: "メールアドレスの確認とかパスワードリセットの時に使うで"
@@ -981,6 +980,9 @@ drivecleaner: "ドライブキレイキレイ"
 retryAllQueuesNow: "キューを全部もっかいやり直す"
 retryAllQueuesConfirmTitle: "もっかいやってみるか？"
 retryAllQueuesConfirmText: "一時的にサーバー重なるかもしれへんで。"
+enableChartsForRemoteUser: "リモートユーザーのチャートを作る"
+enableChartsForFederatedInstances: "リモートサーバーのチャートを作る"
+showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
@@ -1277,6 +1279,8 @@ _role:
     followersMoreThanOrEq: "フォロワー数が～以上"
     followingLessThanOrEq: "フォロー数が～以下"
     followingMoreThanOrEq: "フォロー数が～以上"
+    notesLessThanOrEq: "投稿数が～以下しかない"
+    notesMoreThanOrEq: "投稿を～以上しとる"
     and: "～かつ～"
     or: "～または～"
     not: "～ではない"
@@ -1875,3 +1879,18 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "サイズのでかい順"
   orderByCreatedAtAsc: "追加日の古い順"
+_webhookSettings:
+  createWebhook: "Webhookをつくる"
+  name: "名前"
+  secret: "シークレット"
+  events: "Webhookを投げるタイミング"
+  active: "有効"
+  _events:
+    follow: "フォローしたとき～！"
+    followed: "フォローもらったとき～！"
+    note: "ノートを投稿したとき～！"
+    reply: "返信があるとき～！"
+    renote: "Renoteされるとき～！"
+    reaction: "リアクションがあるとき～！"
+    mention: "メンションがあるとき～！"
+

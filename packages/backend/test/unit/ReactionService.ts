@@ -74,19 +74,19 @@ describe('ReactionService', () => {
 		});
 
 		test('fallback - undefined', async () => {
-			assert.strictEqual(await reactionService.toDbReaction(undefined), '👍');
+			assert.strictEqual(await reactionService.toDbReaction(undefined), '❤');
 		});
 
 		test('fallback - null', async () => {
-			assert.strictEqual(await reactionService.toDbReaction(null), '👍');
+			assert.strictEqual(await reactionService.toDbReaction(null), '❤');
 		});
 
 		test('fallback - empty', async () => {
-			assert.strictEqual(await reactionService.toDbReaction(''), '👍');
+			assert.strictEqual(await reactionService.toDbReaction(''), '❤');
 		});
 
 		test('fallback - unknown', async () => {
-			assert.strictEqual(await reactionService.toDbReaction('unknown'), '👍');
+			assert.strictEqual(await reactionService.toDbReaction('unknown'), '❤');
 		});
 	});
 });

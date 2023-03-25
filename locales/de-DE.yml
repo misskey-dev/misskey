@@ -594,7 +594,6 @@ tokenRequested: "Zugriff zum Benutzerkonto gewähren"
 pluginTokenRequestedDescription: "Dieses Plugin wird die hier konfigurierten Berechtigungen verwenden können."
 notificationType: "Art der Benachrichtigung"
 edit: "Bearbeiten"
-useStarForReactionFallback: "Verwende ★ falls das Reaktions-Emoji unbekannt ist"
 emailServer: "Email-Server"
 enableEmail: "Email-Versand aktivieren"
 emailConfigInfo: "Zur Email-Bestätigung bei Registrierung oder zum Zurücksetzen des Passworts verwendet"
@@ -1277,6 +1276,8 @@ _role:
     followersMoreThanOrEq: "Hat X oder mehr Follower"
     followingLessThanOrEq: "Folgt X oder weniger Benutzern"
     followingMoreThanOrEq: "Folgt X oder mehr Benutzern"
+    notesLessThanOrEq: "Beitragszahl ist kleiner-gleich"
+    notesMoreThanOrEq: "Beitragszahl ist größer-gleich"
     and: "UND-Bedingung"
     or: "ODER-Bedingung"
     not: "NICHT-Bedingung"
@@ -1875,3 +1876,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "Absteigende Dateigrößen"
   orderByCreatedAtAsc: "Aufsteigendes Erstelldatum"
+_webhookSettings:
+  name: "Name"
+  active: "Aktiviert"
+
