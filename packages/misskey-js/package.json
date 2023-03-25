@@ -1,0 +1,45 @@
+{
+	"name": "misskey-js",
+	"version": "0.0.15",
+	"description": "Misskey SDK for JavaScript",
+	"main": "./built/index.js",
+	"types": "./built/index.d.ts",
+	"scripts": {
+		"build": "npm run tsc",
+		"tsc": "tsc",
+		"tsd": "tsd",
+		"api": "npx api-extractor run --local --verbose",
+		"api-prod": "npx api-extractor run --verbose",
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"jest": "jest --coverage --detectOpenHandles",
+		"test": "npm run jest && npm run tsd"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/misskey-dev/misskey.js.git"
+	},
+	"devDependencies": {
+		"@microsoft/api-extractor": "^7.19.3",
+		"@types/jest": "^27.4.0",
+		"@types/node": "17.0.5",
+		"@typescript-eslint/eslint-plugin": "5.8.1",
+		"@typescript-eslint/parser": "5.8.1",
+		"eslint": "8.6.0",
+		"jest": "^27.4.5",
+		"jest-fetch-mock": "^3.0.3",
+		"jest-websocket-mock": "^2.2.1",
+		"mock-socket": "^9.0.8",
+		"ts-jest": "^27.1.2",
+		"ts-node": "10.4.0",
+		"tsd": "^0.19.1",
+		"typescript": "4.5.4"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"autobind-decorator": "^2.4.0",
+		"eventemitter3": "^4.0.7",
+		"reconnecting-websocket": "^4.4.0"
+	}
+}
