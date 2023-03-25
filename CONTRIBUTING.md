@@ -268,18 +268,14 @@ import MyComponent from './MyComponent.vue';
 void MyComponent;
 ```
 
-You can use msw to mock API requests in the storybook. Creating a `MyComponent.stories.msw.ts` file and add the following line to the file.
+You can use msw to mock API requests in the storybook. Creating a `MyComponent.stories.msw.ts` file to define the mock handlers.
 
 ```ts
 import { rest } from 'msw';
 export const handlers = [
 	rest.post('/api/notes/timeline', (req, res, ctx) => {
 		return res(
-			ctx.json({
-				notes: [],
-				users: [],
-				hasNext: false,
-			})
+			ctx.json([]),
 		);
 	}),
 ];
