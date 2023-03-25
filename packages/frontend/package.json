@@ -123,6 +123,7 @@
 		"storybook": "7.0.0-rc.6",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"summaly": "github:misskey-dev/summaly",
+		"vite-plugin-restart": "^0.3.1",
 		"vitest": "^0.29.2",
 		"vitest-fetch-mock": "^0.2.2",
 		"vue-eslint-parser": "9.1.0",
