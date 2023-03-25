@@ -3,7 +3,7 @@ import { IsNull } from 'typeorm';
 import type { LocalUser, User } from '@/models/entities/User.js';
 import type { RelaysRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import type { Relay } from '@/models/entities/Relay.js';
 import { QueueService } from '@/core/QueueService.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
@@ -16,7 +16,7 @@ const ACTOR_USERNAME = 'relay.actor' as const;
 
 @Injectable()
 export class RelayService {
-	private relaysCache: Cache<Relay[]>;
+	private relaysCache: KVCache<Relay[]>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -30,7 +30,7 @@ export class RelayService {
 		private createSystemUserService: CreateSystemUserService,
 		private apRendererService: ApRendererService,
 	) {
-		this.relaysCache = new Cache<Relay[]>(1000 * 60 * 10);
+		this.relaysCache = new KVCache<Relay[]>(1000 * 60 * 10);
 	}
 
 	@bindThis

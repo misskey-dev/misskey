@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { summaly } from 'summaly';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -9,6 +8,7 @@ import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import { ApiError } from '@/server/api/error.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
@@ -40,9 +40,9 @@ export class UrlPreviewService {
 
 	@bindThis
 	public async handle(
-		request: FastifyRequest<{ Querystring: { url: string; lang: string; } }>,
+		request: FastifyRequest<{ Querystring: { url: string; lang?: string; } }>,
 		reply: FastifyReply,
-	) {
+	): Promise<object | undefined> {
 		const url = request.query.url;
 		if (typeof url !== 'string') {
 			reply.code(400);
@@ -78,7 +78,7 @@ export class UrlPreviewService {
 
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
 
-			if (summary.url && !(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
+			if (!(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
 				throw new Error('unsupported schema included');
 			}
 
@@ -95,9 +95,15 @@ export class UrlPreviewService {
 			return summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
-			reply.code(200);
+			reply.code(422);
 			reply.header('Cache-Control', 'max-age=86400, immutable');
-			return {};
+			return {
+				error: new ApiError({
+					message: 'Failed to get preview',
+					code: 'URL_PREVIEW_FAILED',
+					id: '09d01cb5-53b9-4856-82e5-38a50c290a3b',
+				}),
+			};
 		}
 	}
 }
