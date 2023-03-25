@@ -25,15 +25,6 @@ export const Default = {
 			template: '<MkA v-bind="props">Text</MkA>',
 		};
 	},
-	args: {
-		to: '#test',
-	},
-	parameters: {
-		layout: 'centered',
-	},
-} satisfies StoryObj<typeof MkA>;
-export const ContextMenu = {
-	...Default,
 	async play({ canvasElement }) {
 		const canvas = within(canvasElement);
 		const a = canvas.getByRole<HTMLAnchorElement>('link');
@@ -42,5 +33,14 @@ export const ContextMenu = {
 		await tick();
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
+		await userEvent.click(a, { button: 0 });
+		await tick();
+		await expect(menu).not.toBeInTheDocument();
+	},
+	args: {
+		to: '#test',
+	},
+	parameters: {
+		layout: 'centered',
 	},
 } satisfies StoryObj<typeof MkA>;

@@ -41,6 +41,9 @@ export const Default = {
 		await tick();
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
+		await userEvent.click(a, { button: 0 });
+		await tick();
+		await expect(menu).not.toBeInTheDocument();
 	},
 	args: {
 		to: '#test',
