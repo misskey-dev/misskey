@@ -267,6 +267,17 @@ type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
 
+interface OAuthRequestQuery {
+	response_type: string;
+	client_id: string;
+	redirect_uri: string;
+	state: string;
+	code_challenge: string;
+	code_challenge_method: string;
+	scope?: string;
+	me?: string;
+}
+
 @Injectable()
 export class OAuth2ProviderService {
 	// #provider: Provider;
@@ -305,7 +316,7 @@ export class OAuth2ProviderService {
 		// });
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
-			console.log(client, redirectUri, user, ares);
+			console.log('HIT grant code:', client, redirectUri, user, ares);
 			const code = secureRndstr(32, true);
 			done(null, code);
 		}));
@@ -347,11 +358,14 @@ export class OAuth2ProviderService {
 		// no way to turn it off.
 		// For now only allow the basic OAuth endpoints, to start small and evaluate
 		// this feature for some time, given that this is security related.
-		fastify.get<{ Querystring: { code_challenge?: string, code_challenge_method?: string } }>('/oauth/authorize', async (request, reply) => {
+		fastify.get<{ Querystring: OAuthRequestQuery }>('/oauth/authorize', async (request, reply) => {
 			console.log('HIT /oauth/authorize', request.query);
 			const oauth2 = (request.raw as any).oauth2 as (OAuth2 | undefined);
 			console.log(oauth2);
 
+			if (request.query.response_type !== 'code') {
+				throw new Error('`response_type` parameter must be set as "code"');
+			}
 			if (typeof request.query.code_challenge !== 'string') {
 				throw new Error('`code_challenge` parameter is required');
 			}
@@ -363,7 +377,7 @@ export class OAuth2ProviderService {
 				transactionId: oauth2?.transactionID,
 			});
 		});
-		fastify.post('/oauth/decision', async (request, reply) => { });
+		fastify.post('/oauth/decision', async () => { });
 		fastify.post('/oauth/token', async () => { });
 		// fastify.get('/oauth/interaction/:uid', async () => { });
 		// fastify.get('/oauth/interaction/:uid/login', async () => { });
@@ -399,9 +413,7 @@ export class OAuth2ProviderService {
 		}));
 		// for (const middleware of this.#server.decision()) {
 
-		fastify.use('/oauth/decision', bodyParser.urlencoded({
-			extend: false,
-		}));
+		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/decision', this.#server.decision());
 		// }
 
