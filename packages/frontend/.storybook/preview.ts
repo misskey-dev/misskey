@@ -14,6 +14,7 @@ const appInitialized = Symbol();
 
 let moduleInitialized = false;
 let unobserve = () => {};
+let misskeyOS = null;
 
 function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
 	unobserve();
@@ -51,7 +52,8 @@ queueMicrotask(() => {
 		import('../src/directives'),
 		import('../src/widgets'),
 		import('../src/scripts/theme'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }]) => {
+		import('../src/os'),
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
@@ -62,6 +64,7 @@ queueMicrotask(() => {
 			components(app);
 			directives(app);
 			widgets(app);
+			misskeyOS = os;
 		});
 	});
 });
@@ -79,6 +82,17 @@ const preview = {
 			return story;
 		},
 		mswDecorator,
+		(Story, context) => {
+			return {
+				setup() {
+					return {
+						context,
+						popups: misskeyOS.popups,
+					};
+				},
+				template: '<div><component :is="popup.component" v-for="popup in popups" :key="popup.id" v-bind="popup.props" v-on="popup.events"/><story /></div>',
+			};
+		},
 	],
 	parameters: {
 		msw: {
