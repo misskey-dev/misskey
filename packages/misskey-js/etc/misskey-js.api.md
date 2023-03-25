@@ -12,7 +12,7 @@ export type Acct = {
     host: string | null;
 };
 
-// Warning: (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "TODO_2" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
 type Ad = TODO_2;
@@ -2247,17 +2247,17 @@ type FollowRequest = {
 // @public (undocumented)
 type GalleryPost = {
     id: ID;
-	createdAt: DateString;
-	updatedAt: DateString;
-	userId: User['id'];
-	user: User;
-	title: string;
-	description: string | null;
-	fileIds: DriveFile['id'][];
-	files: DriveFile[];
-	isSensitive: boolean;
-	likedCount: number;
-	isLiked?: boolean;
+    createdAt: DateString;
+    updatedAt: DateString;
+    userId: User['id'];
+    user: User;
+    title: string;
+    description: string | null;
+    fileIds: DriveFile['id'][];
+    files: DriveFile[];
+    isSensitive: boolean;
+    likedCount: number;
+    isLiked?: boolean;
 };
 
 // @public (undocumented)
