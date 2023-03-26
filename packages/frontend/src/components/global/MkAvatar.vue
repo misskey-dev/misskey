@@ -86,6 +86,18 @@ watch(() => props.user.avatarBlurhash, () => {
 	to { transform: rotate(-37.6deg) skew(-30deg); }
 }
 
+@keyframes eartightleft {
+	from { transform: rotate(37.6deg) skew(30deg); }
+	50% { transform: rotate(37.4deg) skew(30deg); }
+	to { transform: rotate(37.6deg) skew(30deg); }
+}
+
+@keyframes eartightright {
+	from { transform: rotate(-37.6deg) skew(-30deg); }
+	50% { transform: rotate(-37.4deg) skew(-30deg); }
+	to { transform: rotate(-37.6deg) skew(-30deg); }
+}
+
 .root {
 	position: relative;
 	display: inline-block;
@@ -184,6 +196,7 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		> .earLeft {
 			transform: rotate(37.5deg) skew(30deg);
+			animation: eartightleft 6s infinite;
 
 			&, &::after {
 				border-radius: 0 75% 75%;
@@ -205,6 +218,7 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		> .earRight {
 			transform: rotate(-37.5deg) skew(-30deg);
+			animation: eartightright 6s infinite;
 
 			&, &::after {
 				border-radius: 75% 0 75% 75%;
