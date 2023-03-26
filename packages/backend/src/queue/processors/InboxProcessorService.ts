@@ -184,9 +184,12 @@ export class InboxProcessorService {
 
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 
-			this.instanceChart.requestReceived(i.host);
 			this.apRequestChart.inbox();
 			this.federationChart.inbox(i.host);
+
+			if (meta.enableChartsForFederatedInstances) {
+				this.instanceChart.requestReceived(i.host);
+			}
 		});
 
 		// アクティビティを処理

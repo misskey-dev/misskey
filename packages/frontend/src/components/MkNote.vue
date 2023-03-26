@@ -109,6 +109,9 @@
 				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
 				</button>
+				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
+					<i class="ti ti-paperclip"></i>
+				</button>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -151,7 +154,7 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { getNoteMenu } from '@/scripts/get-note-menu';
+import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
@@ -192,6 +195,7 @@ const menuButton = shallowRef<HTMLElement>();
 const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
+const clipButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
@@ -390,6 +394,10 @@ function menu(viaKeyboard = false): void {
 	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
 		viaKeyboard,
 	}).then(focus);
+}
+
+async function clip() {
+	os.popupMenu(await getNoteClipMenu({ note: note, isDeleted, currentClipPage }), clipButton.value).then(focus);
 }
 
 function showRenoteMenu(viaKeyboard = false): void {

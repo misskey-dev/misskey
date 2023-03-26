@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { InstancesRepository } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -9,7 +9,7 @@ import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class FederatedInstanceService {
-	private cache: Cache<Instance>;
+	private cache: KVCache<Instance>;
 
 	constructor(
 		@Inject(DI.instancesRepository)
@@ -18,7 +18,7 @@ export class FederatedInstanceService {
 		private utilityService: UtilityService,
 		private idService: IdService,
 	) {
-		this.cache = new Cache<Instance>(1000 * 60 * 60);
+		this.cache = new KVCache<Instance>(1000 * 60 * 60);
 	}
 
 	@bindThis

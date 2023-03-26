@@ -10,6 +10,8 @@
 			<option value="followersMoreThanOrEq">{{ i18n.ts._role._condition.followersMoreThanOrEq }}</option>
 			<option value="followingLessThanOrEq">{{ i18n.ts._role._condition.followingLessThanOrEq }}</option>
 			<option value="followingMoreThanOrEq">{{ i18n.ts._role._condition.followingMoreThanOrEq }}</option>
+			<option value="notesLessThanOrEq">{{ i18n.ts._role._condition.notesLessThanOrEq }}</option>
+			<option value="notesMoreThanOrEq">{{ i18n.ts._role._condition.notesMoreThanOrEq }}</option>
 			<option value="and">{{ i18n.ts._role._condition.and }}</option>
 			<option value="or">{{ i18n.ts._role._condition.or }}</option>
 			<option value="not">{{ i18n.ts._role._condition.not }}</option>
@@ -42,7 +44,7 @@
 		<template #suffix>sec</template>
 	</MkInput>
 
-	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
+	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
 	</MkInput>
 </div>
 </template>
@@ -91,6 +93,8 @@ const type = computed({
 		if (t === 'followersMoreThanOrEq') v.value.value = 10;
 		if (t === 'followingLessThanOrEq') v.value.value = 10;
 		if (t === 'followingMoreThanOrEq') v.value.value = 10;
+		if (t === 'notesLessThanOrEq') v.value.value = 10;
+		if (t === 'notesMoreThanOrEq') v.value.value = 10;
 		v.value.type = t;
 	},
 });
