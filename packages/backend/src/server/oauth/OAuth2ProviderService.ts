@@ -26,6 +26,11 @@ import { MetaService } from '@/core/MetaService.js';
 import fastifyFormbody from '@fastify/formbody';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
+import crypto from 'node:crypto';
+import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
+import { IdService } from '@/core/IdService.js';
+import { UserCacheService } from '@/core/UserCacheService.js';
+import type { LocalUser } from '@/models/entities/User.js';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
 function validateClientId(raw: string): URL {
@@ -263,6 +268,12 @@ async function fetchFromClientId(httpRequestService: HttpRequestService, id: str
 // 	};
 // }
 
+function pkceS256(codeVerifier: string) {
+	return crypto.createHash('sha256')
+		.update(codeVerifier, 'ascii')
+		.digest('base64url');
+}
+
 type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
@@ -290,6 +301,12 @@ export class OAuth2ProviderService {
 		private redisClient: Redis.Redis,
 		private httpRequestService: HttpRequestService,
 		private metaService: MetaService,
+		@Inject(DI.accessTokensRepository)
+		accessTokensRepository: AccessTokensRepository,
+		idService: IdService,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+		private userCacheService: UserCacheService,
 	) {
 		// this.#provider = new Provider(config.url, {
 		// 	clientAuthMethods: ['none'],
@@ -314,11 +331,69 @@ export class OAuth2ProviderService {
 		// 		console.log(error);
 		// 	},
 		// });
+
+		const TEMP_GRANT_CODES: Record<string, {
+			clientId: string,
+			userId: string,
+			redirectUri: string,
+			codeChallenge: string,
+			scopes: string[],
+		}> = {};
+
 		this.#server.grant(oauth2Pkce.extensions());
-		this.#server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, done) => {
-			console.log('HIT grant code:', client, redirectUri, user, ares);
-			const code = secureRndstr(32, true);
-			done(null, code);
+		this.#server.grant(oauth2orize.grant.code((client, redirectUri, token, ares, areq, done) => {
+			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
+				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
+				const code = secureRndstr(32, true);
+
+				const user = await this.userCacheService.localUserByNativeTokenCache.fetch(token,
+					() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
+				if (!user) {
+					throw new Error('No such user');
+				}
+
+				TEMP_GRANT_CODES[code] = {
+					clientId: client,
+					userId: user.id,
+					redirectUri,
+					codeChallenge: areq.codeChallenge,
+					scopes: areq.scope,
+				};
+				return [code];
+			})().then(args => done(null, ...args), err => done(err));
+		}));
+		this.#server.exchange(oauth2orize.exchange.code((client, code, redirectUri, body, done) => {
+			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
+				const granted = TEMP_GRANT_CODES[code];
+				console.log(granted, body, code, redirectUri);
+				if (!granted) {
+					return [false];
+				}
+				delete TEMP_GRANT_CODES[code];
+				if (!granted.scopes.length) return [false];
+				if (body.client_id !== granted.clientId) return [false];
+				if (redirectUri !== granted.redirectUri) return [false];
+				if (!body.code_verifier || pkceS256(body.code_verifier) !== granted.codeChallenge) return [false];
+
+				const accessToken = secureRndstr(128, true);
+				const refreshToken = secureRndstr(128, true);
+
+				const now = new Date();
+
+				// Insert access token doc
+				await accessTokensRepository.insert({
+					id: idService.genId(),
+					createdAt: now,
+					lastUsedAt: now,
+					userId: granted.userId,
+					token: accessToken,
+					hash: accessToken,
+					name: granted.clientId,
+					permission: granted.scopes,
+				});
+
+				return [accessToken, refreshToken];
+			})().then(args => done(null, ...args), err => done(err));
 		}));
 		this.#server.serializeClient((client, done) => done(null, client));
 		this.#server.deserializeClient((id, done) => done(null, id));
@@ -373,6 +448,7 @@ export class OAuth2ProviderService {
 				throw new Error('`code_challenge_method` parameter must be set as S256');
 			}
 
+			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
 				transactionId: oauth2?.transactionID,
 			});
@@ -414,7 +490,14 @@ export class OAuth2ProviderService {
 		// for (const middleware of this.#server.decision()) {
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
-		fastify.use('/oauth/decision', this.#server.decision());
+		fastify.use('/oauth/decision', this.#server.decision((req, done) => {
+			console.log('HIT decision:', req.oauth2, (req as any).body);
+			req.user = (req as any).body.login_token;
+			done(null, undefined);
+		}));
+
+		fastify.use('/oauth/token', bodyParser.json({ strict: true }));
+		fastify.use('/oauth/token', this.#server.token());
 		// }
 
 		// fastify.use('/oauth', this.#provider.callback());

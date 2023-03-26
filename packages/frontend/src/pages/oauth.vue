@@ -13,6 +13,7 @@
 			<div v-if="name">{{ $t('_auth.shareAccess', { name }) }}</div>
 			<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 			<form :class="$style.buttons" action="/oauth/decision" accept-charset="utf-8" method="post">
+				<input name="login_token" type="hidden" :value="$i.token"/>
 				<input name="transaction_id" type="hidden" :value="transactionIdMeta?.content"/>
 				<MkButton inline name="cancel">{{ i18n.ts.cancel }}</MkButton>
 				<MkButton inline primary>{{ i18n.ts.accept }}</MkButton>
