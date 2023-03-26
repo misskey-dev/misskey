@@ -10,7 +10,7 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -71,12 +71,14 @@ export class AntennaService implements OnApplicationShutdown {
 					this.antennas.push({
 						...body,
 						createdAt: new Date(body.createdAt),
+						lastUsedAt: new Date(body.lastUsedAt),
 					});
 					break;
 				case 'antennaUpdated':
 					this.antennas[this.antennas.findIndex(a => a.id === body.id)] = {
 						...body,
 						createdAt: new Date(body.createdAt),
+						lastUsedAt: new Date(body.lastUsedAt),
 					};
 					break;
 				case 'antennaDeleted':
@@ -217,7 +219,9 @@ export class AntennaService implements OnApplicationShutdown {
 	@bindThis
 	public async getAntennas() {
 		if (!this.antennasFetched) {
-			this.antennas = await this.antennasRepository.find();
+			this.antennas = await this.antennasRepository.findBy({
+				isActive: true,
+			});
 			this.antennasFetched = true;
 		}
 	

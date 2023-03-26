@@ -7,7 +7,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
@@ -22,7 +22,7 @@ import type { DeliverJobData } from '../types.js';
 @Injectable()
 export class DeliverProcessorService {
 	private logger: Logger;
-	private suspendedHostsCache: Cache<Instance[]>;
+	private suspendedHostsCache: KVCache<Instance[]>;
 	private latest: string | null;
 
 	constructor(
@@ -46,7 +46,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
+		this.suspendedHostsCache = new KVCache<Instance[]>(1000 * 60 * 60);
 	}
 
 	@bindThis
@@ -88,10 +88,12 @@ export class DeliverProcessorService {
 				}
 
 				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-
-				this.instanceChart.requestSent(i.host, true);
 				this.apRequestChart.deliverSucc();
 				this.federationChart.deliverd(i.host, true);
+
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, true);
+				}
 			});
 
 			return 'Success';
@@ -107,14 +109,29 @@ export class DeliverProcessorService {
 					});
 				}
 
-				this.instanceChart.requestSent(i.host, false);
 				this.apRequestChart.deliverFail();
 				this.federationChart.deliverd(i.host, false);
+
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, false);
+				}
 			});
 
 			if (res instanceof StatusError) {
 				// 4xx
 				if (res.isClientError) {
+					// 相手が閉鎖していることを明示しているため、配送停止する
+					if (job.data.isSharedInbox && res.statusCode === 410) {
+						this.federatedInstanceService.fetch(host).then(i => {
+							this.instancesRepository.update(i.id, {
+								isSuspended: true,
+							});
+							this.federatedInstanceService.updateCachePartial(host, {
+								isSuspended: true,
+							});
+						});
+						return `${host} is gone`;
+					}
 					// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
 					// 何回再送しても成功することはないということなのでエラーにはしないでおく
 					return `${res.statusCode} ${res.statusMessage}`;

@@ -8,6 +8,7 @@ import { userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
+import { rolesCache, userListsCache } from '@/cache';
 
 export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -51,6 +52,14 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 				user.isMuted = true;
 			});
 		}
+	}
+
+	async function toggleRenoteMute() {
+		os.apiWithDialog(user.isRenoteMuted ? 'renote-mute/delete' : 'renote-mute/create', {
+			userId: user.id,
+		}).then(() => {
+			user.isRenoteMuted = !user.isRenoteMuted;
+		});
 	}
 
 	async function toggleBlock() {
@@ -111,14 +120,14 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
-			os.post({ specified: user });
+			os.post({ specified: user, initialText: `@${user.username} ` });
 		},
 	}, null, {
 		type: 'parent',
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
 		children: async () => {
-			const lists = await os.api('users/lists/list');
+			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
 
 			return lists.map(list => ({
 				text: list.name,
@@ -139,7 +148,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
 				children: async () => {
-					const roles = await os.api('admin/roles/list');
+					const roles = await rolesCache.fetch(() => os.api('admin/roles/list'));
 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,
@@ -179,6 +188,10 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
+		}, {
+			icon: user.isRenoteMuted ? 'ti ti-repeat' : 'ti ti-repeat-off',
+			text: user.isRenoteMuted ? i18n.ts.renoteUnmute : i18n.ts.renoteMute,
+			action: toggleRenoteMute,
 		}, {
 			icon: 'ti ti-ban',
 			text: user.isBlocking ? i18n.ts.unblock : i18n.ts.block,

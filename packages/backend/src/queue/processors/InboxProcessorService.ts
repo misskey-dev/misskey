@@ -64,7 +64,7 @@ export class InboxProcessorService {
 		const activity = job.data.activity;
 
 		//#region Log
-		const info = Object.assign({}, activity) as any;
+		const info = Object.assign({}, activity);
 		delete info['@context'];
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
@@ -184,9 +184,12 @@ export class InboxProcessorService {
 
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
 
-			this.instanceChart.requestReceived(i.host);
 			this.apRequestChart.inbox();
 			this.federationChart.inbox(i.host);
+
+			if (meta.enableChartsForFederatedInstances) {
+				this.instanceChart.requestReceived(i.host);
+			}
 		});
 
 		// アクティビティを処理

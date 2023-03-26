@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "13.9.2",
+	"version": "13.10.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@7.27.0",
+	"packageManager": "pnpm@7.29.3",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -31,8 +31,8 @@
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
 		"jest": "cd packages/backend && pnpm jest",
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
-		"test": "pnpm jest",
-		"test-and-coverage": "pnpm jest-and-coverage",
+		"test": "pnpm -r test",
+		"test-and-coverage": "pnpm -r test-and-coverage",
 		"format": "pnpm exec gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
@@ -55,12 +55,12 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.53.0",
-		"@typescript-eslint/parser": "5.53.0",
+		"@typescript-eslint/eslint-plugin": "5.54.1",
+		"@typescript-eslint/parser": "5.54.1",
 		"cross-env": "7.0.3",
 		"cypress": "12.7.0",
 		"eslint": "8.35.0",
-		"start-server-and-test": "1.15.4"
+		"start-server-and-test": "2.0.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.2.0"

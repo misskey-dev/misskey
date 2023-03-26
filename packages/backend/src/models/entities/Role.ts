@@ -54,6 +54,16 @@ type CondFormulaValueFollowingMoreThanOrEq = {
 	value: number;
 };
 
+type CondFormulaValueNotesLessThanOrEq = {
+	type: 'notesLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueNotesMoreThanOrEq = {
+	type: 'notesMoreThanOrEq';
+	value: number;
+};
+
 export type RoleCondFormulaValue =
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
@@ -65,7 +75,9 @@ export type RoleCondFormulaValue =
 	CondFormulaValueFollowersLessThanOrEq |
 	CondFormulaValueFollowersMoreThanOrEq |
 	CondFormulaValueFollowingLessThanOrEq |
-	CondFormulaValueFollowingMoreThanOrEq;
+	CondFormulaValueFollowingMoreThanOrEq |
+	CondFormulaValueNotesLessThanOrEq |
+	CondFormulaValueNotesMoreThanOrEq;
 
 @Entity()
 export class Role {
@@ -143,6 +155,12 @@ export class Role {
 		default: false,
 	})
 	public canEditMembersByModerator: boolean;
+
+	// UIに表示する際の並び順用(大きいほど先頭)
+	@Column('integer', {
+		default: 0,
+	})
+	public displayOrder: number;
 
 	@Column('jsonb', {
 		default: { },

@@ -195,7 +195,8 @@ export const isPropertyValue = (object: IObject): object is IApPropertyValue =>
 	object &&
 	getApType(object) === 'PropertyValue' &&
 	typeof object.name === 'string' &&
-	typeof (object as any).value === 'string';
+	'value' in object &&
+	typeof object.value === 'string';
 
 export interface IApMention extends IObject {
 	type: 'Mention';

@@ -5,7 +5,7 @@ import { signup, api, post, uploadUrl, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('users/notes', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let jpgNote: any;
@@ -13,7 +13,7 @@ describe('users/notes', () => {
 	let jpgPngNote: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		const jpg = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.jpg');
 		const png = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/Lenna.png');
@@ -29,7 +29,7 @@ describe('users/notes', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async() => {
-		await p.close();
+		await app.close();
 	});
 
 	test('ファイルタイプ指定 (jpg)', async () => {

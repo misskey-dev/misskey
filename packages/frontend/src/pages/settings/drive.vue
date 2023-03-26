@@ -32,6 +32,9 @@
 				<template #suffix>{{ uploadFolder ? uploadFolder.name : '-' }}</template>
 				<template #suffixIcon><i class="ti ti-folder"></i></template>
 			</FormLink>
+			<FormLink to="/settings/drive/cleaner">
+				{{ i18n.ts.drivecleaner }}
+			</FormLink>
 			<MkSwitch v-model="keepOriginalUploading">
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
