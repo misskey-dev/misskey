@@ -8,6 +8,7 @@ import { userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
+import { rolesCache, userListsCache } from '@/cache';
 
 export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -126,7 +127,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
 		children: async () => {
-			const lists = await os.api('users/lists/list');
+			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
 
 			return lists.map(list => ({
 				text: list.name,
@@ -147,7 +148,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
 				children: async () => {
-					const roles = await os.api('admin/roles/list');
+					const roles = await rolesCache.fetch(() => os.api('admin/roles/list'));
 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,

@@ -564,7 +564,6 @@ tokenRequested: "Przydziel dostęp do konta"
 pluginTokenRequestedDescription: "Ta wtyczka będzie mogła korzystać z ustawionych tu uprawnień."
 notificationType: "Rodzaj powiadomień"
 edit: "Edytuj"
-useStarForReactionFallback: "Użyj ★ jako zapasowego emoji, gdy emoji reakcji jest nieznane"
 emailServer: "Serwer poczty e-mail"
 enableEmail: "Włącz dostarczanie wiadomości e-mail"
 emailConfigInfo: "Wykorzystywany do potwierdzenia adresu e-mail w trakcie rejestracji, lub gdy zapomnisz hasła"
@@ -1358,3 +1357,7 @@ _deck:
     channel: "Kanały"
     mentions: "Wspomnienia"
     direct: "Bezpośredni"
+_webhookSettings:
+  name: "Nazwa"
+  active: "Właczono"
+

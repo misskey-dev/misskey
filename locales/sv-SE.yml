@@ -442,3 +442,6 @@ _deck:
     antenna: "Antenner"
     list: "Listor"
     mentions: "Omnämningar"
+_webhookSettings:
+  active: "Aktiverad"
+

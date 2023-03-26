@@ -30,6 +30,7 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { url } from '@/config';
 import MkButton from '@/components/MkButton.vue';
+import { clipsCache } from '@/cache';
 
 const props = defineProps<{
 	clipId: string,
@@ -108,6 +109,8 @@ const headerActions = $computed(() => clip && isOwned ? [{
 			clipId: clip.id,
 			...result,
 		});
+
+		clipsCache.delete();
 	},
 }, ...(clip.isPublic ? [{
 	icon: 'ti ti-share',
@@ -133,6 +136,8 @@ const headerActions = $computed(() => clip && isOwned ? [{
 		await os.apiWithDialog('clips/delete', {
 			clipId: clip.id,
 		});
+
+		clipsCache.delete();
 	},
 }] : null);
 

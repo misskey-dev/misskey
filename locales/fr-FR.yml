@@ -575,7 +575,6 @@ tokenRequested: "Autoriser l'accès au compte"
 pluginTokenRequestedDescription: "Ce plugin pourra utiliser les autorisations définies ici."
 notificationType: "Type de notifications"
 edit: "Editer"
-useStarForReactionFallback: "Utiliser ★ comme alternative si l’émoji de réaction est inconnu"
 emailServer: "Serveur mail"
 enableEmail: "Activer la distribution de courriel"
 emailConfigInfo: "Utilisé pour confirmer votre adresse de courriel et la réinitialisation de votre mot de passe en cas d’oubli."
@@ -1468,3 +1467,7 @@ _deck:
     channel: "Canaux"
     mentions: "Mentions"
     direct: "Direct"
+_webhookSettings:
+  name: "Nom"
+  active: "Activé"
+
