@@ -8,7 +8,9 @@
 
 		<template v-if="metadata">
 			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
-				<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
+				<div v-if="metadata.avatar" :class="$style.titleAvatarContainer">
+					<MkAvatar :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
+				</div>
 				<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
 				<div :class="$style.title">
@@ -247,6 +249,11 @@ onUnmounted(() => {
 	font-weight: bold;
 	flex-shrink: 1;
 	margin-left: 24px;
+}
+
+.titleAvatarContainer {
+	overflow: hidden;
+	padding: 8px 0;
 }
 
 .titleAvatar {
