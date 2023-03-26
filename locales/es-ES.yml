@@ -594,7 +594,6 @@ tokenRequested: "Permiso de acceso a la cuenta"
 pluginTokenRequestedDescription: "Este plugin podrá usar los permisos descritos aquí"
 notificationType: "Tipo de notificación"
 edit: "Editar"
-useStarForReactionFallback: "En caso de que los emojis de reacciones no sean claros, usar en su lugar una estrella"
 emailServer: "Servidor de correo"
 enableEmail: "Activar el envío de correos electrónicos"
 emailConfigInfo: "Usar en caso de validación de correo electrónico y pedido de contraseña"
@@ -1875,3 +1874,7 @@ _disabledTimeline:
 _drivecleaner:
   orderBySizeDesc: "Más grandes"
   orderByCreatedAtAsc: "Más antiguos"
+_webhookSettings:
+  name: "Nombre"
+  active: "Activado"
+

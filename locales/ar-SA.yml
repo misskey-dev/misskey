@@ -545,7 +545,6 @@ tokenRequested: "منح حق الوصول إلى الحساب"
 pluginTokenRequestedDescription: "ستتمكن الإضافة من استخدام هذه الأذونات."
 notificationType: "أنواع الإشعارات"
 edit: "التعديل"
-useStarForReactionFallback: "استخدم ★ كبديل إذا كان التفاعل مجهولًا"
 emailServer: "خادم البريد الإلكتروني"
 emailConfigInfo: "يستخدم لتأكيد عنوان بريدك الإلكتروني ولإعادة تعيين كلمة المرور إن نسيتها."
 email: "البريد الإلكتروني "
@@ -1275,3 +1274,7 @@ _deck:
     channel: "القنوات"
     mentions: "الإشارات"
     direct: "مباشرة"
+_webhookSettings:
+  name: "الإسم"
+  active: "مفعّل"
+

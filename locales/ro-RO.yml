@@ -561,7 +561,6 @@ tokenRequested: "Acordă acces la cont"
 pluginTokenRequestedDescription: "Acest plugin va putea să folosească permisiunile setate aici."
 notificationType: "Tipul notificării"
 edit: "Editează"
-useStarForReactionFallback: "Folosește ★ ca fallback dacă emoji-ul este necunoscut"
 emailServer: "Server email"
 enableEmail: "Activează distribuția de emailuri"
 emailConfigInfo: "Folosit pentru a confirma emailul tău în timpul logări dacă îți uiți parola"
@@ -702,3 +701,6 @@ _deck:
     list: "Liste"
     channel: "Canale"
     mentions: "Mențiuni"
+_webhookSettings:
+  name: "Nume"
+

@@ -592,7 +592,6 @@ tokenRequested: "계정 접근 허용"
 pluginTokenRequestedDescription: "이 플러그인은 여기서 설정한 권한을 사용할 수 있게 됩니다."
 notificationType: "알림 유형"
 edit: "편집"
-useStarForReactionFallback: "알 수 없는 리액션 이모지 대신 ★ 사용"
 emailServer: "메일 서버"
 enableEmail: "이메일 송신 기능 활성화"
 emailConfigInfo: "가입 시 메일 주소 확인이나 비밀번호 초기화 시에 사용합니다."
@@ -1849,3 +1848,7 @@ _deck:
 _dialog:
   charactersExceeded: "최대 글자수를 초과하였습니다! 현재 {current} / 최대 {min}"
   charactersBelow: "최소 글자수 미만입니다! 현재 {current} / 최소 {min}"
+_webhookSettings:
+  name: "이름"
+  active: "활성화"
+
