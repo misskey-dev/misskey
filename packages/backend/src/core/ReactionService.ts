@@ -21,7 +21,7 @@ import { bindThis } from '@/decorators.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 
-const FALLBACK = '❤';
+const FALLBACK = '⭐';
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -102,7 +102,7 @@ export class ReactionService {
 		}
 
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote') && (user.host != null))) {
-			reaction = '❤️';
+			reaction = FALLBACK;
 		} else {
 			// TODO: cache
 			reaction = await this.toDbReaction(reaction, user.host);
