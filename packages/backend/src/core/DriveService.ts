@@ -278,8 +278,10 @@ export class DriveService {
 			}
 		}
 
-		if (!isMimeImage(type, 'sharp-convertible-image-with-bmp')) {
-			this.registerLogger.debug('web image and thumbnail not created (cannot convert by sharp)');
+		if (!['image/jpeg', 'image/png', 'image/avif', 'image/svg+xml'].includes(type)) {
+			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
+		//if (!isMimeImage(type, 'sharp-convertible-image-with-bmp')) {
+		//	this.registerLogger.debug('web image and thumbnail not created (cannot convert by sharp)');
 			return {
 				webpublic: null,
 				thumbnail: null,
