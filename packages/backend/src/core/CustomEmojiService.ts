@@ -8,7 +8,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { EmojisRepository, Note } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Config } from '@/config.js';
 import { ReactionService } from '@/core/ReactionService.js';
@@ -16,7 +16,7 @@ import { query } from '@/misc/prelude/url.js';
 
 @Injectable()
 export class CustomEmojiService {
-	private cache: Cache<Emoji | null>;
+	private cache: KVCache<Emoji | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -34,7 +34,7 @@ export class CustomEmojiService {
 		private globalEventService: GlobalEventService,
 		private reactionService: ReactionService,
 	) {
-		this.cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
+		this.cache = new KVCache<Emoji | null>(1000 * 60 * 60 * 12);
 	}
 
 	@bindThis

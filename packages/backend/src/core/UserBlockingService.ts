@@ -15,7 +15,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class UserBlockingService implements OnApplicationShutdown {
 	private logger: Logger;
 
 	// キーがユーザーIDで、値がそのユーザーがブロックしているユーザーのIDのリストなキャッシュ
-	private blockingsByUserIdCache: Cache<User['id'][]>;
+	private blockingsByUserIdCache: KVCache<User['id'][]>;
 
 	constructor(
 		@Inject(DI.redisSubscriber)
@@ -58,7 +58,7 @@ export class UserBlockingService implements OnApplicationShutdown {
 	) {
 		this.logger = this.loggerService.getLogger('user-block');
 
-		this.blockingsByUserIdCache = new Cache<User['id'][]>(Infinity);
+		this.blockingsByUserIdCache = new KVCache<User['id'][]>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}

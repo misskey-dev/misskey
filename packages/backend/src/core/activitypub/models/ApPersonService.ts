@@ -30,6 +30,7 @@ import { StatusError } from '@/misc/status-error.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -50,6 +51,7 @@ export class ApPersonService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private idService: IdService;
 	private globalEventService: GlobalEventService;
+	private metaService: MetaService;
 	private federatedInstanceService: FederatedInstanceService;
 	private fetchInstanceMetadataService: FetchInstanceMetadataService;
 	private userCacheService: UserCacheService;
@@ -92,6 +94,7 @@ export class ApPersonService implements OnModuleInit {
 		//private userEntityService: UserEntityService,
 		//private idService: IdService,
 		//private globalEventService: GlobalEventService,
+		//private metaService: MetaService,
 		//private federatedInstanceService: FederatedInstanceService,
 		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		//private userCacheService: UserCacheService,
@@ -112,6 +115,7 @@ export class ApPersonService implements OnModuleInit {
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.idService = this.moduleRef.get('IdService');
 		this.globalEventService = this.moduleRef.get('GlobalEventService');
+		this.metaService = this.moduleRef.get('MetaService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
 		this.userCacheService = this.moduleRef.get('UserCacheService');
@@ -327,10 +331,12 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Register host
-		this.federatedInstanceService.fetch(host).then(i => {
+		this.federatedInstanceService.fetch(host).then(async i => {
 			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
-			this.instanceChart.newUser(i.host);
 			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.newUser(i.host);
+			}
 		});
 
 		this.usersChart.update(user!, true);

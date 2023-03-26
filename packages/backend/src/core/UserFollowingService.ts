@@ -17,6 +17,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { MetaService } from '@/core/MetaService.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -57,6 +58,7 @@ export class UserFollowingService {
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
+		private metaService: MetaService,
 		private notificationService: NotificationService,
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
@@ -200,14 +202,18 @@ export class UserFollowingService {
 
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.fetch(follower.host).then(i => {
+			this.federatedInstanceService.fetch(follower.host).then(async i => {
 				this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
-				this.instanceChart.updateFollowing(i.host, true);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowing(i.host, true);
+				}
 			});
 		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.fetch(followee.host).then(i => {
+			this.federatedInstanceService.fetch(followee.host).then(async i => {
 				this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
-				this.instanceChart.updateFollowers(i.host, true);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowers(i.host, true);
+				}
 			});
 		}
 		//#endregion
@@ -320,14 +326,18 @@ export class UserFollowingService {
 
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.fetch(follower.host).then(i => {
+			this.federatedInstanceService.fetch(follower.host).then(async i => {
 				this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
-				this.instanceChart.updateFollowing(i.host, false);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowing(i.host, false);
+				}
 			});
 		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.fetch(followee.host).then(i => {
+			this.federatedInstanceService.fetch(followee.host).then(async i => {
 				this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
-				this.instanceChart.updateFollowers(i.host, false);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowers(i.host, false);
+				}
 			});
 		}
 		//#endregion

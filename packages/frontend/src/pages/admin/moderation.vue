@@ -46,7 +46,7 @@ let sensitiveWords: string = $ref('');
 
 async function init() {
 	const meta = await os.api('admin/meta');
-	sensitiveWords = meta.pinnedUsers.join('\n');
+	sensitiveWords = meta.sensitiveWords.join('\n');
 }
 
 function save() {
