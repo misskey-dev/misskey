@@ -1,5 +1,5 @@
 <template>
-<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
@@ -27,6 +27,7 @@ import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store';
 
+const animation = $ref(defaultStore.state.animation);
 const squareAvatars = $ref(defaultStore.state.squareAvatars);
 const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
 
@@ -156,6 +157,14 @@ watch(() => props.user.avatarBlurhash, () => {
 			mask:
 				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') exclude center / 50% 50%,
 				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
+
+			> .earLeft {
+				animation: eartightright 6s infinite;
+			}
+
+			> .earRight {
+				animation: eartightleft 6s infinite;
+			}
 		}
 
 		> .earLeft,
@@ -196,7 +205,6 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		> .earLeft {
 			transform: rotate(37.5deg) skew(30deg);
-			animation: eartightleft 6s infinite;
 
 			&, &::after {
 				border-radius: 0 75% 75%;
@@ -218,7 +226,6 @@ watch(() => props.user.avatarBlurhash, () => {
 
 		> .earRight {
 			transform: rotate(-37.5deg) skew(-30deg);
-			animation: eartightright 6s infinite;
 
 			&, &::after {
 				border-radius: 75% 0 75% 75%;
@@ -239,7 +246,7 @@ watch(() => props.user.avatarBlurhash, () => {
 		}
 	}
 
-	&:hover {
+	&.animation:hover {
 		> .ears {
 			> .earLeft {
 				animation: earwiggleleft 1s infinite;
