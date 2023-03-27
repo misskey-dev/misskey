@@ -213,7 +213,7 @@ export class SearchService {
 		}
 
 		query
-			.innerJoinAndSelect('note.user', 'user')
+			.innerJoinAndSelect('note.user', 'user', 'user.hideSearchResult = FALSE')
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')

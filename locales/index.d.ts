@@ -3427,6 +3427,14 @@ export interface Locale extends ILocale {
      */
     "hideOnlineStatusDescription": string;
     /**
+     * ノートを検索結果から隠す
+     */
+    "hideSearchResult": string;
+    /**
+     * 自分のノートを検索結果に表示させないようにします。 (ノートの投稿範囲によっては他のサーバーから検索できてしまう可能性があります)
+     */
+    "hideSearchResultDescription": string;
+    /**
      * オンライン
      */
     "online": string;

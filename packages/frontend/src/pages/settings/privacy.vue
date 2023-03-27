@@ -52,6 +52,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ i18n.ts.hideOnlineStatus }}
 		<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
 	</MkSwitch>
+	<MkSwitch v-model="hideSearchResult" @update:modelValue="save()">
+		{{ i18n.ts.hideSearchResult }}<span class="_beta">{{ i18n.ts.originalFeature }}</span>
+		<template #caption>{{ i18n.ts.hideSearchResultDescription }}</template>
+	</MkSwitch>
 	<MkSwitch v-model="noCrawle" @update:modelValue="save()">
 		{{ i18n.ts.noCrawle }}
 		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
@@ -185,19 +189,19 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { signinRequired } from '@/account.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os';
+import { defaultStore } from '@/store';
+import { unisonReload } from '@/scripts/unison-reload';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
 import FormSlot from '@/components/form/slot.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string.js';
+import { formatDateTimeString } from '@/scripts/format-time-string';
 import MkInput from '@/components/MkInput.vue';
-import * as os from '@/os.js';
+import { instance } from '@/instance';
+import { misskeyApi } from '@/scripts/misskey-api.js';
 
-const $i = signinRequired();
-
+// $ref 構文を標準の ref に変更
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);
 const autoRejectFollowRequest = ref($i.autoRejectFollowRequest);
@@ -208,74 +212,81 @@ const requireSigninToViewContents = ref($i.requireSigninToViewContents ?? false)
 const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null);
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
+const hideSearchResult = ref($i.hideSearchResult);
 const publicReactions = ref($i.publicReactions);
 const hideActivity = ref($i.hideActivity);
 const hideProfileFiles = ref($i.hideProfileFiles);
 const notesVisibility = ref($i.notesVisibility);
 const followingVisibility = ref($i.followingVisibility);
 const followersVisibility = ref($i.followersVisibility);
+const ffVisibility = ref($i.ffVisibility);
+const enableGTL = ref($i.enableGTL);
 
+// $computed を computed に変更
 const defaultNoteVisibility = computed(defaultStore.makeGetterSetter('defaultNoteVisibility'));
 const defaultNoteLocalOnly = computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 const rememberNoteVisibility = computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 const keepCw = computed(defaultStore.makeGetterSetter('keepCw'));
 
 const makeNotesFollowersOnlyBefore_type = computed(() => {
-	if (makeNotesFollowersOnlyBefore.value == null) {
-		return null;
-	} else if (makeNotesFollowersOnlyBefore.value >= 0) {
-		return 'absolute';
-	} else {
-		return 'relative';
-	}
+  if (makeNotesFollowersOnlyBefore.value == null) {
+    return null;
+  } else if (makeNotesFollowersOnlyBefore.value >= 0) {
+    return 'absolute';
+  } else {
+    return 'relative';
+  }
 });
 
 const makeNotesHiddenBefore_type = computed(() => {
-	if (makeNotesHiddenBefore.value == null) {
-		return null;
-	} else if (makeNotesHiddenBefore.value >= 0) {
-		return 'absolute';
-	} else {
-		return 'relative';
-	}
+  if (makeNotesHiddenBefore.value == null) {
+    return null;
+  } else if (makeNotesHiddenBefore.value >= 0) {
+    return 'absolute';
+  } else {
+    return 'relative';
+  }
 });
 
 watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
-	save();
+  save();
 });
 
-async function update_requireSigninToViewContents(value: boolean) {
-	if (value === true && instance.federation !== 'none') {
-		const { canceled } = await os.confirm({
-			type: 'warning',
-			text: i18n.ts.acknowledgeNotesAndEnable,
-		});
-		if (canceled) return;
-	}
+async function update_requireSigninToViewContents(value) {
+  if (value === true && instance.federation !== 'none') {
+    const { canceled } = await os.confirm({
+      type: 'warning',
+      text: i18n.ts.acknowledgeNotesAndEnable,
+    });
+    if (canceled) return;
+  }
 
-	requireSigninToViewContents.value = value;
-	save();
+  requireSigninToViewContents.value = value;
+  save();
 }
 
 function save() {
-	misskeyApi('i/update', {
-		isLocked: !!isLocked.value,
-		autoAcceptFollowed: !!autoAcceptFollowed.value,
-		autoRejectFollowRequest: !!autoRejectFollowRequest.value,
-		noCrawle: !!noCrawle.value,
-		preventAiLearning: !!preventAiLearning.value,
-		isExplorable: !!isExplorable.value,
-		requireSigninToViewContents: !!requireSigninToViewContents.value,
-		makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
-		makeNotesHiddenBefore: makeNotesHiddenBefore.value,
-		hideOnlineStatus: !!hideOnlineStatus.value,
-		publicReactions: !!publicReactions.value,
-		hideActivity: !!hideActivity.value,
-		hideProfileFiles: !!hideProfileFiles.value,
-		notesVisibility: notesVisibility.value,
-		followingVisibility: followingVisibility.value,
-		followersVisibility: followersVisibility.value,
-	});
+  misskeyApi('i/update', {
+    isLocked: !!isLocked.value,
+    autoAcceptFollowed: !!autoAcceptFollowed.value,
+    autoRejectFollowRequest: !!autoRejectFollowRequest.value,
+    noCrawle: !!noCrawle.value,
+    preventAiLearning: !!preventAiLearning.value,
+    isExplorable: !!isExplorable.value,
+    requireSigninToViewContents: !!requireSigninToViewContents.value,
+    makeNotesFollowersOnlyBefore: makeNotesFollowersOnlyBefore.value,
+    makeNotesHiddenBefore: makeNotesHiddenBefore.value,
+    hideOnlineStatus: !!hideOnlineStatus.value,
+    hideSearchResult: !!hideSearchResult.value,
+    publicReactions: !!publicReactions.value,
+    hideActivity: !!hideActivity.value,
+    hideProfileFiles: !!hideProfileFiles.value,
+    notesVisibility: notesVisibility.value,
+    followingVisibility: followingVisibility.value,
+    followersVisibility: followersVisibility.value,
+    ffVisibility: ffVisibility.value,
+    enableGTL: enableGTL.value,
+  });
 }
 
 const headerActions = computed(() => []);
@@ -283,7 +294,7 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => []);
 
 definePageMetadata(() => ({
-	title: i18n.ts.privacy,
-	icon: 'ti ti-lock-open',
+  title: i18n.ts.privacy,
+  icon: 'ti ti-lock-open',
 }));
 </script>
