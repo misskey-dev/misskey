@@ -47,7 +47,7 @@ export const navbarItemDef = reactive({
 	},
 	lookup: {
 		title: i18n.ts.lookup,
-		icon: 'ti ti-world-search',
+		icon: 'ti ti-world',
 		action: (ev) => {
 			lookup();
 		},
