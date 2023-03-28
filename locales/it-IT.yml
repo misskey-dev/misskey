@@ -170,7 +170,7 @@ proxyAccountDescription: "Un profilo proxy funziona come follower per i profili 
 host: "Server remoto"
 selectUser: "Seleziona profilo"
 recipient: "Destinatario"
-annotation: "Descrizione"
+annotation: "Annotazione"
 federation: "Federazione"
 instances: "Istanza"
 registeredAt: "Registrato presso"
