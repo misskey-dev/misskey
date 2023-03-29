@@ -12,6 +12,17 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### General
+-
+
+### Client
+- 検索ページでURLを入力した際に照会したときと同等の挙動をするように
+
+### Server
+-
+
 ## 13.10.3
 
 ### Changes
