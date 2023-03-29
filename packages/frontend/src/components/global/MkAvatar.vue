@@ -159,11 +159,11 @@ watch(() => props.user.avatarBlurhash, () => {
 				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
 
 			> .earLeft {
-				animation: eartightright 6s infinite;
+				animation: eartightleft 6s infinite;
 			}
 
 			> .earRight {
-				animation: eartightleft 6s infinite;
+				animation: eartightright 6s infinite;
 			}
 		}
 
