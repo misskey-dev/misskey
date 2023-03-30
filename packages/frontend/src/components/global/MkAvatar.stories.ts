@@ -9,6 +9,7 @@ export default meta;
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
+import { userDetailed } from '../../../.storybook/fakes';
 import MkAvatar from './MkAvatar.vue';
 export const Default = {
 	render(args) {
@@ -33,10 +34,7 @@ export const Default = {
 	},
 	args: {
 		size: 48,
-		user: {
-			avatarUrl:
-				'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
-		},
+		user: userDetailed,
 	},
 	decorators: [
 		(Story, context) => ({
@@ -54,10 +52,6 @@ export const ProfilePage = {
 		...Default.args,
 		size: 120,
 		indicator: true,
-		user: {
-			...Default.args.user,
-			onlineStatus: 'unknown',
-		},
 	},
 };
 export const ProfilePageCat = {
@@ -65,7 +59,7 @@ export const ProfilePageCat = {
 	args: {
 		...ProfilePage.args,
 		user: {
-			...ProfilePage.args.user,
+			...userDetailed,
 			isCat: true,
 		},
 	},

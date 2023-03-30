@@ -76,7 +76,7 @@
 		"@storybook/addon-interactions": "7.0.0-rc.10",
 		"@storybook/addon-links": "7.0.0-rc.10",
 		"@storybook/addon-storysource": "7.0.0-rc.10",
-		"@storybook/addons": "7.0.0-rc.5",
+		"@storybook/addons": "7.0.0-rc.10",
 		"@storybook/blocks": "7.0.0-rc.10",
 		"@storybook/core-events": "7.0.0-rc.10",
 		"@storybook/jest": "0.0.10",

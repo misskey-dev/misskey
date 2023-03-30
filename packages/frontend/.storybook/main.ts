@@ -21,9 +21,6 @@ const config = {
 	core: {
 		disableTelemetry: true,
 	},
-	features: {
-		interactionsDebugger: true,
-	},
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
 			plugins: [
