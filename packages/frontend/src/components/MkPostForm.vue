@@ -67,7 +67,7 @@
 	<XPostFormAttaches v-model="files" :class="$style.attaches" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<XNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
-	<div v-if="showingOptions" style="padding: 0 16px;">
+	<div v-if="showingOptions" style="padding: 8px 16px;">
 		<MkSelect v-model="reactionAcceptance" small>
 			<template #label>{{ i18n.ts.reactionAcceptance }}</template>
 			<option :value="null">{{ i18n.ts.all }}</option>
