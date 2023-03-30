@@ -33,4 +33,4 @@ jobs:
 
       - name: Show report
         if: always()
-        run: cat packages/misskey-js/etc/misskey-js.api.md
+        run: cat packages/misskey-js/temp/misskey-js.api.md
