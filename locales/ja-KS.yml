@@ -983,6 +983,7 @@ retryAllQueuesConfirmText: "一時的にサーバー重なるかもしれへん�
 enableChartsForRemoteUser: "リモートユーザーのチャートを作る"
 enableChartsForFederatedInstances: "リモートサーバーのチャートを作る"
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
+largeNoteReactions: "ノートのリアクションを大きする"
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
