@@ -41,7 +41,7 @@
 			</button>
 			<div :class="$style.header2Divider"></div>
 		</template>
-		<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.header2Item, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null" @click="toggleLocalOnly">
+		<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.header2Item, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
 			<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 			<span v-else><i class="ti ti-rocket-off"></i></span>
 		</button>
