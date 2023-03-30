@@ -1,5 +1,5 @@
-import { APIClient, isAPIError } from '../src/api';
 import { enableFetchMocks } from 'jest-fetch-mock';
+import { APIClient, isAPIError } from '../src/api';
 
 enableFetchMocks();
 

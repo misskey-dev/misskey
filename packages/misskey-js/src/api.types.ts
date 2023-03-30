@@ -3,7 +3,7 @@ import type {
 	LiteInstanceMetadata,
 	MeDetailed,
 	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
-} from './entities';
+} from './entities.js';
 
 type TODO = Record<string, any> | null;
 
