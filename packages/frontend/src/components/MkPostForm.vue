@@ -869,12 +869,13 @@ defineExpose({
 	z-index: 1000;
 	min-height: 50px;
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
+	gap: 4px;
 }
 
 .headerLeft {
 	display: grid;
-	grid-template-columns: repeat(2, 50px);
+	grid-template-columns: repeat(2, minmax(36px, 50px));
 	grid-template-rows: minmax(40px, 100%);
 }
 
@@ -1102,7 +1103,12 @@ button.header2Item {
 }
 
 .footer {
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: repeat(7, minmax(auto, 46px));
+	grid-auto-rows: 46px;
 	padding: 0 16px 16px 16px;
+	font-size: 1em;
 }
 
 .footerButton {
@@ -1110,8 +1116,8 @@ button.header2Item {
 	padding: 0;
 	margin: 0;
 	font-size: 1em;
-	width: 46px;
-	height: 46px;
+	width: auto;
+	height: 100%;
 	border-radius: 6px;
 
 	&:hover {
@@ -1124,6 +1130,10 @@ button.header2Item {
 }
 
 @container (max-width: 500px) {
+	.headerRight {
+		gap: 4px;
+	}
+
 	.submit {
 		margin: 8px 8px 8px 0;
 	}
@@ -1156,10 +1166,8 @@ button.header2Item {
 }
 
 @container (max-width: 310px) {
-	.footerButton {
+	.footer {
 		font-size: 14px;
-		width: 44px;
-		height: 44px;
 	}
 }
 </style>
