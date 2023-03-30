@@ -210,6 +210,8 @@ Misskey uses [Storybook](https://storybook.js.org/) for UI development.
 ### Setup
 
 ```bash
+cd path/to/packages/misskey-js
+pnpm build
 cd path/to/packages/frontend
 pnpm tsc -p .storybook && (node .storybook/generate.js & node .storybook/preload-locale.js & node .storybook/preload-theme.js)
 ```
