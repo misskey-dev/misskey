@@ -17,7 +17,7 @@
 			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 		</span>
-		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
+		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 	</div>
 </header>

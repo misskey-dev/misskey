@@ -7,19 +7,14 @@
 	@drop.stop="onDrop"
 >
 	<header :class="$style.header">
-		<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-		<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
-			<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
-		</button>
+		<div :class="$style.headerLeft">
+			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
+			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
+				<MkAvatar :user="postAccount ?? $i" :class="$style.avatar"/>
+			</button>
+		</div>
 		<div :class="$style.headerRight">
 			<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>
-			<span v-if="localOnly" :class="$style.localOnly"><i class="ti ti-world-off"></i></span>
-			<button ref="visibilityButton" v-tooltip="i18n.ts.visibility" class="_button" :class="$style.visibility" :disabled="channel != null" @click="setVisibility">
-				<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-				<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-				<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-			</button>
 			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.previewButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
 			<button v-click-anime class="_button" :class="[$style.submit, { [$style.submitPosting]: posting }]" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
@@ -30,6 +25,25 @@
 				</div>
 			</button>
 		</div>
+	</header>
+	<header :class="$style.header2">
+		<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.header2Item, $style.visibility]" @click="setVisibility">
+			<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+			<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
+			<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
+			<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+			<span :class="$style.header2ButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+		</button>
+		<button v-else :class="[$style.header2Item, $style.visibility]" disabled>
+			<span><i class="ti ti-device-tv"></i></span>
+			<span :class="$style.header2ButtonText">{{ channel.name }}</span>
+		</button>
+		<div :class="$style.header2Divider"></div>
+		<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.header2Item, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null" @click="toggleLocalOnly">
+			<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+			<span v-else><i class="ti ti-rocket-off"></i></span>
+		</button>
+		<button v-click-anime v-tooltip="i18n.ts.emoji" :class="['_button', $style.header2Item, $style.emojiButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
@@ -44,7 +58,6 @@
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
-	<MkInfo v-if="localOnly && channel == null" warn :class="$style.disableFederationWarn">{{ i18n.ts.disableFederationWarn }}</MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<textarea ref="textareaEl" v-model="text" :class="[$style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
@@ -60,7 +73,6 @@
 			<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
 		</MkSelect>
 	</div>
-	<button v-tooltip="i18n.ts.emoji" class="_button" :class="$style.emojiButton" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 	<footer :class="$style.footer">
 		<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
 		<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
@@ -399,13 +411,14 @@ function upload(file: File, name?: string) {
 
 function setVisibility() {
 	if (props.channel) {
-		// TODO: information dialog
+		visibility = 'public';
+		localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 		return;
 	}
 
 	os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: visibility,
-		currentLocalOnly: localOnly,
+		localOnly: localOnly,
 		src: visibilityButton,
 	}, {
 		changeVisibility: v => {
@@ -414,13 +427,40 @@ function setVisibility() {
 				defaultStore.set('visibility', visibility);
 			}
 		},
-		changeLocalOnly: v => {
-			localOnly = v;
-			if (defaultStore.state.rememberNoteVisibility) {
-				defaultStore.set('localOnly', localOnly);
-			}
-		},
 	}, 'closed');
+}
+
+async function toggleLocalOnly() {
+	if (props.channel) {
+		visibility = 'public';
+		localOnly = true; // TODO: チャンネルが連合するようになった折には消す
+		return;
+	}
+
+	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
+
+	if (!localOnly && neverShowInfo !== 'true') {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.disableFederationConfirm,
+			text: i18n.ts.disableFederationConfirmWarn,
+			okText: i18n.ts.disableFederationOk,
+		});
+		if (confirm.canceled) return;
+
+		const neverShowConfirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.neverShow,
+			okText: i18n.ts.yes,
+			cancelText: i18n.ts.no,
+		});
+
+		if (!neverShowConfirm.canceled) {
+			miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
+		}
+	}
+
+	localOnly = !localOnly;
 }
 
 function pushVisibleUser(user) {
@@ -822,21 +862,28 @@ defineExpose({
 	}
 }
 
+//#region header
 .header {
 	z-index: 1000;
-	height: 66px;
+	min-height: 50px;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.headerLeft {
+	display: grid;
+	grid-template-columns: repeat(2, 50px);
+	grid-template-rows: minmax(40px, 100%);
 }
 
 .cancel {
 	padding: 0;
 	font-size: 1em;
-	width: 64px;
-	line-height: 66px;
+	height: 100%;
 }
 
 .account {
 	height: 100%;
-	aspect-ratio: 1/1;
 	display: inline-flex;
 	vertical-align: bottom;
 }
@@ -848,35 +895,22 @@ defineExpose({
 }
 
 .headerRight {
-	position: absolute;
-	top: 0;
-	right: 0;
+	display: flex;
+	min-height: 48px;
+	flex-wrap: nowrap;
+	align-items: center;
+	margin-left: auto;
+	gap: 8px;
 }
 
 .textCount {
-	opacity: 0.7;
-	line-height: 66px;
-}
-
-.visibility {
-	height: 34px;
-	width: 34px;
-	margin: 0 0 0 8px;
-
-	& + .localOnly {
-		margin-left: 0 !important;
-	}
-}
-
-.localOnly {
-	margin: 0 0 0 12px;
 	opacity: 0.7;
 }
 
 .previewButton {
 	display: inline-block;
 	padding: 0;
-	margin: 0 8px 0 0;
+	margin: 0;
 	font-size: 16px;
 	width: 34px;
 	height: 34px;
@@ -892,7 +926,7 @@ defineExpose({
 }
 
 .submit {
-	margin: 16px 16px 16px 0;
+	margin: 12px 12px 12px 0;
 	vertical-align: bottom;
 
 	&:disabled {
@@ -927,6 +961,56 @@ defineExpose({
 	color: var(--fgOnAccent);
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 }
+//#endregion
+//#region header2
+.header2 {
+	z-index: 1000;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 8px;
+	padding: 2px 2px 2px 15px;
+	font-size: 1em;
+}
+
+.header2Item {
+	margin: 0;
+	padding: 8px;
+
+	&.danger {
+		color: #ff2a2a;
+	}
+}
+
+button.header2Item {
+	border-radius: 6px;
+
+	&:hover {
+		background: var(--X5);
+	}
+	&:disabled {
+		background: none;
+	}
+}
+
+.header2ButtonText {
+	padding-left: 6px;
+}
+
+.header2Divider {
+	margin: 8px 0;
+	border-left: 1px solid var(--X5);
+}
+
+.visibility {
+	min-width: 8em;
+	text-align: left;
+}
+
+.emojiButton {
+	margin-left: auto;
+	padding-left: 8px;
+}
+//#endregion
 
 .preview {
 	padding: 16px 20px 0 20px;
@@ -959,10 +1043,6 @@ defineExpose({
 	padding: 8px 0 8px 8px;
 	border-radius: 8px;
 	background: var(--X4);
-}
-
-.disableFederationWarn {
-	margin: 0 20px 16px 20px;
 }
 
 .hasNotSpecifiedMentions {
@@ -1038,42 +1118,23 @@ defineExpose({
 	}
 }
 
-.emojiButton {
-	position: absolute;
-	top: 55px;
-	right: 13px;
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-	font-size: 1em;
-	width: 32px;
-	height: 32px;
-}
-
 @container (max-width: 500px) {
-	.header {
-		height: 50px;
+	.submit {
+		margin: 8px 8px 8px 0;
+	}
 
-		> .cancel {
-			width: 50px;
-			line-height: 50px;
-		}
-
-		> .headerRight {
-			> .textCount {
-				line-height: 50px;
-			}
-
-			> .submit {
-				margin: 8px;
-			}
-		}
+	.header2 {
+		padding: 2px 2px 2px 8px;
+		font-size: .9em;
 	}
 
 	.toSpecified {
 		padding: 6px 16px;
 	}
 
+	.preview {
+		padding: 16px 14px 0 14px;
+	}
 	.cw,
 	.hashtags,
 	.text {
