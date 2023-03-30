@@ -14,7 +14,13 @@
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"esnext"
+		]
 	},
 	"include": [
 		"src/**/*"
