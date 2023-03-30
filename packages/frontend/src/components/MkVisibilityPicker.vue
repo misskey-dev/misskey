@@ -1,6 +1,9 @@
 <template>
 <MkModal ref="modal" v-slot="{ type }" :z-priority="'high'" :src="src" @click="modal.close()" @closed="emit('closed')">
 	<div class="_popup" :class="{ [$style.root]: true, [$style.asDrawer]: type === 'drawer' }">
+		<div :class="[$style.label, $style.item]">
+			{{ i18n.ts.visibility }}
+		</div>
 		<button key="public" class="_button" :class="[$style.item, { [$style.active]: v === 'public' }]" data-index="1" @click="choose('public')">
 			<div :class="$style.icon"><i class="ti ti-world"></i></div>
 			<div :class="$style.body">
@@ -76,11 +79,25 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 
+		.label {
+			pointer-events: none;
+			font-size: 12px;
+			padding-bottom: 4px;
+			opacity: 0.7;
+		}
+
 		.item {
 			font-size: 14px;
 			padding: 10px 24px;
 		}
 	}
+}
+
+.label {
+	pointer-events: none;
+	font-size: 10px;
+	padding-bottom: 4px;
+	opacity: 0.7;
 }
 
 .item {
@@ -100,8 +117,7 @@ function choose(visibility: typeof misskey.noteVisibilities[number]): void {
 	}
 
 	&.active {
-		color: var(--fgOnAccent);
-		background: var(--accent);
+		color: var(--accent);
 	}
 }
 
