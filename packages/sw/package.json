@@ -11,7 +11,7 @@
 	"dependencies": {
 		"esbuild": "0.14.42",
 		"idb-keyval": "6.2.0",
-		"misskey-js": "../misskey-js"
+		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
 		"@typescript-eslint/parser": "5.57.0",

@@ -94,7 +94,7 @@
 		"jsrsasign": "10.7.0",
 		"mfm-js": "0.23.3",
 		"mime-types": "2.1.35",
-		"misskey-js": "../misskey-js",
+		"misskey-js": "workspace:*",
 		"ms": "3.0.0-canary.1",
 		"nested-property": "4.0.0",
 		"node-fetch": "3.3.1",
