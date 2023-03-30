@@ -55,6 +55,7 @@ api-docs.json
 .DS_Store
 /files
 ormconfig.json
+temp
 
 # blender backups
 *.blend1
