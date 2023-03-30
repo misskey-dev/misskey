@@ -27,18 +27,20 @@
 		</div>
 	</header>
 	<header :class="$style.header2">
-		<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.header2Item, $style.visibility]" @click="setVisibility">
-			<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-			<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-			<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-			<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-			<span :class="$style.header2ButtonText">{{ i18n.ts._visibility[visibility] }}</span>
-		</button>
-		<button v-else :class="[$style.header2Item, $style.visibility]" disabled>
-			<span><i class="ti ti-device-tv"></i></span>
-			<span :class="$style.header2ButtonText">{{ channel.name }}</span>
-		</button>
-		<div :class="$style.header2Divider"></div>
+		<template v-if="!(channel != null && fixed)">
+			<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.header2Item, $style.visibility]" @click="setVisibility">
+				<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+				<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
+				<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
+				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+				<span :class="$style.header2ButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+			</button>
+			<button v-else :class="['_button', $style.header2Item, $style.visibility]" disabled>
+				<span><i class="ti ti-device-tv"></i></span>
+				<span :class="$style.header2ButtonText">{{ channel.name }}</span>
+			</button>
+			<div :class="$style.header2Divider"></div>
+		</template>
 		<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.header2Item, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null" @click="toggleLocalOnly">
 			<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 			<span v-else><i class="ti ti-rocket-off"></i></span>
@@ -123,7 +125,7 @@ const modal = inject('modal');
 const props = withDefaults(defineProps<{
 	reply?: misskey.entities.Note;
 	renote?: misskey.entities.Note;
-	channel?: any; // TODO
+	channel?: misskey.entities.Channel; // TODO
 	mention?: misskey.entities.User;
 	specified?: misskey.entities.User;
 	initialText?: string;
@@ -966,7 +968,7 @@ defineExpose({
 .header2 {
 	z-index: 1000;
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 4px 8px;
 	padding: 2px 2px 2px 15px;
 	font-size: 1em;
@@ -1004,6 +1006,9 @@ button.header2Item {
 .visibility {
 	min-width: 8em;
 	text-align: left;
+	overflow: clip;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .emojiButton {

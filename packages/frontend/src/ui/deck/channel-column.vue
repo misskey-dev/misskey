@@ -56,11 +56,13 @@ async function setChannel() {
 	});
 }
 
-function post() {
+async function post() {
+	const channel = await os.api('channels/show', {
+		channelId: props.column.channelId,
+	});
+
 	os.post({
-		channel: {
-			id: props.column.channelId,
-		},
+		channel,
 	});
 }
 
