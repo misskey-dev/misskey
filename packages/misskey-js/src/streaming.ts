@@ -36,7 +36,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		WebSocket?: any;
 	}) {
 		super();
-		options = options || { };
+		options = options ?? { };
 
 		const query = urlQuery({
 			i: user?.token,

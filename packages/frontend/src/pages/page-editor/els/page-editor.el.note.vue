@@ -10,8 +10,8 @@
 		</MkInput>
 		<MkSwitch v-model="props.modelValue.detailed"><span>{{ $ts._pages.blocks._note.detailed }}</span></MkSwitch>
 
-		<XNote v-if="note && !props.modelValue.detailed" :key="note.id + ':normal'" v-model:note="note" style="margin-bottom: 16px;"/>
-		<XNoteDetailed v-if="note && props.modelValue.detailed" :key="note.id + ':detail'" v-model:note="note" style="margin-bottom: 16px;"/>
+		<MkNote v-if="note && !props.modelValue.detailed" :key="note.id + ':normal'" v-model:note="note" style="margin-bottom: 16px;"/>
+		<MkNoteDetailed v-if="note && props.modelValue.detailed" :key="note.id + ':detail'" v-model:note="note" style="margin-bottom: 16px;"/>
 	</section>
 </XContainer>
 </template>
@@ -22,8 +22,8 @@ import { watch } from 'vue';
 import XContainer from '../page-editor.container.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import XNote from '@/components/MkNote.vue';
-import XNoteDetailed from '@/components/MkNoteDetailed.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
 
 const props = defineProps<{

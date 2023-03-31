@@ -987,6 +987,7 @@ enableChartsForRemoteUser: "リモートユーザーのチャートを生成"
 enableChartsForFederatedInstances: "リモートサーバーのチャートを生成"
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 largeNoteReactions: "ノートのリアクションを大きく表示"
+noteIdOrUrl: "ノートIDまたはURL"
 
 _achievements:
   earnedAt: "獲得日時"

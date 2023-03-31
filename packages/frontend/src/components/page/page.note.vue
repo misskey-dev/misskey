@@ -1,21 +1,21 @@
 <template>
 <div class="voxdxuby">
-	<XNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>
-	<XNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" v-model:note="note"/>
+	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>
+	<MkNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" v-model:note="note"/>
 </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
-import XNote from '@/components/MkNote.vue';
-import XNoteDetailed from '@/components/MkNoteDetailed.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
 import { NoteBlock } from '@/scripts/hpml/block';
 
 export default defineComponent({
 	components: {
-		XNote,
-		XNoteDetailed,
+		MkNote,
+		MkNoteDetailed,
 	},
 	props: {
 		block: {
