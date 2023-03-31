@@ -11,7 +11,7 @@ export default meta;
 import { StoryObj } from '@storybook/vue3';
 import { userDetailed } from '../../../.storybook/fakes';
 import MkAvatar from './MkAvatar.vue';
-export const Default = {
+const common = {
 	render(args) {
 		return {
 			components: {
@@ -33,7 +33,6 @@ export const Default = {
 		};
 	},
 	args: {
-		size: 48,
 		user: userDetailed,
 	},
 	decorators: [
@@ -47,9 +46,9 @@ export const Default = {
 	},
 } satisfies StoryObj<typeof MkAvatar>;
 export const ProfilePage = {
-	...Default,
+	...common,
 	args: {
-		...Default.args,
+		...common.args,
 		size: 120,
 		indicator: true,
 	},

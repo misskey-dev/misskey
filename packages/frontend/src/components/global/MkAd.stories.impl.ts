@@ -1,12 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
-import { Meta } from '@storybook/vue3';
-const meta = {
-	title: 'components/global/MkAd',
-	component: MkAd,
-} satisfies Meta<typeof MkAd>;
-export default meta;
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';

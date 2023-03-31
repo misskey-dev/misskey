@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import { userDetailed } from '../../../.storybook/fakes';
 import MkAcct from './MkAcct.vue';

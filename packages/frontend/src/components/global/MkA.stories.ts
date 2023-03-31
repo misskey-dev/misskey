@@ -10,8 +10,8 @@ export default meta;
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
-import MkA from './MkA.vue';
 import { tick } from '@/scripts/test-utils';
+import MkA from './MkA.vue';
 export const Default = {
 	render(args) {
 		return {
