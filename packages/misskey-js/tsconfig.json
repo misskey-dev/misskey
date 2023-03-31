@@ -1,8 +1,9 @@
 {
 	"$schema": "http://json.schemastore.org/tsconfig",
 	"compilerOptions": {
-		"target": "es2020",
-		"module": "commonjs",
+		"target": "es2022",
+		"module": "ES2020",
+		"moduleResolution": "node",
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
@@ -13,7 +14,14 @@
 		"strictNullChecks": true,
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"typeRoots": [
+			"node_modules/@types"
+		],
+		"lib": [
+			"esnext",
+			"dom"
+		]
 	},
 	"include": [
 		"src/**/*"

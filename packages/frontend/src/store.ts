@@ -294,6 +294,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	largeNoteReactions: {
+		where: 'device',
+		default: false,
+	},
 	aiChanMode: {
 		where: 'device',
 		default: false,

@@ -1,4 +1,4 @@
-import type { Endpoints } from './api.types';
+import type { Endpoints } from './api.types.js';
 
 const MK_API_ERROR = Symbol();
 
@@ -49,7 +49,7 @@ export class APIClient {
 		this.credential = opts.credential;
 		// ネイティブ関数をそのまま変数に代入して使おうとするとChromiumではIllegal invocationエラーが発生するため、
 		// 環境で実装されているfetchを使う場合は無名関数でラップして使用する
-		this.fetch = opts.fetch || ((...args) => fetch(...args));
+		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
 	public request<E extends keyof Endpoints, P extends Endpoints[E]['req']>(
