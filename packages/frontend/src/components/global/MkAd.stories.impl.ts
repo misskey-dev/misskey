@@ -44,10 +44,10 @@ const common = {
 		const back = buttons[args.__hasReduce ? 1 : 0];
 		if (reduce) {
 			await expect(reduce).toBeInTheDocument();
-			await expect(reduce.textContent).toBe(i18n.ts._ad.reduceFrequencyOfThisAd);
+			await expect(reduce).toHaveTextContent(i18n.ts._ad.reduceFrequencyOfThisAd);
 		}
 		await expect(back).toBeInTheDocument();
-		await expect(back.textContent).toBe(i18n.ts._ad.back);
+		await expect(back).toHaveTextContent(i18n.ts._ad.back);
 		await userEvent.click(back);
 		if (reduce) {
 			await expect(reduce).not.toBeInTheDocument();
