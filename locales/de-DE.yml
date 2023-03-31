@@ -984,6 +984,7 @@ enableChartsForRemoteUser: "Diagramme für Nutzer fremder Instanzen erstellen"
 enableChartsForFederatedInstances: "Diagramme für fremde Instanzen erstellen"
 showClipButtonInNoteFooter: "\"Clip\" zum Notizmenu hinzufügen"
 largeNoteReactions: "Reaktionen vergrößert anzeigen"
+noteIdOrUrl: "Notiz-ID oder URL"
 _achievements:
   earnedAt: "Freigeschaltet am"
   _types:
