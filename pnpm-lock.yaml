@@ -817,6 +817,9 @@ importers:
       '@storybook/vue3-vite':
         specifier: 7.0.0-rc.10
         version: 7.0.0-rc.10(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.2)(vite@4.2.1)(vue@3.2.47)
+      '@testing-library/jest-dom':
+        specifier: ^5.16.5
+        version: 5.16.5
       '@testing-library/vue':
         specifier: ^6.6.1
         version: 6.6.1(@vue/compiler-sfc@3.2.47)(vue@3.2.47)
@@ -847,6 +850,9 @@ importers:
       '@types/seedrandom':
         specifier: 3.0.5
         version: 3.0.5
+      '@types/testing-library__jest-dom':
+        specifier: ^5.14.5
+        version: 5.14.5
       '@types/throttle-debounce':
         specifier: 5.0.0
         version: 5.0.0
@@ -3927,7 +3933,7 @@ packages:
       chalk: 4.1.2
       ci-info: 3.7.1
       exit: 0.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-changed-files: 29.5.0
       jest-config: 29.5.0(@types/node@18.15.11)
       jest-haste-map: 29.5.0
@@ -11806,6 +11812,7 @@ packages:
 
   /graceful-fs@4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
+    dev: false
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -13109,7 +13116,7 @@ packages:
       '@jest/types': 29.5.0
       chalk: 4.1.2
       exit: 0.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       import-local: 3.1.0
       jest-config: 29.5.0(@types/node@18.15.11)
       jest-util: 29.5.0

@@ -10,6 +10,7 @@ export default meta;
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
+import { i18n } from '@/i18n';
 import MkAd from './MkAd.vue';
 const common = {
 	render(args) {
@@ -51,8 +52,12 @@ const common = {
 		const back = buttons[args._hasReduce ? 1 : 0];
 		if (reduce) {
 			await expect(reduce).toBeInTheDocument();
+			await expect(reduce.textContent).toBe(
+				i18n.ts._ad.reduceFrequencyOfThisAd
+			);
 		}
 		await expect(back).toBeInTheDocument();
+		await expect(back.textContent).toBe(i18n.ts._ad.back);
 		await userEvent.click(back);
 		if (reduce) {
 			await expect(reduce).not.toBeInTheDocument();
