@@ -45,6 +45,12 @@
 			<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 			<span v-else><i class="ti ti-rocket-off"></i></span>
 		</button>
+		<div :class="$style.header2Divider"></div>
+		<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" :class="['_button', $style.header2Item, $style.reactionAcceptance, { [$style.danger]: reactionAcceptance }]" @click="toggleReactionAcceptance">
+			<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
+			<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
+			<span v-else><i class="ti ti-plus"></i></span>
+		</button>
 		<button v-click-anime v-tooltip="i18n.ts.emoji" :class="['_button', $style.header2Item, $style.emojiButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
@@ -68,12 +74,7 @@
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<XNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
-		<MkSelect v-model="reactionAcceptance" small>
-			<template #label>{{ i18n.ts.reactionAcceptance }}</template>
-			<option :value="null">{{ i18n.ts.all }}</option>
-			<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
-			<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
-		</MkSelect>
+		<!-- nothing to show -->
 	</div>
 	<footer :class="$style.footer">
 		<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
@@ -82,7 +83,7 @@
 		<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 		<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
 		<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
-		<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>
+		<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
 	</footer>
 	<datalist id="hashtags">
 		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
@@ -442,27 +443,49 @@ async function toggleLocalOnly() {
 	const neverShowInfo = miLocalStorage.getItem('neverShowLocalOnlyInfo');
 
 	if (!localOnly && neverShowInfo !== 'true') {
-		const confirm = await os.confirm({
+		const confirm = await os.actions({
 			type: 'question',
 			title: i18n.ts.disableFederationConfirm,
 			text: i18n.ts.disableFederationConfirmWarn,
-			okText: i18n.ts.disableFederationOk,
+			actions: [
+				{
+					value: 'yes' as const,
+					text: i18n.ts.disableFederationOk,
+					primary: true,
+				},
+				{
+					value: 'neverShow' as const,
+					text: i18n.ts.disableFederationNeverShow,
+					danger: true,
+				},
+				{
+					value: 'no' as const,
+					text: i18n.ts.cancel,
+				},
+			],
 		});
 		if (confirm.canceled) return;
+		if (confirm.result === 'no') return;
 
-		const neverShowConfirm = await os.confirm({
-			type: 'question',
-			title: i18n.ts.neverShow,
-			okText: i18n.ts.yes,
-			cancelText: i18n.ts.no,
-		});
-
-		if (!neverShowConfirm.canceled) {
+		if (confirm.result === 'neverShow') {
 			miLocalStorage.setItem('neverShowLocalOnlyInfo', 'true');
 		}
 	}
 
 	localOnly = !localOnly;
+}
+
+async function toggleReactionAcceptance() {
+	const select = await os.select({
+		title: i18n.ts.reactionAcceptance,
+		items: [
+			{ value: null, text: i18n.ts.all },
+			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
+			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
+		],
+	});
+	if (select.canceled) return;
+	reactionAcceptance = select.result;
 }
 
 function pushVisibleUser(user) {
