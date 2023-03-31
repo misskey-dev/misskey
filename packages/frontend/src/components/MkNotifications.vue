@@ -9,7 +9,7 @@
 
 	<template #default="{ items: notifications }">
 		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :no-gap="true">
-			<XNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
+			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
 			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
 		</MkDateSeparatedList>
 	</template>
@@ -21,7 +21,7 @@ import { onUnmounted, onMounted, computed, shallowRef } from 'vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
