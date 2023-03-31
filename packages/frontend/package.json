@@ -19,7 +19,6 @@
 		"@tabler/icons-webfont": "2.12.0",
 		"@vitejs/plugin-vue": "4.1.0",
 		"@vue/compiler-sfc": "3.2.47",
-		"autobind-decorator": "2.4.0",
 		"autosize": "5.0.2",
 		"blurhash": "2.0.5",
 		"broadcast-channel": "4.20.2",
