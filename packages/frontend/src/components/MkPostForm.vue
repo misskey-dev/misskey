@@ -36,7 +36,6 @@
 				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
 				<span v-else><i class="ti ti-plus"></i></span>
 			</button>
-			<!--<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>-->
 			<button v-click-anime class="_button" :class="[$style.submit, { [$style.submitPosting]: posting }]" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
@@ -62,7 +61,10 @@
 	</div>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
-	<textarea ref="textareaEl" v-model="text" :class="[$style.text, { [$style.withCw]: useCw }]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
+	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
+		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
+		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
+	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" :class="$style.attaches" @detach="detachFile" @change-sensitive="updateFileSensitive" @change-name="updateFileName"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
@@ -225,7 +227,7 @@ const textLength = $computed((): number => {
 });
 
 const maxTextLength = $computed((): number => {
-	return instance ? instance.maxNoteTextLength : 1000;
+	return /*instance ? instance.maxNoteTextLength : 1000*/20;
 });
 
 const canPost = $computed((): boolean => {
@@ -929,12 +931,8 @@ defineExpose({
 	padding-left: 4px;
 }
 
-.textCount {
-	opacity: 0.7;
-}
-
 .submit {
-	margin: 12px 12px 12px 0;
+	margin: 12px 12px 12px 6px;
 	vertical-align: bottom;
 
 	&:disabled {
@@ -1074,13 +1072,36 @@ button.headerRightItem {
 	border-top: solid 0.5px var(--divider);
 }
 
-.text {
-	max-width: 100%;
-	min-width: 100%;
-	min-height: 90px;
+.textOuter {
+	width: 100%;
+	position: relative;
 
 	&.withCw {
 		padding-top: 8px;
+	}
+}
+
+.text {
+	max-width: 100%;
+	min-width: 100%;
+	width: 100%;
+	min-height: 90px;
+	height: 100%;
+}
+
+.textCount {
+	position: absolute;
+	top: 0;
+	right: 2px;
+	padding: 4px 6px;
+	font-size: .9em;
+	color: var(--warn);
+	border-radius: 6px;
+	min-width: 1.6em;
+    text-align: center;
+
+	&.textOver {
+		color: #ff2a2a;
 	}
 }
 
@@ -1124,8 +1145,12 @@ button.headerRightItem {
 		display: none;
 	}
 
+	.visibility {
+		overflow: initial;
+	}
+
 	.submit {
-		margin: 8px 8px 8px 0;
+		margin: 8px 8px 8px 4px;
 	}
 
 	.toSpecified {
