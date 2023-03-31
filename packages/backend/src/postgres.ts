@@ -18,6 +18,7 @@ import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js'
 import { AuthSession } from '@/models/entities/AuthSession.js';
 import { Blocking } from '@/models/entities/Blocking.js';
 import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
+import { ChannelFavorite } from '@/models/entities/ChannelFavorite.js';
 import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
@@ -175,6 +176,7 @@ export const entities = [
 	MutedNote,
 	Channel,
 	ChannelFollowing,
+	ChannelFavorite,
 	ChannelNotePining,
 	RegistryItem,
 	Ad,

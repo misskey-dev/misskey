@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository } from '@/models/index.js';
+import type { ChannelFavoritesRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
@@ -17,6 +17,9 @@ export class ChannelEntityService {
 
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
+
+		@Inject(DI.channelFavoritesRepository)
+		private channelFavoritesRepository: ChannelFavoritesRepository,
 
 		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: NoteUnreadsRepository,
@@ -46,6 +49,11 @@ export class ChannelEntityService {
 			followeeId: channel.id,
 		}) : null;
 
+		const favorite = meId ? await this.channelFavoritesRepository.findOneBy({
+			userId: meId,
+			channelId: channel.id,
+		}) : null;
+
 		return {
 			id: channel.id,
 			createdAt: channel.createdAt.toISOString(),
@@ -59,6 +67,7 @@ export class ChannelEntityService {
 
 			...(me ? {
 				isFollowing: following != null,
+				isFavorited: favorite != null,
 				hasUnreadNote,
 			} : {}),
 		};

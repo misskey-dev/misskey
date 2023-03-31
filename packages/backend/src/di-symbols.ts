@@ -61,6 +61,7 @@ export const DI = {
 	mutedNotesRepository: Symbol('mutedNotesRepository'),
 	channelsRepository: Symbol('channelsRepository'),
 	channelFollowingsRepository: Symbol('channelFollowingsRepository'),
+	channelFavoritesRepository: Symbol('channelFavoritesRepository'),
 	channelNotePiningsRepository: Symbol('channelNotePiningsRepository'),
 	registryItemsRepository: Symbol('registryItemsRepository'),
 	webhooksRepository: Symbol('webhooksRepository'),

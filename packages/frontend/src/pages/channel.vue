@@ -16,6 +16,9 @@
 					<Mfm :text="channel.description" :is-note="false" :i="$i"/>
 				</div>
 			</div>
+
+			<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
+			<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-star"></i></MkButton>
 		</div>
 		<div v-if="channel && tab === 'timeline'" class="_gaps">
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
@@ -63,6 +66,7 @@ const props = defineProps<{
 
 let tab = $ref('timeline');
 let channel = $ref(null);
+let favorited = $ref(false);
 const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
@@ -76,6 +80,7 @@ watch(() => props.channelId, async () => {
 	channel = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
+	favorited = channel.isFavorited;
 }, { immediate: true });
 
 function edit() {
@@ -87,6 +92,27 @@ function openPostForm() {
 		channel: {
 			id: channel.id,
 		},
+	});
+}
+
+function favorite() {
+	os.apiWithDialog('channels/favorite', {
+		channelId: channel.id,
+	}).then(() => {
+		favorited = true;
+	});
+}
+
+async function unfavorite() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unfavoriteConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('channels/unfavorite', {
+		channelId: channel.id,
+	}).then(() => {
+		favorited = false;
 	});
 }
 
