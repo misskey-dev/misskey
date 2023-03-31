@@ -1,4 +1,3 @@
-import autobind from 'autobind-decorator';
 import { ref, Ref, unref } from 'vue';
 import { collectPageVars } from '../collect-page-vars';
 import { initHpmlLib } from './lib';
@@ -51,7 +50,6 @@ export class Hpml {
 		this.eval();
 	}
 
-	@autobind
 	public eval() {
 		try {
 			this.vars.value = this.evaluateVars();
@@ -60,7 +58,6 @@ export class Hpml {
 		}
 	}
 
-	@autobind
 	public interpolate(str: string) {
 		if (str == null) return null;
 		return str.replace(/{(.+?)}/g, match => {
@@ -69,12 +66,10 @@ export class Hpml {
 		});
 	}
 
-	@autobind
 	public registerCanvas(id: string, canvas: any) {
 		this.canvases[id] = canvas;
 	}
 
-	@autobind
 	public updatePageVar(name: string, value: any) {
 		const pageVar = this.pageVars.find(v => v.name === name);
 		if (pageVar !== undefined) {
@@ -84,13 +79,11 @@ export class Hpml {
 		}
 	}
 
-	@autobind
 	public updateRandomSeed(seed: string) {
 		this.opts.randomSeed = seed;
 		this.envVars.SEED = seed;
 	}
 
-	@autobind
 	private _interpolateScope(str: string, scope: HpmlScope) {
 		return str.replace(/{(.+?)}/g, match => {
 			const v = scope.getState(match.slice(1, -1).trim());
@@ -98,7 +91,6 @@ export class Hpml {
 		});
 	}
 
-	@autobind
 	public evaluateVars(): Record<string, any> {
 		const values: Record<string, any> = {};
 
@@ -117,7 +109,6 @@ export class Hpml {
 		return values;
 	}
 
-	@autobind
 	private evaluate(expr: Expr, scope: HpmlScope): any {
 		if (isLiteralValue(expr)) {
 			if (expr.type === null) {

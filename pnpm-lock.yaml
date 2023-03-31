@@ -612,9 +612,6 @@ importers:
       '@vue/compiler-sfc':
         specifier: 3.2.47
         version: 3.2.47
-      autobind-decorator:
-        specifier: 2.4.0
-        version: 2.4.0
       autosize:
         specifier: 5.0.2
         version: 5.0.2
@@ -865,9 +862,6 @@ importers:
       '@swc/core':
         specifier: 1.3.42
         version: 1.3.42
-      autobind-decorator:
-        specifier: ^2.4.0
-        version: 2.4.0
       eventemitter3:
         specifier: 5.0.0
         version: 5.0.0
