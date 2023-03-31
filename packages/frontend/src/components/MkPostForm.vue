@@ -993,7 +993,7 @@ defineExpose({
 	z-index: 1000;
 	display: flex;
 	flex-wrap: nowrap;
-	gap: 4px 8px;
+	gap: 4px;
 	padding: 2px 2px 2px 15px;
 	font-size: 1em;
 }
@@ -1164,6 +1164,7 @@ button.header2Item {
 	.header2 {
 		padding: 2px 2px 2px 8px;
 		font-size: .9em;
+		gap: 2px;
 	}
 
 	.toSpecified {
