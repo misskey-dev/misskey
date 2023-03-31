@@ -50,7 +50,9 @@ function getReactionName(reaction: string): string {
 
 .reaction {
 	max-width: 100px;
+	padding-right: 10px;
 	text-align: center;
+	border-right: solid 0.5px var(--divider);
 }
 
 .reactionIcon {
@@ -66,25 +68,21 @@ function getReactionName(reaction: string): string {
 }
 
 .users {
+	contain: content;
 	flex: 1;
 	min-width: 0;
+	margin: -4px 14px 0 10px;
 	font-size: 0.95em;
 	border-left: solid 0.5px var(--divider);
-	padding-left: 10px;
-	margin-left: 10px;
-	margin-right: 14px;
 	text-align: left;
 }
 
 .user {
 	line-height: 24px;
+	padding-top: 4px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-
-	&:not(:last-child) {
-		margin-bottom: 3px;
-	}
 }
 
 .avatar {
