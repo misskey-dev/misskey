@@ -10,7 +10,7 @@
 				<MkAvatar :class="$style.avatar" :user="u"/>
 				<MkUserName :user="u" :nowrap="true"/>
 			</div>
-			<div v-if="users.length > 10">+{{ count - 10 }}</div>
+			<div v-if="users.length > 10" :class="$style.more">+{{ count - 10 }}</div>
 		</div>
 	</div>
 </MkTooltip>
@@ -89,5 +89,9 @@ function getReactionName(reaction: string): string {
 	width: 24px;
 	height: 24px;
 	margin-right: 3px;
+}
+
+.more {
+	padding-top: 4px;
 }
 </style>
