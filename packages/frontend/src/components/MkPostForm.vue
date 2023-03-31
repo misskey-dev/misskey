@@ -22,7 +22,7 @@
 					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
 					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
 				</button>
-				<button v-else :class="['_button', $style.visibility]" disabled>
+				<button v-else :class="['_button', $style.headerRightItem, $style.visibility]" disabled>
 					<span><i class="ti ti-device-tv"></i></span>
 					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
 				</button>
@@ -30,7 +30,7 @@
 			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.headerRightItem, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
-		</button>
+			</button>
 			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" :class="['_button', $style.headerRightItem, $style.reactionAcceptance, { [$style.danger]: reactionAcceptance }]" @click="toggleReactionAcceptance">
 				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
 				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
@@ -920,10 +920,13 @@ defineExpose({
 .headerRight {
 	display: flex;
 	min-height: 48px;
+	font-size: 0.9em;
 	flex-wrap: nowrap;
 	align-items: center;
 	margin-left: auto;
 	gap: 4px;
+	overflow: clip;
+	padding-left: 4px;
 }
 
 .textCount {
@@ -960,7 +963,6 @@ defineExpose({
 	line-height: 34px;
 	font-weight: bold;
 	border-radius: 4px;
-	font-size: 0.9em;
 	min-width: 90px;
 	box-sizing: border-box;
 	color: var(--fgOnAccent);
