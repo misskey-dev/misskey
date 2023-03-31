@@ -61,7 +61,7 @@ import { toUnicode } from 'punycode/';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
 import XTimeline from './welcome.timeline.vue';
 import { host, instanceName } from '@/config';
@@ -71,7 +71,7 @@ import number from '@/filters/number';
 export default defineComponent({
 	components: {
 		MkButton,
-		XNote,
+		MkNote,
 		MkFeaturedPhotos,
 		XTimeline,
 	},
