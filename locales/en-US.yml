@@ -984,6 +984,7 @@ enableChartsForRemoteUser: "Generate remote user data charts"
 enableChartsForFederatedInstances: "Generate remote instance data charts"
 showClipButtonInNoteFooter: "Add \"Clip\" to note action menu"
 largeNoteReactions: "Enlargen displayed reactions"
+noteIdOrUrl: "Note ID or URL"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
