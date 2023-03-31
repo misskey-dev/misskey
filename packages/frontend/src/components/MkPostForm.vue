@@ -482,6 +482,7 @@ async function toggleReactionAcceptance() {
 			{ value: 'likeOnly' as const, text: i18n.ts.likeOnly },
 			{ value: 'likeOnlyForRemote' as const, text: i18n.ts.likeOnlyForRemote },
 		],
+		default: reactionAcceptance,
 	});
 	if (select.canceled) return;
 	reactionAcceptance = select.result;
