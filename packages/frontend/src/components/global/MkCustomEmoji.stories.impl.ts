@@ -1,12 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
-import { Meta } from '@storybook/vue3';
-const meta = {
-	title: 'components/global/MkCustomEmoji',
-	component: MkCustomEmoji,
-} satisfies Meta<typeof MkCustomEmoji>;
-export default meta;
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import MkCustomEmoji from './MkCustomEmoji.vue';

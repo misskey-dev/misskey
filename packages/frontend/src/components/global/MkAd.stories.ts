@@ -47,17 +47,17 @@ const common = {
 		await expect(a).not.toBeInTheDocument();
 		await expect(i).not.toBeInTheDocument();
 		buttons = canvas.getAllByRole<HTMLButtonElement>('button');
-		await expect(buttons).toHaveLength(args._hasReduce ? 2 : 1);
-		const reduce = args._hasReduce ? buttons[0] : null;
-		const back = buttons[args._hasReduce ? 1 : 0];
+		await expect(buttons).toHaveLength(args.__hasReduce ? 2 : 1);
+		const reduce = args.__hasReduce ? buttons[0] : null;
+		const back = buttons[args.__hasReduce ? 1 : 0];
 		if (reduce) {
 			await expect(reduce).toBeInTheDocument();
-			await expect(reduce.textContent).toBe(
+			await expect(reduce).toHaveTextContent(
 				i18n.ts._ad.reduceFrequencyOfThisAd
 			);
 		}
 		await expect(back).toBeInTheDocument();
-		await expect(back.textContent).toBe(i18n.ts._ad.back);
+		await expect(back).toHaveTextContent(i18n.ts._ad.back);
 		await userEvent.click(back);
 		if (reduce) {
 			await expect(reduce).not.toBeInTheDocument();
@@ -75,7 +75,7 @@ const common = {
 			radio: 1,
 			url: '#test',
 		},
-		_hasReduce: true,
+		__hasReduce: true,
 	},
 	parameters: {
 		layout: 'centered',
@@ -125,6 +125,6 @@ export const ZeroRatio = {
 			...Square.args.specify,
 			ratio: 0,
 		},
-		_hasReduce: false,
+		__hasReduce: false,
 	},
 };

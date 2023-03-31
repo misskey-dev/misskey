@@ -100,8 +100,10 @@ declare global {
 function toStories(component: string): string {
 	const msw = `${component.slice(0, -'.vue'.length)}.msw`;
 	const implStories = `${component.slice(0, -'.vue'.length)}.stories.impl`;
+	const metaStories = `${component.slice(0, -'.vue'.length)}.stories.meta`;
 	const hasMsw = existsSync(`${msw}.ts`);
 	const hasImplStories = existsSync(`${implStories}.ts`);
+	const hasMetaStories = existsSync(`${metaStories}.ts`);
 	const base = basename(component);
 	const dir = dirname(component);
 	const literal = (
@@ -212,6 +214,24 @@ function toStories(component: string): string {
 								/>
 							) as estree.ImportDeclaration,
 					  ]),
+				...(hasMetaStories
+					? [
+							(
+								<import-declaration
+									source={
+										(<literal value={`./${basename(metaStories)}`} />) as estree.Literal
+									}
+									specifiers={[
+										(
+											<import-namespace-specifier
+												local={(<identifier name='storiesMeta' />) as estree.Identifier}
+											/>
+										) as estree.ImportNamespaceSpecifier,
+									]}
+								/>
+							) as estree.ImportDeclaration,
+						]
+					: []),
 				(
 					<variable-declaration
 						kind={'const' as const}
@@ -248,6 +268,19 @@ function toStories(component: string): string {
 																		kind={'init' as const}
 																	/>
 																) as estree.Property,
+																...(hasMetaStories
+																	? [
+																			(
+																				<spread-element
+																					argument={
+																						(
+																							<identifier name='storiesMeta' />
+																						) as estree.Identifier
+																					}
+																				/>
+																			) as estree.SpreadElement,
+																		]
+																	: [])
 															]}
 														/>
 													) as estree.ObjectExpression

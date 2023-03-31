@@ -2,9 +2,11 @@
 /* eslint-disable import/no-default-export */
 import { Meta, StoryObj } from '@storybook/vue3';
 import MkError from './MkError.vue';
+import * as storiesMeta from './MkError.stories.meta';
 const meta = {
 	title: 'components/global/MkError',
 	component: MkError,
+	...storiesMeta,
 } satisfies Meta<typeof MkError>;
 export const Default = {
 	render(args) {
