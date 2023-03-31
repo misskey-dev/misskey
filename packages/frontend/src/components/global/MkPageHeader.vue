@@ -252,17 +252,18 @@ onUnmounted(() => {
 }
 
 .titleAvatarContainer {
-	overflow: hidden;
-	padding: 8px 0;
+	$size: 32px;
+	contain: strict;
+	overflow: clip;
+	width: $size;
+	height: $size;
+	padding: 8px;
+	flex-shrink: 0;
 }
 
 .titleAvatar {
-	$size: 32px;
-	display: inline-block;
-	width: $size;
-	height: $size;
-	vertical-align: bottom;
-	margin: 0 8px;
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
 }
 
