@@ -14,8 +14,29 @@
 			</button>
 		</div>
 		<div :class="$style.headerRight">
-			<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>
-			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.previewButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
+			<template v-if="!(channel != null && fixed)">
+				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
+					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
+					<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
+					<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
+					<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
+					<span :class="$style.headerRightButtonText">{{ i18n.ts._visibility[visibility] }}</span>
+				</button>
+				<button v-else :class="['_button', $style.visibility]" disabled>
+					<span><i class="ti ti-device-tv"></i></span>
+					<span :class="$style.headerRightButtonText">{{ channel.name }}</span>
+				</button>
+			</template>
+			<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.headerRightItem, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
+				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
+				<span v-else><i class="ti ti-rocket-off"></i></span>
+		</button>
+			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" :class="['_button', $style.headerRightItem, $style.reactionAcceptance, { [$style.danger]: reactionAcceptance }]" @click="toggleReactionAcceptance">
+				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
+				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
+				<span v-else><i class="ti ti-plus"></i></span>
+			</button>
+			<!--<span :class="[$style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</span>-->
 			<button v-click-anime class="_button" :class="[$style.submit, { [$style.submitPosting]: posting }]" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
@@ -25,33 +46,6 @@
 				</div>
 			</button>
 		</div>
-	</header>
-	<header :class="$style.header2">
-		<template v-if="!(channel != null && fixed)">
-			<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.header2Item, $style.visibility]" @click="setVisibility">
-				<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
-				<span v-if="visibility === 'home'"><i class="ti ti-home"></i></span>
-				<span v-if="visibility === 'followers'"><i class="ti ti-lock"></i></span>
-				<span v-if="visibility === 'specified'"><i class="ti ti-mail"></i></span>
-				<span :class="$style.header2ButtonText">{{ i18n.ts._visibility[visibility] }}</span>
-			</button>
-			<button v-else :class="['_button', $style.header2Item, $style.visibility]" disabled>
-				<span><i class="ti ti-device-tv"></i></span>
-				<span :class="$style.header2ButtonText">{{ channel.name }}</span>
-			</button>
-			<div :class="$style.header2Divider"></div>
-		</template>
-		<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" :class="['_button', $style.header2Item, $style.localOnly, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleLocalOnly">
-			<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
-			<span v-else><i class="ti ti-rocket-off"></i></span>
-		</button>
-		<div :class="$style.header2Divider"></div>
-		<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" :class="['_button', $style.header2Item, $style.reactionAcceptance, { [$style.danger]: reactionAcceptance }]" @click="toggleReactionAcceptance">
-			<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
-			<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
-			<span v-else><i class="ti ti-plus"></i></span>
-		</button>
-		<button v-click-anime v-tooltip="i18n.ts.emoji" :class="['_button', $style.header2Item, $style.emojiButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 	</header>
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
@@ -83,6 +77,8 @@
 		<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 		<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
 		<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+		<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
+		<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
 		<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
 	</footer>
 	<datalist id="hashtags">
@@ -880,6 +876,7 @@ defineExpose({
 <style lang="scss" module>
 .root {
 	position: relative;
+	container-type: inline-size;
 
 	&.modal {
 		width: 100%;
@@ -926,29 +923,11 @@ defineExpose({
 	flex-wrap: nowrap;
 	align-items: center;
 	margin-left: auto;
-	gap: 8px;
+	gap: 4px;
 }
 
 .textCount {
 	opacity: 0.7;
-}
-
-.previewButton {
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-	font-size: 16px;
-	width: 34px;
-	height: 34px;
-	border-radius: 6px;
-
-	&:hover {
-		background: var(--X5);
-	}
-
-	&.previewButtonActive {
-		color: var(--accent);
-	}
 }
 
 .submit {
@@ -987,18 +966,8 @@ defineExpose({
 	color: var(--fgOnAccent);
 	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 }
-//#endregion
-//#region header2
-.header2 {
-	z-index: 1000;
-	display: flex;
-	flex-wrap: nowrap;
-	gap: 4px;
-	padding: 2px 2px 2px 15px;
-	font-size: 1em;
-}
 
-.header2Item {
+.headerRightItem {
 	margin: 0;
 	padding: 8px;
 
@@ -1007,7 +976,7 @@ defineExpose({
 	}
 }
 
-button.header2Item {
+button.headerRightItem {
 	border-radius: 6px;
 
 	&:hover {
@@ -1018,26 +987,14 @@ button.header2Item {
 	}
 }
 
-.header2ButtonText {
+.headerRightButtonText {
 	padding-left: 6px;
 }
 
-.header2Divider {
-	margin: 8px 0;
-	border-left: 1px solid var(--X5);
-}
-
 .visibility {
-	min-width: 8em;
-	text-align: left;
 	overflow: clip;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.emojiButton {
-	margin-left: auto;
-	padding-left: 8px;
 }
 //#endregion
 
@@ -1128,7 +1085,7 @@ button.header2Item {
 .footer {
 	display: grid;
 	grid-auto-flow: row;
-	grid-template-columns: repeat(7, minmax(auto, 46px));
+	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
 	grid-auto-rows: 46px;
 	padding: 0 16px 16px 16px;
 	font-size: 1em;
@@ -1152,19 +1109,21 @@ button.header2Item {
 	}
 }
 
+.previewButtonActive {
+	color: var(--accent);
+}
+
 @container (max-width: 500px) {
 	.headerRight {
-		gap: 4px;
+		font-size: .9em;
+	}
+
+	.headerRightButtonText {
+		display: none;
 	}
 
 	.submit {
 		margin: 8px 8px 8px 0;
-	}
-
-	.header2 {
-		padding: 2px 2px 2px 8px;
-		font-size: .9em;
-		gap: 2px;
 	}
 
 	.toSpecified {
@@ -1189,7 +1148,11 @@ button.header2Item {
 	}
 }
 
-@container (max-width: 310px) {
+@container (max-width: 330px) {
+	.headerRight {
+		gap: 0;
+	}
+
 	.footer {
 		font-size: 14px;
 	}
