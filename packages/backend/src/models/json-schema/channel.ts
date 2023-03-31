@@ -51,5 +51,13 @@ export const packedChannelSchema = {
 			nullable: true, optional: false,
 			format: 'id',
 		},
+		pinnedNoteIds: {
+			type: 'array',
+			nullable: false, optional: false,
+			items: {
+				type: 'string',
+				format: 'id',
+			},
+		},
 	},
 } as const;

@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			return await this.channelEntityService.pack(channel, me);
+			return await this.channelEntityService.pack(channel, me, true);
 		});
 	}
 }

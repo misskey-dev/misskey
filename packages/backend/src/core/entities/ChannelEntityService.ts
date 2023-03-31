@@ -1,13 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ChannelFavoritesRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository } from '@/models/index.js';
+import type { ChannelFavoritesRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository, NotesRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { NoteEntityService } from './NoteEntityService.js';
+import { In } from 'typeorm';
 
 @Injectable()
 export class ChannelEntityService {
@@ -21,13 +22,16 @@ export class ChannelEntityService {
 		@Inject(DI.channelFavoritesRepository)
 		private channelFavoritesRepository: ChannelFavoritesRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: NoteUnreadsRepository,
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 	) {
 	}
@@ -36,6 +40,7 @@ export class ChannelEntityService {
 	public async pack(
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,
+		detailed?: boolean,
 	): Promise<Packed<'Channel'>> {
 		const channel = typeof src === 'object' ? src : await this.channelsRepository.findOneByOrFail({ id: src });
 		const meId = me ? me.id : null;
@@ -54,6 +59,12 @@ export class ChannelEntityService {
 			channelId: channel.id,
 		}) : null;
 
+		const pinnedNotes = channel.pinnedNoteIds.length > 0 ? await this.notesRepository.find({
+			where: {
+				id: In(channel.pinnedNoteIds),
+			},
+		}) : [];
+
 		return {
 			id: channel.id,
 			createdAt: channel.createdAt.toISOString(),
@@ -62,6 +73,7 @@ export class ChannelEntityService {
 			description: channel.description,
 			userId: channel.userId,
 			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
+			pinnedNoteIds: channel.pinnedNoteIds,
 			usersCount: channel.usersCount,
 			notesCount: channel.notesCount,
 
@@ -69,6 +81,10 @@ export class ChannelEntityService {
 				isFollowing: following != null,
 				isFavorited: favorite != null,
 				hasUnreadNote,
+			} : {}),
+
+			...(detailed ? {
+				pinnedNotes: await this.noteEntityService.packMany(pinnedNotes, me),
 			} : {}),
 		};
 	}

@@ -19,6 +19,13 @@
 
 			<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
 			<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-star"></i></MkButton>
+
+			<MkFoldableSection>
+				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
+				<div v-if="channel.pinnedNotes.length > 0" class="_gaps">
+					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
+				</div>
+			</MkFoldableSection>
 		</div>
 		<div v-if="channel && tab === 'timeline'" class="_gaps">
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
@@ -57,6 +64,8 @@ import MkNotes from '@/components/MkNotes.vue';
 import { url } from '@/config';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
+import MkNote from '@/components/MkNote.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const router = useRouter();
 
