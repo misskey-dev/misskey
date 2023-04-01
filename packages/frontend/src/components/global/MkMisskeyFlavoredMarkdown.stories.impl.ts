@@ -1,12 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
-import { Meta } from '@storybook/vue3';
-const meta = {
-	title: 'components/global/MkMisskeyFlavoredMarkdown',
-	component: MkMisskeyFlavoredMarkdown,
-} satisfies Meta<typeof MkMisskeyFlavoredMarkdown>;
-export default meta;
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.vue';
 export const Default = {

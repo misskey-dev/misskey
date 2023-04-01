@@ -601,7 +601,8 @@ function toStories(component: string): string {
 	);
 }
 
-promisify(glob)('src/{components,pages,ui,widgets}/**/*.vue').then(
+// promisify(glob)('src/{components,pages,ui,widgets}/**/*.vue').then(
+promisify(glob)('src/components/global/**/*.vue').then(
 	(components) =>
 		Promise.all(
 			components.map((component) => {

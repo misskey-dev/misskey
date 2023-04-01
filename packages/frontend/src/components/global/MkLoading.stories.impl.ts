@@ -1,12 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-default-export */
-import { Meta } from '@storybook/vue3';
-const meta = {
-	title: 'components/global/MkLoading',
-	component: MkLoading,
-} satisfies Meta<typeof MkLoading>;
-export default meta;
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import MkLoading from './MkLoading.vue';
 export const Default = {
@@ -30,7 +22,8 @@ export const Default = {
 			template: '<MkLoading v-bind="props" />',
 		};
 	},
-	args: {},
+	args: {
+	},
 	parameters: {
 		layout: 'centered',
 	},
