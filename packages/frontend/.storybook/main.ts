@@ -23,6 +23,13 @@ const config = {
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
 			assetsInclude: [resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}')],
+			build: {
+				target: [
+					'chrome108',
+					'firefox109',
+					'safari16',
+				],
+			},
 		});
 	},
 } satisfies StorybookConfig;
