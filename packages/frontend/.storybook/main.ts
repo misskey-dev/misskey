@@ -27,8 +27,12 @@ const config = {
 				viteStaticCopy({
 					targets: [
 						{
-							src: resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}'),
+							src: resolve(__dirname, '../node_modules/@tabler/icons-webfont/*.css'),
 							dest: 'node_modules/@tabler/icons-webfont',
+						},
+						{
+							src: resolve(__dirname, '../node_modules/@tabler/icons-webfont/fonts/*.{eot,ttf,woff,woff2}'),
+							dest: 'node_modules/@tabler/icons-webfont/fonts',
 						},
 					],
 				}),
