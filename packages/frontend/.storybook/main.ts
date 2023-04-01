@@ -1,7 +1,5 @@
-import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
-import { mergeConfig, normalizePath } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { mergeConfig } from 'vite';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
@@ -23,20 +21,6 @@ const config = {
 	},
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
-			plugins: [
-				viteStaticCopy({
-					targets: [
-						{
-							src: normalizePath(resolve(__dirname, '../node_modules/@tabler/icons-webfont/*.css')),
-							dest: 'node_modules/@tabler/icons-webfont',
-						},
-						{
-							src: normalizePath(resolve(__dirname, '../node_modules/@tabler/icons-webfont/fonts/*.{eot,ttf,woff,woff2}')),
-							dest: 'node_modules/@tabler/icons-webfont/fonts',
-						},
-					],
-				}),
-			],
 			build: {
 				target: [
 					'chrome108',
