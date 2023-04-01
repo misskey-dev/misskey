@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
@@ -22,7 +23,16 @@ const config = {
 	},
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
-			assetsInclude: [resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}')],
+			plugins: [
+				viteStaticCopy({
+					targets: [
+						{
+							src: resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}'),
+							dest: 'node_modules/@tabler/icons-webfont',
+						},
+					],
+				}),
+			],
 			build: {
 				target: [
 					'chrome108',

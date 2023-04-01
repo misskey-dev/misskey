@@ -7,9 +7,6 @@ import { commonHandlers, onUnhandledRequest } from './mocks';
 import themes from './themes';
 import '../src/style.scss';
 
-// TODO: HMR が壊れているのを直す
-import.meta.hot.invalidate();
-
 const appInitialized = Symbol();
 
 let moduleInitialized = false;
