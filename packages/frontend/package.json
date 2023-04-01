@@ -4,6 +4,7 @@
 	"scripts": {
 		"watch": "vite",
 		"build": "vite build",
+		"storybook-dev": "chokidar 'src/**/*.{mdx,ts,vue}' -d 1000 -t 1000 --initial -i '**/*.stories.ts' -c 'pkill -f node_modules/storybook/index.js; node_modules/.bin/tsc -p .storybook && node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js && node_modules/.bin/storybook dev -p 6006 --ci'",
 		"test": "vitest --run",
 		"test-and-coverage": "vitest --run --coverage",
 		"typecheck": "vue-tsc --noEmit",
@@ -110,6 +111,7 @@
 		"@vitest/coverage-c8": "^0.29.8",
 		"@vue/runtime-core": "3.2.47",
 		"astring": "^1.8.4",
+		"chokidar-cli": "^3.0.0",
 		"cross-env": "7.0.3",
 		"cypress": "12.9.0",
 		"eslint": "8.37.0",
@@ -125,7 +127,6 @@
 		"storybook": "7.0.0-rc.10",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"summaly": "github:misskey-dev/summaly",
-		"vite-plugin-restart": "^0.3.1",
 		"vitest": "^0.29.8",
 		"vitest-fetch-mock": "^0.2.2",
 		"vue-eslint-parser": "9.1.0",

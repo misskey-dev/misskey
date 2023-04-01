@@ -1,7 +1,6 @@
 import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
-import restart from 'vite-plugin-restart';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
@@ -23,11 +22,6 @@ const config = {
 	},
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
-			plugins: [
-				restart({
-					restart: ['../src/**/*', './**/*'],
-				}),
-			],
 			assetsInclude: [resolve(__dirname, '../node_modules/@tabler/icons-webfont/**/*.{css,eot,ttf,woff,woff2}')],
 		});
 	},
