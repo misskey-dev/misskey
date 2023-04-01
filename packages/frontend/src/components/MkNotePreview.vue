@@ -16,6 +16,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	text: string;

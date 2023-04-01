@@ -25,6 +25,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
 
 const pagination = {
 	endpoint: 'announcements' as const,

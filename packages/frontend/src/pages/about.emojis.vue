@@ -32,13 +32,14 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 import { i18n } from '@/i18n';
-import * as Misskey from 'misskey-js';
+import { $i } from '@/account';
 
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');

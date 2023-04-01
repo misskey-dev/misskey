@@ -68,6 +68,7 @@ import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const router = useRouter();
 

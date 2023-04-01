@@ -46,7 +46,7 @@ import { openInstanceMenu } from './_common_/common';
 import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu } from '@/account';
+import { openAccountMenu, $i } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { mainRouter } from '@/router';
@@ -70,6 +70,7 @@ export default defineComponent({
 			settingsWindowed: false,
 			defaultStore,
 			instance,
+			$i,
 		};
 	},
 

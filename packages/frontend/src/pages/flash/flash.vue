@@ -64,6 +64,7 @@ import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
 import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	id: string;

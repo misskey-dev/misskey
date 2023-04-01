@@ -60,6 +60,7 @@ import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	showing: boolean;

@@ -27,6 +27,7 @@ import * as misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
