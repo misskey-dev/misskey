@@ -10,7 +10,7 @@ export const onUnhandledRequest = ((req, print) => {
 export const commonHandlers = [
 	rest.get('/twemoji/:codepoints.svg', async (req, res, ctx) => {
 		const { codepoints } = req.params;
-		const file = await import(`../node_modules/@discordapp/twemoji/dist/svg/${codepoints}.svg?raw`);
-		return res(ctx.set('Content-Type', 'image/svg+xml'), ctx.body(file.default));
+		const value = await fetch(`https://unpkg.com/@discordapp/twemoji@14.1.2/dist/svg/${codepoints}.svg`).then((response) => response.blob());
+		return res(ctx.set('Content-Type', 'image/svg+xml'), ctx.body(value));
 	}),
 ];
