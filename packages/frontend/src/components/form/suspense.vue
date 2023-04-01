@@ -1,5 +1,5 @@
 <template>
-<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 	<div v-if="pending">
 		<MkLoading/>
 	</div>
@@ -18,6 +18,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -72,6 +73,7 @@ export default defineComponent({
 			rejected,
 			result,
 			retry,
+			defaultStore,
 		};
 	},
 });

@@ -1,7 +1,7 @@
 <template>
 <span>
 	<span>@{{ user.username }}</span>
-	<span v-if="user.host || detail || showFullAcct" style="opacity: 0.5;">@{{ user.host || host }}</span>
+	<span v-if="user.host || detail || defaultStore.state.showFullAcct" style="opacity: 0.5;">@{{ user.host || host }}</span>
 </span>
 </template>
 
@@ -17,5 +17,4 @@ defineProps<{
 }>();
 
 const host = toUnicode(hostRaw);
-const showFullAcct = $ref(defaultStore.state.showFullAcct);
 </script>

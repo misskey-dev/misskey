@@ -33,7 +33,7 @@
 	<div class="divider"></div>
 	<div class="about">
 		<button v-click-anime class="item _button" @click="openInstanceMenu">
-			<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 		</button>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
@@ -51,6 +51,8 @@ import MkButton from '@/components/MkButton.vue';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { mainRouter } from '@/router';
 //import MisskeyLogo from '@assets/client/misskey.svg';
+import { defaultStore } from '@/store';
+import { instance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -66,12 +68,14 @@ export default defineComponent({
 			navbarItemDef: navbarItemDef,
 			iconOnly: false,
 			settingsWindowed: false,
+			defaultStore,
+			instance,
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.menu;
+			return this.defaultStore.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -84,7 +88,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		'$store.reactiveState.menuDisplay.value'() {
+		'defaultStore.reactiveState.menuDisplay.value'() {
 			this.calcViewState();
 		},
 
@@ -111,7 +115,7 @@ export default defineComponent({
 		openInstanceMenu,
 
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.menuDisplay === 'sideIcon');
+			this.iconOnly = (window.innerWidth <= 1400) || (this.defaultStore.state.menuDisplay === 'sideIcon');
 			this.settingsWindowed = (window.innerWidth > 1400);
 		},
 

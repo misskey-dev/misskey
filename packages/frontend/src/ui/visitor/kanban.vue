@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-<div class="rwqkcmrc" :style="{ backgroundImage: transparent ? 'none' : `url(${ $instance.backgroundImageUrl })` }">
+<div class="rwqkcmrc" :style="{ backgroundImage: transparent ? 'none' : `url(${ instance.backgroundImageUrl })` }">
 	<div class="back" :class="{ transparent }"></div>
 	<div class="contents">
 		<div class="wrapper">
@@ -45,6 +45,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
+import { instance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -81,6 +82,7 @@ export default defineComponent({
 				endpoint: 'announcements',
 				limit: 10,
 			},
+			instance,
 		};
 	},
 

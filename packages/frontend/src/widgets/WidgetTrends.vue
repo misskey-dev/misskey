@@ -5,7 +5,7 @@
 
 	<div class="wbrkwala">
 		<MkLoading v-if="fetching"/>
-		<TransitionGroup v-else tag="div" :name="$store.state.animation ? 'chart' : ''" class="tags">
+		<TransitionGroup v-else tag="div" :name="defaultStore.state.animation ? 'chart' : ''" class="tags">
 			<div v-for="stat in stats" :key="stat.tag">
 				<div class="tag">
 					<MkA class="a" :to="`/tags/${ encodeURIComponent(stat.tag) }`" :title="stat.tag">#{{ stat.tag }}</MkA>
@@ -27,6 +27,7 @@ import MkMiniChart from '@/components/MkMiniChart.vue';
 import * as os from '@/os';
 import { useInterval } from '@/scripts/use-interval';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const name = 'hashtags';
 

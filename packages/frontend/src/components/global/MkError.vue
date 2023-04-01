@@ -1,5 +1,5 @@
 <template>
-<Transition :name="animation ? '_transition_zoom' : ''" appear>
+<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" appear>
 	<div :class="$style.root">
 		<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
@@ -13,7 +13,6 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
-const animation = $ref(defaultStore.reactiveState.animation);
 const emit = defineEmits<{
 	(ev: 'retry'): void;
 }>();
