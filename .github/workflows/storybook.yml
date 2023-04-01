@@ -1,0 +1,40 @@
+name: Storybook
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Build misskey-js
+      run: pnpm --filter misskey-js build
+    - name: Build storybook
+      run: pnpm --filter frontend build-storybook
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: storybook
+        path: packages/frontend/storybook-static
