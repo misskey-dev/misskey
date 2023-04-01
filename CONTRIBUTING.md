@@ -207,20 +207,40 @@ vue-routerとの最大の違いは、niraxは複数のルーターが存在す�
 
 Misskey uses [Storybook](https://storybook.js.org/) for UI development.
 
-### Setup
+### Setup & Run
+
+#### Universal
+
+##### Setup
 
 ```bash
 cd path/to/packages/misskey-js
 pnpm build
 cd path/to/packages/frontend
-pnpm tsc -p .storybook && (node .storybook/generate.js & node .storybook/preload-locale.js & node .storybook/preload-theme.js)
+pnpm tsc -p .storybook && (node .storybook/preload-locale.js & node .storybook/preload-theme.js)
 ```
 
-### Run
+##### Run
 
 ```bash
 cd path/to/packages/frontend
-pnpm storybook dev
+node .storybook/generate.js && pnpm storybook dev
+```
+
+#### macOS & Linux
+
+##### Setup
+
+```bash
+cd path/to/packages/misskey-js
+pnpm build
+```
+
+##### Run
+
+```bash
+cd path/to/packages/frontend
+pnpm storybook-dev
 ```
 
 ### Usage
