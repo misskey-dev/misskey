@@ -5,7 +5,7 @@
 		"watch": "vite",
 		"build": "vite build",
 		"storybook-dev": "chokidar 'src/**/*.{mdx,ts,vue}' -d 1000 -t 1000 --initial -i '**/*.stories.ts' -c 'pkill -f node_modules/storybook/index.js; node_modules/.bin/tsc -p .storybook; node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js && node_modules/.bin/storybook dev -p 6006 --ci'",
-		"build-storybook": "node_modules/.bin/tsc -p .storybook && node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js && node_modules/.bin/storybook build",
+		"build-storybook": "node_modules/.bin/tsc -p .storybook; node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js && node_modules/.bin/storybook build",
 		"test": "vitest --run",
 		"test-and-coverage": "vitest --run --coverage",
 		"typecheck": "vue-tsc --noEmit",
