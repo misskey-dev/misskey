@@ -1,4 +1,4 @@
-export const packedChannelSchema = {
+export const packedClipSchema = {
 	type: 'object',
 	properties: {
 		id: {
@@ -12,10 +12,20 @@ export const packedChannelSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		lastNotedAt: {
+		lastClippedAt: {
 			type: 'string',
 			optional: false, nullable: true,
 			format: 'date-time',
+		},
+		userId: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+		},
+		user: {
+			type: 'object',
+			ref: 'UserLite',
+			optional: false, nullable: false,
 		},
 		name: {
 			type: 'string',
@@ -23,29 +33,19 @@ export const packedChannelSchema = {
 		},
 		description: {
 			type: 'string',
-			nullable: true, optional: false,
+			optional: false, nullable: true,
 		},
-		bannerUrl: {
-			type: 'string',
-			format: 'url',
-			nullable: true, optional: false,
+		isPublic: {
+			type: 'boolean',
+			optional: false, nullable: false,
 		},
-		notesCount: {
-			type: 'number',
-			nullable: false, optional: false,
-		},
-		usersCount: {
-			type: 'number',
-			nullable: false, optional: false,
-		},
-		isFollowing: {
+		isFavorited: {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
-		userId: {
-			type: 'string',
-			nullable: true, optional: false,
-			format: 'id',
+		favoritedCount: {
+			type: 'number',
+			optional: false, nullable: false,
 		},
 	},
 } as const;

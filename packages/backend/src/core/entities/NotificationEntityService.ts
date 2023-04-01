@@ -5,7 +5,7 @@ import type { AccessTokensRepository, NoteReactionsRepository, NotificationsRepo
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { notificationTypes } from '@/types.js';

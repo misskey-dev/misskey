@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -21,6 +21,7 @@ export type RolePolicies = {
 	canPublicNote: boolean;
 	canInvite: boolean;
 	canManageCustomEmojis: boolean;
+	canSearchNotes: boolean;
 	canHideAds: boolean;
 	driveCapacityMb: number;
 	pinLimit: number;
@@ -40,6 +41,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canPublicNote: true,
 	canInvite: false,
 	canManageCustomEmojis: false,
+	canSearchNotes: false,
 	canHideAds: false,
 	driveCapacityMb: 100,
 	pinLimit: 5,
@@ -55,8 +57,8 @@ export const DEFAULT_POLICIES: RolePolicies = {
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown {
-	private rolesCache: Cache<Role[]>;
-	private roleAssignmentByUserIdCache: Cache<RoleAssignment[]>;
+	private rolesCache: KVCache<Role[]>;
+	private roleAssignmentByUserIdCache: KVCache<RoleAssignment[]>;
 
 	public static AlreadyAssignedError = class extends Error {};
 	public static NotAssignedError = class extends Error {};
@@ -82,8 +84,8 @@ export class RoleService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new Cache<Role[]>(Infinity);
-		this.roleAssignmentByUserIdCache = new Cache<RoleAssignment[]>(Infinity);
+		this.rolesCache = new KVCache<Role[]>(Infinity);
+		this.roleAssignmentByUserIdCache = new KVCache<RoleAssignment[]>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}
@@ -190,6 +192,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'followingMoreThanOrEq': {
 					return user.followingCount >= value.value;
 				}
+				case 'notesLessThanOrEq': {
+					return user.notesCount <= value.value;
+				}
+				case 'notesMoreThanOrEq': {
+					return user.notesCount >= value.value;
+				}
 				default:
 					return false;
 			}
@@ -264,6 +272,7 @@ export class RoleService implements OnApplicationShutdown {
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
+			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			pinLimit: calc('pinLimit', vs => Math.max(...vs)),

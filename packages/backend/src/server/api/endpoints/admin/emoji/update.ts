@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
@@ -19,6 +19,11 @@ export const meta = {
 			code: 'NO_SUCH_EMOJI',
 			id: '684dec9d-a8c2-4364-9aa8-456c49cb1dc8',
 		},
+		sameNameEmojiExists: {
+			message: 'Emoji that have same name already exists.',
+			code: 'SAME_NAME_EMOJI_EXISTS',
+			id: '7180fe9d-1ee3-bff9-647d-fe9896d2ffb8',
+		},
 	},
 } as const;
 
@@ -26,7 +31,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		id: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string' },
+		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
 		category: {
 			type: 'string',
 			nullable: true,
@@ -35,6 +40,7 @@ export const paramDef = {
 		aliases: { type: 'array', items: {
 			type: 'string',
 		} },
+		license: { type: 'string', nullable: true },
 	},
 	required: ['id', 'name', 'aliases'],
 } as const;
@@ -56,17 +62,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const emoji = await this.emojisRepository.findOneBy({ id: ps.id });
-
+			const sameNameEmoji = await this.emojisRepository.findOneBy({ name: ps.name, host: IsNull() });
 			if (emoji == null) throw new ApiError(meta.errors.noSuchEmoji);
-
+			if (sameNameEmoji != null && sameNameEmoji.id !== ps.id) throw new ApiError(meta.errors.sameNameEmojiExists);
 			await this.emojisRepository.update(emoji.id, {
 				updatedAt: new Date(),
 				name: ps.name,
 				category: ps.category,
 				aliases: ps.aliases,
+				license: ps.license,
 			});
 
-			await this.db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache?.remove(['meta_emojis']);
 
 			const updated = await this.emojiEntityService.packDetailed(emoji.id);
 

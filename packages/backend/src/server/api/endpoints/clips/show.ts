@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchClip);
 			}
 
-			return await this.clipEntityService.pack(clip);
+			return await this.clipEntityService.pack(clip, me);
 		});
 	}
 }

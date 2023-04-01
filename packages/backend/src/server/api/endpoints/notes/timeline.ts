@@ -6,6 +6,7 @@ import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -56,6 +57,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private activeUsersChart: ActiveUsersChart,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const followees = await this.followingsRepository.createQueryBuilder('following')
@@ -66,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.createdAt > :minDate', { minDate: new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)) }) // 30日前まで
+				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('user.avatar', 'avatar')
 				.leftJoinAndSelect('user.banner', 'banner')

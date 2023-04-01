@@ -1,9 +1,9 @@
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_fade_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 	mode="out-in"
 >
 	<MkLoading v-if="fetching"/>

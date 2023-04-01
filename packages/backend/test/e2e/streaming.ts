@@ -6,7 +6,7 @@ import { connectStream, signup, api, post, startServer, initTestDb, waitFire } f
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Streaming', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 	let Followings: any;
 
 	const follow = async (follower: any, followee: any) => {
@@ -38,7 +38,7 @@ describe('Streaming', () => {
 		let list: any;
 
 		beforeAll(async () => {
-			p = await startServer();
+			app = await startServer();
 			const connection = await initTestDb(true);
 			Followings = connection.getRepository(Following);
 
@@ -74,7 +74,7 @@ describe('Streaming', () => {
 		}, 1000 * 60 * 2);
 
 		afterAll(async () => {
-			await p.close();
+			await app.close();
 		});
 
 		describe('Events', () => {

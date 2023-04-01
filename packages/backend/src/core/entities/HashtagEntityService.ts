@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { HashtagsRepository } from '@/models/index.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { Hashtag } from '@/models/entities/Hashtag.js';
-import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class HashtagEntityService {

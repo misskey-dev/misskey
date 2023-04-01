@@ -7,12 +7,14 @@ import { jest } from '@jest/globals';
 
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IActor } from '@/core/activitypub/type.js';
 import { MockResolver } from '../misc/mock-resolver.js';
+import { Note } from '@/models/index.js';
 
 const host = 'https://host1.test';
 
@@ -33,6 +35,7 @@ function createRandomActor(): IActor & { id: string } {
 describe('ActivityPub', () => {
 	let noteService: ApNoteService;
 	let personService: ApPersonService;
+	let rendererService: ApRendererService;
 	let resolver: MockResolver;
 
 	beforeEach(async () => {
@@ -45,6 +48,7 @@ describe('ActivityPub', () => {
 
 		noteService = app.get<ApNoteService>(ApNoteService);
 		personService = app.get<ApPersonService>(ApPersonService);
+		rendererService = app.get<ApRendererService>(ApRendererService);
 		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
@@ -111,6 +115,15 @@ describe('ActivityPub', () => {
 			const user = await personService.createPerson(actor.id, resolver);
 
 			assert.strictEqual(user.name, null);
+		});
+	});
+
+	describe('Renderer', () => {
+		test('Render an announce with visibility: followers', () => {
+			rendererService.renderAnnounce(null, {
+				createdAt: new Date(0),
+				visibility: 'followers',
+			} as Note);
 		});
 	});
 });

@@ -101,6 +101,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.noteReadService.read(me.id, notes);
 			}
 
+			this.antennasRepository.update(antenna.id, {
+				lastUsedAt: new Date(),
+			});
+
 			return await this.noteEntityService.packMany(notes, me);
 		});
 	}

@@ -124,7 +124,7 @@ export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioEle
 	return audio;
 }
 
-export function play(type: string) {
+export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
 	const sound = soundConfigStore.state[`sound_${type}`];
 	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null) return;

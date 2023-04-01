@@ -42,6 +42,7 @@ import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
 import * as ep___admin_queue_inboxDelayed from './endpoints/admin/queue/inbox-delayed.js';
+import * as ep___admin_queue_promote from './endpoints/admin/queue/promote.js';
 import * as ep___admin_queue_stats from './endpoints/admin/queue/stats.js';
 import * as ep___admin_relays_add from './endpoints/admin/relays/add.js';
 import * as ep___admin_relays_list from './endpoints/admin/relays/list.js';
@@ -94,6 +95,9 @@ import * as ep___channels_show from './endpoints/channels/show.js';
 import * as ep___channels_timeline from './endpoints/channels/timeline.js';
 import * as ep___channels_unfollow from './endpoints/channels/unfollow.js';
 import * as ep___channels_update from './endpoints/channels/update.js';
+import * as ep___channels_favorite from './endpoints/channels/favorite.js';
+import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
+import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -114,6 +118,9 @@ import * as ep___clips_list from './endpoints/clips/list.js';
 import * as ep___clips_notes from './endpoints/clips/notes.js';
 import * as ep___clips_show from './endpoints/clips/show.js';
 import * as ep___clips_update from './endpoints/clips/update.js';
+import * as ep___clips_favorite from './endpoints/clips/favorite.js';
+import * as ep___clips_unfavorite from './endpoints/clips/unfavorite.js';
+import * as ep___clips_myFavorites from './endpoints/clips/my-favorites.js';
 import * as ep___drive from './endpoints/drive.js';
 import * as ep___drive_files from './endpoints/drive/files.js';
 import * as ep___drive_files_attachedNotes from './endpoints/drive/files/attached-notes.js';
@@ -220,6 +227,7 @@ import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
+import * as ep___emoji from './endpoints/emoji.js';
 import * as ep___miauth_genToken from './endpoints/miauth/gen-token.js';
 import * as ep___mute_create from './endpoints/mute/create.js';
 import * as ep___mute_delete from './endpoints/mute/delete.js';
@@ -366,6 +374,7 @@ const $admin_promo_create: Provider = { provide: 'ep:admin/promo/create', useCla
 const $admin_queue_clear: Provider = { provide: 'ep:admin/queue/clear', useClass: ep___admin_queue_clear.default };
 const $admin_queue_deliverDelayed: Provider = { provide: 'ep:admin/queue/deliver-delayed', useClass: ep___admin_queue_deliverDelayed.default };
 const $admin_queue_inboxDelayed: Provider = { provide: 'ep:admin/queue/inbox-delayed', useClass: ep___admin_queue_inboxDelayed.default };
+const $admin_queue_promote: Provider = { provide: 'ep:admin/queue/promote', useClass: ep___admin_queue_promote.default };
 const $admin_queue_stats: Provider = { provide: 'ep:admin/queue/stats', useClass: ep___admin_queue_stats.default };
 const $admin_relays_add: Provider = { provide: 'ep:admin/relays/add', useClass: ep___admin_relays_add.default };
 const $admin_relays_list: Provider = { provide: 'ep:admin/relays/list', useClass: ep___admin_relays_list.default };
@@ -418,6 +427,9 @@ const $channels_show: Provider = { provide: 'ep:channels/show', useClass: ep___c
 const $channels_timeline: Provider = { provide: 'ep:channels/timeline', useClass: ep___channels_timeline.default };
 const $channels_unfollow: Provider = { provide: 'ep:channels/unfollow', useClass: ep___channels_unfollow.default };
 const $channels_update: Provider = { provide: 'ep:channels/update', useClass: ep___channels_update.default };
+const $channels_favorite: Provider = { provide: 'ep:channels/favorite', useClass: ep___channels_favorite.default };
+const $channels_unfavorite: Provider = { provide: 'ep:channels/unfavorite', useClass: ep___channels_unfavorite.default };
+const $channels_myFavorites: Provider = { provide: 'ep:channels/my-favorites', useClass: ep___channels_myFavorites.default };
 const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useClass: ep___charts_activeUsers.default };
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
@@ -438,6 +450,9 @@ const $clips_list: Provider = { provide: 'ep:clips/list', useClass: ep___clips_l
 const $clips_notes: Provider = { provide: 'ep:clips/notes', useClass: ep___clips_notes.default };
 const $clips_show: Provider = { provide: 'ep:clips/show', useClass: ep___clips_show.default };
 const $clips_update: Provider = { provide: 'ep:clips/update', useClass: ep___clips_update.default };
+const $clips_favorite: Provider = { provide: 'ep:clips/favorite', useClass: ep___clips_favorite.default };
+const $clips_unfavorite: Provider = { provide: 'ep:clips/unfavorite', useClass: ep___clips_unfavorite.default };
+const $clips_myFavorites: Provider = { provide: 'ep:clips/my-favorites', useClass: ep___clips_myFavorites.default };
 const $drive: Provider = { provide: 'ep:drive', useClass: ep___drive.default };
 const $drive_files: Provider = { provide: 'ep:drive/files', useClass: ep___drive_files.default };
 const $drive_files_attachedNotes: Provider = { provide: 'ep:drive/files/attached-notes', useClass: ep___drive_files_attachedNotes.default };
@@ -544,6 +559,7 @@ const $i_webhooks_update: Provider = { provide: 'ep:i/webhooks/update', useClass
 const $i_webhooks_delete: Provider = { provide: 'ep:i/webhooks/delete', useClass: ep___i_webhooks_delete.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
+const $emoji: Provider = { provide: 'ep:emoji', useClass: ep___emoji.default };
 const $miauth_genToken: Provider = { provide: 'ep:miauth/gen-token', useClass: ep___miauth_genToken.default };
 const $mute_create: Provider = { provide: 'ep:mute/create', useClass: ep___mute_create.default };
 const $mute_delete: Provider = { provide: 'ep:mute/delete', useClass: ep___mute_delete.default };
@@ -694,6 +710,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
 		$admin_queue_inboxDelayed,
+		$admin_queue_promote,
 		$admin_queue_stats,
 		$admin_relays_add,
 		$admin_relays_list,
@@ -746,6 +763,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+		$channels_favorite,
+		$channels_unfavorite,
+		$channels_myFavorites,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -766,6 +786,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$clips_notes,
 		$clips_show,
 		$clips_update,
+		$clips_favorite,
+		$clips_unfavorite,
+		$clips_myFavorites,
 		$drive,
 		$drive_files,
 		$drive_files_attachedNotes,
@@ -872,6 +895,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_delete,
 		$meta,
 		$emojis,
+		$emoji,
 		$miauth_genToken,
 		$mute_create,
 		$mute_delete,
@@ -1016,6 +1040,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
 		$admin_queue_inboxDelayed,
+		$admin_queue_promote,
 		$admin_queue_stats,
 		$admin_relays_add,
 		$admin_relays_list,
@@ -1068,6 +1093,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+		$channels_favorite,
+		$channels_unfavorite,
+		$channels_myFavorites,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -1088,6 +1116,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$clips_notes,
 		$clips_show,
 		$clips_update,
+		$clips_favorite,
+		$clips_unfavorite,
+		$clips_myFavorites,
 		$drive,
 		$drive_files,
 		$drive_files_attachedNotes,
@@ -1194,6 +1225,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_delete,
 		$meta,
 		$emojis,
+		$emoji,
 		$miauth_genToken,
 		$mute_create,
 		$mute_delete,

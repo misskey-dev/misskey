@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="1000" :margin-min="16" :margin-max="32">
 		<div class="_root">
-			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
 					<div class="files">
 						<div v-for="file in post.files" :key="file.id" class="file">
@@ -67,6 +67,8 @@ import { url } from '@/config';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const router = useRouter();
 

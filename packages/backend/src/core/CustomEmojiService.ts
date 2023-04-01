@@ -8,7 +8,7 @@ import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { EmojisRepository, Note } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
-import { Cache } from '@/misc/cache.js';
+import { KVCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Config } from '@/config.js';
 import { ReactionService } from '@/core/ReactionService.js';
@@ -16,7 +16,7 @@ import { query } from '@/misc/prelude/url.js';
 
 @Injectable()
 export class CustomEmojiService {
-	private cache: Cache<Emoji | null>;
+	private cache: KVCache<Emoji | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -34,7 +34,7 @@ export class CustomEmojiService {
 		private globalEventService: GlobalEventService,
 		private reactionService: ReactionService,
 	) {
-		this.cache = new Cache<Emoji | null>(1000 * 60 * 60 * 12);
+		this.cache = new KVCache<Emoji | null>(1000 * 60 * 60 * 12);
 	}
 
 	@bindThis
@@ -44,6 +44,7 @@ export class CustomEmojiService {
 		category: string | null;
 		aliases: string[];
 		host: string | null;
+		license: string | null;
 	}): Promise<Emoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: this.idService.genId(),
@@ -55,10 +56,11 @@ export class CustomEmojiService {
 			originalUrl: data.driveFile.url,
 			publicUrl: data.driveFile.webpublicUrl ?? data.driveFile.url,
 			type: data.driveFile.webpublicType ?? data.driveFile.type,
+			license: data.license,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {
-			await this.db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache?.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),

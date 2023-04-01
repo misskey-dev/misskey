@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				category: ps.category,
 			});
 
-			await this.db.queryResultCache!.remove(['meta_emojis']);
+			await this.db.queryResultCache?.remove(['meta_emojis']);
 
 			this.globalEventService.publishBroadcastStream('emojiUpdated', {
 				emojis: await this.emojiEntityService.packDetailedMany(ps.ids),
