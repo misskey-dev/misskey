@@ -97,6 +97,9 @@ const preview = {
 		},
 	],
 	parameters: {
+		controls: {
+			exclude: /^__/,
+		},
 		msw: {
 			handlers: commonHandlers,
 		},
