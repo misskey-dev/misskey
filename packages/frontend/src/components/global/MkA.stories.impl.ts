@@ -18,7 +18,7 @@ export const Default = {
 			computed: {
 				props() {
 					return {
-						...args,
+						...this.args,
 					};
 				},
 			},

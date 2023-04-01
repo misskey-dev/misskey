@@ -481,8 +481,19 @@ function toStories(component: string): string {
 																																																											<spread-element
 																																																												argument={
 																																																													(
-																																																														<identifier name='args' />
-																																																													) as estree.Identifier
+																																																														<member-expression
+																																																															object={
+																																																																(
+																																																																	<this-expression />
+																																																																) as estree.ThisExpression
+																																																															}
+																																																															property={
+																																																																(
+																																																																	<identifier name='args' />
+																																																																) as estree.Identifier
+																																																															}
+																																																														/>
+																																																													) as estree.MemberExpression
 																																																												}
 																																																											/>
 																																																										) as estree.SpreadElement,

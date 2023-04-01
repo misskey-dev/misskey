@@ -16,7 +16,7 @@ const common = {
 			computed: {
 				props() {
 					return {
-						...args,
+						...this.args,
 					};
 				},
 			},

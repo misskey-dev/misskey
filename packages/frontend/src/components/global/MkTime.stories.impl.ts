@@ -25,7 +25,7 @@ export const Empty = {
 			computed: {
 				props() {
 					return {
-						...args,
+						...this.args,
 					};
 				},
 			},
