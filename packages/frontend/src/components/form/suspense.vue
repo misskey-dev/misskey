@@ -8,8 +8,8 @@
 	</div>
 	<div v-else>
 		<div class="wszdbhzo">
-			<div><i class="ti ti-alert-triangle"></i> {{ $ts.somethingHappened }}</div>
-			<MkButton inline class="retry" @click="retry"><i class="ti ti-reload"></i> {{ $ts.retry }}</MkButton>
+			<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
+			<MkButton inline class="retry" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
 		</div>
 	</div>
 </Transition>
@@ -19,6 +19,7 @@
 import { defineComponent, PropType, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -74,6 +75,7 @@ export default defineComponent({
 			result,
 			retry,
 			defaultStore,
+			i18n,
 		};
 	},
 });

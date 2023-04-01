@@ -26,7 +26,7 @@
 		<div v-show="showBody" ref="content" :class="[$style.content, { [$style.omitted]: omitted }]">
 			<slot></slot>
 			<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
-				<span :class="$style.fadeLabel">{{ $ts.showMore }}</span>
+				<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 			</button>
 		</div>
 	</Transition>
@@ -36,6 +36,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	props: {

@@ -5,7 +5,7 @@
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" small :model-value="choice" :placeholder="$t('_poll.choiceN', { n: i + 1 })" @update:model-value="onInput(i, $event)">
+			<MkInput class="input" small :model-value="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:model-value="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>

@@ -47,7 +47,7 @@ import { computed, defineAsyncComponent, toRef } from 'vue';
 import { openInstanceMenu } from './common';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu as openAccountMenu_ } from '@/account';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';

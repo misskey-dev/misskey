@@ -1,7 +1,7 @@
 <template>
 <MkContainer>
 	<template #icon><i class="ti ti-chart-line"></i></template>
-	<template #header>{{ $ts.activity }}</template>
+	<template #header>{{ i18n.ts.activity }}</template>
 	<template #func="{ buttonStyleClass }">
 		<button class="_button" :class="buttonStyleClass" @click="showMenu">
 			<i class="ti ti-dots"></i>
