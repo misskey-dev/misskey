@@ -3,7 +3,7 @@
 import { Meta, StoryObj } from '@storybook/vue3';
 import MkPageHeader_tabs from './MkPageHeader.tabs.vue';
 const meta = {
-	title: 'components/global/MkPageHeader.tabs',
+	title: 'components/global/MkPageHeader/tabs',
 	component: MkPageHeader_tabs,
 } satisfies Meta<typeof MkPageHeader_tabs>;
 export const Default = {

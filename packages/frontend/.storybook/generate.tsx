@@ -107,7 +107,11 @@ function toStories(component: string): string {
 	const base = basename(component);
 	const dir = dirname(component);
 	const literal = (
-		<literal value={component.slice('src/'.length, -'.vue'.length)} />
+		<literal
+			value={component
+				.slice('src/'.length, -'.vue'.length)
+				.replace(/\./g, '/')}
+		/>
 	) as estree.Literal;
 	const identifier = (
 		<identifier
