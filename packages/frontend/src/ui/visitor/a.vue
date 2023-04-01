@@ -1,6 +1,6 @@
 <template>
 <div class="mk-app">
-	<div v-if="mainRouter.currentRoute?.name === 'index'" class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-if="mainRouter.currentRoute?.name === 'index'" class="banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div v-if="meta" class="about">
@@ -13,7 +13,7 @@
 			</div>
 		</div>
 	</div>
-	<div v-else class="banner-mini" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-else class="banner-mini" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
@@ -44,6 +44,7 @@ import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore, ColdDeviceStorage } from '@/store';
 import { mainRouter } from '@/router';
+import { instance } from '@/instance';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -67,6 +68,7 @@ export default defineComponent({
 			mainRouter,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
 			defaultStore,
+			instance,
 		};
 	},
 

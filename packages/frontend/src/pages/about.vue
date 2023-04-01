@@ -3,18 +3,18 @@
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
 		<div class="_gaps_m">
-			<div class="fwhjspax" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+			<div class="fwhjspax" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 				<div class="content">
-					<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
+					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
 					<div class="name">
-						<b>{{ $instance.name ?? host }}</b>
+						<b>{{ instance.name ?? host }}</b>
 					</div>
 				</div>
 			</div>
 
 			<MkKeyValue>
 				<template #key>{{ i18n.ts.description }}</template>
-				<template #value><div v-html="$instance.description"></div></template>
+				<template #value><div v-html="instance.description"></div></template>
 			</MkKeyValue>
 
 			<FormSection>
@@ -23,7 +23,7 @@
 						<template #key>Misskey</template>
 						<template #value>{{ version }}</template>
 					</MkKeyValue>
-					<div v-html="i18n.t('poweredByMisskeyDescription', { name: $instance.name ?? host })">
+					<div v-html="i18n.t('poweredByMisskeyDescription', { name: instance.name ?? host })">
 					</div>
 					<FormLink to="/about-misskey">{{ i18n.ts.aboutMisskey }}</FormLink>
 				</div>
@@ -34,14 +34,14 @@
 					<FormSplit>
 						<MkKeyValue>
 							<template #key>{{ i18n.ts.administrator }}</template>
-							<template #value>{{ $instance.maintainerName }}</template>
+							<template #value>{{ instance.maintainerName }}</template>
 						</MkKeyValue>
 						<MkKeyValue>
 							<template #key>{{ i18n.ts.contact }}</template>
-							<template #value>{{ $instance.maintainerEmail }}</template>
+							<template #value>{{ instance.maintainerEmail }}</template>
 						</MkKeyValue>
 					</FormSplit>
-					<FormLink v-if="$instance.tosUrl" :to="$instance.tosUrl" external>{{ i18n.ts.tos }}</FormLink>
+					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.tos }}</FormLink>
 				</div>
 			</FormSection>
 
@@ -101,6 +101,7 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement } from '@/scripts/achievements';
+import { instance } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;

@@ -3,7 +3,7 @@
 	<div class="body">
 		<div class="left">
 			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
-				<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+				<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 			</button>
 			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
@@ -51,6 +51,7 @@ import { openAccountMenu } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { mainRouter } from '@/router';
 import { defaultStore } from '@/store';
+import { instance } from '@/instance';
 
 export default defineComponent({
 	components: {
@@ -65,6 +66,7 @@ export default defineComponent({
 			navbarItemDef: navbarItemDef,
 			settingsWindowed: false,
 			defaultStore,
+			instance,
 		};
 	},
 
