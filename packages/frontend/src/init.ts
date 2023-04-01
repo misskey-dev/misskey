@@ -198,15 +198,6 @@ if (_DEV_) {
 	app.config.performance = true;
 }
 
-// TODO: 廃止
-app.config.globalProperties = {
-	$i,
-	$store: defaultStore,
-	$instance: instance,
-	$t: i18n.t,
-	$ts: i18n.ts,
-};
-
 widgets(app);
 directives(app);
 components(app);
@@ -356,7 +347,7 @@ const hotkeys = {
 	},
 	's': (): void => {
 		mainRouter.push('/search');
-	}
+	},
 };
 
 if ($i) {

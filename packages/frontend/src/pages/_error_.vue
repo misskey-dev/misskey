@@ -1,6 +1,6 @@
 <template>
 <MkLoading v-if="!loaded"/>
-<Transition :name="$store.state.animation ? '_transition_zoom' : ''" appear>
+<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" appear>
 	<div v-show="loaded" class="mjndxjch">
 		<img src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 		<p><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></p>
@@ -27,6 +27,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
+import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
 	error?: Error;

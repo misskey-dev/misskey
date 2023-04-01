@@ -1,10 +1,10 @@
 <template>
 <Transition
 	appear
-	:enter-active-class="$store.state.animation ? $style.transition_fade_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
@@ -18,6 +18,7 @@ import MkMenu from './MkMenu.vue';
 import { MenuItem } from './types/menu.vue';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	items: MenuItem[];

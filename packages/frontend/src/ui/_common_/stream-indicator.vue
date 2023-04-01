@@ -1,5 +1,5 @@
 <template>
-<div v-if="hasDisconnected && $store.state.serverDisconnectedBehavior === 'quiet'" :class="$style.root" class="_panel _shadow" @click="resetDisconnected">
+<div v-if="hasDisconnected && defaultStore.state.serverDisconnectedBehavior === 'quiet'" :class="$style.root" class="_panel _shadow" @click="resetDisconnected">
 	<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.disconnectedFromServer }}</div>
 	<div :class="$style.command" class="_buttons">
 		<MkButton :class="$style.commandButton" small primary @click="reload">{{ i18n.ts.reload }}</MkButton>
@@ -14,6 +14,7 @@ import { stream } from '@/stream';
 import { i18n } from '@/i18n';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 const zIndex = os.claimZIndex('high');
 

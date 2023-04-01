@@ -3,7 +3,7 @@
 	<img :class="$style.icon" :src="`/avatar/@${username}@${host}`" alt="">
 	<span>
 		<span :class="$style.username">@{{ username }}</span>
-		<span v-if="(host != localHost) || $store.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
+		<span v-if="(host != localHost) || defaultStore.state.showFullAcct" :class="$style.host">@{{ toUnicode(host) }}</span>
 	</span>
 </MkA>
 </template>
@@ -14,6 +14,7 @@ import { } from 'vue';
 import tinycolor from 'tinycolor2';
 import { host as localHost } from '@/config';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	username: string;
