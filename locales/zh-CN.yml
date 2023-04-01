@@ -983,6 +983,8 @@ retryAllQueuesConfirmText: "可能会使服务器负荷在一定时间内增加"
 enableChartsForRemoteUser: "生成远程用户的图表"
 enableChartsForFederatedInstances: "生成远程服务器的图表"
 showClipButtonInNoteFooter: "在贴文下方显示便签按钮"
+largeNoteReactions: "使用大图标来显示回应"
+noteIdOrUrl: "帖子ID或URL"
 _achievements:
   earnedAt: "达成时间"
   _types:
