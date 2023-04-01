@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
-import { mergeConfig } from 'vite';
+import { mergeConfig, normalizePath } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -27,11 +27,11 @@ const config = {
 				viteStaticCopy({
 					targets: [
 						{
-							src: resolve(__dirname, '../node_modules/@tabler/icons-webfont/*.css'),
+							src: normalizePath(resolve(__dirname, '../node_modules/@tabler/icons-webfont/*.css')),
 							dest: 'node_modules/@tabler/icons-webfont',
 						},
 						{
-							src: resolve(__dirname, '../node_modules/@tabler/icons-webfont/fonts/*.{eot,ttf,woff,woff2}'),
+							src: normalizePath(resolve(__dirname, '../node_modules/@tabler/icons-webfont/fonts/*.{eot,ttf,woff,woff2}')),
 							dest: 'node_modules/@tabler/icons-webfont/fonts',
 						},
 					],
