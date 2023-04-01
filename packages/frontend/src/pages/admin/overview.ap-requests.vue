@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { Chart, type ChartDataset } from 'chart.js';
+import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { useChartTooltip } from '@/scripts/use-chart-tooltip';
@@ -190,7 +190,7 @@ onMounted(async () => {
 				categoryPercentage: 0.9,
 				fill: true,
 				clip: 8,
-			}] satisfies ChartDataset[],
+			}],
 		},
 		options: {
 			aspectRatio: 5,
