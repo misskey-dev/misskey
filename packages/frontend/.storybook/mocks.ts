@@ -1,7 +1,7 @@
 import { type SharedOptions, rest } from 'msw';
 
 export const onUnhandledRequest = ((req, print) => {
-	if (req.url.hostname !== 'localhost' || /^\/(?:client-assets\/|fluent-emojis?\/|iframe.html$|node_modules\/|sb-|static-assets\/|vite\/)/.test(req.url.pathname)) {
+	if (req.url.hostname !== 'localhost' || /^\/(?:client-assets\/|fluent-emojis?\/|iframe.html$|node_modules\/|src\/|sb-|static-assets\/|vite\/)/.test(req.url.pathname)) {
 		return
 	}
 	print.warning()

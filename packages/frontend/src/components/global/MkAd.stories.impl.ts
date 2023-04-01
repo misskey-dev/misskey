@@ -82,7 +82,7 @@ export const Square = {
 				'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
 		},
 	},
-};
+} satisfies StoryObj<typeof MkAd>;
 export const Horizontal = {
 	...common,
 	args: {
@@ -94,7 +94,7 @@ export const Horizontal = {
 				'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true',
 		},
 	},
-};
+} satisfies StoryObj<typeof MkAd>;
 export const HorizontalBig = {
 	...common,
 	args: {
@@ -106,7 +106,7 @@ export const HorizontalBig = {
 				'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true',
 		},
 	},
-};
+} satisfies StoryObj<typeof MkAd>;
 export const ZeroRatio = {
 	...Square,
 	args: {
@@ -117,4 +117,4 @@ export const ZeroRatio = {
 		},
 		__hasReduce: false,
 	},
-};
+} satisfies StoryObj<typeof MkAd>;

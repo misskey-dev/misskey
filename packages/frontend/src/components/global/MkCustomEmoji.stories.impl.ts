@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import MkCustomEmoji from './MkCustomEmoji.vue';
 export const Default = {
@@ -37,10 +36,10 @@ export const Normal = {
 		...Default.args,
 		normal: true,
 	},
-};
+} satisfies StoryObj<typeof MkCustomEmoji>;
 export const Missing = {
 	...Default,
 	args: {
 		name: Default.args.name,
 	},
-};
+} satisfies StoryObj<typeof MkCustomEmoji>;

@@ -57,18 +57,18 @@ export const Plain = {
 		...Default.args,
 		plain: true,
 	},
-};
+} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;
 export const Nowrap = {
 	...Default,
 	args: {
 		...Default.args,
 		nowrap: true,
 	},
-};
+} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;
 export const IsNotNote = {
 	...Default,
 	args: {
 		...Default.args,
 		isNote: false,
 	},
-};
+} satisfies StoryObj<typeof MkMisskeyFlavoredMarkdown>;

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import MkEmoji from './MkEmoji.vue';
 export const Default = {

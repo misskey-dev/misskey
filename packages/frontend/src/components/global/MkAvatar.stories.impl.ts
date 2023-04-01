@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable import/no-duplicates */
 import { StoryObj } from '@storybook/vue3';
 import { userDetailed } from '../../../.storybook/fakes';
 import MkAvatar from './MkAvatar.vue';
@@ -44,7 +43,7 @@ export const ProfilePage = {
 		size: 120,
 		indicator: true,
 	},
-};
+} satisfies StoryObj<typeof MkAvatar>;
 export const ProfilePageCat = {
 	...ProfilePage,
 	args: {
@@ -54,4 +53,4 @@ export const ProfilePageCat = {
 			isCat: true,
 		},
 	},
-};
+} satisfies StoryObj<typeof MkAvatar>;

@@ -34,25 +34,25 @@ export const Inline = {
 		...Default.args,
 		inline: true,
 	},
-};
+} satisfies StoryObj<typeof MkLoading>;
 export const Colored = {
 	...Default,
 	args: {
 		...Default.args,
 		colored: true,
 	},
-};
+} satisfies StoryObj<typeof MkLoading>;
 export const Mini = {
 	...Default,
 	args: {
 		...Default.args,
 		mini: true,
 	},
-};
+} satisfies StoryObj<typeof MkLoading>;
 export const Em = {
 	...Default,
 	args: {
 		...Default.args,
 		em: true,
 	},
-};
+} satisfies StoryObj<typeof MkLoading>;
