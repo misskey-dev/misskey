@@ -77,7 +77,7 @@ async function renderChart() {
 			barPercentage: 0.7,
 			categoryPercentage: 0.7,
 			fill: true,
-		}, extra);
+		} satisfies ChartDataset, extra);
 	}
 
 	chartInstance = new Chart(chartEl, {

@@ -76,7 +76,7 @@ async function renderChart() {
 			borderRadius: 4,
 			barPercentage: 0.9,
 			fill: true,
-		}, extra);
+		} satisfies ChartDataset, extra);
 	}
 
 	chartInstance = new Chart(chartEl, {

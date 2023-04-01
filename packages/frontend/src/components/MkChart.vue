@@ -15,7 +15,7 @@
   As this is part of Chart.js's API it makes sense to disable the check here.
 */
 import { onMounted, ref, shallowRef, watch, PropType } from 'vue';
-import { Chart } from 'chart.js';
+import { Chart, type ChartDataset } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -165,7 +165,7 @@ const render = () => {
 				fill: x.type === 'area',
 				clip: 8,
 				hidden: !!x.hidden,
-			})),
+			} satisfies ChartDataset)),
 		},
 		options: {
 			aspectRatio: props.aspectRatio || 2.5,

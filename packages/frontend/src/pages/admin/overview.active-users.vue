@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { Chart } from 'chart.js';
+import { Chart, type ChartDataset } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -83,7 +83,7 @@ async function renderChart() {
 				barPercentage: 0.7,
 				categoryPercentage: 0.5,
 				fill: true,
-			}],
+			}] satisfies ChartDataset[],
 		},
 		options: {
 			aspectRatio: 2.5,
