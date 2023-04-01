@@ -33,6 +33,8 @@ jobs:
       run: pnpm --filter misskey-js build
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
+      env:
+        NODE_OPTIONS: "--max_old_space_size=7168"
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
