@@ -6,7 +6,7 @@
 		<MkA class="name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p class="username"><MkAcct :user="user"/></p>
 	</div>
-	<span v-if="$i && $i.id !== user.id && user.isFollowed" class="followed">{{ $ts.followsYou }}</span>
+	<span v-if="$i && $i.id !== user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
 	<div class="description">
 		<div v-if="user.description" class="mfm">
 			<Mfm :text="user.description" :author="user" :i="$i"/>

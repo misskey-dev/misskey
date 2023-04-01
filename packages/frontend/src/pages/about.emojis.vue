@@ -3,7 +3,7 @@
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
 
 	<div class="query">
-		<MkInput v-model="q" class="" :placeholder="$ts.search">
+		<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 
@@ -15,14 +15,14 @@
 	</div>
 
 	<MkFoldableSection v-if="searchEmojis" class="emojis">
-		<template #header>{{ $ts.searchResult }}</template>
+		<template #header>{{ i18n.ts.searchResult }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
 	</MkFoldableSection>
 	
 	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category" class="emojis">
-		<template #header>{{ category || $ts.other }}</template>
+		<template #header>{{ category || i18n.ts.other }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>

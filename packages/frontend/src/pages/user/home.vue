@@ -57,7 +57,7 @@
 						</dl>
 						<dl v-if="user.birthday" class="field">
 							<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ $t('yearsOld', { age }) }})</dd>
+							<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.t('yearsOld', { age }) }})</dd>
 						</dl>
 						<dl class="field">
 							<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>

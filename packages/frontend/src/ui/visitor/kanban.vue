@@ -9,14 +9,14 @@
 			</h1>
 			<template v-if="full">
 				<div v-if="meta" class="about">
-					<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
+					<div class="desc" v-html="meta.description || i18n.ts.introMisskey"></div>
 				</div>
 				<div class="action">
-					<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
-					<button class="_button" @click="signin()">{{ $ts.login }}</button>
+					<button class="_buttonPrimary" @click="signup()">{{ i18n.ts.signup }}</button>
+					<button class="_button" @click="signin()">{{ i18n.ts.login }}</button>
 				</div>
 				<div class="announcements panel">
-					<header>{{ $ts.announcements }}</header>
+					<header>{{ i18n.ts.announcements }}</header>
 					<MkPagination v-slot="{items}" :pagination="announcements" class="list">
 						<section v-for="announcement in items" :key="announcement.id" class="item">
 							<div class="title">{{ announcement.title }}</div>
@@ -46,6 +46,7 @@ import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
 import MkButton from '@/components/MkButton.vue';
 import { instance } from '@/instance';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -83,6 +84,7 @@ export default defineComponent({
 				limit: 10,
 			},
 			instance,
+			i18n,
 		};
 	},
 
