@@ -1,10 +1,9 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
-import { promisify } from 'node:util';
 import { GENERATOR, type State, generate } from 'astring';
 import type * as estree from 'estree';
-import glob from 'glob';
+import glob from 'fast-glob';
 import { format } from 'prettier';
 
 interface SatisfiesExpression extends estree.BaseExpression {
@@ -617,7 +616,7 @@ function toStories(component: string): string {
 }
 
 // promisify(glob)('src/{components,pages,ui,widgets}/**/*.vue').then(
-promisify(glob)('src/components/global/**/*.vue').then(
+glob('src/components/global/**/*.vue').then(
 	(components) =>
 		Promise.all(
 			components.map((component) => {
