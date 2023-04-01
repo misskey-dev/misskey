@@ -23,6 +23,7 @@ export const Default = {
 		};
 	},
 	args: {
+		static: true,
 	},
 	parameters: {
 		layout: 'centered',
