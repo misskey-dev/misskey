@@ -50,6 +50,7 @@ import { navbarItemDef } from '@/navbar';
 import { openAccountMenu } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { mainRouter } from '@/router';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -63,12 +64,13 @@ export default defineComponent({
 			connection: null,
 			navbarItemDef: navbarItemDef,
 			settingsWindowed: false,
+			defaultStore,
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.menu;
+			return defaultStore.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -81,7 +83,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		'$store.reactiveState.menuDisplay.value'() {
+		'defaultStore.reactiveState.menuDisplay.value'() {
 			this.calcViewState();
 		},
 	},

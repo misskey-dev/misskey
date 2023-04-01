@@ -51,6 +51,7 @@ import MkButton from '@/components/MkButton.vue';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
 import { mainRouter } from '@/router';
 //import MisskeyLogo from '@assets/client/misskey.svg';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -66,12 +67,13 @@ export default defineComponent({
 			navbarItemDef: navbarItemDef,
 			iconOnly: false,
 			settingsWindowed: false,
+			defaultStore,
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.menu;
+			return this.defaultStore.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -84,7 +86,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		'$store.reactiveState.menuDisplay.value'() {
+		'defaultStore.reactiveState.menuDisplay.value'() {
 			this.calcViewState();
 		},
 
@@ -111,7 +113,7 @@ export default defineComponent({
 		openInstanceMenu,
 
 		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.menuDisplay === 'sideIcon');
+			this.iconOnly = (window.innerWidth <= 1400) || (this.defaultStore.state.menuDisplay === 'sideIcon');
 			this.settingsWindowed = (window.innerWidth > 1400);
 		},
 

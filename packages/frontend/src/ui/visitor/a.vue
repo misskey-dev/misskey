@@ -42,7 +42,7 @@ import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
-import { ColdDeviceStorage } from '@/store';
+import { defaultStore, ColdDeviceStorage } from '@/store';
 import { mainRouter } from '@/router';
 
 const DESKTOP_THRESHOLD = 1100;
@@ -66,6 +66,7 @@ export default defineComponent({
 			},
 			mainRouter,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
+			defaultStore,
 		};
 	},
 
@@ -74,7 +75,7 @@ export default defineComponent({
 			return {
 				'd': () => {
 					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$store.set('darkMode', !this.$store.state.darkMode);
+					this.defaultStore.set('darkMode', !this.defaultStore.state.darkMode);
 				},
 				's': () => {
 					mainRouter.push('/search');

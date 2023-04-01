@@ -14,10 +14,10 @@
 		</div>
 	</header>
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -35,6 +35,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	props: {
@@ -79,6 +80,7 @@ export default defineComponent({
 			showBody: this.expanded,
 			omitted: null,
 			ignoreOmit: false,
+			defaultStore,
 		};
 	},
 	mounted() {

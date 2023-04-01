@@ -1,9 +1,9 @@
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_popup_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_popup_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_popup_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_popup_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
 	appear @after-leave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
@@ -59,6 +59,7 @@ import * as os from '@/os';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	showing: boolean;

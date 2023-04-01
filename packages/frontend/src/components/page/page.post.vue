@@ -16,6 +16,7 @@ import { apiUrl } from '@/config';
 import * as os from '@/os';
 import { PostBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
+import { defaultStore } from '@/store';
 
 export default defineComponent({
 	components: {
@@ -55,8 +56,8 @@ export default defineComponent({
 					const formData = new FormData();
 					formData.append('file', blob);
 					formData.append('i', this.$i.token);
-					if (this.$store.state.uploadFolder) {
-						formData.append('folderId', this.$store.state.uploadFolder);
+					if (defaultStore.state.uploadFolder) {
+						formData.append('folderId', defaultStore.state.uploadFolder);
 					}
 
 					window.fetch(apiUrl + '/drive/files/create', {
