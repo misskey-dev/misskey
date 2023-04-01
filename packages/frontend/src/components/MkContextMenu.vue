@@ -19,7 +19,6 @@ import { MenuItem } from './types/menu.vue';
 import contains from '@/scripts/contains';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
-import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	items: MenuItem[];
