@@ -75,7 +75,7 @@ function h<T extends estree.Node>(
 	props: Omit<T, 'type'>
 ): T {
 	const type = component.replace(/(?:^|-)([a-z])/g, (_, c) => c.toUpperCase());
-	return Object.assign(props, { type }) as T;
+	return Object.assign(props || {}, { type }) as T;
 }
 
 declare global {
