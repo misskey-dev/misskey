@@ -39,7 +39,7 @@ jobs:
     - name: Publish to Chromatic
       id: chromatic
       uses: chromaui/action@v1
-      env:
+      with:
         exitZeroOnChanges: false
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify on changes
@@ -48,7 +48,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.issues.createComment({
+          github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
