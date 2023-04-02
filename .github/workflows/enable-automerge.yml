@@ -27,3 +27,4 @@ jobs:
       - uses: alexwilson/enable-github-automerge-action@main
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
+          merge-method: "SQUASH"
