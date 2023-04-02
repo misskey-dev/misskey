@@ -52,7 +52,6 @@ import { onMounted, onUnmounted, watch, nextTick, shallowRef } from 'vue';
 import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
-	static?: boolean;
 	tabs?: Tab[];
 	tab?: string;
 	rootEl?: HTMLElement;
@@ -128,11 +127,7 @@ async function enter(el: HTMLElement) {
 		entering = false;
 	});
 
-	if (props.static) {
-		renderTab();
-	} else {
-		setTimeout(renderTab, 170);
-	}
+	setTimeout(renderTab, 170);
 }
 function afterEnter(el: HTMLElement) {
 	//el.style.width = '';

@@ -28,6 +28,10 @@ export const Empty = {
 	},
 	parameters: {
 		layout: 'centered',
+		chromatic: {
+			/* This component has animations that are implemented with JavaScript. So it's unstable to take a snapshot. */
+			disableSnapshot: true,
+		},
 	},
 } satisfies StoryObj<typeof MkPageHeader>;
 export const OneTab = {
