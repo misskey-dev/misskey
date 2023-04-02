@@ -433,7 +433,7 @@ export class OAuth2ProviderService {
 		fastify.get<{ Querystring: OAuthRequestQuery }>('/oauth/authorize', async (request, reply) => {
 			console.log('HIT /oauth/authorize', request.query);
 			const oauth2 = (request.raw as any).oauth2 as (OAuth2 | undefined);
-			console.log(oauth2);
+			console.log(oauth2, request.raw.session);
 
 			if (request.query.response_type !== 'code') {
 				throw new Error('`response_type` parameter must be set as "code"');

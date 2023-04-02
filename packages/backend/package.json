@@ -127,6 +127,7 @@
 		"otpauth": "9.1.2",
 		"parse5": "7.1.2",
 		"pg": "8.11.0",
+		"pkce-challenge": "^3.1.0",
 		"probe-image-size": "7.2.3",
 		"promise-limit": "2.7.0",
 		"pug": "3.0.2",
@@ -202,6 +203,7 @@
 		"@types/sanitize-html": "2.9.0",
 		"@types/semver": "7.5.0",
 		"@types/sharp": "0.32.0",
+		"@types/simple-oauth2": "^5.0.4",
 		"@types/sinonjs__fake-timers": "8.1.2",
 		"@types/tinycolor2": "1.4.3",
 		"@types/tmp": "0.2.3",
@@ -219,6 +221,7 @@
 		"eslint-plugin-import": "2.27.5",
 		"execa": "6.1.0",
 		"jest": "29.5.0",
-		"jest-mock": "29.5.0"
+		"jest-mock": "29.5.0",
+		"simple-oauth2": "^5.0.0"
 	}
 }
