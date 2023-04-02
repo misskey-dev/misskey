@@ -1,6 +1,6 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="width" :height="height"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
 			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
@@ -14,7 +14,7 @@
 		:href="image.url"
 		:title="image.name"
 	>
-		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
+		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :width="width" :height="height" :cover="false"/>
 	</a>
 	<div :class="$style.indicators">
 		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
@@ -39,16 +39,30 @@ const props = defineProps<{
 
 let hide = $ref(true);
 let darkMode = $ref(defaultStore.state.darkMode);
+let width = $ref(64);
+let height = $ref(64);
 
-const url = (props.raw || defaultStore.state.loadRawImages)
+const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl;
+		: props.image.thumbnailUrl
+);
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
 	hide = (defaultStore.state.nsfw === 'force') ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
+
+	if (props.image.properties.width && props.image.properties.height) {
+		const ratio = props.image.properties.width / props.image.properties.height;
+		if (ratio > 1) {
+			width = Math.round(64 * ratio);
+			height = 64;
+		} else {
+			width = 64;
+			height = Math.round(64 / ratio);
+		}
+	}
 }, {
 	deep: true,
 	immediate: true,

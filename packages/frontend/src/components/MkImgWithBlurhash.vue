@@ -1,7 +1,7 @@
 <template>
-<div :class="[$style.root, { [$style.cover]: cover }]" :title="title">
-	<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
-	<img v-if="src" :class="$style.img" :src="src" :title="title" :alt="alt" @load="onLoad"/>
+<div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
+	<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title ?? ''"/>
+	<img v-if="src" v-show="loaded" :class="$style.img" :src="src" :title="title ?? ''" :alt="alt ?? ''" @load="onLoad"/>
 </div>
 </template>
 
@@ -12,15 +12,17 @@ import { decode } from 'blurhash';
 const props = withDefaults(defineProps<{
 	src?: string | null;
 	hash?: string;
-	alt?: string;
+	alt?: string | null;
 	title?: string | null;
-	size?: number;
+	height?: number;
+	width?: number;
 	cover?: boolean;
 }>(), {
 	src: null,
 	alt: '',
 	title: null,
-	size: 64,
+	height: 64,
+	width: 64,
 	cover: true,
 });
 
@@ -29,9 +31,9 @@ let loaded = $ref(false);
 
 function draw() {
 	if (props.hash == null) return;
-	const pixels = decode(props.hash, props.size, props.size);
+	const pixels = decode(props.hash, props.width, props.height);
 	const ctx = canvas.getContext('2d');
-	const imageData = ctx!.createImageData(props.size, props.size);
+	const imageData = ctx!.createImageData(props.width, props.height);
 	imageData.data.set(pixels);
 	ctx!.putImageData(imageData, 0, 0);
 }
@@ -52,6 +54,7 @@ onMounted(() => {
 	height: 100%;
 
 	&.cover {
+		> .canvas,
 		> .img {
 			object-fit: cover;
 		}
@@ -66,8 +69,7 @@ onMounted(() => {
 }
 
 .canvas {
-	position: absolute;
-	object-fit: cover;
+	object-fit: contain;
 }
 
 .img {

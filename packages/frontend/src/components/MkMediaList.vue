@@ -4,8 +4,8 @@
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div ref="gallery" :class="[$style.medias, count <= 4 ? $style['n' + count] : $style.nMany]">
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="media.id" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -155,12 +155,11 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	display: grid;
 	grid-gap: 8px;
 
-	// for webkit
 	height: 100%;
 
 	&.n1 {
-		aspect-ratio: 16/9;
 		grid-template-rows: 1fr;
+		max-height: min(max(calc(var(--containerHeight, 100svh) * 0.5), 130px), 50svh);
 	}
 
 	&.n2 {
