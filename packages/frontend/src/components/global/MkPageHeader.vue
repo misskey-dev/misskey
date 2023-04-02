@@ -19,7 +19,7 @@
 					</div>
 				</div>
 			</div>
-			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" :tabs="tabs" :root-el="el" @update:tab="key => emit('update:tab', key)" @tab-click="onTabClick"/>
+			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :static="static" :tab="tab" :tabs="tabs" :root-el="el" @update:tab="key => emit('update:tab', key)" @tab-click="onTabClick"/>
 		</template>
 		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
@@ -43,6 +43,7 @@ import { injectPageMetadata } from '@/scripts/page-metadata';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 
 const props = withDefaults(defineProps<{
+	static?: boolean;
 	tabs?: Tab[];
 	tab?: string;
 	actions?: {

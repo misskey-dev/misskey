@@ -23,6 +23,7 @@ export const Empty = {
 		};
 	},
 	args: {
+		static: true,
 		tabs: [],
 	},
 	parameters: {
