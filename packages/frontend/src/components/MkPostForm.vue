@@ -452,7 +452,7 @@ async function toggleLocalOnly() {
 				},
 				{
 					value: 'neverShow' as const,
-					text: i18n.ts.disableFederationNeverShow,
+					text: `${i18n.ts.disableFederationOk} (${i18n.ts.neverShow})`,
 					danger: true,
 				},
 				{
