@@ -34,6 +34,7 @@ export const Default = {
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
 		await userEvent.click(a, { button: 0 });
+		a.blur();
 		await tick();
 		await expect(menu).not.toBeInTheDocument();
 	},
