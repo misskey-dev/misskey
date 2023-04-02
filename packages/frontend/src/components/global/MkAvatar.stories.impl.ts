@@ -44,6 +44,9 @@ export const ProfilePage = {
 		indicator: true,
 	},
 } satisfies StoryObj<typeof MkAvatar>;
+/* Your story couldn’t be captured because it exceeds our 25,000,000px limit. Its dimensions are 5,504,893x5,504,892px. Possible ways to resolve:
+ * * Separate pages into components
+ * * Minimize the number of very large elements in a story
 export const ProfilePageCat = {
 	...ProfilePage,
 	args: {
@@ -54,3 +57,4 @@ export const ProfilePageCat = {
 		},
 	},
 } satisfies StoryObj<typeof MkAvatar>;
+ */
