@@ -983,6 +983,8 @@ retryAllQueuesConfirmText: "Potrebbe sovraccaricare il server temporaneamente."
 enableChartsForRemoteUser: "Abilita i grafici per i profili remoti"
 enableChartsForFederatedInstances: "Abilita i grafici per le istanze federate"
 showClipButtonInNoteFooter: "Aggiungi il bottone Clip tra le azioni delle Note"
+largeNoteReactions: "Ingrandisci le reazioni"
+noteIdOrUrl: "ID della Nota o URL"
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
