@@ -361,7 +361,7 @@ export class OAuth2ProviderService {
 				return [code];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
-		this.#server.exchange(oauth2orize.exchange.code((client, code, redirectUri, body, done) => {
+		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				const granted = TEMP_GRANT_CODES[code];
 				console.log(granted, body, code, redirectUri);
@@ -495,6 +495,8 @@ export class OAuth2ProviderService {
 			done(null, undefined);
 		}));
 
+		// Clients may use JSON or urlencoded
+		fastify.use('/oauth/token', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/token', bodyParser.json({ strict: true }));
 		fastify.use('/oauth/token', this.#server.token());
 		// }
