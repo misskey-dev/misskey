@@ -1,6 +1,5 @@
 import dns from 'node:dns/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import Provider, { type Adapter, type Account, AdapterPayload } from 'oidc-provider';
 import fastifyMiddie, { IncomingMessageExtended } from '@fastify/middie';
 import { JSDOM } from 'jsdom';
 import parseLinkHeader from 'parse-link-header';
@@ -429,8 +428,6 @@ export class OAuth2ProviderService {
 			});
 		});
 
-		// oidc-provider provides many more endpoints for OpenID support and there's
-		// no way to turn it off.
 		// For now only allow the basic OAuth endpoints, to start small and evaluate
 		// this feature for some time, given that this is security related.
 		fastify.get<{ Querystring: OAuthRequestQuery }>('/oauth/authorize', async (request, reply) => {
@@ -451,6 +448,8 @@ export class OAuth2ProviderService {
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
 				transactionId: oauth2?.transactionID,
+				clientId: oauth2?.client,
+				scope: oauth2?.req.scope.join(' '),
 			});
 		});
 		fastify.post('/oauth/decision', async () => { });
