@@ -1,6 +1,7 @@
 import { addons } from '@storybook/addons';
 import { FORCE_REMOUNT } from '@storybook/core-events';
 import { type Preview, setup } from '@storybook/vue3';
+import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswDecorator } from 'msw-storybook-addon';
 import locale from './locale';
 import { commonHandlers, onUnhandledRequest } from './mocks';
@@ -18,6 +19,8 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 	const theme = themes[document.documentElement.dataset.misskeyTheme];
 	if (theme) {
 		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
+	} else if (isChromatic()) {
+		applyTheme(themes['l-light']);
 	}
 	const observer = new MutationObserver((entries) => {
 		for (const entry of entries) {

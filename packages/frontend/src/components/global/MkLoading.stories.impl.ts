@@ -24,7 +24,7 @@ export const Default = {
 		};
 	},
 	args: {
-		static: isChromatic,
+		static: isChromatic(),
 	},
 	parameters: {
 		layout: 'centered',
