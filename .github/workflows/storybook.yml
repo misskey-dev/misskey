@@ -42,7 +42,7 @@ jobs:
       with:
         exitZeroOnChanges: false
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-        storybookBuildDir: packages/frontend/storybook-static
+        storybookBuildDir: storybook-static
         workingDir: packages/frontend
     - name: Notify on changes
       uses: actions/github-script@v6.4.0
