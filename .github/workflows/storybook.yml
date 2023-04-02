@@ -35,6 +35,10 @@ jobs:
       run: pnpm --filter frontend build-storybook
       env:
         NODE_OPTIONS: "--max_old_space_size=7168"
+    - name: Publish to Chromatic
+      run: "pnpm --filter frontend chromatic -d storybook-static || :"
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:

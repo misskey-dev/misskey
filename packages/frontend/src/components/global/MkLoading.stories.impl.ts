@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
+import isChromatic from 'chromatic/isChromatic';
 import MkLoading from './MkLoading.vue';
 export const Default = {
 	render(args) {
@@ -23,7 +24,7 @@ export const Default = {
 		};
 	},
 	args: {
-		static: true,
+		static: isChromatic,
 	},
 	parameters: {
 		layout: 'centered',

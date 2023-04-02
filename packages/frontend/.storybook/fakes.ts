@@ -3,7 +3,7 @@ import type { entities } from 'misskey-js'
 export const userDetailed = {
 	id: 'someuserid',
 	username: 'miskist',
-	host: null,
+	host: 'misskey-hub.net',
 	name: 'Misskey User',
 	onlineStatus: 'unknown',
 	avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',
