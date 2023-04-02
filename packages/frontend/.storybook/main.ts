@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
 const config = {
@@ -7,7 +8,7 @@ const config = {
 		'@storybook/addon-interactions',
 		'@storybook/addon-links',
 		'@storybook/addon-storysource',
-		'../node_modules/storybook-addon-misskey-theme',
+		resolve(__dirname, '../node_modules/storybook-addon-misskey-theme'),
 	],
 	framework: {
 		name: '@storybook/vue3-vite',
