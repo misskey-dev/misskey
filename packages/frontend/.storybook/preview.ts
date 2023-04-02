@@ -52,8 +52,9 @@ queueMicrotask(() => {
 		import('../src/directives'),
 		import('../src/widgets'),
 		import('../src/scripts/theme'),
+		import('../src/store'),
 		import('../src/os'),
-	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, os]) => {
+	]).then(([{ default: components }, { default: directives }, { default: widgets }, { applyTheme }, { defaultStore }, os]) => {
 		setup((app) => {
 			moduleInitialized = true;
 			if (app[appInitialized]) {
@@ -65,6 +66,9 @@ queueMicrotask(() => {
 			directives(app);
 			widgets(app);
 			misskeyOS = os;
+			if (isChromatic()) {
+				defaultStore.set('animation', false);
+			}
 		});
 	});
 });
