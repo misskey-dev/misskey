@@ -326,7 +326,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
 
 		if (data.channel) {
-			this.redisClient.xadd(`channelTimeline:${data.channel.id}`, 'MAXLEN', '~', '1000', `${this.idService.parse(note.id).date.getTime()}-*`, 'note', note.id);
+			this.redisClient.xadd(
+				`channelTimeline:${data.channel.id}`,
+				'MAXLEN', '~', '1000',
+				`${this.idService.parse(note.id).date.getTime()}-*`,
+				'note', note.id);
 		}
 
 		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
