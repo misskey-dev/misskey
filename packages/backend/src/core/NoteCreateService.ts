@@ -1,6 +1,7 @@
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
+import Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
@@ -149,6 +150,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.db)
 		private db: DataSource,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -320,6 +324,10 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
+
+		if (data.channel) {
+			this.redisClient.xadd(`channelTimeline:${data.channel.id}`, 'MAXLEN', '~', '1000', `${this.idService.parse(note.id).date.getTime()}-*`, 'note', note.id);
+		}
 
 		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
 			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
