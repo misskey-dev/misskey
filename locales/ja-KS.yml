@@ -506,6 +506,7 @@ objectStorageUseSSLDesc: "API接続にhttpsを使わん場合はオフにする�
 objectStorageUseProxy: "Proxyを使う"
 objectStorageUseProxyDesc: "API接続にproxy使わんのやったら切ってくれへん？"
 objectStorageSetPublicRead: "アップロードした時に'public-read'を設定してや"
+s3ForcePathStyleDesc: "s3ForcePathStyleを使たらバケット名をURLのホスト名やなくてパスの一部として必ず指定させるようになるで。セルフホストされたMinioとかを使うてるんやったら有効にせなあかん場合があるで。"
 serverLogs: "サーバーログ"
 deleteAll: "全部ほかす"
 showFixedPostForm: "タイムラインの上の方で投稿できるようにやってくれへん？"
