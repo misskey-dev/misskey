@@ -7,11 +7,57 @@ import { AuthorizationCode } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 
+const clientPort = port + 1;
+const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
+
+function getClient(): AuthorizationCode<'client_id'> {
+	return new AuthorizationCode({
+		client: {
+			id: `http://127.0.0.1:${clientPort}/`,
+		},
+		auth: {
+			tokenHost: `http://127.0.0.1:${port}`,
+			tokenPath: '/oauth/token',
+			authorizePath: '/oauth/authorize',
+		},
+		options: {
+			authorizationMethod: 'body',
+		},
+	});
+}
+
+function getTransactionId(html: string): string | undefined {
+	const fragment = JSDOM.fragment(html);
+	return fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content;
+}
+
+function fetchDecision(cookie: string, transactionId: string, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+	return fetch(`http://127.0.0.1:${port}/oauth/decision`, {
+		method: 'post',
+		body: new URLSearchParams({
+			transaction_id: transactionId!,
+			login_token: user.token,
+			cancel: cancel ? 'cancel' : '',
+		}),
+		redirect: 'manual',
+		headers: {
+			'content-type': 'application/x-www-form-urlencoded',
+			cookie,
+		},
+	});
+}
+
+async function fetchDecisionFromResponse(response: Response, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+	const cookie = response.headers.get('set-cookie');
+	const transactionId = getTransactionId(await response.text());
+
+	return await fetchDecision(cookie!, transactionId!, user, { cancel });
+}
+
 describe('OAuth', () => {
 	let app: INestApplicationContext;
 
 	let alice: any;
-	const clientPort = port + 1;
 
 	beforeAll(async () => {
 		app = await startServer();
@@ -26,53 +72,23 @@ describe('OAuth', () => {
 	test('Full flow', async () => {
 		const { code_challenge, code_verifier } = pkceChallenge.default(128);
 
-		const client = new AuthorizationCode({
-			client: {
-				id: `http://127.0.0.1:${clientPort}/`,
-			},
-			auth: {
-				tokenHost: `http://127.0.0.1:${port}`,
-				tokenPath: '/oauth/token',
-				authorizePath: '/oauth/authorize',
-			},
-			options: {
-				authorizationMethod: 'body',
-			},
-		});
+		const client = getClient();
 
-		const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
-
-		const authEndpoint = client.authorizeURL({
+		const response = await fetch(client.authorizeURL({
 			redirect_uri,
 			scope: 'write:notes',
 			state: 'state',
 			code_challenge,
 			code_challenge_method: 'S256',
-		});
-		const response = await fetch(authEndpoint);
+		}));
 		assert.strictEqual(response.status, 200);
 		const cookie = response.headers.get('set-cookie');
 		assert.ok(cookie?.startsWith('connect.sid='));
 
-		const fragment = JSDOM.fragment(await response.text());
-		const transactionId = fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content;
+		const transactionId = getTransactionId(await response.text());
 		assert.strictEqual(typeof transactionId, 'string');
 
-		const formData = new FormData();
-		formData.append('transaction_id', transactionId!);
-		formData.append('login_token', alice.token);
-		const decisionResponse = await fetch(`http://127.0.0.1:${port}/oauth/decision`, {
-			method: 'post',
-			body: new URLSearchParams({
-				transaction_id: transactionId!,
-				login_token: alice.token,
-			}),
-			redirect: 'manual',
-			headers: {
-				'content-type': 'application/x-www-form-urlencoded',
-				cookie: cookie!,
-			},
-		});
+		const decisionResponse = await fetchDecision(cookie!, transactionId!, alice);
 		assert.strictEqual(decisionResponse.status, 302);
 		assert.ok(decisionResponse.headers.has('location'));
 
@@ -90,5 +106,59 @@ describe('OAuth', () => {
 		assert.strictEqual(typeof token.token.access_token, 'string');
 		assert.strictEqual(typeof token.token.refresh_token, 'string');
 		assert.strictEqual(token.token.token_type, 'Bearer');
+	});
+
+	test('Require PKCE', async () => {
+		const client = getClient();
+
+		let response = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+		}));
+		assert.ok(!response.ok);
+
+		response = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge: 'code',
+		}));
+		assert.ok(!response.ok);
+
+		response = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge_method: 'S256',
+		}));
+		assert.ok(!response.ok);
+
+		response = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge: 'code',
+			code_challenge_method: 'SSSS',
+		}));
+		assert.ok(!response.ok);
+	});
+
+	test('Cancellation', async () => {
+		const client = getClient();
+
+		const response = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge: 'code',
+			code_challenge_method: 'S256',
+		}));
+		assert.strictEqual(response.status, 200);
+
+		const decisionResponse = await fetchDecisionFromResponse(response, alice, { cancel: true });
+		const location = new URL(decisionResponse.headers.get('location')!);
+		assert.ok(!location.searchParams.has('code'));
+		assert.ok(location.searchParams.has('error'));
 	});
 });
