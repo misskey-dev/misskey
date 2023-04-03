@@ -9,7 +9,7 @@
 		</button>
 	</header>
 	<Transition
-		:name="$store.state.animation ? 'folder-toggle' : ''"
+		:name="defaultStore.state.animation ? 'folder-toggle' : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -26,6 +26,7 @@
 import { defineComponent } from 'vue';
 import tinycolor from 'tinycolor2';
 import { miLocalStorage } from '@/local-storage';
+import { defaultStore } from '@/store';
 
 const miLocalStoragePrefix = 'ui:folder:' as const;
 
@@ -44,6 +45,7 @@ export default defineComponent({
 	},
 	data() {
 		return {
+			defaultStore,
 			bg: null,
 			showBody: (this.persistKey && miLocalStorage.getItem(`${miLocalStoragePrefix}${this.persistKey}`)) ? (miLocalStorage.getItem(`${miLocalStoragePrefix}${this.persistKey}`) === 't') : this.expanded,
 		};

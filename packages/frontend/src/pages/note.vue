@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div class="fcuexfpr">
-			<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="note" class="note">
 					<div v-if="showNext" class="_margin">
 						<MkNotes class="" :pagination="nextPagination" :no-gap="true"/>
@@ -50,6 +50,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { dateString } from '@/filters/date';
 import MkClipPreview from '@/components/MkClipPreview.vue';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	noteId: string;

@@ -21,7 +21,7 @@
 		</div>
 	</div>
 
-	<Transition :name="$store.state.animation ? 'tray-back' : ''">
+	<Transition :name="defaultStore.state.animation ? 'tray-back' : ''">
 		<div
 			v-if="widgetsShowing"
 			class="tray-back _modalBg"
@@ -30,11 +30,11 @@
 		></div>
 	</Transition>
 
-	<Transition :name="$store.state.animation ? 'tray' : ''">
+	<Transition :name="defaultStore.state.animation ? 'tray' : ''">
 		<XWidgets v-if="widgetsShowing" class="tray"/>
 	</Transition>
 
-	<iframe v-if="$store.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
+	<iframe v-if="defaultStore.state.aiChanMode" ref="live2d" class="ivnzpscs" src="https://misskey-dev.github.io/mascot-web/?scale=2&y=1.4"></iframe>
 
 	<XCommon/>
 </div>

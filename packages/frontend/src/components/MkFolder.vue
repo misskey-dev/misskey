@@ -22,10 +22,10 @@
 
 		<div v-if="openedAtLeastOnce" :class="[$style.body, { [$style.bgSame]: bgSame }]" :style="{ maxHeight: maxHeight ? `${maxHeight}px` : null, overflow: maxHeight ? `auto` : null }">
 			<Transition
-				:enter-active-class="$store.state.animation ? $style.transition_toggle_enterActive : ''"
-				:leave-active-class="$store.state.animation ? $style.transition_toggle_leaveActive : ''"
-				:enter-from-class="$store.state.animation ? $style.transition_toggle_enterFrom : ''"
-				:leave-to-class="$store.state.animation ? $style.transition_toggle_leaveTo : ''"
+				:enter-active-class="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
+				:leave-active-class="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
+				:enter-from-class="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
+				:leave-to-class="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
 				@enter="enter"
 				@after-enter="afterEnter"
 				@leave="leave"
@@ -46,6 +46,7 @@
 
 <script lang="ts" setup>
 import { nextTick, onMounted } from 'vue';
+import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
 	defaultOpen?: boolean;
