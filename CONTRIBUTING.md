@@ -232,15 +232,13 @@ node .storybook/generate.js && pnpm storybook dev
 ##### Setup
 
 ```bash
-cd path/to/packages/misskey-js
-pnpm build
+pnpm --filter misskey-js build
 ```
 
 ##### Run
 
 ```bash
-cd path/to/packages/frontend
-pnpm storybook-dev
+pnpm --filter frontend storybook-dev
 ```
 
 ### Usage
