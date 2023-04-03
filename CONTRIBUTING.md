@@ -214,17 +214,14 @@ Misskey uses [Storybook](https://storybook.js.org/) for UI development.
 ##### Setup
 
 ```bash
-cd path/to/packages/misskey-js
-pnpm build
-cd path/to/packages/frontend
-pnpm tsc -p .storybook && (node .storybook/preload-locale.js & node .storybook/preload-theme.js)
+pnpm --filter misskey-js build
+pnpm --filter frontend tsc -p .storybook && (node packages/frontend/.storybook/preload-locale.js & node packages/frontend/.storybook/preload-theme.js)
 ```
 
 ##### Run
 
 ```bash
-cd path/to/packages/frontend
-node .storybook/generate.js && pnpm storybook dev
+node packages/frontend/.storybook/generate.js && pnpm --filter frontend storybook dev
 ```
 
 #### macOS & Linux
@@ -232,15 +229,13 @@ node .storybook/generate.js && pnpm storybook dev
 ##### Setup
 
 ```bash
-cd path/to/packages/misskey-js
-pnpm build
+pnpm --filter misskey-js build
 ```
 
 ##### Run
 
 ```bash
-cd path/to/packages/frontend
-pnpm storybook-dev
+pnpm --filter frontend storybook-dev
 ```
 
 ### Usage
@@ -267,7 +262,7 @@ export const Default = {
 			computed: {
 				props() {
 					return {
-						...args,
+						...this.args,
 					};
 				},
 			},
@@ -290,7 +285,20 @@ import MyComponent from './MyComponent.vue';
 void MyComponent;
 ```
 
-You can use msw to mock API requests in the storybook. Creating a `MyComponent.stories.msw.ts` file to define the mock handlers.
+You can override the component meta by creating a meta story file (`MyComponent.stories.meta.ts`).
+
+```ts
+export const argTypes = {
+	scale: {
+		control: {
+			type: 'range',
+			min: 1,
+			max: 4,
+		},
+};
+```
+
+Also, you can use msw to mock API requests in the storybook. Creating a `MyComponent.stories.msw.ts` file to define the mock handlers.
 
 ```ts
 import { rest } from 'msw';
