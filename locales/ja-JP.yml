@@ -498,7 +498,7 @@ objectStorageBucketDesc: "使用サービスのbucket名を指定してくださ
 objectStoragePrefix: "Prefix"
 objectStoragePrefixDesc: "このprefixのディレクトリ下に格納されます。"
 objectStorageEndpoint: "Endpoint"
-objectStorageEndpointDesc: "S3の場合は空、それ以外の場合は各サービスのendpointを指定してください。'<host>'または'<host>:<port>'のように指定します。**`https://`などのスキーマは含めないでください**"
+objectStorageEndpointDesc: "S3の場合は空、それ以外の場合は各サービスのendpointを指定してください。'<host>'または'<host>:<port>'のように指定します。"
 objectStorageRegion: "Region"
 objectStorageRegionDesc: "'xx-east-1'のようなregionを指定してください。使用サービスにregionの概念がない場合は'us-east-1'にしてください。AWS設定ファイルまたは環境変数を参照する場合は空にしてください。"
 objectStorageUseSSL: "SSLを使用する"
