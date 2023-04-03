@@ -105,51 +105,35 @@ function toStories(component: string): string {
 	const hasMetaStories = existsSync(`${metaStories}.ts`);
 	const base = basename(component);
 	const dir = dirname(component);
-	const literal = (
+	const literal =
 		<literal
 			value={component
 				.slice('src/'.length, -'.vue'.length)
 				.replace(/\./g, '/')}
-		/>
-	) as estree.Literal;
-	const identifier = (
+		/> as estree.Literal;
+	const identifier =
 		<identifier
 			name={base
 				.slice(0, -'.vue'.length)
 				.replace(/[-.]|^(?=\d)/g, '_')
 				.replace(/(?<=^[^A-Z_]*$)/, '_')}
-		/>
-	) as estree.Identifier;
+		/> as estree.Identifier;
 	const parameters = (
 		<object-expression
 			properties={[
-				(
-					<property
-						key={(<identifier name='layout' />) as estree.Identifier}
-						value={
-							(
-								<literal
-									value={
-										`${dir}/`.startsWith('src/pages/')
-											? 'fullscreen'
-											: 'centered'
-									}
-								/>
-							) as estree.Literal
-						}
-						kind={'init' as const}
-					/>
-				) as estree.Property,
+				<property
+					key={<identifier name='layout' /> as estree.Identifier}
+					value={<literal value={`${dir}/`.startsWith('src/pages/') ? 'fullscreen' : 'centered'}/> as estree.Literal}
+					kind={'init' as const}
+				/> as estree.Property,
 				...(hasMsw
 					? [
-							(
-								<property
-									key={(<identifier name='msw' />) as estree.Identifier}
-									value={(<identifier name='msw' />) as estree.Identifier}
-									kind={'init' as const}
-									shorthand
-								/>
-							) as estree.Property,
+							<property
+								key={<identifier name='msw' /> as estree.Identifier}
+								value={<identifier name='msw' /> as estree.Identifier}
+								kind={'init' as const}
+								shorthand
+							/> as estree.Property,
 					  ]
 					: []),
 			]}
@@ -158,447 +142,242 @@ function toStories(component: string): string {
 	const program = (
 		<program
 			body={[
-				(
-					<import-declaration
-						source={(<literal value='@storybook/vue3' />) as estree.Literal}
-						specifiers={[
-							(
-								<import-specifier
-									local={(<identifier name='Meta' />) as estree.Identifier}
-									imported={(<identifier name='Meta' />) as estree.Identifier}
-								/>
-							) as estree.ImportSpecifier,
-							...(hasImplStories
-								? []
-								: [
-										(
-											<import-specifier
-												local={
-													(<identifier name='StoryObj' />) as estree.Identifier
-												}
-												imported={
-													(<identifier name='StoryObj' />) as estree.Identifier
-												}
-											/>
-										) as estree.ImportSpecifier,
-								  ]),
-						]}
-					/>
-				) as estree.ImportDeclaration,
+				<import-declaration
+					source={<literal value='@storybook/vue3' /> as estree.Literal}
+					specifiers={[
+						<import-specifier
+							local={<identifier name='Meta' /> as estree.Identifier}
+							imported={<identifier name='Meta' /> as estree.Identifier}
+						/> as estree.ImportSpecifier,
+						...(hasImplStories
+							? []
+							: [
+									<import-specifier
+										local={<identifier name='StoryObj' /> as estree.Identifier}
+										imported={<identifier name='StoryObj' /> as estree.Identifier}
+									/> as estree.ImportSpecifier,
+								]),
+					]}
+				/> as estree.ImportDeclaration,
 				...(hasMsw
 					? [
-							(
-								<import-declaration
-									source={
-										(<literal value={`./${basename(msw)}`} />) as estree.Literal
-									}
-									specifiers={[
-										(
-											<import-namespace-specifier
-												local={(<identifier name='msw' />) as estree.Identifier}
-											/>
-										) as estree.ImportNamespaceSpecifier,
-									]}
-								/>
-							) as estree.ImportDeclaration,
+							<import-declaration
+								source={<literal value={`./${basename(msw)}`} /> as estree.Literal}
+								specifiers={[
+									<import-namespace-specifier
+										local={<identifier name='msw' /> as estree.Identifier}
+									/> as estree.ImportNamespaceSpecifier,
+								]}
+							/> as estree.ImportDeclaration,
 					  ]
 					: []),
 				...(hasImplStories
 					? []
 					: [
-							(
-								<import-declaration
-									source={(<literal value={`./${base}`} />) as estree.Literal}
-									specifiers={[
-										(
-											<import-default-specifier local={identifier} />
-										) as estree.ImportDefaultSpecifier,
-									]}
-								/>
-							) as estree.ImportDeclaration,
+							<import-declaration
+								source={<literal value={`./${base}`} /> as estree.Literal}
+								specifiers={[
+									<import-default-specifier local={identifier} /> as estree.ImportDefaultSpecifier,
+								]}
+							/> as estree.ImportDeclaration,
 					  ]),
 				...(hasMetaStories
 					? [
-							(
-								<import-declaration
-									source={
-										(<literal value={`./${basename(metaStories)}`} />) as estree.Literal
-									}
-									specifiers={[
-										(
-											<import-namespace-specifier
-												local={(<identifier name='storiesMeta' />) as estree.Identifier}
-											/>
-										) as estree.ImportNamespaceSpecifier,
-									]}
-								/>
-							) as estree.ImportDeclaration,
+							<import-declaration
+								source={<literal value={`./${basename(metaStories)}`} /> as estree.Literal}
+								specifiers={[
+									<import-namespace-specifier
+										local={<identifier name='storiesMeta' /> as estree.Identifier}
+									/> as estree.ImportNamespaceSpecifier,
+								]}
+							/> as estree.ImportDeclaration,
 						]
 					: []),
-				(
-					<variable-declaration
-						kind={'const' as const}
-						declarations={[
-							(
-								<variable-declarator
-									id={(<identifier name='meta' />) as estree.Identifier}
-									init={
-										(
-											<satisfies-expression
-												expression={
-													(
-														<object-expression
-															properties={[
-																(
-																	<property
-																		key={
-																			(
-																				<identifier name='title' />
-																			) as estree.Identifier
-																		}
-																		value={literal}
-																		kind={'init' as const}
-																	/>
-																) as estree.Property,
-																(
-																	<property
-																		key={
-																			(
-																				<identifier name='component' />
-																			) as estree.Identifier
-																		}
-																		value={identifier}
-																		kind={'init' as const}
-																	/>
-																) as estree.Property,
-																...(hasMetaStories
-																	? [
-																			(
-																				<spread-element
-																					argument={
-																						(
-																							<identifier name='storiesMeta' />
-																						) as estree.Identifier
-																					}
-																				/>
-																			) as estree.SpreadElement,
-																		]
-																	: [])
-															]}
-														/>
-													) as estree.ObjectExpression
-												}
-												reference={
-													(
-														<identifier
-															name={`Meta<typeof ${identifier.name}>`}
-														/>
-													) as estree.Identifier
-												}
-											/>
-										) as estree.Expression
+				<variable-declaration
+					kind={'const' as const}
+					declarations={[
+						<variable-declarator
+							id={<identifier name='meta' /> as estree.Identifier}
+							init={
+								<satisfies-expression
+									expression={
+										<object-expression
+											properties={[
+												<property
+													key={<identifier name='title' /> as estree.Identifier}
+													value={literal}
+													kind={'init' as const}
+												/> as estree.Property,
+												<property
+													key={<identifier name='component' /> as estree.Identifier}
+													value={identifier}
+													kind={'init' as const}
+												/> as estree.Property,
+												...(hasMetaStories
+													? [
+															<spread-element
+																argument={<identifier name='storiesMeta' /> as estree.Identifier}
+															/> as estree.SpreadElement,
+														]
+													: [])
+											]}
+										/> as estree.ObjectExpression
 									}
-								/>
-							) as estree.VariableDeclarator,
-						]}
-					/>
-				) as estree.VariableDeclaration,
+									reference={<identifier name={`Meta<typeof ${identifier.name}>`} /> as estree.Identifier}
+								/> as estree.Expression
+							}
+						/> as estree.VariableDeclarator,
+					]}
+				/> as estree.VariableDeclaration,
 				...(hasImplStories
 					? []
 					: [
-							(
-								<export-named-declaration
-									declaration={
-										(
-											<variable-declaration
-												kind={'const' as const}
-												declarations={[
-													(
-														<variable-declarator
-															id={
-																(
-																	<identifier name='Default' />
-																) as estree.Identifier
-															}
-															init={
-																(
-																	<satisfies-expression
-																		expression={
-																			(
-																				<object-expression
-																					properties={[
-																						(
-																							<property
-																								key={
-																									(
-																										<identifier name='render' />
-																									) as estree.Identifier
-																								}
-																								value={
-																									(
-																										<function-expression
-																											params={[
-																												(
-																													<identifier name='args' />
-																												) as estree.Identifier,
-																											]}
-																											body={
-																												(
-																													<block-statement
-																														body={[
-																															(
-																																<return-statement
-																																	argument={
-																																		(
+							<export-named-declaration
+								declaration={
+									<variable-declaration
+										kind={'const' as const}
+										declarations={[
+											<variable-declarator
+												id={<identifier name='Default' /> as estree.Identifier}
+												init={
+													<satisfies-expression
+														expression={
+															<object-expression
+																properties={[
+																	<property
+																		key={<identifier name='render' /> as estree.Identifier}
+																		value={
+																			<function-expression
+																				params={[
+																					<identifier name='args' /> as estree.Identifier,
+																				]}
+																				body={
+																					<block-statement
+																						body={[
+																							<return-statement
+																								argument={
+																									<object-expression
+																										properties={[
+																											<property
+																												key={<identifier name='components' /> as estree.Identifier}
+																												value={
+																													<object-expression
+																														properties={[
+																															<property key={identifier} value={identifier} kind={'init' as const} shorthand /> as estree.Property,
+																														]}
+																													/> as estree.ObjectExpression
+																												}
+																												kind={'init' as const}
+																											/> as estree.Property,
+																											<property
+																												key={<identifier name='setup' /> as estree.Identifier}
+																												value={
+																													<function-expression
+																														params={[]}
+																														body={
+																															<block-statement
+																																body={[
+																																	<return-statement
+																																		argument={
 																																			<object-expression
 																																				properties={[
-																																					(
-																																						<property
-																																							key={
-																																								(
-																																									<identifier name='components' />
-																																								) as estree.Identifier
-																																							}
-																																							value={
-																																								(
-																																									<object-expression
-																																										properties={[
-																																											(
-																																												<property
-																																													key={
-																																														identifier
-																																													}
-																																													value={
-																																														identifier
-																																													}
-																																													kind={
-																																														'init' as const
-																																													}
-																																													shorthand
-																																												/>
-																																											) as estree.Property,
-																																										]}
-																																									/>
-																																								) as estree.ObjectExpression
-																																							}
-																																							kind={
-																																								'init' as const
-																																							}
-																																						/>
-																																					) as estree.Property,
-																																					(
-																																						<property
-																																							key={
-																																								(
-																																									<identifier name='setup' />
-																																								) as estree.Identifier
-																																							}
-																																							value={
-																																								(
-																																									<function-expression
-																																										params={[]}
-																																										body={
-																																											(
-																																												<block-statement
-																																													body={[
-																																														(
-																																															<return-statement
-																																																argument={
-																																																	(
-																																																		<object-expression
-																																																			properties={[
-																																																				(
-																																																					<property
-																																																						key={
-																																																							(
-																																																								<identifier name='args' />
-																																																							) as estree.Identifier
-																																																						}
-																																																						value={
-																																																							(
-																																																								<identifier name='args' />
-																																																							) as estree.Identifier
-																																																						}
-																																																						kind={
-																																																							'init' as const
-																																																						}
-																																																						shorthand
-																																																					/>
-																																																				) as estree.Property,
-																																																			]}
-																																																		/>
-																																																	) as estree.ObjectExpression
-																																																}
-																																															/>
-																																														) as estree.ReturnStatement,
-																																													]}
-																																												/>
-																																											) as estree.BlockStatement
-																																										}
-																																									/>
-																																								) as estree.FunctionExpression
-																																							}
-																																							method
-																																							kind={
-																																								'init' as const
-																																							}
-																																						/>
-																																					) as estree.Property,
-																																					(
-																																						<property
-																																							key={
-																																								(
-																																									<identifier name='computed' />
-																																								) as estree.Identifier
-																																							}
-																																							value={
-																																								(
-																																									<object-expression
-																																										properties={[
-																																											(
-																																												<property
-																																													key={
-																																														(
-																																															<identifier name='props' />
-																																														) as estree.Identifier
-																																													}
-																																													value={
-																																														(
-																																															<function-expression
-																																																params={[]}
-																																																body={
-																																																	(
-																																																		<block-statement
-																																																			body={[
-																																																				(
-																																																					<return-statement
-																																																						argument={
-																																																							(
-																																																								<object-expression
-																																																									properties={[
-																																																										(
-																																																											<spread-element
-																																																												argument={
-																																																													(
-																																																														<member-expression
-																																																															object={
-																																																																(
-																																																																	<this-expression />
-																																																																) as estree.ThisExpression
-																																																															}
-																																																															property={
-																																																																(
-																																																																	<identifier name='args' />
-																																																																) as estree.Identifier
-																																																															}
-																																																														/>
-																																																													) as estree.MemberExpression
-																																																												}
-																																																											/>
-																																																										) as estree.SpreadElement,
-																																																									]}
-																																																								/>
-																																																							) as estree.ObjectExpression
-																																																						}
-																																																					/>
-																																																				) as estree.ReturnStatement,
-																																																			]}
-																																																		/>
-																																																	) as estree.BlockStatement
-																																																}
-																																															/>
-																																														) as estree.FunctionExpression
-																																													}
-																																													method
-																																													kind={
-																																														'init' as const
-																																													}
-																																												/>
-																																											) as estree.Property,
-																																										]}
-																																									/>
-																																								) as estree.ObjectExpression
-																																							}
-																																							kind={
-																																								'init' as const
-																																							}
-																																						/>
-																																					) as estree.Property,
-																																					(
-																																						<property
-																																							key={
-																																								(
-																																									<identifier name='template' />
-																																								) as estree.Identifier
-																																							}
-																																							value={
-																																								(
-																																									<literal
-																																										value={`<${identifier.name} v-bind="props" />`}
-																																									/>
-																																								) as estree.Literal
-																																							}
-																																							kind={
-																																								'init' as const
-																																							}
-																																						/>
-																																					) as estree.Property,
+																																					<property
+																																						key={<identifier name='args' /> as estree.Identifier}
+																																						value={<identifier name='args' /> as estree.Identifier}
+																																						kind={'init' as const}
+																																						shorthand
+																																					/> as estree.Property,
 																																				]}
-																																			/>
-																																		) as estree.ObjectExpression
-																																	}
-																																/>
-																															) as estree.ReturnStatement,
+																																			/> as estree.ObjectExpression
+																																		}
+																																	/> as estree.ReturnStatement,
+																																]}
+																															/> as estree.BlockStatement
+																														}
+																													/> as estree.FunctionExpression
+																												}
+																												method
+																												kind={'init' as const}
+																											/> as estree.Property,
+																											<property
+																												key={<identifier name='computed' /> as estree.Identifier}
+																												value={
+																													<object-expression
+																														properties={[
+																															<property
+																																key={<identifier name='props' /> as estree.Identifier}
+																																value={
+																																	<function-expression
+																																		params={[]}
+																																		body={
+																																			<block-statement
+																																				body={[
+																																					<return-statement
+																																						argument={
+																																							<object-expression
+																																								properties={[
+																																									<spread-element
+																																										argument={
+																																											<member-expression
+																																												object={<this-expression /> as estree.ThisExpression}
+																																												property={<identifier name='args' /> as estree.Identifier}
+																																											/> as estree.MemberExpression
+																																										}
+																																									/> as estree.SpreadElement,
+																																								]}
+																																							/> as estree.ObjectExpression
+																																						}
+																																					/> as estree.ReturnStatement,
+																																				]}
+																																			/> as estree.BlockStatement
+																																		}
+																																	/> as estree.FunctionExpression
+																																}
+																																method
+																																kind={'init' as const}
+																															/> as estree.Property,
 																														]}
-																													/>
-																												) as estree.BlockStatement
-																											}
-																										/>
-																									) as estree.FunctionExpression
+																													/> as estree.ObjectExpression
+																												}
+																												kind={'init' as const}
+																											/> as estree.Property,
+																											<property
+																												key={<identifier name='template' /> as estree.Identifier}
+																												value={<literal value={`<${identifier.name} v-bind="props" />`} /> as estree.Literal}
+																												kind={'init' as const}
+																											/> as estree.Property,
+																										]}
+																									/> as estree.ObjectExpression
 																								}
-																								method
-																								kind={'init' as const}
-																							/>
-																						) as estree.Property,
-																						(
-																							<property
-																								key={
-																									(
-																										<identifier name='parameters' />
-																									) as estree.Identifier
-																								}
-																								value={parameters}
-																								kind={'init' as const}
-																							/>
-																						) as estree.Property,
-																					]}
-																				/>
-																			) as estree.ObjectExpression
+																							/> as estree.ReturnStatement,
+																						]}
+																					/> as estree.BlockStatement
+																				}
+																			/> as estree.FunctionExpression
 																		}
-																		reference={
-																			(
-																				<identifier
-																					name={`StoryObj<typeof ${identifier.name}>`}
-																				/>
-																			) as estree.Identifier
-																		}
-																	/>
-																) as estree.Expression
-															}
-														/>
-													) as estree.VariableDeclarator,
-												]}
-											/>
-										) as estree.VariableDeclaration
-									}
-								/>
-							) as estree.ExportNamedDeclaration,
-					  ]),
-				(
-					<export-default-declaration
-						declaration={(<identifier name='meta' />) as estree.Identifier}
-					/>
-				) as estree.ExportDefaultDeclaration,
+																		method
+																		kind={'init' as const}
+																	/> as estree.Property,
+																	<property
+																		key={<identifier name='parameters' /> as estree.Identifier}
+																		value={parameters}
+																		kind={'init' as const}
+																	/> as estree.Property,
+																]}
+															/> as estree.ObjectExpression
+														}
+														reference={<identifier name={`StoryObj<typeof ${identifier.name}>`} /> as estree.Identifier}
+													/> as estree.Expression
+												}
+											/> as estree.VariableDeclarator,
+										]}
+									/> as estree.VariableDeclaration
+								}
+							/> as estree.ExportNamedDeclaration,
+						]),
+				<export-default-declaration
+					declaration={(<identifier name='meta' />) as estree.Identifier}
+				/> as estree.ExportDefaultDeclaration,
 			]}
 		/>
 	) as estree.Program;
