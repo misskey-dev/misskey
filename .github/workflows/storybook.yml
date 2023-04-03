@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - develop
-  pull_request:
+  pull_request_target:
 
 jobs:
   build:
@@ -45,7 +45,7 @@ jobs:
         storybookBuildDir: storybook-static
         workingDir: packages/frontend
     - name: Compare on Chromatic
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request_target'
       run: pnpm --filter frontend chromatic -d storybook-static --exit-once-uploaded --patch-build ${{ github.head_ref }}...${{ github.base_ref }}
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
