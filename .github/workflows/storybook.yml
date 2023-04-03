@@ -46,7 +46,7 @@ jobs:
         workingDir: packages/frontend
     - name: Compare on Chromatic
       if: github.event_name == 'pull_request'
-      run: pnpm --filter frontend chromatic --exit-once-uploaded --patch-build ${{ github.head_ref }}...${{ github.base_ref }}
+      run: pnpm --filter frontend chromatic -d storybook-static --exit-once-uploaded --patch-build ${{ github.head_ref }}...${{ github.base_ref }}
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
