@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - develop
-  pull_request:
+  pull_request_target:
 
 jobs:
   build:
@@ -40,22 +40,14 @@ jobs:
       id: chromatic
       uses: chromaui/action@v1
       with:
-        exitZeroOnChanges: false
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         storybookBuildDir: storybook-static
         workingDir: packages/frontend
-    - name: Notify on changes
-      uses: actions/github-script@v6.4.0
-      if: failure()
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: 'Chromatic has detected ${{ steps.chromatic.outputs.changeCount }} changes in the Storybook. [Check it out](${{ steps.chromatic.outputs.url }}).'
-          })
+    - name: Compare on Chromatic
+      if: github.event_name == 'pull_request_target'
+      run: pnpm --filter frontend chromatic --exit-once-uploaded --patch-build ${{ github.head_ref }}...${{ github.base_ref }}
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
