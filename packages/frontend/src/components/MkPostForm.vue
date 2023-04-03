@@ -592,11 +592,7 @@ async function post(ev?: MouseEvent) {
 		text.includes('$[scale') ||
 		text.includes('$[position');
 
-	// 対象になる公開範囲の配列
-	const inclusionVisibilities: ReadonlyArray<'public'	| 'home' | 'followers' | 'specified'>
-	= ['public'];
-
-	if (annoying && inclusionVisibilities.includes(visibility)) {
+	if (annoying && visibility === 'public') {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,
