@@ -1,5 +1,5 @@
 <template>
-<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
+<component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
 	<img :class="$style.inner" :src="url" decoding="async"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
@@ -27,6 +27,7 @@ import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import { defaultStore } from '@/store';
 
+const animation = $ref(defaultStore.state.animation);
 const squareAvatars = $ref(defaultStore.state.squareAvatars);
 const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
 
@@ -83,6 +84,18 @@ watch(() => props.user.avatarBlurhash, () => {
 	30% { transform: rotate(-10deg) skew(-30deg); }
 	55% { transform: rotate(-20deg) skew(-30deg); }
 	75% { transform: rotate(0deg) skew(-30deg); }
+	to { transform: rotate(-37.6deg) skew(-30deg); }
+}
+
+@keyframes eartightleft {
+	from { transform: rotate(37.6deg) skew(30deg); }
+	50% { transform: rotate(37.4deg) skew(30deg); }
+	to { transform: rotate(37.6deg) skew(30deg); }
+}
+
+@keyframes eartightright {
+	from { transform: rotate(-37.6deg) skew(-30deg); }
+	50% { transform: rotate(-37.4deg) skew(-30deg); }
 	to { transform: rotate(-37.6deg) skew(-30deg); }
 }
 
@@ -144,6 +157,14 @@ watch(() => props.user.avatarBlurhash, () => {
 			mask:
 				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') exclude center / 50% 50%,
 				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
+
+			> .earLeft {
+				animation: eartightleft 6s infinite;
+			}
+
+			> .earRight {
+				animation: eartightright 6s infinite;
+			}
 		}
 
 		> .earLeft,
@@ -225,7 +246,7 @@ watch(() => props.user.avatarBlurhash, () => {
 		}
 	}
 
-	&:hover {
+	&.animation:hover {
 		> .ears {
 			> .earLeft {
 				animation: earwiggleleft 1s infinite;

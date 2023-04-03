@@ -8,7 +8,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository, FollowingsRepository, ChannelFollowingsRepository, AntennaNotesRepository } from '@/models/index.js';
+import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository, FollowingsRepository, ChannelFollowingsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { NotificationService } from './NotificationService.js';
@@ -37,9 +37,6 @@ export class NoteReadService implements OnApplicationShutdown {
 
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
-
-		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: AntennaNotesRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
@@ -121,7 +118,6 @@ export class NoteReadService implements OnApplicationShutdown {
 		const readMentions: (Note | Packed<'Note'>)[] = [];
 		const readSpecifiedNotes: (Note | Packed<'Note'>)[] = [];
 		const readChannelNotes: (Note | Packed<'Note'>)[] = [];
-		const readAntennaNotes: (Note | Packed<'Note'>)[] = [];
 
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {
@@ -132,14 +128,6 @@ export class NoteReadService implements OnApplicationShutdown {
 
 			if (note.channelId && followingChannels.has(note.channelId)) {
 				readChannelNotes.push(note);
-			}
-
-			if (note.user != null) { // たぶんnullになることは無いはずだけど一応
-				for (const antenna of myAntennas) {
-					if (await this.antennaService.checkHitAntenna(antenna, note, note.user)) {
-						readAntennaNotes.push(note);
-					}
-				}
 			}
 		}
 
@@ -184,35 +172,6 @@ export class NoteReadService implements OnApplicationShutdown {
 	
 			this.notificationService.readNotificationByQuery(userId, {
 				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
-			});
-		}
-
-		if (readAntennaNotes.length > 0) {
-			await this.antennaNotesRepository.update({
-				antennaId: In(myAntennas.map(a => a.id)),
-				noteId: In(readAntennaNotes.map(n => n.id)),
-			}, {
-				read: true,
-			});
-
-			// TODO: まとめてクエリしたい
-			for (const antenna of myAntennas) {
-				const count = await this.antennaNotesRepository.countBy({
-					antennaId: antenna.id,
-					read: false,
-				});
-
-				if (count === 0) {
-					this.globalEventService.publishMainStream(userId, 'readAntenna', antenna);
-					this.pushNotificationService.pushNotification(userId, 'readAntenna', { antennaId: antenna.id });
-				}
-			}
-	
-			this.userEntityService.getHasUnreadAntenna(userId).then(unread => {
-				if (!unread) {
-					this.globalEventService.publishMainStream(userId, 'readAllAntennas');
-					this.pushNotificationService.pushNotification(userId, 'readAllAntennas', undefined);
-				}
 			});
 		}
 	}

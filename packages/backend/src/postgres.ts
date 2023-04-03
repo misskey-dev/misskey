@@ -12,7 +12,6 @@ import { Ad } from '@/models/entities/Ad.js';
 import { Announcement } from '@/models/entities/Announcement.js';
 import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { Antenna } from '@/models/entities/Antenna.js';
-import { AntennaNote } from '@/models/entities/AntennaNote.js';
 import { App } from '@/models/entities/App.js';
 import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { AuthSession } from '@/models/entities/AuthSession.js';
@@ -168,7 +167,6 @@ export const entities = [
 	ClipNote,
 	ClipFavorite,
 	Antenna,
-	AntennaNote,
 	PromoNote,
 	PromoRead,
 	Relay,
