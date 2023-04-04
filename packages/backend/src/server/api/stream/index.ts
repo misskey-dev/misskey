@@ -186,10 +186,7 @@ export default class Connection {
 		if (note == null) return;
 
 		if (this.user && (note.userId !== this.user.id)) {
-			this.noteReadService.read(this.user.id, [note], {
-				following: this.following,
-				followingChannels: this.followingChannels,
-			});
+			this.noteReadService.read(this.user.id, [note]);
 		}
 	}
 

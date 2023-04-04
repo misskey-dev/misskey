@@ -97,8 +97,6 @@ export interface MainStreamTypes {
 	readAllAntennas: undefined;
 	unreadAntenna: Antenna;
 	readAllAnnouncements: undefined;
-	readAllChannels: undefined;
-	unreadChannel: Note['id'];
 	myTokenRegenerated: undefined;
 	signin: Signin;
 	registryUpdated: {
