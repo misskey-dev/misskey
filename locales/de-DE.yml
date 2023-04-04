@@ -506,6 +506,7 @@ objectStorageUseSSLDesc: "Deaktiviere dies, falls du für API-Verbindungen kein 
 objectStorageUseProxy: "Über Proxy verbinden"
 objectStorageUseProxyDesc: "Deaktiviere dies, falls du für Verbindungen zur API keinen Proxy verwenden wirst"
 objectStorageSetPublicRead: "Bei Upload auf \"public-read\" stellen"
+s3ForcePathStyleDesc: "Ist s3ForcePathStyle aktiviert, so muss der Bucketname nicht im Hostnamen der URL, sondern im Pfad der URL angeben werden. Diese Option muss eventuell aktiviert werden, wenn Dienste wie z.B. eine selbstbetriebene Minio-Instanz verwendet werden."
 serverLogs: "Serverprotokolle"
 deleteAll: "Alle löschen"
 showFixedPostForm: "Bereich zum Schreiben neuer Notizen am Anfang der Chronik anzeigen"
