@@ -19,7 +19,7 @@ import type { EventEmitter } from 'events';
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
 	userChangeSuspendedState: { id: User['id']; isSuspended: User['isSuspended']; };
-	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
+	userTokenRegenerated: { id: User['id']; oldToken: string; newToken: string; };
 	remoteUserUpdated: { id: User['id']; };
 	follow: { followerId: User['id']; followeeId: User['id']; };
 	unfollow: { followerId: User['id']; followeeId: User['id']; };

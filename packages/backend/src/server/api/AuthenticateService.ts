@@ -5,7 +5,7 @@ import type { LocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { App } from '@/models/entities/App.js';
-import { UserCacheService } from '@/core/UserCacheService.js';
+import { CacheService } from '@/core/CacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 import { bindThis } from '@/decorators.js';
 
@@ -30,7 +30,7 @@ export class AuthenticateService {
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
 
-		private userCacheService: UserCacheService,
+		private cacheService: CacheService,
 	) {
 		this.appCache = new MemoryKVCache<App>(Infinity);
 	}
@@ -42,7 +42,7 @@ export class AuthenticateService {
 		}
 	
 		if (isNativeToken(token)) {
-			const user = await this.userCacheService.localUserByNativeTokenCache.fetch(token,
+			const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
 				() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
 	
 			if (user == null) {
@@ -67,7 +67,7 @@ export class AuthenticateService {
 				lastUsedAt: new Date(),
 			});
 	
-			const user = await this.userCacheService.localUserByIdCache.fetch(accessToken.userId,
+			const user = await this.cacheService.localUserByIdCache.fetch(accessToken.userId,
 				() => this.usersRepository.findOneBy({
 					id: accessToken.userId,
 				}) as Promise<LocalUser>);

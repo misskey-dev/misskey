@@ -3,7 +3,7 @@ import Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MutingsRepository, UserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -12,6 +12,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
+import { CacheService } from '@/core/CacheService.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -35,6 +36,7 @@ export class NotificationService implements OnApplicationShutdown {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,
+		private cacheService: CacheService,
 	) {
 	}
 
@@ -49,7 +51,6 @@ export class NotificationService implements OnApplicationShutdown {
 			'+',
 			'-',
 			'COUNT', 1);
-		console.log('latestNotificationIdsRes', latestNotificationIdsRes);
 		const latestNotificationId = latestNotificationIdsRes[0]?.[0];
 
 		if (latestNotificationId == null) return;
@@ -72,9 +73,8 @@ export class NotificationService implements OnApplicationShutdown {
 		type: Notification['type'],
 		data: Partial<Notification>,
 	): Promise<Notification | null> {
-		// TODO: Cache
-		const profile = await this.userProfilesRepository.findOneBy({ userId: notifieeId });
-		const isMuted = profile?.mutingNotificationTypes.includes(type);
+		const profile = await this.cacheService.userProfileCache.fetch(notifieeId, () => this.userProfilesRepository.findOneByOrFail({ userId: notifieeId }));
+		const isMuted = profile.mutingNotificationTypes.includes(type);
 		if (isMuted) return null;
 
 		if (data.notifierId) {
@@ -82,12 +82,8 @@ export class NotificationService implements OnApplicationShutdown {
 				return null;
 			}
 
-			// TODO: cache
-			const mutings = await this.mutingsRepository.findOneBy({
-				muterId: notifieeId,
-				muteeId: data.notifierId,
-			});
-			if (mutings) {
+			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId, () => this.mutingsRepository.findBy({ muterId: notifieeId }).then(xs => xs.map(x => x.muteeId)));
+			if (mutings.includes(data.notifierId)) {
 				return null;
 			}
 		}

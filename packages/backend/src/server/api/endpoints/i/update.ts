@@ -18,6 +18,7 @@ import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -152,6 +153,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private accountUpdateService: AccountUpdateService,
 		private hashtagService: HashtagService,
 		private roleService: RoleService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
@@ -276,9 +278,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				includeSecrets: isSecure,
 			});
 
+			const updatedProfile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			this.cacheService.userProfileCache.set(user.id, updatedProfile);
+
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
-			this.globalEventService.publishUserEvent(user.id, 'updateUserProfile', await this.userProfilesRepository.findOneByOrFail({ userId: user.id }));
+			this.globalEventService.publishUserEvent(user.id, 'updateUserProfile', updatedProfile);
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {

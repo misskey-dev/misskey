@@ -8,7 +8,7 @@ import type { Config } from '@/config.js';
 import type { RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
-import type { UserCacheService } from '@/core/UserCacheService.js';
+import type { CacheService } from '@/core/CacheService.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
@@ -54,7 +54,7 @@ export class ApPersonService implements OnModuleInit {
 	private metaService: MetaService;
 	private federatedInstanceService: FederatedInstanceService;
 	private fetchInstanceMetadataService: FetchInstanceMetadataService;
-	private userCacheService: UserCacheService;
+	private cacheService: CacheService;
 	private apResolverService: ApResolverService;
 	private apNoteService: ApNoteService;
 	private apImageService: ApImageService;
@@ -97,7 +97,7 @@ export class ApPersonService implements OnModuleInit {
 		//private metaService: MetaService,
 		//private federatedInstanceService: FederatedInstanceService,
 		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		//private userCacheService: UserCacheService,
+		//private cacheService: CacheService,
 		//private apResolverService: ApResolverService,
 		//private apNoteService: ApNoteService,
 		//private apImageService: ApImageService,
@@ -118,7 +118,7 @@ export class ApPersonService implements OnModuleInit {
 		this.metaService = this.moduleRef.get('MetaService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 		this.fetchInstanceMetadataService = this.moduleRef.get('FetchInstanceMetadataService');
-		this.userCacheService = this.moduleRef.get('UserCacheService');
+		this.cacheService = this.moduleRef.get('CacheService');
 		this.apResolverService = this.moduleRef.get('ApResolverService');
 		this.apNoteService = this.moduleRef.get('ApNoteService');
 		this.apImageService = this.moduleRef.get('ApImageService');
@@ -207,14 +207,14 @@ export class ApPersonService implements OnModuleInit {
 	public async fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
-		const cached = this.userCacheService.uriPersonCache.get(uri);
+		const cached = this.cacheService.uriPersonCache.get(uri);
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(this.config.url + '/')) {
 			const id = uri.split('/').pop();
 			const u = await this.usersRepository.findOneBy({ id });
-			if (u) this.userCacheService.uriPersonCache.set(uri, u);
+			if (u) this.cacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
@@ -222,7 +222,7 @@ export class ApPersonService implements OnModuleInit {
 		const exist = await this.usersRepository.findOneBy({ uri });
 
 		if (exist) {
-			this.userCacheService.uriPersonCache.set(uri, exist);
+			this.cacheService.uriPersonCache.set(uri, exist);
 			return exist;
 		}
 		//#endregion

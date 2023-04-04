@@ -255,7 +255,6 @@ export class UserEntityService implements OnModuleInit {
 			'+',
 			'-',
 			'COUNT', 1);
-		console.log('latestNotificationIdsRes', latestNotificationIdsRes);
 		const latestNotificationId = latestNotificationIdsRes[0]?.[0];
 
 		return latestNotificationId != null && (latestReadNotificationId == null || latestReadNotificationId < latestNotificationId);

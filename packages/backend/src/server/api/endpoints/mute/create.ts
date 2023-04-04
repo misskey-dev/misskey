@@ -7,6 +7,7 @@ import type { Muting } from '@/models/entities/Muting.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -65,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
 		private idService: IdService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const muter = me;
@@ -103,6 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				muteeId: mutee.id,
 			} as Muting);
 
+			this.cacheService.userMutingsCache.delete(muter.id);
 			this.globalEventService.publishUserEvent(me.id, 'mute', mutee);
 		});
 	}

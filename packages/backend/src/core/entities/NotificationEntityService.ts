@@ -54,6 +54,7 @@ export class NotificationEntityService implements OnModuleInit {
 	public async pack(
 		src: Notification,
 		meId: User['id'],
+		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
 			
 		},
