@@ -1,11 +1,8 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
-	<div v-if="video.isSensitive">
-		<b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
-		<span>{{ i18n.ts.clickToShow }}</span>
-	</div>
-	<div v-else>
-		<b><i class="ti ti-movie"></i> {{ bytes(video.size) }}</b>
+	<div>
+		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+		<b v-else><i class="ti ti-movie"></i> {{ bytes(video.size) }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
@@ -38,8 +35,6 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
-
-const mediaAppearance = ref(defaultStore.state.nsfw);
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
