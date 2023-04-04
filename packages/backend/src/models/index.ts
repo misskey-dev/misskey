@@ -32,7 +32,6 @@ import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
 import { NoteUnread } from '@/models/entities/NoteUnread.js';
-import { Notification } from '@/models/entities/Notification.js';
 import { Page } from '@/models/entities/Page.js';
 import { PageLike } from '@/models/entities/PageLike.js';
 import { PasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
@@ -100,7 +99,6 @@ export {
 	NoteReaction,
 	NoteThreadMuting,
 	NoteUnread,
-	Notification,
 	Page,
 	PageLike,
 	PasswordResetRequest,
@@ -167,7 +165,6 @@ export type NoteFavoritesRepository = Repository<NoteFavorite>;
 export type NoteReactionsRepository = Repository<NoteReaction>;
 export type NoteThreadMutingsRepository = Repository<NoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<NoteUnread>;
-export type NotificationsRepository = Repository<Notification>;
 export type PagesRepository = Repository<Page>;
 export type PageLikesRepository = Repository<PageLike>;
 export type PasswordResetRequestsRepository = Repository<PasswordResetRequest>;

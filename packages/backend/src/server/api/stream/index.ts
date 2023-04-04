@@ -195,8 +195,7 @@ export default class Connection {
 
 	@bindThis
 	private onReadNotification(payload: any) {
-		if (!payload.id) return;
-		this.notificationService.readNotification(this.user!.id, [payload.id]);
+		this.notificationService.readAllNotification(this.user!.id);
 	}
 
 	/**

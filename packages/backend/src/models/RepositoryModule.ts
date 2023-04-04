@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Notification, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, RenoteMuting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelFavorite, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment, ClipFavorite } from './index.js';
+import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, RenoteMuting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelFavorite, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment, ClipFavorite } from './index.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
@@ -169,12 +169,6 @@ const $driveFilesRepository: Provider = {
 const $driveFoldersRepository: Provider = {
 	provide: DI.driveFoldersRepository,
 	useFactory: (db: DataSource) => db.getRepository(DriveFolder),
-	inject: [DI.db],
-};
-
-const $notificationsRepository: Provider = {
-	provide: DI.notificationsRepository,
-	useFactory: (db: DataSource) => db.getRepository(Notification),
 	inject: [DI.db],
 };
 
@@ -426,7 +420,6 @@ const $roleAssignmentsRepository: Provider = {
 		$emojisRepository,
 		$driveFilesRepository,
 		$driveFoldersRepository,
-		$notificationsRepository,
 		$metasRepository,
 		$mutingsRepository,
 		$renoteMutingsRepository,
@@ -493,7 +486,6 @@ const $roleAssignmentsRepository: Provider = {
 		$emojisRepository,
 		$driveFilesRepository,
 		$driveFoldersRepository,
-		$notificationsRepository,
 		$metasRepository,
 		$mutingsRepository,
 		$renoteMutingsRepository,

@@ -15,10 +15,6 @@ type PushNotificationsTypes = {
 		antenna: { id: string, name: string };
 		note: Packed<'Note'>;
 	};
-	'readNotifications': { notificationIds: string[] };
-	'readAllNotifications': undefined;
-	'readAntenna': { antennaId: string };
-	'readAllAntennas': undefined;
 };
 
 // Reduce length because push message servers have character limits
@@ -72,14 +68,6 @@ export class PushNotificationService {
 		});
 	
 		for (const subscription of subscriptions) {
-			// Continue if sendReadMessage is false
-			if ([
-				'readNotifications',
-				'readAllNotifications',
-				'readAntenna',
-				'readAllAntennas',
-			].includes(type) && !subscription.sendReadMessage) continue;
-
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {

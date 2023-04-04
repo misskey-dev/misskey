@@ -53,9 +53,7 @@ function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
-		stream.send('readNotification', {
-			id: notification.id,
-		});
+		stream.send('readNotification');
 
 		notifications.unshift(notification);
 		window.setTimeout(() => {
