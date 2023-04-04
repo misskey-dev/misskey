@@ -763,6 +763,9 @@ importers:
         specifier: next
         version: 4.1.0(vue@3.2.47)
     devDependencies:
+      '@storybook/addon-actions':
+        specifier: ^7.0.2
+        version: 7.0.2(react-dom@18.2.0)(react@18.2.0)
       '@storybook/addon-essentials':
         specifier: 7.0.2
         version: 7.0.2(react-dom@18.2.0)(react@18.2.0)

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
-import { userDetailed } from '../../../.storybook/fakes';
-import MkAcct from './MkAcct.vue';
+import MkError from './MkError.vue';
 export const Default = {
 	render(args) {
 		return {
 			components: {
-				MkAcct,
+				MkError,
 			},
 			setup() {
 				return {
@@ -19,25 +19,18 @@ export const Default = {
 						...this.args,
 					};
 				},
+				events() {
+					return {
+						retry: action('retry'),
+					};
+				},
 			},
-			template: '<MkAcct v-bind="props" />',
+			template: '<MkError v-bind="props" v-on="events" />',
 		};
 	},
 	args: {
-		user: {
-			...userDetailed(),
-			host: null,
-		},
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof MkAcct>;
-export const Detail = {
-	...Default,
-	args: {
-		...Default.args,
-		user: userDetailed(),
-		detail: true,
-	},
-} satisfies StoryObj<typeof MkAcct>;
+} satisfies StoryObj<typeof MkError>;
