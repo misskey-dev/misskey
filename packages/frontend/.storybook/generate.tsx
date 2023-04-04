@@ -394,7 +394,7 @@ function toStories(component: string): string {
 	);
 }
 
-// promisify(glob)('src/{components,pages,ui,widgets}/**/*.vue').then(
+// glob('src/{components,pages,ui,widgets}/**/*.vue').then(
 glob('src/components/global/**/*.vue').then(
 	(components) =>
 		Promise.all(
