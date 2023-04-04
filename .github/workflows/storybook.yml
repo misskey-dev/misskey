@@ -1,0 +1,56 @@
+name: Storybook
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request_target:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Build misskey-js
+      run: pnpm --filter misskey-js build
+    - name: Build storybook
+      run: pnpm --filter frontend build-storybook
+      env:
+        NODE_OPTIONS: "--max_old_space_size=7168"
+    - name: Publish to Chromatic
+      id: chromatic
+      uses: chromaui/action@v1
+      with:
+        exitOnceUploaded: true
+        projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        storybookBuildDir: storybook-static
+        workingDir: packages/frontend
+    - name: Compare on Chromatic
+      if: github.event_name == 'pull_request_target'
+      run: pnpm --filter frontend chromatic -d storybook-static --exit-once-uploaded --patch-build ${{ github.head_ref }}...${{ github.base_ref }}
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: storybook
+        path: packages/frontend/storybook-static
