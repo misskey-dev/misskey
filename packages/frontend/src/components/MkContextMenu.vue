@@ -17,8 +17,8 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from './types/menu.vue';
 import contains from '@/scripts/contains';
-import * as os from '@/os';
 import { defaultStore } from '@/store';
+import * as os from '@/os';
 
 const props = defineProps<{
 	items: MenuItem[];

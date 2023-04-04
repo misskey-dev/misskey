@@ -96,6 +96,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		const profile = await this.userProfilesRepository.findOneBy({ userId: notifieeId });
 
+		// TODO: Cache
 		const isMuted = profile?.mutingNotificationTypes.includes(type);
 
 		// Create notification
@@ -122,6 +123,7 @@ export class NotificationService implements OnApplicationShutdown {
 			if (fresh.isRead) return;
 
 			//#region ただしミュートしているユーザーからの通知なら無視
+			// TODO: Cache
 			const mutings = await this.mutingsRepository.findBy({
 				muterId: notifieeId,
 			});

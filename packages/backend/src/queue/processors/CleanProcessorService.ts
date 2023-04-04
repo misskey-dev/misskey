@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennaNotesRepository, AntennasRepository, MutedNotesRepository, NotificationsRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/index.js';
+import type { AntennasRepository, MutedNotesRepository, NotificationsRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
@@ -28,9 +28,6 @@ export class CleanProcessorService {
 
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
-
-		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: AntennaNotesRepository,
 
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
