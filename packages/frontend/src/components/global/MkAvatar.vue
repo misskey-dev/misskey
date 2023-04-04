@@ -148,6 +148,7 @@ watch(() => props.user.avatarBlurhash, () => {
 		width: 100%;
 		height: 100%;
 		padding: 50%;
+		pointer-events: none;
 
 		&.mask {
 			-webkit-mask:
