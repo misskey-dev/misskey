@@ -9,7 +9,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
@@ -53,7 +53,7 @@ export class UserEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private userInstanceCache: KVCache<Instance | null>;
+	private userInstanceCache: MemoryKVCache<Instance | null>;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -119,7 +119,7 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new KVCache<Instance | null>(1000 * 60 * 60 * 3);
+		this.userInstanceCache = new MemoryKVCache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	onModuleInit() {

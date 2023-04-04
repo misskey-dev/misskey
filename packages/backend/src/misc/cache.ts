@@ -2,11 +2,11 @@ import { bindThis } from '@/decorators.js';
 
 // TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
 
-export class KVCache<T> {
+export class MemoryKVCache<T> {
 	public cache: Map<string | null, { date: number; value: T; }>;
 	private lifetime: number;
 
-	constructor(lifetime: KVCache<never>['lifetime']) {
+	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
 		this.cache = new Map();
 		this.lifetime = lifetime;
 	}
@@ -88,12 +88,12 @@ export class KVCache<T> {
 	}
 }
 
-export class Cache<T> {
+export class MemoryCache<T> {
 	private cachedAt: number | null = null;
 	private value: T | undefined;
 	private lifetime: number;
 
-	constructor(lifetime: Cache<never>['lifetime']) {
+	constructor(lifetime: MemoryCache<never>['lifetime']) {
 		this.lifetime = lifetime;
 	}
 
