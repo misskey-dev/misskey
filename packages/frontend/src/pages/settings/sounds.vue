@@ -8,7 +8,7 @@
 		<template #label>{{ i18n.ts.sounds }}</template>
 		<div class="_gaps_s">
 			<MkFolder v-for="type in Object.keys(sounds)" :key="type">
-				<template #label>{{ $t('_sfx.' + type) }}</template>
+				<template #label>{{ i18n.t('_sfx.' + type) }}</template>
 				<template #suffix>{{ sounds[type].type ?? i18n.ts.none }}</template>
 
 				<XSound :type="sounds[type].type" :volume="sounds[type].volume" @update="(res) => updated(type, res)"/>

@@ -118,7 +118,7 @@ onMounted(() => {
 	});
 
 	lightbox.init();
-	
+
 	window.addEventListener('popstate', () => {
 		if (lightbox.pswp && lightbox.pswp.isOpen === true) {
 			lightbox.pswp.close();
@@ -239,5 +239,6 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	max-height: 8em;
 	overflow-y: auto;
 	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
+	white-space: pre-line;
 }
 </style>

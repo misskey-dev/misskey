@@ -2,19 +2,19 @@
 <form class="mk-setup" @submit.prevent="submit()">
 	<h1>Welcome to Misskey!</h1>
 	<div class="_gaps_m">
-		<p>{{ $ts.intro }}</p>
+		<p>{{ i18n.ts.intro }}</p>
 		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
-			<template #label>{{ $ts.username }}</template>
+			<template #label>{{ i18n.ts.username }}</template>
 			<template #prefix>@</template>
 			<template #suffix>@{{ host }}</template>
 		</MkInput>
 		<MkInput v-model="password" type="password" data-cy-admin-password>
-			<template #label>{{ $ts.password }}</template>
+			<template #label>{{ i18n.ts.password }}</template>
 			<template #prefix><i class="ti ti-lock"></i></template>
 		</MkInput>
 		<div class="bottom">
 			<MkButton gradate type="submit" :disabled="submitting" data-cy-admin-ok>
-				{{ submitting ? $ts.processing : $ts.done }}<MkEllipsis v-if="submitting"/>
+				{{ submitting ? i18n.ts.processing : i18n.ts.done }}<MkEllipsis v-if="submitting"/>
 			</MkButton>
 		</div>
 	</div>

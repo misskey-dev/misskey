@@ -1,9 +1,9 @@
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_window_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_window_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_window_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_window_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
 	@after-leave="$emit('closed')"
 >
@@ -47,6 +47,7 @@ import contains from '@/scripts/contains';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const minHeight = 50;
 const minWidth = 250;

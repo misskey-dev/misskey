@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.noteThreadMutingsRepository.count({
 					where: {
 						userId: me.id,
-						threadId: note.threadId || note.id,
+						threadId: note.threadId ?? note.id,
 					},
 					take: 1,
 				}),

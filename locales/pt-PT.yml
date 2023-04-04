@@ -555,3 +555,6 @@ _deck:
     list: "Listas"
     mentions: "Menções"
     direct: "Notas diretas"
+_webhookSettings:
+  name: "Nome"
+

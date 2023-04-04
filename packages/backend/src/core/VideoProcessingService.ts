@@ -37,7 +37,7 @@ export class VideoProcessingService {
 					});
 			});
 
-			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 280);
+			return await this.imageProcessingService.convertToWebp(`${dir}/out.png`, 498, 422);
 		} finally {
 			cleanup();
 		}

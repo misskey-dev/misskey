@@ -34,7 +34,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const freshUser = await this.usersRepository.findOneByOrFail({ id: me.id });
-			const oldToken = freshUser.token;
+			const oldToken = freshUser.token!;
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 

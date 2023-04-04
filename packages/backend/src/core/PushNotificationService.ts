@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/schema';
+import type { Packed } from '@/misc/json-schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { SwSubscriptionsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -15,10 +15,6 @@ type PushNotificationsTypes = {
 		antenna: { id: string, name: string };
 		note: Packed<'Note'>;
 	};
-	'readNotifications': { notificationIds: string[] };
-	'readAllNotifications': undefined;
-	'readAntenna': { antennaId: string };
-	'readAllAntennas': undefined;
 };
 
 // Reduce length because push message servers have character limits
@@ -72,14 +68,6 @@ export class PushNotificationService {
 		});
 	
 		for (const subscription of subscriptions) {
-			// Continue if sendReadMessage is false
-			if ([
-				'readNotifications',
-				'readAllNotifications',
-				'readAntenna',
-				'readAllAntennas',
-			].includes(type) && !subscription.sendReadMessage) continue;
-
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {

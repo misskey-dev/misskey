@@ -72,8 +72,8 @@ export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioEle
 	return audio;
 }
 
-export function play(type: string) {
-	const sound = ColdDeviceStorage.get('sound_' + type as any);
+export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
+	const sound = ColdDeviceStorage.get(`sound_${type}`);
 	if (sound.type == null) return;
 	playFile(sound.type, sound.volume);
 }

@@ -16,7 +16,7 @@ import type {
 	UserListStreamTypes,
 	UserStreamTypes,
 } from '@/server/api/stream/types.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';

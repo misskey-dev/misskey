@@ -1,4 +1,3 @@
-import autobind from 'autobind-decorator';
 import { isLiteralValue } from './expr';
 import { funcDefs } from './lib';
 import { envVarsDef } from '.';
@@ -23,7 +22,6 @@ export class HpmlTypeChecker {
 		this.pageVars = pageVars;
 	}
 
-	@autobind
 	public typeCheck(v: Expr): TypeError | null {
 		if (isLiteralValue(v)) return null;
 
@@ -61,7 +59,6 @@ export class HpmlTypeChecker {
 		return null;
 	}
 
-	@autobind
 	public getExpectedType(v: Expr, slot: number): Type {
 		const def = funcDefs[v.type ?? ''];
 		if (def == null) {
@@ -89,7 +86,6 @@ export class HpmlTypeChecker {
 		}
 	}
 
-	@autobind
 	public infer(v: Expr): Type {
 		if (v.type === null) return null;
 		if (v.type === 'text') return 'string';
@@ -144,7 +140,6 @@ export class HpmlTypeChecker {
 		}
 	}
 
-	@autobind
 	public getVarByName(name: string): Variable {
 		const v = this.variables.find(x => x.name === name);
 		if (v !== undefined) {
@@ -154,25 +149,21 @@ export class HpmlTypeChecker {
 		}
 	}
 
-	@autobind
 	public getVarsByType(type: Type): Variable[] {
 		if (type == null) return this.variables;
 		return this.variables.filter(x => (this.infer(x) === null) || (this.infer(x) === type));
 	}
 
-	@autobind
 	public getEnvVarsByType(type: Type): string[] {
 		if (type == null) return Object.keys(envVarsDef);
 		return Object.entries(envVarsDef).filter(([k, v]) => v === null || type === v).map(([k, v]) => k);
 	}
 
-	@autobind
 	public getPageVarsByType(type: Type): string[] {
 		if (type == null) return this.pageVars.map(v => v.name);
 		return this.pageVars.filter(v => type === v.type).map(v => v.name);
 	}
 
-	@autobind
 	public isUsedName(name: string) {
 		if (this.variables.some(v => v.name === name)) {
 			return true;

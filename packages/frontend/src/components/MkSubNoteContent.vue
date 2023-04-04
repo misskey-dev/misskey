@@ -8,7 +8,7 @@
 		<MkA v-if="note.renoteId" :class="$style.rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
 	<details v-if="note.files.length > 0">
-		<summary>({{ $t('withNFiles', { n: note.files.length }) }})</summary>
+		<summary>({{ i18n.t('withNFiles', { n: note.files.length }) }})</summary>
 		<MkMediaList :media-list="note.files"/>
 	</details>
 	<details v-if="note.poll">
@@ -27,6 +27,7 @@ import * as misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	note: misskey.entities.Note;

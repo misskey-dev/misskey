@@ -1,6 +1,6 @@
 <template>
 <div>
-	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
+	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root">
 			<div class="item _panel users">
@@ -62,6 +62,7 @@ import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n';
 import { customEmojis } from '@/custom-emojis';
+import { defaultStore } from '@/store';
 
 let stats: any = $ref(null);
 let usersComparedToThePrevDay = $ref<number>();

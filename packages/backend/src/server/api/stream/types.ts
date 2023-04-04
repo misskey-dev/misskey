@@ -9,7 +9,7 @@ import type { UserList } from '@/models/entities/UserList.js';
 import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import type { Signin } from '@/models/entities/Signin.js';
 import type { Page } from '@/models/entities/Page.js';
-import type { Packed } from '@/misc/schema.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import type { Meta } from '@/models/entities/Meta.js';
 import { Role, RoleAssignment } from '@/models';
@@ -19,7 +19,7 @@ import type { EventEmitter } from 'events';
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
 	userChangeSuspendedState: { id: User['id']; isSuspended: User['isSuspended']; };
-	userTokenRegenerated: { id: User['id']; oldToken: User['token']; newToken: User['token']; };
+	userTokenRegenerated: { id: User['id']; oldToken: string; newToken: string; };
 	remoteUserUpdated: { id: User['id']; };
 	follow: { followerId: User['id']; followeeId: User['id']; };
 	unfollow: { followerId: User['id']; followeeId: User['id']; };

@@ -8,7 +8,6 @@ import { QueueService } from '@/core/QueueService.js';
 import { PollService } from '@/core/PollService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { CreateNotificationService } from '@/core/CreateNotificationService.js';
 import { DI } from '@/di-symbols.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { ApiError } from '../../../error.js';
@@ -89,7 +88,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private pollService: PollService,
 		private apRendererService: ApRendererService,
 		private globalEventService: GlobalEventService,
-		private createNotificationService: CreateNotificationService,
 		private userBlockingService: UserBlockingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -161,7 +159,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (note.userHost != null) {
 				const pollOwner = await this.usersRepository.findOneByOrFail({ id: note.userId }) as RemoteUser;
 
-				this.queueService.deliver(me, this.apRendererService.addContext(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox);
+				this.queueService.deliver(me, this.apRendererService.addContext(await this.apRendererService.renderVote(me, vote, note, poll, pollOwner)), pollOwner.inbox, false);
 			}
 
 			// リモートフォロワーにUpdate配信

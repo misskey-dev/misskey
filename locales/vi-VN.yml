@@ -585,7 +585,6 @@ tokenRequested: "Cấp quyền truy cập vào tài khoản"
 pluginTokenRequestedDescription: "Plugin này sẽ có thể sử dụng các quyền được đặt ở đây."
 notificationType: "Loại thông báo"
 edit: "Sửa"
-useStarForReactionFallback: "Dùng ★ nếu emoji biểu cảm không có"
 emailServer: "Email máy chủ"
 enableEmail: "Bật phân phối email"
 emailConfigInfo: "Được dùng để xác minh email của bạn lúc đăng ký hoặc nếu bạn quên mật khẩu của mình"
@@ -1705,3 +1704,7 @@ _deck:
 _dialog:
   charactersExceeded: "Bạn nhắn quá giới hạn ký tự!! Hiện nay {current} / giới hạn {max}"
   charactersBelow: "Bạn nhắn quá ít tối thiểu ký tự!! Hiện nay {current} / Tối thiểu {min}"
+_webhookSettings:
+  name: "Tên"
+  active: "Đã bật"
+
