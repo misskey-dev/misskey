@@ -3,12 +3,12 @@
 	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<template v-if="mediaAppearance === 'force' && !image.isSensitive">
-				<b style="display: block;"><i class="ti ti-photo"></i> {{ bytes(image.size) }}</b>
+			<template v-if="image.isSensitive">
+				<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
 				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</template>
 			<template v-else>
-				<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+				<b style="display: block;"><i class="ti ti-photo"></i> {{ bytes(image.size) }}</b>
 				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</template>
 		</div>

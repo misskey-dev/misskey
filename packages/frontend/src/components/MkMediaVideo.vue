@@ -1,11 +1,11 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
-	<div v-if="mediaAppearance === 'force' && !video.isSensitive">
-		<b><i class="ti ti-movie"></i> {{ bytes(video.size) }}</b>
+	<div v-if="video.isSensitive">
+		<b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 	<div v-else>
-		<b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+		<b><i class="ti ti-movie"></i> {{ bytes(video.size) }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
