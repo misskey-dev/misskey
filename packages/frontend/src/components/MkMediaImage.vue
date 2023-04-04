@@ -3,8 +3,14 @@
 	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
-			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			<template v-if="mediaAppearance === 'force' && !image.isSensitive">
+				<b style="display: block;"><i class="ti ti-photo"></i> {{ bytes(image.size) }}</b>
+				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			</template>
+			<template v-else>
+				<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			</template>
 		</div>
 	</div>
 </div>
@@ -28,6 +34,7 @@
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
+import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -38,6 +45,7 @@ const props = defineProps<{
 }>();
 
 let hide = $ref(true);
+let mediaAppearance = $ref(defaultStore.state.nsfw);
 let darkMode = $ref(defaultStore.state.darkMode);
 
 const url = (props.raw || defaultStore.state.loadRawImages)
@@ -53,6 +61,7 @@ watch(() => props.image, () => {
 	deep: true,
 	immediate: true,
 });
+
 </script>
 
 <style lang="scss" module>

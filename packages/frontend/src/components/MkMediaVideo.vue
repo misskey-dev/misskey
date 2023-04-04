@@ -1,6 +1,10 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
-	<div>
+	<div v-if="mediaAppearance === 'force' && !video.isSensitive">
+		<b><i class="ti ti-movie"></i> {{ bytes(video.size) }}</b>
+		<span>{{ i18n.ts.clickToShow }}</span>
+	</div>
+	<div v-else>
 		<b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
@@ -25,6 +29,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as misskey from 'misskey-js';
+import bytes from '@/filters/bytes';
 import VuePlyr from 'vue-plyr';
 import { defaultStore } from '@/store';
 import 'vue-plyr/dist/vue-plyr.css';
@@ -33,6 +38,8 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
+
+const mediaAppearance = ref(defaultStore.state.nsfw);
 
 const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
