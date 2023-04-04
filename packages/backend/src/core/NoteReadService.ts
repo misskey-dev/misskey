@@ -169,10 +169,6 @@ export class NoteReadService implements OnApplicationShutdown {
 					this.globalEventService.publishMainStream(userId, 'readAllChannels');
 				}
 			});
-	
-			this.notificationService.readNotificationByQuery(userId, {
-				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
-			});
 		}
 	}
 
