@@ -506,6 +506,7 @@ objectStorageUseSSLDesc: "Turn this off if you are not going to use HTTPS for AP
 objectStorageUseProxy: "Connect over Proxy"
 objectStorageUseProxyDesc: "Turn this off if you are not going to use a Proxy for API connections"
 objectStorageSetPublicRead: "Set \"public-read\" on upload"
+s3ForcePathStyleDesc: "If s3ForcePathStyle is enabled, the bucket name has to included in the path of the URL as opposed to the hostname of the URL. You may need to enable this setting when using services such as a self-hosted Minio instance."
 serverLogs: "Server logs"
 deleteAll: "Delete all"
 showFixedPostForm: "Display the posting form at the top of the timeline"
