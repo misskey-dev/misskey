@@ -62,11 +62,8 @@ jobs:
       matrix:
         workspace:
         - backend
-<<<<<<< HEAD
         - misskey-js
-=======
         - sw
->>>>>>> lint at ci
     steps:
     - uses: actions/checkout@v3.3.0
       with:
