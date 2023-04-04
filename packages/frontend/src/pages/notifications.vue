@@ -2,8 +2,8 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
-		<div v-if="tab === 'all' || tab === 'unread'">
-			<XNotifications class="notifications" :include-types="includeTypes" :unread-only="unreadOnly"/>
+		<div v-if="tab === 'all'">
+			<XNotifications class="notifications" :include-types="includeTypes"/>
 		</div>
 		<div v-else-if="tab === 'mentions'">
 			<MkNotes :pagination="mentionsPagination"/>
@@ -26,7 +26,6 @@ import { notificationTypes } from '@/const';
 
 let tab = $ref('all');
 let includeTypes = $ref<string[] | null>(null);
-let unreadOnly = $computed(() => tab === 'unread');
 
 const mentionsPagination = {
 	endpoint: 'notes/mentions' as const,
@@ -76,10 +75,6 @@ const headerTabs = $computed(() => [{
 	key: 'all',
 	title: i18n.ts.all,
 	icon: 'ti ti-point',
-}, {
-	key: 'unread',
-	title: i18n.ts.unread,
-	icon: 'ti ti-loader',
 }, {
 	key: 'mentions',
 	title: i18n.ts.mentions,

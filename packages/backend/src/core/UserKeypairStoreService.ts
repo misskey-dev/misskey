@@ -1,20 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@/models/entities/User.js';
 import type { UserKeypairsRepository } from '@/models/index.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class UserKeypairStoreService {
-	private cache: KVCache<UserKeypair>;
+	private cache: MemoryKVCache<UserKeypair>;
 
 	constructor(
 		@Inject(DI.userKeypairsRepository)
 		private userKeypairsRepository: UserKeypairsRepository,
 	) {
-		this.cache = new KVCache<UserKeypair>(Infinity);
+		this.cache = new MemoryKVCache<UserKeypair>(Infinity);
 	}
 
 	@bindThis

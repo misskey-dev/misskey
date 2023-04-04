@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
+import Redis from 'ioredis';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
@@ -8,11 +9,11 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -52,13 +53,16 @@ export class UserEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private userInstanceCache: KVCache<Instance | null>;
+	private userInstanceCache: MemoryKVCache<Instance | null>;
 
 	constructor(
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -90,9 +94,6 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 
-		@Inject(DI.notificationsRepository)
-		private notificationsRepository: NotificationsRepository,
-
 		@Inject(DI.userNotePiningsRepository)
 		private userNotePiningsRepository: UserNotePiningsRepository,
 
@@ -118,7 +119,7 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new KVCache<Instance | null>(1000 * 60 * 60 * 3);
+		this.userInstanceCache = new MemoryKVCache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	onModuleInit() {
@@ -247,21 +248,16 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
-		const mute = await this.mutingsRepository.findBy({
-			muterId: userId,
-		});
-		const mutedUserIds = mute.map(m => m.muteeId);
+		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
+		
+		const latestNotificationIdsRes = await this.redisClient.xrevrange(
+			`notificationTimeline:${userId}`,
+			'+',
+			'-',
+			'COUNT', 1);
+		const latestNotificationId = latestNotificationIdsRes[0]?.[0];
 
-		const count = await this.notificationsRepository.count({
-			where: {
-				notifieeId: userId,
-				...(mutedUserIds.length > 0 ? { notifierId: Not(In(mutedUserIds)) } : {}),
-				isRead: false,
-			},
-			take: 1,
-		});
-
-		return count > 0;
+		return latestNotificationId != null && (latestReadNotificationId == null || latestReadNotificationId < latestNotificationId);
 	}
 
 	@bindThis

@@ -150,7 +150,7 @@ function adjustTweetHeight(message: any) {
 }
 
 const openPlayer = (): void => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkYoutubePlayer.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
 		url: requestUrl.href,
 	});
 };

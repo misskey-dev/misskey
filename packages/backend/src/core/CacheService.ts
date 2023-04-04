@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
-import type { UsersRepository } from '@/models/index.js';
-import { KVCache } from '@/misc/cache.js';
+import type { UserProfile, UsersRepository } from '@/models/index.js';
+import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -10,13 +10,18 @@ import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
-export class UserCacheService implements OnApplicationShutdown {
-	public userByIdCache: KVCache<User>;
-	public localUserByNativeTokenCache: KVCache<LocalUser | null>;
-	public localUserByIdCache: KVCache<LocalUser>;
-	public uriPersonCache: KVCache<User | null>;
+export class CacheService implements OnApplicationShutdown {
+	public userByIdCache: MemoryKVCache<User>;
+	public localUserByNativeTokenCache: MemoryKVCache<LocalUser | null>;
+	public localUserByIdCache: MemoryKVCache<LocalUser>;
+	public uriPersonCache: MemoryKVCache<User | null>;
+	public userProfileCache: RedisKVCache<UserProfile>;
+	public userMutingsCache: RedisKVCache<string[]>;
 
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.redisSubscriber)
 		private redisSubscriber: Redis.Redis,
 
@@ -27,10 +32,12 @@ export class UserCacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new KVCache<User>(Infinity);
-		this.localUserByNativeTokenCache = new KVCache<LocalUser | null>(Infinity);
-		this.localUserByIdCache = new KVCache<LocalUser>(Infinity);
-		this.uriPersonCache = new KVCache<User | null>(Infinity);
+		this.userByIdCache = new MemoryKVCache<User>(Infinity);
+		this.localUserByNativeTokenCache = new MemoryKVCache<LocalUser | null>(Infinity);
+		this.localUserByIdCache = new MemoryKVCache<LocalUser>(Infinity);
+		this.uriPersonCache = new MemoryKVCache<User | null>(Infinity);
+		this.userProfileCache = new RedisKVCache<UserProfile>(this.redisClient, 'userProfile', 1000 * 60 * 60 * 24, 1000 * 60);
+		this.userMutingsCache = new RedisKVCache<string[]>(this.redisClient, 'userMutings', 1000 * 60 * 60 * 24, 1000 * 60);
 
 		this.redisSubscriber.on('message', this.onMessage);
 	}
@@ -52,7 +59,7 @@ export class UserCacheService implements OnApplicationShutdown {
 						}
 					}
 					if (this.userEntityService.isLocalUser(user)) {
-						this.localUserByNativeTokenCache.set(user.token, user);
+						this.localUserByNativeTokenCache.set(user.token!, user);
 						this.localUserByIdCache.set(user.id, user);
 					}
 					break;
@@ -77,7 +84,7 @@ export class UserCacheService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public findById(userId: User['id']) {
+	public findUserById(userId: User['id']) {
 		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
 	}
 
