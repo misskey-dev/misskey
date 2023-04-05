@@ -43,6 +43,7 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	public async readAllNotification(
 		userId: User['id'],
+		force = false,
 	) {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 		
@@ -57,7 +58,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		this.redisClient.set(`latestReadNotification:${userId}`, latestNotificationId);
 
-		if (latestReadNotificationId == null || (latestReadNotificationId < latestNotificationId)) {
+		if (force || latestReadNotificationId == null || (latestReadNotificationId < latestNotificationId)) {
 			return this.postReadAllNotifications(userId);
 		}
 	}
