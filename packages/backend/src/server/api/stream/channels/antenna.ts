@@ -35,11 +35,11 @@ class AntennaChannel extends Channel {
 			const note = await this.noteEntityService.pack(data.body.id, this.user, { detail: true });
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.muting)) return;
+			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-			if (isUserRelated(note, this.blocking)) return;
+			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
-			if (note.renote && !note.text && isUserRelated(note, this.renoteMuting)) return;
+			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
 			this.connection.cacheNote(note);
 

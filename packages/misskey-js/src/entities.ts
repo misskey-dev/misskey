@@ -88,7 +88,6 @@ export type MeDetailed = UserDetailed & {
 	hasPendingReceivedFollowRequest: boolean;
 	hasUnreadAnnouncement: boolean;
 	hasUnreadAntenna: boolean;
-	hasUnreadChannel: boolean;
 	hasUnreadMentions: boolean;
 	hasUnreadMessagingMessage: boolean;
 	hasUnreadNotification: boolean;

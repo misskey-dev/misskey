@@ -28,6 +28,7 @@ import * as os from '@/os';
 import MkContainer from '@/components/MkContainer.vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	user: misskey.entities.UserDetailed;
