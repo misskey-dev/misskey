@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { expect } from '@storybook/jest';
+import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import { galleryPost } from '../../.storybook/fakes';
 import MkGalleryPostPreview from './MkGalleryPostPreview.vue';
-import { userEvent, within } from '@storybook/testing-library';
-import { expect } from '@storybook/jest';
 export const Default = {
 	render(args) {
 		return {
@@ -50,7 +50,7 @@ export const Hover = {
 		await Default.play(context);
 		const canvas = within(context.canvasElement);
 		const links = canvas.getAllByRole('link');
-		await userEvent.hover(links[0]);
+		await waitFor(() => userEvent.hover(links[0]));
 	},
 } satisfies StoryObj<typeof MkGalleryPostPreview>;
 export const HoverThenUnhover = {
@@ -59,7 +59,7 @@ export const HoverThenUnhover = {
 		await Hover.play(context);
 		const canvas = within(context.canvasElement);
 		const links = canvas.getAllByRole('link');
-		await userEvent.unhover(links[0]);
+		await waitFor(() => userEvent.unhover(links[0]));
 	},
 } satisfies StoryObj<typeof MkGalleryPostPreview>;
 export const Sensitive = {
