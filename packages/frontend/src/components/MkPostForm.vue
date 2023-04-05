@@ -1128,7 +1128,7 @@ defineExpose({
 }
 
 .footerRight {
-	flex: 0.5;
+	flex: 0.3;
 	margin-left: auto;
 	display: grid;
 	grid-auto-flow: row;
