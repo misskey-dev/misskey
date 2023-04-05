@@ -88,7 +88,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: null,
+		default: null as 'likeOnly' | 'likeOnlyForRemote' | null,
 	},
 	mutedWords: {
 		where: 'account',
