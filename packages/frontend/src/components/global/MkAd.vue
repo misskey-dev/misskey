@@ -20,13 +20,13 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
 import { $i } from '@/account';
-import { i18n } from '@/i18n';
 
 type Ad = (typeof instance)['ads'][number];
 

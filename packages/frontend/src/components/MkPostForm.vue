@@ -652,7 +652,8 @@ async function post(ev?: MouseEvent) {
 		text.includes('$[x4') ||
 		text.includes('$[scale') ||
 		text.includes('$[position');
-	if (annoying) {
+
+	if (annoying && visibility === 'public') {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,

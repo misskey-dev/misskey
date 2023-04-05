@@ -18,6 +18,7 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { CacheService } from '@/core/CacheService.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -53,6 +54,7 @@ export class UserFollowingService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private userBlockingService: UserBlockingService,
 		private idService: IdService,
@@ -172,6 +174,8 @@ export class UserFollowingService {
 			}
 		});
 
+		this.cacheService.userFollowingsCache.refresh(follower.id);
+
 		const req = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
@@ -225,7 +229,6 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishUserEvent(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
@@ -279,6 +282,8 @@ export class UserFollowingService {
 
 		await this.followingsRepository.delete(following.id);
 
+		this.cacheService.userFollowingsCache.refresh(follower.id);
+
 		this.decrementFollowing(follower, followee);
 
 		// Publish unfollow event
@@ -286,7 +291,6 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
@@ -579,7 +583,6 @@ export class UserFollowingService {
 			detail: true,
 		});
 
-		this.globalEventService.publishUserEvent(follower.id, 'unfollow', packedFollowee);
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
 
 		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));

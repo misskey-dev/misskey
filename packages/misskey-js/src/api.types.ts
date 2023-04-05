@@ -515,7 +515,6 @@ export type Endpoints = {
 	// notifications
 	'notifications/create': { req: { body: string; header?: string | null; icon?: string | null; }; res: null; };
 	'notifications/mark-all-as-read': { req: NoParams; res: null; };
-	'notifications/read': { req: { notificationId: Notification['id']; }; res: null; };
 
 	// page-push
 	'page-push': { req: { pageId: Page['id']; event: string; var?: any; }; res: null; };
