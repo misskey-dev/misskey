@@ -986,6 +986,7 @@ enableChartsForFederatedInstances: "リモートサーバーのチャートを�
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 largeNoteReactions: "ノートのリアクションを大きく表示"
 noteIdOrUrl: "ノートIDまたはURL"
+copyEmbedCode: "埋め込みコードをコピー"
 
 _achievements:
   earnedAt: "獲得日時"

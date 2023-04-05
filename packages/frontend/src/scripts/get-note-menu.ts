@@ -278,7 +278,7 @@ export function getNoteMenu(props: {
 			},
 			(!props.embed) ? {
 				icon: 'ti ti-code',
-				text: "Embed",
+				text: i18n.ts.copyEmbedCode,
 				action: copyEmbedCode,
 			} : undefined,
 			instance.translatorAvailable ? {
@@ -391,7 +391,7 @@ export function getNoteMenu(props: {
 			},
 		} : undefined, (!props.embed) ? {
 			icon: 'ti ti-code',
-			text: "Embed",
+			text: i18n.ts.copyEmbedCode,
 			action: copyEmbedCode,
 		} : undefined,]
 			.filter(x => x !== undefined);
