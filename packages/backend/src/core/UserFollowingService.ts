@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -37,8 +38,12 @@ type Remote = RemoteUser | {
 type Both = Local | Remote;
 
 @Injectable()
-export class UserFollowingService {
+export class UserFollowingService implements OnModuleInit {
+	private userBlockingService: UserBlockingService;
+
 	constructor(
+		private moduleRef: ModuleRef,
+	
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -56,7 +61,6 @@ export class UserFollowingService {
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
-		private userBlockingService: UserBlockingService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
@@ -68,6 +72,10 @@ export class UserFollowingService {
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
+	}
+
+	onModuleInit() {
+		this.userBlockingService = this.moduleRef.get('UserBlockingService');
 	}
 
 	@bindThis

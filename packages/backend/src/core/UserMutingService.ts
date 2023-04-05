@@ -5,7 +5,7 @@ import { IdService } from '@/core/IdService.js';
 import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService';
+import { CacheService } from '@/core/CacheService.js';
 
 @Injectable()
 export class UserMutingService {
