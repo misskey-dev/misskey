@@ -971,20 +971,18 @@ defineExpose({
 .headerRightItem {
 	margin: 0;
 	padding: 8px;
-
-	&.danger {
-		color: #ff2a2a;
-	}
-}
-
-button.headerRightItem {
 	border-radius: 6px;
 
 	&:hover {
 		background: var(--X5);
 	}
+
 	&:disabled {
 		background: none;
+	}
+
+	&.danger {
+		color: #ff2a2a;
 	}
 }
 
