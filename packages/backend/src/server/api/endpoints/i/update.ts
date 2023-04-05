@@ -284,7 +284,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
-			this.globalEventService.publishUserEvent(user.id, 'updateUserProfile', updatedProfile);
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {

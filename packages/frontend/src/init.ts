@@ -514,15 +514,6 @@ if ($i) {
 		updateAccount({ hasUnreadAnnouncement: false });
 	});
 
-	main.on('readAllChannels', () => {
-		updateAccount({ hasUnreadChannel: false });
-	});
-
-	main.on('unreadChannel', () => {
-		updateAccount({ hasUnreadChannel: true });
-		sound.play('channel');
-	});
-
 	// トークンが再生成されたとき
 	// このままではMisskeyが利用できないので強制的にサインアウトさせる
 	main.on('myTokenRegenerated', () => {

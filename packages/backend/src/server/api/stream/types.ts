@@ -38,6 +38,11 @@ export interface InternalStreamTypes {
 	antennaDeleted: Antenna;
 	antennaUpdated: Antenna;
 	metaUpdated: Meta;
+	followChannel: { userId: User['id']; channelId: Channel['id']; };
+	unfollowChannel: { userId: User['id']; channelId: Channel['id']; };
+	updateUserProfile: UserProfile;
+	mute: { muterId: User['id']; muteeId: User['id']; };
+	unmute: { muterId: User['id']; muteeId: User['id']; };
 }
 
 export interface BroadcastTypes {
@@ -54,18 +59,6 @@ export interface BroadcastTypes {
 			[other: string]: any;
 		}[];
 	};
-}
-
-export interface UserStreamTypes {
-	terminate: Record<string, unknown>;
-	followChannel: Channel;
-	unfollowChannel: Channel;
-	updateUserProfile: UserProfile;
-	mute: User;
-	unmute: User;
-	follow: Packed<'UserDetailedNotMe'>;
-	unfollow: Packed<'User'>;
-	userAdded: Packed<'User'>;
 }
 
 export interface MainStreamTypes {
@@ -97,8 +90,6 @@ export interface MainStreamTypes {
 	readAllAntennas: undefined;
 	unreadAntenna: Antenna;
 	readAllAnnouncements: undefined;
-	readAllChannels: undefined;
-	unreadChannel: Note['id'];
 	myTokenRegenerated: undefined;
 	signin: Signin;
 	registryUpdated: {
@@ -201,10 +192,6 @@ export type StreamMessages = {
 	broadcast: {
 		name: 'broadcast';
 		payload: EventUnionFromDictionary<SerializedAll<BroadcastTypes>>;
-	};
-	user: {
-		name: `user:${User['id']}`;
-		payload: EventUnionFromDictionary<SerializedAll<UserStreamTypes>>;
 	};
 	main: {
 		name: `mainStream:${User['id']}`;
