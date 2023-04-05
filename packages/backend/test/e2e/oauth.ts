@@ -161,4 +161,14 @@ describe('OAuth', () => {
 		assert.ok(!location.searchParams.has('code'));
 		assert.ok(location.searchParams.has('error'));
 	});
+
+	// TODO: .well-known/oauth-authorization-server
+
+	// TODO: scopes (totally missing / empty / exists but all invalid / exists but partially invalid / all valid)
+
+	// TODO: PKCE verification failure
+
+	// TODO: authorizing two users concurrently
+
+	// TODO: invalid redirect_uri (at authorize / at token)
 });
