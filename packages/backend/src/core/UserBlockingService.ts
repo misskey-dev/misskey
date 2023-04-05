@@ -1,5 +1,6 @@
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { IdService } from '@/core/IdService.js';
 import type { User } from '@/models/entities/User.js';
 import type { Blocking } from '@/models/entities/Blocking.js';
@@ -17,10 +18,13 @@ import { CacheService } from '@/core/CacheService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 
 @Injectable()
-export class UserBlockingService {
+export class UserBlockingService implements OnModuleInit {
 	private logger: Logger;
+	private userFollowingService: UserFollowingService;
 
 	constructor(
+		private moduleRef: ModuleRef,
+	
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
@@ -34,7 +38,6 @@ export class UserBlockingService {
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private cacheService: CacheService,
-		private userFollowingService: UserFollowingService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
@@ -44,6 +47,10 @@ export class UserBlockingService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('user-block');
+	}
+
+	onModuleInit() {
+		this.userFollowingService = this.moduleRef.get('UserFollowingService');
 	}
 
 	@bindThis
