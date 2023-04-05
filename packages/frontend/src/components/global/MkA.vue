@@ -79,6 +79,11 @@ function popout() {
 }
 
 function nav(ev: MouseEvent) {
+	if (router.currentRoute.value.name?.toLowerCase().includes("embed")) {
+		window.open(props.to, '_blank');
+		return;
+	}
+
 	if (props.behavior === 'browser') {
 		location.href = props.to;
 		return;

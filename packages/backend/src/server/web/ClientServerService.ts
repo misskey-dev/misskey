@@ -476,6 +476,36 @@ export class ClientServerService {
 			}
 		});
 
+		// Note Embed
+		fastify.get<{ Params: { note: string; } }>('/notes/:note/embed', async (request, reply) => {
+			reply.removeHeader('X-Frame-Options');
+			reply.header("X-Robots-Tag", "noindex");
+
+			const note = await this.notesRepository.findOneBy({
+				id: request.params.note,
+				visibility: In(['public', 'home']),
+			});
+
+			if (note) {
+				const _note = await this.noteEntityService.pack(note);
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
+				const meta = await this.metaService.fetch();
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('note', {
+					note: _note,
+					profile,
+					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: note.userId })),
+					// TODO: Let locale changeable by instance setting
+					summary: getNoteSummary(_note),
+					instanceName: meta.name ?? 'Misskey',
+					icon: meta.iconUrl,
+					themeColor: meta.themeColor,
+				});
+			} else {
+				return await renderBase(reply);
+			}
+		});
+
 		// Page
 		fastify.get<{ Params: { user: string; page: string; } }>('/@:user/pages/:page', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);

@@ -11,6 +11,7 @@ import { noteActions } from '@/store';
 import { miLocalStorage } from '@/local-storage';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import { clipsCache } from '@/cache';
+import { getEmbedCode } from './get-embed-code';
 
 export async function getNoteClipMenu(props: {
 	note: misskey.entities.Note;
@@ -93,6 +94,7 @@ export function getNoteMenu(props: {
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: misskey.entities.Clip;
+	embed?: boolean;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -202,7 +204,17 @@ export function getNoteMenu(props: {
 	}
 
 	function openDetail(): void {
-		os.pageWindow(`/notes/${appearNote.id}`);
+		if (props.embed) {
+			window.open(`/notes/${appearNote.id}`, "_blank");
+		} else {
+			os.pageWindow(`/notes/${appearNote.id}`);
+		}
+	}
+
+	function copyEmbedCode(): void {
+		console.log(getEmbedCode({ entityType: 'notes', id: appearNote.id }));
+		copyToClipboard(getEmbedCode({entityType: 'notes', id: appearNote.id}));
+		os.success();
 	}
 
 	function showReactions(): void {
@@ -223,7 +235,7 @@ export function getNoteMenu(props: {
 	}
 
 	let menu;
-	if ($i) {
+	if ($i && !props.embed) {
 		const statePromise = os.api('notes/state', {
 			noteId: appearNote.id,
 		});
@@ -264,6 +276,11 @@ export function getNoteMenu(props: {
 				text: i18n.ts.share,
 				action: share,
 			},
+			(!props.embed) ? {
+				icon: 'ti ti-code',
+				text: "Embed",
+				action: copyEmbedCode,
+			} : undefined,
 			instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
@@ -356,7 +373,7 @@ export function getNoteMenu(props: {
 	} else {
 		menu = [{
 			icon: 'ti ti-external-link',
-			text: i18n.ts.detailed,
+			text: i18n.ts.details,
 			action: openDetail,
 		}, {
 			icon: 'ti ti-copy',
@@ -372,7 +389,11 @@ export function getNoteMenu(props: {
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank');
 			},
-		} : undefined]
+		} : undefined, (!props.embed) ? {
+			icon: 'ti ti-code',
+			text: "Embed",
+			action: copyEmbedCode,
+		} : undefined,]
 			.filter(x => x !== undefined);
 	}
 

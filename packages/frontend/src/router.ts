@@ -31,6 +31,10 @@ export const routes = [{
 	path: '/notes/:noteId',
 	component: page(() => import('./pages/note.vue')),
 }, {
+	name: 'noteEmbed',
+	path: '/notes/:noteId/embed',
+	component: page(() => import('./pages/note-embed.vue')),
+}, {
 	path: '/clips/:clipId',
 	component: page(() => import('./pages/clip.vue')),
 }, {
