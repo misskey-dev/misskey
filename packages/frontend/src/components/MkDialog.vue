@@ -36,7 +36,7 @@
 			<MkButton v-if="showCancelButton || input || select" inline @click="cancel">{{ cancelText ?? i18n.ts.cancel }}</MkButton>
 		</div>
 		<div v-if="actions" :class="$style.buttons">
-			<MkButton v-for="action in actions" :key="action.text" inline :primary="action.primary" @click="() => { action.callback(); modal?.close(); }">{{ action.text }}</MkButton>
+			<MkButton v-for="action in actions" :key="action.text" inline :primary="action.primary" :danger="action.danger" @click="() => { action.callback(); modal?.close(); }">{{ action.text }}</MkButton>
 		</div>
 	</div>
 </MkModal>
@@ -84,6 +84,7 @@ const props = withDefaults(defineProps<{
 	actions?: {
 		text: string;
 		primary?: boolean,
+		danger?: boolean,
 		callback: (...args: any[]) => void;
 	}[];
 	showOkButton?: boolean;

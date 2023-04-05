@@ -2,6 +2,7 @@ import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
 import type { summaly } from 'summaly';
+import { components } from '@/components';
 import { directives } from '@/directives';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 
@@ -27,7 +28,7 @@ describe('MkMediaImage', () => {
 
 		const result = render(MkUrlPreview, {
 			props: { url: summary.url },
-			global: { directives },
+			global: { directives, components },
 		});
 
 		await new Promise<void>(resolve => {

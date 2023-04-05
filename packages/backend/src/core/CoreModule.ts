@@ -40,7 +40,7 @@ import { TwoFactorAuthenticationService } from './TwoFactorAuthenticationService
 import { UserBlockingService } from './UserBlockingService.js';
 import { CacheService } from './CacheService.js';
 import { UserFollowingService } from './UserFollowingService.js';
-import { UserKeypairStoreService } from './UserKeypairStoreService.js';
+import { UserKeypairService } from './UserKeypairService.js';
 import { UserListService } from './UserListService.js';
 import { UserMutingService } from './UserMutingService.js';
 import { UserSuspendService } from './UserSuspendService.js';
@@ -161,7 +161,7 @@ const $TwoFactorAuthenticationService: Provider = { provide: 'TwoFactorAuthentic
 const $UserBlockingService: Provider = { provide: 'UserBlockingService', useExisting: UserBlockingService };
 const $CacheService: Provider = { provide: 'CacheService', useExisting: CacheService };
 const $UserFollowingService: Provider = { provide: 'UserFollowingService', useExisting: UserFollowingService };
-const $UserKeypairStoreService: Provider = { provide: 'UserKeypairStoreService', useExisting: UserKeypairStoreService };
+const $UserKeypairService: Provider = { provide: 'UserKeypairService', useExisting: UserKeypairService };
 const $UserListService: Provider = { provide: 'UserListService', useExisting: UserListService };
 const $UserMutingService: Provider = { provide: 'UserMutingService', useExisting: UserMutingService };
 const $UserSuspendService: Provider = { provide: 'UserSuspendService', useExisting: UserSuspendService };
@@ -284,7 +284,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserBlockingService,
 		CacheService,
 		UserFollowingService,
-		UserKeypairStoreService,
+		UserKeypairService,
 		UserListService,
 		UserMutingService,
 		UserSuspendService,
@@ -401,7 +401,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserBlockingService,
 		$CacheService,
 		$UserFollowingService,
-		$UserKeypairStoreService,
+		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
 		$UserSuspendService,
@@ -519,7 +519,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserBlockingService,
 		CacheService,
 		UserFollowingService,
-		UserKeypairStoreService,
+		UserKeypairService,
 		UserListService,
 		UserMutingService,
 		UserSuspendService,
@@ -635,7 +635,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserBlockingService,
 		$CacheService,
 		$UserFollowingService,
-		$UserKeypairStoreService,
+		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
 		$UserSuspendService,

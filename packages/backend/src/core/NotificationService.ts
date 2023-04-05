@@ -73,7 +73,7 @@ export class NotificationService implements OnApplicationShutdown {
 		type: Notification['type'],
 		data: Partial<Notification>,
 	): Promise<Notification | null> {
-		const profile = await this.cacheService.userProfileCache.fetch(notifieeId, () => this.userProfilesRepository.findOneByOrFail({ userId: notifieeId }));
+		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 		const isMuted = profile.mutingNotificationTypes.includes(type);
 		if (isMuted) return null;
 
@@ -82,8 +82,8 @@ export class NotificationService implements OnApplicationShutdown {
 				return null;
 			}
 
-			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId, () => this.mutingsRepository.findBy({ muterId: notifieeId }).then(xs => xs.map(x => x.muteeId)));
-			if (mutings.includes(data.notifierId)) {
+			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId);
+			if (mutings.has(data.notifierId)) {
 				return null;
 			}
 		}
