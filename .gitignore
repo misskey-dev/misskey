@@ -55,6 +55,8 @@ api-docs.json
 .DS_Store
 /files
 ormconfig.json
+temp
+/packages/frontend/src/**/*.stories.ts
 
 # blender backups
 *.blend1

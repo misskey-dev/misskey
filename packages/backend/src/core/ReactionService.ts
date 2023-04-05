@@ -21,6 +21,8 @@ import { bindThis } from '@/decorators.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 
+const FALLBACK = '❤';
+
 const legacies: Record<string, string> = {
 	'like': '👍',
 	'love': '❤', // ここに記述する場合は異体字セレクタを入れない
@@ -147,7 +149,11 @@ export class ReactionService {
 			.where('id = :id', { id: note.id })
 			.execute();
 
-		this.perUserReactionsChart.update(user, note);
+		const meta = await this.metaService.fetch();
+
+		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+			this.perUserReactionsChart.update(user, note);
+		}
 
 		// カスタム絵文字リアクションだったら絵文字情報も送る
 		const decodedReaction = this.decodeReaction(reaction);
@@ -252,12 +258,6 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async getFallbackReaction(): Promise<string> {
-		const meta = await this.metaService.fetch();
-		return meta.useStarForReactionFallback ? '⭐' : '👍';
-	}
-
-	@bindThis
 	public convertLegacyReactions(reactions: Record<string, number>) {
 		const _reactions = {} as Record<string, number>;
 
@@ -290,7 +290,7 @@ export class ReactionService {
 
 	@bindThis
 	public async toDbReaction(reaction?: string | null, reacterHost?: string | null): Promise<string> {
-		if (reaction == null) return await this.getFallbackReaction();
+		if (reaction == null) return FALLBACK;
 
 		reacterHost = this.utilityService.toPunyNullable(reacterHost);
 
@@ -318,7 +318,7 @@ export class ReactionService {
 			if (emoji) return reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 		}
 
-		return await this.getFallbackReaction();
+		return FALLBACK;
 	}
 
 	@bindThis

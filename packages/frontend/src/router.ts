@@ -66,6 +66,10 @@ export const routes = [{
 		name: 'drive',
 		component: page(() => import('./pages/settings/drive.vue')),
 	}, {
+		path: '/drive/cleaner',
+		name: 'drive',
+		component: page(() => import('./pages/settings/drive-cleaner.vue')),
+	}, {
 		path: '/notifications',
 		name: 'notifications',
 		component: page(() => import('./pages/settings/notifications.vue')),
@@ -197,6 +201,9 @@ export const routes = [{
 }, {
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
+}, {
+	path: '/ads',
+	component: page(() => import('./pages/ads.vue')),
 }, {
 	path: '/theme-editor',
 	component: page(() => import('./pages/theme-editor.vue')),

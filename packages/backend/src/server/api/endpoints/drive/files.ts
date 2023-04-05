@@ -31,6 +31,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 		type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
+		sort: { type: 'string', nullable: true, enum: ['+createdAt', '-createdAt', '+name', '-name', '+size', '-size'] },
 	},
 	required: [],
 } as const;
@@ -61,6 +62,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				} else {
 					query.andWhere('file.type = :type', { type: ps.type });
 				}
+			}
+
+			switch (ps.sort) {
+				case '+createdAt': query.orderBy('file.createdAt', 'DESC'); break;
+				case '-createdAt': query.orderBy('file.createdAt', 'ASC'); break;
+				case '+name': query.orderBy('file.name', 'DESC'); break;
+				case '-name': query.orderBy('file.name', 'ASC'); break;
+				case '+size': query.orderBy('file.size', 'DESC'); break;
+				case '-size': query.orderBy('file.size', 'ASC'); break;
 			}
 
 			const files = await query.take(ps.limit).getMany();

@@ -192,7 +192,7 @@ import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { iAmAdmin, iAmModerator } from '@/account';
+import { iAmAdmin, iAmModerator, $i } from '@/account';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = withDefaults(defineProps<{

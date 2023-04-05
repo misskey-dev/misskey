@@ -28,6 +28,7 @@ import MkClipPreview from '@/components/MkClipPreview.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { clipsCache } from '@/cache';
 
 const pagination = {
 	endpoint: 'clips/list' as const,
@@ -64,6 +65,8 @@ async function create() {
 	if (canceled) return;
 
 	os.apiWithDialog('clips/create', result);
+
+	clipsCache.delete();
 
 	pagingComponent.reload();
 }

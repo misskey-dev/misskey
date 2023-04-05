@@ -12,13 +12,12 @@ import { Ad } from '@/models/entities/Ad.js';
 import { Announcement } from '@/models/entities/Announcement.js';
 import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { Antenna } from '@/models/entities/Antenna.js';
-import { AntennaNote } from '@/models/entities/AntennaNote.js';
 import { App } from '@/models/entities/App.js';
 import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { AuthSession } from '@/models/entities/AuthSession.js';
 import { Blocking } from '@/models/entities/Blocking.js';
 import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
-import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
+import { ChannelFavorite } from '@/models/entities/ChannelFavorite.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
 import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
@@ -41,7 +40,6 @@ import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
 import { NoteUnread } from '@/models/entities/NoteUnread.js';
-import { Notification } from '@/models/entities/Notification.js';
 import { Page } from '@/models/entities/Page.js';
 import { PageLike } from '@/models/entities/PageLike.js';
 import { PasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
@@ -156,7 +154,6 @@ export const entities = [
 	DriveFolder,
 	Poll,
 	PollVote,
-	Notification,
 	Emoji,
 	Hashtag,
 	SwSubscription,
@@ -168,14 +165,13 @@ export const entities = [
 	ClipNote,
 	ClipFavorite,
 	Antenna,
-	AntennaNote,
 	PromoNote,
 	PromoRead,
 	Relay,
 	MutedNote,
 	Channel,
 	ChannelFollowing,
-	ChannelNotePining,
+	ChannelFavorite,
 	RegistryItem,
 	Ad,
 	PasswordResetRequest,

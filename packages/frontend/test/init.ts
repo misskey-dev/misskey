@@ -1,4 +1,8 @@
 import { vi } from 'vitest';
+import createFetchMock from 'vitest-fetch-mock';
+
+const fetchMocker = createFetchMock(vi);
+fetchMocker.enableMocks();
 
 // Set i18n
 import locales from '../../../locales';

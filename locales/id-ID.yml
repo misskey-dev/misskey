@@ -579,7 +579,6 @@ tokenRequested: "Berikan ijin akses ke akun"
 pluginTokenRequestedDescription: "Plugin ini dapat menggunakan setelan ijin disini."
 notificationType: "Jenis pemberitahuan"
 edit: "Sunting"
-useStarForReactionFallback: "Gunakan ★ sebagai fallback jika reaksi emoji tidak diketahui"
 emailServer: "Peladen surel"
 enableEmail: "Nyalakan distribusi surel"
 emailConfigInfo: "Digunakan untuk mengonfirmasi surel kamu disaat mendaftar dan lupa kata sandi"
@@ -1804,3 +1803,7 @@ _deck:
     channel: "Kanal"
     mentions: "Sebutan"
     direct: "Langsung"
+_webhookSettings:
+  name: "Nama"
+  active: "Aktif"
+

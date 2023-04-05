@@ -3,9 +3,9 @@
 	<div class="body">
 		<div class="left">
 			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
-				<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+				<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 			</button>
-			<MkA v-click-anime v-tooltip="$ts.timeline" class="item index" active-class="active" to="/" exact>
+			<MkA v-click-anime v-tooltip="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
 				<i class="ti ti-home ti-fw"></i>
 			</MkA>
 			<template v-for="item in menu">
@@ -16,7 +16,7 @@
 				</component>
 			</template>
 			<div class="divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip="$ts.controlPanel" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
+			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip="i18n.ts.controlPanel" class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
 				<i class="ti ti-dashboard ti-fw"></i>
 			</MkA>
 			<button v-click-anime class="item _button" @click="more">
@@ -25,7 +25,7 @@
 			</button>
 		</div>
 		<div class="right">
-			<MkA v-click-anime v-tooltip="$ts.settings" class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
+			<MkA v-click-anime v-tooltip="i18n.ts.settings" class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
 				<i class="ti ti-settings ti-fw"></i>
 			</MkA>
 			<button v-click-anime class="item _button account" @click="openAccountMenu">
@@ -47,9 +47,12 @@ import { openInstanceMenu } from './_common_/common';
 import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu } from '@/account';
+import { openAccountMenu, $i } from '@/account';
 import MkButton from '@/components/MkButton.vue';
 import { mainRouter } from '@/router';
+import { defaultStore } from '@/store';
+import { instance } from '@/instance';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -63,12 +66,16 @@ export default defineComponent({
 			connection: null,
 			navbarItemDef: navbarItemDef,
 			settingsWindowed: false,
+			defaultStore,
+			instance,
+			$i,
+			i18n,
 		};
 	},
 
 	computed: {
 		menu(): string[] {
-			return this.$store.state.menu;
+			return defaultStore.state.menu;
 		},
 
 		otherNavItemIndicated(): boolean {
@@ -81,7 +88,7 @@ export default defineComponent({
 	},
 
 	watch: {
-		'$store.reactiveState.menuDisplay.value'() {
+		'defaultStore.reactiveState.menuDisplay.value'() {
 			this.calcViewState();
 		},
 	},

@@ -311,10 +311,6 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		hasUnreadChannel: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
 		hasUnreadNotification: {
 			type: 'boolean',
 			nullable: false, optional: false,

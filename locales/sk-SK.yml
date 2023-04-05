@@ -586,7 +586,6 @@ tokenRequested: "Povoliť prístup k účtu"
 pluginTokenRequestedDescription: "Tento plugin bude môcť používať oprávnenia nastavené tu."
 notificationType: "Typ oznámenia"
 edit: "Upraviť"
-useStarForReactionFallback: "Použiť ★ keď emoji reakcie nie je známe"
 emailServer: "Email server"
 enableEmail: "Zapnúť email"
 emailConfigInfo: "Používa sa na overenie emaily pri registrácii alebo pri zabudnutí hesla"
@@ -1475,3 +1474,7 @@ _deck:
     channel: "Kanály"
     mentions: "Zmienky"
     direct: "Priame poznámky"
+_webhookSettings:
+  name: "Názov"
+  active: "Zapnuté"
+

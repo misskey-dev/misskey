@@ -17,10 +17,6 @@ type pushNotificationDataSourceMap = {
 		antenna: { id: string, name: string };
 		note: Misskey.entities.Note;
 	};
-	readNotifications: { notificationIds: string[] };
-	readAllNotifications: undefined;
-	readAntenna: { antennaId: string };
-	readAllAntennas: undefined;
 };
 
 export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> = {

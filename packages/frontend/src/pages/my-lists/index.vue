@@ -24,6 +24,7 @@ import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { userListsCache } from '@/cache';
 
 const pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -38,6 +39,7 @@ async function create() {
 	});
 	if (canceled) return;
 	await os.apiWithDialog('users/lists/create', { name: name });
+	userListsCache.delete();
 	pagingComponent.reload();
 }
 
