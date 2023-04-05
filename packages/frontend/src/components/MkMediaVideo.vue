@@ -1,7 +1,7 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
 	<div>
-		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }} ({{ i18n.ts.video }} {{ bytes(video.size) }})</b>
 		<b v-else><i class="ti ti-movie"></i> {{ bytes(video.size) }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>

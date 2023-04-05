@@ -3,7 +3,7 @@
 	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }} ({{ i18n.ts.image }} {{ bytes(image.size) }})</b>
 			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ bytes(image.size) }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>

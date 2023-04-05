@@ -98,7 +98,7 @@
 		<option value="respect">{{ i18n.ts._mediaAppearance.respect }}</option>
 		<option value="ignore">{{ i18n.ts._mediaAppearance.ignore }}</option>
 		<option value="force">{{ i18n.ts._mediaAppearance.force }}</option>
-		<template #caption>{{ i18n.ts._mediaAppearance.description }}</template>
+		<template #caption>{{ i18n.ts._mediaAppearance.hint }}</template>
 	</MkSelect>
 
 	<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
