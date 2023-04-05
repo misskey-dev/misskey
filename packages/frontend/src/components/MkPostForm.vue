@@ -1103,7 +1103,7 @@ defineExpose({
 	color: var(--warn);
 	border-radius: 6px;
 	min-width: 1.6em;
-    text-align: center;
+	text-align: center;
 
 	&.textOver {
 		color: #ff2a2a;
