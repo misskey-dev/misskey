@@ -1,29 +1,29 @@
 import Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
 
-// redis通すとDateのインスタンスはstringに変換されるので
-type Serialized<T> = {
-	[K in keyof T]:
-		T[K] extends Date
-			? string
-			: T[K] extends (Date | null)
-				? (string | null)
-				: T[K] extends Record<string, any>
-					? Serialized<T[K]>
-					: T[K];
-};
-
 export class RedisKVCache<T> {
 	private redisClient: Redis.Redis;
 	private name: string;
 	private lifetime: number;
 	private memoryCache: MemoryKVCache<T>;
+	private fetcher: (key: string) => Promise<T>;
+	private toRedisConverter: (value: T) => string;
+	private fromRedisConverter: (value: string) => T;
 
-	constructor(redisClient: RedisKVCache<never>['redisClient'], name: RedisKVCache<never>['name'], lifetime: RedisKVCache<never>['lifetime'], memoryCacheLifetime: number) {
+	constructor(redisClient: RedisKVCache<T>['redisClient'], name: RedisKVCache<T>['name'], opts: {
+		lifetime: RedisKVCache<T>['lifetime'];
+		memoryCacheLifetime: number;
+		fetcher: RedisKVCache<T>['fetcher'];
+		toRedisConverter: RedisKVCache<T>['toRedisConverter'];
+		fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
+	}) {
 		this.redisClient = redisClient;
 		this.name = name;
-		this.lifetime = lifetime;
-		this.memoryCache = new MemoryKVCache(memoryCacheLifetime);
+		this.lifetime = opts.lifetime;
+		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime);
+		this.fetcher = opts.fetcher;
+		this.toRedisConverter = opts.toRedisConverter;
+		this.fromRedisConverter = opts.fromRedisConverter;
 	}
 
 	@bindThis
@@ -32,25 +32,25 @@ export class RedisKVCache<T> {
 		if (this.lifetime === Infinity) {
 			await this.redisClient.set(
 				`kvcache:${this.name}:${key}`,
-				JSON.stringify(value),
+				this.toRedisConverter(value),
 			);
 		} else {
 			await this.redisClient.set(
 				`kvcache:${this.name}:${key}`,
-				JSON.stringify(value),
+				this.toRedisConverter(value),
 				'ex', Math.round(this.lifetime / 1000),
 			);
 		}
 	}
 
 	@bindThis
-	public async get(key: string): Promise<Serialized<T> | T | undefined> {
+	public async get(key: string): Promise<T | undefined> {
 		const memoryCached = this.memoryCache.get(key);
 		if (memoryCached !== undefined) return memoryCached;
 
 		const cached = await this.redisClient.get(`kvcache:${this.name}:${key}`);
 		if (cached == null) return undefined;
-		return JSON.parse(cached);
+		return this.fromRedisConverter(cached);
 	}
 
 	@bindThis
@@ -60,28 +60,28 @@ export class RedisKVCache<T> {
 	}
 
 	/**
- * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
- * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
- */
+	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 */
 	@bindThis
-	public async fetch(key: string, fetcher: () => Promise<T>, validator?: (cachedValue: Serialized<T> | T) => boolean): Promise<Serialized<T> | T> {
+	public async fetch(key: string): Promise<T> {
 		const cachedValue = await this.get(key);
 		if (cachedValue !== undefined) {
-			if (validator) {
-				if (validator(cachedValue)) {
-					// Cache HIT
-					return cachedValue;
-				}
-			} else {
-				// Cache HIT
-				return cachedValue;
-			}
+			// Cache HIT
+			return cachedValue;
 		}
 
 		// Cache MISS
-		const value = await fetcher();
+		const value = await this.fetcher(key);
 		this.set(key, value);
 		return value;
+	}
+
+	@bindThis
+	public async refresh(key: string) {
+		const value = await this.fetcher(key);
+		this.set(key, value);
+
+		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
 	}
 }
 
