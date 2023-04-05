@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -17,6 +18,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { CacheService } from '@/core/CacheService.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -35,8 +38,12 @@ type Remote = RemoteUser | {
 type Both = Local | Remote;
 
 @Injectable()
-export class UserFollowingService {
+export class UserFollowingService implements OnModuleInit {
+	private userBlockingService: UserBlockingService;
+
 	constructor(
+		private moduleRef: ModuleRef,
+	
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -52,11 +59,12 @@ export class UserFollowingService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
-		private userBlockingService: UserBlockingService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
+		private metaService: MetaService,
 		private notificationService: NotificationService,
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
@@ -64,6 +72,10 @@ export class UserFollowingService {
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
+	}
+
+	onModuleInit() {
+		this.userBlockingService = this.moduleRef.get('UserBlockingService');
 	}
 
 	@bindThis
@@ -170,6 +182,8 @@ export class UserFollowingService {
 			}
 		});
 
+		this.cacheService.userFollowingsCache.refresh(follower.id);
+
 		const req = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
@@ -200,14 +214,18 @@ export class UserFollowingService {
 
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.fetch(follower.host).then(i => {
+			this.federatedInstanceService.fetch(follower.host).then(async i => {
 				this.instancesRepository.increment({ id: i.id }, 'followingCount', 1);
-				this.instanceChart.updateFollowing(i.host, true);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowing(i.host, true);
+				}
 			});
 		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.fetch(followee.host).then(i => {
+			this.federatedInstanceService.fetch(followee.host).then(async i => {
 				this.instancesRepository.increment({ id: i.id }, 'followersCount', 1);
-				this.instanceChart.updateFollowers(i.host, true);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowers(i.host, true);
+				}
 			});
 		}
 		//#endregion
@@ -219,7 +237,6 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishUserEvent(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
@@ -273,6 +290,8 @@ export class UserFollowingService {
 
 		await this.followingsRepository.delete(following.id);
 
+		this.cacheService.userFollowingsCache.refresh(follower.id);
+
 		this.decrementFollowing(follower, followee);
 
 		// Publish unfollow event
@@ -280,7 +299,6 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
@@ -320,14 +338,18 @@ export class UserFollowingService {
 
 		//#region Update instance stats
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			this.federatedInstanceService.fetch(follower.host).then(i => {
+			this.federatedInstanceService.fetch(follower.host).then(async i => {
 				this.instancesRepository.decrement({ id: i.id }, 'followingCount', 1);
-				this.instanceChart.updateFollowing(i.host, false);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowing(i.host, false);
+				}
 			});
 		} else if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			this.federatedInstanceService.fetch(followee.host).then(i => {
+			this.federatedInstanceService.fetch(followee.host).then(async i => {
 				this.instancesRepository.decrement({ id: i.id }, 'followersCount', 1);
-				this.instanceChart.updateFollowers(i.host, false);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowers(i.host, false);
+				}
 			});
 		}
 		//#endregion
@@ -569,7 +591,6 @@ export class UserFollowingService {
 			detail: true,
 		});
 
-		this.globalEventService.publishUserEvent(follower.id, 'unfollow', packedFollowee);
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
 
 		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));

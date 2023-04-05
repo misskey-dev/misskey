@@ -64,19 +64,19 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile) {
 	return [{
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
-		action: rename,
+		action: () => rename(file),
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
 		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-off',
-		action: toggleSensitive,
+		action: () => toggleSensitive(file),
 	}, {
 		text: i18n.ts.describeFile,
 		icon: 'ti ti-text-caption',
-		action: describe,
+		action: () => describe(file),
 	}, null, {
 		text: i18n.ts.copyUrl,
 		icon: 'ti ti-link',
-		action: copyUrl,
+		action: () => copyUrl(file),
 	}, {
 		type: 'a',
 		href: file.url,
@@ -88,6 +88,6 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile) {
 		text: i18n.ts.delete,
 		icon: 'ti ti-trash',
 		danger: true,
-		action: deleteFile,
+		action: () => deleteFile(file),
 	}];
 }

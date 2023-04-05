@@ -26,7 +26,7 @@ class MainChannel extends Channel {
 				case 'notification': {
 					// Ignore notifications from instances the user has muted
 					if (isUserFromMutedInstance(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
-					if (data.body.userId && this.muting.has(data.body.userId)) return;
+					if (data.body.userId && this.userIdsWhoMeMuting.has(data.body.userId)) return;
 
 					if (data.body.note && data.body.note.isHidden) {
 						const note = await this.noteEntityService.pack(data.body.note.id, this.user, {
@@ -40,7 +40,7 @@ class MainChannel extends Channel {
 				case 'mention': {
 					if (isInstanceMuted(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 
-					if (this.muting.has(data.body.userId)) return;
+					if (this.userIdsWhoMeMuting.has(data.body.userId)) return;
 					if (data.body.isHidden) {
 						const note = await this.noteEntityService.pack(data.body.id, this.user, {
 							detail: true,

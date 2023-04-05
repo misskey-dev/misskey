@@ -16,6 +16,16 @@
 					<Mfm :text="channel.description" :is-note="false" :i="$i"/>
 				</div>
 			</div>
+
+			<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
+			<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-star"></i></MkButton>
+
+			<MkFoldableSection>
+				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
+				<div v-if="channel.pinnedNotes.length > 0" class="_gaps">
+					<MkNote v-for="note in channel.pinnedNotes" :key="note.id" class="_panel" :note="note"/>
+				</div>
+			</MkFoldableSection>
 		</div>
 		<div v-if="channel && tab === 'timeline'" class="_gaps">
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
@@ -54,6 +64,8 @@ import MkNotes from '@/components/MkNotes.vue';
 import { url } from '@/config';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
+import MkNote from '@/components/MkNote.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const router = useRouter();
 
@@ -63,6 +75,7 @@ const props = defineProps<{
 
 let tab = $ref('timeline');
 let channel = $ref(null);
+let favorited = $ref(false);
 const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
@@ -76,6 +89,7 @@ watch(() => props.channelId, async () => {
 	channel = await os.api('channels/show', {
 		channelId: props.channelId,
 	});
+	favorited = channel.isFavorited;
 }, { immediate: true });
 
 function edit() {
@@ -84,9 +98,28 @@ function edit() {
 
 function openPostForm() {
 	os.post({
-		channel: {
-			id: channel.id,
-		},
+		channel,
+	});
+}
+
+function favorite() {
+	os.apiWithDialog('channels/favorite', {
+		channelId: channel.id,
+	}).then(() => {
+		favorited = true;
+	});
+}
+
+async function unfavorite() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unfavoriteConfirm,
+	});
+	if (confirm.canceled) return;
+	os.apiWithDialog('channels/unfavorite', {
+		channelId: channel.id,
+	}).then(() => {
+		favorited = false;
 	});
 }
 

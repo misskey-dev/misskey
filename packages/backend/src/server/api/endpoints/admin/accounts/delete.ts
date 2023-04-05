@@ -61,11 +61,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.usersRepository.update(user.id, {
 				isDeleted: true,
 			});
-
-			if (this.userEntityService.isLocalUser(user)) {
-				// Terminate streaming
-				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
-			}
 		});
 	}
 }

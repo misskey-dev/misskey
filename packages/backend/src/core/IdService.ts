@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ulid } from 'ulid';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { genAid } from '@/misc/id/aid.js';
+import { genAid, parseAid } from '@/misc/id/aid.js';
 import { genMeid } from '@/misc/id/meid.js';
 import { genMeidg } from '@/misc/id/meidg.js';
 import { genObjectId } from '@/misc/id/object-id.js';
@@ -29,6 +29,19 @@ export class IdService {
 			case 'meidg': return genMeidg(date);
 			case 'ulid': return ulid(date.getTime());
 			case 'objectid': return genObjectId(date);
+			default: throw new Error('unrecognized id generation method');
+		}
+	}
+
+	@bindThis
+	public parse(id: string): { date: Date; } {
+		switch (this.method) {
+			case 'aid': return parseAid(id);
+			// TODO
+			//case 'meid':
+			//case 'meidg':
+			//case 'ulid':
+			//case 'objectid':
 			default: throw new Error('unrecognized id generation method');
 		}
 	}

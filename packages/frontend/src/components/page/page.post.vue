@@ -16,6 +16,8 @@ import { apiUrl } from '@/config';
 import * as os from '@/os';
 import { PostBlock } from '@/scripts/hpml/block';
 import { Hpml } from '@/scripts/hpml/evaluator';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 export default defineComponent({
 	components: {
@@ -54,9 +56,9 @@ export default defineComponent({
 				canvas.toBlob(blob => {
 					const formData = new FormData();
 					formData.append('file', blob);
-					formData.append('i', this.$i.token);
-					if (this.$store.state.uploadFolder) {
-						formData.append('folderId', this.$store.state.uploadFolder);
+					formData.append('i', $i.token);
+					if (defaultStore.state.uploadFolder) {
+						formData.append('folderId', defaultStore.state.uploadFolder);
 					}
 
 					window.fetch(apiUrl + '/drive/files/create', {

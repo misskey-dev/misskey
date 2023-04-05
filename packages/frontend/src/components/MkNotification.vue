@@ -83,7 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
+import { ref, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -94,7 +94,6 @@ import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
-import { stream } from '@/stream';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 
@@ -109,35 +108,6 @@ const props = withDefaults(defineProps<{
 
 const elRef = shallowRef<HTMLElement>(null);
 const reactionRef = ref(null);
-
-let readObserver: IntersectionObserver | undefined;
-let connection;
-
-onMounted(() => {
-	if (!props.notification.isRead) {
-		readObserver = new IntersectionObserver((entries, observer) => {
-			if (!entries.some(entry => entry.isIntersecting)) return;
-			stream.send('readNotification', {
-				id: props.notification.id,
-			});
-			observer.disconnect();
-		});
-
-		readObserver.observe(elRef.value);
-
-		connection = stream.useChannel('main');
-		connection.on('readAllNotifications', () => readObserver.disconnect());
-
-		watch(props.notification.isRead, () => {
-			readObserver.disconnect();
-		});
-	}
-});
-
-onUnmounted(() => {
-	if (readObserver) readObserver.disconnect();
-	if (connection) connection.dispose();
-});
 
 const followRequestDone = ref(false);
 

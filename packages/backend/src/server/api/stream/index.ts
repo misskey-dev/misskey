@@ -1,13 +1,11 @@
 import type { User } from '@/models/entities/User.js';
-import type { Channel as ChannelModel } from '@/models/entities/Channel.js';
-import type { FollowingsRepository, MutingsRepository, RenoteMutingsRepository, UserProfilesRepository, ChannelFollowingsRepository, BlockingsRepository } from '@/models/index.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
-import type { UserProfile } from '@/models/entities/UserProfile.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
+import { CacheService } from '@/core/CacheService.js';
+import { UserProfile } from '@/models/index.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type * as websocket from 'websocket';
 import type { EventEmitter } from 'events';
@@ -19,106 +17,71 @@ import type { StreamEventEmitter, StreamMessages } from './types.js';
  */
 export default class Connection {
 	public user?: User;
-	public userProfile?: UserProfile | null;
-	public following: Set<User['id']> = new Set();
-	public muting: Set<User['id']> = new Set();
-	public renoteMuting: Set<User['id']> = new Set();
-	public blocking: Set<User['id']> = new Set(); // "被"blocking
-	public followingChannels: Set<ChannelModel['id']> = new Set();
 	public token?: AccessToken;
 	private wsConnection: websocket.connection;
 	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	private cachedNotes: Packed<'Note'>[] = [];
+	public userProfile: UserProfile | null = null;
+	public following: Set<string> = new Set();
+	public followingChannels: Set<string> = new Set();
+	public userIdsWhoMeMuting: Set<string> = new Set();
+	public userIdsWhoBlockingMe: Set<string> = new Set();
+	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
+	private fetchIntervalId: NodeJS.Timer | null = null;
 
 	constructor(
-		private followingsRepository: FollowingsRepository,
-		private mutingsRepository: MutingsRepository,
-		private renoteMutingsRepository: RenoteMutingsRepository,
-		private blockingsRepository: BlockingsRepository,
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-		private userProfilesRepository: UserProfilesRepository,
 		private channelsService: ChannelsService,
-		private globalEventService: GlobalEventService,
 		private noteReadService: NoteReadService,
 		private notificationService: NotificationService,
+		private cacheService: CacheService,
 
-		wsConnection: websocket.connection,
 		subscriber: EventEmitter,
 		user: User | null | undefined,
 		token: AccessToken | null | undefined,
 	) {
-		this.wsConnection = wsConnection;
 		this.subscriber = subscriber;
 		if (user) this.user = user;
 		if (token) this.token = token;
+	}
 
-		//this.onWsConnectionMessage = this.onWsConnectionMessage.bind(this);
-		//this.onUserEvent = this.onUserEvent.bind(this);
-		//this.onNoteStreamMessage = this.onNoteStreamMessage.bind(this);
-		//this.onBroadcastMessage = this.onBroadcastMessage.bind(this);
+	@bindThis
+	public async fetch() {
+		if (this.user == null) return;
+		const [userProfile, following, followingChannels, userIdsWhoMeMuting, userIdsWhoBlockingMe, userIdsWhoMeMutingRenotes] = await Promise.all([
+			this.cacheService.userProfileCache.fetch(this.user.id),
+			this.cacheService.userFollowingsCache.fetch(this.user.id),
+			this.cacheService.userFollowingChannelsCache.fetch(this.user.id),
+			this.cacheService.userMutingsCache.fetch(this.user.id),
+			this.cacheService.userBlockedCache.fetch(this.user.id),
+			this.cacheService.renoteMutingsCache.fetch(this.user.id),
+		]);
+		this.userProfile = userProfile;
+		this.following = following;
+		this.followingChannels = followingChannels;
+		this.userIdsWhoMeMuting = userIdsWhoMeMuting;
+		this.userIdsWhoBlockingMe = userIdsWhoBlockingMe;
+		this.userIdsWhoMeMutingRenotes = userIdsWhoMeMutingRenotes;
+	}
 
+	@bindThis
+	public async init() {
+		if (this.user != null) {
+			await this.fetch();
+
+			this.fetchIntervalId = setInterval(this.fetch, 1000 * 10);
+		}
+	}
+
+	@bindThis
+	public async init2(wsConnection: websocket.connection) {
+		this.wsConnection = wsConnection;
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
 		this.subscriber.on('broadcast', data => {
 			this.onBroadcastMessage(data);
 		});
-
-		if (this.user) {
-			this.updateFollowing();
-			this.updateMuting();
-			this.updateRenoteMuting();
-			this.updateBlocking();
-			this.updateFollowingChannels();
-			this.updateUserProfile();
-
-			this.subscriber.on(`user:${this.user.id}`, this.onUserEvent);
-		}
-	}
-
-	@bindThis
-	private onUserEvent(data: StreamMessages['user']['payload']) { // { type, body }と展開するとそれぞれ型が分離してしまう
-		switch (data.type) {
-			case 'follow':
-				this.following.add(data.body.id);
-				break;
-
-			case 'unfollow':
-				this.following.delete(data.body.id);
-				break;
-
-			case 'mute':
-				this.muting.add(data.body.id);
-				break;
-
-			case 'unmute':
-				this.muting.delete(data.body.id);
-				break;
-
-				// TODO: renote mute events
-				// TODO: block events
-
-			case 'followChannel':
-				this.followingChannels.add(data.body.id);
-				break;
-
-			case 'unfollowChannel':
-				this.followingChannels.delete(data.body.id);
-				break;
-
-			case 'updateUserProfile':
-				this.userProfile = data.body;
-				break;
-
-			case 'terminate':
-				this.wsConnection.close();
-				this.dispose();
-				break;
-
-			default:
-				break;
-		}
 	}
 
 	/**
@@ -186,17 +149,13 @@ export default class Connection {
 		if (note == null) return;
 
 		if (this.user && (note.userId !== this.user.id)) {
-			this.noteReadService.read(this.user.id, [note], {
-				following: this.following,
-				followingChannels: this.followingChannels,
-			});
+			this.noteReadService.read(this.user.id, [note]);
 		}
 	}
 
 	@bindThis
 	private onReadNotification(payload: any) {
-		if (!payload.id) return;
-		this.notificationService.readNotification(this.user!.id, [payload.id]);
+		this.notificationService.readAllNotification(this.user!.id);
 	}
 
 	/**
@@ -322,78 +281,12 @@ export default class Connection {
 		}
 	}
 
-	@bindThis
-	private async updateFollowing() {
-		const followings = await this.followingsRepository.find({
-			where: {
-				followerId: this.user!.id,
-			},
-			select: ['followeeId'],
-		});
-
-		this.following = new Set<string>(followings.map(x => x.followeeId));
-	}
-
-	@bindThis
-	private async updateMuting() {
-		const mutings = await this.mutingsRepository.find({
-			where: {
-				muterId: this.user!.id,
-			},
-			select: ['muteeId'],
-		});
-
-		this.muting = new Set<string>(mutings.map(x => x.muteeId));
-	}
-
-	@bindThis
-	private async updateRenoteMuting() {
-		const renoteMutings = await this.renoteMutingsRepository.find({
-			where: {
-				muterId: this.user!.id,
-			},
-			select: ['muteeId'],
-		});
-
-		this.renoteMuting = new Set<string>(renoteMutings.map(x => x.muteeId));
-	}
-
-	@bindThis
-	private async updateBlocking() { // ここでいうBlockingは被Blockingの意
-		const blockings = await this.blockingsRepository.find({
-			where: {
-				blockeeId: this.user!.id,
-			},
-			select: ['blockerId'],
-		});
-
-		this.blocking = new Set<string>(blockings.map(x => x.blockerId));
-	}
-
-	@bindThis
-	private async updateFollowingChannels() {
-		const followings = await this.channelFollowingsRepository.find({
-			where: {
-				followerId: this.user!.id,
-			},
-			select: ['followeeId'],
-		});
-
-		this.followingChannels = new Set<string>(followings.map(x => x.followeeId));
-	}
-
-	@bindThis
-	private async updateUserProfile() {
-		this.userProfile = await this.userProfilesRepository.findOneBy({
-			userId: this.user!.id,
-		});
-	}
-
 	/**
 	 * ストリームが切れたとき
 	 */
 	@bindThis
 	public dispose() {
+		if (this.fetchIntervalId) clearInterval(this.fetchIntervalId);
 		for (const c of this.channels.filter(c => c.dispose)) {
 			if (c.dispose) c.dispose();
 		}

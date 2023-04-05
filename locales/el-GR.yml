@@ -392,3 +392,6 @@ _deck:
     antenna: "Αντένες"
     list: "Λίστα"
     mentions: "Επισημάνσεις"
+_webhookSettings:
+  name: "Όνομα"
+
