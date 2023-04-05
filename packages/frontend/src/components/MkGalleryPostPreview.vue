@@ -1,7 +1,8 @@
 <template>
-<MkA :to="`/gallery/${post.id}`" class="ttasepnz _panel" tabindex="-1">
+<MkA :to="`/gallery/${post.id}`" class="ttasepnz _panel" tabindex="-1" @pointerenter="enterHover" @pointerleave="leaveHover">
 	<div class="thumbnail">
-		<ImgWithBlurhash class="img" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
+		<ImgWithBlurhash v-if="show" class="img" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
+		<ImgWithBlurhash v-else class="img" :hash="post.files[0].blurhash"/>
 	</div>
 	<article>
 		<header>
@@ -15,12 +16,25 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import * as misskey from 'misskey-js';
+import { computed, ref } from 'vue';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
-	post: any;
+	post: misskey.entities.GalleryPost;
 }>();
+
+const hover = ref(false);
+const show = computed(() => defaultStore.state.nsfw === 'ignore' || defaultStore.state.nsfw === 'respect' && !props.post.isSensitive || hover.value);
+
+function enterHover(): void {
+	hover.value = true;
+}
+
+function leaveHover(): void {
+	hover.value = false;
+}
 </script>
 
 <style lang="scss" scoped>
