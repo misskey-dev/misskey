@@ -25,7 +25,7 @@ export const Default = {
 	},
 	args: {
 		user: {
-			...userDetailed,
+			...userDetailed(),
 			host: null,
 		},
 	},
@@ -37,7 +37,7 @@ export const Detail = {
 	...Default,
 	args: {
 		...Default.args,
-		user: userDetailed,
+		user: userDetailed(),
 		detail: true,
 	},
 } satisfies StoryObj<typeof MkAcct>;

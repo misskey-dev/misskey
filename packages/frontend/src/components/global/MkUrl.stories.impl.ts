@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
-import { userEvent, within } from '@storybook/testing-library';
+import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
 import { commonHandlers } from '../../../.storybook/mocks';
@@ -30,7 +30,7 @@ export const Default = {
 		const canvas = within(canvasElement);
 		const a = canvas.getByRole<HTMLAnchorElement>('link');
 		await expect(a).toHaveAttribute('href', 'https://misskey-hub.net/');
-		await userEvent.hover(a);
+		await waitFor(() => userEvent.hover(a));
 		/*
 		await tick(); // FIXME: wait for network request
 		const anchors = canvas.getAllByRole<HTMLAnchorElement>('link');
@@ -44,7 +44,7 @@ export const Default = {
 		await expect(icon).toBeInTheDocument();
 		await expect(icon).toHaveAttribute('src', 'https://misskey-hub.net/favicon.ico');
 		 */
-		await userEvent.unhover(a);
+		await waitFor(() => userEvent.unhover(a));
 	},
 	args: {
 		url: 'https://misskey-hub.net/',

@@ -26,10 +26,10 @@ export const Default = {
 		};
 	},
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(userDetailed.name);
+		await expect(canvasElement).toHaveTextContent(userDetailed().name);
 	},
 	args: {
-		user: userDetailed,
+		user: userDetailed(),
 	},
 	parameters: {
 		layout: 'centered',
@@ -38,12 +38,12 @@ export const Default = {
 export const Anonymous = {
 	...Default,
 	async play({ canvasElement }) {
-		await expect(canvasElement).toHaveTextContent(userDetailed.username);
+		await expect(canvasElement).toHaveTextContent(userDetailed().username);
 	},
 	args: {
 		...Default.args,
 		user: {
-			...userDetailed,
+			...userDetailed(),
 			name: null,
 		},
 	},
