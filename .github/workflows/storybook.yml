@@ -6,8 +6,8 @@ on:
       - master
       - develop
   pull_request:
-    branches:
-      - "!l10n_develop"
+    branches-ignore:
+      - l10n_develop
 
 jobs:
   build:
