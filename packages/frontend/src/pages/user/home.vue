@@ -46,6 +46,15 @@
 						</span>
 					</div>
 					<div class="description">
+						<div class="memo" :class="{'no-memo': !memoDraft}">
+							<textarea
+								ref="memoTextareaEl"
+								v-model="memoDraft"
+								:placeholder="i18n.ts.clickToAddPersonalMemo"
+								@blur="updateMemo"
+								@input="adjustMemoTextarea"
+							/>
+						</div>
 						<MkOmit>
 							<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
 							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
@@ -113,7 +122,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted } from 'vue';
+import {defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch} from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
@@ -133,6 +142,7 @@ import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
+import {api} from "@/os";
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -151,6 +161,8 @@ let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
 let rootEl = $ref<null | HTMLElement>(null);
 let bannerEl = $ref<null | HTMLElement>(null);
+let memoTextareaEl = $ref<null | HTMLElement>(null);
+let memoDraft = $ref(props.user.memo);
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -193,6 +205,23 @@ function parallax() {
 	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 }
 
+function adjustMemoTextarea() {
+	if (!memoTextareaEl) return;
+	memoTextareaEl.style.height = '0px';
+	memoTextareaEl.style.height = `${memoTextareaEl.scrollHeight}px`;
+}
+
+async function updateMemo() {
+	await api('users/update-memo', {
+		memo: memoDraft,
+		userId: props.user.id,
+	});
+}
+
+watch([props.user], () => {
+	memoDraft = props.user.memo;
+});
+
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);
 	narrow = rootEl!.clientWidth < 1000;
@@ -208,6 +237,8 @@ onMounted(() => {
 			});
 		}
 	}
+
+	adjustMemoTextarea();
 });
 
 onUnmounted(() => {
@@ -376,6 +407,38 @@ onUnmounted(() => {
 					> .empty {
 						margin: 0;
 						opacity: 0.5;
+					}
+
+					> .memo {
+						background: var(--infoBg);
+						color: var(--infoFg);
+						margin-bottom: 8px;
+						padding: 8px;
+						border-radius: 8px;
+						line-height: 1;
+
+						textarea {
+							font-family: inherit;
+							margin: 0;
+							padding: 0;
+							outline: none;
+							width: 100%;
+							height: auto;
+							min-height: 0;
+							color: var(--fg);
+							background: transparent;
+							border: none;
+							resize: none;
+							overflow: hidden;
+						}
+
+						&.no-memo {
+							color: var(--infoFg);
+							margin-bottom: 8px;
+							.memo-prompt {
+								color: var(--fgTransparentWeak);
+							}
+						}
 					}
 				}
 

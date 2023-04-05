@@ -70,6 +70,7 @@ import { Role } from '@/models/entities/Role.js';
 import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
 import { Flash } from '@/models/entities/Flash.js';
 import { FlashLike } from '@/models/entities/FlashLike.js';
+import { UserMemo } from '@/models/entities/UserMemo.js';
 
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -183,6 +184,7 @@ export const entities = [
 	RoleAssignment,
 	Flash,
 	FlashLike,
+	UserMemo,
 	...charts,
 ];
 
