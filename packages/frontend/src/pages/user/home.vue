@@ -431,14 +431,6 @@ onUnmounted(() => {
 							resize: none;
 							overflow: hidden;
 						}
-
-						&.no-memo {
-							color: var(--infoFg);
-							margin-bottom: 8px;
-							.memo-prompt {
-								color: var(--fgTransparentWeak);
-							}
-						}
 					}
 				}
 
