@@ -34,7 +34,7 @@
 			<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" :class="['_button', $style.headerRightItem, $style.reactionAcceptance, { [$style.danger]: reactionAcceptance }]" @click="toggleReactionAcceptance">
 				<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
 				<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
-				<span v-else><i class="ti ti-plus"></i></span>
+				<span v-else><i class="ti ti-icons"></i></span>
 			</button>
 			<button v-click-anime class="_button" :class="[$style.submit, { [$style.submitPosting]: posting }]" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
@@ -70,18 +70,21 @@
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
-		<!-- nothing to show -->
 	</div>
 	<footer :class="$style.footer">
-		<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
-		<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
-		<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
-		<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
-		<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-		<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
-		<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
-		<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
-		<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
+		<div :class="$style.footerLeft">
+			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
+			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
+			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
+			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugin" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
+			<button v-tooltip="i18n.ts.emoji" :class="['_button', $style.footerButton]" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button>
+		</div>
+		<div :class="$style.footerRight">
+			<button v-tooltip="i18n.ts.previewNoteText" class="_button" :class="[$style.footerButton, { [$style.previewButtonActive]: showPreview }]" @click="showPreview = !showPreview"><i class="ti ti-eye"></i></button>
+			<!--<button v-tooltip="i18n.ts.more" class="_button" :class="$style.footerButton" @click="showingOptions = !showingOptions"><i class="ti ti-dots"></i></button>-->
+		</div>
 	</footer>
 	<datalist id="hashtags">
 		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
@@ -917,7 +920,7 @@ defineExpose({
 .avatar {
 	width: 28px;
 	height: 28px;
-	margin: auto;
+	margin: auto 0;
 }
 
 .headerRight {
@@ -1111,12 +1114,27 @@ defineExpose({
 }
 
 .footer {
+	display: flex;
+	padding: 0 16px 16px 16px;
+	font-size: 1em;
+}
+
+.footerLeft {
+	flex: 1;
 	display: grid;
 	grid-auto-flow: row;
 	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
 	grid-auto-rows: 46px;
-	padding: 0 16px 16px 16px;
-	font-size: 1em;
+}
+
+.footerRight {
+	flex: 0.5;
+	margin-left: auto;
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+	grid-auto-rows: 46px;
+	direction: rtl;
 }
 
 .footerButton {
