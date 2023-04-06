@@ -213,7 +213,7 @@ export function getNoteMenu(props: {
 
 	function copyEmbedCode(): void {
 		console.log(getEmbedCode({ entityType: 'notes', id: appearNote.id }));
-		copyToClipboard(getEmbedCode({entityType: 'notes', id: appearNote.id}));
+		copyToClipboard(getEmbedCode({ entityType: 'notes', id: appearNote.id }));
 		os.success();
 	}
 

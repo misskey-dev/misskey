@@ -17,7 +17,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { instanceName } from '@/config';
 import { popups } from '@/os';
-import 'iframe-resizer/js/iframeResizer.contentWindow'
+import 'iframe-resizer/js/iframeResizer.contentWindow';
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 

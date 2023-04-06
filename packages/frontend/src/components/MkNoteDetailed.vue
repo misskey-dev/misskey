@@ -55,7 +55,7 @@
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
 			</div>
 			<div v-if="embed" class="instance-info">
-				<button class="_button" v-click-anime @click="openInstanceMenu">
+				<button v-click-anime class="_button" @click="openInstanceMenu">
 					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
 				</button>
 			</div>
@@ -112,7 +112,7 @@
 					<MkA v-if="appearNote.myReaction != null" class="button _button reacted" :to="notePage(appearNote)">
 						<i class="ti ti-minus"></i>
 					</MkA>
-					<MkA v-if="defaultStore.state.showClipButtonInNoteFooter" class="button _button"  :to="notePage(appearNote)">
+					<MkA v-if="defaultStore.state.showClipButtonInNoteFooter" class="button _button" :to="notePage(appearNote)">
 						<i class="ti ti-paperclip"></i>
 					</MkA>
 				</template>
