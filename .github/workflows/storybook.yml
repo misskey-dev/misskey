@@ -36,23 +36,9 @@ jobs:
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
     - name: Publish to Chromatic
-      id: chromatic
-      uses: chromaui/action@v1
-      with:
-        debug: true
-        exitOnceUploaded: true
-        externals: |
-          - "assets/**"
-          - "fluent-emojis/**"
-          - "locales/**"
-          - "misskey-assets/**"
-          - "packages/frontend/assets/**"
-          - "packages/frontend/public/**"
-          - "pnpm-lock.yaml"
-        onlyChanged: "!(master)"
-        projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-        workingDir: packages/frontend
-        traceChanged: extended
+      run: pnpm --filter frontend chromatic --exit-once-uploaded --externals "assets/**" --externals "fluent-emojis/**" --externals "locales/**" --externals "misskey-assets/**" --externals "packages/frontend/assets/**" --externals "packages/frontend/public/**" --externals "pnpm-lock.yaml" --only-changed "!(master)" $(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r HEAD | xargs))
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
