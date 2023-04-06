@@ -14,7 +14,6 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
-import { IdService } from '@/core/IdService.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -60,7 +59,6 @@ export class ApRendererService {
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
-		private idService: IdService,
 	) {
 	}
 
@@ -302,7 +300,7 @@ export class ApRendererService {
 		const actor = this.userEntityService.isLocalUser(src) ? `${this.config.url}/users/${src.id}` : src.uri!;
 		const target = this.userEntityService.isLocalUser(dst) ? `${this.config.url}/users/${dst.id}` : dst.uri!;
 		return {
-			id: this.idService.genId(),
+			id: `${this.config.url}/moves/${src.id}/${dst.id}`,
 			actor,
 			type: 'Move',
 			object: actor,
