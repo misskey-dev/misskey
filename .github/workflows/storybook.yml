@@ -2,12 +2,6 @@ name: Storybook
 
 on:
   push:
-    branches:
-      - master
-      - develop
-  pull_request:
-    branches-ignore:
-      - l10n_develop
 
 jobs:
   build:
@@ -43,14 +37,17 @@ jobs:
       uses: chromaui/action@v1
       with:
         exitOnceUploaded: true
+        externals: |
+          - "assets/**"
+          - "fluent-emojis/**"
+          - "locales/**"
+          - "misskey-assets/**"
+          - "packages/frontend/assets/**"
+          - "packages/frontend/public/**"
+        onlyChanged: "!(l10n_develop)"
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        storybookBaseDir: packages/frontend
         storybookBuildDir: storybook-static
-        workingDir: packages/frontend
-    - name: Compare on Chromatic
-      if: github.event_name == 'pull_request_target'
-      run: pnpm --filter frontend chromatic -d storybook-static --exit-once-uploaded --patch-build ${{ github.head_ref }}...${{ github.base_ref }}
-      env:
-        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:

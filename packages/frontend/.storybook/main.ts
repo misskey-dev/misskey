@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
+import turbosnap from 'vite-plugin-turbosnap';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
@@ -22,6 +23,11 @@ const config = {
 	},
 	async viteFinal(config, options) {
 		return mergeConfig(config, {
+			plugins: [
+				turbosnap({
+					rootDir: config.root ?? process.cwd(),
+				}),
+			],
 			build: {
 				target: [
 					'chrome108',
