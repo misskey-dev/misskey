@@ -1390,12 +1390,10 @@ _aboutMisskey:
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
   patrons: "支援者"
 
-_mediaAppearance:
-  title: "メディアの表示"
-  respect: "閲覧注意のみ隠す"
-  ignore: "すべて表示"
-  force: "すべて隠す"
-  hint: "メディアを隠すと、手動で表示するまではメディアが読み込まれないため、データ通信量を削減できます。"
+_nsfw:
+  respect: "閲覧注意のメディアは隠す"
+  ignore: "閲覧注意のメディアを隠さない"
+  force: "常にメディアを隠す"
 
 _instanceTicker:
   none: "表示しない"

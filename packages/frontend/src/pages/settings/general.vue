@@ -94,11 +94,10 @@
 	</MkSelect>
 
 	<MkSelect v-model="nsfw">
-		<template #label>{{ i18n.ts._mediaAppearance.title }}</template>
-		<option value="respect">{{ i18n.ts._mediaAppearance.respect }}</option>
-		<option value="ignore">{{ i18n.ts._mediaAppearance.ignore }}</option>
-		<option value="force">{{ i18n.ts._mediaAppearance.force }}</option>
-		<template #caption>{{ i18n.ts._mediaAppearance.hint }}</template>
+		<template #label>{{ i18n.ts.nsfw }}</template>
+		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
+		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
+		<option value="force">{{ i18n.ts._nsfw.force }}</option>
 	</MkSelect>
 
 	<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
