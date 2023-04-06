@@ -149,13 +149,12 @@ export class ServerService implements OnApplicationShutdown {
 					host: (host == null) || (host === this.config.host) ? IsNull() : host,
 					isSuspended: false,
 				},
-				relations: ['avatar'],
 			});
 
 			reply.header('Cache-Control', 'public, max-age=86400');
 
 			if (user) {
-				reply.redirect(this.userEntityService.getAvatarUrlSync(user));
+				reply.redirect(user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user));
 			} else {
 				reply.redirect('/static-assets/user-unknown.png');
 			}

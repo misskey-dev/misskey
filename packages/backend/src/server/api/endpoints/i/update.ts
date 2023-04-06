@@ -19,6 +19,7 @@ import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { CacheService } from '@/core/CacheService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -148,6 +149,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private pagesRepository: PagesRepository,
 
 		private userEntityService: UserEntityService,
+		private driveFileEntityService: DriveFileEntityService,
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
@@ -170,8 +172,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
-			if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
-			if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 			if (ps.mutedWords !== undefined) {
 				// TODO: ちゃんと数える
 				const length = JSON.stringify(ps.mutedWords).length;
@@ -217,6 +217,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+
+				updates.avatarId = avatar.id;
+				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+				updates.avatarBlurhash = avatar.blurhash;
 			}
 
 			if (ps.bannerId) {
@@ -224,6 +228,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+
+				updates.bannerId = banner.id;
+				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+				updates.bannerBlurhash = banner.blurhash;
 			}
 
 			if (ps.pinnedPageId) {
