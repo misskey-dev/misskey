@@ -157,6 +157,8 @@ export interface IActor extends IObject {
 	name?: string;
 	preferredUsername?: string;
 	manuallyApprovesFollowers?: boolean;
+	movedTo?: string;
+	alsoKnownAs?: string[];
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
@@ -302,6 +304,7 @@ export interface IFlag extends IActivity {
 
 export interface IMove extends IActivity {
 	type: 'Move';
+	target: IObject | string;
 }
 
 export const isCreate = (object: IObject): object is ICreate => getApType(object) === 'Create';

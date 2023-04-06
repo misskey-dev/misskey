@@ -278,6 +278,8 @@ export class ApPersonService implements OnModuleInit {
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
 					isLocked: !!person.manuallyApprovesFollowers,
+					movedToUri: person.movedTo,
+					alsoKnownAs: person.alsoKnownAs,
 					isExplorable: !!person.discoverable,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername!.toLowerCase(),
@@ -458,6 +460,8 @@ export class ApPersonService implements OnModuleInit {
 			isBot: getApType(object) === 'Service',
 			isCat: (person as any).isCat === true,
 			isLocked: !!person.manuallyApprovesFollowers,
+			movedToUri: person.movedTo ?? null,
+			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: !!person.discoverable,
 		} as Partial<User>;
 

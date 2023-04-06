@@ -14,6 +14,7 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
+import type { IdService } from '@/core/IdService.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -23,7 +24,6 @@ import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFil
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
-import { genAid } from '@/misc/id/aid.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
@@ -60,6 +60,7 @@ export class ApRendererService {
 		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
+		private idService: IdService,
 	) {
 	}
 
@@ -301,7 +302,7 @@ export class ApRendererService {
 		const actor = this.userEntityService.isLocalUser(src) ? `${this.config.url}/users/${src.id}` : src.uri!;
 		const target = this.userEntityService.isLocalUser(dst) ? `${this.config.url}/users/${dst.id}` : dst.uri!;
 		return {
-			id: genAid(new Date()),
+			id: this.idService.genId(),
 			actor,
 			type: 'Move',
 			object: actor,
@@ -514,6 +515,14 @@ export class ApRendererService {
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 		} as any;
+
+		if (user.movedToUri) {
+			person.movedTo = user.movedToUri;
+		}
+
+		if (user.alsoKnownAs) {
+			person.alsoKnownAs = user.alsoKnownAs;
+		}
 
 		if (profile.birthday) {
 			person['vcard:bday'] = profile.birthday;

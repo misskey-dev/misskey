@@ -12,6 +12,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -28,9 +29,15 @@ export class AccountMoveService {
 		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
 		private userFollowingService: UserFollowingService,
+		private accountUpdateService: AccountUpdateService,
 	) {
 	}
 
+	/**
+	 * Move a local account to a remote account.
+	 *
+	 * After delivering Move activity, its local followers unfollow the old account and then follow the new one.
+	 */
 	@bindThis
 	public async moveToRemote(src: LocalUser, dst: User): Promise<unknown> {
 		// Make sure that the destination is a remote account.
@@ -63,6 +70,31 @@ export class AccountMoveService {
 				}
 			}
 		});
+
+		return iObj;
+	}
+
+	/**
+	 * Create an alias of an old remote account.
+	 *
+	 * The user's new profile will be published to the followers.
+	 */
+	@bindThis
+	public async createAlias(me: LocalUser, updates: Partial<User>): Promise<unknown> {
+		await this.usersRepository.update(me.id, updates);
+
+		// Publish meUpdated event
+		const iObj = await this.userEntityService.pack<true, true>(me.id, me, {
+			detail: true,
+			includeSecrets: true,
+		});
+		this.globalEventService.publishMainStream(me.id, 'meUpdated', iObj);
+
+		if (me.isLocked === false) {
+			await this.userFollowingService.acceptAllFollowRequests(me);
+		}
+
+		this.accountUpdateService.publishToFollowers(me.id);
 
 		return iObj;
 	}
