@@ -113,7 +113,7 @@ export class NotificationEntityService implements OnModuleInit {
 		const noteIds = validNotifications.map(x => x.noteId).filter(isNotNull);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
-			relations: ['user', 'user.avatar', 'user.banner', 'reply', 'reply.user', 'reply.user.avatar', 'reply.user.banner', 'renote', 'renote.user', 'renote.user.avatar', 'renote.user.banner'],
+			relations: ['user', 'reply', 'reply.user', 'renote', 'renote.user'],
 		}) : [];
 		const packedNotesArray = await this.noteEntityService.packMany(notes, { id: meId }, {
 			detail: true,
@@ -125,7 +125,6 @@ export class NotificationEntityService implements OnModuleInit {
 		const userIds = validNotifications.map(x => x.notifierId).filter(isNotNull);
 		const users = userIds.length > 0 ? await this.usersRepository.find({
 			where: { id: In(userIds) },
-			relations: ['avatar', 'banner'],
 		}) : [];
 		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId }, {
 			detail: false,
