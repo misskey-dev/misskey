@@ -183,6 +183,11 @@ export class NoteEntityService implements OnModuleInit {
 		// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
 		}
 
+		// パフォーマンスのためノートが作成されてから1秒以上経っていない場合はリアクションを取得しない
+		if (note.createdAt.getTime() + 1000 > Date.now()) {
+			return undefined;
+		}
+
 		const reaction = await this.noteReactionsRepository.findOneBy({
 			userId: meId,
 			noteId: note.id,
@@ -395,7 +400,8 @@ export class NoteEntityService implements OnModuleInit {
 		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
 		if (meId) {
 			const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
-			const targets = [...notes.map(n => n.id), ...renoteIds];
+			// パフォーマンスのためノートが作成されてから1秒以上経っていない場合はリアクションを取得しない
+			const targets = [...notes.filter(n => n.createdAt.getTime() + 1000 < Date.now()).map(n => n.id), ...renoteIds];
 			const myReactions = await this.noteReactionsRepository.findBy({
 				userId: meId,
 				noteId: In(targets),
