@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';
@@ -119,6 +120,7 @@ import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
 const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
+const $AccountMoveService: Provider = { provide: 'AccountMoveService', useExisting: AccountMoveService }
 const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useExisting: AccountUpdateService };
 const $AiService: Provider = { provide: 'AiService', useExisting: AiService };
 const $AntennaService: Provider = { provide: 'AntennaService', useExisting: AntennaService };
@@ -242,6 +244,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 	],
 	providers: [
 		LoggerService,
+		AccountMoveService,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
@@ -359,6 +362,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
+		$AccountMoveService,
 		$AccountUpdateService,
 		$AiService,
 		$AntennaService,
@@ -477,6 +481,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 	exports: [
 		QueueModule,
 		LoggerService,
+		AccountMoveService,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
@@ -593,6 +598,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
+		$AccountMoveService,
 		$AccountUpdateService,
 		$AiService,
 		$AntennaService,

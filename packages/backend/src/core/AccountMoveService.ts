@@ -11,7 +11,6 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GetterService } from '@/server/api/GetterService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 @Injectable()
@@ -27,7 +26,6 @@ export class AccountMoveService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private globalEventService: GlobalEventService,
-		private getterService: GetterService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
 	) {
@@ -62,7 +60,8 @@ export class AccountMoveService {
 			// If follower is local
 			if (!following.followerHost) {
 				try {
-					const follower = await this.getterService.getUser(following.followerId);
+					const follower = await this.usersRepository.findOneBy({ id: following.followerId });
+					if (!follower) return;
 					await this.userFollowingService.unfollow(follower, src);
 					await this.userFollowingService.follow(follower, dst);
 				} catch {

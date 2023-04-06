@@ -14,7 +14,7 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
