@@ -23,9 +23,10 @@ import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFil
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
+import { genAid } from '@/misc/id/aid.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -289,6 +290,22 @@ export class ApRendererService {
 			type: 'Mention',
 			href: this.userEntityService.isRemoteUser(mention) ? mention.uri! : `${this.config.url}/users/${(mention as LocalUser).id}`,
 			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
+		};
+	}
+
+	@bindThis
+	public renderMove(
+		from: { id: User['id']; host: User['host']; uri: User['host'] },
+		to: { id: User['id']; host: User['host']; uri: User['host'] },
+	): IMove {
+		const actor = this.userEntityService.isLocalUser(from) ? `${this.config.url}/users/${from.id}` : from.uri!;
+		const target = this.userEntityService.isLocalUser(to) ? `${this.config.url}/users/${to.id}` : to.uri!;
+		return {
+			id: genAid(new Date()),
+			actor,
+			type: 'Move',
+			object: actor,
+			target,
 		};
 	}
 
