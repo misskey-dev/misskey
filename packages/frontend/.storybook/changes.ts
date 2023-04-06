@@ -47,7 +47,11 @@ fs.readFile(
 		Array.from(modules),
 		main.stories.map((story) => path.resolve(__dirname, story))
 	);
-	for (const story of stories) {
-		process.stdout.write(` --only-story-files ${story}`);
+	if (stories.length) {
+		for (const story of stories) {
+			process.stdout.write(` --only-story-files ${story}`);
+		}
+	} else {
+		process.stdout.write(` --only-changed-files __fake__`)
 	}
 });
