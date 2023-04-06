@@ -38,6 +38,7 @@ jobs:
       id: chromatic
       uses: chromaui/action@v1
       with:
+        debug: true
         exitOnceUploaded: true
         externals: |
           - "assets/**"
@@ -50,6 +51,7 @@ jobs:
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         storybookBaseDir: packages/frontend
         storybookBuildDir: packages/frontend/storybook-static
+        traceChanged: extended
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
