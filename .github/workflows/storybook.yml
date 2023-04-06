@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_OPTIONS: "--max_old_space_size=7168"
+
     steps:
     - uses: actions/checkout@v3.3.0
       with:
@@ -32,8 +35,6 @@ jobs:
       run: pnpm --filter misskey-js build
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
-      env:
-        NODE_OPTIONS: "--max_old_space_size=7168"
     - name: Publish to Chromatic
       id: chromatic
       uses: chromaui/action@v1
@@ -47,9 +48,10 @@ jobs:
           - "misskey-assets/**"
           - "packages/frontend/assets/**"
           - "packages/frontend/public/**"
+          - "pnpm-lock.yaml"
         onlyChanged: "!(master)"
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-        storybookBaseDir: packages/frontend
+        workingDir: packages/frontend
         traceChanged: extended
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
