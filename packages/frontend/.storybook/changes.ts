@@ -3,10 +3,32 @@ import path from 'node:path';
 import micromatch from 'micromatch';
 import main from './main';
 
+interface Stats {
+	readonly modules: readonly {
+		readonly id: string;
+		readonly name: string;
+		readonly reasons: readonly {
+			readonly moduleName: string;
+		}[];
+	}[];
+}
+
 fs.readFile(
 	path.resolve(__dirname, '../storybook-static/preview-stats.json')
 ).then((buffer) => {
-	const stats = JSON.parse(buffer.toString());
+	const stats: Stats = JSON.parse(buffer.toString());
+	const keys = new Set(stats.modules.map((stat) => stat.id));
+	const map = new Map(
+		Array.from(keys, (key) => [
+			key,
+			new Set(
+				stats.modules
+					.filter((stat) => stat.id === key)
+					.flatMap((stat) => stat.reasons)
+					.map((reason) => reason.moduleName)
+			),
+		])
+	);
 	const modules = new Set(
 		process.argv
 			.slice(2)
@@ -16,6 +38,7 @@ fs.readFile(
 					path.resolve(__dirname, '../../..', arg)
 				)
 			)
+			.map((path) => (path.startsWith('.') ? path : `./${path}`))
 	);
 	if (
 		micromatch(Array.from(modules), [
@@ -33,9 +56,9 @@ fs.readFile(
 	for (;;) {
 		const oldSize = modules.size;
 		for (const module of Array.from(modules)) {
-			if (stats.modules[module]) {
-				for (const reason of stats.modules[module].reasons) {
-					modules.add(reason.moduleName);
+			if (map.has(module)) {
+				for (const dependency of Array.from(map.get(module)!)) {
+					modules.add(dependency);
 				}
 			}
 		}
@@ -45,13 +68,13 @@ fs.readFile(
 	}
 	const stories = micromatch(
 		Array.from(modules),
-		main.stories.map((story) => path.resolve(__dirname, story))
+		main.stories.map((story) => `./${path.relative('..', story)}`)
 	);
 	if (stories.length) {
 		for (const story of stories) {
 			process.stdout.write(` --only-story-files ${story}`);
 		}
 	} else {
-		process.stdout.write(` --skip`)
+		process.stdout.write(` --skip`);
 	}
 });
