@@ -166,6 +166,8 @@ export type Channels = {
             readAllAntennas: () => void;
             unreadAntenna: (payload: Antenna) => void;
             readAllAnnouncements: () => void;
+            readAllChannels: () => void;
+            unreadChannel: (payload: Note['id']) => void;
             myTokenRegenerated: () => void;
             reversiNoInvites: () => void;
             reversiInvited: (payload: FIXME) => void;
@@ -2353,6 +2355,7 @@ type MeDetailed = UserDetailed & {
     hasPendingReceivedFollowRequest: boolean;
     hasUnreadAnnouncement: boolean;
     hasUnreadAntenna: boolean;
+    hasUnreadChannel: boolean;
     hasUnreadMentions: boolean;
     hasUnreadMessagingMessage: boolean;
     hasUnreadNotification: boolean;
@@ -2612,11 +2615,7 @@ export class Stream extends EventEmitter<StreamEvents> {
     // (undocumented)
     removeSharedConnectionPool(pool: Pool): void;
     // (undocumented)
-    send(typeOrPayload: string): void;
-    // (undocumented)
-    send(typeOrPayload: string, payload: any): void;
-    // (undocumented)
-    send(typeOrPayload: Record<string, any> | any[]): void;
+    send(typeOrPayload: any, payload?: any): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
