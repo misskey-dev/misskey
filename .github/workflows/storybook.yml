@@ -37,12 +37,12 @@ jobs:
       run: pnpm --filter frontend build-storybook
     - name: Publish to Chromatic
       if: github.ref == 'refs/heads/master'
-      run: pnpm --filter frontend chromatic --exit-once-uploaded
+      run: pnpm --filter frontend chromatic --exit-once-uploaded -d packages/frontend/storybook-static
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Publish to Chromatic
       if: github.ref != 'refs/heads/master'
-      run: pnpm --filter frontend chromatic --exit-once-uploaded $(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r HEAD | xargs))
+      run: pnpm --filter frontend chromatic --exit-once-uploaded -d packages/frontend/storybook-static $(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r HEAD | xargs))
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
