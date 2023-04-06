@@ -220,6 +220,10 @@ onUnmounted(() => {
 	align-items: center;
 }
 
+.tabIcon {
+	width: 1.28em;
+}
+
 .tabIcon + .tabTitle {
 	padding-left: 4px;
 }
