@@ -2,6 +2,8 @@ name: Storybook
 
 on:
   push:
+    branches-ignore:
+      - l10n_develop
 
 jobs:
   build:
@@ -44,7 +46,7 @@ jobs:
           - "misskey-assets/**"
           - "packages/frontend/assets/**"
           - "packages/frontend/public/**"
-        onlyChanged: "!(l10n_develop)"
+        onlyChanged: "!(master)"
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         storybookBaseDir: packages/frontend
         storybookBuildDir: packages/frontend/storybook-static
