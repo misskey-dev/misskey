@@ -24,7 +24,7 @@ const common = {
 		};
 	},
 	args: {
-		user: userDetailed,
+		user: userDetailed(),
 	},
 	decorators: [
 		(Story, context) => ({
@@ -49,7 +49,7 @@ export const ProfilePageCat = {
 	args: {
 		...ProfilePage.args,
 		user: {
-			...userDetailed,
+			...userDetailed(),
 			isCat: true,
 		},
 	},

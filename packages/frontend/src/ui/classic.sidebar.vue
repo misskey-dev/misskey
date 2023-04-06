@@ -3,7 +3,7 @@
 	<button v-click-anime class="item _button account" @click="openAccountMenu">
 		<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 	</button>
-	<div class="post" data-cy-open-post-form @click="post">
+	<div class="post" data-cy-open-post-form @click="os.post">
 		<MkButton class="button" gradate full rounded>
 			<i class="ti ti-pencil ti-fw"></i><span v-if="!iconOnly" class="text">{{ i18n.ts.note }}</span>
 		</MkButton>
@@ -40,109 +40,59 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent, onMounted, computed, watch, nextTick } from 'vue';
 import { openInstanceMenu } from './_common_/common';
-import { host } from '@/config';
+// import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu, $i } from '@/account';
+import { openAccountMenu as openAccountMenu_, $i } from '@/account';
 import MkButton from '@/components/MkButton.vue';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
-import { mainRouter } from '@/router';
+// import { StickySidebar } from '@/scripts/sticky-sidebar';
+// import { mainRouter } from '@/router';
 //import MisskeyLogo from '@assets/client/misskey.svg';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		//MisskeyLogo,
-	},
+const WINDOW_THRESHOLD = 1400;
 
-	data() {
-		return {
-			host: host,
-			accounts: [],
-			connection: null,
-			navbarItemDef: navbarItemDef,
-			iconOnly: false,
-			settingsWindowed: false,
-			defaultStore,
-			instance,
-			$i,
-			i18n,
-		};
-	},
-
-	computed: {
-		menu(): string[] {
-			return this.defaultStore.state.menu;
-		},
-
-		otherNavItemIndicated(): boolean {
-			for (const def in this.navbarItemDef) {
-				if (this.menu.includes(def)) continue;
-				if (this.navbarItemDef[def].indicated) return true;
-			}
-			return false;
-		},
-	},
-
-	watch: {
-		'defaultStore.reactiveState.menuDisplay.value'() {
-			this.calcViewState();
-		},
-
-		iconOnly() {
-			this.$nextTick(() => {
-				this.$emit('change-view-mode');
-			});
-		},
-	},
-
-	created() {
-		window.addEventListener('resize', this.calcViewState);
-		this.calcViewState();
-	},
-
-	mounted() {
-		const sticky = new StickySidebar(this.$el.parentElement, 16);
-		window.addEventListener('scroll', () => {
-			sticky.calc(window.scrollY);
-		}, { passive: true });
-	},
-
-	methods: {
-		openInstanceMenu,
-
-		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1400) || (this.defaultStore.state.menuDisplay === 'sideIcon');
-			this.settingsWindowed = (window.innerWidth > 1400);
-		},
-
-		post() {
-			os.post();
-		},
-
-		search() {
-			mainRouter.push('/search');
-		},
-
-		more(ev) {
-			os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-				src: ev.currentTarget ?? ev.target,
-			}, {}, 'closed');
-		},
-
-		openAccountMenu: (ev) => {
-			openAccountMenu({
-				withExtraOperation: true,
-			}, ev);
-		},
-	},
+const menu = $ref(defaultStore.state.menu);
+const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
+const otherNavItemIndicated = computed<boolean>(() => {
+	for (const def in navbarItemDef) {
+		if (menu.includes(def)) continue;
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
 });
+let el = $shallowRef<HTMLElement>();
+// let accounts = $ref([]);
+// let connection = $ref(null);
+let iconOnly = $ref(false);
+let settingsWindowed = $ref(false);
+
+function calcViewState() {
+	iconOnly = (window.innerWidth <= WINDOW_THRESHOLD) || (menuDisplay.value === 'sideIcon');
+	settingsWindowed = (window.innerWidth > WINDOW_THRESHOLD);
+}
+
+function more(ev: MouseEvent) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+		src: ev.currentTarget ?? ev.target,
+	}, {}, 'closed');
+}
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
+}
+
+watch(defaultStore.reactiveState.menuDisplay, () => {
+	calcViewState();
+});
+
 </script>
 
 <style lang="scss" scoped>
