@@ -87,7 +87,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private apiLoggerService: ApiLoggerService,
 		private accountMoveService: AccountMoveService,
 	) {
-		// Adopted from https://codeberg.org/calckey/calckey/src/branch/main/packages/backend/src/server/api/endpoints/i/move.ts
 		super(meta, paramDef, async (ps, me) => {
 			// Check parameter
 			if (!ps.moveToAccount) throw new ApiError(meta.errors.noSuchMoveTarget);
@@ -122,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (fromUrl.includes(elem)) allowed = true;
 			});
 
-			// Abort if the destination server refused.
+			// Abort if unintended
 			if (!(allowed && moveTo.uri && fromUrl)) throw new ApiError(meta.errors.remoteAccountForbids);
 
 			return await this.accountMoveService.moveToRemote(me, moveTo);
