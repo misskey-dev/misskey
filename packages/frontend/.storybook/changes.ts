@@ -52,6 +52,6 @@ fs.readFile(
 			process.stdout.write(` --only-story-files ${story}`);
 		}
 	} else {
-		process.stdout.write(` --only-changed-files __fake__`)
+		process.stdout.write(` --skip`)
 	}
 });
