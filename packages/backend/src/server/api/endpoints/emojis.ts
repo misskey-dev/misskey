@@ -58,10 +58,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					category: 'ASC',
 					name: 'ASC',
 				},
-				cache: {
-					id: 'meta_emojis',
-					milliseconds: 3600000,	// 1 hour
-				},
 			});
 
 			return {
