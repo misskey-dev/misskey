@@ -1,7 +1,6 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<MediaBlurhash v-if="dataSaverMode" style="filter: brightness(.5);" :hash="image.blurhash" :title="image.comment" />
-	<ImgWithBlurhash v-else style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" />
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :force-blurhash="dataSaverMode" />
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ dataSaverMode ? ` (${i18n.ts.image} ${bytes(image.size)})` : '' }}</b>
@@ -32,7 +31,6 @@ import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import MediaBlurhash from '@/components/MkMediaBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
@@ -42,8 +40,8 @@ const props = defineProps<{
 }>();
 
 let hide = $ref(true);
-let darkMode = $ref(defaultStore.state.darkMode);
-let dataSaverMode = $ref(defaultStore.state.enableDataSaverMode);
+let darkMode:boolean = $ref(defaultStore.state.darkMode);
+let dataSaverMode:boolean = $ref(defaultStore.state.enableDataSaverMode);
 
 const url = (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url

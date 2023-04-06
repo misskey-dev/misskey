@@ -1,5 +1,6 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
+	<!-- 【注意】dataSaverMode が有効になっている際には、hide が false になるまでサムネイルや動画を読み込まないようにすること -->
 	<div>
 		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ dataSaverMode ? ` (${i18n.ts.video} ${bytes(video.size)})` : '' }}</b>
 		<b v-else><i class="ti ti-movie"></i> {{ dataSaverMode ? bytes(video.size) : i18n.ts.video }}</b>
