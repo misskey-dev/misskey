@@ -36,8 +36,5 @@ export class DeleteAccountService {
 		await this.usersRepository.update(user.id, {
 			isDeleted: true,
 		});
-	
-		// Terminate streaming
-		this.globalEventService.publishUserEvent(user.id, 'terminate', {});
 	}
 }

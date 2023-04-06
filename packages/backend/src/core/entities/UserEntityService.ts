@@ -235,18 +235,6 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
-		const channels = await this.channelFollowingsRepository.findBy({ followerId: userId });
-
-		const unread = channels.length > 0 ? await this.noteUnreadsRepository.findOneBy({
-			userId: userId,
-			noteChannelId: In(channels.map(x => x.followeeId)),
-		}) : null;
-
-		return unread != null;
-	}
-
-	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 		
@@ -463,7 +451,7 @@ export class UserEntityService implements OnModuleInit {
 				}).then(count => count > 0),
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
-				hasUnreadChannel: this.getHasUnreadChannel(user.id),
+				hasUnreadChannel: false, // 後方互換性のため
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				mutedWords: profile!.mutedWords,

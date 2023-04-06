@@ -62,11 +62,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				targetId: user.id,
 			});
 
-			// Terminate streaming
-			if (this.userEntityService.isLocalUser(user)) {
-				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
-			}
-
 			(async () => {
 				await this.userSuspendService.doPostSuspend(user).catch(e => {});
 				await this.unFollowAll(user).catch(e => {});

@@ -394,13 +394,13 @@ function toStories(component: string): string {
 	);
 }
 
-// glob('src/{components,pages,ui,widgets}/**/*.vue').then(
-glob('src/components/global/**/*.vue').then(
-	(components) =>
-		Promise.all(
-			components.map((component) => {
-				const stories = component.replace(/\.vue$/, '.stories.ts');
-				return writeFile(stories, toStories(component));
-			})
-		)
-);
+// glob('src/{components,pages,ui,widgets}/**/*.vue')
+Promise.all([
+	glob('src/components/global/*.vue'),
+	glob('src/components/MkGalleryPostPreview.vue'),
+])
+	.then((globs) => globs.flat())
+	.then((components) => Promise.all(components.map((component) => {
+		const stories = component.replace(/\.vue$/, '.stories.ts');
+		return writeFile(stories, toStories(component));
+	})));
