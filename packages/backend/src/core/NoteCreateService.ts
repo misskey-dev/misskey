@@ -502,18 +502,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 			});
 		}
 
-		// Channel
-		if (note.channelId) {
-			this.channelFollowingsRepository.findBy({ followeeId: note.channelId }).then(followings => {
-				for (const following of followings) {
-					this.noteReadService.insertNoteUnread(following.followerId, note, {
-						isSpecified: false,
-						isMentioned: false,
-					});
-				}
-			});
-		}
-
 		if (data.reply) {
 			this.saveReply(data.reply, note);
 		}

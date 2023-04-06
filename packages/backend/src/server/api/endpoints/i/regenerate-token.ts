@@ -54,11 +54,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Publish event
 			this.globalEventService.publishInternalEvent('userTokenRegenerated', { id: me.id, oldToken, newToken });
 			this.globalEventService.publishMainStream(me.id, 'myTokenRegenerated');
-
-			// Terminate streaming
-			setTimeout(() => {
-				this.globalEventService.publishUserEvent(me.id, 'terminate', {});
-			}, 5000);
 		});
 	}
 }

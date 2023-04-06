@@ -4,7 +4,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { User } from '@/models/entities/User.js';
-import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
@@ -131,7 +131,7 @@ export class ApRequestService {
 		@Inject(DI.config)
 		private config: Config,
 
-		private userKeypairStoreService: UserKeypairStoreService,
+		private userKeypairService: UserKeypairService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
@@ -143,7 +143,7 @@ export class ApRequestService {
 	public async signedPost(user: { id: User['id'] }, url: string, object: any) {
 		const body = JSON.stringify(object);
 
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedPost({
 			key: {
@@ -170,7 +170,7 @@ export class ApRequestService {
 	 */
 	@bindThis
 	public async signedGet(url: string, user: { id: User['id'] }) {
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedGet({
 			key: {

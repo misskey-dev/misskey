@@ -14,7 +14,7 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
-import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
@@ -53,7 +53,7 @@ export class ApRendererService {
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
-		private userKeypairStoreService: UserKeypairStoreService,
+		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
 	) {
@@ -473,7 +473,7 @@ export class ApRendererService {
 			...hashtagTags,
 		];
 
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const person = {
 			type: isSystem ? 'Application' : user.isBot ? 'Service' : 'Person',
@@ -640,7 +640,7 @@ export class ApRendererService {
 
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;

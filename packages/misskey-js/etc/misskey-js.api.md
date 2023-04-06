@@ -166,8 +166,6 @@ export type Channels = {
             readAllAntennas: () => void;
             unreadAntenna: (payload: Antenna) => void;
             readAllAnnouncements: () => void;
-            readAllChannels: () => void;
-            unreadChannel: (payload: Note['id']) => void;
             myTokenRegenerated: () => void;
             reversiNoInvites: () => void;
             reversiInvited: (payload: FIXME) => void;
@@ -1857,12 +1855,6 @@ export type Endpoints = {
         req: NoParams;
         res: null;
     };
-    'notifications/read': {
-        req: {
-            notificationId: Notification_2['id'];
-        };
-        res: null;
-    };
     'page-push': {
         req: {
             pageId: Page['id'];
@@ -2361,7 +2353,6 @@ type MeDetailed = UserDetailed & {
     hasPendingReceivedFollowRequest: boolean;
     hasUnreadAnnouncement: boolean;
     hasUnreadAntenna: boolean;
-    hasUnreadChannel: boolean;
     hasUnreadMentions: boolean;
     hasUnreadMessagingMessage: boolean;
     hasUnreadNotification: boolean;
@@ -2618,7 +2609,11 @@ export class Stream extends EventEmitter<StreamEvents> {
     // (undocumented)
     removeSharedConnectionPool(pool: Pool): void;
     // (undocumented)
-    send(typeOrPayload: any, payload?: any): void;
+    send(typeOrPayload: string): void;
+    // (undocumented)
+    send(typeOrPayload: string, payload: any): void;
+    // (undocumented)
+    send(typeOrPayload: Record<string, any> | any[]): void;
     // (undocumented)
     state: 'initializing' | 'reconnecting' | 'connected';
     // (undocumented)
@@ -2714,8 +2709,8 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:595:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:35:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:594:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

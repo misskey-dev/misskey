@@ -158,6 +158,7 @@ export class ReactionService {
 		// カスタム絵文字リアクションだったら絵文字情報も送る
 		const decodedReaction = this.decodeReaction(reaction);
 
+		// TODO: Cache
 		const emoji = await this.emojisRepository.findOne({
 			where: {
 				name: decodedReaction.name,

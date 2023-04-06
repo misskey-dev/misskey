@@ -24,7 +24,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private notificationService: NotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			this.notificationService.readAllNotification(me.id);
+			this.notificationService.readAllNotification(me.id, true);
 		});
 	}
 }
