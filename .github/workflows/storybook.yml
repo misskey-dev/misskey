@@ -50,7 +50,6 @@ jobs:
         onlyChanged: "!(master)"
         projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
         storybookBaseDir: packages/frontend
-        storybookBuildDir: packages/frontend/storybook-static
         traceChanged: extended
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
