@@ -22,7 +22,7 @@ export const Default = {
 					};
 				},
 			},
-			template: '<MkA v-bind="props">Text</MkA>',
+			template: '<MkA v-bind="props">Misskey</MkA>',
 		};
 	},
 	async play({ canvasElement }) {
