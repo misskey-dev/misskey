@@ -36,7 +36,7 @@ jobs:
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
     - name: Publish to Chromatic
-      run: pnpm --filter frontend chromatic --exit-once-uploaded --externals "assets/**" --externals "fluent-emojis/**" --externals "locales/**" --externals "misskey-assets/**" --externals "packages/frontend/assets/**" --externals "packages/frontend/public/**" --externals "pnpm-lock.yaml" --only-changed "!(master)" $(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r HEAD | xargs))
+      run: pnpm --filter frontend chromatic --exit-once-uploaded --externals "assets/**" --externals "fluent-emojis/**" --externals "locales/**" --externals "misskey-assets/**" --externals "packages/frontend/assets/**" --externals "packages/frontend/public/**" --externals "pnpm-lock.yaml" $(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r HEAD | xargs))
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Upload Artifacts
