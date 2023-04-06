@@ -98,9 +98,7 @@ function edit() {
 
 function openPostForm() {
 	os.post({
-		channel: {
-			id: channel.id,
-		},
+		channel,
 	});
 }
 
