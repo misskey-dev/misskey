@@ -16,6 +16,7 @@
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
 		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
+		"build-storybook": "pnpm --filter frontend build-storybook",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"init": "pnpm migrate",
