@@ -6,8 +6,8 @@
 			<template #prefix><i class="ti ti-plane-departure"></i></template>
 			<template #label>{{ i18n.ts.moveToLabel }}</template>
 		</MkInput>
-		<FormInfo warn>{{ i18n.ts.moveAccountDescription }}</FormInfo>
 	</FormSection>
+	<FormInfo warn>{{ i18n.ts.moveAccountDescription }}</FormInfo>
 
 	<FormSection>
 		<template #label>{{ i18n.ts.moveFrom }}</template>
@@ -15,8 +15,8 @@
 			<template #prefix><i class="ti ti-plane-arrival"></i></template>
 			<template #label>{{ i18n.ts.moveFromLabel }}</template>
 		</MkInput>
-		<FormInfo warn>{{ i18n.ts.moveFromDescription }}</FormInfo>
 	</FormSection>
+	<FormInfo warn>{{ i18n.ts.moveFromDescription }}</FormInfo>
 </div>
 </template>
 

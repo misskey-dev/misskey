@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 
 import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols';
+import { DI } from '@/di-symbols.js';
 
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
