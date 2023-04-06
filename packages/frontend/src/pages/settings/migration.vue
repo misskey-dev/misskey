@@ -60,8 +60,8 @@ watch(moveToAccount, async () => {
 });
 
 definePageMetadata({
-	title: i18n.ts.security,
-	icon: 'ti ti-lock',
+	title: i18n.ts.migration,
+	icon: 'ti ti-plane',
 });
 </script>
 
