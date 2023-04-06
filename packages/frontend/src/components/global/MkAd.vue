@@ -9,7 +9,7 @@
 	<div v-else :class="$style.menu">
 		<div :class="$style.menuContainer">
 			<div>Ads by {{ host }}</div>
-			<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
+			<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>
 			<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
 			<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
 		</div>
