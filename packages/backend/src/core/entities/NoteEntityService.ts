@@ -406,7 +406,7 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
-		await this.customEmojiService.prefetchEmojis(this.customEmojiService.aggregateNoteEmojis(notes));
+		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(notes));
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
 		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
 		const packedFiles = await this.driveFileEntityService.packManyByIdsMap(fileIds);
@@ -418,6 +418,30 @@ export class NoteEntityService implements OnModuleInit {
 				packedFiles,
 			},
 		})));
+	}
+
+	@bindThis
+	public aggregateNoteEmojis(notes: Note[]) {
+		let emojis: { name: string | null; host: string | null; }[] = [];
+		for (const note of notes) {
+			emojis = emojis.concat(note.emojis
+				.map(e => this.customEmojiService.parseEmojiStr(e, note.userHost)));
+			if (note.renote) {
+				emojis = emojis.concat(note.renote.emojis
+					.map(e => this.customEmojiService.parseEmojiStr(e, note.renote!.userHost)));
+				if (note.renote.user) {
+					emojis = emojis.concat(note.renote.user.emojis
+						.map(e => this.customEmojiService.parseEmojiStr(e, note.renote!.userHost)));
+				}
+			}
+			const customReactions = Object.keys(note.reactions).map(x => this.reactionService.decodeReaction(x)).filter(x => x.name != null) as typeof emojis;
+			emojis = emojis.concat(customReactions);
+			if (note.user) {
+				emojis = emojis.concat(note.user.emojis
+					.map(e => this.customEmojiService.parseEmojiStr(e, note.userHost)));
+			}
+		}
+		return emojis.filter(x => x.name != null && x.host != null) as { name: string; host: string; }[];
 	}
 
 	@bindThis

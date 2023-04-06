@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
-import { MemoryKVCache, MemoryCache } from '@/misc/cache.js';
+import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -57,7 +57,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown {
-	private rolesCache: MemoryCache<Role[]>;
+	private rolesCache: MemorySingleCache<Role[]>;
 	private roleAssignmentByUserIdCache: MemoryKVCache<RoleAssignment[]>;
 
 	public static AlreadyAssignedError = class extends Error {};
@@ -84,7 +84,7 @@ export class RoleService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new MemoryCache<Role[]>(Infinity);
+		this.rolesCache = new MemorySingleCache<Role[]>(Infinity);
 		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(Infinity);
 
 		this.redisSubscriber.on('message', this.onMessage);
