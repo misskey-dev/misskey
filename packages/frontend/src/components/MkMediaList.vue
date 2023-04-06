@@ -160,7 +160,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	&.n1 {
 		grid-template-rows: 1fr;
 		min-height: 64px;
-		max-height: max(min(calc(var(--containerHeight, 100svh) * 0.5), 50svh, 334px), 130px);
+		max-height: max(min(calc(var(--containerHeight, 100svh) * 0.5), 50svh, 334px), 64px);
 	}
 
 	&.n2 {
