@@ -108,27 +108,30 @@ export class NotificationEntityService implements OnModuleInit {
 	) {
 		if (notifications.length === 0) return [];
 
-		const noteIds = notifications.map(x => x.noteId).filter(isNotNull);
+		let validNotifications = notifications;
+
+		const noteIds = validNotifications.map(x => x.noteId).filter(isNotNull);
 		const notes = noteIds.length > 0 ? await this.notesRepository.find({
 			where: { id: In(noteIds) },
-			relations: ['user', 'user.avatar', 'user.banner', 'reply', 'reply.user', 'reply.user.avatar', 'reply.user.banner', 'renote', 'renote.user', 'renote.user.avatar', 'renote.user.banner'],
+			relations: ['user', 'reply', 'reply.user', 'renote', 'renote.user'],
 		}) : [];
 		const packedNotesArray = await this.noteEntityService.packMany(notes, { id: meId }, {
 			detail: true,
 		});
 		const packedNotes = new Map(packedNotesArray.map(p => [p.id, p]));
 
-		const userIds = notifications.map(x => x.notifierId).filter(isNotNull);
+		validNotifications = validNotifications.filter(x => x.noteId == null || packedNotes.has(x.noteId));
+
+		const userIds = validNotifications.map(x => x.notifierId).filter(isNotNull);
 		const users = userIds.length > 0 ? await this.usersRepository.find({
 			where: { id: In(userIds) },
-			relations: ['avatar', 'banner'],
 		}) : [];
 		const packedUsersArray = await this.userEntityService.packMany(users, { id: meId }, {
 			detail: false,
 		});
 		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
 
-		return await Promise.all(notifications.map(x => this.pack(x, meId, {}, {
+		return await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
 			packedNotes,
 			packedUsers,
 		})));

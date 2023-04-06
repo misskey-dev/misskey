@@ -75,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				order: {
 					id: -1,
 				},
-				relations: ['user', 'user.avatar', 'user.banner', 'note'],
+				relations: ['user', 'note'],
 			});
 
 			return await Promise.all(reactions.map(reaction => this.noteReactionEntityService.pack(reaction, me)));

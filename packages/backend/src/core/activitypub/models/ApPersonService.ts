@@ -31,6 +31,7 @@ import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -49,6 +50,7 @@ const summaryLength = 2048;
 export class ApPersonService implements OnModuleInit {
 	private utilityService: UtilityService;
 	private userEntityService: UserEntityService;
+	private driveFileEntityService: DriveFileEntityService;
 	private idService: IdService;
 	private globalEventService: GlobalEventService;
 	private metaService: MetaService;
@@ -113,6 +115,7 @@ export class ApPersonService implements OnModuleInit {
 	onModuleInit() {
 		this.utilityService = this.moduleRef.get('UtilityService');
 		this.userEntityService = this.moduleRef.get('UserEntityService');
+		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.idService = this.moduleRef.get('IdService');
 		this.globalEventService = this.moduleRef.get('GlobalEventService');
 		this.metaService = this.moduleRef.get('MetaService');
@@ -356,32 +359,44 @@ export class ApPersonService implements OnModuleInit {
 
 		const avatarId = avatar ? avatar.id : null;
 		const bannerId = banner ? banner.id : null;
+		const avatarUrl = avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null;
+		const bannerUrl = banner ? this.driveFileEntityService.getPublicUrl(banner) : null;
+		const avatarBlurhash = avatar ? avatar.blurhash : null;
+		const bannerBlurhash = banner ? banner.blurhash : null;
 
 		await this.usersRepository.update(user!.id, {
 			avatarId,
 			bannerId,
+			avatarUrl,
+			bannerUrl,
+			avatarBlurhash,
+			bannerBlurhash,
 		});
 
-	user!.avatarId = avatarId;
-	user!.bannerId = bannerId;
-	//#endregion
+		user!.avatarId = avatarId;
+		user!.bannerId = bannerId;
+		user!.avatarUrl = avatarUrl;
+		user!.bannerUrl = bannerUrl;
+		user!.avatarBlurhash = avatarBlurhash;
+		user!.bannerBlurhash = bannerBlurhash;
+		//#endregion
 
-	//#region カスタム絵文字取得
-	const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
-		this.logger.info(`extractEmojis: ${err}`);
-		return [] as Emoji[];
-	});
+		//#region カスタム絵文字取得
+		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
+			this.logger.info(`extractEmojis: ${err}`);
+			return [] as Emoji[];
+		});
 
-	const emojiNames = emojis.map(emoji => emoji.name);
+		const emojiNames = emojis.map(emoji => emoji.name);
 
-	await this.usersRepository.update(user!.id, {
-		emojis: emojiNames,
-	});
-	//#endregion
+		await this.usersRepository.update(user!.id, {
+			emojis: emojiNames,
+		});
+		//#endregion
 
-	await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
+		await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
 
-	return user!;
+		return user!;
 	}
 
 	/**
@@ -463,10 +478,14 @@ export class ApPersonService implements OnModuleInit {
 
 		if (avatar) {
 			updates.avatarId = avatar.id;
+			updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+			updates.avatarBlurhash = avatar.blurhash;
 		}
 
 		if (banner) {
 			updates.bannerId = banner.id;
+			updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+			updates.bannerBlurhash = banner.blurhash;
 		}
 
 		// Update user
