@@ -1,7 +1,6 @@
 <template>
-<div :class="[$style.root, { [$style.cover]: cover }]" :title="title">
-	<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
-	<img v-if="src" :class="$style.img" :src="src" :title="title" :alt="alt" @load="onLoad"/>
+<div :class="$style.root" :title="title">
+	<canvas ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
 </div>
 </template>
 
@@ -9,19 +8,18 @@
 import { onMounted } from 'vue';
 import { decode } from 'blurhash';
 
+/**
+ * Blurhash表示専用（＝画像を裏で読み込まない）
+ * See also: https://github.com/misskey-dev/misskey/pull/10478#issuecomment-1498278881
+ */
+
 const props = withDefaults(defineProps<{
-	src?: string | null;
 	hash?: string;
-	alt?: string | null;
 	title?: string | null;
 	size?: number;
-	cover?: boolean;
 }>(), {
-	src: null,
-	alt: '',
 	title: null,
 	size: 64,
-	cover: true,
 });
 
 const canvas = $shallowRef<HTMLCanvasElement>();
@@ -36,10 +34,6 @@ function draw() {
 	ctx!.putImageData(imageData, 0, 0);
 }
 
-function onLoad() {
-	loaded = true;
-}
-
 onMounted(() => {
 	draw();
 });
@@ -50,16 +44,9 @@ onMounted(() => {
 	position: relative;
 	width: 100%;
 	height: 100%;
-
-	&.cover {
-		> .img {
-			object-fit: cover;
-		}
-	}
 }
 
-.canvas,
-.img {
+.canvas {
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -68,9 +55,5 @@ onMounted(() => {
 .canvas {
 	position: absolute;
 	object-fit: cover;
-}
-
-.img {
-	object-fit: contain;
 }
 </style>

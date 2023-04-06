@@ -991,6 +991,7 @@ largeNoteReactions: "ノートのリアクションを大きく表示"
 noteIdOrUrl: "ノートIDまたはURL"
 video: "動画"
 videos: "動画"
+dataSaver: "データセーバー"
 
 _achievements:
   earnedAt: "獲得日時"

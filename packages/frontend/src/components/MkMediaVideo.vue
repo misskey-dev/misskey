@@ -1,8 +1,8 @@
 <template>
 <div v-if="hide" class="icozogqfvdetwohsdglrbswgrejoxbdj" @click="hide = false">
 	<div>
-		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
-		<b v-else><i class="ti ti-movie"></i> {{ i18n.ts.video }}</b>
+		<b v-if="video.isSensitive"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ dataSaverMode ? ` (${i18n.ts.video} ${bytes(video.size)})` : '' }}</b>
+		<b v-else><i class="ti ti-movie"></i> {{ dataSaverMode ? bytes(video.size) : i18n.ts.video }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 </div>
@@ -35,8 +35,9 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	video: misskey.entities.DriveFile;
 }>();
+const dataSaverMode = ref(defaultStore.state.enableDataSaverMode);
 
-const hide = ref((defaultStore.state.nsfw === 'force') ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
+const hide = ref((defaultStore.state.nsfw === 'force' || dataSaverMode.value) ? true : props.video.isSensitive && (defaultStore.state.nsfw !== 'ignore'));
 </script>
 
 <style lang="scss" scoped>
