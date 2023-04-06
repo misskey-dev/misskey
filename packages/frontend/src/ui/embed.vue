@@ -31,17 +31,12 @@ provideMetadataReceiver((info) => {
 
 document.documentElement.style.backgroundColor = "transparent";
 document.documentElement.style.maxWidth = "650px";
-document.documentElement.style.minHeight = "300px";
 </script>
 
 <style lang="scss" scoped>
 .mk-app {
 	max-width: 650px;
     min-width: 0;
-    min-height: 300px;
-	overflow: hidden;
-	border-radius: var(--radius);
-	border: 1px solid var(--divider);
 	box-sizing: border-box;
 	background-color: transparent;
 }

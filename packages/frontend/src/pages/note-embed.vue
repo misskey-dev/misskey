@@ -93,7 +93,9 @@ definePageMetadata(computed(() => note ? {
 }
 
 .fcuexfpr {
-	background: var(--bg);
+	border-radius: var(--radius);
+	border: 1px solid var(--divider);
+	background: var(--panel);
 
 	> .note {
 		height: 100%;

@@ -11,6 +11,7 @@ import { url } from '@/config';
 import { popout as popout_ } from '@/scripts/popout';
 import { i18n } from '@/i18n';
 import { useRouter } from '@/router';
+import { MenuItem } from '@/types/menu';
 
 const props = withDefaults(defineProps<{
 	to: string;
@@ -33,37 +34,60 @@ const active = $computed(() => {
 	return resolved.route.name === router.currentRoute.value.name;
 });
 
-function onContextmenu(ev) {
+function onContextmenu(ev : Event) {
 	const selection = window.getSelection();
-	if (selection && selection.toString() !== '') return;
-	os.contextMenu([{
-		type: 'label',
-		text: props.to,
-	}, {
-		icon: 'ti ti-app-window',
-		text: i18n.ts.openInWindow,
-		action: () => {
-			os.pageWindow(props.to);
-		},
-	}, {
-		icon: 'ti ti-player-eject',
-		text: i18n.ts.showInPage,
-		action: () => {
-			router.push(props.to, 'forcePage');
-		},
-	}, null, {
-		icon: 'ti ti-external-link',
-		text: i18n.ts.openInNewTab,
-		action: () => {
-			window.open(props.to, '_blank');
-		},
-	}, {
-		icon: 'ti ti-link',
-		text: i18n.ts.copyLink,
-		action: () => {
-			copyToClipboard(`${url}${props.to}`);
-		},
-	}], ev);
+	if ((selection && selection.toString() !== '')) return;
+
+	let contextMenuItem: MenuItem[] = [];
+
+	if (router.currentRoute.value.name?.toLowerCase().includes("embed")) {
+		contextMenuItem = [{
+			type: 'label',
+			text: props.to,
+		}, {
+			icon: 'ti ti-external-link',
+			text: i18n.ts.openInNewTab,
+			action: () => {
+				window.open(props.to, '_blank');
+			},
+		}, {
+			icon: 'ti ti-link',
+			text: i18n.ts.copyLink,
+			action: () => {
+				copyToClipboard(`${url}${props.to}`);
+			},
+		}];
+	} else {
+		contextMenuItem = [{
+			type: 'label',
+			text: props.to,
+		}, {
+			icon: 'ti ti-app-window',
+			text: i18n.ts.openInWindow,
+			action: () => {
+				os.pageWindow(props.to);
+			},
+		}, {
+			icon: 'ti ti-player-eject',
+			text: i18n.ts.showInPage,
+			action: () => {
+				router.push(props.to, 'forcePage');
+			},
+		}, null, {
+			icon: 'ti ti-external-link',
+			text: i18n.ts.openInNewTab,
+			action: () => {
+				window.open(props.to, '_blank');
+			},
+		}, {
+			icon: 'ti ti-link',
+			text: i18n.ts.copyLink,
+			action: () => {
+				copyToClipboard(`${url}${props.to}`);
+			},
+		}];
+	}
+	os.contextMenu(contextMenuItem, ev);
 }
 
 function openWindow() {
