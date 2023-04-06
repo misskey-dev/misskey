@@ -19,6 +19,6 @@ fs.readFile(path.resolve(__dirname, '../storybook-static/preview-stats.json'))
 			}
 		}
 		for (const file of Array.from(modules)) {
-			process.stdout.write(`--only-story-files ${file}`);
+			process.stdout.write(` --only-story-files ${file}`);
 		}
 	})
