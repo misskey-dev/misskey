@@ -7,7 +7,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { MemoryCache } from '@/misc/cache.js';
+import { MemorySingleCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
@@ -22,7 +22,7 @@ import type { DeliverJobData } from '../types.js';
 @Injectable()
 export class DeliverProcessorService {
 	private logger: Logger;
-	private suspendedHostsCache: MemoryCache<Instance[]>;
+	private suspendedHostsCache: MemorySingleCache<Instance[]>;
 	private latest: string | null;
 
 	constructor(
@@ -46,7 +46,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new MemoryCache<Instance[]>(1000 * 60 * 60);
+		this.suspendedHostsCache = new MemorySingleCache<Instance[]>(1000 * 60 * 60);
 	}
 
 	@bindThis
