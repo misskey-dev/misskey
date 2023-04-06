@@ -1,23 +1,31 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import micromatch from "micromatch";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import micromatch from 'micromatch';
+import main from './main';
 
 fs.readFile(
-	path.resolve(__dirname, "../storybook-static/preview-stats.json")
+	path.resolve(__dirname, '../storybook-static/preview-stats.json')
 ).then((buffer) => {
 	const stats = JSON.parse(buffer.toString());
 	const modules = new Set(
-		process.argv.slice(2).map((arg) => path.relative(path.resolve(__dirname, ".."), path.resolve(__dirname, "../../..", arg)))
+		process.argv
+			.slice(2)
+			.map((arg) =>
+				path.relative(
+					path.resolve(__dirname, '..'),
+					path.resolve(__dirname, '../../..', arg)
+				)
+			)
 	);
 	if (
 		micromatch(Array.from(modules), [
-			"../../assets/**",
-			"../../fluent-emojis/**",
-			"../../locales/**",
-			"../../misskey-assets/**",
-			"assets/**",
-			"public/**",
-			"../../pnpm-lock.yaml",
+			'../../assets/**',
+			'../../fluent-emojis/**',
+			'../../locales/**',
+			'../../misskey-assets/**',
+			'assets/**',
+			'public/**',
+			'../../pnpm-lock.yaml',
 		]).length
 	) {
 		return;
@@ -35,7 +43,11 @@ fs.readFile(
 			break;
 		}
 	}
-	for (const file of Array.from(modules)) {
-		process.stdout.write(` --only-story-files ${path.resolve(__dirname, "..", file)}`);
+	const stories = micromatch(
+		Array.from(modules),
+		main.stories.map((story) => path.resolve(__dirname, story))
+	);
+	for (const story of stories) {
+		process.stdout.write(` --only-story-files ${story}`);
 	}
 });

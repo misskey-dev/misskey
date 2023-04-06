@@ -21,7 +21,7 @@ const config = {
 	core: {
 		disableTelemetry: true,
 	},
-	async viteFinal(config, options) {
+	async viteFinal(config) {
 		return mergeConfig(config, {
 			plugins: [
 				turbosnap({
