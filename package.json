@@ -50,13 +50,13 @@
 		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0",
-		"typescript": "5.0.2"
+		"typescript": "5.0.3"
 	},
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.57.0",
-		"@typescript-eslint/parser": "5.57.0",
+		"@typescript-eslint/eslint-plugin": "5.57.1",
+		"@typescript-eslint/parser": "5.57.1",
 		"cross-env": "7.0.3",
 		"cypress": "12.9.0",
 		"eslint": "8.37.0",
