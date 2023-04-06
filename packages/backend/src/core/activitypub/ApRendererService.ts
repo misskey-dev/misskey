@@ -295,11 +295,11 @@ export class ApRendererService {
 
 	@bindThis
 	public renderMove(
-		from: { id: User['id']; host: User['host']; uri: User['host'] },
-		to: { id: User['id']; host: User['host']; uri: User['host'] },
+		src: { id: User['id']; host: User['host']; uri: User['host'] },
+		dst: { id: User['id']; host: User['host']; uri: User['host'] },
 	): IMove {
-		const actor = this.userEntityService.isLocalUser(from) ? `${this.config.url}/users/${from.id}` : from.uri!;
-		const target = this.userEntityService.isLocalUser(to) ? `${this.config.url}/users/${to.id}` : to.uri!;
+		const actor = this.userEntityService.isLocalUser(src) ? `${this.config.url}/users/${src.id}` : src.uri!;
+		const target = this.userEntityService.isLocalUser(dst) ? `${this.config.url}/users/${dst.id}` : dst.uri!;
 		return {
 			id: genAid(new Date()),
 			actor,
