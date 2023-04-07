@@ -31,7 +31,7 @@
 			<button v-click-anime class="item _button account" @click="openAccountMenu">
 				<MkAvatar :user="$i" class="avatar"/><MkAcct class="acct" :user="$i"/>
 			</button>
-			<div class="post" @click="post">
+			<div class="post" @click="os.post()">
 				<MkButton class="button" gradate full rounded>
 					<i class="ti ti-pencil ti-fw"></i>
 				</MkButton>
@@ -41,93 +41,50 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { computed, defineAsyncComponent, onMounted } from 'vue';
 import { openInstanceMenu } from './_common_/common';
-import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu, $i } from '@/account';
+import { openAccountMenu as openAccountMenu_, $i } from '@/account';
 import MkButton from '@/components/MkButton.vue';
-import { mainRouter } from '@/router';
 import { defaultStore } from '@/store';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
+const WINDOW_THRESHOLD = 1400;
 
-	data() {
-		return {
-			host: host,
-			accounts: [],
-			connection: null,
-			navbarItemDef: navbarItemDef,
-			settingsWindowed: false,
-			defaultStore,
-			instance,
-			$i,
-			i18n,
-		};
-	},
-
-	computed: {
-		menu(): string[] {
-			return defaultStore.state.menu;
-		},
-
-		otherNavItemIndicated(): boolean {
-			for (const def in this.navbarItemDef) {
-				if (this.menu.includes(def)) continue;
-				if (this.navbarItemDef[def].indicated) return true;
-			}
-			return false;
-		},
-	},
-
-	watch: {
-		'defaultStore.reactiveState.menuDisplay.value'() {
-			this.calcViewState();
-		},
-	},
-
-	created() {
-		window.addEventListener('resize', this.calcViewState);
-		this.calcViewState();
-	},
-
-	methods: {
-		openInstanceMenu,
-
-		calcViewState() {
-			this.settingsWindowed = (window.innerWidth > 1400);
-		},
-
-		post() {
-			os.post();
-		},
-
-		search() {
-			mainRouter.push('/search');
-		},
-
-		more(ev) {
-			os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-				src: ev.currentTarget ?? ev.target,
-				anchor: { x: 'center', y: 'bottom' },
-			}, {
-			}, 'closed');
-		},
-
-		openAccountMenu: (ev) => {
-			openAccountMenu({
-				withExtraOperation: true,
-			}, ev);
-		},
-	},
+let settingsWindowed = $ref(window.innerWidth > WINDOW_THRESHOLD);
+let menu = $ref(defaultStore.state.menu);
+// const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
+let otherNavItemIndicated = computed<boolean>(() => {
+	for (const def in navbarItemDef) {
+		if (menu.includes(def)) continue;
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
 });
+
+function more(ev: MouseEvent) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+		src: ev.currentTarget ?? ev.target,
+		anchor: { x: 'center', y: 'bottom' },
+	}, {
+	}, 'closed');
+}
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
+}
+
+onMounted(() => {
+	window.addEventListener('resize', () => {
+		settingsWindowed = (window.innerWidth >= WINDOW_THRESHOLD);
+	}, { passive: true });	
+});
+
 </script>
 
 <style lang="scss" scoped>

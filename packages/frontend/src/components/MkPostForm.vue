@@ -964,7 +964,7 @@ defineExpose({
 	padding: 0 12px;
 	line-height: 34px;
 	font-weight: bold;
-	border-radius: 4px;
+	border-radius: 6px;
 	min-width: 90px;
 	box-sizing: border-box;
 	color: var(--fgOnAccent);

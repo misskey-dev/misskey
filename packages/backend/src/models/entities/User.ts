@@ -100,6 +100,26 @@ export class User {
 	@JoinColumn()
 	public banner: DriveFile | null;
 
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public avatarUrl: string | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public bannerUrl: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public avatarBlurhash: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public bannerBlurhash: string | null;
+
 	@Index()
 	@Column('varchar', {
 		length: 128, array: true, default: '{}',

@@ -17,6 +17,49 @@ export function abuseUserReport() {
 	};
 }
 
+export function galleryPost(isSensitive = false) {
+	return {
+		id: 'somepostid',
+		createdAt: '2016-12-28T22:49:51.000Z',
+		updatedAt: '2016-12-28T22:49:51.000Z',
+		userid: 'someuserid',
+		user: userDetailed(),
+		title: 'Some post title',
+		description: 'Some post description',
+		fileIds: ['somefileid'],
+		files: [
+			file(isSensitive),
+		],
+		isSensitive,
+		likedCount: 0,
+		isLiked: false,
+	}
+}
+
+export function file(isSensitive = false) {
+	return {
+		id: 'somefileid',
+		createdAt: '2016-12-28T22:49:51.000Z',
+		name: 'somefile.jpg',
+		type: 'image/jpeg',
+		md5: 'f6fc51c73dc21b1fb85ead2cdf57530a',
+		size: 77752,
+		isSensitive,
+		blurhash: 'eQAmoa^-MH8w9ZIvNLSvo^$*MwRPbwtSxutRozjEiwR.RjWBoeozog',
+		properties: {
+			width: 1024,
+			height: 270
+		},
+		url: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true',
+		thumbnailUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/fedi.jpg?raw=true',
+		comment: null,
+		folderId: null,
+		folder: null,
+		userId: null,
+		user: null,
+	};
+}
+
 export function userDetailed(id = 'someuserid', username = 'miskist', host = 'misskey-hub.net', name = 'Misskey User'): entities.UserDetailed {
 	return {
 		id,

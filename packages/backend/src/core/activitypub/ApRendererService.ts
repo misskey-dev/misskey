@@ -21,6 +21,8 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
@@ -50,6 +52,7 @@ export class ApRendererService {
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
+		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
@@ -272,11 +275,7 @@ export class ApRendererService {
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
-			// TODO: cache
-			const emoji = await this.emojisRepository.findOneBy({
-				name,
-				host: IsNull(),
-			});
+			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
 
 			if (emoji) object.tag = [this.renderEmoji(emoji)];
 		}
@@ -701,13 +700,9 @@ export class ApRendererService {
 	private async getEmojis(names: string[]): Promise<Emoji[]> {
 		if (names == null || names.length === 0) return [];
 
-		const emojis = await Promise.all(
-			names.map(name => this.emojisRepository.findOneBy({
-				name,
-				host: IsNull(),
-			})),
-		);
+		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
+		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
 
-		return emojis.filter(emoji => emoji != null) as Emoji[];
+		return emojis;
 	}
 }
