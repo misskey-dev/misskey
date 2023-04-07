@@ -149,9 +149,9 @@ let sOneRound = false;
 function tick() {
 	const now = props.now();
 	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
-	const previousS = s.value;
-	const previousM = m.value;
-	const previousH = h.value;
+	const previousS = s;
+	const previousM = m;
+	const previousH = h;
 	s = now.getSeconds();
 	m = now.getMinutes();
 	h = now.getHours();
