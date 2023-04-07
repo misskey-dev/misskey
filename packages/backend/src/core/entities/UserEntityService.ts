@@ -9,7 +9,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { MemoryKVCache } from '@/misc/cache.js';
+import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
@@ -53,7 +53,7 @@ export class UserEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private userInstanceCache: MemoryKVCache<Instance | null>;
+	private userInstanceCache: RedisKVCache<Instance | null>;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -119,7 +119,13 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new MemoryKVCache<Instance | null>(1000 * 60 * 60 * 3);
+		this.userInstanceCache = new RedisKVCache<Instance | null>(this.redisClient, 'userInstance', {
+			lifetime: 1000 * 60 * 60 * 24, // 24h
+			memoryCacheLifetime: 1000 * 60 * 30, // 30m
+			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
+			toRedisConverter: (value) => JSON.stringify(value),
+			fromRedisConverter: (value) => JSON.parse(value), // TODO: date型の考慮
+		});
 	}
 
 	onModuleInit() {
@@ -343,10 +349,7 @@ export class UserEntityService implements OnModuleInit {
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: user.host ? this.userInstanceCache.fetch(user.host,
-				() => this.instancesRepository.findOneBy({ host: user.host! }),
-				v => v != null,
-			).then(instance => instance ? {
+			instance: user.host ? this.userInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
 				softwareVersion: instance.softwareVersion,
