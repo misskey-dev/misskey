@@ -13,14 +13,14 @@ export class WebhookService implements OnApplicationShutdown {
 	private webhooks: Webhook[] = [];
 
 	constructor(
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForPubsub)
+		private redisForPubsub: Redis.Redis,
 
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
-		this.redisSubscriber.on('message', this.onMessage);
+		this.redisForPubsub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -82,6 +82,6 @@ export class WebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisSubscriber.off('message', this.onMessage);
+		this.redisForPubsub.off('message', this.onMessage);
 	}
 }

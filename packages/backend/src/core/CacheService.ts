@@ -27,8 +27,8 @@ export class CacheService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForPubsub)
+		private redisForPubsub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -116,7 +116,7 @@ export class CacheService implements OnApplicationShutdown {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.redisSubscriber.on('message', this.onMessage);
+		this.redisForPubsub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -167,6 +167,6 @@ export class CacheService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisSubscriber.off('message', this.onMessage);
+		this.redisForPubsub.off('message', this.onMessage);
 	}
 }
