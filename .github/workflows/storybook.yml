@@ -57,10 +57,10 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
+          github.rest.repos.createCommitComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
+            commit_sha: context.sha,
             body: 'Chromatic will skip testing but you may still have to [review the changes on Chromatic](https://www.chromatic.com/pullrequests?appId=6428f7d7b962f0b79f97d6e4).'
           })
     - name: Upload Artifacts
