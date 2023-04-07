@@ -3,7 +3,9 @@
 	<div class="thumbnail">
 		<ImgWithBlurhash class="img" :hash="post.files[0].blurhash"/>
 		<Transition>
-			<ImgWithBlurhash v-if="show" class="img layered" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
+			<KeepAlive>
+				<ImgWithBlurhash v-if="show" class="img layered" :animation="!safe" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
+			</KeepAlive>
 		</Transition>
 	</div>
 	<article>
@@ -28,7 +30,8 @@ const props = defineProps<{
 }>();
 
 const hover = ref(false);
-const show = computed(() => defaultStore.state.nsfw === 'ignore' || defaultStore.state.nsfw === 'respect' && !props.post.isSensitive || hover.value);
+const safe = computed(() => defaultStore.state.nsfw === 'ignore' || defaultStore.state.nsfw === 'respect' && !props.post.isSensitive);
+const show = computed(() => safe.value || hover.value);
 
 function enterHover(): void {
 	hover.value = true;
