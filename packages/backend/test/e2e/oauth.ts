@@ -1,11 +1,12 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { port, signup, startServer } from '../utils.js';
+import { port, relativeFetch, signup, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import { AuthorizationCode } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
+import { api } from '../utils.js';
 
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
@@ -106,6 +107,19 @@ describe('OAuth', () => {
 		assert.strictEqual(typeof token.token.access_token, 'string');
 		assert.strictEqual(typeof token.token.refresh_token, 'string');
 		assert.strictEqual(token.token.token_type, 'Bearer');
+
+		const createResponse = await relativeFetch('api/notes/create', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${token.token.access_token}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: 'test' }),
+		});
+		assert.strictEqual(createResponse.status, 200);
+
+		const createResponseBody: any = await createResponse.json();
+		assert.strictEqual(createResponseBody.createdNote.text, 'test');
 	});
 
 	test('Require PKCE', async () => {
@@ -171,4 +185,6 @@ describe('OAuth', () => {
 	// TODO: authorizing two users concurrently
 
 	// TODO: invalid redirect_uri (at authorize / at token)
+
+	// TODO: Wrong Authorization header (Not starts with Bearer / token is wrong)
 });

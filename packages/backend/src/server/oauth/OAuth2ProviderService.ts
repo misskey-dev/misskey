@@ -12,7 +12,6 @@ import { kinds } from '@/misc/api-permissions.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
-import fastifySession from '@fastify/session';
 import type Redis from 'ioredis';
 import oauth2Pkce from 'oauth2orize-pkce';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
@@ -28,7 +27,7 @@ import fastifyExpress from '@fastify/express';
 import crypto from 'node:crypto';
 import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
-import { UserCacheService } from '@/core/UserCacheService.js';
+import { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
@@ -305,7 +304,7 @@ export class OAuth2ProviderService {
 		idService: IdService,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-		private userCacheService: UserCacheService,
+		private cacheService: CacheService,
 	) {
 		// this.#provider = new Provider(config.url, {
 		// 	clientAuthMethods: ['none'],
@@ -345,7 +344,7 @@ export class OAuth2ProviderService {
 				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
 				const code = secureRndstr(32, true);
 
-				const user = await this.userCacheService.localUserByNativeTokenCache.fetch(token,
+				const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
 					() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
 				if (!user) {
 					throw new Error('No such user');
