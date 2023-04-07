@@ -84,8 +84,8 @@ export class RoleService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new MemorySingleCache<Role[]>(Infinity);
-		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(Infinity);
+		this.rolesCache = new MemorySingleCache<Role[]>(1000 * 60 * 60 * 1);
+		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(1000 * 60 * 60 * 1);
 
 		this.redisForPubsub.on('message', this.onMessage);
 	}
