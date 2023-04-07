@@ -757,7 +757,7 @@ export class ApInboxService {
 		}
 
 		// add target uri to movedToUri in order to indicate that the user has moved
-		await this.usersRepository.update(old_acc.id, { movedToUri: activity.target.toString() });
+		await this.usersRepository.update(old_acc.id, { movedToUri: targetUri });
 
 		// follow the new account and unfollow the old one
 		const followings = await this.followingsRepository.findBy({
