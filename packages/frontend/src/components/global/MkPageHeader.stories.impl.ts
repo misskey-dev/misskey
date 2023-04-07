@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { waitFor } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import MkPageHeader from './MkPageHeader.vue';
 export const Empty = {
@@ -22,16 +23,16 @@ export const Empty = {
 			template: '<MkPageHeader v-bind="props" />',
 		};
 	},
+	async play() {
+		const wait = new Promise((resolve) => setTimeout(resolve, 800));
+		await waitFor(async () => await wait);
+	},
 	args: {
 		static: true,
 		tabs: [],
 	},
 	parameters: {
 		layout: 'centered',
-		chromatic: {
-			/* This component has animations that are implemented with JavaScript. So it's unstable to take a snapshot. */
-			disableSnapshot: true,
-		},
 	},
 } satisfies StoryObj<typeof MkPageHeader>;
 export const OneTab = {

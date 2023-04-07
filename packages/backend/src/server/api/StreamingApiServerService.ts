@@ -22,8 +22,8 @@ export class StreamingApiServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForPubsub)
+		private redisForPubsub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -81,7 +81,7 @@ export class StreamingApiServerService {
 				ev.emit(parsed.channel, parsed.message);
 			}
 
-			this.redisSubscriber.on('message', onRedisMessage);
+			this.redisForPubsub.on('message', onRedisMessage);
 
 			const main = new MainStreamConnection(
 				this.channelsService,
@@ -111,7 +111,7 @@ export class StreamingApiServerService {
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				main.dispose();
-				this.redisSubscriber.off('message', onRedisMessage);
+				this.redisForPubsub.off('message', onRedisMessage);
 				if (intervalId) clearInterval(intervalId);
 			});
 

@@ -18,5 +18,10 @@
 		"jsx": "react",
 		"jsxFactory": "h"
 	},
-	"files": ["./generate.tsx", "./preload-locale.ts", "./preload-theme.ts"]
+	"files": [
+		"./changes.ts",
+		"./generate.tsx",
+		"./preload-locale.ts",
+		"./preload-theme.ts"
+	]
 }
