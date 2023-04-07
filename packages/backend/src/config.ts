@@ -33,6 +33,14 @@ export type Source = {
 		db?: number;
 		prefix?: string;
 	};
+	redisForPubsub?: {
+		host: string;
+		port: number;
+		family?: number;
+		pass: string;
+		db?: number;
+		prefix?: string;
+	};
 	elasticsearch: {
 		host: string;
 		port: number;
@@ -151,6 +159,7 @@ export function loadConfig() {
 		: null;
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
+	if (config.redisForPubsub == null) config.redisForPubsub = config.redis;
 
 	return Object.assign(config, mixin);
 }

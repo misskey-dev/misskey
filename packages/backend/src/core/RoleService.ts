@@ -64,8 +64,8 @@ export class RoleService implements OnApplicationShutdown {
 	public static NotAssignedError = class extends Error {};
 
 	constructor(
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForPubsub)
+		private redisForPubsub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -87,7 +87,7 @@ export class RoleService implements OnApplicationShutdown {
 		this.rolesCache = new MemorySingleCache<Role[]>(Infinity);
 		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(Infinity);
 
-		this.redisSubscriber.on('message', this.onMessage);
+		this.redisForPubsub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -400,6 +400,6 @@ export class RoleService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisSubscriber.off('message', this.onMessage);
+		this.redisForPubsub.off('message', this.onMessage);
 	}
 }
