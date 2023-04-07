@@ -288,7 +288,7 @@ export class NoteEntityService implements OnModuleInit {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.notesRepository.findOneByOrFail({ id: src });
+		const note = typeof src === 'object' ? src : await this.notesRepository.findOneOrFail({ where: { id: src }, relations: ['user'] });
 		const host = note.userHost;
 
 		let text = note.text;
