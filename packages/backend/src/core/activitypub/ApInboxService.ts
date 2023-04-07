@@ -754,8 +754,8 @@ export class ApInboxService {
 			return 'skip: accounts invalid';
 		}
 
-		// add movedToUri to indicate that the user has been moved
-		await this.usersRepository.update(old_acc.id, { movedToUri: new_acc.id });
+		// add target uri to movedToUri in order to indicate that the user has been moved
+		await this.usersRepository.update(old_acc.id, { movedToUri: activity.target.toString() });
 
 		// unfollow the old account and follow the new account
 		const followings = await this.followingsRepository.findBy({
