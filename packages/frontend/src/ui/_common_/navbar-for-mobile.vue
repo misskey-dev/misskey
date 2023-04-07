@@ -2,9 +2,9 @@
 <div class="kmwsukvl">
 	<div class="body">
 		<div class="top">
-			<div class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }"></div>
+			<div class="banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
 			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
-				<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
 			</button>
 		</div>
 		<div class="middle">
@@ -47,9 +47,10 @@ import { computed, defineAsyncComponent, toRef } from 'vue';
 import { openInstanceMenu } from './common';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu as openAccountMenu_ } from '@/account';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 const menu = toRef(defaultStore.state, 'menu');
 const otherMenuItemIndicated = computed(() => {

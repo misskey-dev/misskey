@@ -33,14 +33,18 @@
 <script lang="ts">
 export type Tab = {
 	key: string;
-	title: string;
-	icon?: string;
-	iconOnly?: boolean;
 	onClick?: (ev: MouseEvent) => void;
-} & {
-	iconOnly: true;
-	iccn: string;
-};
+} & (
+	| {
+			iconOnly?: false;
+			title: string;
+			icon?: string;
+		}
+	| {
+			iconOnly: true;
+			icon: string;
+		}
+);
 </script>
 
 <script lang="ts" setup>

@@ -14,13 +14,15 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
-import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
@@ -50,10 +52,11 @@ export class ApRendererService {
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
+		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
-		private userKeypairStoreService: UserKeypairStoreService,
+		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
 	) {
@@ -272,11 +275,7 @@ export class ApRendererService {
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
-			// TODO: cache
-			const emoji = await this.emojisRepository.findOneBy({
-				name,
-				host: IsNull(),
-			});
+			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
 
 			if (emoji) object.tag = [this.renderEmoji(emoji)];
 		}
@@ -473,7 +472,7 @@ export class ApRendererService {
 			...hashtagTags,
 		];
 
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const person = {
 			type: isSystem ? 'Application' : user.isBot ? 'Service' : 'Person',
@@ -640,7 +639,7 @@ export class ApRendererService {
 
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
@@ -701,13 +700,9 @@ export class ApRendererService {
 	private async getEmojis(names: string[]): Promise<Emoji[]> {
 		if (names == null || names.length === 0) return [];
 
-		const emojis = await Promise.all(
-			names.map(name => this.emojisRepository.findOneBy({
-				name,
-				host: IsNull(),
-			})),
-		);
+		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
+		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
 
-		return emojis.filter(emoji => emoji != null) as Emoji[];
+		return emojis;
 	}
 }

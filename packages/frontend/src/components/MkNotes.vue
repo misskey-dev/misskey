@@ -19,7 +19,7 @@
 				:ad="true"
 				:class="$style.notes"
 			>
-				<XNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
+				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>
@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
-import XNote from '@/components/MkNote.vue';
+import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';

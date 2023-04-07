@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
+import Redis from 'ioredis';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
@@ -8,11 +9,11 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, NotificationsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, AntennaNotesRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -52,13 +53,16 @@ export class UserEntityService implements OnModuleInit {
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private userInstanceCache: KVCache<Instance | null>;
+	private userInstanceCache: MemoryKVCache<Instance | null>;
 
 	constructor(
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -90,9 +94,6 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
 
-		@Inject(DI.notificationsRepository)
-		private notificationsRepository: NotificationsRepository,
-
 		@Inject(DI.userNotePiningsRepository)
 		private userNotePiningsRepository: UserNotePiningsRepository,
 
@@ -108,9 +109,6 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
 
-		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: AntennaNotesRepository,
-
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
@@ -121,7 +119,7 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new KVCache<Instance | null>(1000 * 60 * 60 * 3);
+		this.userInstanceCache = new MemoryKVCache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	onModuleInit() {
@@ -223,6 +221,7 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
+		/*
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
 		const unread = myAntennas.length > 0 ? await this.antennaNotesRepository.findOneBy({
@@ -231,37 +230,22 @@ export class UserEntityService implements OnModuleInit {
 		}) : null;
 
 		return unread != null;
-	}
-
-	@bindThis
-	public async getHasUnreadChannel(userId: User['id']): Promise<boolean> {
-		const channels = await this.channelFollowingsRepository.findBy({ followerId: userId });
-
-		const unread = channels.length > 0 ? await this.noteUnreadsRepository.findOneBy({
-			userId: userId,
-			noteChannelId: In(channels.map(x => x.followeeId)),
-		}) : null;
-
-		return unread != null;
+		*/
+		return false; // TODO
 	}
 
 	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
-		const mute = await this.mutingsRepository.findBy({
-			muterId: userId,
-		});
-		const mutedUserIds = mute.map(m => m.muteeId);
+		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
+		
+		const latestNotificationIdsRes = await this.redisClient.xrevrange(
+			`notificationTimeline:${userId}`,
+			'+',
+			'-',
+			'COUNT', 1);
+		const latestNotificationId = latestNotificationIdsRes[0]?.[0];
 
-		const count = await this.notificationsRepository.count({
-			where: {
-				notifieeId: userId,
-				...(mutedUserIds.length > 0 ? { notifierId: Not(In(mutedUserIds)) } : {}),
-				isRead: false,
-			},
-			take: 1,
-		});
-
-		return count > 0;
+		return latestNotificationId != null && (latestReadNotificationId == null || latestReadNotificationId < latestNotificationId);
 	}
 
 	@bindThis
@@ -286,27 +270,6 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getAvatarUrl(user: User): Promise<string> {
-		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
-		} else if (user.avatarId) {
-			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user);
-		} else {
-			return this.getIdenticonUrl(user);
-		}
-	}
-
-	@bindThis
-	public getAvatarUrlSync(user: User): string {
-		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
-		} else {
-			return this.getIdenticonUrl(user);
-		}
-	}
-
-	@bindThis
 	public getIdenticonUrl(user: User): string {
 		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
@@ -325,19 +288,23 @@ export class UserEntityService implements OnModuleInit {
 			includeSecrets: false,
 		}, options);
 
-		let user: User;
+		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
 
-		if (typeof src === 'object') {
-			user = src;
-			if (src.avatar === undefined && src.avatarId) src.avatar = await this.driveFilesRepository.findOneBy({ id: src.avatarId }) ?? null;
-			if (src.banner === undefined && src.bannerId) src.banner = await this.driveFilesRepository.findOneBy({ id: src.bannerId }) ?? null;
-		} else {
-			user = await this.usersRepository.findOneOrFail({
-				where: { id: src },
-				relations: {
-					avatar: true,
-					banner: true,
-				},
+		// migration
+		if (user.avatarId != null && user.avatarUrl === null) {
+			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
+			user.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+			this.usersRepository.update(user.id, {
+				avatarUrl: user.avatarUrl,
+				avatarBlurhash: avatar.blurhash,
+			});
+		}
+		if (user.bannerId != null && user.bannerUrl === null) {
+			const banner = await this.driveFilesRepository.findOneByOrFail({ id: user.bannerId });
+			user.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+			this.usersRepository.update(user.id, {
+				bannerUrl: user.bannerUrl,
+				bannerBlurhash: banner.blurhash,
 			});
 		}
 
@@ -372,8 +339,8 @@ export class UserEntityService implements OnModuleInit {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: this.getAvatarUrlSync(user),
-			avatarBlurhash: user.avatar?.blurhash ?? null,
+			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
+			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
 			instance: user.host ? this.userInstanceCache.fetch(user.host,
@@ -402,8 +369,8 @@ export class UserEntityService implements OnModuleInit {
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner) : null,
-				bannerBlurhash: user.banner?.blurhash ?? null,
+				bannerUrl: user.bannerUrl,
+				bannerBlurhash: user.bannerBlurhash,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
 				isSuspended: user.isSuspended ?? falsy,
@@ -467,7 +434,7 @@ export class UserEntityService implements OnModuleInit {
 				}).then(count => count > 0),
 				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
-				hasUnreadChannel: this.getHasUnreadChannel(user.id),
+				hasUnreadChannel: false, // 後方互換性のため
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),
 				hasPendingReceivedFollowRequest: this.getHasPendingReceivedFollowRequest(user.id),
 				mutedWords: profile!.mutedWords,

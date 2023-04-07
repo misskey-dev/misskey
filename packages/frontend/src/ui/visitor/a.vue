@@ -1,19 +1,19 @@
 <template>
 <div class="mk-app">
-	<div v-if="mainRouter.currentRoute?.name === 'index'" class="banner" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-if="mainRouter.currentRoute?.name === 'index'" class="banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 			<div v-if="meta" class="about">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div class="desc" v-html="meta.description || $ts.introMisskey"></div>
+				<div class="desc" v-html="meta.description || i18n.ts.introMisskey"></div>
 			</div>
 			<div class="action">
-				<button class="_button primary" @click="signup()">{{ $ts.signup }}</button>
-				<button class="_button" @click="signin()">{{ $ts.login }}</button>
+				<button class="_button primary" @click="signup()">{{ i18n.ts.signup }}</button>
+				<button class="_button" @click="signin()">{{ i18n.ts.login }}</button>
 			</div>
 		</div>
 	</div>
-	<div v-else class="banner-mini" :style="{ backgroundImage: `url(${ $instance.bannerUrl })` }">
+	<div v-else class="banner-mini" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 		<div>
 			<h1 v-if="meta"><img v-if="meta.logoImageUrl" class="logo" :src="meta.logoImageUrl"><span v-else class="text">{{ instanceName }}</span></h1>
 		</div>
@@ -42,8 +42,10 @@ import XHeader from './header.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
-import { ColdDeviceStorage } from '@/store';
+import { defaultStore, ColdDeviceStorage } from '@/store';
 import { mainRouter } from '@/router';
+import { instance } from '@/instance';
+import { i18n } from '@/i18n';
 
 const DESKTOP_THRESHOLD = 1100;
 
@@ -66,6 +68,9 @@ export default defineComponent({
 			},
 			mainRouter,
 			isDesktop: window.innerWidth >= DESKTOP_THRESHOLD,
+			defaultStore,
+			instance,
+			i18n,
 		};
 	},
 
@@ -74,7 +79,7 @@ export default defineComponent({
 			return {
 				'd': () => {
 					if (ColdDeviceStorage.get('syncDeviceDarkMode')) return;
-					this.$store.set('darkMode', !this.$store.state.darkMode);
+					this.defaultStore.set('darkMode', !this.defaultStore.state.darkMode);
 				},
 				's': () => {
 					mainRouter.push('/search');

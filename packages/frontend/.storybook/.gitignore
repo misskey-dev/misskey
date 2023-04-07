@@ -1,0 +1,9 @@
+# (cd path/to/frontend; pnpm tsc -p .storybook)
+# (cd path/to/frontend; node .storybook/generate.js)
+/generate.js
+# (cd path/to/frontend; node .storybook/preload-locale.js)
+/preload-locale.js
+/locale.ts
+# (cd path/to/frontend; node .storybook/preload-theme.js)
+/preload-theme.js
+/themes.ts

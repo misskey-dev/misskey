@@ -1,6 +1,6 @@
 <template>
 <div class="fgmtyycl" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
-	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" @after-leave="emit('closed')">
+	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" @after-leave="emit('closed')">
 		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url"/>
 	</Transition>
 </div>
@@ -10,6 +10,7 @@
 import { onMounted } from 'vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	showing: boolean;

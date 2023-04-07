@@ -1,5 +1,5 @@
 <template>
-<div>
+<div role="menu">
 	<div
 		ref="itemsEl" v-hotkey="keymap"
 		class="_popup _shadow"
@@ -8,37 +8,37 @@
 		@contextmenu.self="e => e.preventDefault()"
 	>
 		<template v-for="(item, i) in items2">
-			<div v-if="item === null" :class="$style.divider"></div>
-			<span v-else-if="item.type === 'label'" :class="[$style.label, $style.item]">
+			<div v-if="item === null" role="separator" :class="$style.divider"></div>
+			<span v-else-if="item.type === 'label'" role="menuitem" :class="[$style.label, $style.item]">
 				<span>{{ item.text }}</span>
 			</span>
-			<span v-else-if="item.type === 'pending'" :tabindex="i" :class="[$style.pending, $style.item]">
+			<span v-else-if="item.type === 'pending'" role="menuitem" :tabindex="i" :class="[$style.pending, $style.item]">
 				<span><MkEllipsis/></span>
 			</span>
-			<MkA v-else-if="item.type === 'link'" :to="item.to" :tabindex="i" class="_button" :class="$style.item" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<MkA v-else-if="item.type === 'link'" role="menuitem" :to="item.to" :tabindex="i" class="_button" :class="$style.item" @click.passive="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<span>{{ item.text }}</span>
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</MkA>
-			<a v-else-if="item.type === 'a'" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button" :class="$style.item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<a v-else-if="item.type === 'a'" role="menuitem" :href="item.href" :target="item.target" :download="item.download" :tabindex="i" class="_button" :class="$style.item" @click="close(true)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</a>
-			<button v-else-if="item.type === 'user'" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<button v-else-if="item.type === 'user'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, { [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
-			<span v-else-if="item.type === 'switch'" :tabindex="i" :class="$style.item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<span v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" :class="$style.item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<MkSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</MkSwitch>
 			</span>
-			<button v-else-if="item.type === 'parent'" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
+			<button v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
 			</button>
-			<button v-else :tabindex="i" class="_button" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
 				<span>{{ item.text }}</span>

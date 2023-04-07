@@ -9,7 +9,7 @@
 					<i v-if="relay.status === 'accepted'" class="ti ti-check icon accepted"></i>
 					<i v-else-if="relay.status === 'rejected'" class="ti ti-ban icon rejected"></i>
 					<i v-else class="ti ti-clock icon requesting"></i>
-					<span>{{ $t(`_relayStatus.${relay.status}`) }}</span>
+					<span>{{ i18n.t(`_relayStatus.${relay.status}`) }}</span>
 				</div>
 				<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 			</div>

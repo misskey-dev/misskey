@@ -14,7 +14,7 @@
 	</div>
 	<div class="contents">
 		<div class="main">
-			<img :src="$instance.iconUrl || $instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
 			<button class="_button _acrylic menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<div class="fg">
 				<h1>

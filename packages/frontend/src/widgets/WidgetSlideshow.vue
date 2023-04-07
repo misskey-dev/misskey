@@ -4,7 +4,7 @@
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}
 		</p>
-		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ $t('no-image') }}</p>
+		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.t('no-image') }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
