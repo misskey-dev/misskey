@@ -41,6 +41,14 @@ export type Source = {
 		db?: number;
 		prefix?: string;
 	};
+	redisForJobQueue?: {
+		host: string;
+		port: number;
+		family?: number;
+		pass: string;
+		db?: number;
+		prefix?: string;
+	};
 	elasticsearch: {
 		host: string;
 		port: number;
@@ -99,6 +107,8 @@ export type Mixin = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
+	redisForPubsub: NonNullable<Source['redisForPubsub']>;
+	redisForJobQueue: NonNullable<Source['redisForJobQueue']>;
 };
 
 export type Config = Source & Mixin;
@@ -160,6 +170,7 @@ export function loadConfig() {
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
 	if (config.redisForPubsub == null) config.redisForPubsub = config.redis;
+	if (config.redisForJobQueue == null) config.redisForJobQueue = config.redis;
 
 	return Object.assign(config, mixin);
 }
