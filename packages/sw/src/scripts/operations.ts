@@ -59,7 +59,7 @@ export async function findClient() {
 		type: 'window',
 	});
 	for (const c of clients) {
-		if (c.url.indexOf('?zen') < 0) return c;
+		if (!new URL(c.url).searchParams.has('zen')) return c;
 	}
 	return null;
 }
