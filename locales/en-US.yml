@@ -920,7 +920,6 @@ pushNotificationNotSupported: "Your browser or instance does not support push no
 sendPushNotificationReadMessage: "Delete push notifications once the relevant notifications or messages have been read"
 sendPushNotificationReadMessageCaption: "A notification containing the text \"{emptyPushNotificationMessage}\" will be displayed for a short time. This may increase the battery usage of your device, if applicable."
 windowMaximize: "Maximize"
-windowMinimize: "Minimize"
 windowRestore: "Restore"
 caption: "Caption"
 loggedInAsBot: "Currently logged in as bot"
