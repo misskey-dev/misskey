@@ -12,6 +12,7 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
+import { RelayService } from '@/core/RelayService.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -28,6 +29,7 @@ export class AccountMoveService {
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
+		private relayService: RelayService,
 	) {
 	}
 
@@ -40,18 +42,28 @@ export class AccountMoveService {
 	public async moveToRemote(src: LocalUser, dst: User): Promise<unknown> {
 		// Make sure that the destination is a remote account.
 		if (this.userEntityService.isLocalUser(dst)) throw new Error('move destiantion is not remote');
+		if (!dst.uri) throw new Error('destination uri is empty');
 
-		// add movedToUri to indicate that the user has been moved
-		await this.usersRepository.update(src.id, { movedToUri: dst.uri });
+		// add movedToUri to indicate that the user has moved
+		const update = {} as Partial<User>;
+		update.alsoKnownAs = src.alsoKnownAs?.concat([dst.uri]) ?? [dst.uri];
+		update.movedToUri = dst.uri;
+		await this.usersRepository.update(src.id, update);
+
+		const srcPerson = await this.apRendererService.renderPerson(src);
+		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
+		await this.apDeliverManagerService.deliverToFollowers(src, updateAct);
+		this.relayService.deliverToRelays(src, updateAct);
 
 		// Deliver Move activity to the followers of the old account
-		const moveAct = this.apRendererService.renderMove(src, dst);
+		const moveAct = this.apRendererService.addContext(this.apRendererService.renderMove(src, dst));
 		await this.apDeliverManagerService.deliverToFollowers(src, moveAct);
 
 		// Publish meUpdated event
 		const iObj = await this.userEntityService.pack<true, true>(src.id, src, { detail: true, includeSecrets: true });
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
+		// follow the new account and unfollow the old one
 		const followings = await this.followingsRepository.findBy({
 			followeeId: src.id,
 		});
@@ -61,8 +73,8 @@ export class AccountMoveService {
 				try {
 					const follower = await this.usersRepository.findOneBy({ id: following.followerId });
 					if (!follower) return;
-					await this.userFollowingService.unfollow(follower, src);
 					await this.userFollowingService.follow(follower, dst);
+					await this.userFollowingService.unfollow(follower, src);
 				} catch {
 					/* empty */
 				}

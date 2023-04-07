@@ -22,7 +22,7 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import type { RemoteUser } from '@/models/entities/User.js';
-import { getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import { getApHrefNullable, getApId, getApIds, getApType, getOneApHrefNullable, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
@@ -734,7 +734,9 @@ export class ApInboxService {
 	@bindThis
 	private async move(actor: RemoteUser, activity: IMove): Promise<string> {
 		// fetch the new and old accounts
-		const new_acc = await this.apPersonService.resolvePerson(activity.target.toString());
+		const targetUri = getApHrefNullable(activity.target);
+		if (!targetUri) return 'skip: invalid activity target';
+		const new_acc = await this.apPersonService.resolvePerson(targetUri);
 		const old_acc = await this.apPersonService.resolvePerson(actor.uri);
 
 		// update them if they're remote
@@ -754,10 +756,10 @@ export class ApInboxService {
 			return 'skip: accounts invalid';
 		}
 
-		// add target uri to movedToUri in order to indicate that the user has been moved
+		// add target uri to movedToUri in order to indicate that the user has moved
 		await this.usersRepository.update(old_acc.id, { movedToUri: activity.target.toString() });
 
-		// unfollow the old account and follow the new account
+		// follow the new account and unfollow the old one
 		const followings = await this.followingsRepository.findBy({
 			followeeId: old_acc.id,
 		});
@@ -767,8 +769,8 @@ export class ApInboxService {
 				try {
 					const follower = await this.usersRepository.findOneBy({ id: following.followerId });
 					if (!follower) return;
-					await this.userFollowingService.unfollow(follower, old_acc);
 					await this.userFollowingService.follow(follower, new_acc);
+					await this.userFollowingService.unfollow(follower, old_acc);
 				} catch {
 					/* empty */
 				}

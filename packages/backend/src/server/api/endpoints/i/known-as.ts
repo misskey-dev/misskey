@@ -83,11 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				// Only allow moving from a remote account
 				if (this.userEntityService.isLocalUser(knownAs)) throw new ApiError(meta.errors.notRemote);
 
-				if (updates.alsoKnownAs == null || updates.alsoKnownAs.length === 0) {
-					updates.alsoKnownAs = [toUrl];
-				} else {
-					updates.alsoKnownAs.push(toUrl);
-				}
+				updates.alsoKnownAs = updates.alsoKnownAs?.concat([toUrl]) ?? [toUrl];
 			}
 
 			return await this.accountMoveService.createAlias(me, updates);
