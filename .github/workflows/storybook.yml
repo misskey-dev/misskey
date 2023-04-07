@@ -42,9 +42,27 @@ jobs:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Publish to Chromatic
       if: github.ref != 'refs/heads/master'
-      run: pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static $(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r ${{ github.event.before }} HEAD | xargs))
+      id: chromatic
+      run: |
+        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r ${{ github.event.before }} HEAD | xargs))"
+        if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
+          echo "skip=true" >> $GITHUB_OUTPUT
+        fi
+        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static $(echo "$CHROMATIC_PARAMETER")
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    - name: Notify that Chromatic will skip testing
+      uses: actions/github-script@v6.4.0
+      if: github.ref != 'refs/heads/master' && steps.chromatic.outputs.skip == 'true'
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: 'Chromatic will skip testing but you may still have to [review the changes on Chromatic](https://www.chromatic.com/pullrequests?appId=6428f7d7b962f0b79f97d6e4).'
+          })
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
