@@ -27,7 +27,15 @@ export class FederatedInstanceService {
 			memoryCacheLifetime: 1000 * 60 * 30, // 30m
 			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
 			toRedisConverter: (value) => JSON.stringify(value),
-			fromRedisConverter: (value) => JSON.parse(value), // TODO: date型の考慮
+			fromRedisConverter: (value) => {
+				const parsed = JSON.parse(value);
+				return {
+					...parsed,
+					firstRetrievedAt: new Date(parsed.firstRetrievedAt),
+					latestRequestReceivedAt: parsed.latestRequestReceivedAt ? new Date(parsed.latestRequestReceivedAt) : null,
+					infoUpdatedAt: parsed.infoUpdatedAt ? new Date(parsed.infoUpdatedAt) : null,
+				};
+			},
 		});
 	}
 
