@@ -162,9 +162,20 @@ function minimize() {
 }
 
 function unMinimize() {
+	const main = rootEl;
+	if (main == null) return;
+
 	minimized = false;
 	rootEl.style.width = unResizedWidth;
 	rootEl.style.height = unResizedHeight;
+	const browserWidth = window.innerWidth;
+	const browserHeight = window.innerHeight;
+	const windowWidth = main.offsetWidth;
+	const windowHeight = main.offsetHeight;
+
+	const position = main.getBoundingClientRect();
+	if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';
+	if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';
 }
 
 function onBodyMousedown() {
