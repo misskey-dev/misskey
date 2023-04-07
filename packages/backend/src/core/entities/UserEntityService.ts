@@ -9,7 +9,6 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
@@ -17,6 +16,7 @@ import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository,
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -48,14 +48,14 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 
 @Injectable()
 export class UserEntityService implements OnModuleInit {
+	private apPersonService: ApPersonService;
 	private noteEntityService: NoteEntityService;
 	private driveFileEntityService: DriveFileEntityService;
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private apPersonService: ApPersonService;
-	private userInstanceCache: RedisKVCache<Instance | null>;
+	private federatedInstanceService: FederatedInstanceService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -121,23 +121,17 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new RedisKVCache<Instance | null>(this.redisClient, 'userInstance', {
-			lifetime: 1000 * 60 * 60 * 24, // 24h
-			memoryCacheLifetime: 1000 * 60 * 30, // 30m
-			fetcher: (key) => this.instancesRepository.findOneBy({ host: key }),
-			toRedisConverter: (value) => JSON.stringify(value),
-			fromRedisConverter: (value) => JSON.parse(value), // TODO: date型の考慮
-		});
 	}
 
 	onModuleInit() {
+		this.apPersonService = this.moduleRef.get('ApPersonService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.antennaService = this.moduleRef.get('AntennaService');
 		this.roleService = this.moduleRef.get('RoleService');
-		this.apPersonService = this.moduleRef.get('ApPersonService');
+		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 	}
 
 	//#region Validators
@@ -352,7 +346,7 @@ export class UserEntityService implements OnModuleInit {
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: user.host ? this.userInstanceCache.fetch(user.host).then(instance => instance ? {
+			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
 				softwareVersion: instance.softwareVersion,
