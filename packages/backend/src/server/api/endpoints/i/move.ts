@@ -11,6 +11,8 @@ import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
+import { GetterService } from '@/server/api/GetterService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -86,6 +88,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private accountMoveService: AccountMoveService,
+		private getterService: GetterService,
+		private apPersonService: ApPersonService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Check parameter
@@ -105,11 +109,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const userAddress = unfiltered.split('@');
 			// Retrieve the destination account
-			const moveTo = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
+			const remoteMoveTo = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.noSuchMoveTarget);
 			});
+			const moveTo = await this.getterService.getRemoteUser(remoteMoveTo.id);
 			if (!moveTo.uri) throw new ApiError(meta.errors.uriNull);
+			await this.apPersonService.updatePerson(moveTo.uri);
 			// Only allow moving to a remote account
 			if (this.userEntityService.isLocalUser(moveTo)) throw new ApiError(meta.errors.notRemote);
 

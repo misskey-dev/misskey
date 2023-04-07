@@ -31,7 +31,7 @@ import { ApAudienceService } from './ApAudienceService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
 import type { Resolver } from './ApResolverService.js';
-import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IActor, IMove } from './type.js';
+import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove } from './type.js';
 
 @Injectable()
 export class ApInboxService {
@@ -733,49 +733,32 @@ export class ApInboxService {
 
 	@bindThis
 	private async move(actor: RemoteUser, activity: IMove): Promise<string> {
-		let new_acc = await this.apDbResolverService.getUserFromApId(activity.target);
-		let actor_new;
-		if (!new_acc) {
-			const resolver = this.apResolverService.createResolver();
-			actor_new = await resolver.resolve(activity.object).catch(e => {
-				this.logger.error(`Resolution failed: ${e}`);
-				throw e;
-			}) as IActor;
+		const new_acc = await this.apPersonService.resolvePerson(activity.target.toString());
+		const old_acc = await this.apPersonService.resolvePerson(actor.uri);
+
+		if (new_acc.uri) await this.apPersonService.updatePerson(new_acc.uri);
+		if (old_acc.uri) await this.apPersonService.updatePerson(old_acc.uri);
+
+		console.log(`new_acc.id: ${new_acc.id} new_acc.uri: ${new_acc.uri}`);
+		console.log(`old_acc.id: ${old_acc.id} old_acc.uri: ${old_acc.uri}`);
+
+		let isValidMove = true;
+		if (old_acc.uri) {
+			if (!new_acc.alsoKnownAs?.includes(old_acc.uri)) {
+				isValidMove = false;
+			}
+		} else if (!new_acc.alsoKnownAs?.includes(old_acc.id)) {
+			isValidMove = false;
+		}
+		if (!isValidMove) {
+			console.log('alsoKnownAs invalid');
+			return 'skip: accounts invalid';
 		}
 
-		if ((!new_acc || new_acc.uri === null) && !actor_new?.id) {
-			return 'skip: new acc not found';
-		}
-
-		const newUri = new_acc ? new_acc.uri : actor_new?.url?.toString();
-		if (newUri === null || newUri === undefined) return 'skip: new acc not found #2';
-
-		await this.apPersonService.updatePerson(newUri);
-		await this.apPersonService.updatePerson(actor.uri!);
-
-		new_acc = await this.apDbResolverService.getUserFromApId(newUri);
-		const old = await this.apDbResolverService.getUserFromApId(actor.uri!);
-
-		if (
-			old === null ||
-			old.uri === null ||
-			!new_acc?.alsoKnownAs?.includes(old.uri)
-		) return 'skip: accounts invalid';
-
-		old.movedToUri = new_acc.uri;
-
-		const followee = await this.usersRepository.findOneBy({ id: actor.id });
-		if (followee == null) {
-			return 'skip: old followee not found';
-		}
-
-		const followeeNew = await this.usersRepository.findOneBy({ id: new_acc.id });
-		if (followeeNew == null) {
-			return 'skip: new followee not found';
-		}
+		await this.usersRepository.update(old_acc.id, { movedToUri: new_acc.id });
 
 		const followings = await this.followingsRepository.findBy({
-			followeeId: followee.id,
+			followeeId: old_acc.id,
 		});
 		followings.forEach(async (following) => {
 			// If follower is local
@@ -783,8 +766,8 @@ export class ApInboxService {
 				try {
 					const follower = await this.usersRepository.findOneBy({ id: following.followerId });
 					if (!follower) return;
-					await this.userFollowingService.unfollow(follower, followee);
-					await this.userFollowingService.follow(follower, followeeNew);
+					await this.userFollowingService.unfollow(follower, old_acc);
+					await this.userFollowingService.follow(follower, new_acc);
 				} catch {
 					/* empty */
 				}
