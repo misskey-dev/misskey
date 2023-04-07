@@ -476,14 +476,6 @@ export class ClientServerService {
 			}
 		});
 
-		// Note Embed
-		fastify.get<{ Params: { note: string; } }>('/notes/:note/embed', async (request, reply) => {
-			reply.removeHeader('X-Frame-Options');
-			reply.header("X-Robots-Tag", "noindex");
-
-			return await renderBase(reply);
-		});
-
 		// Page
 		fastify.get<{ Params: { user: string; page: string; } }>('/@:user/pages/:page', async (request, reply) => {
 			const { username, host } = Acct.parse(request.params.user);

@@ -54,11 +54,6 @@
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
 				<MkInstanceTicker v-if="showTicker" class="ticker" :instance="appearNote.user.instance"/>
 			</div>
-			<div v-if="embed" class="instance-info">
-				<button v-click-anime class="_button" @click="openInstanceMenu">
-					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" class="icon"/>
-				</button>
-			</div>
 		</header>
 		<div class="main">
 			<div class="body">
@@ -96,54 +91,32 @@
 					</MkA>
 				</div>
 				<MkReactionsViewer ref="reactionsViewer" :note="appearNote"/>
-				<template v-if="embed">
-					<MkA class="button _button" :to="notePage(appearNote)">
-						<i class="ti ti-arrow-back-up"></i>
-						<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
-					</MkA>
-					<MkA v-if="canRenote" class="button _button" :to="notePage(appearNote)">
-						<i class="ti ti-repeat"></i>
-						<p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
-					</MkA>
-					<MkA v-if="appearNote.myReaction == null" class="button _button" :to="notePage(appearNote)">
-						<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-						<i v-else class="ti ti-plus"></i>
-					</MkA>
-					<MkA v-if="appearNote.myReaction != null" class="button _button reacted" :to="notePage(appearNote)">
-						<i class="ti ti-minus"></i>
-					</MkA>
-					<MkA v-if="defaultStore.state.showClipButtonInNoteFooter" class="button _button" :to="notePage(appearNote)">
-						<i class="ti ti-paperclip"></i>
-					</MkA>
-				</template>
-				<template v-else>
-					<button class="button _button" @click="reply()">
-						<i class="ti ti-arrow-back-up"></i>
-						<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
-					</button>
-					<button
-						v-if="canRenote"
-						ref="renoteButton"
-						class="button _button"
-						@mousedown="renote()"
-					>
-						<i class="ti ti-repeat"></i>
-						<p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
-					</button>
-					<button v-else class="button _button" disabled>
-						<i class="ti ti-ban"></i>
-					</button>
-					<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @mousedown="react()">
-						<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-						<i v-else class="ti ti-plus"></i>
-					</button>
-					<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
-						<i class="ti ti-minus"></i>
-					</button>
-					<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="button _button" @mousedown="clip()">
-						<i class="ti ti-paperclip"></i>
-					</button>
-				</template>
+				<button class="button _button" @click="reply()">
+					<i class="ti ti-arrow-back-up"></i>
+					<p v-if="appearNote.repliesCount > 0" class="count">{{ appearNote.repliesCount }}</p>
+				</button>
+				<button
+					v-if="canRenote"
+					ref="renoteButton"
+					class="button _button"
+					@mousedown="renote()"
+				>
+					<i class="ti ti-repeat"></i>
+					<p v-if="appearNote.renoteCount > 0" class="count">{{ appearNote.renoteCount }}</p>
+				</button>
+				<button v-else class="button _button" disabled>
+					<i class="ti ti-ban"></i>
+				</button>
+				<button v-if="appearNote.myReaction == null" ref="reactButton" class="button _button" @mousedown="react()">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
+				</button>
+				<button v-if="appearNote.myReaction != null" ref="reactButton" class="button _button reacted" @click="undoReact(appearNote)">
+					<i class="ti ti-minus"></i>
+				</button>
+				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="button _button" @mousedown="clip()">
+					<i class="ti ti-paperclip"></i>
+				</button>
 				<button ref="menuButton" class="button _button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -185,8 +158,6 @@ import { defaultStore, noteViewInterruptors } from '@/store';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 import { $i } from '@/account';
-import { instance } from '@/instance';
-import { openInstanceMenu } from '@/ui/_common_/common';
 import { i18n } from '@/i18n';
 import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
@@ -199,7 +170,6 @@ import MkRippleEffect from '@/components/MkRippleEffect.vue';
 const props = defineProps<{
 	note: misskey.entities.Note;
 	pinned?: boolean;
-	embed?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
@@ -408,12 +378,12 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, embed: props.embed }), ev).then(focus);
+		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, embed: props.embed }), menuButton.value, {
+	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted }), menuButton.value, {
 		viaKeyboard,
 	}).then(focus);
 }
@@ -494,10 +464,6 @@ if (appearNote.replyId) {
 
 	&:hover > .article > .main > .footer > .button {
 		opacity: 1;
-
-		&:hover {
-			text-decoration: none;
-		}
 	}
 
 	> .reply-to {
@@ -610,19 +576,6 @@ if (appearNote.replyId) {
 					margin-bottom: 2px;
 					line-height: 1.3;
 					word-wrap: anywhere;
-				}
-			}
-
-			> .instance-info {
-				flex-shrink: 0;
-				padding-left: 16px;
-				width: 39px;
-				height: 39px;
-
-				img {
-					width: 100%;
-					height: auto;
-					border-radius: 4px;
 				}
 			}
 		}
@@ -780,10 +733,6 @@ if (appearNote.replyId) {
 				> .avatar {
 					width: 50px;
 					height: 50px;
-				}
-				> .instance-info {
-					width: 33px;
-					height: 33px;
 				}
 			}
 

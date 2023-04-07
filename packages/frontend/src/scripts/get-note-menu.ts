@@ -94,7 +94,6 @@ export function getNoteMenu(props: {
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
 	currentClip?: misskey.entities.Clip;
-	embed?: boolean;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -235,7 +234,7 @@ export function getNoteMenu(props: {
 	}
 
 	let menu;
-	if ($i && !props.embed) {
+	if ($i) {
 		const statePromise = os.api('notes/state', {
 			noteId: appearNote.id,
 		});
@@ -275,13 +274,11 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-share',
 				text: i18n.ts.share,
 				action: share,
-			},
-			(!props.embed) ? {
+			}, {
 				icon: 'ti ti-code',
 				text: i18n.ts.copyEmbedCode,
 				action: copyEmbedCode,
-			} : undefined,
-			instance.translatorAvailable ? {
+			}, instance.translatorAvailable ? {
 				icon: 'ti ti-language-hiragana',
 				text: i18n.ts.translate,
 				action: translate,
@@ -389,7 +386,7 @@ export function getNoteMenu(props: {
 			action: () => {
 				window.open(appearNote.url ?? appearNote.uri, '_blank');
 			},
-		} : undefined, (!props.embed) ? {
+		} : undefined, (!appearNote.url && !appearNote.uri) ? {
 			icon: 'ti ti-code',
 			text: i18n.ts.copyEmbedCode,
 			action: copyEmbedCode,
