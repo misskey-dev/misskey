@@ -733,15 +733,15 @@ export class ApInboxService {
 
 	@bindThis
 	private async move(actor: RemoteUser, activity: IMove): Promise<string> {
+		// fetch the new and old accounts
 		const new_acc = await this.apPersonService.resolvePerson(activity.target.toString());
 		const old_acc = await this.apPersonService.resolvePerson(actor.uri);
 
+		// update them if they're remote
 		if (new_acc.uri) await this.apPersonService.updatePerson(new_acc.uri);
 		if (old_acc.uri) await this.apPersonService.updatePerson(old_acc.uri);
 
-		console.log(`new_acc.id: ${new_acc.id} new_acc.uri: ${new_acc.uri}`);
-		console.log(`old_acc.id: ${old_acc.id} old_acc.uri: ${old_acc.uri}`);
-
+		// check if alsoKnownAs of the new account is valid
 		let isValidMove = true;
 		if (old_acc.uri) {
 			if (!new_acc.alsoKnownAs?.includes(old_acc.uri)) {
@@ -751,12 +751,13 @@ export class ApInboxService {
 			isValidMove = false;
 		}
 		if (!isValidMove) {
-			console.log('alsoKnownAs invalid');
 			return 'skip: accounts invalid';
 		}
 
+		// add movedToUri to indicate that the user has been moved
 		await this.usersRepository.update(old_acc.id, { movedToUri: new_acc.id });
 
+		// unfollow the old account and follow the new account
 		const followings = await this.followingsRepository.findBy({
 			followeeId: old_acc.id,
 		});

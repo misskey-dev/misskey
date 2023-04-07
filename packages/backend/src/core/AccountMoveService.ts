@@ -41,9 +41,8 @@ export class AccountMoveService {
 		// Make sure that the destination is a remote account.
 		if (this.userEntityService.isLocalUser(dst)) throw new Error('move destiantion is not remote');
 
-		const updates: Partial<User> = { movedToUri: dst.uri };
-
-		await this.usersRepository.update(src.id, updates);
+		// add movedToUri to indicate that the user has been moved
+		await this.usersRepository.update(src.id, { movedToUri: dst.uri });
 
 		// Deliver Move activity to the followers of the old account
 		const moveAct = this.apRendererService.renderMove(src, dst);

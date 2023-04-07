@@ -996,6 +996,7 @@ moveFrom: "Move to this account from an older account"
 moveFromLabel: "Account you're moving from:"
 moveFromDescription: "This will set an alias of your old account so that you can move from that account to this current one. Do this BEFORE moving from your older account. Please enter the tag of the account formatted like @person@instance.com"
 migrationConfirm: "Are you absolutely sure you want to migrate your acccount to {account}? Once you do this, you won't be able to reverse it, and you won't be able to use your account normally again.\nAlso, please ensure that you've set this current account as the account you're moving from."
+accountMoved: "User has moved to a new account:"
 
 _achievements:
   earnedAt: "Unlocked at"
