@@ -989,7 +989,6 @@ enableChartsForFederatedInstances: "生成远程服务器的图表"
 showClipButtonInNoteFooter: "在贴文下方显示便签按钮"
 largeNoteReactions: "使用大图标来显示回应"
 noteIdOrUrl: "帖子ID或URL"
-migration: "账户迁移"
 _achievements:
   earnedAt: "达成时间"
   _types:
