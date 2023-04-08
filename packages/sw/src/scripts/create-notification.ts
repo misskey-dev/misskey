@@ -5,7 +5,6 @@ import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
 import { BadgeNames, PushNotificationDataMap } from '@/types';
 import getUserName from '@/scripts/get-user-name';
-import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
 
@@ -37,7 +36,8 @@ export async function createNotification<K extends keyof PushNotificationDataMap
 
 async function composeNotification(data: PushNotificationDataMap[keyof PushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
 	if (!swLang.i18n) swLang.fetchLocale();
-	const i18n = await swLang.i18n as I18n;
+	const i18n = await swLang.i18n;
+	if (i18n === null) throw new Error("Failed to load i18n.");
 	const { t } = i18n;
 	switch (data.type) {
 		/*
@@ -228,7 +228,8 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 export async function createEmptyNotification() {
 	return new Promise<void>(async res => {
 		if (!swLang.i18n) swLang.fetchLocale();
-		const i18n = await swLang.i18n as I18n;
+		const i18n = await swLang.i18n;
+		if (i18n === null) throw new Error("Failed to load i18n.");
 		const { t } = i18n;
 
 		await globalThis.registration.showNotification(
