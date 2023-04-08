@@ -920,6 +920,7 @@ pushNotificationNotSupported: "ブラウザかサーバーがプッシュ通知�
 sendPushNotificationReadMessage: "通知やメッセージが既読になったらプッシュ通知を消すで"
 sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」っていう表示が一瞬表示されるようになるで。端末の電池使用量が増える可能性があるで。"
 windowMaximize: "最大化"
+windowMinimize: "最小化"
 windowRestore: "元に戻す"
 caption: "キャプション"
 loggedInAsBot: "Botアカウントでログイン中やで"
@@ -988,6 +989,7 @@ enableChartsForFederatedInstances: "リモートサーバーのチャートを�
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 largeNoteReactions: "ノートのリアクションを大きする"
 noteIdOrUrl: "ノートIDかURL"
+accountMoved: "このユーザーはさらのアカウントに引っ越したで："
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
@@ -1898,4 +1900,3 @@ _webhookSettings:
     renote: "Renoteされるとき～！"
     reaction: "リアクションがあるとき～！"
     mention: "メンションがあるとき～！"
-

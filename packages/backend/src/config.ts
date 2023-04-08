@@ -25,6 +25,14 @@ export type Source = {
 		disableCache?: boolean;
 		extra?: { [x: string]: string };
 	};
+	dbReplications?: boolean;
+	dbSlaves?: {
+		host: string;
+		port: number;
+		db: string;
+		user: string;
+		pass: string;
+	}[];
 	redis: {
 		host: string;
 		port: number;

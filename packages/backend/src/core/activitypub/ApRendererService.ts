@@ -25,7 +25,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -293,6 +293,22 @@ export class ApRendererService {
 	}
 
 	@bindThis
+	public renderMove(
+		src: { id: User['id']; host: User['host']; uri: User['host'] },
+		dst: { id: User['id']; host: User['host']; uri: User['host'] },
+	): IMove {
+		const actor = this.userEntityService.isLocalUser(src) ? `${this.config.url}/users/${src.id}` : src.uri!;
+		const target = this.userEntityService.isLocalUser(dst) ? `${this.config.url}/users/${dst.id}` : dst.uri!;
+		return {
+			id: `${this.config.url}/moves/${src.id}/${dst.id}`,
+			actor,
+			type: 'Move',
+			object: actor,
+			target,
+		};
+	}
+
+	@bindThis
 	public async renderNote(note: Note, dive = true): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
@@ -497,6 +513,14 @@ export class ApRendererService {
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 		} as any;
+
+		if (user.movedToUri) {
+			person.movedTo = user.movedToUri;
+		}
+
+		if (user.alsoKnownAs) {
+			person.alsoKnownAs = user.alsoKnownAs;
+		}
 
 		if (profile.birthday) {
 			person['vcard:bday'] = profile.birthday;
