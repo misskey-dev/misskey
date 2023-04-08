@@ -72,8 +72,5 @@ export async function findClient() {
 	const clients = await globalThis.clients.matchAll({
 		type: 'window',
 	});
-	for (const c of clients) {
-		if (!(new URL(c.url)).searchParams.has('zen')) return c;
-	}
-	return null;
+	return clients.find(c => !(new URL(c.url)).searchParams.has('zen')) ?? null;
 }
