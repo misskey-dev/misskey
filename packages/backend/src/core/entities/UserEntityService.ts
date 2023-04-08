@@ -15,6 +15,7 @@ import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema,
 import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
@@ -25,7 +26,7 @@ import type { PageEntityService } from './PageEntityService.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
-	Detailed extends true ? 
+	Detailed extends true ?
 		ExpectsMe extends true ? Packed<'MeDetailed'> :
 		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
 		Packed<'UserDetailed'> :
@@ -47,6 +48,7 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 
 @Injectable()
 export class UserEntityService implements OnModuleInit {
+	private apPersonService: ApPersonService;
 	private noteEntityService: NoteEntityService;
 	private driveFileEntityService: DriveFileEntityService;
 	private pageEntityService: PageEntityService;
@@ -122,6 +124,7 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	onModuleInit() {
+		this.apPersonService = this.moduleRef.get('ApPersonService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
@@ -237,7 +240,7 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
-		
+
 		const latestNotificationIdsRes = await this.redisClient.xrevrange(
 			`notificationTimeline:${userId}`,
 			'+',
@@ -363,6 +366,8 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				url: profile!.url,
 				uri: user.uri,
+				movedToUri: user.movedToUri ? await this.apPersonService.resolvePerson(user.movedToUri) : null,
+				alsoKnownAs: user.alsoKnownAs,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,

@@ -187,7 +187,7 @@ try {
 } catch (err) {}
 
 const app = createApp(
-	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	new URLSearchParams(window.location.search).has('zen') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 	!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 	ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
