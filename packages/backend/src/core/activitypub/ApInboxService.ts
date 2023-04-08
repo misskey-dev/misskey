@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -760,20 +760,23 @@ export class ApInboxService {
 		await this.usersRepository.update(old_acc.id, { movedToUri: targetUri });
 
 		// follow the new account and unfollow the old one
-		const followings = await this.followingsRepository.findBy({
-			followeeId: old_acc.id,
+		const followings = await this.followingsRepository.find({
+			relations: {
+				follower: true,
+			},
+			where: {
+				follower: Not(IsNull()),
+				followeeId: old_acc.id,
+				followerHost: IsNull(), // follower is local
+			}
 		});
 		followings.forEach(async (following) => {
-			// If follower is local
-			if (!following.followerHost) {
-				try {
-					const follower = await this.usersRepository.findOneBy({ id: following.followerId });
-					if (!follower) return;
-					await this.userFollowingService.follow(follower, new_acc);
-					await this.userFollowingService.unfollow(follower, old_acc);
-				} catch {
-					/* empty */
-				}
+			if (!following.follower) return;
+			try {
+				await this.userFollowingService.follow(following.follower, new_acc);
+				await this.userFollowingService.unfollow(following.follower, old_acc);
+			} catch {
+				/* empty */
 			}
 		});
 

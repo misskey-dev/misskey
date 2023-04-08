@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { IsNull, Not } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -64,20 +65,23 @@ export class AccountMoveService {
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
 		// follow the new account and unfollow the old one
-		const followings = await this.followingsRepository.findBy({
-			followeeId: src.id,
+		const followings = await this.followingsRepository.find({
+			relations: {
+				follower: true,
+			},
+			where: {
+				follower: Not(IsNull()),
+				followeeId: src.id,
+				followerHost: IsNull(), // follower is local
+			}
 		});
 		followings.forEach(async (following) => {
-			// If follower is local
-			if (!following.followerHost) {
-				try {
-					const follower = await this.usersRepository.findOneBy({ id: following.followerId });
-					if (!follower) return;
-					await this.userFollowingService.follow(follower, dst);
-					await this.userFollowingService.unfollow(follower, src);
-				} catch {
-					/* empty */
-				}
+			if (!following.follower) return;
+			try {
+				await this.userFollowingService.follow(following.follower, dst);
+				await this.userFollowingService.unfollow(following.follower, src);
+			} catch {
+				/* empty */
 			}
 		});
 
