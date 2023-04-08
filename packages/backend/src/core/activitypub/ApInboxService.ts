@@ -771,17 +771,17 @@ export class ApInboxService {
 			where: {
 				followeeId: old_acc.id,
 				followerHost: IsNull(), // follower is local
-			}
+			},
 		});
-		followings.forEach(async (following) => {
-			if (!following.follower) return;
+		for (const following of followings) {
+			if (!following.follower) continue;
 			try {
 				await this.userFollowingService.follow(following.follower, new_acc);
 				await this.userFollowingService.unfollow(following.follower, old_acc);
 			} catch {
 				/* empty */
 			}
-		});
+		}
 
 		return 'ok';
 	}
