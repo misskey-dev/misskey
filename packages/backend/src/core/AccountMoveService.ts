@@ -72,17 +72,17 @@ export class AccountMoveService {
 			where: {
 				followeeId: src.id,
 				followerHost: IsNull(), // follower is local
-			}
+			},
 		});
-		followings.forEach(async (following) => {
-			if (!following.follower) return;
+		for (const following of followings) {
+			if (!following.follower) continue;
 			try {
 				await this.userFollowingService.follow(following.follower, dst);
 				await this.userFollowingService.unfollow(following.follower, src);
 			} catch {
 				/* empty */
 			}
-		});
+		}
 
 		return iObj;
 	}
