@@ -32,8 +32,6 @@ export type Source = {
 		db: string;
 		user: string;
 		pass: string;
-		disableCache?: boolean;
-		extra?: { [x: string]: string };
 	}[];
 	redis: {
 		host: string;
