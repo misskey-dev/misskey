@@ -38,6 +38,8 @@
 - Add Minimizing ("folding") of windows
 
 ### Server
+- PostgreSQLのレプリケーション対応
+	- 設定ファイルの `dbReplications` および `dbSlaves` にて設定できます
 - イベント用Redisを別サーバーに分離できるように
 - ジョブキュー用Redisを別サーバーに分離できるように
 - サーバーの全体的なパフォーマンスを向上
