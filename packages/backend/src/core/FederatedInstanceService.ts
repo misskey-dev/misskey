@@ -29,6 +29,7 @@ export class FederatedInstanceService {
 			toRedisConverter: (value) => JSON.stringify(value),
 			fromRedisConverter: (value) => {
 				const parsed = JSON.parse(value);
+				if (parsed == null) return null;
 				return {
 					...parsed,
 					firstRetrievedAt: new Date(parsed.firstRetrievedAt),
