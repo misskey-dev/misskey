@@ -24,3 +24,9 @@ function getRandom() {
 export function genMeid(date: Date): string {
 	return getTime(date.getTime()) + getRandom();
 }
+
+export function parseMeid(id: string): { date: Date; } {
+	return {
+		date: new Date(parseInt(id.slice(0, 12), 16) - 0x800000000000),
+	};
+}
