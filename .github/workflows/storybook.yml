@@ -44,7 +44,11 @@ jobs:
       if: github.ref != 'refs/heads/master'
       id: chromatic
       run: |
-        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r ${{ github.event.before }} HEAD | xargs))"
+        DIFF="${{ github.event.before }} HEAD"
+        if [ "$DIFF" = "0000000000000000000000000000000000000000 HEAD" ]; then
+          DIFF="HEAD"
+        fi
+        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r $(echo "$DIFF") | xargs))"
         if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
           echo "skip=true" >> $GITHUB_OUTPUT
         fi
