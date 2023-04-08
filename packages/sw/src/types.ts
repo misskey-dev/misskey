@@ -5,7 +5,7 @@ export type SwMessageOrderType = 'post' | 'push';
 export type SwMessage = {
 	type: 'order';
 	order: SwMessageOrderType;
-	loginId: string;
+	loginId?: string;
 	url: string;
 	[x: string]: any;
 };

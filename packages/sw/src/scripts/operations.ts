@@ -57,11 +57,11 @@ export async function openPost(options: any, loginId?: string) {
 	return openClient('post', `${url}?${query}`, loginId, { options });
 }
 
-export async function openClient(order: SwMessageOrderType, url: string, loginId?: string, query: any = {}) {
+export async function openClient(order: SwMessageOrderType, url: string, loginId?: string, query: Record<string, SwMessage[string]> = {}) {
 	const client = await findClient();
 
 	if (client) {
-		client.postMessage({ type: 'order', ...query, order, loginId, url } as SwMessage);
+		client.postMessage({ type: 'order', ...query, order, loginId, url } satisfies SwMessage);
 		return client;
 	}
 
