@@ -1,22 +1,22 @@
 <template>
 <div class="_gaps_m">
 	<FormSection first>
-		<template #label>{{ i18n.ts.moveTo }}</template>
+		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
 		<MkInput v-model="moveToAccount" manual-save>
 			<template #prefix><i class="ti ti-plane-departure"></i></template>
-			<template #label>{{ i18n.ts.moveToLabel }}</template>
+			<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
 		</MkInput>
 	</FormSection>
-	<FormInfo warn>{{ i18n.ts.moveAccountDescription }}</FormInfo>
+	<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.moveFrom }}</template>
+		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
 		<MkInput v-model="accountAlias" manual-save>
 			<template #prefix><i class="ti ti-plane-arrival"></i></template>
-			<template #label>{{ i18n.ts.moveFromLabel }}</template>
+			<template #label>{{ i18n.ts._accountMigration.moveFromLabel }}</template>
 		</MkInput>
 	</FormSection>
-	<FormInfo warn>{{ i18n.ts.moveFromDescription }}</FormInfo>
+	<FormInfo warn>{{ i18n.ts._accountMigration.moveFromDescription }}</FormInfo>
 </div>
 </template>
 
@@ -60,7 +60,7 @@ watch(moveToAccount, async () => {
 });
 
 definePageMetadata({
-	title: i18n.ts.migration,
+	title: i18n.ts.accountMigration,
 	icon: 'ti ti-plane',
 });
 </script>
