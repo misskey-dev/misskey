@@ -87,9 +87,10 @@ async function search() {
 
 	if (query == null || query === '') return;
 
-	if (query.startsWith('https://')) {
+	if (query.startsWith('https://') || query.startsWith("web+ap://")) {
+		const uri = query.replace(/^web\+ap:\/\//, 'https://');
 		const promise = os.api('ap/show', {
-			uri: query,
+			uri: uri,
 		});
 
 		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
