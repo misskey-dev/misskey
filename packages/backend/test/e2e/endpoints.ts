@@ -862,7 +862,7 @@ describe('Endpoints', () => {
 			const res2 = await api('/users/show', {
 				userId: bob.id,
 			}, alice);
-			assert.strictEqual(res1.status, 200);
+			assert.strictEqual(res1.status, 204);
 			assert.strictEqual(res2.body?.memo, memo);
 		});
 
@@ -877,7 +877,7 @@ describe('Endpoints', () => {
 			const res2 = await api('/users/show', {
 				userId: alice.id,
 			}, alice);
-			assert.strictEqual(res1.status, 200);
+			assert.strictEqual(res1.status, 204);
 			assert.strictEqual(res2.body?.memo, memo);
 		});
 

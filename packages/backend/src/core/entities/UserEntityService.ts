@@ -340,7 +340,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const falsy = opts.detail ? false : undefined;
 
-		const memo = meId == null ? null : this.userMemoRepository.findOneBy({
+		const memo = meId == null ? null : await this.userMemoRepository.findOneBy({
 			userId: meId,
 			targetUserId: user.id,
 		}).then(row => row?.memo ?? null);
