@@ -2,7 +2,7 @@
  * Language manager for SW
  */
 import { get, set } from 'idb-keyval';
-import { I18n } from '@/scripts/i18n';
+import { I18n, type Locale } from '@/scripts/i18n';
 
 class SwLang {
 	public cacheName = `mk-cache-${_VERSION_}`;
@@ -18,7 +18,7 @@ class SwLang {
 		return this.fetchLocale();
 	}
 
-	public i18n: Promise<I18n<any>> | null = null;
+	public i18n: Promise<I18n> | null = null;
 
 	public fetchLocale() {
 		return this.i18n = this._fetch();
@@ -38,7 +38,7 @@ class SwLang {
 			caches.open(this.cacheName).then(cache => cache.put(localeUrl, clone));
 		}
 
-		return new I18n(await localeRes.json());
+		return new I18n<Locale>(await localeRes.json());
 	}
 }
 

@@ -37,7 +37,7 @@ export async function createNotification<K extends keyof PushNotificationDataMap
 
 async function composeNotification(data: PushNotificationDataMap[keyof PushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
 	if (!swLang.i18n) swLang.fetchLocale();
-	const i18n = await swLang.i18n as I18n<any>;
+	const i18n = await swLang.i18n as I18n;
 	const { t } = i18n;
 	switch (data.type) {
 		/*
@@ -228,7 +228,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 export async function createEmptyNotification() {
 	return new Promise<void>(async res => {
 		if (!swLang.i18n) swLang.fetchLocale();
-		const i18n = await swLang.i18n as I18n<any>;
+		const i18n = await swLang.i18n as I18n;
 		const { t } = i18n;
 
 		await globalThis.registration.showNotification(
