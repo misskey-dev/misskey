@@ -126,6 +126,7 @@ describe('OAuth', () => {
 		test('Require PKCE', async () => {
 			const client = getClient();
 
+			// Pattern 1: No PKCE fields at all
 			let response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
@@ -133,6 +134,7 @@ describe('OAuth', () => {
 			}));
 			assert.ok(!response.ok);
 
+			// Pattern 2: Only code_challenge
 			response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
@@ -141,6 +143,7 @@ describe('OAuth', () => {
 			}));
 			assert.ok(!response.ok);
 
+			// Pattern 2: Only code_challenge_method
 			response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
@@ -149,6 +152,7 @@ describe('OAuth', () => {
 			}));
 			assert.ok(!response.ok);
 
+			// Pattern 3: Unsupported code_challenge_method
 			response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
