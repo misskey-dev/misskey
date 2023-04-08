@@ -12,7 +12,7 @@ const buildOptions = {
 	absWorkingDir: __dirname,
 	bundle: true,
 	define: {
-		_DEV_: process.env.NODE_ENV !== 'production',
+		_DEV_: JSON.stringify(process.env.NODE_ENV !== 'production'),
 		_ENV_: JSON.stringify(process.env.NODE_ENV),
 		_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
 		_PERF_PREFIX_: JSON.stringify('Misskey:'),
