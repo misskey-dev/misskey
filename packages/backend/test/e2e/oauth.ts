@@ -122,40 +122,91 @@ describe('OAuth', () => {
 		assert.strictEqual(createResponseBody.createdNote.text, 'test');
 	});
 
-	test('Require PKCE', async () => {
-		const client = getClient();
+	describe('PKCE', () => {
+		test('Require PKCE', async () => {
+			const client = getClient();
 
-		let response = await fetch(client.authorizeURL({
-			redirect_uri,
-			scope: 'write:notes',
-			state: 'state',
-		}));
-		assert.ok(!response.ok);
+			let response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+			}));
+			assert.ok(!response.ok);
 
-		response = await fetch(client.authorizeURL({
-			redirect_uri,
-			scope: 'write:notes',
-			state: 'state',
-			code_challenge: 'code',
-		}));
-		assert.ok(!response.ok);
+			response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+			}));
+			assert.ok(!response.ok);
 
-		response = await fetch(client.authorizeURL({
-			redirect_uri,
-			scope: 'write:notes',
-			state: 'state',
-			code_challenge_method: 'S256',
-		}));
-		assert.ok(!response.ok);
+			response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge_method: 'S256',
+			}));
+			assert.ok(!response.ok);
 
-		response = await fetch(client.authorizeURL({
-			redirect_uri,
-			scope: 'write:notes',
-			state: 'state',
-			code_challenge: 'code',
-			code_challenge_method: 'SSSS',
-		}));
-		assert.ok(!response.ok);
+			response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'SSSS',
+			}));
+			assert.ok(!response.ok);
+		});
+
+		test('Verify PKCE', async () => {
+			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge,
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+
+			const decisionResponse = await fetchDecisionFromResponse(response, alice);
+			assert.strictEqual(decisionResponse.status, 302);
+
+			const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
+			assert.ok(!!code);
+
+			// Pattern 1: code followed by some junk code
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier: code_verifier + 'x',
+			}));
+
+			// Pattern 2: clipped code
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier: code_verifier.slice(0, 80),
+			}));
+
+			// Pattern 3: Some part of code is replaced
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier: code_verifier.slice(0, -10) + 'x'.repeat(10),
+			}));
+
+			// And now the code is invalidated by the previous failures
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			}));
+		});
 	});
 
 	test('Cancellation', async () => {
@@ -171,6 +222,8 @@ describe('OAuth', () => {
 		assert.strictEqual(response.status, 200);
 
 		const decisionResponse = await fetchDecisionFromResponse(response, alice, { cancel: true });
+		assert.strictEqual(decisionResponse.status, 302);
+
 		const location = new URL(decisionResponse.headers.get('location')!);
 		assert.ok(!location.searchParams.has('code'));
 		assert.ok(location.searchParams.has('error'));
@@ -179,8 +232,6 @@ describe('OAuth', () => {
 	// TODO: .well-known/oauth-authorization-server
 
 	// TODO: scopes (totally missing / empty / exists but all invalid / exists but partially invalid / all valid)
-
-	// TODO: PKCE verification failure
 
 	// TODO: authorizing two users concurrently
 
