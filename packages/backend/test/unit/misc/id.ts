@@ -1,8 +1,8 @@
-import { aidRegExp, genAid, parseAid } from '@/misc/id/aid';
-import { genMeid, meidRegExp, parseMeid } from '@/misc/id/meid';
-import { genMeidg, meidgRegExp, parseMeidg } from '@/misc/id/meidg';
-import { genObjectId, objectIdRegExp, parseObjectId } from '@/misc/id/object-id';
-import { ulidRegExp, parseUlid } from '@/misc/id/ulid';
+import { aidRegExp, genAid, parseAid } from '@/misc/id/aid.js';
+import { genMeid, meidRegExp, parseMeid } from '@/misc/id/meid.js';
+import { genMeidg, meidgRegExp, parseMeidg } from '@/misc/id/meidg.js';
+import { genObjectId, objectIdRegExp, parseObjectId } from '@/misc/id/object-id.js';
+import { ulidRegExp, parseUlid } from '@/misc/id/ulid.js';
 import { ulid } from 'ulid';
 import { describe, test, expect } from '@jest/globals';
 

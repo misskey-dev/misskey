@@ -7,7 +7,7 @@ import { genMeid, parseMeid } from '@/misc/id/meid.js';
 import { genMeidg, parseMeidg } from '@/misc/id/meidg.js';
 import { genObjectId } from '@/misc/id/object-id.js';
 import { bindThis } from '@/decorators.js';
-import { parseUlid } from '@/misc/id/ulid';
+import { parseUlid } from '@/misc/id/ulid.js';
 
 @Injectable()
 export class IdService {
