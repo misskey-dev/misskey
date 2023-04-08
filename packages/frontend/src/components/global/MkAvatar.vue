@@ -236,7 +236,7 @@ watch(() => props.user.avatarBlurhash, () => {
 				> .plot {
 					background-position: 20% 10%; /* ~= 37.5deg */
 
-					&:fist-child {
+					&:first-child {
 						background-position-x: 21%;
 					}
 
@@ -266,7 +266,7 @@ watch(() => props.user.avatarBlurhash, () => {
 					position: absolute;
 					background-position: 80% 10%; /* ~= 37.5deg */
 
-					&:fist-child {
+					&:first-child {
 						background-position-x: 79%;
 					}
 
