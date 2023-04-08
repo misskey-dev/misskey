@@ -20,6 +20,9 @@ packages/frontend/.yarn/cache
 packages/backend/.yarn/cache
 packages/sw/.yarn/cache
 
+# pnpm
+.pnpm-store
+
 # Cypress
 cypress/screenshots
 cypress/videos
@@ -52,6 +55,8 @@ api-docs.json
 .DS_Store
 /files
 ormconfig.json
+temp
+/packages/frontend/src/**/*.stories.ts
 
 # blender backups
 *.blend1

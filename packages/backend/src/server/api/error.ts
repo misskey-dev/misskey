@@ -1,4 +1,4 @@
-type E = { message: string, code: string, id: string, kind?: 'client' | 'server', httpStatusCode?: number };
+type E = { message: string, code: string, id: string, kind?: 'client' | 'server' | 'permission', httpStatusCode?: number };
 
 export class ApiError extends Error {
 	public message: string;

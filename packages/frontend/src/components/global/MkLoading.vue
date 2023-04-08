@@ -6,7 +6,7 @@
 				<circle cx="64" cy="64" r="64" style="fill:none;stroke:currentColor;stroke-width:21.33px;"/>
 			</g>
 		</svg>
-		<svg :class="[$style.spinner, $style.fg]" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
+		<svg :class="[$style.spinner, $style.fg, { [$style.static]: static }]" viewBox="0 0 168 168" xmlns="http://www.w3.org/2000/svg">
 			<g transform="matrix(1.125,0,0,1.125,12,12)">
 				<path d="M128,64C128,28.654 99.346,0 64,0C99.346,0 128,28.654 128,64Z" style="fill:none;stroke:currentColor;stroke-width:21.33px;"/>
 			</g>
@@ -19,11 +19,13 @@
 import { } from 'vue';
 
 const props = withDefaults(defineProps<{
+	static?: boolean;
 	inline?: boolean;
 	colored?: boolean;
 	mini?: boolean;
 	em?: boolean;
 }>(), {
+	static: false,
 	inline: false,
 	colored: true,
 	mini: false,
@@ -97,5 +99,9 @@ const props = withDefaults(defineProps<{
 
 .fg {
 	animation: spinner 0.5s linear infinite;
+
+	&.static {
+		animation-play-state: paused;
+	}
 }
 </style>

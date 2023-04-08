@@ -1,7 +1,9 @@
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
+import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
 import { i18n } from '@/i18n';
+import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 
@@ -46,7 +48,7 @@ export default defineComponent({
 
 		if (props.items.length === 0) return;
 
-		const renderChildren = () => props.items.map((item, i) => {
+		const renderChildrenImpl = () => props.items.map((item, i) => {
 			if (!slots || !slots.default) return;
 
 			const el = slots.default({
@@ -94,6 +96,21 @@ export default defineComponent({
 				}
 			}
 		});
+
+		const renderChildren = () => {
+			const children = renderChildrenImpl();
+			if (isDebuggerEnabled(6864)) {
+				const nodes = children.flatMap((node) => node ?? []);
+				const keys = new Set(nodes.map((node) => node.key));
+				if (keys.size !== nodes.length) {
+					const id = crypto.randomUUID();
+					const instances = stackTraceInstances();
+					os.toast(instances.reduce((a, c) => `${a} at ${c.type.name}`, `[DEBUG_6864 (${id})]: ${nodes.length - keys.size} duplicated keys found`));
+					console.warn({ id, debugId: 6864, stack: instances });
+				}
+			}
+			return children;
+		};
 
 		function onBeforeLeave(el: HTMLElement) {
 			el.style.top = `${el.offsetTop}px`;

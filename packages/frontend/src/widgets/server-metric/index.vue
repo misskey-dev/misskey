@@ -4,7 +4,7 @@
 	<template #header>{{ i18n.ts._widgets.serverMetric }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
 
-	<div v-if="meta" class="mkw-serverMetric data-cy-mkw-serverMetric">
+	<div v-if="meta" data-cy-mkw-serverMetric class="mkw-serverMetric">
 		<XCpuMemory v-if="widgetProps.view === 0" :connection="connection" :meta="meta"/>
 		<XNet v-else-if="widgetProps.view === 1" :connection="connection" :meta="meta"/>
 		<XCpu v-else-if="widgetProps.view === 2" :connection="connection" :meta="meta"/>

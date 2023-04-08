@@ -1,6 +1,6 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs" /></template>
+	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="800">
 		<div v-if="$i">
 			<div v-if="state == 'waiting'">
@@ -15,13 +15,13 @@
 			</div>
 			<div v-else>
 				<div v-if="_permissions.length > 0">
-					<p v-if="name">{{ $t('_auth.permission', { name }) }}</p>
+					<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
 					<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 					<ul>
-						<li v-for="p in _permissions" :key="p">{{ $t(`_permissions.${p}`) }}</li>
+						<li v-for="p in _permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
 					</ul>
 				</div>
-				<div v-if="name">{{ $t('_auth.shareAccess', { name }) }}</div>
+				<div v-if="name">{{ i18n.t('_auth.shareAccess', { name }) }}</div>
 				<div v-else>{{ i18n.ts._auth.shareAccessAsk }}</div>
 				<div :class="$style.buttons">
 					<MkButton inline @click="deny">{{ i18n.ts.cancel }}</MkButton>

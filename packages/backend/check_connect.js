@@ -1,8 +1,15 @@
+import Redis from 'ioredis';
 import { loadConfig } from './built/config.js';
-import { createRedisConnection } from './built/redis.js';
 
 const config = loadConfig();
-const redis = createRedisConnection(config);
+const redis = new Redis({
+	port: config.redis.port,
+	host: config.redis.host,
+	family: config.redis.family == null ? 0 : config.redis.family,
+	password: config.redis.pass,
+	keyPrefix: `${config.redis.prefix}:`,
+	db: config.redis.db ?? 0,
+});
 
 redis.on('connect', () => redis.disconnect());
 redis.on('error', (e) => {

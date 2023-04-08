@@ -97,6 +97,7 @@ export const paramDef = {
 		} },
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 		localOnly: { type: 'boolean', default: false },
+		reactionAcceptance: { type: 'string', nullable: true, enum: [null, 'likeOnly', 'likeOnlyForRemote'], default: null },
 		noExtractMentions: { type: 'boolean', default: false },
 		noExtractHashtags: { type: 'boolean', default: false },
 		noExtractEmojis: { type: 'boolean', default: false },
@@ -110,7 +111,7 @@ export const paramDef = {
 			type: 'string',
 			minLength: 1,
 			maxLength: MAX_NOTE_TEXT_LENGTH,
-			nullable: false
+			nullable: false,
 		},
 		fileIds: {
 			type: 'array',
@@ -280,6 +281,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				renote,
 				cw: ps.cw,
 				localOnly: ps.localOnly,
+				reactionAcceptance: ps.reactionAcceptance,
 				visibility: ps.visibility,
 				visibleUsers,
 				channel,

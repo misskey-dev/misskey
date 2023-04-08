@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="page" :key="page.id" class="xcukqgmh">
 				<div class="main">
 					<!--
@@ -75,6 +75,9 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { pageViewInterruptors, defaultStore } from '@/store';
+import { deepClone } from '@/scripts/clone';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	pageName: string;
@@ -97,8 +100,17 @@ function fetchPage() {
 	os.api('pages/show', {
 		name: props.pageName,
 		username: props.username,
-	}).then(_page => {
+	}).then(async _page => {
 		page = _page;
+
+		// plugin
+		if (pageViewInterruptors.length > 0) {
+			let result = deepClone(_page);
+			for (const interruptor of pageViewInterruptors) {
+				result = await interruptor.handler(result);
+			}
+			page = result;
+		}
 	}).catch(err => {
 		error = err;
 	});

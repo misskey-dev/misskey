@@ -75,7 +75,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				}
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
+				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
 			});
 
 			if (user) {
@@ -129,7 +129,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}, request).then((res) => {
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : 500, err);
+				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
 			});
 
 			if (user) {
@@ -321,7 +321,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
-			if (err instanceof ApiError) {
+			if (err instanceof ApiError || err instanceof AuthenticationError) {
 				throw err;
 			} else {
 				const errId = uuid();

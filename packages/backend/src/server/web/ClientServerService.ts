@@ -209,11 +209,6 @@ export class ClientServerService {
 		//#region static assets
 
 		fastify.register(fastifyStatic, {
-			root: _dirname,
-			serve: false,
-		});
-
-		fastify.register(fastifyStatic, {
 			root: staticAssets,
 			prefix: '/static-assets/',
 			maxAge: ms('7 days'),
@@ -438,7 +433,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await reply.view('user', {
 					user, profile, me,
-					avatarUrl: await this.userEntityService.getAvatarUrl(user),
+					avatarUrl: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 					sub: request.params.sub,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
@@ -483,7 +478,7 @@ export class ClientServerService {
 				return await reply.view('note', {
 					note: _note,
 					profile,
-					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: note.userId })),
+					avatarUrl: _note.user.avatarUrl,
 					// TODO: Let locale changeable by instance setting
 					summary: getNoteSummary(_note),
 					instanceName: meta.name ?? 'Misskey',
@@ -522,7 +517,7 @@ export class ClientServerService {
 				return await reply.view('page', {
 					page: _page,
 					profile,
-					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: page.userId })),
+					avatarUrl: _page.user.avatarUrl,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
@@ -546,7 +541,7 @@ export class ClientServerService {
 				return await reply.view('flash', {
 					flash: _flash,
 					profile,
-					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: flash.userId })),
+					avatarUrl: _flash.user.avatarUrl,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
@@ -570,7 +565,7 @@ export class ClientServerService {
 				return await reply.view('clip', {
 					clip: _clip,
 					profile,
-					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: clip.userId })),
+					avatarUrl: _clip.user.avatarUrl,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,
@@ -592,7 +587,7 @@ export class ClientServerService {
 				return await reply.view('gallery-post', {
 					post: _post,
 					profile,
-					avatarUrl: await this.userEntityService.getAvatarUrl(await this.usersRepository.findOneByOrFail({ id: post.userId })),
+					avatarUrl: _post.user.avatarUrl,
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
 					themeColor: meta.themeColor,

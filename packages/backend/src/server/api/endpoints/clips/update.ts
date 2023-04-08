@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isPublic: ps.isPublic,
 			});
 
-			return await this.clipEntityService.pack(clip.id);
+			return await this.clipEntityService.pack(clip.id, me);
 		});
 	}
 }

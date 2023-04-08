@@ -49,7 +49,7 @@ async function install() {
 			text: 'No language version annotation found :(',
 		});
 		return;
-	} else if (!lv.startsWith('0.12.')) {
+	} else if (!(lv.startsWith('0.12.') || lv.startsWith('0.13.'))) {
 		os.alert({
 			type: 'error',
 			text: `aiscript version '${lv}' is not supported :(`,

@@ -2,14 +2,14 @@
 <div class="sqxihjet">
 	<div v-if="narrow === false" class="wide">
 		<div class="content">
-			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ $ts.home }}</MkA>
-			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i>{{ $ts.timeline }}</MkA>
-			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ $ts.channel }}</MkA>
+			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ i18n.ts.home }}</MkA>
+			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i>{{ i18n.ts.timeline }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ i18n.ts.explore }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ i18n.ts.channel }}</MkA>
 			<div class="right">
-				<button class="_button search" @click="search()"><i class="ti ti-search icon"></i><span>{{ $ts.search }}</span></button>
-				<button class="_buttonPrimary signup" @click="signup()">{{ $ts.signup }}</button>
-				<button class="_button login" @click="signin()">{{ $ts.login }}</button>
+				<button class="_button search" @click="search()"><i class="ti ti-search icon"></i><span>{{ i18n.ts.search }}</span></button>
+				<button class="_buttonPrimary signup" @click="signup()">{{ i18n.ts.signup }}</button>
+				<button class="_button login" @click="signin()">{{ i18n.ts.login }}</button>
 			</div>
 		</div>
 	</div>
@@ -28,6 +28,7 @@ import XSignupDialog from '@/components/MkSignupDialog.vue';
 import * as os from '@/os';
 import { instance } from '@/instance';
 import { mainRouter } from '@/router';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	data() {
@@ -35,6 +36,7 @@ export default defineComponent({
 			narrow: null,
 			showMenu: false,
 			isTimelineAvailable: instance.policies.ltlAvailable || instance.policies.gtlAvailable,
+			i18n,
 		};
 	},
 

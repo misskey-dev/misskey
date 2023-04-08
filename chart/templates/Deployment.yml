@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{ include "misskey.fullname" . }}
   labels:
-		{{- include "misskey.labels" . | nindent 4 }}
+    {{- include "misskey.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-			{{- include "misskey.selectorLabels" . | nindent 6 }}
+      {{- include "misskey.selectorLabels" . | nindent 6 }}
   replicas: 1
   template:
     metadata:
       labels:
-				{{- include "misskey.selectorLabels" . | nindent 8 }}
+        {{- include "misskey.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: misskey

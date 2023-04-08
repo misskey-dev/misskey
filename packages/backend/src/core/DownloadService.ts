@@ -6,6 +6,7 @@ import IPCIDR from 'ip-cidr';
 import PrivateIp from 'private-ip';
 import chalk from 'chalk';
 import got, * as Got from 'got';
+import { parse } from 'content-disposition';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -32,12 +33,17 @@ export class DownloadService {
 	}
 
 	@bindThis
-	public async downloadUrl(url: string, path: string): Promise<void> {
+	public async downloadUrl(url: string, path: string): Promise<{
+		filename: string;
+	}> {
 		this.logger.info(`Downloading ${chalk.cyan(url)} to ${chalk.cyanBright(path)} ...`);
 
 		const timeout = 30 * 1000;
 		const operationTimeout = 60 * 1000;
 		const maxSize = this.config.maxFileSize ?? 262144000;
+
+		const urlObj = new URL(url);
+		let filename = urlObj.pathname.split('/').pop() ?? 'untitled';
 
 		const req = got.stream(url, {
 			headers: {
@@ -77,6 +83,14 @@ export class DownloadService {
 					req.destroy();
 				}
 			}
+
+			const contentDisposition = res.headers['content-disposition'];
+			if (contentDisposition != null) {
+				const parsed = parse(contentDisposition);
+				if (parsed.parameters.filename) {
+					filename = parsed.parameters.filename;
+				}
+			}
 		}).on('downloadProgress', (progress: Got.Progress) => {
 			if (progress.transferred > maxSize) {
 				this.logger.warn(`maxSize exceeded (${progress.transferred} > ${maxSize}) on downloadProgress`);
@@ -95,6 +109,10 @@ export class DownloadService {
 		}
 
 		this.logger.succ(`Download finished: ${chalk.cyan(url)}`);
+
+		return {
+			filename,
+		};
 	}
 
 	@bindThis

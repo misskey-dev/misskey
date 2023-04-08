@@ -4,11 +4,11 @@ import * as assert from 'assert';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
-import { startServer, signup, post, api, uploadFile } from '../utils.js';
+import { startServer, signup, post, api, uploadFile, simpleGet } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Endpoints', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
@@ -16,7 +16,7 @@ describe('Endpoints', () => {
 	let dave: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
@@ -24,7 +24,7 @@ describe('Endpoints', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	describe('signup', () => {
@@ -162,14 +162,14 @@ describe('Endpoints', () => {
 			const res = await api('/users/show', {
 				userId: '000000000000000000000000',
 			});
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 404);
 		});
 
 		test('間違ったIDで怒られる', async () => {
 			const res = await api('/users/show', {
 				userId: 'kyoppie',
 			});
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 404);
 		});
 	});
 
@@ -206,7 +206,7 @@ describe('Endpoints', () => {
 
 	describe('notes/reactions/create', () => {
 		test('リアクションできる', async () => {
-			const bobPost = await post(bob);
+			const bobPost = await post(bob, { text: 'hi' });
 
 			const res = await api('/notes/reactions/create', {
 				noteId: bobPost.id,
@@ -224,7 +224,7 @@ describe('Endpoints', () => {
 		});
 
 		test('自分の投稿にもリアクションできる', async () => {
-			const myPost = await post(alice);
+			const myPost = await post(alice, { text: 'hi' });
 
 			const res = await api('/notes/reactions/create', {
 				noteId: myPost.id,
@@ -235,7 +235,7 @@ describe('Endpoints', () => {
 		});
 
 		test('二重にリアクションすると上書きされる', async () => {
-			const bobPost = await post(bob);
+			const bobPost = await post(bob, { text: 'hi' });
 
 			await api('/notes/reactions/create', {
 				noteId: bobPost.id,
@@ -410,11 +410,19 @@ describe('Endpoints', () => {
 		});
 
 		test('ファイルに名前を付けられる', async () => {
+			const res = await uploadFile(alice, { name: 'Belmond.jpg' });
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+			assert.strictEqual(res.body.name, 'Belmond.jpg');
+		});
+
+		test('ファイルに名前を付けられるが、拡張子は正しいものになる', async () => {
 			const res = await uploadFile(alice, { name: 'Belmond.png' });
 
 			assert.strictEqual(res.status, 200);
 			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
-			assert.strictEqual(res.body.name, 'Belmond.png');
+			assert.strictEqual(res.body.name, 'Belmond.png.jpg');
 		});
 
 		test('ファイル無しで怒られる', async () => {
@@ -431,6 +439,45 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.body.name, 'image.svg');
 			assert.strictEqual(res.body.type, 'image/svg+xml');
 		});
+
+		for (const type of ['webp', 'avif']) {
+			const mediaType = `image/${type}`;
+
+			const getWebpublicType = async (user: any, fileId: string): Promise<string> => {
+				// drive/files/create does not expose webpublicType directly, so get it by posting it
+				const res = await post(user, {
+					text: mediaType,
+					fileIds: [fileId],
+				});
+				const apRes = await simpleGet(`notes/${res.id}`, 'application/activity+json');
+				assert.strictEqual(apRes.status, 200);
+				assert.ok(Array.isArray(apRes.body.attachment));
+				return apRes.body.attachment[0].mediaType;
+			};
+
+			test(`透明な${type}ファイルを作成できる`, async () => {
+				const path = `with-alpha.${type}`;
+				const res = await uploadFile(alice, { path });
+
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.name, path);
+				assert.strictEqual(res.body.type, mediaType);
+
+				const webpublicType = await getWebpublicType(alice, res.body.id);
+				assert.strictEqual(webpublicType, 'image/webp');
+			});
+
+			test(`透明じゃない${type}ファイルを作成できる`, async () => {
+				const path = `without-alpha.${type}`;
+				const res = await uploadFile(alice, { path });
+				assert.strictEqual(res.status, 200);
+				assert.strictEqual(res.body.name, path);
+				assert.strictEqual(res.body.type, mediaType);
+
+				const webpublicType = await getWebpublicType(alice, res.body.id);
+				assert.strictEqual(webpublicType, 'image/webp');
+			});
+		}
 	});
 
 	describe('drive/files/update', () => {
@@ -792,6 +839,14 @@ describe('Endpoints', () => {
 			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.length, 1);
 			assert.strictEqual(res.body[0].id, carolPost.id);
+		});
+	});
+
+	describe('URL preview', () => {
+		test('Error from summaly becomes HTTP 422', async () => {
+			const res = await simpleGet('/url?url=https://e:xample.com');
+			assert.strictEqual(res.status, 422);
+			assert.strictEqual(res.body.error.code, 'URL_PREVIEW_FAILED');
 		});
 	});
 });

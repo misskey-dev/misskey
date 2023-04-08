@@ -54,7 +54,7 @@ export class UserSuspendService {
 			}
 	
 			for (const inbox of queue) {
-				this.queueService.deliver(user, content, inbox);
+				this.queueService.deliver(user, content, inbox, true);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ export class UserSuspendService {
 			}
 	
 			for (const inbox of queue) {
-				this.queueService.deliver(user as any, content, inbox);
+				this.queueService.deliver(user as any, content, inbox, true);
 			}
 		}
 	}

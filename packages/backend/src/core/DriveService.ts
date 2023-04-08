@@ -2,7 +2,9 @@ import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
+import { sharpBmp } from 'sharp-read-bmp';
 import { IsNull } from 'typeorm';
+import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -33,7 +35,8 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import type S3 from 'aws-sdk/clients/s3.js';
+import { correctFilename } from '@/misc/correct-filename.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -78,6 +81,7 @@ type UploadFromUrlArgs = {
 export class DriveService {
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
+	private deleteLogger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -115,6 +119,7 @@ export class DriveService {
 		const logger = new Logger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
 		this.downloaderLogger = logger.createSubLogger('downloader');
+		this.deleteLogger = logger.createSubLogger('delete');
 	}
 
 	/***
@@ -168,7 +173,7 @@ export class DriveService {
 			//#region Uploads
 			this.registerLogger.info(`uploading original: ${key}`);
 			const uploads = [
-				this.upload(key, fs.createReadStream(path), type, name),
+				this.upload(key, fs.createReadStream(path), type, ext, name),
 			];
 
 			if (alts.webpublic) {
@@ -176,7 +181,7 @@ export class DriveService {
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
-				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, name));
+				uploads.push(this.upload(webpublicKey, alts.webpublic.data, alts.webpublic.type, alts.webpublic.ext, name));
 			}
 
 			if (alts.thumbnail) {
@@ -184,7 +189,7 @@ export class DriveService {
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
-				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type));
+				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext));
 			}
 
 			await Promise.all(uploads);
@@ -273,8 +278,8 @@ export class DriveService {
 			}
 		}
 
-		if (!['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'].includes(type)) {
-			this.registerLogger.debug('web image and thumbnail not created (not an required file)');
+		if (!isMimeImage(type, 'sharp-convertible-image-with-bmp')) {
+			this.registerLogger.debug('web image and thumbnail not created (cannot convert by sharp)');
 			return {
 				webpublic: null,
 				thumbnail: null,
@@ -283,22 +288,16 @@ export class DriveService {
 
 		let img: sharp.Sharp | null = null;
 		let satisfyWebpublic: boolean;
+		let isAnimated: boolean;
 
 		try {
-			img = sharp(path);
+			img = await sharpBmp(path, type);
 			const metadata = await img.metadata();
-			const isAnimated = metadata.pages && metadata.pages > 1;
-
-			// skip animated
-			if (isAnimated) {
-				return {
-					webpublic: null,
-					thumbnail: null,
-				};
-			}
+			isAnimated = !!(metadata.pages && metadata.pages > 1);
 
 			satisfyWebpublic = !!(
-				type !== 'image/svg+xml' && type !== 'image/webp' && type !== 'image/avif' &&
+				type !== 'image/svg+xml' && // security reason
+				type !== 'image/avif' && // not supported by Mastodon and MS Edge
 			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
@@ -314,15 +313,13 @@ export class DriveService {
 		// #region webpublic
 		let webpublic: IImage | null = null;
 
-		if (generateWeb && !satisfyWebpublic) {
+		if (generateWeb && !satisfyWebpublic && !isAnimated) {
 			this.registerLogger.info('creating web image');
 
 			try {
 				if (['image/jpeg', 'image/webp', 'image/avif'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToJpeg(img, 2048, 2048);
-				} else if (['image/png'].includes(type)) {
-					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
-				} else if (['image/svg+xml'].includes(type)) {
+					webpublic = await this.imageProcessingService.convertSharpToWebp(img, 2048, 2048);
+				} else if (['image/png', 'image/bmp', 'image/svg+xml'].includes(type)) {
 					webpublic = await this.imageProcessingService.convertSharpToPng(img, 2048, 2048);
 				} else {
 					this.registerLogger.debug('web image not created (not an required image)');
@@ -332,6 +329,7 @@ export class DriveService {
 			}
 		} else {
 			if (satisfyWebpublic) this.registerLogger.info('web image not created (original satisfies webpublic)');
+			else if (isAnimated) this.registerLogger.info('web image not created (animated image)');
 			else this.registerLogger.info('web image not created (from remote)');
 		}
 		// #endregion webpublic
@@ -340,10 +338,10 @@ export class DriveService {
 		let thumbnail: IImage | null = null;
 
 		try {
-			if (['image/jpeg', 'image/webp', 'image/avif', 'image/png', 'image/svg+xml'].includes(type)) {
-				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 280);
+			if (isAnimated) {
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(sharp(path, { animated: true }), 374, 317, { alphaQuality: 70 });
 			} else {
-				this.registerLogger.debug('thumbnail not created (not an required file)');
+				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
 			}
 		} catch (err) {
 			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
@@ -360,7 +358,7 @@ export class DriveService {
 	 * Upload to ObjectStorage
 	 */
 	@bindThis
-	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, filename?: string) {
+	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
@@ -372,26 +370,26 @@ export class DriveService {
 			Body: stream,
 			ContentType: type,
 			CacheControl: 'max-age=31536000, immutable',
-		} as S3.PutObjectRequest;
+		} as PutObjectCommandInput;
 
-		if (filename) params.ContentDisposition = contentDisposition('inline', filename);
+		if (filename) params.ContentDisposition = contentDisposition(
+			'inline',
+			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
+			// 許可されているファイル形式でしか拡張子をつけない
+			ext ? correctFilename(filename, ext) : filename,
+		);
 		if (meta.objectStorageSetPublicRead) params.ACL = 'public-read';
 
-		const s3 = this.s3Service.getS3(meta);
-
-		const upload = s3.upload(params, {
-			partSize: s3.endpoint.hostname === 'storage.googleapis.com' ? 500 * 1024 * 1024 : 8 * 1024 * 1024,
-		});
-
-		await upload.promise()
+		await this.s3Service.upload(meta, params)
 			.then(
 				result => {
-					if (result) {
+					if ('Bucket' in result) { // CompleteMultipartUploadCommandOutput
 						this.registerLogger.debug(`Uploaded: ${result.Bucket}/${result.Key} => ${result.Location}`);
-					} else {
-						this.registerLogger.error(`Upload Result Empty: key = ${key}, filename = ${filename}`);
+					} else { // AbortMultipartUploadCommandOutput
+						this.registerLogger.error(`Upload Result Aborted: key = ${key}, filename = ${filename}`);
 					}
-				},
+				})
+			.catch(
 				err => {
 					this.registerLogger.error(`Upload Failed: key = ${key}, filename = ${filename}`, err);
 				},
@@ -466,7 +464,12 @@ export class DriveService {
 		//}
 
 		// detect name
-		const detectedName = name ?? (info.type.ext ? `untitled.${info.type.ext}` : 'untitled');
+		const detectedName = correctFilename(
+			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
+			// extを付加してデータベースの文字数制限に当たることはまずない
+			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
+			info.type.ext,
+		);
 
 		if (user && !force) {
 		// Check if there is a file with the same hash
@@ -522,10 +525,10 @@ export class DriveService {
 		};
 
 		const properties: {
-		width?: number;
-		height?: number;
-		orientation?: number;
-	} = {};
+			width?: number;
+			height?: number;
+			orientation?: number;
+		} = {};
 
 		if (info.width) {
 			properties['width'] = info.width;
@@ -610,17 +613,20 @@ export class DriveService {
 
 		if (user) {
 			this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
-			// Publish driveFileCreated event
+				// Publish driveFileCreated event
 				this.globalEventService.publishMainStream(user.id, 'driveFileCreated', packedFile);
 				this.globalEventService.publishDriveStream(user.id, 'fileCreated', packedFile);
 			});
 		}
 
-		// 統計を更新
 		this.driveChart.update(file, true);
-		this.perUserDriveChart.update(file, true);
-		if (file.userHost !== null) {
-			this.instanceChart.updateDrive(file, true);
+		if (file.userHost == null) {
+			// ローカルユーザーのみ
+			this.perUserDriveChart.update(file, true);
+		} else {
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.updateDrive(file, true);
+			}
 		}
 
 		return file;
@@ -686,7 +692,7 @@ export class DriveService {
 
 	@bindThis
 	private async deletePostProcess(file: DriveFile, isExpired = false) {
-	// リモートファイル期限切れ削除後は直リンクにする
+		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
 			this.driveFilesRepository.update(file.id, {
 				isLink: true,
@@ -703,24 +709,37 @@ export class DriveService {
 			this.driveFilesRepository.delete(file.id);
 		}
 
-		// 統計を更新
 		this.driveChart.update(file, false);
-		this.perUserDriveChart.update(file, false);
-		if (file.userHost !== null) {
-			this.instanceChart.updateDrive(file, false);
+		if (file.userHost == null) {
+			// ローカルユーザーのみ
+			this.perUserDriveChart.update(file, false);
+		} else {
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.updateDrive(file, false);
+			}
 		}
 	}
 
 	@bindThis
 	public async deleteObjectStorageFile(key: string) {
 		const meta = await this.metaService.fetch();
+		try {
+			const param = {
+				Bucket: meta.objectStorageBucket,
+				Key: key,
+			} as DeleteObjectCommandInput;
 
-		const s3 = this.s3Service.getS3(meta);
-
-		await s3.deleteObject({
-			Bucket: meta.objectStorageBucket!,
-			Key: key,
-		}).promise();
+			await this.s3Service.delete(meta, param);
+		} catch (err: any) {
+			if (err.name === 'NoSuchKey') {
+				this.deleteLogger.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err as Error);
+				return;
+			} else {
+				throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
+					cause: err,
+				});
+			}
+		}
 	}
 
 	@bindThis
@@ -736,24 +755,19 @@ export class DriveService {
 		requestIp = null,
 		requestHeaders = null,
 	}: UploadFromUrlArgs): Promise<DriveFile> {
-		let name = new URL(url).pathname.split('/').pop() ?? null;
-		if (name == null || !this.driveFileEntityService.validateFileName(name)) {
-			name = null;
-		}
-	
-		// If the comment is same as the name, skip comment
-		// (image.name is passed in when receiving attachment)
-		if (comment !== null && name === comment) {
-			comment = null;
-		}
-	
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		try {
 			// write content at URL to temp file
-			await this.downloadService.downloadUrl(url, path);
-	
+			const { filename: name } = await this.downloadService.downloadUrl(url, path);
+
+			// If the comment is same as the name, skip comment
+			// (image.name is passed in when receiving attachment)
+			if (comment !== null && name === comment) {
+				comment = null;
+			}
+
 			const driveFile = await this.addFile({ user, path, name, comment, folderId, force, isLink, url, uri, sensitive, requestIp, requestHeaders });
 			this.downloaderLogger.succ(`Got: ${driveFile.id}`);
 			return driveFile!;

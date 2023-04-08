@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { User } from '@/models/entities/User.js';
-import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository } from '@/models/index.js';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
@@ -29,6 +29,9 @@ export class QueryService {
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
+
+		@Inject(DI.renoteMutingsRepository)
+		private renoteMutingsRepository: RenoteMutingsRepository,
 	) {
 	}
 
@@ -269,5 +272,24 @@ export class QueryService {
 			q.setParameters({ meId: me.id });
 		}
 	}
-}
 
+	@bindThis
+	public generateMutedUserRenotesQueryForNotes(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
+		const mutingQuery = this.renoteMutingsRepository.createQueryBuilder('renote_muting')
+			.select('renote_muting.muteeId')
+			.where('renote_muting.muterId = :muterId', { muterId: me.id });
+	
+		q.andWhere(new Brackets(qb => {
+			qb
+				.where(new Brackets(qb => { 
+					qb.where('note.renoteId IS NOT NULL');
+					qb.andWhere('note.text IS NULL');
+					qb.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
+				}))
+				.orWhere('note.renoteId IS NULL')
+				.orWhere('note.text IS NOT NULL');
+		}));
+		
+		q.setParameters(mutingQuery.getParameters());
+	}
+}

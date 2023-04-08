@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import type { LocalUser } from '@/models/entities/User.js';
 import type { UsersRepository } from '@/models/index.js';
-import { Cache } from '@/misc/cache.js';
+import { MemorySingleCache } from '@/misc/cache.js';
 import { DI } from '@/di-symbols.js';
 import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
 import { bindThis } from '@/decorators.js';
@@ -11,7 +11,7 @@ const ACTOR_USERNAME = 'instance.actor' as const;
 
 @Injectable()
 export class InstanceActorService {
-	private cache: Cache<LocalUser>;
+	private cache: MemorySingleCache<LocalUser>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -19,12 +19,12 @@ export class InstanceActorService {
 
 		private createSystemUserService: CreateSystemUserService,
 	) {
-		this.cache = new Cache<LocalUser>(Infinity);
+		this.cache = new MemorySingleCache<LocalUser>(Infinity);
 	}
 
 	@bindThis
 	public async getInstanceActor(): Promise<LocalUser> {
-		const cached = this.cache.get(null);
+		const cached = this.cache.get();
 		if (cached) return cached;
 	
 		const user = await this.usersRepository.findOneBy({
@@ -33,11 +33,11 @@ export class InstanceActorService {
 		}) as LocalUser | undefined;
 	
 		if (user) {
-			this.cache.set(null, user);
+			this.cache.set(user);
 			return user;
 		} else {
 			const created = await this.createSystemUserService.createSystemUser(ACTOR_USERNAME) as LocalUser;
-			this.cache.set(null, created);
+			this.cache.set(created);
 			return created;
 		}
 	}

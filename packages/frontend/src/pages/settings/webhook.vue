@@ -1,7 +1,7 @@
 <template>
 <div class="_gaps_m">
 	<FormLink :to="`/settings/webhook/new`">
-		Create webhook
+		{{ i18n.ts._webhookSettings.createWebhook }}
 	</FormLink>
 
 	<FormSection>
@@ -31,6 +31,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const pagination = {
 	endpoint: 'i/webhooks/list' as const,

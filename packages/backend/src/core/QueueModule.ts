@@ -8,13 +8,13 @@ import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, End
 function q<T>(config: Config, name: string, limitPerSec = -1) {
 	return new Bull<T>(name, {
 		redis: {
-			port: config.redis.port,
-			host: config.redis.host,
-			family: config.redis.family == null ? 0 : config.redis.family,
-			password: config.redis.pass,
-			db: config.redis.db ?? 0,
+			port: config.redisForJobQueue.port,
+			host: config.redisForJobQueue.host,
+			family: config.redisForJobQueue.family == null ? 0 : config.redisForJobQueue.family,
+			password: config.redisForJobQueue.pass,
+			db: config.redisForJobQueue.db ?? 0,
 		},
-		prefix: config.redis.prefix ? `${config.redis.prefix}:queue` : 'queue',
+		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue` : 'queue',
 		limiter: limitPerSec > 0 ? {
 			max: limitPerSec,
 			duration: 1000,

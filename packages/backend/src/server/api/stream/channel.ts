@@ -23,12 +23,16 @@ export default abstract class Channel {
 		return this.connection.following;
 	}
 
-	protected get muting() {
-		return this.connection.muting;
+	protected get userIdsWhoMeMuting() {
+		return this.connection.userIdsWhoMeMuting;
 	}
 
-	protected get blocking() {
-		return this.connection.blocking;
+	protected get userIdsWhoMeMutingRenotes() {
+		return this.connection.userIdsWhoMeMutingRenotes;
+	}
+
+	protected get userIdsWhoBlockingMe() {
+		return this.connection.userIdsWhoBlockingMe;
 	}
 
 	protected get followingChannels() {

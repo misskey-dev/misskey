@@ -5,14 +5,14 @@ import { signup, api, post, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('API visibility', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	describe('Note visibility', () => {
