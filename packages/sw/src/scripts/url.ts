@@ -12,7 +12,3 @@ export function query(obj: object): string {
 		.map((e) => `${e[0]}=${encodeURIComponent(e[1])}`)
 		.join('&');
 }
-
-export function appendQuery(url: string, query: string): string {
-	return `${url}${/\?/.test(url) ? url.endsWith('?') ? '' : '&' : '?'}${query}`;
-}
