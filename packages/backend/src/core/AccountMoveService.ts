@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, Not } from 'typeorm';
+import { IsNull } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -70,7 +70,6 @@ export class AccountMoveService {
 				follower: true,
 			},
 			where: {
-				follower: Not(IsNull()),
 				followeeId: src.id,
 				followerHost: IsNull(), // follower is local
 			}

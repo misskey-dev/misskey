@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull, Not } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -765,7 +765,6 @@ export class ApInboxService {
 				follower: true,
 			},
 			where: {
-				follower: Not(IsNull()),
 				followeeId: old_acc.id,
 				followerHost: IsNull(), // follower is local
 			}
