@@ -989,6 +989,17 @@ enableChartsForFederatedInstances: "リモートサーバーのチャートを�
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 largeNoteReactions: "ノートのリアクションを大きく表示"
 noteIdOrUrl: "ノートIDまたはURL"
+accountMigration: "アカウントの引っ越し"
+accountMoved: "このユーザーは新しいアカウントに引っ越しました："
+
+_accountMigration:
+  moveTo: "このアカウントを新しいアカウントに引っ越す"
+  moveToLabel: "引っ越し先のアカウント："
+  moveAccountDescription: "この操作は取り消せません。まずは引っ越し先のアカウントでこのアカウントに対しエイリアスを作成したことを確認してください。エイリアス作成後、引っ越し先のアカウントをこのように入力してください：@person@instance.com"
+  moveFrom: "別のアカウントからこのアカウントに引っ越す"
+  moveFromLabel: "引っ越し元のアカウント："
+  moveFromDescription: "別のアカウントからこのアカウントにフォロワーを引き継いで引っ越したい場合、ここでエイリアスを作成しておく必要があります。必ず引っ越しを実行する前に作成してください！引っ越し元のアカウントをこのように入力してください：@person@instance.com"
+  migrationConfirm: "本当にこのアカウントを {account} に引っ越しますか？一度引っ越しを行うと取り消せず、二度とこのアカウントを元の状態で使用できなくなります。\nまた、引っ越し先のアカウントでエイリアスを作成したことを確認してください。"
 
 _achievements:
   earnedAt: "獲得日時"
@@ -1955,4 +1966,3 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
-
