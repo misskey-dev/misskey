@@ -330,6 +330,7 @@ export class OAuth2ProviderService {
 		// 	},
 		// });
 
+		// TODO: store this in Redis
 		const TEMP_GRANT_CODES: Record<string, {
 			clientId: string,
 			userId: string,
@@ -368,7 +369,6 @@ export class OAuth2ProviderService {
 					return [false];
 				}
 				delete TEMP_GRANT_CODES[code];
-				if (!granted.scopes.length) return [false];
 				if (body.client_id !== granted.clientId) return [false];
 				if (redirectUri !== granted.redirectUri) return [false];
 				if (!body.code_verifier || pkceS256(body.code_verifier) !== granted.codeChallenge) return [false];
@@ -444,11 +444,16 @@ export class OAuth2ProviderService {
 				throw new Error('`code_challenge_method` parameter must be set as S256');
 			}
 
+			const scopes = [...new Set(oauth2?.req.scope)].filter(s => kinds.includes(s));
+			if (!scopes.length) {
+				throw new Error('`scope` parameter has no known scope');
+			}
+
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
 				transactionId: oauth2?.transactionID,
 				clientId: oauth2?.client,
-				scope: oauth2?.req.scope.join(' '),
+				scope: scopes.join(' '),
 			});
 		});
 		fastify.post('/oauth/decision', async () => { });

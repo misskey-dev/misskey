@@ -233,13 +233,92 @@ describe('OAuth', () => {
 		assert.ok(location.searchParams.has('error'));
 	});
 
-	// TODO: .well-known/oauth-authorization-server
+	describe('Scope', () => {
+		test('Missing scope', async () => {
+			const client = getClient();
 
-	// TODO: scopes (totally missing / empty / exists but all invalid / exists but partially invalid / all valid)
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+
+			// TODO: But 500 is not a valid code, should be 403 or such. Check the OAuth spec
+			assert.strictEqual(response.status, 500);
+		});
+
+		test('Empty scope', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: '',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+
+			// TODO: But 500 is not a valid code, should be 403 or such. Check the OAuth spec
+			assert.strictEqual(response.status, 500);
+		});
+
+		test('Unknown scopes', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'test:unknown test:unknown2',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+
+			// TODO: But 500 is not a valid code, should be 403 or such. Check the OAuth spec
+			assert.strictEqual(response.status, 500);
+		});
+
+		test('Partially known scopes', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes test:unknown test:unknown2',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+
+			// Just get the known scope for this case for backward compatibility
+			assert.strictEqual(response.status, 200);
+			// TODO: OAuth2 requires returning `scope` in the token response in this case but oauth2orize seemingly doesn't support this
+		});
+
+		test('Known scopes', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes read:account',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+
+			// Just get the known scope for this case for backward compatibility
+			assert.strictEqual(response.status, 200);
+		});
+
+		// TODO: duplicate scopes test (currently token response doesn't return final scopes, although it must)
+	});
+
+	// TODO: .well-known/oauth-authorization-server
 
 	// TODO: authorizing two users concurrently
 
 	// TODO: invalid redirect_uri (at authorize / at token)
 
 	// TODO: Wrong Authorization header (Not starts with Bearer / token is wrong)
+
+	// TODO: Error format required by OAuth spec
 });
