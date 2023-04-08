@@ -6,7 +6,3 @@ export function char2fileName(char: string): string {
 	codes = codes.filter(x => x && x.length);
 	return codes.join('-');
 }
-
-export function char2filePath(char: string): string {
-	return `${twemojiSvgBase}/${char2fileName(char)}.svg`;
-}
