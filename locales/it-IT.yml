@@ -994,6 +994,11 @@ accountMoved: "Questo profilo ha migrato altrove:"
 _accountMigration:
   moveTo: "Migrare questo profilo verso un un altro"
   moveToLabel: "Profilo verso cui migrare"
+  moveAccountDescription: "Questa attività è irreversibile! Innanzitutto, assicurati di aver creato, nella istanza di destinazione, un alias con l'indirizzo di questo profilo. Successivamente, indica qui il profilo di destinazione in questo modo: @persona@istanza.it"
+  moveFrom: "Migra un altro profilo dentro a questo"
+  moveFromLabel: "Profilo da cui migrare:"
+  moveFromDescription: "Se desideri spostare i profili follower da un altro profilo a questo, devi prima creare un alias qui. Assicurati averlo creato PRIMA di eseguire l'attività! Inserisci l'indirizzo del profilo mittente in questo modo: @persona@istanza.it"
+  migrationConfirm: "Vuoi davvero migrare questo profilo su {account}? L'azione è irreversibile e non potrai più utilizzare questo profilo nel suo stato originale.\nInoltre, assicurati di aver già creato un alias sull'account a cui ti stai trasferendo."
 _achievements:
   earnedAt: "Data di conseguimento"
   _types:
