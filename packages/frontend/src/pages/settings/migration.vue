@@ -1,6 +1,6 @@
 <template>
 <div class="_gaps_m">
-	<FormSection>
+	<FormSection first>
 		<template #label>{{ i18n.ts.moveTo }}</template>
 		<MkInput v-model="moveToAccount" manual-save>
 			<template #prefix><i class="ti ti-plane-departure"></i></template>
