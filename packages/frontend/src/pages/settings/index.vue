@@ -130,6 +130,11 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.otherSettings,
 	items: [{
+		icon: 'ti ti-plane',
+		text: i18n.ts.migration,
+		to: '/settings/migration',
+		active: currentPage?.route.name === 'migration',
+	}, {
 		icon: 'ti ti-package',
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',

@@ -29,7 +29,7 @@ export class AccountUpdateService {
 	public async publishToFollowers(userId: User['id']) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
-	
+
 		// フォロワーがリモートユーザーかつ投稿者がローカルユーザーならUpdateを配信
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderPerson(user), user));
