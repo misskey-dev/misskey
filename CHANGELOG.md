@@ -38,6 +38,7 @@
 			- 右耳は上からおよそ 10%, 左からおよそ 80% の位置で決定します
 	- 「UIのアニメーションを減らす」 (`reduceAnimation`) で猫耳を撫でられなくなります
 - Add Minimizing ("folding") of windows
+- PWA時の絵文字ピッカーの位置をホームバーに重ならないように調整
 
 ### Server
 - PostgreSQLのレプリケーション対応
