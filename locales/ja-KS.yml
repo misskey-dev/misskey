@@ -920,6 +920,7 @@ pushNotificationNotSupported: "ブラウザかサーバーがプッシュ通知�
 sendPushNotificationReadMessage: "通知やメッセージが既読になったらプッシュ通知を消すで"
 sendPushNotificationReadMessageCaption: "「{emptyPushNotificationMessage}」っていう表示が一瞬表示されるようになるで。端末の電池使用量が増える可能性があるで。"
 windowMaximize: "最大化"
+windowMinimize: "最小化"
 windowRestore: "元に戻す"
 caption: "キャプション"
 loggedInAsBot: "Botアカウントでログイン中やで"
@@ -988,6 +989,15 @@ enableChartsForFederatedInstances: "リモートサーバーのチャートを�
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
 largeNoteReactions: "ノートのリアクションを大きする"
 noteIdOrUrl: "ノートIDかURL"
+migration: "アカウントのお引っ越し"
+moveTo: "このアカウントをさらのアカウントに引っ越すで"
+moveToLabel: "引っ越し先のアカウント："
+moveAccountDescription: "この操作は戻されへんで。まず引っ越し先のアカウントでこのアカウントへのエイリアスが作れたか確認してきなはれや。エイリアスができてたら、引っ越し先のアカウントをこんな風に入力してくれへんか？：@person@instance.com"
+moveFrom: "別のアカウントからこのアカウントに引っ越す"
+moveFromLabel: "引っ越し元のアカウント："
+moveFromDescription: "別のアカウントからこのアカウントにフォロワーを引き継いで引っ越したかったら、ここでエイリアスを作っとく必要があるで。必ずお引っ越しを実行する前に作っとかなあかんで！引っ越し元のアカウントをこんな風に入力してくれへんか？：@person@instance.com"
+migrationConfirm: "ほんまにこのアカウントを {account} に引っ越すんか？一回引っ越してもうたら取り消されへんし、二度とこのアカウントを元に戻されへんくなるで。\nそれと、引っ越し先のアカウントでエイリアスが作れたかちゃ～んと確認しーや？"
+accountMoved: "このユーザーはさらのアカウントに引っ越したで："
 _achievements:
   earnedAt: "貰った日ぃ"
   _types:
@@ -1898,4 +1908,3 @@ _webhookSettings:
     renote: "Renoteされるとき～！"
     reaction: "リアクションがあるとき～！"
     mention: "メンションがあるとき～！"
-
