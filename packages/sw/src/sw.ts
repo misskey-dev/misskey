@@ -2,7 +2,7 @@ import { createEmptyNotification, createNotification } from '@/scripts/create-no
 import { swLang } from '@/scripts/lang';
 import { PushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
-import { acct as getAcct } from '@/filters/user';
+import * as Acct from 'misskey-js/built/acct';
 import { get } from 'idb-keyval';
 
 globalThis.addEventListener('install', ev => {
@@ -83,7 +83,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						if ('userId' in data.body) await swos.api('following/create', loginId, { userId: data.body.userId });
 						break;
 					case 'showUser':
-						if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), loginId);
+						if ('user' in data.body) client = await swos.openUser(Acct.toString(data.body.user), loginId);
 						break;
 					case 'reply':
 						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
@@ -120,7 +120,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 								if ('note' in data.body) {
 									client = await swos.openNote(data.body.note.id, loginId);
 								} else if ('user' in data.body) {
-									client = await swos.openUser(getAcct(data.body.user), loginId);
+									client = await swos.openUser(Acct.toString(data.body.user), loginId);
 								}
 								break;
 						}
