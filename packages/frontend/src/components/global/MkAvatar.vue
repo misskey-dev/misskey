@@ -4,14 +4,14 @@
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
 		<div :class="$style.earLeft">
-			<div v-if="useBlurEffect" :class="$style.layer">
+			<div v-if="false" :class="$style.layer">
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 			</div>
 		</div>
 		<div :class="$style.earRight">
-			<div v-if="useBlurEffect" :class="$style.layer">
+			<div v-if="false" :class="$style.layer">
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
