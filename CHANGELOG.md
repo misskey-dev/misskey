@@ -34,6 +34,7 @@
 	  - 猫耳のアバター内部部分をぼかしでマスク表示してより猫耳っぽく見えるように
 	- 「UIのアニメーションを減らす」 (`reduceAnimation`) で猫耳を撫でられなくなります
 - Add Minimizing ("folding") of windows
+- PWA時の絵文字ピッカーの位置をホームバーに重ならないように調整
 
 ### Server
 - PostgreSQLのレプリケーション対応
