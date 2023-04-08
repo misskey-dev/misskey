@@ -45,6 +45,17 @@
 							{{ role.name }}
 						</span>
 					</div>
+					<div class="memo" :class="{'no-memo': !memoDraft}">
+						<div class="heading" v-if="memoDraft" v-text="i18n.ts.memo" />
+						<textarea
+							ref="memoTextareaEl"
+							rows="1"
+							v-model="memoDraft"
+							:placeholder="i18n.ts.clickToAddPersonalMemo"
+							@blur="updateMemo"
+							@input="adjustMemoTextarea"
+						/>
+					</div>
 					<div class="description">
 						<div class="memo" :class="{'no-memo': !memoDraft}">
 							<textarea
@@ -237,8 +248,9 @@ onMounted(() => {
 			});
 		}
 	}
-
-	adjustMemoTextarea();
+	nextTick(() => {
+		adjustMemoTextarea();
+	});
 });
 
 onUnmounted(() => {
@@ -400,6 +412,37 @@ onUnmounted(() => {
 					}
 				}
 
+				> .memo {
+					margin: 12px 24px 0 154px;
+					background: transparent;
+					color: var(--fg);
+					border: 1px solid var(--divider);
+					border-radius: 8px;
+					padding: 8px;
+					line-height: 0;
+
+					> .heading {
+						text-align: left;
+						color: var(--fgTransparent);
+						line-height: 1.5;
+					}
+
+					textarea {
+						font-family: inherit;
+						margin: 0;
+						padding: 0;
+						outline: none;
+						width: 100%;
+						height: auto;
+						min-height: 0;
+						color: var(--fg);
+						background: transparent;
+						border: none;
+						resize: none;
+						overflow: hidden;
+					}
+				}
+
 				> .description {
 					padding: 24px 24px 24px 154px;
 					font-size: 0.95em;
@@ -557,6 +600,10 @@ onUnmounted(() => {
 				> .roles {
 					padding: 16px 16px 0 16px;
 					justify-content: center;
+				}
+
+				> .memo {
+					margin: 16px 16px 0 16px;
 				}
 
 				> .description {
