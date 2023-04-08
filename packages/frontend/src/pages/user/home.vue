@@ -57,15 +57,6 @@
 						/>
 					</div>
 					<div class="description">
-						<div class="memo" :class="{'no-memo': !memoDraft}">
-							<textarea
-								ref="memoTextareaEl"
-								v-model="memoDraft"
-								:placeholder="i18n.ts.clickToAddPersonalMemo"
-								@blur="updateMemo"
-								@input="adjustMemoTextarea"
-							/>
-						</div>
 						<MkOmit>
 							<Mfm v-if="user.description" :text="user.description" :is-note="false" :author="user" :i="$i"/>
 							<p v-else class="empty">{{ i18n.ts.noAccountDescription }}</p>
