@@ -48,12 +48,13 @@ export function openAntenna(antennaId: string, loginId: string) {
 // post-formのオプションから投稿フォームを開く
 export async function openPost(options: any, loginId?: string) {
 	// クエリを作成しておく
-	let url = '/share?';
-	if (options.initialText) url += `text=${options.initialText}&`;
-	if (options.reply) url += `replyId=${options.reply.id}&`;
-	if (options.renote) url += `renoteId=${options.renote.id}&`;
+	let url = '/share';
+	const query = new URLSearchParams();
+	if (options.initialText) query.set('text', options.initialText);
+	if (options.reply) query.set('replyId', options.reply.id);
+	if (options.renote) query.set('renoteId', options.renote.id);
 
-	return openClient('post', url, loginId, { options });
+	return openClient('post', `${url}?${query}`, loginId, { options });
 }
 
 export async function openClient(order: SwMessageOrderType, url: string, loginId?: string, query: any = {}) {
