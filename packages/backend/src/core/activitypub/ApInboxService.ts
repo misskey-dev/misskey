@@ -140,7 +140,7 @@ export class ApInboxService {
 		} else if (isFlag(activity)) {
 			await this.flag(actor, activity);
 		} else if (isMove(activity)) {
-			await this.move(actor, activity);
+			//await this.move(actor, activity);
 		} else {
 			this.logger.warn(`unrecognized activity type: ${activity.type}`);
 		}
