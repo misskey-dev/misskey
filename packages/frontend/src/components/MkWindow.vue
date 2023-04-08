@@ -183,7 +183,11 @@ function onBodyMousedown() {
 }
 
 function onDblClick() {
-	if (minimized) {unMinimize();} else {maximize();}
+	if (minimized) {
+		unMinimize();
+	} else {
+		maximize();
+	}
 }
 
 function onHeaderMousedown(evt: MouseEvent) {
