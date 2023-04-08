@@ -1,6 +1,6 @@
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
-import { swNotificationRead } from '@/scripts/notification-read';
+import { api } from '@/scripts/operations';
 import { pushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
@@ -54,30 +54,6 @@ globalThis.addEventListener('push', ev => {
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
 				return createNotification(data);
-			case 'readAllNotifications':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (n?.data?.type === 'notification') n.close();
-				}
-				break;
-			case 'readAllAntennas':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadAntennaNote') n.close();
-				}
-				break;
-			case 'readNotifications':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (data.body.notificationIds.includes(n.data.body.id)) {
-						n.close();
-					}
-				}
-				break;
-			case 'readAntenna':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadAntennaNote' && data.body.antennaId === n.data.body.antenna.id) {
-						n.close();
-					}
-				}
-				break;
 		}
 
 		await createEmptyNotification();
@@ -154,7 +130,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 			client.focus();
 		}
 		if (data.type === 'notification') {
-			swNotificationRead.then(that => that.read(data));
+			api('notifications/mark-all-as-read', data.userId);
 		}
 
 		notification.close();
@@ -165,7 +141,7 @@ globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEv
 	const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.notification.data;
 
 	if (data.type === 'notification') {
-		swNotificationRead.then(that => that.read(data));
+		api('notifications/mark-all-as-read', data.userId);
 	}
 });
 

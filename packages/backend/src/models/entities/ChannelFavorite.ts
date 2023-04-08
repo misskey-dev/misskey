@@ -1,21 +1,24 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { Note } from './Note.js';
+import { User } from './User.js';
 import { Channel } from './Channel.js';
 
 @Entity()
-@Index(['channelId', 'noteId'], { unique: true })
-export class ChannelNotePining {
+@Index(['userId', 'channelId'], { unique: true })
+export class ChannelFavorite {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Index()
 	@Column('timestamp with time zone', {
-		comment: 'The created date of the ChannelNotePining.',
+		comment: 'The created date of the ChannelFavorite.',
 	})
 	public createdAt: Date;
 
 	@Index()
-	@Column(id())
+	@Column({
+		...id(),
+	})
 	public channelId: Channel['id'];
 
 	@ManyToOne(type => Channel, {
@@ -24,12 +27,15 @@ export class ChannelNotePining {
 	@JoinColumn()
 	public channel: Channel | null;
 
-	@Column(id())
-	public noteId: Note['id'];
+	@Index()
+	@Column({
+		...id(),
+	})
+	public userId: User['id'];
 
-	@ManyToOne(type => Note, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Note | null;
+	public user: User | null;
 }

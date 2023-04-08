@@ -11,7 +11,7 @@ import type { Role, RolesRepository, RoleAssignmentsRepository, UsersRepository,
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 import { genAid } from '@/misc/id/aid.js';
-import { UserCacheService } from '@/core/UserCacheService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { sleep } from '../utils.js';
@@ -65,7 +65,7 @@ describe('RoleService', () => {
 			],
 			providers: [
 				RoleService,
-				UserCacheService,
+				CacheService,
 				IdService,
 				GlobalEventService,
 			],

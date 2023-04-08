@@ -1,9 +1,9 @@
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_window_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_window_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_window_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_window_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
 	@after-leave="$emit('closed')"
 >
@@ -11,15 +11,21 @@
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
 			<div :class="[$style.header, { [$style.mini]: mini }]" @contextmenu.prevent.stop="onContextmenu">
 				<span :class="$style.headerLeft">
-					<button v-for="button in buttonsLeft" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
+					<template v-if="!minimized">
+						<button v-for="button in buttonsLeft" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
+					</template>
 				</span>
 				<span :class="$style.headerTitle" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
 					<slot name="header"></slot>
 				</span>
 				<span :class="$style.headerRight">
-					<button v-for="button in buttonsRight" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
+					<template v-if="!minimized">
+						<button v-for="button in buttonsRight" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
+					</template>
+					<button v-if="canResize && minimized" v-tooltip="i18n.ts.windowRestore" class="_button" :class="$style.headerButton" @click="unMinimize()"><i class="ti ti-maximize"></i></button>
+					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMinimize" class="_button" :class="$style.headerButton" @click="minimize()"><i class="ti ti-minimize"></i></button>
 					<button v-if="canResize && maximized" v-tooltip="i18n.ts.windowRestore" class="_button" :class="$style.headerButton" @click="unMaximize()"><i class="ti ti-picture-in-picture"></i></button>
-					<button v-else-if="canResize && !maximized" v-tooltip="i18n.ts.windowMaximize" class="_button" :class="$style.headerButton" @click="maximize()"><i class="ti ti-rectangle"></i></button>
+					<button v-else-if="canResize && !maximized && !minimized" v-tooltip="i18n.ts.windowMaximize" class="_button" :class="$style.headerButton" @click="maximize()"><i class="ti ti-rectangle"></i></button>
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
@@ -27,7 +33,7 @@
 				<slot></slot>
 			</div>
 		</div>
-		<template v-if="canResize">
+		<template v-if="canResize && !minimized">
 			<div :class="$style.handleTop" @mousedown.prevent="onTopHandleMousedown"></div>
 			<div :class="$style.handleRight" @mousedown.prevent="onRightHandleMousedown"></div>
 			<div :class="$style.handleBottom" @mousedown.prevent="onBottomHandleMousedown"></div>
@@ -47,6 +53,7 @@ import contains from '@/scripts/contains';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const minHeight = 50;
 const minWidth = 250;
@@ -99,10 +106,11 @@ let rootEl = $shallowRef<HTMLElement | null>();
 let showing = $ref(true);
 let beforeClickedAt = 0;
 let maximized = $ref(false);
-let unMaximizedTop = '';
-let unMaximizedLeft = '';
-let unMaximizedWidth = '';
-let unMaximizedHeight = '';
+let minimized = $ref(false);
+let unResizedTop = '';
+let unResizedLeft = '';
+let unResizedWidth = '';
+let unResizedHeight = '';
 
 function close() {
 	showing = false;
@@ -131,10 +139,10 @@ function top() {
 
 function maximize() {
 	maximized = true;
-	unMaximizedTop = rootEl.style.top;
-	unMaximizedLeft = rootEl.style.left;
-	unMaximizedWidth = rootEl.style.width;
-	unMaximizedHeight = rootEl.style.height;
+	unResizedTop = rootEl.style.top;
+	unResizedLeft = rootEl.style.left;
+	unResizedWidth = rootEl.style.width;
+	unResizedHeight = rootEl.style.height;
 	rootEl.style.top = '0';
 	rootEl.style.left = '0';
 	rootEl.style.width = '100%';
@@ -143,10 +151,35 @@ function maximize() {
 
 function unMaximize() {
 	maximized = false;
-	rootEl.style.top = unMaximizedTop;
-	rootEl.style.left = unMaximizedLeft;
-	rootEl.style.width = unMaximizedWidth;
-	rootEl.style.height = unMaximizedHeight;
+	rootEl.style.top = unResizedTop;
+	rootEl.style.left = unResizedLeft;
+	rootEl.style.width = unResizedWidth;
+	rootEl.style.height = unResizedHeight;
+}
+
+function minimize() {
+	minimized = true;
+	unResizedWidth = rootEl.style.width;
+	unResizedHeight = rootEl.style.height;
+	rootEl.style.width = minWidth + 'px';
+	rootEl.style.height = props.mini ? '32px' : '39px';
+}
+
+function unMinimize() {
+	const main = rootEl;
+	if (main == null) return;
+
+	minimized = false;
+	rootEl.style.width = unResizedWidth;
+	rootEl.style.height = unResizedHeight;
+	const browserWidth = window.innerWidth;
+	const browserHeight = window.innerHeight;
+	const windowWidth = main.offsetWidth;
+	const windowHeight = main.offsetHeight;
+
+	const position = main.getBoundingClientRect();
+	if (position.top + windowHeight > browserHeight) main.style.top = browserHeight - windowHeight + 'px';
+	if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';
 }
 
 function onBodyMousedown() {
@@ -154,7 +187,11 @@ function onBodyMousedown() {
 }
 
 function onDblClick() {
-	maximize();
+	if (minimized) {
+		unMinimize();
+	} else {
+		maximize();
+	}
 }
 
 function onHeaderMousedown(evt: MouseEvent) {
@@ -186,7 +223,7 @@ function onHeaderMousedown(evt: MouseEvent) {
 
 	const clickX = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientX : evt.clientX;
 	const clickY = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientY : evt.clientY;
-	const moveBaseX = beforeMaximized ? parseInt(unMaximizedWidth, 10) / 2 : clickX - position.left; // TODO: parseIntやめる
+	const moveBaseX = beforeMaximized ? parseInt(unResizedWidth, 10) / 2 : clickX - position.left; // TODO: parseIntやめる
 	const moveBaseY = beforeMaximized ? 20 : clickY - position.top;
 	const browserWidth = window.innerWidth;
 	const browserHeight = window.innerHeight;

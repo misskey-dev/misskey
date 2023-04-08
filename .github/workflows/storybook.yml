@@ -1,0 +1,74 @@
+name: Storybook
+
+on:
+  push:
+    branches-ignore:
+      - l10n_develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_OPTIONS: "--max_old_space_size=7168"
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: 18.x
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Build misskey-js
+      run: pnpm --filter misskey-js build
+    - name: Build storybook
+      run: pnpm --filter frontend build-storybook
+    - name: Publish to Chromatic
+      if: github.ref == 'refs/heads/master'
+      run: pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    - name: Publish to Chromatic
+      if: github.ref != 'refs/heads/master'
+      id: chromatic
+      run: |
+        DIFF="${{ github.event.before }} HEAD"
+        if [ "$DIFF" = "0000000000000000000000000000000000000000 HEAD" ]; then
+          DIFF="HEAD"
+        fi
+        CHROMATIC_PARAMETER="$(node packages/frontend/.storybook/changes.js $(git diff-tree --no-commit-id --name-only -r $(echo "$DIFF") | xargs))"
+        if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
+          echo "skip=true" >> $GITHUB_OUTPUT
+        fi
+        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static $(echo "$CHROMATIC_PARAMETER")
+      env:
+        CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    - name: Notify that Chromatic will skip testing
+      uses: actions/github-script@v6.4.0
+      if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' && steps.chromatic.outputs.skip == 'true'
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+            body: 'Chromatic will skip testing but you may still have to [review the changes on Chromatic](https://www.chromatic.com/pullrequests?appId=6428f7d7b962f0b79f97d6e4).'
+          })
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: storybook
+        path: packages/frontend/storybook-static

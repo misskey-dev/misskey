@@ -59,6 +59,11 @@ export class Channel {
 	@JoinColumn()
 	public banner: DriveFile | null;
 
+	@Column('varchar', {
+		array: true, length: 128, default: '{}',
+	})
+	public pinnedNoteIds: string[];
+
 	@Index()
 	@Column('integer', {
 		default: 0,

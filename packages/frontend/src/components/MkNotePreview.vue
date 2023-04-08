@@ -3,7 +3,7 @@
 	<MkAvatar :class="$style.avatar" :user="$i" link preview/>
 	<div :class="$style.main">
 		<div :class="$style.header">
-			<MkUserName :user="$i"/>
+			<MkUserName :user="$i" :nowrap="true"/>
 		</div>
 		<div>
 			<div :class="$style.content">
@@ -16,6 +16,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	text: string;
@@ -49,6 +50,9 @@ const props = defineProps<{
 .header {
 	margin-bottom: 2px;
 	font-weight: bold;
+	width: 100%;
+	overflow: clip;
+    text-overflow: ellipsis;
 }
 
 @container (min-width: 350px) {
