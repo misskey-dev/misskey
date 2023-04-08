@@ -39,6 +39,21 @@
 			</MkFoldableSection>
 		</div>
 	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'channel'" :content-max="800">
+		<div class="_gaps">
+			<div class="_gaps">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
+				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+			</div>
+
+			<MkFoldableSection v-if="channelPagination">
+				<template #header>{{ i18n.ts.searchResult }}</template>
+				<MkChannelList :key="key" :pagination="channelPagination"/>
+			</MkFoldableSection>
+		</div>
+	</MkSpacer>
 </MkStickyContainer>
 </template>
 
@@ -49,6 +64,7 @@ import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkChannelList from '@/components/MkChannelList.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
@@ -73,6 +89,7 @@ let searchQuery = $ref('');
 let searchOrigin = $ref('combined');
 let notePagination = $ref();
 let userPagination = $ref();
+let channelPagination = $ref();
 
 const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
@@ -123,6 +140,14 @@ async function search() {
 				origin: searchOrigin,
 			},
 		};
+	} else if (tab === 'channel') {
+		channelPagination = {
+			endpoint: 'channels/search',
+			limit: 10,
+			params: {
+				query: searchQuery,
+			},
+		};
 	}
 
 	key = query;
@@ -138,6 +163,10 @@ const headerTabs = $computed(() => [{
 	key: 'user',
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
+}, {
+	key: 'channel',
+	title: i18n.ts.channel,
+	icon: 'ti ti-device-tv',
 }]);
 
 definePageMetadata(computed(() => ({
