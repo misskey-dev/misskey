@@ -997,6 +997,7 @@ _accountMigration:
   moveAccountDescription: "Ein Umzug kann nicht rückgängig gemacht werden. Stelle zuerst sicher, dass du auf dem Umzugsziel einen Alias erstellt hast. Gib dann das Umzugsziel in folgendem Format ein: @person@instance.com"
   moveFrom: "Von einem anderen Konto zu diesem umziehen"
   moveFromLabel: "Umzugsursprung:"
+  moveFromDescription: "Stelle sicher, dass du auf dem Umzugsursprungskonto einen Alias zu diesem Konto erstellt hast, falls du die Follower des Ursprungskontos übertragen möchtest. Dies muss vor dem Umzug geschehen! Gib dann das Ursprungskonto in folgendem Format an: @person@instance.com"
   migrationConfirm: "Dieses Konto wirklich zu {account} umziehen? Sobald der Umzug beginnt, kann er nicht rückgängig gemacht werden, und dieses Konto nicht wieder im ursprünglichen Zustand verwendet werden.\n\nÜberprüfe zusätzlich, dass du auf dem Umzugsziel einen Alias eingerichtet hast."
 _achievements:
   earnedAt: "Freigeschaltet am"
