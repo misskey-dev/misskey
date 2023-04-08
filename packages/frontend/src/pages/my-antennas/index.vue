@@ -24,6 +24,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 
 const pagination = {
 	endpoint: 'antennas/list' as const,
+	noPaging: true,
 	limit: 10,
 };
 
