@@ -51,6 +51,19 @@ export const Default = {
 						},
 					}));
 				}),
+				rest.get('/api/charts/user/pv', (req, res, ctx) => {
+					const length = Math.max(Math.min(parseInt(req.url.searchParams.get('limit') ?? '30', 10), 1), 300);
+					return res(ctx.json({
+						upv: {
+							user: Array.from({ length }, () => 0),
+							visitor: Array.from({ length }, () => 0),
+						},
+						pv: {
+							user: Array.from({ length }, () => 0),
+							visitor: Array.from({ length }, () => 0),
+						},
+					}));
+				}),
 			],
 		},
 		chromatic: {
