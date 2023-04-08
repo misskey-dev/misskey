@@ -42,8 +42,8 @@
 	"include": [
 		".eslintrc.js",
 		"./**/*.ts",
-		"./**/*.vue"
-, "src/embed/scripts/parse-mfm.ts"	],
+		"./**/*.vue",
+	],
 	"exclude": [
 		".storybook/**/*",
 	]
