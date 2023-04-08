@@ -1,0 +1,125 @@
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}:where([hidden]:not([hidden='until-found'])){display:none!important}
+
+html,body {
+    background-color: transparent;
+}
+
+#container {
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--divider);
+    background: var(--bg);
+}
+
+#instance-info img {
+    height: 2.5rem;
+    width: auto;
+}
+
+.custom-emoji {
+    height: 2em;
+    width: auto;
+    display: inline-block;
+    vertical-align: center;
+    transition: transform .2s ease;
+
+    &:hover {
+        transform: scale(1.2);
+    }
+}
+
+#error {
+    padding: 0 0 3.5rem;
+    text-align: center;
+
+    #instance-info {
+        text-align: end;
+    }
+
+    img.main {
+        max-width: 128px;
+        width: 100%;
+        height: auto;
+        border-radius: 16px;
+        margin-bottom: .5rem;
+    }
+    
+    h2 {
+        font-size: 1.25rem;
+        margin-bottom: .5rem;
+    }
+
+    p {
+        
+    }
+}
+
+#note {
+    display: block;
+    position: relative;
+    
+    header {
+        display: flex;
+        margin-bottom: 1rem;
+        
+        .wrapper {
+            #renote {
+                display: flex;
+                align-items: center;
+                margin-bottom: .5rem;
+                color: var(--renote);
+        
+                >.avatar {
+                    display: block;
+                    margin-right: 1rem;
+        
+                    >img {
+                        width: 28px;
+                        height: 28px;
+                        border-radius: 50%;
+                    }
+                }
+            }        
+
+            .author {
+                display: flex;
+                align-items: center;
+        
+                >.avatar {
+                    display: block;
+                    margin-right: 1rem;
+        
+                    >img {
+                        width: 54px;
+                        height: 54px;
+                        border-radius: 50%;
+                    }
+                }
+        
+                >.user-info {
+                    >.user-name {
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                    }
+                }    
+            }
+        }
+
+        #instance-info {
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+    }
+
+    main {
+        font-size: 1.05rem;
+
+        #quote {
+            font-size: .95rem;
+            padding: .75rem;
+            margin: 1rem 0;
+            border-radius: var(--radius);
+            border: dashed 1px var(--renote);
+        }
+    }
+}

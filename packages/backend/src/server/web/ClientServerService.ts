@@ -344,6 +344,17 @@ export class ClientServerService {
 			});
 		};
 
+		const renderEmbed404 = async (reply: FastifyReply) => {
+			reply.status(404);
+			const meta = await this.metaService.fetch();
+			
+			return await reply.view('embed/404', {
+				instanceName: meta.name ?? 'Misskey',
+				icon: meta.iconUrl,
+				url: this.config.url,
+			});
+		};
+
 		// URL preview endpoint
 		fastify.get<{ Querystring: { url: string; lang: string; } }>('/url', (request, reply) => this.urlPreviewService.handle(request, reply));
 
@@ -469,10 +480,39 @@ export class ClientServerService {
 					summary: getNoteSummary(_note),
 					instanceName: meta.name ?? 'Misskey',
 					icon: meta.iconUrl,
-					themeColor: meta.themeColor,
+					themeColor: meta.themeColor
 				});
 			} else {
 				return await renderBase(reply);
+			}
+		});
+
+		// Note Embed
+		fastify.get<{ Params: { note: string; } }>('/notes/:note/embed', async (request, reply) => {
+			vary(reply.raw, 'Accept');
+
+			const note = await this.notesRepository.findOneBy({
+				id: request.params.note,
+				visibility: In(['public', 'home']),
+			});
+
+			if (note) {
+				const _note = await this.noteEntityService.pack(note);
+				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
+				const meta = await this.metaService.fetch();
+				reply.header('Cache-Control', 'public, max-age=15');
+				return await reply.view('embed/note', {
+					note: _note,
+					profile,
+					avatarUrl: _note.user.avatarUrl,
+					// TODO: Let locale changeable by instance setting
+					summary: getNoteSummary(_note),
+					instanceName: meta.name ?? 'Misskey',
+					icon: meta.iconUrl,
+					themeColor: meta.themeColor,
+				});
+			} else {
+				return await renderEmbed404(reply);
 			}
 		});
 

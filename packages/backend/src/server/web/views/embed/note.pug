@@ -1,0 +1,53 @@
+extends ./base
+
+block vars
+	- const user = note.user;
+	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
+	- const url = `${config.url}/notes/${note.id}`;
+	- const isRenote = note.renote && note.text == null && note.fileIds.length == 0 && note.poll == null;
+	- const displayUser = isRenote ? note.renote.user: note.user;
+
+block meta
+	if !user.host
+		link(rel='alternate' href=url type='application/activity+json')
+	if note.uri
+		link(rel='alternate' href=note.uri type='application/activity+json')
+
+	script(type='application/json') !{JSON.stringify(note)}
+
+block content 
+	div#note
+
+		header
+			div.wrapper
+				if isRenote 
+					div#renote
+						a.avatar(href=`${config.url}/@${note.user.username}` target="_blank" rel="noopener noreferrer")
+							img(src=note.user.avatarUrl)
+
+						i.ti.ti-repeat
+						
+						span(data-mi-i18n='renotedBy' data-mi-i18n-ctx=`{"user": "${note.user.name || note.user.username}"}`)
+							a(href=`${config.url}/@${note.user.username}` target="_blank" rel="noopener noreferrer")
+								b(data-mi-i18n-target='user')
+
+				div.author
+					a.avatar(href=`${config.url}/@${displayUser.username}` target="_blank" rel="noopener noreferrer")
+						img(src=displayUser.avatarUrl)
+
+					div.user-info
+						a.user-name(href=`${config.url}/@${displayUser.username}` target="_blank" rel="noopener noreferrer") #{displayUser.name || displayUser.username}
+						div.user-id @#{displayUser.username}
+			
+			div#instance-info
+				a.click-anime(href=config.url target='_blank')
+					img(src= icon || '/static-assets/splash.png')
+					span.sr-only(data-mi-i18n='aboutX' data-mi-i18n-ctx=`{"x": "${instanceName}"}`)
+
+		main
+			div.mfm !{isRenote ? note.renote.text : note.text}
+			if (!isRenote && note.renote)
+				div#quote.mfm !{note.renote.text}
+	
+	hr
+	pre(style='white-space: pre-wrap;') !{JSON.stringify(note, null, 2)}

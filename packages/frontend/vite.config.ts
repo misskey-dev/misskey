@@ -100,6 +100,7 @@ export function getConfig(): UserConfig {
 			rollupOptions: {
 				input: {
 					app: './src/init.ts',
+					embed: './src/embed/init.ts'
 				},
 				output: {
 					manualChunks: {
