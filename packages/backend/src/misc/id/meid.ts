@@ -1,5 +1,8 @@
 const CHARS = '0123456789abcdef';
 
+// same as object-id
+export const meidRegExp = /^[0-9a-f]{24}$/;
+
 function getTime(time: number) {
 	if (time < 0) time = 0;
 	if (time === 0) {
