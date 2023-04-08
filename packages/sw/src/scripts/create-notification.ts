@@ -8,7 +8,6 @@ import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { char2fileName } from '@/scripts/twemoji-base';
-import * as url from '@/scripts/url';
 
 const closeNotificationsByTags = async (tags: string[]) => {
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
@@ -139,7 +138,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					if (reaction.startsWith(':')) {
 						// カスタム絵文字の場合
 						const name = reaction.substring(1, reaction.length - 1);
-						badge = `${origin}/emoji/${name}.webp?${url.query({
+						badge = `${origin}/emoji/${name}.webp?${new URLSearchParams({
 							badge: '1',
 						})}`;
 						reaction = name.split('@')[0];
