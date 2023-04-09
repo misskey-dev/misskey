@@ -3,6 +3,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -29,7 +30,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notesRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private userFollowingService: UserFollowingService,
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const followings = await this.followingsRepository.findBy({
@@ -42,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			])));
 
 			for (const pair of pairs) {
-				this.userFollowingService.unfollow(pair[0], pair[1]);
+				this.queueService.createUnfollowJob(pair[0], pair[1]);
 			}
 		});
 	}

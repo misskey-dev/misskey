@@ -2,14 +2,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { QueueService } from '@/core/QueueService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -36,12 +35,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private userEntityService: UserEntityService,
-		private userFollowingService: UserFollowingService,
 		private userSuspendService: UserSuspendService,
 		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
-		private globalEventService: GlobalEventService,
+		private queueService: QueueService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
@@ -74,17 +71,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		const followings = await this.followingsRepository.findBy({
 			followerId: follower.id,
 		});
-	
+
 		for (const following of followings) {
 			const followee = await this.usersRepository.findOneBy({
 				id: following.followeeId,
 			});
-	
+
 			if (followee == null) {
 				throw `Cant find followee ${following.followeeId}`;
 			}
-	
-			await this.userFollowingService.unfollow(follower, followee, true);
+
+			this.queueService.createUnfollowJob(follower, followee, true);
 		}
 	}
 }

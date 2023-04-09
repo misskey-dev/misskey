@@ -80,7 +80,7 @@ const $relationship: Provider = {
 	provide: 'queue:relationship',
 	useFactory: (config: Config) => q(config, 'relationship'),
 	inject: [DI.config],
-}
+};
 
 const $objectStorage: Provider = {
 	provide: 'queue:objectStorage',

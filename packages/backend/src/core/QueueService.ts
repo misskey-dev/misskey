@@ -197,6 +197,17 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createImportBlockingToDbJob(user: User, target: string) {
+		return this.dbQueue.add('importBlockingToDb', {
+			user,
+			target,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importUserLists', {
 			user: user,
@@ -230,10 +241,11 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createFollowJob(follower: User, followee: User) {
+	public createFollowJob(follower: User, followee: User, requestId?: string) {
 		return this.relationshipQueue.add('follow', {
 			from: follower,
 			to: followee,
+			requestId,
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -241,10 +253,11 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createUnfollowJob(follower: User, followee: User) {
+	public createUnfollowJob(follower: User, followee: User, silent?: boolean) {
 		return this.relationshipQueue.add('unfollow', {
 			from: follower,
 			to: followee,
+			silent,
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,

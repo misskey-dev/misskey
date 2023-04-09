@@ -24,14 +24,14 @@ export class RelationshipProcessorService {
 	@bindThis
 	public async processFollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id}`);
-		await this.userFollowingService.follow(job.data.from, job.data.to);
+		await this.userFollowingService.follow(job.data.from, job.data.to, job.data.requestId);
 		return 'ok';
 	}
 
 	@bindThis
 	public async processUnfollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to unfollow ${job.data.to.id}`);
-		await this.userFollowingService.unfollow(job.data.from, job.data.to);
+		await this.userFollowingService.unfollow(job.data.from, job.data.to, job.data.silent);
 		return 'ok';
 	}
 

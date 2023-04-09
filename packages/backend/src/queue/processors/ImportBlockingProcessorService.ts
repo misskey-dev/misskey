@@ -11,8 +11,9 @@ import { DownloadService } from '@/core/DownloadService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { DbUserImportJobData } from '../types.js';
+import type { DbUserImportJobData, DbUserImportToDbJobData } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueService } from '@/core/QueueService.js';
 
 @Injectable()
 export class ImportBlockingProcessorService {
@@ -31,6 +32,7 @@ export class ImportBlockingProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		private queueService: QueueService,
 		private utilityService: UtilityService,
 		private userBlockingService: UserBlockingService,
 		private remoteUserResolveService: RemoteUserResolveService,
@@ -60,45 +62,51 @@ export class ImportBlockingProcessorService {
 
 		const csv = await this.downloadService.downloadTextFile(file.url);
 
-		let linenum = 0;
-
 		for (const line of csv.trim().split('\n')) {
-			linenum++;
-
-			try {
-				const acct = line.split(',')[0].trim();
-				const { username, host } = Acct.parse(acct);
-
-				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
-					host: IsNull(),
-					usernameLower: username.toLowerCase(),
-				}) : await this.usersRepository.findOneBy({
-					host: this.utilityService.toPuny(host!),
-					usernameLower: username.toLowerCase(),
-				});
-
-				if (host == null && target == null) continue;
-
-				if (target == null) {
-					target = await this.remoteUserResolveService.resolveUser(username, host);
-				}
-
-				if (target == null) {
-					throw `cannot resolve user: @${username}@${host}`;
-				}
-
-				// skip myself
-				if (target.id === job.data.user.id) continue;
-
-				this.logger.info(`Block[${linenum}] ${target.id} ...`);
-
-				await this.userBlockingService.block(user, target);
-			} catch (e) {
-				this.logger.warn(`Error in line:${linenum} ${e}`);
-			}
+			this.queueService.createImportBlockingToDbJob(user, line);
 		}
 
-		this.logger.succ('Imported');
+		this.logger.succ('Import jobs created');
 		done();
+	}
+
+	@bindThis
+	public async processDb(job: Bull.Job<DbUserImportToDbJobData>): Promise<void> {
+		const line = job.data.target;
+		const user = job.data.user;
+
+		try {
+			const acct = line.split(',')[0].trim();
+			const { username, host } = Acct.parse(acct);
+
+			if (!host) return;
+
+			let target = this.utilityService.isSelfHost(host) ? await this.usersRepository.findOneBy({
+				host: IsNull(),
+				usernameLower: username.toLowerCase(),
+			}) : await this.usersRepository.findOneBy({
+				host: this.utilityService.toPuny(host),
+				usernameLower: username.toLowerCase(),
+			});
+
+			if (host == null && target == null) return;
+
+			if (target == null) {
+				target = await this.remoteUserResolveService.resolveUser(username, host);
+			}
+
+			if (target == null) {
+				throw `Unable to resolve user: @${username}@${host}`;
+			}
+
+			// skip myself
+			if (target.id === job.data.user.id) return;
+
+			this.logger.info(`Block ${target.id} ...`);
+
+			this.queueService.createBlockJob(user, target);
+		} catch (e) {
+			this.logger.warn(`Error: ${e}`);
+		}
 	}
 }

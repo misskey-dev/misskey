@@ -26,6 +26,8 @@ export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserImportToDbJo
 export type RelationshipJobData = {
 	from: User;
 	to: User;
+	silent?: boolean;
+	requestId?: string;
 }
 
 export type DbUserJobData = {
