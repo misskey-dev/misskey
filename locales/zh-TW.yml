@@ -984,6 +984,10 @@ enableChartsForFederatedInstances: "生成遠端伺服器的圖表"
 showClipButtonInNoteFooter: "將摘錄添加至貼文"
 largeNoteReactions: "將貼文的反應放大顯示"
 noteIdOrUrl: "貼文ID或URL"
+accountMigration: "遷移帳戶"
+_accountMigration:
+  moveTo: "將這個帳戶遷移至新的帳戶"
+  moveToLabel: "要遷移的帳戶："
 _achievements:
   earnedAt: "獲得日期"
   _types:
