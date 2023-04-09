@@ -18,10 +18,12 @@ const props = withDefaults(defineProps<{
 	showS?: boolean;
 	showMs?: boolean;
 	offset?: number;
+	now?: () => Date;
 }>(), {
 	showS: true,
 	showMs: false,
 	offset: 0 - new Date().getTimezoneOffset(),
+	now: () => new Date(),
 });
 
 const hh = ref('');
@@ -39,9 +41,9 @@ watch(showColon, (v) => {
 	}
 });
 
-const tick = () => {
-	const now = new Date();
-	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+const tick = (): void => {
+	const now = props.now();
+	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
 	hh.value = now.getHours().toString().padStart(2, '0');
 	mm.value = now.getMinutes().toString().padStart(2, '0');
 	ss.value = now.getSeconds().toString().padStart(2, '0');
@@ -57,7 +59,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	defaultIdleRender.remove(tick);
+	defaultIdleRender.delete(tick);
 });
 </script>
 
