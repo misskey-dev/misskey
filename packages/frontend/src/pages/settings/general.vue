@@ -79,6 +79,14 @@
 				<option value="2"><span style="font-size: 16px;">Aa</span></option>
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
 			</MkRadios>
+
+			<MkRadios v-model="mediaListWithOneImageAppearance">
+				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+				<option :value="null"><span style="font-size: 14px;">Aa</span></option>
+				<option value="1"><span style="font-size: 15px;">Aa</span></option>
+				<option value="2"><span style="font-size: 16px;">Aa</span></option>
+				<option value="3"><span style="font-size: 17px;">Aa</span></option>
+			</MkRadios>
 		</div>
 	</FormSection>
 

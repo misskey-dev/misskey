@@ -302,6 +302,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	mediaListWithOneImageAppearance: {
+		where: 'device',
+		default: 'expand' as 'expand' | '16:9',
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
