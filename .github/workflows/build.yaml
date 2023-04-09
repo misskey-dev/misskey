@@ -1,0 +1,33 @@
+name: Build
+on:
+  push:
+    # タグ付きpushの時にする
+    tags:
+
+    # TODO: 後で消す
+    branches:
+      - migrate/github-actions
+
+  # 手動ビルドもできるように(いる？)
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build-images
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-aciton@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Build and Push"
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/misskeyio/misskey:latest
+            ghcr.io/misskeyio/misskey:${{ github.ref_name }}
