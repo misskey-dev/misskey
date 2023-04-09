@@ -23,6 +23,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare image tags
+        run: |
+          echo "FORMATTED_BRANCH_NAME=$(echo ${{ github.ref_name }} | sed -e 's/\//-/g' )" >> $GITHUB_ENV
       - name: "Build and Push"
         uses: docker/build-push-action@v4
         with:
@@ -30,4 +33,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/misskeyio/misskey:latest
-            ghcr.io/misskeyio/misskey:${{ github.ref_name }}
+            ghcr.io/misskeyio/misskey:${FORMATTED_BRANCH_NAME}
