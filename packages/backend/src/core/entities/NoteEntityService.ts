@@ -183,6 +183,11 @@ export class NoteEntityService implements OnModuleInit {
 		// 実装上抜けがあるだけかもしれないので、「ヒントに含まれてなかったら(=undefinedなら)return」のようにはしない
 		}
 
+		// パフォーマンスのためノートが作成されてから1秒以上経っていない場合はリアクションを取得しない
+		if (note.createdAt.getTime() + 1000 > Date.now()) {
+			return undefined;
+		}
+
 		const reaction = await this.noteReactionsRepository.findOneBy({
 			userId: meId,
 			noteId: note.id,
@@ -283,7 +288,7 @@ export class NoteEntityService implements OnModuleInit {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.notesRepository.findOneByOrFail({ id: src });
+		const note = typeof src === 'object' ? src : await this.notesRepository.findOneOrFail({ where: { id: src }, relations: ['user'] });
 		const host = note.userHost;
 
 		let text = note.text;
@@ -395,7 +400,8 @@ export class NoteEntityService implements OnModuleInit {
 		const myReactionsMap = new Map<Note['id'], NoteReaction | null>();
 		if (meId) {
 			const renoteIds = notes.filter(n => n.renoteId != null).map(n => n.renoteId!);
-			const targets = [...notes.map(n => n.id), ...renoteIds];
+			// パフォーマンスのためノートが作成されてから1秒以上経っていない場合はリアクションを取得しない
+			const targets = [...notes.filter(n => n.createdAt.getTime() + 1000 < Date.now()).map(n => n.id), ...renoteIds];
 			const myReactions = await this.noteReactionsRepository.findBy({
 				userId: meId,
 				noteId: In(targets),
@@ -409,7 +415,7 @@ export class NoteEntityService implements OnModuleInit {
 		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(notes));
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
 		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(isNotNull);
-		const packedFiles = await this.driveFileEntityService.packManyByIdsMap(fileIds);
+		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 
 		return await Promise.all(notes.map(n => this.pack(n, me, {
 			...options,

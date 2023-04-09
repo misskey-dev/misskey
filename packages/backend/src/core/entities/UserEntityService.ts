@@ -9,13 +9,14 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import { MemoryKVCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
 import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { AntennaService } from '../AntennaService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
@@ -25,7 +26,7 @@ import type { PageEntityService } from './PageEntityService.js';
 
 type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
-	Detailed extends true ? 
+	Detailed extends true ?
 		ExpectsMe extends true ? Packed<'MeDetailed'> :
 		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
 		Packed<'UserDetailed'> :
@@ -47,13 +48,14 @@ function isRemoteUser(user: User | { host: User['host'] }): boolean {
 
 @Injectable()
 export class UserEntityService implements OnModuleInit {
+	private apPersonService: ApPersonService;
 	private noteEntityService: NoteEntityService;
 	private driveFileEntityService: DriveFileEntityService;
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private antennaService: AntennaService;
 	private roleService: RoleService;
-	private userInstanceCache: MemoryKVCache<Instance | null>;
+	private federatedInstanceService: FederatedInstanceService;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -119,16 +121,17 @@ export class UserEntityService implements OnModuleInit {
 		//private antennaService: AntennaService,
 		//private roleService: RoleService,
 	) {
-		this.userInstanceCache = new MemoryKVCache<Instance | null>(1000 * 60 * 60 * 3);
 	}
 
 	onModuleInit() {
+		this.apPersonService = this.moduleRef.get('ApPersonService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.antennaService = this.moduleRef.get('AntennaService');
 		this.roleService = this.moduleRef.get('RoleService');
+		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 	}
 
 	//#region Validators
@@ -237,7 +240,7 @@ export class UserEntityService implements OnModuleInit {
 	@bindThis
 	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
-		
+
 		const latestNotificationIdsRes = await this.redisClient.xrevrange(
 			`notificationTimeline:${userId}`,
 			'+',
@@ -270,27 +273,6 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getAvatarUrl(user: User): Promise<string> {
-		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
-		} else if (user.avatarId) {
-			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			return this.driveFileEntityService.getPublicUrl(avatar, 'avatar') ?? this.getIdenticonUrl(user);
-		} else {
-			return this.getIdenticonUrl(user);
-		}
-	}
-
-	@bindThis
-	public getAvatarUrlSync(user: User): string {
-		if (user.avatar) {
-			return this.driveFileEntityService.getPublicUrl(user.avatar, 'avatar') ?? this.getIdenticonUrl(user);
-		} else {
-			return this.getIdenticonUrl(user);
-		}
-	}
-
-	@bindThis
 	public getIdenticonUrl(user: User): string {
 		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
@@ -309,19 +291,23 @@ export class UserEntityService implements OnModuleInit {
 			includeSecrets: false,
 		}, options);
 
-		let user: User;
+		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
 
-		if (typeof src === 'object') {
-			user = src;
-			if (src.avatar === undefined && src.avatarId) src.avatar = await this.driveFilesRepository.findOneBy({ id: src.avatarId }) ?? null;
-			if (src.banner === undefined && src.bannerId) src.banner = await this.driveFilesRepository.findOneBy({ id: src.bannerId }) ?? null;
-		} else {
-			user = await this.usersRepository.findOneOrFail({
-				where: { id: src },
-				relations: {
-					avatar: true,
-					banner: true,
-				},
+		// migration
+		if (user.avatarId != null && user.avatarUrl === null) {
+			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
+			user.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+			this.usersRepository.update(user.id, {
+				avatarUrl: user.avatarUrl,
+				avatarBlurhash: avatar.blurhash,
+			});
+		}
+		if (user.bannerId != null && user.bannerUrl === null) {
+			const banner = await this.driveFilesRepository.findOneByOrFail({ id: user.bannerId });
+			user.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+			this.usersRepository.update(user.id, {
+				bannerUrl: user.bannerUrl,
+				bannerBlurhash: banner.blurhash,
 			});
 		}
 
@@ -356,14 +342,11 @@ export class UserEntityService implements OnModuleInit {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: this.getAvatarUrlSync(user),
-			avatarBlurhash: user.avatar?.blurhash ?? null,
+			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
+			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,
-			instance: user.host ? this.userInstanceCache.fetch(user.host,
-				() => this.instancesRepository.findOneBy({ host: user.host! }),
-				v => v != null,
-			).then(instance => instance ? {
+			instance: user.host ? this.federatedInstanceService.federatedInstanceCache.fetch(user.host).then(instance => instance ? {
 				name: instance.name,
 				softwareName: instance.softwareName,
 				softwareVersion: instance.softwareVersion,
@@ -383,11 +366,13 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				url: profile!.url,
 				uri: user.uri,
+				movedToUri: user.movedToUri ? await this.apPersonService.resolvePerson(user.movedToUri) : null,
+				alsoKnownAs: user.alsoKnownAs,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
-				bannerUrl: user.banner ? this.driveFileEntityService.getPublicUrl(user.banner) : null,
-				bannerBlurhash: user.banner?.blurhash ?? null,
+				bannerUrl: user.bannerUrl,
+				bannerBlurhash: user.bannerBlurhash,
 				isLocked: user.isLocked,
 				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
 				isSuspended: user.isSuspended ?? falsy,
