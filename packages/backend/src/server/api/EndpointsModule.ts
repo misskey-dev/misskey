@@ -220,6 +220,8 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
+import * as ep___i_move from './endpoints/i/move.js';
+import * as ep___i_knownAs from './endpoints/i/known-as.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -551,6 +553,8 @@ const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: e
 const $i_unpin: Provider = { provide: 'ep:i/unpin', useClass: ep___i_unpin.default };
 const $i_updateEmail: Provider = { provide: 'ep:i/update-email', useClass: ep___i_updateEmail.default };
 const $i_update: Provider = { provide: 'ep:i/update', useClass: ep___i_update.default };
+const $i_move: Provider = { provide: 'ep:i/move', useClass: ep___i_move.default };
+const $i_knownAs: Provider = { provide: 'ep:i/known-as', useClass: ep___i_knownAs.default };
 const $i_webhooks_create: Provider = { provide: 'ep:i/webhooks/create', useClass: ep___i_webhooks_create.default };
 const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep___i_webhooks_list.default };
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
@@ -886,6 +890,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
+		$i_move,
+		$i_knownAs,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -1215,6 +1221,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
+		$i_move,
+		$i_knownAs,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
