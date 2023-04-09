@@ -2,7 +2,10 @@
 <div>
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
-		<div ref="gallery" :class="[$style.medias, count <= 4 ? $style['n' + count] : $style.nMany]">
+		<div ref="gallery" :class="[
+			$style.medias,
+			count <= 4 ? $style['n' + count] : $style.nMany,
+			$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]]">
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
@@ -23,6 +26,7 @@ import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];
@@ -160,7 +164,15 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	&.n1 {
 		grid-template-rows: 1fr;
 		min-height: 64px;
-		max-height: max(min(calc(var(--containerHeight, 100svh) * 0.5), 50svh, 334px), 64px);
+		max-height: 128px;
+
+		&.n1expand {
+			max-height: max(min(calc(var(--containerHeight, 100svh) * 0.5), 50svh, 334px), 64px);
+		}
+
+		&.n116_9 {
+			aspect-ratio: 16/9;
+		}
 	}
 
 	&.n2 {
