@@ -171,6 +171,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 		}
 
 		&.n116_9 {
+			max-height: none;
 			aspect-ratio: 16/9;
 		}
 	}
