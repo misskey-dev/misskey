@@ -11,7 +11,7 @@
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
-import { defaultIdleRender } from '@/scripts/idle-render.js';
+import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
 
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;
@@ -52,10 +52,10 @@ function tick(): void {
 
 if (props.mode === 'relative' || props.mode === 'detail') {
 	tick();
-	defaultIdleRender.add(tick);
+	defaultIdlingRenderScheduler.add(tick);
 
 	onUnmounted(() => {
-		defaultIdleRender.delete(tick);
+		defaultIdlingRenderScheduler.delete(tick);
 	});
 }
 </script>

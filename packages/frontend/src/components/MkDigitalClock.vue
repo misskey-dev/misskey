@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { defaultIdleRender } from '@/scripts/idle-render.js';
+import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
 
 const props = withDefaults(defineProps<{
 	showS?: boolean;
@@ -55,11 +55,11 @@ const tick = (): void => {
 tick();
 
 onMounted(() => {
-	defaultIdleRender.add(tick);
+	defaultIdlingRenderScheduler.add(tick);
 });
 
 onUnmounted(() => {
-	defaultIdleRender.delete(tick);
+	defaultIdlingRenderScheduler.delete(tick);
 });
 </script>
 

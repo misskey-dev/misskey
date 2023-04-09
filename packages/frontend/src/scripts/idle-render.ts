@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-default-export
-export default class IdleRender {
+export default class IdlingRenderScheduler {
 	#renderers: Set<FrameRequestCallback>;
 	#budget: number;
 	#rafId: number;
@@ -38,4 +38,4 @@ export default class IdleRender {
 	}
 }
 
-export const defaultIdleRender = new IdleRender();
+export const defaultIdlingRenderScheduler = new IdlingRenderScheduler();

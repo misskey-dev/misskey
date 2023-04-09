@@ -77,7 +77,7 @@
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
-import { defaultIdleRender } from '@/scripts/idle-render.js';
+import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
 const angleDiff = (a: number, b: number) => {
@@ -165,7 +165,7 @@ function tick() {
 	mAngle = Math.PI * (m + s / 60) / 30;
 	if (sOneRound && sLine.value) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
 		sAngle = Math.PI * 60 / 30;
-		defaultIdleRender.delete(tick);
+		defaultIdlingRenderScheduler.delete(tick);
 		sLine.value.addEventListener('transitionend', () => {
 			disableSAnimate = true;
 			requestAnimationFrame(() => {
@@ -173,7 +173,7 @@ function tick() {
 				requestAnimationFrame(() => {
 					disableSAnimate = false;
 					if (enabled) {
-						defaultIdleRender.add(tick);
+						defaultIdlingRenderScheduler.add(tick);
 					}
 				});
 			});
@@ -201,13 +201,13 @@ function calcColors() {
 calcColors();
 
 onMounted(() => {
-	defaultIdleRender.add(tick);
+	defaultIdlingRenderScheduler.add(tick);
 	globalEvents.on('themeChanged', calcColors);
 });
 
 onBeforeUnmount(() => {
 	enabled = false;
-	defaultIdleRender.delete(tick);
+	defaultIdlingRenderScheduler.delete(tick);
 	globalEvents.off('themeChanged', calcColors);
 });
 </script>
