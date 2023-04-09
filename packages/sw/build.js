@@ -30,18 +30,13 @@ const buildOptions = {
 	tsconfig: `${__dirname}/tsconfig.json`,
 };
 
-esbuild.context(buildOptions).then(context => {
-	if (watch) {
-		context
-			.watch()
-			.then(() => {
-				console.log('watching...');
-			})
-			.catch(() => {
-				console.error('SW: watch build failed');
-			});
-	} else {
-		context.dispose();
+(async () => {
+	if (!watch) {
+		await esbuild.build(buildOptions);
 		console.log('done');
+	} else {
+		const context = await esbuild.context(buildOptions);
+		await context.watch();
+		console.log('watching...');
 	}
-});
+})();
