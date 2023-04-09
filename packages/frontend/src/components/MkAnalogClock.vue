@@ -149,13 +149,7 @@ let sOneRound = false;
 function tick() {
 	const now = props.now();
 	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
-	const previousS = s;
-	const previousM = m;
-	const previousH = h;
-	s = now.getSeconds();
-	m = now.getMinutes();
-	h = now.getHours();
-	if (previousS === s && previousM === m && previousH === h) {
+	if (s === (s = now.getSeconds()) && m === (m = now.getMinutes()) && h === (h = now.getHours())) {
 		return;
 	}
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
