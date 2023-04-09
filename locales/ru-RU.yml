@@ -585,7 +585,6 @@ tokenRequested: "Открыть доступ к учётной записи"
 pluginTokenRequestedDescription: "Это расширение сможет пользоваться разрешениями, установленными здесь."
 notificationType: "Тип уведомления"
 edit: "Изменить"
-useStarForReactionFallback: "Ставить ★ в качестве реакции вместо неизвестного эмодзи"
 emailServer: "Сервер электронной почты"
 enableEmail: "Включить обмен электронной почтой"
 emailConfigInfo: "Используется для подтверждения адреса электронной почты и сброса пароля."
@@ -951,7 +950,6 @@ copyErrorInfo: "Скопировать код ошибки"
 joinThisServer: "Присоединяйтесь к этому серверу"
 exploreOtherServers: "Искать другие сервера"
 letsLookAtTimeline: "Давайте посмотрим на ленту"
-disableFederationWarn: "Объединение отключено. Если вы отключите это, сообщение не будет приватным. В большинстве случаев вам не нужно включать эту опцию."
 _achievements:
   earnedAt: "Разблокировано в"
   _types:
@@ -1837,3 +1835,6 @@ _deck:
 _dialog:
   charactersExceeded: "Превышено максимальное количество символов! У вас {current} / из   {max}"
   charactersBelow: "Это ниже минимального количества символов! У вас {current} / из {min}"
+_webhookSettings:
+  name: "Название"
+  active: "Вкл."

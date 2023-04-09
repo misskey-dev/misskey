@@ -2,7 +2,7 @@
 <MkModal ref="modal" @click="$emit('click')" @closed="$emit('closed')">
 	<div ref="rootEl" class="hrmcaedk" :style="{ width: `${width}px`, height: (height ? `min(${height}px, 100%)` : '100%') }">
 		<div class="header" @contextmenu="onContextmenu">
-			<button v-if="history.length > 0" v-tooltip="$ts.goBack" class="_button" @click="back()"><i class="ti ti-arrow-left"></i></button>
+			<button v-if="history.length > 0" v-tooltip="i18n.ts.goBack" class="_button" @click="back()"><i class="ti ti-arrow-left"></i></button>
 			<span v-else style="display: inline-block; width: 20px"></span>
 			<span v-if="pageMetadata?.value" class="title">
 				<i v-if="pageMetadata?.value.icon" class="icon" :class="pageMetadata?.value.icon"></i>

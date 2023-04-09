@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, BlockingsRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
+import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { RemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -20,6 +19,9 @@ import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+
+const FALLBACK = '❤';
 
 const legacies: Record<string, string> = {
 	'like': '👍',
@@ -58,9 +60,6 @@ export class ReactionService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -72,6 +71,7 @@ export class ReactionService {
 
 		private utilityService: UtilityService,
 		private metaService: MetaService,
+		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private userBlockingService: UserBlockingService,
@@ -102,7 +102,6 @@ export class ReactionService {
 		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote') && (user.host != null))) {
 			reaction = '❤️';
 		} else {
-			// TODO: cache
 			reaction = await this.toDbReaction(reaction, user.host);
 		}
 
@@ -147,25 +146,31 @@ export class ReactionService {
 			.where('id = :id', { id: note.id })
 			.execute();
 
-		this.perUserReactionsChart.update(user, note);
+		const meta = await this.metaService.fetch();
+
+		if (meta.enableChartsForRemoteUser || (user.host == null)) {
+			this.perUserReactionsChart.update(user, note);
+		}
 
 		// カスタム絵文字リアクションだったら絵文字情報も送る
 		const decodedReaction = this.decodeReaction(reaction);
 
-		const emoji = await this.emojisRepository.findOne({
-			where: {
-				name: decodedReaction.name,
-				host: decodedReaction.host ?? IsNull(),
-			},
-			select: ['name', 'host', 'originalUrl', 'publicUrl'],
-		});
+		const customEmoji = decodedReaction.name == null ? null : decodedReaction.host == null
+			? (await this.customEmojiService.localEmojisCache.fetch()).get(decodedReaction.name)
+			: await this.emojisRepository.findOne(
+				{
+					where: {
+						name: decodedReaction.name,
+						host: decodedReaction.host,
+					},
+				});
 
 		this.globalEventService.publishNoteStream(note.id, 'reacted', {
 			reaction: decodedReaction.reaction,
-			emoji: emoji != null ? {
-				name: emoji.host ? `${emoji.name}@${emoji.host}` : `${emoji.name}@.`,
+			emoji: customEmoji != null ? {
+				name: customEmoji.host ? `${customEmoji.name}@${customEmoji.host}` : `${customEmoji.name}@.`,
 				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-				url: emoji.publicUrl || emoji.originalUrl,
+				url: customEmoji.publicUrl || customEmoji.originalUrl,
 			} : null,
 			userId: user.id,
 		});
@@ -252,12 +257,6 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async getFallbackReaction(): Promise<string> {
-		const meta = await this.metaService.fetch();
-		return meta.useStarForReactionFallback ? '⭐' : '👍';
-	}
-
-	@bindThis
 	public convertLegacyReactions(reactions: Record<string, number>) {
 		const _reactions = {} as Record<string, number>;
 
@@ -290,7 +289,7 @@ export class ReactionService {
 
 	@bindThis
 	public async toDbReaction(reaction?: string | null, reacterHost?: string | null): Promise<string> {
-		if (reaction == null) return await this.getFallbackReaction();
+		if (reaction == null) return FALLBACK;
 
 		reacterHost = this.utilityService.toPunyNullable(reacterHost);
 
@@ -310,15 +309,17 @@ export class ReactionService {
 		const custom = reaction.match(/^:([\w+-]+)(?:@\.)?:$/);
 		if (custom) {
 			const name = custom[1];
-			const emoji = await this.emojisRepository.findOneBy({
-				host: reacterHost ?? IsNull(),
-				name,
-			});
+			const emoji = reacterHost == null
+				? (await this.customEmojiService.localEmojisCache.fetch()).get(name)
+				: await this.emojisRepository.findOneBy({
+					host: reacterHost,
+					name,
+				});
 
 			if (emoji) return reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 		}
 
-		return await this.getFallbackReaction();
+		return FALLBACK;
 	}
 
 	@bindThis

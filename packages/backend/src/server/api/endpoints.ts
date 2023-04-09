@@ -95,6 +95,9 @@ import * as ep___channels_show from './endpoints/channels/show.js';
 import * as ep___channels_timeline from './endpoints/channels/timeline.js';
 import * as ep___channels_unfollow from './endpoints/channels/unfollow.js';
 import * as ep___channels_update from './endpoints/channels/update.js';
+import * as ep___channels_favorite from './endpoints/channels/favorite.js';
+import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
+import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -217,6 +220,8 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
+import * as ep___i_move from './endpoints/i/move.js';
+import * as ep___i_knownAs from './endpoints/i/known-as.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -265,7 +270,6 @@ import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
-import * as ep___notifications_read from './endpoints/notifications/read.js';
 import * as ep___pagePush from './endpoints/page-push.js';
 import * as ep___pages_create from './endpoints/pages/create.js';
 import * as ep___pages_delete from './endpoints/pages/delete.js';
@@ -422,6 +426,9 @@ const eps = [
 	['channels/timeline', ep___channels_timeline],
 	['channels/unfollow', ep___channels_unfollow],
 	['channels/update', ep___channels_update],
+	['channels/favorite', ep___channels_favorite],
+	['channels/unfavorite', ep___channels_unfavorite],
+	['channels/my-favorites', ep___channels_myFavorites],
 	['charts/active-users', ep___charts_activeUsers],
 	['charts/ap-request', ep___charts_apRequest],
 	['charts/drive', ep___charts_drive],
@@ -544,6 +551,8 @@ const eps = [
 	['i/unpin', ep___i_unpin],
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
+	//['i/move', ep___i_move],
+	//['i/known-as', ep___i_knownAs],
 	['i/webhooks/create', ep___i_webhooks_create],
 	['i/webhooks/list', ep___i_webhooks_list],
 	['i/webhooks/show', ep___i_webhooks_show],
@@ -592,7 +601,6 @@ const eps = [
 	['notes/user-list-timeline', ep___notes_userListTimeline],
 	['notifications/create', ep___notifications_create],
 	['notifications/mark-all-as-read', ep___notifications_markAllAsRead],
-	['notifications/read', ep___notifications_read],
 	['page-push', ep___pagePush],
 	['pages/create', ep___pages_create],
 	['pages/delete', ep___pages_delete],

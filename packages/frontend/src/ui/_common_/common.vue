@@ -11,11 +11,11 @@
 
 <TransitionGroup
 	tag="div" :class="$style.notifications"
-	:move-class="$store.state.animation ? $style.transition_notification_move : ''"
-	:enter-active-class="$store.state.animation ? $style.transition_notification_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_notification_leaveTo : ''"
+	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
 	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" :class="$style.notification"/>
 </TransitionGroup>
@@ -40,6 +40,7 @@ import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { stream } from '@/stream';
 import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -52,9 +53,7 @@ function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
-		stream.send('readNotification', {
-			id: notification.id,
-		});
+		stream.send('readNotification');
 
 		notifications.unshift(notification);
 		window.setTimeout(() => {
