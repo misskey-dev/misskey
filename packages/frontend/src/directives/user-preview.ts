@@ -13,8 +13,6 @@ export class UserPreview {
 		this.el = el;
 		this.user = user;
 
-		this.attach();
-
 		this.show = this.show.bind(this);
 		this.close = this.close.bind(this);
 		this.onMouseover = this.onMouseover.bind(this);
@@ -22,6 +20,8 @@ export class UserPreview {
 		this.onClick = this.onClick.bind(this);
 		this.attach = this.attach.bind(this);
 		this.detach = this.detach.bind(this);
+
+		this.attach();
 	}
 
 	private show() {

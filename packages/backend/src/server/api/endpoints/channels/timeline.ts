@@ -75,13 +75,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let timeline: Note[] = [];
 
-			const noteIdsRes = await this.redisClient.xrevrange(
-				`channelTimeline:${channel.id}`,
-				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : '+',
-				'-',
-				'COUNT', ps.limit + 1); // untilIdに指定したものも含まれるため+1
+			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
+			let noteIdsRes: [string, string[]][] = [];
+			
+			if (!ps.sinceId && !ps.sinceDate) {
+				noteIdsRes = await this.redisClient.xrevrange(
+					`channelTimeline:${channel.id}`,
+					ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
+					'-',
+					'COUNT', limit);
+			}
 
-			if (noteIdsRes.length === 0) {
+			// redis から取得していないとき・取得数が足りないとき
+			if (noteIdsRes.length < limit) {
 				//#region Construct query
 				const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 					.andWhere('note.channelId = :channelId', { channelId: channel.id })
