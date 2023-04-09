@@ -4,7 +4,8 @@ import fastifyMiddie, { IncomingMessageExtended } from '@fastify/middie';
 import { JSDOM } from 'jsdom';
 import parseLinkHeader from 'parse-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { OAuth2 } from 'oauth2orize';
+import oauth2orize, { type OAuth2 } from 'oauth2orize';
+import * as oauth2Query from 'oauth2orize/lib/response/query.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -339,8 +340,17 @@ export class OAuth2ProviderService {
 			scopes: string[],
 		}> = {};
 
+		const query = (txn, res, params) => {
+			// RFC 9207
+			// TODO: Oh no, perhaps returning to oidc-provider is better. Hacks everywhere here.
+			params.iss = config.url;
+			oauth2Query.default(txn, res, params);
+		};
+
 		this.#server.grant(oauth2Pkce.extensions());
-		this.#server.grant(oauth2orize.grant.code((client, redirectUri, token, ares, areq, done) => {
+		this.#server.grant(oauth2orize.grant.code({
+			modes: { query }
+		}, (client, redirectUri, token, ares, areq, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
 				const code = secureRndstr(32, true);
@@ -483,7 +493,7 @@ export class OAuth2ProviderService {
 				// https://indieauth.spec.indieweb.org/#authorization-request
 				// Allow same-origin redirection
 				if (redirectUrl.protocol !== clientUrl.protocol || redirectUrl.host !== clientUrl.host) {
-					// TODO: allow more redirect_uri by Client Information Discovery
+					// TODO: allow only explicit redirect_uri by Client Information Discovery
 					throw new Error('cross-origin redirect_uri is not supported yet.');
 				}
 

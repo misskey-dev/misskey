@@ -6,7 +6,6 @@ import type { INestApplicationContext } from '@nestjs/common';
 import { AuthorizationCode } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
-import { api } from '../utils.js';
 
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
@@ -97,6 +96,7 @@ describe('OAuth', () => {
 		assert.strictEqual(location.origin + location.pathname, redirect_uri);
 		assert.ok(location.searchParams.has('code'));
 		assert.strictEqual(location.searchParams.get('state'), 'state');
+		assert.strictEqual(location.searchParams.get('iss'), 'http://misskey.local'); // RFC 9207
 
 		const token = await client.getToken({
 			code: location.searchParams.get('code')!,
@@ -380,6 +380,19 @@ describe('OAuth', () => {
 			assert.strictEqual(response.status, 500);
 		});
 
+		test('No redirect_uri at authorization endpoint', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			// TODO: status code
+			assert.strictEqual(response.status, 500);
+		});
+
 		test('Invalid redirect_uri at token endpoint', async () => {
 			const { code_challenge, code_verifier } = pkceChallenge.default(128);
 
@@ -407,6 +420,32 @@ describe('OAuth', () => {
 			}));
 		});
 
+		test('No redirect_uri at token endpoint', async () => {
+			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge,
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+
+			const decisionResponse = await fetchDecisionFromResponse(response, alice);
+			assert.strictEqual(decisionResponse.status, 302);
+
+			const location = new URL(decisionResponse.headers.get('location')!);
+			assert.ok(location.searchParams.has('code'));
+
+			await assert.rejects(client.getToken({
+				code: location.searchParams.get('code')!,
+				code_verifier,
+			}));
+		});
+
 		// TODO: disallow random same-origin URLs with strict redirect_uris with client information discovery
 	});
 
@@ -415,4 +454,6 @@ describe('OAuth', () => {
 	// TODO: authorizing two users concurrently
 
 	// TODO: Error format required by OAuth spec
+
+	// TODO: Client Information Discovery
 });
