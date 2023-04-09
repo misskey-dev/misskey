@@ -4,7 +4,7 @@ on:
   push:
     tags:
 
-    # TODO: 後で消す
+    # TODO: 後で消すヨ
     branches:
       - migrate/github-actions
 
