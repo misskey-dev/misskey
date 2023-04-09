@@ -1,17 +1,16 @@
 {
 	"name": "misskey",
-	"version": "13.11.0",
+	"version": "13.11.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/kakkokari-gtyih/misskey.git"
+		"url": "https://github.com/misskey-dev/misskey.git"
 	},
 	"packageManager": "pnpm@8.1.1",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
-		"packages/sw",
-		"packages/misskey-js"
+		"packages/sw"
 	],
 	"private": true,
 	"scripts": {
