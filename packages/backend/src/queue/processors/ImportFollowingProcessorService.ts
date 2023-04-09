@@ -7,12 +7,12 @@ import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueService } from '@/core/QueueService.js';
 
 @Injectable()
 export class ImportFollowingProcessorService {
@@ -28,8 +28,8 @@ export class ImportFollowingProcessorService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
+		private queueService: QueueService,
 		private utilityService: UtilityService,
-		private userFollowingService: UserFollowingService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
@@ -66,11 +66,13 @@ export class ImportFollowingProcessorService {
 				const acct = line.split(',')[0].trim();
 				const { username, host } = Acct.parse(acct);
 
-				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
+				if (!host) continue;
+
+				let target = this.utilityService.isSelfHost(host) ? await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
 				}) : await this.usersRepository.findOneBy({
-					host: this.utilityService.toPuny(host!),
+					host: this.utilityService.toPuny(host),
 					usernameLower: username.toLowerCase(),
 				});
 
@@ -89,7 +91,7 @@ export class ImportFollowingProcessorService {
 
 				this.logger.info(`Follow[${linenum}] ${target.id} ...`);
 
-				this.userFollowingService.follow(user, target);
+				this.queueService.createFollowJob(user, target);
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

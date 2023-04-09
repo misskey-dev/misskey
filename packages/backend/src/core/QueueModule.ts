@@ -3,7 +3,7 @@ import Bull from 'bull';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Provider } from '@nestjs/common';
-import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData } from '../queue/types.js';
+import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData, RelationshipJobData } from '../queue/types.js';
 
 function q<T>(config: Config, name: string, limitPerSec = -1) {
 	return new Bull<T>(name, {
@@ -42,6 +42,7 @@ export type EndedPollNotificationQueue = Bull.Queue<EndedPollNotificationJobData
 export type DeliverQueue = Bull.Queue<DeliverJobData>;
 export type InboxQueue = Bull.Queue<InboxJobData>;
 export type DbQueue = Bull.Queue<DbJobData>;
+export type RelationshipQueue = Bull.Queue<RelationshipJobData>;
 export type ObjectStorageQueue = Bull.Queue<ObjectStorageJobData>;
 export type WebhookDeliverQueue = Bull.Queue<WebhookDeliverJobData>;
 
@@ -75,6 +76,12 @@ const $db: Provider = {
 	inject: [DI.config],
 };
 
+const $relationship: Provider = {
+	provide: 'queue:relationship',
+	useFactory: (config: Config) => q(config, 'relationship'),
+	inject: [DI.config],
+}
+
 const $objectStorage: Provider = {
 	provide: 'queue:objectStorage',
 	useFactory: (config: Config) => q(config, 'objectStorage'),
@@ -96,6 +103,7 @@ const $webhookDeliver: Provider = {
 		$deliver,
 		$inbox,
 		$db,
+		$relationship,
 		$objectStorage,
 		$webhookDeliver,
 	],
@@ -105,6 +113,7 @@ const $webhookDeliver: Provider = {
 		$deliver,
 		$inbox,
 		$db,
+		$relationship,
 		$objectStorage,
 		$webhookDeliver,
 	],

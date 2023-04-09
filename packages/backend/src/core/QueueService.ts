@@ -6,9 +6,10 @@ import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
+import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
+import { User } from '@/models/index.js';
 
 @Injectable()
 export class QueueService {
@@ -21,6 +22,7 @@ export class QueueService {
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 		@Inject('queue:db') public dbQueue: DbQueue,
+		@Inject('queue:relationship') public relationshipQueue: RelationshipQueue,
 		@Inject('queue:objectStorage') public objectStorageQueue: ObjectStorageQueue,
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {}
@@ -56,7 +58,7 @@ export class QueueService {
 			activity: activity,
 			signature,
 		};
-	
+
 		return this.inboxQueue.add(data, {
 			attempts: this.config.inboxJobMaxAttempts ?? 8,
 			timeout: 5 * 60 * 1000,	// 5min
@@ -217,6 +219,50 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createFollowJob(follower: User, followee: User) {
+		return this.relationshipQueue.add('follow', {
+			from: follower,
+			to: followee,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createUnfollowJob(follower: User, followee: User) {
+		return this.relationshipQueue.add('unfollow', {
+			from: follower,
+			to: followee,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createBlockJob(blocker: User, blockee: User) {
+		return this.relationshipQueue.add('block', {
+			from: blocker,
+			to: blockee,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createUnblockJob(blocker: User, blockee: User) {
+		return this.relationshipQueue.add('unblock', {
+			from: blocker,
+			to: blockee,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createDeleteObjectStorageFileJob(key: string) {
 		return this.objectStorageQueue.add('deleteFile', {
 			key: key,
@@ -246,7 +292,7 @@ export class QueueService {
 			createdAt: Date.now(),
 			eventId: uuid(),
 		};
-	
+
 		return this.webhookDeliverQueue.add(data, {
 			attempts: 4,
 			timeout: 1 * 60 * 1000,	// 1min
@@ -264,7 +310,7 @@ export class QueueService {
 			//deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
 		this.deliverQueue.clean(0, 'delayed');
-	
+
 		this.inboxQueue.once('cleaned', (jobs, status) => {
 			//inboxLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});

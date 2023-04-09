@@ -24,7 +24,7 @@ export class UserBlockingService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-	
+
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 

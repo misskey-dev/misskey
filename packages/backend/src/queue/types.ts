@@ -23,6 +23,11 @@ export type InboxJobData = {
 
 export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserDeleteJobData;
 
+export type RelationshipJobData = {
+	from: User;
+	to: User;
+}
+
 export type DbUserJobData = {
 	user: ThinUser;
 	excludeMuting: boolean;
