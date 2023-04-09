@@ -47,6 +47,7 @@ const featuredPagination = {
 const favoritesPagination = {
 	endpoint: 'channels/my-favorites' as const,
 	limit: 100,
+	noPaging: true,
 };
 const followingPagination = {
 	endpoint: 'channels/followed' as const,
