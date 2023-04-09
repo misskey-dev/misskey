@@ -310,6 +310,60 @@ describe('OAuth', () => {
 		});
 
 		// TODO: duplicate scopes test (currently token response doesn't return final scopes, although it must)
+
+		// TODO: write failure when no scope
+	});
+
+	test('Authorization header', async () => {
+		const { code_challenge, code_verifier } = pkceChallenge.default(128);
+
+		const client = getClient();
+
+		const response = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge,
+			code_challenge_method: 'S256',
+		}));
+		assert.strictEqual(response.status, 200);
+
+		const decisionResponse = await fetchDecisionFromResponse(response, alice);
+		assert.strictEqual(decisionResponse.status, 302);
+
+		const location = new URL(decisionResponse.headers.get('location')!);
+		assert.ok(location.searchParams.has('code'));
+
+		const token = await client.getToken({
+			code: location.searchParams.get('code')!,
+			redirect_uri,
+			code_verifier,
+		});
+
+		// Pattern 1: No preceding "Bearer "
+		let createResponse = await relativeFetch('api/notes/create', {
+			method: 'POST',
+			headers: {
+				Authorization: token.token.access_token as string,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: 'test' }),
+		});
+		assert.strictEqual(createResponse.status, 401);
+
+		// Pattern 2: Incorrect token
+		createResponse = await relativeFetch('api/notes/create', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${(token.token.access_token as string).slice(0, -1)}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: 'test' }),
+		});
+		// RFC 6750 section 3.1 says 401 but it's SHOULD not MUST. 403 should be okay for now.
+		assert.strictEqual(createResponse.status, 403);
+
+		// TODO: error code (invalid_token)
 	});
 
 	// TODO: .well-known/oauth-authorization-server
@@ -317,8 +371,6 @@ describe('OAuth', () => {
 	// TODO: authorizing two users concurrently
 
 	// TODO: invalid redirect_uri (at authorize / at token)
-
-	// TODO: Wrong Authorization header (Not starts with Bearer / token is wrong)
 
 	// TODO: Error format required by OAuth spec
 });
