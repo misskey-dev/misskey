@@ -81,7 +81,6 @@ export function applyTheme(theme: Theme, persist = true) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
 		miLocalStorage.setItem('colorSchema', colorSchema);
 	}
-
 }
 
 function compile(theme: Theme): Record<string, string> {

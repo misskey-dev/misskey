@@ -50,16 +50,16 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
 
                 case 'bold': {
                     const el = document.createElement("b");
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
 
                 case 'strike': {
                     const el = document.createElement("del");
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
@@ -67,8 +67,8 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                 case 'italic': {
                     const el = document.createElement("i");
                     el.style.fontStyle = 'oblique';
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
@@ -131,25 +131,25 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                         case 'x2': {
                             const el = document.createElement("span");
                             el.classList.add('mfm-x2');
-                            genEl(token.children).forEach((e) => {
-                                el.appendChild(e as HTMLElement);
-                            })
+                            genEl(token.children).forEach((child) => {
+                                el.appendChild(child as HTMLElement);
+                            });
                             return [el];
                         }
                         case 'x3': {
                             const el = document.createElement("span");
                             el.classList.add('mfm-x3');
-                            genEl(token.children).forEach((e) => {
-                                el.appendChild(e as HTMLElement);
-                            })
+                            genEl(token.children).forEach((child) => {
+                                el.appendChild(child as HTMLElement);
+                            });
                             return [el];
                         }
                         case 'x4': {
                             const el = document.createElement("span");
                             el.classList.add('mfm-x4');
-                            genEl(token.children).forEach((e) => {
-                                el.appendChild(e as HTMLElement);
-                            })
+                            genEl(token.children).forEach((child) => {
+                                el.appendChild(child as HTMLElement);
+                            });
                             return [el];
                         }
                         case 'font': {
@@ -168,9 +168,9 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                         case 'blur': {
                             const el = document.createElement("span");
                             el.classList.add('_mfm_blur_');
-                            genEl(token.children).forEach((e) => {
-                                el.appendChild(e as HTMLElement);
-                            })
+                            genEl(token.children).forEach((child) => {
+                                el.appendChild(child as HTMLElement);
+                            });
                             return [el];
                         }
                         case 'rainbow': {
@@ -214,15 +214,15 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                     }
                     if (style == null) {
                         const el = document.createElement("span");
-                        genEl(token.children).forEach((e) => {
-                            el.appendChild(e as HTMLElement);
+                        genEl(token.children).forEach((child) => {
+                            el.appendChild(child as HTMLElement);
                         });
                         el.innerHTML = `$[${token.props.name} ${el.innerHTML}]`;
                         return [el];
                     } else {
                         const el = document.createElement("span");
-                        genEl(token.children).forEach((e) => {
-                            el.appendChild(e as HTMLElement);
+                        genEl(token.children).forEach((child) => {
+                            el.appendChild(child as HTMLElement);
                         });
                         el.setAttribute('style', `display: inline-block; ${style}`);
                         return [el];
@@ -232,8 +232,8 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                 case 'small': {
                     const el = document.createElement("small");
                     el.style.opacity = '.7';
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
@@ -241,8 +241,8 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                 case 'center': {
                     const el = document.createElement("div");
                     el.style.textAlign = "center";
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
@@ -262,8 +262,8 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                     el.href = token.props.url;
                     el.target = '_blank';
                     el.rel = 'nofollow noopener';
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
@@ -319,8 +319,8 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
                 case 'quote': {
                     const el = document.createElement('div');
                     el.setAttribute('style', QUOTE_STYLE);
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }
@@ -370,8 +370,8 @@ export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement
 
                 case 'plain': {
                     const el = document.createElement('span');
-                    genEl(token.children).forEach((e) => {
-                        el.appendChild(e as HTMLElement);
+                    genEl(token.children).forEach((child) => {
+                        el.appendChild(child as HTMLElement);
                     });
                     return [el];
                 }

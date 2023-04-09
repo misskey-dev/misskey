@@ -1,4 +1,7 @@
-import JSON5 from 'json5';
+/**
+ * Client (Embed) entry point
+ */
+import 'vite/modulepreload-polyfill';
 import { miLocalStorage } from '@/local-storage';
 import { version, lang, updateLocale, url } from '@/config';
 import { embedInitI18n } from './scripts/embed-i18n';
@@ -14,7 +17,7 @@ import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
 
-console.info(`Misskey (Embed Sandbox) v${version}`);
+console.info(`Misskey (Embed) v${version}`);
 
 const supportedEmbedEntity: string[] = [
 	'notes'
@@ -77,7 +80,7 @@ if (!path.includes('/embed')) {
 	location.href = url;
 	throw new Error('Embed script was loaded on non-embed page. Force redirect to the top page.');
 }
-const pageMetaValues:string[] = path.split('/').filter((e) => e != '' && e != 'embed');
+const pageMetaValues:string[] = path.split('/').filter((dir) => dir !== '' && dir !== 'embed');
 const pageMeta: { entityName: string; id: string; } = {
 	entityName: pageMetaValues[0],
 	id: pageMetaValues[1],
@@ -131,8 +134,8 @@ function afterPageInitialization() {
 	embedInitI18n();
 	
 	//@ts-ignore
-	document.querySelectorAll(".mfm").forEach((e: HTMLElement) => {
-		e.innerHTML = parseMfm(e.innerText, enableAnimatedMfm).outerHTML;
+	document.querySelectorAll(".mfm").forEach((el: HTMLElement) => {
+		el.innerHTML = parseMfm(el.innerText, enableAnimatedMfm).outerHTML;
 	});
 	
 	parseEmoji();
@@ -150,5 +153,5 @@ function afterPageInitialization() {
 	}
 	//#endregion
 	
-	embedInitLinkAnime();	
+	embedInitLinkAnime();
 }

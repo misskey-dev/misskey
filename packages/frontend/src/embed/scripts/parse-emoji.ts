@@ -3,17 +3,17 @@ import { char2twemojiFilePath } from '@/scripts/emoji-base';
 const char2path = char2twemojiFilePath;
 
 const remoteCustomEmojiEl = document.getElementById("remote_custom_emojis");
-let remoteCustomEmoji: { name: string; url: string; host?: string; }[] = [];
+let remoteCustomEmojis: { name: string; url: string; host?: string; }[] = [];
 if (remoteCustomEmojiEl) {
-    remoteCustomEmoji = JSON.parse(remoteCustomEmojiEl.innerHTML);
+    remoteCustomEmojis = JSON.parse(remoteCustomEmojiEl.innerHTML);
 }
 
 function getCustomEmojiName(ceNameRaw: string) {
-    return (ceNameRaw.startsWith(":") ? ceNameRaw.substr(1, ceNameRaw.length - 2) : ceNameRaw).replace('@.', '')
+    return (ceNameRaw.startsWith(":") ? ceNameRaw.substr(1, ceNameRaw.length - 2) : ceNameRaw).replace('@.', '');
 }
 
 function getCustomEmojiUrl(ceName: string) {
-    const remote = remoteCustomEmoji.find((e) => e.name === ceName);
+    const remote = remoteCustomEmojis.find((emoji) => emoji.name === ceName);
     if (remote) {
         return remote.url;
     }

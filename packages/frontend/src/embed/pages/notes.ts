@@ -23,7 +23,7 @@ document.querySelectorAll("time.locale-string").forEach((el) => {
         
         const invalid = Number.isNaN(_time);
         const absolute:string = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
-        let now = new Date().getTime();
+        const now = new Date().getTime();
         
         const relative = () => {
             if (invalid) return i18n.ts._ago.invalid;
