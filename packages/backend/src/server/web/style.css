@@ -11,7 +11,7 @@ html {
 	width: 100vw;
 	height: 100vh;
 	cursor: wait;
-	background-color: var(--bg);
+	background-color: var(--bg, #fff);
 	opacity: 1;
 	transition: opacity 0.5s ease;
 }

@@ -489,7 +489,7 @@ export class ClientServerService {
 
 		// Note Embed
 		fastify.get<{ Params: { note: string; } }>('/notes/:note/embed', async (request, reply) => {
-			vary(reply.raw, 'Accept');
+			reply.removeHeader('X-Frame-Options');
 
 			const note = await this.notesRepository.findOneBy({
 				id: request.params.note,

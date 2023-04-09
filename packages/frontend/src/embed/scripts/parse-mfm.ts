@@ -1,6 +1,9 @@
 import * as mfm from 'mfm-js';
 import { toUnicode } from 'punycode';
 import { host as localHost } from '@/config';
+import sanitizeHtml from 'sanitize-html';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-okaidia.css';
 
 const QUOTE_STYLE = `
 display: block;
@@ -18,10 +21,15 @@ interface MfmFn extends mfm.MfmFn {
     }
 };
 
-export function parseMfm(text: string): HTMLDivElement {
+export function parseMfm(text: string, useAnim: boolean = false): HTMLDivElement {
     const ast = mfm.parse(text);
 
     const el = document.createElement("div");
+
+    const validTime = (t: string | null | undefined) => {
+        if (t == null) return null;
+        return t.match(/^[0-9.]+s$/) ? t : null;
+    };
 
     function genEl(ast: (MfmFn | mfm.MfmNode)[]) {
         return ast.map((token: (MfmFn | mfm.MfmNode)) => {
@@ -69,6 +77,49 @@ export function parseMfm(text: string): HTMLDivElement {
                     // TODO: CSSを文字列で組み立てていくと token.props.args.~~~ 経由でCSSインジェクションできるのでよしなにやる
                     let style;
                     switch (token.props.name) {
+                        case 'tada': {
+							const speed = validTime(token.props.args.speed) ?? '1s';
+							style = 'font-size: 150%;' + (useAnim ? `animation: tada ${speed} linear infinite both;` : '');
+							break;
+						}
+						case 'jelly': {
+							const speed = validTime(token.props.args.speed) ?? '1s';
+							style = (useAnim ? `animation: mfm-rubberBand ${speed} linear infinite both;` : '');
+							break;
+						}
+						case 'twitch': {
+							const speed = validTime(token.props.args.speed) ?? '0.5s';
+							style = useAnim ? `animation: mfm-twitch ${speed} ease infinite;` : '';
+							break;
+						}
+						case 'shake': {
+							const speed = validTime(token.props.args.speed) ?? '0.5s';
+							style = useAnim ? `animation: mfm-shake ${speed} ease infinite;` : '';
+							break;
+						}
+						case 'spin': {
+							const direction =
+								token.props.args.left ? 'reverse' :
+								token.props.args.alternate ? 'alternate' :
+								'normal';
+							const anime =
+								token.props.args.x ? 'mfm-spinX' :
+								token.props.args.y ? 'mfm-spinY' :
+								'mfm-spin';
+							const speed = validTime(token.props.args.speed) ?? '1.5s';
+							style = useAnim ? `animation: ${anime} ${speed} linear infinite; animation-direction: ${direction};` : '';
+							break;
+						}
+						case 'jump': {
+							const speed = validTime(token.props.args.speed) ?? '0.75s';
+							style = useAnim ? `animation: mfm-jump ${speed} linear infinite;` : '';
+							break;
+						}
+						case 'bounce': {
+							const speed = validTime(token.props.args.speed) ?? '0.75s';
+							style = useAnim ? `animation: mfm-bounce ${speed} linear infinite; transform-origin: center bottom;` : '';
+							break;
+						}
                         case 'flip': {
                             const transform =
                                 (token.props.args.h && token.props.args.v) ? 'scale(-1, -1)' :
@@ -122,6 +173,12 @@ export function parseMfm(text: string): HTMLDivElement {
                             })
                             return [el];
                         }
+                        case 'rainbow': {
+							const speed = validTime(token.props.args.speed) ?? '1s';
+							style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
+							break;
+                        }
+                        // TODO: Sparkle の プレーンHTML実装
                         case 'rotate': {
                             const degrees = parseFloat(token.props.args.deg ?? '90');
                             style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
@@ -151,6 +208,9 @@ export function parseMfm(text: string): HTMLDivElement {
                             style = `background-color: #${color};`;
                             break;
                         }
+                        default:
+                            style = '';
+                            break;
                     }
                     if (style == null) {
                         const el = document.createElement("span");
@@ -240,14 +300,19 @@ export function parseMfm(text: string): HTMLDivElement {
                     el.style.overflowX = 'scroll';
                     el.style.width = '100%';
                     const elc = document.createElement('code');
-                    elc.innerText = token.props.code;
+                    const prismLang = Prism.languages[token.props.lang] ? token.props.lang : 'js';
+                    elc.innerHTML = Prism.highlight(token.props.code, Prism.languages[prismLang], prismLang);
+                    el.classList.add(`language-${prismLang}`);
+                    elc.classList.add(`language-${prismLang}`);
                     el.appendChild(elc);
                     return [el];
                 }
 
                 case 'inlineCode': {
                     const el = document.createElement('code');
-                    el.innerText = token.props.code;
+                    const prismLang = 'js';
+                    el.innerHTML = Prism.highlight(token.props.code, Prism.languages[prismLang], prismLang);
+                    el.classList.add(`language-${prismLang}`);
                     return [el];
                 }
 
@@ -262,14 +327,14 @@ export function parseMfm(text: string): HTMLDivElement {
 
                 case 'emojiCode': {
                     const el = document.createElement('span');
-                    el.classList.add('custom-emoji', 'needs-replacing');
+                    el.classList.add('emoji', 'custom-emoji');
                     el.innerText = `:${token.props.name}:`;
                     return [el];
                 }
 
                 case 'unicodeEmoji': {
                     const el = document.createElement('span');
-                    el.classList.add('emoji');
+                    el.classList.add('emoji', 'unicode-emoji');
                     el.innerText = token.props.emoji;
                     return [el];
                 }
@@ -323,6 +388,12 @@ export function parseMfm(text: string): HTMLDivElement {
 
     genEl(ast).forEach((element) => {
         el.appendChild(element as HTMLElement);
+    });
+
+    el.innerHTML = sanitizeHtml(el.innerHTML, {
+        allowedAttributes: {
+            '*': ['style', 'class']
+        }
     });
 
     return el;

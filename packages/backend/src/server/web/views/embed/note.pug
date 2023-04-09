@@ -4,16 +4,19 @@ block vars
 	- const user = note.user;
 	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
 	- const url = `${config.url}/notes/${note.id}`;
+	- const userUrl = (user) => user.host ? `${config.url}/@${user.username}@${user.host}` : `${config.url}/@${user.username}`;
 	- const isRenote = note.renote && note.text == null && note.fileIds.length == 0 && note.poll == null;
 	- const displayUser = isRenote ? note.renote.user: note.user;
+	- const mainNote = isRenote ? note.renote : note;
+	- const displayMedia = mainNote.files.filter((item) => item.type.startsWith('image') || item.type.startsWith('video')).slice(0, 4);
+	- const noteEmoji = Object.entries(note.emojis || {}).map((e) => { return { name: e[0], url: e[1], host: note.user.host }; }).concat(Object.entries(note.renote?.emojis || {}).map((e) => { return { name: e[0], url: e[1], host: note.renote?.user.host }; }))
 
 block meta
 	if !user.host
 		link(rel='alternate' href=url type='application/activity+json')
 	if note.uri
 		link(rel='alternate' href=note.uri type='application/activity+json')
-
-	script(type='application/json') !{JSON.stringify(note)}
+	script(id='remote_custom_emojis' type='application/json') !{JSON.stringify(noteEmoji)}
 
 block content 
 	div#note
@@ -22,22 +25,24 @@ block content
 			div.wrapper
 				if isRenote 
 					div#renote
-						a.avatar(href=`${config.url}/@${note.user.username}` target="_blank" rel="noopener noreferrer")
+						a.avatar(href=userUrl(note.user) target="_blank" rel="noopener noreferrer")
 							img(src=note.user.avatarUrl)
 
 						i.ti.ti-repeat
 						
 						span(data-mi-i18n='renotedBy' data-mi-i18n-ctx=`{"user": "${note.user.name || note.user.username}"}`)
-							a(href=`${config.url}/@${note.user.username}` target="_blank" rel="noopener noreferrer")
+							a(href=userUrl(note.user) target="_blank" rel="noopener noreferrer")
 								b(data-mi-i18n-target='user')
 
 				div.author
-					a.avatar(href=`${config.url}/@${displayUser.username}` target="_blank" rel="noopener noreferrer")
+					a.avatar(href=userUrl(displayUser) target="_blank" rel="noopener noreferrer")
 						img(src=displayUser.avatarUrl)
 
 					div.user-info
-						a.user-name(href=`${config.url}/@${displayUser.username}` target="_blank" rel="noopener noreferrer") #{displayUser.name || displayUser.username}
+						a.user-name(href=userUrl(displayUser) target="_blank" rel="noopener noreferrer") #{displayUser.name || displayUser.username}
 						div.user-id @#{displayUser.username}
+							if displayUser.host 
+								span(style="opacity: .5;") @#{displayUser.host}
 			
 			div#instance-info
 				a.click-anime(href=config.url target='_blank')
@@ -45,9 +50,77 @@ block content
 					span.sr-only(data-mi-i18n='aboutX' data-mi-i18n-ctx=`{"x": "${instanceName}"}`)
 
 		main
-			div.mfm !{isRenote ? note.renote.text : note.text}
+			if (mainNote.cw != null)
+				div.cw-meta
+					span.mfm.cw-summary #{mainNote.cw}
+					button._button#cw-button
+						span#cw-info-show
+							b(data-mi-i18n="showMore")
+							span.cw-info-wrapper
+								if(mainNote.text)
+									span.cw-info(data-mi-i18n='_cw.chars' data-mi-i18n-ctx=`{"count": ${mainNote.text.length}}`)
+								if(mainNote.files && mainNote.files.length !== 0)
+									span.cw-info(data-mi-i18n='_cw.files' data-mi-i18n-ctx=`{"count": ${mainNote.files.length}}`)
+								if(mainNote.poll != null)
+									span.cw-info(data-mi-i18n='poll')
+						span.hide#cw-info-hide
+							b(data-mi-i18n="hide")
+				div#note-body.mfm.hide #{mainNote.text}
+
+			else
+				div#note-body.mfm #{mainNote.text}
+
 			if (!isRenote && note.renote)
-				div#quote.mfm !{note.renote.text}
-	
-	hr
-	pre(style='white-space: pre-wrap;') !{JSON.stringify(note, null, 2)}
+				div#quote
+					div.quote-avatar
+						a.avatar(href=userUrl(note.renote.user) target="_blank" rel="noopener noreferrer")
+							img(src=note.renote.user.avatarUrl)
+
+					div.quote-body
+						div.meta
+							div.author
+								a(href=userUrl(note.renote.user) target="_blank" rel="noopener noreferrer")
+									b #{note.renote.user.name || note.renote.user.username}
+								span @#{note.renote.user.username}
+								if note.renote.user.host 
+									span(style="opacity: .5;") @#{note.renote.user.host}
+
+							a.time(href=`${config.url}/notes/${note.renote.id}` target="_blank" rel="noopener noreferrer")
+								time.locale-string(datetime=note.renote.createdAt data-mi-date-mode="relative")
+						
+						if (note.renote.cw != null)
+							div.cw-meta
+								span.mfm.cw-summary #{note.renote.cw}
+								button._button#quote-cw-button
+									span#quote-cw-info-show
+										b(data-mi-i18n="showMore")
+										span.cw-info-wrapper
+											if(mainNote.text)
+												span.cw-info(data-mi-i18n='_cw.chars' data-mi-i18n-ctx=`{"count": ${mainNote.text.length}}`)
+											if(mainNote.files && mainNote.files.length !== 0)
+												span.cw-info(data-mi-i18n='_cw.files' data-mi-i18n-ctx=`{"count": ${mainNote.files.length}}`)
+											if(mainNote.poll != null)
+												span.cw-info(data-mi-i18n='poll')
+									span.hide#quote-cw-info-hide
+										b(data-mi-i18n="hide")
+							div#quote-note-body.mfm.hide #{mainNote.text}
+						else
+							div#quote-note-body.mfm #{note.renote.text}		
+		footer 
+			div.info
+				a(href=`${config.url}/notes/${mainNote.id}`, target="_blank", rel="noopener noreferrer")
+					time.locale-string(datetime=mainNote.createdAt data-mi-date-mode="detailed")
+			div.reactions
+				each val, key in mainNote.reactions 
+					span.reaction-item
+						span.emoji #{key}
+						span.count #{val}
+
+			a._button.button(href=`${config.url}/notes/${mainNote.id}`, target="_blank", rel="noopener noreferrer")
+				i.ti.ti-arrow-back-up
+			a._button.button(href=`${config.url}/notes/${mainNote.id}`, target="_blank", rel="noopener noreferrer")
+				i.ti.ti-repeat
+			a._button.button(href=`${config.url}/notes/${mainNote.id}`, target="_blank", rel="noopener noreferrer")
+				i.ti.ti-plus
+			a._button.button(href=`${config.url}/notes/${mainNote.id}`, target="_blank", rel="noopener noreferrer")
+				i.ti.ti-dots

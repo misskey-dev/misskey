@@ -1,0 +1,178 @@
+#note {
+    display: block;
+    position: relative;
+    
+    header {
+        display: flex;
+        margin-bottom: 1rem;
+        
+        .wrapper {
+            #renote {
+                display: flex;
+                align-items: center;
+                margin-bottom: .5rem;
+                color: var(--renote);
+        
+                >.avatar {
+                    display: block;
+                    margin-right: 1rem;
+        
+                    >img {
+                        width: 28px;
+                        height: 28px;
+                        border-radius: 50%;
+                    }
+                }
+            }        
+
+            .author {
+                display: flex;
+                align-items: center;
+        
+                >.avatar {
+                    display: block;
+                    margin-right: 1rem;
+        
+                    >img {
+                        width: 54px;
+                        height: 54px;
+                        border-radius: 50%;
+                    }
+                }
+        
+                >.user-info {
+                    >.user-name {
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                    }
+                }    
+            }
+        }
+
+        #instance-info {
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+    }
+
+    main {
+        #note-body {
+            position: relative;
+            font-size: 1.05rem;
+            overflow-wrap: break-word;
+        }
+
+        #quote {
+            font-size: .95rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--radius);
+            border: dashed 1px var(--renote);
+            display: flex;
+
+            .quote-avatar {
+                margin-right: .5rem;
+                flex-shrink: 0;
+
+                img {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                }
+            }
+
+            .quote-body {
+                flex-grow: 1;
+
+                >.meta {
+                    display: flex;
+                    
+                    >.author>a {
+                        display: inline-block;
+                        margin-right: .25rem;
+                    }
+
+                    >a.time {
+                        margin-left: auto;
+                    }
+                }
+            }
+        }
+
+        .cw-meta {
+            margin-bottom: .5em;
+            
+            >.cw-summary>div {
+                display: inline-block;
+                margin-right: 8px;
+            }
+
+            #cw-button,
+            #quote-cw-button {
+                display: inline-block;
+                padding: .25em .5em;
+                font-size: 0.75em;
+                color: var(--cwFg);
+                background: var(--cwBg);
+                border-radius: 2px;
+            
+                &:hover {
+                    background: var(--cwHoverBg);
+                }
+    
+                .cw-info-wrapper {
+                    >:first-child {
+                        margin-left: 4px;
+                        &:before {
+                            content: '(';
+                        }    
+                    }
+                    
+                    >:after {
+                        content: ' / ';
+                    }
+    
+                    >:last-child:after {
+                        content: ')';
+                    }
+                }    
+            }    
+        }
+    }
+
+    footer {
+        .info {
+            margin: 1rem 0;
+            opacity: .7;
+        }
+        .reactions {
+            .reaction-item {
+                border-radius: 4px;
+                padding: 0 6px;
+                margin: 2px;
+                height: 32px;
+                background-color: var(--fgOnAccent);
+                display: inline-block;
+
+                img {
+                    height: 1.25rem;
+                    vertical-align: -.25rem;
+                }
+                span {
+                    display: inline-block;
+                    margin-left: 4px;
+                    line-height: 32px;
+                }
+            }
+        }
+        .button {
+            margin-right: 2rem;
+            padding: .5rem;
+            font-size: 1.2rem;
+            
+            &:hover {
+                text-decoration: none;    
+            }
+        }
+    }
+}

@@ -1,4 +1,5 @@
-import { i18n } from "@/i18n";
+import { locale } from "@/config";
+import { I18n } from "@/scripts/i18n";
 
 /**
  * 非vueページ向け翻訳適用関数
@@ -8,6 +9,10 @@ import { i18n } from "@/i18n";
  * <span data-mi-i18n="翻訳key（必須）" data-mi-i18n-ctx=" *JSON Objectで動的な値を指定（任意）* "></span>
  * ```
  */
+const i18n = new I18n(locale);
+
+export const embedI18n = i18n;
+
 export function embedInitI18n() {
 	const els: NodeListOf<HTMLElement> = document.querySelectorAll("[data-mi-i18n]");
 	els.forEach((tag: HTMLElement) => {
