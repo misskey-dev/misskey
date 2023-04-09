@@ -52,6 +52,7 @@ export class DbQueueProcessorsService {
 		q.process('exportBlocking', (job, done) => this.exportBlockingProcessorService.process(job, done));
 		q.process('exportUserLists', (job, done) => this.exportUserListsProcessorService.process(job, done));
 		q.process('importFollowing', (job, done) => this.importFollowingProcessorService.process(job, done));
+		q.process('importFollowingToDb', (job) => this.importFollowingProcessorService.processDb(job))
 		q.process('importMuting', (job, done) => this.importMutingProcessorService.process(job, done));
 		q.process('importBlocking', (job, done) => this.importBlockingProcessorService.process(job, done));
 		q.process('importUserLists', (job, done) => this.importUserListsProcessorService.process(job, done));

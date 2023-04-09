@@ -164,6 +164,17 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createImportFollowingToDbJob(user: User, target: string) {
+		return this.dbQueue.add('importFollowingToDb', {
+			user,
+			target,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createImportMutingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importMuting', {
 			user: user,

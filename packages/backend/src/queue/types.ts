@@ -21,7 +21,7 @@ export type InboxJobData = {
 	signature: httpSignature.IParsedSignature;
 };
 
-export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserDeleteJobData;
+export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserImportToDbJobData | DbUserDeleteJobData;
 
 export type RelationshipJobData = {
 	from: User;
@@ -42,6 +42,11 @@ export type DbUserDeleteJobData = {
 export type DbUserImportJobData = {
 	user: ThinUser;
 	fileId: DriveFile['id'];
+};
+
+export type DbUserImportToDbJobData = {
+	user: User;
+	target: string;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;
