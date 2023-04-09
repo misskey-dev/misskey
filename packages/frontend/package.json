@@ -131,7 +131,7 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"start-server-and-test": "2.0.0",
-		"storybook": "^7.0.2",
+		"storybook": "7.0.2",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"summaly": "github:misskey-dev/summaly",
 		"vite-plugin-turbosnap": "^1.0.1",
