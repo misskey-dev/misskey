@@ -13,7 +13,7 @@ const buildOptions = {
 	bundle: true,
 	define: {
 		_DEV_: JSON.stringify(process.env.NODE_ENV !== 'production'),
-		_ENV_: JSON.stringify(process.env.NODE_ENV),
+		_ENV_: JSON.stringify(process.env.NODE_ENV ?? ''), // `NODE_ENV`は`undefined`になることがあり、そのとき`JSON.stringify`は`undefined`を返してしまう
 		_LANGS_: JSON.stringify(Object.entries(locales).map(([k, v]) => [k, v._lang_])),
 		_PERF_PREFIX_: JSON.stringify('Misskey:'),
 		_VERSION_: JSON.stringify(meta.version),
