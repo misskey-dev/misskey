@@ -26,8 +26,8 @@ export class GlobalEventService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForPub)
+		private redisForPub: Redis.Redis,
 	) {
 	}
 
@@ -37,7 +37,7 @@ export class GlobalEventService {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		this.redisClient.publish(this.config.host, JSON.stringify({
+		this.redisForPub.publish(this.config.host, JSON.stringify({
 			channel: channel,
 			message: message,
 		}));
