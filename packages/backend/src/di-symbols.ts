@@ -2,7 +2,8 @@ export const DI = {
 	config: Symbol('config'),
 	db: Symbol('db'),
 	redis: Symbol('redis'),
-	redisForPubsub: Symbol('redisForPubsub'),
+	redisForPub: Symbol('redisForPub'),
+	redisForSub: Symbol('redisForSub'),
 
 	//#region Repositories
 	usersRepository: Symbol('usersRepository'),
