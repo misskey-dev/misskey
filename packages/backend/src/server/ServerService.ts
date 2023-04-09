@@ -85,6 +85,12 @@ export class ServerService implements OnApplicationShutdown {
 			serve: false,
 		});
 
+		const hostname = os.hostname();
+		fastify.addHook('onRequest', (request, reply, done) => {
+			reply.header('x-worker-host', hostname);
+			done();
+		});
+
 		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		fastify.register(this.openApiServerService.createServer);
 		fastify.register(this.fileServerService.createServer);
