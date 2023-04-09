@@ -186,7 +186,7 @@ class DeliverManager {
 
 			for (const following of followers) {
 				const inbox = following.followerSharedInbox ?? following.followerInbox;
-				inboxes.set(inbox, following.followerSharedInbox === null);
+				inboxes.set(inbox, following.followerSharedInbox != null);
 			}
 		}
 
