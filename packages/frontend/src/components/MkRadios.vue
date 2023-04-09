@@ -22,6 +22,7 @@ export default defineComponent({
 		},
 	},
 	render() {
+		console.log(this.$slots, this.$slots.label && this.$slots.label());
 		if (!this.$slots.default) return null;
 		let options = this.$slots.default();
 		const label = this.$slots.label && this.$slots.label();
@@ -35,7 +36,7 @@ export default defineComponent({
 		}, [
 			...(label ? [h('div', {
 				class: 'label',
-			}, () => [label])] : []),
+			}, label)] : []),
 			h('div', {
 				class: 'body',
 			}, options.map(option => h(MkRadio, {
@@ -47,7 +48,7 @@ export default defineComponent({
 			),
 			...(caption ? [h('div', {
 				class: 'caption',
-			}, () => [caption])] : []),
+			}, caption)] : []),
 		]);
 	},
 });
