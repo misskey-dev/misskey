@@ -384,7 +384,6 @@ export class OAuth2ProviderService {
 				if (!body.code_verifier || pkceS256(body.code_verifier) !== granted.codeChallenge) return [false];
 
 				const accessToken = secureRndstr(128, true);
-				const refreshToken = secureRndstr(128, true);
 
 				const now = new Date();
 
@@ -400,7 +399,7 @@ export class OAuth2ProviderService {
 					permission: granted.scopes,
 				});
 
-				return [accessToken, refreshToken];
+				return [accessToken, { scope: granted.scopes.join(' ') }];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
 		this.#server.serializeClient((client, done) => done(null, client));
@@ -441,7 +440,7 @@ export class OAuth2ProviderService {
 		// this feature for some time, given that this is security related.
 		fastify.get<{ Querystring: OAuthRequestQuery }>('/oauth/authorize', async (request, reply) => {
 			console.log('HIT /oauth/authorize', request.query);
-			const oauth2 = (request.raw as any).oauth2 as (OAuth2 | undefined);
+			const oauth2 = (request.raw as any).oauth2 as OAuth2;
 			console.log(oauth2, request.raw.session);
 
 			if (request.query.response_type !== 'code') {
@@ -454,15 +453,16 @@ export class OAuth2ProviderService {
 				throw new Error('`code_challenge_method` parameter must be set as S256');
 			}
 
-			const scopes = [...new Set(oauth2?.req.scope)].filter(s => kinds.includes(s));
+			const scopes = [...new Set(oauth2.req.scope)].filter(s => kinds.includes(s));
 			if (!scopes.length) {
 				throw new Error('`scope` parameter has no known scope');
 			}
+			oauth2.req.scope = scopes;
 
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
-				transactionId: oauth2?.transactionID,
-				clientId: oauth2?.client,
+				transactionId: oauth2.transactionID,
+				clientId: oauth2.client,
 				scope: scopes.join(' '),
 			});
 		});

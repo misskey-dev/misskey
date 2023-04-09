@@ -104,8 +104,8 @@ describe('OAuth', () => {
 			code_verifier,
 		});
 		assert.strictEqual(typeof token.token.access_token, 'string');
-		assert.strictEqual(typeof token.token.refresh_token, 'string');
 		assert.strictEqual(token.token.token_type, 'Bearer');
+		assert.strictEqual(token.token.scope, 'write:notes');
 
 		const createResponse = await relativeFetch('api/notes/create', {
 			method: 'POST',
@@ -278,19 +278,39 @@ describe('OAuth', () => {
 		});
 
 		test('Partially known scopes', async () => {
+			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+
 			const client = getClient();
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes test:unknown test:unknown2',
 				state: 'state',
-				code_challenge: 'code',
+				code_challenge,
 				code_challenge_method: 'S256',
 			}));
 
 			// Just get the known scope for this case for backward compatibility
 			assert.strictEqual(response.status, 200);
-			// TODO: OAuth2 requires returning `scope` in the token response in this case but oauth2orize seemingly doesn't support this
+
+			const decisionResponse = await fetchDecisionFromResponse(response, alice);
+			assert.strictEqual(decisionResponse.status, 302);
+
+			const location = new URL(decisionResponse.headers.get('location')!);
+			assert.ok(location.searchParams.has('code'));
+
+			const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
+			assert.ok(!!code);
+
+			const token = await client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			});
+
+			// OAuth2 requires returning `scope` in the token response if the resulting scope is different than the requested one
+			// (Although Misskey always return scope, which is also fine)
+			assert.strictEqual(token.token.scope, 'write:notes');
 		});
 
 		test('Known scopes', async () => {
@@ -304,13 +324,79 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			}));
 
-			// Just get the known scope for this case for backward compatibility
 			assert.strictEqual(response.status, 200);
 		});
 
-		// TODO: duplicate scopes test (currently token response doesn't return final scopes, although it must)
+		test('Duplicated scopes', async () => {
+			const { code_challenge, code_verifier } = pkceChallenge.default(128);
 
-		// TODO: write failure when no scope
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes write:notes read:account read:account',
+				state: 'state',
+				code_challenge,
+				code_challenge_method: 'S256',
+			}));
+
+			assert.strictEqual(response.status, 200);
+
+			const decisionResponse = await fetchDecisionFromResponse(response, alice);
+			assert.strictEqual(decisionResponse.status, 302);
+
+			const location = new URL(decisionResponse.headers.get('location')!);
+			assert.ok(location.searchParams.has('code'));
+
+			const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
+			assert.ok(!!code);
+
+			const token = await client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			});
+			assert.strictEqual(token.token.scope, 'write:notes read:account');
+		});
+
+		test('Scope check by API', async () => {
+			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'read:account',
+				state: 'state',
+				code_challenge,
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+
+			const decisionResponse = await fetchDecisionFromResponse(response, alice);
+			assert.strictEqual(decisionResponse.status, 302);
+
+			const location = new URL(decisionResponse.headers.get('location')!);
+			assert.ok(location.searchParams.has('code'));
+
+			const token = await client.getToken({
+				code: location.searchParams.get('code')!,
+				redirect_uri,
+				code_verifier,
+			});
+			assert.strictEqual(typeof token.token.access_token, 'string');
+
+			const createResponse = await relativeFetch('api/notes/create', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token.token.access_token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ text: 'test' }),
+			});
+			// XXX: PERMISSION_DENIED is not using kind: 'permission' and gives 400 instead of 403
+			assert.strictEqual(createResponse.status, 400);
+		});
 	});
 
 	test('Authorization header', async () => {
