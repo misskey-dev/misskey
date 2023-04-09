@@ -22,7 +22,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2.5.0
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
