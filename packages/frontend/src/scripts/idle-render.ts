@@ -9,10 +9,10 @@ export default class IdlingRenderScheduler {
 		this.#renderers = new Set();
 		this.#budget = budget;
 		this.#rafId = 0;
-		this.#ricId = requestIdleCallback((deadline) => this.#render(deadline));
+		this.#ricId = requestIdleCallback((deadline) => this.#schedule(deadline));
 	}
 
-	#render(deadline: IdleDeadline): void {
+	#schedule(deadline: IdleDeadline): void {
 		if (deadline.timeRemaining() > this.#budget) {
 			this.#rafId = requestAnimationFrame((time) => {
 				for (const renderer of this.#renderers) {
@@ -20,7 +20,7 @@ export default class IdlingRenderScheduler {
 				}
 			});
 		}
-		this.#ricId = requestIdleCallback((arg) => this.#render(arg));
+		this.#ricId = requestIdleCallback((arg) => this.#schedule(arg));
 	}
 
 	add(renderer: FrameRequestCallback): void {
