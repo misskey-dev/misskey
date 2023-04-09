@@ -90,8 +90,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				license: emoji.license,
 			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
-			await this.db.queryResultCache?.remove(['meta_emojis']);
-
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(copied.id),
 			});

@@ -18,6 +18,8 @@ import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -147,11 +149,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private pagesRepository: PagesRepository,
 
 		private userEntityService: UserEntityService,
+		private driveFileEntityService: DriveFileEntityService,
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
 		private hashtagService: HashtagService,
 		private roleService: RoleService,
+		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, _user, token) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
@@ -168,8 +172,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.location !== undefined) profileUpdates.location = ps.location;
 			if (ps.birthday !== undefined) profileUpdates.birthday = ps.birthday;
 			if (ps.ffVisibility !== undefined) profileUpdates.ffVisibility = ps.ffVisibility;
-			if (ps.avatarId !== undefined) updates.avatarId = ps.avatarId;
-			if (ps.bannerId !== undefined) updates.bannerId = ps.bannerId;
 			if (ps.mutedWords !== undefined) {
 				// TODO: ちゃんと数える
 				const length = JSON.stringify(ps.mutedWords).length;
@@ -215,6 +217,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (avatar == null || avatar.userId !== user.id) throw new ApiError(meta.errors.noSuchAvatar);
 				if (!avatar.type.startsWith('image/')) throw new ApiError(meta.errors.avatarNotAnImage);
+
+				updates.avatarId = avatar.id;
+				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+				updates.avatarBlurhash = avatar.blurhash;
 			}
 
 			if (ps.bannerId) {
@@ -222,6 +228,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (banner == null || banner.userId !== user.id) throw new ApiError(meta.errors.noSuchBanner);
 				if (!banner.type.startsWith('image/')) throw new ApiError(meta.errors.bannerNotAnImage);
+
+				updates.bannerId = banner.id;
+				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+				updates.bannerBlurhash = banner.blurhash;
 			}
 
 			if (ps.pinnedPageId) {
@@ -276,9 +286,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				includeSecrets: isSecure,
 			});
 
+			const updatedProfile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+
+			this.cacheService.userProfileCache.set(user.id, updatedProfile);
+
 			// Publish meUpdated event
 			this.globalEventService.publishMainStream(user.id, 'meUpdated', iObj);
-			this.globalEventService.publishUserEvent(user.id, 'updateUserProfile', await this.userProfilesRepository.findOneByOrFail({ userId: user.id }));
 
 			// 鍵垢を解除したとき、溜まっていたフォローリクエストがあるならすべて承認
 			if (user.isLocked && ps.isLocked === false) {

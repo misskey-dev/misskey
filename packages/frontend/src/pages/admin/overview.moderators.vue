@@ -1,6 +1,6 @@
 <template>
 <div>
-	<Transition :name="$store.state.animation ? '_transition_zoom' : ''" mode="out-in">
+	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
 		<div v-else :class="$style.root" class="_panel">
 			<MkA v-for="user in moderators" :key="user.id" class="user" :to="`/user-info/${user.id}`">
@@ -14,6 +14,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as os from '@/os';
+import { defaultStore } from '@/store';
 
 let moderators: any = $ref(null);
 let fetching = $ref(true);

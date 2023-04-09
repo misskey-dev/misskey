@@ -84,16 +84,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 				.innerJoin(this.userListJoiningsRepository.metadata.targetName, 'userListJoining', 'userListJoining.userId = note.userId')
 				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('user.avatar', 'avatar')
-				.leftJoinAndSelect('user.banner', 'banner')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
 				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner')
 				.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
 
 			this.queryService.generateVisibilityQuery(query, me);

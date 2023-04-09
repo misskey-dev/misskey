@@ -70,16 +70,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
 				.innerJoinAndSelect('note.user', 'user')
-				.leftJoinAndSelect('user.avatar', 'avatar')
-				.leftJoinAndSelect('user.banner', 'banner')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
-				.leftJoinAndSelect('replyUser.avatar', 'replyUserAvatar')
-				.leftJoinAndSelect('replyUser.banner', 'replyUserBanner')
-				.leftJoinAndSelect('renote.user', 'renoteUser')
-				.leftJoinAndSelect('renoteUser.avatar', 'renoteUserAvatar')
-				.leftJoinAndSelect('renoteUser.banner', 'renoteUserBanner');
+				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			if (followees.length > 0) {
 				const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];

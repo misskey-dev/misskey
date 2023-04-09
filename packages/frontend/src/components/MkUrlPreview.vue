@@ -23,7 +23,7 @@
 </template>
 <template v-else-if="tweetId && tweetExpanded">
 	<div ref="twitter" :class="$style.twitter">
-		<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${$store.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
+		<iframe ref="tweet" scrolling="no" frameborder="no" :style="{ position: 'relative', width: '100%', height: `${tweetHeight}px` }" :src="`https://platform.twitter.com/embed/index.html?embedId=${embedId}&amp;hideCard=false&amp;hideThread=false&amp;lang=en&amp;theme=${defaultStore.state.darkMode ? 'dark' : 'light'}&amp;id=${tweetId}`"></iframe>
 	</div>
 	<div :class="$style.action">
 		<MkButton :small="true" inline @click="tweetExpanded = false">
@@ -77,6 +77,7 @@ import * as os from '@/os';
 import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
+import { defaultStore } from '@/store';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -149,7 +150,7 @@ function adjustTweetHeight(message: any) {
 }
 
 const openPlayer = (): void => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkYoutubePlayer.vue')), {
+	os.popup(defineAsyncComponent(() => import('@/components/MkYouTubePlayer.vue')), {
 		url: requestUrl.href,
 	});
 };

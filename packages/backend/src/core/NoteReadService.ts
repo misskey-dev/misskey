@@ -1,28 +1,20 @@
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { In, IsNull, Not } from 'typeorm';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { User } from '@/models/entities/User.js';
-import type { Channel } from '@/models/entities/Channel.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { Note } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { UsersRepository, NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository, FollowingsRepository, ChannelFollowingsRepository, AntennaNotesRepository } from '@/models/index.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
-import { NotificationService } from './NotificationService.js';
-import { AntennaService } from './AntennaService.js';
-import { PushNotificationService } from './PushNotificationService.js';
 
 @Injectable()
 export class NoteReadService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
 
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: NoteUnreadsRepository,
 
@@ -32,21 +24,8 @@ export class NoteReadService implements OnApplicationShutdown {
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
-		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
-
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
-		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: AntennaNotesRepository,
-
-		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private notificationService: NotificationService,
-		private antennaService: AntennaService,
-		private pushNotificationService: PushNotificationService,
 	) {
 	}
 
@@ -57,7 +36,6 @@ export class NoteReadService implements OnApplicationShutdown {
 		isMentioned: boolean;
 	}): Promise<void> {
 		//#region ミュートしているなら無視
-		// TODO: 現在の仕様ではChannelにミュートは適用されないのでよしなにケアする
 		const mute = await this.mutingsRepository.findBy({
 			muterId: userId,
 		});
@@ -77,7 +55,6 @@ export class NoteReadService implements OnApplicationShutdown {
 			userId: userId,
 			isSpecified: params.isSpecified,
 			isMentioned: params.isMentioned,
-			noteChannelId: note.channelId,
 			noteUserId: note.userId,
 		};
 
@@ -95,9 +72,6 @@ export class NoteReadService implements OnApplicationShutdown {
 			if (params.isSpecified) {
 				this.globalEventService.publishMainStream(userId, 'unreadSpecifiedNote', note.id);
 			}
-			if (note.channelId) {
-				this.globalEventService.publishMainStream(userId, 'unreadChannel', note.id);
-			}
 		}, () => { /* aborted, ignore it */ });
 	}
 
@@ -105,23 +79,9 @@ export class NoteReadService implements OnApplicationShutdown {
 	public async read(
 		userId: User['id'],
 		notes: (Note | Packed<'Note'>)[],
-		info?: {
-			following: Set<User['id']>;
-			followingChannels: Set<Channel['id']>;
-		},
 	): Promise<void> {
-		const followingChannels = info?.followingChannels ? info.followingChannels : new Set<string>((await this.channelFollowingsRepository.find({
-			where: {
-				followerId: userId,
-			},
-			select: ['followeeId'],
-		})).map(x => x.followeeId));
-
-		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 		const readMentions: (Note | Packed<'Note'>)[] = [];
 		const readSpecifiedNotes: (Note | Packed<'Note'>)[] = [];
-		const readChannelNotes: (Note | Packed<'Note'>)[] = [];
-		const readAntennaNotes: (Note | Packed<'Note'>)[] = [];
 
 		for (const note of notes) {
 			if (note.mentions && note.mentions.includes(userId)) {
@@ -129,25 +89,13 @@ export class NoteReadService implements OnApplicationShutdown {
 			} else if (note.visibleUserIds && note.visibleUserIds.includes(userId)) {
 				readSpecifiedNotes.push(note);
 			}
-
-			if (note.channelId && followingChannels.has(note.channelId)) {
-				readChannelNotes.push(note);
-			}
-
-			if (note.user != null) { // たぶんnullになることは無いはずだけど一応
-				for (const antenna of myAntennas) {
-					if (await this.antennaService.checkHitAntenna(antenna, note, note.user)) {
-						readAntennaNotes.push(note);
-					}
-				}
-			}
 		}
 
-		if ((readMentions.length > 0) || (readSpecifiedNotes.length > 0) || (readChannelNotes.length > 0)) {
+		if ((readMentions.length > 0) || (readSpecifiedNotes.length > 0)) {
 			// Remove the record
 			await this.noteUnreadsRepository.delete({
 				userId: userId,
-				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id), ...readChannelNotes.map(n => n.id)]),
+				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
 			});
 
 			// TODO: ↓まとめてクエリしたい
@@ -169,49 +117,6 @@ export class NoteReadService implements OnApplicationShutdown {
 				if (specifiedCount === 0) {
 					// 全て既読になったイベントを発行
 					this.globalEventService.publishMainStream(userId, 'readAllUnreadSpecifiedNotes');
-				}
-			});
-	
-			this.noteUnreadsRepository.countBy({
-				userId: userId,
-				noteChannelId: Not(IsNull()),
-			}).then(channelNoteCount => {
-				if (channelNoteCount === 0) {
-					// 全て既読になったイベントを発行
-					this.globalEventService.publishMainStream(userId, 'readAllChannels');
-				}
-			});
-	
-			this.notificationService.readNotificationByQuery(userId, {
-				noteId: In([...readMentions.map(n => n.id), ...readSpecifiedNotes.map(n => n.id)]),
-			});
-		}
-
-		if (readAntennaNotes.length > 0) {
-			await this.antennaNotesRepository.update({
-				antennaId: In(myAntennas.map(a => a.id)),
-				noteId: In(readAntennaNotes.map(n => n.id)),
-			}, {
-				read: true,
-			});
-
-			// TODO: まとめてクエリしたい
-			for (const antenna of myAntennas) {
-				const count = await this.antennaNotesRepository.countBy({
-					antennaId: antenna.id,
-					read: false,
-				});
-
-				if (count === 0) {
-					this.globalEventService.publishMainStream(userId, 'readAntenna', antenna);
-					this.pushNotificationService.pushNotification(userId, 'readAntenna', { antennaId: antenna.id });
-				}
-			}
-	
-			this.userEntityService.getHasUnreadAntenna(userId).then(unread => {
-				if (!unread) {
-					this.globalEventService.publishMainStream(userId, 'readAllAntennas');
-					this.pushNotificationService.pushNotification(userId, 'readAllAntennas', undefined);
 				}
 			});
 		}

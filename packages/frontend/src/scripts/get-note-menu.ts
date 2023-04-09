@@ -15,7 +15,7 @@ import { clipsCache } from '@/cache';
 export async function getNoteClipMenu(props: {
 	note: misskey.entities.Note;
 	isDeleted: Ref<boolean>;
-	currentClipPage?: Ref<misskey.entities.Clip>;
+	currentClip?: misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -42,7 +42,7 @@ export async function getNoteClipMenu(props: {
 						});
 						if (!confirm.canceled) {
 							os.apiWithDialog('clips/remove-note', { clipId: clip.id, noteId: appearNote.id });
-							if (props.currentClipPage?.value.id === clip.id) props.isDeleted.value = true;
+							if (props.currentClip?.id === clip.id) props.isDeleted.value = true;
 						}
 					} else {
 						os.alert({
@@ -92,7 +92,7 @@ export function getNoteMenu(props: {
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
-	currentClipPage?: Ref<misskey.entities.Clip>;
+	currentClip?: misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -176,7 +176,7 @@ export function getNoteMenu(props: {
 	}
 
 	async function unclip(): Promise<void> {
-		os.apiWithDialog('clips/remove-note', { clipId: props.currentClipPage.value.id, noteId: appearNote.id });
+		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
 		props.isDeleted.value = true;
 	}
 
@@ -230,7 +230,7 @@ export function getNoteMenu(props: {
 
 		menu = [
 			...(
-				props.currentClipPage?.value.userId === $i.id ? [{
+				props.currentClip?.userId === $i.id ? [{
 					icon: 'ti ti-backspace',
 					text: i18n.ts.unclip,
 					danger: true,
@@ -294,7 +294,7 @@ export function getNoteMenu(props: {
 				text: i18n.ts.muteThread,
 				action: () => toggleThreadMute(true),
 			}),
-			appearNote.userId === $i.id ? ($i.pinnedNoteIds || []).includes(appearNote.id) ? {
+			appearNote.userId === $i.id ? ($i.pinnedNoteIds ?? []).includes(appearNote.id) ? {
 				icon: 'ti ti-pinned-off',
 				text: i18n.ts.unpin,
 				action: () => togglePin(false),

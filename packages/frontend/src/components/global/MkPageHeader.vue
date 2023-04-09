@@ -8,7 +8,9 @@
 
 		<template v-if="metadata">
 			<div v-if="!hideTitle" :class="$style.titleContainer" @click="top">
-				<MkAvatar v-if="metadata.avatar" :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
+				<div v-if="metadata.avatar" :class="$style.titleAvatarContainer">
+					<MkAvatar :class="$style.titleAvatar" :user="metadata.avatar" indicator/>
+				</div>
 				<i v-else-if="metadata.icon" :class="[$style.titleIcon, metadata.icon]"></i>
 
 				<div :class="$style.title">
@@ -241,7 +243,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	max-width: min(30vw, 400px);
-	overflow: auto;
+	overflow: clip;
 	white-space: nowrap;
 	text-align: left;
 	font-weight: bold;
@@ -249,13 +251,19 @@ onUnmounted(() => {
 	margin-left: 24px;
 }
 
-.titleAvatar {
+.titleAvatarContainer {
 	$size: 32px;
-	display: inline-block;
+	contain: strict;
+	overflow: clip;
 	width: $size;
 	height: $size;
-	vertical-align: bottom;
-	margin: 0 8px;
+	padding: 8px;
+	flex-shrink: 0;
+}
+
+.titleAvatar {
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
 }
 

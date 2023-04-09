@@ -2,17 +2,22 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div v-if="tab === 'featured'" class="grwlizim featured">
+		<div v-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :pagination="featuredPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
-		<div v-else-if="tab === 'following'" class="grwlizim following">
+		<div v-else-if="tab === 'favorites'">
+			<MkPagination v-slot="{items}" :pagination="favoritesPagination">
+				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
+			</MkPagination>
+		</div>
+		<div v-else-if="tab === 'following'">
 			<MkPagination v-slot="{items}" :pagination="followingPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
 			</MkPagination>
 		</div>
-		<div v-else-if="tab === 'owned'" class="grwlizim owned">
+		<div v-else-if="tab === 'owned'">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="ownedPagination">
 				<MkChannelPreview v-for="channel in items" :key="channel.id" class="_margin" :channel="channel"/>
@@ -39,13 +44,18 @@ const featuredPagination = {
 	endpoint: 'channels/featured' as const,
 	noPaging: true,
 };
+const favoritesPagination = {
+	endpoint: 'channels/my-favorites' as const,
+	limit: 100,
+	noPaging: true,
+};
 const followingPagination = {
 	endpoint: 'channels/followed' as const,
-	limit: 5,
+	limit: 10,
 };
 const ownedPagination = {
 	endpoint: 'channels/owned' as const,
-	limit: 5,
+	limit: 10,
 };
 
 function create() {
@@ -63,9 +73,13 @@ const headerTabs = $computed(() => [{
 	title: i18n.ts._channel.featured,
 	icon: 'ti ti-comet',
 }, {
+	key: 'favorites',
+	title: i18n.ts.favorites,
+	icon: 'ti ti-star',
+}, {
 	key: 'following',
 	title: i18n.ts._channel.following,
-	icon: 'ti ti-heart',
+	icon: 'ti ti-eye',
 }, {
 	key: 'owned',
 	title: i18n.ts._channel.owned,

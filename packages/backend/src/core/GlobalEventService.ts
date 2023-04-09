@@ -14,7 +14,6 @@ import type {
 	MainStreamTypes,
 	NoteStreamTypes,
 	UserListStreamTypes,
-	UserStreamTypes,
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
@@ -27,8 +26,8 @@ export class GlobalEventService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForPub)
+		private redisForPub: Redis.Redis,
 	) {
 	}
 
@@ -38,7 +37,7 @@ export class GlobalEventService {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		this.redisClient.publish(this.config.host, JSON.stringify({
+		this.redisForPub.publish(this.config.host, JSON.stringify({
 			channel: channel,
 			message: message,
 		}));
@@ -47,11 +46,6 @@ export class GlobalEventService {
 	@bindThis
 	public publishInternalEvent<K extends keyof InternalStreamTypes>(type: K, value?: InternalStreamTypes[K]): void {
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
-	}
-
-	@bindThis
-	public publishUserEvent<K extends keyof UserStreamTypes>(userId: User['id'], type: K, value?: UserStreamTypes[K]): void {
-		this.publish(`user:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis
