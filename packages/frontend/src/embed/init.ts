@@ -8,7 +8,6 @@ import { embedInitI18n } from './scripts/embed-i18n';
 import '@/style.scss';
 import './embed.scss';
 import 'iframe-resizer/js/iframeResizer.contentWindow';
-import { embedInitLinkAnime } from './scripts/link-anime';
 import { parseMfm } from './scripts/parse-mfm';
 import { renderNotFound } from './scripts/render-not-found';
 import { parseEmoji } from './scripts/parse-emoji';
@@ -152,6 +151,4 @@ function afterPageInitialization() {
 		splash.style.pointerEvents = 'none';
 	}
 	//#endregion
-	
-	embedInitLinkAnime();
 }
