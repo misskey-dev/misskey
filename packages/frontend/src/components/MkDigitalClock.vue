@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { defaultIdleRender } from '@/scripts/idle-render.js';
 
 const props = withDefaults(defineProps<{
 	showS?: boolean;
@@ -23,7 +24,6 @@ const props = withDefaults(defineProps<{
 	offset: 0 - new Date().getTimezoneOffset(),
 });
 
-let intervalId;
 const hh = ref('');
 const mm = ref('');
 const ss = ref('');
@@ -52,13 +52,12 @@ const tick = () => {
 
 tick();
 
-watch(() => props.showMs, () => {
-	if (intervalId) window.clearInterval(intervalId);
-	intervalId = window.setInterval(tick, props.showMs ? 10 : 1000);
-}, { immediate: true });
+onMounted(() => {
+	defaultIdleRender.add(tick);
+});
 
 onUnmounted(() => {
-	window.clearInterval(intervalId);
+	defaultIdleRender.remove(tick);
 });
 </script>
 

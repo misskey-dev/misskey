@@ -397,6 +397,8 @@ function toStories(component: string): string {
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
 Promise.all([
 	glob('src/components/global/*.vue'),
+	glob('src/components/MkAnalogClock.vue'),
+	glob('src/components/MkDigitalClock.vue'),
 	glob('src/components/MkGalleryPostPreview.vue'),
 	glob('src/pages/user/home.vue'),
 ])

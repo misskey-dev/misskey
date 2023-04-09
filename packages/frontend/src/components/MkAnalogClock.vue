@@ -39,6 +39,7 @@
 	-->
 
 	<line
+		ref="sLine"
 		:class="[$style.s, { [$style.animate]: !disableSAnimate && sAnimation !== 'none', [$style.elastic]: sAnimation === 'elastic', [$style.easeOut]: sAnimation === 'easeOut' }]"
 		:x1="5 - (0 * (sHandLengthRatio * handsTailLength))"
 		:y1="5 + (1 * (sHandLengthRatio * handsTailLength))"
@@ -73,9 +74,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onBeforeUnmount } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events.js';
+import { defaultIdleRender } from '@/scripts/idle-render.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
 const angleDiff = (a: number, b: number) => {
@@ -99,6 +101,7 @@ const props = withDefaults(defineProps<{
 	graduations?: 'none' | 'dots' | 'numbers';
 	fadeGraduations?: boolean;
 	sAnimation?: 'none' | 'elastic' | 'easeOut';
+	now?: () => Date;
 }>(), {
 	numbers: false,
 	thickness: 0.1,
@@ -107,6 +110,7 @@ const props = withDefaults(defineProps<{
 	graduations: 'dots',
 	fadeGraduations: true,
 	sAnimation: 'elastic',
+	now: () => new Date(),
 });
 
 const graduationsMajor = computed(() => {
@@ -143,26 +147,37 @@ let mAngle = $ref<number>(0);
 let sAngle = $ref<number>(0);
 let disableSAnimate = $ref(false);
 let sOneRound = false;
+const sLine = ref<SVGPathElement>();
 
 function tick() {
-	const now = new Date();
-	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+	const now = props.now();
+	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
+	const previousS = s;
+	const previousM = m;
+	const previousH = h;
 	s = now.getSeconds();
 	m = now.getMinutes();
 	h = now.getHours();
+	if (previousS === s && previousM === m && previousH === h) {
+		return;
+	}
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
 	mAngle = Math.PI * (m + s / 60) / 30;
-	if (sOneRound) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
+	if (sOneRound && sLine.value) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)
 		sAngle = Math.PI * 60 / 30;
-		window.setTimeout(() => {
+		defaultIdleRender.delete(tick);
+		sLine.value.addEventListener('transitionend', () => {
 			disableSAnimate = true;
-			window.setTimeout(() => {
+			requestAnimationFrame(() => {
 				sAngle = 0;
-				window.setTimeout(() => {
+				requestAnimationFrame(() => {
 					disableSAnimate = false;
-				}, 100);
-			}, 100);
-		}, 700);
+					if (enabled) {
+						defaultIdleRender.add(tick);
+					}
+				});
+			});
+		}, { once: true });
 	} else {
 		sAngle = Math.PI * s / 30;
 	}
@@ -186,20 +201,13 @@ function calcColors() {
 calcColors();
 
 onMounted(() => {
-	const update = () => {
-		if (enabled) {
-			tick();
-			window.setTimeout(update, 1000);
-		}
-	};
-	update();
-
+	defaultIdleRender.add(tick);
 	globalEvents.on('themeChanged', calcColors);
 });
 
 onBeforeUnmount(() => {
 	enabled = false;
-
+	defaultIdleRender.delete(tick);
 	globalEvents.off('themeChanged', calcColors);
 });
 </script>

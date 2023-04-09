@@ -11,6 +11,7 @@
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
+import { defaultIdleRender } from '@/scripts/idle-render.js';
 
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;
@@ -45,21 +46,16 @@ const relative = $computed<string>(() => {
 		i18n.ts._ago.future);
 });
 
-let tickId: number;
-
-function tick() {
+function tick(): void {
 	now = props.origin ?? (new Date()).getTime();
-	const ago = (now - _time) / 1000/*ms*/;
-	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
-
-	tickId = window.setTimeout(tick, next);
 }
 
 if (props.mode === 'relative' || props.mode === 'detail') {
 	tick();
+	defaultIdleRender.add(tick);
 
 	onUnmounted(() => {
-		window.clearTimeout(tickId);
+		defaultIdleRender.delete(tick);
 	});
 }
 </script>
