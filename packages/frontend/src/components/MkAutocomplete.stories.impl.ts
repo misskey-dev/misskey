@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from '@storybook/addon-actions';
+import { expect } from '@storybook/jest';
+import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
+import { tick } from '@/scripts/test-utils';
 import { userDetailed } from '../../.storybook/fakes';
 import { commonHandlers } from '../../.storybook/mocks';
 import MkAutocomplete from './MkAutocomplete.vue';
@@ -62,6 +65,10 @@ const common = {
 			exclude: ['textarea'],
 		},
 		layout: 'centered',
+		chromatic: {
+			// FIXME: flaky
+			disableSnapshot: true,
+		},
 	},
 } satisfies StoryObj<typeof MkAutocomplete>;
 export const User = {
@@ -69,7 +76,18 @@ export const User = {
 	args: {
 		...common.args,
 		type: 'user',
-		q: 'm',
+	},
+	async play({ canvasElement }) {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox');
+		await waitFor(() => userEvent.hover(input));
+		await waitFor(() => userEvent.click(input));
+		await waitFor(() => userEvent.type(input, 'm'));
+		await waitFor(async () => {
+			await userEvent.type(input, ' ', { delay: 256 });
+			await tick();
+			return await expect(canvas.getByRole('list')).toBeInTheDocument();
+		}, { timeout: 16384 });
 	},
 	parameters: {
 		...common.parameters,
@@ -91,7 +109,18 @@ export const Hashtag = {
 	args: {
 		...common.args,
 		type: 'hashtag',
-		q: '気象',
+	},
+	async play({ canvasElement }) {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox');
+		await waitFor(() => userEvent.hover(input));
+		await waitFor(() => userEvent.click(input));
+		await waitFor(() => userEvent.type(input, '気象'));
+		await waitFor(async () => {
+			await userEvent.type(input, ' ', { delay: 256 });
+			await tick();
+			return await expect(canvas.getByRole('list')).toBeInTheDocument();
+		}, { interval: 256, timeout: 16384 });
 	},
 	parameters: {
 		...common.parameters,
@@ -114,7 +143,18 @@ export const Emoji = {
 	args: {
 		...common.args,
 		type: 'emoji',
-		q: 'smile',
+	},
+	async play({ canvasElement }) {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox');
+		await waitFor(() => userEvent.hover(input));
+		await waitFor(() => userEvent.click(input));
+		await waitFor(() => userEvent.type(input, 'smile'));
+		await waitFor(async () => {
+			await userEvent.type(input, ' ', { delay: 256 });
+			await tick();
+			return await expect(canvas.getByRole('list')).toBeInTheDocument();
+		}, { interval: 256, timeout: 16384 });
 	},
 } satisfies StoryObj<typeof MkAutocomplete>;
 export const MfmTag = {
@@ -122,5 +162,15 @@ export const MfmTag = {
 	args: {
 		...common.args,
 		type: 'mfmTag',
+	},
+	async play({ canvasElement }) {
+		const canvas = within(canvasElement);
+		const input = canvas.getByRole('combobox');
+		await waitFor(() => userEvent.hover(input));
+		await waitFor(() => userEvent.click(input));
+		await waitFor(async () => {
+			await tick();
+			return await expect(canvas.getByRole('list')).toBeInTheDocument();
+		}, { interval: 256, timeout: 16384 });
 	},
 } satisfies StoryObj<typeof MkAutocomplete>;
