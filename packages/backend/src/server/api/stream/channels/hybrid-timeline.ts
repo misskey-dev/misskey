@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
@@ -13,6 +14,7 @@ class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
+	private q: string[][] = [['delmulin']];
 
 	constructor(
 		private metaService: MetaService,
@@ -37,6 +39,9 @@ class HybridTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
+		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
+		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
+
 		// チャンネルの投稿ではなく、自分自身の投稿 または
 		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
 		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
@@ -44,7 +49,7 @@ class HybridTimelineChannel extends Channel {
 		if (!(
 			(note.channelId == null && this.user!.id === note.userId) ||
 			(note.channelId == null && this.following.has(note.userId)) ||
-			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
+			(note.channelId == null && (matched && note.visibility === 'public')) ||
 			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
 
