@@ -7,7 +7,7 @@ import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
-	public readonly chName = 'LocalTimeline';
+	public readonly chName = 'localTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private q: string[][];
