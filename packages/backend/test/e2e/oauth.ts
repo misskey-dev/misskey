@@ -7,6 +7,8 @@ import { AuthorizationCode } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 
+const host = `http://127.0.0.1:${port}`;
+
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
 
@@ -16,7 +18,7 @@ function getClient(): AuthorizationCode<'client_id'> {
 			id: `http://127.0.0.1:${clientPort}/`,
 		},
 		auth: {
-			tokenHost: `http://127.0.0.1:${port}`,
+			tokenHost: host,
 			tokenPath: '/oauth/token',
 			authorizePath: '/oauth/authorize',
 		},
@@ -32,7 +34,7 @@ function getTransactionId(html: string): string | undefined {
 }
 
 function fetchDecision(cookie: string, transactionId: string, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
-	return fetch(`http://127.0.0.1:${port}/oauth/decision`, {
+	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
 			transaction_id: transactionId!,
@@ -535,7 +537,14 @@ describe('OAuth', () => {
 		// TODO: disallow random same-origin URLs with strict redirect_uris with client information discovery
 	});
 
-	// TODO: .well-known/oauth-authorization-server
+	test('Server metadata', async () => {
+		const response = await fetch(new URL('.well-known/oauth-authorization-server', host));
+		assert.strictEqual(response.status, 200);
+
+		const body = await response.json();
+		assert.strictEqual(body.issuer, 'http://misskey.local');
+		assert.ok(body.scopes_supported.includes('write:notes'));
+	});
 
 	// TODO: authorizing two users concurrently
 
