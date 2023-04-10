@@ -3,7 +3,7 @@
  */
 import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
-import { badgeNames, pushNotificationDataMap } from '@/types';
+import { BadgeNames, PushNotificationDataMap } from '@/types';
 import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
@@ -16,7 +16,7 @@ const closeNotificationsByTags = async (tags: string[]) => {
 	}
 };
 
-const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
+const iconUrl = (name: BadgeNames) => `/static-assets/tabler-badges/${name}.png`;
 /* How to add a new badge:
  * 1. Find the icon and download png from https://tabler-icons.io/
  * 2. vips resize ~/Downloads/icon-name.png vipswork.png 0.4; vips scRGB2BW vipswork.png ~/icon-name.png"[compression=9,strip]"; rm vipswork.png;
@@ -25,7 +25,7 @@ const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`
  * 5. Add `badge: iconUrl('icon-name'),`
  */
 
-export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
+export async function createNotification<K extends keyof PushNotificationDataMap>(data: PushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
 
 	if (n) {
@@ -36,7 +36,7 @@ export async function createNotification<K extends keyof pushNotificationDataMap
 	}
 }
 
-async function composeNotification(data: pushNotificationDataMap[keyof pushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
+async function composeNotification(data: PushNotificationDataMap[keyof PushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
 	if (!swLang.i18n) swLang.fetchLocale();
 	const i18n = await swLang.i18n as I18n<any>;
 	const { t } = i18n;

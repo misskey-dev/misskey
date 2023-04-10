@@ -82,6 +82,7 @@ export default defineComponent({
 			omitted: null,
 			ignoreOmit: false,
 			defaultStore,
+			i18n,
 		};
 	},
 	mounted() {
