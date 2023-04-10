@@ -200,7 +200,6 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						badge: iconUrl('medal'),
 						data,
 						tag: `achievement:${data.body.achievement}`,
-						renotify: true,
 					}];
 
 				case 'app':
