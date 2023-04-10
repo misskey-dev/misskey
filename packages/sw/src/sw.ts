@@ -1,7 +1,7 @@
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
 import { api } from '@/scripts/operations';
-import { pushNotificationDataMap } from '@/types';
+import { PushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
 
@@ -44,7 +44,7 @@ globalThis.addEventListener('push', ev => {
 		includeUncontrolled: true,
 		type: 'window',
 	}).then(async (clients: readonly WindowClient[]) => {
-		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.data?.json();
+		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.data?.json();
 
 		switch (data.type) {
 			// case 'driveFileCreated':
@@ -68,7 +68,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 		}
 
 		const { action, notification } = ev;
-		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = notification.data;
+		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = notification.data;
 		const { userId: loginId } = data;
 		let client: WindowClient | null = null;
 
@@ -138,7 +138,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 });
 
 globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
-	const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.notification.data;
+	const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.notification.data;
 
 	if (data.type === 'notification') {
 		api('notifications/mark-all-as-read', data.userId);

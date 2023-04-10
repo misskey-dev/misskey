@@ -1,17 +1,17 @@
 import * as Misskey from 'misskey-js';
 
-export type swMessageOrderType = 'post' | 'push';
+export type SwMessageOrderType = 'post' | 'push';
 
 export type SwMessage = {
 	type: 'order';
-	order: swMessageOrderType;
+	order: SwMessageOrderType;
 	loginId: string;
 	url: string;
 	[x: string]: any;
 };
 
 // Defined also @/core/PushNotificationService.ts#L12
-type pushNotificationDataSourceMap = {
+type PushNotificationDataSourceMap = {
 	notification: Misskey.entities.Notification;
 	unreadAntennaNote: {
 		antenna: { id: string, name: string };
@@ -19,18 +19,18 @@ type pushNotificationDataSourceMap = {
 	};
 };
 
-export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> = {
+export type PushNotificationData<K extends keyof PushNotificationDataSourceMap> = {
 	type: K;
-	body: pushNotificationDataSourceMap[K];
+	body: PushNotificationDataSourceMap[K];
 	userId: string;
 	dateTime: number;
 };
 
-export type pushNotificationDataMap = {
-	[K in keyof pushNotificationDataSourceMap]: pushNotificationData<K>;
+export type PushNotificationDataMap = {
+	[K in keyof PushNotificationDataSourceMap]: PushNotificationData<K>;
 };
 
-export type badgeNames = 
+export type BadgeNames = 
 	'null'
 	| 'antenna'
 	| 'arrow-back-up'

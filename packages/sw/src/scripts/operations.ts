@@ -3,7 +3,7 @@
  * 各種操作
  */
 import * as Misskey from 'misskey-js';
-import { SwMessage, swMessageOrderType } from '@/types';
+import { SwMessage, SwMessageOrderType } from '@/types';
 import { acct as getAcct } from '@/filters/user';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { getUrlWithLoginId } from '@/scripts/login-id';
@@ -43,7 +43,7 @@ export async function openPost(options: any, loginId: string) {
 	return openClient('post', url, loginId, { options });
 }
 
-export async function openClient(order: swMessageOrderType, url: string, loginId: string, query: any = {}) {
+export async function openClient(order: SwMessageOrderType, url: string, loginId: string, query: any = {}) {
 	const client = await findClient();
 
 	if (client) {
