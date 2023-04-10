@@ -10,7 +10,7 @@ class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = true;
 	public static requireCredential = false;
-	private q: string[][];
+	private q: string[][] = [['delmulin']];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -24,7 +24,7 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		this.q = [['delmulin']];
+		// this.q = params.q;
 
 		if (this.q == null) return;
 
@@ -46,12 +46,11 @@ class LocalTimelineChannel extends Channel {
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
-		// if (isUserRelated(note, this.muting)) return;
+		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
-		// if (isUserRelated(note, this.blocking)) return;
-		
-		// if (note.renote && !note.text && isUserRelated(note, this.renoteMuting)) return;
-		if (!note.text) return;
+		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+
+		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
 		this.connection.cacheNote(note);
 
