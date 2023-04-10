@@ -10,6 +10,7 @@ import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import type { MeSignup } from 'misskey-js/built/entities.js';
 
 export { server as startServer } from '@/boot/common.js';
 

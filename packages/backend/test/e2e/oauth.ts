@@ -4,9 +4,10 @@ import * as assert from 'assert';
 import { AuthorizationCode } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
+import * as misskey from 'misskey-js';
+import Fastify, { type FastifyInstance } from 'fastify';
 import { port, relativeFetch, signup, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
-import Fastify, { type FastifyInstance } from 'fastify';
 
 const host = `http://127.0.0.1:${port}`;
 
@@ -37,7 +38,7 @@ function getMeta(html: string): { transactionId: string | undefined, clientName:
 	};
 }
 
-function fetchDecision(cookie: string, transactionId: string, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+function fetchDecision(cookie: string, transactionId: string, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
@@ -53,7 +54,7 @@ function fetchDecision(cookie: string, transactionId: string, user: any, { cance
 	});
 }
 
-async function fetchDecisionFromResponse(response: Response, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+async function fetchDecisionFromResponse(response: Response, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	const cookie = response.headers.get('set-cookie');
 	const { transactionId } = getMeta(await response.text());
 
@@ -64,11 +65,13 @@ describe('OAuth', () => {
 	let app: INestApplicationContext;
 	let fastify: FastifyInstance;
 
-	let alice: any;
+	let alice: misskey.entities.MeSignup;
+	let bob: misskey.entities.MeSignup;
 
 	beforeAll(async () => {
 		app = await startServer();
 		alice = await signup({ username: 'alice' });
+		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
 
 	beforeEach(async () => {
@@ -145,6 +148,81 @@ describe('OAuth', () => {
 		assert.strictEqual(createResponseBody.createdNote.text, 'test');
 	});
 
+	test('Two concurrent flows', async () => {
+		const client = getClient();
+
+		const pkceAlice = pkceChallenge.default(128);
+		const pkceBob = pkceChallenge.default(128);
+
+		const responseAlice = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge: pkceAlice.code_challenge,
+			code_challenge_method: 'S256',
+		}));
+		assert.strictEqual(responseAlice.status, 200);
+
+		const responseBob = await fetch(client.authorizeURL({
+			redirect_uri,
+			scope: 'write:notes',
+			state: 'state',
+			code_challenge: pkceBob.code_challenge,
+			code_challenge_method: 'S256',
+		}));
+		assert.strictEqual(responseBob.status, 200);
+
+		const decisionResponseAlice = await fetchDecisionFromResponse(responseAlice, alice);
+		assert.strictEqual(decisionResponseAlice.status, 302);
+
+		const decisionResponseBob = await fetchDecisionFromResponse(responseBob, bob);
+		assert.strictEqual(decisionResponseBob.status, 302);
+
+		const locationAlice = new URL(decisionResponseAlice.headers.get('location')!);
+		assert.ok(locationAlice.searchParams.has('code'));
+
+		const locationBob = new URL(decisionResponseBob.headers.get('location')!);
+		assert.ok(locationBob.searchParams.has('code'));
+
+		const tokenAlice = await client.getToken({
+			code: locationAlice.searchParams.get('code')!,
+			redirect_uri,
+			code_verifier: pkceAlice.code_verifier,
+		});
+
+		const tokenBob = await client.getToken({
+			code: locationBob.searchParams.get('code')!,
+			redirect_uri,
+			code_verifier: pkceBob.code_verifier,
+		});
+
+		const createResponseAlice = await relativeFetch('api/notes/create', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${tokenAlice.token.access_token}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: 'test' }),
+		});
+		assert.strictEqual(createResponseAlice.status, 200);
+
+		const createResponseBob = await relativeFetch('api/notes/create', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${tokenBob.token.access_token}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: 'test' }),
+		});
+		assert.strictEqual(createResponseAlice.status, 200);
+
+		const createResponseBodyAlice = await createResponseAlice.json() as { createdNote: misskey.entities.Note };
+		assert.strictEqual(createResponseBodyAlice.createdNote.user.username, 'alice');
+
+		const createResponseBodyBob = await createResponseBob.json() as { createdNote: misskey.entities.Note };
+		assert.strictEqual(createResponseBodyBob.createdNote.user.username, 'bob');
+	});
+
 	describe('PKCE', () => {
 		test('Require PKCE', async () => {
 			const client = getClient();
@@ -212,6 +290,8 @@ describe('OAuth', () => {
 				redirect_uri,
 				code_verifier: code_verifier + 'x',
 			}));
+
+			// TODO: The following patterns may fail only because of pattern 1's failure. Let's split them.
 
 			// Pattern 2: clipped code
 			await assert.rejects(client.getToken({
@@ -775,8 +855,6 @@ describe('OAuth', () => {
 			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
 		});
 	});
-
-	// TODO: authorizing two users concurrently
 
 	// TODO: Error format required by OAuth spec
 });

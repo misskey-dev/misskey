@@ -76,33 +76,6 @@ function validateClientId(raw: string): URL {
 	return url;
 }
 
-// const grantable = new Set([
-// 	'AccessToken',
-// 	'AuthorizationCode',
-// 	'RefreshToken',
-// 	'DeviceCode',
-// 	'BackchannelAuthenticationRequest',
-// ]);
-
-// const consumable = new Set([
-// 	'AuthorizationCode',
-// 	'RefreshToken',
-// 	'DeviceCode',
-// 	'BackchannelAuthenticationRequest',
-// ]);
-
-// function grantKeyFor(id: string): string {
-// 	return `grant:${id}`;
-// }
-
-// function userCodeKeyFor(userCode: string): string {
-// 	return `userCode:${userCode}`;
-// }
-
-// function uidKeyFor(uid: string): string {
-// 	return `uid:${uid}`;
-// }
-
 interface ClientInformation {
 	id: string;
 	redirectUris: string[];
