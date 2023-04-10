@@ -511,7 +511,7 @@ export class OAuth2ProviderService {
 
 				const clientUrl = validateClientId(clientId);
 
-				if (process.env.NODE_ENV !== 'test') {
+				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_DISALLOW_LOOPBACK === '1') {
 					const lookup = await dns.lookup(clientUrl.hostname);
 					if (ipaddr.parse(lookup.address).range() === 'loopback') {
 						throw new Error('client_id unexpectedly resolves to loopback IP.');
