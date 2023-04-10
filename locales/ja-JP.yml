@@ -995,6 +995,7 @@ videos: "動画"
 dataSaver: "データセーバー"
 accountMigration: "アカウントの引っ越し"
 accountMoved: "このユーザーは新しいアカウントに引っ越しました："
+forceShowAds: "常に広告を表示する"
 
 _accountMigration:
   moveTo: "このアカウントを新しいアカウントに引っ越す"
