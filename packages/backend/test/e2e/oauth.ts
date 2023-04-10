@@ -76,7 +76,7 @@ describe('OAuth', () => {
 				<div class="h-app"><div class="p-name">Misklient
 			`);
 		});
-		fastify.listen({ port: clientPort, host: '0.0.0.0' });
+		await fastify.listen({ port: clientPort });
 
 		alice = await signup({ username: 'alice' });
 	}, 1000 * 60 * 2);
@@ -599,6 +599,136 @@ describe('OAuth', () => {
 		const body = await response.json();
 		assert.strictEqual(body.issuer, 'http://misskey.local');
 		assert.ok(body.scopes_supported.includes('write:notes'));
+	});
+
+	describe('Client Information Discovery', () => {
+		test('Read HTTP header', async () => {
+			await fastify.close();
+
+			fastify = Fastify();
+			fastify.get('/', async (request, reply) => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app"><div class="p-name">Misklient
+				`);
+			});
+			await fastify.listen({ port: clientPort });
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+		});
+
+		test('Mixed links', async () => {
+			await fastify.close();
+
+			fastify = Fastify();
+			fastify.get('/', async (request, reply) => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<link rel="redirect_uri" href="/redirect2" />
+					<div class="h-app"><div class="p-name">Misklient
+				`);
+			});
+			await fastify.listen({ port: clientPort });
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+		});
+
+		test('Multiple items in Link header', async () => {
+			await fastify.close();
+
+			fastify = Fastify();
+			fastify.get('/', async (request, reply) => {
+				reply.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app"><div class="p-name">Misklient
+				`);
+			});
+			await fastify.listen({ port: clientPort });
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			console.log(await response.text());
+			assert.strictEqual(response.status, 200);
+		});
+
+		test('Multiple items in HTML', async () => {
+			await fastify.close();
+
+			fastify = Fastify();
+			fastify.get('/', async (request, reply) => {
+				reply.send(`
+					<!DOCTYPE html>
+					<link rel="redirect_uri" href="/redirect2" />
+					<link rel="redirect_uri" href="/redirect" />
+					<div class="h-app"><div class="p-name">Misklient
+				`);
+			});
+			await fastify.listen({ port: clientPort });
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+		});
+
+		test('No item', async () => {
+			await fastify.close();
+
+			fastify = Fastify();
+			fastify.get('/', async (request, reply) => {
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app"><div class="p-name">Misklient
+				`);
+			});
+			await fastify.listen({ port: clientPort });
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			// TODO: status code
+			assert.strictEqual(response.status, 500);
+		});
 	});
 
 	// TODO: authorizing two users concurrently
