@@ -4,11 +4,11 @@ import { expect } from '@storybook/jest';
 import { userEvent, waitFor, within } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
-import { tick } from '@/scripts/test-utils';
 import { userDetailed } from '../../.storybook/fakes';
 import { commonHandlers } from '../../.storybook/mocks';
 import MkAutocomplete from './MkAutocomplete.vue';
 import MkInput from './MkInput.vue';
+import { tick } from '@/scripts/test-utils';
 const common = {
 	render(args) {
 		return {
