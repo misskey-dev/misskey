@@ -17,6 +17,7 @@ type PushNotificationDataSourceMap = {
 		antenna: { id: string, name: string };
 		note: Misskey.entities.Note;
 	};
+	readAllNotifications: undefined;
 };
 
 export type PushNotificationData<K extends keyof PushNotificationDataSourceMap> = {
@@ -37,6 +38,7 @@ export type BadgeNames =
 	| 'at'
 	| 'chart-arrows'
 	| 'circle-check'
+	| 'medal'
 	| 'messages'
 	| 'plus'
 	| 'quote'
