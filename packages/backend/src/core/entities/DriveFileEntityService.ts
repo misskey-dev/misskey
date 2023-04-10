@@ -266,6 +266,7 @@ export class DriveFileEntityService {
 		fileIds: DriveFile['id'][],
 		options?: PackOptions,
 	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
+		if (fileIds.length === 0) return new Map();
 		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
 		const packedFiles = await this.packMany(files, options);
 		const map = new Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>(packedFiles.map(f => [f.id, f]));
@@ -280,6 +281,7 @@ export class DriveFileEntityService {
 		fileIds: DriveFile['id'][],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
+		if (fileIds.length === 0) return [];
 		const filesMap = await this.packManyByIdsMap(fileIds, options);
 		return fileIds.map(id => filesMap.get(id)).filter(isNotNull);
 	}

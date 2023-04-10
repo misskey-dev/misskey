@@ -12,7 +12,7 @@ import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, NotesRepository, AntennaNotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { MutingsRepository, NotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -24,17 +24,17 @@ export class AntennaService implements OnApplicationShutdown {
 	private antennas: Antenna[];
 
 	constructor(
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
+		@Inject(DI.redisForPubsub)
+		private redisForPubsub: Redis.Redis,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-
-		@Inject(DI.antennaNotesRepository)
-		private antennaNotesRepository: AntennaNotesRepository,
 
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
@@ -52,12 +52,12 @@ export class AntennaService implements OnApplicationShutdown {
 		this.antennasFetched = false;
 		this.antennas = [];
 
-		this.redisSubscriber.on('message', this.onRedisMessage);
+		this.redisForPubsub.on('message', this.onRedisMessage);
 	}
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisSubscriber.off('message', this.onRedisMessage);
+		this.redisForPubsub.off('message', this.onRedisMessage);
 	}
 
 	@bindThis
@@ -92,54 +92,13 @@ export class AntennaService implements OnApplicationShutdown {
 
 	@bindThis
 	public async addNoteToAntenna(antenna: Antenna, note: Note, noteUser: { id: User['id']; }): Promise<void> {
-		// 通知しない設定になっているか、自分自身の投稿なら既読にする
-		const read = !antenna.notify || (antenna.userId === noteUser.id);
-	
-		this.antennaNotesRepository.insert({
-			id: this.idService.genId(),
-			antennaId: antenna.id,
-			noteId: note.id,
-			read: read,
-		});
-	
+		this.redisClient.xadd(
+			`antennaTimeline:${antenna.id}`,
+			'MAXLEN', '~', '200',
+			`${this.idService.parse(note.id).date.getTime()}-*`,
+			'note', note.id);
+		
 		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
-	
-		if (!read) {
-			const mutings = await this.mutingsRepository.find({
-				where: {
-					muterId: antenna.userId,
-				},
-				select: ['muteeId'],
-			});
-	
-			// Copy
-			const _note: Note = {
-				...note,
-			};
-	
-			if (note.replyId != null) {
-				_note.reply = await this.notesRepository.findOneByOrFail({ id: note.replyId });
-			}
-			if (note.renoteId != null) {
-				_note.renote = await this.notesRepository.findOneByOrFail({ id: note.renoteId });
-			}
-	
-			if (isUserRelated(_note, new Set<string>(mutings.map(x => x.muteeId)))) {
-				return;
-			}
-	
-			// 2秒経っても既読にならなかったら通知
-			setTimeout(async () => {
-				const unread = await this.antennaNotesRepository.findOneBy({ antennaId: antenna.id, read: false });
-				if (unread) {
-					this.globalEventService.publishMainStream(antenna.userId, 'unreadAntenna', antenna);
-					this.pushNotificationService.pushNotification(antenna.userId, 'unreadAntennaNote', {
-						antenna: { id: antenna.id, name: antenna.name },
-						note: await this.noteEntityService.pack(note),
-					});
-				}
-			}, 2000);
-		}
 	}
 
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている

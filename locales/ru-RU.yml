@@ -950,7 +950,6 @@ copyErrorInfo: "Скопировать код ошибки"
 joinThisServer: "Присоединяйтесь к этому серверу"
 exploreOtherServers: "Искать другие сервера"
 letsLookAtTimeline: "Давайте посмотрим на ленту"
-disableFederationWarn: "Объединение отключено. Если вы отключите это, сообщение не будет приватным. В большинстве случаев вам не нужно включать эту опцию."
 _achievements:
   earnedAt: "Разблокировано в"
   _types:
@@ -1839,4 +1838,3 @@ _dialog:
 _webhookSettings:
   name: "Название"
   active: "Вкл."
-

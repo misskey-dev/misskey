@@ -24,7 +24,7 @@
 		</div>
 	</div>
 
-	<Transition :name="$store.state.animation ? 'tray-back' : ''">
+	<Transition :name="'tray-back'">
 		<div
 			v-if="showMenu"
 			class="menu-back _modalBg"
@@ -33,20 +33,20 @@
 		></div>
 	</Transition>
 
-	<Transition :name="$store.state.animation ? 'tray' : ''">
+	<Transition :name="'tray'">
 		<div v-if="showMenu" class="menu">
-			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ $ts.home }}</MkA>
-			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i>{{ $ts.timeline }}</MkA>
-			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ $ts.explore }}</MkA>
-			<MkA to="/announcements" class="link" active-class="active"><i class="ti ti-speakerphone icon"></i>{{ $ts.announcements }}</MkA>
-			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ $ts.channel }}</MkA>
+			<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i>{{ i18n.ts.home }}</MkA>
+			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i>{{ i18n.ts.timeline }}</MkA>
+			<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i>{{ i18n.ts.explore }}</MkA>
+			<MkA to="/announcements" class="link" active-class="active"><i class="ti ti-speakerphone icon"></i>{{ i18n.ts.announcements }}</MkA>
+			<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i>{{ i18n.ts.channel }}</MkA>
 			<div class="divider"></div>
-			<MkA to="/pages" class="link" active-class="active"><i class="ti ti-news icon"></i>{{ $ts.pages }}</MkA>
+			<MkA to="/pages" class="link" active-class="active"><i class="ti ti-news icon"></i>{{ i18n.ts.pages }}</MkA>
 			<MkA to="/play" class="link" active-class="active"><i class="ti ti-player-play icon"></i>Play</MkA>
-			<MkA to="/gallery" class="link" active-class="active"><i class="ti ti-icons icon"></i>{{ $ts.gallery }}</MkA>
+			<MkA to="/gallery" class="link" active-class="active"><i class="ti ti-icons icon"></i>{{ i18n.ts.gallery }}</MkA>
 			<div class="action">
-				<button class="_buttonPrimary" @click="signup()">{{ $ts.signup }}</button>
-				<button class="_button" @click="signin()">{{ $ts.login }}</button>
+				<button class="_buttonPrimary" @click="signup()">{{ i18n.ts.signup }}</button>
+				<button class="_button" @click="signin()">{{ i18n.ts.login }}</button>
 			</div>
 		</div>
 	</Transition>
@@ -65,6 +65,7 @@ import XSignupDialog from '@/components/MkSignupDialog.vue';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const DESKTOP_THRESHOLD = 1100;
 

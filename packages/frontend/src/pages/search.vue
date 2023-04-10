@@ -56,6 +56,9 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import MkInfo from '@/components/MkInfo.vue';
+import { useRouter } from '@/router';
+
+const router = useRouter();
 
 const props = defineProps<{
 	query: string;
@@ -83,6 +86,24 @@ async function search() {
 	const query = searchQuery.toString().trim();
 
 	if (query == null || query === '') return;
+
+	if (query.startsWith('https://')) {
+		const promise = os.api('ap/show', {
+			uri: query,
+		});
+
+		os.promiseDialog(promise, null, null, i18n.ts.fetchingAsApObject);
+
+		const res = await promise;
+
+		if (res.type === 'User') {
+			router.push(`/@${res.object.username}@${res.object.host}`);
+		} else if (res.type === 'Note') {
+			router.push(`/notes/${res.object.id}`);
+		}
+
+		return;
+	}
 
 	if (tab === 'note') {
 		notePagination = {

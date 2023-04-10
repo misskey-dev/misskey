@@ -42,7 +42,7 @@ export class S3Service {
 				accessKeyId: meta.objectStorageAccessKey,
 				secretAccessKey: meta.objectStorageSecretKey,
 			} : undefined,
-			region: meta.objectStorageRegion ?? undefined,
+			region: meta.objectStorageRegion ? meta.objectStorageRegion : undefined, // 空文字列もundefinedにするため ?? は使わない
 			tls: meta.objectStorageUseSSL,
 			forcePathStyle: meta.objectStorageEndpoint ? meta.objectStorageS3ForcePathStyle : false, // AWS with endPoint omitted
 			requestHandler: new NodeHttpHandler(handlerOption),

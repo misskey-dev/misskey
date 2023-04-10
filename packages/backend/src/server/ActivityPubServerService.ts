@@ -12,7 +12,7 @@ import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
-import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 import type { Following } from '@/models/entities/Following.js';
 import { countIf } from '@/misc/prelude/array.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -58,7 +58,7 @@ export class ActivityPubServerService {
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
 		private queueService: QueueService,
-		private userKeypairStoreService: UserKeypairStoreService,
+		private userKeypairService: UserKeypairService,
 		private queryService: QueryService,
 	) {
 		//this.createServer = this.createServer.bind(this);
@@ -540,7 +540,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+			const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 			if (this.userEntityService.isLocalUser(user)) {
 				reply.header('Cache-Control', 'public, max-age=180');

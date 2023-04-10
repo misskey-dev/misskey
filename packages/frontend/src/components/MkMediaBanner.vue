@@ -2,8 +2,8 @@
 <div class="mk-media-banner">
 	<div v-if="media.isSensitive && hide" class="sensitive" @click="hide = false">
 		<span class="icon"><i class="ti ti-alert-triangle"></i></span>
-		<b>{{ $ts.sensitive }}</b>
-		<span>{{ $ts.clickToShow }}</span>
+		<b>{{ i18n.ts.sensitive }}</b>
+		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
 	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
 		<VuePlyr :options="{ volume: 0.5 }">
@@ -33,6 +33,7 @@ import * as misskey from 'misskey-js';
 import VuePlyr from 'vue-plyr';
 import { ColdDeviceStorage } from '@/store';
 import 'vue-plyr/dist/vue-plyr.css';
+import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
 	media: misskey.entities.DriveFile;

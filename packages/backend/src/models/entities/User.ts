@@ -68,6 +68,19 @@ export class User {
 	})
 	public followingCount: number;
 
+	@Column('varchar', {
+		length: 512,
+		nullable: true,
+		comment: 'The URI of the new account of the User',
+	})
+	public movedToUri: string | null;
+
+	@Column('simple-array', {
+		nullable: true,
+		comment: 'URIs the user is known as too',
+	})
+	public alsoKnownAs: string[] | null;
+
 	@Column('integer', {
 		default: 0,
 		comment: 'The count of notes.',
@@ -99,6 +112,26 @@ export class User {
 	})
 	@JoinColumn()
 	public banner: DriveFile | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public avatarUrl: string | null;
+
+	@Column('varchar', {
+		length: 512, nullable: true,
+	})
+	public bannerUrl: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public avatarBlurhash: string | null;
+
+	@Column('varchar', {
+		length: 128, nullable: true,
+	})
+	public bannerBlurhash: string | null;
 
 	@Index()
 	@Column('varchar', {

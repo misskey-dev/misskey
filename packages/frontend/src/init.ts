@@ -187,7 +187,7 @@ try {
 } catch (err) {}
 
 const app = createApp(
-	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	new URLSearchParams(window.location.search).has('zen') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 	!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 	ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
@@ -197,15 +197,6 @@ const app = createApp(
 if (_DEV_) {
 	app.config.performance = true;
 }
-
-// TODO: 廃止
-app.config.globalProperties = {
-	$i,
-	$store: defaultStore,
-	$instance: instance,
-	$t: i18n.t,
-	$ts: i18n.ts,
-};
 
 widgets(app);
 directives(app);
@@ -356,7 +347,7 @@ const hotkeys = {
 	},
 	's': (): void => {
 		mainRouter.push('/search');
-	}
+	},
 };
 
 if ($i) {
@@ -520,15 +511,6 @@ if ($i) {
 
 	main.on('readAllAnnouncements', () => {
 		updateAccount({ hasUnreadAnnouncement: false });
-	});
-
-	main.on('readAllChannels', () => {
-		updateAccount({ hasUnreadChannel: false });
-	});
-
-	main.on('unreadChannel', () => {
-		updateAccount({ hasUnreadChannel: true });
-		sound.play('channel');
 	});
 
 	// トークンが再生成されたとき

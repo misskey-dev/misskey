@@ -10,7 +10,7 @@
 	@closed="$emit('closed')"
 	@ok="ok()"
 >
-	<template #header>{{ title || $ts.generateAccessToken }}</template>
+	<template #header>{{ title || i18n.ts.generateAccessToken }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="_gaps_m">
@@ -19,15 +19,15 @@
 			</div>
 			<div>
 				<MkInput v-model="name">
-					<template #label>{{ $ts.name }}</template>
+					<template #label>{{ i18n.ts.name }}</template>
 				</MkInput>
 			</div>
-			<div><b>{{ $ts.permission }}</b></div>
+			<div><b>{{ i18n.ts.permission }}</b></div>
 			<div class="_buttons">
 				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
-			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ $t(`_permissions.${kind}`) }}</MkSwitch>
+			<MkSwitch v-for="kind in (initialPermissions || kinds)" :key="kind" v-model="permissions[kind]">{{ i18n.t(`_permissions.${kind}`) }}</MkSwitch>
 		</div>
 	</MkSpacer>
 </MkModalWindow>

@@ -1,9 +1,9 @@
 <template>
 <Transition
-	:enter-active-class="$store.state.animation ? $style.transition_tooltip_enterActive : ''"
-	:leave-active-class="$store.state.animation ? $style.transition_tooltip_leaveActive : ''"
-	:enter-from-class="$store.state.animation ? $style.transition_tooltip_enterFrom : ''"
-	:leave-to-class="$store.state.animation ? $style.transition_tooltip_leaveTo : ''"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_tooltip_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_tooltip_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_tooltip_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
 	appear @after-leave="emit('closed')"
 >
 	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
@@ -19,6 +19,7 @@
 import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
 import * as os from '@/os';
 import { calcPopupPosition } from '@/scripts/popup-position';
+import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;
