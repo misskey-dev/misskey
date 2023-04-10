@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -341,15 +342,17 @@ export class ApNoteService {
 		if (!tags) return [];
 	
 		const eomjiTags = toArray(tags).filter(isEmoji);
+
+		const existingEmojis = await this.emojisRepository.findBy({
+			host,
+			name: In(eomjiTags.map(tag => tag.name!.replaceAll(':', ''))),
+		});
 	
 		return await Promise.all(eomjiTags.map(async tag => {
-			const name = tag.name!.replace(/^:/, '').replace(/:$/, '');
+			const name = tag.name!.replaceAll(':', '');
 			tag.icon = toSingle(tag.icon);
 	
-			const exists = await this.emojisRepository.findOneBy({
-				host,
-				name,
-			});
+			const exists = existingEmojis.find(x => x.name === name);
 	
 			if (exists) {
 				if ((tag.updated != null && exists.updatedAt == null)

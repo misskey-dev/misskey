@@ -33,6 +33,7 @@ import MkCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
 	note: misskey.entities.Note;

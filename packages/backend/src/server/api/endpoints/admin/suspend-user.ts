@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, FollowingsRepository, NotificationsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -36,9 +36,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		@Inject(DI.notificationsRepository)
-		private notificationsRepository: NotificationsRepository,
-
 		private userEntityService: UserEntityService,
 		private userFollowingService: UserFollowingService,
 		private userSuspendService: UserSuspendService,
@@ -65,15 +62,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				targetId: user.id,
 			});
 
-			// Terminate streaming
-			if (this.userEntityService.isLocalUser(user)) {
-				this.globalEventService.publishUserEvent(user.id, 'terminate', {});
-			}
-
 			(async () => {
 				await this.userSuspendService.doPostSuspend(user).catch(e => {});
 				await this.unFollowAll(user).catch(e => {});
-				await this.readAllNotify(user).catch(e => {});
 			})();
 		});
 	}
@@ -95,15 +86,5 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	
 			await this.userFollowingService.unfollow(follower, followee, true);
 		}
-	}
-	
-	@bindThis
-	private async readAllNotify(notifier: User) {
-		await this.notificationsRepository.update({
-			notifierId: notifier.id,
-			isRead: false,
-		}, {
-			isRead: true,
-		});
 	}
 }

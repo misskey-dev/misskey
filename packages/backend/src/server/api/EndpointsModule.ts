@@ -95,6 +95,9 @@ import * as ep___channels_show from './endpoints/channels/show.js';
 import * as ep___channels_timeline from './endpoints/channels/timeline.js';
 import * as ep___channels_unfollow from './endpoints/channels/unfollow.js';
 import * as ep___channels_update from './endpoints/channels/update.js';
+import * as ep___channels_favorite from './endpoints/channels/favorite.js';
+import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
+import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -217,6 +220,8 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
+import * as ep___i_move from './endpoints/i/move.js';
+import * as ep___i_knownAs from './endpoints/i/known-as.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -265,7 +270,6 @@ import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
-import * as ep___notifications_read from './endpoints/notifications/read.js';
 import * as ep___pagePush from './endpoints/page-push.js';
 import * as ep___pages_create from './endpoints/pages/create.js';
 import * as ep___pages_delete from './endpoints/pages/delete.js';
@@ -424,6 +428,9 @@ const $channels_show: Provider = { provide: 'ep:channels/show', useClass: ep___c
 const $channels_timeline: Provider = { provide: 'ep:channels/timeline', useClass: ep___channels_timeline.default };
 const $channels_unfollow: Provider = { provide: 'ep:channels/unfollow', useClass: ep___channels_unfollow.default };
 const $channels_update: Provider = { provide: 'ep:channels/update', useClass: ep___channels_update.default };
+const $channels_favorite: Provider = { provide: 'ep:channels/favorite', useClass: ep___channels_favorite.default };
+const $channels_unfavorite: Provider = { provide: 'ep:channels/unfavorite', useClass: ep___channels_unfavorite.default };
+const $channels_myFavorites: Provider = { provide: 'ep:channels/my-favorites', useClass: ep___channels_myFavorites.default };
 const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useClass: ep___charts_activeUsers.default };
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
@@ -546,6 +553,8 @@ const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: e
 const $i_unpin: Provider = { provide: 'ep:i/unpin', useClass: ep___i_unpin.default };
 const $i_updateEmail: Provider = { provide: 'ep:i/update-email', useClass: ep___i_updateEmail.default };
 const $i_update: Provider = { provide: 'ep:i/update', useClass: ep___i_update.default };
+const $i_move: Provider = { provide: 'ep:i/move', useClass: ep___i_move.default };
+const $i_knownAs: Provider = { provide: 'ep:i/known-as', useClass: ep___i_knownAs.default };
 const $i_webhooks_create: Provider = { provide: 'ep:i/webhooks/create', useClass: ep___i_webhooks_create.default };
 const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep___i_webhooks_list.default };
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
@@ -594,7 +603,6 @@ const $notes_unrenote: Provider = { provide: 'ep:notes/unrenote', useClass: ep__
 const $notes_userListTimeline: Provider = { provide: 'ep:notes/user-list-timeline', useClass: ep___notes_userListTimeline.default };
 const $notifications_create: Provider = { provide: 'ep:notifications/create', useClass: ep___notifications_create.default };
 const $notifications_markAllAsRead: Provider = { provide: 'ep:notifications/mark-all-as-read', useClass: ep___notifications_markAllAsRead.default };
-const $notifications_read: Provider = { provide: 'ep:notifications/read', useClass: ep___notifications_read.default };
 const $pagePush: Provider = { provide: 'ep:page-push', useClass: ep___pagePush.default };
 const $pages_create: Provider = { provide: 'ep:pages/create', useClass: ep___pages_create.default };
 const $pages_delete: Provider = { provide: 'ep:pages/delete', useClass: ep___pages_delete.default };
@@ -757,6 +765,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+		$channels_favorite,
+		$channels_unfavorite,
+		$channels_myFavorites,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -879,6 +890,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
+		$i_move,
+		$i_knownAs,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -927,7 +940,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_userListTimeline,
 		$notifications_create,
 		$notifications_markAllAsRead,
-		$notifications_read,
 		$pagePush,
 		$pages_create,
 		$pages_delete,
@@ -1084,6 +1096,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_timeline,
 		$channels_unfollow,
 		$channels_update,
+		$channels_favorite,
+		$channels_unfavorite,
+		$channels_myFavorites,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -1206,6 +1221,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
+		$i_move,
+		$i_knownAs,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -1254,7 +1271,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_userListTimeline,
 		$notifications_create,
 		$notifications_markAllAsRead,
-		$notifications_read,
 		$pagePush,
 		$pages_create,
 		$pages_delete,

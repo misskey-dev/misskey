@@ -6,12 +6,12 @@
 			<span>
 				<template v-if="choice.isVoted"><i class="ti ti-check"></i></template>
 				<Mfm :text="choice.text" :plain="true"/>
-				<span v-if="showResult" class="votes">({{ $t('_poll.votesCount', { n: choice.votes }) }})</span>
+				<span v-if="showResult" class="votes">({{ i18n.t('_poll.votesCount', { n: choice.votes }) }})</span>
 			</span>
 		</li>
 	</ul>
 	<p v-if="!readOnly">
-		<span>{{ $t('_poll.totalVotes', { n: total }) }}</span>
+		<span>{{ i18n.t('_poll.totalVotes', { n: total }) }}</span>
 		<span> · </span>
 		<a v-if="!closed && !isVoted" @click="showResult = !showResult">{{ showResult ? i18n.ts._poll.vote : i18n.ts._poll.showResult }}</a>
 		<span v-if="isVoted">{{ i18n.ts._poll.voted }}</span>

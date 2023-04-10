@@ -3,9 +3,9 @@ import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type { UserPublickey } from '@/models/entities/UserPublickey.js';
-import { UserCacheService } from '@/core/UserCacheService.js';
+import { CacheService } from '@/core/CacheService.js';
 import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { RemoteUser, User } from '@/models/entities/User.js';
@@ -31,8 +31,8 @@ export type UriParseResult = {
 
 @Injectable()
 export class ApDbResolverService {
-	private publicKeyCache: KVCache<UserPublickey | null>;
-	private publicKeyByUserIdCache: KVCache<UserPublickey | null>;
+	private publicKeyCache: MemoryKVCache<UserPublickey | null>;
+	private publicKeyByUserIdCache: MemoryKVCache<UserPublickey | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -47,11 +47,11 @@ export class ApDbResolverService {
 		@Inject(DI.userPublickeysRepository)
 		private userPublickeysRepository: UserPublickeysRepository,
 
-		private userCacheService: UserCacheService,
+		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new KVCache<UserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new KVCache<UserPublickey | null>(Infinity);
+		this.publicKeyCache = new MemoryKVCache<UserPublickey | null>(Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<UserPublickey | null>(Infinity);
 	}
 
 	@bindThis
@@ -107,11 +107,11 @@ export class ApDbResolverService {
 		if (parsed.local) {
 			if (parsed.type !== 'users') return null;
 
-			return await this.userCacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
+			return await this.cacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
 				id: parsed.id,
 			}).then(x => x ?? undefined)) ?? null;
 		} else {
-			return await this.userCacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
+			return await this.cacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
 				uri: parsed.uri,
 			}));
 		}
@@ -138,7 +138,7 @@ export class ApDbResolverService {
 		if (key == null) return null;
 
 		return {
-			user: await this.userCacheService.findById(key.userId) as RemoteUser,
+			user: await this.cacheService.findUserById(key.userId) as RemoteUser,
 			key,
 		};
 	}

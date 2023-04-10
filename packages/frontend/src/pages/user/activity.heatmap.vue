@@ -113,6 +113,9 @@ async function renderChart() {
 					const a = c.chart.chartArea ?? {};
 					return (a.bottom - a.top) / 7 - marginEachCell;
 				},
+			/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
+			}] satisfies ChartData[],
+			 */
 			}],
 		},
 		options: {

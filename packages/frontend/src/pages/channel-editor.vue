@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<div class="_gaps_m">
+		<div v-if="channelId == null || channel != null" class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
@@ -11,13 +11,37 @@
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
-			<div class="banner">
+			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
 					<img :src="bannerUrl" style="width: 100%;"/>
 					<MkButton @click="removeBannerImage()"><i class="ti ti-trash"></i> {{ i18n.ts._channel.removeBanner }}</MkButton>
 				</div>
 			</div>
+
+			<MkFolder :default-open="true">
+				<template #label>{{ i18n.ts.pinnedNotes }}</template>
+				
+				<div class="_gaps">
+					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
+
+					<Sortable 
+						v-model="pinnedNotes"
+						item-key="id"
+						:handle="'.' + $style.pinnedNoteHandle"
+						:animation="150"
+					>
+						<template #item="{element,index}">
+							<div :class="$style.pinnedNote">
+								<button class="_button" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
+								{{ element.id }}
+								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
+							</div>
+						</template>
+					</Sortable>
+				</div>
+			</MkFolder>
+
 			<div>
 				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
 			</div>
@@ -27,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, ref, watch, defineAsyncComponent } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -36,6 +60,9 @@ import * as os from '@/os';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import MkFolder from '@/components/MkFolder.vue';
+
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const router = useRouter();
 
@@ -48,6 +75,7 @@ let name = $ref(null);
 let description = $ref(null);
 let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
+const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
 	if (bannerId == null) {
@@ -70,15 +98,36 @@ async function fetchChannel() {
 	description = channel.description;
 	bannerId = channel.bannerId;
 	bannerUrl = channel.bannerUrl;
+	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
+		id,
+	}));
 }
 
 fetchChannel();
+
+async function addPinnedNote() {
+	const { canceled, result: value } = await os.inputText({
+		title: i18n.ts.noteIdOrUrl,
+	});
+	if (canceled) return;
+	const note = await os.apiWithDialog('notes/show', {
+		noteId: value.includes('/') ? value.split('/').pop() : value,
+	});
+	pinnedNotes.value = [{
+		id: note.id,
+	}, ...pinnedNotes.value];
+}
+
+function removePinnedNote(index: number) {
+	pinnedNotes.value.splice(index, 1);
+}
 
 function save() {
 	const params = {
 		name: name,
 		description: description,
 		bannerId: bannerId,
+		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
 	};
 
 	if (props.channelId) {
@@ -117,6 +166,32 @@ definePageMetadata(computed(() => props.channelId ? {
 }));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+.pinnedNote {
+	position: relative;
+	display: block;
+	line-height: 2.85rem;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	color: var(--navFg);
+}
 
+.pinnedNoteRemove {
+	position: absolute;
+	z-index: 10000;
+	width: 32px;
+	height: 32px;
+	color: #ff2a2a;
+	right: 8px;
+	opacity: 0.8;
+}
+
+.pinnedNoteHandle {
+	cursor: move;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px;
+	opacity: 0.5;
+}
 </style>
