@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import type { ChannelsRepository } from '@/models/index.js';
@@ -26,6 +27,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		query: { type: 'string' },
+		type: { type: 'string', enum: ['nameAndDescription', 'nameOnly'], default: 'nameAndDescription' },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
@@ -44,8 +46,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder('channel'), ps.sinceId, ps.untilId)
-				.andWhere('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
+			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder('channel'), ps.sinceId, ps.untilId);
+
+			if (ps.type === 'nameAndDescription') {
+				query.andWhere(new Brackets(qb => { qb
+					.where('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })
+					.orWhere('channel.description ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
+				}));
+			} else {
+				query.andWhere('channel.name ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` });
+			}
 
 			const channels = await query
 				.take(ps.limit)

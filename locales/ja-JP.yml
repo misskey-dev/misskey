@@ -1427,6 +1427,8 @@ _channel:
   following: "フォロー中"
   usersCount: "{n}人が参加中"
   notesCount: "{n}投稿があります"
+  nameAndDescription: "名前と説明"
+  nameOnly: "名前のみ"
 
 _menuDisplay:
   sideFull: "横"
