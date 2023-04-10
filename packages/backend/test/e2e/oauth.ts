@@ -1,11 +1,12 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { port, relativeFetch, signup, startServer } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
 import { AuthorizationCode } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
+import { port, relativeFetch, signup, startServer } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
+import Fastify, { type FastifyInstance } from 'fastify';
 
 const host = `http://127.0.0.1:${port}`;
 
@@ -28,9 +29,12 @@ function getClient(): AuthorizationCode<'client_id'> {
 	});
 }
 
-function getTransactionId(html: string): string | undefined {
+function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined } | undefined {
 	const fragment = JSDOM.fragment(html);
-	return fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content;
+	return {
+		transactionId: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:transaction-id"]')?.content,
+		clientName: fragment.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content,
+	};
 }
 
 function fetchDecision(cookie: string, transactionId: string, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
@@ -51,24 +55,35 @@ function fetchDecision(cookie: string, transactionId: string, user: any, { cance
 
 async function fetchDecisionFromResponse(response: Response, user: any, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	const cookie = response.headers.get('set-cookie');
-	const transactionId = getTransactionId(await response.text());
+	const { transactionId } = getMeta(await response.text());
 
 	return await fetchDecision(cookie!, transactionId!, user, { cancel });
 }
 
 describe('OAuth', () => {
 	let app: INestApplicationContext;
+	let fastify: FastifyInstance;
 
 	let alice: any;
 
 	beforeAll(async () => {
 		app = await startServer();
+		fastify = Fastify();
+		fastify.get('/', async (request, reply) => {
+			reply.send(`
+				<!DOCTYPE html>
+				<link rel="redirect_uri" href="/redirect" />
+				<div class="h-app"><div class="p-name">Misklient
+			`);
+		});
+		fastify.listen({ port: clientPort, host: '0.0.0.0' });
+
 		alice = await signup({ username: 'alice' });
-		// fastify = Fastify();
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
 		await app.close();
+		await fastify.close();
 	});
 
 	test('Full flow', async () => {
@@ -87,10 +102,11 @@ describe('OAuth', () => {
 		const cookie = response.headers.get('set-cookie');
 		assert.ok(cookie?.startsWith('connect.sid='));
 
-		const transactionId = getTransactionId(await response.text());
-		assert.strictEqual(typeof transactionId, 'string');
+		const meta = getMeta(await response.text());
+		assert.strictEqual(typeof meta.transactionId, 'string');
+		assert.strictEqual(meta?.clientName, 'Misklient');
 
-		const decisionResponse = await fetchDecision(cookie!, transactionId!, alice);
+		const decisionResponse = await fetchDecision(cookie!, meta.transactionId!, alice);
 		assert.strictEqual(decisionResponse.status, 302);
 		assert.ok(decisionResponse.headers.has('location'));
 
@@ -468,6 +484,20 @@ describe('OAuth', () => {
 			assert.strictEqual(response.status, 500);
 		});
 
+		test('Invalid redirect_uri including the valid one at authorization endpoint', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri: 'http://127.0.0.1/redirection',
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			}));
+			// TODO: status code
+			assert.strictEqual(response.status, 500);
+		});
+
 		test('No redirect_uri at authorization endpoint', async () => {
 			const client = getClient();
 
@@ -508,6 +538,33 @@ describe('OAuth', () => {
 			}));
 		});
 
+		test('Invalid redirect_uri including the valid one at token endpoint', async () => {
+			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge,
+				code_challenge_method: 'S256',
+			}));
+			assert.strictEqual(response.status, 200);
+
+			const decisionResponse = await fetchDecisionFromResponse(response, alice);
+			assert.strictEqual(decisionResponse.status, 302);
+
+			const location = new URL(decisionResponse.headers.get('location')!);
+			assert.ok(location.searchParams.has('code'));
+
+			await assert.rejects(client.getToken({
+				code: location.searchParams.get('code')!,
+				redirect_uri: 'http://127.0.0.1/redirection',
+				code_verifier,
+			}));
+		});
+
 		test('No redirect_uri at token endpoint', async () => {
 			const { code_challenge, code_verifier } = pkceChallenge.default(128);
 
@@ -533,8 +590,6 @@ describe('OAuth', () => {
 				code_verifier,
 			}));
 		});
-
-		// TODO: disallow random same-origin URLs with strict redirect_uris with client information discovery
 	});
 
 	test('Server metadata', async () => {
@@ -550,5 +605,5 @@ describe('OAuth', () => {
 
 	// TODO: Error format required by OAuth spec
 
-	// TODO: Client Information Discovery
+	// TODO: Client Information Discovery (use http header, loopback check, missing name or redirection uri)
 });

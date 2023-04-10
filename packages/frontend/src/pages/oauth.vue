@@ -40,7 +40,7 @@ if (transactionIdMeta) {
 	transactionIdMeta.remove();
 }
 
-const name = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-id"]')?.content;
+const name = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content;
 const _permissions = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:scope"]')?.content.split(' ') ?? [];
 
 function onLogin(res): void {

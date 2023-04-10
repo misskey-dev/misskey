@@ -2,7 +2,7 @@ import dns from 'node:dns/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyMiddie, { IncomingMessageExtended } from '@fastify/middie';
 import { JSDOM } from 'jsdom';
-import parseLinkHeader from 'parse-link-header';
+import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2 } from 'oauth2orize';
 import * as oauth2Query from 'oauth2orize/lib/response/query.js';
@@ -103,18 +103,33 @@ function validateClientId(raw: string): URL {
 // 	return `uid:${uid}`;
 // }
 
-async function fetchFromClientId(httpRequestService: HttpRequestService, id: string): Promise<string | void> {
+interface ClientInformation {
+	id: string;
+	redirectUris: string[];
+	name: string;
+}
+
+async function discoverClientInformation(httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
 	try {
 		const res = await httpRequestService.send(id);
-		let redirectUri = parseLinkHeader(res.headers.get('link'))?.redirect_uri?.url;
-		if (redirectUri) {
-			return new URL(redirectUri, res.url).toString();
+		const redirectUris: string[] = [];
+
+		const linkHeader = res.headers.get('link');
+		if (linkHeader) {
+			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(r => r.uri));
 		}
 
-		redirectUri = JSDOM.fragment(await res.text()).querySelector<HTMLLinkElement>('link[rel=redirect_uri][href]')?.href;
-		if (redirectUri) {
-			return new URL(redirectUri, res.url).toString();
-		}
+		const fragment = JSDOM.fragment(await res.text());
+
+		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
+
+		const name = fragment.querySelector<HTMLElement>('.h-app .p-name')?.textContent?.trim() ?? id;
+
+		return {
+			id,
+			redirectUris: redirectUris.map(uri => new URL(uri, res.url).toString()),
+			name,
+		};
 	} catch {
 		throw new Error('Failed to fetch client information');
 	}
@@ -267,7 +282,7 @@ async function fetchFromClientId(httpRequestService: HttpRequestService, id: str
 // 	};
 // }
 
-function pkceS256(codeVerifier: string) {
+function pkceS256(codeVerifier: string): string {
 	return crypto.createHash('sha256')
 		.update(codeVerifier, 'ascii')
 		.digest('base64url');
@@ -362,7 +377,7 @@ export class OAuth2ProviderService {
 				}
 
 				TEMP_GRANT_CODES[code] = {
-					clientId: client,
+					clientId: client.id,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: areq.codeChallenge,
@@ -470,7 +485,7 @@ export class OAuth2ProviderService {
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
 				transactionId: oauth2.transactionID,
-				clientId: oauth2.client,
+				clientName: oauth2.client.name,
 				scope: scopes.join(' '),
 			});
 		});
@@ -494,18 +509,22 @@ export class OAuth2ProviderService {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT /oauth/authorize validation middleware');
 
-				// Find client information from the remote.
 				const clientUrl = validateClientId(clientId);
-				const redirectUrl = new URL(redirectUri);
 
-				// https://indieauth.spec.indieweb.org/#authorization-request
-				// Allow same-origin redirection
-				if (redirectUrl.protocol !== clientUrl.protocol || redirectUrl.host !== clientUrl.host) {
-					// TODO: allow only explicit redirect_uri by Client Information Discovery
-					throw new Error('cross-origin redirect_uri is not supported yet.');
+				if (process.env.NODE_ENV !== 'test') {
+					const lookup = await dns.lookup(clientUrl.hostname);
+					if (ipaddr.parse(lookup.address).range() === 'loopback') {
+						throw new Error('client_id unexpectedly resolves to loopback IP.');
+					}
 				}
 
-				return [clientId, redirectUri];
+				// Find client information from the remote.
+				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
+				if (!clientInfo.redirectUris.includes(redirectUri)) {
+					throw new Error('Invalid redirect_uri');
+				}
+
+				return [clientInfo, redirectUri];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
 		// for (const middleware of this.#server.decision()) {
