@@ -89,7 +89,7 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 32 }, async (request, reply) => {
+				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();

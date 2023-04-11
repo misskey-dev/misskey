@@ -66,6 +66,7 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
+		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
 	@bindThis
@@ -99,7 +100,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
 			'MAXLEN', '~', '300',
-			`${this.idService.parse(notification.id).date.getTime()}-*`,
+			'*',
 			'data', JSON.stringify(notification));
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});

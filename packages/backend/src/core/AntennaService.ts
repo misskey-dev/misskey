@@ -27,8 +27,8 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.redisForPubsub)
-		private redisForPubsub: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
@@ -52,12 +52,12 @@ export class AntennaService implements OnApplicationShutdown {
 		this.antennasFetched = false;
 		this.antennas = [];
 
-		this.redisForPubsub.on('message', this.onRedisMessage);
+		this.redisForSub.on('message', this.onRedisMessage);
 	}
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisForPubsub.off('message', this.onRedisMessage);
+		this.redisForSub.off('message', this.onRedisMessage);
 	}
 
 	@bindThis
@@ -95,7 +95,7 @@ export class AntennaService implements OnApplicationShutdown {
 		this.redisClient.xadd(
 			`antennaTimeline:${antenna.id}`,
 			'MAXLEN', '~', '200',
-			`${this.idService.parse(note.id).date.getTime()}-*`,
+			'*',
 			'note', note.id);
 		
 		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);

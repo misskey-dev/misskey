@@ -329,7 +329,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.redisClient.xadd(
 				`channelTimeline:${data.channel.id}`,
 				'MAXLEN', '~', '1000',
-				`${this.idService.parse(note.id).date.getTime()}-*`,
+				'*',
 				'note', note.id);
 		}
 

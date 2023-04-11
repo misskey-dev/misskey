@@ -991,6 +991,7 @@ largeNoteReactions: "使用大图标来显示回应"
 noteIdOrUrl: "帖子ID或URL"
 accountMigration: "账户迁移"
 accountMoved: "此用户已迁移账户"
+forceShowAds: "总是显示广告"
 _accountMigration:
   moveTo: "把这个账户迁移到新的账户"
   moveToLabel: "迁移后的账户"

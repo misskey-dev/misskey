@@ -3,7 +3,7 @@
  */
 import { swLang } from '@/scripts/lang';
 import { cli } from '@/scripts/operations';
-import { badgeNames, pushNotificationDataMap } from '@/types';
+import { BadgeNames, PushNotificationDataMap } from '@/types';
 import getUserName from '@/scripts/get-user-name';
 import { I18n } from '@/scripts/i18n';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
@@ -16,16 +16,16 @@ const closeNotificationsByTags = async (tags: string[]) => {
 	}
 };
 
-const iconUrl = (name: badgeNames) => `/static-assets/tabler-badges/${name}.png`;
+const iconUrl = (name: BadgeNames) => `/static-assets/tabler-badges/${name}.png`;
 /* How to add a new badge:
  * 1. Find the icon and download png from https://tabler-icons.io/
  * 2. vips resize ~/Downloads/icon-name.png vipswork.png 0.4; vips scRGB2BW vipswork.png ~/icon-name.png"[compression=9,strip]"; rm vipswork.png;
  * 3. mv ~/icon-name.png ~/misskey/packages/backend/assets/tabler-badges/
- * 4. Add 'icon-name' to badgeNames
+ * 4. Add 'icon-name' to BadgeNames
  * 5. Add `badge: iconUrl('icon-name'),`
  */
 
-export async function createNotification<K extends keyof pushNotificationDataMap>(data: pushNotificationDataMap[K]) {
+export async function createNotification<K extends keyof PushNotificationDataMap>(data: PushNotificationDataMap[K]) {
 	const n = await composeNotification(data);
 
 	if (n) {
@@ -36,7 +36,7 @@ export async function createNotification<K extends keyof pushNotificationDataMap
 	}
 }
 
-async function composeNotification(data: pushNotificationDataMap[keyof pushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
+async function composeNotification(data: PushNotificationDataMap[keyof PushNotificationDataMap]): Promise<[string, NotificationOptions] | null> {
 	if (!swLang.i18n) swLang.fetchLocale();
 	const i18n = await swLang.i18n as I18n<any>;
 	const { t } = i18n;
@@ -168,14 +168,6 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 					}];
 				}
 
-				case 'pollEnded':
-					return [t('_notification.pollEnded'), {
-						body: data.body.note.text || '',
-						badge: iconUrl('chart-arrows'),
-						tag: `poll:${data.body.note.id}`,
-						data,
-					}];
-
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
@@ -200,6 +192,14 @@ async function composeNotification(data: pushNotificationDataMap[keyof pushNotif
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('circle-check'),
 						data,
+					}];
+
+				case 'achievementEarned':
+					return [t('_notification.achievementEarned'), {
+						body: t(`_achievements._types._${data.body.achievement}.title`),
+						badge: iconUrl('medal'),
+						data,
+						tag: `achievement:${data.body.achievement}`,
 					}];
 
 				case 'app':
@@ -233,17 +233,29 @@ export async function createEmptyNotification() {
 		const { t } = i18n;
 
 		await globalThis.registration.showNotification(
-			t('_notification.emptyPushNotificationMessage'),
+			(new URL(origin)).host,
 			{
+				body: `Misskey v${_VERSION_}`,
 				silent: true,
 				badge: iconUrl('null'),
 				tag: 'read_notification',
+				actions: [
+					{
+						action: 'markAllAsRead',
+						title: t('markAllAsRead'),
+					},
+					{
+						action: 'settings',
+						title: t('notificationSettings'),
+					},
+				],
+				data: {},
 			},
 		);
 
 		setTimeout(async () => {
 			try {
-				await closeNotificationsByTags(['user_visible_auto_notification', 'read_notification']);
+				await closeNotificationsByTags(['user_visible_auto_notification']);
 			} finally {
 				res();
 			}

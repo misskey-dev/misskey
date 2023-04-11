@@ -1124,16 +1124,16 @@ defineExpose({
 	display: grid;
 	grid-auto-flow: row;
 	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 46px;
+	grid-auto-rows: 40px;
 }
 
 .footerRight {
-	flex: 0.3;
+	flex: 0;
 	margin-left: auto;
 	display: grid;
 	grid-auto-flow: row;
 	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 46px;
+	grid-auto-rows: 40px;
 	direction: rtl;
 }
 
@@ -1198,13 +1198,21 @@ defineExpose({
 	}
 }
 
-@container (max-width: 330px) {
-	.headerRight {
-		gap: 0;
+@container (max-width: 350px) {
+	.footer {
+		font-size: 0.9em;
 	}
 
-	.footer {
-		font-size: 14px;
+	.footerLeft {
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+	}
+
+	.footerRight {
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+	}
+
+	.headerRight {
+		gap: 0;
 	}
 }
 </style>
