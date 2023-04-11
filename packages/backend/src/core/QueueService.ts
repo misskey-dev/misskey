@@ -73,7 +73,7 @@ export class QueueService {
 	@bindThis
 	public createDeleteDriveFilesJob(user: ThinUser) {
 		return this.dbQueue.add('deleteDriveFiles', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -83,7 +83,7 @@ export class QueueService {
 	@bindThis
 	public createExportCustomEmojisJob(user: ThinUser) {
 		return this.dbQueue.add('exportCustomEmojis', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -93,7 +93,7 @@ export class QueueService {
 	@bindThis
 	public createExportNotesJob(user: ThinUser) {
 		return this.dbQueue.add('exportNotes', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -103,7 +103,7 @@ export class QueueService {
 	@bindThis
 	public createExportFavoritesJob(user: ThinUser) {
 		return this.dbQueue.add('exportFavorites', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -113,7 +113,7 @@ export class QueueService {
 	@bindThis
 	public createExportFollowingJob(user: ThinUser, excludeMuting = false, excludeInactive = false) {
 		return this.dbQueue.add('exportFollowing', {
-			user: user,
+			user: { id: user.id },
 			excludeMuting,
 			excludeInactive,
 		}, {
@@ -125,7 +125,7 @@ export class QueueService {
 	@bindThis
 	public createExportMuteJob(user: ThinUser) {
 		return this.dbQueue.add('exportMuting', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -135,7 +135,7 @@ export class QueueService {
 	@bindThis
 	public createExportBlockingJob(user: ThinUser) {
 		return this.dbQueue.add('exportBlocking', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -145,7 +145,7 @@ export class QueueService {
 	@bindThis
 	public createExportUserListsJob(user: ThinUser) {
 		return this.dbQueue.add('exportUserLists', {
-			user: user,
+			user: { id: user.id },
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,
@@ -155,7 +155,7 @@ export class QueueService {
 	@bindThis
 	public createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importFollowing', {
-			user: user,
+			user: { id: user.id },
 			fileId: fileId,
 		}, {
 			removeOnComplete: true,
@@ -172,7 +172,7 @@ export class QueueService {
 	@bindThis
 	public createImportMutingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importMuting', {
-			user: user,
+			user: { id: user.id },
 			fileId: fileId,
 		}, {
 			removeOnComplete: true,
@@ -183,7 +183,7 @@ export class QueueService {
 	@bindThis
 	public createImportBlockingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importBlocking', {
-			user: user,
+			user: { id: user.id },
 			fileId: fileId,
 		}, {
 			removeOnComplete: true,
@@ -216,7 +216,7 @@ export class QueueService {
 	@bindThis
 	public createImportUserListsJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importUserLists', {
-			user: user,
+			user: { id: user.id },
 			fileId: fileId,
 		}, {
 			removeOnComplete: true,
@@ -227,7 +227,7 @@ export class QueueService {
 	@bindThis
 	public createImportCustomEmojisJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importCustomEmojis', {
-			user: user,
+			user: { id: user.id },
 			fileId: fileId,
 		}, {
 			removeOnComplete: true,
@@ -238,7 +238,7 @@ export class QueueService {
 	@bindThis
 	public createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 		return this.dbQueue.add('deleteAccount', {
-			user: user,
+			user: { id: user.id },
 			soft: opts.soft,
 		}, {
 			removeOnComplete: true,
