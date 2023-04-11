@@ -1,12 +1,12 @@
 /*
  * Notification manager for SW
  */
-import { swLang } from '@/scripts/lang';
-import { cli } from '@/scripts/operations';
-import { BadgeNames, PushNotificationDataMap } from '@/types';
-import getUserName from '@/scripts/get-user-name';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
+import type { BadgeNames, PushNotificationDataMap } from '@/types';
 import { char2fileName } from '@/scripts/twemoji-base';
+import { cli } from '@/scripts/operations';
+import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { swLang } from '@/scripts/lang';
+import getUserName from '@/scripts/get-user-name';
 
 const closeNotificationsByTags = async (tags: string[]) => {
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {

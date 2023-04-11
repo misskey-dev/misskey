@@ -3,7 +3,7 @@
  * 各種操作
  */
 import * as Misskey from 'misskey-js';
-import { SwMessage, SwMessageOrderType } from '@/types';
+import type { SwMessage, SwMessageOrderType } from '@/types';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { getUrlWithLoginId } from '@/scripts/login-id';
 
