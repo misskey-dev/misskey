@@ -278,7 +278,12 @@ export class QueueService {
 	} {
 		return {
 			name,
-			data,
+			data: {
+				from: { id: data.from.id },
+				to: { id: data.to.id },
+				silent: data.silent,
+				requestId: data.requestId,
+			},
 			opts: {
 				removeOnComplete: true,
 				removeOnFail: true,
