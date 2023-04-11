@@ -82,6 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				jobs.push({
 					from: { id: following.followerId },
 					to: { id: following.followeeId },
+					silent: true,
 				});
 			}
 		}
