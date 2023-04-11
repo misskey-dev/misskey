@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type Bull from 'bull';
 
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -8,12 +8,17 @@ import type Logger from '@/logger.js';
 
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import { RelationshipJobData } from '../types.js';
+import type { UsersRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 
 @Injectable()
 export class RelationshipProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		private queueLoggerService: QueueLoggerService,
 		private userFollowingService: UserFollowingService,
 		private userBlockingService: UserBlockingService,
@@ -31,21 +36,33 @@ export class RelationshipProcessorService {
 	@bindThis
 	public async processUnfollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to unfollow ${job.data.to.id}`);
-		await this.userFollowingService.unfollow(job.data.from, job.data.to, job.data.silent);
+		const [follower, followee] = await Promise.all([
+			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
+			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
+		]);
+		await this.userFollowingService.unfollow(follower, followee, job.data.silent);
 		return 'ok';
 	}
 
 	@bindThis
 	public async processBlock(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to block ${job.data.to.id}`);
-		await this.userBlockingService.block(job.data.from, job.data.to, job.data.silent);
+		const [blockee, blocker] = await Promise.all([
+			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
+			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
+		]);
+		await this.userBlockingService.block(blockee, blocker, job.data.silent);
 		return 'ok';
 	}
 
 	@bindThis
 	public async processUnblock(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to unblock ${job.data.to.id}`);
-		await this.userBlockingService.unblock(job.data.from, job.data.to);
+		const [blockee, blocker] = await Promise.all([
+			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
+			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
+		]);
+		await this.userBlockingService.unblock(blockee, blocker);
 		return 'ok';
 	}
 }

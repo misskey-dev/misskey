@@ -80,7 +80,6 @@ export class UserFollowingService implements OnModuleInit {
 
 	@bindThis
 	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string, silent = false): Promise<void> {
-		/* FIXME: unnecessary perhaps? */
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),

@@ -56,7 +56,7 @@ export class UserListService {
 		if (this.userEntityService.isRemoteUser(target)) {
 			const proxy = await this.proxyAccountService.fetch();
 			if (proxy) {
-				this.queueService.createFollowJob([{ from: proxy, to: target }]);
+				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: target.id } }]);
 			}
 		}
 	}

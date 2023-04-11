@@ -24,8 +24,8 @@ export type InboxJobData = {
 export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserImportToDbJobData | DbUserDeleteJobData;
 
 export type RelationshipJobData = {
-	from: User;
-	to: User;
+	from: ThinUser;
+	to: ThinUser;
 	silent?: boolean;
 	requestId?: string;
 }
@@ -47,7 +47,7 @@ export type DbUserImportJobData = {
 };
 
 export type DbUserImportToDbJobData = {
-	user: User;
+	user: ThinUser;
 	target: string;
 };
 

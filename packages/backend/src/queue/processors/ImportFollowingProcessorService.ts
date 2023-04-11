@@ -93,7 +93,7 @@ export class ImportFollowingProcessorService {
 
 			this.logger.info(`Follow ${target.id} ...`);
 
-			this.queueService.createFollowJob([{ from: user, to: target, silent: true }]);
+			this.queueService.createFollowJob([{ from: user, to: { id: target.id }, silent: true }]);
 		} catch (e) {
 			this.logger.warn(`Error: ${e}`);
 		}

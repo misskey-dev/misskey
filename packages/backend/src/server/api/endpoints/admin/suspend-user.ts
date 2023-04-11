@@ -70,22 +70,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	@bindThis
 	private async unFollowAll(follower: User) {
 		const followings = await this.followingsRepository.find({
-			relations: {
-				followee: true,
-				follower: true,
-			},
 			where: {
 				followerId: follower.id,
-				followee: Not(IsNull()),
+				followeeId: Not(IsNull()),
 			},
 		});
 
 		const jobs: RelationshipJobData[] = [];
 		for (const following of followings) {
-			if (following.followee && following.follower) {
+			if (following.followeeId && following.followerId) {
 				jobs.push({
-					from: following.follower,
-					to: following.followee,
+					from: { id: following.followerId },
+					to: { id: following.followeeId },
 				});
 			}
 		}
