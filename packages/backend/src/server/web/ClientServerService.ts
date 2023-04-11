@@ -649,6 +649,14 @@ export class ClientServerService {
 			return await renderBase(reply);
 		});
 
+		fastify.setErrorHandler(async (error, request, reply) => {
+			reply.code(500);
+			return await reply.view('error', {
+				code: error.code,
+				error: JSON.stringify(error),
+			});
+		});
+
 		done();
 	}
 }
