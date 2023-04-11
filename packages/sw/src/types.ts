@@ -14,7 +14,7 @@ export type SwMessage = {
 type PushNotificationDataSourceMap = {
 	notification: Misskey.entities.Notification;
 	unreadAntennaNote: {
-		antenna: { id: string, name: string };
+		antenna: { id: string; name: string };
 		note: Misskey.entities.Note;
 	};
 	readAllNotifications: undefined;
@@ -31,8 +31,8 @@ export type PushNotificationDataMap = {
 	[K in keyof PushNotificationDataSourceMap]: PushNotificationData<K>;
 };
 
-export type BadgeNames = 
-	'null'
+export type BadgeNames =
+	| 'null'
 	| 'antenna'
 	| 'arrow-back-up'
 	| 'at'
@@ -44,5 +44,4 @@ export type BadgeNames =
 	| 'quote'
 	| 'repeat'
 	| 'user-plus'
-	| 'users'
-	;
+	| 'users';

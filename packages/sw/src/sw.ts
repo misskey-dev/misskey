@@ -6,7 +6,7 @@ import { swLang } from '@/scripts/lang';
 import * as swos from '@/scripts/operations';
 
 globalThis.addEventListener('install', ev => {
-	//ev.waitUntil(globalThis.skipWaiting());
+	// ev.waitUntil(globalThis.skipWaiting());
 });
 
 globalThis.addEventListener('activate', ev => {

@@ -24,8 +24,7 @@ export function sendMarkAllAsRead(userId: string): Promise<null | undefined | vo
 	return new Promise(resolve => {
 		setTimeout(() => {
 			readBlockingStatus.set(userId, false);
-			api('notifications/mark-all-as-read', userId)
-				.then(resolve, resolve);
+			api('notifications/mark-all-as-read', userId).then(resolve, resolve);
 		}, 1000);
 	});
 }
