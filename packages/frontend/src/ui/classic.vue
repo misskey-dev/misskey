@@ -250,6 +250,7 @@ onMounted(() => {
 		> .widgets {
 			//--panelBorder: none;
 			width: 300px;
+			padding-bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 
 			@media (max-width: $widgets-hide-threshold) {
 				display: none;
@@ -304,7 +305,7 @@ onMounted(() => {
 		right: 0;
 		z-index: 1001;
 		height: 100dvh;
-		padding: var(--margin);
+		padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 		box-sizing: border-box;
 		overflow: auto;
 		background: var(--bg);
