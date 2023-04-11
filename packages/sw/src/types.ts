@@ -7,7 +7,7 @@ export type SwMessage = {
 	order: SwMessageOrderType;
 	loginId?: string;
 	url: string;
-	[x: string]: any;
+	[x: string]: unknown;
 };
 
 // Defined also @/core/PushNotificationService.ts#L12
