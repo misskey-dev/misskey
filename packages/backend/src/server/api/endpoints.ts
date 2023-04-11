@@ -98,6 +98,7 @@ import * as ep___channels_update from './endpoints/channels/update.js';
 import * as ep___channels_favorite from './endpoints/channels/favorite.js';
 import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
 import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
+import * as ep___channels_search from './endpoints/channels/search.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -430,6 +431,7 @@ const eps = [
 	['channels/favorite', ep___channels_favorite],
 	['channels/unfavorite', ep___channels_unfavorite],
 	['channels/my-favorites', ep___channels_myFavorites],
+	['channels/search', ep___channels_search],
 	['charts/active-users', ep___charts_activeUsers],
 	['charts/ap-request', ep___charts_apRequest],
 	['charts/drive', ep___charts_drive],
@@ -552,8 +554,8 @@ const eps = [
 	['i/unpin', ep___i_unpin],
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
-	['i/move', ep___i_move],
-	['i/known-as', ep___i_knownAs],
+	//['i/move', ep___i_move],
+	//['i/known-as', ep___i_knownAs],
 	['i/webhooks/create', ep___i_webhooks_create],
 	['i/webhooks/list', ep___i_webhooks_list],
 	['i/webhooks/show', ep___i_webhooks_show],

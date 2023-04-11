@@ -3,8 +3,7 @@
  * 各種操作
  */
 import * as Misskey from 'misskey-js';
-import { SwMessage, swMessageOrderType } from '@/types';
-import { acct as getAcct } from '@/filters/user';
+import { SwMessage, SwMessageOrderType } from '@/types';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { getUrlWithLoginId } from '@/scripts/login-id';
 
@@ -17,13 +16,27 @@ export async function api<E extends keyof Misskey.Endpoints>(endpoint: E, userId
 	return cli.request(endpoint, options, account.token);
 }
 
+// mark-all-as-read送出を1秒間隔に制限する
+const readBlockingStatus = new Map<string, boolean>();
+export function sendMarkAllAsRead(userId: string): Promise<null | undefined | void> {
+	if (readBlockingStatus.get(userId)) return Promise.resolve();
+	readBlockingStatus.set(userId, true);
+	return new Promise(resolve => {
+		setTimeout(() => {
+			readBlockingStatus.set(userId, false);
+			api('notifications/mark-all-as-read', userId)
+				.then(resolve, resolve);
+		}, 1000);
+	});
+}
+
 // rendered acctからユーザーを開く
-export function openUser(acct: string, loginId: string) {
+export function openUser(acct: string, loginId?: string) {
 	return openClient('push', `/@${acct}`, loginId, { acct });
 }
 
 // noteIdからノートを開く
-export function openNote(noteId: string, loginId: string) {
+export function openNote(noteId: string, loginId?: string) {
 	return openClient('push', `/notes/${noteId}`, loginId, { noteId });
 }
 
@@ -33,7 +46,7 @@ export function openAntenna(antennaId: string, loginId: string) {
 }
 
 // post-formのオプションから投稿フォームを開く
-export async function openPost(options: any, loginId: string) {
+export async function openPost(options: any, loginId?: string) {
 	// クエリを作成しておく
 	let url = '/share?';
 	if (options.initialText) url += `text=${options.initialText}&`;
@@ -43,7 +56,7 @@ export async function openPost(options: any, loginId: string) {
 	return openClient('post', url, loginId, { options });
 }
 
-export async function openClient(order: swMessageOrderType, url: string, loginId: string, query: any = {}) {
+export async function openClient(order: SwMessageOrderType, url: string, loginId?: string, query: any = {}) {
 	const client = await findClient();
 
 	if (client) {
@@ -51,7 +64,7 @@ export async function openClient(order: swMessageOrderType, url: string, loginId
 		return client;
 	}
 
-	return globalThis.clients.openWindow(getUrlWithLoginId(url, loginId));
+	return globalThis.clients.openWindow(loginId ? getUrlWithLoginId(url, loginId) : url);
 }
 
 export async function findClient() {
@@ -59,7 +72,7 @@ export async function findClient() {
 		type: 'window',
 	});
 	for (const c of clients) {
-		if (!new URL(c.url).searchParams.has('zen')) return c;
+		if (!(new URL(c.url)).searchParams.has('zen')) return c;
 	}
 	return null;
 }

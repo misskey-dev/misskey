@@ -140,7 +140,7 @@ export class ApInboxService {
 		} else if (isFlag(activity)) {
 			await this.flag(actor, activity);
 		} else if (isMove(activity)) {
-			await this.move(actor, activity);
+			//await this.move(actor, activity);
 		} else {
 			this.logger.warn(`unrecognized activity type: ${activity.type}`);
 		}
@@ -736,12 +736,16 @@ export class ApInboxService {
 		// fetch the new and old accounts
 		const targetUri = getApHrefNullable(activity.target);
 		if (!targetUri) return 'skip: invalid activity target';
-		const new_acc = await this.apPersonService.resolvePerson(targetUri);
-		const old_acc = await this.apPersonService.resolvePerson(actor.uri);
+		let new_acc = await this.apPersonService.resolvePerson(targetUri);
+		let old_acc = await this.apPersonService.resolvePerson(actor.uri);
 
 		// update them if they're remote
 		if (new_acc.uri) await this.apPersonService.updatePerson(new_acc.uri);
 		if (old_acc.uri) await this.apPersonService.updatePerson(old_acc.uri);
+
+		// retrieve updated users
+		new_acc = await this.apPersonService.resolvePerson(targetUri);
+		old_acc = await this.apPersonService.resolvePerson(actor.uri);
 
 		// check if alsoKnownAs of the new account is valid
 		let isValidMove = true;
@@ -767,17 +771,17 @@ export class ApInboxService {
 			where: {
 				followeeId: old_acc.id,
 				followerHost: IsNull(), // follower is local
-			}
+			},
 		});
-		followings.forEach(async (following) => {
-			if (!following.follower) return;
+		for (const following of followings) {
+			if (!following.follower) continue;
 			try {
 				await this.userFollowingService.follow(following.follower, new_acc);
 				await this.userFollowingService.unfollow(following.follower, old_acc);
 			} catch {
 				/* empty */
 			}
-		});
+		}
 
 		return 'ok';
 	}

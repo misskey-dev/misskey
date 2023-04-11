@@ -43,7 +43,7 @@ export class CustomEmojiService {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60 * 3, // 3m
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
-			toRedisConverter: (value) => JSON.stringify(value.values()),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => new Map(JSON.parse(value).map((x: Emoji) => [x.name, x])), // TODO: Date型の変換
 		});
 	}
