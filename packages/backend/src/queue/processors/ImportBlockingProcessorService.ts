@@ -61,10 +61,8 @@ export class ImportBlockingProcessorService {
 		}
 
 		const csv = await this.downloadService.downloadTextFile(file.url);
-
-		for (const line of csv.trim().split('\n')) {
-			this.queueService.createImportBlockingToDbJob(user, line);
-		}
+		const data = csv.trim().split('\n').map(target => ({ user, target }));
+		this.queueService.createImportBlockingToDbJob(data);
 
 		this.logger.succ('Import jobs created');
 		done();
@@ -104,7 +102,7 @@ export class ImportBlockingProcessorService {
 
 			this.logger.info(`Block ${target.id} ...`);
 
-			this.queueService.createBlockJob(user, target);
+			this.queueService.createBlockJob([{ from: user, to: target }]);
 		} catch (e) {
 			this.logger.warn(`Error: ${e}`);
 		}

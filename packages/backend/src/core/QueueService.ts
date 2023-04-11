@@ -7,9 +7,10 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
-import type { ThinUser } from '../queue/types.js';
+import type { DbJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
 import { User } from '@/models/index.js';
+import Bull from 'bull';
 
 @Injectable()
 export class QueueService {
@@ -164,14 +165,9 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportFollowingToDbJob(user: User, target: string) {
-		return this.dbQueue.add('importFollowingToDb', {
-			user,
-			target,
-		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
+	public createImportFollowingToDbJob(data: {user: User, target: string}[]) {
+		const jobs = data.map(rel => this.createToDbJobData('importFollowingToDb', rel));
+		return this.dbQueue.addBulk(jobs);
 	}
 
 	@bindThis
@@ -197,14 +193,25 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportBlockingToDbJob(user: User, target: string) {
-		return this.dbQueue.add('importBlockingToDb', {
-			user,
-			target,
-		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
+	public createImportBlockingToDbJob(data: {user: User, target: string}[]) {
+		const jobs = data.map(rel => this.createToDbJobData('importBlockingToDb', rel));
+		return this.dbQueue.addBulk(jobs);
+	}
+
+	@bindThis
+	private createToDbJobData(name: 'importFollowingToDb' | 'importBlockingToDb', data: DbJobData): {
+		name: string,
+		data: DbJobData,
+		opts: Bull.JobOptions,
+	} {
+		return {
+			name,
+			data,
+			opts: {
+				removeOnComplete: true,
+				removeOnFail: true,
+			},
+		};
 	}
 
 	@bindThis
@@ -241,49 +248,43 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createFollowJob(follower: User, followee: User, requestId?: string) {
-		return this.relationshipQueue.add('follow', {
-			from: follower,
-			to: followee,
-			requestId,
-		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
+	public createFollowJob(followings: { from: User, to: User, requestId?: string }[]) {
+		const jobs = followings.map(rel => this.createRelationshipJob('follow', rel));
+		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	public createUnfollowJob(follower: User, followee: User, silent?: boolean) {
-		return this.relationshipQueue.add('unfollow', {
-			from: follower,
-			to: followee,
-			silent,
-		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
+	public createUnfollowJob(followings: { from: User, to: User, requestId?: string }[]) {
+		const jobs = followings.map(rel => this.createRelationshipJob('unfollow', rel));
+		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	public createBlockJob(blocker: User, blockee: User) {
-		return this.relationshipQueue.add('block', {
-			from: blocker,
-			to: blockee,
-		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
+	public createBlockJob(blockings: { from: User, to: User, silent?: boolean }[]) {
+		const jobs = blockings.map(rel => this.createRelationshipJob('block', rel));
+		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	public createUnblockJob(blocker: User, blockee: User) {
-		return this.relationshipQueue.add('unblock', {
-			from: blocker,
-			to: blockee,
-		}, {
-			removeOnComplete: true,
-			removeOnFail: true,
-		});
+	public createUnblockJob(blockings: { from: User, to: User, silent?: boolean }[]) {
+		const jobs = blockings.map(rel => this.createRelationshipJob('unblock', rel));
+		return this.relationshipQueue.addBulk(jobs);
+	}
+
+	@bindThis
+	private createRelationshipJob(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData): {
+		name: string,
+		data: RelationshipJobData,
+		opts: Bull.JobOptions,
+	} {
+		return {
+			name,
+			data,
+			opts: {
+				removeOnComplete: true,
+				removeOnFail: true,
+			},
+		};
 	}
 
 	@bindThis
