@@ -165,7 +165,7 @@ export class QueueService {
 
 	@bindThis
 	public createImportFollowingToDbJob(user: ThinUser, targets: string[]) {
-		const jobs = targets.map(rel => this.createToDbJobData('importFollowingToDb', { user, target: rel }));
+		const jobs = targets.map(rel => this.generateToDbJobData('importFollowingToDb', { user, target: rel }));
 		return this.dbQueue.addBulk(jobs);
 	}
 
@@ -193,12 +193,12 @@ export class QueueService {
 
 	@bindThis
 	public createImportBlockingToDbJob(user: ThinUser, targets: string[]) {
-		const jobs = targets.map(rel => this.createToDbJobData('importBlockingToDb', { user, target: rel }));
+		const jobs = targets.map(rel => this.generateToDbJobData('importBlockingToDb', { user, target: rel }));
 		return this.dbQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	private createToDbJobData<T extends 'importFollowingToDb' | 'importBlockingToDb', D extends DbJobData<T>>(name: T, data: D): {
+	private generateToDbJobData<T extends 'importFollowingToDb' | 'importBlockingToDb', D extends DbJobData<T>>(name: T, data: D): {
 		name: string,
 		data: D,
 		opts: Bull.JobOptions,
@@ -248,30 +248,30 @@ export class QueueService {
 
 	@bindThis
 	public createFollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string, silent?: boolean }[]) {
-		const jobs = followings.map(rel => this.createRelationshipJob('follow', rel));
+		const jobs = followings.map(rel => this.generateRelationshipJobData('follow', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
 	public createUnfollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string }[]) {
-		const jobs = followings.map(rel => this.createRelationshipJob('unfollow', rel));
+		const jobs = followings.map(rel => this.generateRelationshipJobData('unfollow', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
 	public createBlockJob(blockings: { from: ThinUser, to: ThinUser, silent?: boolean }[]) {
-		const jobs = blockings.map(rel => this.createRelationshipJob('block', rel));
+		const jobs = blockings.map(rel => this.generateRelationshipJobData('block', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
 	public createUnblockJob(blockings: { from: ThinUser, to: ThinUser, silent?: boolean }[]) {
-		const jobs = blockings.map(rel => this.createRelationshipJob('unblock', rel));
+		const jobs = blockings.map(rel => this.generateRelationshipJobData('unblock', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	private createRelationshipJob(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData): {
+	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData): {
 		name: string,
 		data: RelationshipJobData,
 		opts: Bull.JobOptions,
