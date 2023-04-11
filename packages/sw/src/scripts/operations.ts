@@ -48,7 +48,7 @@ export function openAntenna(antennaId: string, loginId: string) {
 // post-formのオプションから投稿フォームを開く
 export async function openPost(options: { initialText?: string; reply?: Misskey.entities.Note; renote?: Misskey.entities.Note }, loginId?: string) {
 	// クエリを作成しておく
-	let url = '/share';
+	const url = '/share';
 	const query = new URLSearchParams();
 	if (options.initialText) query.set('text', options.initialText);
 	if (options.reply) query.set('replyId', options.reply.id);
