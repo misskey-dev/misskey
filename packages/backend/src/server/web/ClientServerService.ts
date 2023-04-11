@@ -651,6 +651,7 @@ export class ClientServerService {
 
 		fastify.setErrorHandler(async (error, request, reply) => {
 			reply.code(500);
+			reply.header('Cache-Control', 'max-age=10, must-revalidate');
 			return await reply.view('error', {
 				code: error.code,
 				error: JSON.stringify(error),
