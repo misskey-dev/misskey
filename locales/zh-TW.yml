@@ -985,9 +985,15 @@ showClipButtonInNoteFooter: "將摘錄添加至貼文"
 largeNoteReactions: "將貼文的反應放大顯示"
 noteIdOrUrl: "貼文ID或URL"
 accountMigration: "遷移帳戶"
+forceShowAds: "總是顯示廣告"
 _accountMigration:
   moveTo: "將這個帳戶遷移至新的帳戶"
-  moveToLabel: "要遷移的帳戶："
+  moveToLabel: "要遷移到的帳戶："
+  moveAccountDescription: "這個操作不可撤銷。首先，請確認已在要遷移到的帳戶中為這個帳戶建立了一個別名。建立別名之後，像這樣輸入你要遷移到的帳戶：@person@instance.com"
+  moveFrom: "從其他帳戶遷移到這個帳戶"
+  moveFromLabel: "要遷移過來的帳戶："
+  moveFromDescription: "如果你想把跟隨者從別的帳戶遷移過來，必須先在這裡建立別名。請務必在執行遷移之前建立別名！請像這樣輸入要遷移的帳戶：@person@instance.com"
+  migrationConfirm: "確定要將這個帳戶遷移至 {account} 嗎？一旦遷移就無法撤銷，也就無法以原來的狀態使用這個帳戶。\n另外，請確認在要遷移到的帳戶已經建立了一個別名。"
 _achievements:
   earnedAt: "獲得日期"
   _types:

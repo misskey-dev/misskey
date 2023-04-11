@@ -991,6 +991,7 @@ largeNoteReactions: "ノートのリアクションを大きする"
 noteIdOrUrl: "ノートIDかURL"
 accountMigration: "アカウントのお引っ越し"
 accountMoved: "このユーザーはさらのアカウントに引っ越したで："
+forceShowAds: "常に広告を表示しとく"
 _accountMigration:
   moveTo: "このアカウントをさらのアカウントに引っ越すで"
   moveToLabel: "引っ越し先のアカウント："
