@@ -12,6 +12,17 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### General
+-
+
+### Client
+-
+
+### Server
+- Misskey Webでのサーバーサイドエラー画面を改善
+
 ## 13.11.2
 
 ### General
