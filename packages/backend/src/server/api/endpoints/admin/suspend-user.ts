@@ -1,10 +1,11 @@
+import { IsNull, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
+import type { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -68,20 +69,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 	@bindThis
 	private async unFollowAll(follower: User) {
-		const followings = await this.followingsRepository.findBy({
-			followerId: follower.id,
+		const followings = await this.followingsRepository.find({
+			relations: {
+				followee: true,
+				follower: true,
+			},
+			where: {
+				followerId: follower.id,
+				followee: Not(IsNull()),
+			},
 		});
 
+		const jobs: RelationshipJobData[] = [];
 		for (const following of followings) {
-			const followee = await this.usersRepository.findOneBy({
-				id: following.followeeId,
-			});
-
-			if (followee == null) {
-				throw `Cant find followee ${following.followeeId}`;
+			if (following.followee && following.follower) {
+				jobs.push({
+					from: following.follower,
+					to: following.followee,
+				});
 			}
-
-			this.queueService.createUnfollowJob(follower, followee, true);
 		}
+		this.queueService.createUnfollowJob(jobs);
 	}
 }

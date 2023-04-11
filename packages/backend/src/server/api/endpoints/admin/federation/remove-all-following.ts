@@ -42,9 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.usersRepository.findOneByOrFail({ id: f.followeeId }),
 			])));
 
-			for (const pair of pairs) {
-				this.queueService.createUnfollowJob(pair[0], pair[1]);
-			}
+			this.queueService.createUnfollowJob(pairs.map(p => ({ to: p[0], from: p[1] })));
 		});
 	}
 }
