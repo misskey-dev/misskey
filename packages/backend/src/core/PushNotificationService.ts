@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
+import Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
-import type { SwSubscriptionsRepository } from '@/models/index.js';
+import type { SwSubscription, SwSubscriptionsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
+import { RedisKVCache } from '@/misc/cache.js';
 
 // Defined also packages/sw/types.ts#L13
 type PushNotificationsTypes = {
@@ -41,15 +43,27 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 
 @Injectable()
 export class PushNotificationService {
+	private subscriptionsCache: RedisKVCache<SwSubscription[]>;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 
 		@Inject(DI.swSubscriptionsRepository)
 		private swSubscriptionsRepository: SwSubscriptionsRepository,
 
 		private metaService: MetaService,
 	) {
+		this.subscriptionsCache = new RedisKVCache<SwSubscription[]>(this.redisClient, 'userSwSubscriptions', {
+			lifetime: 1000 * 60 * 60 * 1, // 1h
+			memoryCacheLifetime: 1000 * 60 * 3, // 3m
+			fetcher: (key) => this.swSubscriptionsRepository.findBy({ userId: key }),
+			toRedisConverter: (value) => JSON.stringify(value),
+			fromRedisConverter: (value) => JSON.parse(value),
+		});
 	}
 
 	@bindThis
@@ -63,10 +77,7 @@ export class PushNotificationService {
 			meta.swPublicKey,
 			meta.swPrivateKey);
 	
-		// Fetch
-		const subscriptions = await this.swSubscriptionsRepository.findBy({
-			userId: userId,
-		});
+		const subscriptions = await this.subscriptionsCache.fetch(userId);
 	
 		for (const subscription of subscriptions) {
 			if ([
