@@ -52,8 +52,8 @@ export class ImportFollowingProcessorService {
 		}
 
 		const csv = await this.downloadService.downloadTextFile(file.url);
-		const data = csv.trim().split('\n').map(target => ({ user, target }));
-		this.queueService.createImportFollowingToDbJob(data);
+		const targets = csv.trim().split('\n');
+		this.queueService.createImportFollowingToDbJob({ id: user.id }, targets);
 
 		this.logger.succ('Import jobs created');
 		done();

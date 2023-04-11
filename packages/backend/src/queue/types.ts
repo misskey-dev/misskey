@@ -21,8 +21,6 @@ export type InboxJobData = {
 	signature: httpSignature.IParsedSignature;
 };
 
-export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserImportToDbJobData | DbUserDeleteJobData;
-
 export type RelationshipJobData = {
 	from: ThinUser;
 	to: ThinUser;
@@ -30,7 +28,32 @@ export type RelationshipJobData = {
 	requestId?: string;
 }
 
-export type DbUserJobData = {
+export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
+
+export type DbJobMap = {
+	deleteDriveFiles: DbJobDataWithUser;
+	exportCustomEmojis: DbJobDataWithUser;
+	exportNotes: DbJobDataWithUser;
+	exportFavorites: DbJobDataWithUser;
+	exportFollowing: DbExportFollowingData;
+	exportMuting: DbJobDataWithUser;
+	exportBlocking: DbJobDataWithUser;
+	exportUserLists: DbJobDataWithUser;
+	importFollowing: DbUserImportJobData;
+	importFollowingToDb: DbUserImportToDbJobData;
+	importMuting: DbUserImportJobData;
+	importBlocking: DbUserImportJobData;
+	importBlockingToDb: DbUserImportToDbJobData;
+	importUserLists: DbUserImportJobData;
+	importCustomEmojis: DbUserImportJobData;
+	deleteAccount: DbUserDeleteJobData;
+}
+
+export type DbJobDataWithUser = {
+	user: ThinUser;
+}
+
+export type DbExportFollowingData = {
 	user: ThinUser;
 	excludeMuting: boolean;
 	excludeInactive: boolean;

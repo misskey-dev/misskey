@@ -164,8 +164,8 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportFollowingToDbJob(data: {user: ThinUser, target: string}[]) {
-		const jobs = data.map(rel => this.createToDbJobData('importFollowingToDb', rel));
+	public createImportFollowingToDbJob(user: ThinUser, targets: string[]) {
+		const jobs = targets.map(rel => this.createToDbJobData('importFollowingToDb', { user, target: rel }));
 		return this.dbQueue.addBulk(jobs);
 	}
 
@@ -192,15 +192,15 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createImportBlockingToDbJob(data: {user: ThinUser, target: string}[]) {
-		const jobs = data.map(rel => this.createToDbJobData('importBlockingToDb', rel));
+	public createImportBlockingToDbJob(user: ThinUser, targets: string[]) {
+		const jobs = targets.map(rel => this.createToDbJobData('importBlockingToDb', { user, target: rel }));
 		return this.dbQueue.addBulk(jobs);
 	}
 
 	@bindThis
-	private createToDbJobData(name: 'importFollowingToDb' | 'importBlockingToDb', data: DbJobData): {
+	private createToDbJobData<T extends 'importFollowingToDb' | 'importBlockingToDb', D extends DbJobData<T>>(name: T, data: D): {
 		name: string,
-		data: DbJobData,
+		data: D,
 		opts: Bull.JobOptions,
 	} {
 		return {

@@ -52,8 +52,8 @@ export class ImportBlockingProcessorService {
 		}
 
 		const csv = await this.downloadService.downloadTextFile(file.url);
-		const data = csv.trim().split('\n').map(target => ({ user, target }));
-		this.queueService.createImportBlockingToDbJob(data);
+		const targets = csv.trim().split('\n');
+		this.queueService.createImportBlockingToDbJob({ id: user.id }, targets);
 
 		this.logger.succ('Import jobs created');
 		done();
