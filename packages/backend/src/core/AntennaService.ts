@@ -95,7 +95,7 @@ export class AntennaService implements OnApplicationShutdown {
 		this.redisClient.xadd(
 			`antennaTimeline:${antenna.id}`,
 			'MAXLEN', '~', '200',
-			`${this.idService.parse(note.id).date.getTime()}-*`,
+			'*',
 			'note', note.id);
 		
 		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
