@@ -24,7 +24,7 @@ export class RelationshipProcessorService {
 	@bindThis
 	public async processFollow(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to follow ${job.data.to.id}`);
-		await this.userFollowingService.follow(job.data.from, job.data.to, job.data.requestId);
+		await this.userFollowingService.follow(job.data.from, job.data.to, job.data.requestId, job.data.silent);
 		return 'ok';
 	}
 
@@ -38,7 +38,7 @@ export class RelationshipProcessorService {
 	@bindThis
 	public async processBlock(job: Bull.Job<RelationshipJobData>): Promise<string> {
 		this.logger.info(`${job.data.from.id} is trying to block ${job.data.to.id}`);
-		await this.userBlockingService.block(job.data.from, job.data.to);
+		await this.userBlockingService.block(job.data.from, job.data.to, job.data.silent);
 		return 'ok';
 	}
 

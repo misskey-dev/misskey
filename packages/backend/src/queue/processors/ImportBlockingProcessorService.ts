@@ -1,12 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository, DriveFilesRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { UsersRepository, DriveFilesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
@@ -20,21 +18,14 @@ export class ImportBlockingProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
 		private queueService: QueueService,
 		private utilityService: UtilityService,
-		private userBlockingService: UserBlockingService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private downloadService: DownloadService,
 		private queueLoggerService: QueueLoggerService,
@@ -102,7 +93,7 @@ export class ImportBlockingProcessorService {
 
 			this.logger.info(`Block ${target.id} ...`);
 
-			this.queueService.createBlockJob([{ from: user, to: target }]);
+			this.queueService.createBlockJob([{ from: user, to: target, silent: true }]);
 		} catch (e) {
 			this.logger.warn(`Error: ${e}`);
 		}

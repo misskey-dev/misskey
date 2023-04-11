@@ -248,7 +248,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public createFollowJob(followings: { from: User, to: User, requestId?: string }[]) {
+	public createFollowJob(followings: { from: User, to: User, requestId?: string, silent?: boolean }[]) {
 		const jobs = followings.map(rel => this.createRelationshipJob('follow', rel));
 		return this.relationshipQueue.addBulk(jobs);
 	}

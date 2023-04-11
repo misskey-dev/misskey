@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository, DriveFilesRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -19,9 +18,6 @@ export class ImportFollowingProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -97,7 +93,7 @@ export class ImportFollowingProcessorService {
 
 			this.logger.info(`Follow ${target.id} ...`);
 
-			this.queueService.createFollowJob([{ from: user, to: target }]);
+			this.queueService.createFollowJob([{ from: user, to: target, silent: true }]);
 		} catch (e) {
 			this.logger.warn(`Error: ${e}`);
 		}
