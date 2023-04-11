@@ -21,6 +21,7 @@
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+								<button v-if="!isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea"><i class="ti ti-edit"/> メモを追加</button>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -45,13 +46,13 @@
 							{{ role.name }}
 						</span>
 					</div>
-					<div class="memo" :class="{'no-memo': !memoDraft}">
-						<div class="heading" v-if="memoDraft" v-text="i18n.ts.memo" />
+					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
+						<div class="heading" v-text="i18n.ts.memo"/>
 						<textarea
 							ref="memoTextareaEl"
-							rows="1"
 							v-model="memoDraft"
-							:placeholder="i18n.ts.clickToAddPersonalMemo"
+							rows="1"
+							@focus="isEditingMemo = true"
 							@blur="updateMemo"
 							@input="adjustMemoTextarea"
 						/>
@@ -124,7 +125,7 @@
 </template>
 
 <script lang="ts" setup>
-import {defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch} from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
@@ -144,7 +145,7 @@ import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
-import {api} from "@/os";
+import { api } from '@/os';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -165,6 +166,8 @@ let rootEl = $ref<null | HTMLElement>(null);
 let bannerEl = $ref<null | HTMLElement>(null);
 let memoTextareaEl = $ref<null | HTMLElement>(null);
 let memoDraft = $ref(props.user.memo);
+
+let isEditingMemo = $ref(false);
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -207,6 +210,13 @@ function parallax() {
 	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 }
 
+function showMemoTextarea() {
+	isEditingMemo = true;
+	nextTick(() => {
+		memoTextareaEl?.focus();
+	});
+}
+
 function adjustMemoTextarea() {
 	if (!memoTextareaEl) return;
 	memoTextareaEl.style.height = '0px';
@@ -218,6 +228,7 @@ async function updateMemo() {
 		memo: memoDraft,
 		userId: props.user.id,
 	});
+	isEditingMemo = false;
 }
 
 watch([props.user], () => {
@@ -357,6 +368,16 @@ onUnmounted(() => {
 									font-weight: bold;
 								}
 							}
+
+							> .add-note-button {
+								background: rgba(0, 0, 0, 0.2);
+								color: #fff;
+								-webkit-backdrop-filter: var(--blur, blur(8px));
+								backdrop-filter: var(--blur, blur(8px));
+								border-radius: 24px;
+								padding: 4px 8px;
+								font-size: 80%;
+							}
 						}
 					}
 				}
@@ -453,6 +474,7 @@ onUnmounted(() => {
 
 						textarea {
 							font-family: inherit;
+							line-height: 1.5;
 							margin: 0;
 							padding: 0;
 							outline: none;
