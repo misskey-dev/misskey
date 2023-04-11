@@ -1,9 +1,9 @@
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
-import { api } from '@/scripts/operations';
 import { PushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
 import { acct as getAcct } from '@/filters/user';
+import { get } from 'idb-keyval';
 
 globalThis.addEventListener('install', ev => {
 	//ev.waitUntil(globalThis.skipWaiting());
@@ -54,6 +54,10 @@ globalThis.addEventListener('push', ev => {
 				if ((new Date()).getTime() - data.dateTime > 1000 * 60 * 60 * 24) break;
 
 				return createNotification(data);
+			case 'readAllNotifications':
+				await globalThis.registration.getNotifications()
+					.then(notifications => notifications.forEach(n => n.close()));
+				break;
 		}
 
 		await createEmptyNotification();
@@ -68,7 +72,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 		}
 
 		const { action, notification } = ev;
-		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = notification.data;
+		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = notification.data ?? {};
 		const { userId: loginId } = data;
 		let client: WindowClient | null = null;
 
@@ -124,13 +128,29 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 				break;
 			case 'unreadAntennaNote':
 				client = await swos.openAntenna(data.body.antenna.id, loginId);
+				break;
+			default:
+				switch (action) {
+					case 'markAllAsRead':
+						await globalThis.registration.getNotifications()
+							.then(notifications => notifications.forEach(n => n.close()));
+						await get('accounts').then(accounts => {
+							return Promise.all(accounts.map(async account => {
+								await swos.sendMarkAllAsRead(account.id);
+							}));
+						});
+						break;
+					case 'settings':
+						client = await swos.openClient('push', '/settings/notifications', loginId);
+						break;
+				}
 		}
 
 		if (client) {
 			client.focus();
 		}
 		if (data.type === 'notification') {
-			api('notifications/mark-all-as-read', data.userId);
+			await swos.sendMarkAllAsRead(loginId);
 		}
 
 		notification.close();
@@ -140,9 +160,12 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
 	const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.notification.data;
 
-	if (data.type === 'notification') {
-		api('notifications/mark-all-as-read', data.userId);
-	}
+	ev.waitUntil((async () => {
+		if (data.type === 'notification') {
+			await swos.sendMarkAllAsRead(data.userId);
+		}
+		return;
+	})());
 });
 
 globalThis.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message']) => {

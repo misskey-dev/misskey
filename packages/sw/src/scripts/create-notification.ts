@@ -21,7 +21,7 @@ const iconUrl = (name: BadgeNames) => `/static-assets/tabler-badges/${name}.png`
  * 1. Find the icon and download png from https://tabler-icons.io/
  * 2. vips resize ~/Downloads/icon-name.png vipswork.png 0.4; vips scRGB2BW vipswork.png ~/icon-name.png"[compression=9,strip]"; rm vipswork.png;
  * 3. mv ~/icon-name.png ~/misskey/packages/backend/assets/tabler-badges/
- * 4. Add 'icon-name' to badgeNames
+ * 4. Add 'icon-name' to BadgeNames
  * 5. Add `badge: iconUrl('icon-name'),`
  */
 
@@ -168,14 +168,6 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					}];
 				}
 
-				case 'pollEnded':
-					return [t('_notification.pollEnded'), {
-						body: data.body.note.text || '',
-						badge: iconUrl('chart-arrows'),
-						tag: `poll:${data.body.note.id}`,
-						data,
-					}];
-
 				case 'receiveFollowRequest':
 					return [t('_notification.youReceivedFollowRequest'), {
 						body: getUserName(data.body.user),
@@ -200,6 +192,14 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						icon: data.body.user.avatarUrl,
 						badge: iconUrl('circle-check'),
 						data,
+					}];
+
+				case 'achievementEarned':
+					return [t('_notification.achievementEarned'), {
+						body: t(`_achievements._types._${data.body.achievement}.title`),
+						badge: iconUrl('medal'),
+						data,
+						tag: `achievement:${data.body.achievement}`,
 					}];
 
 				case 'app':
@@ -233,17 +233,29 @@ export async function createEmptyNotification() {
 		const { t } = i18n;
 
 		await globalThis.registration.showNotification(
-			t('_notification.emptyPushNotificationMessage'),
+			(new URL(origin)).host,
 			{
+				body: `Misskey v${_VERSION_}`,
 				silent: true,
 				badge: iconUrl('null'),
 				tag: 'read_notification',
+				actions: [
+					{
+						action: 'markAllAsRead',
+						title: t('markAllAsRead'),
+					},
+					{
+						action: 'settings',
+						title: t('notificationSettings'),
+					},
+				],
+				data: {},
 			},
 		);
 
 		setTimeout(async () => {
 			try {
-				await closeNotificationsByTags(['user_visible_auto_notification', 'read_notification']);
+				await closeNotificationsByTags(['user_visible_auto_notification']);
 			} finally {
 				res();
 			}

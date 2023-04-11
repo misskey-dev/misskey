@@ -66,6 +66,7 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
+		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
 	@bindThis

@@ -15,6 +15,7 @@ type PushNotificationsTypes = {
 		antenna: { id: string, name: string };
 		note: Packed<'Note'>;
 	};
+	'readAllNotifications': undefined;
 };
 
 // Reduce length because push message servers have character limits
@@ -68,6 +69,10 @@ export class PushNotificationService {
 		});
 	
 		for (const subscription of subscriptions) {
+			if ([
+				'readAllNotifications',
+			].includes(type) && !subscription.sendReadMessage) continue;
+
 			const pushSubscription = {
 				endpoint: subscription.endpoint,
 				keys: {
