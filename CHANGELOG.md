@@ -14,6 +14,9 @@
 
 ## 13.11.2
 
+### Note
+- 13.11.0または13.11.1から13.11.2以降にアップデートする場合、Redisのカスタム絵文字のキャッシュを削除する必要があります(https://github.com/misskey-dev/misskey/issues/10502#issuecomment-1502790755 参照)
+
 ### General
 - チャンネルの検索用ページの追加
 
