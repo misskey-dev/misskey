@@ -66,7 +66,7 @@ globalThis.addEventListener('push', ev => {
 });
 
 globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => {
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		if (_DEV_) {
 			console.log('notificationclick', ev.action, ev.notification.data);
 		}
@@ -160,7 +160,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
 	const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.notification.data;
 
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		if (data.type === 'notification') {
 			await swos.sendMarkAllAsRead(data.userId);
 		}
@@ -169,7 +169,7 @@ globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEv
 });
 
 globalThis.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message']) => {
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		switch (ev.data) {
 			case 'clear':
 				// Cache Storage全削除

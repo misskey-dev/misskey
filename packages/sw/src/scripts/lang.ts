@@ -12,7 +12,7 @@ class SwLang {
 		return prelang;
 	});
 
-	public setLang(newLang: string) {
+	public setLang(newLang: string): Promise<I18n<Locale>> {
 		this.lang = Promise.resolve(newLang);
 		set('lang', newLang);
 		return this.fetchLocale();
@@ -20,11 +20,11 @@ class SwLang {
 
 	public i18n: Promise<I18n> | null = null;
 
-	public fetchLocale() {
+	public fetchLocale(): Promise<I18n<Locale>> {
 		return (this.i18n = this._fetch());
 	}
 
-	private async _fetch() {
+	private async _fetch(): Promise<I18n<Locale>> {
 		// Service Workerは何度も起動しそのたびにlocaleを読み込むので、CacheStorageを使う
 		const localeUrl = `/assets/locales/${await this.lang}.${_VERSION_}.json`;
 		let localeRes = await caches.match(localeUrl);

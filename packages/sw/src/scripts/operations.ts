@@ -7,9 +7,9 @@ import type { SwMessage, SwMessageOrderType } from '@/types';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
 import { getUrlWithLoginId } from '@/scripts/login-id';
 
-export const cli = new Misskey.api.APIClient({ origin, fetch: (...args) => fetch(...args) });
+export const cli = new Misskey.api.APIClient({ origin, fetch: (...args): Promise<Response> => fetch(...args) });
 
-export async function api<E extends keyof Misskey.Endpoints>(endpoint: E, userId: string, options?: Misskey.Endpoints[E]['req']) {
+export async function api<E extends keyof Misskey.Endpoints>(endpoint: E, userId: string, options?: Misskey.Endpoints[E]['req']): Promise<void | ReturnType<typeof cli.request>> {
 	const account = await getAccountFromId(userId);
 	if (!account) return;
 
@@ -30,22 +30,22 @@ export function sendMarkAllAsRead(userId: string): Promise<null | undefined | vo
 }
 
 // rendered acctからユーザーを開く
-export function openUser(acct: string, loginId?: string) {
+export function openUser(acct: string, loginId?: string): ReturnType<typeof openClient> {
 	return openClient('push', `/@${acct}`, loginId, { acct });
 }
 
 // noteIdからノートを開く
-export function openNote(noteId: string, loginId?: string) {
+export function openNote(noteId: string, loginId?: string): ReturnType<typeof openClient> {
 	return openClient('push', `/notes/${noteId}`, loginId, { noteId });
 }
 
 // noteIdからノートを開く
-export function openAntenna(antennaId: string, loginId: string) {
+export function openAntenna(antennaId: string, loginId: string): ReturnType<typeof openClient> {
 	return openClient('push', `/timeline/antenna/${antennaId}`, loginId, { antennaId });
 }
 
 // post-formのオプションから投稿フォームを開く
-export async function openPost(options: { initialText?: string; reply?: Misskey.entities.Note; renote?: Misskey.entities.Note }, loginId?: string) {
+export async function openPost(options: { initialText?: string; reply?: Misskey.entities.Note; renote?: Misskey.entities.Note }, loginId?: string): ReturnType<typeof openClient> {
 	// クエリを作成しておく
 	const url = '/share';
 	const query = new URLSearchParams();
@@ -56,7 +56,7 @@ export async function openPost(options: { initialText?: string; reply?: Misskey.
 	return openClient('post', `${url}?${query}`, loginId, { options });
 }
 
-export async function openClient(order: SwMessageOrderType, url: string, loginId?: string, query: Record<string, SwMessage[string]> = {}) {
+export async function openClient(order: SwMessageOrderType, url: string, loginId?: string, query: Record<string, SwMessage[string]> = {}): Promise<WindowClient | null> {
 	const client = await findClient();
 
 	if (client) {
@@ -67,7 +67,7 @@ export async function openClient(order: SwMessageOrderType, url: string, loginId
 	return globalThis.clients.openWindow(loginId ? getUrlWithLoginId(url, loginId) : url);
 }
 
-export async function findClient() {
+export async function findClient(): Promise<WindowClient | null> {
 	const clients = await globalThis.clients.matchAll({
 		type: 'window',
 	});
