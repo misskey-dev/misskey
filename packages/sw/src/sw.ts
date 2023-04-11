@@ -5,7 +5,7 @@ import { createEmptyNotification, createNotification } from '@/scripts/create-no
 import { swLang } from '@/scripts/lang';
 import * as swos from '@/scripts/operations';
 
-globalThis.addEventListener('install', ev => {
+globalThis.addEventListener('install', () => {
 	// ev.waitUntil(globalThis.skipWaiting());
 });
 
@@ -43,7 +43,7 @@ globalThis.addEventListener('push', ev => {
 	ev.waitUntil(globalThis.clients.matchAll({
 		includeUncontrolled: true,
 		type: 'window',
-	}).then(async (clients: readonly WindowClient[]) => {
+	}).then(async () => {
 		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.data?.json();
 
 		switch (data.type) {
