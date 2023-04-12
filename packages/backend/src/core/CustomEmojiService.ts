@@ -43,7 +43,7 @@ export class CustomEmojiService {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60 * 3, // 3m
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
-			toRedisConverter: (value) => JSON.stringify(value.values()),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => new Map(JSON.parse(value).map((x: Emoji) => [x.name, x])), // TODO: Date型の変換
 		});
 	}
@@ -267,16 +267,7 @@ export class CustomEmojiService {
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
-
-		const isLocal = emoji.host == null;
-		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-		const url = isLocal
-			? emojiUrl
-			: this.config.proxyRemoteFiles
-				? `${this.config.mediaProxy}/emoji.webp?${query({ url: emojiUrl })}`
-				: emojiUrl;
-
-		return url;
+		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 	}
 
 	/**
