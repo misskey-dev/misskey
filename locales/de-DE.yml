@@ -1890,6 +1890,7 @@ _deck:
     channel: "Kanal"
     mentions: "Erwähnungen"
     direct: "Direktnachrichten"
+    roleTimeline: "Rollenchronik"
 _dialog:
   charactersExceeded: "Maximallänge überschritten! Momentan {current} von {max}"
   charactersBelow: "Minimallänge unterschritten! Momentan {current} von {min}"
