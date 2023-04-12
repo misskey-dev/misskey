@@ -31,22 +31,9 @@ let loaded = $ref(false);
 let width = $ref(props.width);
 let height = $ref(props.height);
 
-function draw() {
-	if (props.hash == null) return;
-	const pixels = decode(props.hash, props.width, props.height);
-	const ctx = canvas.getContext('2d');
-	const imageData = ctx!.createImageData(props.width, props.height);
-	imageData.data.set(pixels);
-	ctx!.putImageData(imageData, 0, 0);
-}
-
 function onLoad() {
 	loaded = true;
 }
-
-watch(() => props.hash, () => {
-	draw();
-});
 
 watch([() => props.width, () => props.height], () => {
 	const ratio = props.width / props.height;
@@ -59,6 +46,19 @@ watch([() => props.width, () => props.height], () => {
 	}
 }, {
 	immediate: true,
+});
+
+function draw() {
+	if (props.hash == null) return;
+	const pixels = decode(props.hash, width, height);
+	const ctx = canvas.getContext('2d');
+	const imageData = ctx!.createImageData(props.width, props.height);
+	imageData.data.set(pixels);
+	ctx!.putImageData(imageData, 0, 0);
+}
+
+watch(() => props.hash, () => {
+	draw();
 });
 
 onMounted(() => {
