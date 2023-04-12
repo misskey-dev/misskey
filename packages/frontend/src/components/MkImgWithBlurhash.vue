@@ -52,7 +52,7 @@ function draw() {
 	if (props.hash == null) return;
 	const pixels = decode(props.hash, width, height);
 	const ctx = canvas.getContext('2d');
-	const imageData = ctx!.createImageData(props.width, props.height);
+	const imageData = ctx!.createImageData(width, height);
 	imageData.data.set(pixels);
 	ctx!.putImageData(imageData, 0, 0);
 }
