@@ -1890,6 +1890,7 @@ _deck:
     channel: "频道"
     mentions: "提及"
     direct: "指定用户"
+    roleTimeline: "角色时间线"
 _dialog:
   charactersExceeded: "已经超过了最大字符数! 当前字符数 {current} / 限制字符数 {max}"
   charactersBelow: "低于最小字符数！当前字符数 {current} / 限制字符数 {min}"
