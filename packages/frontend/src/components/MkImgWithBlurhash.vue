@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { decode } from 'blurhash';
 
 const props = withDefaults(defineProps<{
@@ -28,6 +28,8 @@ const props = withDefaults(defineProps<{
 
 const canvas = $shallowRef<HTMLCanvasElement>();
 let loaded = $ref(false);
+let width = $ref(props.width);
+let height = $ref(props.height);
 
 function draw() {
 	if (props.hash == null) return;
@@ -41,6 +43,23 @@ function draw() {
 function onLoad() {
 	loaded = true;
 }
+
+watch(() => props.hash, () => {
+	draw();
+});
+
+watch([() => props.width, () => props.height], () => {
+	const ratio = props.width / props.height;
+	if (ratio > 1) {
+		width = Math.round(64 * ratio);
+		height = 64;
+	} else {
+		width = 64;
+		height = Math.round(64 / ratio);
+	}
+}, {
+	immediate: true,
+});
 
 onMounted(() => {
 	draw();
