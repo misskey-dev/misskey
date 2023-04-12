@@ -1890,6 +1890,7 @@ _deck:
     channel: "頻道"
     mentions: "提及"
     direct: "指定使用者"
+    roleTimeline: "角色時間軸"
 _dialog:
   charactersExceeded: "已超過最大字數！現在 {current} / 限制 {max}"
   charactersBelow: "低於最少字數！現在 {current} / 限制 {max}"
