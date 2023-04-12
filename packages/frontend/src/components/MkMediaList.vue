@@ -2,14 +2,10 @@
 <div>
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
-		<div
-			ref="gallery"
-			:class="[
-				$style.medias,
-				count <= 4 ? $style['n' + count] : $style.nMany,
-				$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]
-			]"
-		>
+		<div ref="gallery" :class="[
+			$style.medias,
+			count <= 4 ? $style['n' + count] : $style.nMany,
+			$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]]">
 			<template v-for="media in mediaList.filter(media => previewable(media))">
 				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
 				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
@@ -20,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch } from 'vue';
+import { onMounted, ref, useCssModule } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -39,33 +35,10 @@ const props = defineProps<{
 
 const $style = useCssModule();
 
-const gallery = ref<HTMLDivElement>();
+const gallery = ref(null);
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
-
-function calcAspectRatio() {
-	if (!gallery.value) return;
-
-	let img = props.mediaList[0];
-
-	if (!(img.properties.width && img.properties.height)) {
-		gallery.value.style.aspectRatio = '';
-		return;
-	}
-
-	switch (defaultStore.state.mediaListWithOneImageAppearance) {
-		// アスペクト比上限設定では、横長の場合は高さを縮小させる
-		case '16_9':
-			gallery.value.style.aspectRatio = Math.max(16 / 9, img.properties.width / img.properties.height).toString();
-			break;
-		default:
-			gallery.value.style.aspectRatio = '';
-			break;
-	}
-}
-
-watch([defaultStore.reactiveState.mediaListWithOneImageAppearance, gallery], () => calcAspectRatio());
 
 onMounted(() => {
 	const lightbox = new PhotoSwipeLightbox({
@@ -199,7 +172,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 
 		&.n116_9 {
 			max-height: none;
-			aspect-ratio: 16 / 9; // fallback
+			aspect-ratio: 16/9;
 		}
 	}
 
