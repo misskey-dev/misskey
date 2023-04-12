@@ -659,6 +659,8 @@ export class ClientServerService {
 			const errId = uuid();
 			this.clientLoggerService.logger.error(`Internal error occured in ${request.routerPath}: ${error.message}`, {
 				path: request.routerPath,
+				params: request.params,
+				query: request.query,
 				code: error.name,
 				stack: error.stack,
 				id: errId,
