@@ -1,10 +1,10 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :force-blurhash="dataSaverMode" />
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :force-blurhash="defaultStore.state.enableDataSaverMode" />
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ dataSaverMode ? ` (${i18n.ts.image} ${bytes(image.size)})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ dataSaverMode ? bytes(image.size) : i18n.ts.image }}</b>
+			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</div>
@@ -41,7 +41,6 @@ const props = defineProps<{
 
 let hide = $ref(true);
 let darkMode: boolean = $ref(defaultStore.state.darkMode);
-let dataSaverMode: boolean = $ref(defaultStore.state.enableDataSaverMode);
 
 const url = (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
@@ -51,7 +50,7 @@ const url = (props.raw || defaultStore.state.loadRawImages)
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
-	hide = (defaultStore.state.nsfw === 'force' || dataSaverMode) ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
+	hide = (defaultStore.state.nsfw === 'force' || defaultStore.state.enableDataSaverMode) ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
 }, {
 	deep: true,
 	immediate: true,
