@@ -24,7 +24,7 @@ export class UserBlockingService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-	
+
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 
@@ -54,12 +54,12 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async block(blocker: User, blockee: User) {
+	public async block(blocker: User, blockee: User, silent = false) {
 		await Promise.all([
-			this.cancelRequest(blocker, blockee),
-			this.cancelRequest(blockee, blocker),
-			this.userFollowingService.unfollow(blocker, blockee),
-			this.userFollowingService.unfollow(blockee, blocker),
+			this.cancelRequest(blocker, blockee, silent),
+			this.cancelRequest(blockee, blocker, silent),
+			this.userFollowingService.unfollow(blocker, blockee, silent),
+			this.userFollowingService.unfollow(blockee, blocker, silent),
 			this.removeFromList(blockee, blocker),
 		]);
 
@@ -89,7 +89,7 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async cancelRequest(follower: User, followee: User) {
+	private async cancelRequest(follower: User, followee: User, silent = false) {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
@@ -110,7 +110,7 @@ export class UserBlockingService implements OnModuleInit {
 			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
 		}
 
-		if (this.userEntityService.isLocalUser(follower)) {
+		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			this.userEntityService.pack(followee, follower, {
 				detail: true,
 			}).then(async packed => {

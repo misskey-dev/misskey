@@ -13,6 +13,7 @@ import { UserListChannelService } from './channels/user-list.js';
 import { AntennaChannelService } from './channels/antenna.js';
 import { DriveChannelService } from './channels/drive.js';
 import { HashtagChannelService } from './channels/hashtag.js';
+import { RoleTimelineChannelService } from './channels/role-timeline.js';
 
 @Injectable()
 export class ChannelsService {
@@ -24,6 +25,7 @@ export class ChannelsService {
 		private globalTimelineChannelService: GlobalTimelineChannelService,
 		private userListChannelService: UserListChannelService,
 		private hashtagChannelService: HashtagChannelService,
+		private roleTimelineChannelService: RoleTimelineChannelService,
 		private antennaChannelService: AntennaChannelService,
 		private channelChannelService: ChannelChannelService,
 		private driveChannelService: DriveChannelService,
@@ -43,6 +45,7 @@ export class ChannelsService {
 			case 'globalTimeline': return this.globalTimelineChannelService;
 			case 'userList': return this.userListChannelService;
 			case 'hashtag': return this.hashtagChannelService;
+			case 'roleTimeline': return this.roleTimelineChannelService;
 			case 'antenna': return this.antennaChannelService;
 			case 'channel': return this.channelChannelService;
 			case 'drive': return this.driveChannelService;

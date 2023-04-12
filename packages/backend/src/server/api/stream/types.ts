@@ -148,6 +148,10 @@ export interface AntennaStreamTypes {
 	note: Note;
 }
 
+export interface RoleTimelineStreamTypes {
+	note: Packed<'Note'>;
+}
+
 export interface AdminStreamTypes {
 	newAbuseUserReport: {
 		id: AbuseUserReport['id'];
@@ -208,6 +212,10 @@ export type StreamMessages = {
 	userList: {
 		name: `userListStream:${UserList['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<UserListStreamTypes>>;
+	};
+	roleTimeline: {
+		name: `roleTimelineStream:${Role['id']}`;
+		payload: EventUnionFromDictionary<SerializedAll<RoleTimelineStreamTypes>>;
 	};
 	antenna: {
 		name: `antennaStream:${Antenna['id']}`;
