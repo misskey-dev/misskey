@@ -76,11 +76,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
+			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			const noteIdsRes = await this.redisClient.xrevrange(
 				`antennaTimeline:${antenna.id}`,
 				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : '+',
 				'-',
-				'COUNT', ps.limit + 1); // untilIdに指定したものも含まれるため+1
+				'COUNT', limit);
 
 			if (noteIdsRes.length === 0) {
 				return [];

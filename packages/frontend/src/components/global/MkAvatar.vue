@@ -4,12 +4,16 @@
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
 		<div :class="$style.earLeft">
-			<div v-if="useBlurEffect" :class="$style.layer">
+			<div v-if="false" :class="$style.layer">
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 			</div>
 		</div>
 		<div :class="$style.earRight">
-			<div v-if="useBlurEffect" :class="$style.layer">
+			<div v-if="false" :class="$style.layer">
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
+				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
 			</div>
 		</div>
@@ -195,11 +199,21 @@ watch(() => props.user.avatarBlurhash, () => {
 
 				> .plot {
 					contain: strict;
+					position: absolute;
 					width: 100%;
 					height: 100%;
 					clip-path: path('M0 0H1V1H0z');
 					transform: scale(32767);
 					transform-origin: 0 0;
+					opacity: 0.5;
+
+					&:first-child {
+						opacity: 1;
+					}
+
+					&:last-child {
+						opacity: calc(1 / 3);
+					}
 				}
 			}
 		}
@@ -221,6 +235,14 @@ watch(() => props.user.avatarBlurhash, () => {
 
 				> .plot {
 					background-position: 20% 10%; /* ~= 37.5deg */
+
+					&:first-child {
+						background-position-x: 21%;
+					}
+
+					&:last-child {
+						background-position-y: 11%;
+					}
 				}
 			}
 		}
@@ -241,7 +263,16 @@ watch(() => props.user.avatarBlurhash, () => {
 										-38.5857864376%); /* 40 - 2 * sqrt(2) */
 
 				> .plot {
+					position: absolute;
 					background-position: 80% 10%; /* ~= 37.5deg */
+
+					&:first-child {
+						background-position-x: 79%;
+					}
+
+					&:last-child {
+						background-position-y: 11%;
+					}
 				}
 			}
 		}
