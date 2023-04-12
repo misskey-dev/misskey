@@ -21,7 +21,9 @@
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
-								<button v-if="!isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea"><i class="ti ti-edit"/> メモを追加</button>
+								<button v-if="!isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
+									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+								</button>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -40,12 +42,6 @@
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
-					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-							{{ role.name }}
-						</span>
-					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
 						<div class="heading" v-text="i18n.ts.memo"/>
 						<textarea
@@ -56,6 +52,12 @@
 							@blur="updateMemo"
 							@input="adjustMemoTextarea"
 						/>
+					</div>
+					<div v-if="user.roles.length > 0" class="roles">
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+							<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+							{{ role.name }}
+						</span>
 					</div>
 					<div class="description">
 						<MkOmit>
@@ -440,18 +442,19 @@ onUnmounted(() => {
 					}
 
 					textarea {
-						font-family: inherit;
 						margin: 0;
 						padding: 0;
+						resize: none;
+						border: none;
 						outline: none;
 						width: 100%;
 						height: auto;
 						min-height: 0;
+						line-height: 1.5;
 						color: var(--fg);
-						background: transparent;
-						border: none;
-						resize: none;
 						overflow: hidden;
+						background: transparent;
+						font-family: inherit;
 					}
 				}
 
@@ -462,31 +465,6 @@ onUnmounted(() => {
 					> .empty {
 						margin: 0;
 						opacity: 0.5;
-					}
-
-					> .memo {
-						background: var(--infoBg);
-						color: var(--infoFg);
-						margin-bottom: 8px;
-						padding: 8px;
-						border-radius: 8px;
-						line-height: 1;
-
-						textarea {
-							font-family: inherit;
-							line-height: 1.5;
-							margin: 0;
-							padding: 0;
-							outline: none;
-							width: 100%;
-							height: auto;
-							min-height: 0;
-							color: var(--fg);
-							background: transparent;
-							border: none;
-							resize: none;
-							overflow: hidden;
-						}
 					}
 				}
 
