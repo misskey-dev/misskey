@@ -14,8 +14,8 @@ export class MetaService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
-		@Inject(DI.redisForPubsub)
-		private redisForPubsub: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.db)
 		private db: DataSource,
@@ -33,7 +33,7 @@ export class MetaService implements OnApplicationShutdown {
 			}, 1000 * 60 * 5);
 		}
 
-		this.redisForPubsub.on('message', this.onMessage);
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -122,6 +122,6 @@ export class MetaService implements OnApplicationShutdown {
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.intervalId);
-		this.redisForPubsub.off('message', this.onMessage);
+		this.redisForSub.off('message', this.onMessage);
 	}
 }
