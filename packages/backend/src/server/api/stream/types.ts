@@ -172,7 +172,7 @@ type EventUnionFromDictionary<
 > = U[keyof U];
 
 // redis通すとDateのインスタンスはstringに変換されるので
-type Serialized<T> = {
+export type Serialized<T> = {
 	[K in keyof T]:
 		T[K] extends Date
 			? string
