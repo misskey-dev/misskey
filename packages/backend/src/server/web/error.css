@@ -82,22 +82,15 @@ h1 {
 }
 
 code {
+    display: block;
     font-family: Fira, FiraCode, monospace;
-}
-
-details {
     background: #333;
-    margin-bottom: 2rem;
     padding: 0.5rem 1rem;
     width: 40rem;
     border-radius: 10px;
     justify-content: center;
     margin: auto;
-}
-
-details > code {
-    white-space: pre-wrap;
-    word-break: break-all;
+    white-space: pre;
 }
 
 summary {

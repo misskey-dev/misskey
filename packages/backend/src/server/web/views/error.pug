@@ -16,12 +16,13 @@ html
 
 	head
 		meta(charset='utf-8')
+		meta(name='viewport' content='width=device-width, initial-scale=1')
 		meta(name='application-name' content='Misskey')
 		meta(name='referrer' content='origin')
 
 		title
 			block title
-				= title || 'Misskey'
+				= 'An error has occurred... | Misskey'
 
 		style
 			include ../error.css
@@ -39,10 +40,15 @@ body
 	
 	p.dont-worry Don't worry, it's (probably) not your fault.
 
-	p If the problem persists after refreshing, please contact your instance's administrator.
-		br
-		| You may also try the following options:
-	
+	p If reloading after a period of time does not resolve the problem, contact the server administrator with the following ERROR ID.
+
+	div#errors
+		code.
+			ERROR CODE: #{code}
+			ERROR ID: #{id}
+
+	p You may also try the following options:
+
 	p Update your os and browser.
 	p Disable an adblocker.
 
@@ -57,6 +63,3 @@ body
 	a(href="/bios")
 		button.button-small
 			span.button-label-small Start the repair tool
-	br
-	div#errors
-		code ERROR CODE: #{code} (#{id})
