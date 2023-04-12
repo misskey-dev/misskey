@@ -13,7 +13,7 @@ import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Config } from '@/config.js';
 import { query } from '@/misc/prelude/url.js';
-import { Serialized } from '@/server/api/stream/types';
+import type { Serialized } from '@/server/api/stream/types.js';
 
 @Injectable()
 export class CustomEmojiService {
