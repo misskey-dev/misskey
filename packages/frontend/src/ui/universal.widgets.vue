@@ -3,7 +3,7 @@
 	<XWidgets :class="$style.widgets" :edit="editMode" :widgets="widgets" @add-widget="addWidget" @remove-widget="removeWidget" @update-widget="updateWidget" @update-widgets="updateWidgets" @exit="editMode = false"/>
 
 	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
-	<button v-else class="_textButton mk-widget-edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
+	<button v-else class="_textButton mk-widget-edit" :class="$style.edit" style="font-size: 0.9em;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
 </div>
 </template>
 
@@ -90,5 +90,9 @@ function updateWidgets(thisWidgets) {
 
 .widgets {
 	width: 300px;
+}
+
+.edit {
+	width: 100%;
 }
 </style>
