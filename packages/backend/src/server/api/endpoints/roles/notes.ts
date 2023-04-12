@@ -76,7 +76,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				`roleTimeline:${role.id}`,
 				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : ps.untilDate ?? '+',
 				ps.sinceId ? this.idService.parse(ps.sinceId).date.getTime() : ps.sinceDate ?? '-',
-				'-',
 				'COUNT', limit);
 
 			if (noteIdsRes.length === 0) {
