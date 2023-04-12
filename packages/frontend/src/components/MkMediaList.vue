@@ -49,7 +49,7 @@ function calcAspectRatio() {
 
 	let img = props.mediaList[0];
 
-	if (!(img.properties.width && img.properties.height)) {
+	if (props.mediaList.length !== 1 || !(img.properties.width && img.properties.height)) {
 		gallery.value.style.aspectRatio = '';
 		return;
 	}
@@ -57,7 +57,7 @@ function calcAspectRatio() {
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
 		// アスペクト比上限設定では、横長の場合は高さを縮小させる
 		case '16_9':
-			gallery.value.style.aspectRatio = Math.max(16 / 9, img.properties.width / img.properties.height).toString();
+			gallery.value.style.aspectRatio = Math.max(16 / 9, img.properties.width / img.properties.height).toString() + '/1';
 			break;
 		default:
 			gallery.value.style.aspectRatio = '';
