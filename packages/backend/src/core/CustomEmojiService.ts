@@ -267,16 +267,7 @@ export class CustomEmojiService {
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
-
-		const isLocal = emoji.host == null;
-		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-		const url = isLocal
-			? emojiUrl
-			: this.config.proxyRemoteFiles
-				? `${this.config.mediaProxy}/emoji.webp?${query({ url: emojiUrl })}`
-				: emojiUrl;
-
-		return url;
+		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 	}
 
 	/**

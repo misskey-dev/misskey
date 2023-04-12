@@ -15,7 +15,9 @@
 ## 13.x.x (unreleased)
 
 ### General
--
+- カスタム絵文字関連の変更
+  * ノートなどに含まれるemojis（populateEmojiの結果）は（プロキシされたURLではなく）オリジナルのURLを指すように
+  * MFMでx3/x4もしくはscale.x/yが2.5以上に指定されていた場合にはオリジナル品質の絵文字を使用するように
 
 ### Client
 -
