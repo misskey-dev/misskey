@@ -1,0 +1,75 @@
+import { Injectable } from '@nestjs/common';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
+import Channel from '../channel.js';
+import { StreamMessages } from '../types.js';
+
+class RoleTimelineChannel extends Channel {
+	public readonly chName = 'roleTimeline';
+	public static shouldShare = false;
+	public static requireCredential = false;
+	private roleId: string;
+
+	constructor(
+		private noteEntityService: NoteEntityService,
+
+		id: string,
+		connection: Channel['connection'],
+	) {
+		super(id, connection);
+		//this.onNote = this.onNote.bind(this);
+	}
+
+	@bindThis
+	public async init(params: any) {
+		this.roleId = params.roleId as string;
+
+		this.subscriber.on(`roleTimelineStream:${this.roleId}`, this.onEvent);
+	}
+
+	@bindThis
+	private async onEvent(data: StreamMessages['roleTimeline']['payload']) {
+		if (data.type === 'note') {
+			const note = data.body;
+
+			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
+			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
+			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
+			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
+
+			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+			this.send('note', note);
+		} else {
+			this.send(data.type, data.body);
+		}
+	}
+
+	@bindThis
+	public dispose() {
+		// Unsubscribe events
+		this.subscriber.off(`roleTimelineStream:${this.roleId}`, this.onEvent);
+	}
+}
+
+@Injectable()
+export class RoleTimelineChannelService {
+	public readonly shouldShare = RoleTimelineChannel.shouldShare;
+	public readonly requireCredential = RoleTimelineChannel.requireCredential;
+
+	constructor(
+		private noteEntityService: NoteEntityService,
+	) {
+	}
+
+	@bindThis
+	public create(id: string, connection: Channel['connection']): RoleTimelineChannel {
+		return new RoleTimelineChannel(
+			this.noteEntityService,
+			id,
+			connection,
+		);
+	}
+}
