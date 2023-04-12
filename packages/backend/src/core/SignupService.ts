@@ -90,7 +90,7 @@ export class SignupService {
 					cipher: undefined,
 					passphrase: undefined,
 				},
-			} as any, (err, publicKey, privateKey) =>
+			}, (err, publicKey, privateKey) =>
 				err ? rej(err) : res([publicKey, privateKey]),
 			));
 	

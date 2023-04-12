@@ -7,8 +7,8 @@
 	<FormSection>
 		<template #label>{{ i18n.ts.sounds }}</template>
 		<div class="_gaps_s">
-			<MkFolder v-for="type in Object.keys(sounds)" :key="type">
-				<template #label>{{ $t('_sfx.' + type) }}</template>
+			<MkFolder v-for="type in soundsKeys" :key="type">
+				<template #label>{{ i18n.t('_sfx.' + type) }}</template>
 				<template #suffix>{{ sounds[type].type ?? i18n.ts.none }}</template>
 
 				<XSound :type="sounds[type].type" :volume="sounds[type].volume" @update="(res) => updated(type, res)"/>
@@ -21,51 +21,44 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { Ref, computed, ref } from 'vue';
 import XSound from './sounds.sound.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { ColdDeviceStorage } from '@/store';
+import { soundConfigStore } from '@/scripts/sound';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
-const masterVolume = computed({
-	get: () => {
-		return ColdDeviceStorage.get('sound_masterVolume');
-	},
-	set: (value) => {
-		ColdDeviceStorage.set('sound_masterVolume', value);
-	},
+const masterVolume = computed(soundConfigStore.makeGetterSetter('sound_masterVolume'));
+
+const soundsKeys = ['note', 'noteMy', 'notification', 'chat', 'chatBg', 'antenna', 'channel'] as const;
+
+const sounds = ref<Record<typeof soundsKeys[number], Ref<any>>>({
+	note: soundConfigStore.reactiveState.sound_note,
+	noteMy: soundConfigStore.reactiveState.sound_noteMy,
+	notification: soundConfigStore.reactiveState.sound_notification,
+	chat: soundConfigStore.reactiveState.sound_chat,
+	chatBg: soundConfigStore.reactiveState.sound_chatBg,
+	antenna: soundConfigStore.reactiveState.sound_antenna,
+	channel: soundConfigStore.reactiveState.sound_channel,
 });
 
-const volumeIcon = computed(() => masterVolume.value === 0 ? 'ti ti-volume-3' : 'ti ti-volume');
-
-const sounds = ref({
-	note: ColdDeviceStorage.get('sound_note'),
-	noteMy: ColdDeviceStorage.get('sound_noteMy'),
-	notification: ColdDeviceStorage.get('sound_notification'),
-	chat: ColdDeviceStorage.get('sound_chat'),
-	chatBg: ColdDeviceStorage.get('sound_chatBg'),
-	antenna: ColdDeviceStorage.get('sound_antenna'),
-	channel: ColdDeviceStorage.get('sound_channel'),
-});
-
-async function updated(type, sound) {
+async function updated(type: keyof typeof sounds.value, sound) {
 	const v = {
 		type: sound.type,
 		volume: sound.volume,
 	};
 
-	ColdDeviceStorage.set('sound_' + type, v);
+	soundConfigStore.set(`sound_${type}`, v);
 	sounds.value[type] = v;
 }
 
 function reset() {
-	for (const sound of Object.keys(sounds.value)) {
-		const v = ColdDeviceStorage.default['sound_' + sound];
-		ColdDeviceStorage.set('sound_' + sound, v);
+	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
+		const v = soundConfigStore.def[`sound_${sound}`].default;
+		soundConfigStore.set(`sound_${sound}`, v);
 		sounds.value[sound] = v;
 	}
 }

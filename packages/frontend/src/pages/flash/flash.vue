@@ -2,9 +2,9 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700">
-		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="flash" :key="flash.id">
-				<Transition :name="$store.state.animation ? 'zoom' : ''" mode="out-in">
+				<Transition :name="defaultStore.state.animation ? 'zoom' : ''" mode="out-in">
 					<div v-if="started" :class="$style.started">
 						<div class="main _panel">
 							<MkAsUi v-if="root" :component="root" :components="components"/>
@@ -63,6 +63,8 @@ import { AsUiComponent, AsUiRoot, registerAsUiLib } from '@/scripts/aiscript/ui'
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import MkFolder from '@/components/MkFolder.vue';
 import MkCode from '@/components/MkCode.vue';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	id: string;

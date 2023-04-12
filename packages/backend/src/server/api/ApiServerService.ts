@@ -73,28 +73,32 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, (request, reply) => {
+				}>('/' + endpoint.name, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();
 						return;
 					}
 
-					this.apiCallService.handleMultipartRequest(ep, request, reply);
+					// Await so that any error can automatically be translated to HTTP 500
+					await this.apiCallService.handleMultipartRequest(ep, request, reply);
+					return reply;
 				});
 			} else {
 				fastify.all<{
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 32 }, (request, reply) => {
+				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
 					if (request.method === 'GET' && !endpoint.meta.allowGet) {
 						reply.code(405);
 						reply.send();
 						return;
 					}
 
-					this.apiCallService.handleRequest(ep, request, reply);
+					// Await so that any error can automatically be translated to HTTP 500
+					await this.apiCallService.handleRequest(ep, request, reply);
+					return reply;
 				});
 			}
 		}
@@ -163,7 +167,7 @@ export class ApiServerService {
 		// Make sure any unknown path under /api returns HTTP 404 Not Found,
 		// because otherwise ClientServerService will return the base client HTML
 		// page with HTTP 200.
-		fastify.get('*', (request, reply) => {
+		fastify.get('/*', (request, reply) => {
 			reply.code(404);
 			// Mock ApiCallService.send's error handling
 			reply.send({

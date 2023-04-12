@@ -192,7 +192,7 @@ import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { iAmAdmin, iAmModerator } from '@/account';
+import { iAmAdmin, iAmModerator, $i } from '@/account';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 const props = withDefaults(defineProps<{
@@ -262,14 +262,21 @@ async function updateRemoteUser() {
 }
 
 async function resetPassword() {
-	const { password } = await os.api('admin/reset-password', {
-		userId: user.id,
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.resetPasswordConfirm,
 	});
-
-	os.alert({
-		type: 'success',
-		text: i18n.t('newPasswordIs', { password }),
-	});
+	if (confirm.canceled) {
+		return;
+	} else {
+		const { password } = await os.api('admin/reset-password', {
+			userId: user.id,
+		});
+		os.alert({
+			type: 'success',
+			text: i18n.t('newPasswordIs', { password }),
+		});
+	}
 }
 
 async function toggleSuspend(v) {
@@ -337,7 +344,31 @@ async function assignRole() {
 	});
 	if (canceled) return;
 
-	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.id });
+	const { canceled: canceled2, result: period } = await os.select({
+		title: i18n.ts.period,
+		items: [{
+			value: 'indefinitely', text: i18n.ts.indefinitely,
+		}, {
+			value: 'oneHour', text: i18n.ts.oneHour,
+		}, {
+			value: 'oneDay', text: i18n.ts.oneDay,
+		}, {
+			value: 'oneWeek', text: i18n.ts.oneWeek,
+		}, {
+			value: 'oneMonth', text: i18n.ts.oneMonth,
+		}],
+		default: 'indefinitely',
+	});
+	if (canceled2) return;
+
+	const expiresAt = period === 'indefinitely' ? null
+		: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
+		: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)
+		: period === 'oneWeek' ? Date.now() + (1000 * 60 * 60 * 24 * 7)
+		: period === 'oneMonth' ? Date.now() + (1000 * 60 * 60 * 24 * 30)
+		: null;
+
+	await os.apiWithDialog('admin/roles/assign', { roleId, userId: user.id, expiresAt });
 	refreshUser();
 }
 

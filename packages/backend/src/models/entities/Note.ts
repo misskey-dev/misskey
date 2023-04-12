@@ -87,6 +87,11 @@ export class Note {
 	})
 	public localOnly: boolean;
 
+	@Column('varchar', {
+		length: 64, nullable: true,
+	})
+	public reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | null;
+
 	@Column('smallint', {
 		default: 0,
 	})

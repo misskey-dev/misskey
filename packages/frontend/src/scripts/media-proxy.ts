@@ -10,7 +10,10 @@ export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' 
 		imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
 	}
 
-	return `${mustOrigin ? localProxy : instance.mediaProxy}/image.webp?${query({
+	return `${mustOrigin ? localProxy : instance.mediaProxy}/${
+		type === 'preview' ? 'preview.webp'
+		: 'image.webp'
+	}?${query({
 		url: imageUrl,
 		...(!noFallback ? { 'fallback': '1' } : {}),
 		...(type ? { [type]: '1' } : {}),

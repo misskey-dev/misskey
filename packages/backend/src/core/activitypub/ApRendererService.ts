@@ -14,16 +14,18 @@ import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { PollVote } from '@/models/entities/PollVote.js';
-import { UserKeypairStoreService } from '@/core/UserKeypairStoreService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
 import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
-import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
@@ -50,10 +52,11 @@ export class ApRendererService {
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
+		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,
 		private ldSignatureService: LdSignatureService,
-		private userKeypairStoreService: UserKeypairStoreService,
+		private userKeypairService: UserKeypairService,
 		private apMfmService: ApMfmService,
 		private mfmService: MfmService,
 	) {
@@ -91,6 +94,9 @@ export class ApRendererService {
 		} else if (note.visibility === 'home') {
 			to = [`${attributedTo}/followers`];
 			cc = ['https://www.w3.org/ns/activitystreams#Public'];
+		} else if (note.visibility === 'followers') {
+			to = [`${attributedTo}/followers`];
+			cc = [];
 		} else {
 			throw new Error('renderAnnounce: cannot render non-public note');
 		}
@@ -116,7 +122,7 @@ export class ApRendererService {
 		if (block.blockee?.uri == null) {
 			throw new Error('renderBlock: missing blockee uri');
 		}
-	
+
 		return {
 			type: 'Block',
 			id: `${this.config.url}/blocks/${block.id}`,
@@ -134,10 +140,10 @@ export class ApRendererService {
 			published: note.createdAt.toISOString(),
 			object,
 		} as ICreate;
-	
+
 		if (object.to) activity.to = object.to;
 		if (object.cc) activity.cc = object.cc;
-	
+
 		return activity;
 	}
 
@@ -155,7 +161,7 @@ export class ApRendererService {
 	public renderDocument(file: DriveFile): IApDocument {
 		return {
 			type: 'Document',
-			mediaType: file.type,
+			mediaType: file.webpublicType ?? file.type,
 			url: this.driveFileEntityService.getPublicUrl(file),
 			name: file.comment,
 		};
@@ -269,11 +275,7 @@ export class ApRendererService {
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
-			// TODO: cache
-			const emoji = await this.emojisRepository.findOneBy({
-				name,
-				host: IsNull(),
-			});
+			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
 
 			if (emoji) object.tag = [this.renderEmoji(emoji)];
 		}
@@ -291,22 +293,38 @@ export class ApRendererService {
 	}
 
 	@bindThis
+	public renderMove(
+		src: { id: User['id']; host: User['host']; uri: User['host'] },
+		dst: { id: User['id']; host: User['host']; uri: User['host'] },
+	): IMove {
+		const actor = this.userEntityService.isLocalUser(src) ? `${this.config.url}/users/${src.id}` : src.uri!;
+		const target = this.userEntityService.isLocalUser(dst) ? `${this.config.url}/users/${dst.id}` : dst.uri!;
+		return {
+			id: `${this.config.url}/moves/${src.id}/${dst.id}`,
+			actor,
+			type: 'Move',
+			object: actor,
+			target,
+		};
+	}
+
+	@bindThis
 	public async renderNote(note: Note, dive = true): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]) => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
 			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
 		};
-	
+
 		let inReplyTo;
 		let inReplyToNote: Note | null;
-	
+
 		if (note.replyId) {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
-	
+
 			if (inReplyToNote != null) {
 				const inReplyToUser = await this.usersRepository.findOneBy({ id: inReplyToNote.userId });
-	
+
 				if (inReplyToUser != null) {
 					if (inReplyToNote.uri) {
 						inReplyTo = inReplyToNote.uri;
@@ -322,24 +340,24 @@ export class ApRendererService {
 		} else {
 			inReplyTo = null;
 		}
-	
+
 		let quote;
-	
+
 		if (note.renoteId) {
 			const renote = await this.notesRepository.findOneBy({ id: note.renoteId });
-	
+
 			if (renote) {
 				quote = renote.uri ? renote.uri : `${this.config.url}/notes/${renote.id}`;
 			}
 		}
-	
+
 		const attributedTo = `${this.config.url}/users/${note.userId}`;
-	
+
 		const mentions = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
-	
+
 		let to: string[] = [];
 		let cc: string[] = [];
-	
+
 		if (note.visibility === 'public') {
 			to = ['https://www.w3.org/ns/activitystreams#Public'];
 			cc = [`${attributedTo}/followers`].concat(mentions);
@@ -352,44 +370,44 @@ export class ApRendererService {
 		} else {
 			to = mentions;
 		}
-	
+
 		const mentionedUsers = note.mentions.length > 0 ? await this.usersRepository.findBy({
 			id: In(note.mentions),
 		}) : [];
-	
+
 		const hashtagTags = (note.tags ?? []).map(tag => this.renderHashtag(tag));
 		const mentionTags = mentionedUsers.map(u => this.renderMention(u));
-	
+
 		const files = await getPromisedFiles(note.fileIds);
-	
+
 		const text = note.text ?? '';
 		let poll: Poll | null = null;
-	
+
 		if (note.hasPoll) {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 		}
-	
+
 		let apText = text;
-	
+
 		if (quote) {
 			apText += `\n\nRE: ${quote}`;
 		}
-	
+
 		const summary = note.cw === '' ? String.fromCharCode(0x200B) : note.cw;
-	
+
 		const content = this.apMfmService.getNoteHtml(Object.assign({}, note, {
 			text: apText,
 		}));
-	
+
 		const emojis = await this.getEmojis(note.emojis);
 		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
-	
+
 		const tag = [
 			...hashtagTags,
 			...mentionTags,
 			...apemojis,
 		];
-	
+
 		const asPoll = poll ? {
 			type: 'Question',
 			content: this.apMfmService.getNoteHtml(Object.assign({}, note, {
@@ -470,7 +488,7 @@ export class ApRendererService {
 			...hashtagTags,
 		];
 
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const person = {
 			type: isSystem ? 'Application' : user.isBot ? 'Service' : 'Person',
@@ -495,6 +513,14 @@ export class ApRendererService {
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
 		} as any;
+
+		if (user.movedToUri) {
+			person.movedTo = user.movedToUri;
+		}
+
+		if (user.alsoKnownAs) {
+			person.alsoKnownAs = user.alsoKnownAs;
+		}
 
 		if (profile.birthday) {
 			person['vcard:bday'] = profile.birthday;
@@ -601,7 +627,7 @@ export class ApRendererService {
 		if (typeof x === 'object' && x.id == null) {
 			x.id = `${this.config.url}/${uuid()}`;
 		}
-	
+
 		return Object.assign({
 			'@context': [
 				'https://www.w3.org/ns/activitystreams',
@@ -634,18 +660,18 @@ export class ApRendererService {
 			],
 		}, x as T & { id: string; });
 	}
-	
+
 	@bindThis
 	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
-		const keypair = await this.userKeypairStoreService.getUserKeypair(user.id);
-	
+		const keypair = await this.userKeypairService.getUserKeypair(user.id);
+
 		const ldSignature = this.ldSignatureService.use();
 		ldSignature.debug = false;
 		activity = await ldSignature.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
-	
+
 		return activity;
 	}
-	
+
 	/**
 	 * Render OrderedCollectionPage
 	 * @param id URL of self
@@ -686,11 +712,11 @@ export class ApRendererService {
 			type: 'OrderedCollection',
 			totalItems,
 		};
-	
+
 		if (first) page.first = first;
 		if (last) page.last = last;
 		if (orderedItems) page.orderedItems = orderedItems;
-	
+
 		return page;
 	}
 
@@ -698,13 +724,9 @@ export class ApRendererService {
 	private async getEmojis(names: string[]): Promise<Emoji[]> {
 		if (names == null || names.length === 0) return [];
 
-		const emojis = await Promise.all(
-			names.map(name => this.emojisRepository.findOneBy({
-				name,
-				host: IsNull(),
-			})),
-		);
+		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
+		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
 
-		return emojis.filter(emoji => emoji != null) as Emoji[];
+		return emojis;
 	}
 }

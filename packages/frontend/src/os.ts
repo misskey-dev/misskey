@@ -215,6 +215,7 @@ export function actions<T extends {
 	value: string;
 	text: string;
 	primary?: boolean,
+	danger?: boolean,
 }[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string | null;
@@ -229,6 +230,7 @@ export function actions<T extends {
 			actions: props.actions.map(a => ({
 				text: a.text,
 				primary: a.primary,
+				danger: a.danger,
 				callback: () => {
 					resolve({ canceled: false, result: a.value });
 				},
@@ -362,7 +364,7 @@ export function select<C = any>(props: {
 	});
 }
 
-export function success() {
+export function success(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
 		window.setTimeout(() => {
@@ -377,7 +379,7 @@ export function success() {
 	});
 }
 
-export function waiting() {
+export function waiting(): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const showing = ref(true);
 		popup(MkWaitingDialog, {
@@ -528,7 +530,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	width?: number;
 	viaKeyboard?: boolean;
 	onClosing?: () => void;
-}) {
+}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		let dispose;
 		popup(MkPopupMenu, {
@@ -551,7 +553,7 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 	});
 }
 
-export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent) {
+export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent): Promise<void> {
 	ev.preventDefault();
 	return new Promise((resolve, reject) => {
 		let dispose;
@@ -569,7 +571,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 	});
 }
 
-export function post(props: Record<string, any> = {}) {
+export function post(props: Record<string, any> = {}): Promise<void> {
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
 		// NOTE: ただ、dynamic importしない場合、MkPostFormDialogインスタンスが使いまわされ、

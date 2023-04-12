@@ -2,7 +2,7 @@
 <div :class="[$style.root, { [$style.withWallpaper]: wallpaper }]">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-	<MkStickyContainer :class="$style.contents">
+	<MkStickyContainer v-container :class="$style.contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
 		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 			<div :class="$style.content" style="container-type: inline-size;">
@@ -18,7 +18,7 @@
 
 	<button v-if="!isDesktop && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
 
-	<div v-if="isMobile" :class="$style.nav">
+	<div v-if="isMobile" ref="navFooter" :class="$style.nav">
 		<button :class="$style.navButton" class="_button" @click="drawerMenuShowing = true"><i :class="$style.navButtonIcon" class="ti ti-menu-2"></i><span v-if="menuIndicated" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.currentRoute.value.name === 'index' ? top() : mainRouter.push('/')"><i :class="$style.navButtonIcon" class="ti ti-home"></i></button>
 		<button :class="$style.navButton" class="_button" @click="mainRouter.push('/my/notifications')"><i :class="$style.navButtonIcon" class="ti ti-bell"></i><span v-if="$i?.hasUnreadNotification" :class="$style.navButtonIndicator"><i class="_indicatorCircle"></i></span></button>
@@ -27,10 +27,10 @@
 	</div>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -42,10 +42,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
 			<XDrawerMenu/>
@@ -53,10 +53,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="widgetsShowing"
@@ -68,10 +68,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
 	>
 		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
 			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef, watch, inject, Ref } from 'vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
 import { StickySidebar } from '@/scripts/sticky-sidebar';
@@ -98,6 +98,7 @@ import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
+import { CURRENT_STICKY_BOTTOM } from '@/const';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -115,6 +116,7 @@ window.addEventListener('resize', () => {
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsEl = $shallowRef<HTMLElement>();
 const widgetsShowing = $ref(false);
+const navFooter = $shallowRef<HTMLElement>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
@@ -207,6 +209,21 @@ function top() {
 }
 
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
+
+let navFooterHeight = $ref(0);
+provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
+
+watch($$(navFooter), () => {
+	if (navFooter) {
+		navFooterHeight = navFooter.offsetHeight;
+		document.body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
+	} else {
+		navFooterHeight = 0;
+		document.body.style.setProperty('--stickyBottom', '0px');
+	}
+}, {
+	immediate: true,
+});
 </script>
 
 <style lang="scss" module>
@@ -279,7 +296,7 @@ $widgets-hide-threshold: 1090px;
 }
 
 .widgets {
-	padding: 0 var(--margin);
+	padding: 0 var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
@@ -312,7 +329,7 @@ $widgets-hide-threshold: 1090px;
 	right: 0;
 	z-index: 1001;
 	height: 100dvh;
-	padding: var(--margin) !important;
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -342,8 +359,8 @@ $widgets-hide-threshold: 1090px;
 	grid-gap: 8px;
 	width: 100%;
 	box-sizing: border-box;
-	-webkit-backdrop-filter: var(--blur, blur(32px));
-	backdrop-filter: var(--blur, blur(32px));
+	-webkit-backdrop-filter: var(--blur, blur(24px));
+	backdrop-filter: var(--blur, blur(24px));
 	background-color: var(--header);
 	border-top: solid 0.5px var(--divider);
 }

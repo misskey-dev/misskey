@@ -69,6 +69,7 @@ function save(announcement) {
 				type: 'success',
 				text: i18n.ts.saved,
 			});
+			refresh();
 		}).catch(err => {
 			os.alert({
 				type: 'error',
@@ -89,6 +90,14 @@ function save(announcement) {
 		});
 	}
 }
+
+function refresh() {
+	os.api('admin/announcements/list').then(announcementResponse => {
+		announcements = announcementResponse;
+	});
+}
+
+refresh();
 
 const headerActions = $computed(() => [{
 	asFullButton: true,

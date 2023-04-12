@@ -73,6 +73,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'useBlurEffectForModal',
 	'useBlurEffect',
 	'showFixedPostForm',
+	'showFixedPostFormInChannel',
 	'enableInfiniteScroll',
 	'useReactionPickerForContextMenu',
 	'showGapBetweenNotesInTimeline',
@@ -398,7 +399,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
 	}, null, {
-		text: ts._preferencesBackups.delete,
+		text: ts.delete,
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
 		danger: true,
@@ -422,7 +423,6 @@ onUnmounted(() => {
 definePageMetadata(computed(() => ({
 	title: ts.preferencesBackups,
 	icon: 'ti ti-device-floppy',
-	bg: 'var(--bg)',
 })));
 </script>
 

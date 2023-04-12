@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "13.8.1",
+	"version": "13.11.2",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@7.27.0",
+	"packageManager": "pnpm@8.1.1",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -16,6 +16,7 @@
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
 		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
+		"build-storybook": "pnpm --filter frontend build-storybook",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
 		"init": "pnpm migrate",
@@ -31,8 +32,8 @@
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
 		"jest": "cd packages/backend && pnpm jest",
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
-		"test": "pnpm jest",
-		"test-and-coverage": "pnpm jest-and-coverage",
+		"test": "pnpm -r test",
+		"test-and-coverage": "pnpm -r test-and-coverage",
 		"format": "pnpm exec gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
@@ -50,17 +51,17 @@
 		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0",
-		"typescript": "4.9.5"
+		"typescript": "5.0.3"
 	},
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.53.0",
-		"@typescript-eslint/parser": "5.53.0",
+		"@typescript-eslint/eslint-plugin": "5.57.1",
+		"@typescript-eslint/parser": "5.57.1",
 		"cross-env": "7.0.3",
-		"cypress": "12.7.0",
-		"eslint": "8.35.0",
-		"start-server-and-test": "1.15.4"
+		"cypress": "12.9.0",
+		"eslint": "8.37.0",
+		"start-server-and-test": "2.0.0"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.2.0"

@@ -14,10 +14,10 @@
 		</div>
 	</header>
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
 		@enter="enter"
 		@after-enter="afterEnter"
 		@leave="leave"
@@ -26,7 +26,7 @@
 		<div v-show="showBody" ref="content" :class="[$style.content, { [$style.omitted]: omitted }]">
 			<slot></slot>
 			<button v-if="omitted" :class="$style.fade" class="_button" @click="() => { ignoreOmit = true; omitted = false; }">
-				<span :class="$style.fadeLabel">{{ $ts.showMore }}</span>
+				<span :class="$style.fadeLabel">{{ i18n.ts.showMore }}</span>
 			</button>
 		</div>
 	</Transition>
@@ -35,6 +35,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	props: {
@@ -79,6 +81,8 @@ export default defineComponent({
 			showBody: this.expanded,
 			omitted: null,
 			ignoreOmit: false,
+			defaultStore,
+			i18n,
 		};
 	},
 	mounted() {

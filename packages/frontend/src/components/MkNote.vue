@@ -31,7 +31,8 @@
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
@@ -56,7 +57,7 @@
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else :class="$style.translated">
-								<b>{{ $t('translatedFrom', { x: translation.sourceLang }) }}: </b>
+								<b>{{ i18n.t('translatedFrom', { x: translation.sourceLang }) }}: </b>
 								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :emoji-urls="appearNote.emojis"/>
 							</div>
 						</div>
@@ -102,10 +103,14 @@
 					<i class="ti ti-ban"></i>
 				</button>
 				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
-					<i class="ti ti-plus"></i>
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
+					<i v-else class="ti ti-plus"></i>
 				</button>
 				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
 					<i class="ti ti-minus"></i>
+				</button>
+				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
+					<i class="ti ti-paperclip"></i>
 				</button>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown="menu()">
 					<i class="ti ti-dots"></i>
@@ -149,13 +154,14 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { getNoteMenu } from '@/scripts/get-note-menu';
+import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { MenuItem } from '@/types/menu';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -163,6 +169,7 @@ const props = defineProps<{
 }>();
 
 const inChannel = inject('inChannel', null);
+const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
 
 let note = $ref(deepClone(props.note));
 
@@ -189,6 +196,7 @@ const menuButton = shallowRef<HTMLElement>();
 const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
+const clipButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
@@ -255,9 +263,19 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
-				os.apiWithDialog('notes/create', {
+				const el = renoteButton.value as HTMLElement | null | undefined;
+				if (el) {
+					const rect = el.getBoundingClientRect();
+					const x = rect.left + (el.offsetWidth / 2);
+					const y = rect.top + (el.offsetHeight / 2);
+					os.popup(MkRippleEffect, { x, y }, {}, 'end');
+				}
+					
+				os.api('notes/create', {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
+				}).then(() => {
+					os.toast(i18n.ts.renoted);
 				});
 			},
 		}, {
@@ -276,8 +294,18 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
-			os.apiWithDialog('notes/create', {
+			const el = renoteButton.value as HTMLElement | null | undefined;
+			if (el) {
+				const rect = el.getBoundingClientRect();
+				const x = rect.left + (el.offsetWidth / 2);
+				const y = rect.top + (el.offsetHeight / 2);
+				os.popup(MkRippleEffect, { x, y }, {}, 'end');
+			}
+				
+			os.api('notes/create', {
 				renoteId: appearNote.id,
+			}).then(() => {
+				os.toast(i18n.ts.renoted);
 			});
 		},
 	}, {
@@ -307,18 +335,32 @@ function reply(viaKeyboard = false): void {
 
 function react(viaKeyboard = false): void {
 	pleaseLogin();
-	blur();
-	reactionPicker.show(reactButton.value, reaction => {
+	if (appearNote.reactionAcceptance === 'likeOnly') {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
-			reaction: reaction,
+			reaction: '❤️',
 		});
-		if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
-			claimAchievement('reactWithoutRead');
+		const el = reactButton.value as HTMLElement | null | undefined;
+		if (el) {
+			const rect = el.getBoundingClientRect();
+			const x = rect.left + (el.offsetWidth / 2);
+			const y = rect.top + (el.offsetHeight / 2);
+			os.popup(MkRippleEffect, { x, y }, {}, 'end');
 		}
-	}, () => {
-		focus();
-	});
+	} else {
+		blur();
+		reactionPicker.show(reactButton.value, reaction => {
+			os.api('notes/reactions/create', {
+				noteId: appearNote.id,
+				reaction: reaction,
+			});
+			if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+				claimAchievement('reactWithoutRead');
+			}
+		}, () => {
+			focus();
+		});
+	}
 }
 
 function undoReact(note): void {
@@ -328,8 +370,6 @@ function undoReact(note): void {
 		noteId: note.id,
 	});
 }
-
-const currentClipPage = inject<Ref<misskey.entities.Clip> | null>('currentClipPage', null);
 
 function onContextmenu(ev: MouseEvent): void {
 	const isLink = (el: HTMLElement) => {
@@ -345,14 +385,18 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), ev).then(focus);
+		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClipPage }), menuButton.value, {
+	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), menuButton.value, {
 		viaKeyboard,
 	}).then(focus);
+}
+
+async function clip() {
+	os.popupMenu(await getNoteClipMenu({ note: note, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
@@ -451,16 +495,17 @@ function showReactions(): void {
 			top: 12px;
 			right: 12px;
 			padding: 0 4px;
+			margin-bottom: 0 !important;
 			background: var(--popup);
-			border-radius: 6px;
+			border-radius: 8px;
 			box-shadow: 0px 4px 32px var(--shadow);
 		}
 
 		.footerButton {
-			font-size: 80%;
+			font-size: 90%;
 
 			&:not(:last-child) {
-				margin-right: 6px;
+				margin-right: 0;
 			}
 		}
 	}
@@ -568,14 +613,15 @@ function showReactions(): void {
 }
 
 .article {
+	position: relative;
 	display: flex;
-	padding: 28px 32px 18px;
+	padding: 28px 32px;
 }
 
 .avatar {
 	flex-shrink: 0;
 	display: block !important;
-	margin: 0 14px 8px 0;
+	margin: 0 14px 0 0;
 	width: 58px;
 	height: 58px;
 	position: sticky !important;
@@ -598,9 +644,9 @@ function showReactions(): void {
 
 .showLess {
 	width: 100%;
-	margin-top: 1em;
+	margin-top: 14px;
 	position: sticky;
-	bottom: 1em;
+	bottom: calc(var(--stickyBottom, 0px) + 14px);
 }
 
 .showLessLabel {
@@ -680,6 +726,10 @@ function showReactions(): void {
 	font-size: 80%;
 }
 
+.footer {
+	margin-bottom: -14px;
+}
+
 .footerButton {
 	margin: 0;
 	padding: 8px;
@@ -710,7 +760,7 @@ function showReactions(): void {
 	}
 
 	.article {
-		padding: 24px 26px 14px;
+		padding: 24px 26px;
 	}
 
 	.avatar {
@@ -729,7 +779,11 @@ function showReactions(): void {
 	}
 
 	.article {
-		padding: 20px 22px 12px;
+		padding: 20px 22px;
+	}
+
+	.footer {
+		margin-bottom: -8px;
 	}
 }
 
@@ -748,13 +802,13 @@ function showReactions(): void {
 	}
 
 	.article {
-		padding: 14px 16px 9px;
+		padding: 14px 16px;
 	}
 }
 
 @container (max-width: 450px) {
 	.avatar {
-		margin: 0 10px 8px 0;
+		margin: 0 10px 0 0;
 		width: 46px;
 		height: 46px;
 		top: calc(14px + var(--stickyTop, 0px));
@@ -762,17 +816,21 @@ function showReactions(): void {
 }
 
 @container (max-width: 400px) {
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 18px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 18px;
+			}
 		}
 	}
 }
 
 @container (max-width: 350px) {
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 12px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 12px;
+			}
 		}
 	}
 }
@@ -783,9 +841,11 @@ function showReactions(): void {
 		height: 44px;
 	}
 
-	.footerButton {
-		&:not(:last-child) {
-			margin-right: 8px;
+	.root:not(.showActionsOnlyHover) {
+		.footerButton {
+			&:not(:last-child) {
+				margin-right: 8px;
+			}
 		}
 	}
 }

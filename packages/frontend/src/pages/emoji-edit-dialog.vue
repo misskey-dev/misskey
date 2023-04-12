@@ -22,6 +22,9 @@
 				<template #label>{{ i18n.ts.tags }}</template>
 				<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 			</MkInput>
+			<MkInput v-model="license">
+				<template #label>{{ i18n.ts.license }}</template>
+			</MkInput>
 			<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</MkSpacer>
@@ -45,6 +48,7 @@ let dialog = $ref(null);
 let name: string = $ref(props.emoji.name);
 let category: string = $ref(props.emoji.category);
 let aliases: string = $ref(props.emoji.aliases.join(' '));
+let license: string = $ref(props.emoji.license ?? '');
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean, updated?: any }): void,
@@ -61,6 +65,7 @@ async function update() {
 		name,
 		category,
 		aliases: aliases.split(' '),
+		license: license === '' ? null : license,
 	});
 
 	emit('done', {
@@ -69,6 +74,7 @@ async function update() {
 			name,
 			category,
 			aliases: aliases.split(' '),
+			license: license === '' ? null : license,
 		},
 	});
 

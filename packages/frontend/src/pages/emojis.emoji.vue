@@ -34,6 +34,17 @@ function menu(ev) {
 			copyToClipboard(`:${props.emoji.name}:`);
 			os.success();
 		},
+	}, {
+		text: i18n.ts.info,
+		icon: 'ti ti-info-circle',
+		action: () => {
+			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
+				os.alert({
+					type: 'info',
+					text: `License: ${res.license}`,
+				});
+			});
+		},
 	}], ev.currentTarget ?? ev.target);
 }
 </script>

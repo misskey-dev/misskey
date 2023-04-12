@@ -483,3 +483,5 @@ _deck:
     antenna: "Antennes"
     list: "Lijsten"
     mentions: "Vermeldingen"
+_webhookSettings:
+  name: "Naam"

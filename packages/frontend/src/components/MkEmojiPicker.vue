@@ -35,8 +35,10 @@
 					<button
 						v-for="emoji in pinned"
 						:key="emoji"
+						:data-emoji="emoji"
 						class="_button item"
 						tabindex="0"
+						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
 						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
@@ -52,6 +54,8 @@
 						v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
 						class="_button item"
+						:data-emoji="emoji"
+						@pointerenter="computeButtonTitle"
 						@click="chosen(emoji, $event)"
 					>
 						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
@@ -90,7 +94,7 @@
 import { ref, shallowRef, computed, watch, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from '@/components/MkEmojiPicker.section.vue';
-import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories } from '@/scripts/emojilist';
+import { emojilist, emojiCharByCategory, UnicodeEmojiDef, unicodeEmojiCategories as categories, getEmojiName } from '@/scripts/emojilist';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
@@ -291,6 +295,13 @@ function getKey(emoji: string | Misskey.entities.CustomEmoji | UnicodeEmojiDef):
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 }
 
+/** @see MkEmojiPicker.section.vue */
+function computeButtonTitle(ev: MouseEvent): void {
+	const elm = ev.target as HTMLElement;
+	const emoji = elm.dataset.emoji as string;
+	elm.title = getEmojiName(emoji) ?? emoji;
+}
+
 function chosen(emoji: any, ev?: MouseEvent) {
 	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el) {
@@ -485,6 +496,10 @@ defineExpose({
 		border: none;
 		background: transparent;
 		color: var(--fg);
+
+		&:not(:focus):not(.filled) {
+			margin-bottom: env(safe-area-inset-bottom, 0px);
+		}
 
 		&:not(.filled) {
 			order: 1;

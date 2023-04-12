@@ -1,7 +1,7 @@
 <template>
 <div>
 	<MkStickyContainer>
-		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+		<template #header><XHeader :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
@@ -42,6 +42,14 @@
 
 							<MkSwitch v-model="emailRequiredForSignup">
 								<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+							</MkSwitch>
+
+							<MkSwitch v-model="enableChartsForRemoteUser">
+								<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
+							</MkSwitch>
+
+							<MkSwitch v-model="enableChartsForFederatedInstances">
+								<template #label>{{ i18n.ts.enableChartsForFederatedInstances }}</template>
 							</MkSwitch>
 						</div>
 					</FormSection>
@@ -133,6 +141,13 @@
 				</div>
 			</FormSuspense>
 		</MkSpacer>
+		<template #footer>
+			<div :class="$style.footer">
+				<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</MkSpacer>
+			</div>
+		</template>
 	</MkStickyContainer>
 </div>
 </template>
@@ -150,6 +165,7 @@ import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkButton from '@/components/MkButton.vue';
 
 let name: string | null = $ref(null);
 let description: string | null = $ref(null);
@@ -167,6 +183,8 @@ let cacheRemoteFiles: boolean = $ref(false);
 let enableRegistration: boolean = $ref(false);
 let emailRequiredForSignup: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
+let enableChartsForRemoteUser: boolean = $ref(false);
+let enableChartsForFederatedInstances: boolean = $ref(false);
 let swPublicKey: any = $ref(null);
 let swPrivateKey: any = $ref(null);
 let deeplAuthKey: string = $ref('');
@@ -190,6 +208,8 @@ async function init() {
 	enableRegistration = !meta.disableRegistration;
 	emailRequiredForSignup = meta.emailRequiredForSignup;
 	enableServiceWorker = meta.enableServiceWorker;
+	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
+	enableChartsForFederatedInstances = meta.enableChartsForFederatedInstances;
 	swPublicKey = meta.swPublickey;
 	swPrivateKey = meta.swPrivateKey;
 	deeplAuthKey = meta.deeplAuthKey;
@@ -214,6 +234,8 @@ function save() {
 		disableRegistration: !enableRegistration,
 		emailRequiredForSignup,
 		enableServiceWorker,
+		enableChartsForRemoteUser,
+		enableChartsForFederatedInstances,
 		swPublicKey,
 		swPrivateKey,
 		deeplAuthKey,
@@ -223,13 +245,6 @@ function save() {
 	});
 }
 
-const headerActions = $computed(() => [{
-	asFullButton: true,
-	icon: 'ti ti-check',
-	text: i18n.ts.save,
-	handler: save,
-}]);
-
 const headerTabs = $computed(() => []);
 
 definePageMetadata({
@@ -237,3 +252,10 @@ definePageMetadata({
 	icon: 'ti ti-settings',
 });
 </script>
+
+<style lang="scss" module>
+.footer {
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+}
+</style>

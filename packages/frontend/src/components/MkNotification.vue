@@ -69,8 +69,9 @@
 			<span v-else-if="notification.type === 'followRequestAccepted'" :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</span>
 			<template v-else-if="notification.type === 'receiveFollowRequest'">
 				<span :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.receiveFollowRequest }}</span>
-				<div v-if="full && !followRequestDone">
-					<button class="_textButton" @click="acceptFollowRequest()">{{ i18n.ts.accept }}</button> | <button class="_textButton" @click="rejectFollowRequest()">{{ i18n.ts.reject }}</button>
+				<div v-if="full && !followRequestDone" :class="$style.followRequestCommands">
+					<MkButton :class="$style.followRequestCommandButton" rounded primary @click="acceptFollowRequest()"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
+					<MkButton :class="$style.followRequestCommandButton" rounded danger @click="rejectFollowRequest()"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
 				</div>
 			</template>
 			<span v-else-if="notification.type === 'app'" :class="$style.text">
@@ -82,17 +83,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef, onMounted, onUnmounted, watch } from 'vue';
+import { ref, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import XReactionTooltip from '@/components/MkReactionTooltip.vue';
+import MkButton from '@/components/MkButton.vue';
 import { getNoteSummary } from '@/scripts/get-note-summary';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
-import { stream } from '@/stream';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 
@@ -107,35 +108,6 @@ const props = withDefaults(defineProps<{
 
 const elRef = shallowRef<HTMLElement>(null);
 const reactionRef = ref(null);
-
-let readObserver: IntersectionObserver | undefined;
-let connection;
-
-onMounted(() => {
-	if (!props.notification.isRead) {
-		readObserver = new IntersectionObserver((entries, observer) => {
-			if (!entries.some(entry => entry.isIntersecting)) return;
-			stream.send('readNotification', {
-				id: props.notification.id,
-			});
-			observer.disconnect();
-		});
-
-		readObserver.observe(elRef.value);
-
-		connection = stream.useChannel('main');
-		connection.on('readAllNotifications', () => readObserver.disconnect());
-
-		watch(props.notification.isRead, () => {
-			readObserver.disconnect();
-		});
-	}
-});
-
-onUnmounted(() => {
-	if (readObserver) readObserver.disconnect();
-	if (connection) connection.dispose();
-});
 
 const followRequestDone = ref(false);
 
@@ -292,6 +264,16 @@ useTooltip(reactionRef, (showing) => {
 
 .quote:last-child {
 	margin-left: 4px;
+}
+
+.followRequestCommands {
+	display: flex;
+	gap: 8px;
+	max-width: 300px;
+	margin-top: 8px;
+}
+.followRequestCommandButton {
+	flex: 1;
 }
 
 @container (max-width: 600px) {

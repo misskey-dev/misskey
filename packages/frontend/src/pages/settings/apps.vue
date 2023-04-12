@@ -8,27 +8,29 @@
 			</div>
 		</template>
 		<template #default="{items}">
-			<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
-				<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
-				<div class="body">
-					<div class="name">{{ token.name }}</div>
-					<div class="description">{{ token.description }}</div>
-					<MkKeyValue oneline>
-						<template #key>{{ i18n.ts.installedDate }}</template>
-						<template #value><MkTime :time="token.createdAt"/></template>
-					</MkKeyValue>
-					<MkKeyValue oneline>
-						<template #key>{{ i18n.ts.lastUsedDate }}</template>
-						<template #value><MkTime :time="token.lastUsedAt"/></template>
-					</MkKeyValue>
-					<details>
-						<summary>{{ i18n.ts.details }}</summary>
-						<ul>
-							<li v-for="p in token.permission" :key="p">{{ $t(`_permissions.${p}`) }}</li>
-						</ul>
-					</details>
-					<div class="actions">
-						<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
+			<div class="_gaps">
+				<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
+					<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
+					<div class="body">
+						<div class="name">{{ token.name }}</div>
+						<div class="description">{{ token.description }}</div>
+						<MkKeyValue oneline>
+							<template #key>{{ i18n.ts.installedDate }}</template>
+							<template #value><MkTime :time="token.createdAt"/></template>
+						</MkKeyValue>
+						<MkKeyValue oneline>
+							<template #key>{{ i18n.ts.lastUsedDate }}</template>
+							<template #value><MkTime :time="token.lastUsedAt"/></template>
+						</MkKeyValue>
+						<details>
+							<summary>{{ i18n.ts.details }}</summary>
+							<ul>
+								<li v-for="p in token.permission" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+							</ul>
+						</details>
+						<div class="actions">
+							<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -51,6 +53,7 @@ const list = ref<any>(null);
 const pagination = {
 	endpoint: 'i/apps' as const,
 	limit: 100,
+	noPaging: true,
 	params: {
 		sort: '+lastUsedAt',
 	},

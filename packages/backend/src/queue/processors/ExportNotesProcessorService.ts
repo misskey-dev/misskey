@@ -10,10 +10,10 @@ import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { Note } from '@/models/entities/Note.js';
+import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { DbUserJobData } from '../types.js';
-import { bindThis } from '@/decorators.js';
+import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
 export class ExportNotesProcessorService {
@@ -39,7 +39,7 @@ export class ExportNotesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
@@ -141,5 +141,6 @@ function serialize(note: Note, poll: Poll | null = null): Record<string, unknown
 		visibility: note.visibility,
 		visibleUserIds: note.visibleUserIds,
 		localOnly: note.localOnly,
+		reactionAcceptance: note.reactionAcceptance,
 	};
 }

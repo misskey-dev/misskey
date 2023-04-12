@@ -1,13 +1,13 @@
 <template>
 <MkStickyContainer>
-	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><XHeader :tabs="headerTabs"/></template>
 	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
 
 				<template v-if="useObjectStorage">
-					<MkInput v-model="objectStorageBaseUrl">
+					<MkInput v-model="objectStorageBaseUrl" :placeholder="'https://example.com'">
 						<template #label>{{ i18n.ts.objectStorageBaseUrl }}</template>
 						<template #caption>{{ i18n.ts.objectStorageBaseUrlDesc }}</template>
 					</MkInput>
@@ -22,8 +22,9 @@
 						<template #caption>{{ i18n.ts.objectStoragePrefixDesc }}</template>
 					</MkInput>
 
-					<MkInput v-model="objectStorageEndpoint">
+					<MkInput v-model="objectStorageEndpoint" :placeholder="'example.com'">
 						<template #label>{{ i18n.ts.objectStorageEndpoint }}</template>
+						<template #prefix>https://</template>
 						<template #caption>{{ i18n.ts.objectStorageEndpointDesc }}</template>
 					</MkInput>
 
@@ -60,11 +61,19 @@
 
 					<MkSwitch v-model="objectStorageS3ForcePathStyle">
 						<template #label>s3ForcePathStyle</template>
+						<template #caption>{{ i18n.ts.s3ForcePathStyleDesc }}</template>
 					</MkSwitch>
 				</template>
 			</div>
 		</FormSuspense>
 	</MkSpacer>
+	<template #footer>
+		<div :class="$style.footer">
+			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</MkSpacer>
+		</div>
+	</template>
 </MkStickyContainer>
 </template>
 
@@ -79,6 +88,7 @@ import * as os from '@/os';
 import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkButton from '@/components/MkButton.vue';
 
 let useObjectStorage: boolean = $ref(false);
 let objectStorageBaseUrl: string | null = $ref(null);
@@ -131,13 +141,6 @@ function save() {
 	});
 }
 
-const headerActions = $computed(() => [{
-	asFullButton: true,
-	icon: 'ti ti-check',
-	text: i18n.ts.save,
-	handler: save,
-}]);
-
 const headerTabs = $computed(() => []);
 
 definePageMetadata({
@@ -145,3 +148,10 @@ definePageMetadata({
 	icon: 'ti ti-cloud',
 });
 </script>
+
+<style lang="scss" module>
+.footer {
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+}
+</style>

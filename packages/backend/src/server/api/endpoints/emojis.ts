@@ -23,24 +23,7 @@ export const meta = {
 				items: {
 					type: 'object',
 					optional: false, nullable: false,
-					properties: {
-						name: {
-							type: 'string',
-							optional: false, nullable: false,
-						},
-						aliases: {
-							type: 'array',
-							optional: false, nullable: false,
-							items: {
-								type: 'string',
-								optional: false, nullable: false,
-							},
-						},
-						category: {
-							type: 'string',
-							optional: false, nullable: true,
-						},
-					},
+					ref: 'EmojiSimple',
 				},
 			},
 		},
@@ -74,10 +57,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				order: {
 					category: 'ASC',
 					name: 'ASC',
-				},
-				cache: {
-					id: 'meta_emojis',
-					milliseconds: 3600000,	// 1 hour
 				},
 			});
 

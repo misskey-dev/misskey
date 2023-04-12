@@ -39,4 +39,10 @@ export class RoleAssignment {
 	})
 	@JoinColumn()
 	public role: Role | null;
+
+	@Index()
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public expiresAt: Date | null;
 }

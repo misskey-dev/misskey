@@ -1,5 +1,5 @@
 <template>
-<div class="mkw-button data-cy-mkw-button">
+<div data-cy-mkw-button class="mkw-button">
 	<MkButton :primary="widgetProps.colored" full @click="run">
 		{{ widgetProps.label }}
 	</MkButton>
