@@ -329,7 +329,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.redisClient.xadd(
 				`channelTimeline:${data.channel.id}`,
 				'MAXLEN', '~', '1000',
-				`${this.idService.parse(note.id).date.getTime()}-*`,
+				'*',
 				'note', note.id);
 		}
 
@@ -493,14 +493,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		});
 
-		// Antenna
-		for (const antenna of (await this.antennaService.getAntennas())) {
-			this.antennaService.checkHitAntenna(antenna, note, user).then(hit => {
-				if (hit) {
-					this.antennaService.addNoteToAntenna(antenna, note, user);
-				}
-			});
-		}
+		this.antennaService.addNoteToAntennas(note, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);

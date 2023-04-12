@@ -98,6 +98,7 @@ import * as ep___channels_update from './endpoints/channels/update.js';
 import * as ep___channels_favorite from './endpoints/channels/favorite.js';
 import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
 import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
+import * as ep___channels_search from './endpoints/channels/search.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -431,6 +432,7 @@ const $channels_update: Provider = { provide: 'ep:channels/update', useClass: ep
 const $channels_favorite: Provider = { provide: 'ep:channels/favorite', useClass: ep___channels_favorite.default };
 const $channels_unfavorite: Provider = { provide: 'ep:channels/unfavorite', useClass: ep___channels_unfavorite.default };
 const $channels_myFavorites: Provider = { provide: 'ep:channels/my-favorites', useClass: ep___channels_myFavorites.default };
+const $channels_search: Provider = { provide: 'ep:channels/search', useClass: ep___channels_search.default };
 const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useClass: ep___charts_activeUsers.default };
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
@@ -768,6 +770,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
+		$channels_search,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -1099,6 +1102,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
+		$channels_search,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
