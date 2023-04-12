@@ -3,27 +3,43 @@ import { IsNull } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
 import type { LocalUser } from '@/models/entities/User.js';
-import { User } from '@/models/entities/User.js';
-import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, FollowingsRepository, Muting, MutingsRepository, UsersRepository } from '@/models/index.js';
+import type { RelationshipJobData } from '@/queue/types.js';
 
+import { User } from '@/models/entities/User.js';
+
+import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RelayService } from '@/core/RelayService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { AccountUpdateService } from '@/core/AccountUpdateService.js';
-import { RelayService } from '@/core/RelayService.js';
+import { IdService } from '@/core/IdService.js';
+import { CacheService } from '@/core/CacheService';
 
 @Injectable()
 export class AccountMoveService {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
+		@Inject(DI.blockingsRepository)
+		private blockingsRepository: BlockingsRepository,
+
+		@Inject(DI.mutingsRepository)
+		private mutingsRepository: MutingsRepository,
+
+		private idService: IdService,
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
@@ -31,18 +47,18 @@ export class AccountMoveService {
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
 		private relayService: RelayService,
+		private cacheService: CacheService,
+		private queueService: QueueService,
 	) {
 	}
 
 	/**
-	 * Move a local account to a remote account.
+	 * Move a local account to a new account.
 	 *
 	 * After delivering Move activity, its local followers unfollow the old account and then follow the new one.
 	 */
 	@bindThis
-	public async moveToRemote(src: LocalUser, dst: User): Promise<unknown> {
-		// Make sure that the destination is a remote account.
-		if (this.userEntityService.isLocalUser(dst)) throw new Error('move destiantion is not remote');
+	public async moveFromLocal(src: LocalUser, dst: User): Promise<unknown> {
 		if (!dst.uri) throw new Error('destination uri is empty');
 
 		// add movedToUri to indicate that the user has moved
@@ -64,25 +80,8 @@ export class AccountMoveService {
 		const iObj = await this.userEntityService.pack<true, true>(src.id, src, { detail: true, includeSecrets: true });
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
-		// follow the new account and unfollow the old one
-		const followings = await this.followingsRepository.find({
-			relations: {
-				follower: true,
-			},
-			where: {
-				followeeId: src.id,
-				followerHost: IsNull(), // follower is local
-			},
-		});
-		for (const following of followings) {
-			if (!following.follower) continue;
-			try {
-				await this.userFollowingService.follow(following.follower, dst);
-				await this.userFollowingService.unfollow(following.follower, src);
-			} catch {
-				/* empty */
-			}
-		}
+		// Move!
+		await this.move(src, dst);
 
 		return iObj;
 	}
@@ -110,5 +109,75 @@ export class AccountMoveService {
 		this.accountUpdateService.publishToFollowers(me.id);
 
 		return iObj;
+	}
+
+	@bindThis
+	public async move(src: User, dst: User): Promise<void> {
+		// Copy blockings:
+		// Followers shouldn't overlap with blockers, but the destination account, different from the blockee (i.e., old account), may have followed the local user before moving.
+		// So block the destination account here.
+		const blockings = await this.blockingsRepository.find({
+			relations: {
+				blocker: true
+			},
+			where: {
+				blockeeId: src.id
+			}
+		})
+		// reblock the destination account
+		const blockJobs: RelationshipJobData[] = [];
+		for (const blocking of blockings) {
+			if (!blocking.blocker) continue;
+			blockJobs.push({ from: blocking.blocker, to: dst });
+		}
+		// no need to unblock the old account because it may be still functional
+		this.queueService.createBlockJob(blockJobs);
+
+		// Copy mutings:
+		// Insert new mutings with the same values except mutee
+		const mutings = await this.mutingsRepository.findBy({ muteeId: src.id });
+		const newMuting: Partial<Muting>[] = [];
+		for (const muting of mutings) {
+			newMuting.push({
+				id: this.idService.genId(),
+				createdAt: new Date(),
+				expiresAt: muting.expiresAt,
+				muterId: muting.muterId,
+				muteeId: dst.id,
+			})
+		}
+		this.mutingsRepository.insert(mutings); // no need to wait
+		for (const mute of mutings) {
+			if (mute.muter) this.cacheService.userMutingsCache.refresh(mute.muter.id);
+		}
+		// no need to unmute the old account because it may be still functional
+
+		// follow the new account and unfollow the old one
+		const followings = await this.followingsRepository.find({
+			relations: {
+				follower: true,
+			},
+			where: {
+				followeeId: src.id,
+				followerHost: IsNull(), // follower is local
+			},
+		});
+		const followJobs: RelationshipJobData[] = [];
+		const unfollowJobs: RelationshipJobData[] = [];
+		for (const following of followings) {
+			if (!following.follower) continue;
+			followJobs.push({ from: following.follower, to: dst });
+			unfollowJobs.push({ from: following.follower, to: src });
+		}
+		// Should be queued because this can cause a number of follow/unfollow per one move.
+		// No need to care job orders as there should be no overlaps of follow/unfollow target.
+		this.queueService.createFollowJob(followJobs);
+		this.queueService.createUnfollowJob(unfollowJobs);
+	}
+
+	@bindThis
+	public getUserUri(user: User): string {
+			return this.userEntityService.isRemoteUser(user)
+				? user.uri : `${this.config.url}/users/${user.id}`;
 	}
 }

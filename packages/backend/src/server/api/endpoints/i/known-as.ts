@@ -27,11 +27,6 @@ export const meta = {
 			code: 'NO_SUCH_USER',
 			id: 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5',
 		},
-		notRemote: {
-			message: 'User is not remote. You can only migrate from other instances.',
-			code: 'NOT_REMOTE',
-			id: '4362f8dc-731f-4ad8-a694-be2a88922a24',
-		},
 		uriNull: {
 			message: 'User ActivityPup URI is null.',
 			code: 'URI_NULL',
@@ -69,19 +64,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				// Parse user's input into the old account
 				if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
 				if (unfiltered.startsWith('@')) unfiltered = unfiltered.substring(1);
-				if (!unfiltered.includes('@')) throw new ApiError(meta.errors.notRemote);
+				if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchUser);
 
 				const userAddress = unfiltered.split('@');
 				// Retrieve the old account
 				const knownAs = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
-					this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
+					this.apiLoggerService.logger.warn(`failed to resolve dstination user: ${e}`);
 					throw new ApiError(meta.errors.noSuchUser);
 				});
 
-				const toUrl: string | null = knownAs.uri;
+				const toUrl = this.accountMoveService.getUserUri(knownAs);
 				if (!toUrl) throw new ApiError(meta.errors.uriNull);
-				// Only allow moving from a remote account
-				if (this.userEntityService.isLocalUser(knownAs)) throw new ApiError(meta.errors.notRemote);
 
 				updates.alsoKnownAs = updates.alsoKnownAs?.concat([toUrl]) ?? [toUrl];
 			}

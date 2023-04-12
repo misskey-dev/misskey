@@ -30,16 +30,11 @@ export const meta = {
 			code: 'NO_SUCH_MOVE_TARGET',
 			id: 'b5c90186-4ab0-49c8-9bba-a1f76c202ba4',
 		},
-		remoteAccountForbids: {
+		destinationAccountForbids: {
 			message:
-				'Remote account doesn\'t have proper \'Known As\' alias. Did you remember to set it?',
+				'Destination account doesn\'t have proper \'Known As\' alias. Did you remember to set it?',
 			code: 'REMOTE_ACCOUNT_FORBIDS',
 			id: 'b5c90186-4ab0-49c8-9bba-a1f766282ba4',
-		},
-		notRemote: {
-			message: 'User is not remote. You can only migrate to other instances.',
-			code: 'NOT_REMOTE',
-			id: '4362f8dc-731f-4ad8-a694-be2a88922a24',
 		},
 		rootForbidden: {
 			message: 'The root can\'t migrate.',
@@ -105,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// parse user's input into the destination account
 			if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
 			if (unfiltered.startsWith('@')) unfiltered = unfiltered.substring(1);
-			if (!unfiltered.includes('@')) throw new ApiError(meta.errors.notRemote);
+			if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchMoveTarget);
 
 			const userAddress = unfiltered.split('@');
 			// retrieve the destination account
@@ -113,28 +108,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.noSuchMoveTarget);
 			});
-			const remoteMoveTo = await this.getterService.getRemoteUser(moveTo.id);
-			if (!remoteMoveTo.uri) throw new ApiError(meta.errors.uriNull);
+			const destination = await this.getterService.getUser(moveTo.id);
+			moveTo.uri = this.accountMoveService.getUserUri(destination)
 
 			// update local db
-			await this.apPersonService.updatePerson(remoteMoveTo.uri);
+			await this.apPersonService.updatePerson(moveTo.uri);
 			// retrieve updated user
-			moveTo = await this.apPersonService.resolvePerson(remoteMoveTo.uri);
-			// only allow moving to a remote account
-			if (this.userEntityService.isLocalUser(moveTo)) throw new ApiError(meta.errors.notRemote);
+			moveTo = await this.apPersonService.resolvePerson(moveTo.uri);
 
-			let allowed = false;
-
-			const fromUrl = `${this.config.url}/users/${me.id}`;
 			// make sure that the user has indicated the old account as an alias
+			const fromUrl = `${this.config.url}/users/${me.id}`;
+			let allowed = false;
 			moveTo.alsoKnownAs?.forEach((elem) => {
 				if (fromUrl.includes(elem)) allowed = true;
 			});
 
 			// abort if unintended
-			if (!(allowed && moveTo.uri && fromUrl)) throw new ApiError(meta.errors.remoteAccountForbids);
+			if (!(allowed && moveTo.uri && fromUrl)) throw new ApiError(meta.errors.destinationAccountForbids);
 
-			return await this.accountMoveService.moveToRemote(me, moveTo);
+			return await this.accountMoveService.moveFromLocal(me, moveTo);
 		});
 	}
 }
