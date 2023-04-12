@@ -20,6 +20,7 @@ import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
+import type { Config } from '@/config.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -43,6 +44,9 @@ export class UserFollowingService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
+
+		@Inject(DI.config)
+		private config: Config,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -411,7 +415,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, requestId ?? `${this.config.url}/follows/${followRequest.id}`));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	}
