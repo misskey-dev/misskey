@@ -294,6 +294,7 @@ import * as ep___promo_read from './endpoints/promo/read.js';
 import * as ep___roles_list from './endpoints/roles/list.js';
 import * as ep___roles_show from './endpoints/roles/show.js';
 import * as ep___roles_users from './endpoints/roles/users.js';
+import * as ep___roles_notes from './endpoints/roles/notes.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -628,6 +629,7 @@ const $promo_read: Provider = { provide: 'ep:promo/read', useClass: ep___promo_r
 const $roles_list: Provider = { provide: 'ep:roles/list', useClass: ep___roles_list.default };
 const $roles_show: Provider = { provide: 'ep:roles/show', useClass: ep___roles_show.default };
 const $roles_users: Provider = { provide: 'ep:roles/users', useClass: ep___roles_users.default };
+const $roles_notes: Provider = { provide: 'ep:roles/notes', useClass: ep___roles_notes.default };
 const $requestResetPassword: Provider = { provide: 'ep:request-reset-password', useClass: ep___requestResetPassword.default };
 const $resetDb: Provider = { provide: 'ep:reset-db', useClass: ep___resetDb.default };
 const $resetPassword: Provider = { provide: 'ep:reset-password', useClass: ep___resetPassword.default };
@@ -966,6 +968,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$roles_list,
 		$roles_show,
 		$roles_users,
+		$roles_notes,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,
@@ -1298,6 +1301,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$roles_list,
 		$roles_show,
 		$roles_users,
+		$roles_notes,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,

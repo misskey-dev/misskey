@@ -66,11 +66,13 @@ export class ImportMutingProcessorService {
 				const acct = line.split(',')[0].trim();
 				const { username, host } = Acct.parse(acct);
 
-				let target = this.utilityService.isSelfHost(host!) ? await this.usersRepository.findOneBy({
+				if (!host) continue;
+
+				let target = this.utilityService.isSelfHost(host) ? await this.usersRepository.findOneBy({
 					host: IsNull(),
 					usernameLower: username.toLowerCase(),
 				}) : await this.usersRepository.findOneBy({
-					host: this.utilityService.toPuny(host!),
+					host: this.utilityService.toPuny(host),
 					usernameLower: username.toLowerCase(),
 				});
 

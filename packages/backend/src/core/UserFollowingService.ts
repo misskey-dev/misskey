@@ -43,7 +43,7 @@ export class UserFollowingService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-	
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -79,7 +79,7 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string): Promise<void> {
+	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string, silent = false): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
@@ -139,7 +139,7 @@ export class UserFollowingService implements OnModuleInit {
 			}
 		}
 
-		await this.insertFollowingDoc(followee, follower);
+		await this.insertFollowingDoc(followee, follower, silent);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
@@ -155,6 +155,7 @@ export class UserFollowingService implements OnModuleInit {
 		follower: {
 			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
 		},
+		silent = false,
 	): Promise<void> {
 		if (follower.id === followee.id) return;
 
@@ -233,7 +234,7 @@ export class UserFollowingService implements OnModuleInit {
 		this.perUserFollowingChart.update(follower, followee, true);
 
 		// Publish follow event
-		if (this.userEntityService.isLocalUser(follower)) {
+		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
