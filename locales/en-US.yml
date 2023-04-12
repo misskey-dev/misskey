@@ -1890,6 +1890,7 @@ _deck:
     channel: "Channel"
     mentions: "Mentions"
     direct: "Direct notes"
+    roleTimeline: "Role Timeline"
 _dialog:
   charactersExceeded: "You've exceeded the maximum character limit! Currently at {current} of {max}."
   charactersBelow: "You're below the minimum character limit! Currently at {current} of {min}."
