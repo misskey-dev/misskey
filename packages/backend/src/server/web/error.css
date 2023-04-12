@@ -86,11 +86,12 @@ code {
     font-family: Fira, FiraCode, monospace;
     background: #333;
     padding: 0.5rem 1rem;
-    width: 40rem;
+    max-width: 40rem;
     border-radius: 10px;
     justify-content: center;
     margin: auto;
-    white-space: pre;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 summary {
