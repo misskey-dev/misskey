@@ -13,6 +13,7 @@ import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Config } from '@/config.js';
 import { query } from '@/misc/prelude/url.js';
+import type { Serialized } from '@/server/api/stream/types.js';
 
 @Injectable()
 export class CustomEmojiService {
@@ -46,9 +47,9 @@ export class CustomEmojiService {
 			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
 				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
-				return new Map(JSON.parse(value).map((x) => [x.name, {
+				return new Map(JSON.parse(value).map((x: Serialized<Emoji>) => [x.name, {
 					...x,
-					updatedAt: new Date(x.updatedAt),
+					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
 				}]));
 			},
 		});
