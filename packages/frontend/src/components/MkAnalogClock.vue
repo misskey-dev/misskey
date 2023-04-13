@@ -92,6 +92,7 @@ const hHandLengthRatio = 0.75;
 const mHandLengthRatio = 1;
 const sHandLengthRatio = 1;
 const numbersOpacityFactor = 0.35;
+const thisYearValue = new Date(new Date().getFullYear(), 0).valueOf();
 
 const props = withDefaults(defineProps<{
 	thickness?: number;
@@ -159,7 +160,7 @@ function tick() {
 	}
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
 	mAngle = Math.PI * (m + s / 60) / 30;
-	sAngle = Math.PI * Math.floor(now.valueOf() / 1000) / 30; // NOTE: 秒針はトランジションするので実際の UNIX 秒から角度を算出する
+	sAngle = Math.PI * Math.floor((now.valueOf() - thisYearValue) / 1000) / 30; // NOTE: 秒針はトランジションするので実際の UNIX 秒から角度を算出する
 }
 
 tick();
