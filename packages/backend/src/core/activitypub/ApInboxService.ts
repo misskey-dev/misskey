@@ -742,18 +742,14 @@ export class ApInboxService {
 		// fetch the new and old accounts
 		const targetUri = getApHrefNullable(activity.target);
 		if (!targetUri) return 'skip: invalid activity target';
-		let newAccount = await this.apPersonService.resolvePerson(targetUri);
-		let oldAccount = await this.apPersonService.resolvePerson(actor.uri);
-
-		// update them if they're remote
-		if (newAccount.uri) {
-			await this.apPersonService.updatePerson(newAccount.uri);
-			newAccount = await this.apPersonService.resolvePerson(newAccount.uri);
-		}
-		if (oldAccount.uri) {
-			await this.apPersonService.updatePerson(oldAccount.uri);
-			oldAccount = await this.apPersonService.resolvePerson(oldAccount.uri);
-		}
+		await Promise.all([
+			this.apPersonService.updatePerson(targetUri),
+			this.apPersonService.updatePerson(actor.uri),
+		]);
+		const [newAccount, oldAccount] = await Promise.all([
+			this.apPersonService.resolvePerson(targetUri),
+			this.apPersonService.resolvePerson(actor.uri),
+		]);
 
 		// check if alsoKnownAs of the new account is valid
 		let isValidMove = true;
