@@ -118,14 +118,12 @@ export class AccountMoveService {
 
 	@bindThis
 	public async move(src: User, dst: User): Promise<void> {
-		// Copy blockings:
-		await this.copyBlocking(src, dst);
-
-		// Copy mutings:
-		await this.copyMutings(src, dst);
-
-		// Update lists:
-		await this.updateLists(src, dst);
+		// Copy blockings and mutings, and update lists
+		await Promise.all([
+			this.copyBlocking(src, dst),
+			this.copyMutings(src, dst),
+			this.updateLists(src, dst),
+		]);
 
 		// follow the new account and unfollow the old one
 		const followings = await this.followingsRepository.find({
@@ -195,9 +193,13 @@ export class AccountMoveService {
 
 	@bindThis
 	public async updateLists(src: ThinUser, dst: User): Promise<void> {
-		// Return if there is no list to be updated
-		const numOfLists = await this.userListJoiningsRepository.countBy({ userId: src.id });
-		if (numOfLists === 0) return;
+		// Return if there is no list to be updated.
+		const exists = await this.userListJoiningsRepository.exist({
+			where: {
+				userId: src.id,
+			},
+		});
+		if (!exists) return;
 
 		await this.userListJoiningsRepository.update(
 			{ userId: src.id },

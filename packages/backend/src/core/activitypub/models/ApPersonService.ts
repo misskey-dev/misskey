@@ -533,9 +533,11 @@ export class ApPersonService implements OnModuleInit {
 				const newAccount = await this.resolvePerson(updates.movedToUri);
 				// Aggressively block and/or mute the new account:
 				// This does NOT check alsoKnownAs, assuming that other implmenetations properly check alsoKnownAs when firing account migration
-				await this.accountMoveService.copyBlocking(exist, newAccount);
-				await this.accountMoveService.copyMutings(exist, newAccount);
-				await this.accountMoveService.updateLists(exist, newAccount);
+				await Promise.all([
+					this.accountMoveService.copyBlocking(exist, newAccount),
+					this.accountMoveService.copyMutings(exist, newAccount),
+					this.accountMoveService.updateLists(exist, newAccount),
+				]);
 			} catch {
 				/* skip if any error happens */
 			}
