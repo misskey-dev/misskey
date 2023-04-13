@@ -993,6 +993,8 @@ noteIdOrUrl: "Note ID or URL"
 accountMigration: "Account Migration"
 accountMoved: "This user has moved to a new account:"
 forceShowAds: "Always show ads"
+addMemo: "Add memo"
+editMemo: "Edit memo"
 _accountMigration:
   moveTo: "Migrate this account to a different one"
   moveToLabel: "Account to move to:"
