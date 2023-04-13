@@ -898,7 +898,8 @@ describe('Endpoints', () => {
 				userId: bob.id,
 			}, alice);
 
-			assert.strictEqual('memo' in res.body, false);
+			// memoには常に文字列かnullが入っている(5cac151)
+			assert.strictEqual(res.body.memo, null);
 		});
 
 		test('メモは個人ごとに独立して保存される', async () => {
