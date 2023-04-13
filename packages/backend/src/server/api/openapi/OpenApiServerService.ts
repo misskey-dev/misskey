@@ -17,7 +17,7 @@ export class OpenApiServerService {
 	}
 
 	@bindThis
-	public createServer(fastify: FastifyInstance, _options: FastifyPluginOptions, done: (err?: Error) => void) {
+	public createServer(fastify: FastifyInstance, _options: FastifyPluginOptions, done: (err?: Error) => void): void {
 		fastify.get('/api-doc', async (_request, reply) => {
 			reply.header('Cache-Control', 'public, max-age=86400');
 			return await reply.sendFile('/redoc.html', staticAssets);
