@@ -993,6 +993,7 @@ noteIdOrUrl: "ノートIDまたはURL"
 accountMigration: "アカウントの引っ越し"
 accountMoved: "このユーザーは新しいアカウントに引っ越しました："
 forceShowAds: "常に広告を表示する"
+addMemo: "メモを追加"
 
 _accountMigration:
   moveTo: "このアカウントを新しいアカウントに引っ越す"
