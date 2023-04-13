@@ -993,6 +993,8 @@ noteIdOrUrl: "Notiz-ID oder URL"
 accountMigration: "Konto-Umzug"
 accountMoved: "Dieser Benutzer ist zu einem neuen Konto umgezogen:"
 forceShowAds: "Werbung immer anzeigen"
+addMemo: "Bemerkung hinzufügen"
+editMemo: "Bemerkung bearbeiten"
 _accountMigration:
   moveTo: "Dieses Konto zu einem neuen umziehen"
   moveToLabel: "Umzugsziel:"
