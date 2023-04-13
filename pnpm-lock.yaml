@@ -597,6 +597,9 @@ importers:
       '@rollup/plugin-json':
         specifier: 6.0.0
         version: 6.0.0(rollup@3.20.2)
+      '@rollup/plugin-replace':
+        specifier: ^5.0.2
+        version: 5.0.2(rollup@3.20.2)
       '@rollup/pluginutils':
         specifier: 5.0.2
         version: 5.0.2(rollup@3.20.2)
@@ -766,9 +769,6 @@ importers:
         specifier: next
         version: 4.1.0(vue@3.2.47)
     devDependencies:
-      '@rollup/plugin-replace':
-        specifier: ^5.0.2
-        version: 5.0.2(rollup@3.20.2)
       '@storybook/addon-actions':
         specifier: 7.0.2
         version: 7.0.2(react-dom@18.2.0)(react@18.2.0)
@@ -4813,7 +4813,7 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@3.20.2)
       magic-string: 0.27.0
       rollup: 3.20.2
-    dev: true
+    dev: false
 
   /@rollup/pluginutils@4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -4836,6 +4836,7 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 3.20.2
+    dev: false
 
   /@rushstack/node-core-library@3.55.2(@types/node@18.15.11):
     resolution: {integrity: sha512-SaLe/x/Q/uBVdNFK5V1xXvsVps0y7h1sN7aSJllQyFbugyOaxhNRF25bwEDnicARNEjJw0pk0lYnJQ9Kr6ev0A==}
@@ -14374,7 +14375,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.14
-    dev: true
 
   /mailcheck@1.1.1:
     resolution: {integrity: sha512-3WjL8+ZDouZwKlyJBMp/4LeziLFXgleOdsYu87piGcMLqhBzCsy2QFdbtAwv757TFC/rtqd738fgJw1tFQCSgA==}
