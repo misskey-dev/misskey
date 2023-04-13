@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import isChromatic from 'chromatic/isChromatic';
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
@@ -18,7 +17,7 @@ const props = withDefaults(defineProps<{
 	origin?: Date | null;
 	mode?: 'relative' | 'absolute' | 'detail';
 }>(), {
-	origin: isChromatic() ? new Date('2023-04-01T00:00:00Z') : null,
+	origin: null,
 	mode: 'relative',
 });
 
