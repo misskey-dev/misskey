@@ -109,7 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchMoveTarget);
 			});
 			const destination = await this.getterService.getUser(moveTo.id);
-			moveTo.uri = this.accountMoveService.getUserUri(destination)
+			moveTo.uri = this.accountMoveService.getUserUri(destination);
 
 			// update local db
 			await this.apPersonService.updatePerson(moveTo.uri);

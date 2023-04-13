@@ -747,11 +747,11 @@ export class ApInboxService {
 
 		// update them if they're remote
 		if (newAccount.uri) {
- 			await this.apPersonService.updatePerson(newAccount.uri);
+			await this.apPersonService.updatePerson(newAccount.uri);
 			newAccount = await this.apPersonService.resolvePerson(newAccount.uri);
 		}
 		if (oldAccount.uri) {
- 			await this.apPersonService.updatePerson(oldAccount.uri);
+			await this.apPersonService.updatePerson(oldAccount.uri);
 			oldAccount = await this.apPersonService.resolvePerson(oldAccount.uri);
 		}
 
