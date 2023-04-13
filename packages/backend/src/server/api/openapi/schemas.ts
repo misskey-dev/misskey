@@ -1,8 +1,9 @@
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
+import type { Schema as OpenAPISchema } from './types';
 
-export function convertSchemaToOpenApiSchema(schema: Schema) {
-	const res: any = schema;
+export function convertSchemaToOpenApiSchema(schema: Schema): OpenAPISchema {
+	const res: OpenAPISchema = schema;
 
 	if (schema.type === 'object' && schema.properties) {
 		res.required = Object.entries(schema.properties).filter(([, v]) => !v.optional).map(([k]) => k);
@@ -27,7 +28,7 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 	return res;
 }
 
-export const schemas = {
+export const schemas: { [key: string]: OpenAPISchema } = {
 	Error: {
 		type: 'object',
 		properties: {

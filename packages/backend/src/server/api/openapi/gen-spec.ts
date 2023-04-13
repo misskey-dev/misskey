@@ -2,11 +2,10 @@ import type { Config } from '@/config.js';
 import endpoints from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import type { OpenApiSpec, Operation, ValueOf } from './types.js';
 
-export type ValueOf<T> = T[keyof T];
-
-export function genOpenApiSpec(config: Config) {
-	const spec = {
+export function genOpenApiSpec(config: Config): OpenApiSpec {
+	const spec: OpenApiSpec = {
 		openapi: '3.0.0',
 
 		info: {
@@ -24,7 +23,7 @@ export function genOpenApiSpec(config: Config) {
 			url: config.apiUrl,
 		}],
 
-		paths: {} as any,
+		paths: {},
 
 		components: {
 			schemas: schemas,
@@ -77,7 +76,7 @@ export function genOpenApiSpec(config: Config) {
 			schema.required = [...schema.required ?? [], 'file'];
 		}
 
-		const info = {
+		const info: Operation = {
 			operationId: endpoint.name,
 			summary: endpoint.name,
 			description: desc,

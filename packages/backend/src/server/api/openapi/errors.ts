@@ -1,5 +1,6 @@
+import type { Example } from './types';
 
-export const errors = {
+export const errors: Record<string, Record<string, Example>> = {
 	'400': {
 		'INVALID_PARAM': {
 			value: {
