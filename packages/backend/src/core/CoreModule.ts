@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AntennaService } from './AntennaService.js';
 import { AppLockService } from './AppLockService.js';
 import { AchievementService } from './AchievementService.js';
 import { CaptchaService } from './CaptchaService.js';
-import { CreateNotificationService } from './CreateNotificationService.js';
 import { CreateSystemUserService } from './CreateSystemUserService.js';
 import { CustomEmojiService } from './CustomEmojiService.js';
 import { DeleteAccountService } from './DeleteAccountService.js';
@@ -39,9 +39,9 @@ import { S3Service } from './S3Service.js';
 import { SignupService } from './SignupService.js';
 import { TwoFactorAuthenticationService } from './TwoFactorAuthenticationService.js';
 import { UserBlockingService } from './UserBlockingService.js';
-import { UserCacheService } from './UserCacheService.js';
+import { CacheService } from './CacheService.js';
 import { UserFollowingService } from './UserFollowingService.js';
-import { UserKeypairStoreService } from './UserKeypairStoreService.js';
+import { UserKeypairService } from './UserKeypairService.js';
 import { UserListService } from './UserListService.js';
 import { UserMutingService } from './UserMutingService.js';
 import { UserSuspendService } from './UserSuspendService.js';
@@ -120,13 +120,13 @@ import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
 const $LoggerService: Provider = { provide: 'LoggerService', useExisting: LoggerService };
+const $AccountMoveService: Provider = { provide: 'AccountMoveService', useExisting: AccountMoveService };
 const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useExisting: AccountUpdateService };
 const $AiService: Provider = { provide: 'AiService', useExisting: AiService };
 const $AntennaService: Provider = { provide: 'AntennaService', useExisting: AntennaService };
 const $AppLockService: Provider = { provide: 'AppLockService', useExisting: AppLockService };
 const $AchievementService: Provider = { provide: 'AchievementService', useExisting: AchievementService };
 const $CaptchaService: Provider = { provide: 'CaptchaService', useExisting: CaptchaService };
-const $CreateNotificationService: Provider = { provide: 'CreateNotificationService', useExisting: CreateNotificationService };
 const $CreateSystemUserService: Provider = { provide: 'CreateSystemUserService', useExisting: CreateSystemUserService };
 const $CustomEmojiService: Provider = { provide: 'CustomEmojiService', useExisting: CustomEmojiService };
 const $DeleteAccountService: Provider = { provide: 'DeleteAccountService', useExisting: DeleteAccountService };
@@ -161,9 +161,9 @@ const $S3Service: Provider = { provide: 'S3Service', useExisting: S3Service };
 const $SignupService: Provider = { provide: 'SignupService', useExisting: SignupService };
 const $TwoFactorAuthenticationService: Provider = { provide: 'TwoFactorAuthenticationService', useExisting: TwoFactorAuthenticationService };
 const $UserBlockingService: Provider = { provide: 'UserBlockingService', useExisting: UserBlockingService };
-const $UserCacheService: Provider = { provide: 'UserCacheService', useExisting: UserCacheService };
+const $CacheService: Provider = { provide: 'CacheService', useExisting: CacheService };
 const $UserFollowingService: Provider = { provide: 'UserFollowingService', useExisting: UserFollowingService };
-const $UserKeypairStoreService: Provider = { provide: 'UserKeypairStoreService', useExisting: UserKeypairStoreService };
+const $UserKeypairService: Provider = { provide: 'UserKeypairService', useExisting: UserKeypairService };
 const $UserListService: Provider = { provide: 'UserListService', useExisting: UserListService };
 const $UserMutingService: Provider = { provide: 'UserMutingService', useExisting: UserMutingService };
 const $UserSuspendService: Provider = { provide: 'UserSuspendService', useExisting: UserSuspendService };
@@ -244,13 +244,13 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 	],
 	providers: [
 		LoggerService,
+		AccountMoveService,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
 		AppLockService,
 		AchievementService,
 		CaptchaService,
-		CreateNotificationService,
 		CreateSystemUserService,
 		CustomEmojiService,
 		DeleteAccountService,
@@ -285,9 +285,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SignupService,
 		TwoFactorAuthenticationService,
 		UserBlockingService,
-		UserCacheService,
+		CacheService,
 		UserFollowingService,
-		UserKeypairStoreService,
+		UserKeypairService,
 		UserListService,
 		UserMutingService,
 		UserSuspendService,
@@ -362,13 +362,13 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
+		$AccountMoveService,
 		$AccountUpdateService,
 		$AiService,
 		$AntennaService,
 		$AppLockService,
 		$AchievementService,
 		$CaptchaService,
-		$CreateNotificationService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
 		$DeleteAccountService,
@@ -403,9 +403,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SignupService,
 		$TwoFactorAuthenticationService,
 		$UserBlockingService,
-		$UserCacheService,
+		$CacheService,
 		$UserFollowingService,
-		$UserKeypairStoreService,
+		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
 		$UserSuspendService,
@@ -481,13 +481,13 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 	exports: [
 		QueueModule,
 		LoggerService,
+		AccountMoveService,
 		AccountUpdateService,
 		AiService,
 		AntennaService,
 		AppLockService,
 		AchievementService,
 		CaptchaService,
-		CreateNotificationService,
 		CreateSystemUserService,
 		CustomEmojiService,
 		DeleteAccountService,
@@ -522,9 +522,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SignupService,
 		TwoFactorAuthenticationService,
 		UserBlockingService,
-		UserCacheService,
+		CacheService,
 		UserFollowingService,
-		UserKeypairStoreService,
+		UserKeypairService,
 		UserListService,
 		UserMutingService,
 		UserSuspendService,
@@ -598,13 +598,13 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
+		$AccountMoveService,
 		$AccountUpdateService,
 		$AiService,
 		$AntennaService,
 		$AppLockService,
 		$AchievementService,
 		$CaptchaService,
-		$CreateNotificationService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
 		$DeleteAccountService,
@@ -639,9 +639,9 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SignupService,
 		$TwoFactorAuthenticationService,
 		$UserBlockingService,
-		$UserCacheService,
+		$CacheService,
 		$UserFollowingService,
-		$UserKeypairStoreService,
+		$UserKeypairService,
 		$UserListService,
 		$UserMutingService,
 		$UserSuspendService,
@@ -714,4 +714,4 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		//#endregion
 	],
 })
-export class CoreModule {}
+export class CoreModule { }

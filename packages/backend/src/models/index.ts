@@ -4,15 +4,15 @@ import { Ad } from '@/models/entities/Ad.js';
 import { Announcement } from '@/models/entities/Announcement.js';
 import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { Antenna } from '@/models/entities/Antenna.js';
-import { AntennaNote } from '@/models/entities/AntennaNote.js';
 import { App } from '@/models/entities/App.js';
 import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { AuthSession } from '@/models/entities/AuthSession.js';
 import { Blocking } from '@/models/entities/Blocking.js';
 import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
-import { ChannelNotePining } from '@/models/entities/ChannelNotePining.js';
+import { ChannelFavorite } from '@/models/entities/ChannelFavorite.js';
 import { Clip } from '@/models/entities/Clip.js';
 import { ClipNote } from '@/models/entities/ClipNote.js';
+import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { Emoji } from '@/models/entities/Emoji.js';
@@ -32,7 +32,6 @@ import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
 import { NoteUnread } from '@/models/entities/NoteUnread.js';
-import { Notification } from '@/models/entities/Notification.js';
 import { Page } from '@/models/entities/Page.js';
 import { PageLike } from '@/models/entities/PageLike.js';
 import { PasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
@@ -72,15 +71,15 @@ export {
 	Announcement,
 	AnnouncementRead,
 	Antenna,
-	AntennaNote,
 	App,
 	AttestationChallenge,
 	AuthSession,
 	Blocking,
 	ChannelFollowing,
-	ChannelNotePining,
+	ChannelFavorite,
 	Clip,
 	ClipNote,
+	ClipFavorite,
 	DriveFile,
 	DriveFolder,
 	Emoji,
@@ -100,7 +99,6 @@ export {
 	NoteReaction,
 	NoteThreadMuting,
 	NoteUnread,
-	Notification,
 	Page,
 	PageLike,
 	PasswordResetRequest,
@@ -139,15 +137,15 @@ export type AdsRepository = Repository<Ad>;
 export type AnnouncementsRepository = Repository<Announcement>;
 export type AnnouncementReadsRepository = Repository<AnnouncementRead>;
 export type AntennasRepository = Repository<Antenna>;
-export type AntennaNotesRepository = Repository<AntennaNote>;
 export type AppsRepository = Repository<App>;
 export type AttestationChallengesRepository = Repository<AttestationChallenge>;
 export type AuthSessionsRepository = Repository<AuthSession>;
 export type BlockingsRepository = Repository<Blocking>;
 export type ChannelFollowingsRepository = Repository<ChannelFollowing>;
-export type ChannelNotePiningsRepository = Repository<ChannelNotePining>;
+export type ChannelFavoritesRepository = Repository<ChannelFavorite>;
 export type ClipsRepository = Repository<Clip>;
 export type ClipNotesRepository = Repository<ClipNote>;
+export type ClipFavoritesRepository = Repository<ClipFavorite>;
 export type DriveFilesRepository = Repository<DriveFile>;
 export type DriveFoldersRepository = Repository<DriveFolder>;
 export type EmojisRepository = Repository<Emoji>;
@@ -167,7 +165,6 @@ export type NoteFavoritesRepository = Repository<NoteFavorite>;
 export type NoteReactionsRepository = Repository<NoteReaction>;
 export type NoteThreadMutingsRepository = Repository<NoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<NoteUnread>;
-export type NotificationsRepository = Repository<Notification>;
 export type PagesRepository = Repository<Page>;
 export type PageLikesRepository = Repository<PageLike>;
 export type PasswordResetRequestsRepository = Repository<PasswordResetRequest>;

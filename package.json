@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "13.9.2",
+	"version": "13.11.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@7.27.0",
+	"packageManager": "pnpm@8.1.1",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -16,6 +16,7 @@
 	"scripts": {
 		"build": "run-s build:pre build:main build:post",
 		"build:main": "cross-env FORCE_COLOR=1 turbo run build:main",
+		"build-storybook": "pnpm --filter frontend build-storybook",
 		"build:post": "turbo run build:post",
 		"build:pre": "turbo run build:pre",
 		"check:connect": "turbo run check:connect",
@@ -53,14 +54,14 @@
 		"execa": "5.1.1",
 		"js-yaml": "4.1.0",
 		"turbo": "^1.8.1",
-		"typescript": "4.9.5"
+		"typescript": "5.0.3"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "5.54.1",
-		"@typescript-eslint/parser": "5.54.1",
+		"@typescript-eslint/eslint-plugin": "5.57.1",
+		"@typescript-eslint/parser": "5.57.1",
 		"cross-env": "7.0.3",
-		"cypress": "12.7.0",
-		"eslint": "8.35.0",
+		"cypress": "12.9.0",
+		"eslint": "8.37.0",
 		"start-server-and-test": "2.0.0",
 		"npm-run-all": "^4.1.5"
 	},

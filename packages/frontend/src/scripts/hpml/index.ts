@@ -2,7 +2,6 @@
  * Hpml
  */
 
-import autobind from 'autobind-decorator';
 import { Hpml } from './evaluator';
 import { funcDefs } from './lib';
 
@@ -61,7 +60,6 @@ export class HpmlScope {
 		this.name = name ?? 'anonymous';
 	}
 
-	@autobind
 	public createChildScope(states: Record<string, any>, name?: HpmlScope['name']): HpmlScope {
 		const layer = [states, ...this.layerdStates];
 		return new HpmlScope(layer, name);
@@ -71,7 +69,6 @@ export class HpmlScope {
 	 * 指定した名前の変数の値を取得します
 	 * @param name 変数名
 	 */
-	@autobind
 	public getState(name: string): any {
 		for (const later of this.layerdStates) {
 			const state = later[name];

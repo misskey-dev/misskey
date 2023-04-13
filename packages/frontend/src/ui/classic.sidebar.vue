@@ -3,14 +3,14 @@
 	<button v-click-anime class="item _button account" @click="openAccountMenu">
 		<MkAvatar :user="$i" class="avatar"/><MkAcct class="text" :user="$i"/>
 	</button>
-	<div class="post" data-cy-open-post-form @click="post">
+	<div class="post" data-cy-open-post-form @click="os.post">
 		<MkButton class="button" gradate full rounded>
-			<i class="ti ti-pencil ti-fw"></i><span v-if="!iconOnly" class="text">{{ $ts.note }}</span>
+			<i class="ti ti-pencil ti-fw"></i><span v-if="!iconOnly" class="text">{{ i18n.ts.note }}</span>
 		</MkButton>
 	</div>
 	<div class="divider"></div>
 	<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-		<i class="ti ti-home ti-fw"></i><span class="text">{{ $ts.timeline }}</span>
+		<i class="ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 	</MkA>
 	<template v-for="item in menu">
 		<div v-if="item === '-'" class="divider"></div>
@@ -21,121 +21,78 @@
 	</template>
 	<div class="divider"></div>
 	<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ $ts.controlPanel }}</span>
+		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 	</MkA>
 	<button v-click-anime class="item _button" @click="more">
-		<i class="ti ti-dots ti-fw"></i><span class="text">{{ $ts.more }}</span>
+		<i class="ti ti-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
 	</button>
 	<MkA v-click-anime class="item" active-class="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
-		<i class="ti ti-settings ti-fw"></i><span class="text">{{ $ts.settings }}</span>
+		<i class="ti ti-settings ti-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>
 	<div class="about">
 		<button v-click-anime class="item _button" @click="openInstanceMenu">
-			<img :src="$instance.iconUrl ?? $instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
+			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" class="_ghost"/>
 		</button>
 	</div>
 	<!--<MisskeyLogo class="misskey"/>-->
 </div>
 </template>
 
-<script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent, onMounted, computed, watch, nextTick } from 'vue';
 import { openInstanceMenu } from './_common_/common';
-import { host } from '@/config';
+// import { host } from '@/config';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
-import { openAccountMenu } from '@/account';
+import { openAccountMenu as openAccountMenu_, $i } from '@/account';
 import MkButton from '@/components/MkButton.vue';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
-import { mainRouter } from '@/router';
+// import { StickySidebar } from '@/scripts/sticky-sidebar';
+// import { mainRouter } from '@/router';
 //import MisskeyLogo from '@assets/client/misskey.svg';
+import { defaultStore } from '@/store';
+import { instance } from '@/instance';
+import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-		//MisskeyLogo,
-	},
+const WINDOW_THRESHOLD = 1400;
 
-	data() {
-		return {
-			host: host,
-			accounts: [],
-			connection: null,
-			navbarItemDef: navbarItemDef,
-			iconOnly: false,
-			settingsWindowed: false,
-		};
-	},
-
-	computed: {
-		menu(): string[] {
-			return this.$store.state.menu;
-		},
-
-		otherNavItemIndicated(): boolean {
-			for (const def in this.navbarItemDef) {
-				if (this.menu.includes(def)) continue;
-				if (this.navbarItemDef[def].indicated) return true;
-			}
-			return false;
-		},
-	},
-
-	watch: {
-		'$store.reactiveState.menuDisplay.value'() {
-			this.calcViewState();
-		},
-
-		iconOnly() {
-			this.$nextTick(() => {
-				this.$emit('change-view-mode');
-			});
-		},
-	},
-
-	created() {
-		window.addEventListener('resize', this.calcViewState);
-		this.calcViewState();
-	},
-
-	mounted() {
-		const sticky = new StickySidebar(this.$el.parentElement, 16);
-		window.addEventListener('scroll', () => {
-			sticky.calc(window.scrollY);
-		}, { passive: true });
-	},
-
-	methods: {
-		openInstanceMenu,
-
-		calcViewState() {
-			this.iconOnly = (window.innerWidth <= 1400) || (this.$store.state.menuDisplay === 'sideIcon');
-			this.settingsWindowed = (window.innerWidth > 1400);
-		},
-
-		post() {
-			os.post();
-		},
-
-		search() {
-			mainRouter.push('/search');
-		},
-
-		more(ev) {
-			os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
-				src: ev.currentTarget ?? ev.target,
-			}, {}, 'closed');
-		},
-
-		openAccountMenu: (ev) => {
-			openAccountMenu({
-				withExtraOperation: true,
-			}, ev);
-		},
-	},
+const menu = $ref(defaultStore.state.menu);
+const menuDisplay = computed(defaultStore.makeGetterSetter('menuDisplay'));
+const otherNavItemIndicated = computed<boolean>(() => {
+	for (const def in navbarItemDef) {
+		if (menu.includes(def)) continue;
+		if (navbarItemDef[def].indicated) return true;
+	}
+	return false;
 });
+let el = $shallowRef<HTMLElement>();
+// let accounts = $ref([]);
+// let connection = $ref(null);
+let iconOnly = $ref(false);
+let settingsWindowed = $ref(false);
+
+function calcViewState() {
+	iconOnly = (window.innerWidth <= WINDOW_THRESHOLD) || (menuDisplay.value === 'sideIcon');
+	settingsWindowed = (window.innerWidth > WINDOW_THRESHOLD);
+}
+
+function more(ev: MouseEvent) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkLaunchPad.vue')), {
+		src: ev.currentTarget ?? ev.target,
+	}, {}, 'closed');
+}
+
+function openAccountMenu(ev: MouseEvent) {
+	openAccountMenu_({
+		withExtraOperation: true,
+	}, ev);
+}
+
+watch(defaultStore.reactiveState.menuDisplay, () => {
+	calcViewState();
+});
+
 </script>
 
 <style lang="scss" scoped>

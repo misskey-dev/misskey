@@ -24,11 +24,16 @@ interface NotePostInterruptor {
 	handler: (note: FIXME) => unknown;
 }
 
+interface PageViewInterruptor {
+	handler: (page: Page) => unknown;
+}
+
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
+export const pageViewInterruptors: PageViewInterruptor[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -83,7 +88,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: null,
+		default: null as 'likeOnly' | 'likeOnlyForRemote' | null,
 	},
 	mutedWords: {
 		where: 'account',
@@ -285,6 +290,18 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	showClipButtonInNoteFooter: {
+		where: 'device',
+		default: false,
+	},
+	largeNoteReactions: {
+		where: 'device',
+		default: false,
+	},
+	forceShowAds: {
+		where: 'device',
+		default: false,
+	},
 	aiChanMode: {
 		where: 'device',
 		default: false,
@@ -318,7 +335,7 @@ interface Watcher {
 import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
-import { Note, UserDetailed } from 'misskey-js/built/entities';
+import { Note, UserDetailed, Page } from 'misskey-js/built/entities';
 
 export class ColdDeviceStorage {
 	public static default = {
@@ -326,15 +343,6 @@ export class ColdDeviceStorage {
 		darkTheme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
-		mediaVolume: 0.5,
-		sound_masterVolume: 0.5,
-		sound_note: { type: 'syuilo/n-eca', volume: 0.5 },
-		sound_noteMy: { type: 'syuilo/n-cea-4va', volume: 0.5 },
-		sound_notification: { type: 'syuilo/n-ea', volume: 0.5 },
-		sound_chat: { type: 'syuilo/pope1', volume: 0.5 },
-		sound_chatBg: { type: 'syuilo/waon', volume: 0.5 },
-		sound_antenna: { type: 'syuilo/triple', volume: 0.5 },
-		sound_channel: { type: 'syuilo/square-pico', volume: 0.5 },
 	};
 
 	public static watchers: Watcher[] = [];

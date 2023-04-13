@@ -86,6 +86,10 @@ export class ImportCustomEmojisProcessorService {
 					continue;
 				}
 				const emojiInfo = record.emoji;
+				if (!/^[a-zA-Z0-9_]+$/.test(emojiInfo.name)) {
+					this.logger.error(`invalid emojiname: ${emojiInfo.name}`);
+					continue;
+				}
 				const emojiPath = outputPath + '/' + record.fileName;
 				await this.emojisRepository.delete({
 					name: emojiInfo.name,
@@ -102,6 +106,7 @@ export class ImportCustomEmojisProcessorService {
 					host: null,
 					aliases: emojiInfo.aliases,
 					driveFile,
+					license: emojiInfo.license,
 				});
 			}
 

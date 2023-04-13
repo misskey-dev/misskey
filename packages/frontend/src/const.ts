@@ -53,6 +53,7 @@ export const ROLE_POLICIES = [
 	'canPublicNote',
 	'canInvite',
 	'canManageCustomEmojis',
+	'canSearchNotes',
 	'canHideAds',
 	'driveCapacityMb',
 	'pinLimit',

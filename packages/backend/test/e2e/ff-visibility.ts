@@ -5,19 +5,19 @@ import { signup, api, startServer, simpleGet } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('FF visibility', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	test('ffVisibility が public なユーザーのフォロー/フォロワーを誰でも見れる', async () => {

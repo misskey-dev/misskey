@@ -80,8 +80,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.renoteMutingsRepository.delete({
 				id: exist.id,
 			});
-
-			// publishUserEvent(user.id, 'unmute', mutee);
 		});
 	}
 }

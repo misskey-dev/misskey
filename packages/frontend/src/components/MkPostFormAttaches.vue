@@ -24,19 +24,19 @@ const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.d
 
 const props = defineProps<{
 	modelValue: any[];
-	detachMediaFn: () => void;
+	detachMediaFn?: (id: string) => void;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any[]): void;
-	(ev: 'detach'): void;
+	(ev: 'detach', id: string): void;
 	(ev: 'changeSensitive'): void;
 	(ev: 'changeName'): void;
 }>();
 
 let menuShowing = false;
 
-function detachMedia(id) {
+function detachMedia(id: string) {
 	if (props.detachMediaFn) {
 		props.detachMediaFn(id);
 	} else {

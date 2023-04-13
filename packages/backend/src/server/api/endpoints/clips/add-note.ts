@@ -106,6 +106,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				noteId: note.id,
 				clipId: clip.id,
 			});
+
+			await this.clipsRepository.update(clip.id, {
+				lastClippedAt: new Date(),
+			});
 		});
 	}
 }

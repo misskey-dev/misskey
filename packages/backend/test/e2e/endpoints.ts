@@ -8,7 +8,7 @@ import { startServer, signup, post, api, uploadFile, simpleGet } from '../utils.
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Endpoints', () => {
-	let p: INestApplicationContext;
+	let app: INestApplicationContext;
 
 	let alice: any;
 	let bob: any;
@@ -16,7 +16,7 @@ describe('Endpoints', () => {
 	let dave: any;
 
 	beforeAll(async () => {
-		p = await startServer();
+		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 		carol = await signup({ username: 'carol' });
@@ -24,7 +24,7 @@ describe('Endpoints', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await p.close();
+		await app.close();
 	});
 
 	describe('signup', () => {
@@ -162,14 +162,14 @@ describe('Endpoints', () => {
 			const res = await api('/users/show', {
 				userId: '000000000000000000000000',
 			});
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 404);
 		});
 
 		test('間違ったIDで怒られる', async () => {
 			const res = await api('/users/show', {
 				userId: 'kyoppie',
 			});
-			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.status, 404);
 		});
 	});
 
@@ -839,6 +839,14 @@ describe('Endpoints', () => {
 			assert.strictEqual(Array.isArray(res.body), true);
 			assert.strictEqual(res.body.length, 1);
 			assert.strictEqual(res.body[0].id, carolPost.id);
+		});
+	});
+
+	describe('URL preview', () => {
+		test('Error from summaly becomes HTTP 422', async () => {
+			const res = await simpleGet('/url?url=https://e:xample.com');
+			assert.strictEqual(res.status, 422);
+			assert.strictEqual(res.body.error.code, 'URL_PREVIEW_FAILED');
 		});
 	});
 });

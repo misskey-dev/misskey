@@ -110,6 +110,14 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			sensitiveWords: {
+				type: 'array',
+				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 			hcaptchaSecretKey: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -231,6 +239,14 @@ export const meta = {
 				type: 'boolean',
 				optional: true, nullable: false,
 			},
+			enableChartsForRemoteUser: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			enableChartsForFederatedInstances: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			policies: {
 				type: 'object',
 				optional: false, nullable: false,
@@ -291,10 +307,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				enableServiceWorker: instance.enableServiceWorker,
 				translatorAvailable: instance.deeplAuthKey != null,
 				cacheRemoteFiles: instance.cacheRemoteFiles,
-				useStarForReactionFallback: instance.useStarForReactionFallback,
 				pinnedUsers: instance.pinnedUsers,
 				hiddenTags: instance.hiddenTags,
 				blockedHosts: instance.blockedHosts,
+				sensitiveWords: instance.sensitiveWords,
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,
@@ -328,6 +344,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				deeplIsPro: instance.deeplIsPro,
 				enableIpLogging: instance.enableIpLogging,
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
+				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
+				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 			};
 		});

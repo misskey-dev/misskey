@@ -5,7 +5,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
+import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy';
 import { defaultStore } from '@/store';
 import { customEmojis } from '@/custom-emojis';
 
@@ -15,25 +15,38 @@ const props = defineProps<{
 	noStyle?: boolean;
 	host?: string | null;
 	url?: string;
+	useOriginalSize?: boolean;
 }>();
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substr(1, props.name.length - 2) : props.name).replace('@.', ''));
+const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
 
 const rawUrl = computed(() => {
 	if (props.url) {
 		return props.url;
 	}
-	if (props.host == null && !customEmojiName.value.includes('@')) {
+	if (isLocal.value) {
 		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url ?? null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });
 
-const url = computed(() =>
-	defaultStore.reactiveState.disableShowingAnimatedImages.value && rawUrl.value
-		? getStaticImageUrl(rawUrl.value)
-		: rawUrl.value,
-);
+const url = computed(() => {
+	if (rawUrl.value == null) return null;
+
+	const proxied =
+		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
+			? rawUrl.value
+			: getProxiedImageUrl(
+				rawUrl.value,
+				props.useOriginalSize ? undefined : 'emoji',
+				false,
+				true,
+			);
+	return defaultStore.reactiveState.disableShowingAnimatedImages.value
+		? getStaticImageUrl(proxied)
+		: proxied;
+});
 
 const alt = computed(() => `:${customEmojiName.value}:`);
 let errored = $ref(url.value == null);

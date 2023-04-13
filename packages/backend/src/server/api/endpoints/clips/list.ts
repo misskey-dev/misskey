@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 			});
 
-			return await Promise.all(clips.map(x => this.clipEntityService.pack(x)));
+			return await this.clipEntityService.packMany(clips, me);
 		});
 	}
 }

@@ -76,7 +76,10 @@ async function renderChart() {
 			borderRadius: 4,
 			barPercentage: 0.9,
 			fill: true,
-		} satisfies ChartDataset, extra);
+		/* @see <https://github.com/misskey-dev/misskey/pull/10365#discussion_r1155511107>
+		} satisfies ChartData, extra);
+		 */
+		}, extra);
 	}
 
 	chartInstance = new Chart(chartEl, {
