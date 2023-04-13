@@ -159,7 +159,7 @@ function tick() {
 	}
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
 	mAngle = Math.PI * (m + s / 60) / 30;
-	sAngle = Math.PI * (now.valueOf() / 1000) / 30; // NOTE: 秒針はトランジションするので実際の UNIX 秒から角度を算出する
+	sAngle = Math.PI * Math.floor(now.valueOf() / 1000) / 30; // NOTE: 秒針はトランジションするので実際の UNIX 秒から角度を算出する
 }
 
 tick();
