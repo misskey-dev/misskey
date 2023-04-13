@@ -194,7 +194,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 
 		&.n1expand {
 			min-height: 64px;
-			max-height: max(min(calc(var(--containerHeight, 100svh) * 0.5), 50svh, 334px), 64px);
+			max-height: clamp(64px, calc(var(--containerHeight, 100svh) * 0.5), min(334px, 50vh));
 		}
 
 		&.n116_9 {
