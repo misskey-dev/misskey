@@ -31,7 +31,7 @@
 import { onMounted } from 'vue';
 import * as misskey from 'misskey-js';
 import VuePlyr from 'vue-plyr';
-import { ColdDeviceStorage } from '@/store';
+import { soundConfigStore } from '@/scripts/sound';
 import 'vue-plyr/dist/vue-plyr.css';
 import { i18n } from '@/i18n';
 
@@ -44,11 +44,11 @@ const audioEl = $shallowRef<HTMLAudioElement | null>();
 let hide = $ref(true);
 
 function volumechange() {
-	if (audioEl) ColdDeviceStorage.set('mediaVolume', audioEl.volume);
+	if (audioEl) soundConfigStore.set('mediaVolume', audioEl.volume);
 }
 
 onMounted(() => {
-	if (audioEl) audioEl.volume = ColdDeviceStorage.get('mediaVolume');
+	if (audioEl) audioEl.volume = soundConfigStore.state.mediaVolume;
 });
 </script>
 

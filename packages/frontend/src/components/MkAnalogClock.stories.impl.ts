@@ -2,6 +2,7 @@
 import { StoryObj } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import MkAnalogClock from './MkAnalogClock.vue';
+import isChromatic from 'chromatic';
 export const Default = {
 	render(args) {
 		return {

@@ -98,6 +98,7 @@ import * as ep___channels_update from './endpoints/channels/update.js';
 import * as ep___channels_favorite from './endpoints/channels/favorite.js';
 import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
 import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
+import * as ep___channels_search from './endpoints/channels/search.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -293,6 +294,7 @@ import * as ep___promo_read from './endpoints/promo/read.js';
 import * as ep___roles_list from './endpoints/roles/list.js';
 import * as ep___roles_show from './endpoints/roles/show.js';
 import * as ep___roles_users from './endpoints/roles/users.js';
+import * as ep___roles_notes from './endpoints/roles/notes.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -429,6 +431,7 @@ const eps = [
 	['channels/favorite', ep___channels_favorite],
 	['channels/unfavorite', ep___channels_unfavorite],
 	['channels/my-favorites', ep___channels_myFavorites],
+	['channels/search', ep___channels_search],
 	['charts/active-users', ep___charts_activeUsers],
 	['charts/ap-request', ep___charts_apRequest],
 	['charts/drive', ep___charts_drive],
@@ -624,6 +627,7 @@ const eps = [
 	['roles/list', ep___roles_list],
 	['roles/show', ep___roles_show],
 	['roles/users', ep___roles_users],
+	['roles/notes', ep___roles_notes],
 	['request-reset-password', ep___requestResetPassword],
 	['reset-db', ep___resetDb],
 	['reset-password', ep___resetPassword],

@@ -10,6 +10,7 @@
 <XAntennaColumn v-else-if="column.type === 'antenna'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
 <XMentionsColumn v-else-if="column.type === 'mentions'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
 <XDirectColumn v-else-if="column.type === 'direct'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
+<XRoleTimelineColumn v-else-if="column.type === 'roleTimeline'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
 </template>
 
 <script lang="ts" setup>
@@ -23,6 +24,7 @@ import XNotificationsColumn from './notifications-column.vue';
 import XWidgetsColumn from './widgets-column.vue';
 import XMentionsColumn from './mentions-column.vue';
 import XDirectColumn from './direct-column.vue';
+import XRoleTimelineColumn from './role-timeline-column.vue';
 import { Column } from './deck-store';
 
 defineProps<{
