@@ -396,8 +396,9 @@ export class DriveService {
 			);
 	}
 
+	// Expire oldest file (without avatar or banner) of remote user
 	@bindThis
-	private async deleteOldFile(user: RemoteUser) {
+	private async expireOldFile(user: RemoteUser, driveCapacity: number) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -410,12 +411,16 @@ export class DriveService {
 			q.andWhere('file.id != :bannerId', { bannerId: user.bannerId });
 		}
 
+		//This selete is hard coded, be careful if change database schema
+		q.addSelect('SUM("file"."size") OVER (ORDER BY "file"."id" DESC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)', 'acc_usage');
 		q.orderBy('file.id', 'ASC');
 
-		const oldFile = await q.getOne();
+		const fileList = await q.getRawMany();
+		const exceedFileIds = fileList.filter((x: any) => x.acc_usage > driveCapacity).map((x: any) => x.file_id);
 
-		if (oldFile) {
-			this.deleteFile(oldFile, true);
+		for (const fileId of exceedFileIds) {
+			const file = await this.driveFilesRepository.findOneBy({ id: fileId });
+			this.deleteFile(file, true);
 		}
 	}
 
@@ -489,22 +494,19 @@ export class DriveService {
 		//#region Check drive usage
 		if (user && !isLink) {
 			const usage = await this.driveFileEntityService.calcDriveUsageOf(user);
+			const isLocalUser = this.userEntityService.isLocalUser(user);
 
 			const policies = await this.roleService.getUserPolicies(user.id);
 			const driveCapacity = 1024 * 1024 * policies.driveCapacityMb;
 			this.registerLogger.debug('drive capacity override applied');
 			this.registerLogger.debug(`overrideCap: ${driveCapacity}bytes, usage: ${usage}bytes, u+s: ${usage + info.size}bytes`);
 
-			this.registerLogger.debug(`drive usage is ${usage} (max: ${driveCapacity})`);
-
 			// If usage limit exceeded
-			if (usage + info.size > driveCapacity) {
-				if (this.userEntityService.isLocalUser(user)) {
+			if (driveCapacity < usage + info.size) {
+				if (isLocalUser) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
-				} else {
-				// (アバターまたはバナーを含まず)最も古いファイルを削除する
-					this.deleteOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as RemoteUser);
 				}
+				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as RemoteUser, driveCapacity - info.size);
 			}
 		}
 		//#endregion
