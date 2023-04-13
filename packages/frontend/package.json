@@ -32,6 +32,7 @@
 		"chartjs-chart-matrix": "2.0.1",
 		"chartjs-plugin-gradient": "0.6.1",
 		"chartjs-plugin-zoom": "2.0.1",
+		"chromatic": "6.17.3",
 		"compare-versions": "5.0.1",
 		"cropperjs": "2.0.0-beta.2",
 		"date-fns": "2.29.3",
@@ -74,6 +75,7 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
+		"@rollup/plugin-replace": "^5.0.2",
 		"@storybook/addon-actions": "7.0.2",
 		"@storybook/addon-essentials": "7.0.2",
 		"@storybook/addon-interactions": "7.0.2",
@@ -116,7 +118,6 @@
 		"@vue/runtime-core": "3.2.47",
 		"astring": "1.8.4",
 		"chokidar-cli": "3.0.0",
-		"chromatic": "6.17.3",
 		"cross-env": "7.0.3",
 		"cypress": "12.9.0",
 		"eslint": "8.37.0",
