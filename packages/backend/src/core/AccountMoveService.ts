@@ -136,16 +136,12 @@ export class AccountMoveService {
 			},
 		});
 		const followJobs: RelationshipJobData[] = [];
-		const unfollowJobs: RelationshipJobData[] = [];
 		for (const following of followings) {
 			if (!following.follower) continue;
 			followJobs.push({ from: { id: following.follower.id }, to: { id: dst.id } });
-			unfollowJobs.push({ from: { id: following.follower.id }, to: { id: src.id } });
 		}
-		// Should be queued because this can cause a number of follow/unfollow per one move.
-		// No need to care job orders as there should be no overlaps of follow/unfollow target.
+		// Should be queued because this can cause a number of follow per one move.
 		this.queueService.createFollowJob(followJobs);
-		this.queueService.createUnfollowJob(unfollowJobs);
 	}
 
 	@bindThis
