@@ -2,7 +2,7 @@
 <div :class="$style.root">
 	<i class="ti ti-plane-departure" style="margin-right: 8px;"></i>
 	{{ i18n.ts.accountMoved }}
-	<MkMention :class="$style.link" :username="acct" :host="host ?? localHost"/>
+	<MkMention :class="$style.link" :username="username" :host="host ?? localHost"/>
 </div>
 </template>
 
@@ -12,7 +12,7 @@ import { i18n } from '@/i18n';
 import { host as localHost } from '@/config';
 
 defineProps<{
-	acct: string;
+	username: string;
 	host: string;
 }>();
 </script>
