@@ -1,19 +1,16 @@
-// eslint-disable-next-line import/no-default-export
-export default class IdlingRenderScheduler {
+class IdlingRenderScheduler {
 	#renderers: Set<FrameRequestCallback>;
-	#budget: number;
 	#rafId: number;
 	#ricId: number;
 
-	constructor(budget = 0) {
+	constructor() {
 		this.#renderers = new Set();
-		this.#budget = budget;
 		this.#rafId = 0;
 		this.#ricId = requestIdleCallback((deadline) => this.#schedule(deadline));
 	}
 
 	#schedule(deadline: IdleDeadline): void {
-		if (deadline.timeRemaining() > this.#budget) {
+		if (deadline.timeRemaining()) {
 			this.#rafId = requestAnimationFrame((time) => {
 				for (const renderer of this.#renderers) {
 					renderer(time);
