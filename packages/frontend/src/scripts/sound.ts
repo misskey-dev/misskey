@@ -1,4 +1,56 @@
-import { ColdDeviceStorage } from '@/store';
+import { markRaw } from 'vue';
+import { Storage } from '@/pizzax';
+
+export const soundConfigStore = markRaw(new Storage('sound', {
+	mediaVolume: {
+		where: 'device',
+		default: 0.5
+	},
+	sound_masterVolume: {
+		where: 'device',
+		default: 0.3
+	},
+	sound_note: {
+		where: 'account',
+		default: { type: 'syuilo/n-aec', volume: 1 }
+	},
+	sound_noteMy: {
+		where: 'account',
+		default: { type: 'syuilo/n-cea-4va', volume: 1 }
+	},
+	sound_notification: {
+		where: 'account',
+		default: { type: 'syuilo/n-ea', volume: 1 }
+	},
+	sound_chat: {
+		where: 'account',
+		default: { type: 'syuilo/pope1', volume: 1 }
+	},
+	sound_chatBg: {
+		where: 'account',
+		default: { type: 'syuilo/waon', volume: 1 }
+	},
+	sound_antenna: {
+		where: 'account',
+		default: { type: 'syuilo/triple', volume: 1 }
+	},
+	sound_channel: {
+		where: 'account',
+		default: { type: 'syuilo/square-pico', volume: 1 }
+	},
+}));
+
+await soundConfigStore.ready;
+
+//#region サウンドのColdDeviceStorage => indexedDBのマイグレーション
+for (const target of Object.keys(soundConfigStore.state) as Array<keyof typeof soundConfigStore.state>) {
+	const value = localStorage.getItem(`miux:${target}`);
+	if (value) {
+		soundConfigStore.set(target, JSON.parse(value) as typeof soundConfigStore.def[typeof target]['default']);
+		localStorage.removeItem(`miux:${target}`);
+	}
+}
+//#endregion
 
 const cache = new Map<string, HTMLAudioElement>();
 
@@ -67,19 +119,20 @@ export function getAudio(file: string, useCache = true): HTMLAudioElement {
 }
 
 export function setVolume(audio: HTMLAudioElement, volume: number): HTMLAudioElement {
-	const masterVolume = ColdDeviceStorage.get('sound_masterVolume');
+	const masterVolume = soundConfigStore.state.sound_masterVolume;
 	audio.volume = masterVolume - ((1 - volume) * masterVolume);
 	return audio;
 }
 
 export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notification') {
-	const sound = ColdDeviceStorage.get(`sound_${type}`);
+	const sound = soundConfigStore.state[`sound_${type}`];
+	if (_DEV_) console.log('play', type, sound);
 	if (sound.type == null) return;
 	playFile(sound.type, sound.volume);
 }
 
 export function playFile(file: string, volume: number) {
-	const masterVolume = ColdDeviceStorage.get('sound_masterVolume');
+	const masterVolume = soundConfigStore.state.sound_masterVolume;
 	if (masterVolume === 0) return;
 
 	const audio = setVolume(getAudio(file), volume);

@@ -1,12 +1,15 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs"/></template>
 
-	<MkSpacer :content-max="1200">
+	<MkSpacer v-if="tab === 'users'" :content-max="1200">
 		<div class="_gaps_s">
 			<div v-if="role">{{ role.description }}</div>
 			<MkUserList :pagination="users" :extractor="(item) => item.user"/>
 		</div>
+	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'timeline'" :content-max="700">
+		<MkTimeline ref="timeline" src="role" :role="props.role"/>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -16,11 +19,17 @@ import { computed, watch } from 'vue';
 import * as os from '@/os';
 import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
+import MkTimeline from '@/components/MkTimeline.vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	role: string;
-}>();
+	initialTab?: string;
+}>(), {
+	initialTab: 'users',
+});
 
+let tab = $ref(props.initialTab);
 let role = $ref();
 
 watch(() => props.role, () => {
@@ -38,6 +47,16 @@ const users = $computed(() => ({
 		roleId: props.role,
 	},
 }));
+
+const headerTabs = $computed(() => [{
+	key: 'users',
+	icon: 'ti ti-users',
+	title: i18n.ts.users,
+}, {
+	key: 'timeline',
+	icon: 'ti ti-pencil',
+	title: i18n.ts.timeline,
+}]);
 
 definePageMetadata(computed(() => ({
 	title: role?.name,

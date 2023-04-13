@@ -7,7 +7,7 @@ import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { DbUserJobData } from '../types.js';
+import type { DbJobDataWithUser } from '../types.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -31,7 +31,7 @@ export class DeleteDriveFilesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
 		this.logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });

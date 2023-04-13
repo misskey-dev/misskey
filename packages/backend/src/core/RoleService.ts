@@ -13,6 +13,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { Packed } from '@/misc/json-schema';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -64,6 +65,9 @@ export class RoleService implements OnApplicationShutdown {
 	public static NotAssignedError = class extends Error {};
 
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
@@ -396,6 +400,25 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
+	}
+
+	@bindThis
+	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
+		const roles = await this.getUserRoles(note.userId);
+
+		const redisPipeline = this.redisClient.pipeline();
+
+		for (const role of roles) {
+			redisPipeline.xadd(
+				`roleTimeline:${role.id}`,
+				'MAXLEN', '~', '1000',
+				'*',
+				'note', note.id);
+
+			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
+		}
+
+		redisPipeline.exec();
 	}
 
 	@bindThis

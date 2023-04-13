@@ -1,12 +1,12 @@
+import { get } from 'idb-keyval';
+import * as Acct from 'misskey-js/built/acct';
+import type { PushNotificationDataMap } from '@/types';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
-import { PushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
-import { acct as getAcct } from '@/filters/user';
-import { get } from 'idb-keyval';
 
-globalThis.addEventListener('install', ev => {
-	//ev.waitUntil(globalThis.skipWaiting());
+globalThis.addEventListener('install', () => {
+	// ev.waitUntil(globalThis.skipWaiting());
 });
 
 globalThis.addEventListener('activate', ev => {
@@ -43,7 +43,7 @@ globalThis.addEventListener('push', ev => {
 	ev.waitUntil(globalThis.clients.matchAll({
 		includeUncontrolled: true,
 		type: 'window',
-	}).then(async (clients: readonly WindowClient[]) => {
+	}).then(async () => {
 		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.data?.json();
 
 		switch (data.type) {
@@ -66,7 +66,7 @@ globalThis.addEventListener('push', ev => {
 });
 
 globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => {
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		if (_DEV_) {
 			console.log('notificationclick', ev.action, ev.notification.data);
 		}
@@ -83,7 +83,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						if ('userId' in data.body) await swos.api('following/create', loginId, { userId: data.body.userId });
 						break;
 					case 'showUser':
-						if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), loginId);
+						if ('user' in data.body) client = await swos.openUser(Acct.toString(data.body.user), loginId);
 						break;
 					case 'reply':
 						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
@@ -120,7 +120,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 								if ('note' in data.body) {
 									client = await swos.openNote(data.body.note.id, loginId);
 								} else if ('user' in data.body) {
-									client = await swos.openUser(getAcct(data.body.user), loginId);
+									client = await swos.openUser(Acct.toString(data.body.user), loginId);
 								}
 								break;
 						}
@@ -160,7 +160,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
 	const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.notification.data;
 
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		if (data.type === 'notification') {
 			await swos.sendMarkAllAsRead(data.userId);
 		}
@@ -169,7 +169,7 @@ globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEv
 });
 
 globalThis.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message']) => {
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		switch (ev.data) {
 			case 'clear':
 				// Cache Storage全削除

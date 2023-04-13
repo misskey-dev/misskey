@@ -1,4 +1,6 @@
-export class I18n<T extends Record<string, any>> {
+export type Locale = { [key: string]: string | Locale };
+
+export class I18n<T extends Locale = Locale> {
 	public ts: T;
 
 	constructor(locale: T) {
@@ -13,7 +15,8 @@ export class I18n<T extends Record<string, any>> {
 	// なるべくこのメソッド使うよりもlocale直接参照の方がvueのキャッシュ効いてパフォーマンスが良いかも
 	public t(key: string, args?: Record<string, string>): string {
 		try {
-			let str = key.split('.').reduce((o, i) => o[i], this.ts) as unknown as string;
+			let str = key.split('.').reduce<Locale | Locale[keyof Locale]>((o, i) => o[i], this.ts);
+			if (typeof str !== 'string') throw new Error();
 
 			if (args) {
 				for (const [k, v] of Object.entries(args)) {
