@@ -17,6 +17,7 @@
 		"@discordapp/twemoji": "14.1.2",
 		"@rollup/plugin-alias": "4.0.3",
 		"@rollup/plugin-json": "6.0.0",
+		"@rollup/plugin-replace": "^5.0.2",
 		"@rollup/pluginutils": "5.0.2",
 		"@syuilo/aiscript": "0.13.1",
 		"@tabler/icons-webfont": "2.12.0",
@@ -75,7 +76,6 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
-		"@rollup/plugin-replace": "^5.0.2",
 		"@storybook/addon-actions": "7.0.2",
 		"@storybook/addon-essentials": "7.0.2",
 		"@storybook/addon-interactions": "7.0.2",
