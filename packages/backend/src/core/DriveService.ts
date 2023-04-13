@@ -420,6 +420,7 @@ export class DriveService {
 
 		for (const fileId of exceedFileIds) {
 			const file = await this.driveFilesRepository.findOneBy({ id: fileId });
+			if (file == null) continue;
 			this.deleteFile(file, true);
 		}
 	}
