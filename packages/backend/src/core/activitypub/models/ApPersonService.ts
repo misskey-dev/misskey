@@ -463,7 +463,7 @@ export class ApPersonService implements OnModuleInit {
 		const url = getOneApHrefNullable(person.url);
 
 		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of person url: ' + url);
+			throw new Error(`unexpected shcema of person url: ${url}`);
 		}
 
 		const updates = {
