@@ -217,7 +217,7 @@ export class ApPersonService implements OnModuleInit {
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
-		if (uri.startsWith(this.config.url + '/')) {
+		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
 			const u = await this.usersRepository.findOneBy({ id });
 			if (u) this.cacheService.uriPersonCache.set(uri, u);

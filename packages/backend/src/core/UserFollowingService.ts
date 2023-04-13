@@ -22,6 +22,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import Logger from '../logger.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 
 const logger = new Logger('following/create');
 
@@ -73,6 +74,7 @@ export class UserFollowingService implements OnModuleInit {
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
+		private apPersonService: ApPersonService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -135,6 +137,24 @@ export class UserFollowingService implements OnModuleInit {
 				});
 
 				if (followed) autoAccept = true;
+			}
+
+			// Automatically accept if the follower is an account who has moved and the locked followee had accepted the old account.
+			if (followee.isLocked && !autoAccept && follower.alsoKnownAs) {
+				for (const oldUri of follower.alsoKnownAs) {
+					try {
+						await this.apPersonService.updatePerson(oldUri);
+						const oldAccount = await this.apPersonService.resolvePerson(oldUri);
+						autoAccept = await this.followingsRepository.exist({
+							where: {
+								followeeId: followee.id,
+								followerId: oldAccount.id,
+							},
+						});
+					} catch {
+						/* skip if any error happens */
+					}
+				}
 			}
 
 			if (!autoAccept) {
