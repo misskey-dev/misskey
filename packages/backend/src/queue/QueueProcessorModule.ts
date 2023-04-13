@@ -4,6 +4,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
 import { QueueProcessorService } from './QueueProcessorService.js';
 import { DbQueueProcessorsService } from './DbQueueProcessorsService.js';
+import { RelationshipQueueProcessorsService } from './RelationshipQueueProcessorsService.js';
 import { ObjectStorageQueueProcessorsService } from './ObjectStorageQueueProcessorsService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
@@ -32,6 +33,7 @@ import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessor
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
+import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
 
 @Module({
 	imports: [
@@ -61,9 +63,11 @@ import { ExportFavoritesProcessorService } from './processors/ExportFavoritesPro
 		DeleteAccountProcessorService,
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,
+		RelationshipProcessorService,
 		SystemQueueProcessorsService,
 		ObjectStorageQueueProcessorsService,
 		DbQueueProcessorsService,
+		RelationshipQueueProcessorsService,
 		WebhookDeliverProcessorService,
 		EndedPollNotificationProcessorService,
 		DeliverProcessorService,
