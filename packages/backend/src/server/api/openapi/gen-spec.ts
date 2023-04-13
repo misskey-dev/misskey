@@ -3,6 +3,8 @@ import endpoints from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
 import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
 
+export type ValueOf<T> = T[keyof T];
+
 export function genOpenApiSpec(config: Config) {
 	const spec = {
 		openapi: '3.0.0',
@@ -38,7 +40,8 @@ export function genOpenApiSpec(config: Config) {
 	};
 
 	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
-		const errors = {} as any;
+		type Error = ValueOf<NonNullable<typeof endpoint.meta.errors>>;
+		const errors: Record<Error['code'], { value: { error: Error } }> = {};
 
 		if (endpoint.meta.errors) {
 			for (const e of Object.values(endpoint.meta.errors)) {
