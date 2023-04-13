@@ -11,6 +11,7 @@
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
+
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;
 	origin?: Date | null;
@@ -50,6 +51,7 @@ function tick() {
 	now = props.origin ?? (new Date()).getTime();
 	const ago = (now - _time) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
+
 	tickId = window.setTimeout(tick, next);
 }
 
