@@ -49,7 +49,7 @@ export class CustomEmojiService {
 				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
 				return new Map(JSON.parse(value).map((x: Serialized<Emoji>) => [x.name, {
 					...x,
-					updatedAt: x.updatedAt && new Date(x.updatedAt),
+					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
 				}]));
 			},
 		});
