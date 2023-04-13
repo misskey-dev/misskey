@@ -5,7 +5,7 @@ export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;
 
 	if (schema.type === 'object' && schema.properties) {
-		res.required = Object.entries(schema.properties).filter(([k, v]) => !v.optional).map(([k]) => k);
+		res.required = Object.entries(schema.properties).filter(([, v]) => !v.optional).map(([k]) => k);
 
 		for (const k of Object.keys(schema.properties)) {
 			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k]);
