@@ -58,15 +58,15 @@ export class Note {
 	@Column({
 		...id(),
 		nullable: true,
-		comment: 'id of child event',
+		comment: 'The ID of child event',
 	})
-	public noteId: Event['id'] | null;
+	public eventId: Event['id'] | null;
 
 	@OneToOne(type => Event, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Event | null;
+	public event: Event | null;
 
 	// TODO: varcharにしたい
 	@Column('text', {
