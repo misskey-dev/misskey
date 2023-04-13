@@ -141,7 +141,7 @@ export type Schema = {
 	exclusiveMinimum?: boolean;
 	maxLength?: number;
 	minLength?: number;
-	pattern?: number;
+	pattern?: string;
 	maxItems?: number;
 	minItems?: number;
 	uniqueItems?: boolean;
