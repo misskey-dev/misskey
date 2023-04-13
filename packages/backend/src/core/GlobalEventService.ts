@@ -14,11 +14,13 @@ import type {
 	MainStreamTypes,
 	NoteStreamTypes,
 	UserListStreamTypes,
+	RoleTimelineStreamTypes,
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
+import { Role } from '@/models';
 
 @Injectable()
 export class GlobalEventService {
@@ -79,6 +81,11 @@ export class GlobalEventService {
 	@bindThis
 	public publishAntennaStream<K extends keyof AntennaStreamTypes>(antennaId: Antenna['id'], type: K, value?: AntennaStreamTypes[K]): void {
 		this.publish(`antennaStream:${antennaId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishRoleTimelineStream<K extends keyof RoleTimelineStreamTypes>(roleId: Role['id'], type: K, value?: RoleTimelineStreamTypes[K]): void {
+		this.publish(`roleTimelineStream:${roleId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis
