@@ -70,6 +70,6 @@ export const DI = {
 	roleAssignmentsRepository: Symbol('roleAssignmentsRepository'),
 	flashsRepository: Symbol('flashsRepository'),
 	flashLikesRepository: Symbol('flashLikesRepository'),
-	userMemoRepository: Symbol('userMemoRepository'),
+	userMemosRepository: Symbol('userMemosRepository'),
 	//#endregion
 };

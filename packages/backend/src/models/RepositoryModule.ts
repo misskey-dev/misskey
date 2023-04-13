@@ -388,8 +388,8 @@ const $roleAssignmentsRepository: Provider = {
 	inject: [DI.db],
 };
 
-const $userMemoRepository: Provider = {
-	provide: DI.userMemoRepository,
+const $userMemosRepository: Provider = {
+	provide: DI.userMemosRepository,
 	useFactory: (db: DataSource) => db.getRepository(UserMemo),
 	inject: [DI.db],
 };
@@ -462,7 +462,7 @@ const $userMemoRepository: Provider = {
 		$roleAssignmentsRepository,
 		$flashsRepository,
 		$flashLikesRepository,
-		$userMemoRepository,
+		$userMemosRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -529,7 +529,7 @@ const $userMemoRepository: Provider = {
 		$roleAssignmentsRepository,
 		$flashsRepository,
 		$flashLikesRepository,
-		$userMemoRepository,
+		$userMemosRepository,
 	],
 })
 export class RepositoryModule {}

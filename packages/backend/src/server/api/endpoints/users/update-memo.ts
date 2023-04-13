@@ -39,8 +39,8 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.userMemoRepository)
-		private userMemoRepository: UserMemoRepository,
+		@Inject(DI.userMemosRepository)
+		private userMemosRepository: UserMemoRepository,
 		private getterService: GetterService,
 		private idService: IdService,
 	) {
@@ -53,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// 引数がnullか空文字であれば、パーソナルメモを削除する
 			if (ps.memo === '' || ps.memo == null) {
-				await this.userMemoRepository.delete({
+				await this.userMemosRepository.delete({
 					userId: me.id,
 					targetUserId: target.id,
 				});
@@ -61,20 +61,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// 以前に作成されたパーソナルメモがあるかどうか確認
-			const previousMemo = await this.userMemoRepository.findOneBy({
+			const previousMemo = await this.userMemosRepository.findOneBy({
 				userId: me.id,
 				targetUserId: target.id,
 			});
 
 			if (!previousMemo) {
-				await this.userMemoRepository.insert({
+				await this.userMemosRepository.insert({
 					id: this.idService.genId(),
 					userId: me.id,
 					targetUserId: target.id,
 					memo: ps.memo,
 				});
 			} else {
-				await this.userMemoRepository.update(previousMemo.id, {
+				await this.userMemosRepository.update(previousMemo.id, {
 					userId: me.id,
 					targetUserId: target.id,
 					memo: ps.memo,

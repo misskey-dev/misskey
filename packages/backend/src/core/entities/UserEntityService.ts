@@ -114,8 +114,8 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 		
-		@Inject(DI.userMemoRepository)
-		private userMemoRepository: UserMemoRepository,
+		@Inject(DI.userMemosRepository)
+		private userMemosRepository: UserMemoRepository,
 
 		//private noteEntityService: NoteEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
@@ -340,7 +340,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const falsy = opts.detail ? false : undefined;
 
-		const memo = meId == null ? null : await this.userMemoRepository.findOneBy({
+		const memo = meId == null ? null : await this.userMemosRepository.findOneBy({
 			userId: meId,
 			targetUserId: user.id,
 		}).then(row => row?.memo ?? null);
