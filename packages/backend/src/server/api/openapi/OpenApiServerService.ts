@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { genOpenapiSpec } from './gen-spec.js';
+import { genOpenApiSpec } from './gen-spec.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const staticAssets = fileURLToPath(new URL('../../../../assets/', import.meta.url));
@@ -24,7 +24,7 @@ export class OpenApiServerService {
 		});
 		fastify.get('/api.json', (_request, reply) => {
 			reply.header('Cache-Control', 'public, max-age=600');
-			reply.send(genOpenapiSpec(this.config));
+			reply.send(genOpenApiSpec(this.config));
 		});
 		done();
 	}
