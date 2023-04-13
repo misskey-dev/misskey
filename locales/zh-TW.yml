@@ -993,6 +993,8 @@ noteIdOrUrl: "貼文ID或URL"
 accountMigration: "遷移帳戶"
 accountMoved: "這個使用者已遷移至新的帳戶："
 forceShowAds: "總是顯示廣告"
+addMemo: "新增備註"
+editMemo: "編輯備註"
 _accountMigration:
   moveTo: "將這個帳戶遷移至新的帳戶"
   moveToLabel: "要遷移到的帳戶："
