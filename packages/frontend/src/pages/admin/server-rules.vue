@@ -54,7 +54,7 @@ const save = async () => {
 		serverRules,
 	});
 	fetchInstance();
-}
+};
 
 const remove = (index: number): void => {
 	serverRules.splice(index, 1);
