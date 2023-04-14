@@ -151,9 +151,9 @@ export type Schema = {
 	enum?: unknown[];
 	type?: 'array' | 'boolean' | 'integer' | 'number' | 'object' | 'string';
 	not?: Schema | Reference;
-	allOf?: Schema | Reference;
-	oneOf?: Schema | Reference;
-	anyOf?: Schema | Reference;
+	allOf?: (Schema | Reference)[];
+	oneOf?: (Schema | Reference)[];
+	anyOf?: (Schema | Reference)[];
 	items?: Schema | Reference;
 	properties?: {
 		[key: string]: Schema | Reference;
