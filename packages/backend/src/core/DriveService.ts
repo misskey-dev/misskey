@@ -59,6 +59,8 @@ type AddFileArgs = {
 	uri?: string | null;
 	/** Mark file as sensitive */
 	sensitive?: boolean | null;
+	/** Extension to force */
+	ext?: string | null;
 
 	requestIp?: string | null;
 	requestHeaders?: Record<string, string> | null;
@@ -125,7 +127,7 @@ export class DriveService {
 	/***
 	 * Save file
 	 * @param path Path for original
-	 * @param name Name for original
+	 * @param name Name for original (should be extention corrected)
 	 * @param type Content-Type for original
 	 * @param hash Hash for original
 	 * @param size Size for original
@@ -151,7 +153,7 @@ export class DriveService {
 			}
 
 			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
-			// 許可されているファイル形式でしか拡張子をつけない
+			// 許可されているファイル形式でしかURLに拡張子をつけない
 			if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
 				ext = '';
 			}
@@ -173,7 +175,7 @@ export class DriveService {
 			//#region Uploads
 			this.registerLogger.info(`uploading original: ${key}`);
 			const uploads = [
-				this.upload(key, fs.createReadStream(path), type, ext, name),
+				this.upload(key, fs.createReadStream(path), type, null, name),
 			];
 
 			if (alts.webpublic) {
@@ -189,7 +191,7 @@ export class DriveService {
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
-				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext));
+				uploads.push(this.upload(thumbnailKey, alts.thumbnail.data, alts.thumbnail.type, alts.thumbnail.ext, `${name}.thumbnail`));
 			}
 
 			await Promise.all(uploads);
@@ -443,6 +445,7 @@ export class DriveService {
 		sensitive = null,
 		requestIp = null,
 		requestHeaders = null,
+		ext = null,
 	}: AddFileArgs): Promise<DriveFile> {
 		let skipNsfwCheck = false;
 		const instance = await this.metaService.fetch();
@@ -474,7 +477,7 @@ export class DriveService {
 			// DriveFile.nameは256文字, validateFileNameは200文字制限であるため、
 			// extを付加してデータベースの文字数制限に当たることはまずない
 			(name && this.driveFileEntityService.validateFileName(name)) ? name : 'untitled',
-			info.type.ext,
+			ext ?? info.type.ext,
 		);
 
 		if (user && !force) {
