@@ -54,10 +54,10 @@ function calcAspectRatio() {
 		return;
 	}
 
+	// アスペクト比上限設定では、横長の場合は高さを縮小させる
 	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
 
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
-		// アスペクト比上限設定では、横長の場合は高さを縮小させる
 		case '16_9':
 			gallery.value.style.aspectRatio = ratioMax(16 / 9);
 			break;
