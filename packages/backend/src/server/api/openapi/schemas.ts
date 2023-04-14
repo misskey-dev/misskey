@@ -1,5 +1,4 @@
-import type { Schema } from '@/misc/json-schema.js';
-import { refs } from '@/misc/json-schema.js';
+import { type Schema, refs } from '@/misc/json-schema.js';
 import type { MediaType } from './types';
 
 type OpenAPISchema = NonNullable<MediaType['schema']>;
