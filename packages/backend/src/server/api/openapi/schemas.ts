@@ -9,8 +9,8 @@ export function convertSchemaToOpenApiSchema(schema: Schema): OpenAPISchema {
 	if (schema.type === 'object' && schema.properties) {
 		res.required = Object.entries(schema.properties).filter(([, v]) => !v.optional).map(([k]) => k);
 
-		for (const k of Object.keys(schema.properties)) {
-			res.properties[k] = convertSchemaToOpenApiSchema(schema.properties[k]);
+		for (const [k, v] of Object.entries(schema.properties)) {
+			res.properties[k] = convertSchemaToOpenApiSchema(v);
 		}
 	}
 
