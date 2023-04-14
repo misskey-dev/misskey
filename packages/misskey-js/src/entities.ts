@@ -14,6 +14,8 @@ export type UserLite = {
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 	avatarUrl: string;
 	avatarBlurhash: string;
+	alsoKnownAs: string[];
+	movedToUri: any;
 	emojis: {
 		name: string;
 		url: string;
@@ -88,7 +90,6 @@ export type MeDetailed = UserDetailed & {
 	hasPendingReceivedFollowRequest: boolean;
 	hasUnreadAnnouncement: boolean;
 	hasUnreadAntenna: boolean;
-	hasUnreadChannel: boolean;
 	hasUnreadMentions: boolean;
 	hasUnreadMessagingMessage: boolean;
 	hasUnreadNotification: boolean;

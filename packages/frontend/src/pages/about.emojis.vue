@@ -3,7 +3,7 @@
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
 
 	<div class="query">
-		<MkInput v-model="q" class="" :placeholder="$ts.search">
+		<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
 
@@ -15,14 +15,14 @@
 	</div>
 
 	<MkFoldableSection v-if="searchEmojis" class="emojis">
-		<template #header>{{ $ts.searchResult }}</template>
+		<template #header>{{ i18n.ts.searchResult }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
 	</MkFoldableSection>
 	
 	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category" class="emojis">
-		<template #header>{{ category || $ts.other }}</template>
+		<template #header>{{ category || i18n.ts.other }}</template>
 		<div class="zuvgdzyt">
 			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" class="emoji" :emoji="emoji"/>
 		</div>
@@ -32,13 +32,14 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis';
 import { i18n } from '@/i18n';
-import * as Misskey from 'misskey-js';
+import { $i } from '@/account';
 
 const customEmojiTags = getCustomEmojiTags();
 let q = $ref('');
@@ -52,7 +53,15 @@ function search() {
 	}
 
 	if (selectedTags.size === 0) {
-		searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+		const queryarry = q.match(/\:([a-z0-9_]*)\:/g);
+
+		if (queryarry) {
+			searchEmojis = customEmojis.value.filter(emoji => 
+				queryarry.includes(`:${emoji.name}:`)
+			);
+		} else {
+			searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+		}
 	} else {
 		searchEmojis = customEmojis.value.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
 	}

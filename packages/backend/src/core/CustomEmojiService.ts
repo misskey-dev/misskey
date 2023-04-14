@@ -1,24 +1,29 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, Note } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
-import { KVCache } from '@/misc/cache.js';
+import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Config } from '@/config.js';
-import { ReactionService } from '@/core/ReactionService.js';
 import { query } from '@/misc/prelude/url.js';
+import type { Serialized } from '@/server/api/stream/types.js';
 
 @Injectable()
 export class CustomEmojiService {
-	private cache: KVCache<Emoji | null>;
+	private cache: MemoryKVCache<Emoji | null>;
+	public localEmojisCache: RedisSingleCache<Map<string, Emoji>>;
 
 	constructor(
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.config)
 		private config: Config,
 
@@ -32,9 +37,22 @@ export class CustomEmojiService {
 		private idService: IdService,
 		private emojiEntityService: EmojiEntityService,
 		private globalEventService: GlobalEventService,
-		private reactionService: ReactionService,
 	) {
-		this.cache = new KVCache<Emoji | null>(1000 * 60 * 60 * 12);
+		this.cache = new MemoryKVCache<Emoji | null>(1000 * 60 * 60 * 12);
+
+		this.localEmojisCache = new RedisSingleCache<Map<string, Emoji>>(this.redisClient, 'localEmojis', {
+			lifetime: 1000 * 60 * 30, // 30m
+			memoryCacheLifetime: 1000 * 60 * 3, // 3m
+			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
+			fromRedisConverter: (value) => {
+				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
+				return new Map(JSON.parse(value).map((x: Serialized<Emoji>) => [x.name, {
+					...x,
+					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
+				}]));
+			},
+		});
 	}
 
 	@bindThis
@@ -60,7 +78,7 @@ export class CustomEmojiService {
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {
-			await this.db.queryResultCache?.remove(['meta_emojis']);
+			this.localEmojisCache.refresh();
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),
@@ -68,6 +86,146 @@ export class CustomEmojiService {
 		}
 
 		return emoji;
+	}
+
+	@bindThis
+	public async update(id: Emoji['id'], data: {
+		name?: string;
+		category?: string | null;
+		aliases?: string[];
+		license?: string | null;
+	}): Promise<void> {
+		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
+		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
+		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
+
+		await this.emojisRepository.update(emoji.id, {
+			updatedAt: new Date(),
+			name: data.name,
+			category: data.category,
+			aliases: data.aliases,
+			license: data.license,
+		});
+
+		this.localEmojisCache.refresh();
+
+		const updated = await this.emojiEntityService.packDetailed(emoji.id);
+
+		if (emoji.name === data.name) {
+			this.globalEventService.publishBroadcastStream('emojiUpdated', {
+				emojis: [updated],
+			});
+		} else {
+			this.globalEventService.publishBroadcastStream('emojiDeleted', {
+				emojis: [await this.emojiEntityService.packDetailed(emoji)],
+			});
+
+			this.globalEventService.publishBroadcastStream('emojiAdded', {
+				emoji: updated,
+			});	
+		}
+	}
+
+	@bindThis
+	public async addAliasesBulk(ids: Emoji['id'][], aliases: string[]) {
+		const emojis = await this.emojisRepository.findBy({
+			id: In(ids),
+		});
+
+		for (const emoji of emojis) {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				aliases: [...new Set(emoji.aliases.concat(aliases))],
+			});
+		}
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
+
+	@bindThis
+	public async setAliasesBulk(ids: Emoji['id'][], aliases: string[]) {
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			aliases: aliases,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
+
+	@bindThis
+	public async removeAliasesBulk(ids: Emoji['id'][], aliases: string[]) {
+		const emojis = await this.emojisRepository.findBy({
+			id: In(ids),
+		});
+
+		for (const emoji of emojis) {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				aliases: emoji.aliases.filter(x => !aliases.includes(x)),
+			});
+		}
+
+		this.localEmojisCache.refresh();
+	
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
+
+	@bindThis
+	public async setCategoryBulk(ids: Emoji['id'][], category: string | null) {
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			category: category,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
+
+	@bindThis
+	public async delete(id: Emoji['id']) {
+		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
+
+		await this.emojisRepository.delete(emoji.id);
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiDeleted', {
+			emojis: [await this.emojiEntityService.packDetailed(emoji)],
+		});
+	}
+
+	@bindThis
+	public async deleteBulk(ids: Emoji['id'][]) {
+		const emojis = await this.emojisRepository.findBy({
+			id: In(ids),
+		});
+
+		for (const emoji of emojis) {
+			await this.emojisRepository.delete(emoji.id);
+		}
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiDeleted', {
+			emojis: await this.emojiEntityService.packDetailedMany(emojis),
+		});
 	}
 
 	@bindThis
@@ -84,7 +242,7 @@ export class CustomEmojiService {
 	}
 
 	@bindThis
-	private parseEmojiStr(emojiName: string, noteUserHost: string | null) {
+	public parseEmojiStr(emojiName: string, noteUserHost: string | null) {
 		const match = emojiName.match(/^(\w+)(?:@([\w.-]+))?$/);
 		if (!match) return { name: null, host: null };
 
@@ -116,16 +274,7 @@ export class CustomEmojiService {
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
-
-		const isLocal = emoji.host == null;
-		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-		const url = isLocal
-			? emojiUrl
-			: this.config.proxyRemoteFiles
-				? `${this.config.mediaProxy}/emoji.webp?${query({ url: emojiUrl })}`
-				: emojiUrl;
-
-		return url;
+		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 	}
 
 	/**
@@ -141,30 +290,6 @@ export class CustomEmojiService {
 			}
 		}
 		return res;
-	}
-
-	@bindThis
-	public aggregateNoteEmojis(notes: Note[]) {
-		let emojis: { name: string | null; host: string | null; }[] = [];
-		for (const note of notes) {
-			emojis = emojis.concat(note.emojis
-				.map(e => this.parseEmojiStr(e, note.userHost)));
-			if (note.renote) {
-				emojis = emojis.concat(note.renote.emojis
-					.map(e => this.parseEmojiStr(e, note.renote!.userHost)));
-				if (note.renote.user) {
-					emojis = emojis.concat(note.renote.user.emojis
-						.map(e => this.parseEmojiStr(e, note.renote!.userHost)));
-				}
-			}
-			const customReactions = Object.keys(note.reactions).map(x => this.reactionService.decodeReaction(x)).filter(x => x.name != null) as typeof emojis;
-			emojis = emojis.concat(customReactions);
-			if (note.user) {
-				emojis = emojis.concat(note.user.emojis
-					.map(e => this.parseEmojiStr(e, note.userHost)));
-			}
-		}
-		return emojis.filter(x => x.name != null && x.host != null) as { name: string; host: string; }[];
 	}
 
 	/**

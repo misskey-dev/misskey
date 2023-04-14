@@ -4,7 +4,6 @@ import { Ad } from '@/models/entities/Ad.js';
 import { Announcement } from '@/models/entities/Announcement.js';
 import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { Antenna } from '@/models/entities/Antenna.js';
-import { AntennaNote } from '@/models/entities/AntennaNote.js';
 import { App } from '@/models/entities/App.js';
 import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { AuthSession } from '@/models/entities/AuthSession.js';
@@ -33,7 +32,6 @@ import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
 import { NoteUnread } from '@/models/entities/NoteUnread.js';
-import { Notification } from '@/models/entities/Notification.js';
 import { Page } from '@/models/entities/Page.js';
 import { PageLike } from '@/models/entities/PageLike.js';
 import { PasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
@@ -57,6 +55,7 @@ import { UserPending } from '@/models/entities/UserPending.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
 import { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
+import { UserMemo } from '@/models/entities/UserMemo.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
@@ -73,7 +72,6 @@ export {
 	Announcement,
 	AnnouncementRead,
 	Antenna,
-	AntennaNote,
 	App,
 	AttestationChallenge,
 	AuthSession,
@@ -102,7 +100,6 @@ export {
 	NoteReaction,
 	NoteThreadMuting,
 	NoteUnread,
-	Notification,
 	Page,
 	PageLike,
 	PasswordResetRequest,
@@ -133,6 +130,7 @@ export {
 	RoleAssignment,
 	Flash,
 	FlashLike,
+	UserMemo,
 };
 
 export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
@@ -141,7 +139,6 @@ export type AdsRepository = Repository<Ad>;
 export type AnnouncementsRepository = Repository<Announcement>;
 export type AnnouncementReadsRepository = Repository<AnnouncementRead>;
 export type AntennasRepository = Repository<Antenna>;
-export type AntennaNotesRepository = Repository<AntennaNote>;
 export type AppsRepository = Repository<App>;
 export type AttestationChallengesRepository = Repository<AttestationChallenge>;
 export type AuthSessionsRepository = Repository<AuthSession>;
@@ -170,7 +167,6 @@ export type NoteFavoritesRepository = Repository<NoteFavorite>;
 export type NoteReactionsRepository = Repository<NoteReaction>;
 export type NoteThreadMutingsRepository = Repository<NoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<NoteUnread>;
-export type NotificationsRepository = Repository<Notification>;
 export type PagesRepository = Repository<Page>;
 export type PageLikesRepository = Repository<PageLike>;
 export type PasswordResetRequestsRepository = Repository<PasswordResetRequest>;
@@ -201,3 +197,4 @@ export type RolesRepository = Repository<Role>;
 export type RoleAssignmentsRepository = Repository<RoleAssignment>;
 export type FlashsRepository = Repository<Flash>;
 export type FlashLikesRepository = Repository<FlashLike>;
+export type UserMemoRepository = Repository<UserMemo>;

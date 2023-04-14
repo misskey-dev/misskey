@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import * as websocket from 'websocket';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, RenoteMutingsRepository } from '@/models/index.js';
@@ -9,6 +9,7 @@ import { NoteReadService } from '@/core/NoteReadService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
+import { CacheService } from '@/core/CacheService.js';
 import { AuthenticateService } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
@@ -21,8 +22,8 @@ export class StreamingApiServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -45,7 +46,7 @@ export class StreamingApiServerService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 	
-		private globalEventService: GlobalEventService,
+		private cacheService: CacheService,
 		private noteReadService: NoteReadService,
 		private authenticateService: AuthenticateService,
 		private channelsService: ChannelsService,
@@ -73,8 +74,6 @@ export class StreamingApiServerService {
 				return;
 			}
 
-			const connection = request.accept();
-
 			const ev = new EventEmitter();
 
 			async function onRedisMessage(_: string, data: string): Promise<void> {
@@ -82,21 +81,21 @@ export class StreamingApiServerService {
 				ev.emit(parsed.channel, parsed.message);
 			}
 
-			this.redisSubscriber.on('message', onRedisMessage);
+			this.redisForSub.on('message', onRedisMessage);
 
 			const main = new MainStreamConnection(
-				this.followingsRepository,
-				this.mutingsRepository,
-				this.renoteMutingsRepository,
-				this.blockingsRepository,
-				this.channelFollowingsRepository,
-				this.userProfilesRepository,
 				this.channelsService,
-				this.globalEventService,
 				this.noteReadService,
 				this.notificationService,
-				connection, ev, user, miapp,
+				this.cacheService,
+				ev, user, miapp,
 			);
+
+			await main.init();
+
+			const connection = request.accept();
+
+			main.init2(connection);
 
 			const intervalId = user ? setInterval(() => {
 				this.usersRepository.update(user.id, {
@@ -112,7 +111,7 @@ export class StreamingApiServerService {
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				main.dispose();
-				this.redisSubscriber.off('message', onRedisMessage);
+				this.redisForSub.off('message', onRedisMessage);
 				if (intervalId) clearInterval(intervalId);
 			});
 

@@ -2,14 +2,31 @@ import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
 import type { DriveFile } from 'misskey-js/built/entities';
+import { components } from '@/components';
 import { directives } from '@/directives';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 
 describe('MkMediaImage', () => {
 	const renderMediaImage = (image: Partial<DriveFile>): RenderResult => {
 		return render(MkMediaImage, {
-			props: { image },
-			global: { directives },
+			props: {
+				image: {
+					id: 'xxxxxxxx',
+					createdAt: (new Date()).toJSON(),
+					isSensitive: false,
+					name: 'example.png',
+					thumbnailUrl: null,
+					url: '',
+					type: 'application/octet-stream',
+					size: 1,
+					md5: '15eca7fba0480996e2245f5185bf39f2',
+					blurhash: null,
+					comment: null,
+					properties: {},
+					...image,
+				} as DriveFile,
+			},
+			global: { directives, components },
 		});
 	};
 

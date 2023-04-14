@@ -1,4 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -18,6 +19,8 @@ import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { CacheService } from '@/core/CacheService.js';
+import type { Config } from '@/config.js';
 import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
@@ -36,8 +39,15 @@ type Remote = RemoteUser | {
 type Both = Local | Remote;
 
 @Injectable()
-export class UserFollowingService {
+export class UserFollowingService implements OnModuleInit {
+	private userBlockingService: UserBlockingService;
+
 	constructor(
+		private moduleRef: ModuleRef,
+
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -53,8 +63,8 @@ export class UserFollowingService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
-		private userBlockingService: UserBlockingService,
 		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
@@ -68,8 +78,12 @@ export class UserFollowingService {
 	) {
 	}
 
+	onModuleInit() {
+		this.userBlockingService = this.moduleRef.get('UserBlockingService');
+	}
+
 	@bindThis
-	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string): Promise<void> {
+	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string, silent = false): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
@@ -129,7 +143,7 @@ export class UserFollowingService {
 			}
 		}
 
-		await this.insertFollowingDoc(followee, follower);
+		await this.insertFollowingDoc(followee, follower, silent);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, requestId), followee));
@@ -145,6 +159,7 @@ export class UserFollowingService {
 		follower: {
 			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
 		},
+		silent = false,
 	): Promise<void> {
 		if (follower.id === followee.id) return;
 
@@ -171,6 +186,8 @@ export class UserFollowingService {
 				throw err;
 			}
 		});
+
+		this.cacheService.userFollowingsCache.refresh(follower.id);
 
 		const req = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
@@ -221,11 +238,10 @@ export class UserFollowingService {
 		this.perUserFollowingChart.update(follower, followee, true);
 
 		// Publish follow event
-		if (this.userEntityService.isLocalUser(follower)) {
+		if (this.userEntityService.isLocalUser(follower) && !silent) {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishUserEvent(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 				this.globalEventService.publishMainStream(follower.id, 'follow', packed as Packed<'UserDetailedNotMe'>);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('follow'));
@@ -279,6 +295,8 @@ export class UserFollowingService {
 
 		await this.followingsRepository.delete(following.id);
 
+		this.cacheService.userFollowingsCache.refresh(follower.id);
+
 		this.decrementFollowing(follower, followee);
 
 		// Publish unfollow event
@@ -286,7 +304,6 @@ export class UserFollowingService {
 			this.userEntityService.pack(followee.id, follower, {
 				detail: true,
 			}).then(async packed => {
-				this.globalEventService.publishUserEvent(follower.id, 'unfollow', packed);
 				this.globalEventService.publishMainStream(follower.id, 'unfollow', packed);
 
 				const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));
@@ -398,7 +415,7 @@ export class UserFollowingService {
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, requestId ?? `${this.config.url}/follows/${followRequest.id}`));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	}
@@ -579,7 +596,6 @@ export class UserFollowingService {
 			detail: true,
 		});
 
-		this.globalEventService.publishUserEvent(follower.id, 'unfollow', packedFollowee);
 		this.globalEventService.publishMainStream(follower.id, 'unfollow', packedFollowee);
 
 		const webhooks = (await this.webhookService.getActiveWebhooks()).filter(x => x.userId === follower.id && x.on.includes('unfollow'));

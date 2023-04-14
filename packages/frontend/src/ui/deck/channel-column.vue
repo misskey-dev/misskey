@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import * as misskey from 'misskey-js';
 
 const props = defineProps<{
 	column: Column;
@@ -33,6 +33,7 @@ const emit = defineEmits<{
 }>();
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
+let channel = $shallowRef<misskey.entities.Channel>();
 
 if (props.column.channelId == null) {
 	setChannel();
@@ -56,11 +57,15 @@ async function setChannel() {
 	});
 }
 
-function post() {
+async function post() {
+	if (!channel || channel.id !== props.column.channelId) {
+		channel = await os.api('channels/show', {
+			channelId: props.column.channelId,
+		});
+	}
+
 	os.post({
-		channel: {
-			id: props.column.channelId,
-		},
+		channel,
 	});
 }
 

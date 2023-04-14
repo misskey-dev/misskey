@@ -6,18 +6,6 @@ import 'vite/modulepreload-polyfill';
 
 import '@/style.scss';
 
-//#region account indexedDB migration
-import { set } from '@/scripts/idb-proxy';
-
-{
-	const accounts = miLocalStorage.getItem('accounts');
-	if (accounts) {
-		set('accounts', JSON.parse(accounts));
-		miLocalStorage.removeItem('accounts');
-	}
-}
-//#endregion
-
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import { compareVersions } from 'compare-versions';
 import JSON5 from 'json5';
@@ -42,11 +30,11 @@ import { reloadChannel } from '@/scripts/unison-reload';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { getUrlWithoutLoginId } from '@/scripts/login-id';
 import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { deckStore } from './ui/deck/deck-store';
-import { miLocalStorage } from './local-storage';
-import { claimAchievement, claimedAchievements } from './scripts/achievements';
-import { fetchCustomEmojis } from './custom-emojis';
-import { mainRouter } from './router';
+import { deckStore } from '@/ui/deck/deck-store';
+import { miLocalStorage } from '@/local-storage';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
+import { fetchCustomEmojis } from '@/custom-emojis';
+import { mainRouter } from '@/router';
 
 console.info(`Misskey v${version}`);
 
@@ -55,7 +43,9 @@ if (_DEV_) {
 
 	console.info(`vue ${vueVersion}`);
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(window as any).$i = $i;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(window as any).$store = defaultStore;
 
 	window.addEventListener('error', event => {
@@ -184,10 +174,10 @@ fetchInstanceMetaPromise.then(() => {
 
 try {
 	await fetchCustomEmojis();
-} catch (err) {}
+} catch (err) { /* empty */ }
 
 const app = createApp(
-	window.location.search === '?zen' ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+	new URLSearchParams(window.location.search).has('zen') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 	!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 	ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 	ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
@@ -197,15 +187,6 @@ const app = createApp(
 if (_DEV_) {
 	app.config.performance = true;
 }
-
-// TODO: 廃止
-app.config.globalProperties = {
-	$i,
-	$store: defaultStore,
-	$instance: instance,
-	$t: i18n.t,
-	$ts: i18n.ts,
-};
 
 widgets(app);
 directives(app);
@@ -221,20 +202,20 @@ await deckStore.ready;
 
 // https://github.com/misskey-dev/misskey/pull/8575#issuecomment-1114239210
 // なぜかinit.tsの内容が2回実行されることがあるため、mountするdivを1つに制限する
-const rootEl = (() => {
+const rootEl = ((): HTMLElement => {
 	const MISSKEY_MOUNT_DIV_ID = 'misskey_app';
 
-	const currentEl = document.getElementById(MISSKEY_MOUNT_DIV_ID);
+	const currentRoot = document.getElementById(MISSKEY_MOUNT_DIV_ID);
 
-	if (currentEl) {
+	if (currentRoot) {
 		console.warn('multiple import detected');
-		return currentEl;
+		return currentRoot;
 	}
 
-	const rootEl = document.createElement('div');
-	rootEl.id = MISSKEY_MOUNT_DIV_ID;
-	document.body.appendChild(rootEl);
-	return rootEl;
+	const root = document.createElement('div');
+	root.id = MISSKEY_MOUNT_DIV_ID;
+	document.body.appendChild(root);
+	return root;
 })();
 
 app.mount(rootEl);
@@ -265,8 +246,7 @@ if (lastVersion !== version) {
 				popup(defineAsyncComponent(() => import('@/components/MkUpdated.vue')), {}, {}, 'closed');
 			}
 		}
-	} catch (err) {
-	}
+	} catch (err) { /* empty */ }
 }
 
 await defaultStore.ready;
@@ -356,7 +336,7 @@ const hotkeys = {
 	},
 	's': (): void => {
 		mainRouter.push('/search');
-	}
+	},
 };
 
 if ($i) {
@@ -520,15 +500,6 @@ if ($i) {
 
 	main.on('readAllAnnouncements', () => {
 		updateAccount({ hasUnreadAnnouncement: false });
-	});
-
-	main.on('readAllChannels', () => {
-		updateAccount({ hasUnreadChannel: false });
-	});
-
-	main.on('unreadChannel', () => {
-		updateAccount({ hasUnreadChannel: true });
-		sound.play('channel');
 	});
 
 	// トークンが再生成されたとき

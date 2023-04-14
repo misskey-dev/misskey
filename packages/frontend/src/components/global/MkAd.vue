@@ -9,9 +9,9 @@
 	<div v-else :class="$style.menu">
 		<div :class="$style.menuContainer">
 			<div>Ads by {{ host }}</div>
-			<!--<MkButton class="button" primary>{{ $ts._ad.like }}</MkButton>-->
-			<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ $ts._ad.reduceFrequencyOfThisAd }}</MkButton>
-			<button class="_textButton" @click="toggleMenu">{{ $ts._ad.back }}</button>
+			<!--<MkButton class="button" primary>{{ i18n.ts._ad.like }}</MkButton>-->
+			<MkButton v-if="chosen.ratio !== 0" :class="$style.menuButton" @click="reduceFrequency">{{ i18n.ts._ad.reduceFrequencyOfThisAd }}</MkButton>
+			<button class="_textButton" @click="toggleMenu">{{ i18n.ts._ad.back }}</button>
 		</div>
 	</div>
 </div>
@@ -20,6 +20,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';
 import MkButton from '@/components/MkButton.vue';
@@ -82,7 +83,7 @@ const choseAd = (): Ad | null => {
 };
 
 const chosen = ref(choseAd());
-const shouldHide = $ref($i && $i.policies.canHideAds && (props.specify == null));
+const shouldHide = $ref(!defaultStore.state.forceShowAds && $i && $i.policies.canHideAds && (props.specify == null));
 
 function reduceFrequency(): void {
 	if (chosen.value == null) return;

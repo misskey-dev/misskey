@@ -35,9 +35,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					id: ps.tokenId,
 					userId: me.id,
 				});
-
-				// Terminate streaming
-				this.globalEventService.publishUserEvent(me.id, 'terminate');
 			}
 		});
 	}

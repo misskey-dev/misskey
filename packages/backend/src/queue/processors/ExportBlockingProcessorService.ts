@@ -11,7 +11,7 @@ import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { DbUserJobData } from '../types.js';
+import type { DbJobDataWithUser } from '../types.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class ExportBlockingProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
@@ -106,7 +106,7 @@ export class ExportBlockingProcessorService {
 			this.logger.succ(`Exported to: ${path}`);
 
 			const fileName = 'blocking-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
-			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true });
+			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 		} finally {

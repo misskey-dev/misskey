@@ -14,7 +14,7 @@
 		<div :class="$style.text">
 			<I18n :src="i18n.ts.pleaseDonate" tag="span">
 				<template #host>
-					{{ $instance.name ?? host }}
+					{{ instance.name ?? host }}
 				</template>
 			</I18n>
 			<div style="margin-top: 0.2em;">
@@ -37,6 +37,7 @@ import { host } from '@/config';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { miLocalStorage } from '@/local-storage';
+import { instance } from '@/instance';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;

@@ -1,12 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { IdService } from '@/core/IdService.js';
 import type { MutingsRepository } from '@/models/index.js';
-import type { Muting } from '@/models/entities/Muting.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { UserMutingService } from '@/core/UserMutingService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -62,9 +60,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
-		private idService: IdService,
+		private userMutingService: UserMutingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const muter = me;
@@ -94,16 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			// Create mute
-			await this.mutingsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
-				muterId: muter.id,
-				muteeId: mutee.id,
-			} as Muting);
-
-			this.globalEventService.publishUserEvent(me.id, 'mute', mutee);
+			await this.userMutingService.mute(muter, mutee, ps.expiresAt ? new Date(ps.expiresAt) : null);
 		});
 	}
 }

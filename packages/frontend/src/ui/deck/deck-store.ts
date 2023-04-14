@@ -22,6 +22,7 @@ export type Column = {
 	antennaId?: string;
 	listId?: string;
 	channelId?: string;
+	roleId?: string;
 	includingTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
 };

@@ -27,10 +27,10 @@
 	</div>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -42,10 +42,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
 			<XDrawerMenu/>
@@ -53,10 +53,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="widgetsShowing"
@@ -68,10 +68,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
 	>
 		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
 			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
@@ -296,7 +296,7 @@ $widgets-hide-threshold: 1090px;
 }
 
 .widgets {
-	padding: 0 var(--margin);
+	padding: 0 var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
@@ -329,7 +329,7 @@ $widgets-hide-threshold: 1090px;
 	right: 0;
 	z-index: 1001;
 	height: 100dvh;
-	padding: var(--margin) !important;
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;
 	overscroll-behavior: contain;

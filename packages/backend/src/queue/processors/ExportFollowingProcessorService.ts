@@ -12,7 +12,7 @@ import type { Following } from '@/models/entities/Following.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import type { DbUserJobData } from '../types.js';
+import type { DbExportFollowingData } from '../types.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class ExportFollowingProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbExportFollowingData>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting following of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
@@ -110,7 +110,7 @@ export class ExportFollowingProcessorService {
 			this.logger.succ(`Exported to: ${path}`);
 
 			const fileName = 'following-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
-			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true });
+			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 		} finally {

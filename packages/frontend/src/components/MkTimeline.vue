@@ -1,5 +1,5 @@
 <template>
-<MkNotes ref="tlComponent" :no-gap="!$store.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+<MkNotes ref="tlComponent" :no-gap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
 
 <script lang="ts" setup>
@@ -8,12 +8,14 @@ import MkNotes from '@/components/MkNotes.vue';
 import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	src: string;
 	list?: string;
 	antenna?: string;
 	channel?: string;
+	role?: string;
 	sound?: boolean;
 }>();
 
@@ -118,6 +120,15 @@ if (props.src === 'antenna') {
 	};
 	connection = stream.useChannel('channel', {
 		channelId: props.channel,
+	});
+	connection.on('note', prepend);
+} else if (props.src === 'role') {
+	endpoint = 'roles/notes';
+	query = {
+		roleId: props.role,
+	};
+	connection = stream.useChannel('roleTimeline', {
+		roleId: props.role,
 	});
 	connection.on('note', prepend);
 }

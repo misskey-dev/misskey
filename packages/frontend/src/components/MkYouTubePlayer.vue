@@ -6,7 +6,7 @@
 	</template>
 
 	<div class="poamfof">
-		<Transition :name="$store.state.animation ? 'fade' : ''" mode="out-in">
+		<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 			<div v-if="player.url && (player.url.startsWith('http://') || player.url.startsWith('https://'))" class="player">
 				<iframe v-if="!fetching" :src="player.url + (player.url.match(/\?/) ? '&autoplay=1&auto_play=1' : '?autoplay=1&auto_play=1')" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen/>
 			</div>
@@ -21,6 +21,7 @@
 <script lang="ts" setup>
 import MkWindow from '@/components/MkWindow.vue';
 import { versatileLang } from '@/scripts/intl-const';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	url: string;
