@@ -88,7 +88,7 @@ const tagUsers = $computed(() => ({
 	},
 }));
 
-const pinnedUsers = { endpoint: 'pinned-users' };
+const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };
 const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {
 	state: 'alive',
 	origin: 'local',

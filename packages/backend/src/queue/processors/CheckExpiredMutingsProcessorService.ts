@@ -4,10 +4,10 @@ import { DI } from '@/di-symbols.js';
 import type { MutingsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { bindThis } from '@/decorators.js';
+import { UserMutingService } from '@/core/UserMutingService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CheckExpiredMutingsProcessorService {
@@ -20,7 +20,7 @@ export class CheckExpiredMutingsProcessorService {
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
-		private globalEventService: GlobalEventService,
+		private userMutingService: UserMutingService,
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('check-expired-mutings');
@@ -37,13 +37,7 @@ export class CheckExpiredMutingsProcessorService {
 			.getMany();
 
 		if (expired.length > 0) {
-			await this.mutingsRepository.delete({
-				id: In(expired.map(m => m.id)),
-			});
-
-			for (const m of expired) {
-				this.globalEventService.publishUserEvent(m.muterId, 'unmute', m.mutee!);
-			}
+			await this.userMutingService.unmute(expired);
 		}
 
 		this.logger.succ('All expired mutings checked.');

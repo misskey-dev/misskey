@@ -12,6 +12,11 @@ export const packedClipSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
+		lastClippedAt: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'date-time',
+		},
 		userId: {
 			type: 'string',
 			optional: false, nullable: false,
@@ -32,6 +37,14 @@ export const packedClipSchema = {
 		},
 		isPublic: {
 			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		isFavorited: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		favoritedCount: {
+			type: 'number',
 			optional: false, nullable: false,
 		},
 	},

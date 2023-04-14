@@ -1,50 +1,47 @@
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
-export type swMessageOrderType = 'post' | 'push';
+export type SwMessageOrderType = 'post' | 'push';
 
 export type SwMessage = {
 	type: 'order';
-	order: swMessageOrderType;
-	loginId: string;
+	order: SwMessageOrderType;
+	loginId?: string;
 	url: string;
-	[x: string]: any;
+	[x: string]: unknown;
 };
 
 // Defined also @/core/PushNotificationService.ts#L12
-type pushNotificationDataSourceMap = {
+type PushNotificationDataSourceMap = {
 	notification: Misskey.entities.Notification;
 	unreadAntennaNote: {
-		antenna: { id: string, name: string };
+		antenna: { id: string; name: string };
 		note: Misskey.entities.Note;
 	};
-	readNotifications: { notificationIds: string[] };
 	readAllNotifications: undefined;
-	readAntenna: { antennaId: string };
-	readAllAntennas: undefined;
 };
 
-export type pushNotificationData<K extends keyof pushNotificationDataSourceMap> = {
+export type PushNotificationData<K extends keyof PushNotificationDataSourceMap> = {
 	type: K;
-	body: pushNotificationDataSourceMap[K];
+	body: PushNotificationDataSourceMap[K];
 	userId: string;
 	dateTime: number;
 };
 
-export type pushNotificationDataMap = {
-	[K in keyof pushNotificationDataSourceMap]: pushNotificationData<K>;
+export type PushNotificationDataMap = {
+	[K in keyof PushNotificationDataSourceMap]: PushNotificationData<K>;
 };
 
-export type badgeNames = 
-	'null'
+export type BadgeNames =
+	| 'null'
 	| 'antenna'
 	| 'arrow-back-up'
 	| 'at'
 	| 'chart-arrows'
 	| 'circle-check'
+	| 'medal'
 	| 'messages'
 	| 'plus'
 	| 'quote'
 	| 'repeat'
 	| 'user-plus'
-	| 'users'
-	;
+	| 'users';

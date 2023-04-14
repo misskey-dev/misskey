@@ -8,14 +8,17 @@
 </template>
 
 <script lang="ts" setup>
+import isChromatic from 'chromatic/isChromatic';
 import { onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
 
 const props = withDefaults(defineProps<{
 	time: Date | string | number | null;
+	origin?: Date | null;
 	mode?: 'relative' | 'absolute' | 'detail';
 }>(), {
+	origin: isChromatic() ? new Date('2023-04-01T00:00:00Z') : null,
 	mode: 'relative',
 });
 
@@ -25,7 +28,7 @@ const _time = props.time == null ? NaN :
 const invalid = Number.isNaN(_time);
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
-let now = $ref((new Date()).getTime());
+let now = $ref((props.origin ?? new Date()).getTime());
 const relative = $computed<string>(() => {
 	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
 	if (invalid) return i18n.ts._ago.invalid;
@@ -46,7 +49,7 @@ const relative = $computed<string>(() => {
 let tickId: number;
 
 function tick() {
-	now = (new Date()).getTime();
+	now = props.origin ?? (new Date()).getTime();
 	const ago = (now - _time) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 

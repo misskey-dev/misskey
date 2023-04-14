@@ -72,6 +72,18 @@ export const packedUserDetailedNotMeOnlySchema = {
 			format: 'uri',
 			nullable: true, optional: false,
 		},
+		movedToUri: {
+			type: 'string',
+			format: 'uri',
+			nullable: true,
+			optional: false,
+		},
+		alsoKnownAs: {
+			type: 'array',
+			format: 'uri',
+			nullable: true,
+			optional: false,
+		},
 		createdAt: {
 			type: 'string',
 			nullable: false, optional: false,
@@ -238,6 +250,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: true,
 		},
+		memo: {
+			type: 'string',
+			nullable: false, optional: true,
+		},
 		//#endregion
 	},
 } as const;
@@ -308,10 +324,6 @@ export const packedMeDetailedOnlySchema = {
 			nullable: false, optional: false,
 		},
 		hasUnreadAntenna: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadChannel: {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},

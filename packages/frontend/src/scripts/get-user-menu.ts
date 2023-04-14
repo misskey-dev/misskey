@@ -8,6 +8,7 @@ import { userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
+import { rolesCache, userListsCache } from '@/cache';
 
 export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -97,6 +98,27 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	async function editMemo(): Promise<void> {
+		const userDetailed = await os.api('users/show', {
+			userId: user.id,
+		});
+		const { canceled, result } = await os.form(i18n.ts.editMemo, {
+			memo: {
+				type: 'string',
+				required: true,
+				multiline: true,
+				label: i18n.ts.memo,
+				default: userDetailed.memo,
+			},
+		});
+		if (canceled) return;
+
+		os.apiWithDialog('users/update-memo', {
+			memo: result.memo,
+			userId: user.id,
+		});
+	}
+
 	let menu = [{
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
@@ -122,11 +144,17 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			os.post({ specified: user, initialText: `@${user.username} ` });
 		},
 	}, null, {
+		icon: 'ti ti-pencil',
+		text: i18n.ts.editMemo,
+		action: () => {
+			editMemo();
+		},
+	}, {
 		type: 'parent',
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
 		children: async () => {
-			const lists = await os.api('users/lists/list');
+			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
 
 			return lists.map(list => ({
 				text: list.name,
@@ -147,7 +175,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
 				children: async () => {
-					const roles = await os.api('admin/roles/list');
+					const roles = await rolesCache.fetch(() => os.api('admin/roles/list'));
 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,

@@ -157,6 +157,8 @@ export interface IActor extends IObject {
 	name?: string;
 	preferredUsername?: string;
 	manuallyApprovesFollowers?: boolean;
+	movedTo?: string;
+	alsoKnownAs?: string[];
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
@@ -300,6 +302,11 @@ export interface IFlag extends IActivity {
 	type: 'Flag';
 }
 
+export interface IMove extends IActivity {
+	type: 'Move';
+	target: IObject | string;
+}
+
 export const isCreate = (object: IObject): object is ICreate => getApType(object) === 'Create';
 export const isDelete = (object: IObject): object is IDelete => getApType(object) === 'Delete';
 export const isUpdate = (object: IObject): object is IUpdate => getApType(object) === 'Update';
@@ -314,3 +321,4 @@ export const isLike = (object: IObject): object is ILike => getApType(object) ==
 export const isAnnounce = (object: IObject): object is IAnnounce => getApType(object) === 'Announce';
 export const isBlock = (object: IObject): object is IBlock => getApType(object) === 'Block';
 export const isFlag = (object: IObject): object is IFlag => getApType(object) === 'Flag';
+export const isMove = (object: IObject): object is IMove => getApType(object) === 'Move';

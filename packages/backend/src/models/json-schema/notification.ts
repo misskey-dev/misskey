@@ -14,10 +14,6 @@ export const packedNotificationSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		isRead: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
 		type: {
 			type: 'string',
 			optional: false, nullable: false,

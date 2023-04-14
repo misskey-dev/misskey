@@ -1,5 +1,4 @@
 import { defineAsyncComponent, Directive, ref } from 'vue';
-import autobind from 'autobind-decorator';
 import { popup } from '@/os';
 
 export class UserPreview {
@@ -14,10 +13,17 @@ export class UserPreview {
 		this.el = el;
 		this.user = user;
 
+		this.show = this.show.bind(this);
+		this.close = this.close.bind(this);
+		this.onMouseover = this.onMouseover.bind(this);
+		this.onMouseleave = this.onMouseleave.bind(this);
+		this.onClick = this.onClick.bind(this);
+		this.attach = this.attach.bind(this);
+		this.detach = this.detach.bind(this);
+
 		this.attach();
 	}
 
-	@autobind
 	private show() {
 		if (!document.body.contains(this.el)) return;
 		if (this.promise) return;
@@ -53,7 +59,6 @@ export class UserPreview {
 		}, 1000);
 	}
 
-	@autobind
 	private close() {
 		if (this.promise) {
 			window.clearInterval(this.checkTimer);
@@ -62,34 +67,29 @@ export class UserPreview {
 		}
 	}
 
-	@autobind
 	private onMouseover() {
 		window.clearTimeout(this.showTimer);
 		window.clearTimeout(this.hideTimer);
 		this.showTimer = window.setTimeout(this.show, 500);
 	}
 
-	@autobind
 	private onMouseleave() {
 		window.clearTimeout(this.showTimer);
 		window.clearTimeout(this.hideTimer);
 		this.hideTimer = window.setTimeout(this.close, 500);
 	}
 
-	@autobind
 	private onClick() {
 		window.clearTimeout(this.showTimer);
 		this.close();
 	}
 
-	@autobind
 	public attach() {
 		this.el.addEventListener('mouseover', this.onMouseover);
 		this.el.addEventListener('mouseleave', this.onMouseleave);
 		this.el.addEventListener('click', this.onClick);
 	}
 
-	@autobind
 	public detach() {
 		this.el.removeEventListener('mouseover', this.onMouseover);
 		this.el.removeEventListener('mouseleave', this.onMouseleave);

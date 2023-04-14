@@ -53,10 +53,10 @@
 	</div>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -68,10 +68,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="$store.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="$store.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="$store.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="$store.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>
@@ -99,6 +99,7 @@ import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
 import { deviceKind } from '@/scripts/device-kind';
+import { defaultStore } from '@/store';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 
 mainRouter.navHook = (path, flag): boolean => {
@@ -151,6 +152,7 @@ const addColumn = async (ev) => {
 		'channel',
 		'mentions',
 		'direct',
+		'roleTimeline',
 	];
 
 	const { canceled, result: column } = await os.select({

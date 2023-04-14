@@ -1,7 +1,7 @@
 import path from 'path';
+import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
-import { configDefaults as vitestConfigDefaults } from 'vitest/config';
+import { type UserConfig, defineConfig } from 'vite';
 
 import locales from '../../locales';
 import meta from '../../package.json';
@@ -38,7 +38,7 @@ function toBase62(n: number): string {
 	return result;
 }
 
-export default defineConfig(({ command, mode }) => {
+export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
@@ -47,6 +47,16 @@ export default defineConfig(({ command, mode }) => {
 				reactivityTransform: true,
 			}),
 			pluginJson5(),
+			...process.env.NODE_ENV === 'production'
+				? [
+					pluginReplace({
+						preventAssignment: true,
+						values: {
+							'isChromatic()': JSON.stringify(false),
+						},
+					}),
+				]
+				: [],
 		],
 
 		resolve: {
@@ -62,7 +72,7 @@ export default defineConfig(({ command, mode }) => {
 
 		css: {
 			modules: {
-				generateScopedName: (name, filename, css) => {
+				generateScopedName(name, filename, _css): string {
 					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
 						return 'x' + toBase62(hash(id)).substring(0, 4);
@@ -84,6 +94,11 @@ export default defineConfig(({ command, mode }) => {
 			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
 			__VUE_OPTIONS_API__: true,
 			__VUE_PROD_DEVTOOLS__: false,
+		},
+
+		// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
+		optimizeDeps: {
+			include: ['misskey-js'],
 		},
 
 		build: {
@@ -110,6 +125,11 @@ export default defineConfig(({ command, mode }) => {
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',
 			reportCompressedSize: false,
+
+			// https://vitejs.dev/guide/dep-pre-bundling.html#monorepos-and-linked-dependencies
+			commonjsOptions: {
+				include: [/misskey-js/, /node_modules/],
+			},
 		},
 
 		test: {
@@ -122,4 +142,8 @@ export default defineConfig(({ command, mode }) => {
 			},
 		},
 	};
-});
+}
+
+const config = defineConfig(({ command, mode }) => getConfig());
+
+export default config;

@@ -1,12 +1,12 @@
+import { get } from 'idb-keyval';
+import * as Acct from 'misskey-js/built/acct';
+import type { PushNotificationDataMap } from '@/types';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification';
 import { swLang } from '@/scripts/lang';
-import { swNotificationRead } from '@/scripts/notification-read';
-import { pushNotificationDataMap } from '@/types';
 import * as swos from '@/scripts/operations';
-import { acct as getAcct } from '@/filters/user';
 
-globalThis.addEventListener('install', ev => {
-	//ev.waitUntil(globalThis.skipWaiting());
+globalThis.addEventListener('install', () => {
+	// ev.waitUntil(globalThis.skipWaiting());
 });
 
 globalThis.addEventListener('activate', ev => {
@@ -43,8 +43,8 @@ globalThis.addEventListener('push', ev => {
 	ev.waitUntil(globalThis.clients.matchAll({
 		includeUncontrolled: true,
 		type: 'window',
-	}).then(async (clients: readonly WindowClient[]) => {
-		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.data?.json();
+	}).then(async () => {
+		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.data?.json();
 
 		switch (data.type) {
 			// case 'driveFileCreated':
@@ -55,28 +55,8 @@ globalThis.addEventListener('push', ev => {
 
 				return createNotification(data);
 			case 'readAllNotifications':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (n?.data?.type === 'notification') n.close();
-				}
-				break;
-			case 'readAllAntennas':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadAntennaNote') n.close();
-				}
-				break;
-			case 'readNotifications':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (data.body.notificationIds.includes(n.data.body.id)) {
-						n.close();
-					}
-				}
-				break;
-			case 'readAntenna':
-				for (const n of await globalThis.registration.getNotifications()) {
-					if (n?.data?.type === 'unreadAntennaNote' && data.body.antennaId === n.data.body.antenna.id) {
-						n.close();
-					}
-				}
+				await globalThis.registration.getNotifications()
+					.then(notifications => notifications.forEach(n => n.close()));
 				break;
 		}
 
@@ -86,13 +66,13 @@ globalThis.addEventListener('push', ev => {
 });
 
 globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEventMap['notificationclick']) => {
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		if (_DEV_) {
 			console.log('notificationclick', ev.action, ev.notification.data);
 		}
 
 		const { action, notification } = ev;
-		const data: pushNotificationDataMap[keyof pushNotificationDataMap] = notification.data;
+		const data: PushNotificationDataMap[keyof PushNotificationDataMap] = notification.data ?? {};
 		const { userId: loginId } = data;
 		let client: WindowClient | null = null;
 
@@ -103,7 +83,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 						if ('userId' in data.body) await swos.api('following/create', loginId, { userId: data.body.userId });
 						break;
 					case 'showUser':
-						if ('user' in data.body) client = await swos.openUser(getAcct(data.body.user), loginId);
+						if ('user' in data.body) client = await swos.openUser(Acct.toString(data.body.user), loginId);
 						break;
 					case 'reply':
 						if ('note' in data.body) client = await swos.openPost({ reply: data.body.note }, loginId);
@@ -140,7 +120,7 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 								if ('note' in data.body) {
 									client = await swos.openNote(data.body.note.id, loginId);
 								} else if ('user' in data.body) {
-									client = await swos.openUser(getAcct(data.body.user), loginId);
+									client = await swos.openUser(Acct.toString(data.body.user), loginId);
 								}
 								break;
 						}
@@ -148,13 +128,29 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 				break;
 			case 'unreadAntennaNote':
 				client = await swos.openAntenna(data.body.antenna.id, loginId);
+				break;
+			default:
+				switch (action) {
+					case 'markAllAsRead':
+						await globalThis.registration.getNotifications()
+							.then(notifications => notifications.forEach(n => n.close()));
+						await get('accounts').then(accounts => {
+							return Promise.all(accounts.map(async account => {
+								await swos.sendMarkAllAsRead(account.id);
+							}));
+						});
+						break;
+					case 'settings':
+						client = await swos.openClient('push', '/settings/notifications', loginId);
+						break;
+				}
 		}
 
 		if (client) {
 			client.focus();
 		}
 		if (data.type === 'notification') {
-			swNotificationRead.then(that => that.read(data));
+			await swos.sendMarkAllAsRead(loginId);
 		}
 
 		notification.close();
@@ -162,15 +158,18 @@ globalThis.addEventListener('notificationclick', (ev: ServiceWorkerGlobalScopeEv
 });
 
 globalThis.addEventListener('notificationclose', (ev: ServiceWorkerGlobalScopeEventMap['notificationclose']) => {
-	const data: pushNotificationDataMap[keyof pushNotificationDataMap] = ev.notification.data;
+	const data: PushNotificationDataMap[keyof PushNotificationDataMap] = ev.notification.data;
 
-	if (data.type === 'notification') {
-		swNotificationRead.then(that => that.read(data));
-	}
+	ev.waitUntil((async (): Promise<void> => {
+		if (data.type === 'notification') {
+			await swos.sendMarkAllAsRead(data.userId);
+		}
+		return;
+	})());
 });
 
 globalThis.addEventListener('message', (ev: ServiceWorkerGlobalScopeEventMap['message']) => {
-	ev.waitUntil((async () => {
+	ev.waitUntil((async (): Promise<void> => {
 		switch (ev.data) {
 			case 'clear':
 				// Cache Storage全削除

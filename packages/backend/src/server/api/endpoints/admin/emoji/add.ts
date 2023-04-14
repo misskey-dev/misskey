@@ -56,6 +56,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				category: null,
 				aliases: [],
 				host: null,
+				license: null,
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'addEmoji', {

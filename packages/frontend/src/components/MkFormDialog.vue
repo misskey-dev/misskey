@@ -18,15 +18,15 @@
 		<div class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
 				<MkInput v-else-if="form[item].type === 'string' && !form[item].multiline" v-model="values[item]" type="text">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkInput>
 				<MkTextarea v-else-if="form[item].type === 'string' && form[item].multiline" v-model="values[item]">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkTextarea>
 				<MkSwitch v-else-if="form[item].type === 'boolean'" v-model="values[item]">
@@ -34,15 +34,15 @@
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkSwitch>
 				<MkSelect v-else-if="form[item].type === 'enum'" v-model="values[item]">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<option v-for="item in form[item].enum" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</MkSelect>
 				<MkRadios v-else-if="form[item].type === 'radio'" v-model="values[item]">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</MkRadios>
 				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter">
-					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ $ts.optional }})</span></template>
+					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkRange>
 				<MkButton v-else-if="form[item].type === 'button'" @click="form[item].action($event, values)">
@@ -64,6 +64,7 @@ import MkRange from './MkRange.vue';
 import MkButton from './MkButton.vue';
 import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import { i18n } from '@/i18n';
 
 export default defineComponent({
 	components: {
@@ -93,6 +94,7 @@ export default defineComponent({
 	data() {
 		return {
 			values: {},
+			i18n,
 		};
 	},
 

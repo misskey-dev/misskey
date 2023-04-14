@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { Meta } from '@/models/entities/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -14,8 +14,8 @@ export class MetaService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.db)
 		private db: DataSource,
@@ -33,7 +33,7 @@ export class MetaService implements OnApplicationShutdown {
 			}, 1000 * 60 * 5);
 		}
 
-		this.redisSubscriber.on('message', this.onMessage);
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -122,6 +122,6 @@ export class MetaService implements OnApplicationShutdown {
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
 		clearInterval(this.intervalId);
-		this.redisSubscriber.off('message', this.onMessage);
+		this.redisForSub.off('message', this.onMessage);
 	}
 }

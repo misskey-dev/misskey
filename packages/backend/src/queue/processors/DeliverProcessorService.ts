@@ -7,7 +7,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { Cache } from '@/misc/cache.js';
+import { MemorySingleCache } from '@/misc/cache.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
@@ -22,7 +22,7 @@ import type { DeliverJobData } from '../types.js';
 @Injectable()
 export class DeliverProcessorService {
 	private logger: Logger;
-	private suspendedHostsCache: Cache<Instance[]>;
+	private suspendedHostsCache: MemorySingleCache<Instance[]>;
 	private latest: string | null;
 
 	constructor(
@@ -46,7 +46,7 @@ export class DeliverProcessorService {
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('deliver');
-		this.suspendedHostsCache = new Cache<Instance[]>(1000 * 60 * 60);
+		this.suspendedHostsCache = new MemorySingleCache<Instance[]>(1000 * 60 * 60);
 	}
 
 	@bindThis
@@ -60,14 +60,14 @@ export class DeliverProcessorService {
 		}
 
 		// isSuspendedなら中断
-		let suspendedHosts = this.suspendedHostsCache.get(null);
+		let suspendedHosts = this.suspendedHostsCache.get();
 		if (suspendedHosts == null) {
 			suspendedHosts = await this.instancesRepository.find({
 				where: {
 					isSuspended: true,
 				},
 			});
-			this.suspendedHostsCache.set(null, suspendedHosts);
+			this.suspendedHostsCache.set(suspendedHosts);
 		}
 		if (suspendedHosts.map(x => x.host).includes(this.utilityService.toPuny(host))) {
 			return 'skip (suspended)';
@@ -88,10 +88,12 @@ export class DeliverProcessorService {
 				}
 
 				this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-
-				this.instanceChart.requestSent(i.host, true);
 				this.apRequestChart.deliverSucc();
 				this.federationChart.deliverd(i.host, true);
+
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, true);
+				}
 			});
 
 			return 'Success';
@@ -107,9 +109,12 @@ export class DeliverProcessorService {
 					});
 				}
 
-				this.instanceChart.requestSent(i.host, false);
 				this.apRequestChart.deliverFail();
 				this.federationChart.deliverd(i.host, false);
+
+				if (meta.enableChartsForFederatedInstances) {
+					this.instanceChart.requestSent(i.host, false);
+				}
 			});
 
 			if (res instanceof StatusError) {
