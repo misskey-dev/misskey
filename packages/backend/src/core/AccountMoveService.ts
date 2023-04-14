@@ -1,14 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
+import { IsNull, In } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { LocalUser } from '@/models/entities/User.js';
-import type { BlockingsRepository, FollowingsRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
-
-import { User } from '@/models/entities/User.js';
+import type { User } from '@/models/entities/User.js';
 
 import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -19,8 +18,12 @@ import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerServ
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from '@/core/IdService.js';
-import { CacheService } from '@/core/CacheService';
+import { CacheService } from '@/core/CacheService.js';
 import { ProxyAccountService } from '@/core/ProxyAccountService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { MetaService } from '@/core/MetaService.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
+import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -43,6 +46,9 @@ export class AccountMoveService {
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
+
 		private idService: IdService,
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
@@ -51,6 +57,10 @@ export class AccountMoveService {
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
 		private proxyAccountService: ProxyAccountService,
+		private perUserFollowingChart: PerUserFollowingChart,
+		private federatedInstanceService: FederatedInstanceService,
+		private instanceChart: InstanceChart,
+		private metaService: MetaService,
 		private relayService: RelayService,
 		private cacheService: CacheService,
 		private queueService: QueueService,
@@ -140,6 +150,10 @@ export class AccountMoveService {
 			if (!following.follower) continue;
 			followJobs.push({ from: { id: following.follower.id }, to: { id: dst.id } });
 		}
+
+		// Decrease following count instead of unfollowing.
+		await this.adjustFollowingCounts(followJobs.map(job => job.from.id), src);
+
 		// Should be queued because this can cause a number of follow per one move.
 		this.queueService.createFollowJob(followJobs);
 	}
@@ -215,5 +229,29 @@ export class AccountMoveService {
 	public getUserUri(user: User): string {
 			return this.userEntityService.isRemoteUser(user)
 				? user.uri : `${this.config.url}/users/${user.id}`;
+	}
+
+	@bindThis
+	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: User) {
+		// Set the old account's following and followers counts to 0.
+		await this.usersRepository.update(oldAccount.id, { followersCount: 0, followingCount: 0 });
+
+		// Decrease following counts of local followers by 1.
+		await this.usersRepository.decrement({ id: In(localFollowerIds) }, 'followingCount', 1);
+
+		// Update instance stats by decreasing remote followers count by the number of local followers who were following the old account.
+		if (this.userEntityService.isRemoteUser(oldAccount)) {
+			this.federatedInstanceService.fetch(oldAccount.host).then(async i => {
+				this.instancesRepository.decrement({ id: i.id }, 'followersCount', localFollowerIds.length);
+				if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+					this.instanceChart.updateFollowers(i.host, false);
+				}
+			});
+		}
+
+		// FIXME: expensive?
+		for (const followerId of localFollowerIds) {
+			this.perUserFollowingChart.update({ id: followerId, host: null }, oldAccount, false);
+		}
 	}
 }
