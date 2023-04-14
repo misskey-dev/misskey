@@ -62,7 +62,7 @@ export function genOpenApiSpec(config: Config): OpenApiSpec {
 		}
 
 		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = { ...endpoint.params };
+		const schema = convertSchemaToOpenApiSchema(endpoint.params);
 
 		if (endpoint.meta.requireFile) {
 			schema.properties = {
