@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
