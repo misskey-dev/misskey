@@ -1,18 +1,14 @@
 <template>
 <div class="_gaps_m">
-	<section>
-		<p v-text="i18n.ts._serverRules.beforeSignup"/>
-		<ol class="_gaps_m" :class="$style.rule">
-			<li v-for="(item, index) in instance.serverRules" :key="index" v-text="item" />
-		</ol>
-	</section>
-	<section>
-		<p v-text="i18n.ts._serverRules.additionalRules"/>
-		<ul style="margin: 0; padding-left: 2em;">
-			<li v-if="instance.tosUrl"><a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.tos }}</a></li>
-			<li><a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }}</a></li>
-		</ul>
-	</section>
+	<div v-text="i18n.ts._serverRules.beforeSignup"/>
+	<ol class="_gaps_m" :class="$style.rule">
+		<li v-for="(item, index) in instance.serverRules" :key="index" v-text="item" />
+	</ol>
+	<div v-text="i18n.ts._serverRules.additionalRules"/>
+	<ul style="margin: 0; padding-left: 2em;">
+		<li v-if="instance.tosUrl"><a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.tos }}</a></li>
+		<li><a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }}</a></li>
+	</ul>
 	<MkButton primary @click="emit('accept')">{{ i18n.ts.agree }}</MkButton>
 </div>
 </template>

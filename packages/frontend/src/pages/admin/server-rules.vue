@@ -4,6 +4,7 @@
 		<template #header><XHeader :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<div class="_gaps_m">
+				<div>{{ i18n.t('_serverRules.description', { t: i18n.ts.tos, b: i18n.ts.basicNotesBeforeCreateAccount }) }}</div>
 				<Sortable
 					v-model="serverRules"
 					class="_gaps_m"
@@ -85,6 +86,7 @@ definePageMetadata({
 	height: 40px;
 	align-items: center;
 	justify-content: center;
+	cursor: move;
 }
 
 .itemNumber {
@@ -105,16 +107,6 @@ definePageMetadata({
 	width: 100%;
 	max-width: 100%;
 	min-width: 100%;
-}
-
-.itemCommand {
-	width: 40px;
-	height: 40px;
-	border-radius: 6px;
-
-	&:hover {
-		background: var(--X5);
-	}
 }
 
 .itemRemove {
