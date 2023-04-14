@@ -145,7 +145,9 @@ export class UserFollowingService implements OnModuleInit {
 					try {
 						await this.apPersonService.updatePerson(oldUri);
 						const oldAccount = await this.apPersonService.resolvePerson(oldUri);
-						autoAccept = await this.followingsRepository.exist({
+						const newUri = this.userEntityService.isRemoteUser(follower) ? follower.uri : `${this.config.url}/users/${follower.id}`;
+
+						autoAccept = oldAccount.movedToUri === newUri && await this.followingsRepository.exist({
 							where: {
 								followeeId: followee.id,
 								followerId: oldAccount.id,
