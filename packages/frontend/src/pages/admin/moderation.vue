@@ -3,6 +3,7 @@
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+			<FormLink to="/admin/server-rules">サーバールール</FormLink>
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
 					<FormSection first>
@@ -41,6 +42,7 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
+import FormLink from "@/components/form/link.vue";
 
 let sensitiveWords: string = $ref('');
 

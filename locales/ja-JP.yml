@@ -263,6 +263,7 @@ noMoreHistory: "これより過去の履歴はありません"
 startMessaging: "チャットを開始"
 nUsersRead: "{n}人が読みました"
 agreeTo: "{0}に同意"
+agree: "同意する"
 agreeBelow: "下記に同意する"
 basicNotesBeforeCreateAccount: "基本的な注意事項"
 tos: "利用規約"
@@ -995,6 +996,11 @@ accountMoved: "このユーザーは新しいアカウントに引っ越しま�
 forceShowAds: "常に広告を表示する"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
+serverRules: "サーバールール"
+
+_serverRules:
+  beforeSignup: "本サーバーに登録する前に、以下のルールをお読みください。"
+  additionalRules: "加えて、以下のルールも適用されます。"
 
 _accountMigration:
   moveTo: "このアカウントを新しいアカウントに引っ越す"
