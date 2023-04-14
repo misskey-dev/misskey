@@ -54,10 +54,18 @@ function calcAspectRatio() {
 		return;
 	}
 
+	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
+
 	switch (defaultStore.state.mediaListWithOneImageAppearance) {
 		// アスペクト比上限設定では、横長の場合は高さを縮小させる
 		case '16_9':
-			gallery.value.style.aspectRatio = Math.max(16 / 9, img.properties.width / img.properties.height).toString() + '/1';
+			gallery.value.style.aspectRatio = ratioMax(16 / 9);
+			break;
+		case '1_1':
+			gallery.value.style.aspectRatio = ratioMax(1);
+			break;
+		case '3_4':
+			gallery.value.style.aspectRatio = ratioMax(3 / 4);
 			break;
 		default:
 			gallery.value.style.aspectRatio = '';
@@ -204,6 +212,14 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 		&.n116_9 {
 			max-height: none;
 			aspect-ratio: 16 / 9; // fallback
+		}
+		&.n11_1{
+			max-height: none;
+			aspect-ratio: 1 / 1; // fallback
+		}
+		&.n13_4 {
+			max-height: none;
+			aspect-ratio: 3 / 4; // fallback
 		}
 	}
 

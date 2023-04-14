@@ -83,8 +83,10 @@
 
 			<MkRadios v-model="mediaListWithOneImageAppearance">
 				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
-				<option value="expand">{{ i18n.ts.expandAsImage }}</option>
+				<option value="expand">{{ i18n.ts.friendlyRecommended }}</option>
 				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
+				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
+				<option value="3_4">{{ i18n.t('limitTo', { x: '3:4' }) }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
