@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { loadConfig } from './built/config.js';
 
 const config = loadConfig();
