@@ -232,9 +232,11 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: User) {
+	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: User): Promise<void> {
+		if (localFollowerIds.length === 0) return;
+
 		// Set the old account's following and followers counts to 0.
-		await this.usersRepository.update(oldAccount.id, { followersCount: 0, followingCount: 0 });
+		await this.usersRepository.update({ id: oldAccount.id }, { followersCount: 0, followingCount: 0 });
 
 		// Decrease following counts of local followers by 1.
 		await this.usersRepository.decrement({ id: In(localFollowerIds) }, 'followingCount', 1);
