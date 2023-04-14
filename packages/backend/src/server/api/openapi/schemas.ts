@@ -1,6 +1,8 @@
 import type { Schema } from '@/misc/json-schema.js';
 import { refs } from '@/misc/json-schema.js';
-import type { Schema as OpenAPISchema } from './types';
+import type { MediaType } from './types';
+
+type OpenAPISchema = NonNullable<MediaType['schema']>;
 
 export function convertSchemaToOpenApiSchema(schema: Schema): OpenAPISchema {
 	const res: OpenAPISchema = schema;

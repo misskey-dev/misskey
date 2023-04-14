@@ -115,7 +115,7 @@ type RequestBody = {
 	required?: boolean;
 } & Extension;
 
-type MediaType = (
+export type MediaType = (
 	| Without<MediaTypeBase, 'example'>
 	| Without<MediaTypeBase, 'examples'>
 ) &
@@ -132,7 +132,7 @@ type MediaTypeBase = {
 	};
 };
 
-export type Schema = {
+type Schema = {
 	title?: string;
 	multipleOf?: number;
 	maximum?: number;
