@@ -3,7 +3,7 @@
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
-			<FormLink to="/admin/server-rules">サーバールール</FormLink>
+			<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
 					<FormSection first>
