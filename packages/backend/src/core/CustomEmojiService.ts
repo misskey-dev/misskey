@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
