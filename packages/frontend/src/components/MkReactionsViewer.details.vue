@@ -73,7 +73,6 @@ function getReactionName(reaction: string): string {
 	min-width: 0;
 	margin: -4px 14px 0 10px;
 	font-size: 0.95em;
-	border-left: solid 0.5px var(--divider);
 	text-align: left;
 }
 
