@@ -11,6 +11,16 @@
 -
 
 -->
+## 13.x.x (unreleased)
+
+### General
+-
+
+### Client
+-
+
+### Server
+- エクスポートデータの拡張子がunknownになる問題を修正
 
 ## 13.11.3
 
