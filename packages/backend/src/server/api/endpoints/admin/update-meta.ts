@@ -18,17 +18,17 @@ export const paramDef = {
 	properties: {
 		disableRegistration: { type: 'boolean', nullable: true },
 		pinnedUsers: { type: 'array', nullable: true, items: {
-				type: 'string',
-			} },
+			type: 'string',
+		} },
 		hiddenTags: { type: 'array', nullable: true, items: {
-				type: 'string',
-			} },
+			type: 'string',
+		} },
 		blockedHosts: { type: 'array', nullable: true, items: {
-				type: 'string',
-			} },
+			type: 'string',
+		} },
 		sensitiveWords: { type: 'array', nullable: true, items: {
-				type: 'string',
-			} },
+			type: 'string',
+		} },
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
@@ -59,8 +59,8 @@ export const paramDef = {
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
 		langs: { type: 'array', items: {
-				type: 'string',
-			} },
+			type: 'string',
+		} },
 		summalyProxy: { type: 'string', nullable: true },
 		deeplAuthKey: { type: 'string', nullable: true },
 		deeplIsPro: { type: 'boolean' },

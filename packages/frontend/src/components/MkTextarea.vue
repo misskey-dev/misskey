@@ -6,7 +6,6 @@
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
-			:rows="rows"
 			:class="{ code, _monospace: code }"
 			:disabled="disabled"
 			:required="required"
@@ -100,10 +99,6 @@ export default defineComponent({
 			type: Boolean,
 			required: false,
 			default: false,
-		},
-		rows: {
-			type: Number,
-			required: false,
 		},
 	},
 
