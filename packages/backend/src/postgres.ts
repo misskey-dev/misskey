@@ -24,6 +24,7 @@ import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
 import { DriveFile } from '@/models/entities/DriveFile.js';
 import { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { Emoji } from '@/models/entities/Emoji.js';
+import { Event } from '@/models/entities/Event.js';
 import { Following } from '@/models/entities/Following.js';
 import { FollowRequest } from '@/models/entities/FollowRequest.js';
 import { GalleryLike } from '@/models/entities/GalleryLike.js';
@@ -155,6 +156,7 @@ export const entities = [
 	Poll,
 	PollVote,
 	Emoji,
+	Event,
 	Hashtag,
 	SwSubscription,
 	AbuseUserReport,
