@@ -1,35 +1,31 @@
 import dns from 'node:dns/promises';
+import { fileURLToPath } from 'node:url';
+import crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import fastifyMiddie, { IncomingMessageExtended } from '@fastify/middie';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2 } from 'oauth2orize';
 import * as oauth2Query from 'oauth2orize/lib/response/query.js';
-import { bindThis } from '@/decorators.js';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
-import { kinds } from '@/misc/api-permissions.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { FastifyInstance } from 'fastify';
-import fastifyCookie from '@fastify/cookie';
-import type Redis from 'ioredis';
 import oauth2Pkce from 'oauth2orize-pkce';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
 import expressSession from 'express-session';
-import http from 'node:http';
 import fastifyView from '@fastify/view';
 import pug from 'pug';
-import { fileURLToPath } from 'node:url';
-import { MetaService } from '@/core/MetaService.js';
-import fastifyFormbody from '@fastify/formbody';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
-import crypto from 'node:crypto';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { MetaService } from '@/core/MetaService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { kinds } from '@/misc/api-permissions.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { bindThis } from '@/decorators.js';
 import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
+import type * as Redis from 'ioredis';
+import type { FastifyInstance } from 'fastify';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
 function validateClientId(raw: string): URL {
@@ -337,7 +333,7 @@ export class OAuth2ProviderService {
 
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
-			modes: { query }
+			modes: { query },
 		}, (client, redirectUri, token, ares, areq, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
