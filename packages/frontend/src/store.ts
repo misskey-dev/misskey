@@ -308,7 +308,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	mediaListWithOneImageAppearance: {
 		where: 'device',
-		default: 'expand' as 'expand' | '16_9' | '1_1' | '3_4',
+		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
 	},
 }));
 

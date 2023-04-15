@@ -64,8 +64,8 @@ function calcAspectRatio() {
 		case '1_1':
 			gallery.value.style.aspectRatio = ratioMax(1);
 			break;
-		case '3_4':
-			gallery.value.style.aspectRatio = ratioMax(3 / 4);
+		case '2_3':
+			gallery.value.style.aspectRatio = ratioMax(2 / 3);
 			break;
 		default:
 			gallery.value.style.aspectRatio = '';
