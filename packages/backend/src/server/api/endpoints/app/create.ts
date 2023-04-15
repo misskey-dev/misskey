@@ -12,8 +12,6 @@ export const meta = {
 
 	requireCredential: false,
 
-	prohibitMoved: true,
-
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
