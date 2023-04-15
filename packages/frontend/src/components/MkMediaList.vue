@@ -198,28 +198,31 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 
 	&.n1 {
 		grid-template-rows: 1fr;
-		max-height: 128px;
 
-		&.n1expand {
-			min-height: 64px;
-			max-height: clamp(
-				64px,
-				calc(var(--containerHeight, 100svh) * 0.5), // but --containerHeight can broken (too big)
-				min(334px, 50vh)
-			);
-		}
+		// default (expand)
+		min-height: 64px;
+		max-height: clamp(
+			64px,
+			calc(var(--containerHeight, 100svh) * 0.5), // but --containerHeight can broken (too big)
+			min(334px, 50vh)
+		);
 
 		&.n116_9 {
+			min-height: none;
 			max-height: none;
 			aspect-ratio: 16 / 9; // fallback
 		}
+
 		&.n11_1{
+			min-height: none;
 			max-height: none;
 			aspect-ratio: 1 / 1; // fallback
 		}
-		&.n13_4 {
+
+		&.n12_3 {
+			min-height: none;
 			max-height: none;
-			aspect-ratio: 3 / 4; // fallback
+			aspect-ratio: 2 / 3; // fallback
 		}
 	}
 
