@@ -1002,6 +1002,11 @@ editMemo: "메모 편집"
 _accountMigration:
   moveTo: "이 계정에서 다른 계정으로 이사"
   moveToLabel: "이사할 계정:"
+  moveAccountDescription: "이 작업은 취소할 수 없습니다. 먼저 이사할 계정에서 이 계정에 대한 별칭을 지정하였는지 다시 한 번 확인해 주십시오. 별칭을 지정한 다음, 이사할 계정을 다음과 같은 형식으로 입력해 주십시오: @person@instance.com"
+  moveFrom: "다른 계정에서 이 계정으로 이사"
+  moveFromLabel: "기존 계정:"
+  moveFromDescription: "다른 계정에서 이 계정으로 팔로워를 가져오려면, 우선 여기에서 별칭을 지정해야 합니다. 반드시 이사하기 전에 지정해야 합니다! 기존 계정을 다음과 같은 형식으로 입력해 주십시오: @person@instance.com"
+  migrationConfirm: "정말로 이 계정을 {account} 으로 이전하시겠습니까? 한 번 이전한 다음에는 취소할 수 없으며, 두 번 다시 원래 상태로 복구할 수 없습니다.\n이사할 계정에서 계정 별칭을 지정하였는지 다시 한 번 확인하십시오."
 _achievements:
   earnedAt: "달성 일시"
   _types:
@@ -1261,6 +1266,8 @@ _role:
   iconUrl: "아이콘 URL"
   asBadge: "뱃지로 표시"
   descriptionOfAsBadge: "활성화하면 유저명 옆에 역할의 아이콘이 표시됩니다."
+  displayOrder: "표시 순서"
+  descriptionOfDisplayOrder: "값이 클 수록 UI에서 먼저 표시됩니다."
   canEditMembersByModerator: "모더레이터의 역할 수정 허용"
   descriptionOfCanEditMembersByModerator: "이 옵션을 켜면 모더레이터도 이 역할에 사용자를 할당하거나 삭제할 수 있습니다. 꺼져 있으면 관리자만 할당이 가능합니다."
   priority: "우선순위"
@@ -1286,6 +1293,7 @@ _role:
     rateLimitFactor: "요청 빈도 제한"
     descriptionOfRateLimitFactor: "작을수록 제한이 완화되고, 클수록 제한이 강화됩니다."
     canHideAds: "광고 숨기기"
+    canSearchNotes: "노트 검색 이용 가능 여부"
   _condition:
     isLocal: "로컬 사용자"
     isRemote: "리모트 사용자"
@@ -1295,6 +1303,8 @@ _role:
     followersMoreThanOrEq: "팔로워 수가 다음 이상인 유저"
     followingLessThanOrEq: "팔로잉 수가 다음 이하인 유저"
     followingMoreThanOrEq: "팔로잉 수가 다음 이상인 유저"
+    notesLessThanOrEq: "노트 수가 다음 이하인 유저"
+    notesMoreThanOrEq: "노트 수가 다음 이상인 유저"
     and: "다음을 모두 만족"
     or: "다음을 하나라도 만족"
     not: "다음을 만족하지 않음"
@@ -1404,6 +1414,8 @@ _channel:
   following: "팔로잉"
   usersCount: "{n}명 참여 중"
   notesCount: "{n}노트"
+  nameAndDescription: "이름과 설명"
+  nameOnly: "이름만"
 _menuDisplay:
   sideFull: "가로"
   sideIcon: "가로(아이콘)"
@@ -1884,9 +1896,27 @@ _deck:
     channel: "채널"
     mentions: "받은 멘션"
     direct: "다이렉트"
+    roleTimeline: "역할 타임라인"
 _dialog:
   charactersExceeded: "최대 글자수를 초과하였습니다! 현재 {current} / 최대 {min}"
   charactersBelow: "최소 글자수 미만입니다! 현재 {current} / 최소 {min}"
+_disabledTimeline:
+  title: "비활성화된 타임라인"
+  description: "현재 역할에서는 이 타임라인을 이용할 수 없습니다."
+_drivecleaner:
+  orderBySizeDesc: "크기가 큰 순"
+  orderByCreatedAtAsc: "등록일이 오래된 순"
 _webhookSettings:
+  createWebhook: "Webhook 생성"
   name: "이름"
+  secret: "시크릿"
+  events: "Webhook을 실행할 타이밍"
   active: "활성화"
+  _events:
+    follow: "누군가를 팔로우했을 때"
+    followed: "누군가 나를 팔로우했을 때"
+    note: "노트를 게시할 때"
+    reply: "답글을 받았을 때"
+    renote: "누군가 내 글을 Renote했을 때"
+    reaction: "누군가 내 노트에 리액션했을 때"
+    mention: "누군가 나를 멘션했을 때"
