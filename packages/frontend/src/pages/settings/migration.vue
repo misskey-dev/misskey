@@ -36,7 +36,7 @@ async function move(): Promise<void> {
 	const account = moveToAccount.value;
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.t('migrationConfirm', { account: account.toString() }),
+		text: i18n.t('_accountMigration.migrationConfirm', { account: account.toString() }),
 	});
 	if (confirm.canceled) return;
 	os.apiWithDialog('i/move', {
