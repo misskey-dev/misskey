@@ -109,22 +109,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchMoveTarget);
 			});
 			const destination = await this.getterService.getUser(moveTo.id);
-			moveTo.uri = this.accountMoveService.getUserUri(destination);
+			const newUri = this.accountMoveService.getUserUri(destination);
 
 			// update local db
-			await this.apPersonService.updatePerson(moveTo.uri);
+			await this.apPersonService.updatePerson(newUri);
 			// retrieve updated user
-			moveTo = await this.apPersonService.resolvePerson(moveTo.uri);
+			moveTo = await this.apPersonService.resolvePerson(newUri);
 
 			// make sure that the user has indicated the old account as an alias
 			const fromUrl = `${this.config.url}/users/${me.id}`;
 			let allowed = false;
-			moveTo.alsoKnownAs?.forEach((elem) => {
-				if (fromUrl.includes(elem)) allowed = true;
-			});
+			if (moveTo.alsoKnownAs) {
+				for (const knownAs of moveTo.alsoKnownAs) {
+					if (knownAs.includes(fromUrl)) {
+						allowed = true;
+						break;
+					}
+				}
+			}
 
 			// abort if unintended
-			if (!(allowed && moveTo.uri && fromUrl)) throw new ApiError(meta.errors.destinationAccountForbids);
+			if (!allowed) throw new ApiError(meta.errors.destinationAccountForbids);
 
 			return await this.accountMoveService.moveFromLocal(me, moveTo);
 		});

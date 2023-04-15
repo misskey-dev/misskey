@@ -74,12 +74,12 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async moveFromLocal(src: LocalUser, dst: User): Promise<unknown> {
-		if (!dst.uri) throw new Error('destination uri is empty');
+		const dstUri = this.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
 		const update = {} as Partial<User>;
-		update.alsoKnownAs = src.alsoKnownAs?.concat([dst.uri]) ?? [dst.uri];
-		update.movedToUri = dst.uri;
+		update.alsoKnownAs = src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
+		update.movedToUri = dstUri;
 		await this.usersRepository.update(src.id, update);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
