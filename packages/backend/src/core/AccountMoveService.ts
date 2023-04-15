@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, In } from 'typeorm';
+import { IsNull, In, MoreThan, Not } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -138,6 +138,7 @@ export class AccountMoveService {
 		]);
 
 		// follow the new account and unfollow the old one
+		const proxy = await this.proxyAccountService.fetch();
 		const followings = await this.followingsRepository.find({
 			relations: {
 				follower: true,
@@ -145,6 +146,7 @@ export class AccountMoveService {
 			where: {
 				followeeId: src.id,
 				followerHost: IsNull(), // follower is local
+				followerId: proxy ? Not(proxy.id) : undefined,
 			},
 		});
 		const followJobs: RelationshipJobData[] = [];
@@ -185,27 +187,14 @@ export class AccountMoveService {
 	@bindThis
 	public async copyMutings(src: ThinUser, dst: ThinUser): Promise<void> {
 		// Insert new mutings with the same values except mutee
-		const mutings = await this.mutingsRepository.find({
-			relations: {
-				muter: true,
-			},
-			where: { muteeId: src.id }
-		});
-		const newMuting: Partial<Muting>[] = [];
-		for (const muting of mutings) {
-			newMuting.push({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				expiresAt: muting.expiresAt,
-				muterId: muting.muterId,
-				muteeId: dst.id,
-			});
+		const mutings = await this.mutingsRepository.findBy({ muteeId: src.id, expiresAt: MoreThan(new Date()) });
+		const muteIds = mutings.map(mute => mute.id);
+		if (muteIds.length > 0) {
+			await this.mutingsRepository.update({ id: In(muteIds) }, { muteeId: dst.id });
+			for (const muterId of mutings.map(mute => mute.muterId)) {
+				this.cacheService.userMutingsCache.refresh(muterId);
+			}
 		}
-		await this.mutingsRepository.insert(mutings);
-		for (const mute of mutings) {
-			if (mute.muter) this.cacheService.userMutingsCache.refresh(mute.muter.id);
-		}
-		// no need to unmute the old account because it may be still functional
 	}
 
 	@bindThis
