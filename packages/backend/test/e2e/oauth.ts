@@ -14,6 +14,11 @@ const host = `http://127.0.0.1:${port}`;
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
 
+interface OAuthError {
+	error: string;
+	code: string;
+}
+
 function getClient(): AuthorizationCode<'client_id'> {
 	return new AuthorizationCode({
 		client: {
@@ -233,7 +238,8 @@ describe('OAuth', () => {
 				scope: 'write:notes',
 				state: 'state',
 			}));
-			assert.ok(!response.ok);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 
 			// Pattern 2: Only code_challenge
 			response = await fetch(client.authorizeURL({
@@ -242,7 +248,8 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 			}));
-			assert.ok(!response.ok);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 
 			// Pattern 2: Only code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -251,7 +258,8 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge_method: 'S256',
 			}));
-			assert.ok(!response.ok);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 
 			// Pattern 3: Unsupported code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -261,7 +269,8 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'SSSS',
 			}));
-			assert.ok(!response.ok);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 		});
 
 		test('Verify PKCE', async () => {
@@ -347,8 +356,8 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			}));
 
-			// TODO: But 500 is not a valid code, should be 403 or such. Check the OAuth spec
-			assert.strictEqual(response.status, 500);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_scope');
 		});
 
 		test('Empty scope', async () => {
@@ -362,8 +371,8 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			}));
 
-			// TODO: But 500 is not a valid code, should be 403 or such. Check the OAuth spec
-			assert.strictEqual(response.status, 500);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_scope');
 		});
 
 		test('Unknown scopes', async () => {
@@ -377,8 +386,8 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			}));
 
-			// TODO: But 500 is not a valid code, should be 403 or such. Check the OAuth spec
-			assert.strictEqual(response.status, 500);
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_scope');
 		});
 
 		test('Partially known scopes', async () => {
@@ -566,8 +575,9 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			}));
-			// TODO: status code
-			assert.strictEqual(response.status, 500);
+
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri including the valid one at authorization endpoint', async () => {
@@ -580,8 +590,9 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			}));
-			// TODO: status code
-			assert.strictEqual(response.status, 500);
+
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 		});
 
 		test('No redirect_uri at authorization endpoint', async () => {
@@ -593,8 +604,9 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			}));
-			// TODO: status code
-			assert.strictEqual(response.status, 500);
+
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri at token endpoint', async () => {
@@ -812,8 +824,9 @@ describe('OAuth', () => {
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
 				}));
-				// TODO: status code
-				assert.strictEqual(response.status, 500);
+
+				assert.strictEqual(response.status, 400);
+				assert.strictEqual((await response.json() as any).error, 'invalid_request');
 			});
 		});
 
@@ -828,8 +841,9 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			}));
-			// TODO: status code
-			assert.strictEqual(response.status, 500);
+
+			assert.strictEqual(response.status, 400);
+			assert.strictEqual((await response.json() as any).error, 'invalid_request');
 		});
 
 		test('Missing name', async () => {
@@ -856,5 +870,5 @@ describe('OAuth', () => {
 		});
 	});
 
-	// TODO: Error format required by OAuth spec
+	// TODO: Invalid decision endpoint parameters
 });

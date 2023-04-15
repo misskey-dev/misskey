@@ -5,7 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { type OAuth2 } from 'oauth2orize';
+import oauth2orize, { type OAuth2, AuthorizationError } from 'oauth2orize';
 import * as oauth2Query from 'oauth2orize/lib/response/query.js';
 import oauth2Pkce from 'oauth2orize-pkce';
 import expressSession from 'express-session';
@@ -33,13 +33,13 @@ function validateClientId(raw: string): URL {
 	const url = ((): URL => {
 		try {
 			return new URL(raw);
-		} catch { throw new Error('client_id must be a valid URL'); }
+		} catch { throw new AuthorizationError('client_id must be a valid URL', 'invalid_request'); }
 	})();
 
 	// Client identifier URLs MUST have either an https or http scheme
 	// XXX: but why allow http in 2023?
 	if (!['http:', 'https:'].includes(url.protocol)) {
-		throw new Error('client_id must be either https or http URL');
+		throw new AuthorizationError('client_id must be either https or http URL', 'invalid_request');
 	}
 
 	// MUST contain a path component (new URL() implicitly adds one)
@@ -48,17 +48,17 @@ function validateClientId(raw: string): URL {
 	// url.
 	const segments = url.pathname.split('/');
 	if (segments.includes('.') || segments.includes('..')) {
-		throw new Error('client_id must not contain dot path segments');
+		throw new AuthorizationError('client_id must not contain dot path segments', 'invalid_request');
 	}
 
 	// MUST NOT contain a fragment component
 	if (url.hash) {
-		throw new Error('client_id must not contain a fragment component');
+		throw new AuthorizationError('client_id must not contain a fragment component', 'invalid_request');
 	}
 
 	// MUST NOT contain a username or password component
 	if (url.username || url.password) {
-		throw new Error('client_id must not contain a username or a password');
+		throw new AuthorizationError('client_id must not contain a username or a password', 'invalid_request');
 	}
 
 	// (MAY contain a port)
@@ -66,7 +66,7 @@ function validateClientId(raw: string): URL {
 	// host names MUST be domain names or a loopback interface and MUST NOT be
 	// IPv4 or IPv6 addresses except for IPv4 127.0.0.1 or IPv6 [::1].
 	if (!url.hostname.match(/\.\w+$/) && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {
-		throw new Error('client_id must have a domain name as a host name');
+		throw new AuthorizationError('client_id must have a domain name as a host name', 'invalid_request');
 	}
 
 	return url;
@@ -100,7 +100,7 @@ async function discoverClientInformation(httpRequestService: HttpRequestService,
 			name,
 		};
 	} catch {
-		throw new Error('Failed to fetch client information');
+		throw new AuthorizationError('Failed to fetch client information', 'server_error');
 	}
 }
 
@@ -342,7 +342,7 @@ export class OAuth2ProviderService {
 				const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
 					() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
 				if (!user) {
-					throw new Error('No such user');
+					throw new AuthorizationError('No such user', 'invalid_request');
 				}
 
 				TEMP_GRANT_CODES[code] = {
@@ -360,6 +360,7 @@ export class OAuth2ProviderService {
 				const granted = TEMP_GRANT_CODES[code];
 				console.log(granted, body, code, redirectUri);
 				if (!granted) {
+					// TODO: throw TokenError?
 					return [false];
 				}
 				delete TEMP_GRANT_CODES[code];
@@ -435,21 +436,26 @@ export class OAuth2ProviderService {
 			const oauth2 = (request.raw as any).oauth2 as OAuth2;
 			console.log(oauth2, request.raw.session);
 
-			if (request.query.response_type !== 'code') {
-				throw new Error('`response_type` parameter must be set as "code"');
-			}
-			if (typeof request.query.code_challenge !== 'string') {
-				throw new Error('`code_challenge` parameter is required');
-			}
-			if (request.query.code_challenge_method !== 'S256') {
-				throw new Error('`code_challenge_method` parameter must be set as S256');
-			}
-
 			const scopes = [...new Set(oauth2.req.scope)].filter(s => kinds.includes(s));
-			if (!scopes.length) {
-				throw new Error('`scope` parameter has no known scope');
+			try {
+				if (!scopes.length) {
+					throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
+				}
+				oauth2.req.scope = scopes;
+
+				if (request.query.response_type !== 'code') {
+					throw new AuthorizationError('`response_type` parameter must be set as "code"', 'invalid_request');
+				}
+				if (typeof request.query.code_challenge !== 'string') {
+					throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
+				}
+				if (request.query.code_challenge_method !== 'S256') {
+					throw new AuthorizationError('`code_challenge_method` parameter must be set as S256', 'invalid_request');
+				}
+			} catch (err: any) {
+				this.#server.errorHandler()(err, request.raw, reply.raw, null as any);
+				return;
 			}
-			oauth2.req.scope = scopes;
 
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
@@ -483,19 +489,20 @@ export class OAuth2ProviderService {
 				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_DISALLOW_LOOPBACK === '1') {
 					const lookup = await dns.lookup(clientUrl.hostname);
 					if (ipaddr.parse(lookup.address).range() === 'loopback') {
-						throw new Error('client_id unexpectedly resolves to loopback IP.');
+						throw new AuthorizationError('client_id unexpectedly resolves to loopback IP.', 'invalid_request');
 					}
 				}
 
 				// Find client information from the remote.
 				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
 				if (!clientInfo.redirectUris.includes(redirectUri)) {
-					throw new Error('Invalid redirect_uri');
+					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
 				}
 
 				return [clientInfo, redirectUri];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
+		fastify.use('/oauth/authorize', this.#server.errorHandler()); // TODO: use mode: indirect?
 		// for (const middleware of this.#server.decision()) {
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
@@ -504,11 +511,13 @@ export class OAuth2ProviderService {
 			req.user = (req as any).body.login_token;
 			done(null, undefined);
 		}));
+		fastify.use('/oauth/decision', this.#server.errorHandler());
 
 		// Clients may use JSON or urlencoded
 		fastify.use('/oauth/token', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/token', bodyParser.json({ strict: true }));
 		fastify.use('/oauth/token', this.#server.token());
+		fastify.use('/oauth/token', this.#server.errorHandler());
 		// }
 
 		// fastify.use('/oauth', this.#provider.callback());
