@@ -45,7 +45,7 @@ gulp.task('build:backend:script', () => {
 });
 
 gulp.task('build:backend:style', () => {
-	return gulp.src(['./packages/backend/src/server/web/style.css', './packages/backend/src/server/web/bios.css', './packages/backend/src/server/web/cli.css'])
+	return gulp.src(['./packages/backend/src/server/web/style.css', './packages/backend/src/server/web/bios.css', './packages/backend/src/server/web/cli.css', './packages/backend/src/server/web/error.css'])
 		.pipe(cssnano({
 			zindex: false
 		}))

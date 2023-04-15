@@ -1,11 +1,5 @@
-export function getUrlWithLoginId(url: string, loginId: string) {
+export function getUrlWithLoginId(url: string, loginId: string): string {
 	const u = new URL(url, origin);
-	u.searchParams.append('loginId', loginId);
-	return u.toString();
-}
-
-export function getUrlWithoutLoginId(url: string) {
-	const u = new URL(url);
-	u.searchParams.delete('loginId');
+	u.searchParams.set('loginId', loginId);
 	return u.toString();
 }

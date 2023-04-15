@@ -493,14 +493,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		});
 
-		// Antenna
-		for (const antenna of (await this.antennaService.getAntennas())) {
-			this.antennaService.checkHitAntenna(antenna, note, user).then(hit => {
-				if (hit) {
-					this.antennaService.addNoteToAntenna(antenna, note, user);
-				}
-			});
-		}
+		this.antennaService.addNoteToAntennas(note, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);
@@ -553,6 +546,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			const noteObj = await this.noteEntityService.pack(note);
 
 			this.globalEventService.publishNotesStream(noteObj);
+
+			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
 				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
