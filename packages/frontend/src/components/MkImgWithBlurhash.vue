@@ -1,7 +1,7 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title">
-	<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
-	<img v-if="src" :class="$style.img" :src="src" :title="title" :alt="alt" @load="onLoad"/>
+	<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
+	<img v-if="src && !forceBlurhash" :class="$style.img" :src="src" :title="title" :alt="alt" @load="onLoad"/>
 </div>
 </template>
 
@@ -12,16 +12,18 @@ import { decode } from 'blurhash';
 const props = withDefaults(defineProps<{
 	src?: string | null;
 	hash?: string;
-	alt?: string;
+	alt?: string | null;
 	title?: string | null;
 	size?: number;
 	cover?: boolean;
+	forceBlurhash?: boolean;
 }>(), {
 	src: null,
 	alt: '',
 	title: null,
 	size: 64,
 	cover: true,
+	forceBlurhash: false,
 });
 
 const canvas = $shallowRef<HTMLCanvasElement>();
