@@ -51,7 +51,6 @@ function calcAspectRatio() {
 
 	if (props.mediaList.length !== 1 || !(img.properties.width && img.properties.height)) {
 		gallery.value.style.aspectRatio = '';
-		gallery.value.style.minHeight = '64px';
 		return;
 	}
 
