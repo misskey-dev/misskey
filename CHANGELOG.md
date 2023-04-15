@@ -22,6 +22,7 @@
 
 ### Server
 - エクスポートデータの拡張子がunknownになる問題を修正
+- API: i/update avatarIdとbannerIdにnullを渡した時、画像がリセットされない問題を修正
 
 ## 13.11.3
 
