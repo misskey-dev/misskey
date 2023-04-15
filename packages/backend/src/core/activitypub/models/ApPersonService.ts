@@ -527,7 +527,7 @@ export class ApPersonService implements OnModuleInit {
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 
-		this.cacheService.uriPersonCache.set(uri, Object.assign(exist, updates));
+		this.cacheService.uriPersonCache.set(uri, { ...exist, ...updates });
 
 		// Copy blocking and muting if we know its moving for the first time.
 		if (!exist.movedToUri && updates.movedToUri) {
