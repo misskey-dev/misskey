@@ -218,6 +218,8 @@ const patrons = [
 	'Ebise Lutica',
 	'巣黒るい@リスケモ男の娘VTuber!',
 	'ふぇいぽむ',
+	'依古田イコ',
+	'戸塚こだま',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

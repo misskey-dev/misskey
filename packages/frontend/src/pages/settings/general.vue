@@ -62,6 +62,7 @@
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -160,6 +161,7 @@ const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
 const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
+const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));

@@ -1,9 +1,10 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :force-blurhash="defaultStore.state.enableDataSaverMode" />
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</div>
@@ -28,6 +29,7 @@
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
+import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -38,7 +40,7 @@ const props = defineProps<{
 }>();
 
 let hide = $ref(true);
-let darkMode = $ref(defaultStore.state.darkMode);
+let darkMode: boolean = $ref(defaultStore.state.darkMode);
 
 const url = (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
@@ -48,7 +50,7 @@ const url = (props.raw || defaultStore.state.loadRawImages)
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
-	hide = (defaultStore.state.nsfw === 'force') ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
+	hide = (defaultStore.state.nsfw === 'force' || defaultStore.state.enableDataSaverMode) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
 }, {
 	deep: true,
 	immediate: true,

@@ -65,7 +65,7 @@ const props = defineProps<{
 }>();
 
 let key = $ref('');
-let tab = $ref('search');
+let tab = $ref('featured');
 let searchQuery = $ref('');
 let searchType = $ref('nameAndDescription');
 let channelPagination = $ref();

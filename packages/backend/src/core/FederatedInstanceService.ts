@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import type { InstancesRepository } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
