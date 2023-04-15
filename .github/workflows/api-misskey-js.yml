@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3.6.0
         with:
-          node-version: 18.x
+          node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Install dependencies
