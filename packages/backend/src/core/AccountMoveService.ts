@@ -17,7 +17,6 @@ import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import { ProxyAccountService } from '@/core/ProxyAccountService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -49,7 +48,6 @@ export class AccountMoveService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
-		private idService: IdService,
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
@@ -209,7 +207,7 @@ export class AccountMoveService {
 
 		await this.userListJoiningsRepository.update(
 			{ userId: src.id },
-			{ userId: dst.id, user: dst }
+			{ userId: dst.id }
 		);
 
 		// Have the proxy account follow the new account in the same way as UserListService.push
