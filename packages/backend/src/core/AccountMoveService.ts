@@ -81,6 +81,7 @@ export class AccountMoveService {
 		update.alsoKnownAs = src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
 		update.movedToUri = dstUri;
 		await this.usersRepository.update(src.id, update);
+		src = Object.assign(src, update);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
 		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
@@ -109,6 +110,7 @@ export class AccountMoveService {
 	@bindThis
 	public async createAlias(me: LocalUser, updates: Partial<User>): Promise<unknown> {
 		await this.usersRepository.update(me.id, updates);
+		me = Object.assign(me, updates);
 
 		// Publish meUpdated event
 		const iObj = await this.userEntityService.pack<true, true>(me.id, me, {
