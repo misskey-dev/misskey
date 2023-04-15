@@ -185,7 +185,12 @@ export class AccountMoveService {
 	@bindThis
 	public async copyMutings(src: ThinUser, dst: ThinUser): Promise<void> {
 		// Insert new mutings with the same values except mutee
-		const mutings = await this.mutingsRepository.findBy({ muteeId: src.id });
+		const mutings = await this.mutingsRepository.find({
+			relations: {
+				muter: true,
+			},
+			where: { muteeId: src.id }
+		});
 		const newMuting: Partial<Muting>[] = [];
 		for (const muting of mutings) {
 			newMuting.push({
@@ -196,7 +201,7 @@ export class AccountMoveService {
 				muteeId: dst.id,
 			});
 		}
-		this.mutingsRepository.insert(mutings); // no need to wait
+		await this.mutingsRepository.insert(mutings);
 		for (const mute of mutings) {
 			if (mute.muter) this.cacheService.userMutingsCache.refresh(mute.muter.id);
 		}
