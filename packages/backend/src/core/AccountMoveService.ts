@@ -243,6 +243,12 @@ export class AccountMoveService {
 		// Decrease following counts of local followers by 1.
 		await this.usersRepository.decrement({ id: In(localFollowerIds) }, 'followingCount', 1);
 
+		// Decrease follower counts of local followees by 1.
+		const oldFollowings = await this.followingsRepository.findBy({ followerId: oldAccount.id });
+		if (oldFollowings.length > 0) {
+			await this.usersRepository.decrement({ id: In(oldFollowings.map(following => following.followeeId)) }, 'followersCount', 1);
+		}
+
 		// Update instance stats by decreasing remote followers count by the number of local followers who were following the old account.
 		if (this.userEntityService.isRemoteUser(oldAccount)) {
 			this.federatedInstanceService.fetch(oldAccount.host).then(async i => {
