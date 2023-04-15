@@ -7,7 +7,6 @@ import { ApiError } from '@/server/api/error.js';
 
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
 
 export const meta = {
@@ -15,6 +14,7 @@ export const meta = {
 
 	secure: true,
 	requireCredential: true,
+	prohibitMoved: true,
 
 	limit: {
 		duration: ms('1day'),
@@ -46,7 +46,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		private userEntityService: UserEntityService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private accountMoveService: AccountMoveService,
@@ -76,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const toUrl = this.accountMoveService.getUserUri(knownAs);
 				if (!toUrl) throw new ApiError(meta.errors.uriNull);
 
-				updates.alsoKnownAs = updates.alsoKnownAs?.concat([toUrl]) ?? [toUrl];
+				updates.alsoKnownAs = me.alsoKnownAs?.includes(toUrl) ? me.alsoKnownAs : me.alsoKnownAs?.concat([toUrl]) ?? [toUrl];
 			}
 
 			return await this.accountMoveService.createAlias(me, updates);
