@@ -221,6 +221,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updates.avatarId = avatar.id;
 				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
 				updates.avatarBlurhash = avatar.blurhash;
+			} else if (ps.avatarId === null) {
+				updates.avatarId = null;
+				updates.avatarUrl = null;
+				updates.avatarBlurhash = null;
 			}
 
 			if (ps.bannerId) {
@@ -232,6 +236,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updates.bannerId = banner.id;
 				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
 				updates.bannerBlurhash = banner.blurhash;
+			} else if (ps.bannerId === null) {
+				updates.bannerId = null;
+				updates.bannerUrl = null;
+				updates.bannerBlurhash = null;
 			}
 
 			if (ps.pinnedPageId) {
