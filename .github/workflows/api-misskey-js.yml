@@ -20,7 +20,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm i --frozen-lockfile
 
       - name: Build
         run: pnpm --filter misskey-js build:pre

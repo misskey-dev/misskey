@@ -28,7 +28,7 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
-    - run: pnpm install --no-frozen-lockfile
+    - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
     - name: Build misskey-js

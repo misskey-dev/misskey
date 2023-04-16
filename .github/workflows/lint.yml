@@ -24,7 +24,7 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
-    - run: pnpm install --no-frozen-lockfile
+    - run: pnpm i --frozen-lockfile
 
   lint:
     needs: [pnpm_install]
@@ -51,7 +51,7 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
-    - run: pnpm install --no-frozen-lockfile
+    - run: pnpm i --frozen-lockfile
     - run: pnpm --filter ${{ matrix.workspace }} run eslint
 
   typecheck:
@@ -77,5 +77,5 @@ jobs:
         node-version-file: '.node-version'
         cache: 'pnpm'
     - run: corepack enable
-    - run: pnpm install --no-frozen-lockfile
+    - run: pnpm i --frozen-lockfile
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck

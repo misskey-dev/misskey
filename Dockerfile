@@ -26,7 +26,7 @@ COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm install --no-frozen-lockfile --aggregate-output
+	pnpm i --frozen-lockfile --aggregate-output
 
 COPY --link . ./
 
@@ -53,7 +53,7 @@ COPY --link ["scripts", "./scripts"]
 COPY --link ["packages/backend/package.json", "./packages/backend/"]
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
-	pnpm install --no-frozen-lockfile --aggregate-output
+	pnpm i --frozen-lockfile --aggregate-output
 
 FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-slim AS runner
 
