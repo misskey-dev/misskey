@@ -182,6 +182,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	enableDataSaverMode: {
+		where: 'device',
+		default: false,
+	},
 	disableShowingAnimatedImages: {
 		where: 'device',
 		default: matchMedia('(prefers-reduced-motion)').matches,
@@ -305,6 +309,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	aiChanMode: {
 		where: 'device',
 		default: false,
+	},
+	mediaListWithOneImageAppearance: {
+		where: 'device',
+		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
 	},
 }));
 

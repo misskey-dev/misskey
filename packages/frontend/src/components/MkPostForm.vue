@@ -247,6 +247,10 @@ watch($$(text), () => {
 	checkMissingMention();
 }, { immediate: true });
 
+watch($$(visibility), () => {
+	checkMissingMention();
+}, { immediate: true });
+
 watch($$(visibleUsers), () => {
 	checkMissingMention();
 }, {

@@ -1,44 +1,67 @@
 <template>
-<div :class="[$style.root, { [$style.cover]: cover }]" :title="title">
-	<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
-	<img v-if="src" :class="$style.img" :src="src" :title="title" :alt="alt" @load="onLoad"/>
+<div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
+	<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title ?? ''"/>
+	<img v-if="src && !forceBlurhash" v-show="loaded" :class="$style.img" :src="src" :title="title ?? ''" :alt="alt ?? ''" @load="onLoad"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { decode } from 'blurhash';
 
 const props = withDefaults(defineProps<{
 	src?: string | null;
 	hash?: string;
-	alt?: string;
+	alt?: string | null;
 	title?: string | null;
-	size?: number;
+	height?: number;
+	width?: number;
 	cover?: boolean;
+	forceBlurhash?: boolean;
 }>(), {
 	src: null,
 	alt: '',
 	title: null,
-	size: 64,
+	height: 64,
+	width: 64,
 	cover: true,
+	forceBlurhash: false,
 });
 
 const canvas = $shallowRef<HTMLCanvasElement>();
 let loaded = $ref(false);
-
-function draw() {
-	if (props.hash == null) return;
-	const pixels = decode(props.hash, props.size, props.size);
-	const ctx = canvas.getContext('2d');
-	const imageData = ctx!.createImageData(props.size, props.size);
-	imageData.data.set(pixels);
-	ctx!.putImageData(imageData, 0, 0);
-}
+let width = $ref(props.width);
+let height = $ref(props.height);
 
 function onLoad() {
 	loaded = true;
 }
+
+watch([() => props.width, () => props.height], () => {
+	const ratio = props.width / props.height;
+	if (ratio > 1) {
+		width = Math.round(64 * ratio);
+		height = 64;
+	} else {
+		width = 64;
+		height = Math.round(64 / ratio);
+	}
+}, {
+	immediate: true,
+});
+
+function draw() {
+	if (props.hash == null) return;
+	const pixels = decode(props.hash, width, height);
+	const ctx = canvas.getContext('2d');
+	const imageData = ctx!.createImageData(width, height);
+	imageData.data.set(pixels);
+	ctx!.putImageData(imageData, 0, 0);
+}
+
+watch(() => props.hash, () => {
+	draw();
+});
 
 onMounted(() => {
 	draw();
@@ -52,6 +75,7 @@ onMounted(() => {
 	height: 100%;
 
 	&.cover {
+		> .canvas,
 		> .img {
 			object-fit: cover;
 		}
@@ -66,8 +90,7 @@ onMounted(() => {
 }
 
 .canvas {
-	position: absolute;
-	object-fit: cover;
+	object-fit: contain;
 }
 
 .img {
