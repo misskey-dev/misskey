@@ -1,9 +1,8 @@
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { noteVisibilities } from '../../types.js';
 import { User } from './User.js';
 import { Channel } from './Channel.js';
-import { Event } from './Event.js';
 import type { DriveFile } from './DriveFile.js';
 
 @Entity()
@@ -54,19 +53,10 @@ export class Note {
 	})
 	public threadId: string | null;
 
-	@Index()
-	@Column({
-		...id(),
-		nullable: true,
-		comment: 'The ID of child event',
+	@Column('boolean', {
+		default: false,
 	})
-	public eventId: Event['id'] | null;
-
-	@OneToOne(type => Event, {
-		onDelete: 'CASCADE',
-	})
-	@JoinColumn()
-	public event: Event | null;
+	public isEvent: boolean;
 
 	// TODO: varcharにしたい
 	@Column('text', {

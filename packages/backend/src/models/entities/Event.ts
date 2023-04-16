@@ -1,10 +1,17 @@
-import { Entity, Index, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Index, Column, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
+import { Note } from './Note.js';
 
 @Entity()
 export class Event {
 	@PrimaryColumn(id())
-	public id: string;
+	public noteId: Note['id'];
+
+	@OneToOne(type => Note, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn()
+	public note: Note | null;
 
 	@Index()
 	@Column('timestamp with time zone', {
