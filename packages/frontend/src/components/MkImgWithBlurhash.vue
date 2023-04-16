@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title">
-	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
+	<img v-if="!loaded && src && !forceBlurhash" :class="$style.loader" :src="src" @load="onLoad"/>
 	<Transition
 		mode="in-out"
 		:enter-active-class="defaultStore.state.animation && props.transition?.enterActiveClass || ''"
@@ -8,7 +8,7 @@
 		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || ''"
 		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || ''"
 	>
-		<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
+		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
 		<img v-else :class="$style.img" :src="src" :title="title" :alt="alt"/>
 	</Transition>
 </div>
@@ -28,10 +28,11 @@ const props = withDefaults(defineProps<{
 	} | null;
 	src?: string | null;
 	hash?: string;
-	alt?: string;
+	alt?: string | null;
 	title?: string | null;
 	size?: number;
 	cover?: boolean;
+	forceBlurhash?: boolean;
 }>(), {
 	transition: null,
 	src: null,
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<{
 	title: null,
 	size: 64,
 	cover: true,
+	forceBlurhash: false,
 });
 
 const canvas = $shallowRef<HTMLCanvasElement>();

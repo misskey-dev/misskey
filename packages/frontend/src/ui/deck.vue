@@ -152,6 +152,7 @@ const addColumn = async (ev) => {
 		'channel',
 		'mentions',
 		'direct',
+		'roleTimeline',
 	];
 
 	const { canceled, result: column } = await os.select({

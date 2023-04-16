@@ -130,11 +130,6 @@ const menuDef = computed(() => [{
 }, {
 	title: i18n.ts.otherSettings,
 	items: [{
-		icon: 'ti ti-package',
-		text: i18n.ts.importAndExport,
-		to: '/settings/import-export',
-		active: currentPage?.route.name === 'import-export',
-	}, {
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,
 		to: '/settings/roles',
@@ -165,6 +160,16 @@ const menuDef = computed(() => [{
 		to: '/settings/webhook',
 		active: currentPage?.route.name === 'webhook',
 	}, {
+		icon: 'ti ti-package',
+		text: i18n.ts.importAndExport,
+		to: '/settings/import-export',
+		active: currentPage?.route.name === 'import-export',
+	}, /*{
+		icon: 'ti ti-plane',
+		text: i18n.ts.accountMigration,
+		to: '/settings/migration',
+		active: currentPage?.route.name === 'migration',
+	},*/ {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',
@@ -231,7 +236,7 @@ onUnmounted(() => {
 });
 
 watch(router.currentRef, (to) => {
-	if (to.route.name === "settings" && to.child?.route.name == null && !narrow) {
+	if (to.route.name === 'settings' && to.child?.route.name == null && !narrow) {
 		router.replace('/settings/profile');
 	}
 });

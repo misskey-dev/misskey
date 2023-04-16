@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import * as websocket from 'websocket';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, RenoteMutingsRepository } from '@/models/index.js';
@@ -22,8 +22,8 @@ export class StreamingApiServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redisForPubsub)
-		private redisForPubsub: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -81,7 +81,7 @@ export class StreamingApiServerService {
 				ev.emit(parsed.channel, parsed.message);
 			}
 
-			this.redisForPubsub.on('message', onRedisMessage);
+			this.redisForSub.on('message', onRedisMessage);
 
 			const main = new MainStreamConnection(
 				this.channelsService,
@@ -111,7 +111,7 @@ export class StreamingApiServerService {
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				main.dispose();
-				this.redisForPubsub.off('message', onRedisMessage);
+				this.redisForSub.off('message', onRedisMessage);
 				if (intervalId) clearInterval(intervalId);
 			});
 

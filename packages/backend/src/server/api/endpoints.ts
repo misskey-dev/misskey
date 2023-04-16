@@ -98,6 +98,7 @@ import * as ep___channels_update from './endpoints/channels/update.js';
 import * as ep___channels_favorite from './endpoints/channels/favorite.js';
 import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
 import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
+import * as ep___channels_search from './endpoints/channels/search.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -220,6 +221,8 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
+import * as ep___i_move from './endpoints/i/move.js';
+import * as ep___i_knownAs from './endpoints/i/known-as.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -291,6 +294,7 @@ import * as ep___promo_read from './endpoints/promo/read.js';
 import * as ep___roles_list from './endpoints/roles/list.js';
 import * as ep___roles_show from './endpoints/roles/show.js';
 import * as ep___roles_users from './endpoints/roles/users.js';
+import * as ep___roles_notes from './endpoints/roles/notes.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -326,6 +330,7 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
+import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 
@@ -427,6 +432,7 @@ const eps = [
 	['channels/favorite', ep___channels_favorite],
 	['channels/unfavorite', ep___channels_unfavorite],
 	['channels/my-favorites', ep___channels_myFavorites],
+	['channels/search', ep___channels_search],
 	['charts/active-users', ep___charts_activeUsers],
 	['charts/ap-request', ep___charts_apRequest],
 	['charts/drive', ep___charts_drive],
@@ -549,6 +555,8 @@ const eps = [
 	['i/unpin', ep___i_unpin],
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
+	//['i/move', ep___i_move],
+	//['i/known-as', ep___i_knownAs],
 	['i/webhooks/create', ep___i_webhooks_create],
 	['i/webhooks/list', ep___i_webhooks_list],
 	['i/webhooks/show', ep___i_webhooks_show],
@@ -620,6 +628,7 @@ const eps = [
 	['roles/list', ep___roles_list],
 	['roles/show', ep___roles_show],
 	['roles/users', ep___roles_users],
+	['roles/notes', ep___roles_notes],
 	['request-reset-password', ep___requestResetPassword],
 	['reset-db', ep___resetDb],
 	['reset-password', ep___resetPassword],
@@ -655,6 +664,7 @@ const eps = [
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
 	['users/achievements', ep___users_achievements],
+	['users/update-memo', ep___users_updateMemo],
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
 ];

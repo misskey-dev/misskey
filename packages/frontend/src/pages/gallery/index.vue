@@ -66,7 +66,7 @@ const recentPostsPagination = {
 };
 const popularPostsPagination = {
 	endpoint: 'gallery/featured' as const,
-	limit: 5,
+	noPaging: true,
 };
 const myPostsPagination = {
 	endpoint: 'i/gallery/posts' as const,
