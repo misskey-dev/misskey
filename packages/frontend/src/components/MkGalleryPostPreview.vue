@@ -4,7 +4,18 @@
 		<ImgWithBlurhash class="img" :hash="post.files[0].blurhash"/>
 		<Transition>
 			<KeepAlive>
-				<ImgWithBlurhash v-if="show" class="img layered" :animation="!safe" :src="post.files[0].thumbnailUrl" :hash="post.files[0].blurhash"/>
+				<ImgWithBlurhash
+					v-if="show"
+					class="img layered"
+					:transition="safe ? null : {
+						enterActiveClass: $style.transition_toggle_enterActive,
+						leaveActiveClass: $style.transition_toggle_leaveActive,
+						enterFromClass: $style.transition_toggle_enterFrom,
+						leaveToClass: $style.transition_toggle_leaveTo,
+					}"
+					:src="post.files[0].thumbnailUrl"
+					:hash="post.files[0].blurhash"
+				/>
 			</KeepAlive>
 		</Transition>
 	</div>
@@ -41,6 +52,18 @@ function leaveHover(): void {
 	hover.value = false;
 }
 </script>
+
+<style lang="scss" module>
+.transition_toggle_enterActive,
+.transition_toggle_leaveActive {
+	transition: opacity 0.5s;
+}
+
+.transition_toggle_enterFrom,
+.transition_toggle_leaveTo {
+	opacity: 0;
+}
+</style>
 
 <style lang="scss" scoped>
 .ttasepnz {

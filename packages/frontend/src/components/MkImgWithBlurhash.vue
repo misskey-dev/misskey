@@ -3,10 +3,10 @@
 	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
 	<Transition
 		mode="in-out"
-		:enter-active-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leave-active-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enter-from-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leave-to-class="props.animation && defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enter-active-class="defaultStore.state.animation && props.transition?.enterActiveClass || ''"
+		:leave-active-class="defaultStore.state.animation && props.transition?.leaveActiveClass || ''"
+		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || ''"
+		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || ''"
 	>
 		<canvas v-if="!loaded" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
 		<img v-else :class="$style.img" :src="src" :title="title" :alt="alt"/>
@@ -20,7 +20,12 @@ import { decode } from 'blurhash';
 import { defaultStore } from '@/store';
 
 const props = withDefaults(defineProps<{
-	animation?: boolean;
+	transition?: {
+		enterActiveClass?: string;
+		leaveActiveClass?: string;
+		enterFromClass?: string;
+		leaveToClass?: string;
+	} | null;
 	src?: string | null;
 	hash?: string;
 	alt?: string;
@@ -28,7 +33,7 @@ const props = withDefaults(defineProps<{
 	size?: number;
 	cover?: boolean;
 }>(), {
-	animation: false,
+	transition: null,
 	src: null,
 	alt: '',
 	title: null,
