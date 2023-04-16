@@ -261,15 +261,14 @@ type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
 
-interface OAuthRequestQuery {
-	response_type: string;
-	client_id: string;
-	redirect_uri: string;
+interface OAuthRequest {
+	type: string;
+	clientID: string;
+	redirectURI: string;
 	state: string;
-	code_challenge: string;
-	code_challenge_method: string;
-	scope?: string;
-	me?: string;
+	codeChallenge: string;
+	codeChallengeMethod: string;
+	scope: string[];
 }
 
 @Injectable()
@@ -431,37 +430,15 @@ export class OAuth2ProviderService {
 
 		// For now only allow the basic OAuth endpoints, to start small and evaluate
 		// this feature for some time, given that this is security related.
-		fastify.get<{ Querystring: OAuthRequestQuery }>('/oauth/authorize', async (request, reply) => {
-			console.log('HIT /oauth/authorize', request.query);
+		fastify.get('/oauth/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as any).oauth2 as OAuth2;
-			console.log(oauth2, request.raw.session);
-
-			const scopes = [...new Set(oauth2.req.scope)].filter(s => kinds.includes(s));
-			try {
-				if (!scopes.length) {
-					throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
-				}
-				oauth2.req.scope = scopes;
-
-				if (request.query.response_type !== 'code') {
-					throw new AuthorizationError('`response_type` parameter must be set as "code"', 'invalid_request');
-				}
-				if (typeof request.query.code_challenge !== 'string') {
-					throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
-				}
-				if (request.query.code_challenge_method !== 'S256') {
-					throw new AuthorizationError('`code_challenge_method` parameter must be set as S256', 'invalid_request');
-				}
-			} catch (err: any) {
-				this.#server.errorHandler()(err, request.raw, reply.raw, null as any);
-				return;
-			}
+			console.log('HIT /oauth/authorize', request.query, oauth2, request.raw.session);
 
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
-				scope: scopes.join(' '),
+				scope: (oauth2.req.scope as any as string[]).join(' '),
 			});
 		});
 		fastify.post('/oauth/decision', async () => { });
@@ -479,12 +456,31 @@ export class OAuth2ProviderService {
 		});
 
 		await fastify.register(fastifyExpress);
+		// TODO: use redis session store to prevent memory leak
 		fastify.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }) as any);
-		fastify.use('/oauth/authorize', this.#server.authorization((clientId, redirectUri, done) => {
+		fastify.use('/oauth/authorize', this.#server.authorization((areq: OAuthRequest, done: (err: Error | null, client?: any, redirectURI?: string) => void) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
-				console.log('HIT /oauth/authorize validation middleware');
+				console.log('HIT /oauth/authorize validation middleware', areq);
 
-				const clientUrl = validateClientId(clientId);
+				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq;
+
+				const scopes = [...new Set(scope)].filter(s => kinds.includes(s));
+				if (!scopes.length) {
+					throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
+				}
+				areq.scope = scopes;
+
+				if (type !== 'code') {
+					throw new AuthorizationError('`response_type` parameter must be set as "code"', 'invalid_request');
+				}
+				if (typeof codeChallenge !== 'string') {
+					throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
+				}
+				if (codeChallengeMethod !== 'S256') {
+					throw new AuthorizationError('`code_challenge_method` parameter must be set as S256', 'invalid_request');
+				}
+
+				const clientUrl = validateClientId(clientID);
 
 				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_DISALLOW_LOOPBACK === '1') {
 					const lookup = await dns.lookup(clientUrl.hostname);
@@ -495,14 +491,17 @@ export class OAuth2ProviderService {
 
 				// Find client information from the remote.
 				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
-				if (!clientInfo.redirectUris.includes(redirectUri)) {
+				if (!clientInfo.redirectUris.includes(redirectURI)) {
 					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
 				}
 
-				return [clientInfo, redirectUri];
+				return [clientInfo, redirectURI];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
-		fastify.use('/oauth/authorize', this.#server.errorHandler()); // TODO: use mode: indirect?
+		// TODO: use mode: indirect
+		// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2.1
+		// But make sure not to redirect to an invalid redirect_uri
+		fastify.use('/oauth/authorize', this.#server.errorHandler());
 		// for (const middleware of this.#server.decision()) {
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));

@@ -871,4 +871,6 @@ describe('OAuth', () => {
 	});
 
 	// TODO: Invalid decision endpoint parameters
+
+	// TODO: Unknown OAuth endpoint
 });
