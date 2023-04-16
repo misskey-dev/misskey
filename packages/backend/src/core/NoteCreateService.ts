@@ -8,6 +8,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import { Note } from '@/models/entities/Note.js';
+import { Event, IEvent } from '@/models/entities/Event.js';
 import type { ChannelFollowingsRepository, ChannelsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { App } from '@/models/entities/App.js';
@@ -126,6 +127,7 @@ type Option = {
 	renote?: Note | null;
 	files?: DriveFile[] | null;
 	poll?: IPoll | null;
+	event?: IEvent | null;
 	localOnly?: boolean | null;
 	reactionAcceptance?: Note['reactionAcceptance'];
 	cw?: string | null;
@@ -358,6 +360,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			name: data.name,
 			text: data.text,
 			hasPoll: data.poll != null,
+			hasEvent: data.event != null,
 			cw: data.cw == null ? null : data.cw,
 			tags: tags.map(tag => normalizeForSearch(tag)),
 			emojis,
@@ -402,23 +405,40 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// 投稿を作成
 		try {
-			if (insert.hasPoll) {
+			if (insert.hasPoll || insert.hasEvent) {
 				// Start transaction
 				await this.db.transaction(async transactionalEntityManager => {
 					await transactionalEntityManager.insert(Note, insert);
 
-					const poll = new Poll({
-						noteId: insert.id,
-						choices: data.poll!.choices,
-						expiresAt: data.poll!.expiresAt,
-						multiple: data.poll!.multiple,
-						votes: new Array(data.poll!.choices.length).fill(0),
-						noteVisibility: insert.visibility,
-						userId: user.id,
-						userHost: user.host,
-					});
+					if (insert.hasPoll) {
+						const poll = new Poll({
+							noteId: insert.id,
+							choices: data.poll!.choices,
+							expiresAt: data.poll!.expiresAt,
+							multiple: data.poll!.multiple,
+							votes: new Array(data.poll!.choices.length).fill(0),
+							noteVisibility: insert.visibility,
+							userId: user.id,
+							userHost: user.host,
+						});
 
-					await transactionalEntityManager.insert(Poll, poll);
+						await transactionalEntityManager.insert(Poll, poll);
+					}
+
+					if (insert.hasEvent) {
+						const event = new Event({
+							noteId: insert.id,
+							start: data.event!.start,
+							end: data.event!.end ?? undefined,
+							title: data.event!.title,
+							metadata: data.event!.metadata,
+							noteVisibility: insert.visibility,
+							userId: user.id,
+							userHost: user.host,
+						});
+
+						await transactionalEntityManager.insert(Event, event);
+					}
 				});
 			} else {
 				await this.notesRepository.insert(insert);
