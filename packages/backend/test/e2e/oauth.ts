@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { AuthorizationCode } from 'simple-oauth2';
+import { AuthorizationCode, type AuthorizationTokenConfig } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 import * as misskey from 'misskey-js';
@@ -17,6 +17,18 @@ const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
 interface OAuthErrorResponse {
 	error: string;
 	error_description: string;
+}
+
+interface AuthorizationParamsExtended {
+	redirect_uri: string;
+	scope: string | string[];
+	state: string;
+	code_challenge?: string;
+	code_challenge_method?: string;
+}
+
+interface AuthorizationTokenConfigExtended extends AuthorizationTokenConfig {
+	code_verifier: string;
 }
 
 function getClient(): AuthorizationCode<'client_id'> {
@@ -111,7 +123,7 @@ describe('OAuth', () => {
 			state: 'state',
 			code_challenge,
 			code_challenge_method: 'S256',
-		}));
+		} as AuthorizationParamsExtended));
 		assert.strictEqual(response.status, 200);
 		const cookie = response.headers.get('set-cookie');
 		assert.ok(cookie?.startsWith('connect.sid='));
@@ -134,7 +146,7 @@ describe('OAuth', () => {
 			code: location.searchParams.get('code')!,
 			redirect_uri,
 			code_verifier,
-		});
+		} as AuthorizationTokenConfigExtended);
 		assert.strictEqual(typeof token.token.access_token, 'string');
 		assert.strictEqual(token.token.token_type, 'Bearer');
 		assert.strictEqual(token.token.scope, 'write:notes');
@@ -165,7 +177,7 @@ describe('OAuth', () => {
 			state: 'state',
 			code_challenge: pkceAlice.code_challenge,
 			code_challenge_method: 'S256',
-		}));
+		} as AuthorizationParamsExtended));
 		assert.strictEqual(responseAlice.status, 200);
 
 		const responseBob = await fetch(client.authorizeURL({
@@ -174,7 +186,7 @@ describe('OAuth', () => {
 			state: 'state',
 			code_challenge: pkceBob.code_challenge,
 			code_challenge_method: 'S256',
-		}));
+		} as AuthorizationParamsExtended));
 		assert.strictEqual(responseBob.status, 200);
 
 		const decisionResponseAlice = await fetchDecisionFromResponse(responseAlice, alice);
@@ -193,13 +205,13 @@ describe('OAuth', () => {
 			code: locationAlice.searchParams.get('code')!,
 			redirect_uri,
 			code_verifier: pkceAlice.code_verifier,
-		});
+		} as AuthorizationTokenConfigExtended);
 
 		const tokenBob = await client.getToken({
 			code: locationBob.searchParams.get('code')!,
 			redirect_uri,
 			code_verifier: pkceBob.code_verifier,
-		});
+		} as AuthorizationTokenConfigExtended);
 
 		const createResponseAlice = await relativeFetch('api/notes/create', {
 			method: 'POST',
@@ -247,7 +259,7 @@ describe('OAuth', () => {
 				scope: 'write:notes',
 				state: 'state',
 				code_challenge: 'code',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 
@@ -257,7 +269,7 @@ describe('OAuth', () => {
 				scope: 'write:notes',
 				state: 'state',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 
@@ -268,7 +280,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'SSSS',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
@@ -284,7 +296,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 
 			const decisionResponse = await fetchDecisionFromResponse(response, alice);
@@ -298,7 +310,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier: code_verifier + 'x',
-			}));
+			} as AuthorizationTokenConfigExtended));
 
 			// TODO: The following patterns may fail only because of pattern 1's failure. Let's split them.
 
@@ -307,21 +319,21 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier: code_verifier.slice(0, 80),
-			}));
+			} as AuthorizationTokenConfigExtended));
 
 			// Pattern 3: Some part of code is replaced
 			await assert.rejects(client.getToken({
 				code,
 				redirect_uri,
 				code_verifier: code_verifier.slice(0, -10) + 'x'.repeat(10),
-			}));
+			} as AuthorizationTokenConfigExtended));
 
 			// And now the code is invalidated by the previous failures
 			await assert.rejects(client.getToken({
 				code,
 				redirect_uri,
 				code_verifier,
-			}));
+			} as AuthorizationTokenConfigExtended));
 		});
 	});
 
@@ -334,7 +346,7 @@ describe('OAuth', () => {
 			state: 'state',
 			code_challenge: 'code',
 			code_challenge_method: 'S256',
-		}));
+		} as AuthorizationParamsExtended));
 		assert.strictEqual(response.status, 200);
 
 		const decisionResponse = await fetchDecisionFromResponse(response, alice, { cancel: true });
@@ -354,7 +366,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
@@ -369,7 +381,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
@@ -384,7 +396,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
@@ -401,7 +413,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			// Just get the known scope for this case for backward compatibility
 			assert.strictEqual(response.status, 200);
@@ -419,7 +431,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier,
-			});
+			} as AuthorizationTokenConfigExtended);
 
 			// OAuth2 requires returning `scope` in the token response if the resulting scope is different than the requested one
 			// (Although Misskey always return scope, which is also fine)
@@ -435,7 +447,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 200);
 		});
@@ -451,7 +463,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 200);
 
@@ -468,7 +480,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier,
-			});
+			} as AuthorizationTokenConfigExtended);
 			assert.strictEqual(token.token.scope, 'write:notes read:account');
 		});
 
@@ -483,7 +495,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 
 			const decisionResponse = await fetchDecisionFromResponse(response, alice);
@@ -496,7 +508,7 @@ describe('OAuth', () => {
 				code: location.searchParams.get('code')!,
 				redirect_uri,
 				code_verifier,
-			});
+			} as AuthorizationTokenConfigExtended);
 			assert.strictEqual(typeof token.token.access_token, 'string');
 
 			const createResponse = await relativeFetch('api/notes/create', {
@@ -523,7 +535,7 @@ describe('OAuth', () => {
 			state: 'state',
 			code_challenge,
 			code_challenge_method: 'S256',
-		}));
+		} as AuthorizationParamsExtended));
 		assert.strictEqual(response.status, 200);
 
 		const decisionResponse = await fetchDecisionFromResponse(response, alice);
@@ -536,7 +548,7 @@ describe('OAuth', () => {
 			code: location.searchParams.get('code')!,
 			redirect_uri,
 			code_verifier,
-		});
+		} as AuthorizationTokenConfigExtended);
 
 		// Pattern 1: No preceding "Bearer "
 		let createResponse = await relativeFetch('api/notes/create', {
@@ -574,7 +586,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
@@ -589,7 +601,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
@@ -603,7 +615,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
@@ -620,7 +632,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 
 			const decisionResponse = await fetchDecisionFromResponse(response, alice);
@@ -633,7 +645,7 @@ describe('OAuth', () => {
 				code: location.searchParams.get('code')!,
 				redirect_uri: 'http://127.0.0.2/',
 				code_verifier,
-			}));
+			} as AuthorizationTokenConfigExtended));
 		});
 
 		test('Invalid redirect_uri including the valid one at token endpoint', async () => {
@@ -647,7 +659,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 
 			const decisionResponse = await fetchDecisionFromResponse(response, alice);
@@ -660,7 +672,7 @@ describe('OAuth', () => {
 				code: location.searchParams.get('code')!,
 				redirect_uri: 'http://127.0.0.1/redirection',
 				code_verifier,
-			}));
+			} as AuthorizationTokenConfigExtended));
 		});
 
 		test('No redirect_uri at token endpoint', async () => {
@@ -674,7 +686,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge,
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 
 			const decisionResponse = await fetchDecisionFromResponse(response, alice);
@@ -686,7 +698,7 @@ describe('OAuth', () => {
 			await assert.rejects(client.getToken({
 				code: location.searchParams.get('code')!,
 				code_verifier,
-			}));
+			} as AuthorizationTokenConfigExtended));
 		});
 	});
 
@@ -722,7 +734,7 @@ describe('OAuth', () => {
 					state: 'state',
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
-				}));
+				} as AuthorizationParamsExtended));
 				assert.strictEqual(response.status, 200);
 			});
 
@@ -748,7 +760,7 @@ describe('OAuth', () => {
 					state: 'state',
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
-				}));
+				} as AuthorizationParamsExtended));
 				assert.strictEqual(response.status, 200);
 			});
 
@@ -773,7 +785,7 @@ describe('OAuth', () => {
 					state: 'state',
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
-				}));
+				} as AuthorizationParamsExtended));
 				assert.strictEqual(response.status, 200);
 			});
 
@@ -799,7 +811,7 @@ describe('OAuth', () => {
 					state: 'state',
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
-				}));
+				} as AuthorizationParamsExtended));
 				assert.strictEqual(response.status, 200);
 			});
 
@@ -823,7 +835,7 @@ describe('OAuth', () => {
 					state: 'state',
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
-				}));
+				} as AuthorizationParamsExtended));
 
 				assert.strictEqual(response.status, 400);
 				assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
@@ -840,7 +852,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
@@ -864,7 +876,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			}));
+			} as AuthorizationParamsExtended));
 			assert.strictEqual(response.status, 200);
 			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
 		});
