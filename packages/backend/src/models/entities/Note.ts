@@ -56,7 +56,7 @@ export class Note {
 	@Column('boolean', {
 		default: false,
 	})
-	public isEvent: boolean;
+	public hasEvent: boolean;
 
 	// TODO: varcharにしたい
 	@Column('text', {
