@@ -53,6 +53,7 @@ gulp.task('build:backend:style', () => {
 		'./packages/backend/src/server/web/style.css',
 		'./packages/backend/src/server/web/bios.css',
 		'./packages/backend/src/server/web/cli.css',
+    './packages/backend/src/server/web/error.css',
 		'./packages/backend/src/server/web/embed.css'
 	])
 		.pipe(cssnano({

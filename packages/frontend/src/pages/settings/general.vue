@@ -61,6 +61,8 @@
 				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
+				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -78,6 +80,14 @@
 				<option value="1"><span style="font-size: 15px;">Aa</span></option>
 				<option value="2"><span style="font-size: 16px;">Aa</span></option>
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
+			</MkRadios>
+
+			<MkRadios v-model="mediaListWithOneImageAppearance">
+				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+				<option value="expand">{{ i18n.ts.default }}</option>
+				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
+				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
+				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
@@ -157,7 +167,9 @@ const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
 const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
+const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
+const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -168,6 +180,7 @@ const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfin
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
+const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

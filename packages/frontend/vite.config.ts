@@ -1,4 +1,5 @@
 import path from 'path';
+import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
 
@@ -46,6 +47,16 @@ export function getConfig(): UserConfig {
 				reactivityTransform: true,
 			}),
 			pluginJson5(),
+			...process.env.NODE_ENV === 'production'
+				? [
+					pluginReplace({
+						preventAssignment: true,
+						values: {
+							'isChromatic()': JSON.stringify(false),
+						},
+					}),
+				]
+				: [],
 		],
 
 		resolve: {

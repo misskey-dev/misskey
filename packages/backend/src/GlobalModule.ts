@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
@@ -25,7 +25,7 @@ const $db: Provider = {
 const $redis: Provider = {
 	provide: DI.redis,
 	useFactory: (config) => {
-		return new Redis({
+		return new Redis.Redis({
 			port: config.redis.port,
 			host: config.redis.host,
 			family: config.redis.family == null ? 0 : config.redis.family,
@@ -40,7 +40,7 @@ const $redis: Provider = {
 const $redisForPub: Provider = {
 	provide: DI.redisForPub,
 	useFactory: (config) => {
-		const redis = new Redis({
+		const redis = new Redis.Redis({
 			port: config.redisForPubsub.port,
 			host: config.redisForPubsub.host,
 			family: config.redisForPubsub.family == null ? 0 : config.redisForPubsub.family,
@@ -56,7 +56,7 @@ const $redisForPub: Provider = {
 const $redisForSub: Provider = {
 	provide: DI.redisForSub,
 	useFactory: (config) => {
-		const redis = new Redis({
+		const redis = new Redis.Redis({
 			port: config.redisForPubsub.port,
 			host: config.redisForPubsub.host,
 			family: config.redisForPubsub.family == null ? 0 : config.redisForPubsub.family,

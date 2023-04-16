@@ -86,9 +86,13 @@ export class DownloadService {
 
 			const contentDisposition = res.headers['content-disposition'];
 			if (contentDisposition != null) {
-				const parsed = parse(contentDisposition);
-				if (parsed.parameters.filename) {
-					filename = parsed.parameters.filename;
+				try {
+					const parsed = parse(contentDisposition);
+					if (parsed.parameters.filename) {
+						filename = parsed.parameters.filename;
+					}
+				} catch (e) {
+					this.logger.warn(`Failed to parse content-disposition: ${contentDisposition}`, { stack: e });
 				}
 			}
 		}).on('downloadProgress', (progress: Got.Progress) => {

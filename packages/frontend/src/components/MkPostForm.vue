@@ -247,6 +247,10 @@ watch($$(text), () => {
 	checkMissingMention();
 }, { immediate: true });
 
+watch($$(visibility), () => {
+	checkMissingMention();
+}, { immediate: true });
+
 watch($$(visibleUsers), () => {
 	checkMissingMention();
 }, {
@@ -900,27 +904,28 @@ defineExpose({
 }
 
 .headerLeft {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(36px, 50px));
-	grid-template-rows: minmax(40px, 100%);
+	display: flex;
+	flex: 0 1 100px;
 }
 
 .cancel {
 	padding: 0;
 	font-size: 1em;
 	height: 100%;
+	flex: 0 1 50px;
 }
 
 .account {
 	height: 100%;
 	display: inline-flex;
 	vertical-align: bottom;
+	flex: 0 1 50px;
 }
 
 .avatar {
 	width: 28px;
 	height: 28px;
-	margin: auto 0;
+	margin: auto;
 }
 
 .headerRight {
@@ -1124,16 +1129,16 @@ defineExpose({
 	display: grid;
 	grid-auto-flow: row;
 	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 46px;
+	grid-auto-rows: 40px;
 }
 
 .footerRight {
-	flex: 0.3;
+	flex: 0;
 	margin-left: auto;
 	display: grid;
 	grid-auto-flow: row;
 	grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
-	grid-auto-rows: 46px;
+	grid-auto-rows: 40px;
 	direction: rtl;
 }
 
@@ -1198,13 +1203,21 @@ defineExpose({
 	}
 }
 
-@container (max-width: 330px) {
-	.headerRight {
-		gap: 0;
+@container (max-width: 350px) {
+	.footer {
+		font-size: 0.9em;
 	}
 
-	.footer {
-		font-size: 14px;
+	.footerLeft {
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+	}
+
+	.footerRight {
+		grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+	}
+
+	.headerRight {
+		gap: 0;
 	}
 }
 </style>
