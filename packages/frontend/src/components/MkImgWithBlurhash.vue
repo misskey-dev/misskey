@@ -8,7 +8,7 @@
 		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || ''"
 		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || ''"
 	>
-		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="size" :height="size" :title="title"/>
+		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title"/>
 		<img v-else :class="$style.img" :src="src" :title="title" :alt="alt"/>
 	</Transition>
 </div>
