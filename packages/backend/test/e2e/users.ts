@@ -508,7 +508,6 @@ describe('ユーザー', () => {
 		};
 		assert.deepStrictEqual(response, expected, inspect(parameters));
 
-		if (1) return; // BUG 521eb95 以降アバターのリセットができない。
 		const parameters2 = { avatarId: null };
 		const response2 = await successfulApiCall({ endpoint: 'i/update', parameters: parameters2, user: alice });
 		const expected2 = { 
@@ -534,7 +533,6 @@ describe('ユーザー', () => {
 		};
 		assert.deepStrictEqual(response, expected, inspect(parameters));
 
-		if (1) return; // BUG 521eb95 以降バナーのリセットができない。
 		const parameters2 = { bannerId: null };
 		const response2 = await successfulApiCall({ endpoint: 'i/update', parameters: parameters2, user: alice });
 		const expected2 = { 
