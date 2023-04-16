@@ -6,7 +6,7 @@
 	@close="dialog.close()"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.renote }}</template>
+	<template #header>{{ i18n.ts.renoteList }}</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div v-if="renotes" class="_gaps">
