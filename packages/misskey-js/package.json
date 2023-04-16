@@ -5,15 +5,13 @@
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
 	"scripts": {
-		"build": "tsc",
+		"build:pre": "tsc",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
 		"eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"typecheck": "tsc --noEmit",
-		"lint": "pnpm typecheck && pnpm eslint",
-		"jest": "jest --coverage --detectOpenHandles",
-		"test": "pnpm jest && pnpm tsd"
+		"jest": "jest --detectOpenHandles"
 	},
 	"repository": {
 		"type": "git",

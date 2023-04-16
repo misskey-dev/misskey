@@ -1,6 +1,16 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
+		"api": {
+			"inputs": [
+				"packages/misskey-js/**"
+			]
+		},
+		"api-prod": {
+			"inputs": [
+				"packages/misskey-js/**"
+			]
+		},
 		"build:main": {
 			"inputs": [
 				"built/meta.json",
@@ -21,6 +31,17 @@
 			]
 		},
 		"build:pre": {
+			"inputs": [
+				"built/**",
+				"scripts/build-pre.js",
+				"scripts/package.json",
+				"package.json"
+			],
+			"outputs": [
+				"built/meta.json"
+			]
+		},
+		"build-storybook": {
 			"inputs": [
 				"built/**",
 				"scripts/build-pre.js",
@@ -84,7 +105,8 @@
 				"NODE_ENV"
 			],
 			"inputs": [
-				"packages/backend/**"
+				"packages/backend/**",
+				"packages/misskey-js/**"
 			]
 		},
 		"jest-clear": {
@@ -117,7 +139,16 @@
 		"test": {
 			"dependsOn": [
 				"jest",
+				"tsd",
 				"vitest"
+			]
+		},
+		"tsd": {
+			"inputs": [
+				"packages/misskey-js/**"
+			],
+			"outputs": [
+				"packages/misskey-js/**"
 			]
 		},
 		"typecheck": {

@@ -14,11 +14,13 @@
 	],
 	"private": true,
 	"scripts": {
+		"api": "cross-env FORCE_COLOR=1 turbo run api",
+		"api-prod": "cross-env FORCE_COLOR=1 turbo run api-prod",
 		"build": "run-s build:pre build:main build:post",
 		"build:main": "cross-env FORCE_COLOR=1 turbo run build:main",
-		"build-storybook": "pnpm --filter frontend build-storybook",
 		"build:post": "turbo run build:post",
 		"build:pre": "turbo run build:pre",
+		"build-storybook": "turbo run build-storybook",
 		"check:connect": "turbo run check:connect",
 		"clean": "turbo run clean",
 		"clean-all": "turbo run clean-all",
@@ -43,6 +45,7 @@
 		"start:test": "cross-env FORCE_COLOR=1 NODE_ENV=test turbo run start",
 		"test": "cross-env FORCE_COLOR=1 turbo run test",
 		"test-and-coverage": "cross-env FORCE_COLOR=1 turbo run test -- --coverage",
+		"tsd": "cross-env FORCE_COLOR=1 turbo run tsd",
 		"vitest": "cross-env FORCE_COLOR=1 turbo run vitest",
 		"vitest-and-coverage": "cross-env FORCE_COLOR=1 turbo run vitest -- --coverage"
 	},
@@ -53,8 +56,7 @@
 	"dependencies": {
 		"execa": "5.1.1",
 		"js-yaml": "4.1.0",
-		"turbo": "^1.8.1",
-		"typescript": "5.0.3"
+		"turbo": "^1.8.1"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "5.57.1",
@@ -63,7 +65,8 @@
 		"cypress": "12.9.0",
 		"eslint": "8.37.0",
 		"start-server-and-test": "2.0.0",
-		"npm-run-all": "^4.1.5"
+		"npm-run-all": "^4.1.5",
+		"typescript": "5.0.3"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.2.0"

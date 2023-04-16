@@ -16,14 +16,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3.6.0
         with:
-          node-version: 18.x
+          node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
 
       - name: Build
-        run: pnpm --filter misskey-js build
+        run: pnpm --filter misskey-js build:pre
 
       - name: Check files
         run: ls packages/misskey-js/built
