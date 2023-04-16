@@ -1001,6 +1001,8 @@ accountMoved: "このユーザーは新しいアカウントに引っ越しま�
 forceShowAds: "常に広告を表示する"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
+reactionList: "リアクション一覧"
+renoteList: "Renote一覧"
 
 _accountMigration:
   moveTo: "このアカウントを新しいアカウントに引っ越す"

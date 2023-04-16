@@ -212,7 +212,7 @@ export function getNoteMenu(props: {
 	}
 
 	function showRenotes(): void {
-		os.popup(defineAsyncComponent(() => import('@/components/MkRenoteUsersDialog.vue')), {
+		os.popup(defineAsyncComponent(() => import('@/components/MkRenotedUsersDialog.vue')), {
 			noteId: appearNote.id,
 		}, {}, 'closed');
 	}
@@ -247,12 +247,12 @@ export function getNoteMenu(props: {
 				text: i18n.ts.details,
 				action: openDetail,
 			}, {
-				icon: 'ti ti-users',
-				text: i18n.ts.renotes,
+				icon: 'ti ti-repeat',
+				text: i18n.ts.renoteList,
 				action: showRenotes,
 			}, {
-				icon: 'ti ti-users',
-				text: i18n.ts.reactions,
+				icon: 'ti ti-icons',
+				text: i18n.ts.reactionList,
 				action: showReactions,
 			}, {
 				icon: 'ti ti-copy',
