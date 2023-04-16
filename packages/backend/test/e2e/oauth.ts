@@ -14,9 +14,9 @@ const host = `http://127.0.0.1:${port}`;
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
 
-interface OAuthError {
+interface OAuthErrorResponse {
 	error: string;
-	code: string;
+	error_description: string;
 }
 
 function getClient(): AuthorizationCode<'client_id'> {
@@ -239,7 +239,7 @@ describe('OAuth', () => {
 				state: 'state',
 			}));
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 
 			// Pattern 2: Only code_challenge
 			response = await fetch(client.authorizeURL({
@@ -249,7 +249,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 			}));
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 
 			// Pattern 2: Only code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -259,7 +259,7 @@ describe('OAuth', () => {
 				code_challenge_method: 'S256',
 			}));
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 
 			// Pattern 3: Unsupported code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -270,7 +270,7 @@ describe('OAuth', () => {
 				code_challenge_method: 'SSSS',
 			}));
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
 		test('Verify PKCE', async () => {
@@ -357,7 +357,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_scope');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
 		});
 
 		test('Empty scope', async () => {
@@ -372,7 +372,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_scope');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
 		});
 
 		test('Unknown scopes', async () => {
@@ -387,7 +387,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_scope');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
 		});
 
 		test('Partially known scopes', async () => {
@@ -577,7 +577,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri including the valid one at authorization endpoint', async () => {
@@ -592,7 +592,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
 		test('No redirect_uri at authorization endpoint', async () => {
@@ -606,7 +606,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri at token endpoint', async () => {
@@ -826,7 +826,7 @@ describe('OAuth', () => {
 				}));
 
 				assert.strictEqual(response.status, 400);
-				assert.strictEqual((await response.json() as any).error, 'invalid_request');
+				assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 			});
 		});
 
@@ -843,7 +843,7 @@ describe('OAuth', () => {
 			}));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as any).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
 		test('Missing name', async () => {
