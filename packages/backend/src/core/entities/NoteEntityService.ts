@@ -9,7 +9,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository, EventsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -42,6 +42,9 @@ export class NoteEntityService implements OnModuleInit {
 
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
+
+		@Inject(DI.eventsRepository)
+		private eventsRepository: EventsRepository,
 
 		@Inject(DI.pollVotesRepository)
 		private pollVotesRepository: PollVotesRepository,
@@ -166,6 +169,17 @@ export class NoteEntityService implements OnModuleInit {
 			multiple: poll.multiple,
 			expiresAt: poll.expiresAt,
 			choices,
+		};
+	}
+
+	@bindThis
+	private async populateEvent(note: Note) {
+		const event = await this.eventsRepository.findOneByOrFail({ noteId: note.id });
+		return {
+			title: event.title,
+			start: event.start,
+			end: event.end,
+			metadata: event.metadata,
 		};
 	}
 
@@ -352,6 +366,7 @@ export class NoteEntityService implements OnModuleInit {
 				}) : undefined,
 
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
+				event: note.hasEvent ? this.populateEvent(note) : undefined,
 
 				...(meId ? {
 					myReaction: this.populateMyReaction(note, meId, options?._hint_),
