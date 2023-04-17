@@ -2,7 +2,7 @@
 <div class="_gaps_m">
 	<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
 
-	<MkFolder v-if="instance.serverRules.length > 0" :default-open="true">
+	<MkFolder v-if="availableServerRules" :default-open="true">
 		<template #label>{{ i18n.ts.serverRules }}</template>
 
 		<ol class="_gaps_s" :class="$style.rules">
@@ -12,7 +12,7 @@
 		<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 	</MkFolder>
 
-	<MkFolder v-if="instance.tosUrl">
+	<MkFolder v-if="availableTos">
 		<template #label>{{ i18n.ts.termsOfService }}</template>
 
 		<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a>
@@ -40,12 +40,15 @@ import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 
+const availableServerRules = instance.serverRules.length > 0;
+const availableTos = instance.tosUrl != null;
+
 const agreeServerRules = ref(false);
 const agreeTos = ref(false);
 const agreeNote = ref(false);
 
 const agreed = computed(() => {
-	return agreeServerRules.value && agreeTos.value && agreeNote.value;
+	return (!availableServerRules || agreeServerRules.value) && (!availableTos || agreeTos.value) && agreeNote.value;
 });
 
 const emit = defineEmits<{
