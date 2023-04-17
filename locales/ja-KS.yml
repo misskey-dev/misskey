@@ -999,6 +999,7 @@ accountMoved: "このユーザーはさらのアカウントに引っ越した�
 forceShowAds: "常に広告を表示しとく"
 addMemo: "メモを足す"
 editMemo: "メモをいらう"
+horizontal: "横"
 _accountMigration:
   moveTo: "このアカウントをさらのアカウントに引っ越すで"
   moveToLabel: "引っ越し先のアカウント："
