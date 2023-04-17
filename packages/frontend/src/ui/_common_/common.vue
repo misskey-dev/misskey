@@ -10,14 +10,16 @@
 <XUpload v-if="uploads.length > 0"/>
 
 <TransitionGroup
-	tag="div" :class="$style.notifications"
+	tag="div" :class="[$style.notifications, $style[`notificationsPosition-${defaultStore.state.notificationPosition}`], $style[`notificationsStackAxis-${defaultStore.state.notificationStackAxis}`]]"
 	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
 	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
 	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
 	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
 	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
-	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" :class="$style.notification"/>
+	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
+		<XNotification :notification="notification"/>
+	</div>
 </TransitionGroup>
 
 <XStreamIndicator/>
@@ -30,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { swInject } from './sw-inject';
 import XNotification from './notification.vue';
@@ -85,7 +87,10 @@ if ($i) {
 .transition_notification_leaveActive {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.transition_notification_enterFrom,
+.transition_notification_enterFrom {
+	opacity: 0;
+	transform: translateX(250px);
+}
 .transition_notification_leaveTo {
 	opacity: 0;
 	transform: translateX(-250px);
@@ -94,35 +99,90 @@ if ($i) {
 .notifications {
 	position: fixed;
 	z-index: 3900000;
-	left: 0;
-	width: 250px;
-	top: 32px;
-	padding: 0 32px;
+	padding: 0 var(--margin);
 	pointer-events: none;
-	container-type: inline-size;
+	display: flex;
+
+	&.notificationsPosition-leftTop {
+		top: var(--margin);
+		left: 0;
+	}
+
+	&.notificationsPosition-rightTop {
+		top: var(--margin);
+		right: 0;
+	}
+
+	&.notificationsPosition-leftBottom {
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		left: 0;
+	}
+
+	&.notificationsPosition-rightBottom {
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		right: 0;
+	}
+
+	&.notificationsStackAxis-vertical {
+		width: 250px;
+
+		&.notificationsPosition-leftTop,
+		&.notificationsPosition-rightTop {
+			flex-direction: column;
+
+			.notification {
+				& + .notification {
+					margin-top: 8px;
+				}
+			}
+		}
+
+		&.notificationsPosition-leftBottom,
+		&.notificationsPosition-rightBottom {
+			flex-direction: column-reverse;
+
+			.notification {
+				& + .notification {
+					margin-bottom: 8px;
+				}
+			}
+		}
+	}
+
+	&.notificationsStackAxis-horizontal {
+		width: 100%;
+
+		&.notificationsPosition-leftTop,
+		&.notificationsPosition-leftBottom {
+			flex-direction: row;
+
+			.notification {
+				& + .notification {
+					margin-left: 8px;
+				}
+			}
+		}
+
+		&.notificationsPosition-rightTop,
+		&.notificationsPosition-rightBottom {
+			flex-direction: row-reverse;
+
+			.notification {
+				& + .notification {
+					margin-right: 8px;
+				}
+			}
+		}
+
+		.notification {
+			width: 250px;
+			flex-shrink: 0;
+		}
+	}
 }
 
 .notification {
-	& + .notification {
-		margin-top: 8px;
-	}
-}
-
-@media (max-width: 500px) {
-	.notifications {
-		top: initial;
-		bottom: calc(var(--minBottomSpacing) + var(--margin));
-		padding: 0 var(--margin);
-		display: flex;
-		flex-direction: column-reverse;
-	}
-
-	.notification {
-		& + .notification {
-			margin-top: 0;
-			margin-bottom: 8px;
-		}
-	}
+	container-type: inline-size;
 }
 </style>
 
