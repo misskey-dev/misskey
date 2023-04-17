@@ -802,6 +802,7 @@ cannotLoad: "تعذر التحميل"
 like: "أعجبني"
 show: "المظهر"
 color: "اللون"
+horizontal: "جانبي"
 _role:
   priority: "الأولوية"
   _priority:
