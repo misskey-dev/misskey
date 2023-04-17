@@ -1001,6 +1001,7 @@ accountMoved: "Questo profilo ha migrato altrove:"
 forceShowAds: "Mostra sempre i banner"
 addMemo: "Aggiungi Memo"
 editMemo: "Modifica Memo"
+horizontal: "Laterale"
 _accountMigration:
   moveTo: "Migrare questo profilo verso un un altro"
   moveToLabel: "Profilo verso cui migrare"
