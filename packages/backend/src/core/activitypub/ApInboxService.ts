@@ -765,8 +765,10 @@ export class ApInboxService {
 		}
 
 		// add target uri to movedToUri in order to indicate that the user has moved
-		await this.usersRepository.update(oldAccount.id, { movedToUri: targetUri });
-		oldAccount.movedToUri = targetUri;
+		if (oldAccount.movedToUri !== targetUri) {
+			await this.usersRepository.update(oldAccount.id, { movedToUri: targetUri });
+			oldAccount.movedToUri = targetUri;
+		}
 
 		// Move!
 		await this.accountMoveService.move(oldAccount, newAccount);

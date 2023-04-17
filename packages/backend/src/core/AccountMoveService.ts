@@ -141,24 +141,22 @@ export class AccountMoveService {
 
 		// follow the new account and unfollow the old one
 		const proxy = await this.proxyAccountService.fetch();
-		const followings = await this.followingsRepository.find({
-			relations: {
-				follower: true,
-			},
-			where: {
+		const followings = await this.followingsRepository.findBy({
 				followeeId: src.id,
 				followerHost: IsNull(), // follower is local
 				followerId: proxy ? Not(proxy.id) : undefined,
-			},
 		});
 		const followJobs: RelationshipJobData[] = [];
 		for (const following of followings) {
-			if (!following.follower) continue;
-			followJobs.push({ from: { id: following.follower.id }, to: { id: dst.id } });
+			followJobs.push({ from: { id: following.followerId }, to: { id: dst.id } });
 		}
 
 		// Decrease following count instead of unfollowing.
-		await this.adjustFollowingCounts(followJobs.map(job => job.from.id), src);
+		try {
+			await this.adjustFollowingCounts(followJobs.map(job => job.from.id), src);
+		} catch {
+			/* skip if any error happens */
+		}
 
 		// Should be queued because this can cause a number of follow per one move.
 		this.queueService.createFollowJob(followJobs);
@@ -168,19 +166,14 @@ export class AccountMoveService {
 	public async copyBlocking(src: ThinUser, dst: ThinUser): Promise<void> {
 		// Followers shouldn't overlap with blockers, but the destination account, different from the blockee (i.e., old account), may have followed the local user before moving.
 		// So block the destination account here.
-		const blockings = await this.blockingsRepository.find({ // FIXME: might be expensive
-			relations: {
-				blocker: true
-			},
-			where: {
-				blockeeId: src.id
-			}
-		});
+		const srcBlockings = await this.blockingsRepository.findBy({ blockeeId: src.id });
+		const dstBlockings = await this.blockingsRepository.findBy({ blockeeId: dst.id });
+		const blockerIds = dstBlockings.map(blocking => blocking.blockerId);
 		// reblock the destination account
 		const blockJobs: RelationshipJobData[] = [];
-		for (const blocking of blockings) {
-			if (!blocking.blocker) continue;
-			blockJobs.push({ from: { id: blocking.blocker.id }, to: { id: dst.id } });
+		for (const blocking of srcBlockings) {
+			if (blockerIds.includes(blocking.blockerId)) continue; // skip if already blocked
+			blockJobs.push({ from: { id: blocking.blockerId }, to: { id: dst.id } });
 		}
 		// no need to unblock the old account because it may be still functional
 		this.queueService.createBlockJob(blockJobs);
