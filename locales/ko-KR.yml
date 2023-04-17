@@ -1001,6 +1001,7 @@ accountMoved: "이 사용자는 다음 계정으로 이사했습니다:"
 forceShowAds: "광고를 항상 표시"
 addMemo: "메모 추가"
 editMemo: "메모 편집"
+horizontal: "가로"
 _accountMigration:
   moveTo: "이 계정에서 다른 계정으로 이사"
   moveToLabel: "이사할 계정:"
