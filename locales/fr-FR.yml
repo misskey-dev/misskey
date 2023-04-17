@@ -902,6 +902,7 @@ show: "Affichage"
 neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
 color: "Couleur"
+horizontal: "Latéral"
 _achievements:
   _types:
     _notes100000:
