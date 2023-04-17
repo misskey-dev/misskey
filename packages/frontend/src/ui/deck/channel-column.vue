@@ -40,7 +40,7 @@ if (props.column.channelId == null) {
 }
 
 async function setChannel() {
-	const channels = await os.api('channels/followed', {
+	const channels = await os.api('channels/my-favorites', {
 		limit: 100,
 	});
 	const { canceled, result: channel } = await os.select({
