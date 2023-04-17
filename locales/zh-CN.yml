@@ -999,6 +999,7 @@ accountMoved: "此用户已迁移账户"
 forceShowAds: "总是显示广告"
 addMemo: "添加备注"
 editMemo: "编辑备注"
+horizontal: "横向"
 _accountMigration:
   moveTo: "把这个账户迁移到新的账户"
   moveToLabel: "迁移后的账户"
