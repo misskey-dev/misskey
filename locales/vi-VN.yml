@@ -945,6 +945,7 @@ copyErrorInfo: "Sao chép thông tin lỗi"
 joinThisServer: "Đăng ký trên chủ máy này"
 exploreOtherServers: "Tìm chủ máy khác"
 letsLookAtTimeline: "Thử xem Timeline"
+horizontal: "Thanh bên"
 _achievements:
   earnedAt: "Ngày thu nhận"
   _types:
