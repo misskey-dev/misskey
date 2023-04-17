@@ -328,6 +328,8 @@ describe('OAuth', () => {
 				code_verifier: code_verifier.slice(0, -10) + 'x'.repeat(10),
 			} as AuthorizationTokenConfigExtended));
 
+			// TODO: pattern 4: no code_verifier
+
 			// And now the code is invalidated by the previous failures
 			await assert.rejects(client.getToken({
 				code,
@@ -885,4 +887,6 @@ describe('OAuth', () => {
 	// TODO: Invalid decision endpoint parameters
 
 	// TODO: Unknown OAuth endpoint
+
+	// TODO: successful token exchange should invalidate the grant token (spec?)
 });
