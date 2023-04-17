@@ -185,7 +185,10 @@ export class AccountMoveService {
 	@bindThis
 	public async copyMutings(src: ThinUser, dst: ThinUser): Promise<void> {
 		// Insert new mutings with the same values except mutee
-		const mutings = await this.mutingsRepository.findBy({ muteeId: src.id, expiresAt: MoreThan(new Date()) });
+		const mutings = await this.mutingsRepository.findBy([
+			{ muteeId: src.id, expiresAt: IsNull() },
+			{ muteeId: src.id, expiresAt: MoreThan(new Date()) },
+		]);
 		const muteIds = mutings.map(mute => mute.id);
 		if (muteIds.length > 0) {
 			await this.mutingsRepository.update({ id: In(muteIds) }, { muteeId: dst.id });
