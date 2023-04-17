@@ -954,6 +954,7 @@ letsLookAtTimeline: "LIhat timeline"
 disableFederationConfirm: "Matikan federasi?"
 disableFederationConfirmWarn: "Mematikan federasi tidak membuat kiriman menjadi privat. Umumnya, mematikan federasi tidak diperlukan."
 disableFederationOk: "Matikan federasi"
+horizontal: "Horisontal"
 _achievements:
   earnedAt: "Terbuka pada"
   _types:
