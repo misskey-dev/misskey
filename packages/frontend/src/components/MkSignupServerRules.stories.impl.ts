@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
+import { onBeforeUnmount } from 'vue';
 import MkSignupServerRules from './MkSignupServerRules.vue';
+import { instance } from '@/instance';
 export const Default = {
 	render(args) {
 		return {
@@ -29,6 +31,18 @@ export const Default = {
 			'サーバールール 3',
 		],
 	},
+	decorators: [
+		(_, context) => ({
+			setup() {
+				instance.serverRules = context.args.serverRules;
+				onBeforeUnmount(() => {
+					// FIXME: 呼び出されない
+					instance.serverRules = [];
+				});
+			},
+			template: '<story/>',
+		}),
+	],
 	parameters: {
 		layout: 'centered',
 	},
