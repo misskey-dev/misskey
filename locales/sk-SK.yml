@@ -918,6 +918,7 @@ remindMeLater: "Pripomenúť neskôr"
 didYouLikeMisskey: "Páči sa vám Misskey?"
 pleaseDonate: "Misskey je bezplatný softvér, ktorý používa {host}. Prosím, prispejte, aby sme ho mohli ďalej rozvíjať!"
 color: "Farba"
+horizontal: "Strana"
 _role:
   priority: "Priorita"
   _priority:
