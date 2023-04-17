@@ -1001,6 +1001,15 @@ accountMoved: "このユーザーは新しいアカウントに引っ越しま�
 forceShowAds: "常に広告を表示する"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
+notificationDisplay: "通知の表示"
+leftTop: "左上"
+rightTop: "右上"
+leftBottom: "左下"
+rightBottom: "右下"
+stackAxis: "スタック方向"
+vertical: "縦"
+horizontal: "横"
+position: "位置"
 
 _accountMigration:
   moveTo: "このアカウントを新しいアカウントに引っ越す"
