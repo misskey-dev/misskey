@@ -160,6 +160,7 @@ export class UserFollowingService implements OnModuleInit {
 									followerId: oldAccount.id,
 								},
 							});
+							if (autoAccept) break;
 						} catch {
 							/* skip if any error happens */
 						}

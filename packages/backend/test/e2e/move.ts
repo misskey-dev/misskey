@@ -19,6 +19,7 @@ describe('Account Move', () => {
 	let carol: any;
 	let dave: any;
 	let eve: any;
+	let frank: any;
 
 	let Users: UsersRepository;
 	let Followings: FollowingsRepository;
@@ -37,6 +38,7 @@ describe('Account Move', () => {
 		carol = await signup({ username: 'carol' });
 		dave = await signup({ username: 'dave' });
 		eve = await signup({ username: 'eve' });
+		frank = await signup({ username: 'frank' });
 		Users = connection.getRepository(User);
 		Followings = connection.getRepository(Following);
 		Blockings = connection.getRepository(Blocking);
@@ -151,6 +153,16 @@ describe('Account Move', () => {
 			await api('/following/create', {
 				userId: dave.id,
 			}, eve);
+
+			await api('/i/update', {
+				isLocked: true,
+			}, frank);
+			await api('/following/create', {
+				userId: frank.id,
+			}, alice);
+			await api('/following/requests/accept', {
+				userId: alice.id,
+			}, frank);
 		}, 1000 * 10);
 
 		test('Prohibit the root account from moving', async () => {
@@ -237,6 +249,19 @@ describe('Account Move', () => {
 			newEve = await Users.findOneByOrFail({ id: eve.id });
 			assert.strictEqual(newEve.followingCount, 1);
 			assert.strictEqual(newEve.followersCount, 1);
+		});
+
+		test('A locked account automatically accept the follow request if it had already accepted the old account.', async () => {
+			await api('/following/create', {
+				userId: frank.id,
+			}, bob);
+			const followers = await api('/users/followers', {
+				userId: frank.id,
+			}, frank);
+
+			assert.strictEqual(followers.status, 200);
+			assert.strictEqual(followers.body.length, 2);
+			assert.strictEqual(followers.body[0].followerId, bob.id);
 		});
 
 		test.each([
