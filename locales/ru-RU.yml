@@ -951,6 +951,7 @@ copyErrorInfo: "Скопировать код ошибки"
 joinThisServer: "Присоединяйтесь к этому серверу"
 exploreOtherServers: "Искать другие сервера"
 letsLookAtTimeline: "Давайте посмотрим на ленту"
+horizontal: "Сбоку"
 _achievements:
   earnedAt: "Разблокировано в"
   _types:
