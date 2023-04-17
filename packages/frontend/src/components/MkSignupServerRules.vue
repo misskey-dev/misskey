@@ -2,11 +2,11 @@
 <div class="_gaps_m">
 	<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
 
-	<MkFolder :default-open="true">
+	<MkFolder v-if="instance.serverRules.length > 0" :default-open="true">
 		<template #label>{{ i18n.ts.serverRules }}</template>
 
 		<ol class="_gaps_s" :class="$style.rules">
-			<li v-for="(item, index) in instance.serverRules" :key="index" :class="$style.rule" v-html="item"></li>
+			<li v-for="item in instance.serverRules" :class="$style.rule" v-html="item"></li>
 		</ol>
 
 		<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
@@ -15,7 +15,7 @@
 	<MkFolder v-if="instance.tosUrl">
 		<template #label>{{ i18n.ts.termsOfService }}</template>
 
-		<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }}</a>
+		<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a>
 
 		<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 	</MkFolder>
@@ -23,7 +23,7 @@
 	<MkFolder>
 		<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
 
-		<a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }}</a>
+		<a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
 
 		<MkSwitch v-model="agreeNote" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 	</MkFolder>
