@@ -992,6 +992,7 @@ largeNoteReactions: "Agrandar las reacciones de las notas"
 noteIdOrUrl: "ID o URL de la nota"
 accountMigration: "Migración de cuenta"
 accountMoved: "Este usuario se ha mudado a una nueva cuenta:"
+horizontal: "Horizontal"
 _accountMigration:
   moveTo: "Mover esta cuenta a una nueva"
   moveToLabel: "Cuenta destino:"
