@@ -51,15 +51,6 @@
 			<span v-if="passwordRetypeState == 'not-match'" style="color: var(--error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
 		</template>
 	</MkInput>
-	<template v-if="instance.serverRules.length === 0">
-		<MkSwitch v-model="ToSAgreement" class="tou">
-			<template #label>{{ i18n.ts.agreeBelow }}</template>
-		</MkSwitch>
-		<ul style="margin: 0; padding-left: 2em;">
-			<li v-if="instance.tosUrl"><a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.tos }}</a></li>
-			<li><a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }}</a></li>
-		</ul>
-	</template>
 	<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" class="captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
 	<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" class="captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 	<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" class="captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
@@ -108,8 +99,6 @@ let emailState: null | 'wait' | 'ok' | 'unavailable:used' | 'unavailable:format'
 let passwordStrength: '' | 'low' | 'medium' | 'high' = $ref('');
 let passwordRetypeState: null | 'match' | 'not-match' = $ref(null);
 let submitting: boolean = $ref(false);
-// Note: サーバールールが設定されている場合は、このコンポーネントでは規約を表示しない
-let ToSAgreement: boolean = $ref(instance.serverRules.length > 0);
 let hCaptchaResponse = $ref(null);
 let reCaptchaResponse = $ref(null);
 let turnstileResponse = $ref(null);
@@ -118,7 +107,6 @@ let emailAbortController: null | AbortController = $ref(null);
 
 const shouldDisableSubmitting = $computed((): boolean => {
 	return submitting ||
-		instance.tosUrl && !ToSAgreement ||
 		instance.enableHcaptcha && !hCaptchaResponse ||
 		instance.enableRecaptcha && !reCaptchaResponse ||
 		instance.enableTurnstile && !turnstileResponse ||

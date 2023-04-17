@@ -41,7 +41,7 @@
 							<template #value>{{ instance.maintainerEmail }}</template>
 						</MkKeyValue>
 					</FormSplit>
-					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.tos }}</FormLink>
+					<FormLink v-if="instance.tosUrl" :to="instance.tosUrl" external>{{ i18n.ts.termsOfService }}</FormLink>
 				</div>
 			</FormSection>
 

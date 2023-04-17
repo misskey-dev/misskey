@@ -1,8 +1,8 @@
 <template>
 <MkModalWindow
 	ref="dialog"
-	:width="366"
-	:height="500"
+	:width="500"
+	:height="600"
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
@@ -17,12 +17,12 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import { $ref } from 'vue/macros';
 import XSignup from '@/components/MkSignup.vue';
 import XServerRules from '@/components/MkSignupServerRules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
-import { $ref } from "vue/macros";
-import { instance } from "@/instance";
+import { instance } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
@@ -37,8 +37,7 @@ const emit = defineEmits<{
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-// サーバールールが存在しない場合は初めから承諾したものとする
-const isAcceptedServerRule = $ref(instance.serverRules.length === 0);
+const isAcceptedServerRule = $ref(false);
 
 function onSignup(res) {
 	emit('done', res);
