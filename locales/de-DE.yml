@@ -1001,6 +1001,7 @@ accountMoved: "Dieser Benutzer ist zu einem neuen Konto umgezogen:"
 forceShowAds: "Werbung immer anzeigen"
 addMemo: "Bemerkung hinzufügen"
 editMemo: "Bemerkung bearbeiten"
+horizontal: "Seitlich"
 _accountMigration:
   moveTo: "Dieses Konto zu einem neuen umziehen"
   moveToLabel: "Umzugsziel:"
