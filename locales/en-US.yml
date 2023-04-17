@@ -1001,6 +1001,7 @@ accountMoved: "This user has moved to a new account:"
 forceShowAds: "Always show ads"
 addMemo: "Add memo"
 editMemo: "Edit memo"
+horizontal: "Side"
 _accountMigration:
   moveTo: "Migrate this account to a different one"
   moveToLabel: "Account to move to:"
