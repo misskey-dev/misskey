@@ -15,6 +15,7 @@ import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { bindThis } from '@/decorators.js';
+import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 
 const pipeline = util.promisify(stream.pipeline);
 
@@ -48,6 +49,7 @@ const TYPE_SVG = {
 export class FileInfoService {
 	constructor(
 		private aiService: AiService,
+		private imageProcessingService: ImageProcessingService,
 	) {
 	}
 
@@ -55,7 +57,8 @@ export class FileInfoService {
 	 * Get file information
 	 */
 	@bindThis
-	public async getFileInfo(path: string, opts: {
+	public async getFileInfo(path: string,
+		opts: {
 		skipSensitiveDetection: boolean;
 		sensitiveThreshold?: number;
 		sensitiveThresholdForPorn?: number;
@@ -183,6 +186,20 @@ export class FileInfoService {
 			const result = await this.aiService.detectSensitive(source);
 			if (result) {
 				[sensitive, porn] = judgePrediction(result);
+			}
+		} else if (mime === 'image/avif') {
+			// avifのままでは検査できないため一度pngに変換してから検査する
+			const [outDir, disposeOutDir] = await createTempDir();
+			try {
+				const image = await this.imageProcessingService.convertToPng(source, 2048,2048);
+				const outFile = join(outDir, 'image.png');
+				await fs.writeFileSync(outFile, image.data);
+				const result = await this.aiService.detectSensitive(outFile);
+				if (result) {
+					[sensitive, porn] = judgePrediction(result);
+				}
+			} finally {
+				disposeOutDir();
 			}
 		} else if (analyzeVideo && (mime === 'image/apng' || mime.startsWith('video/'))) {
 			const [outDir, disposeOutDir] = await createTempDir();
