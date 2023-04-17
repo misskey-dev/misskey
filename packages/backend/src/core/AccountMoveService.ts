@@ -129,11 +129,15 @@ export class AccountMoveService {
 	@bindThis
 	public async move(src: User, dst: User): Promise<void> {
 		// Copy blockings and mutings, and update lists
-		await Promise.all([
-			this.copyBlocking(src, dst),
-			this.copyMutings(src, dst),
-			this.updateLists(src, dst),
-		]);
+		try {
+			await Promise.all([
+				this.copyBlocking(src, dst),
+				this.copyMutings(src, dst),
+				this.updateLists(src, dst),
+			]);
+		} catch {
+			/* skip if any error happens */
+		}
 
 		// follow the new account and unfollow the old one
 		const proxy = await this.proxyAccountService.fetch();
