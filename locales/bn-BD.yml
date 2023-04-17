@@ -837,6 +837,7 @@ account: "অ্যাকাউন্টগুলি"
 like: "পছন্দ করা"
 show: "প্রদর্শন"
 color: "রং"
+horizontal: "পাশে"
 _role:
   priority: "অগ্রাধিকার"
   _priority:
