@@ -197,6 +197,22 @@ export class CustomEmojiService {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
+	
+	@bindThis
+	public async setLicenseBulk(ids: Emoji['id'][], license: string | null) {
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			license: license,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
 
 	@bindThis
 	public async delete(id: Emoji['id']) {

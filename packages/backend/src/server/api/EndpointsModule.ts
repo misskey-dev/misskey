@@ -29,6 +29,7 @@ import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
+import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
@@ -365,6 +366,7 @@ const $admin_emoji_list: Provider = { provide: 'ep:admin/emoji/list', useClass: 
 const $admin_emoji_removeAliasesBulk: Provider = { provide: 'ep:admin/emoji/remove-aliases-bulk', useClass: ep___admin_emoji_removeAliasesBulk.default };
 const $admin_emoji_setAliasesBulk: Provider = { provide: 'ep:admin/emoji/set-aliases-bulk', useClass: ep___admin_emoji_setAliasesBulk.default };
 const $admin_emoji_setCategoryBulk: Provider = { provide: 'ep:admin/emoji/set-category-bulk', useClass: ep___admin_emoji_setCategoryBulk.default };
+const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-license-bulk', useClass: ep___admin_emoji_setLicenseBulk.default };
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
@@ -705,6 +707,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
+		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
@@ -1039,6 +1042,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
+		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
