@@ -19,6 +19,7 @@
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
 						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
+						<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
@@ -217,6 +218,18 @@ const setCategoryBulk = async () => {
 	await os.apiWithDialog('admin/emoji/set-category-bulk', {
 		ids: selectedEmojis.value,
 		category: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const setLisenceBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'License',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-license-bulk', {
+		ids: selectedEmojis.value,
+		license: result,
 	});
 	emojisPaginationComponent.value.reload();
 };
