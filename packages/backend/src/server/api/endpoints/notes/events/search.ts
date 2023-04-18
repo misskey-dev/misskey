@@ -100,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					const matches = filters[f].filter(x => x !== null);
 					if (matches.length < 1) throw new ApiError(meta.errors.invalidParam);
 					query.andWhere(new Brackets((qb) => {
-						qb.where('event.metadata ->> :key IN (:...values)', { key: f, values: filters[f].filter(x => x !== null) });
+						qb.where('event.metadata ->> :key IN (:...values)', { key: f, values: matches });
 						if (filters[f].filter(x => x === null).length > 0) {
 							qb.orWhere('event.metadata ->> :key IS NULL', { key: f });
 						}
