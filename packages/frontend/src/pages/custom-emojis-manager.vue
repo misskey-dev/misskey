@@ -15,11 +15,11 @@
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
+						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-						<MkButton inline @click="setTagBulk">Set tag</MkButton>
-						<MkButton inline danger @click="delBulk">Delete</MkButton>
 						<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
+						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
 						<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
