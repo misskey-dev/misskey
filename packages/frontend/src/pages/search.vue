@@ -83,10 +83,13 @@ onMounted(() => {
 });
 
 async function search() {
-	const query = searchQuery.toString().trim();
+	let query = searchQuery.toString().trim();
 
 	if (query == null || query === '') return;
 
+	if (/^@.+@.+$/.test(query)) {
+		query = query.replace(/^@(.+)@(.+)$/, 'https://$2/@$1');
+	}
 	if (query.startsWith('https://')) {
 		const promise = os.api('ap/show', {
 			uri: query,
