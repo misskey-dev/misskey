@@ -12,7 +12,7 @@
 				<template #suffix><i v-if="agreeServerRules" class="ti ti-check" style="color: var(--success)"></i></template>
 
 				<ol class="_gaps_s" :class="$style.rules">
-					<li v-for="item in instance.serverRules" :class="$style.rule" v-html="item"></li>
+					<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
 				</ol>
 
 				<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
@@ -86,9 +86,13 @@ const emit = defineEmits<{
 	display: flex;
 	align-items: center;
 	gap: 8px;
+	word-break: break-word;
 
 	&::before {
+		flex-shrink: 0;
 		display: flex;
+		position: sticky;
+		top: calc(var(--stickyTop, 0px) + 8px);
 		counter-increment: item;
 		content: counter(item);
 		width: 32px;
@@ -102,5 +106,9 @@ const emit = defineEmits<{
 		justify-content: center;
 		border-radius: 999px;
 	}
+}
+
+.ruleText {
+	padding-top: 6px;
 }
 </style>
