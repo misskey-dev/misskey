@@ -53,8 +53,8 @@ describe('After setup instance', () => {
 
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
-		cy.get('[data-cy-signup-rules-notes]').click();
-		cy.get('[data-cy-signup-rules-notes-agree]').click();
+		cy.get('[data-cy-signup-rules-notes] [data-cy-folder-header]').click();
+		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
 	
@@ -78,8 +78,8 @@ describe('After setup instance', () => {
 		// ユーザー名が重複している場合の挙動確認
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
-		cy.get('[data-cy-signup-rules-notes]').click();
-		cy.get('[data-cy-signup-rules-notes-agree]').click();
+		cy.get('[data-cy-signup-rules-notes] [data-cy-folder-header]').click();
+		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
 
