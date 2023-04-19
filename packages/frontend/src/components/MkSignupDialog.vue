@@ -8,10 +8,14 @@
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 
-	<MkSpacer :margin-min="20" :margin-max="28">
-		<XServerRules v-if="!isAcceptedServerRule" @accept="isAcceptedServerRule = true"/>
-		<XSignup v-else :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
-	</MkSpacer>
+	<template v-if="!isAcceptedServerRule">
+		<XServerRules @accept="isAcceptedServerRule = true"/>
+	</template>
+	<template v-else>
+		<MkSpacer :margin-min="20" :margin-max="28">
+			<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
+		</MkSpacer>
+	</template>
 </MkModalWindow>
 </template>
 

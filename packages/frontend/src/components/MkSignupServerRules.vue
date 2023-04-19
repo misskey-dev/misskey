@@ -1,34 +1,44 @@
 <template>
-<div class="_gaps_m">
-	<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
+<div>
+	<div :class="$style.banner">
+		<i class="ti ti-checklist"></i>
+	</div>
+	<MkSpacer :margin-min="20" :margin-max="28">
+		<div class="_gaps_m">
+			<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
 
-	<MkFolder v-if="availableServerRules" :default-open="true">
-		<template #label>{{ i18n.ts.serverRules }}</template>
+			<MkFolder v-if="availableServerRules" :default-open="true">
+				<template #label>{{ i18n.ts.serverRules }}</template>
+				<template #suffix><i v-if="agreeServerRules" class="ti ti-check" style="color: var(--success)"></i></template>
 
-		<ol class="_gaps_s" :class="$style.rules">
-			<li v-for="item in instance.serverRules" :class="$style.rule" v-html="item"></li>
-		</ol>
+				<ol class="_gaps_s" :class="$style.rules">
+					<li v-for="item in instance.serverRules" :class="$style.rule" v-html="item"></li>
+				</ol>
 
-		<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
-	</MkFolder>
+				<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
+			</MkFolder>
 
-	<MkFolder v-if="availableTos">
-		<template #label>{{ i18n.ts.termsOfService }}</template>
+			<MkFolder v-if="availableTos">
+				<template #label>{{ i18n.ts.termsOfService }}</template>
+				<template #suffix><i v-if="agreeTos" class="ti ti-check" style="color: var(--success)"></i></template>
 
-		<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a>
+				<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a>
 
-		<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
-	</MkFolder>
+				<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
+			</MkFolder>
 
-	<MkFolder>
-		<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
+			<MkFolder>
+				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
+				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--success)"></i></template>
 
-		<a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
+				<a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
 
-		<MkSwitch v-model="agreeNote" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
-	</MkFolder>
+				<MkSwitch v-model="agreeNote" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
+			</MkFolder>
 
-	<MkButton primary rounded style="margin: 0 auto;" :disabled="!agreed" @click="emit('accept')">{{ i18n.ts.continue }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" :disabled="!agreed" @click="emit('accept')">{{ i18n.ts.continue }}</MkButton>
+		</div>
+	</MkSpacer>
 </div>
 </template>
 
@@ -57,6 +67,14 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" module>
+.banner {
+	padding: 16px;
+	text-align: center;
+	font-size: 26px;
+	background-color: var(--accentedBg);
+	color: var(--accent);
+}
+
 .rules {
 	counter-reset: item;
 	list-style: none;
