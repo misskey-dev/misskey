@@ -15,3 +15,7 @@
 
 'packages/misskey-js':
 - packages/misskey-js/**/*
+
+'packages/misskey-js:test':
+- packages/misskey-js/test/**/*
+- packages/misskey-js/test-d/**/*
