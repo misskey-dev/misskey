@@ -131,8 +131,7 @@ onBeforeUnmount(() => {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
-	color: var(--accent);
-	background: transparent;
+	color: var(--fgOnWhite);
 	border: solid 1px var(--accent);
 	padding: 0;
 	height: 31px;
