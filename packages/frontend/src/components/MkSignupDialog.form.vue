@@ -3,7 +3,7 @@
 	<div :class="$style.banner">
 		<i class="ti ti-user-edit"></i>
 	</div>
-	<MkSpacer :margin-min="20" :margin-max="28">
+	<MkSpacer :margin-min="20" :margin-max="32">
 		<form class="_gaps_m" autocomplete="new-password" @submit.prevent="onSubmit">
 			<MkInput v-if="instance.disableRegistration" v-model="invitationCode" type="text" :spellcheck="false" required>
 				<template #label>{{ i18n.ts.invitationCode }}</template>

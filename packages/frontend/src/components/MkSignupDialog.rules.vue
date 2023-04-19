@@ -36,7 +36,7 @@
 				<MkSwitch v-model="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree>{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkButton primary rounded style="margin: 0 auto;" :disabled="!agreed" data-cy-signup-rules-continue @click="emit('accept')">{{ i18n.ts.continue }}</MkButton>
+			<MkButton primary rounded gradate style="margin: 0 auto;" :disabled="!agreed" data-cy-signup-rules-continue @click="emit('accept')">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 		</div>
 	</MkSpacer>
 </div>

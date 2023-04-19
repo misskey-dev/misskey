@@ -8,12 +8,22 @@
 >
 	<template #header>{{ i18n.ts.signup }}</template>
 
-	<template v-if="!isAcceptedServerRule">
-		<XServerRules @accept="isAcceptedServerRule = true"/>
-	</template>
-	<template v-else>
-		<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
-	</template>
+	<div style="overflow-x: clip;">
+		<Transition
+			mode="out-in"
+			:enter-active-class="$style.transition_x_enterActive"
+			:leave-active-class="$style.transition_x_leaveActive"
+			:enter-from-class="$style.transition_x_enterFrom"
+			:leave-to-class="$style.transition_x_leaveTo"
+		>
+			<template v-if="!isAcceptedServerRule">
+				<XServerRules @accept="isAcceptedServerRule = true"/>
+			</template>
+			<template v-else>
+				<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
+			</template>
+		</Transition>
+	</div>
 </MkModalWindow>
 </template>
 
@@ -50,3 +60,18 @@ function onSignupEmailPending() {
 	dialog.close();
 }
 </script>
+
+<style lang="scss" module>
+.transition_x_enterActive,
+.transition_x_leaveActive {
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
+}
+.transition_x_enterFrom {
+	opacity: 0;
+	transform: translateX(50px);
+}
+.transition_x_leaveTo {
+	opacity: 0;
+	transform: translateX(-50px);
+}
+</style>
