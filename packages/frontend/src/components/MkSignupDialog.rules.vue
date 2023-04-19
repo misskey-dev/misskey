@@ -27,16 +27,16 @@
 				<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkFolder>
+			<MkFolder data-cy-signup-rules-notes>
 				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
 				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--success)"></i></template>
 
 				<a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
 
-				<MkSwitch v-model="agreeNote" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch v-model="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree>{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkButton primary rounded style="margin: 0 auto;" :disabled="!agreed" @click="emit('accept')">{{ i18n.ts.continue }}</MkButton>
+			<MkButton primary rounded style="margin: 0 auto;" :disabled="!agreed" data-cy-signup-rules-continue @click="emit('accept')">{{ i18n.ts.continue }}</MkButton>
 		</div>
 	</MkSpacer>
 </div>
