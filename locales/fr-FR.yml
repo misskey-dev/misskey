@@ -902,6 +902,11 @@ show: "Affichage"
 neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
 color: "Couleur"
+leftTop: "En haut à gauche"
+rightTop: "En haut à droite"
+leftBottom: "En bas à gauche"
+rightBottom: "En bas à droite"
+vertical: "Vertical"
 horizontal: "Latéral"
 _achievements:
   _types:
