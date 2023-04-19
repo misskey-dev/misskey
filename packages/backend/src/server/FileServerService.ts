@@ -297,7 +297,8 @@ export class FileServerService {
 			} else if ('badge' in request.query) {
 				const mask = (await sharpBmp(file.path, file.mime))
 					.resize(96, 96, {
-						fit: 'inside',
+						fit: 'contain',
+						position: 'centre',
 						withoutEnlargement: false,
 					})
 					.greyscale()
