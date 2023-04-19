@@ -12,9 +12,7 @@
 		<XServerRules @accept="isAcceptedServerRule = true"/>
 	</template>
 	<template v-else>
-		<MkSpacer :margin-min="20" :margin-max="28">
-			<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
-		</MkSpacer>
+		<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>
 	</template>
 </MkModalWindow>
 </template>
@@ -22,8 +20,8 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import { $ref } from 'vue/macros';
-import XSignup from '@/components/MkSignup.vue';
-import XServerRules from '@/components/MkSignupServerRules.vue';
+import XSignup from '@/components/MkSignupDialog.form.vue';
+import XServerRules from '@/components/MkSignupDialog.rules.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
