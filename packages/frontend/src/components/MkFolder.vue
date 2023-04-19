@@ -196,7 +196,7 @@ onMounted(() => {
 
 .headerRight {
 	margin-left: auto;
-	opacity: 0.7;
+	color: var(--fgTransparentWeak);
 	white-space: nowrap;
 }
 
