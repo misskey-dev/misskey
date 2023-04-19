@@ -13,11 +13,6 @@
 						<template #label>{{ i18n.ts.instanceDescription }}</template>
 					</MkTextarea>
 
-					<MkInput v-model="tosUrl">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.tosUrl }}</template>
-					</MkInput>
-
 					<FormSplit :min-width="300">
 						<MkInput v-model="maintainerName">
 							<template #label>{{ i18n.ts.maintainerName }}</template>
@@ -169,7 +164,6 @@ import MkButton from '@/components/MkButton.vue';
 
 let name: string | null = $ref(null);
 let description: string | null = $ref(null);
-let tosUrl: string | null = $ref(null);
 let maintainerName: string | null = $ref(null);
 let maintainerEmail: string | null = $ref(null);
 let iconUrl: string | null = $ref(null);
@@ -194,7 +188,6 @@ async function init() {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
 	description = meta.description;
-	tosUrl = meta.tosUrl;
 	iconUrl = meta.iconUrl;
 	bannerUrl = meta.bannerUrl;
 	backgroundImageUrl = meta.backgroundImageUrl;
@@ -220,7 +213,6 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		name,
 		description,
-		tosUrl,
 		iconUrl,
 		bannerUrl,
 		backgroundImageUrl,
