@@ -1,19 +1,16 @@
 import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
-import { createRedisConnection } from '@/redis.js';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
 
-const config = loadConfig();
-
 const $config: Provider = {
 	provide: DI.config,
-	useValue: config,
+	useValue: loadConfig(),
 };
 
 const $db: Provider = {
@@ -28,18 +25,47 @@ const $db: Provider = {
 const $redis: Provider = {
 	provide: DI.redis,
 	useFactory: (config) => {
-		const redisClient = createRedisConnection(config);
-		return redisClient;
+		return new Redis.Redis({
+			port: config.redis.port,
+			host: config.redis.host,
+			family: config.redis.family == null ? 0 : config.redis.family,
+			password: config.redis.pass,
+			keyPrefix: `${config.redis.prefix}:`,
+			db: config.redis.db ?? 0,
+		});
 	},
 	inject: [DI.config],
 };
 
-const $redisSubscriber: Provider = {
-	provide: DI.redisSubscriber,
+const $redisForPub: Provider = {
+	provide: DI.redisForPub,
 	useFactory: (config) => {
-		const redisSubscriber = createRedisConnection(config);
-		redisSubscriber.subscribe(config.host);
-		return redisSubscriber;
+		const redis = new Redis.Redis({
+			port: config.redisForPubsub.port,
+			host: config.redisForPubsub.host,
+			family: config.redisForPubsub.family == null ? 0 : config.redisForPubsub.family,
+			password: config.redisForPubsub.pass,
+			keyPrefix: `${config.redisForPubsub.prefix}:`,
+			db: config.redisForPubsub.db ?? 0,
+		});
+		return redis;
+	},
+	inject: [DI.config],
+};
+
+const $redisForSub: Provider = {
+	provide: DI.redisForSub,
+	useFactory: (config) => {
+		const redis = new Redis.Redis({
+			port: config.redisForPubsub.port,
+			host: config.redisForPubsub.host,
+			family: config.redisForPubsub.family == null ? 0 : config.redisForPubsub.family,
+			password: config.redisForPubsub.pass,
+			keyPrefix: `${config.redisForPubsub.prefix}:`,
+			db: config.redisForPubsub.db ?? 0,
+		});
+		redis.subscribe(config.host);
+		return redis;
 	},
 	inject: [DI.config],
 };
@@ -47,14 +73,15 @@ const $redisSubscriber: Provider = {
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $redis, $redisSubscriber],
-	exports: [$config, $db, $redis, $redisSubscriber, RepositoryModule],
+	providers: [$config, $db, $redis, $redisForPub, $redisForSub],
+	exports: [$config, $db, $redis, $redisForPub, $redisForSub, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.db) private db: DataSource,
 		@Inject(DI.redis) private redisClient: Redis.Redis,
-		@Inject(DI.redisSubscriber) private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForPub) private redisForPub: Redis.Redis,
+		@Inject(DI.redisForSub) private redisForSub: Redis.Redis,
 	) {}
 
 	async onApplicationShutdown(signal: string): Promise<void> {
@@ -69,7 +96,8 @@ export class GlobalModule implements OnApplicationShutdown {
 		await Promise.all([
 			this.db.destroy(),
 			this.redisClient.disconnect(),
-			this.redisSubscriber.disconnect(),
+			this.redisForPub.disconnect(),
+			this.redisForSub.disconnect(),
 		]);
 	}
 }

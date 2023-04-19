@@ -1,5 +1,5 @@
 import { setTimeout } from 'node:timers/promises';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -66,6 +66,7 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
+		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
 	@bindThis
@@ -99,7 +100,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
 			'MAXLEN', '~', '300',
-			`${this.idService.parse(notification.id).date.getTime()}-*`,
+			'*',
 			'data', JSON.stringify(notification));
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
@@ -110,7 +111,7 @@ export class NotificationService implements OnApplicationShutdown {
 		// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 		setTimeout(2000, 'unread notification', { signal: this.#shutdownController.signal }).then(async () => {
 			const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${notifieeId}`);
-			if (latestReadNotificationId && (latestReadNotificationId >= await redisIdPromise)) return;
+			if (latestReadNotificationId && (latestReadNotificationId >= (await redisIdPromise)!)) return;
 
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
@@ -13,6 +13,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import type { Packed } from '@/misc/json-schema';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -64,8 +65,11 @@ export class RoleService implements OnApplicationShutdown {
 	public static NotAssignedError = class extends Error {};
 
 	constructor(
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -84,10 +88,10 @@ export class RoleService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new MemorySingleCache<Role[]>(Infinity);
-		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(Infinity);
+		this.rolesCache = new MemorySingleCache<Role[]>(1000 * 60 * 60 * 1);
+		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(1000 * 60 * 60 * 1);
 
-		this.redisSubscriber.on('message', this.onMessage);
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -399,7 +403,26 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async addNoteToRoleTimeline(note: Packed<'Note'>): Promise<void> {
+		const roles = await this.getUserRoles(note.userId);
+
+		const redisPipeline = this.redisClient.pipeline();
+
+		for (const role of roles) {
+			redisPipeline.xadd(
+				`roleTimeline:${role.id}`,
+				'MAXLEN', '~', '1000',
+				'*',
+				'note', note.id);
+
+			this.globalEventService.publishRoleTimelineStream(role.id, 'note', note);
+		}
+
+		redisPipeline.exec();
+	}
+
+	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisSubscriber.off('message', this.onMessage);
+		this.redisForSub.off('message', this.onMessage);
 	}
 }

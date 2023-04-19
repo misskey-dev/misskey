@@ -7,6 +7,7 @@
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
 			<div class="profile _gaps">
+				<MkAccountMoved v-if="user.movedToUri" :host="user.movedToUri.host" :username="user.movedToUri.username"/>
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
@@ -20,6 +21,9 @@
 								<span v-if="user.isAdmin" :title="i18n.ts.isAdmin" style="color: var(--badge);"><i class="ti ti-shield"></i></span>
 								<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
+								<button v-if="!isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
+									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+								</button>
 							</div>
 						</div>
 						<span v-if="$i && $i.id != user.id && user.isFollowed" class="followed">{{ i18n.ts.followsYou }}</span>
@@ -37,6 +41,17 @@
 							<span v-if="user.isLocked" :title="i18n.ts.isLocked"><i class="ti ti-lock"></i></span>
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
+					</div>
+					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
+						<div class="heading" v-text="i18n.ts.memo"/>
+						<textarea
+							ref="memoTextareaEl"
+							v-model="memoDraft"
+							rows="1"
+							@focus="isEditingMemo = true"
+							@blur="updateMemo"
+							@input="adjustMemoTextarea"
+						/>
 					</div>
 					<div v-if="user.roles.length > 0" class="roles">
 						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
@@ -112,11 +127,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
+import MkAccountMoved from '@/components/MkAccountMoved.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -131,6 +147,7 @@ import { $i } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
+import { api } from '@/os';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -149,6 +166,10 @@ let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
 let rootEl = $ref<null | HTMLElement>(null);
 let bannerEl = $ref<null | HTMLElement>(null);
+let memoTextareaEl = $ref<null | HTMLElement>(null);
+let memoDraft = $ref(props.user.memo);
+
+let isEditingMemo = $ref(false);
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -191,6 +212,31 @@ function parallax() {
 	banner.style.backgroundPosition = `center calc(50% - ${pos}px)`;
 }
 
+function showMemoTextarea() {
+	isEditingMemo = true;
+	nextTick(() => {
+		memoTextareaEl?.focus();
+	});
+}
+
+function adjustMemoTextarea() {
+	if (!memoTextareaEl) return;
+	memoTextareaEl.style.height = '0px';
+	memoTextareaEl.style.height = `${memoTextareaEl.scrollHeight}px`;
+}
+
+async function updateMemo() {
+	await api('users/update-memo', {
+		memo: memoDraft,
+		userId: props.user.id,
+	});
+	isEditingMemo = false;
+}
+
+watch([props.user], () => {
+	memoDraft = props.user.memo;
+});
+
 onMounted(() => {
 	window.requestAnimationFrame(parallaxLoop);
 	narrow = rootEl!.clientWidth < 1000;
@@ -206,6 +252,9 @@ onMounted(() => {
 			});
 		}
 	}
+	nextTick(() => {
+		adjustMemoTextarea();
+	});
 });
 
 onUnmounted(() => {
@@ -321,6 +370,16 @@ onUnmounted(() => {
 									font-weight: bold;
 								}
 							}
+
+							> .add-note-button {
+								background: rgba(0, 0, 0, 0.2);
+								color: #fff;
+								-webkit-backdrop-filter: var(--blur, blur(8px));
+								backdrop-filter: var(--blur, blur(8px));
+								border-radius: 24px;
+								padding: 4px 8px;
+								font-size: 80%;
+							}
 						}
 					}
 				}
@@ -364,6 +423,38 @@ onUnmounted(() => {
 						border-radius: 999px;
 						margin-right: 4px;
 						padding: 3px 8px;
+					}
+				}
+
+				> .memo {
+					margin: 12px 24px 0 154px;
+					background: transparent;
+					color: var(--fg);
+					border: 1px solid var(--divider);
+					border-radius: 8px;
+					padding: 8px;
+					line-height: 0;
+
+					> .heading {
+						text-align: left;
+						color: var(--fgTransparent);
+						line-height: 1.5;
+					}
+
+					textarea {
+						margin: 0;
+						padding: 0;
+						resize: none;
+						border: none;
+						outline: none;
+						width: 100%;
+						height: auto;
+						min-height: 0;
+						line-height: 1.5;
+						color: var(--fg);
+						overflow: hidden;
+						background: transparent;
+						font-family: inherit;
 					}
 				}
 
@@ -500,6 +591,10 @@ onUnmounted(() => {
 				> .roles {
 					padding: 16px 16px 0 16px;
 					justify-content: center;
+				}
+
+				> .memo {
+					margin: 16px 16px 0 16px;
 				}
 
 				> .description {
