@@ -106,7 +106,7 @@ jobs:
         install: false
         start: pnpm start:test
         wait-on: 'http://localhost:61812'
-        headless: false
+        headed: true
         browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
       if: failure()
