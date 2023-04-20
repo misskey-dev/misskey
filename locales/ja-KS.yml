@@ -1004,6 +1004,8 @@ leftBottom: "左下"
 rightBottom: "右下"
 vertical: "縦"
 horizontal: "横"
+_serverRules:
+  description: "新規登録前に見せる、サーバーの簡潔なルールを設定すんで。内容は利用規約の要約とすることを推奨するわ。"
 _accountMigration:
   moveTo: "このアカウントをさらのアカウントに引っ越すで"
   moveToLabel: "引っ越し先のアカウント："
