@@ -18,7 +18,7 @@
 				<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkFolder v-if="availableTos">
+			<MkFolder v-if="availableTos" :default-open="true">
 				<template #label>{{ i18n.ts.termsOfService }}</template>
 				<template #suffix><i v-if="agreeTos" class="ti ti-check" style="color: var(--success)"></i></template>
 
@@ -27,7 +27,7 @@
 				<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkFolder data-cy-signup-rules-notes>
+			<MkFolder :default-open="true">
 				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
 				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--success)"></i></template>
 
