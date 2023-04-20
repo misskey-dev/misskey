@@ -1013,6 +1013,7 @@ horizontal: "Horizontal"
 position: "Position"
 serverRules: "Serverregeln"
 pleaseConfirmBelowBeforeSignup: "Lies bitte Untenstehendes vor der Registration."
+pleaseAgreeAllToContinue: "Zum Fortfahren muss allen obigen Feldern zugestimmt werden."
 continue: "Fortfahren"
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
