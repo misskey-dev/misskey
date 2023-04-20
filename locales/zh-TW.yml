@@ -1009,6 +1009,7 @@ stackAxis: "堆疊方向"
 vertical: "縱向"
 horizontal: "側向"
 position: "位置"
+pleaseAgreeAllToContinue: "必須全部勾選「同意」才能繼續。"
 _accountMigration:
   moveTo: "將這個帳戶遷移至新的帳戶"
   moveToLabel: "要遷移到的帳戶："
