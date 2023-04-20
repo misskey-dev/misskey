@@ -1013,6 +1013,7 @@ horizontal: "横向"
 position: "位置"
 serverRules: "服务器规则"
 pleaseConfirmBelowBeforeSignup: "在这个服务器上注册账号前，请确认以下信息。"
+pleaseAgreeAllToContinue: "必须全部勾选「同意」才能够继续。"
 continue: "继续"
 _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
@@ -1195,6 +1196,9 @@ _achievements:
     _client30min:
       title: "休息一下！"
       description: "启动客户端超过30分钟"
+    _client60min:
+      title: "Misskey重度依赖"
+      description: "启动客户端超过60分钟"
     _noteDeletedWithin1min:
       title: "欲言又止"
       description: "发帖后一分钟内就将其删除"
@@ -1283,6 +1287,8 @@ _role:
   iconUrl: "图标URL"
   asBadge: "作为徽章显示"
   descriptionOfAsBadge: "开启后，用户名旁边将会出现角色图标。"
+  isExplorable: "公开角色时间线"
+  descriptionOfIsExplorable: "打开后将公开角色时间线。如果角色不是公开的，就无法公开时间线。"
   displayOrder: "显示顺序"
   descriptionOfDisplayOrder: "数字越大，显示位置越靠前。"
   canEditMembersByModerator: "允许监察者编辑成员"
