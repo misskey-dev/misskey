@@ -273,7 +273,6 @@ export class RoleService implements OnApplicationShutdown {
 		return {
 			gtlAvailable: calc('gtlAvailable', vs => vs.some(v => v === true)),
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
-			isExplorable: calc('isExplorable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
