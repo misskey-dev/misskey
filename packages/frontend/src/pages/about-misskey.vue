@@ -220,6 +220,9 @@ const patrons = [
 	'ふぇいぽむ',
 	'依古田イコ',
 	'戸塚こだま',
+	'すー。',
+	'秋雨/Slime-hatena.jp',
+	'けそ',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
