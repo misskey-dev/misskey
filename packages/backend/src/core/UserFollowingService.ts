@@ -151,13 +151,14 @@ export class UserFollowingService implements OnModuleInit {
 					movedFollower = await this.apPersonService.fetchPerson(movedFollower.uri) ?? follower;
 				}
 
+				const newUri = this.userEntityService.isLocalUser(movedFollower) ? movedFollower.uri : `${this.config.url}/users/${movedFollower.id}`;
+
 				if (movedFollower.alsoKnownAs) {
 					for (const oldUri of movedFollower.alsoKnownAs) {
 						try {
 							let oldAccount = await this.apPersonService.fetchPerson(oldUri);
 							if (!oldAccount) continue; // oldAccountを探してもこのサーバーに存在しない場合はフォロー関係もないということなのでスルー
 
-							let newUri: string;
 
 							if (this.userEntityService.isRemoteUser(movedFollower)) {
 								if ((new Date()).getTime() - (oldAccount.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
@@ -165,9 +166,6 @@ export class UserFollowingService implements OnModuleInit {
 								}
 
 								oldAccount = await this.apPersonService.fetchPerson(oldUri) ?? oldAccount;
-								newUri = movedFollower.uri;
-							} else {
-								newUri = `${this.config.url}/users/${movedFollower.id}`;
 							}
 
 							autoAccept = oldAccount.movedToUri === newUri && await this.followingsRepository.exist({
