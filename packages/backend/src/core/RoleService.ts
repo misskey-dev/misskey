@@ -40,7 +40,6 @@ export type RolePolicies = {
 export const DEFAULT_POLICIES: RolePolicies = {
 	gtlAvailable: true,
 	ltlAvailable: true,
-	isExplorable: true,
 	canPublicNote: true,
 	canInvite: false,
 	canManageCustomEmojis: false,
