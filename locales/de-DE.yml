@@ -1197,6 +1197,7 @@ _achievements:
       title: "Kurze Pause"
       description: "Habe Misskey für mindestens 30 Minuten geöffnet"
     _client60min:
+      title: "Munter mit Misskey"
       description: "Habe Misskey für mindestens 60 Minuten geöffnet"
     _noteDeletedWithin1min:
       title: "Ups"
