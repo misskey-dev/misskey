@@ -45,7 +45,6 @@ describe('Account Move', () => {
 		Mutings = connection.getRepository(Muting);
 	}, 1000 * 60 * 2);
 
-
 	afterAll(async () => {
 		await app.close();
 	});
@@ -206,7 +205,7 @@ describe('Account Move', () => {
 
 			const followings = await api('/users/following', {
 				userId: carol.id,
-			}, carol)
+			}, carol);
 			assert.strictEqual(followings.status, 200);
 			assert.strictEqual(followings.body.length, 2);
 			assert.strictEqual(followings.body[0].followeeId, bob.id);
@@ -225,8 +224,9 @@ describe('Account Move', () => {
 
 			const lists = await api('/users/lists/list', {}, root);
 			assert.strictEqual(lists.status, 200);
-			assert.strictEqual(lists.body[0].userIds.length, 1);
-			assert.strictEqual(lists.body[0].userIds[0], bob.id);
+			assert.strictEqual(lists.body[0].userIds.length, 2);
+			assert.ok(lists.body[0].userIds.find((id: string) => id === bob.id));
+			assert.ok(lists.body[0].userIds.find((id: string) => id === alice.id));
 		});
 
 		test('Follow and follower counts are properly adjusted', async () => {
