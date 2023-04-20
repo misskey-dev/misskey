@@ -1195,7 +1195,9 @@ _achievements:
       description: "Du hast einen verborgenen Schatz gefunden"
     _client30min:
       title: "Kurze Pause"
-      description: "Habe Misskey für 30 Minuten geöffnet"
+      description: "Habe Misskey für mindestens 30 Minuten geöffnet"
+    _client60min:
+      description: "Habe Misskey für mindestens 60 Minuten geöffnet"
     _noteDeletedWithin1min:
       title: "Ups"
       description: "Lösche eine Notiz innerhalb von 1 Minute nachdem sie gesendet wurde"
@@ -1284,6 +1286,8 @@ _role:
   iconUrl: "Icon-URL"
   asBadge: "Als Abzeichen anzeigen"
   descriptionOfAsBadge: "Ist dies aktiviert, so wird das Icon dieser Rolle an der Seite der Namen von Benutzern mit dieser Rolle angezeigt."
+  isExplorable: "Rollenchronik veröffentlichen"
+  descriptionOfIsExplorable: "Ist dies aktiviert, so ist die Rollenchronik dieser Rolle frei zugänglich. Die Chronik von Rollen, welche nicht öffentlich sind, wird auch bei Aktivierung nicht veröffentlicht."
   displayOrder: "Position"
   descriptionOfDisplayOrder: "Je höher die Nummer, desto höher die UI-Position."
   canEditMembersByModerator: "Moderatoren können Benutzern diese Rolle zuweisen"
