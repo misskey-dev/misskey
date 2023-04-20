@@ -151,9 +151,9 @@ export class UserFollowingService implements OnModuleInit {
 					movedFollower = await this.apPersonService.fetchPerson(movedFollower.uri) ?? follower;
 				}
 
-				const newUri = this.userEntityService.isLocalUser(movedFollower) ? movedFollower.uri : `${this.config.url}/users/${movedFollower.id}`;
-
 				if (movedFollower.alsoKnownAs) {
+					const newUri = this.userEntityService.isLocalUser(movedFollower) ? movedFollower.uri : `${this.config.url}/users/${movedFollower.id}`;
+	
 					for (const oldUri of movedFollower.alsoKnownAs) {
 						try {
 							let oldAccount = await this.apPersonService.fetchPerson(oldUri);
