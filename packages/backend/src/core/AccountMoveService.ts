@@ -78,7 +78,7 @@ export class AccountMoveService {
 
 		// add movedToUri to indicate that the user has moved
 		const update = {} as Partial<User>;
-		update.alsoKnownAs = src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
+		update.alsoKnownAs = src.alsoKnownAs?.includes(dstUri) ? src.alsoKnownAs : src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
 		update.movedToUri = dstUri;
 		await this.usersRepository.update(src.id, update);
 		src = Object.assign(src, update);
@@ -226,7 +226,7 @@ export class AccountMoveService {
 			} while (newJoinings.has(id));
 			return id;
 		};
-		for (const joining of oldJoinings) {			
+		for (const joining of oldJoinings) {
 			newJoinings.set(genId(), {
 				createdAt: new Date(),
 				userId: dst.id,

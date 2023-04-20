@@ -1,13 +1,12 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { signup, startServer, initTestDb, api, sleep } from '../utils.js';
-import type { INestApplicationContext } from '@nestjs/common';
-import { loadConfig } from '@/config.js';
-import { Blocking, BlockingsRepository, Following, FollowingsRepository, Muting, MutingsRepository, User, UsersRepository } from '@/models/index.js';
-import { jobQueue } from '@/boot/common.js';
 import rndstr from 'rndstr';
-import { uploadFile } from '../utils.js';
+import { loadConfig } from '@/config.js';
+import { User, UsersRepository } from '@/models/index.js';
+import { jobQueue } from '@/boot/common.js';
+import { uploadFile, signup, startServer, initTestDb, api, sleep } from '../utils.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Account Move', () => {
 	let app: INestApplicationContext;
@@ -22,9 +21,6 @@ describe('Account Move', () => {
 	let frank: any;
 
 	let Users: UsersRepository;
-	let Followings: FollowingsRepository;
-	let Blockings: BlockingsRepository;
-	let Mutings: MutingsRepository;
 
 	beforeAll(async () => {
 		app = await startServer();
@@ -40,9 +36,6 @@ describe('Account Move', () => {
 		eve = await signup({ username: 'eve' });
 		frank = await signup({ username: 'frank' });
 		Users = connection.getRepository(User);
-		Followings = connection.getRepository(Following);
-		Blockings = connection.getRepository(Blocking);
-		Mutings = connection.getRepository(Muting);
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
@@ -66,7 +59,7 @@ describe('Account Move', () => {
 
 		test('Able to set remote user (but may fail)', async () => {
 			const res = await api('/i/known-as', {
-				alsoKnownAs: `@syuilo@example.com`,
+				alsoKnownAs: '@syuilo@example.com',
 			}, bob);
 
 			assert.strictEqual(res.status, 400);
@@ -123,7 +116,7 @@ describe('Account Move', () => {
 
 		test('Unable to create an alias without the second @', async () => {
 			const res1 = await api('/i/known-as', {
-				alsoKnownAs: '@alice'
+				alsoKnownAs: '@alice',
 			}, bob);
 
 			assert.strictEqual(res1.status, 400);
@@ -131,7 +124,7 @@ describe('Account Move', () => {
 			assert.strictEqual(res1.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 
 			const res2 = await api('/i/known-as', {
-				alsoKnownAs: 'alice'
+				alsoKnownAs: 'alice',
 			}, bob);
 
 			assert.strictEqual(res2.status, 400);
@@ -209,7 +202,7 @@ describe('Account Move', () => {
 
 		test('Prohibit the root account from moving', async () => {
 			const res = await api('/i/move', {
-				moveToAccount: `@bob@${url.hostname}`
+				moveToAccount: `@bob@${url.hostname}`,
 			}, root);
 
 			assert.strictEqual(res.status, 400);
@@ -223,8 +216,8 @@ describe('Account Move', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'NO_SUCH_MOVE_TARGET');
-			assert.strictEqual(res.body.error.id, 'b5c90186-4ab0-49c8-9bba-a1f76c202ba4');
+			assert.strictEqual(res.body.error.code, 'NO_SUCH_USER');
+			assert.strictEqual(res.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 		});
 
 		test('Unable to move if alsoKnownAs is invalid', async () => {
@@ -270,6 +263,25 @@ describe('Account Move', () => {
 			assert.strictEqual(lists.body[0].userIds.length, 2);
 			assert.ok(lists.body[0].userIds.find((id: string) => id === bob.id));
 			assert.ok(lists.body[0].userIds.find((id: string) => id === alice.id));
+		});
+
+		test('Unable to move if the destination account has already moved.', async () => {
+			await api('/i/move', {
+				moveToAccount: `@bob@${url.hostname}`,
+			}, alice);
+
+			const newAlice = await Users.findOneByOrFail({ id: alice.id });
+			assert.strictEqual(newAlice.movedToUri, `${url.origin}/users/${bob.id}`);
+			assert.strictEqual(newAlice.alsoKnownAs?.length, 1);
+			assert.strictEqual(newAlice.alsoKnownAs[0], `${url.origin}/users/${bob.id}`);
+
+			const res = await api('/i/move', {
+				moveToAccount: `@alice@${url.hostname}`,
+			}, bob);
+
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.body.error.code, 'REMOTE_ACCOUNT_FORBIDS');
+			assert.strictEqual(res.body.error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
 		});
 
 		test('Follow and follower counts are properly adjusted', async () => {

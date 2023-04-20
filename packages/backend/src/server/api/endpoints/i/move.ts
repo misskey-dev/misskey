@@ -28,7 +28,7 @@ export const meta = {
 	errors: {
 		destinationAccountForbids: {
 			message:
-				'Destination account doesn\'t have proper \'Known As\' alias. Did you remember to set it?',
+				'Destination account doesn\'t have proper \'Known As\' alias, or has already moved.',
 			code: 'REMOTE_ACCOUNT_FORBIDS',
 			id: 'b5c90186-4ab0-49c8-9bba-a1f766282ba4',
 		},
@@ -125,7 +125,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// abort if unintended
-			if (!allowed) throw new ApiError(meta.errors.destinationAccountForbids);
+			if (!allowed || moveTo.movedToUri) throw new ApiError(meta.errors.destinationAccountForbids);
 
 			return await this.accountMoveService.moveFromLocal(me, moveTo);
 		});

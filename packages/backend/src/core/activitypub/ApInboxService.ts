@@ -760,6 +760,9 @@ export class ApInboxService {
 		} else if (!newAccount.alsoKnownAs?.includes(this.accountMoveService.getUserUri(oldAccount))) {
 			isValidMove = false;
 		}
+		if (newAccount.movedToUri) {
+			isValidMove = false;
+		}
 		if (!isValidMove) {
 			return 'skip: destination account invalid';
 		}
