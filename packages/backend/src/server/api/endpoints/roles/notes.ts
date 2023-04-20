@@ -65,12 +65,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({
 				id: ps.roleId,
+				isPublic: true,
 			});
 
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
-
+			if (!role.isExplorable) { 
+				return [];
+			}
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			const noteIdsRes = await this.redisClient.xrevrange(
 				`roleTimeline:${role.id}`,

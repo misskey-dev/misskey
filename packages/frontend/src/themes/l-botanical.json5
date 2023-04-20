@@ -13,8 +13,6 @@
 		fgHighlighted: '#6bc9a0',
 		divider: '#cfcfcf',
 		panel: '@X14',
-		panelHeaderBg: '@panel',
-		panelHeaderDivider: '@divider',
 		header: ':alpha<0.7<@panel',
 		navBg: '@X14',
 		renote: '#229e92',

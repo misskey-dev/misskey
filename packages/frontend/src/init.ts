@@ -431,6 +431,10 @@ if ($i) {
 		claimAchievement('client30min');
 	}, 1000 * 60 * 30);
 
+	window.setTimeout(() => {
+		claimAchievement('client60min');
+	}, 1000 * 60 * 60);
+
 	const lastUsed = miLocalStorage.getItem('lastUsed');
 	if (lastUsed) {
 		const lastUsedDate = parseInt(lastUsed, 10);

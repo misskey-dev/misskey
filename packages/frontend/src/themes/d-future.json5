@@ -14,8 +14,6 @@
 		fgOnAccent: '#000',
 		divider: 'rgba(255, 255, 255, 0.1)',
 		panel: '#18181c',
-		panelHeaderBg: '@panel',
-		panelHeaderDivider: '@divider',
 		renote: '@accent',
 		mention: '#f2c97d',
 		mentionMe: '@accent',
