@@ -2348,7 +2348,6 @@ type LiteInstanceMetadata = {
         imageUrl: string;
     }[];
     translatorAvailable: boolean;
-    serverRules: string[];
 };
 
 // @public (undocumented)
