@@ -59,9 +59,9 @@
 		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
 	</MkSwitch>
 
-	<MkSwitch v-model="role.isRoleTimeline" :readonly="readonly">
-		<template #label>{{ i18n.ts._role.isRoleTimeline }}</template>
-		<template #caption>{{ i18n.ts._role.descriptionOfIsRoleTimeline }}</template>
+	<MkSwitch v-model="role.isExplorable" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.isExplorable }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfIsExplorable }}</template>
 	</MkSwitch>
 
 	<FormSlot>
@@ -480,7 +480,7 @@ const save = throttle(100, () => {
 		isAdministrator: role.isAdministrator,
 		isModerator: role.isModerator,
 		isPublic: role.isPublic,
-		isRoleTimeline: role.isRoleTimeline,
+		isExplorable: role.isExplorable,
 		asBadge: role.asBadge,
 		canEditMembersByModerator: role.canEditMembersByModerator,
 		policies: role.policies,

@@ -152,9 +152,9 @@ export class Role {
 	public isAdministrator: boolean;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
-	public isRoleTimeline: boolean;
+	public isExplorable: boolean;
 
 	@Column('boolean', {
 		default: false,

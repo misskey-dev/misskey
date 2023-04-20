@@ -54,7 +54,7 @@ if (props.id) {
 		target: 'manual',
 		condFormula: { id: uuid(), type: 'isRemote' },
 		isPublic: false,
-		isRoleTimeline: false,
+		isExplorable: false,
 		asBadge: false,
 		canEditMembersByModerator: false,
 		displayOrder: 0,
