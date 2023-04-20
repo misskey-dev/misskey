@@ -27,7 +27,6 @@
 		panelHighlight: ':lighten<3<@panel',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',
-		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		panelBorder: '" solid 1px var(--divider)',
 		acrylicPanel: ':alpha<0.5<@panel',
 		windowHeader: ':alpha<0.85<@panel',
