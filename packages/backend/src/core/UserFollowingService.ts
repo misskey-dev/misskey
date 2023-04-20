@@ -143,16 +143,32 @@ export class UserFollowingService implements OnModuleInit {
 			// Automatically accept if the follower is an account who has moved and the locked followee had accepted the old account.
 			if (followee.isLocked && !autoAccept) {
 				let movedFollower = follower;
+
 				if (this.userEntityService.isRemoteUser(movedFollower)) {
-					await this.apPersonService.updatePerson(movedFollower.uri);
-					movedFollower = await this.apPersonService.resolvePerson(movedFollower.uri);
+					if ((new Date()).getTime() - (movedFollower.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
+						await this.apPersonService.updatePerson(movedFollower.uri);
+					}
+					movedFollower = await this.apPersonService.fetchPerson(movedFollower.uri) ?? follower;
 				}
+
 				if (movedFollower.alsoKnownAs) {
 					for (const oldUri of movedFollower.alsoKnownAs) {
 						try {
-							await this.apPersonService.updatePerson(oldUri);
-							const oldAccount = await this.apPersonService.resolvePerson(oldUri);
-							const newUri = this.userEntityService.isRemoteUser(movedFollower) ? movedFollower.uri : `${this.config.url}/users/${movedFollower.id}`;
+							let oldAccount = await this.apPersonService.fetchPerson(oldUri);
+							if (!oldAccount) continue; // oldAccountを探してもこのサーバーに存在しない場合はフォロー関係もないということなのでスルー
+
+							let newUri: string;
+
+							if (this.userEntityService.isRemoteUser(movedFollower)) {
+								if ((new Date()).getTime() - (oldAccount.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
+									await this.apPersonService.updatePerson(oldUri);
+								}
+
+								oldAccount = await this.apPersonService.fetchPerson(oldUri) ?? oldAccount;
+								newUri = movedFollower.uri;
+							} else {
+								newUri = `${this.config.url}/users/${movedFollower.id}`;
+							}
 
 							autoAccept = oldAccount.movedToUri === newUri && await this.followingsRepository.exist({
 								where: {

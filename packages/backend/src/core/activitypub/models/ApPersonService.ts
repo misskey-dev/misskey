@@ -205,12 +205,12 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	/**
-	 * Personをフェッチします。
+	 * uriからUser(Person)をフェッチします。
 	 *
-	 * Misskeyに対象のPersonが登録されていればそれを返します。
+	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
+	public async fetchPerson(uri: string): Promise<User | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		const cached = this.cacheService.uriPersonCache.get(uri);
