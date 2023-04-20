@@ -1195,7 +1195,10 @@ _achievements:
       description: "You've found the hidden treasure"
     _client30min:
       title: "Short break"
-      description: "Spend 30 minutes on Misskey"
+      description: "Keep Misskey opened for at least 30 minutes"
+    _client60min:
+      title: "No \"Miss\" in Misskey"
+      description: "Keep Misskey opened for at least 60 minutes"
     _noteDeletedWithin1min:
       title: "Nevermind"
       description: "Delete a note within a minute of posting it"
@@ -1284,6 +1287,8 @@ _role:
   iconUrl: "Icon URL"
   asBadge: "Show as badge"
   descriptionOfAsBadge: "This role's icon will be displayed next to the username of users with this role if turned on."
+  isExplorable: "Role timeline is public"
+  descriptionOfIsExplorable: "This role's timeline will become publicly accessible if enabled. Timelines of non-public roles will not be made public even if set."
   displayOrder: "Position"
   descriptionOfDisplayOrder: "The higher the number, the higher its UI position."
   canEditMembersByModerator: "Allow moderators to edit the list of members for this role"
