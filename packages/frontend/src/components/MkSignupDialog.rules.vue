@@ -90,7 +90,6 @@ const emit = defineEmits<{
 
 .rule {
 	display: flex;
-	align-items: center;
 	gap: 8px;
 	word-break: break-word;
 
