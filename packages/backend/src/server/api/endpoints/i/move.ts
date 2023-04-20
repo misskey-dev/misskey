@@ -26,11 +26,6 @@ export const meta = {
 	},
 
 	errors: {
-		noSuchMoveTarget: {
-			message: 'No such move target.',
-			code: 'NO_SUCH_MOVE_TARGET',
-			id: 'b5c90186-4ab0-49c8-9bba-a1f76c202ba4',
-		},
 		destinationAccountForbids: {
 			message:
 				'Destination account doesn\'t have proper \'Known As\' alias. Did you remember to set it?',
@@ -89,25 +84,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// check parameter
-			if (!ps.moveToAccount) throw new ApiError(meta.errors.noSuchMoveTarget);
+			if (!ps.moveToAccount) throw new ApiError(meta.errors.noSuchUser);
 			// abort if user is the root
 			if (me.isRoot) throw new ApiError(meta.errors.rootForbidden);
 			// abort if user has already moved
 			if (me.movedToUri) throw new ApiError(meta.errors.alreadyMoved);
 
 			let unfiltered = ps.moveToAccount;
-			if (!unfiltered) throw new ApiError(meta.errors.noSuchMoveTarget);
+			if (!unfiltered) throw new ApiError(meta.errors.noSuchUser);
 
 			// parse user's input into the destination account
 			if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
 			if (unfiltered.startsWith('@')) unfiltered = unfiltered.substring(1);
-			if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchMoveTarget);
+			if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchUser);
 
 			const userAddress = unfiltered.split('@');
 			// retrieve the destination account
 			let moveTo = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
-				throw new ApiError(meta.errors.noSuchMoveTarget);
+				throw new ApiError(meta.errors.noSuchUser);
 			});
 			const destination = await this.getterService.getUser(moveTo.id);
 			const newUri = this.accountMoveService.getUserUri(destination);
