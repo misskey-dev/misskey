@@ -1291,6 +1291,8 @@ _role:
   iconUrl: "アイコン画像のURL"
   asBadge: "バッジとして表示"
   descriptionOfAsBadge: "オンにすると、ユーザー名の横にロールのアイコンが表示されます。"
+  isExplorable: "ロールタイムラインを公開"
+  descriptionOfIsExplorable: "オンにすると、ロールのタイムラインを公開します。ロールの公開がオフの場合、タイムラインの公開はされません。"
   displayOrder: "表示順"
   descriptionOfDisplayOrder: "数値が大きいほどUI上で先頭に表示されます。"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
