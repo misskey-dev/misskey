@@ -17,7 +17,7 @@
 			:leave-to-class="$style.transition_x_leaveTo"
 		>
 			<template v-if="!isAcceptedServerRule">
-				<XServerRules @accept="isAcceptedServerRule = true"/>
+				<XServerRules @done="isAcceptedServerRule = true" @cancel="dialog.close()"/>
 			</template>
 			<template v-else>
 				<XSignup :auto-set="autoSet" @signup="onSignup" @signup-email-pending="onSignupEmailPending"/>

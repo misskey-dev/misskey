@@ -36,7 +36,12 @@
 				<MkSwitch v-model="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree>{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkButton primary rounded gradate style="margin: 0 auto;" :disabled="!agreed" data-cy-signup-rules-continue @click="emit('accept')">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			<div v-if="!agreed" style="text-align: center;">{{ i18n.ts.pleaseAgreeAllToContinue }}</div>
+
+			<div class="_buttonsCenter">
+				<MkButton inline rounded @click="emit('cancel')">{{ i18n.ts.cancel }}</MkButton>
+				<MkButton inline primary rounded gradate :disabled="!agreed" data-cy-signup-rules-continue @click="emit('done')">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+			</div>
 		</div>
 	</MkSpacer>
 </div>
@@ -62,7 +67,8 @@ const agreed = computed(() => {
 });
 
 const emit = defineEmits<{
-	(ev: 'accept'): void;
+	(ev: 'cancel'): void;
+	(ev: 'done'): void;
 }>();
 </script>
 
