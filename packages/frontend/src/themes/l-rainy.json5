@@ -13,7 +13,6 @@
 		fgOnWhite: '@accent',
 		panel: '#fff',
 		divider: 'rgb(230 233 234)',
-		panelHeaderDivider: '@divider',
 		renote: '@accent',
 		link: '@accent',
 		mention: '@accent',
