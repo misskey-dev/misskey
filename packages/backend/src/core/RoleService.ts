@@ -19,7 +19,6 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 export type RolePolicies = {
 	gtlAvailable: boolean;
 	ltlAvailable: boolean;
-	isExplorable: boolean;
 	canPublicNote: boolean;
 	canInvite: boolean;
 	canManageCustomEmojis: boolean;
