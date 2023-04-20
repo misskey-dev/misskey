@@ -32,6 +32,11 @@ export const meta = {
 			code: 'URI_NULL',
 			id: 'bf326f31-d430-4f97-9933-5d61e4d48a23',
 		},
+		forbiddenToSetYourself: {
+			message: 'You can\'t set yourself as your own alias.',
+			code: 'FORBIDDEN_TO_SET_YOURSELF',
+			id: '25c90186-4ab0-49c8-9bba-a1fa6c202ba4',
+		},
 	},
 } as const;
 
@@ -51,9 +56,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private accountMoveService: AccountMoveService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// Check parameter
-			if (!ps.alsoKnownAs) throw new ApiError(meta.errors.noSuchUser);
-
 			let unfiltered = ps.alsoKnownAs;
 			const updates = {} as Partial<User>;
 
@@ -71,6 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					this.apiLoggerService.logger.warn(`failed to resolve dstination user: ${e}`);
 					throw new ApiError(meta.errors.noSuchUser);
 				});
+				if (knownAs.id === me.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
 
 				const toUrl = this.accountMoveService.getUserUri(knownAs);
 				if (!toUrl) throw new ApiError(meta.errors.uriNull);

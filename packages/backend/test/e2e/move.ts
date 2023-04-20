@@ -54,6 +54,49 @@ describe('Account Move', () => {
 			await Users.update(bob.id, { alsoKnownAs: null });
 		}, 1000 * 10);
 
+		test('Able to create an alias', async () => {
+			await api('/i/known-as', {
+				alsoKnownAs: `@alice@${url.hostname}`,
+			}, bob);
+
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.alsoKnownAs?.length, 1);
+			assert.strictEqual(newBob.alsoKnownAs[0], `${url.origin}/users/${alice.id}`);
+		});
+
+		test('Able to set remote user (but may fail)', async () => {
+			const res = await api('/i/known-as', {
+				alsoKnownAs: `@syuilo@example.com`,
+			}, bob);
+
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.body.error.code, 'NO_SUCH_USER');
+			assert.strictEqual(res.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
+		});
+
+		test('Nothing happen when alias duplicated', async () => {
+			await api('/i/known-as', {
+				alsoKnownAs: `@alice@${url.hostname}`,
+			}, bob);
+			await api('/i/known-as', {
+				alsoKnownAs: `@alice@${url.hostname}`,
+			}, bob);
+
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.alsoKnownAs?.length, 1);
+			assert.strictEqual(newBob.alsoKnownAs[0], `${url.origin}/users/${alice.id}`);
+		});
+
+		test('Unable to add itself', async () => {
+			const res = await api('/i/known-as', {
+				alsoKnownAs: `@bob@${url.hostname}`,
+			}, bob);
+
+			assert.strictEqual(res.status, 400);
+			assert.strictEqual(res.body.error.code, 'FORBIDDEN_TO_SET_YOURSELF');
+			assert.strictEqual(res.body.error.id, '25c90186-4ab0-49c8-9bba-a1fa6c202ba4');
+		});
+
 		test('Unable to add a nonexisting local account to alsoKnownAs', async () => {
 			const res = await api('/i/known-as', {
 				alsoKnownAs: `@nonexist@${url.hostname}`,
@@ -72,10 +115,10 @@ describe('Account Move', () => {
 				alsoKnownAs: `@carol@${url.hostname}`,
 			}, bob);
 
-			const newAlice = await Users.findOneByOrFail({ id: bob.id });
-			assert.strictEqual(newAlice.alsoKnownAs?.length, 2);
-			assert.strictEqual(newAlice.alsoKnownAs[0], `${url.origin}/users/${alice.id}`);
-			assert.strictEqual(newAlice.alsoKnownAs[1], `${url.origin}/users/${carol.id}`);
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.alsoKnownAs?.length, 2);
+			assert.strictEqual(newBob.alsoKnownAs[0], `${url.origin}/users/${alice.id}`);
+			assert.strictEqual(newBob.alsoKnownAs[1], `${url.origin}/users/${carol.id}`);
 		});
 
 		test('Unable to create an alias without the second @', async () => {
@@ -95,7 +138,7 @@ describe('Account Move', () => {
 			assert.strictEqual(res2.body.error.code, 'NO_SUCH_USER');
 			assert.strictEqual(res2.body.error.id, 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5');
 		});
-	})
+	});
 
 	describe('Local to Local', () => {
 		let antennaId = '';

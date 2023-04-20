@@ -15,7 +15,6 @@ export type UserLite = {
 	avatarUrl: string;
 	avatarBlurhash: string;
 	alsoKnownAs: string[];
-	movedToUri: any;
 	emojis: {
 		name: string;
 		url: string;
@@ -58,6 +57,7 @@ export type UserDetailed = UserLite & {
 	lang: string | null;
 	lastFetchedAt?: DateString;
 	location: string | null;
+	movedToUri: string;
 	notesCount: number;
 	pinnedNoteIds: ID[];
 	pinnedNotes: Note[];
