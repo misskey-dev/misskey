@@ -94,6 +94,7 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
+		serverRules: { type: 'array', items: { type: 'string' } },
 	},
 	required: [],
 } as const;
@@ -385,6 +386,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableChartsForFederatedInstances !== undefined) {
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
+			}
+
+			if (ps.serverRules !== undefined) {
+				set.serverRules = ps.serverRules;
 			}
 
 			await this.metaService.update(set);

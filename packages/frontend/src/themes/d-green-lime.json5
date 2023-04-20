@@ -14,8 +14,6 @@
 		fgOnAccent: '#192320',
 		divider: '#e7fffb24',
 		panel: '#192320',
-		panelHeaderBg: '@panel',
-		panelHeaderDivider: '@divider',
 		popup: '#293330',
 		renote: '@accent',
 		mentionMe: '#ffaa00',
