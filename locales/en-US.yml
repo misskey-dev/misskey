@@ -1013,6 +1013,7 @@ horizontal: "Horizontal"
 position: "Position"
 serverRules: "Server rules"
 pleaseConfirmBelowBeforeSignup: "Please confirm the below before signing up."
+pleaseAgreeAllToContinue: "You must agree to all above fields to continue."
 continue: "Continue"
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
