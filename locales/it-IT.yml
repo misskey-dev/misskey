@@ -1013,6 +1013,7 @@ horizontal: "Laterale"
 position: "Posizione"
 serverRules: "Regolamento"
 pleaseConfirmBelowBeforeSignup: "Ai sensi del regolamento EU 679/2016 GDPR, autorizzo il trattamento dati personali come descritto nella informativa Privacy."
+pleaseAgreeAllToContinue: "Per continuare, occorre selezionare ed essere d'accordo su tutto."
 continue: "Continua"
 _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
@@ -1195,6 +1196,9 @@ _achievements:
     _client30min:
       title: "Piccola grande pausa"
       description: "Hai passato più di 30 minuti su Misskey"
+    _client60min:
+      title: "Misskey negli occhi"
+      description: "Hai letto Misskey almeno per un'ora"
     _noteDeletedWithin1min:
       title: "Ooops!"
       description: "Hai eliminato una nota entro un minuto dalla sua pubblicazione"
@@ -1283,6 +1287,8 @@ _role:
   iconUrl: "URL dell'icona"
   asBadge: "Mostra come badge"
   descriptionOfAsBadge: "Se indicato, accanto al nome utente viene visualizzata l'icona del ruolo."
+  isExplorable: "La timeline del ruolo è pubblica"
+  descriptionOfIsExplorable: "Selezionandolo, la timeline del ruolo diventerà accessibile pubblicamente. Tranne se il ruolo non è pubblico."
   displayOrder: "Ordine di visualizzazione"
   descriptionOfDisplayOrder: "I valori più alti vengono visualizzati per primi"
   canEditMembersByModerator: "Anche i Moderatori assegnano profili a questo ruolo"
