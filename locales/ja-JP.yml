@@ -1199,6 +1199,9 @@ _achievements:
     _client30min:
       title: "ひとやすみ"
       description: "クライアントを起動してから30分以上経過した"
+    _client60min:
+      title: "Misskeyの見すぎ"
+      description: "クライアントを起動してから60分以上経過した"
     _noteDeletedWithin1min:
       title: "いまのなし"
       description: "投稿してから1分以内にその投稿を削除した"
