@@ -159,7 +159,6 @@ export class UserFollowingService implements OnModuleInit {
 							let oldAccount = await this.apPersonService.fetchPerson(oldUri);
 							if (!oldAccount) continue; // oldAccountを探してもこのサーバーに存在しない場合はフォロー関係もないということなのでスルー
 
-
 							if (this.userEntityService.isRemoteUser(movedFollower)) {
 								if ((new Date()).getTime() - (oldAccount.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
 									await this.apPersonService.updatePerson(oldUri);
