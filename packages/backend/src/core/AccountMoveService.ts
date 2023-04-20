@@ -146,10 +146,10 @@ export class AccountMoveService {
 				followerHost: IsNull(), // follower is local
 				followerId: proxy ? Not(proxy.id) : undefined,
 		});
-		const followJobs: RelationshipJobData[] = [];
-		for (const following of followings) {
-			followJobs.push({ from: { id: following.followerId }, to: { id: dst.id } });
-		}
+		const followJobs = followings.map(following => ({
+			from: { id: following.followerId },
+			to: { id: dst.id },
+		})) as RelationshipJobData[];
 
 		// Decrease following count instead of unfollowing.
 		try {
