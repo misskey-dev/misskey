@@ -1013,6 +1013,7 @@ horizontal: "横"
 position: "位置"
 serverRules: "サーバールール"
 pleaseConfirmBelowBeforeSignup: "このサーバーに登録する前に、以下を確認してください。"
+pleaseAgreeAllToContinue: "続けるには、全ての「同意する」にチェックが入っている必要があります。"
 continue: "続ける"
 
 _serverRules:
