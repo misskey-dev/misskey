@@ -1,2 +1,54 @@
 ---
 _lang_: "Norsk Bokmål"
+search: "Søk"
+notifications: "Varsler"
+username: "Brukernavn"
+password: "Passord"
+ok: "OK"
+cancel: "Avbryt"
+noNotifications: "Ingen varsler"
+settings: "Innstillinger"
+profile: "Profil"
+timeline: "Tidslinje"
+login: "Logg inn"
+loggingIn: "Logget inn"
+logout: "Logg ut"
+save: "Lagre"
+favorite: "Favoritt"
+favorites: "Favoritter"
+unfavorite: "Fjern favoritt"
+pin: "Fest"
+delete: "Slett"
+lists: "Lister"
+noLists: "Ingen lister"
+following: "Følger"
+followers: "Følgere"
+error: "Feil"
+follow: "Følger"
+pinned: "Fest"
+remove: "Slett"
+userList: "Lister"
+smtpUser: "Brukernavn"
+smtpPass: "Passord"
+searchByGoogle: "Søk"
+_sfx:
+  notification: "Varsler"
+_widgets:
+  profile: "Profil"
+  notifications: "Varsler"
+  timeline: "Tidslinje"
+_visibility:
+  followers: "Følgere"
+_profile:
+  username: "Brukernavn"
+_exportOrImport:
+  followingList: "Følger"
+  userLists: "Lister"
+_notification:
+  _types:
+    follow: "Følger"
+_deck:
+  _columns:
+    notifications: "Varsler"
+    tl: "Tidslinje"
+    list: "Lister"
