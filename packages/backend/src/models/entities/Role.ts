@@ -152,6 +152,11 @@ export class Role {
 	public isAdministrator: boolean;
 
 	@Column('boolean', {
+		default: true,
+	})
+	public isRoleTimeline: boolean;
+
+	@Column('boolean', {
 		default: false,
 	})
 	public canEditMembersByModerator: boolean;

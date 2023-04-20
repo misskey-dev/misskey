@@ -1280,6 +1280,8 @@ _role:
   iconUrl: "アイコン画像のURL"
   asBadge: "バッジとして表示"
   descriptionOfAsBadge: "オンにすると、ユーザー名の横にロールのアイコンが表示されます。"
+  isRoleTimeline: "ロールタイムラインを公開"
+  descriptionOfIsRoleTimeline: "オンにすると、ロールのタイムラインを公開します。"
   displayOrder: "表示順"
   descriptionOfDisplayOrder: "数値が大きいほどUI上で先頭に表示されます。"
   canEditMembersByModerator: "モデレーターのメンバー編集を許可"
