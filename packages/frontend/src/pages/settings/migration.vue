@@ -1,8 +1,33 @@
 <template>
 <div class="_gaps_m">
-	<FormSection first>
-		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
+	<MkFolder :default-open="true">
+		<template #icon><i class="ti ti-plane-arrival"></i></template>
+		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
+		<template #caption>{{ i18n.ts._accountMigration.moveFromSub }}</template>
+
 		<div class="_gaps_m">
+			<FormInfo warn>
+				{{ i18n.ts._accountMigration.moveFromDescription }}
+			</FormInfo>
+			<div>
+				<MkButton :disabled="accountAliases.length >= 5" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</div>
+			<div class="_gaps">
+				<MkInput v-for="(_, i) in accountAliases" v-model="accountAliases[i]">
+					<template #prefix><i class="ti ti-plane-arrival"></i></template>
+					<template #label>{{ i18n.t('_accountMigration.moveFromLabel', { n: i + 1 }) }}</template>
+				</MkInput>
+			</div>
+		</div>
+	</MkFolder>
+
+	<MkFolder :default-open="false">
+		<template #icon><i class="ti ti-plane-departure"></i></template>
+		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
+
+		<div class="_gaps_m">
+			<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
 			<div>
 				<MkInput v-model="moveToAccount">
 					<template #prefix><i class="ti ti-plane-departure"></i></template>
@@ -13,34 +38,16 @@
 				<MkButton inline primary :disabled="!moveToAccount" @click="move"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
 			</div>
 		</div>
-	</FormSection>
-	<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
-
-	<FormSection>
-		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
-		<div class="_gaps_m">
-			<div v-for="(_, i) in accountAliases">
-				<MkInput v-model="accountAliases[i]">
-					<template #prefix><i class="ti ti-plane-arrival"></i></template>
-					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
-				</MkInput>
-			</div>
-			<div>
-				<MkButton :disabled="accountAliases.length >= 5" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
-			</div>
-		</div>
-	</FormSection>
-	<FormInfo warn>{{ i18n.ts._accountMigration.moveFromDescription }}</FormInfo>
+	</MkFolder>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import FormSection from '@/components/form/section.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -69,6 +76,7 @@ async function save(): Promise<void> {
 	os.apiWithDialog('i/update', {
 		alsoKnownAs,
 	});
+	accountAliases.value = alsoKnownAs.length === 0 ? [''] : alsoKnownAs;
 }
 
 definePageMetadata({
