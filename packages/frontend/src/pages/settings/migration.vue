@@ -60,7 +60,7 @@ async function move(): Promise<void> {
 	});
 }
 
-function add() {
+function add(): void {
 	accountAliases.value.push('');
 }
 
