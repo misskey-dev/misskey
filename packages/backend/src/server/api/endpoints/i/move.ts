@@ -30,7 +30,7 @@ export const meta = {
 		destinationAccountForbids: {
 			message:
 				'Destination account doesn\'t have proper \'Known As\' alias, or has already moved.',
-			code: 'REMOTE_ACCOUNT_FORBIDS',
+			code: 'DESTINATION_ACCOUNT_FORBIDS',
 			id: 'b5c90186-4ab0-49c8-9bba-a1f766282ba4',
 		},
 		rootForbidden: {

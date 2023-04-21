@@ -251,7 +251,7 @@ describe('Account Move', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'REMOTE_ACCOUNT_FORBIDS');
+			assert.strictEqual(res.body.error.code, 'DESTINATION_ACCOUNT_FORBIDS');
 			assert.strictEqual(res.body.error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
 		});
 
@@ -310,7 +310,7 @@ describe('Account Move', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 400);
-			assert.strictEqual(res.body.error.code, 'REMOTE_ACCOUNT_FORBIDS');
+			assert.strictEqual(res.body.error.code, 'DESTINATION_ACCOUNT_FORBIDS');
 			assert.strictEqual(res.body.error.id, 'b5c90186-4ab0-49c8-9bba-a1f766282ba4');
 		});
 
