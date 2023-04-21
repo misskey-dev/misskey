@@ -186,6 +186,12 @@ export class AccountMoveService {
 		});
 		if (oldJoinings.length === 0) return;
 
+		const existingUserListIds = await this.userListJoiningsRepository.find({
+			where: {
+				userId: dst.id,
+			},
+		}).then(joinings => joinings.map(joining => joining.userListId));
+
 		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
@@ -197,6 +203,7 @@ export class AccountMoveService {
 			return id;
 		};
 		for (const joining of oldJoinings) {
+			if (existingUserListIds.includes(joining.userListId)) continue; // skip if dst exists in this user's list
 			newJoinings.set(genId(), {
 				createdAt: new Date(),
 				userId: dst.id,

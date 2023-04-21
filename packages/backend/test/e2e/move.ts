@@ -148,11 +148,11 @@ describe('Account Move', () => {
 			await api('/i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`],
 			}, root);
-			const list = await api('/users/lists/create', {
+			const listRoot = await api('/users/lists/create', {
 				name: rndstr('0-9a-z', 8),
 			}, root);
 			await api('/users/lists/push', {
-				listId: list.body.id,
+				listId: listRoot.body.id,
 				userId: alice.id,
 			}, root);
 
@@ -195,6 +195,13 @@ describe('Account Move', () => {
 
 			await api('/following/create', {
 				userId: dave.id,
+			}, eve);
+			const listEve = await api('/users/lists/create', {
+				name: rndstr('0-9a-z', 8),
+			}, eve);
+			await api('/users/lists/push', {
+				listId: listEve.body.id,
+				userId: bob.id,
 			}, eve);
 
 			await api('/i/update', {
@@ -266,11 +273,16 @@ describe('Account Move', () => {
 			assert.strictEqual(mutings.body.length, 1);
 			assert.strictEqual(mutings.body[0].muteeId, bob.id);
 
-			const lists = await api('/users/lists/list', {}, root);
-			assert.strictEqual(lists.status, 200);
-			assert.strictEqual(lists.body[0].userIds.length, 2);
-			assert.ok(lists.body[0].userIds.find((id: string) => id === bob.id));
-			assert.ok(lists.body[0].userIds.find((id: string) => id === alice.id));
+			const rootLists = await api('/users/lists/list', {}, root);
+			assert.strictEqual(rootLists.status, 200);
+			assert.strictEqual(rootLists.body[0].userIds.length, 2);
+			assert.ok(rootLists.body[0].userIds.find((id: string) => id === bob.id));
+			assert.ok(rootLists.body[0].userIds.find((id: string) => id === alice.id));
+
+			const eveLists = await api('/users/lists/list', {}, eve);
+			assert.strictEqual(eveLists.status, 200);
+			assert.strictEqual(eveLists.body[0].userIds.length, 1);
+			assert.ok(eveLists.body[0].userIds.find((id: string) => id === bob.id));
 		});
 
 		test('Unable to move if the destination account has already moved.', async () => {
