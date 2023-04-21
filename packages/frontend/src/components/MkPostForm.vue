@@ -49,6 +49,7 @@
 	<MkNoteSimple v-if="reply" :class="$style.targetNote" :note="reply"/>
 	<MkNoteSimple v-if="renote" :class="$style.targetNote" :note="renote"/>
 	<div v-if="quoteId" :class="$style.withQuote"><i class="ti ti-quote"></i> {{ i18n.ts.quoteAttached }}<button @click="quoteId = null"><i class="ti ti-x"></i></button></div>
+	<MkEventEditor v-if="event" v-model="event" @destroyed="event = null"/>
 	<div v-if="visibility === 'specified'" :class="$style.toSpecified">
 		<span style="margin-right: 8px;">{{ i18n.ts.recipient }}</span>
 		<div :class="$style.visibleUsers">
@@ -75,6 +76,7 @@
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile" class="_button" :class="$style.footerButton" @click="chooseFileFrom"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
+			<button v-tooltip="i18n.ts.event" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: event }]" @click="toggleEvent"><i class="ti ti-calendar"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
@@ -103,6 +105,7 @@ import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
 import MkPollEditor from '@/components/MkPollEditor.vue';
+import MkEventEditor from '@/components/MkEventEditor.vue';
 import { host, url } from '@/config';
 import { erase, unique } from '@/scripts/array';
 import { extractMentions } from '@/scripts/extract-mentions';
@@ -164,6 +167,12 @@ let poll = $ref<{
 	multiple: boolean;
 	expiresAt: string | null;
 	expiredAfter: string | null;
+} | null>(null);
+let event = $ref<{
+	title: string;
+	start: string;
+	end: string | null;
+	metadata: Record<string, string>;
 } | null>(null);
 let useCw = $ref(false);
 let showPreview = $ref(false);
@@ -235,7 +244,7 @@ const maxTextLength = $computed((): number => {
 
 const canPost = $computed((): boolean => {
 	return !posting && !posted &&
-		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote) &&
+		(1 <= textLength || 1 <= files.length || !!poll || !!props.renote || !!event) &&
 		(textLength <= maxTextLength) &&
 		(!poll || poll.choices.length >= 2);
 });
@@ -331,6 +340,7 @@ function watchForDraft() {
 	watch($$(useCw), () => saveDraft());
 	watch($$(cw), () => saveDraft());
 	watch($$(poll), () => saveDraft());
+	watch($$(event), () => saveDraft());
 	watch($$(files), () => saveDraft(), { deep: true });
 	watch($$(visibility), () => saveDraft());
 	watch($$(localOnly), () => saveDraft());
@@ -371,6 +381,19 @@ function togglePoll() {
 			multiple: false,
 			expiresAt: null,
 			expiredAfter: null,
+		};
+	}
+}
+
+function toggleEvent() {
+	if (event) {
+		event = null;
+	} else {
+		event = {
+			title: '',
+			start: (new Date()).toString(),
+			end: null,
+			metadata: {},
 		};
 	}
 }
@@ -513,6 +536,7 @@ function clear() {
 	text = '';
 	files = [];
 	poll = null;
+	event = null;
 	quoteId = null;
 }
 
@@ -626,6 +650,7 @@ function saveDraft() {
 			localOnly: localOnly,
 			files: files,
 			poll: poll,
+			event: event,
 		},
 	};
 
@@ -687,6 +712,7 @@ async function post(ev?: MouseEvent) {
 		renoteId: props.renote ? props.renote.id : quoteId ? quoteId : undefined,
 		channelId: props.channel ? props.channel.id : undefined,
 		poll: poll,
+		event: event,
 		cw: useCw ? cw ?? '' : undefined,
 		localOnly: localOnly,
 		visibility: visibility,
@@ -847,6 +873,9 @@ onMounted(() => {
 				if (draft.data.poll) {
 					poll = draft.data.poll;
 				}
+				if (draft.data.event) {
+					event = draft.data.event;
+				}
 			}
 		}
 
@@ -863,6 +892,14 @@ onMounted(() => {
 					multiple: init.poll.multiple,
 					expiresAt: init.poll.expiresAt,
 					expiredAfter: init.poll.expiredAfter,
+				};
+			}
+			if (init.event) {
+				event = {
+					title: init.event.title,
+					start: init.event.start,
+					end: init.event.end,
+					metadata: init.event.metadata,
 				};
 			}
 			visibility = init.visibility;
