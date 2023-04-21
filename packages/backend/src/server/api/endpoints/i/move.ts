@@ -9,10 +9,11 @@ import { ApiError } from '@/server/api/error.js';
 
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+
+import * as Acct from '@/misc/acct.js';
 
 export const meta = {
 	tags: ['users'],
@@ -75,7 +76,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.config)
 		private config: Config,
 
-		private userEntityService: UserEntityService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private accountMoveService: AccountMoveService,
@@ -90,17 +90,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// abort if user has already moved
 			if (me.movedToUri) throw new ApiError(meta.errors.alreadyMoved);
 
-			let unfiltered = ps.moveToAccount;
-			if (!unfiltered) throw new ApiError(meta.errors.noSuchUser);
-
 			// parse user's input into the destination account
-			if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
-			if (unfiltered.startsWith('@')) unfiltered = unfiltered.substring(1);
-			if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchUser);
-
-			const userAddress = unfiltered.split('@');
+			const { username, host } = Acct.parse(ps.moveToAccount);
 			// retrieve the destination account
-			let moveTo = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
+			let moveTo = await this.remoteUserResolveService.resolveUser(username, host).catch((e) => {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.noSuchUser);
 			});

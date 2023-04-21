@@ -3,6 +3,7 @@ import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
+import * as Acct from '@/misc/acct.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
@@ -303,14 +304,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				// Parse user's input into the old account
 				const newAlsoKnownAs = new Set<string>();
 				for (const line of ps.alsoKnownAs) {
-					let unfiltered = line;
-					if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
-					if (unfiltered.startsWith('@')) unfiltered = unfiltered.substring(1);
-					if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchUser);
+					if (!line) throw new ApiError(meta.errors.noSuchUser);
+					const { username, host } = Acct.parse(line);
 
-					const userAddress = unfiltered.split('@');
 					// Retrieve the old account
-					const knownAs = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
+					const knownAs = await this.remoteUserResolveService.resolveUser(username, host).catch((e) => {
 						this.apiLoggerService.logger.warn(`failed to resolve dstination user: ${e}`);
 						throw new ApiError(meta.errors.noSuchUser);
 					});
