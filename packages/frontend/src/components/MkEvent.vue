@@ -1,7 +1,7 @@
 <template>
 <div><span class="mfm-x2">{{ note.event!.title }}</span></div>
-<div>Start: {{ note.event!.start }}</div>
-<div v-if="!!note.event!.end">End: {{ note.event!.end }}</div>
+<div>Start: {{ (new Date(note.event!.start)).toLocaleString() }}</div>
+<div v-if="!!note.event!.end">End: {{ (new Date(note.event!.end)).toLocaleString() }}</div>
 <ul>
 	<li v-for="k in Object.keys(note.event!.metadata)" :key="k">
 		{{ k }}: {{ note.event!.metadata[k] }}
