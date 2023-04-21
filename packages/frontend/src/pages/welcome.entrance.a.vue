@@ -112,7 +112,7 @@ function showMenu(ev) {
 		},
 	}, null, {
 		text: i18n.ts.help,
-		icon: 'ti ti-question-circle',
+		icon: 'ti ti-help-circle',
 		action: () => {
 			window.open('https://misskey-hub.net/help.md', '_blank');
 		},
