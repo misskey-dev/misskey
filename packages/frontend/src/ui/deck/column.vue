@@ -318,10 +318,7 @@ function onDrop(ev) {
 	background: var(--panelHeaderBg);
 	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
-
-	&, * {
-		user-select: none;
-	}
+	user-select: none;
 }
 
 .title {
