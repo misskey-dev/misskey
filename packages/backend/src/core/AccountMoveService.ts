@@ -102,32 +102,6 @@ export class AccountMoveService {
 		return iObj;
 	}
 
-	/**
-	 * Create an alias of an old remote account.
-	 *
-	 * The user's new profile will be published to the followers.
-	 */
-	@bindThis
-	public async createAlias(me: LocalUser, updates: Partial<User>): Promise<unknown> {
-		await this.usersRepository.update(me.id, updates);
-		me = Object.assign(me, updates);
-
-		// Publish meUpdated event
-		const iObj = await this.userEntityService.pack<true, true>(me.id, me, {
-			detail: true,
-			includeSecrets: true,
-		});
-		this.globalEventService.publishMainStream(me.id, 'meUpdated', iObj);
-
-		if (me.isLocked === false) {
-			await this.userFollowingService.acceptAllFollowRequests(me);
-		}
-
-		this.accountUpdateService.publishToFollowers(me.id);
-
-		return iObj;
-	}
-
 	@bindThis
 	public async move(src: User, dst: User): Promise<void> {
 		// Copy blockings and mutings, and update lists
@@ -144,9 +118,9 @@ export class AccountMoveService {
 		// follow the new account and unfollow the old one
 		const proxy = await this.proxyAccountService.fetch();
 		const followings = await this.followingsRepository.findBy({
-				followeeId: src.id,
-				followerHost: IsNull(), // follower is local
-				followerId: proxy ? Not(proxy.id) : undefined,
+			followeeId: src.id,
+			followerHost: IsNull(), // follower is local
+			followerId: proxy ? Not(proxy.id) : undefined,
 		});
 		const followJobs = followings.map(following => ({
 			from: { id: following.followerId },

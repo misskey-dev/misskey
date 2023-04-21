@@ -19,7 +19,10 @@ import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { CacheService } from '@/core/CacheService.js';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -70,6 +73,24 @@ export const meta = {
 			message: 'Too many muted words.',
 			code: 'TOO_MANY_MUTED_WORDS',
 			id: '010665b1-a211-42d2-bc64-8f6609d79785',
+		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5',
+		},
+
+		uriNull: {
+			message: 'User ActivityPup URI is null.',
+			code: 'URI_NULL',
+			id: 'bf326f31-d430-4f97-9933-5d61e4d48a23',
+		},
+
+		forbiddenToSetYourself: {
+			message: 'You can\'t set yourself as your own alias.',
+			code: 'FORBIDDEN_TO_SET_YOURSELF',
+			id: '25c90186-4ab0-49c8-9bba-a1fa6c202ba4',
 		},
 	},
 
@@ -129,6 +150,12 @@ export const paramDef = {
 		emailNotificationTypes: { type: 'array', items: {
 			type: 'string',
 		} },
+		alsoKnownAs: {
+			type: 'array',
+			maxItems: 5,
+			uniqueItems: true,
+			items: { type: 'string' },
+		},
 	},
 } as const;
 
@@ -153,6 +180,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
+		private accountMoveService: AccountMoveService,
+		private remoteUserResolveService: RemoteUserResolveService,
+		private apiLoggerService: ApiLoggerService,
 		private hashtagService: HashtagService,
 		private roleService: RoleService,
 		private cacheService: CacheService,
@@ -258,6 +288,41 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.map(x => {
 						return { name: x.name, value: x.value };
 					});
+			}
+
+			if (ps.alsoKnownAs) {
+				if (_user.movedToUri) {
+					throw new ApiError({
+						message: 'You have moved your account.',
+						code: 'YOUR_ACCOUNT_MOVED',
+						id: '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31',
+						httpStatusCode: 403,
+					});
+				}
+
+				// Parse user's input into the old account
+				const newAlsoKnownAs: string[] = [];
+				for (const line of ps.alsoKnownAs) {
+					let unfiltered = line;
+					if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
+					if (unfiltered.startsWith('@')) unfiltered = unfiltered.substring(1);
+					if (!unfiltered.includes('@')) throw new ApiError(meta.errors.noSuchUser);
+
+					const userAddress = unfiltered.split('@');
+					// Retrieve the old account
+					const knownAs = await this.remoteUserResolveService.resolveUser(userAddress[0], userAddress[1]).catch((e) => {
+						this.apiLoggerService.logger.warn(`failed to resolve dstination user: ${e}`);
+						throw new ApiError(meta.errors.noSuchUser);
+					});
+					if (knownAs.id === _user.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
+
+					const toUrl = this.accountMoveService.getUserUri(knownAs);
+					if (!toUrl) throw new ApiError(meta.errors.uriNull);
+
+					newAlsoKnownAs.push(toUrl);
+				}
+
+				updates.alsoKnownAs = newAlsoKnownAs.length > 0 ? newAlsoKnownAs : null;
 			}
 
 			//#region emojis/tags

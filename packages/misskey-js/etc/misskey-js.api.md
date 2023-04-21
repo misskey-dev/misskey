@@ -1357,10 +1357,6 @@ export type Endpoints = {
         req: TODO;
         res: TODO;
     };
-    'i/known-as': {
-        req: TODO;
-        res: TODO;
-    };
     'i/notifications': {
         req: {
             limit?: number;
@@ -1511,6 +1507,7 @@ export type Endpoints = {
             mutedWords?: string[][];
             mutingNotificationTypes?: Notification_2['type'][];
             emailNotificationTypes?: string[];
+            alsoKnownAs?: string[];
         };
         res: MeDetailed;
     };
@@ -2348,6 +2345,7 @@ type LiteInstanceMetadata = {
         imageUrl: string;
     }[];
     translatorAvailable: boolean;
+    serverRules: string[];
 };
 
 // @public (undocumented)
@@ -2663,6 +2661,7 @@ type UserDetailed = UserLite & {
     lang: string | null;
     lastFetchedAt?: DateString;
     location: string | null;
+    movedToUri: string;
     notesCount: number;
     pinnedNoteIds: ID[];
     pinnedNotes: Note[];
@@ -2697,7 +2696,6 @@ type UserLite = {
     avatarUrl: string;
     avatarBlurhash: string;
     alsoKnownAs: string[];
-    movedToUri: any;
     emojis: {
         name: string;
         url: string;

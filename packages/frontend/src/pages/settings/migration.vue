@@ -2,35 +2,51 @@
 <div class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
-		<MkInput v-model="moveToAccount" manual-save>
-			<template #prefix><i class="ti ti-plane-departure"></i></template>
-			<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
-		</MkInput>
+		<div class="_gaps_m">
+			<div>
+				<MkInput v-model="moveToAccount">
+					<template #prefix><i class="ti ti-plane-departure"></i></template>
+					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
+				</MkInput>
+			</div>
+			<div>
+				<MkButton inline primary :disabled="!moveToAccount" @click="move"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
+			</div>
+		</div>
 	</FormSection>
 	<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
 
 	<FormSection>
 		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>
-		<MkInput v-model="accountAlias" manual-save>
-			<template #prefix><i class="ti ti-plane-arrival"></i></template>
-			<template #label>{{ i18n.ts._accountMigration.moveFromLabel }}</template>
-		</MkInput>
+		<div class="_gaps_m">
+			<div v-for="(_, i) in accountAliases">
+				<MkInput v-model="accountAliases[i]">
+					<template #prefix><i class="ti ti-plane-arrival"></i></template>
+					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
+				</MkInput>
+			</div>
+			<div>
+				<MkButton :disabled="accountAliases.length >= 5" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+			</div>
+		</div>
 	</FormSection>
 	<FormInfo warn>{{ i18n.ts._accountMigration.moveFromDescription }}</FormInfo>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import FormSection from '@/components/form/section.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const moveToAccount = ref('');
-const accountAlias = ref('');
+const accountAliases = ref(['']);
 
 async function move(): Promise<void> {
 	const account = moveToAccount.value;
@@ -44,20 +60,16 @@ async function move(): Promise<void> {
 	});
 }
 
-async function save(): Promise<void> {
-	const account = accountAlias.value;
-	os.apiWithDialog('i/known-as', {
-		alsoKnownAs: account,
-	});
+function add() {
+	accountAliases.value.push('');
 }
 
-watch(accountAlias, async () => {
-	await save();
-});
-
-watch(moveToAccount, async () => {
-	await move();
-});
+async function save(): Promise<void> {
+	const alsoKnownAs = accountAliases.value.map(alias => alias.trim()).filter(alias => alias !== '');
+	os.apiWithDialog('i/update', {
+		alsoKnownAs,
+	});
+}
 
 definePageMetadata({
 	title: i18n.ts.accountMigration,
