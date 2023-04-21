@@ -350,7 +350,6 @@ describe('Account Move', () => {
 			'/gallery/posts/like',
 			'/gallery/posts/unlike',
 			'/gallery/posts/update',
-			'/i/update',
 			'/i/move',
 			'/notes/create',
 			'/notes/polls/vote',
@@ -391,6 +390,16 @@ describe('Account Move', () => {
 
 		test('Prohibit access after moving: /drive/files/create', async () => {
 			const res = await uploadFile(alice);
+
+			assert.strictEqual(res.status, 403);
+			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
+			assert.strictEqual(res.body.error.id, '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31');
+		});
+
+		test('Prohibit updating alsoKnownAs after moving', async () => {
+			const res = await api('/i/update', {
+				alsoKnownAs: [`@eve@${url.hostname}`],
+			}, alice);
 
 			assert.strictEqual(res.status, 403);
 			assert.strictEqual(res.body.error.code, 'YOUR_ACCOUNT_MOVED');
