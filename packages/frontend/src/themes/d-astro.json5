@@ -57,6 +57,7 @@
 		listItemHoverBg: 'rgba(255, 255, 255, 0.03)',
 		scrollbarHandle: 'rgba(255, 255, 255, 0.2)',
 		wallpaperOverlay: 'rgba(0, 0, 0, 0.5)',
+		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		scrollbarHandleHover: 'rgba(255, 255, 255, 0.4)',
 		X2: ':darken<2<@panel',
 		X3: 'rgba(255, 255, 255, 0.05)',

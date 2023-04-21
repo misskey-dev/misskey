@@ -316,6 +316,7 @@ function onDrop(ev) {
 	font-size: 0.9em;
 	color: var(--panelHeaderFg);
 	background: var(--panelHeaderBg);
+	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
 }
