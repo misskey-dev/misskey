@@ -291,7 +291,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 
-			const connection = await initTestDb(false);
+			const connection = await initTestDb(true);
 			const Users = connection.getRepository(User);
 			const newBob = await Users.findOneByOrFail({ id: bob.id });
 			assert.strictEqual(newBob.followersCount, 0);
@@ -353,7 +353,7 @@ describe('Endpoints', () => {
 
 			assert.strictEqual(res.status, 200);
 
-			const connection = await initTestDb(false);
+			const connection = await initTestDb(true);
 			const Users = connection.getRepository(User);
 			const newBob = await Users.findOneByOrFail({ id: bob.id });
 			assert.strictEqual(newBob.followersCount, 0);
