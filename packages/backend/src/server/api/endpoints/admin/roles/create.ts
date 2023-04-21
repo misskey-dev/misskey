@@ -25,7 +25,7 @@ export const paramDef = {
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
-		isExplorable: { type: 'boolean' },
+		isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility
 		asBadge: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
 		displayOrder: { type: 'number' },
@@ -43,7 +43,6 @@ export const paramDef = {
 		'isPublic',
 		'isModerator',
 		'isAdministrator',
-		'isExplorable',
 		'asBadge',
 		'canEditMembersByModerator',
 		'displayOrder',
@@ -84,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				displayOrder: ps.displayOrder,
 				policies: ps.policies,
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
-	
+
 			this.globalEventService.publishInternalEvent('roleCreated', created);
 
 			return await this.roleEntityService.pack(created, me);
