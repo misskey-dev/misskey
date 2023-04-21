@@ -12,6 +12,7 @@
 		fg: '#636b71',
 		panel: '#fff',
 		divider: 'rgb(230 233 234)',
+		panelHeaderDivider: '@divider',
 		renote: '@accent',
 		link: '@accent',
 		mention: '@accent',
