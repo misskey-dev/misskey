@@ -10,7 +10,7 @@
 				{{ i18n.ts._accountMigration.moveFromDescription }}
 			</FormInfo>
 			<div>
-				<MkButton :disabled="accountAliases.length >= 5" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton :disabled="accountAliases.length >= 10" inline style="margin-right: 8px;" @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 				<MkButton inline primary @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 			<div class="_gaps">

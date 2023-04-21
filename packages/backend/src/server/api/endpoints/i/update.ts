@@ -153,7 +153,7 @@ export const paramDef = {
 		} },
 		alsoKnownAs: {
 			type: 'array',
-			maxItems: 5,
+			maxItems: 10,
 			uniqueItems: true,
 			items: { type: 'string' },
 		},
