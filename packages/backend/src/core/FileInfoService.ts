@@ -323,8 +323,16 @@ export class FileInfoService {
 				return TYPE_SVG;
 			}
 
+			// HTML5 Video/Audio に対応しているMIME Typeに書き換える
+			let mime = type.mime;
+			if (mime === "audio/x-flac") {
+				mime = "audio/flac";
+			} else if (mime === "audio/vnd.wave") {
+				mime = "audio/wav";
+			}
+
 			return {
-				mime: type.mime,
+				mime: mime,
 				ext: type.ext,
 			};
 		}
