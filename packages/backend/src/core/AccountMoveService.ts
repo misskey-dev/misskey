@@ -10,11 +10,9 @@ import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 import type { User } from '@/models/entities/User.js';
 
 import { IdService } from '@/core/IdService.js';
-import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RelayService } from '@/core/RelayService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -54,8 +52,6 @@ export class AccountMoveService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private globalEventService: GlobalEventService,
-		private userFollowingService: UserFollowingService,
-		private accountUpdateService: AccountUpdateService,
 		private proxyAccountService: ProxyAccountService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private federatedInstanceService: FederatedInstanceService,
@@ -193,7 +189,7 @@ export class AccountMoveService {
 		const newJoinings: Map<string, { createdAt: Date; userId: string; userListId: string; }> = new Map();
 
 		// 重複しないようにIDを生成
-		const genId = () => {
+		const genId = (): string => {
 			let id: string;
 			do {
 				id = this.idService.genId();
@@ -222,8 +218,8 @@ export class AccountMoveService {
 
 	@bindThis
 	public getUserUri(user: User): string {
-			return this.userEntityService.isRemoteUser(user)
-				? user.uri : `${this.config.url}/users/${user.id}`;
+		return this.userEntityService.isRemoteUser(user)
+			? user.uri : `${this.config.url}/users/${user.id}`;
 	}
 
 	@bindThis

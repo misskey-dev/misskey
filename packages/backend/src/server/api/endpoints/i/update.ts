@@ -301,7 +301,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				// Parse user's input into the old account
-				const newAlsoKnownAs: string[] = [];
+				const newAlsoKnownAs = new Set<string>();
 				for (const line of ps.alsoKnownAs) {
 					let unfiltered = line;
 					if (unfiltered.startsWith('acct:')) unfiltered = unfiltered.substring(5);
@@ -319,10 +319,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					const toUrl = this.accountMoveService.getUserUri(knownAs);
 					if (!toUrl) throw new ApiError(meta.errors.uriNull);
 
-					newAlsoKnownAs.push(toUrl);
+					newAlsoKnownAs.add(toUrl);
 				}
 
-				updates.alsoKnownAs = newAlsoKnownAs.length > 0 ? newAlsoKnownAs : null;
+				updates.alsoKnownAs = newAlsoKnownAs.size > 0 ? Array.from(newAlsoKnownAs) : null;
 			}
 
 			//#region emojis/tags
