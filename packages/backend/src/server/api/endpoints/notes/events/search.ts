@@ -35,7 +35,7 @@ export const meta = {
 			message: 'Invalid Parameter',
 			code: 'INVALID_PARAM',
 			id: 'e70903d3-0aa2-44d5-a955-4de5723c603d',
-		}
+		},
 	},
 } as const;
 
@@ -50,7 +50,7 @@ export const paramDef = {
 			nullable: true,
 			description: 'The local host is represented with `null`.',
 		},
-		users: { type: 'array', nullable: true, items: { type: 'object', format: 'misskey:id' } },
+		users: { type: 'array', nullable: true, items: { type: 'string', format: 'misskey:id' } },
 		sinceDate: { type: 'integer', nullable: true },
 		untilDate: { type: 'integer', nullable: true },
 		filters: {
@@ -109,15 +109,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.sinceDate && ps.untilDate && ps.sinceDate > ps.untilDate) throw new ApiError(meta.errors.invalidParam);
-			const sinceDate = ps.sinceDate ? new Date(ps.sinceDate) : new Date();
-			query.andWhere('event.start > :sinceDate', { sinceDate: sinceDate })
-				.andWhere('(event.end IS NULL OR event.end > :sinceDate)', { sinceDate: sinceDate });
+
+			if (ps.sinceDate || ps.sortBy !== 'createdAt') {
+				const sinceDate = ps.sinceDate ? new Date(ps.sinceDate) : new Date();
+				query.andWhere('event.start > :sinceDate', { sinceDate: sinceDate })
+					.andWhere('(event.end IS NULL OR event.end > :sinceDate)', { sinceDate: sinceDate });
+			}
+
 			if (ps.untilDate) {
 				query.andWhere('event.start < :untilDate', { untilDate: new Date(ps.untilDate) });
 			}
 
 			if (ps.sortBy === 'createdAt') {
-				query.orderBy('note.createdAt', 'ASC');
+				query.orderBy('note.createdAt', 'DESC');
 			} else {
 				query.orderBy('event.start', 'ASC');
 			}

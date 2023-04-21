@@ -3,8 +3,8 @@
 <div>Start: {{ note.event!.start }}</div>
 <div v-if="!!note.event!.end">End: {{ note.event!.end }}</div>
 <ul>
-	<li v-for="k in Object.keys(note.event!.metadata)">
-	{{ k }}: {{ note.event!.metadata[k] }}
+	<li v-for="k in Object.keys(note.event!.metadata)" :key="k">
+		{{ k }}: {{ note.event!.metadata[k] }}
 	</li>
 </ul>
 </template>
