@@ -1,6 +1,6 @@
 <template>
 <div v-if="meta" :class="$style.root">
-	<div :class="$style.main">
+	<div :class="[$style.main, $style.panel]">
 		<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.mainIcon"/>
 		<button class="_button _acrylic" :class="$style.mainMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 		<div :class="$style.mainFg">
@@ -24,20 +24,23 @@
 		</div>
 	</div>
 	<div v-if="stats" :class="$style.stats">
-		<div :class="$style.statsItem">
+		<div :class="[$style.statsItem, $style.panel]">
 			<div :class="$style.statsItemLabel">{{ i18n.ts.users }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalUsersCount"/></div>
 		</div>
-		<div :class="$style.statsItem">
+		<div :class="[$style.statsItem, $style.panel]">
 			<div :class="$style.statsItemLabel">{{ i18n.ts.notes }}</div>
 			<div :class="$style.statsItemCount"><MkNumber :value="stats.originalNotesCount"/></div>
 		</div>
 	</div>
-	<div v-if="instance.policies.ltlAvailable" :class="$style.tl">
+	<div v-if="instance.policies.ltlAvailable" :class="[$style.tl, $style.panel]">
 		<div :class="$style.tlHeader">{{ i18n.ts.letsLookAtTimeline }}</div>
 		<div :class="$style.tlBody">
 			<MkTimeline src="local"/>
 		</div>
+	</div>
+	<div :class="[$style.activeUsersChart, $style.panel]">
+		<XActiveUsersChart/>
 	</div>
 </div>
 </template>
@@ -57,6 +60,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import number from '@/filters/number';
 import MkNumber from '@/components/MkNumber.vue';
+import XActiveUsersChart from '@/components/MkVisitorDashboard.ActiveUsersChart.vue';
 
 let meta = $ref<Instance>();
 let stats = $ref(null);
@@ -119,11 +123,14 @@ function exploreOtherServers() {
 	padding: 32px 0 0 0;
 }
 
-.main {
+.panel {
 	position: relative;
 	background: var(--panel);
 	border-radius: var(--radius);
 	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
+}
+
+.main {
 	text-align: center;
 }
 
@@ -185,11 +192,7 @@ function exploreOtherServers() {
 }
 
 .statsItem {
-	position: relative;
-	background: var(--panel);
-	border-radius: var(--radius);
 	overflow: clip;
-	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 	padding: 16px 20px;
 }
 
@@ -205,11 +208,7 @@ function exploreOtherServers() {
 }
 
 .tl {
-	position: relative;
-	background: var(--panel);
-	border-radius: var(--radius);
 	overflow: clip;
-	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
 }
 
 .tlHeader {
@@ -220,5 +219,9 @@ function exploreOtherServers() {
 .tlBody {
 	height: 350px;
 	overflow: auto;
+}
+
+.activeUsersChart {
+
 }
 </style>
