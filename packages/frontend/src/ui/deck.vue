@@ -153,6 +153,7 @@ const addColumn = async (ev) => {
 		'mentions',
 		'direct',
 		'roleTimeline',
+		'otherServerLocalTimeline',
 	];
 
 	const { canceled, result: column } = await os.select({
