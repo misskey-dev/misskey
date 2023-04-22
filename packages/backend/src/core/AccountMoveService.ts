@@ -336,13 +336,6 @@ export class AccountMoveService {
 						resultUser = src;
 					}
 					if (instant && resultUser) return resultUser;
-					/*
-					if (!resultUser || !resultUser.movedAt) {
-						resultUser = oldAccount;
-					} else if (resultUser.movedAt.getTime() > (oldAccount.movedAt?.getTime() ?? 0)) {
-						resultUser = oldAccount;
-					}
-					*/
 				}
 			} catch {
 				/* skip if any error happens */
