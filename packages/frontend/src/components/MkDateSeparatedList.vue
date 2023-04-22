@@ -68,6 +68,26 @@ export default defineComponent({
 			
 			if (props.otherServer) {
 				if (item.user.host !== props.otherDomain) {
+					// 入れられたリアクションのドメインを修正
+					if (item.reactions != null) {
+						let reactions = {};
+						let reactinUrl = item.reactionEmojis;
+						for (let key in item.reactions) {
+							if (key.indexOf('@.') !== -1) {
+								let newkey = key.replace('@.', `@${props.otherDomain}`);
+								reactions[newkey] = item.reactions[key];
+
+								// 置き換えたURLを設定
+								let emojiName = newkey.substr(1, newkey.length - 2).split('@')[0];
+								reactinUrl[newkey.substr(1, newkey.length - 2)] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+							} else {
+								reactions[key] = item.reactions[key];
+							}
+						}
+						item.reactions = reactions;
+						item.reactionEmojis = reactinUrl;
+					}
+
 					// カスタム絵文字を置き換える
 					if (item.text != null && item.emojis == null) {
 						{
@@ -84,6 +104,7 @@ export default defineComponent({
 						}
 
 						// ユーザー絵文字を適応
+						if (item.user.name != null)
 						{
 							const m = item.user.name.match(/:.*?:/g);
 							let emojis = {};
@@ -123,6 +144,25 @@ export default defineComponent({
 									item.renote.user.emojis = emojis;
 								}							
 							}
+						}
+						
+						// 入れられたリアクションのドメインを修正
+						if (item.renote.reactions != null) {
+							let reactions = {};
+							let reactinUrl = item.renote.reactionEmojis;
+							for (let key in item.renote.reactions) {
+								if (key.indexOf('@.') !== -1) {
+									let newkey = key.replace('@.', `@${props.otherDomain}`);
+									reactions[newkey] = item.renote.reactions[key];
+									// 置き換えたURLを設定
+									let emojiName = newkey.substr(1, newkey.length - 2).split('@')[0];
+									reactinUrl[newkey.substr(1, newkey.length - 2)] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+								} else {
+									reactions[key] = item.renote.reactions[key];
+								}
+							}
+							item.renote.reactions = reactions;
+							item.renote.reactionEmojis = reactinUrl;
 						}
 					}
 				}
