@@ -27,16 +27,26 @@
 		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
 
 		<div class="_gaps_m">
-			<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
-			<div>
-				<MkInput v-model="moveToAccount" :disabled="!!$i?.movedTo">
+			<FormInfo>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
+
+			<template v-if="$i && !$i.movedTo">
+				<FormInfo>{{ i18n.ts._accountMigration.moveAccountHowTo }}</FormInfo>
+				<FormInfo warn>{{ i18n.ts._accountMigration.moveCannotBeUndone }}</FormInfo>
+
+				<MkInput v-model="moveToAccount">
 					<template #prefix><i class="ti ti-plane-departure"></i></template>
 					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
 				</MkInput>
-			</div>
-			<div>
-				<MkButton inline primary :disabled="!moveToAccount || !!$i?.movedTo" @click="move"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
-			</div>
+				<MkButton inline danger :disabled="!moveToAccount" @click="move">
+					<i class="ti ti-check"></i> {{ i18n.ts._accountMigration.startMigration }}
+				</MkButton>
+			</template>
+			<template v-else-if="$i">
+				<FormInfo warn>{{ i18n.ts._accountMigration.movedAndCannotBeUndone }}</FormInfo>
+				<div>{{ i18n.ts._accountMigration.movedTo }}</div>
+				<MkUserInfo v-if="movedTo" :user="movedTo" class="_panel _shadow" />
+				<FormInfo>{{ i18n.ts._accountMigration.postMigrationNote }}</FormInfo>
+			</template>
 		</div>
 	</MkFolder>
 </div>
@@ -48,20 +58,22 @@ import FormInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkUserInfo from '@/components/MkUserInfo.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i } from '@/account';
 import { toString } from 'misskey-js/built/acct';
+import { UserDetailed } from 'misskey-js/built/entities';
 import { unisonReload } from '@/scripts/unison-reload';
 
 const moveToAccount = ref('');
+const movedTo = ref<UserDetailed>();
 const accountAliases = ref(['']);
 
 async function init() {
 	if ($i?.movedTo) {
-		const movedTo = await os.api('users/show', { userId: $i.movedTo });
-		moveToAccount.value = movedTo ? toString(movedTo) : '';
+		movedTo.value = await os.api('users/show', { userId: $i.movedTo });
 	} else {
 		moveToAccount.value = '';
 	}
