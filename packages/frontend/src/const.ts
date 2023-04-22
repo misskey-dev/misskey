@@ -35,8 +35,8 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'audio/webm',
 
 	'audio/aac',
-	'audio/x-flac',
-	'audio/vnd.wave',
+	'audio/flac',
+	'audio/wav',
 ];
 /*
 https://github.com/sindresorhus/file-type/blob/main/supported.js
