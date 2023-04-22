@@ -742,42 +742,7 @@ export class ApInboxService {
 		// fetch the new and old accounts
 		const targetUri = getApHrefNullable(activity.target);
 		if (!targetUri) return 'skip: invalid activity target';
-		await Promise.all([
-			this.apPersonService.updatePerson(targetUri),
-			this.apPersonService.updatePerson(actor.uri), // actor may cached for a day or more
-		]);
-		const [newAccount, oldAccount] = await Promise.all([
-			this.apPersonService.resolvePerson(targetUri),
-			this.apPersonService.resolvePerson(actor.uri),
-		]);
 
-		// check if alsoKnownAs of the new account is valid
-		let isValidMove = true;
-		if (oldAccount.uri) {
-			if (!newAccount.alsoKnownAs?.includes(oldAccount.uri)) {
-				isValidMove = false;
-			}
-		} else if (!newAccount.alsoKnownAs?.includes(this.userEntityService.getUserUri(oldAccount))) {
-			isValidMove = false;
-		}
-		if (newAccount.movedToUri) {
-			isValidMove = false;
-		}
-		if (!isValidMove) {
-			return 'skip: destination account invalid';
-		}
-
-		// add target uri to movedToUri in order to indicate that the user has moved
-		if (oldAccount.movedToUri !== targetUri) {
-			const movedAt = new Date();
-			await this.usersRepository.update(oldAccount.id, { movedToUri: targetUri, movedAt });
-			oldAccount.movedToUri = targetUri;
-			oldAccount.movedAt = movedAt;
-		}
-
-		// Move!
-		await this.accountMoveService.postMoveProcess(oldAccount, newAccount);
-
-		return 'ok';
+		return await this.apPersonService.updatePerson(actor.uri) ?? 'skip: nothing to do';
 	}
 }

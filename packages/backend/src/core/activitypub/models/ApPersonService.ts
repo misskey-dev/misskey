@@ -285,6 +285,7 @@ export class ApPersonService implements OnModuleInit {
 					name: truncate(person.name, nameLength),
 					isLocked: !!person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
+					movedAt: person.movedTo ? new Date() : null,
 					alsoKnownAs: person.alsoKnownAs,
 					isExplorable: !!person.discoverable,
 					username: person.preferredUsername,
@@ -407,12 +408,15 @@ export class ApPersonService implements OnModuleInit {
 	/**
 	 * Personの情報を更新します。
 	 * Misskeyに対象のPersonが登録されていなければ無視します。
+	 * もしアカウントの移行が確認された場合、アカウント移行処理を行います。
+	 * 
 	 * @param uri URI of Person
 	 * @param resolver Resolver
 	 * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
+	 * @param movePreventUris ここに指定されたURIがPersonのmovedToに指定されていたり10回より多く回っている場合これ以上アカウント移行を行わない（無限ループ防止）
 	 */
 	@bindThis
-	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject): Promise<void> {
+	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
@@ -481,7 +485,11 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: !!person.discoverable,
-		} as Partial<User>;
+		} as Partial<RemoteUser>;
+
+		const moving = !exist.movedToUri && updates.movedToUri;
+		// Add movedAt if moving detected
+		if (moving) updates.movedAt = new Date();
 
 		if (avatar) {
 			updates.avatarId = avatar.id;
@@ -527,23 +535,17 @@ export class ApPersonService implements OnModuleInit {
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 
-		this.cacheService.uriPersonCache.set(uri, { ...exist, ...updates });
+		const updated = { ...exist, ...updates };
+
+		this.cacheService.uriPersonCache.set(uri, updated);
 
 		// Copy blocking and muting if we know its moving for the first time.
-		if (!exist.movedToUri && updates.movedToUri) {
-			try {
-				const newAccount = await this.resolvePerson(updates.movedToUri);
-				// Aggressively block and/or mute the new account:
-				// This does NOT check alsoKnownAs, assuming that other implmenetations properly check alsoKnownAs when firing account migration
-				await Promise.all([
-					this.accountMoveService.copyBlocking(exist, newAccount),
-					this.accountMoveService.copyMutings(exist, newAccount),
-					this.accountMoveService.updateLists(exist, newAccount),
-				]);
-			} catch {
-				/* skip if any error happens */
-			}
+		if (moving) {
+			return this.processRemoteMove(updated, movePreventUris)
+				.catch(() => 'failed');
 		}
+
+		return 'skip';
 	}
 
 	/**
@@ -627,5 +629,48 @@ export class ApPersonService implements OnModuleInit {
 				});
 			}
 		});
+	}
+
+	/**
+	 * リモート由来のアカウント移行処理を行います
+	 * @param src 移行元アカウント（リモートかつupdatePerson後である必要がある、というかこれ自体がupdatePersonで呼ばれる前提）
+	 * @param movePreventUris ここに列挙されたURIにsrc.movedToUriが含まれる場合、移行処理はしない（無限ループ防止）
+	 */
+	@bindThis
+	private async processRemoteMove(src: RemoteUser, movePreventUris: string[] = []): Promise<string> {
+		if (!src.movedToUri) return 'skip: no movedToUri';
+		if (src.uri === src.movedToUri) return 'skip: movedTo itself'; // ？？？
+		if (movePreventUris.length > 10) return 'skip: too many moves';
+
+		// まずサーバー内で検索して様子見
+		let dst = await this.fetchPerson(src.movedToUri);
+
+		if (dst && this.userEntityService.isLocalUser(dst)) {
+			// targetがローカルユーザーだった場合データベースから引っ張ってくる
+			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as LocalUser;
+		} else if (dst) {
+			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
+
+			// targetを見つけたことがあるならtargetをupdatePersonする
+			await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
+			dst = await this.fetchPerson(src.movedToUri) ?? dst;
+		} else {
+			// targetが知らない人だったらresolvePerson
+			dst = await this.resolvePerson(src.movedToUri);
+		}
+ 
+		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
+		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
+		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';
+		if (!dst.alsoKnownAs || dst.alsoKnownAs.length === 0) {
+			return 'skip: dst.alsoKnownAs is empty';
+		}
+		if (!dst.alsoKnownAs?.includes(src.uri)) {
+			return 'skip: alsoKnownAs does not include from.uri';
+		}
+
+		await this.accountMoveService.postMoveProcess(src, dst);
+
+		return 'ok';
 	}
 }
