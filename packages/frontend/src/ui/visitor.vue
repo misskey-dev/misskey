@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="main">
-		<div class="header">
+		<div v-if="!root" class="header">
 			<div v-if="narrow === false" class="wide">
 				<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i> {{ i18n.ts.home }}</MkA>
 				<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i> {{ i18n.ts.timeline }}</MkA>
