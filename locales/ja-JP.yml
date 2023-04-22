@@ -1961,6 +1961,7 @@ _deck:
     mentions: "あなた宛て"
     direct: "ダイレクト"
     roleTimeline: "ロールタイムライン"
+    otherServerLocalTimeline: "他サーバーローカルタイムライン"
 
 _dialog:
   charactersExceeded: "最大文字数を超えています！ 現在 {current} / 制限 {max}"

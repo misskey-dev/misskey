@@ -23,6 +23,7 @@ export type Column = {
 	listId?: string;
 	channelId?: string;
 	roleId?: string;
+	serverUrl?: string;
 	includingTypes?: typeof notificationTypes[number][];
 	tl?: 'home' | 'local' | 'social' | 'global';
 };

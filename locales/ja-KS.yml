@@ -1891,6 +1891,7 @@ _deck:
     mentions: "あんた宛て"
     direct: "ダイレクト"
     roleTimeline: "ロールタイムライン"
+    otherServerLocalTimeline: "他サーバーローカルタイムライン"
 _dialog:
   charactersExceeded: "最大の文字数を上回っとるで！今は {current} / 最大でも {max}"
   charactersBelow: "最小の文字数を下回っとるで！今は {current} / 最低でも {min}"

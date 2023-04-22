@@ -9,6 +9,8 @@ import { stream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
+import { defined } from 'chart.js/dist/helpers/helpers.core';
+import { Stream } from 'misskey-js';
 
 const props = defineProps<{
 	src: string;
@@ -16,6 +18,7 @@ const props = defineProps<{
 	antenna?: string;
 	channel?: string;
 	role?: string;
+	server?: string;
 	sound?: boolean;
 }>();
 
@@ -131,6 +134,26 @@ if (props.src === 'antenna') {
 		roleId: props.role,
 	});
 	connection.on('note', prepend);
+} else if (props.src === 'otherServerLocalTimeline') {
+	if (props.server != null) {
+		let serverDomain = '';
+		if (props.server.indexOf('://') !== -1) {
+			const split = props.server.split('://');
+			const protocol = split[0];
+			const domain = split[1];
+			serverDomain = `${protocol}://${domain}`;
+		} else {
+			serverDomain = `https://${props.server.split('/')[0]}`;
+		}
+
+		console.log(serverDomain);
+
+		endpoint = `${serverDomain}/api/notes/local-timeline`;
+
+		let st = new Stream(serverDomain, null);
+		connection = st.useChannel('localTimeline');
+		connection.on('note', prepend);
+	}
 }
 
 const pagination = {
@@ -140,7 +163,7 @@ const pagination = {
 };
 
 onUnmounted(() => {
-	connection.dispose();
+	if (connection) connection.dispose();
 	if (connection2) connection2.dispose();
 });
 
