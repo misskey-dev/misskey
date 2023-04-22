@@ -51,20 +51,40 @@ import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
+import { toString } from 'misskey-js/built/acct';
+import { unisonReload } from '@/scripts/unison-reload';
 
 const moveToAccount = ref('');
 const accountAliases = ref(['']);
+
+async function init() {
+	if ($i?.movedTo) {
+		const movedTo = await os.api('users/show', { userId: $i.movedTo });
+		moveToAccount.value = movedTo ? toString(movedTo) : '';
+	} else {
+		moveToAccount.value = '';
+	}
+
+	if ($i?.alsoKnownAs && $i.alsoKnownAs.length > 0) {
+		const alsoKnownAs = await os.api('users/show', { userIds: $i.alsoKnownAs });
+		accountAliases.value = (alsoKnownAs && alsoKnownAs.length > 0) ? alsoKnownAs.map(user => `@${toString(user)}`) : [''];
+	} else {
+		accountAliases.value = [''];
+	}
+}
 
 async function move(): Promise<void> {
 	const account = moveToAccount.value;
 	const confirm = await os.confirm({
 		type: 'warning',
-		text: i18n.t('_accountMigration.migrationConfirm', { account: account.toString() }),
+		text: i18n.t('_accountMigration.migrationConfirm', { account }),
 	});
 	if (confirm.canceled) return;
-	os.apiWithDialog('i/move', {
+	await os.apiWithDialog('i/move', {
 		moveToAccount: account,
 	});
+	unisonReload();
 }
 
 function add(): void {
@@ -73,11 +93,14 @@ function add(): void {
 
 async function save(): Promise<void> {
 	const alsoKnownAs = accountAliases.value.map(alias => alias.trim()).filter(alias => alias !== '');
-	os.apiWithDialog('i/update', {
+	const i = await os.apiWithDialog('i/update', {
 		alsoKnownAs,
 	});
-	accountAliases.value = alsoKnownAs.length === 0 ? [''] : alsoKnownAs;
+	$i.alsoKnownAs = i.alsoKnownAs;
+	init();
 }
+
+init();
 
 definePageMetadata({
 	title: i18n.ts.accountMigration,

@@ -369,8 +369,11 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				url: profile!.url,
 				uri: user.uri,
-				movedToUri: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.uri).catch(() => null) : null,
-				alsoKnownAs: user.alsoKnownAs,
+				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
+				alsoKnownAs: user.alsoKnownAs
+					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
+						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
+					: null,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,

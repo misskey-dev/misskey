@@ -2631,6 +2631,7 @@ type User = UserLite | UserDetailed;
 
 // @public (undocumented)
 type UserDetailed = UserLite & {
+    alsoKnownAs: string[];
     bannerBlurhash: string | null;
     bannerColor: string | null;
     bannerUrl: string | null;
@@ -2661,7 +2662,7 @@ type UserDetailed = UserLite & {
     lang: string | null;
     lastFetchedAt?: DateString;
     location: string | null;
-    movedToUri: string;
+    movedTo: string;
     notesCount: number;
     pinnedNoteIds: ID[];
     pinnedNotes: Note[];
@@ -2695,7 +2696,6 @@ type UserLite = {
     onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
     avatarUrl: string;
     avatarBlurhash: string;
-    alsoKnownAs: string[];
     emojis: {
         name: string;
         url: string;
