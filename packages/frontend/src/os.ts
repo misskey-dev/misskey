@@ -583,7 +583,7 @@ export function post(props: Record<string, any> = {}): Promise<void> {
 		return alert({
 			type: 'error',
 			title: i18n.ts.accountMovedShort,
-			text: i18n.ts.forbiddenBecauseYouAreMigrated,
+			text: i18n.ts.operationForbidden,
 		});
 	}
 
