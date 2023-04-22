@@ -10,7 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
