@@ -48,13 +48,15 @@ describe('Account Move', () => {
 		}, 1000 * 10);
 
 		test('Able to create an alias', async () => {
-			await api('/i/update', {
+			const res = await api('/i/update', {
 				alsoKnownAs: [`@alice@${url.hostname}`],
 			}, bob);
 
 			const newBob = await Users.findOneByOrFail({ id: bob.id });
 			assert.strictEqual(newBob.alsoKnownAs?.length, 1);
 			assert.strictEqual(newBob.alsoKnownAs[0], `${url.origin}/users/${alice.id}`);
+			assert.strictEqual(res.body.alsoKnownAs?.length, 1);
+			assert.strictEqual(res.body.alsoKnownAs[0], alice.id);
 		});
 
 		test('Able to create a local alias without hostname', async () => {
