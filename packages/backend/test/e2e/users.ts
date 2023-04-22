@@ -83,7 +83,7 @@ describe('ユーザー', () => {
 			...userLite(user),
 			url: user.url,
 			uri: user.uri,
-			movedToUri: user.movedToUri,
+			movedTo: user.movedTo,
 			alsoKnownAs: user.alsoKnownAs,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
@@ -348,7 +348,7 @@ describe('ユーザー', () => {
 		// UserDetailedNotMeOnly
 		assert.strictEqual(response.url, null);
 		assert.strictEqual(response.uri, null);
-		assert.strictEqual(response.movedToUri, null);
+		assert.strictEqual(response.movedTo, null);
 		assert.strictEqual(response.alsoKnownAs, null);
 		assert.strictEqual(response.createdAt, new Date(response.createdAt).toISOString());
 		assert.strictEqual(response.updatedAt, null);

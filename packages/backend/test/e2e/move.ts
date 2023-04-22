@@ -282,8 +282,9 @@ describe('Account Move', () => {
 
 			const mutings = await api('/mute/list', {}, dave);
 			assert.strictEqual(mutings.status, 200);
-			assert.strictEqual(mutings.body.length, 1);
+			assert.strictEqual(mutings.body.length, 2);
 			assert.strictEqual(mutings.body[0].muteeId, bob.id);
+			assert.strictEqual(mutings.body[1].muteeId, alice.id);
 
 			const rootLists = await api('/users/lists/list', {}, root);
 			assert.strictEqual(rootLists.status, 200);

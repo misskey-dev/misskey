@@ -5,7 +5,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { LocalUser } from '@/models/entities/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 import type { User } from '@/models/entities/User.js';
 
@@ -154,17 +154,38 @@ export class AccountMoveService {
 	@bindThis
 	public async copyMutings(src: ThinUser, dst: ThinUser): Promise<void> {
 		// Insert new mutings with the same values except mutee
-		const mutings = await this.mutingsRepository.findBy([
+		const oldMutings = await this.mutingsRepository.findBy([
 			{ muteeId: src.id, expiresAt: IsNull() },
 			{ muteeId: src.id, expiresAt: MoreThan(new Date()) },
 		]);
-		const muteIds = mutings.map(mute => mute.id);
-		if (muteIds.length > 0) {
-			await this.mutingsRepository.update({ id: In(muteIds) }, { muteeId: dst.id });
-			for (const muterId of mutings.map(mute => mute.muterId)) {
-				this.cacheService.userMutingsCache.refresh(muterId);
-			}
+		if (oldMutings.length === 0) return;
+
+		// Check if the destination account is already indefinitely muted by the muter
+		const existingMutingsMuterUserIds = await this.mutingsRepository.findBy(
+			{ muteeId: dst.id, expiresAt: IsNull() },
+		).then(mutings => mutings.map(muting => muting.muterId));
+
+		const newMutings: Map<string, { muterId: string; muteeId: string; createdAt: Date; expiresAt: Date | null; }> = new Map();
+
+		// 重複しないようにIDを生成
+		const genId = (): string => {
+			let id: string;
+			do {
+				id = this.idService.genId();
+			} while (newMutings.has(id));
+			return id;
+		};
+		for (const muting of oldMutings) {
+			if (existingMutingsMuterUserIds.includes(muting.muterId)) continue; // skip if already muted indefinitely
+			newMutings.set(genId(), {
+				...muting,
+				createdAt: new Date(),
+				muteeId: dst.id,
+			});
 		}
+
+		const arrayToInsert = Array.from(newMutings.entries()).map(entry => ({ ...entry[1], id: entry[0] }));
+		await this.mutingsRepository.insert(arrayToInsert);
 	}
 
 	/**
