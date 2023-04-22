@@ -236,7 +236,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.localOnly = true;
 
 		if (data.visibility === 'public' && data.channel == null) {
-			if ((data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => data.text!.includes(w))) {
+			if (data.cw != null && (data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => data.text!.includes(w) || data.cw?.includes(w))) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
