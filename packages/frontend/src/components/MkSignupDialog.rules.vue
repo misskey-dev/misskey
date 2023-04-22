@@ -5,6 +5,10 @@
 	</div>
 	<MkSpacer :margin-min="20" :margin-max="28">
 		<div class="_gaps_m">
+			<div v-if="instance.disableRegistration">
+				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
+			</div>
+
 			<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
 
 			<MkFolder v-if="availableServerRules" :default-open="true">
@@ -54,6 +58,7 @@ import { i18n } from '@/i18n';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const availableServerRules = instance.serverRules.length > 0;
 const availableTos = instance.tosUrl != null;
