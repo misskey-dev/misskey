@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (file == null) throw new ApiError(meta.errors.noSuchFile);
 			//if (!file.type.endsWith('/csv')) throw new ApiError(meta.errors.unexpectedFileType);
-			if (file.size > 32 * 1024 * 1024) throw new ApiError(meta.errors.tooBigFile);
+			if (file.size > 50000) throw new ApiError(meta.errors.tooBigFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
 
 			this.queueService.createImportMutingJob(me, file.id);
