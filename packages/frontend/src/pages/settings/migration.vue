@@ -42,10 +42,10 @@
 				</MkButton>
 			</template>
 			<template v-else-if="$i">
+				<FormInfo>{{ i18n.ts._accountMigration.postMigrationNote }}</FormInfo>
 				<FormInfo warn>{{ i18n.ts._accountMigration.movedAndCannotBeUndone }}</FormInfo>
 				<div>{{ i18n.ts._accountMigration.movedTo }}</div>
 				<MkUserInfo v-if="movedTo" :user="movedTo" class="_panel _shadow" />
-				<FormInfo>{{ i18n.ts._accountMigration.postMigrationNote }}</FormInfo>
 			</template>
 		</div>
 	</MkFolder>
