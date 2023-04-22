@@ -75,6 +75,12 @@ export class User {
 	})
 	public movedToUri: string | null;
 
+	@Column('timestamp with time zone', {
+		nullable: true,
+		comment: 'When the user moved to another account',
+	})
+	public movedAt: Date | null;
+
 	@Column('simple-array', {
 		nullable: true,
 		comment: 'URIs the user is known as too',

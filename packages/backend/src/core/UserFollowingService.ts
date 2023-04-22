@@ -22,8 +22,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import Logger from '../logger.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { IsNull } from 'typeorm';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
 
 const logger = new Logger('following/create');
 
@@ -75,7 +75,7 @@ export class UserFollowingService implements OnModuleInit {
 		private federatedInstanceService: FederatedInstanceService,
 		private webhookService: WebhookService,
 		private apRendererService: ApRendererService,
-		private apPersonService: ApPersonService,
+		private accountMoveService: AccountMoveService,
 		private perUserFollowingChart: PerUserFollowingChart,
 		private instanceChart: InstanceChart,
 	) {
@@ -142,43 +142,16 @@ export class UserFollowingService implements OnModuleInit {
 
 			// Automatically accept if the follower is an account who has moved and the locked followee had accepted the old account.
 			if (followee.isLocked && !autoAccept) {
-				let movedFollower = follower;
-
-				if (this.userEntityService.isRemoteUser(movedFollower)) {
-					if ((new Date()).getTime() - (movedFollower.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
-						await this.apPersonService.updatePerson(movedFollower.uri);
-					}
-					movedFollower = await this.apPersonService.fetchPerson(movedFollower.uri) ?? follower;
-				}
-
-				if (movedFollower.alsoKnownAs) {
-					const newUri = this.userEntityService.getUserUri(movedFollower);
-
-					for (const oldUri of movedFollower.alsoKnownAs) {
-						try {
-							let oldAccount = await this.apPersonService.fetchPerson(oldUri);
-							if (!oldAccount) continue; // oldAccountを探してもこのサーバーに存在しない場合はフォロー関係もないということなのでスルー
-
-							if (this.userEntityService.isRemoteUser(movedFollower)) {
-								if ((new Date()).getTime() - (oldAccount.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
-									await this.apPersonService.updatePerson(oldUri);
-								}
-
-								oldAccount = await this.apPersonService.fetchPerson(oldUri) ?? oldAccount;
-							}
-
-							autoAccept = oldAccount.movedToUri === newUri && await this.followingsRepository.exist({
-								where: {
-									followeeId: followee.id,
-									followerId: oldAccount.id,
-								},
-							});
-							if (autoAccept) break;
-						} catch {
-							/* skip if any error happens */
-						}
-					}
-				}
+				autoAccept = !!(await this.accountMoveService.validateAlsoKnownAs(
+					follower,
+					(oldSrc, newSrc) => this.followingsRepository.exist({
+						where: {
+							followeeId: followee.id,
+							followerId: newSrc.id,
+						},
+					}),
+					true,
+				));
 			}
 
 			if (!autoAccept) {
