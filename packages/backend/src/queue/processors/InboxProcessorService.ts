@@ -174,11 +174,8 @@ export class InboxProcessorService {
 
 		// Update stats
 		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
-			this.instancesRepository.update(i.id, {
+			this.federatedInstanceService.update(i.id, {
 				latestRequestReceivedAt: new Date(),
-				isNotResponding: false,
-			});
-			this.federatedInstanceService.updateCachePartial(host, {
 				isNotResponding: false,
 			});
 
