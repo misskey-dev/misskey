@@ -655,7 +655,13 @@ export class ApPersonService implements OnModuleInit {
 			await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
 			dst = await this.fetchPerson(src.movedToUri) ?? dst;
 		} else {
+			if (src.movedToUri.startsWith(`${this.config.url}/`)) {
+				// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
+				return 'fail: movedTo is local but not found';
+			}
+
 			// targetが知らない人だったらresolvePerson
+			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
 			dst = await this.resolvePerson(src.movedToUri);
 		}
  
