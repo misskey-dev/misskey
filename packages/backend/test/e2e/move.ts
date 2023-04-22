@@ -388,6 +388,7 @@ describe('Account Move', () => {
 			'/gallery/posts/like',
 			'/gallery/posts/unlike',
 			'/gallery/posts/update',
+			'/i/claim-achievement',
 			'/i/move',
 			'/i/import-blocking',
 			'/i/import-following',

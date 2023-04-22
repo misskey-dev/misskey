@@ -18,7 +18,7 @@ import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
 import copyToClipboard from './scripts/copy-to-clipboard';
-import { $i } from './account';
+import { showMovedDialog } from './scripts/show-moved-dialog';
 
 export const openingWindowsCount = ref(0);
 
@@ -579,13 +579,7 @@ export function contextMenu(items: MenuItem[] | Ref<MenuItem[]>, ev: MouseEvent)
 }
 
 export function post(props: Record<string, any> = {}): Promise<void> {
-	if ($i && $i.movedTo) {
-		return alert({
-			type: 'error',
-			title: i18n.ts.accountMovedShort,
-			text: i18n.ts.operationForbidden,
-		});
-	}
+	showMovedDialog();
 
 	return new Promise((resolve, reject) => {
 		// NOTE: MkPostFormDialogをdynamic importするとiOSでテキストエリアに自動フォーカスできない
