@@ -22,20 +22,20 @@
 		</div>
 	</MkFolder>
 
-	<MkFolder :default-open="false">
+	<MkFolder :default-open="!!$i?.movedTo">
 		<template #icon><i class="ti ti-plane-departure"></i></template>
 		<template #label>{{ i18n.ts._accountMigration.moveTo }}</template>
 
 		<div class="_gaps_m">
 			<FormInfo warn>{{ i18n.ts._accountMigration.moveAccountDescription }}</FormInfo>
 			<div>
-				<MkInput v-model="moveToAccount">
+				<MkInput v-model="moveToAccount" :disabled="!!$i?.movedTo">
 					<template #prefix><i class="ti ti-plane-departure"></i></template>
 					<template #label>{{ i18n.ts._accountMigration.moveToLabel }}</template>
 				</MkInput>
 			</div>
 			<div>
-				<MkButton inline primary :disabled="!moveToAccount" @click="move"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
+				<MkButton inline primary :disabled="!moveToAccount || !!$i?.movedTo" @click="move"><i class="ti ti-check"></i> {{ i18n.ts.ok }}</MkButton>
 			</div>
 		</div>
 	</MkFolder>
