@@ -1,8 +1,8 @@
 <template>
-<div v-show="user" :class="$style.root">
+<div v-if="user" :class="$style.root">
 	<i class="ti ti-plane-departure" style="margin-right: 8px;"></i>
 	{{ i18n.ts.accountMoved }}
-	<MkMention :class="$style.link" :username="username" :host="host ?? localHost"/>
+	<MkMention :class="$style.link" :username="user.username" :host="user.host ?? localHost"/>
 </div>
 </template>
 
