@@ -94,11 +94,11 @@ export class AccountMoveService {
 
 		// Unfollow
 		const followings = await this.followingsRepository.findBy({
-			followeeId: src.id,
+			followerId: src.id,
 		});
 		this.queueService.createUnfollowJob(followings.map(following => ({
 			from: { id: src.id },
-			to: { id: following.followerId },
+			to: { id: following.followeeId },
 		})));
 
 		// Move!
@@ -120,7 +120,7 @@ export class AccountMoveService {
 			/* skip if any error happens */
 		}
 
-		// follow the new account and unfollow the old one
+		// follow the new account
 		const proxy = await this.proxyAccountService.fetch();
 		const followings = await this.followingsRepository.findBy({
 			followeeId: src.id,

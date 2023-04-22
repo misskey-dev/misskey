@@ -264,7 +264,7 @@ describe('Account Move', () => {
 
 			assert.strictEqual(move.status, 200);
 
-			await sleep(1000 * 1); // wait for jobs to finish
+			await sleep(1000 * 3); // wait for jobs to finish
 
 			const aliceFollowings = await api('/users/following', {
 				userId: alice.id,
