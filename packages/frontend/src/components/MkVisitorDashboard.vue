@@ -190,7 +190,7 @@ function exploreOtherServers() {
 	border-radius: var(--radius);
 	overflow: clip;
 	box-shadow: 0 12px 32px rgb(0 0 0 / 25%);
-	padding: 16px;
+	padding: 16px 20px;
 }
 
 .statsItemLabel {

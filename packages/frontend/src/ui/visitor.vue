@@ -10,20 +10,26 @@
 	</div>
 
 	<div class="main">
-		<XKanban v-if="narrow && !root" class="banner" :powered-by="root"/>
-
+		<div class="header">
+			<div v-if="narrow === false" class="wide">
+				<MkA to="/" class="link" active-class="active"><i class="ti ti-home icon"></i> {{ i18n.ts.home }}</MkA>
+				<MkA v-if="isTimelineAvailable" to="/timeline" class="link" active-class="active"><i class="ti ti-message icon"></i> {{ i18n.ts.timeline }}</MkA>
+				<MkA to="/explore" class="link" active-class="active"><i class="ti ti-hash icon"></i> {{ i18n.ts.explore }}</MkA>
+				<MkA to="/channels" class="link" active-class="active"><i class="ti ti-device-tv icon"></i> {{ i18n.ts.channel }}</MkA>
+			</div>
+			<div v-else-if="narrow === true" class="narrow">
+				<button class="menu _button" @click="showMenu = true">
+					<i class="ti ti-menu-2 icon"></i>
+				</button>
+			</div>
+		</div>
 		<div class="contents">
-			<XHeader v-if="!root" class="header"/>
 			<main v-if="!root" style="container-type: inline-size;">
 				<RouterView/>
 			</main>
 			<main v-else>
 				<RouterView/>
 			</main>
-			<div v-if="!root" class="powered-by">
-				<b><MkA to="/">{{ host }}</MkA></b>
-				<small>Powered by <a href="https://github.com/misskey-dev/misskey" target="_blank">Misskey</a></small>
-			</div>
 		</div>
 	</div>
 
@@ -60,7 +66,6 @@
 <script lang="ts" setup>
 import { ComputedRef, onMounted, provide } from 'vue';
 import XCommon from './_common_/common.vue';
-import XHeader from './visitor.header.vue';
 import { host, instanceName } from '@/config';
 import * as os from '@/os';
 import { instance } from '@/instance';
@@ -203,23 +208,21 @@ defineExpose({
 		flex: 1;
 		min-width: 0;
 
-		> .banner {
-		}
+		> .header {
+			background: var(--panel);
 
-		> .contents {
-			position: relative;
-			z-index: 1;
+			> .wide {
+				line-height: 50px;
+				padding: 0 16px;
 
-			> .powered-by {
-				padding: 28px;
-				font-size: 14px;
-				text-align: center;
-				border-top: 1px solid var(--divider);
+				> .link {
+					padding: 0 16px;
+				}
+			}
 
-				> small {
-					display: block;
-					margin-top: 8px;
-					opacity: 0.5;
+			> .narrow {
+				> .menu {
+					padding: 16px;
 				}
 			}
 		}
