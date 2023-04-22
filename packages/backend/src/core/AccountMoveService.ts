@@ -92,6 +92,15 @@ export class AccountMoveService {
 		const iObj = await this.userEntityService.pack<true, true>(src.id, src, { detail: true, includeSecrets: true });
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
+		// Unfollow
+		const followings = await this.followingsRepository.findBy({
+			followeeId: src.id,
+		});
+		this.queueService.createUnfollowJob(followings.map(following => ({
+			from: { id: src.id },
+			to: { id: following.followerId },
+		})));
+
 		// Move!
 		await this.move(src, dst);
 

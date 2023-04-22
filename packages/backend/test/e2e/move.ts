@@ -266,13 +266,19 @@ describe('Account Move', () => {
 
 			await sleep(1000 * 1); // wait for jobs to finish
 
-			const followings = await api('/users/following', {
+			const aliceFollowings = await api('/users/following', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(aliceFollowings.status, 200);
+			assert.strictEqual(aliceFollowings.body.length, 0);
+
+			const carolFollowings = await api('/users/following', {
 				userId: carol.id,
 			}, carol);
-			assert.strictEqual(followings.status, 200);
-			assert.strictEqual(followings.body.length, 2);
-			assert.strictEqual(followings.body[0].followeeId, bob.id);
-			assert.strictEqual(followings.body[1].followeeId, alice.id);
+			assert.strictEqual(carolFollowings.status, 200);
+			assert.strictEqual(carolFollowings.body.length, 2);
+			assert.strictEqual(carolFollowings.body[0].followeeId, bob.id);
+			assert.strictEqual(carolFollowings.body[1].followeeId, alice.id);
 
 			const blockings = await api('/blocking/list', {}, dave);
 			assert.strictEqual(blockings.status, 200);
