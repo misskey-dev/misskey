@@ -324,7 +324,7 @@ export class FileInfoService {
 			}
 
 			// HTML5 Video/Audio に対応しているMIME Typeに書き換える
-			let mime:string = type.mime;
+			let mime: string = type.mime;
 			if (mime === "audio/x-flac") {
 				mime = "audio/flac";
 			} else if (mime === "audio/vnd.wave") {
