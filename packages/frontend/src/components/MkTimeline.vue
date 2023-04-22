@@ -41,6 +41,23 @@ const prepend = note => {
 	}
 };
 
+const overridePrepend = onnote => {
+	// リモートユーザーの場合はホストを上書きする
+	if (props.server != null) {
+		let serverDomain = '';
+		if (props.server.indexOf('://') !== -1) {
+			const split = props.server.split('://');
+			serverDomain = split[1];
+		} else {
+			serverDomain = props.server.split('/')[0];
+		}
+
+		onnote.user.host = serverDomain;
+	}
+
+	return prepend(onnote);
+};
+
 const onUserAdded = () => {
 	tlComponent.pagingComponent?.reload();
 };
@@ -148,7 +165,7 @@ if (props.src === 'antenna') {
 		endpoint = `${serverDomain}/api/notes/local-timeline`;
 		let st = new Stream(serverDomain, null);
 		connection = st.useChannel('localTimeline');
-		connection.on('note', prepend);
+		connection.on('note', overridePrepend);
 	}
 }
 
