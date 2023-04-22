@@ -223,7 +223,9 @@ export function getNoteMenu(props: {
 	}
 
 	let menu;
-	if ($i) {
+	const otherServer = appearNote.otherServer ?? false;
+	if ($i && !otherServer) {
+
 		const statePromise = os.api('notes/state', {
 			noteId: appearNote.id,
 		});
@@ -353,6 +355,19 @@ export function getNoteMenu(props: {
 			: []
 			)]
 			.filter(x => x !== undefined);
+	} else if (otherServer) {
+		// ほかサーバーのやつだった場合
+		menu = [(appearNote.url || appearNote.uri) ? {
+			icon: 'ti ti-external-link',
+			text: i18n.ts.showOnRemote,
+			action: () => {
+				window.open(appearNote.url ?? appearNote.uri, '_blank');
+			},
+		} : undefined, {
+			icon: 'ti ti-copy',
+			text: i18n.ts.copyContent,
+			action: copyContent,
+		}].filter(x => x !== undefined);
 	} else {
 		menu = [{
 			icon: 'ti ti-external-link',

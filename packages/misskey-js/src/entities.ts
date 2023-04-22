@@ -175,6 +175,8 @@ export type Note = {
 	uri?: string;
 	url?: string;
 	isHidden?: boolean;
+	otherServer?: boolean;
+	otherDomain?: string;
 };
 
 export type NoteReaction = {

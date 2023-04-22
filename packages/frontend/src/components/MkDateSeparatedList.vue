@@ -33,6 +33,21 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
+		otherServer: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		otherDomain: {
+			type: String,
+			required: false,
+			default: '',
+		},
+		otherProtocol: {
+			type: String,
+			required: false,
+			default: '',
+		},
 	},
 
 	setup(props, { slots, expose }) {
@@ -50,6 +65,84 @@ export default defineComponent({
 
 		const renderChildrenImpl = () => props.items.map((item, i) => {
 			if (!slots || !slots.default) return;
+			
+			if (props.otherServer) {
+				if (item.user.host !== props.otherDomain) {
+					// カスタム絵文字を置き換える
+					if (item.text != null && item.emojis == null) {
+						{
+							const m = item.text.match(/:.*?:/g);
+							let emojis = {};
+							if (m != null) {
+								m.forEach((emoji) => {
+									const emojiName = emoji.substr(1, emoji.length - 2);
+									emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+								});
+
+								item.emojis = emojis;
+							}
+						}
+
+						// ユーザー絵文字を適応
+						{
+							const m = item.user.name.match(/:.*?:/g);
+							let emojis = {};
+							if (m != null) {
+								m.forEach((emoji) => {
+									const emojiName = emoji.substr(1, emoji.length - 2);
+									emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+								});
+								item.user.emojis = emojis;
+							}							
+						}
+					}
+					if (item.renote != null) {
+						if (item.renote.text != null && item.renote.emojis == null) {
+							{
+								const m = item.renote.text.match(/:.*?:/g);
+								let emojis = {};
+								if (m != null) {
+									m.forEach((emoji) => {
+										const emojiName = emoji.substr(1, emoji.length - 2);
+										emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+									});
+
+									item.renote.emojis = emojis;
+								}
+							}
+							
+							// ユーザー絵文字を適応
+							{
+								const m = item.renote.user.name.match(/:.*?:/g);
+								let emojis = {};
+								if (m != null) {
+									m.forEach((emoji) => {
+										const emojiName = emoji.substr(1, emoji.length - 2);
+										emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+									});
+									item.renote.user.emojis = emojis;
+								}							
+							}
+						}
+					}
+				}
+
+				item.localOnly = false;
+				item.otherServer = true;
+				item.otherDomain = props.otherDomain;
+				item.otherProtocol = props.otherProtocol;
+				item.url = `${props.otherProtocol}://${props.otherDomain}/notes/${item.id}`;
+				item.user.host = props.otherDomain;
+
+				if (item.renoteId != null) {
+					item.renote.otherServer = true;
+					if ( item.renote.uri == null) {
+						item.renote.uri = `${props.otherProtocol}://${props.otherDomain}/notes/${item.renoteId}`;
+					}
+
+					item.renote.user.host = item.renote.uri.split('://')[1].split('/')[0];
+				}
+			}
 
 			const el = slots.default({
 				item: item,

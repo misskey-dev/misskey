@@ -18,6 +18,9 @@
 				:no-gap="noGap"
 				:ad="true"
 				:class="$style.notes"
+				:other-server="otherServer"
+				:other-protocol="otherProtocol"
+				:other-domain="otherDomain"
 			>
 				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>
@@ -36,6 +39,9 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
+	otherServer?: boolean;
+	otherDomain? : string;
+	otherProtocol?: string;
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();

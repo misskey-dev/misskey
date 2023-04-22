@@ -12,11 +12,15 @@
 	<!--<div v-if="appearNote._prId_" class="tip"><i class="ti ti-speakerphone"></i> {{ i18n.ts.promotion }}<button class="_textButton hide" @click="readPromo()">{{ i18n.ts.hideThisNote }} <i class="ti ti-x"></i></button></div>-->
 	<!--<div v-if="appearNote._featuredId_" class="tip"><i class="ti ti-bolt"></i> {{ i18n.ts.featured }}</div>-->
 	<div v-if="isRenote" :class="$style.renote">
-		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
+		<MkAvatar v-if="note.otherServer" :class="$style.renoteAvatar" :user="note.user" link/>
+		<MkAvatar v-else :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
-				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+				<MkA v-if="note.otherServer" v-user="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+					<MkUserName :user="note.user"/>
+				</MkA>
+				<MkA v-else v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
 				</MkA>
 			</template>
@@ -36,11 +40,13 @@
 		</div>
 	</div>
 	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
-		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
+		<MkAvatar v-if="note.otherServer" :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link/>
+		<MkAvatar v-else :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
 	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
-		<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
+		<MkAvatar v-if="note.otherServer" :class="$style.avatar" :user="appearNote.user" link/>
+		<MkAvatar v-else :class="$style.avatar" :user="appearNote.user" link preview/>
 		<div :class="$style.main">
 			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
@@ -79,7 +85,7 @@
 			</div>
 			<MkReactionsViewer :note="appearNote" :max-number="16">
 				<template #more>
-					<button class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
+					<button v-if="!(note.otherServer ?? false)" class="_button" :class="$style.reactionDetailsButton" @click="showReactions">
 						{{ i18n.ts.more }}
 					</button>
 				</template>
@@ -122,7 +128,10 @@
 <div v-else :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+			<MkA v-if="note.otherServer" v-user="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+			<MkA v-else v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
 				<MkUserName :user="appearNote.user"/>
 			</MkA>
 		</template>
@@ -236,6 +245,8 @@ useNoteCapture({
 });
 
 useTooltip(renoteButton, async (showing) => {
+	if (appearNote.otherServer ?? false) return;
+	
 	const renotes = await os.api('notes/renotes', {
 		noteId: appearNote.id,
 		limit: 11,
@@ -255,6 +266,7 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
+	if (appearNote.otherServer ?? false) return;
 
 	let items = [] as MenuItem[];
 
@@ -325,6 +337,7 @@ function renote(viaKeyboard = false) {
 
 function reply(viaKeyboard = false): void {
 	pleaseLogin();
+	if (appearNote.otherServer ?? false) return;
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
@@ -335,6 +348,7 @@ function reply(viaKeyboard = false): void {
 
 function react(viaKeyboard = false): void {
 	pleaseLogin();
+	if (appearNote.otherServer ?? false) return;
 	if (appearNote.reactionAcceptance === 'likeOnly') {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,

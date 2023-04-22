@@ -4,7 +4,13 @@
 		<i class="ti ti-planet"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.serverUrl" ref="timeline" src="otherServerLocalTimeline" :server="column.serverUrl" @after="() => emit('loaded')"/>
+	<MkTimeline 
+		v-if="column.serverUrl" 
+		ref="timeline" 
+		src="otherServerLocalTimeline" 
+		:server="column.serverUrl" 
+		@after="() => emit('loaded')"
+	/>
 </XColumn>
 </template>
 

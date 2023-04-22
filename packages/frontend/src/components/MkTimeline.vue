@@ -1,5 +1,12 @@
 <template>
-<MkNotes ref="tlComponent" :no-gap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+<MkNotes ref="tlComponent" 
+	:no-gap="!defaultStore.state.showGapBetweenNotesInTimeline" 
+	:pagination="pagination" 
+	:other-server="otherServer" 
+	:other-domain="otherDomain"
+	:other-protocol="otherProtocol"
+	@queue="emit('queue', $event)"
+/>
 </template>
 
 <script lang="ts" setup>
@@ -44,15 +51,10 @@ const prepend = note => {
 const overridePrepend = onnote => {
 	// リモートユーザーの場合はホストを上書きする
 	if (props.server != null) {
-		let serverDomain = '';
-		if (props.server.indexOf('://') !== -1) {
-			const split = props.server.split('://');
-			serverDomain = split[1];
-		} else {
-			serverDomain = props.server.split('/')[0];
-		}
-
-		onnote.user.host = serverDomain;
+		onnote.user.host = otherDomain;
+		onnote.otherServer = true;
+		onnote.otherDomain = `${otherProtocol}://${otherDomain}`;
+		onnote.url = `${otherProtocol}://${otherDomain}/notes/${onnote.id}`;
 	}
 
 	return prepend(onnote);
@@ -76,6 +78,9 @@ let endpoint;
 let query;
 let connection;
 let connection2;
+let otherServer = false;
+let otherDomain = '';
+let	otherProtocol = '';
 
 if (props.src === 'antenna') {
 	endpoint = 'antennas/notes';
@@ -154,18 +159,23 @@ if (props.src === 'antenna') {
 } else if (props.src === 'otherServerLocalTimeline') {
 	if (props.server != null) {
 		let serverDomain = '';
+		let protocol = 'https';
 		if (props.server.indexOf('://') !== -1) {
 			const split = props.server.split('://');
-			const protocol = split[0];
-			const domain = split[1];
-			serverDomain = `${protocol}://${domain}`;
+			protocol = split[0];
+			const domain = split[1].split('/')[0];
+			serverDomain = domain;
 		} else {
-			serverDomain = `https://${props.server.split('/')[0]}`;
+			serverDomain = `${props.server.split('/')[0]}`;
 		}
-		endpoint = `${serverDomain}/api/notes/local-timeline`;
-		let st = new Stream(serverDomain, null);
+
+		endpoint = `${protocol}://${serverDomain}/api/notes/local-timeline`;
+		otherServer = true;
+		otherDomain = serverDomain;
+		otherProtocol = protocol;
+		let st = new Stream(`${protocol}://${serverDomain}`, null);
 		connection = st.useChannel('localTimeline');
-		connection.on('note', overridePrepend);
+		connection.on('note', prepend);
 	}
 }
 

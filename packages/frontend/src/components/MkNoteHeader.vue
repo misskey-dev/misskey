@@ -1,6 +1,9 @@
 <template>
 <header :class="$style.root">
-	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+	<MkA v-if="note.otherServer" v-user="note.user.id" :class="$style.name" :to="userPage(note.user)">
+		<MkUserName :user="note.user"/>
+	</MkA>
+	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
 		<MkUserName :user="note.user"/>
 	</MkA>
 	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
@@ -9,7 +12,10 @@
 		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
 	</div>
 	<div :class="$style.info">
-		<MkA :to="notePage(note)">
+		<button v-if="note.otherServer" ref="renoteTime" :class="$style.renoteTime" class="_button" @click="openNoteWindow(note)">
+				<MkTime :time="note.createdAt"/>
+		</button>
+		<MkA v-else :to="notePage(note)">
 			<MkTime :time="note.createdAt"/>
 		</MkA>
 		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
@@ -34,6 +40,10 @@ defineProps<{
 	note: misskey.entities.Note;
 	pinned?: boolean;
 }>();
+
+function openNoteWindow(note): void {
+	window.open(note.url ?? note.uri, '_blank');
+}
 </script>
 
 <style lang="scss" module>

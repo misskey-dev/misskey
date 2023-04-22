@@ -35,6 +35,7 @@ const buttonEl = shallowRef<HTMLElement>();
 const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 
 const toggleReaction = () => {
+	if (props.note.otherServer ?? false) return;
 	if (!canToggle.value) return;
 
 	const oldReaction = props.note.myReaction;
