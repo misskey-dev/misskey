@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
@@ -90,7 +90,7 @@ export class UserFollowingService implements OnModuleInit {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
-		]);
+		]) as [LocalUser | RemoteUser, LocalUser | RemoteUser];
 
 		// check blocking
 		const [blocking, blocked] = await Promise.all([
@@ -152,7 +152,7 @@ export class UserFollowingService implements OnModuleInit {
 				}
 
 				if (movedFollower.alsoKnownAs) {
-					const newUri = this.userEntityService.isRemoteUser(movedFollower) ? movedFollower.uri : `${this.config.url}/users/${movedFollower.id}`;
+					const newUri = this.userEntityService.getUserUri(movedFollower);
 
 					for (const oldUri of movedFollower.alsoKnownAs) {
 						try {
@@ -374,13 +374,13 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower as PartialLocalUser, followee as PartialRemoteUser), follower));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 
 		if (this.userEntityService.isLocalUser(followee) && this.userEntityService.isRemoteUser(follower)) {
 			// local user has null host
-			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower, followee), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderReject(this.apRendererService.renderFollow(follower as PartialRemoteUser, followee as PartialLocalUser), followee));
 			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 	}
@@ -510,7 +510,7 @@ export class UserFollowingService implements OnModuleInit {
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, requestId ?? `${this.config.url}/follows/${followRequest.id}`));
+			const content = this.apRendererService.addContext(this.apRendererService.renderFollow(follower as PartialLocalUser, followee as PartialRemoteUser, requestId ?? `${this.config.url}/follows/${followRequest.id}`));
 			this.queueService.deliver(follower, content, followee.inbox, false);
 		}
 	}
@@ -525,7 +525,7 @@ export class UserFollowingService implements OnModuleInit {
 		},
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower, followee), follower));
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderFollow(follower as PartialLocalUser | PartialRemoteUser, followee as PartialRemoteUser), follower));
 
 			if (this.userEntityService.isLocalUser(follower)) { // 本来このチェックは不要だけどTSに怒られるので
 				this.queueService.deliver(follower, content, followee.inbox, false);
@@ -570,7 +570,7 @@ export class UserFollowingService implements OnModuleInit {
 		await this.insertFollowingDoc(followee, follower);
 
 		if (this.userEntityService.isRemoteUser(follower) && this.userEntityService.isLocalUser(followee)) {
-			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee, request.requestId!), followee));
+			const content = this.apRendererService.addContext(this.apRendererService.renderAccept(this.apRendererService.renderFollow(follower, followee as PartialLocalUser, request.requestId!), followee));
 			this.queueService.deliver(followee, content, follower.inbox, false);
 		}
 

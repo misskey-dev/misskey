@@ -253,7 +253,19 @@ export type LocalUser = User & {
 	uri: null;
 }
 
+export type PartialLocalUser = Partial<User> & {
+	id: User['id'];
+	host: null;
+	uri: null;
+}
+
 export type RemoteUser = User & {
+	host: string;
+	uri: string;
+}
+
+export type PartialRemoteUser = Partial<User> & {
+	id: User['id'];
 	host: string;
 	uri: string;
 }

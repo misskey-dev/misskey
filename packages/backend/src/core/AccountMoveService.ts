@@ -4,7 +4,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 import type { User } from '@/models/entities/User.js';
@@ -69,8 +69,8 @@ export class AccountMoveService {
 	 * After delivering Move activity, its local followers unfollow the old account and then follow the new one.
 	 */
 	@bindThis
-	public async moveFromLocal(src: LocalUser, dst: User): Promise<unknown> {
-		const dstUri = this.getUserUri(dst);
+	public async moveFromLocal(src: LocalUser, dst: LocalUser | RemoteUser): Promise<unknown> {
+		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
 		const update = {} as Partial<User>;
@@ -251,12 +251,6 @@ export class AccountMoveService {
 				this.queueService.createFollowJob([{ from: { id: proxy.id }, to: { id: dst.id } }]);
 			}
 		}
-	}
-
-	@bindThis
-	public getUserUri(user: User): string {
-		return this.userEntityService.isRemoteUser(user)
-			? user.uri : `${this.config.url}/users/${user.id}`;
 	}
 
 	@bindThis

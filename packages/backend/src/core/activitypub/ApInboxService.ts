@@ -757,7 +757,7 @@ export class ApInboxService {
 			if (!newAccount.alsoKnownAs?.includes(oldAccount.uri)) {
 				isValidMove = false;
 			}
-		} else if (!newAccount.alsoKnownAs?.includes(this.accountMoveService.getUserUri(oldAccount))) {
+		} else if (!newAccount.alsoKnownAs?.includes(this.userEntityService.getUserUri(oldAccount))) {
 			isValidMove = false;
 		}
 		if (newAccount.movedToUri) {

@@ -314,7 +314,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					});
 					if (knownAs.id === _user.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
 
-					const toUrl = this.accountMoveService.getUserUri(knownAs);
+					const toUrl = this.userEntityService.getUserUri(knownAs);
 					if (!toUrl) throw new ApiError(meta.errors.uriNull);
 
 					newAlsoKnownAs.add(toUrl);

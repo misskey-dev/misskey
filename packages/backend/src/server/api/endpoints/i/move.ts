@@ -7,11 +7,14 @@ import { DI } from '@/di-symbols.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
+import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 import * as Acct from '@/misc/acct.js';
 
@@ -81,6 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private accountMoveService: AccountMoveService,
 		private getterService: GetterService,
 		private apPersonService: ApPersonService,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// check parameter
@@ -97,8 +101,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.noSuchUser);
 			});
-			const destination = await this.getterService.getUser(moveTo.id);
-			const newUri = this.accountMoveService.getUserUri(destination);
+			const destination = await this.getterService.getUser(moveTo.id) as LocalUser | RemoteUser;
+			const newUri = this.userEntityService.getUserUri(destination);
 
 			// update local db
 			await this.apPersonService.updatePerson(newUri);
@@ -106,7 +110,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			moveTo = await this.apPersonService.resolvePerson(newUri);
 
 			// make sure that the user has indicated the old account as an alias
-			const fromUrl = `${this.config.url}/users/${me.id}`;
+			const fromUrl = this.userEntityService.genLocalUserUri(me.id);
 			let allowed = false;
 			if (moveTo.alsoKnownAs) {
 				for (const knownAs of moveTo.alsoKnownAs) {

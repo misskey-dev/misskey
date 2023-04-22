@@ -5,7 +5,7 @@ import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { BlockingsRepository, MutingsRepository, FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { RemoteUser } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
@@ -210,22 +210,22 @@ export class ApPersonService implements OnModuleInit {
 	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string): Promise<User | null> {
+	public async fetchPerson(uri: string): Promise<LocalUser | RemoteUser | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
-		const cached = this.cacheService.uriPersonCache.get(uri);
+		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null;
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
-			const u = await this.usersRepository.findOneBy({ id });
+			const u = await this.usersRepository.findOneBy({ id }) as LocalUser;
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.usersRepository.findOneBy({ uri });
+		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser;
 
 		if (exist) {
 			this.cacheService.uriPersonCache.set(uri, exist);
@@ -240,7 +240,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Personを作成します。
 	 */
 	@bindThis
-	public async createPerson(uri: string, resolver?: Resolver): Promise<User> {
+	public async createPerson(uri: string, resolver?: Resolver): Promise<RemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		if (uri.startsWith(this.config.url)) {
@@ -553,7 +553,7 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
+	public async resolvePerson(uri: string, resolver?: Resolver): Promise<LocalUser | RemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		//#region このサーバーに既に登録されていたらそれを返す
