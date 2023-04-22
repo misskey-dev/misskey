@@ -96,14 +96,14 @@ export class AccountMoveService {
 		const iObj = await this.userEntityService.pack<true, true>(src.id, src, { detail: true, includeSecrets: true });
 		this.globalEventService.publishMainStream(src.id, 'meUpdated', iObj);
 
-		// Unfollow
+		// Unfollow after 24 hours
 		const followings = await this.followingsRepository.findBy({
 			followerId: src.id,
 		});
-		this.queueService.createUnfollowJob(followings.map(following => ({
+		this.queueService.createDelayedUnfollowJob(followings.map(following => ({
 			from: { id: src.id },
 			to: { id: following.followeeId },
-		})));
+		})), process.env.NODE_ENV === 'test' ? 10000 : 1000 * 60 * 60 * 24);
 
 		await this.postMoveProcess(src, dst);
 
