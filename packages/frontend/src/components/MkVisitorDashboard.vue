@@ -137,8 +137,8 @@ function exploreOtherServers() {
 .mainIcon {
 	width: 85px;
 	margin-top: -47px;
-	border-radius: 100%;
 	vertical-align: bottom;
+	filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
 }
 
 .mainMenu {
