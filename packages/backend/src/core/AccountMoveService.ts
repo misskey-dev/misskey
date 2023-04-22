@@ -70,14 +70,18 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async moveFromLocal(src: LocalUser, dst: LocalUser | RemoteUser): Promise<unknown> {
+		const srcUri = this.userEntityService.getUserUri(src);
 		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
-		const update = {} as Partial<User>;
+		const update = {} as Partial<LocalUser>;
 		update.alsoKnownAs = src.alsoKnownAs?.includes(dstUri) ? src.alsoKnownAs : src.alsoKnownAs?.concat([dstUri]) ?? [dstUri];
 		update.movedToUri = dstUri;
 		await this.usersRepository.update(src.id, update);
-		src = Object.assign(src, update);
+		Object.assign(src, update);
+
+		// Update cache
+		this.cacheService.uriPersonCache.set(srcUri, src);
 
 		const srcPerson = await this.apRendererService.renderPerson(src);
 		const updateAct = this.apRendererService.addContext(this.apRendererService.renderUpdate(srcPerson, src));
@@ -101,14 +105,13 @@ export class AccountMoveService {
 			to: { id: following.followeeId },
 		})));
 
-		// Move!
-		await this.move(src, dst);
+		await this.postMoveProcess(src, dst);
 
 		return iObj;
 	}
 
 	@bindThis
-	public async move(src: User, dst: User): Promise<void> {
+	public async postMoveProcess(src: User, dst: User): Promise<void> {
 		// Copy blockings and mutings, and update lists
 		try {
 			await Promise.all([

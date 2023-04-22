@@ -5,7 +5,7 @@ import rndstr from 'rndstr';
 import { loadConfig } from '@/config.js';
 import { User, UsersRepository } from '@/models/index.js';
 import { jobQueue } from '@/boot/common.js';
-import { uploadFile, signup, startServer, initTestDb, api, sleep } from '../utils.js';
+import { uploadFile, signup, startServer, initTestDb, api, sleep, successfulApiCall } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Account Move', () => {
@@ -346,9 +346,13 @@ describe('Account Move', () => {
 		});
 
 		test('A locked account automatically accept the follow request if it had already accepted the old account.', async () => {
-			await api('/following/create', {
-				userId: frank.id,
-			}, bob);
+			await successfulApiCall({
+				endpoint: '/following/create',
+				parameters: {
+					userId: frank.id,
+				},
+				user: bob,
+			});
 			const followers = await api('/users/followers', {
 				userId: frank.id,
 			}, frank);
