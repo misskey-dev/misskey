@@ -243,7 +243,7 @@ function onDrop(ev) {
 <style lang="scss" module>
 .root {
 	--root-margin: 10px;
-	--deckColumnHeaderHeight: 40px;
+	--deckColumnHeaderHeight: 38px;
 
 	height: 100%;
 	overflow: clip;
