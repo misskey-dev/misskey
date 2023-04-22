@@ -66,7 +66,15 @@ export class FederatedInstanceService {
 
 	@bindThis
 	public async update(id: Instance['id'], data: Partial<Instance>): Promise<void> {
-		const result = await this.instancesRepository.update(id, data);
+		const result = await this.instancesRepository.createQueryBuilder().update()
+			.set(data)
+			.where('id = :id', { id })
+			.returning('*')
+			.execute()
+			.then((response) => {
+				return response.raw[0];
+			});
+
 		const updated = result.raw[0];
 	
 		this.federatedInstanceCache.set(updated.host, updated);
