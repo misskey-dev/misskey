@@ -145,11 +145,7 @@ if (props.src === 'antenna') {
 		} else {
 			serverDomain = `https://${props.server.split('/')[0]}`;
 		}
-
-		console.log(serverDomain);
-
 		endpoint = `${serverDomain}/api/notes/local-timeline`;
-
 		let st = new Stream(serverDomain, null);
 		connection = st.useChannel('localTimeline');
 		connection.on('note', prepend);

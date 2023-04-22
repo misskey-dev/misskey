@@ -14,27 +14,22 @@ export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(en
 
 	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
 		// もしendpointのアドレスがapiUrlと違う場合はtokenは付与しない
-		console.log(endpoint);
 		let isUseToken = true;
 		if (endpoint.indexOf('://') > -1) {
 			const p = endpoint.substring(endpoint.indexOf('://') + 3);
 			const sp = p.split('/');
 			const domain = sp[0];
-			console.log(domain);
 			if (domain !== apiUrl) {
 				isUseToken = false;
 			}
 		}
-
-		console.log(isUseToken);
 
 		if (isUseToken) {
 			// Append a credential
 			if ($i) (data as any).i = $i.token;
 			if (token !== undefined) (data as any).i = token;
 		}
-
-
+		
 		// Send request
 		window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
 			method: 'POST',
