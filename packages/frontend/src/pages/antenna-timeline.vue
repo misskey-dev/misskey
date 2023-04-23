@@ -106,7 +106,7 @@ definePageMetadata(computed(() => antenna ? {
 			margin: 0 auto;
 			padding: 8px 16px;
 			border-radius: 32px;
-			pointer-events: all;
+			pointer-events: auto;
 		}
 	}
 
