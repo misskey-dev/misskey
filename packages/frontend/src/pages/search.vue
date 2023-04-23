@@ -50,6 +50,14 @@
 					<option value="startDate">{{ 'Event Date' }}</option>
 					<option value="createdAt">{{ 'New' }}</option>
 				</MkSelect>
+				<section>
+					<MkInput v-model="startDate" small type="date" class="input">
+						<template #label>{{ "Start Date" }}</template>
+					</MkInput>
+					<MkInput v-model="endDate" small type="date" class="input">
+						<template #label>{{ "End Date" }}</template>
+					</MkInput>
+				</section>
 				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 			</div>
 
@@ -96,6 +104,8 @@ let eventSort = $ref('startDate');
 let notePagination = $ref();
 let userPagination = $ref();
 let eventPagination = $ref();
+let startDate = $ref(null);
+let endDate = $ref(null);
 
 const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
@@ -152,8 +162,10 @@ async function search() {
 			endpoint: 'notes/events/search',
 			limit: 10,
 			params: {
-				query: searchQuery,
+				query: !searchQuery ? undefined : searchQuery,
 				sortBy: eventSort,
+				sinceDate: startDate ? (new Date(startDate)).getTime() : undefined,
+				untilDate: endDate ? (new Date(endDate)).getTime() + 1000 * 3600 * 24 : undefined,
 			},
 		};
 
