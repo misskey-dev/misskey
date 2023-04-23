@@ -183,6 +183,7 @@ definePageMetadata(computed(() => ({
 	z-index: 1000;
 	width: 100%;
 	margin: calc(-0.675em - 8px) 0;
+	pointer-events: none;
 
 	&:first-child {
 		margin-top: calc(-0.675em - 8px - var(--margin));
@@ -190,9 +191,10 @@ definePageMetadata(computed(() => ({
 
 	> button {
 		display: block;
-		margin: var(--margin) auto 0 auto;
+		margin: 0 auto;
 		padding: 8px 16px;
 		border-radius: 32px;
+		pointer-events: all;
 	}
 }
 
