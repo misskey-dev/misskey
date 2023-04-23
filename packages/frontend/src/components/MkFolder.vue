@@ -65,7 +65,7 @@ const getBgColor = (el: HTMLElement) => {
 	}
 };
 
-let rootEl = $ref<HTMLElement>();
+let rootEl = $shallowRef<HTMLElement>();
 let bgSame = $ref(false);
 let opened = $ref(props.defaultOpen);
 let openedAtLeastOnce = $ref(props.defaultOpen);

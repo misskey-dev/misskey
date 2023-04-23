@@ -33,7 +33,7 @@ import { $i } from '@/account';
 
 let notes = $ref<Note[]>([]);
 let isScrolling = $ref(false);
-let scrollEl = $ref<HTMLElement>();
+let scrollEl = $shallowRef<HTMLElement>();
 
 os.apiGet('notes/featured').then(_notes => {
 	notes = _notes;
