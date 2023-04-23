@@ -33,6 +33,11 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
+		getDate: {
+			type: Function, // Note => date string
+			required: false,
+			default: undefined,
+		}
 	},
 
 	setup(props, { slots, expose }) {
@@ -58,7 +63,7 @@ export default defineComponent({
 
 			if (
 				i !== props.items.length - 1 &&
-				new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()
+				new Date(getDateKey(item)).getDate() !== new Date(getDateKey(props.items[i + 1])).getDate()
 			) {
 				const separator = h('div', {
 					class: $style['separator'],
@@ -72,12 +77,12 @@ export default defineComponent({
 						h('i', {
 							class: `ti ti-chevron-up ${$style['date-1-icon']}`,
 						}),
-						getDateText(item.createdAt),
+						getDateText(getDateKey(item)),
 					]),
 					h('span', {
 						class: $style['date-2'],
 					}, [
-						getDateText(props.items[i + 1].createdAt),
+						getDateText(getDateKey(props.items[i + 1])),
 						h('i', {
 							class: `ti ti-chevron-down ${$style['date-2-icon']}`,
 						}),
@@ -96,6 +101,8 @@ export default defineComponent({
 				}
 			}
 		});
+
+		const getDateKey = (item: MisskeyEntity): string => props.getDate ? props.getDate(item) : item.createdAt;
 
 		const renderChildren = () => {
 			const children = renderChildrenImpl();

@@ -39,6 +39,23 @@
 			</MkFoldableSection>
 		</div>
 	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'event'" :content-max="800">
+		<div class="_gaps">
+			<div class="_gaps">
+				<MkSelect v-model="eventSort" small>
+					<template #label>{{ 'Sort By' }}</template>
+					<option value="startDate">{{ 'Event Date' }}</option>
+					<option value="createdAt">{{ 'New' }}</option>
+				</MkSelect>
+				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
+			</div>
+
+			<MkFoldableSection v-if="eventPagination">
+				<template #header>{{ i18n.ts.searchResult }}</template>
+				<MkNotes :key="key" :pagination="eventPagination" :get-date="eventSort === 'startDate' ? note => note.event.start : undefined"/>
+			</MkFoldableSection>
+		</div>
+	</MkSpacer>
 </MkStickyContainer>
 </template>
 
@@ -49,6 +66,7 @@ import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
@@ -71,8 +89,10 @@ let key = $ref('');
 let tab = $ref('note');
 let searchQuery = $ref('');
 let searchOrigin = $ref('combined');
+let eventSort = $ref('startDate');
 let notePagination = $ref();
 let userPagination = $ref();
+let eventPagination = $ref();
 
 const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
 
@@ -85,7 +105,8 @@ onMounted(() => {
 async function search() {
 	const query = searchQuery.toString().trim();
 
-	if (query == null || query === '') return;
+	// only notes/users search use the query string. event does not use it
+	if ((query == null || query === '') && tab !== 'event') return;
 
 	if (query.startsWith('https://')) {
 		const promise = os.api('ap/show', {
@@ -123,6 +144,19 @@ async function search() {
 				origin: searchOrigin,
 			},
 		};
+	} else if (tab === 'event') {
+		eventPagination = {
+			endpoint: 'notes/events/search',
+			limit: 10,
+			params: {
+				sortBy: eventSort,
+			},
+		};
+
+		// only refresh search on query/key change
+		key = JSON.stringify(eventPagination);
+
+		return;
 	}
 
 	key = query;
@@ -138,6 +172,10 @@ const headerTabs = $computed(() => [{
 	key: 'user',
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
+}, {
+	key: 'event',
+	title: 'Events',
+	icon: 'ti ti-calendar',
 }]);
 
 definePageMetadata(computed(() => ({

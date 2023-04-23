@@ -3,11 +3,11 @@
 	<MkStickyContainer>
 		<template #header>
 			<MkTab v-model="include" :class="$style.tab">
-				<option :value="null">{{ i18n.ts.events || 'Events' }}</option>
 				<option value="upcoming">{{ i18n.ts.upcomingEvents || 'Upcoming' }}</option>
+				<option :value="null">{{ i18n.ts.events || 'Events' }}</option>
 			</MkTab>
 		</template>
-		<MkNotes :no-gap="true" :pagination="pagination" :class="$style.tl"/>
+		<MkNotes :no-gap="true" :pagination="pagination" :class="$style.tl" :get-date="include === 'upcoming' ? note => note.event.start : undefined "/>
 	</MkStickyContainer>
 </MkSpacer>
 </template>
@@ -23,7 +23,7 @@ const props = defineProps<{
 	user: misskey.entities.UserDetailed;
 }>();
 
-const include = ref<string | null>(null);
+const include = ref<string | null>('upcoming');
 
 const pagination = {
 	endpoint: 'notes/events/search' as const,
