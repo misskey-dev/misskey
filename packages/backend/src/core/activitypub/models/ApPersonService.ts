@@ -485,10 +485,15 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: !!person.discoverable,
-		} as Partial<RemoteUser>;
+		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
-		const moving = !exist.movedToUri && updates.movedToUri;
-		// Add movedAt if moving detected
+		const moving =
+			// 移行先がない→ある
+			(!exist.movedToUri && updates.movedToUri) ||
+			// 移行先がある→別のもの
+			(exist.movedToUri !== updates.movedToUri && exist.movedToUri && updates.movedToUri);
+			// 移行先がある→ない、ない→ないは無視
+
 		if (moving) updates.movedAt = new Date();
 
 		if (avatar) {
@@ -539,8 +544,14 @@ export class ApPersonService implements OnModuleInit {
 
 		this.cacheService.uriPersonCache.set(uri, updated);
 
-		// Copy blocking and muting if we know its moving for the first time.
-		if (moving) {
+		// 移行処理を行う
+		if (updated.movedAt && (
+			// 初めて移行する場合はmovedAtがnullなので移行処理を許可
+			exist.movedAt == null ||
+			// 以前のmovingから14日以上経過した場合のみ移行処理を許可
+			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
+			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
+		)) {
 			return this.processRemoteMove(updated, movePreventUris)
 				.catch(() => 'failed');
 		}
@@ -639,7 +650,7 @@ export class ApPersonService implements OnModuleInit {
 	@bindThis
 	private async processRemoteMove(src: RemoteUser, movePreventUris: string[] = []): Promise<string> {
 		if (!src.movedToUri) return 'skip: no movedToUri';
-		if (src.uri === src.movedToUri) return 'skip: movedTo itself'; // ？？？
+		if (src.uri === src.movedToUri) return 'skip: movedTo itself (src)'; // ？？？
 		if (movePreventUris.length > 10) return 'skip: too many moves';
 
 		// まずサーバー内で検索して様子見
@@ -657,7 +668,7 @@ export class ApPersonService implements OnModuleInit {
 		} else {
 			if (src.movedToUri.startsWith(`${this.config.url}/`)) {
 				// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
-				return 'fail: movedTo is local but not found';
+				return 'failed: movedTo is local but not found';
 			}
 
 			// targetが知らない人だったらresolvePerson
