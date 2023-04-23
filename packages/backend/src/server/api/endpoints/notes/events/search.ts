@@ -47,11 +47,6 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		host: {
-			type: 'string',
-			nullable: true,
-			description: 'The local host is represented with `null`.',
-		},
 		users: { type: 'array', nullable: true, items: { type: 'string', format: 'misskey:id' } },
 		sinceDate: { type: 'integer', nullable: true },
 		untilDate: { type: 'integer', nullable: true },

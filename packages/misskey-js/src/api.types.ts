@@ -488,6 +488,12 @@ export type Endpoints = {
 			expiresAt?: null | number;
 			expiredAfter?: null | number;
 		};
+		event?: null | {
+			title: string;
+			start: number;
+			end?: null | number;
+			metadata: Record<string, string[]>;
+		}
 	}; res: { createdNote: Note }; };
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
 	'notes/favorites/create': { req: { noteId: Note['id']; }; res: null; };
@@ -499,7 +505,17 @@ export type Endpoints = {
 	'notes/mentions': { req: { following?: boolean; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; }; res: Note[]; };
 	'notes/polls/recommendation': { req: TODO; res: TODO; };
 	'notes/polls/vote': { req: { noteId: Note['id']; choice: number; }; res: null; };
-	'notes/events/search': { req: TODO; res: Note[]; };
+	'notes/events/search': { req: {
+		query?: string;
+		sinceId?: Note['id'];
+		untilId?: Note['id'];
+		limit?: number;
+		users?: User['id'][];
+		sinceDate?: number;
+		untilDate?: number;
+		sortBy?: 'startDate' | 'craetedAt';
+		filters?: Record<string, string[]>;
+	}; res: Note[]; };
 	'notes/reactions': { req: { noteId: Note['id']; type?: string | null; limit?: number; }; res: NoteReaction[]; };
 	'notes/reactions/create': { req: { noteId: Note['id']; reaction: string; }; res: null; };
 	'notes/reactions/delete': { req: { noteId: Note['id']; }; res: null; };
