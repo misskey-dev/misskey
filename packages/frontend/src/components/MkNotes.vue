@@ -21,6 +21,8 @@
 				:other-server="otherServer"
 				:other-protocol="otherProtocol"
 				:other-domain="otherDomain"
+				:emojis="emojis"
+				:meta="meta"
 			>
 				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>
@@ -42,6 +44,8 @@ const props = defineProps<{
 	otherServer?: boolean;
 	otherDomain? : string;
 	otherProtocol?: string;
+	emojis?: any;
+	meta?: any;
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();

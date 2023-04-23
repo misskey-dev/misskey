@@ -5,10 +5,12 @@
 	</template>
 
 	<MkTimeline 
-		v-if="column.serverUrl" 
+		v-if="isInitialized" 
 		ref="timeline" 
 		src="otherServerLocalTimeline" 
 		:server="column.serverUrl" 
+		:emojis="emojis"
+		:meta="meta"
 		@after="() => emit('loaded')"
 	/>
 </XColumn>
@@ -33,14 +35,39 @@ const emit = defineEmits<{
 }>();
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
+let emojis = $ref([]);
+let meta = $ref({});
+let isInitialized = $ref(false);
 
 onMounted(() => {
 	if (props.column.serverUrl == null) {
 		setServer();
+	} else {
+		updateInfos(props.column.serverUrl);
 	}
 });
 
-async function setServer() {
+async function updateInfos(serverUrl:string) : Promise<void> {
+	let serverDomain = '';
+	let protocol = 'https';
+	if (serverUrl.indexOf('://') !== -1) {
+		const split = serverUrl.split('://');
+		protocol = split[0];
+		const domain = split[1].split('/')[0];
+		serverDomain = domain;
+	} else {
+		serverDomain = `${serverUrl.split('/')[0]}`;
+	}
+
+	let endpoint = `${protocol}://${serverDomain}/api`;
+	let emoji = await os.api(`${endpoint}/emojis`, {});
+	emojis = emoji.emojis;
+	meta = await os.api(`${endpoint}/meta`, {});
+
+	isInitialized = true;
+}
+
+async function setServer() : Promise<void> {
 	const { canceled, result: serverUrl } = await os.inputText({
 		title: i18n.ts.instance,
 		default: props.column.serverUrl,
@@ -49,6 +76,7 @@ async function setServer() {
 	updateColumn(props.column.id, {
 		serverUrl: serverUrl,
 	});
+	updateInfos(serverUrl);
 }
 
 const menu = [{

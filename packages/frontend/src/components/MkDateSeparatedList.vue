@@ -48,6 +48,16 @@ export default defineComponent({
 			required: false,
 			default: '',
 		},
+		emojis: {
+			type: Object,
+			required: false,
+			default: undefined,
+		},
+		meta: {
+			type: Object,
+			required: false,
+			default: undefined,	
+		}
 	},
 
 	setup(props, { slots, expose }) {
@@ -65,6 +75,19 @@ export default defineComponent({
 
 		const renderChildrenImpl = () => props.items.map((item, i) => {
 			if (!slots || !slots.default) return;
+
+			function getEmoji( emojiName: string ): string {
+				let emojiUrl = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+				if (props.emojis != null) {
+					let emojiData = props.emojis.find((emoji) => {
+						return emoji.name === emojiName;
+					});
+					if (emojiData !== null && emojiData !== undefined) {
+						emojiUrl = emojiData.url;
+					}
+				}
+				return emojiUrl;
+			};
 			
 			if (props.otherServer) {
 				if (item.user.host !== props.otherDomain) {
@@ -79,7 +102,7 @@ export default defineComponent({
 
 								// 置き換えたURLを設定
 								let emojiName = newkey.substr(1, newkey.length - 2).split('@')[0];
-								reactinUrl[newkey.substr(1, newkey.length - 2)] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+								reactinUrl[newkey.substr(1, newkey.length - 2)] = getEmoji(emojiName);
 							} else {
 								reactions[key] = item.reactions[key];
 							}
@@ -90,13 +113,14 @@ export default defineComponent({
 
 					// カスタム絵文字を置き換える
 					if (item.text != null && item.emojis == null) {
+						if (item.text != null)
 						{
 							const m = item.text.match(/:.*?:/g);
 							let emojis = {};
 							if (m != null) {
 								m.forEach((emoji) => {
 									const emojiName = emoji.substr(1, emoji.length - 2);
-									emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+									emojis[emojiName] = getEmoji(emojiName);
 								});
 
 								item.emojis = emojis;
@@ -111,7 +135,7 @@ export default defineComponent({
 							if (m != null) {
 								m.forEach((emoji) => {
 									const emojiName = emoji.substr(1, emoji.length - 2);
-									emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+									emojis[emojiName] = getEmoji(emojiName);
 								});
 								item.user.emojis = emojis;
 							}							
@@ -119,13 +143,14 @@ export default defineComponent({
 					}
 					if (item.renote != null) {
 						if (item.renote.text != null && item.renote.emojis == null) {
+							if (item.renote.text != null)
 							{
 								const m = item.renote.text.match(/:.*?:/g);
 								let emojis = {};
 								if (m != null) {
 									m.forEach((emoji) => {
 										const emojiName = emoji.substr(1, emoji.length - 2);
-										emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+										emojis[emojiName] = getEmoji(emojiName);
 									});
 
 									item.renote.emojis = emojis;
@@ -133,13 +158,14 @@ export default defineComponent({
 							}
 							
 							// ユーザー絵文字を適応
+							if (item.renote.user.name != null)
 							{
 								const m = item.renote.user.name.match(/:.*?:/g);
 								let emojis = {};
 								if (m != null) {
 									m.forEach((emoji) => {
 										const emojiName = emoji.substr(1, emoji.length - 2);
-										emojis[emojiName] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+										emojis[emojiName] = getEmoji(emojiName);
 									});
 									item.renote.user.emojis = emojis;
 								}							
@@ -156,7 +182,7 @@ export default defineComponent({
 									reactions[newkey] = item.renote.reactions[key];
 									// 置き換えたURLを設定
 									let emojiName = newkey.substr(1, newkey.length - 2).split('@')[0];
-									reactinUrl[newkey.substr(1, newkey.length - 2)] = `${props.otherProtocol}://${props.otherDomain}/emoji/${emojiName}.webp`;
+									reactinUrl[newkey.substr(1, newkey.length - 2)] = getEmoji(emojiName);
 								} else {
 									reactions[key] = item.renote.reactions[key];
 								}

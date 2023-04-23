@@ -5,6 +5,8 @@
 	:other-server="otherServer" 
 	:other-domain="otherDomain"
 	:other-protocol="otherProtocol"
+	:emojis="emojis"
+	:meta="meta"
 	@queue="emit('queue', $event)"
 />
 </template>
@@ -27,6 +29,8 @@ const props = defineProps<{
 	role?: string;
 	server?: string;
 	sound?: boolean;
+	emojis?: any;
+	meta?: any;
 }>();
 
 const emit = defineEmits<{
@@ -46,18 +50,6 @@ const prepend = note => {
 	if (props.sound) {
 		sound.play($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 	}
-};
-
-const overridePrepend = onnote => {
-	// リモートユーザーの場合はホストを上書きする
-	if (props.server != null) {
-		onnote.user.host = otherDomain;
-		onnote.otherServer = true;
-		onnote.otherDomain = `${otherProtocol}://${otherDomain}`;
-		onnote.url = `${otherProtocol}://${otherDomain}/notes/${onnote.id}`;
-	}
-
-	return prepend(onnote);
 };
 
 const onUserAdded = () => {
