@@ -9,6 +9,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -42,6 +43,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		query: { type: 'string', nullable: true },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
@@ -93,6 +95,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.innerJoinAndSelect(Event, 'event', 'event.noteId = note.id')
 				.innerJoinAndSelect('note.user', 'user');
 
+			if (ps.query && ps.query.trim() !== '') {
+				query.andWhere(new Brackets((qb) => {
+					const q = (ps.query ?? '').trim();
+					qb.where('event.title ILIKE :q', { q: `%${ sqlLikeEscape(q) }%` })
+						.orWhere('note.text ILIKE :q', { q: `%${ sqlLikeEscape(q) }%` });
+				}));
+			}
 			if (ps.filters) {
 				const filters: Record<string, (string | null)[]> = ps.filters;
 				

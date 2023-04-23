@@ -42,6 +42,9 @@
 	<MkSpacer v-else-if="tab === 'event'" :content-max="800">
 		<div class="_gaps">
 			<div class="_gaps">
+				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
 				<MkSelect v-model="eventSort" small>
 					<template #label>{{ 'Sort By' }}</template>
 					<option value="startDate">{{ 'Event Date' }}</option>
@@ -105,7 +108,7 @@ onMounted(() => {
 async function search() {
 	const query = searchQuery.toString().trim();
 
-	// only notes/users search use the query string. event does not use it
+	// only notes/users search require the query string
 	if ((query == null || query === '') && tab !== 'event') return;
 
 	if (query.startsWith('https://')) {
@@ -149,6 +152,7 @@ async function search() {
 			endpoint: 'notes/events/search',
 			limit: 10,
 			params: {
+				query: searchQuery,
 				sortBy: eventSort,
 			},
 		};
