@@ -11,7 +11,6 @@
 
 <script lang="ts" setup>
 import * as misskey from 'misskey-js';
-//import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	note: misskey.entities.Note

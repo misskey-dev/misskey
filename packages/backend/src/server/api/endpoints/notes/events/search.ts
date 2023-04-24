@@ -47,6 +47,7 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', default: 0 },
 		users: { type: 'array', nullable: true, items: { type: 'string', format: 'misskey:id' } },
 		sinceDate: { type: 'integer', nullable: true },
 		untilDate: { type: 'integer', nullable: true },
@@ -134,6 +135,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
+			if (ps.offset) query.skip(ps.offset);
 			const notes = await query.take(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me);

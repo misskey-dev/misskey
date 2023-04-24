@@ -78,7 +78,7 @@ const headerTabs = $computed(() => user ? [{
 	icon: 'ti ti-pencil',
 }, {
 	key: 'events',
-	title: 'Events', //i18n.ts.events,
+	title: i18n.ts.events,
 	icon: 'ti ti-calendar',
 }, {
 	key: 'activity',

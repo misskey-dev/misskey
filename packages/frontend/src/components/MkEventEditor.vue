@@ -1,24 +1,24 @@
 <template>
 <div class="zmdxowut">
 	<MkInput v-model="title" small type="text" class="input">
-		<template #label>*{{ "Title" }}</template>
+		<template #label>*{{ i18n.ts._event.title }}</template>
 	</MkInput>
 	<section>
 		<div>
 			<section>
 				<MkInput v-model="startDate" small type="date" class="input">
-					<template #label>*{{ "Start Date" }}</template>
+					<template #label>*{{ i18n.ts._event.startDate }}</template>
 				</MkInput>
 				<MkInput v-model="startTime" small type="time" class="input">
-					<template #label>*{{ "Start Time" }}</template>
+					<template #label>*{{ i18n.ts._event.startTime }}</template>
 				</MkInput>
 			</section>
 			<section>
 				<MkInput v-model="endDate" small type="date" class="input">
-					<template #label>{{ "End Date" }}</template>
+					<template #label>{{ i18n.ts._event.endDate }}</template>
 				</MkInput>
 				<MkInput v-model="endTime" small type="time" class="input">
-					<template #label>{{ "End Time" }}</template>
+					<template #label>{{ i18n.ts._event.endTime }}</template>
 				</MkInput>
 			</section>
 		</div>
@@ -26,10 +26,10 @@
 	<p>Details</p>
 	<ul>
 		<li v-for="(entry, i) in meta" :key="i">
-			<MkInput class="input" small :model-value="entry[0]" placeholder="placeholder key"
+			<MkInput class="input" small :model-value="entry[0]" :placeholder="i18n.ts._event.detailName"
 				@update:model-value="onKeyInput(i, $event)">
 			</MkInput>
-			<MkInput class="input" small :model-value="entry[1]" placeholder="placeholder value"
+			<MkInput class="input" small :model-value="entry[1]" :placeholder="i18n.ts._event.detailValue"
 				@update:model-value="onValueInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">

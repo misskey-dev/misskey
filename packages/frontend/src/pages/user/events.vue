@@ -3,8 +3,8 @@
 	<MkStickyContainer>
 		<template #header>
 			<MkTab v-model="include" :class="$style.tab">
-				<option value="upcoming">{{ i18n.ts.upcomingEvents || 'Upcoming' }}</option>
-				<option :value="null">{{ i18n.ts.events || 'Events' }}</option>
+				<option value="upcoming">{{ i18n.ts._event.startDate }}</option>
+				<option :value="null">{{ i18n.ts.reverseChronological }}</option>
 			</MkTab>
 		</template>
 		<MkNotes :no-gap="true" :pagination="pagination" :class="$style.tl" :get-date="include === 'upcoming' ? note => note.event.start : undefined "/>
@@ -28,6 +28,7 @@ const include = ref<string | null>('upcoming');
 const pagination = {
 	endpoint: 'notes/events/search' as const,
 	limit: 10,
+	offsetMode: include.value === 'upcoming',
 	params: computed(() => ({
 		users: [props.user.id],
 		sortBy: include.value === 'upcoming' ? 'startDate' : 'createdAt',

@@ -510,6 +510,7 @@ export type Endpoints = {
 		sinceId?: Note['id'];
 		untilId?: Note['id'];
 		limit?: number;
+		offset?: number;
 		users?: User['id'][];
 		sinceDate?: number;
 		untilDate?: number;

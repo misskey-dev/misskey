@@ -993,6 +993,18 @@ noteIdOrUrl: "ノートIDまたはURL"
 accountMigration: "アカウントの引っ越し"
 accountMoved: "このユーザーは新しいアカウントに引っ越しました："
 forceShowAds: "常に広告を表示する"
+event: "イベント"
+events: "イベント"
+reverseChronological: "倒叙"
+
+_event:
+  title: "題"
+  startDate: "開始日"
+  endDate: "終了日"
+  startTime: "開始時刻"
+  endTime: "終了時刻"
+  detailName: "属性"
+  detailValue: "値"
 
 _accountMigration:
   moveTo: "このアカウントを新しいアカウントに引っ越す"

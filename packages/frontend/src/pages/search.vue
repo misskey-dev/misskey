@@ -46,16 +46,16 @@
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
 				<MkSelect v-model="eventSort" small>
-					<template #label>{{ 'Sort By' }}</template>
-					<option value="startDate">{{ 'Event Date' }}</option>
-					<option value="createdAt">{{ 'New' }}</option>
+					<template #label>{{ i18n.ts.sort }}</template>
+					<option value="startDate">{{ i18n.ts._event.startDate }}</option>
+					<option value="createdAt">{{ i18n.ts.reverseChronological }}</option>
 				</MkSelect>
 				<section>
 					<MkInput v-model="startDate" small type="date" class="input">
-						<template #label>{{ "Start Date" }}</template>
+						<template #label>{{ i18n.ts._event.startDate }}</template>
 					</MkInput>
 					<MkInput v-model="endDate" small type="date" class="input">
-						<template #label>{{ "End Date" }}</template>
+						<template #label>{{ i18n.ts._event.endDate }}</template>
 					</MkInput>
 				</section>
 				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
@@ -161,6 +161,7 @@ async function search() {
 		eventPagination = {
 			endpoint: 'notes/events/search',
 			limit: 10,
+			offsetMode: true,
 			params: {
 				query: !searchQuery ? undefined : searchQuery,
 				sortBy: eventSort,
@@ -190,7 +191,7 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-users',
 }, {
 	key: 'event',
-	title: 'Events',
+	title: i18n.ts.events,
 	icon: 'ti ti-calendar',
 }]);
 
