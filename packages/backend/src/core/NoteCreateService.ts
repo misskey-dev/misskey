@@ -237,6 +237,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			if ((data.cw == null) && (data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => {
+				if (w.startsWith('/')) {
+					const matchRegex = /\/(.*)\/(.*)/g.exec(w);
+					if (matchRegex != null) {
+						const pattern = matchRegex[1];
+						const flags = matchRegex[2];
+						const regex = new RegExp(pattern, flags);
+						return regex.test(data.text!);
+					} 
+				}
 				const reg = new RegExp(w);
 				if (data.text!.match(reg)) return true;
 				return false;
@@ -245,6 +254,15 @@ export class NoteCreateService implements OnApplicationShutdown {
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
 			} else if ((data.cw != null) && (await this.metaService.fetch()).sensitiveWords.some(w => {
+				if (w.startsWith('/')) {
+					const matchRegex = /\/(.*)\/(.*)/g.exec(w);
+					if (matchRegex != null) {
+						const pattern = matchRegex[1];
+						const flags = matchRegex[2];
+						const regex = new RegExp(pattern, flags);
+						return regex.test(data.cw!);
+					} 
+				}
 				const reg = new RegExp(w);
 				if (data.cw!.match(reg)) return true;
 				return false;
