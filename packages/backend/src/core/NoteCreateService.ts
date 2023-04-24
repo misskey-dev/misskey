@@ -246,9 +246,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						return regex.test(data.text!);
 					} 
 				}
-				const reg = new RegExp(w);
-				if (data.text!.match(reg)) return true;
-				return false;
+				return data.text!.includes(w);
 			})) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
@@ -263,9 +261,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						return regex.test(data.cw!);
 					} 
 				}
-				const reg = new RegExp(w);
-				if (data.cw!.match(reg)) return true;
-				return false;
+				return data.cw!.includes(w);
 			})) {
 				data.visibility = 'home';
 			}
