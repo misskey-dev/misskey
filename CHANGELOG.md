@@ -15,7 +15,7 @@
 ## 13.x.x (unreleased)
 
 ### General
--
+- Add support for user created events. Includes basic federation of ActivityPub Event objects. [PR 10628](https://github.com/misskey-dev/misskey/pull/10628) @ssmucny
 
 ### Client
 -
