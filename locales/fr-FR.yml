@@ -929,6 +929,7 @@ _achievements:
   _types:
     _notes1:
       description: "Publiez votre première note"
+      flavor: "Passez un bon moment avec Misskey !"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
     _login1000:
