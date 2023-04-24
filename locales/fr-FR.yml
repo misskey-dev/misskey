@@ -932,6 +932,18 @@ _achievements:
       flavor: "Passez un bon moment avec Misskey !"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
+    _login3:
+      description: "Se connecter pour un total de 3 jours"
+    _login7:
+      description: "Se connecter pour un total de 7 jours"
+    _login15:
+      description: "Se connecter pour un total de 15 jours"
+    _login30:
+      description: "Se connecter pour un total de 30 jours"
+    _login60:
+      description: "Se connecter pour un total de 60 jours"
+    _login100:
+      description: "Se connecter pour un total de 100 jours"
     _login1000:
       flavor: "Merci d'utiliser Misskey !"
     _markedAsCat:
@@ -939,6 +951,12 @@ _achievements:
       flavor: "Je n'ai pas encore de nom"
     _following50:
       title: "Beaucoup d'amis"
+    _followers10:
+      title: "Abonnez-moi !"
+    _viewInstanceChart:
+      title: "Analyste"
+    _loggedInOnNewYearsDay:
+      title: "Bonne année !"
 _role:
   assignTarget: "Attribuer"
   priority: "Priorité"
