@@ -236,11 +236,19 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.localOnly = true;
 
 		if (data.visibility === 'public' && data.channel == null) {
-			if ((data.cw == null) && (data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => data.text!.includes(w))) {
+			if ((data.cw == null) && (data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => {
+				const reg = new RegExp(w);
+				if (data.text!.match(reg)) return true;
+				return false;
+			})) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
-			} else if ((data.cw != null) && (await this.metaService.fetch()).sensitiveWords.some(w => data.cw!.includes(w))) {
+			} else if ((data.cw != null) && (await this.metaService.fetch()).sensitiveWords.some(w => {
+				const reg = new RegExp(w);
+				if (data.cw!.match(reg)) return true;
+				return false;
+			})) {
 				data.visibility = 'home';
 			}
 		}
