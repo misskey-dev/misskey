@@ -321,6 +321,7 @@ export type LiteInstanceMetadata = {
 		imageUrl: string;
 	}[];
 	translatorAvailable: boolean;
+	serverRules: string[];
 };
 
 export type DetailedInstanceMetadata = LiteInstanceMetadata & {

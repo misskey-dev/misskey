@@ -9,7 +9,7 @@
 			<i v-else-if="type === 'error'" :class="$style.iconInner" class="ti ti-circle-x"></i>
 			<i v-else-if="type === 'warning'" :class="$style.iconInner" class="ti ti-alert-triangle"></i>
 			<i v-else-if="type === 'info'" :class="$style.iconInner" class="ti ti-info-circle"></i>
-			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-question-circle"></i>
+			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
 		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>

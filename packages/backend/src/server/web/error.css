@@ -1,0 +1,110 @@
+* {
+    font-family: BIZ UDGothic, Roboto, HelveticaNeue, Arial, sans-serif;
+}
+
+#misskey_app,
+#splash {
+    display: none !important;
+}
+
+body,
+html {
+    background-color: #222;
+    color: #dfddcc;
+    justify-content: center;
+    margin: auto;
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    border-radius: 999px;
+    padding: 0px 12px 0px 12px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.button-big {
+    background: linear-gradient(90deg, rgb(134, 179, 0), rgb(74, 179, 0));
+    line-height: 50px;
+}
+
+.button-big:hover {
+    background: rgb(153, 204, 0);
+}
+
+.button-small {
+    background: #444;
+    line-height: 40px;
+}
+
+.button-small:hover {
+    background: #555;
+}
+
+.button-label-big {
+    color: #222;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 12px;
+}
+
+.button-label-small {
+    color: rgb(153, 204, 0);
+    font-size: 16px;
+    padding: 12px;
+}
+
+a {
+    color: rgb(134, 179, 0);
+    text-decoration: none;
+}
+
+p,
+li {
+    font-size: 16px;
+}
+
+.dont-worry,
+#msg {
+    font-size: 18px;
+}
+
+.icon-warning {
+    color: #dec340;
+    height: 4rem;
+    padding-top: 2rem;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+code {
+    display: block;
+    font-family: Fira, FiraCode, monospace;
+    background: #333;
+    padding: 0.5rem 1rem;
+    max-width: 40rem;
+    border-radius: 10px;
+    justify-content: center;
+    margin: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+summary {
+    cursor: pointer;
+}
+
+summary > * {
+    display: inline;
+    white-space: pre-wrap;
+}
+
+@media screen and (max-width: 500px) {
+    details {
+        width: 50%;
+    }
+}

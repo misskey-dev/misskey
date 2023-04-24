@@ -1,7 +1,7 @@
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
@@ -566,6 +566,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			const noteObj = await this.noteEntityService.pack(note);
 
 			this.globalEventService.publishNotesStream(noteObj);
+
+			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
 				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));

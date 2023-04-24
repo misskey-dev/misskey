@@ -29,6 +29,7 @@ import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
+import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
@@ -295,6 +296,7 @@ import * as ep___promo_read from './endpoints/promo/read.js';
 import * as ep___roles_list from './endpoints/roles/list.js';
 import * as ep___roles_show from './endpoints/roles/show.js';
 import * as ep___roles_users from './endpoints/roles/users.js';
+import * as ep___roles_notes from './endpoints/roles/notes.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -330,6 +332,7 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
+import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 
@@ -362,6 +365,7 @@ const eps = [
 	['admin/emoji/remove-aliases-bulk', ep___admin_emoji_removeAliasesBulk],
 	['admin/emoji/set-aliases-bulk', ep___admin_emoji_setAliasesBulk],
 	['admin/emoji/set-category-bulk', ep___admin_emoji_setCategoryBulk],
+	['admin/emoji/set-license-bulk', ep___admin_emoji_setLicenseBulk],
 	['admin/emoji/update', ep___admin_emoji_update],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
@@ -628,6 +632,7 @@ const eps = [
 	['roles/list', ep___roles_list],
 	['roles/show', ep___roles_show],
 	['roles/users', ep___roles_users],
+	['roles/notes', ep___roles_notes],
 	['request-reset-password', ep___requestResetPassword],
 	['reset-db', ep___resetDb],
 	['reset-password', ep___resetPassword],
@@ -663,6 +668,7 @@ const eps = [
 	['users/show', ep___users_show],
 	['users/stats', ep___users_stats],
 	['users/achievements', ep___users_achievements],
+	['users/update-memo', ep___users_updateMemo],
 	['fetch-rss', ep___fetchRss],
 	['retention', ep___retention],
 ];

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import push from 'web-push';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema';

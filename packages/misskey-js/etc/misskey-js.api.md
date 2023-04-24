@@ -2362,6 +2362,7 @@ export type Endpoints = {
             imageUrl: string;
         }[];
         translatorAvailable: boolean;
+        serverRules: string[];
     };
 
     // @public (undocumented)

@@ -29,6 +29,7 @@ import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
+import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
@@ -295,6 +296,7 @@ import * as ep___promo_read from './endpoints/promo/read.js';
 import * as ep___roles_list from './endpoints/roles/list.js';
 import * as ep___roles_show from './endpoints/roles/show.js';
 import * as ep___roles_users from './endpoints/roles/users.js';
+import * as ep___roles_notes from './endpoints/roles/notes.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -330,6 +332,7 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
+import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
@@ -364,6 +367,7 @@ const $admin_emoji_list: Provider = { provide: 'ep:admin/emoji/list', useClass: 
 const $admin_emoji_removeAliasesBulk: Provider = { provide: 'ep:admin/emoji/remove-aliases-bulk', useClass: ep___admin_emoji_removeAliasesBulk.default };
 const $admin_emoji_setAliasesBulk: Provider = { provide: 'ep:admin/emoji/set-aliases-bulk', useClass: ep___admin_emoji_setAliasesBulk.default };
 const $admin_emoji_setCategoryBulk: Provider = { provide: 'ep:admin/emoji/set-category-bulk', useClass: ep___admin_emoji_setCategoryBulk.default };
+const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-license-bulk', useClass: ep___admin_emoji_setLicenseBulk.default };
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
@@ -630,6 +634,7 @@ const $promo_read: Provider = { provide: 'ep:promo/read', useClass: ep___promo_r
 const $roles_list: Provider = { provide: 'ep:roles/list', useClass: ep___roles_list.default };
 const $roles_show: Provider = { provide: 'ep:roles/show', useClass: ep___roles_show.default };
 const $roles_users: Provider = { provide: 'ep:roles/users', useClass: ep___roles_users.default };
+const $roles_notes: Provider = { provide: 'ep:roles/notes', useClass: ep___roles_notes.default };
 const $requestResetPassword: Provider = { provide: 'ep:request-reset-password', useClass: ep___requestResetPassword.default };
 const $resetDb: Provider = { provide: 'ep:reset-db', useClass: ep___resetDb.default };
 const $resetPassword: Provider = { provide: 'ep:reset-password', useClass: ep___resetPassword.default };
@@ -665,6 +670,7 @@ const $users_search: Provider = { provide: 'ep:users/search', useClass: ep___use
 const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_show.default };
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
 const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
+const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
@@ -703,6 +709,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
+		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
@@ -969,6 +976,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$roles_list,
 		$roles_show,
 		$roles_users,
+		$roles_notes,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,
@@ -1004,6 +1012,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_show,
 		$users_stats,
 		$users_achievements,
+		$users_updateMemo,
 		$fetchRss,
 		$retention,
 	],
@@ -1036,6 +1045,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
+		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
@@ -1302,6 +1312,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$roles_list,
 		$roles_show,
 		$roles_users,
+		$roles_notes,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,
@@ -1335,6 +1346,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_show,
 		$users_stats,
 		$users_achievements,
+		$users_updateMemo,
 		$fetchRss,
 		$retention,
 	],

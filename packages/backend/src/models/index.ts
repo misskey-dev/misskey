@@ -56,6 +56,7 @@ import { UserPending } from '@/models/entities/UserPending.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
 import { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
+import { UserMemo } from '@/models/entities/UserMemo.js';
 import { Webhook } from '@/models/entities/Webhook.js';
 import { Channel } from '@/models/entities/Channel.js';
 import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
@@ -131,6 +132,7 @@ export {
 	RoleAssignment,
 	Flash,
 	FlashLike,
+	UserMemo,
 };
 
 export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
@@ -198,3 +200,4 @@ export type RolesRepository = Repository<Role>;
 export type RoleAssignmentsRepository = Repository<RoleAssignment>;
 export type FlashsRepository = Repository<Flash>;
 export type FlashLikesRepository = Repository<FlashLike>;
+export type UserMemoRepository = Repository<UserMemo>;

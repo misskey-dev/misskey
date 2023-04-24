@@ -164,7 +164,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animation: {
 		where: 'device',
-		default: !matchMedia('(prefers-reduced-motion)').matches,
+		default: !window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	animatedMfm: {
 		where: 'device',
@@ -182,9 +182,13 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	enableDataSaverMode: {
+		where: 'device',
+		default: false,
+	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: matchMedia('(prefers-reduced-motion)').matches,
+		default: window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	emojiStyle: {
 		where: 'device',
@@ -305,6 +309,18 @@ export const defaultStore = markRaw(new Storage('base', {
 	aiChanMode: {
 		where: 'device',
 		default: false,
+	},
+	mediaListWithOneImageAppearance: {
+		where: 'device',
+		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+	},
+	notificationPosition: {
+		where: 'device',
+		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
+	},
+	notificationStackAxis: {
+		where: 'device',
+		default: 'horizontal' as 'vertical' | 'horizontal',
 	},
 }));
 

@@ -1,5 +1,5 @@
 import { Brackets, In } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, NotesRepository } from '@/models/index.js';
 import { obsoleteNotificationTypes, notificationTypes } from '@/types.js';
@@ -91,11 +91,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const includeTypes = ps.includeTypes && ps.includeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 			const excludeTypes = ps.excludeTypes && ps.excludeTypes.filter(type => !(obsoleteNotificationTypes).includes(type as any)) as typeof notificationTypes[number][];
 
+			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			const notificationsRes = await this.redisClient.xrevrange(
 				`notificationTimeline:${me.id}`,
 				ps.untilId ? this.idService.parse(ps.untilId).date.getTime() : '+',
 				'-',
-				'COUNT', ps.limit + 1); // untilIdに指定したものも含まれるため+1
+				'COUNT', limit);
 
 			if (notificationsRes.length === 0) {
 				return [];
