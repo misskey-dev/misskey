@@ -557,6 +557,7 @@ export class ApPersonService implements OnModuleInit {
 			return this.processRemoteMove(updated, movePreventUris)
 				.then(result => {
 					this.logger.info(`Processing Move Finished [${result}] @${updated.username}@${updated.host} (${uri})`);
+					return result;
 				})
 				.catch(e => {
 					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${uri})`, { stack: e });
