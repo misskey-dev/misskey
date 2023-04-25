@@ -53,7 +53,7 @@ export class ApEventService {
 				metadata: {},
 			};
 		} else {
-			throw new Error('Invalid event properties')
+			throw new Error('Invalid event properties');
 		}
 	}
 }
