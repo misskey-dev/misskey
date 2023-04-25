@@ -41,15 +41,19 @@ export class ApEventService {
 			throw new Error('invalid type');
 		}
 
-		const title = note.name!;
-		const start = note.startTime!;
-		const end = note.endTime ?? null;
+		if (note.name && note.startTime) {
+			const title = note.name;
+			const start = note.startTime;
+			const end = note.endTime ?? null;
 
-		return {
-			title,
-			start,
-			end,
-			metadata: {},
-		};
+			return {
+				title,
+				start,
+				end,
+				metadata: {},
+			};
+		} else {
+			throw new Error('Invalid event properties')
+		}
 	}
 }
