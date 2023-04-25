@@ -1680,6 +1680,12 @@ export type Endpoints = {
                 expiresAt?: null | number;
                 expiredAfter?: null | number;
             };
+            event?: null | {
+                title: string;
+                start: number;
+                end?: null | number;
+                metadata: Record<string, string[]>;
+            };
         };
         res: {
             createdNote: Note;
@@ -1757,992 +1763,993 @@ export type Endpoints = {
         };
         res: null;
     };
-    		'notes/events/search': {
-        				req: {
-            						sinceId?: Note['id'];
-            						untilId?: Note['id'];
-            						limit?: number;
-            						offset?: number;
-            						host?: string;
-            						users?: User['id'][];
-            						sinceDate?: number;
-            						untilDate?: number;
-            						filters?: Record<string, string[]>;
-            						sortBy?: 'startDate' | 'createAt'
-            				res: Note[];
-            		};
-        'notes/reactions': {
-            req: {
-                noteId: Note['id'];
-                type?: string | null;
-                limit?: number;
-            };
-            res: NoteReaction[];
-        };
-        'notes/reactions/create': {
-            req: {
-                noteId: Note['id'];
-                reaction: string;
-            };
-            res: null;
-        };
-        'notes/reactions/delete': {
-            req: {
-                noteId: Note['id'];
-            };
-            res: null;
-        };
-        'notes/renotes': {
-            req: {
-                limit?: number;
-                sinceId?: Note['id'];
-                untilId?: Note['id'];
-                noteId: Note['id'];
-            };
-            res: Note[];
-        };
-        'notes/replies': {
-            req: {
-                limit?: number;
-                sinceId?: Note['id'];
-                untilId?: Note['id'];
-                noteId: Note['id'];
-            };
-            res: Note[];
-        };
-        'notes/search-by-tag': {
-            req: TODO;
-            res: TODO;
-        };
-        'notes/search': {
-            req: TODO;
-            res: TODO;
-        };
-        'notes/show': {
-            req: {
-                noteId: Note['id'];
-            };
-            res: Note;
-        };
-        'notes/state': {
-            req: TODO;
-            res: TODO;
-        };
-        'notes/timeline': {
-            req: {
-                limit?: number;
-                sinceId?: Note['id'];
-                untilId?: Note['id'];
-                sinceDate?: number;
-                untilDate?: number;
-            };
-            res: Note[];
-        };
-        'notes/unrenote': {
-            req: {
-                noteId: Note['id'];
-            };
-            res: null;
-        };
-        'notes/user-list-timeline': {
-            req: {
-                listId: UserList['id'];
-                limit?: number;
-                sinceId?: Note['id'];
-                untilId?: Note['id'];
-                sinceDate?: number;
-                untilDate?: number;
-            };
-            res: Note[];
-        };
-        'notes/watching/create': {
-            req: TODO;
-            res: TODO;
-        };
-        'notes/watching/delete': {
-            req: {
-                noteId: Note['id'];
-            };
-            res: null;
-        };
-        'notifications/create': {
-            req: {
-                body: string;
-                header?: string | null;
-                icon?: string | null;
-            };
-            res: null;
-        };
-        'notifications/mark-all-as-read': {
-            req: NoParams;
-            res: null;
-        };
-        'page-push': {
-            req: {
-                pageId: Page['id'];
-                event: string;
-                var?: any;
-            };
-            res: null;
-        };
-        'pages/create': {
-            req: TODO;
-            res: Page;
-        };
-        'pages/delete': {
-            req: {
-                pageId: Page['id'];
-            };
-            res: null;
-        };
-        'pages/featured': {
-            req: NoParams;
-            res: Page[];
-        };
-        'pages/like': {
-            req: {
-                pageId: Page['id'];
-            };
-            res: null;
-        };
-        'pages/show': {
-            req: {
-                pageId?: Page['id'];
-                name?: string;
-                username?: string;
-            };
-            res: Page;
-        };
-        'pages/unlike': {
-            req: {
-                pageId: Page['id'];
-            };
-            res: null;
-        };
-        'pages/update': {
-            req: TODO;
-            res: null;
-        };
-        'ping': {
-            req: NoParams;
-            res: {
-                pong: number;
-            };
-        };
-        'pinned-users': {
-            req: TODO;
-            res: TODO;
-        };
-        'promo/read': {
-            req: TODO;
-            res: TODO;
-        };
-        'request-reset-password': {
-            req: {
-                username: string;
-                email: string;
-            };
-            res: null;
-        };
-        'reset-password': {
-            req: {
-                token: string;
-                password: string;
-            };
-            res: null;
-        };
-        'room/show': {
-            req: TODO;
-            res: TODO;
-        };
-        'room/update': {
-            req: TODO;
-            res: TODO;
-        };
-        'stats': {
-            req: NoParams;
-            res: Stats;
-        };
-        'server-info': {
-            req: NoParams;
-            res: ServerInfo;
-        };
-        'sw/register': {
-            req: TODO;
-            res: TODO;
-        };
-        'username/available': {
-            req: {
-                username: string;
-            };
-            res: {
-                available: boolean;
-            };
-        };
-        'users': {
-            req: {
-                limit?: number;
-                offset?: number;
-                sort?: UserSorting;
-                origin?: OriginType;
-            };
-            res: User[];
-        };
-        'users/clips': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/followers': {
-            req: {
-                userId?: User['id'];
-                username?: User['username'];
-                host?: User['host'] | null;
-                limit?: number;
-                sinceId?: Following['id'];
-                untilId?: Following['id'];
-            };
-            res: FollowingFollowerPopulated[];
-        };
-        'users/following': {
-            req: {
-                userId?: User['id'];
-                username?: User['username'];
-                host?: User['host'] | null;
-                limit?: number;
-                sinceId?: Following['id'];
-                untilId?: Following['id'];
-            };
-            res: FollowingFolloweePopulated[];
-        };
-        'users/gallery/posts': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/get-frequently-replied-users': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/create': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/delete': {
-            req: {
-                groupId: UserGroup['id'];
-            };
-            res: null;
-        };
-        'users/groups/invitations/accept': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/invitations/reject': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/invite': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/joined': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/owned': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/pull': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/show': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/transfer': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/groups/update': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/lists/create': {
-            req: {
-                name: string;
-            };
-            res: UserList;
-        };
-        'users/lists/delete': {
-            req: {
-                listId: UserList['id'];
-            };
-            res: null;
-        };
-        'users/lists/list': {
-            req: NoParams;
-            res: UserList[];
-        };
-        'users/lists/pull': {
-            req: {
-                listId: UserList['id'];
-                userId: User['id'];
-            };
-            res: null;
-        };
-        'users/lists/push': {
-            req: {
-                listId: UserList['id'];
-                userId: User['id'];
-            };
-            res: null;
-        };
-        'users/lists/show': {
-            req: {
-                listId: UserList['id'];
-            };
-            res: UserList;
-        };
-        'users/lists/update': {
-            req: {
-                listId: UserList['id'];
-                name: string;
-            };
-            res: UserList;
-        };
-        'users/notes': {
-            req: {
-                userId: User['id'];
-                limit?: number;
-                sinceId?: Note['id'];
-                untilId?: Note['id'];
-                sinceDate?: number;
-                untilDate?: number;
-            };
-            res: Note[];
-        };
-        'users/pages': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/recommendation': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/relation': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/report-abuse': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/search-by-username-and-host': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/search': {
-            req: TODO;
-            res: TODO;
-        };
-        'users/show': {
-            req: ShowUserReq | {
-                userIds: User['id'][];
-            };
-            res: {
-                $switch: {
-                    $cases: [
-                    [
-                        {
-                        userIds: User['id'][];
-                    },
-                    UserDetailed[]
-                    ]
-                    ];
-                    $default: UserDetailed;
-                };
-            };
-        };
-        'users/stats': {
-            req: TODO;
-            res: TODO;
+    'notes/events/search': {
+        req: {
+            query?: string;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            limit?: number;
+            offset?: number;
+            users?: User['id'][];
+            sinceDate?: number;
+            untilDate?: number;
+            sortBy?: 'startDate' | 'craetedAt';
+            filters?: Record<string, string[]>;
+        };
+        res: Note[];
+    };
+    'notes/reactions': {
+        req: {
+            noteId: Note['id'];
+            type?: string | null;
+            limit?: number;
+        };
+        res: NoteReaction[];
+    };
+    'notes/reactions/create': {
+        req: {
+            noteId: Note['id'];
+            reaction: string;
+        };
+        res: null;
+    };
+    'notes/reactions/delete': {
+        req: {
+            noteId: Note['id'];
+        };
+        res: null;
+    };
+    'notes/renotes': {
+        req: {
+            limit?: number;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            noteId: Note['id'];
+        };
+        res: Note[];
+    };
+    'notes/replies': {
+        req: {
+            limit?: number;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            noteId: Note['id'];
+        };
+        res: Note[];
+    };
+    'notes/search-by-tag': {
+        req: TODO;
+        res: TODO;
+    };
+    'notes/search': {
+        req: TODO;
+        res: TODO;
+    };
+    'notes/show': {
+        req: {
+            noteId: Note['id'];
+        };
+        res: Note;
+    };
+    'notes/state': {
+        req: TODO;
+        res: TODO;
+    };
+    'notes/timeline': {
+        req: {
+            limit?: number;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            sinceDate?: number;
+            untilDate?: number;
+        };
+        res: Note[];
+    };
+    'notes/unrenote': {
+        req: {
+            noteId: Note['id'];
+        };
+        res: null;
+    };
+    'notes/user-list-timeline': {
+        req: {
+            listId: UserList['id'];
+            limit?: number;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            sinceDate?: number;
+            untilDate?: number;
+        };
+        res: Note[];
+    };
+    'notes/watching/create': {
+        req: TODO;
+        res: TODO;
+    };
+    'notes/watching/delete': {
+        req: {
+            noteId: Note['id'];
+        };
+        res: null;
+    };
+    'notifications/create': {
+        req: {
+            body: string;
+            header?: string | null;
+            icon?: string | null;
+        };
+        res: null;
+    };
+    'notifications/mark-all-as-read': {
+        req: NoParams;
+        res: null;
+    };
+    'page-push': {
+        req: {
+            pageId: Page['id'];
+            event: string;
+            var?: any;
+        };
+        res: null;
+    };
+    'pages/create': {
+        req: TODO;
+        res: Page;
+    };
+    'pages/delete': {
+        req: {
+            pageId: Page['id'];
+        };
+        res: null;
+    };
+    'pages/featured': {
+        req: NoParams;
+        res: Page[];
+    };
+    'pages/like': {
+        req: {
+            pageId: Page['id'];
+        };
+        res: null;
+    };
+    'pages/show': {
+        req: {
+            pageId?: Page['id'];
+            name?: string;
+            username?: string;
+        };
+        res: Page;
+    };
+    'pages/unlike': {
+        req: {
+            pageId: Page['id'];
+        };
+        res: null;
+    };
+    'pages/update': {
+        req: TODO;
+        res: null;
+    };
+    'ping': {
+        req: NoParams;
+        res: {
+            pong: number;
         };
     };
-
-    declare namespace entities {
-        export {
-            ID,
-            DateString,
-            User,
-            UserLite,
-            UserDetailed,
-            UserGroup,
-            UserList,
-            MeDetailed,
-            DriveFile,
-            DriveFolder,
-            GalleryPost,
-            Note,
-            NoteReaction,
-            Notification_2 as Notification,
-            MessagingMessage,
-            CustomEmoji,
-            LiteInstanceMetadata,
-            DetailedInstanceMetadata,
-            InstanceMetadata,
-            ServerInfo,
-            Stats,
-            Page,
-            PageEvent,
-            Announcement,
-            Antenna,
-            App,
-            AuthSession,
-            Ad,
-            Clip,
-            NoteFavorite,
-            FollowRequest,
-            Channel,
-            Following,
-            FollowingFolloweePopulated,
-            FollowingFollowerPopulated,
-            Blocking,
-            Instance,
-            Signin,
-            UserSorting,
-            OriginType
-        }
-    }
-    export { entities }
-
-    // @public (undocumented)
-    type FetchLike = (input: string, init?: {
-        method?: string;
-        body?: string;
-        credentials?: RequestCredentials;
-        cache?: RequestCache;
-        headers: {
-            [key in string]: string;
+    'pinned-users': {
+        req: TODO;
+        res: TODO;
+    };
+    'promo/read': {
+        req: TODO;
+        res: TODO;
+    };
+    'request-reset-password': {
+        req: {
+            username: string;
+            email: string;
         };
-    }) => Promise<{
-        status: number;
-        json(): Promise<any>;
-    }>;
-
-    // @public (undocumented)
-    export const ffVisibility: readonly ["public", "followers", "private"];
-
-    // @public (undocumented)
-    type Following = {
-        id: ID;
-        createdAt: DateString;
-        followerId: User['id'];
-        followeeId: User['id'];
+        res: null;
     };
-
-    // @public (undocumented)
-    type FollowingFolloweePopulated = Following & {
-        followee: UserDetailed;
-    };
-
-    // @public (undocumented)
-    type FollowingFollowerPopulated = Following & {
-        follower: UserDetailed;
-    };
-
-    // @public (undocumented)
-    type FollowRequest = {
-        id: ID;
-        follower: User;
-        followee: User;
-    };
-
-    // @public (undocumented)
-    type GalleryPost = {
-        id: ID;
-        createdAt: DateString;
-        updatedAt: DateString;
-        userId: User['id'];
-        user: User;
-        title: string;
-        description: string | null;
-        fileIds: DriveFile['id'][];
-        files: DriveFile[];
-        isSensitive: boolean;
-        likedCount: number;
-        isLiked?: boolean;
-    };
-
-    // @public (undocumented)
-    type ID = string;
-
-    // @public (undocumented)
-    type Instance = {
-        id: ID;
-        caughtAt: DateString;
-        host: string;
-        usersCount: number;
-        notesCount: number;
-        followingCount: number;
-        followersCount: number;
-        driveUsage: number;
-        driveFiles: number;
-        latestRequestSentAt: DateString | null;
-        latestStatus: number | null;
-        latestRequestReceivedAt: DateString | null;
-        lastCommunicatedAt: DateString;
-        isNotResponding: boolean;
-        isSuspended: boolean;
-        softwareName: string | null;
-        softwareVersion: string | null;
-        openRegistrations: boolean | null;
-        name: string | null;
-        description: string | null;
-        maintainerName: string | null;
-        maintainerEmail: string | null;
-        iconUrl: string | null;
-        faviconUrl: string | null;
-        themeColor: string | null;
-        infoUpdatedAt: DateString | null;
-    };
-
-    // @public (undocumented)
-    type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
-
-    // @public (undocumented)
-    function isAPIError(reason: any): reason is APIError;
-
-    // @public (undocumented)
-    type LiteInstanceMetadata = {
-        maintainerName: string | null;
-        maintainerEmail: string | null;
-        version: string;
-        name: string | null;
-        uri: string;
-        description: string | null;
-        langs: string[];
-        tosUrl: string | null;
-        repositoryUrl: string;
-        feedbackUrl: string;
-        disableRegistration: boolean;
-        disableLocalTimeline: boolean;
-        disableGlobalTimeline: boolean;
-        driveCapacityPerLocalUserMb: number;
-        driveCapacityPerRemoteUserMb: number;
-        emailRequiredForSignup: boolean;
-        enableHcaptcha: boolean;
-        hcaptchaSiteKey: string | null;
-        enableRecaptcha: boolean;
-        recaptchaSiteKey: string | null;
-        enableTurnstile: boolean;
-        turnstileSiteKey: string | null;
-        swPublickey: string | null;
-        themeColor: string | null;
-        mascotImageUrl: string | null;
-        bannerUrl: string | null;
-        errorImageUrl: string | null;
-        iconUrl: string | null;
-        backgroundImageUrl: string | null;
-        logoImageUrl: string | null;
-        maxNoteTextLength: number;
-        enableEmail: boolean;
-        enableTwitterIntegration: boolean;
-        enableGithubIntegration: boolean;
-        enableDiscordIntegration: boolean;
-        enableServiceWorker: boolean;
-        emojis: CustomEmoji[];
-        defaultDarkTheme: string | null;
-        defaultLightTheme: string | null;
-        ads: {
-            id: ID;
-            ratio: number;
-            place: string;
-            url: string;
-            imageUrl: string;
-        }[];
-        translatorAvailable: boolean;
-        serverRules: string[];
-    };
-
-    // @public (undocumented)
-    type MeDetailed = UserDetailed & {
-        avatarId: DriveFile['id'];
-        bannerId: DriveFile['id'];
-        autoAcceptFollowed: boolean;
-        alwaysMarkNsfw: boolean;
-        carefulBot: boolean;
-        emailNotificationTypes: string[];
-        hasPendingReceivedFollowRequest: boolean;
-        hasUnreadAnnouncement: boolean;
-        hasUnreadAntenna: boolean;
-        hasUnreadMentions: boolean;
-        hasUnreadMessagingMessage: boolean;
-        hasUnreadNotification: boolean;
-        hasUnreadSpecifiedNotes: boolean;
-        hideOnlineStatus: boolean;
-        injectFeaturedNote: boolean;
-        integrations: Record<string, any>;
-        isDeleted: boolean;
-        isExplorable: boolean;
-        mutedWords: string[][];
-        mutingNotificationTypes: string[];
-        noCrawle: boolean;
-        receiveAnnouncementEmail: boolean;
-        usePasswordLessLogin: boolean;
-        [other: string]: any;
-    };
-
-    // @public (undocumented)
-    type MessagingMessage = {
-        id: ID;
-        createdAt: DateString;
-        file: DriveFile | null;
-        fileId: DriveFile['id'] | null;
-        isRead: boolean;
-        reads: User['id'][];
-        text: string | null;
-        user: User;
-        userId: User['id'];
-        recipient?: User | null;
-        recipientId: User['id'] | null;
-        group?: UserGroup | null;
-        groupId: UserGroup['id'] | null;
-    };
-
-    // @public (undocumented)
-    export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
-
-    // @public (undocumented)
-    type Note = {
-        id: ID;
-        createdAt: DateString;
-        text: string | null;
-        cw: string | null;
-        user: User;
-        userId: User['id'];
-        reply?: Note;
-        replyId: Note['id'];
-        renote?: Note;
-        renoteId: Note['id'];
-        event?: {
-            title: string;
-            start: DateString;
-            end: DateString | null;
-            metadata: Record<string, string[]>;
-        };
-        files: DriveFile[];
-        fileIds: DriveFile['id'][];
-        visibility: 'public' | 'home' | 'followers' | 'specified';
-        visibleUserIds?: User['id'][];
-        localOnly?: boolean;
-        myReaction?: string;
-        reactions: Record<string, number>;
-        renoteCount: number;
-        repliesCount: number;
-        poll?: {
-            expiresAt: DateString | null;
-            multiple: boolean;
-            choices: {
-                isVoted: boolean;
-                text: string;
-                votes: number;
-            }[];
-        };
-        emojis: {
-            name: string;
-            url: string;
-        }[];
-        uri?: string;
-        url?: string;
-        isHidden?: boolean;
-    };
-
-    // @public (undocumented)
-    type NoteFavorite = {
-        id: ID;
-        createdAt: DateString;
-        noteId: Note['id'];
-        note: Note;
-    };
-
-    // @public (undocumented)
-    type NoteReaction = {
-        id: ID;
-        createdAt: DateString;
-        user: UserLite;
-        type: string;
-    };
-
-    // @public (undocumented)
-    export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
-
-    // @public (undocumented)
-    type Notification_2 = {
-        id: ID;
-        createdAt: DateString;
-        isRead: boolean;
-    } & ({
-        type: 'reaction';
-        reaction: string;
-        user: User;
-        userId: User['id'];
-        note: Note;
-    } | {
-        type: 'reply';
-        user: User;
-        userId: User['id'];
-        note: Note;
-    } | {
-        type: 'renote';
-        user: User;
-        userId: User['id'];
-        note: Note;
-    } | {
-        type: 'quote';
-        user: User;
-        userId: User['id'];
-        note: Note;
-    } | {
-        type: 'mention';
-        user: User;
-        userId: User['id'];
-        note: Note;
-    } | {
-        type: 'pollVote';
-        user: User;
-        userId: User['id'];
-        note: Note;
-    } | {
-        type: 'follow';
-        user: User;
-        userId: User['id'];
-    } | {
-        type: 'followRequestAccepted';
-        user: User;
-        userId: User['id'];
-    } | {
-        type: 'receiveFollowRequest';
-        user: User;
-        userId: User['id'];
-    } | {
-        type: 'groupInvited';
-        invitation: UserGroup;
-        user: User;
-        userId: User['id'];
-    } | {
-        type: 'app';
-        header?: string | null;
-        body: string;
-        icon?: string | null;
-    });
-
-    // @public (undocumented)
-    export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
-
-    // @public (undocumented)
-    type OriginType = 'combined' | 'local' | 'remote';
-
-    // @public (undocumented)
-    type Page = {
-        id: ID;
-        createdAt: DateString;
-        updatedAt: DateString;
-        userId: User['id'];
-        user: User;
-        content: Record<string, any>[];
-        variables: Record<string, any>[];
-        title: string;
-        name: string;
-        summary: string | null;
-        hideTitleWhenPinned: boolean;
-        alignCenter: boolean;
-        font: string;
-        script: string;
-        eyeCatchingImageId: DriveFile['id'] | null;
-        eyeCatchingImage: DriveFile | null;
-        attachedFiles: any;
-        likedCount: number;
-        isLiked?: boolean;
-    };
-
-    // @public (undocumented)
-    type PageEvent = {
-        pageId: Page['id'];
-        event: string;
-        var: any;
-        userId: User['id'];
-        user: User;
-    };
-
-    // @public (undocumented)
-    export const permissions: string[];
-
-    // @public (undocumented)
-    type ServerInfo = {
-        machine: string;
-        cpu: {
-            model: string;
-            cores: number;
-        };
-        mem: {
-            total: number;
-        };
-        fs: {
-            total: number;
-            used: number;
-        };
-    };
-
-    // @public (undocumented)
-    type Signin = {
-        id: ID;
-        createdAt: DateString;
-        ip: string;
-        headers: Record<string, any>;
-        success: boolean;
-    };
-
-    // @public (undocumented)
-    type Stats = {
-        notesCount: number;
-        originalNotesCount: number;
-        usersCount: number;
-        originalUsersCount: number;
-        instances: number;
-        driveUsageLocal: number;
-        driveUsageRemote: number;
-    };
-
-    // Warning: (ae-forgotten-export) The symbol "StreamEvents" needs to be exported by the entry point index.d.ts
-    //
-    // @public (undocumented)
-    export class Stream extends EventEmitter<StreamEvents> {
-        constructor(origin: string, user: {
+    'reset-password': {
+        req: {
             token: string;
-        } | null, options?: {
-            WebSocket?: any;
-        });
-        // (undocumented)
-        close(): void;
-        // Warning: (ae-forgotten-export) The symbol "NonSharedConnection" needs to be exported by the entry point index.d.ts
-        //
-        // (undocumented)
-        disconnectToChannel(connection: NonSharedConnection): void;
-        // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
-        //
-        // (undocumented)
-        removeSharedConnection(connection: SharedConnection): void;
-        // Warning: (ae-forgotten-export) The symbol "Pool" needs to be exported by the entry point index.d.ts
-        //
-        // (undocumented)
-        removeSharedConnectionPool(pool: Pool): void;
-        // (undocumented)
-        send(typeOrPayload: string): void;
-        // (undocumented)
-        send(typeOrPayload: string, payload: any): void;
-        // (undocumented)
-        send(typeOrPayload: Record<string, any> | any[]): void;
-        // (undocumented)
-        state: 'initializing' | 'reconnecting' | 'connected';
-        // (undocumented)
-        useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
-    }
-
-    // @public (undocumented)
-    type User = UserLite | UserDetailed;
-
-    // @public (undocumented)
-    type UserDetailed = UserLite & {
-        bannerBlurhash: string | null;
-        bannerColor: string | null;
-        bannerUrl: string | null;
-        birthday: string | null;
-        createdAt: DateString;
-        description: string | null;
-        ffVisibility: 'public' | 'followers' | 'private';
-        fields: {
-            name: string;
-            value: string;
-        }[];
-        followersCount: number;
-        followingCount: number;
-        hasPendingFollowRequestFromYou: boolean;
-        hasPendingFollowRequestToYou: boolean;
-        isAdmin: boolean;
-        isBlocked: boolean;
-        isBlocking: boolean;
-        isBot: boolean;
-        isCat: boolean;
-        isFollowed: boolean;
-        isFollowing: boolean;
-        isLocked: boolean;
-        isModerator: boolean;
-        isMuted: boolean;
-        isSilenced: boolean;
-        isSuspended: boolean;
-        lang: string | null;
-        lastFetchedAt?: DateString;
-        location: string | null;
-        notesCount: number;
-        pinnedNoteIds: ID[];
-        pinnedNotes: Note[];
-        pinnedPage: Page | null;
-        pinnedPageId: string | null;
-        publicReactions: boolean;
-        securityKeys: boolean;
-        twoFactorEnabled: boolean;
-        updatedAt: DateString | null;
-        uri: string | null;
-        url: string | null;
+            password: string;
+        };
+        res: null;
     };
-
-    // @public (undocumented)
-    type UserGroup = TODO_2;
-
-    // @public (undocumented)
-    type UserList = {
-        id: ID;
-        createdAt: DateString;
-        name: string;
-        userIds: User['id'][];
+    'room/show': {
+        req: TODO;
+        res: TODO;
     };
-
-    // @public (undocumented)
-    type UserLite = {
-        id: ID;
-        username: string;
-        host: string | null;
-        name: string;
-        onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
-        avatarUrl: string;
-        avatarBlurhash: string;
-        alsoKnownAs: string[];
-        movedToUri: any;
-        emojis: {
-            name: string;
-            url: string;
-        }[];
-        instance?: {
-            name: Instance['name'];
-            softwareName: Instance['softwareName'];
-            softwareVersion: Instance['softwareVersion'];
-            iconUrl: Instance['iconUrl'];
-            faviconUrl: Instance['faviconUrl'];
-            themeColor: Instance['themeColor'];
+    'room/update': {
+        req: TODO;
+        res: TODO;
+    };
+    'stats': {
+        req: NoParams;
+        res: Stats;
+    };
+    'server-info': {
+        req: NoParams;
+        res: ServerInfo;
+    };
+    'sw/register': {
+        req: TODO;
+        res: TODO;
+    };
+    'username/available': {
+        req: {
+            username: string;
+        };
+        res: {
+            available: boolean;
         };
     };
+    'users': {
+        req: {
+            limit?: number;
+            offset?: number;
+            sort?: UserSorting;
+            origin?: OriginType;
+        };
+        res: User[];
+    };
+    'users/clips': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/followers': {
+        req: {
+            userId?: User['id'];
+            username?: User['username'];
+            host?: User['host'] | null;
+            limit?: number;
+            sinceId?: Following['id'];
+            untilId?: Following['id'];
+        };
+        res: FollowingFollowerPopulated[];
+    };
+    'users/following': {
+        req: {
+            userId?: User['id'];
+            username?: User['username'];
+            host?: User['host'] | null;
+            limit?: number;
+            sinceId?: Following['id'];
+            untilId?: Following['id'];
+        };
+        res: FollowingFolloweePopulated[];
+    };
+    'users/gallery/posts': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/get-frequently-replied-users': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/create': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/delete': {
+        req: {
+            groupId: UserGroup['id'];
+        };
+        res: null;
+    };
+    'users/groups/invitations/accept': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/invitations/reject': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/invite': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/joined': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/owned': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/pull': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/show': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/transfer': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/groups/update': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/lists/create': {
+        req: {
+            name: string;
+        };
+        res: UserList;
+    };
+    'users/lists/delete': {
+        req: {
+            listId: UserList['id'];
+        };
+        res: null;
+    };
+    'users/lists/list': {
+        req: NoParams;
+        res: UserList[];
+    };
+    'users/lists/pull': {
+        req: {
+            listId: UserList['id'];
+            userId: User['id'];
+        };
+        res: null;
+    };
+    'users/lists/push': {
+        req: {
+            listId: UserList['id'];
+            userId: User['id'];
+        };
+        res: null;
+    };
+    'users/lists/show': {
+        req: {
+            listId: UserList['id'];
+        };
+        res: UserList;
+    };
+    'users/lists/update': {
+        req: {
+            listId: UserList['id'];
+            name: string;
+        };
+        res: UserList;
+    };
+    'users/notes': {
+        req: {
+            userId: User['id'];
+            limit?: number;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            sinceDate?: number;
+            untilDate?: number;
+        };
+        res: Note[];
+    };
+    'users/pages': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/recommendation': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/relation': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/report-abuse': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/search-by-username-and-host': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/search': {
+        req: TODO;
+        res: TODO;
+    };
+    'users/show': {
+        req: ShowUserReq | {
+            userIds: User['id'][];
+        };
+        res: {
+            $switch: {
+                $cases: [
+                [
+                    {
+                    userIds: User['id'][];
+                },
+                UserDetailed[]
+                ]
+                ];
+                $default: UserDetailed;
+            };
+        };
+    };
+    'users/stats': {
+        req: TODO;
+        res: TODO;
+    };
+};
 
-    // @public (undocumented)
-    type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
+declare namespace entities {
+    export {
+        ID,
+        DateString,
+        User,
+        UserLite,
+        UserDetailed,
+        UserGroup,
+        UserList,
+        MeDetailed,
+        DriveFile,
+        DriveFolder,
+        GalleryPost,
+        Note,
+        NoteReaction,
+        Notification_2 as Notification,
+        MessagingMessage,
+        CustomEmoji,
+        LiteInstanceMetadata,
+        DetailedInstanceMetadata,
+        InstanceMetadata,
+        ServerInfo,
+        Stats,
+        Page,
+        PageEvent,
+        Announcement,
+        Antenna,
+        App,
+        AuthSession,
+        Ad,
+        Clip,
+        NoteFavorite,
+        FollowRequest,
+        Channel,
+        Following,
+        FollowingFolloweePopulated,
+        FollowingFollowerPopulated,
+        Blocking,
+        Instance,
+        Signin,
+        UserSorting,
+        OriginType
+    }
+}
+export { entities }
 
-    // Warnings were encountered during analysis:
+// @public (undocumented)
+type FetchLike = (input: string, init?: {
+    method?: string;
+    body?: string;
+    credentials?: RequestCredentials;
+    cache?: RequestCache;
+    headers: {
+        [key in string]: string;
+    };
+}) => Promise<{
+    status: number;
+    json(): Promise<any>;
+}>;
+
+// @public (undocumented)
+export const ffVisibility: readonly ["public", "followers", "private"];
+
+// @public (undocumented)
+type Following = {
+    id: ID;
+    createdAt: DateString;
+    followerId: User['id'];
+    followeeId: User['id'];
+};
+
+// @public (undocumented)
+type FollowingFolloweePopulated = Following & {
+    followee: UserDetailed;
+};
+
+// @public (undocumented)
+type FollowingFollowerPopulated = Following & {
+    follower: UserDetailed;
+};
+
+// @public (undocumented)
+type FollowRequest = {
+    id: ID;
+    follower: User;
+    followee: User;
+};
+
+// @public (undocumented)
+type GalleryPost = {
+    id: ID;
+    createdAt: DateString;
+    updatedAt: DateString;
+    userId: User['id'];
+    user: User;
+    title: string;
+    description: string | null;
+    fileIds: DriveFile['id'][];
+    files: DriveFile[];
+    isSensitive: boolean;
+    likedCount: number;
+    isLiked?: boolean;
+};
+
+// @public (undocumented)
+type ID = string;
+
+// @public (undocumented)
+type Instance = {
+    id: ID;
+    caughtAt: DateString;
+    host: string;
+    usersCount: number;
+    notesCount: number;
+    followingCount: number;
+    followersCount: number;
+    driveUsage: number;
+    driveFiles: number;
+    latestRequestSentAt: DateString | null;
+    latestStatus: number | null;
+    latestRequestReceivedAt: DateString | null;
+    lastCommunicatedAt: DateString;
+    isNotResponding: boolean;
+    isSuspended: boolean;
+    softwareName: string | null;
+    softwareVersion: string | null;
+    openRegistrations: boolean | null;
+    name: string | null;
+    description: string | null;
+    maintainerName: string | null;
+    maintainerEmail: string | null;
+    iconUrl: string | null;
+    faviconUrl: string | null;
+    themeColor: string | null;
+    infoUpdatedAt: DateString | null;
+};
+
+// @public (undocumented)
+type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
+
+// @public (undocumented)
+function isAPIError(reason: any): reason is APIError;
+
+// @public (undocumented)
+type LiteInstanceMetadata = {
+    maintainerName: string | null;
+    maintainerEmail: string | null;
+    version: string;
+    name: string | null;
+    uri: string;
+    description: string | null;
+    langs: string[];
+    tosUrl: string | null;
+    repositoryUrl: string;
+    feedbackUrl: string;
+    disableRegistration: boolean;
+    disableLocalTimeline: boolean;
+    disableGlobalTimeline: boolean;
+    driveCapacityPerLocalUserMb: number;
+    driveCapacityPerRemoteUserMb: number;
+    emailRequiredForSignup: boolean;
+    enableHcaptcha: boolean;
+    hcaptchaSiteKey: string | null;
+    enableRecaptcha: boolean;
+    recaptchaSiteKey: string | null;
+    enableTurnstile: boolean;
+    turnstileSiteKey: string | null;
+    swPublickey: string | null;
+    themeColor: string | null;
+    mascotImageUrl: string | null;
+    bannerUrl: string | null;
+    errorImageUrl: string | null;
+    iconUrl: string | null;
+    backgroundImageUrl: string | null;
+    logoImageUrl: string | null;
+    maxNoteTextLength: number;
+    enableEmail: boolean;
+    enableTwitterIntegration: boolean;
+    enableGithubIntegration: boolean;
+    enableDiscordIntegration: boolean;
+    enableServiceWorker: boolean;
+    emojis: CustomEmoji[];
+    defaultDarkTheme: string | null;
+    defaultLightTheme: string | null;
+    ads: {
+        id: ID;
+        ratio: number;
+        place: string;
+        url: string;
+        imageUrl: string;
+    }[];
+    translatorAvailable: boolean;
+    serverRules: string[];
+};
+
+// @public (undocumented)
+type MeDetailed = UserDetailed & {
+    avatarId: DriveFile['id'];
+    bannerId: DriveFile['id'];
+    autoAcceptFollowed: boolean;
+    alwaysMarkNsfw: boolean;
+    carefulBot: boolean;
+    emailNotificationTypes: string[];
+    hasPendingReceivedFollowRequest: boolean;
+    hasUnreadAnnouncement: boolean;
+    hasUnreadAntenna: boolean;
+    hasUnreadMentions: boolean;
+    hasUnreadMessagingMessage: boolean;
+    hasUnreadNotification: boolean;
+    hasUnreadSpecifiedNotes: boolean;
+    hideOnlineStatus: boolean;
+    injectFeaturedNote: boolean;
+    integrations: Record<string, any>;
+    isDeleted: boolean;
+    isExplorable: boolean;
+    mutedWords: string[][];
+    mutingNotificationTypes: string[];
+    noCrawle: boolean;
+    receiveAnnouncementEmail: boolean;
+    usePasswordLessLogin: boolean;
+    [other: string]: any;
+};
+
+// @public (undocumented)
+type MessagingMessage = {
+    id: ID;
+    createdAt: DateString;
+    file: DriveFile | null;
+    fileId: DriveFile['id'] | null;
+    isRead: boolean;
+    reads: User['id'][];
+    text: string | null;
+    user: User;
+    userId: User['id'];
+    recipient?: User | null;
+    recipientId: User['id'] | null;
+    group?: UserGroup | null;
+    groupId: UserGroup['id'] | null;
+};
+
+// @public (undocumented)
+export const mutedNoteReasons: readonly ["word", "manual", "spam", "other"];
+
+// @public (undocumented)
+type Note = {
+    id: ID;
+    createdAt: DateString;
+    text: string | null;
+    cw: string | null;
+    user: User;
+    userId: User['id'];
+    reply?: Note;
+    replyId: Note['id'];
+    renote?: Note;
+    renoteId: Note['id'];
+    event?: {
+        title: string;
+        start: DateString;
+        end: DateString | null;
+        metadata: Record<string, string>;
+    };
+    files: DriveFile[];
+    fileIds: DriveFile['id'][];
+    visibility: 'public' | 'home' | 'followers' | 'specified';
+    visibleUserIds?: User['id'][];
+    localOnly?: boolean;
+    myReaction?: string;
+    reactions: Record<string, number>;
+    renoteCount: number;
+    repliesCount: number;
+    poll?: {
+        expiresAt: DateString | null;
+        multiple: boolean;
+        choices: {
+            isVoted: boolean;
+            text: string;
+            votes: number;
+        }[];
+    };
+    emojis: {
+        name: string;
+        url: string;
+    }[];
+    uri?: string;
+    url?: string;
+    isHidden?: boolean;
+};
+
+// @public (undocumented)
+type NoteFavorite = {
+    id: ID;
+    createdAt: DateString;
+    noteId: Note['id'];
+    note: Note;
+};
+
+// @public (undocumented)
+type NoteReaction = {
+    id: ID;
+    createdAt: DateString;
+    user: UserLite;
+    type: string;
+};
+
+// @public (undocumented)
+export const noteVisibilities: readonly ["public", "home", "followers", "specified"];
+
+// @public (undocumented)
+type Notification_2 = {
+    id: ID;
+    createdAt: DateString;
+    isRead: boolean;
+} & ({
+    type: 'reaction';
+    reaction: string;
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'reply';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'renote';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'quote';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'mention';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'pollVote';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'follow';
+    user: User;
+    userId: User['id'];
+} | {
+    type: 'followRequestAccepted';
+    user: User;
+    userId: User['id'];
+} | {
+    type: 'receiveFollowRequest';
+    user: User;
+    userId: User['id'];
+} | {
+    type: 'groupInvited';
+    invitation: UserGroup;
+    user: User;
+    userId: User['id'];
+} | {
+    type: 'app';
+    header?: string | null;
+    body: string;
+    icon?: string | null;
+});
+
+// @public (undocumented)
+export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
+
+// @public (undocumented)
+type OriginType = 'combined' | 'local' | 'remote';
+
+// @public (undocumented)
+type Page = {
+    id: ID;
+    createdAt: DateString;
+    updatedAt: DateString;
+    userId: User['id'];
+    user: User;
+    content: Record<string, any>[];
+    variables: Record<string, any>[];
+    title: string;
+    name: string;
+    summary: string | null;
+    hideTitleWhenPinned: boolean;
+    alignCenter: boolean;
+    font: string;
+    script: string;
+    eyeCatchingImageId: DriveFile['id'] | null;
+    eyeCatchingImage: DriveFile | null;
+    attachedFiles: any;
+    likedCount: number;
+    isLiked?: boolean;
+};
+
+// @public (undocumented)
+type PageEvent = {
+    pageId: Page['id'];
+    event: string;
+    var: any;
+    userId: User['id'];
+    user: User;
+};
+
+// @public (undocumented)
+export const permissions: string[];
+
+// @public (undocumented)
+type ServerInfo = {
+    machine: string;
+    cpu: {
+        model: string;
+        cores: number;
+    };
+    mem: {
+        total: number;
+    };
+    fs: {
+        total: number;
+        used: number;
+    };
+};
+
+// @public (undocumented)
+type Signin = {
+    id: ID;
+    createdAt: DateString;
+    ip: string;
+    headers: Record<string, any>;
+    success: boolean;
+};
+
+// @public (undocumented)
+type Stats = {
+    notesCount: number;
+    originalNotesCount: number;
+    usersCount: number;
+    originalUsersCount: number;
+    instances: number;
+    driveUsageLocal: number;
+    driveUsageRemote: number;
+};
+
+// Warning: (ae-forgotten-export) The symbol "StreamEvents" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export class Stream extends EventEmitter<StreamEvents> {
+    constructor(origin: string, user: {
+        token: string;
+    } | null, options?: {
+        WebSocket?: any;
+    });
+    // (undocumented)
+    close(): void;
+    // Warning: (ae-forgotten-export) The symbol "NonSharedConnection" needs to be exported by the entry point index.d.ts
     //
-    // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
-    // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-    // src/api.types.ts:602:27 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
-    // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
+    // (undocumented)
+    disconnectToChannel(connection: NonSharedConnection): void;
+    // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    removeSharedConnection(connection: SharedConnection): void;
+    // Warning: (ae-forgotten-export) The symbol "Pool" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    removeSharedConnectionPool(pool: Pool): void;
+    // (undocumented)
+    send(typeOrPayload: string): void;
+    // (undocumented)
+    send(typeOrPayload: string, payload: any): void;
+    // (undocumented)
+    send(typeOrPayload: Record<string, any> | any[]): void;
+    // (undocumented)
+    state: 'initializing' | 'reconnecting' | 'connected';
+    // (undocumented)
+    useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
+}
 
-    // (No @packageDocumentation comment for this package)
+// @public (undocumented)
+type User = UserLite | UserDetailed;
 
-    ```
+// @public (undocumented)
+type UserDetailed = UserLite & {
+    bannerBlurhash: string | null;
+    bannerColor: string | null;
+    bannerUrl: string | null;
+    birthday: string | null;
+    createdAt: DateString;
+    description: string | null;
+    ffVisibility: 'public' | 'followers' | 'private';
+    fields: {
+        name: string;
+        value: string;
+    }[];
+    followersCount: number;
+    followingCount: number;
+    hasPendingFollowRequestFromYou: boolean;
+    hasPendingFollowRequestToYou: boolean;
+    isAdmin: boolean;
+    isBlocked: boolean;
+    isBlocking: boolean;
+    isBot: boolean;
+    isCat: boolean;
+    isFollowed: boolean;
+    isFollowing: boolean;
+    isLocked: boolean;
+    isModerator: boolean;
+    isMuted: boolean;
+    isSilenced: boolean;
+    isSuspended: boolean;
+    lang: string | null;
+    lastFetchedAt?: DateString;
+    location: string | null;
+    notesCount: number;
+    pinnedNoteIds: ID[];
+    pinnedNotes: Note[];
+    pinnedPage: Page | null;
+    pinnedPageId: string | null;
+    publicReactions: boolean;
+    securityKeys: boolean;
+    twoFactorEnabled: boolean;
+    updatedAt: DateString | null;
+    uri: string | null;
+    url: string | null;
+};
+
+// @public (undocumented)
+type UserGroup = TODO_2;
+
+// @public (undocumented)
+type UserList = {
+    id: ID;
+    createdAt: DateString;
+    name: string;
+    userIds: User['id'][];
+};
+
+// @public (undocumented)
+type UserLite = {
+    id: ID;
+    username: string;
+    host: string | null;
+    name: string;
+    onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
+    avatarUrl: string;
+    avatarBlurhash: string;
+    alsoKnownAs: string[];
+    movedToUri: any;
+    emojis: {
+        name: string;
+        url: string;
+    }[];
+    instance?: {
+        name: Instance['name'];
+        softwareName: Instance['softwareName'];
+        softwareVersion: Instance['softwareVersion'];
+        iconUrl: Instance['iconUrl'];
+        faviconUrl: Instance['faviconUrl'];
+        themeColor: Instance['themeColor'];
+    };
+};
+
+// @public (undocumented)
+type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
+
+// Warnings were encountered during analysis:
+//
+// src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:614:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
+
+// (No @packageDocumentation comment for this package)
+
+```
