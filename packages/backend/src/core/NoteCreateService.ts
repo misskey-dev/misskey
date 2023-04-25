@@ -235,34 +235,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
+		const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
 		if (data.visibility === 'public' && data.channel == null) {
-			if ((data.cw == null) && (data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => {
-				if (w.startsWith('/')) {
-					const matchRegex = /\/(.*)\/(.*)/g.exec(w);
-					if (matchRegex != null) {
-						const pattern = matchRegex[1];
-						const flags = matchRegex[2];
-						const regex = new RegExp(pattern, flags);
-						return regex.test(data.text!);
-					} 
-				}
-				return data.text!.includes(w);
-			})) {
+			if ((data.cw == null) && (data.text != null) && sensitiveWords.some(w => this.isSensiteive(data.text!, w))) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
-			} else if ((data.cw != null) && (await this.metaService.fetch()).sensitiveWords.some(w => {
-				if (w.startsWith('/')) {
-					const matchRegex = /\/(.*)\/(.*)/g.exec(w);
-					if (matchRegex != null) {
-						const pattern = matchRegex[1];
-						const flags = matchRegex[2];
-						const regex = new RegExp(pattern, flags);
-						return regex.test(data.cw!);
-					} 
-				}
-				return data.cw!.includes(w);
-			})) {
+			} else if ((data.cw != null) && sensitiveWords.some(w => this.isSensiteive(data.cw!, w))) {
 				data.visibility = 'home';
 			}
 		}
@@ -691,6 +670,17 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// Register to search database
 		this.index(note);
+	}
+	
+	private isSensiteive(sensitiveWord: string, word:string):boolean {
+		if (sensitiveWord.startsWith('/') && sensitiveWord.endsWith('/')) {
+			const matchRegex = /\/(.*)\/(.*)/.exec(sensitiveWord);
+			if (matchRegex != null && matchRegex.length > 2) {
+				const regex = new RegExp(matchRegex[1]);
+				return regex.test(word);
+			} 
+		}
+		return word.includes(sensitiveWord);
 	}
 
 	@bindThis
