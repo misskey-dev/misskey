@@ -31,7 +31,7 @@ describe('ユーザー', () => {
 			}, {});
 	};
 
-	// FIXME: 足りないキーがたくさんある
+	// BUG misskey-jsとjson-schemaと実際に返ってくるデータが全部違う
 	type UserLite = misskey.entities.UserLite & {
 		badgeRoles: any[],
 	};
@@ -55,6 +55,7 @@ describe('ユーザー', () => {
 		return successfulApiCall({ endpoint: 'users/show', parameters: { userId: id }, user: me }) as any;
 	};
 
+	// UserLiteのキーが過不足なく入っている？
 	const userLite = (user: User): Partial<UserLite> => {
 		return stripUndefined({
 			id: user.id,
@@ -76,6 +77,7 @@ describe('ユーザー', () => {
 		});
 	};
 
+	// UserDetailedNotMeのキーが過不足なく入っている？
 	const userDetailedNotMe = (user: User): Partial<UserDetailedNotMe> => {
 		return stripUndefined({
 			...userLite(user),
@@ -109,9 +111,11 @@ describe('ユーザー', () => {
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
 			roles: user.roles,
+			memo: user.memo,
 		});
 	};
 
+	// Relations関連のキーが過不足なく入っている？
 	const userDetailedNotMeWithRelations = (user: User): Partial<UserDetailedNotMe> => {
 		return stripUndefined({
 			...userDetailedNotMe(user),
@@ -126,6 +130,7 @@ describe('ユーザー', () => {
 		});
 	};
 
+	// MeDetailedのキーが過不足なく入っている？
 	const meDetailed = (user: User, security = false): Partial<MeDetailed> => {
 		return stripUndefined({
 			...userDetailedNotMe(user),
@@ -371,6 +376,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.usePasswordLessLogin, false);
 		assert.strictEqual(response.securityKeys, false);
 		assert.deepStrictEqual(response.roles, []);
+		assert.strictEqual(response.memo, null);
 		
 		// MeDetailedOnly
 		assert.strictEqual(response.avatarId, null);
@@ -410,7 +416,7 @@ describe('ユーザー', () => {
 	//#endregion
 	//#region 自分の情報(i)
 
-	test('を読み取ることができる。（自分）', async () => {
+	test('を読み取ることができること（自分）、キーが過不足なく入っていること。', async () => {
 		const response = await successfulApiCall({
 			endpoint: 'i',
 			parameters: {},
@@ -502,7 +508,6 @@ describe('ユーザー', () => {
 		};
 		assert.deepStrictEqual(response, expected, inspect(parameters));
 
-		if (1) return; // BUG 521eb95 以降アバターのリセットができない。
 		const parameters2 = { avatarId: null };
 		const response2 = await successfulApiCall({ endpoint: 'i/update', parameters: parameters2, user: alice });
 		const expected2 = { 
@@ -528,7 +533,6 @@ describe('ユーザー', () => {
 		};
 		assert.deepStrictEqual(response, expected, inspect(parameters));
 
-		if (1) return; // BUG 521eb95 以降バナーのリセットができない。
 		const parameters2 = { bannerId: null };
 		const response2 = await successfulApiCall({ endpoint: 'i/update', parameters: parameters2, user: alice });
 		const expected2 = { 
@@ -552,6 +556,21 @@ describe('ユーザー', () => {
 		const response2 = await successfulApiCall({ endpoint: 'i/unpin', parameters, user: alice });
 		const expected2 = meDetailed(alice, false);
 		assert.deepStrictEqual(response2, expected2);
+	});
+
+	//#endregion
+	//#region メモの更新(users/update-memo)
+
+	test.each([
+		{ label: '最大長', memo: 'x'.repeat(2048) },
+		{ label: '空文字', memo: '', expects: null },
+		{ label: 'null', memo: null },
+	])('を書き換えることができる(メモを$labelに)', async ({ memo, expects }) => {
+		const expected = { ...await show(bob.id), memo: expects === undefined ? memo : expects };
+		const parameters = { userId: bob.id, memo };
+		await successfulApiCall({ endpoint: 'users/update-memo', parameters, user: alice });
+		const response = await show(bob.id);
+		assert.deepStrictEqual(response, expected);
 	});
 
 	//#endregion

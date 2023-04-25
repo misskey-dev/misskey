@@ -247,6 +247,10 @@ watch($$(text), () => {
 	checkMissingMention();
 }, { immediate: true });
 
+watch($$(visibility), () => {
+	checkMissingMention();
+}, { immediate: true });
+
 watch($$(visibleUsers), () => {
 	checkMissingMention();
 }, {
@@ -900,27 +904,28 @@ defineExpose({
 }
 
 .headerLeft {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(36px, 50px));
-	grid-template-rows: minmax(40px, 100%);
+	display: flex;
+	flex: 0 1 100px;
 }
 
 .cancel {
 	padding: 0;
 	font-size: 1em;
 	height: 100%;
+	flex: 0 1 50px;
 }
 
 .account {
 	height: 100%;
 	display: inline-flex;
 	vertical-align: bottom;
+	flex: 0 1 50px;
 }
 
 .avatar {
 	width: 28px;
 	height: 28px;
-	margin: auto 0;
+	margin: auto;
 }
 
 .headerRight {

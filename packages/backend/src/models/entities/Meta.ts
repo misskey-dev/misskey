@@ -405,4 +405,11 @@ export class Meta {
 		default: { },
 	})
 	public policies: Record<string, any>;
+
+	@Column('varchar', {
+		length: 280,
+		array: true,
+		default: '{}',
+	})
+	public serverRules: string[];
 }

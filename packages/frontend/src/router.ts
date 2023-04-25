@@ -428,6 +428,10 @@ export const routes = [{
 		name: 'other-settings',
 		component: page(() => import('./pages/admin/other-settings.vue')),
 	}, {
+		path: '/server-rules',
+		name: 'server-rules',
+		component: page(() => import('./pages/admin/server-rules.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],

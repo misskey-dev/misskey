@@ -110,7 +110,7 @@ export class ExportMutingProcessorService {
 			this.logger.succ(`Exported to: ${path}`);
 
 			const fileName = 'mute-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
-			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true });
+			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 		} finally {
