@@ -45,6 +45,7 @@
 
 ### Server
 
+- 環境変数 MISSKEY_CONFIG_YML で設定ファイルを default.yml から変更可能に
 - Fix: エクスポートデータの拡張子が unknown になる問題を修正
 - Fix: Content-Disposition のパースでエラーが発生した場合にダウンロードが完了しない問題を修正
 - Fix: API: i/update avatarId と bannerId に null を渡した時、画像がリセットされない問題を修正
