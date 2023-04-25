@@ -19,7 +19,7 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 	const theme = themes[document.documentElement.dataset.misskeyTheme];
 	if (theme) {
 		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
-	} else if (isChromatic()) {
+	} else {
 		applyTheme(themes['l-light']);
 	}
 	const observer = new MutationObserver((entries) => {
