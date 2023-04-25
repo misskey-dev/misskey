@@ -255,7 +255,8 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
-		const host = this.utilityService.toPuny(new URL(object.id).hostname);
+		const urlObj = new URL(object.id);
+		const host = `${this.utilityService.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
 
 		const { fields } = this.analyzeAttachments(person.attachment ?? []);
 
@@ -268,7 +269,7 @@ export class ApPersonService implements OnModuleInit {
 		const url = getOneApHrefNullable(person.url);
 
 		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of person url: ' + url);
+			throw new Error('unexpected shcema of person url: ' + urlObj);
 		}
 
 		// Create user
@@ -552,8 +553,14 @@ export class ApPersonService implements OnModuleInit {
 			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
 			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
 		)) {
+			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
 			return this.processRemoteMove(updated, movePreventUris)
-				.catch(() => 'failed');
+				.then(result => {
+					this.logger.info(`Processing Move Finished [${result}] @${updated.username}@${updated.host} (${uri})`);
+				})
+				.catch(e => {
+					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${uri})`, { stack: e });
+				});
 		}
 
 		return 'skip';
