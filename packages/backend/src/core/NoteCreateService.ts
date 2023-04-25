@@ -672,7 +672,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		this.index(note);
 	}
 	
-	private isSensiteive(sensitiveWord: string, word:string):boolean {
+	@bindThis
+	private isSensiteive(sensitiveWord: string, word: string): boolean {
 		if (sensitiveWord.startsWith('/') && sensitiveWord.endsWith('/')) {
 			const matchRegex = /\/(.*)\/(.*)/.exec(sensitiveWord);
 			if (matchRegex != null && matchRegex.length > 2) {
