@@ -48,7 +48,8 @@ export class ApImageService {
 			throw new Error('invalid image: url not privided');
 		}
 
-		if (!image.url.startsWith('https://')) {
+		if (!image.url.startsWith('https://') &&
+			!(process.env.NODE_ENV !== 'production' && image.url.startsWith('http://'))) {
 			throw new Error('invalid image: unexpected shcema of url: ' + image.url);
 		}
 

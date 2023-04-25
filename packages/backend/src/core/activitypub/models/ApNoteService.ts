@@ -130,14 +130,20 @@ export class ApNoteService {
 	
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
-		if (note.id && !note.id.startsWith('https://')) {
-			throw new Error('unexpected shcema of note.id: ' + note.id);
+		if (note.id) {
+			if (!note.id.startsWith('https://') &&
+				!(process.env.NODE_ENV !== 'production' && note.id.startsWith('http://'))) {
+				throw new Error('unexpected shcema of note.id: ' + note.id);
+			}
 		}
 
 		const url = getOneApHrefNullable(note.url);
 
-		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of note url: ' + url);
+		if (url) {
+			if (!url.startsWith('https://') &&
+				!(process.env.NODE_ENV !== 'production' && url.startsWith('http://'))) {
+				throw new Error('unexpected shcema of note url: ' + url);
+			}
 		}
 	
 		this.logger.info(`Creating the Note: ${note.id}`);

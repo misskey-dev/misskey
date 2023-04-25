@@ -137,6 +137,12 @@ export class ApPersonService implements OnModuleInit {
 		this.logger = this.apLoggerService.logger;
 	}
 
+	private punyHost(url: string): string {
+		const urlObj = new URL(url);
+		const host = `${this.utilityService.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		return host;
+	}
+
 	/**
 	 * Validate and convert to actor object
 	 * @param x Fetched object
@@ -144,7 +150,7 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
-		const expectHost = this.utilityService.toPuny(new URL(uri).hostname);
+		const expectHost = this.punyHost(uri);
 
 		if (x == null) {
 			throw new Error('invalid Actor: object is null');
@@ -185,7 +191,7 @@ export class ApPersonService implements OnModuleInit {
 			x.summary = truncate(x.summary, summaryLength);
 		}
 
-		const idHost = this.utilityService.toPuny(new URL(x.id!).hostname);
+		const idHost = this.punyHost(x.id);
 		if (idHost !== expectHost) {
 			throw new Error('invalid Actor: id has different host');
 		}
@@ -255,8 +261,7 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
-		const urlObj = new URL(object.id);
-		const host = `${this.utilityService.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		const host = this.punyHost(object.id);
 
 		const { fields } = this.analyzeAttachments(person.attachment ?? []);
 
@@ -268,8 +273,11 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of person url: ' + url);
+		if (url) {
+			if (!url.startsWith('https://') &&
+				!(process.env.NODE_ENV !== 'production' && url.startsWith('http://'))) {
+				throw new Error('unexpected shcema of person url: ' + url);
+			}
 		}
 
 		// Create user
@@ -467,8 +475,11 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url && !url.startsWith('https://')) {
-			throw new Error(`unexpected shcema of person url: ${url}`);
+		if (url) {
+			if (!url.startsWith('https://') &&
+				!(process.env.NODE_ENV !== 'production' && url.startsWith('http://'))) {
+				throw new Error('unexpected shcema of person url: ' + url);
+			}
 		}
 
 		const updates = {
