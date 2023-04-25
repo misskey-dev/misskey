@@ -677,7 +677,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (sensitiveWord.startsWith('/') && sensitiveWord.endsWith('/')) {
 			const matchRegex = /\/(.*)\/(.*)/.exec(sensitiveWord);
 			if (matchRegex != null && matchRegex.length > 2) {
-				const regex = new RegExp(matchRegex[1]);
+				const regex = new RE2(sensitiveWord.slice(1, -1));
 				return regex.test(word);
 			} 
 		}
