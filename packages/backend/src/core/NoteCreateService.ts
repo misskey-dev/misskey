@@ -3,6 +3,7 @@ import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import RE2 from 're2';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -235,13 +236,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.visibleUsers = [];
 		if (data.channel != null) data.localOnly = true;
 
-		const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
 		if (data.visibility === 'public' && data.channel == null) {
+			const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
 			if ((data.cw == null) && (data.text != null) && sensitiveWords.some(w => this.isSensiteive(data.text!, w))) {
 				data.visibility = 'home';
-			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
-				data.visibility = 'home';
 			} else if ((data.cw != null) && sensitiveWords.some(w => this.isSensiteive(data.cw!, w))) {
+				data.visibility = 'home';
+			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
 			}
 		}
@@ -675,11 +676,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private isSensiteive(sensitiveWord: string, word: string): boolean {
 		if (sensitiveWord.startsWith('/') && sensitiveWord.endsWith('/')) {
-			const matchRegex = /\/(.*)\/(.*)/.exec(sensitiveWord);
-			if (matchRegex != null && matchRegex.length > 2) {
-				const regex = new RE2(sensitiveWord.slice(1, -1));
-				return regex.test(word);
-			} 
+			const regex = new RE2(sensitiveWord.slice(1, -1));
+			return regex.test(word);
 		}
 		return word.includes(sensitiveWord);
 	}
