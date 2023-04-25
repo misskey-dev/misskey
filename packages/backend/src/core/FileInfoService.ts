@@ -306,9 +306,9 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async detectType(path: string): Promise<{
-	mime: string;
-	ext: string | null;
-}> {
+		mime: string;
+		ext: string | null;
+	}> {
 	// Check 0 byte
 		const fileSize = await this.getFileSize(path);
 		if (fileSize === 0) {
@@ -325,9 +325,9 @@ export class FileInfoService {
 
 			// HTML5 Video/Audio に対応しているMIME Typeに書き換える
 			let mime: string = type.mime;
-			if (mime === "audio/x-flac") {
+			if (type.mime === "audio/x-flac") {
 				mime = "audio/flac";
-			} else if (mime === "audio/vnd.wave") {
+			} else if (type.mime === "audio/vnd.wave") {
 				mime = "audio/wav";
 			}
 
