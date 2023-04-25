@@ -5,7 +5,7 @@ import * as stream from 'node:stream';
 import * as util from 'node:util';
 import { Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
-import { fileTypeFromFile } from 'file-type';
+import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
 import probeImageSize from 'probe-image-size';
@@ -301,6 +301,19 @@ export class FileInfoService {
 		return fs.promises.access(path).then(() => true, () => false);
 	}
 
+	@bindThis
+	public fixMime(mime: string | fileType.MimeType): string {
+		// see https://github.com/misskey-dev/misskey/pull/10686
+		if (mime === "audio/x-flac") {
+			return "audio/flac";
+		}
+		if (mime === "audio/vnd.wave") {
+			return "audio/wav";
+		}
+
+		return mime;
+	}
+
 	/**
 	 * Detect MIME Type and extension
 	 */
@@ -315,7 +328,7 @@ export class FileInfoService {
 			return TYPE_OCTET_STREAM;
 		}
 
-		const type = await fileTypeFromFile(path);
+		const type = await fileType.fileTypeFromFile(path);
 
 		if (type) {
 		// XMLはSVGかもしれない
@@ -323,16 +336,8 @@ export class FileInfoService {
 				return TYPE_SVG;
 			}
 
-			// HTML5 Video/Audio に対応しているMIME Typeに書き換える
-			let mime: string = type.mime;
-			if (type.mime === "audio/x-flac") {
-				mime = "audio/flac";
-			} else if (type.mime === "audio/vnd.wave") {
-				mime = "audio/wav";
-			}
-
 			return {
-				mime: mime,
+				mime: this.fixMime(type.mime),
 				ext: type.ext,
 			};
 		}
