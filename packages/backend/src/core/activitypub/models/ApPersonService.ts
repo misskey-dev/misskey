@@ -202,7 +202,7 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('invalid Actor: publicKey.id is not a string');
 			}
 
-			const publicKeyIdHost = this.utilityService.toPuny(new URL(x.publicKey.id).hostname);
+			const publicKeyIdHost = this.punyHost(x.publicKey.id);
 			if (publicKeyIdHost !== expectHost) {
 				throw new Error('invalid Actor: publicKey.id has different host');
 			}
