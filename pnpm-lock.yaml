@@ -106,6 +106,42 @@ importers:
       '@fastify/view':
         specifier: 7.4.1
         version: 7.4.1
+      '@misskey-dev/slacc':
+        specifier: file:../../lib/slacc-0.0.4.tgz
+        version: file:lib/slacc-0.0.4.tgz
+      '@misskey-dev/slacc-android-arm-eabi':
+        specifier: file:../../lib/slacc-android-arm-eabi-0.0.4.tgz
+        version: file:lib/slacc-android-arm-eabi-0.0.4.tgz
+      '@misskey-dev/slacc-android-arm64':
+        specifier: file:../../lib/slacc-android-arm64-0.0.4.tgz
+        version: file:lib/slacc-android-arm64-0.0.4.tgz
+      '@misskey-dev/slacc-darwin-arm64':
+        specifier: file:../../lib/slacc-darwin-arm64-0.0.4.tgz
+        version: file:lib/slacc-darwin-arm64-0.0.4.tgz
+      '@misskey-dev/slacc-darwin-universal':
+        specifier: file:../../lib/slacc-darwin-universal-0.0.4.tgz
+        version: file:lib/slacc-darwin-universal-0.0.4.tgz
+      '@misskey-dev/slacc-darwin-x64':
+        specifier: file:../../lib/slacc-darwin-x64-0.0.4.tgz
+        version: file:lib/slacc-darwin-x64-0.0.4.tgz
+      '@misskey-dev/slacc-linux-arm-gnueabihf':
+        specifier: file:../../lib/slacc-linux-arm-gnueabihf-0.0.4.tgz
+        version: file:lib/slacc-linux-arm-gnueabihf-0.0.4.tgz
+      '@misskey-dev/slacc-linux-arm64-gnu':
+        specifier: file:../../lib/slacc-linux-arm64-gnu-0.0.4.tgz
+        version: file:lib/slacc-linux-arm64-gnu-0.0.4.tgz
+      '@misskey-dev/slacc-linux-arm64-musl':
+        specifier: file:../../lib/slacc-linux-arm64-musl-0.0.4.tgz
+        version: file:lib/slacc-linux-arm64-musl-0.0.4.tgz
+      '@misskey-dev/slacc-linux-x64-gnu':
+        specifier: file:../../lib/slacc-linux-x64-gnu-0.0.4.tgz
+        version: file:lib/slacc-linux-x64-gnu-0.0.4.tgz
+      '@misskey-dev/slacc-win32-arm64-msvc':
+        specifier: file:../../lib/slacc-win32-arm64-msvc-0.0.4.tgz
+        version: file:lib/slacc-win32-arm64-msvc-0.0.4.tgz
+      '@misskey-dev/slacc-win32-x64-msvc':
+        specifier: file:../../lib/slacc-win32-x64-msvc-0.0.4.tgz
+        version: file:lib/slacc-win32-x64-msvc-0.0.4.tgz
       '@nestjs/common':
         specifier: 9.4.0
         version: 9.4.0(reflect-metadata@0.1.13)(rxjs@7.8.0)
@@ -19509,7 +19545,7 @@ packages:
       axios: 0.27.2(debug@4.3.4)
       joi: 17.7.0
       lodash: 4.17.21
-      minimist: 1.2.7
+      minimist: 1.2.8
       rxjs: 7.8.0
     transitivePeerDependencies:
       - debug
@@ -19992,6 +20028,101 @@ packages:
       archiver-utils: 2.1.0
       compress-commons: 4.1.1
       readable-stream: 3.6.0
+    dev: false
+
+  file:lib/slacc-0.0.4.tgz:
+    resolution: {integrity: sha512-7dv1WWtEhtPSj1ayhfjLi5WpKqjbCV1rnfBCct/UXuWL8SkURgmkKvsMmbkPHz03ckG3CS54qoRdsXODNZsmHw==, tarball: file:lib/slacc-0.0.4.tgz}
+    name: '@misskey-dev/slacc'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    dev: false
+
+  file:lib/slacc-android-arm-eabi-0.0.4.tgz:
+    resolution: {integrity: sha512-IwBxbFTSBnnoDDiQAkk1RS3FGK6o0tfOhE8GDc5X3iBnc7uKdmH6exM8h/bcpjX05wiWKiPXN60t1j58FwSbtg==, tarball: file:lib/slacc-android-arm-eabi-0.0.4.tgz}
+    name: '@misskey-dev/slacc-android-arm-eabi'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [android]
+    dev: false
+
+  file:lib/slacc-android-arm64-0.0.4.tgz:
+    resolution: {integrity: sha512-c82JuwEawCyN6oUI3OEK1Lqzies2OvMx2AfjbrcbObgdMUbbk+ilmC1GLTO4HwI1IwdjKiqz4DYoIO3xEKzBcw==, tarball: file:lib/slacc-android-arm64-0.0.4.tgz}
+    name: '@misskey-dev/slacc-android-arm64'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [android]
+    dev: false
+
+  file:lib/slacc-darwin-arm64-0.0.4.tgz:
+    resolution: {integrity: sha512-GrwlAQ3qnQmgwkJ7XoIg9EPOqrEQUI+/xO3Sk3ESPO4QPsIvZVLfMqNmx2FkiK4B4MyOfF5QfRCWzml1BBHUvA==, tarball: file:lib/slacc-darwin-arm64-0.0.4.tgz}
+    name: '@misskey-dev/slacc-darwin-arm64'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [darwin]
+    dev: false
+
+  file:lib/slacc-darwin-universal-0.0.4.tgz:
+    resolution: {integrity: sha512-Ykswa2wMwaylHIMBYEXRvWEn5mYgsTGJl6lsHuknf8k/wYNTZERR4UV8Aq4mEOdC3L4DWsyrWRq2sy2BnG7+yw==, tarball: file:lib/slacc-darwin-universal-0.0.4.tgz}
+    name: '@misskey-dev/slacc-darwin-universal'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [darwin]
+    dev: false
+
+  file:lib/slacc-darwin-x64-0.0.4.tgz:
+    resolution: {integrity: sha512-zag7dDibCxeeQRLWHxOS6aw+pfFB1BzTsmCLjMzXGwV+AS/inAKYmONuLPn0jRaSJeM1teXnnfFN3y5yFGhBUQ==, tarball: file:lib/slacc-darwin-x64-0.0.4.tgz}
+    name: '@misskey-dev/slacc-darwin-x64'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [darwin]
+    dev: false
+
+  file:lib/slacc-linux-arm-gnueabihf-0.0.4.tgz:
+    resolution: {integrity: sha512-m7yTQ0vBgdEAX6o6cjW51YMPLxMbIXd5RO5EM1+njbDIACkdtek9AKC4mUSzqJfhMnrrbfBGMU6sGpTEMfr/Ow==, tarball: file:lib/slacc-linux-arm-gnueabihf-0.0.4.tgz}
+    name: '@misskey-dev/slacc-linux-arm-gnueabihf'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [linux]
+    dev: false
+
+  file:lib/slacc-linux-arm64-gnu-0.0.4.tgz:
+    resolution: {integrity: sha512-RzxIDdmcddvAB5RxcgRMA4zCjG01DTcyVg7SbJ9vl1uu3LbA3NYC8cTb21SO2w0I/uGOkE4bWMnWNxF/ReTNAw==, tarball: file:lib/slacc-linux-arm64-gnu-0.0.4.tgz}
+    name: '@misskey-dev/slacc-linux-arm64-gnu'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [linux]
+    dev: false
+
+  file:lib/slacc-linux-arm64-musl-0.0.4.tgz:
+    resolution: {integrity: sha512-v4W5XxCiLgdPYdBC07TRHiZZPJlTh52IKPoPZg2b6NoqvDPoRAbLVMB/377qqL9m22B7EcqkZscqyspS3LLmpA==, tarball: file:lib/slacc-linux-arm64-musl-0.0.4.tgz}
+    name: '@misskey-dev/slacc-linux-arm64-musl'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [linux]
+    dev: false
+
+  file:lib/slacc-linux-x64-gnu-0.0.4.tgz:
+    resolution: {integrity: sha512-HEdl4LEAD27cw7SY7kVqc/RFp7HtYgCiR2P8nZt9y6CUwMqDs1bCP6MkN3KUUIpSP8eUpP9Za1cnVviqprik8A==, tarball: file:lib/slacc-linux-x64-gnu-0.0.4.tgz}
+    name: '@misskey-dev/slacc-linux-x64-gnu'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [linux]
+    dev: false
+
+  file:lib/slacc-win32-arm64-msvc-0.0.4.tgz:
+    resolution: {integrity: sha512-NDAVAKsqMxNCtsT523mWRFudY+iNN90jhuEDB4qwfpn5l2BBMdx1klpOLjj0meWR8bpQUZ8KQ2Bj2oQiE8PAAQ==, tarball: file:lib/slacc-win32-arm64-msvc-0.0.4.tgz}
+    name: '@misskey-dev/slacc-win32-arm64-msvc'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [win32]
+    dev: false
+
+  file:lib/slacc-win32-x64-msvc-0.0.4.tgz:
+    resolution: {integrity: sha512-yI4X0x9W3w/5B11y7jhIljUM8KDvfL0wCqhLBgpZjexbrDiyPlc4I4KNMOyI5glrh3ZDRCVsgFloLwm5AmoeUw==, tarball: file:lib/slacc-win32-x64-msvc-0.0.4.tgz}
+    name: '@misskey-dev/slacc-win32-x64-msvc'
+    version: 0.0.4
+    engines: {node: '>= 10'}
+    os: [win32]
     dev: false
 
   github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
