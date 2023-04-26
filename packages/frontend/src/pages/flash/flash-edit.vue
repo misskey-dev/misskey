@@ -305,6 +305,11 @@ const PRESET_TIMELINE = `/// @ 0.13.1
 	// それぞれのノートごとにUI要素作成
 	let noteEls = []
 	each (let note, notes) {
+		// 表示名を設定していないアカウントはidを表示
+		let userName = if Core:type(note.user.name) == "str" note.user.name else note.user.username
+		// リノートもしくはメディア・投票のみで本文が無いノートに代替表示文を設定
+		let noteText = if Core:type(note.text) == "str" note.text else "（リノートもしくはメディア・投票のみのノート）"
+
 		let el = Ui:C:container({
 			bgColor: "#444"
 			fgColor: "#fff"
@@ -312,11 +317,11 @@ const PRESET_TIMELINE = `/// @ 0.13.1
 			rounded: true
 			children: [
 				Ui:C:mfm({
-					text: note.user.name
+					text: userName
 					bold: true
 				})
 				Ui:C:mfm({
-					text: note.text
+					text: noteText
 				})
 			]
 		})
