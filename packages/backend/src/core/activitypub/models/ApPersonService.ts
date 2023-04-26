@@ -42,6 +42,7 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, IObject } from '../type.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -270,11 +271,8 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url) {
-			if (!url.startsWith('https://') &&
-				!(process.env.NODE_ENV !== 'production' && url.startsWith('http://'))) {
-				throw new Error('unexpected shcema of person url: ' + url);
-			}
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of person url: ' + url);
 		}
 
 		// Create user
@@ -468,11 +466,8 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url) {
-			if (!url.startsWith('https://') &&
-				!(process.env.NODE_ENV !== 'production' && url.startsWith('http://'))) {
-				throw new Error('unexpected shcema of person url: ' + url);
-			}
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of person url: ' + url);
 		}
 
 		const updates = {
