@@ -24,21 +24,22 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 
 		if (text === '') return false;
 
-		if (mutedWords.every((filter) => Array.isArray(filter) && filter.length === 1)) {
-			const filter = mutedWords.map(filter => filter[0]);
-			const key = filter.join('\n');
-			const slacc = slaccCache.get(key) ?? Slacc.withPatterns(filter);
-			slaccCache.delete(key);
-			for (const obsoleteKeys of slaccCache.keys()) {
-				if (slaccCache.size > 1000) {
-					slaccCache.delete(obsoleteKeys);
-				}
+		const slaccable = mutedWords.filter(filter => Array.isArray(filter) && filter.length === 1).map(filter => filter[0]).sort();
+		const unslaccable = mutedWords.filter(filter => !Array.isArray(filter) || filter.length !== 1);
+		const slaccCacheKey = slaccable.join('\n');
+		const slacc = slaccCache.get(slaccCacheKey) ?? Slacc.withPatterns(slaccable);
+		slaccCache.delete(slaccCacheKey);
+		for (const obsoleteKeys of slaccCache.keys()) {
+			if (slaccCache.size > 1000) {
+				slaccCache.delete(obsoleteKeys);
 			}
-			slaccCache.set(key, slacc);
-			return slacc.isMatch(text);
+		}
+		slaccCache.set(slaccCacheKey, slacc);
+		if (slacc.isMatch(text)) {
+			return true;
 		}
 
-		const matched = mutedWords.some(filter => {
+		const matched = unslaccable.some(filter => {
 			if (Array.isArray(filter)) {
 				return filter.every(keyword => text.includes(keyword));
 			} else {
