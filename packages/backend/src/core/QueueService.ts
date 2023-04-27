@@ -277,7 +277,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts?: Bull.JobOptions): {
+	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobOptions = {}): {
 		name: string,
 		data: RelationshipJobData,
 		opts: Bull.JobOptions,
