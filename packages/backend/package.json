@@ -51,7 +51,7 @@
 		"@fastify/multipart": "7.6.0",
 		"@fastify/static": "6.10.1",
 		"@fastify/view": "7.4.1",
-		"@misskey-dev/slacc": "0.0.4",
+		"@misskey-dev/slacc": "0.0.6",
 		"@nestjs/common": "9.4.0",
 		"@nestjs/core": "9.4.0",
 		"@nestjs/testing": "9.4.0",

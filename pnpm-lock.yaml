@@ -107,8 +107,8 @@ importers:
         specifier: 7.4.1
         version: 7.4.1
       '@misskey-dev/slacc':
-        specifier: 0.0.4
-        version: 0.0.4
+        specifier: 0.0.6
+        version: 0.0.6
       '@nestjs/common':
         specifier: 9.4.0
         version: 9.4.0(reflect-metadata@0.1.13)(rxjs@7.8.0)
@@ -4314,8 +4314,8 @@ packages:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
 
-  /@misskey-dev/slacc-android-arm-eabi@0.0.4:
-    resolution: {integrity: sha512-IwBxbFTSBnnoDDiQAkk1RS3FGK6o0tfOhE8GDc5X3iBnc7uKdmH6exM8h/bcpjX05wiWKiPXN60t1j58FwSbtg==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-android-arm-eabi/0.0.4/b2821b6e9a22529c6ed483d2619c9bda322007dd}
+  /@misskey-dev/slacc-android-arm-eabi@0.0.6:
+    resolution: {integrity: sha512-/c4h+5Y32JkogNJz8EXstCZqDHz0BBuplyoE4OwG/iX+S6wJmbRhtWl7J460bL7qsbpLjYs8YjFJDR1t4grx5A==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-android-arm-eabi/0.0.6/0eedb5eda42a985599aa5eb2d61cf303d83dc467}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [android]
@@ -4323,8 +4323,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-android-arm64@0.0.4:
-    resolution: {integrity: sha512-c82JuwEawCyN6oUI3OEK1Lqzies2OvMx2AfjbrcbObgdMUbbk+ilmC1GLTO4HwI1IwdjKiqz4DYoIO3xEKzBcw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-android-arm64/0.0.4/d1791ccfd48bc265af8e45ad85c33c13f099572c}
+  /@misskey-dev/slacc-android-arm64@0.0.6:
+    resolution: {integrity: sha512-xhA3VH3kMOwweX1iT2q60nV56eRRvfPV9L1QcNmfnYmSnGvOk0Cq5EeuURFZpFeyNQ4gpV8QvSVhcK8c4IHmWA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-android-arm64/0.0.6/acd4b55a6c7d332acf8e4326d0375d9310fc308f}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
@@ -4332,8 +4332,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-darwin-arm64@0.0.4:
-    resolution: {integrity: sha512-GrwlAQ3qnQmgwkJ7XoIg9EPOqrEQUI+/xO3Sk3ESPO4QPsIvZVLfMqNmx2FkiK4B4MyOfF5QfRCWzml1BBHUvA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-arm64/0.0.4/b320a04fddb5ae08b84ac92236c084050c6ae1d5}
+  /@misskey-dev/slacc-darwin-arm64@0.0.6:
+    resolution: {integrity: sha512-q4rx7n5aBWRlBwE3mtNqXpu72nPqxo3JgG7iVGxS1cqLuBdjx0t7ByckjMvZwegvceuGmW0PqpU3cNZ82g1TqQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-arm64/0.0.6/96786d9c5f54347a3ba7e66ea3afffd0d84737c8}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -4341,16 +4341,16 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-darwin-universal@0.0.4:
-    resolution: {integrity: sha512-Ykswa2wMwaylHIMBYEXRvWEn5mYgsTGJl6lsHuknf8k/wYNTZERR4UV8Aq4mEOdC3L4DWsyrWRq2sy2BnG7+yw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-universal/0.0.4/44253b5135edcf599af41f32690a59fdbe536ee1}
+  /@misskey-dev/slacc-darwin-universal@0.0.6:
+    resolution: {integrity: sha512-qH8iM9BCSqfMqNwtUKNtoYqR2pUBovT2jMZqvvYvtXuxPTV8npbqaZdTCzIcrGCIEWBMgOPO41sWwllUqzbLTA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-universal/0.0.6/7ee849b68f4c9ea944ff9d353a9bacad62fd3584}
     engines: {node: '>= 10'}
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-darwin-x64@0.0.4:
-    resolution: {integrity: sha512-zag7dDibCxeeQRLWHxOS6aw+pfFB1BzTsmCLjMzXGwV+AS/inAKYmONuLPn0jRaSJeM1teXnnfFN3y5yFGhBUQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-x64/0.0.4/7c2bc50a9a922c1ee11346fa31341e2dd767d9c8}
+  /@misskey-dev/slacc-darwin-x64@0.0.6:
+    resolution: {integrity: sha512-SZNByGL7G2twvsBTkmhjONbG9Gtmh2lYx9t1cMxsqJkpokfYY7ddxpahec01thQRVvVNEOV3wdmfFB2qvzxuYw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-x64/0.0.6/fe64b1f4b42fa9cbf779a1e83c88135ff1e5866b}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -4358,8 +4358,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-linux-arm-gnueabihf@0.0.4:
-    resolution: {integrity: sha512-m7yTQ0vBgdEAX6o6cjW51YMPLxMbIXd5RO5EM1+njbDIACkdtek9AKC4mUSzqJfhMnrrbfBGMU6sGpTEMfr/Ow==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm-gnueabihf/0.0.4/762da4e913e118bbc5c842133f154cdf1bd132de}
+  /@misskey-dev/slacc-linux-arm-gnueabihf@0.0.6:
+    resolution: {integrity: sha512-mq6VHOKLnZKsFQKvHfl7NUu+9zNXnPZGE8pQG02yqj5YyzKq0ORNqFZjwQfYg9ALWy2JAGYhmrz1ZieGJzRDUg==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm-gnueabihf/0.0.6/61560d508acca723c0e149a27bd0d13caec2139e}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
@@ -4367,8 +4367,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-linux-arm64-gnu@0.0.4:
-    resolution: {integrity: sha512-RzxIDdmcddvAB5RxcgRMA4zCjG01DTcyVg7SbJ9vl1uu3LbA3NYC8cTb21SO2w0I/uGOkE4bWMnWNxF/ReTNAw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm64-gnu/0.0.4/21a646d671447b9a96ed238d216ce715289abd68}
+  /@misskey-dev/slacc-linux-arm64-gnu@0.0.6:
+    resolution: {integrity: sha512-JEfAJVOvJ9spBM13fQ/uLIMTkxdLWsbkqYc8ALjvvXMly1P2MynoxmiBr9T+48JBVdvMKG3vGE0A1YMjUEEJMQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm64-gnu/0.0.6/bcce8cac4c8225a8c4987eefd1af7fa571a73200}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -4376,8 +4376,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-linux-arm64-musl@0.0.4:
-    resolution: {integrity: sha512-v4W5XxCiLgdPYdBC07TRHiZZPJlTh52IKPoPZg2b6NoqvDPoRAbLVMB/377qqL9m22B7EcqkZscqyspS3LLmpA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm64-musl/0.0.4/21437a3a630c96530a75e14729f397960d46d8df}
+  /@misskey-dev/slacc-linux-arm64-musl@0.0.6:
+    resolution: {integrity: sha512-YLNm2dQY80elo56FRgRBHcqWVjKm0q899uJMl0DdgU93uUhbNMqqT0j2QCtczkC9xOrZVYokD3nNAkeXzoA7Xg==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm64-musl/0.0.6/4c1551e78979f1b3c50c07545951c7674312f628}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -4385,8 +4385,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-linux-x64-gnu@0.0.4:
-    resolution: {integrity: sha512-HEdl4LEAD27cw7SY7kVqc/RFp7HtYgCiR2P8nZt9y6CUwMqDs1bCP6MkN3KUUIpSP8eUpP9Za1cnVviqprik8A==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-x64-gnu/0.0.4/fdd2556cfeeb444d1a73446a6289a453cc47082b}
+  /@misskey-dev/slacc-linux-x64-gnu@0.0.6:
+    resolution: {integrity: sha512-pwECQ7Ha4ZF+mhwY2Sk8unXztuG9WR285Zvje+BUdvuXFqkdK8G6HaC8SI8YHQ0MPUfnsSJW/NwARCfpZKmkxQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-x64-gnu/0.0.6/76b5b92e5864ef1249ac297fe35c27ec0e5b0030}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -4394,8 +4394,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-win32-arm64-msvc@0.0.4:
-    resolution: {integrity: sha512-NDAVAKsqMxNCtsT523mWRFudY+iNN90jhuEDB4qwfpn5l2BBMdx1klpOLjj0meWR8bpQUZ8KQ2Bj2oQiE8PAAQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-win32-arm64-msvc/0.0.4/50e160518944c1dc4d1cb568be5d0eaffde39cbf}
+  /@misskey-dev/slacc-win32-arm64-msvc@0.0.6:
+    resolution: {integrity: sha512-xQ5uwdTRMRgE8fGTezm4JSCog0z8PUvocgFtW/yz9YDxdYEyvpMQXIaOFcbWLZbS2xMpU1PHoo/23vAorvwIwA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-win32-arm64-msvc/0.0.6/4da166018b1babd75cd3140dc77dfeca7d4b39e7}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -4403,8 +4403,8 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc-win32-x64-msvc@0.0.4:
-    resolution: {integrity: sha512-yI4X0x9W3w/5B11y7jhIljUM8KDvfL0wCqhLBgpZjexbrDiyPlc4I4KNMOyI5glrh3ZDRCVsgFloLwm5AmoeUw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-win32-x64-msvc/0.0.4/620910a2c49ddcdd3f9305d1311d74a722d799c8}
+  /@misskey-dev/slacc-win32-x64-msvc@0.0.6:
+    resolution: {integrity: sha512-9Kx9jRnFQ6kguYPeaZ3ttSyj5Ib1d10T9wPumgjw3gBhQMERQOBz0wWNWJ3IDCQ93fQBC3oqE5bwHdPDou76oQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-win32-x64-msvc/0.0.6/77ddeecb56623d6b7c59e12c23c00bbdfe904a52}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -4412,21 +4412,21 @@ packages:
     dev: false
     optional: true
 
-  /@misskey-dev/slacc@0.0.4:
-    resolution: {integrity: sha512-7dv1WWtEhtPSj1ayhfjLi5WpKqjbCV1rnfBCct/UXuWL8SkURgmkKvsMmbkPHz03ckG3CS54qoRdsXODNZsmHw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc/0.0.4/dfbec2769b43bd214e38d623ae6e33c79d53ecce}
+  /@misskey-dev/slacc@0.0.6:
+    resolution: {integrity: sha512-+poaP18G41NVB9pcckSPeVygBZh5AYbgpcQKLS7KfFT+6yG7JdEmDlffnNlhUV9nUGMcc9AkyaWkgLoHHuBXmA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc/0.0.6/e048daadc8e80c9a60c060c30b8e40f105ca7990}
     engines: {node: '>= 10'}
     optionalDependencies:
-      '@misskey-dev/slacc-android-arm-eabi': 0.0.4
-      '@misskey-dev/slacc-android-arm64': 0.0.4
-      '@misskey-dev/slacc-darwin-arm64': 0.0.4
-      '@misskey-dev/slacc-darwin-universal': 0.0.4
-      '@misskey-dev/slacc-darwin-x64': 0.0.4
-      '@misskey-dev/slacc-linux-arm-gnueabihf': 0.0.4
-      '@misskey-dev/slacc-linux-arm64-gnu': 0.0.4
-      '@misskey-dev/slacc-linux-arm64-musl': 0.0.4
-      '@misskey-dev/slacc-linux-x64-gnu': 0.0.4
-      '@misskey-dev/slacc-win32-arm64-msvc': 0.0.4
-      '@misskey-dev/slacc-win32-x64-msvc': 0.0.4
+      '@misskey-dev/slacc-android-arm-eabi': 0.0.6
+      '@misskey-dev/slacc-android-arm64': 0.0.6
+      '@misskey-dev/slacc-darwin-arm64': 0.0.6
+      '@misskey-dev/slacc-darwin-universal': 0.0.6
+      '@misskey-dev/slacc-darwin-x64': 0.0.6
+      '@misskey-dev/slacc-linux-arm-gnueabihf': 0.0.6
+      '@misskey-dev/slacc-linux-arm64-gnu': 0.0.6
+      '@misskey-dev/slacc-linux-arm64-musl': 0.0.6
+      '@misskey-dev/slacc-linux-x64-gnu': 0.0.6
+      '@misskey-dev/slacc-win32-arm64-msvc': 0.0.6
+      '@misskey-dev/slacc-win32-x64-msvc': 0.0.6
     dev: false
 
   /@mole-inc/bin-wrapper@8.0.1:
