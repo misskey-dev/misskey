@@ -47,6 +47,7 @@ import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
+import { fill } from '@tensorflow/tfjs-core';
 
 const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -678,8 +679,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (sensitiveWord.length > 0) {
 			if (text === '') return false;
 			const matched = sensitiveWord.some(filter => {
-				if (Array.isArray(filter)) {
-					return filter.every(keyword => text.includes(keyword));
+				const words = filter.split(' ');
+				if (Array.isArray(words)) {
+					return words.every(keyword => text.includes(keyword));
 				} else {
 					// represents RegExp
 					const regexp = filter.match(/^\/(.+)\/(.*)$/);
