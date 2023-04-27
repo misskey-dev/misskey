@@ -238,9 +238,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
-			if ((data.cw == null) && (data.text != null) && sensitiveWords.some(w => this.isSensiteive(data.text!, w))) {
+			if ((data.cw == null) && (data.text != null) && this.isSensiteive(data.text!, sensitiveWords)) {
 				data.visibility = 'home';
-			} else if ((data.cw != null) && sensitiveWords.some(w => this.isSensiteive(data.cw!, w))) {
+			} else if ((data.cw != null) && this.isSensiteive(data.cw!, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
@@ -674,12 +674,28 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 	
 	@bindThis
-	private isSensiteive(sensitiveWord: string, word: string): boolean {
-		if (sensitiveWord.startsWith('/') && sensitiveWord.endsWith('/')) {
-			const regex = new RE2(sensitiveWord.slice(1, -1));
-			return regex.test(word);
+	private isSensiteive(text: string, sensitiveWord: string[]): boolean {
+		if (sensitiveWord.length > 0) {
+			if (text === '') return false;
+			const matched = sensitiveWord.some(filter => {
+				if (Array.isArray(filter)) {
+					return filter.every(keyword => text.includes(keyword));
+				} else {
+					// represents RegExp
+					const regexp = filter.match(/^\/(.+)\/(.*)$/);
+					// This should never happen due to input sanitisation.
+					if (!regexp) return false;
+					try {
+						return new RE2(regexp[1], regexp[2]).test(text);
+					} catch (err) {
+						// This should never happen due to input sanitisation.
+						return false;
+					}
+				}
+			});
+			if (matched) return true;
 		}
-		return word.includes(sensitiveWord);
+		return false;
 	}
 
 	@bindThis
