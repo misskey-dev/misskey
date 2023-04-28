@@ -7,10 +7,10 @@
 		:leave-active-class="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_toggle_leaveActive']) || undefined"
 		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
 		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
-		:enter-to-class="defaultStore.state.animation && props.transition?.enterToClass || undefined"
-		:leave-from-class="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
+		:enter-to-class="defaultStore.state.animation && (props.transition?.enterToClass ?? $style['transition_toggle_enterTo']) || undefined"
+		:leave-from-class="defaultStore.state.animation && (props.transition?.leaveFromClass ?? $style['transition_toggle_leaveFrom']) || undefined"
 	>
-		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title"/>
+		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title ?? undefined"/>
 		<img v-else :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined"/>
 	</Transition>
 </div>
@@ -97,6 +97,11 @@ onMounted(() => {
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+
+.transition_toggle_enterTo,
+.transition_toggle_leaveFrom {
+	opacity: 0;
 }
 
 .loader {
