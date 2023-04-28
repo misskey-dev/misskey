@@ -93,6 +93,26 @@
 	</FormSection>
 
 	<FormSection>
+		<template #label>{{ i18n.ts.notificationDisplay }}</template>
+
+		<div class="_gaps_m">
+			<MkRadios v-model="notificationPosition">
+				<template #label>{{ i18n.ts.position }}</template>
+				<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
+				<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
+				<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
+				<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
+			</MkRadios>
+
+			<MkRadios v-model="notificationStackAxis">
+				<template #label>{{ i18n.ts.stackAxis }}</template>
+				<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
+				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
+			</MkRadios>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
 	</FormSection>
 
@@ -181,6 +201,8 @@ const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
+const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
+const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

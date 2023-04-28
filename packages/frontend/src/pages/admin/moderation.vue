@@ -3,10 +3,15 @@
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+			<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
 					<FormSection first>
 						<div class="_gaps_m">
+							<MkInput v-model="tosUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.tosUrl }}</template>
+							</MkInput>
 							<MkTextarea v-model="sensitiveWords">
 								<template #label>{{ i18n.ts.sensitiveWords }}</template>
 								<template #caption>{{ i18n.ts.sensitiveWordsDescription }}</template>
@@ -41,16 +46,20 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
+import FormLink from "@/components/form/link.vue";
 
 let sensitiveWords: string = $ref('');
+let tosUrl: string | null = $ref(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
 	sensitiveWords = meta.sensitiveWords.join('\n');
+	tosUrl = meta.tosUrl;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
+		tosUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
 	}).then(() => {
 		fetchInstance();
