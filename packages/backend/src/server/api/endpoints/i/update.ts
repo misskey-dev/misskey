@@ -71,6 +71,12 @@ export const meta = {
 			code: 'TOO_MANY_MUTED_WORDS',
 			id: '010665b1-a211-42d2-bc64-8f6609d79785',
 		},
+
+		restrictedByRole: {
+			message: 'This feature is restricted by your role.',
+			code: 'RESTRICTED_BY_ROLE',
+			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
+		}
 	},
 
 	res: {
@@ -208,7 +214,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
-			if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+			if (typeof ps.alwaysMarkNsfw === 'boolean') {
+				if((await roleService.getUserPolicies(user.id)).alwaysMarkNsfw) throw new ApiError(meta.errors.restrictedByRole);
+				profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+			}
 			if (typeof ps.autoSensitive === 'boolean') profileUpdates.autoSensitive = ps.autoSensitive;
 			if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
