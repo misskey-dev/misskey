@@ -13,7 +13,7 @@ noNotifications: "Ingen varsler"
 instance: "Server"
 settings: "Innstillinger"
 notificationSettings: "Varslingsinnstillinger"
-otherSettings: "Andre instillinger"
+otherSettings: "Andre innstillinger"
 profile: "Profil"
 timeline: "Tidslinje"
 login: "Logg inn"
@@ -259,6 +259,9 @@ tools: "Verktøy"
 like: "Liker!"
 unlike: "Liker ikke"
 numberOfLikes: "Likerklikk"
+show: "Vis"
+neverShow: "Ikke vis igjen"
+remindMeLater: "Kanskje senere"
 didYouLikeMisskey: "Likte du Misskey?"
 roles: "Roller"
 role: "Rolle"
@@ -269,8 +272,30 @@ thisPostMayBeAnnoyingCancel: "Avbryt"
 exploreOtherServers: "Utforsk andre severe"
 letsLookAtTimeline: "La oss se på tidslinje"
 cannotBeChangedLater: "Du kan ikke endre senere."
+likeOnly: "Bare liker"
 retryAllQueuesConfirmTitle: "Vil du prøve igjen akkurat nå?"
 continue: "Fortsett"
+_achievements:
+  _types:
+    _noteFavorited1:
+      title: "Stjernekikker"
+    _myNoteFavorited1:
+      title: "Jeg vil gjerne få en stjerne"
+    _following50:
+      title: "Mange venner"
+    _following100:
+      title: "100 venner"
+    _following300:
+      title: "For mange venner"
+    _followers10:
+      title: "Følg meg!"
+    _reactWithoutRead:
+      title: "Leste du det virkelig?"
+    _clickedClickHere:
+      title: "Klikk her"
+      description: "Du har klikket her"
+    _loggedInOnBirthday:
+      title: "Gratulerer med dagen"
 _role:
   options: "Alternativ"
   _priority:
@@ -332,6 +357,7 @@ _time:
 _tutorial:
   title: "Hvordan bruke Misskey"
   step1_1: "Velkommen."
+  step8_3: "Du kan alltid endre denne innstillingen senere."
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:
@@ -378,6 +404,12 @@ _exportOrImport:
   muteList: "Skjul"
   blockingList: "Blokker"
   userLists: "Lister"
+_charts:
+  filesIncDec: "Forskjell på antall filer"
+_instanceCharts:
+  users: "Forskjell på antall brukere"
+  ff: "Forskjell på antall Følg/Følgere"
+  files: "Forskjell på antall filer"
 _timelines:
   home: "Hjem"
 _play:
