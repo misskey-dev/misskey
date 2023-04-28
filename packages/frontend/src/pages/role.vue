@@ -39,6 +39,8 @@ watch(() => props.role, () => {
 	}).then(res => {
 		role = res;
 		document.title = `${role.name} | ${instanceName}`;
+	}).catch(err => {
+		document.title = `${err.message} | ${instanceName}`;
 	});
 }, { immediate: true });
 
