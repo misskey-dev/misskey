@@ -21,6 +21,7 @@ import MkUserList from '@/components/MkUserList.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import MkTimeline from '@/components/MkTimeline.vue';
+import { instanceName } from '@/config';
 
 const props = withDefaults(defineProps<{
 	role: string;
@@ -37,6 +38,7 @@ watch(() => props.role, () => {
 		roleId: props.role,
 	}).then(res => {
 		role = res;
+		document.title = `${role.name} | ${instanceName}`;
 	});
 }, { immediate: true });
 
