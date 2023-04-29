@@ -1020,6 +1020,7 @@ serverRules: "伺服器規則"
 pleaseConfirmBelowBeforeSignup: "在本伺服器註冊之前，請確認下列事項。"
 pleaseAgreeAllToContinue: "必須全部勾選「同意」才能繼續。"
 continue: "繼續"
+preservedUsernames: "保留的使用者名稱"
 _serverRules:
   description: "設定伺服器的簡要規則，在新的註冊之前顯示。建議的內容是使用條款的摘要。"
 _accountMigration:
