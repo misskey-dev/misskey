@@ -84,7 +84,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 			optional: false,
 			items: {
 				type: 'string',
-				format: 'uri',
+				format: 'id',
 				nullable: false,
 				optional: false,
 			},
