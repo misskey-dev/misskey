@@ -50,8 +50,10 @@ watch(() => props.role, () => {
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
 			error = i18n.ts.noRole;
-			document.title = `${error} | ${instanceName}`;
+		} else {
+			error = i18n.ts.somethingHappened;
 		}
+		document.title = `${error} | ${instanceName}`;
 	});
 }, { immediate: true });
 
