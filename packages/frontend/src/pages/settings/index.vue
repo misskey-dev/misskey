@@ -166,7 +166,7 @@ const menuDef = computed(() => [{
 		active: currentPage?.route.name === 'import-export',
 	}, {
 		icon: 'ti ti-plane',
-		text: i18n.ts.accountMigration,
+		text: `${i18n.ts.accountMigration} (${i18n.ts.experimental})`,
 		to: '/settings/migration',
 		active: currentPage?.route.name === 'migration',
 	}, {
