@@ -11,7 +11,7 @@ import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import type { Following } from '@/models/entities/Following.js';
 import { countIf } from '@/misc/prelude/array.js';
@@ -630,7 +630,7 @@ export class ActivityPubServerService {
 					id: request.params.followee,
 					host: Not(IsNull()),
 				}),
-			]);
+			]) as [LocalUser | RemoteUser | null, LocalUser | RemoteUser | null];
 
 			if (follower == null || followee == null) {
 				reply.code(404);
@@ -665,7 +665,7 @@ export class ActivityPubServerService {
 					id: followRequest.followeeId,
 					host: Not(IsNull()),
 				}),
-			]);
+			]) as [LocalUser | RemoteUser | null, LocalUser | RemoteUser | null];
 
 			if (follower == null || followee == null) {
 				reply.code(404);
