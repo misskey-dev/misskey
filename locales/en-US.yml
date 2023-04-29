@@ -1029,11 +1029,11 @@ _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _accountMigration:
   moveFrom: "Migrate another account to this one"
-  moveFromLabel: "Account to move from:"
-  moveFromDescription: "Create an alias for the account to move from on this account if you wish to transfer its followers. This has to be done before the transfer! Then, enter the account to move to in the following format: @person@instance.com"
+  moveFromLabel: "Original Account #{n}"
+  moveFromDescription: "You must create an alias for the account to move from on this account.\nEnter the account to migrate from in the following format: @username@server.example.com\nTo delete the alias, leave the field empty (not recommended)."
   moveTo: "Migrate this account to a different one"
   moveToLabel: "Account to move to:"
-  moveAccountDescription: "This action is irreversible. First, create an alias for this account on the account you wish to move to. Then, enter the account to move to in the following format: @person@instance.com"
+  moveAccountDescription: "This will migrate your account to a different one.\n　・Followers from this account will automatically be migrated to the new account\n　・This account will unfollow all users it is currently following\n　・You will be unable to create new notes etc. on this account\n\nWhile migration of followers is automatic, you must manually prepare some steps to migrate the list of users you are following. To do so, carry out a follows export that you will later import on the new account in the settings menu. The same procedure applies to your lists as well as your muted and blocked users.\n\n(This explanation applies to Misskey v13.12.0 and later. Other ActivityPub software, such as Mastodon, might function differently.)"
   migrationConfirm: "Really migrate this account to {account}? Once started, this process cannot be stopped or taken back, and you will not be able to use this account in its original state anymore."
   movedTo: "Account to move to:"
 _achievements:
