@@ -1022,6 +1022,8 @@ serverRules: "Serverregeln"
 pleaseConfirmBelowBeforeSignup: "Lies bitte Untenstehendes vor der Registration."
 pleaseAgreeAllToContinue: "Zum Fortfahren muss allen obigen Feldern zugestimmt werden."
 continue: "Fortfahren"
+preservedUsernames: "Reservierte Benutzernamen"
+preservedUsernamesDescription: "Gib zu reservierende Benutzernamen durch Zeilenumbrüche getrennt an. Diese werden für die Registrierung gesperrt, können aber von Administratoren zur manuellen Erstellung von Konten verwendet werden. Existierende Konten, die diese Namen bereits verwenden, werden nicht beeinträchtigt."
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
 _accountMigration:
