@@ -248,11 +248,11 @@ export function getNoteMenu(props: {
 				action: openDetail,
 			}, {
 				icon: 'ti ti-repeat',
-				text: i18n.ts.renoteList,
+				text: i18n.ts.renotesList,
 				action: showRenotes,
 			}, {
 				icon: 'ti ti-icons',
-				text: i18n.ts.reactionList,
+				text: i18n.ts.reactionsList,
 				action: showReactions,
 			}, {
 				icon: 'ti ti-copy',
