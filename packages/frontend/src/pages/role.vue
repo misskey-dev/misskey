@@ -1,8 +1,16 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs"/></template>
-
-	<MkSpacer v-if="tab === 'users'" :content-max="1200">
+	<MKSpacer v-if="!(typeof error === 'undefined')" :content-max="1200">
+		<div :class="$style.root">
+			<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+			<p :class="$style.text">
+				<i class="ti ti-alert-triangle"></i>
+				{{ i18n.ts.noRole }}
+			</p>
+		</div>
+	</MKSpacer>
+	<MkSpacer v-else-if="tab === 'users'" :content-max="1200">
 		<div class="_gaps_s">
 			<div v-if="role">{{ role.description }}</div>
 			<MkUserList :pagination="users" :extractor="(item) => item.user"/>
@@ -13,7 +21,6 @@
 	</MkSpacer>
 </MkStickyContainer>
 </template>
-
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import * as os from '@/os';
@@ -32,6 +39,7 @@ const props = withDefaults(defineProps<{
 
 let tab = $ref(props.initialTab);
 let role = $ref();
+let error = $ref();
 
 watch(() => props.role, () => {
 	os.api('roles/show', {
@@ -41,7 +49,8 @@ watch(() => props.role, () => {
 		document.title = `${role?.name} | ${instanceName}`;
 	}).catch((err) => {
 		if (err.code === 'NO_SUCH_ROLE') {
-			document.title = `${i18n.ts.noRole} | ${instanceName}`;
+			error = i18n.ts.noRole;
+			document.title = `${error} | ${instanceName}`;
 		}
 	});
 }, { immediate: true });
@@ -69,4 +78,23 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-badge',
 })));
 </script>
+<style lang="scss" module>
+.root {
+	padding: 32px;
+	text-align: center;
+  align-items: center;
+}
+
+.text {
+	margin: 0 0 8px 0;
+}
+
+.img {
+	vertical-align: bottom;
+  width: 128px;
+	height: 128px;
+	margin-bottom: 16px;
+	border-radius: 16px;
+}
+</style>
 
