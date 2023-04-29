@@ -118,6 +118,14 @@ export const meta = {
 					optional: false, nullable: false,
 				},
 			},
+			preservedUsernames: {
+				type: 'array',
+				optional: false, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
 			hcaptchaSecretKey: {
 				type: 'string',
 				optional: true, nullable: true,
@@ -311,6 +319,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				hiddenTags: instance.hiddenTags,
 				blockedHosts: instance.blockedHosts,
 				sensitiveWords: instance.sensitiveWords,
+				preservedUsernames: instance.preservedUsernames,
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,
