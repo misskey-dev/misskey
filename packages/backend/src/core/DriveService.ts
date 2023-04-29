@@ -452,13 +452,12 @@ export class DriveService {
 		const userRoleNSFW = user && (await this.roleService.getUserPolicies(user.id)).alwaysMarkNsfw;
 		if (user == null) {
 			skipNsfwCheck = true;
-		}else if(userRoleNSFW){
+		} else if (userRoleNSFW) {
 			skipNsfwCheck = true;
 		}
 		if (instance.sensitiveMediaDetection === 'none') skipNsfwCheck = true;
 		if (user && instance.sensitiveMediaDetection === 'local' && this.userEntityService.isRemoteUser(user)) skipNsfwCheck = true;
 		if (user && instance.sensitiveMediaDetection === 'remote' && this.userEntityService.isLocalUser(user)) skipNsfwCheck = true;
-
 
 		const info = await this.fileInfoService.getFileInfo(path, {
 			skipSensitiveDetection: skipNsfwCheck,

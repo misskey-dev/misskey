@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.comment !== undefined) file.comment = ps.comment;
 
-			if (ps.isSensitive !== undefined && ps.isSensitive !== file.isSensitive && alwaysMarkNsfw) {
+			if (ps.isSensitive !== undefined && ps.isSensitive !== file.isSensitive && alwaysMarkNsfw && !ps.isSensitive) {
 				throw new ApiError(meta.errors.restrictedByRole);
 			}
 
