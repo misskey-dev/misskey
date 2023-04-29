@@ -943,6 +943,7 @@ didYouLikeMisskey: "Have you taken a liking to Misskey?"
 pleaseDonate: "{host} uses the free software, Misskey. We would highly appreciate your donations so development of Misskey can continue!"
 roles: "Roles"
 role: "Role"
+noRole: "Role not found"
 normalUser: "Normal user"
 undefined: "Undefined"
 assign: "Assign"
@@ -1027,13 +1028,14 @@ preservedUsernamesDescription: "List usernames to reserve separated by linebreak
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _accountMigration:
-  moveTo: "Migrate this account to a different one"
-  moveToLabel: "Account to move to:"
-  moveAccountDescription: "This action is irreversible. First, create an alias for this account on the account you wish to move to. Then, enter the account to move to in the following format: @person@instance.com"
   moveFrom: "Migrate another account to this one"
   moveFromLabel: "Account to move from:"
   moveFromDescription: "Create an alias for the account to move from on this account if you wish to transfer its followers. This has to be done before the transfer! Then, enter the account to move to in the following format: @person@instance.com"
-  migrationConfirm: "Really migrate this account to {account}? Once started, this process cannot be stopped or taken back, and you will not be able to use this account in its original state anymore.\n\nAlso, confirm you've created an alias at the account to migrate to."
+  moveTo: "Migrate this account to a different one"
+  moveToLabel: "Account to move to:"
+  moveAccountDescription: "This action is irreversible. First, create an alias for this account on the account you wish to move to. Then, enter the account to move to in the following format: @person@instance.com"
+  migrationConfirm: "Really migrate this account to {account}? Once started, this process cannot be stopped or taken back, and you will not be able to use this account in its original state anymore."
+  movedTo: "Account to move to:"
 _achievements:
   earnedAt: "Unlocked at"
   _types:
