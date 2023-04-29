@@ -36,6 +36,12 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 	os.api('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
+	}).catch(err => {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: err.message,
+		});
 	});
 }
 
