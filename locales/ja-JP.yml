@@ -1007,6 +1007,8 @@ accountMoved: "このユーザーは新しいアカウントに引っ越しま�
 forceShowAds: "常に広告を表示する"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
+reactionsList: "リアクション一覧"
+renotesList: "Renote一覧"
 notificationDisplay: "通知の表示"
 leftTop: "左上"
 rightTop: "右上"
