@@ -38,10 +38,12 @@
 - 新しい実績を追加
 
 ### Server
+- 環境変数MISSKEY_CONFIG_YMLで設定ファイルをdefault.ymlから変更可能に
 - Fix: エクスポートデータの拡張子がunknownになる問題を修正
 - Fix: Content-Dispositionのパースでエラーが発生した場合にダウンロードが完了しない問題を修正
 - Fix: API: i/update avatarIdとbannerIdにnullを渡した時、画像がリセットされない問題を修正
 - Fix: 1:1ではない画像のリアクション通知バッジが左や上に寄ってしまっていたのを中央に来るように修正
+- Fix: .wav, .flacが再生できない問題を修正（新しくアップロードされたファイルのみ修正が適用されます）
 
 ## 13.11.3
 
