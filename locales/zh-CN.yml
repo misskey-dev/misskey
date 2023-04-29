@@ -1023,13 +1023,14 @@ continue: "继续"
 _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
 _accountMigration:
-  moveTo: "把这个账户迁移到新的账户"
-  moveToLabel: "迁移后的账户"
-  moveAccountDescription: "此操作无法取消。请先确认您已在迁移后的账户上，为此账户创造了别名。创造别名后，请如以下输入您的迁移后的账户：@person@instance.com"
   moveFrom: "从别的账号迁移到此账户"
   moveFromLabel: "迁移前的账户"
   moveFromDescription: "如果迁移时需要继承其他账户的关注者，请在此创造别名。此操作需要在实行迁移之前完成！请如已下输入需要迁移的账户：@person@instance.com"
+  moveTo: "把这个账户迁移到新的账户"
+  moveToLabel: "迁移后的账户"
+  moveAccountDescription: "此操作无法取消。请先确认您已在迁移后的账户上，为此账户创造了别名。创造别名后，请如以下输入您的迁移后的账户：@person@instance.com"
   migrationConfirm: "确定要把此账户迁移到{account}吗？一旦确定后，此操作无法取消，此账户也无法以原来的状态使用。\n同时，请确认迁移后的账户，已创造别名。"
+  movedTo: "迁移后的账户"
 _achievements:
   earnedAt: "达成时间"
   _types:
