@@ -6,7 +6,7 @@
 			<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
-				{{ i18n.ts.noRole }}
+				{{ error }}
 			</p>
 		</div>
 	</MKSpacer>
