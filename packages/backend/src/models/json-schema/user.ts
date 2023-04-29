@@ -80,9 +80,14 @@ export const packedUserDetailedNotMeOnlySchema = {
 		},
 		alsoKnownAs: {
 			type: 'array',
-			format: 'uri',
 			nullable: true,
 			optional: false,
+			items: {
+				type: 'string',
+				format: 'uri',
+				nullable: false,
+				optional: false,
+			},
 		},
 		createdAt: {
 			type: 'string',
