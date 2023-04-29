@@ -85,6 +85,8 @@ export const packedUserDetailedNotMeOnlySchema = {
 			items: {
 				type: 'string',
 				format: 'id',
+				nullable: false,
+				optional: false,
 			},
 		},
 		createdAt: {
