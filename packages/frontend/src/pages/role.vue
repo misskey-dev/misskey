@@ -38,9 +38,11 @@ watch(() => props.role, () => {
 		roleId: props.role,
 	}).then(res => {
 		role = res;
-		document.title = `${role.name} | ${instanceName}`;
-	}).catch(err => {
-		document.title = `${err.message} | ${instanceName}`;
+		document.title = `${role?.name} | ${instanceName}`;
+	}).catch((err) => {
+		if (err.code === 'NO_SUCH_ROLE') {
+			document.title = `${i18n.ts.noRole} | ${instanceName}`;
+		}
 	});
 }, { immediate: true });
 
