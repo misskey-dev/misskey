@@ -1007,6 +1007,8 @@ accountMoved: "這個使用者已遷移至新的帳戶："
 forceShowAds: "總是顯示廣告"
 addMemo: "新增備註"
 editMemo: "編輯備註"
+reactionsList: "反應列表"
+renotesList: "轉發貼文列表"
 notificationDisplay: "通知的顯示"
 leftTop: "左上"
 rightTop: "右上"
@@ -1021,6 +1023,7 @@ pleaseConfirmBelowBeforeSignup: "在本伺服器註冊之前，請確認下列�
 pleaseAgreeAllToContinue: "必須全部勾選「同意」才能繼續。"
 continue: "繼續"
 preservedUsernames: "保留的使用者名稱"
+preservedUsernamesDescription: "換行列舉要保留的使用者名稱。此處指定的使用者名稱，在建立帳戶時無法使用，但由管理者所建立的帳戶不受此限。此外，既有的帳戶也不受影響。"
 _serverRules:
   description: "設定伺服器的簡要規則，在新的註冊之前顯示。建議的內容是使用條款的摘要。"
 _accountMigration:
