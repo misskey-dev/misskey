@@ -58,4 +58,5 @@ export const widgets = [
 	'aichan',
 	'userList',
 	'clicker',
+	'koteitag',
 ];

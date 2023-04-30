@@ -1703,6 +1703,7 @@ _widgets:
   _userList:
     chooseList: "リストを選択"
   clicker: "クリッカー"
+  koteitag: "実況用固定タグ"
 
 _cw:
   hide: "隠す"
