@@ -1,7 +1,7 @@
 <template>
 <div class="_gaps_m">
 	<FormInfo warn>
-		{{ i18n.ts.ThisIsExperimentalFeature }}
+		{{ i18n.ts.thisIsExperimentalFeature }}
 	</FormInfo>
 	<MkFolder :default-open="true">
 		<template #icon><i class="ti ti-plane-arrival"></i></template>
