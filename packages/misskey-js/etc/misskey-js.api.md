@@ -1774,7 +1774,10 @@ export type Endpoints = {
             sinceDate?: number;
             untilDate?: number;
             sortBy?: 'startDate' | 'craetedAt';
-            filters?: [string, (string | null)[]][];
+            filters?: {
+                key: string;
+                values: (string | null)[];
+            }[];
         };
         res: Note[];
     };

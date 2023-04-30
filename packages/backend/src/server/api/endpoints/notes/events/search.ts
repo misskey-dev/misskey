@@ -55,10 +55,13 @@ export const paramDef = {
 			type: 'array',
 			nullable: true,
 			description: 'list of string -> [string] that filters events based on metadata. Each item in filters is applied as an AND',
-			prefixItems: [
-				{ type: 'string', description: 'The property of metadata to be filtered' },
-				{ type: 'array', items: { type: 'string', nullable: true, description: 'The values to match the metadata against. Each item in this array is applied as an OR. Include null to indicate match on missing metadata' } },
-			],
+			items: {
+				type: 'object',
+				properties: {
+					key: { type: 'string', description: 'the metadata property to filter on.' },
+					values: { type: 'array', items: { type: 'string', nullable: true }, description: 'The values to match the metadata against (case insensitive regex). Each item in this array is applied as an OR. Include null to indicate match on missing metadata' },
+				},
+			},
 		},
 		sortBy: { type: 'string', nullable: true, default: 'startDate', enum: ['startDate', 'createdAt'] },
 	},
@@ -84,7 +87,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.unavailable);
 			}
 	
-			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
+			const queryRunner = this.notesRepository.queryRunner;
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note', queryRunner), ps.sinceId, ps.untilId);
 
 			if (ps.users) {
 				if (ps.users.length < 1) throw new ApiError(meta.errors.invalidParam);
@@ -103,18 +107,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}));
 			}
 			if (ps.filters) {
-				const filters: [string, (string | null)[]][] = ps.filters;
+				const filters = ps.filters;
 				
 				filters.forEach(f => {
-					const filterKey = f[0];
-					const filterValues = f[1];
+					if (!f.key || !f.values) throw new ApiError(meta.errors.invalidParam);
+					const filterKey = f.key;
+					const filterValues = f.values as (string | null)[];
 					const matches = filterValues.filter(x => x !== null) as string[];
 					const hasNull = filterValues.length !== matches.length;
 					if (matches.length < 1) throw new ApiError(meta.errors.invalidParam);
 					query.andWhere(new Brackets((qb) => {
-						qb.where('event.metadata ->> :key SIMILAR TO :values', { key: filterKey, values: `%(${ matches.map(sqlLikeEscape).map(m => m.trim()).filter(m => m.length).join('|') })%` });
+						// regex match metadata values case insensitive
+						qb.where('event.metadata ->> :key ~* :values', { key: filterKey, values: `(${ matches.map(m => m.trim()).filter(m => m.length).join('|') })` });
 						if (hasNull) {
-							qb.orWhere('event.metadata ->> :key IS NULL', { key: filterKey });
+							qb.orWhere('NOT (event.metadata ? :key)', { key: filterKey });
 						}
 					}));
 				});
@@ -143,6 +149,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			if (ps.offset) query.skip(ps.offset);
+
+			query.maxExecutionTime(250); // because we include regex expressions in where clause, defend against long running regex with timeout
 			const notes = await query.take(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me);
