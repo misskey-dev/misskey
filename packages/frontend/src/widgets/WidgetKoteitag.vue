@@ -60,10 +60,6 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 	emit,
 );
 const programs = ref('');
-let commandToot = [
-	'command: user_config',
-	'tagging:',
-];
 
 const getPrograms = async () => {
 	widgetProps.options = {
@@ -91,6 +87,8 @@ const getPrograms = async () => {
 
 const setPrograms = async () => {
 	if (!programs.value) return;
+
+	let commandToot = ['command: user_config', 'tagging:'];
 	switch (programs.value) {
 		case 'episode_browser':
 			os.confirm({
