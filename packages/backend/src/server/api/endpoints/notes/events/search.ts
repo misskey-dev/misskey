@@ -52,9 +52,13 @@ export const paramDef = {
 		sinceDate: { type: 'integer', nullable: true },
 		untilDate: { type: 'integer', nullable: true },
 		filters: {
-			type: 'object',
+			type: 'array',
 			nullable: true,
-			description: 'mapping of string -> [string] that filters events based on metadata',
+			description: 'list of string -> [string] that filters events based on metadata. Each item in filters is applied as an AND',
+			prefixItems: [
+				{ type: 'string', description: 'The property of metadata to be filtered' },
+				{ type: 'array', items: { type: 'string', nullable: true, description: 'The values to match the metadata against. Each item in this array is applied as an OR. Include null to indicate match on missing metadata' } },
+			],
 		},
 		sortBy: { type: 'string', nullable: true, default: 'startDate', enum: ['startDate', 'createdAt'] },
 	},
@@ -99,15 +103,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}));
 			}
 			if (ps.filters) {
-				const filters: Record<string, (string | null)[]> = ps.filters;
+				const filters: [string, (string | null)[]][] = ps.filters;
 				
-				Object.keys(filters).forEach(f => {
-					const matches = filters[f].filter(x => x !== null);
+				filters.forEach(f => {
+					const filterKey = f[0];
+					const filterValues = f[1];
+					const matches = filterValues.filter(x => x !== null) as string[];
+					const hasNull = filterValues.length !== matches.length;
 					if (matches.length < 1) throw new ApiError(meta.errors.invalidParam);
 					query.andWhere(new Brackets((qb) => {
-						qb.where('event.metadata ->> :key IN (:...values)', { key: f, values: matches });
-						if (filters[f].filter(x => x === null).length > 0) {
-							qb.orWhere('event.metadata ->> :key IS NULL', { key: f });
+						qb.where('event.metadata ->> :key SIMILAR TO :values', { key: filterKey, values: `%(${ matches.map(sqlLikeEscape).map(m => m.trim()).filter(m => m.length).join('|') })%` });
+						if (hasNull) {
+							qb.orWhere('event.metadata ->> :key IS NULL', { key: filterKey });
 						}
 					}));
 				});

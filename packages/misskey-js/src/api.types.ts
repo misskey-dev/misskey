@@ -492,7 +492,7 @@ export type Endpoints = {
 			title: string;
 			start: number;
 			end?: null | number;
-			metadata: Record<string, string[]>;
+			metadata: Record<string, string>;
 		}
 	}; res: { createdNote: Note }; };
 	'notes/delete': { req: { noteId: Note['id']; }; res: null; };
@@ -515,7 +515,7 @@ export type Endpoints = {
 		sinceDate?: number;
 		untilDate?: number;
 		sortBy?: 'startDate' | 'craetedAt';
-		filters?: Record<string, string[]>;
+		filters?: [string, (string | null)[]][];
 	}; res: Note[]; };
 	'notes/reactions': { req: { noteId: Note['id']; type?: string | null; limit?: number; }; res: NoteReaction[]; };
 	'notes/reactions/create': { req: { noteId: Note['id']; reaction: string; }; res: null; };
