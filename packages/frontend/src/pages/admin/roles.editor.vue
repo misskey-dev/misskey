@@ -59,6 +59,11 @@
 		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
 	</MkSwitch>
 
+	<MkSwitch v-model="role.isExplorable" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.isExplorable }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfIsExplorable }}</template>
+	</MkSwitch>
+
 	<FormSlot>
 		<template #label><i class="ti ti-license"></i> {{ i18n.ts._role.policies }}</template>
 		<div class="_gaps_s">
@@ -475,6 +480,7 @@ const save = throttle(100, () => {
 		isAdministrator: role.isAdministrator,
 		isModerator: role.isModerator,
 		isPublic: role.isPublic,
+		isExplorable: role.isExplorable,
 		asBadge: role.asBadge,
 		canEditMembersByModerator: role.canEditMembersByModerator,
 		policies: role.policies,

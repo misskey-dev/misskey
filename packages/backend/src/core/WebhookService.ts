@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import type { WebhooksRepository } from '@/models/index.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import { DI } from '@/di-symbols.js';
@@ -13,14 +13,14 @@ export class WebhookService implements OnApplicationShutdown {
 	private webhooks: Webhook[] = [];
 
 	constructor(
-		@Inject(DI.redisSubscriber)
-		private redisSubscriber: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
-		this.redisSubscriber.on('message', this.onMessage);
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -82,6 +82,6 @@ export class WebhookService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisSubscriber.off('message', this.onMessage);
+		this.redisForSub.off('message', this.onMessage);
 	}
 }

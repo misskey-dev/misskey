@@ -169,14 +169,21 @@ export default class Stream extends EventEmitter<StreamEvents> {
 
 	/**
 	 * Send a message to connection
+	 * ! ストリーム上のやり取りはすべてJSONで行われます !
 	 */
-	public send(typeOrPayload: any, payload?: any): void {
-		const data = payload === undefined ? typeOrPayload : {
-			type: typeOrPayload,
-			body: payload,
-		};
+	public send(typeOrPayload: string): void
+	public send(typeOrPayload: string, payload: any): void
+	public send(typeOrPayload: Record<string, any> | any[]): void
+	public send(typeOrPayload: string | Record<string, any> | any[], payload?: any): void {
+		if (typeof typeOrPayload === 'string') {
+			this.stream.send(JSON.stringify({
+				type: typeOrPayload,
+				...(payload === undefined ? {} : { body: payload }),
+			}));
+			return;
+		}
 
-		this.stream.send(JSON.stringify(data));
+		this.stream.send(JSON.stringify(typeOrPayload));
 	}
 
 	/**

@@ -132,6 +132,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'mollinaca',
 	icon: 'https://misskey-hub.net/patrons/ceb36b8f66e549bdadb3b90d5da62314.jpg',
+}, {
+	name: '坂本龍',
+	icon: 'https://misskey-hub.net/patrons/a631cf8b490145cf8dbbe4e7508cfbc2.jpg',
 }];
 
 const patrons = [
@@ -217,6 +220,13 @@ const patrons = [
 	'氷月氷華里',
 	'Ebise Lutica',
 	'巣黒るい@リスケモ男の娘VTuber!',
+	'ふぇいぽむ',
+	'依古田イコ',
+	'戸塚こだま',
+	'すー。',
+	'秋雨/Slime-hatena.jp',
+	'けそ',
+	'ずも',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

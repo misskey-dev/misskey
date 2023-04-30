@@ -88,6 +88,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'squareAvatars',
 	'numberOfPageCache',
 	'aiChanMode',
+	'mediaListWithOneImageAppearance',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',
@@ -399,7 +400,7 @@ function menu(ev: MouseEvent, profileId: string) {
 		icon: 'ti ti-device-floppy',
 		action: () => save(profileId),
 	}, null, {
-		text: ts._preferencesBackups.delete,
+		text: ts.delete,
 		icon: 'ti ti-trash',
 		action: () => deleteProfile(profileId),
 		danger: true,

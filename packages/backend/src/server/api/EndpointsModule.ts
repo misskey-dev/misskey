@@ -29,6 +29,7 @@ import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
+import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
@@ -98,6 +99,7 @@ import * as ep___channels_update from './endpoints/channels/update.js';
 import * as ep___channels_favorite from './endpoints/channels/favorite.js';
 import * as ep___channels_unfavorite from './endpoints/channels/unfavorite.js';
 import * as ep___channels_myFavorites from './endpoints/channels/my-favorites.js';
+import * as ep___channels_search from './endpoints/channels/search.js';
 import * as ep___charts_activeUsers from './endpoints/charts/active-users.js';
 import * as ep___charts_apRequest from './endpoints/charts/ap-request.js';
 import * as ep___charts_drive from './endpoints/charts/drive.js';
@@ -220,6 +222,7 @@ import * as ep___i_signinHistory from './endpoints/i/signin-history.js';
 import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
+import * as ep___i_move from './endpoints/i/move.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -291,6 +294,7 @@ import * as ep___promo_read from './endpoints/promo/read.js';
 import * as ep___roles_list from './endpoints/roles/list.js';
 import * as ep___roles_show from './endpoints/roles/show.js';
 import * as ep___roles_users from './endpoints/roles/users.js';
+import * as ep___roles_notes from './endpoints/roles/notes.js';
 import * as ep___requestResetPassword from './endpoints/request-reset-password.js';
 import * as ep___resetDb from './endpoints/reset-db.js';
 import * as ep___resetPassword from './endpoints/reset-password.js';
@@ -326,6 +330,7 @@ import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
 import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
+import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
@@ -360,6 +365,7 @@ const $admin_emoji_list: Provider = { provide: 'ep:admin/emoji/list', useClass: 
 const $admin_emoji_removeAliasesBulk: Provider = { provide: 'ep:admin/emoji/remove-aliases-bulk', useClass: ep___admin_emoji_removeAliasesBulk.default };
 const $admin_emoji_setAliasesBulk: Provider = { provide: 'ep:admin/emoji/set-aliases-bulk', useClass: ep___admin_emoji_setAliasesBulk.default };
 const $admin_emoji_setCategoryBulk: Provider = { provide: 'ep:admin/emoji/set-category-bulk', useClass: ep___admin_emoji_setCategoryBulk.default };
+const $admin_emoji_setLicenseBulk: Provider = { provide: 'ep:admin/emoji/set-license-bulk', useClass: ep___admin_emoji_setLicenseBulk.default };
 const $admin_emoji_update: Provider = { provide: 'ep:admin/emoji/update', useClass: ep___admin_emoji_update.default };
 const $admin_federation_deleteAllFiles: Provider = { provide: 'ep:admin/federation/delete-all-files', useClass: ep___admin_federation_deleteAllFiles.default };
 const $admin_federation_refreshRemoteInstanceMetadata: Provider = { provide: 'ep:admin/federation/refresh-remote-instance-metadata', useClass: ep___admin_federation_refreshRemoteInstanceMetadata.default };
@@ -429,6 +435,7 @@ const $channels_update: Provider = { provide: 'ep:channels/update', useClass: ep
 const $channels_favorite: Provider = { provide: 'ep:channels/favorite', useClass: ep___channels_favorite.default };
 const $channels_unfavorite: Provider = { provide: 'ep:channels/unfavorite', useClass: ep___channels_unfavorite.default };
 const $channels_myFavorites: Provider = { provide: 'ep:channels/my-favorites', useClass: ep___channels_myFavorites.default };
+const $channels_search: Provider = { provide: 'ep:channels/search', useClass: ep___channels_search.default };
 const $charts_activeUsers: Provider = { provide: 'ep:charts/active-users', useClass: ep___charts_activeUsers.default };
 const $charts_apRequest: Provider = { provide: 'ep:charts/ap-request', useClass: ep___charts_apRequest.default };
 const $charts_drive: Provider = { provide: 'ep:charts/drive', useClass: ep___charts_drive.default };
@@ -551,6 +558,7 @@ const $i_signinHistory: Provider = { provide: 'ep:i/signin-history', useClass: e
 const $i_unpin: Provider = { provide: 'ep:i/unpin', useClass: ep___i_unpin.default };
 const $i_updateEmail: Provider = { provide: 'ep:i/update-email', useClass: ep___i_updateEmail.default };
 const $i_update: Provider = { provide: 'ep:i/update', useClass: ep___i_update.default };
+const $i_move: Provider = { provide: 'ep:i/move', useClass: ep___i_move.default };
 const $i_webhooks_create: Provider = { provide: 'ep:i/webhooks/create', useClass: ep___i_webhooks_create.default };
 const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep___i_webhooks_list.default };
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
@@ -622,6 +630,7 @@ const $promo_read: Provider = { provide: 'ep:promo/read', useClass: ep___promo_r
 const $roles_list: Provider = { provide: 'ep:roles/list', useClass: ep___roles_list.default };
 const $roles_show: Provider = { provide: 'ep:roles/show', useClass: ep___roles_show.default };
 const $roles_users: Provider = { provide: 'ep:roles/users', useClass: ep___roles_users.default };
+const $roles_notes: Provider = { provide: 'ep:roles/notes', useClass: ep___roles_notes.default };
 const $requestResetPassword: Provider = { provide: 'ep:request-reset-password', useClass: ep___requestResetPassword.default };
 const $resetDb: Provider = { provide: 'ep:reset-db', useClass: ep___resetDb.default };
 const $resetPassword: Provider = { provide: 'ep:reset-password', useClass: ep___resetPassword.default };
@@ -657,6 +666,7 @@ const $users_search: Provider = { provide: 'ep:users/search', useClass: ep___use
 const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_show.default };
 const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
 const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
+const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
 const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention.default };
 
@@ -695,6 +705,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
+		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
@@ -764,6 +775,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
+		$channels_search,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -886,6 +898,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
+		$i_move,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -957,6 +970,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$roles_list,
 		$roles_show,
 		$roles_users,
+		$roles_notes,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,
@@ -992,6 +1006,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_show,
 		$users_stats,
 		$users_achievements,
+		$users_updateMemo,
 		$fetchRss,
 		$retention,
 	],
@@ -1024,6 +1039,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_emoji_removeAliasesBulk,
 		$admin_emoji_setAliasesBulk,
 		$admin_emoji_setCategoryBulk,
+		$admin_emoji_setLicenseBulk,
 		$admin_emoji_update,
 		$admin_federation_deleteAllFiles,
 		$admin_federation_refreshRemoteInstanceMetadata,
@@ -1093,6 +1109,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$channels_favorite,
 		$channels_unfavorite,
 		$channels_myFavorites,
+		$channels_search,
 		$charts_activeUsers,
 		$charts_apRequest,
 		$charts_drive,
@@ -1215,6 +1232,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_unpin,
 		$i_updateEmail,
 		$i_update,
+		$i_move,
 		$i_webhooks_create,
 		$i_webhooks_list,
 		$i_webhooks_show,
@@ -1286,6 +1304,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$roles_list,
 		$roles_show,
 		$roles_users,
+		$roles_notes,
 		$requestResetPassword,
 		$resetDb,
 		$resetPassword,
@@ -1319,6 +1338,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_show,
 		$users_stats,
 		$users_achievements,
+		$users_updateMemo,
 		$fetchRss,
 		$retention,
 	],

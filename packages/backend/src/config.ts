@@ -4,7 +4,7 @@
 
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
 
 /**
@@ -25,7 +25,31 @@ export type Source = {
 		disableCache?: boolean;
 		extra?: { [x: string]: string };
 	};
+	dbReplications?: boolean;
+	dbSlaves?: {
+		host: string;
+		port: number;
+		db: string;
+		user: string;
+		pass: string;
+	}[];
 	redis: {
+		host: string;
+		port: number;
+		family?: number;
+		pass: string;
+		db?: number;
+		prefix?: string;
+	};
+	redisForPubsub?: {
+		host: string;
+		port: number;
+		family?: number;
+		pass: string;
+		db?: number;
+		prefix?: string;
+	};
+	redisForJobQueue?: {
 		host: string;
 		port: number;
 		family?: number;
@@ -60,8 +84,10 @@ export type Source = {
 
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
+	relashionshipJobConcurrency?: number;
 	deliverJobPerSec?: number;
 	inboxJobPerSec?: number;
+	relashionshipJobPerSec?: number;
 	deliverJobMaxAttempts?: number;
 	inboxJobMaxAttempts?: number;
 
@@ -91,6 +117,8 @@ export type Mixin = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
+	redisForPubsub: NonNullable<Source['redisForPubsub']>;
+	redisForJobQueue: NonNullable<Source['redisForJobQueue']>;
 };
 
 export type Config = Source & Mixin;
@@ -106,10 +134,11 @@ const dir = `${_dirname}/../../../.config`;
 /**
  * Path of configuration file
  */
-const path = process.env.NODE_ENV === 'test'
-	? `${dir}/test.yml`
-	: `${dir}/default.yml`;
-
+const path = process.env.MISSKEY_CONFIG_YML
+	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
+	: process.env.NODE_ENV === 'test'
+		? resolve(dir, 'test.yml')
+		: resolve(dir, 'default.yml');
 export function loadConfig() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
 	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
@@ -151,6 +180,8 @@ export function loadConfig() {
 		: null;
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;
+	if (config.redisForPubsub == null) config.redisForPubsub = config.redis;
+	if (config.redisForJobQueue == null) config.redisForJobQueue = config.redis;
 
 	return Object.assign(config, mixin);
 }

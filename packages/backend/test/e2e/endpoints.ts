@@ -4,8 +4,9 @@ import * as assert from 'assert';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
-import { startServer, signup, post, api, uploadFile, simpleGet } from '../utils.js';
+import { startServer, signup, post, api, uploadFile, simpleGet, initTestDb } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import { User } from '@/models/index.js';
 
 describe('Endpoints', () => {
 	let app: INestApplicationContext;
@@ -289,6 +290,16 @@ describe('Endpoints', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 200);
+
+			const connection = await initTestDb(true);
+			const Users = connection.getRepository(User);
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.followersCount, 0);
+			assert.strictEqual(newBob.followingCount, 1);
+			const newAlice = await Users.findOneByOrFail({ id: alice.id });
+			assert.strictEqual(newAlice.followersCount, 1);
+			assert.strictEqual(newAlice.followingCount, 0);
+			connection.destroy();
 		});
 
 		test('既にフォローしている場合は怒る', async () => {
@@ -341,6 +352,16 @@ describe('Endpoints', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 200);
+
+			const connection = await initTestDb(true);
+			const Users = connection.getRepository(User);
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.followersCount, 0);
+			assert.strictEqual(newBob.followingCount, 0);
+			const newAlice = await Users.findOneByOrFail({ id: alice.id });
+			assert.strictEqual(newAlice.followersCount, 0);
+			assert.strictEqual(newAlice.followingCount, 0);
+			connection.destroy();
 		});
 
 		test('フォローしていない場合は怒る', async () => {
@@ -847,6 +868,87 @@ describe('Endpoints', () => {
 			const res = await simpleGet('/url?url=https://e:xample.com');
 			assert.strictEqual(res.status, 422);
 			assert.strictEqual(res.body.error.code, 'URL_PREVIEW_FAILED');
+		});
+	});
+
+	describe('パーソナルメモ機能のテスト', () => {
+		test('他者に関するメモを更新できる', async () => {
+			const memo = '10月まで低浮上とのこと。';
+
+			const res1 = await api('/users/update-memo', {
+				memo,
+				userId: bob.id,
+			}, alice);
+
+			const res2 = await api('/users/show', {
+				userId: bob.id,
+			}, alice);
+			assert.strictEqual(res1.status, 204);
+			assert.strictEqual(res2.body?.memo, memo);
+		});
+
+		test('自分に関するメモを更新できる', async () => {
+			const memo = 'チケットを月末までに買う。';
+
+			const res1 = await api('/users/update-memo', {
+				memo,
+				userId: alice.id,
+			}, alice);
+
+			const res2 = await api('/users/show', {
+				userId: alice.id,
+			}, alice);
+			assert.strictEqual(res1.status, 204);
+			assert.strictEqual(res2.body?.memo, memo);
+		});
+
+		test('メモを削除できる', async () => {
+			const memo = '10月まで低浮上とのこと。';
+
+			await api('/users/update-memo', {
+				memo,
+				userId: bob.id,
+			}, alice);
+
+			await api('/users/update-memo', {
+				memo: '',
+				userId: bob.id,
+			}, alice);
+
+			const res = await api('/users/show', {
+				userId: bob.id,
+			}, alice);
+
+			// memoには常に文字列かnullが入っている(5cac151)
+			assert.strictEqual(res.body.memo, null);
+		});
+
+		test('メモは個人ごとに独立して保存される', async () => {
+			const memoAliceToBob = '10月まで低浮上とのこと。';
+			const memoCarolToBob = '例の件について今度問いただす。';
+
+			await Promise.all([
+				api('/users/update-memo', {
+					memo: memoAliceToBob,
+					userId: bob.id,
+				}, alice),
+				api('/users/update-memo', {
+					memo: memoCarolToBob,
+					userId: bob.id,
+				}, carol),
+			]);
+
+			const [resAlice, resCarol] = await Promise.all([
+				api('/users/show', {
+					userId: bob.id,
+				}, alice),
+				api('/users/show', {
+					userId: bob.id,
+				}, carol),
+			]);
+
+			assert.strictEqual(resAlice.body.memo, memoAliceToBob);
+			assert.strictEqual(resCarol.body.memo, memoCarolToBob);
 		});
 	});
 });

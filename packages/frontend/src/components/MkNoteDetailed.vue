@@ -30,7 +30,7 @@
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
 				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 			</span>
-			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 		</div>
 	</div>
 	<article class="article" @contextmenu.stop="onContextmenu">
@@ -48,7 +48,7 @@
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
 							<i v-else-if="appearNote.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
 						</span>
-						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-world-off"></i></span>
+						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 					</div>
 				</div>
 				<div class="username"><MkAcct :user="appearNote.user"/></div>
@@ -166,6 +166,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
 import { MenuItem } from '@/types/menu';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { showMovedDialog } from '@/scripts/show-moved-dialog';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -248,6 +249,7 @@ useTooltip(renoteButton, async (showing) => {
 
 function renote(viaKeyboard = false) {
 	pleaseLogin();
+	showMovedDialog();
 
 	let items = [] as MenuItem[];
 
@@ -318,6 +320,7 @@ function renote(viaKeyboard = false) {
 
 function reply(viaKeyboard = false): void {
 	pleaseLogin();
+	showMovedDialog();
 	os.post({
 		reply: appearNote,
 		animation: !viaKeyboard,
@@ -328,6 +331,7 @@ function reply(viaKeyboard = false): void {
 
 function react(viaKeyboard = false): void {
 	pleaseLogin();
+	showMovedDialog();
 	if (appearNote.reactionAcceptance === 'likeOnly') {
 		os.api('notes/reactions/create', {
 			noteId: appearNote.id,
@@ -394,6 +398,7 @@ async function clip() {
 
 function showRenoteMenu(viaKeyboard = false): void {
 	if (!isMyRenote) return;
+	pleaseLogin();
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',

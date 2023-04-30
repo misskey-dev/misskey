@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { UserList } from '@/models/entities/UserList.js';
@@ -14,12 +14,13 @@ import type {
 	MainStreamTypes,
 	NoteStreamTypes,
 	UserListStreamTypes,
-	UserStreamTypes,
+	RoleTimelineStreamTypes,
 } from '@/server/api/stream/types.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
+import { Role } from '@/models';
 
 @Injectable()
 export class GlobalEventService {
@@ -27,8 +28,8 @@ export class GlobalEventService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
+		@Inject(DI.redisForPub)
+		private redisForPub: Redis.Redis,
 	) {
 	}
 
@@ -38,7 +39,7 @@ export class GlobalEventService {
 			{ type: type, body: null } :
 			{ type: type, body: value };
 
-		this.redisClient.publish(this.config.host, JSON.stringify({
+		this.redisForPub.publish(this.config.host, JSON.stringify({
 			channel: channel,
 			message: message,
 		}));
@@ -47,11 +48,6 @@ export class GlobalEventService {
 	@bindThis
 	public publishInternalEvent<K extends keyof InternalStreamTypes>(type: K, value?: InternalStreamTypes[K]): void {
 		this.publish('internal', type, typeof value === 'undefined' ? null : value);
-	}
-
-	@bindThis
-	public publishUserEvent<K extends keyof UserStreamTypes>(userId: User['id'], type: K, value?: UserStreamTypes[K]): void {
-		this.publish(`user:${userId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis
@@ -85,6 +81,11 @@ export class GlobalEventService {
 	@bindThis
 	public publishAntennaStream<K extends keyof AntennaStreamTypes>(antennaId: Antenna['id'], type: K, value?: AntennaStreamTypes[K]): void {
 		this.publish(`antennaStream:${antennaId}`, type, typeof value === 'undefined' ? null : value);
+	}
+
+	@bindThis
+	public publishRoleTimelineStream<K extends keyof RoleTimelineStreamTypes>(roleId: Role['id'], type: K, value?: RoleTimelineStreamTypes[K]): void {
+		this.publish(`roleTimelineStream:${roleId}`, type, typeof value === 'undefined' ? null : value);
 	}
 
 	@bindThis

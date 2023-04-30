@@ -1,5 +1,5 @@
 import { setTimeout } from 'node:timers/promises';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -43,6 +43,7 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	public async readAllNotification(
 		userId: User['id'],
+		force = false,
 	) {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 		
@@ -57,7 +58,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		this.redisClient.set(`latestReadNotification:${userId}`, latestNotificationId);
 
-		if (latestReadNotificationId == null || (latestReadNotificationId < latestNotificationId)) {
+		if (force || latestReadNotificationId == null || (latestReadNotificationId < latestNotificationId)) {
 			return this.postReadAllNotifications(userId);
 		}
 	}
@@ -65,6 +66,7 @@ export class NotificationService implements OnApplicationShutdown {
 	@bindThis
 	private postReadAllNotifications(userId: User['id']) {
 		this.globalEventService.publishMainStream(userId, 'readAllNotifications');
+		this.pushNotificationService.pushNotification(userId, 'readAllNotifications', undefined);
 	}
 
 	@bindThis
@@ -73,7 +75,7 @@ export class NotificationService implements OnApplicationShutdown {
 		type: Notification['type'],
 		data: Partial<Notification>,
 	): Promise<Notification | null> {
-		const profile = await this.cacheService.userProfileCache.fetch(notifieeId, () => this.userProfilesRepository.findOneByOrFail({ userId: notifieeId }));
+		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 		const isMuted = profile.mutingNotificationTypes.includes(type);
 		if (isMuted) return null;
 
@@ -82,8 +84,8 @@ export class NotificationService implements OnApplicationShutdown {
 				return null;
 			}
 
-			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId, () => this.mutingsRepository.findBy({ muterId: notifieeId }).then(xs => xs.map(x => x.muteeId)));
-			if (mutings.includes(data.notifierId)) {
+			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId);
+			if (mutings.has(data.notifierId)) {
 				return null;
 			}
 		}
@@ -95,10 +97,10 @@ export class NotificationService implements OnApplicationShutdown {
 			...data,
 		} as Notification;
 
-		this.redisClient.xadd(
+		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
 			'MAXLEN', '~', '300',
-			`${this.idService.parse(notification.id).date.getTime()}-*`,
+			'*',
 			'data', JSON.stringify(notification));
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
@@ -109,7 +111,7 @@ export class NotificationService implements OnApplicationShutdown {
 		// 2秒経っても(今回作成した)通知が既読にならなかったら「未読の通知がありますよ」イベントを発行する
 		setTimeout(2000, 'unread notification', { signal: this.#shutdownController.signal }).then(async () => {
 			const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${notifieeId}`);
-			if (latestReadNotificationId && (latestReadNotificationId >= notification.id)) return;
+			if (latestReadNotificationId && (latestReadNotificationId >= (await redisIdPromise)!)) return;
 
 			this.globalEventService.publishMainStream(notifieeId, 'unreadNotification', packed);
 			this.pushNotificationService.pushNotification(notifieeId, 'notification', packed);

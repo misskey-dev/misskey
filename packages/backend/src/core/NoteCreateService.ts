@@ -1,7 +1,7 @@
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
@@ -20,7 +20,7 @@ import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { MemoryCache } from '@/misc/cache.js';
+import { MemorySingleCache } from '@/misc/cache.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -47,7 +47,7 @@ import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 
-const mutedWordsCache = new MemoryCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
+const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -329,7 +329,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.redisClient.xadd(
 				`channelTimeline:${data.channel.id}`,
 				'MAXLEN', '~', '1000',
-				`${this.idService.parse(note.id).date.getTime()}-*`,
+				'*',
 				'note', note.id);
 		}
 
@@ -493,26 +493,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 		});
 
-		// Antenna
-		for (const antenna of (await this.antennaService.getAntennas())) {
-			this.antennaService.checkHitAntenna(antenna, note, user).then(hit => {
-				if (hit) {
-					this.antennaService.addNoteToAntenna(antenna, note, user);
-				}
-			});
-		}
-
-		// Channel
-		if (note.channelId) {
-			this.channelFollowingsRepository.findBy({ followeeId: note.channelId }).then(followings => {
-				for (const following of followings) {
-					this.noteReadService.insertNoteUnread(following.followerId, note, {
-						isSpecified: false,
-						isMentioned: false,
-					});
-				}
-			});
-		}
+		this.antennaService.addNoteToAntennas(note, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);
@@ -565,6 +546,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			const noteObj = await this.noteEntityService.pack(note);
 
 			this.globalEventService.publishNotesStream(noteObj);
+
+			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
 				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));

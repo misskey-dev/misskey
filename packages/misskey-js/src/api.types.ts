@@ -362,6 +362,7 @@ export type Endpoints = {
 	'i/get-word-muted-notes-count': { req: TODO; res: TODO; };
 	'i/import-following': { req: TODO; res: TODO; };
 	'i/import-user-lists': { req: TODO; res: TODO; };
+	'i/move': { req: TODO; res: TODO; };
 	'i/notifications': { req: {
 		limit?: number;
 		sinceId?: Notification['id'];
@@ -419,6 +420,7 @@ export type Endpoints = {
 		mutedWords?: string[][];
 		mutingNotificationTypes?: Notification['type'][];
 		emailNotificationTypes?: string[];
+		alsoKnownAs?: string[];
 	}; res: MeDetailed; };
 	'i/user-group-invites': { req: TODO; res: TODO; };
 	'i/2fa/done': { req: TODO; res: TODO; };

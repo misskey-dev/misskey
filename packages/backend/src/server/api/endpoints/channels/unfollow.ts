@@ -10,6 +10,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	prohibitMoved: true,
+
 	kind: 'write:channels',
 
 	errors: {
@@ -38,8 +40,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.channelFollowingsRepository)
 		private channelFollowingsRepository: ChannelFollowingsRepository,
-
-		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({
@@ -54,8 +54,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				followerId: me.id,
 				followeeId: channel.id,
 			});
-
-			this.globalEventService.publishUserEvent(me.id, 'unfollowChannel', channel);
 		});
 	}
 }

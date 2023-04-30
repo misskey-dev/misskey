@@ -162,6 +162,10 @@ export const routes = [{
 		name: 'preferences-backups',
 		component: page(() => import('./pages/settings/preferences-backups.vue')),
 	}, {
+		path: '/migration',
+		name: 'migration',
+		component: page(() => import('./pages/settings/migration.vue'))
+	}, {
 		path: '/custom-css',
 		name: 'general',
 		component: page(() => import('./pages/settings/custom-css.vue')),
@@ -423,6 +427,10 @@ export const routes = [{
 		path: '/other-settings',
 		name: 'other-settings',
 		component: page(() => import('./pages/admin/other-settings.vue')),
+	}, {
+		path: '/server-rules',
+		name: 'server-rules',
+		component: page(() => import('./pages/admin/server-rules.vue')),
 	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),

@@ -1,29 +1,29 @@
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
-
-// redis通すとDateのインスタンスはstringに変換されるので
-type Serialized<T> = {
-	[K in keyof T]:
-		T[K] extends Date
-			? string
-			: T[K] extends (Date | null)
-				? (string | null)
-				: T[K] extends Record<string, any>
-					? Serialized<T[K]>
-					: T[K];
-};
 
 export class RedisKVCache<T> {
 	private redisClient: Redis.Redis;
 	private name: string;
 	private lifetime: number;
 	private memoryCache: MemoryKVCache<T>;
+	private fetcher: (key: string) => Promise<T>;
+	private toRedisConverter: (value: T) => string;
+	private fromRedisConverter: (value: string) => T | undefined;
 
-	constructor(redisClient: RedisKVCache<never>['redisClient'], name: RedisKVCache<never>['name'], lifetime: RedisKVCache<never>['lifetime'], memoryCacheLifetime: number) {
+	constructor(redisClient: RedisKVCache<T>['redisClient'], name: RedisKVCache<T>['name'], opts: {
+		lifetime: RedisKVCache<T>['lifetime'];
+		memoryCacheLifetime: number;
+		fetcher: RedisKVCache<T>['fetcher'];
+		toRedisConverter: RedisKVCache<T>['toRedisConverter'];
+		fromRedisConverter: RedisKVCache<T>['fromRedisConverter'];
+	}) {
 		this.redisClient = redisClient;
 		this.name = name;
-		this.lifetime = lifetime;
-		this.memoryCache = new MemoryKVCache(memoryCacheLifetime);
+		this.lifetime = opts.lifetime;
+		this.memoryCache = new MemoryKVCache(opts.memoryCacheLifetime);
+		this.fetcher = opts.fetcher;
+		this.toRedisConverter = opts.toRedisConverter;
+		this.fromRedisConverter = opts.fromRedisConverter;
 	}
 
 	@bindThis
@@ -32,25 +32,25 @@ export class RedisKVCache<T> {
 		if (this.lifetime === Infinity) {
 			await this.redisClient.set(
 				`kvcache:${this.name}:${key}`,
-				JSON.stringify(value),
+				this.toRedisConverter(value),
 			);
 		} else {
 			await this.redisClient.set(
 				`kvcache:${this.name}:${key}`,
-				JSON.stringify(value),
-				'ex', Math.round(this.lifetime / 1000),
+				this.toRedisConverter(value),
+				'EX', Math.round(this.lifetime / 1000),
 			);
 		}
 	}
 
 	@bindThis
-	public async get(key: string): Promise<Serialized<T> | T | undefined> {
+	public async get(key: string): Promise<T | undefined> {
 		const memoryCached = this.memoryCache.get(key);
 		if (memoryCached !== undefined) return memoryCached;
 
 		const cached = await this.redisClient.get(`kvcache:${this.name}:${key}`);
 		if (cached == null) return undefined;
-		return JSON.parse(cached);
+		return this.fromRedisConverter(cached);
 	}
 
 	@bindThis
@@ -60,28 +60,112 @@ export class RedisKVCache<T> {
 	}
 
 	/**
- * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
- * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
- */
+	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 */
 	@bindThis
-	public async fetch(key: string, fetcher: () => Promise<T>, validator?: (cachedValue: Serialized<T> | T) => boolean): Promise<Serialized<T> | T> {
+	public async fetch(key: string): Promise<T> {
 		const cachedValue = await this.get(key);
 		if (cachedValue !== undefined) {
-			if (validator) {
-				if (validator(cachedValue)) {
-					// Cache HIT
-					return cachedValue;
-				}
-			} else {
-				// Cache HIT
-				return cachedValue;
-			}
+			// Cache HIT
+			return cachedValue;
 		}
 
 		// Cache MISS
-		const value = await fetcher();
+		const value = await this.fetcher(key);
 		this.set(key, value);
 		return value;
+	}
+
+	@bindThis
+	public async refresh(key: string) {
+		const value = await this.fetcher(key);
+		this.set(key, value);
+
+		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
+	}
+}
+
+export class RedisSingleCache<T> {
+	private redisClient: Redis.Redis;
+	private name: string;
+	private lifetime: number;
+	private memoryCache: MemorySingleCache<T>;
+	private fetcher: () => Promise<T>;
+	private toRedisConverter: (value: T) => string;
+	private fromRedisConverter: (value: string) => T | undefined;
+
+	constructor(redisClient: RedisSingleCache<T>['redisClient'], name: RedisSingleCache<T>['name'], opts: {
+		lifetime: RedisSingleCache<T>['lifetime'];
+		memoryCacheLifetime: number;
+		fetcher: RedisSingleCache<T>['fetcher'];
+		toRedisConverter: RedisSingleCache<T>['toRedisConverter'];
+		fromRedisConverter: RedisSingleCache<T>['fromRedisConverter'];
+	}) {
+		this.redisClient = redisClient;
+		this.name = name;
+		this.lifetime = opts.lifetime;
+		this.memoryCache = new MemorySingleCache(opts.memoryCacheLifetime);
+		this.fetcher = opts.fetcher;
+		this.toRedisConverter = opts.toRedisConverter;
+		this.fromRedisConverter = opts.fromRedisConverter;
+	}
+
+	@bindThis
+	public async set(value: T): Promise<void> {
+		this.memoryCache.set(value);
+		if (this.lifetime === Infinity) {
+			await this.redisClient.set(
+				`singlecache:${this.name}`,
+				this.toRedisConverter(value),
+			);
+		} else {
+			await this.redisClient.set(
+				`singlecache:${this.name}`,
+				this.toRedisConverter(value),
+				'EX', Math.round(this.lifetime / 1000),
+			);
+		}
+	}
+
+	@bindThis
+	public async get(): Promise<T | undefined> {
+		const memoryCached = this.memoryCache.get();
+		if (memoryCached !== undefined) return memoryCached;
+
+		const cached = await this.redisClient.get(`singlecache:${this.name}`);
+		if (cached == null) return undefined;
+		return this.fromRedisConverter(cached);
+	}
+
+	@bindThis
+	public async delete(): Promise<void> {
+		this.memoryCache.delete();
+		await this.redisClient.del(`singlecache:${this.name}`);
+	}
+
+	/**
+	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
+	 */
+	@bindThis
+	public async fetch(): Promise<T> {
+		const cachedValue = await this.get();
+		if (cachedValue !== undefined) {
+			// Cache HIT
+			return cachedValue;
+		}
+
+		// Cache MISS
+		const value = await this.fetcher();
+		this.set(value);
+		return value;
+	}
+
+	@bindThis
+	public async refresh() {
+		const value = await this.fetcher();
+		this.set(value);
+
+		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
 	}
 }
 
@@ -173,12 +257,12 @@ export class MemoryKVCache<T> {
 	}
 }
 
-export class MemoryCache<T> {
+export class MemorySingleCache<T> {
 	private cachedAt: number | null = null;
 	private value: T | undefined;
 	private lifetime: number;
 
-	constructor(lifetime: MemoryCache<never>['lifetime']) {
+	constructor(lifetime: MemorySingleCache<never>['lifetime']) {
 		this.lifetime = lifetime;
 	}
 

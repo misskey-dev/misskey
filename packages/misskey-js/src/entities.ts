@@ -29,6 +29,7 @@ export type UserLite = {
 };
 
 export type UserDetailed = UserLite & {
+	alsoKnownAs: string[];
 	bannerBlurhash: string | null;
 	bannerColor: string | null;
 	bannerUrl: string | null;
@@ -56,6 +57,7 @@ export type UserDetailed = UserLite & {
 	lang: string | null;
 	lastFetchedAt?: DateString;
 	location: string | null;
+	movedTo: string;
 	notesCount: number;
 	pinnedNoteIds: ID[];
 	pinnedNotes: Note[];
@@ -88,7 +90,6 @@ export type MeDetailed = UserDetailed & {
 	hasPendingReceivedFollowRequest: boolean;
 	hasUnreadAnnouncement: boolean;
 	hasUnreadAntenna: boolean;
-	hasUnreadChannel: boolean;
 	hasUnreadMentions: boolean;
 	hasUnreadMessagingMessage: boolean;
 	hasUnreadNotification: boolean;
@@ -314,6 +315,7 @@ export type LiteInstanceMetadata = {
 		imageUrl: string;
 	}[];
 	translatorAvailable: boolean;
+	serverRules: string[];
 };
 
 export type DetailedInstanceMetadata = LiteInstanceMetadata & {

@@ -40,7 +40,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 			const stats = {
 				cpu: roundCpu(cpu),
 				mem: {
-					used: round(memStats.used - memStats.buffers - memStats.cached),
+					used: round(memStats.total - memStats.available),
 					active: round(memStats.active),
 				},
 				net: {

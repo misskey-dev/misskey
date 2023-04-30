@@ -53,7 +53,15 @@ function search() {
 	}
 
 	if (selectedTags.size === 0) {
-		searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+		const queryarry = q.match(/\:([a-z0-9_]*)\:/g);
+
+		if (queryarry) {
+			searchEmojis = customEmojis.value.filter(emoji => 
+				queryarry.includes(`:${emoji.name}:`)
+			);
+		} else {
+			searchEmojis = customEmojis.value.filter(emoji => emoji.name.includes(q) || emoji.aliases.includes(q));
+		}
 	} else {
 		searchEmojis = customEmojis.value.filter(emoji => (emoji.name.includes(q) || emoji.aliases.includes(q)) && [...selectedTags].every(t => emoji.aliases.includes(t)));
 	}

@@ -58,7 +58,7 @@ export class FeedService {
 			generator: 'Misskey',
 			description: `${user.notesCount} Notes, ${profile.ffVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.ffVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
 			link: author.link,
-			image: await this.userEntityService.getAvatarUrl(user),
+			image: user.avatarUrl ?? this.userEntityService.getIdenticonUrl(user),
 			feedLinks: {
 				json: `${author.link}.json`,
 				atom: `${author.link}.atom`,

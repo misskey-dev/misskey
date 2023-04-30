@@ -310,6 +310,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				translatorAvailable: instance.deeplAuthKey != null,
 
+				serverRules: instance.serverRules,
+
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
 				mediaProxy: this.config.mediaProxy,

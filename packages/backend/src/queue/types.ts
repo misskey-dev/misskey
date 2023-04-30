@@ -21,9 +21,39 @@ export type InboxJobData = {
 	signature: httpSignature.IParsedSignature;
 };
 
-export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserDeleteJobData;
+export type RelationshipJobData = {
+	from: ThinUser;
+	to: ThinUser;
+	silent?: boolean;
+	requestId?: string;
+}
 
-export type DbUserJobData = {
+export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
+
+export type DbJobMap = {
+	deleteDriveFiles: DbJobDataWithUser;
+	exportCustomEmojis: DbJobDataWithUser;
+	exportNotes: DbJobDataWithUser;
+	exportFavorites: DbJobDataWithUser;
+	exportFollowing: DbExportFollowingData;
+	exportMuting: DbJobDataWithUser;
+	exportBlocking: DbJobDataWithUser;
+	exportUserLists: DbJobDataWithUser;
+	importFollowing: DbUserImportJobData;
+	importFollowingToDb: DbUserImportToDbJobData;
+	importMuting: DbUserImportJobData;
+	importBlocking: DbUserImportJobData;
+	importBlockingToDb: DbUserImportToDbJobData;
+	importUserLists: DbUserImportJobData;
+	importCustomEmojis: DbUserImportJobData;
+	deleteAccount: DbUserDeleteJobData;
+}
+
+export type DbJobDataWithUser = {
+	user: ThinUser;
+}
+
+export type DbExportFollowingData = {
 	user: ThinUser;
 	excludeMuting: boolean;
 	excludeInactive: boolean;
@@ -37,6 +67,11 @@ export type DbUserDeleteJobData = {
 export type DbUserImportJobData = {
 	user: ThinUser;
 	fileId: DriveFile['id'];
+};
+
+export type DbUserImportToDbJobData = {
+	user: ThinUser;
+	target: string;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;
