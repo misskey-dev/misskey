@@ -1684,7 +1684,7 @@ export type Endpoints = {
                 title: string;
                 start: number;
                 end?: null | number;
-                metadata: Record<string, string[]>;
+                metadata: Record<string, string>;
             };
         };
         res: {
@@ -1774,7 +1774,7 @@ export type Endpoints = {
             sinceDate?: number;
             untilDate?: number;
             sortBy?: 'startDate' | 'craetedAt';
-            filters?: Record<string, string[]>;
+            filters?: [string, (string | null)[]][];
         };
         res: Note[];
     };
