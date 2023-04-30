@@ -74,7 +74,7 @@ export class SigninApiService {
 
 		try {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
+			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 100, minInterval: 1000 }, getIpHash(request.ip));
 		} catch (err) {
 			reply.code(429);
 			return {
