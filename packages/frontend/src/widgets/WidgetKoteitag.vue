@@ -63,8 +63,7 @@ const programs = ref('');
 
 const getPrograms = async () => {
 	widgetProps.options = {
-		clear_tags: {key:'clear_tags' ,label: 'タグをクリア'},
-		episode_browser: {key:'episode_browser' ,label: 'その他の番組'},
+		clear_tags: {key:'clear_tags', label: 'タグをクリア'},
 	};
 
 	fetch('/mulukhiya/api/program/update', {method: 'POST'})
@@ -82,6 +81,8 @@ const getPrograms = async () => {
 				if (program.minutes) {label.push(`${program.minutes}分`)};
 				widgetProps.options[key] = {key: key, label: label.join(' ')};
 			});
+		}).then(e => {
+			widgetProps.options.episode_browser = {key:'episode_browser', label: 'その他の番組'};
 		}).catch(e => os.alert({type: 'error', title: '番組表の取得', text: e.message}));
 }
 
@@ -118,7 +119,7 @@ const setPrograms = async () => {
 			break;
 	}
 
-	const envelope = {
+	const payload = {
 		localOnly: true, // コマンドトゥートは連合に流す必要なし
 		poll: null,
 		text: commandToot.join("\n"),
@@ -133,7 +134,7 @@ const setPrograms = async () => {
 	}).then(({ canceled }) => {
 		programs.value = null;
 		if (canceled) return;
-		os.api('notes/create', envelope).then(() => {
+		os.api('notes/create', payload).then(() => {
 			os.toast('固定タグ用コマンドを送信しました。');
 		});
 	});
