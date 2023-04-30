@@ -52,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const { account, secret } = await this.signupService.signup({
 				username: ps.username,
 				password: ps.password,
+				ignorePreservedUsernames: true,
 			});
 
 			const res = await this.userEntityService.pack(account, account, {

@@ -12,6 +12,10 @@
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.tosUrl }}</template>
 							</MkInput>
+							<MkTextarea v-model="preservedUsernames">
+								<template #label>{{ i18n.ts.preservedUsernames }}</template>
+								<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
+							</MkTextarea>
 							<MkTextarea v-model="sensitiveWords">
 								<template #label>{{ i18n.ts.sensitiveWords }}</template>
 								<template #caption>{{ i18n.ts.sensitiveWordsDescription }}</template>
@@ -46,14 +50,16 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
-import FormLink from "@/components/form/link.vue";
+import FormLink from '@/components/form/link.vue';
 
 let sensitiveWords: string = $ref('');
+let preservedUsernames: string = $ref('');
 let tosUrl: string | null = $ref(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
 	sensitiveWords = meta.sensitiveWords.join('\n');
+	preservedUsernames = meta.preservedUsernames.join('\n');
 	tosUrl = meta.tosUrl;
 }
 
@@ -61,6 +67,7 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		tosUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
+		preservedUsernames: preservedUsernames.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

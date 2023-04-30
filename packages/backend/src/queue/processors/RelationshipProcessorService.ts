@@ -10,6 +10,7 @@ import { QueueLoggerService } from '../QueueLoggerService.js';
 import { RelationshipJobData } from '../types.js';
 import type { UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
+import { LocalUser, RemoteUser } from '@/models/entities/User.js';
 
 @Injectable()
 export class RelationshipProcessorService {
@@ -39,7 +40,7 @@ export class RelationshipProcessorService {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
 			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
-		]);
+		]) as [LocalUser | RemoteUser, LocalUser | RemoteUser];
 		await this.userFollowingService.unfollow(follower, followee, job.data.silent);
 		return 'ok';
 	}
