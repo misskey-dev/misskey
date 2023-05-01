@@ -2086,6 +2086,7 @@ _notification:
     reply: "リプライ"
     renote: "Renote"
     quote: "引用"
+    note: "新着ノート"
     reaction: "リアクション"
     pollEnded: "アンケートが終了"
     receiveFollowRequest: "フォロー申請を受け取った"
