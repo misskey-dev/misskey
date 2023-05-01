@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NoteNotificationsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
@@ -53,6 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private noteNotificationRepository: NoteNotificationsRepository,
 
 		private getterService: GetterService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// 自分自身
@@ -67,12 +69,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already unsubscribed
-			const exist = await this.noteNotificationRepository.findOneBy({
+			const noteNotification = await this.noteNotificationRepository.findOneBy({
 				userId: me.id,
 				targetUserId: target.id,
 			});
 
-			if (!exist) {
+			if (!noteNotification) {
 				throw new ApiError(meta.errors.alreadyUnsubscribed);
 			}
 
@@ -81,6 +83,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 				targetUserId: target.id,
 			});
+
+			// Publish event
+			this.globalEventService.publishInternalEvent('noteNotificationDeleted', noteNotification);
 		});
 	}
 }
