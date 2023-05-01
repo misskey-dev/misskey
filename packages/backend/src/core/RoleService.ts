@@ -46,7 +46,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canSearchNotes: false,
 	canHideAds: false,
 	driveCapacityMb: 100,
-	alwaysMarkNsfw:false,
+	alwaysMarkNsfw: false,
 	pinLimit: 5,
 	antennaLimit: 5,
 	wordMuteLimit: 200,
