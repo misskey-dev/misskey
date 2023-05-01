@@ -74,6 +74,10 @@ export const routes = [{
 		name: 'drive',
 		component: page(() => import('./pages/settings/drive-cleaner.vue')),
 	}, {
+		path: '/notifications/note',
+		name: 'notifications',
+		component: page(() => import('./pages/settings/notifications.note.vue')),
+	}, {
 		path: '/notifications',
 		name: 'notifications',
 		component: page(() => import('./pages/settings/notifications.vue')),

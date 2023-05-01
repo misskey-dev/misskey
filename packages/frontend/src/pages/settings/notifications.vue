@@ -1,6 +1,7 @@
 <template>
 <div class="_gaps_m">
 	<FormLink @click="configure"><template #icon><i class="ti ti-settings"></i></template>{{ i18n.ts.notificationSetting }}</FormLink>
+	<FormLink to="/settings/notifications/note"><template #icon><i class="ti ti-bell"></i></template>{{ i18n.ts.noteNotification }}</FormLink>
 	<FormSection>
 		<div class="_gaps_m">
 			<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>

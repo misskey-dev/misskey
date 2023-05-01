@@ -1033,6 +1033,7 @@ accountMoved: "このユーザーは新しいアカウントに移行しまし�
 accountMovedShort: "このアカウントは移行されています"
 operationForbidden: "この操作はできません"
 forceShowAds: "常に広告を表示する"
+noteNotification: "ノート通知"
 noteSubscribe: "ノート通知を有効にする"
 noteUnsubscribe: "ノート通知を無効にする"
 addMemo: "メモを追加"

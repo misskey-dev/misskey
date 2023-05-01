@@ -247,6 +247,7 @@ import * as ep___renoteMute_delete from './endpoints/renote-mute/delete.js';
 import * as ep___renoteMute_list from './endpoints/renote-mute/list.js';
 import * as ep___noteNotification_create from './endpoints/note-notification/create.js';
 import * as ep___noteNotification_delete from './endpoints/note-notification/delete.js';
+import * as ep___noteNotification_list from './endpoints/note-notification/list.js';
 import * as ep___my_apps from './endpoints/my/apps.js';
 import * as ep___notes from './endpoints/notes.js';
 import * as ep___notes_children from './endpoints/notes/children.js';
@@ -594,6 +595,7 @@ const $renoteMute_delete: Provider = { provide: 'ep:renote-mute/delete', useClas
 const $renoteMute_list: Provider = { provide: 'ep:renote-mute/list', useClass: ep___renoteMute_list.default };
 const $noteNotification_create: Provider = { provide: 'ep:note-notification/create', useClass: ep___noteNotification_create.default };
 const $noteNotification_delete: Provider = { provide: 'ep:note-notification/delete', useClass: ep___noteNotification_delete.default };
+const $noteNotification_list: Provider = { provide: 'ep:note-notification/list', useClass: ep___noteNotification_list.default };
 const $my_apps: Provider = { provide: 'ep:my/apps', useClass: ep___my_apps.default };
 const $notes: Provider = { provide: 'ep:notes', useClass: ep___notes.default };
 const $notes_children: Provider = { provide: 'ep:notes/children', useClass: ep___notes_children.default };
@@ -945,6 +947,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$renoteMute_list,
 		$noteNotification_create,
 		$noteNotification_delete,
+		$noteNotification_list,
 		$my_apps,
 		$notes,
 		$notes_children,
@@ -1290,6 +1293,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$renoteMute_list,
 		$noteNotification_create,
 		$noteNotification_delete,
+		$noteNotification_list,
 		$my_apps,
 		$notes,
 		$notes_children,
