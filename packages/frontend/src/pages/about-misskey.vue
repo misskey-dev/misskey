@@ -138,6 +138,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'takke',
 	icon: 'https://misskey-hub.net/patrons/6c3327e626c046f2914fbcd9f7557935.jpg',
+}, {
+	name: 'ぺんぎん',
+	icon: 'https://misskey-hub.net/patrons/6a652e0534ff4cb1836e7ce4968d76a7.jpg',
 }];
 
 const patrons = [
