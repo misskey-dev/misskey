@@ -229,6 +229,9 @@ importers:
       jsrsasign:
         specifier: 10.7.0
         version: 10.7.0
+      meilisearch:
+        specifier: ^0.32.3
+        version: 0.32.3
       mfm-js:
         specifier: 0.23.3
         version: 0.23.3
@@ -342,7 +345,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992
+        version: github.com/misskey-dev/summaly/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e
       systeminformation:
         specifier: 5.17.12
         version: 5.17.12
@@ -939,7 +942,7 @@ importers:
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.2)(@storybook/components@7.0.2)(@storybook/core-events@7.0.2)(@storybook/manager-api@7.0.2)(@storybook/preview-api@7.0.2)(@storybook/theming@7.0.2)(@storybook/types@7.0.2)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992
+        version: github.com/misskey-dev/summaly/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e
       vite-plugin-turbosnap:
         specifier: ^1.0.1
         version: 1.0.1
@@ -5540,6 +5543,17 @@ packages:
       telejson: 7.0.4
     dev: true
 
+  /@storybook/channel-postmessage@7.0.7:
+    resolution: {integrity: sha512-XMtYfcaE0UoY/V7K1cTu9PcWETD4iyWb/Yswc4F9VrPw0Ui4UwGS1j4iaAu8DC06yyoJs4XvxYFBMlCQmKja6A==}
+    dependencies:
+      '@storybook/channels': 7.0.7
+      '@storybook/client-logger': 7.0.7
+      '@storybook/core-events': 7.0.7
+      '@storybook/global': 5.0.0
+      qs: 6.11.1
+      telejson: 7.0.4
+    dev: true
+
   /@storybook/channel-websocket@7.0.2:
     resolution: {integrity: sha512-YU3lFId6Nsi75ddA+3qfbnLfNUPswboYyx+SALhaLuXqz7zqfzX4ezMgxeS/h0gRlUJ7nf2/yJ5qie/kZaizjw==}
     dependencies:
@@ -5555,6 +5569,10 @@ packages:
 
   /@storybook/channels@7.0.2:
     resolution: {integrity: sha512-qkI8mFy9c8mxN2f01etayKhCaauL6RAsxRzbX1/pKj6UqhHWqqUbtHwymrv4hG5qDYjV1e9pd7ae5eNF8Kui0g==}
+    dev: true
+
+  /@storybook/channels@7.0.7:
+    resolution: {integrity: sha512-Om4ovBLNw8pVrBu83MpOKgAuGO9Dpr1Coh2qp8t64WRPkejX1mxOY9IgH723//zH3igx8LCkf9rvBvcrsyaScQ==}
     dev: true
 
   /@storybook/cli@7.0.2:
@@ -5614,6 +5632,12 @@ packages:
 
   /@storybook/client-logger@7.0.2:
     resolution: {integrity: sha512-rv7W2BhzIQHbFpUM5/CP/acS6T5lTmaxT0MbZ9n+9h++9QQU/cFOdkZgSUbLVAb1AeUGoLsk0HYzcqPpV35Xsw==}
+    dependencies:
+      '@storybook/global': 5.0.0
+    dev: true
+
+  /@storybook/client-logger@7.0.7:
+    resolution: {integrity: sha512-EclHjDs5HwHMKB4X2orn/KKA0DTIDmp4AXAUJGRfxb5ArpKEb7tXLHsgrRBlaoz1j5LAwKTmEyZOONh9G3etjg==}
     dependencies:
       '@storybook/global': 5.0.0
     dev: true
@@ -5695,6 +5719,10 @@ packages:
 
   /@storybook/core-events@7.0.2:
     resolution: {integrity: sha512-1DCHCwHRL3+rlvnVVc/BCfReP31XaT2WYgcLeGTmkX1E43Po1MkgcM7PnJPSaa9POvSqZ+6YLZv5Bs1SXbufow==}
+    dev: true
+
+  /@storybook/core-events@7.0.7:
+    resolution: {integrity: sha512-XNsR2RgaL2vBwuqsu+KA1DzGmB1UFfrAhpxhmyWTKDCniwtTLlaXgfKbqwcrOrPu/o1YswgIup/9UHepRHaf4A==}
     dev: true
 
   /@storybook/core-server@7.0.2:
@@ -5834,6 +5862,16 @@ packages:
       '@storybook/preview-api': 7.0.2
     dev: true
 
+  /@storybook/instrumenter@7.0.7:
+    resolution: {integrity: sha512-0zE5lM3laKvCT4GW/XKKw8kakvI4catqK8PObZolRhfxbtGufW4VJZ2E8vXLtgA/+K3zikypjuWE6d45NLbh9w==}
+    dependencies:
+      '@storybook/channels': 7.0.7
+      '@storybook/client-logger': 7.0.7
+      '@storybook/core-events': 7.0.7
+      '@storybook/global': 5.0.0
+      '@storybook/preview-api': 7.0.7
+    dev: true
+
   /@storybook/jest@0.1.0:
     resolution: {integrity: sha512-TmybnEXlv5Fu2/Hq4nRj7alS9mw4CasLR0RDwaAzS+Vpvu1TC4+j9rh+b1BHtmWebbJh0JMT6mgzPqOyJdgtQA==}
     dependencies:
@@ -5919,6 +5957,26 @@ packages:
       '@storybook/csf': 0.1.0
       '@storybook/global': 5.0.0
       '@storybook/types': 7.0.2
+      '@types/qs': 6.9.7
+      dequal: 2.0.3
+      lodash: 4.17.21
+      memoizerific: 1.11.3
+      qs: 6.11.1
+      synchronous-promise: 2.0.17
+      ts-dedent: 2.2.0
+      util-deprecate: 1.0.2
+    dev: true
+
+  /@storybook/preview-api@7.0.7:
+    resolution: {integrity: sha512-R5pmGTodpu6hbwEg2RM2ulWtW3d426YzsisHrZJ+FT9lecWauN1y9xHCz7HdNzEFhT8r4YOa24L9ZS3mosZ7hA==}
+    dependencies:
+      '@storybook/channel-postmessage': 7.0.7
+      '@storybook/channels': 7.0.7
+      '@storybook/client-logger': 7.0.7
+      '@storybook/core-events': 7.0.7
+      '@storybook/csf': 0.1.0
+      '@storybook/global': 5.0.0
+      '@storybook/types': 7.0.7
       '@types/qs': 6.9.7
       dequal: 2.0.3
       lodash: 4.17.21
@@ -6057,8 +6115,8 @@ packages:
   /@storybook/testing-library@0.0.14-next.1:
     resolution: {integrity: sha512-1CAl40IKIhcPaCC4pYCG0b9IiYNymktfV/jTrX7ctquRY3akaN7f4A1SippVHosksft0M+rQTFE0ccfWW581fw==}
     dependencies:
-      '@storybook/client-logger': 7.0.2
-      '@storybook/instrumenter': 7.0.2
+      '@storybook/client-logger': 7.0.7
+      '@storybook/instrumenter': 7.0.7
       '@testing-library/dom': 8.20.0
       '@testing-library/user-event': 13.5.0(@testing-library/dom@8.20.0)
       ts-dedent: 2.2.0
@@ -6091,6 +6149,15 @@ packages:
     resolution: {integrity: sha512-0OCt/kAexa8MCcljxA+yZxGMn0n2U2Ync0KxotItqNbKBKVkaLQUls0+IXTWSCpC/QJvNZ049jxUHHanNi/96w==}
     dependencies:
       '@storybook/channels': 7.0.2
+      '@types/babel__core': 7.20.0
+      '@types/express': 4.17.17
+      file-system-cache: 2.0.2
+    dev: true
+
+  /@storybook/types@7.0.7:
+    resolution: {integrity: sha512-v9piuwp8FvTiHXIOOi5lEyTEJKhnbcbhVxgJ3VFhhXYFd0DTz6Bst0XIIgkgs21ITb3xhkfPbCRUueMcbXO1MA==}
+    dependencies:
+      '@storybook/channels': 7.0.7
       '@types/babel__core': 7.20.0
       '@types/express': 4.17.17
       file-system-cache: 2.0.2
@@ -9655,7 +9722,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: true
 
   /cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
@@ -14627,6 +14693,14 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
     dev: true
+
+  /meilisearch@0.32.3:
+    resolution: {integrity: sha512-EOgfBuRE5SiIPIpEDYe2HO0D7a4z5bexIgaAdJFma/dH5hx1kwO+u/qb2g3qKyjG+iA3l8MlmTj/Xd72uahaAw==}
+    dependencies:
+      cross-fetch: 3.1.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /memoizerific@1.11.3:
     resolution: {integrity: sha512-/EuHYwAPdLtXwAwSZkh/Gutery6pD2KYd44oQLhAvQp/50mpyduZh8Q7PYHXTCJ+wuXxt7oij2LXyIJOOYFPog==}
@@ -20361,10 +20435,10 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/1bab7afee616429b8bbf7a7cbcbb8ebcef66d992}
+  github.com/misskey-dev/summaly/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e}
     name: summaly
-    version: 4.0.1
+    version: 4.0.2
     dependencies:
       cheerio: 1.0.0-rc.12
       escape-regexp: 0.0.1
