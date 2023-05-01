@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NoteNotificationsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -69,6 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private getterService: GetterService,
 		private userBlockingService: UserBlockingService,
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// 自分自身
@@ -103,12 +105,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Create
-			await this.noteNotificationRepository.insert({
+			const noteNotification = await this.noteNotificationRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				userId: me.id,
 				targetUserId: target.id,
-			});
+			}).then(x => this.noteNotificationRepository.findOneByOrFail(x.identifiers[0]));
+
+			// Publish event
+			this.globalEventService.publishInternalEvent('noteNotificationCreated', noteNotification);
 		});
 	}
 }
