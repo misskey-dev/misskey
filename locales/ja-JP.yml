@@ -1033,6 +1033,8 @@ accountMoved: "このユーザーは新しいアカウントに移行しまし�
 accountMovedShort: "このアカウントは移行されています"
 operationForbidden: "この操作はできません"
 forceShowAds: "常に広告を表示する"
+noteSubscribe: "ノート通知を有効にする"
+noteUnsubscribe: "ノート通知を無効にする"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
 reactionsList: "リアクション一覧"
@@ -1118,6 +1120,7 @@ _initialAccountSetting:
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
+
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
@@ -2021,6 +2024,7 @@ _notification:
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
+  newNote: "{name}がノートしました"
 
   _types:
     all: "すべて"

@@ -73,6 +73,14 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	async function toggleNoteSubscribe() {
+		os.apiWithDialog(user.isNoteSubscribing ? 'note-notification/delete' : 'note-notification/create', {
+			userId: user.id,
+		}).then(() => {
+			user.isNoteSubscribing = !user.isNoteSubscribing;
+		});
+	}
+
 	function reportAbuse() {
 		os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
 			user: user,
@@ -248,6 +256,10 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		}
 
 		menu = menu.concat([null, {
+			icon: user.isNoteSubscribing ? 'ti ti-bell-off' : 'ti ti-bell',
+			text: user.isNoteSubscribing ? i18n.ts.noteUnsubscribe : i18n.ts.noteSubscribe,
+			action: toggleNoteSubscribe,
+		}, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,

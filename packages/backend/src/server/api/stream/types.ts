@@ -3,6 +3,7 @@ import type { User } from '@/models/entities/User.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Antenna } from '@/models/entities/Antenna.js';
+import type { NoteNotification } from '@/models/entities/NoteNotification.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { DriveFolder } from '@/models/entities/DriveFolder.js';
 import type { UserList } from '@/models/entities/UserList.js';
@@ -37,6 +38,8 @@ export interface InternalStreamTypes {
 	antennaCreated: Antenna;
 	antennaDeleted: Antenna;
 	antennaUpdated: Antenna;
+	noteNotificationCreated: NoteNotification;
+	noteNotificationDeleted: NoteNotification;
 	metaUpdated: Meta;
 	followChannel: { userId: User['id']; channelId: Channel['id']; };
 	unfollowChannel: { userId: User['id']; channelId: Channel['id']; };
