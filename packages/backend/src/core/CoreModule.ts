@@ -95,6 +95,7 @@ import { RenoteMutingEntityService } from './entities/RenoteMutingEntityService.
 import { NoteEntityService } from './entities/NoteEntityService.js';
 import { NoteFavoriteEntityService } from './entities/NoteFavoriteEntityService.js';
 import { NoteReactionEntityService } from './entities/NoteReactionEntityService.js';
+import { NoteNotificationEntityService } from './entities/NoteNotificationEntityService.js';
 import { NotificationEntityService } from './entities/NotificationEntityService.js';
 import { PageEntityService } from './entities/PageEntityService.js';
 import { PageLikeEntityService } from './entities/PageLikeEntityService.js';
@@ -222,6 +223,7 @@ const $RenoteMutingEntityService: Provider = { provide: 'RenoteMutingEntityServi
 const $NoteEntityService: Provider = { provide: 'NoteEntityService', useExisting: NoteEntityService };
 const $NoteFavoriteEntityService: Provider = { provide: 'NoteFavoriteEntityService', useExisting: NoteFavoriteEntityService };
 const $NoteReactionEntityService: Provider = { provide: 'NoteReactionEntityService', useExisting: NoteReactionEntityService };
+const $NoteNotificationEntityService: Provider = { provide: 'NoteNotificationEntityService', useExisting: NoteNotificationEntityService };
 const $NotificationEntityService: Provider = { provide: 'NotificationEntityService', useExisting: NotificationEntityService };
 const $PageEntityService: Provider = { provide: 'PageEntityService', useExisting: PageEntityService };
 const $PageLikeEntityService: Provider = { provide: 'PageLikeEntityService', useExisting: PageLikeEntityService };
@@ -349,6 +351,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoteEntityService,
 		NoteFavoriteEntityService,
 		NoteReactionEntityService,
+		NoteNotificationEntityService,
 		NotificationEntityService,
 		PageEntityService,
 		PageLikeEntityService,
@@ -471,6 +474,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoteEntityService,
 		$NoteFavoriteEntityService,
 		$NoteReactionEntityService,
+		$NoteNotificationEntityService,
 		$NotificationEntityService,
 		$PageEntityService,
 		$PageLikeEntityService,
@@ -593,6 +597,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoteEntityService,
 		NoteFavoriteEntityService,
 		NoteReactionEntityService,
+		NoteNotificationEntityService,
 		NotificationEntityService,
 		PageEntityService,
 		PageLikeEntityService,
@@ -714,6 +719,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoteEntityService,
 		$NoteFavoriteEntityService,
 		$NoteReactionEntityService,
+		$NoteNotificationEntityService,
 		$NotificationEntityService,
 		$PageEntityService,
 		$PageLikeEntityService,
