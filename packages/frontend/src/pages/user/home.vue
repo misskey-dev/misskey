@@ -7,7 +7,7 @@
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
 			<div class="profile _gaps">
-				<MkAccountMoved v-if="user.movedToUri" :host="user.movedToUri.host" :username="user.movedToUri.username"/>
+				<MkAccountMoved v-if="user.movedTo" :movedTo="user.movedTo" />
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">

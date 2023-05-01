@@ -259,6 +259,12 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createDelayedUnfollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string }[], delay: number) {
+		const jobs = followings.map(rel => this.generateRelationshipJobData('unfollow', rel, { delay }));
+		return this.relationshipQueue.addBulk(jobs);
+	}
+
+	@bindThis
 	public createBlockJob(blockings: { from: ThinUser, to: ThinUser, silent?: boolean }[]) {
 		const jobs = blockings.map(rel => this.generateRelationshipJobData('block', rel));
 		return this.relationshipQueue.addBulk(jobs);
@@ -271,7 +277,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData): {
+	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobOptions = {}): {
 		name: string,
 		data: RelationshipJobData,
 		opts: Bull.JobOptions,
@@ -287,6 +293,7 @@ export class QueueService {
 			opts: {
 				removeOnComplete: true,
 				removeOnFail: true,
+				...opts,
 			},
 		};
 	}
