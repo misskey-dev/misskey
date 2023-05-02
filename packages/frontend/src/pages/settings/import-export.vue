@@ -84,6 +84,21 @@
 			</MkFolder>
 		</div>
 	</FormSection>
+	<FormSection>
+		<template #label><i class="ti ti-antenna"></i> {{ i18n.ts.antennas }}</template>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #label>{{ i18n.ts.export }}</template>
+				<template #icon><i class="ti ti-download"></i></template>
+				<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+			</MkFolder>
+			<MkFolder v-if="$i && !$i.movedTo">
+				<template #label>{{ i18n.ts.import }}</template>
+				<template #icon><i class="ti ti-upload"></i></template>
+				<MkButton primary :class="$style.button" inline><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+			</MkFolder>
+		</div>
+	</FormSection>
 </div>
 </template>
 
@@ -149,6 +164,10 @@ const exportUserLists = () => {
 
 const exportMuting = () => {
 	os.api('i/export-mute', {}).then(onExportSuccess).catch(onError);
+};
+
+const exportAntennas = () => {
+	os.api('i/export-antennas', {}).then(onExportSuccess).catch(onError);
 };
 
 const importFollowing = async (ev) => {

@@ -9,6 +9,7 @@ import { ExportFollowingProcessorService } from './processors/ExportFollowingPro
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
 import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
 import { ExportUserListsProcessorService } from './processors/ExportUserListsProcessorService.js';
+import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
 import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
 import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
@@ -32,6 +33,7 @@ export class DbQueueProcessorsService {
 		private exportMutingProcessorService: ExportMutingProcessorService,
 		private exportBlockingProcessorService: ExportBlockingProcessorService,
 		private exportUserListsProcessorService: ExportUserListsProcessorService,
+		private exportAntennasProcessorService: ExportAntennasProcessorService,
 		private importFollowingProcessorService: ImportFollowingProcessorService,
 		private importMutingProcessorService: ImportMutingProcessorService,
 		private importBlockingProcessorService: ImportBlockingProcessorService,
@@ -51,6 +53,7 @@ export class DbQueueProcessorsService {
 		q.process('exportMuting', (job, done) => this.exportMutingProcessorService.process(job, done));
 		q.process('exportBlocking', (job, done) => this.exportBlockingProcessorService.process(job, done));
 		q.process('exportUserLists', (job, done) => this.exportUserListsProcessorService.process(job, done));
+		q.process('exportAntennas', (job, done) => this.exportAntennasProcessorService.process(job, done));
 		q.process('importFollowing', (job, done) => this.importFollowingProcessorService.process(job, done));
 		q.process('importFollowingToDb', (job) => this.importFollowingProcessorService.processDb(job));
 		q.process('importMuting', (job, done) => this.importMutingProcessorService.process(job, done));

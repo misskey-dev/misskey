@@ -153,6 +153,16 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createExportAntennasJob(user: ThinUser) {
+		return this.dbQueue.add('exportAntennas', {
+			user: { id: user.id },
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importFollowing', {
 			user: { id: user.id },

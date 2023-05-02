@@ -194,6 +194,7 @@ import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
+import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
@@ -530,6 +531,7 @@ const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_
 const $i_exportNotes: Provider = { provide: 'ep:i/export-notes', useClass: ep___i_exportNotes.default };
 const $i_exportFavorites: Provider = { provide: 'ep:i/export-favorites', useClass: ep___i_exportFavorites.default };
 const $i_exportUserLists: Provider = { provide: 'ep:i/export-user-lists', useClass: ep___i_exportUserLists.default };
+const $i_exportAntennas: Provider = { provide: 'ep:i/export-antennas', useClass: ep___i_exportAntennas.default };
 const $i_favorites: Provider = { provide: 'ep:i/favorites', useClass: ep___i_favorites.default };
 const $i_gallery_likes: Provider = { provide: 'ep:i/gallery/likes', useClass: ep___i_gallery_likes.default };
 const $i_gallery_posts: Provider = { provide: 'ep:i/gallery/posts', useClass: ep___i_gallery_posts.default };
@@ -870,6 +872,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportNotes,
 		$i_exportFavorites,
 		$i_exportUserLists,
+		$i_exportAntennas,
 		$i_favorites,
 		$i_gallery_likes,
 		$i_gallery_posts,
@@ -1204,6 +1207,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportNotes,
 		$i_exportFavorites,
 		$i_exportUserLists,
+		$i_exportAntennas,
 		$i_favorites,
 		$i_gallery_likes,
 		$i_gallery_posts,

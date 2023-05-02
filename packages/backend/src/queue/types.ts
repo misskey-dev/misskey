@@ -59,6 +59,10 @@ export type DbExportFollowingData = {
 	excludeInactive: boolean;
 };
 
+export type DBExportAntennasData = {
+	user: ThinUser
+}
+
 export type DbUserDeleteJobData = {
 	user: ThinUser;
 	soft?: boolean;
