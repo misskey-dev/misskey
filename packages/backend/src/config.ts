@@ -57,13 +57,10 @@ export type Source = {
 		db?: number;
 		prefix?: string;
 	};
-	elasticsearch: {
-		host: string;
-		port: number;
-		ssl?: boolean;
+	meilisearch: {
+		url: string;
 		user?: string;
 		pass?: string;
-		index?: string;
 	};
 
 	proxy?: string;
@@ -139,6 +136,7 @@ const path = process.env.MISSKEY_CONFIG_YML
 	: process.env.NODE_ENV === 'test'
 		? resolve(dir, 'test.yml')
 		: resolve(dir, 'default.yml');
+
 export function loadConfig() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
 	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
