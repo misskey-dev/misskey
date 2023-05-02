@@ -1,4 +1,6 @@
 export const packedAntennaSchema = {
+	$id: '/schemas/Antenna',
+
 	type: 'object',
 	properties: {
 		id: {
@@ -69,21 +71,21 @@ export const packedAntennaSchema = {
 			type: 'boolean',
 			default: false,
 		},
-		required: [
-			'id',
-			'createdAt',
-			'name',
-			'keywords',
-			'excludeKeywords',
-			'src',
-			'userListId',
-			'users',
-			'caseSensitive',
-			'notify',
-			'withReplies',
-			'withFile',
-			'isActive',
-			'hasUnreadNote',
-		],
 	},
+	required: [
+		'id',
+		'createdAt',
+		'name',
+		'keywords',
+		'excludeKeywords',
+		'src',
+		'userListId',
+		'users',
+		'caseSensitive',
+		'notify',
+		'withReplies',
+		'withFile',
+		'isActive',
+		'hasUnreadNote',
+	],
 } as const;

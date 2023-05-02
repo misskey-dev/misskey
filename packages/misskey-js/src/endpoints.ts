@@ -1,4 +1,4 @@
-import { localUsernameSchema, passwordSchema } from "./schema/user";
+import { localUsernameSchema, passwordSchema } from "./schemas/user";
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
