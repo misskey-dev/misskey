@@ -148,6 +148,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 		fields: {
 			type: 'array',
 			nullable: false, optional: false,
+			maxItems: 16,
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
@@ -161,7 +162,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 						nullable: false, optional: false,
 					},
 				},
-				maxLength: 4,
 			},
 		},
 		followersCount: {
