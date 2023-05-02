@@ -53,6 +53,7 @@ export const paramDef = {
 				type: 'string', format: 'misskey:id',
 			},
 		},
+		color: { type: 'string', minLength: 1, maxLength: 16 },
 	},
 	required: ['channelId'],
 } as const;
@@ -104,6 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				...(ps.name !== undefined ? { name: ps.name } : {}),
 				...(ps.description !== undefined ? { description: ps.description } : {}),
 				...(ps.pinnedNoteIds !== undefined ? { pinnedNoteIds: ps.pinnedNoteIds } : {}),
+				...(ps.color !== undefined ? { color: ps.color } : {}),
 				...(banner ? { bannerId: banner.id } : {}),
 			});
 

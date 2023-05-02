@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div :class="$style.label"><slot name="label"></slot></div>
-	<div :class="[$style.input, { disabled, focused }]">
+	<div :class="[$style.input, { disabled }]">
 		<input
 			ref="inputEl"
 			v-model="v"
