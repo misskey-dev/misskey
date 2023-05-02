@@ -1,3 +1,5 @@
+import type { JSONSchema7Reference } from 'json-schema-to-ts';
+
 export const packedAntennaSchema = {
 	$id: '/schemas/Antenna',
 
@@ -88,4 +90,4 @@ export const packedAntennaSchema = {
 		'isActive',
 		'hasUnreadNote',
 	],
-} as const;
+} as const satisfies JSONSchema7Reference;

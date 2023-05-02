@@ -1,4 +1,5 @@
 import { localUsernameSchema, passwordSchema } from "./schemas/user";
+import type { JSONSchema7 } from 'json-schema-to-ts';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -33,7 +34,7 @@ export interface IEndpointMeta {
 		};
 	};
 
-	readonly defines: { req: Schema | undefined; res: Schema | undefined; }[];
+	readonly defines: ReadonlyArray<{ req: JSONSchema7 | undefined; res: JSONSchema7 | undefined; }>;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
@@ -132,14 +133,13 @@ export const endpoints = {
                 required: ['username', 'password'],
             },
             res: {
-                type: 'object',
-                ref: 'User',
+                $ref: '/schemas/User',
                 properties: {
                     token: {
                         type: 'string',
                     },
-                    required: ['token'],
                 },
+				required: ['token'],
             },
         }],
     },
@@ -159,4 +159,4 @@ export const endpoints = {
             res: undefined,
         }],
     },
-} as const;
+} as const satisfies { [x: string]: IEndpointMeta; };

@@ -1,3 +1,5 @@
+import type { JSONSchema7Reference } from 'json-schema-to-ts';
+
 export const packedNoteSchema = {
 	$id: '/schemas/Note',
 
@@ -156,4 +158,4 @@ export const packedNoteSchema = {
 		'renoteCount',
 		'repliesCount',
 	],
-} as const;
+} as const satisfies JSONSchema7Reference;
