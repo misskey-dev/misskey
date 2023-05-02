@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div :class="$style.input" :class="{ inline, disabled, focused }">
+	<div :class="[$style.input, { inline, disabled, focused }]">
 		<div ref="prefixEl" :class="$style.prefix"><div :class="$style.prefixOrSuffixText"><slot name="prefix"></slot></div></div>
 		<input
 			ref="inputEl"
