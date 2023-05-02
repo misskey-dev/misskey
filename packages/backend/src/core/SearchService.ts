@@ -137,6 +137,7 @@ export class SearchService {
 				matchingStrategy: 'all',
 				attributesToRetrieve: ['id', 'createdAt'],
 				filter: compileQuery(filter),
+				limit: pagination.limit,
 			});
 			if (res.hits.length === 0) return [];
 			return await this.notesRepository.findBy({
