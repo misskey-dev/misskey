@@ -8,10 +8,9 @@
 		<template #label>{{ i18n.ts._role.description }}</template>
 	</MkTextarea>
 
-	<MkInput v-model="role.color">
+	<MkColorInput v-model="role.color">
 		<template #label>{{ i18n.ts.color }}</template>
-		<template #caption>#RRGGBB</template>
-	</MkInput>
+	</MkColorInput>
 
 	<MkInput v-model="role.iconUrl">
 		<template #label>{{ i18n.ts._role.iconUrl }}</template>
@@ -414,6 +413,7 @@ import { watch } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
