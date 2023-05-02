@@ -78,7 +78,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.unavailable);
 			}
 
-			// 乗っ取る
 			if (meiliService.index !== null) {
 				const meili = await meiliService.index.search(ps.query, {
 					sort: ['createdAt:desc'],
@@ -109,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				return await this.noteEntityService.packMany(fastNotes, me);
-			}// 乗っ取った
+			}
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
@@ -128,8 +127,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			// if (me) this.queryService.generateMutedUserQuery(query, me);
-			// if (me) this.queryService.generateBlockedUserQuery(query, me);
+			if (me) this.queryService.generateMutedUserQuery(query, me);
+			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			const notes = await query.take(ps.limit).getMany();
 
