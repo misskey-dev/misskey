@@ -15,6 +15,7 @@ import { ImportMutingProcessorService } from './processors/ImportMutingProcessor
 import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
 import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
+import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
 import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 import type Bull from 'bull';
@@ -39,6 +40,7 @@ export class DbQueueProcessorsService {
 		private importBlockingProcessorService: ImportBlockingProcessorService,
 		private importUserListsProcessorService: ImportUserListsProcessorService,
 		private importCustomEmojisProcessorService: ImportCustomEmojisProcessorService,
+		private importAntennasProcessorService: ImportAntennasProcessorService,
 		private deleteAccountProcessorService: DeleteAccountProcessorService,
 	) {
 	}
@@ -61,6 +63,7 @@ export class DbQueueProcessorsService {
 		q.process('importBlockingToDb', (job) => this.importBlockingProcessorService.processDb(job));
 		q.process('importUserLists', (job, done) => this.importUserListsProcessorService.process(job, done));
 		q.process('importCustomEmojis', (job, done) => this.importCustomEmojisProcessorService.process(job, done));
+		q.process('importAntennas', (job, done) => this.importAntennasProcessorService.process(job, done));
 		q.process('deleteAccount', (job) => this.deleteAccountProcessorService.process(job));
 	}
 }

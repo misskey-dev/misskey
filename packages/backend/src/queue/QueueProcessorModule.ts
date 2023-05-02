@@ -30,6 +30,7 @@ import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmo
 import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
+import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
@@ -62,6 +63,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		ImportBlockingProcessorService,
 		ImportUserListsProcessorService,
 		ImportCustomEmojisProcessorService,
+		ImportAntennasProcessorService,
 		DeleteAccountProcessorService,
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,

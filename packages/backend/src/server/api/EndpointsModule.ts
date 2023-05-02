@@ -203,6 +203,7 @@ import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
+import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
@@ -540,6 +541,7 @@ const $i_importBlocking: Provider = { provide: 'ep:i/import-blocking', useClass:
 const $i_importFollowing: Provider = { provide: 'ep:i/import-following', useClass: ep___i_importFollowing.default };
 const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep___i_importMuting.default };
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
+const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
@@ -881,6 +883,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importFollowing,
 		$i_importMuting,
 		$i_importUserLists,
+		$i_importAntennas,
 		$i_notifications,
 		$i_pageLikes,
 		$i_pages,
@@ -1216,6 +1219,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importFollowing,
 		$i_importMuting,
 		$i_importUserLists,
+		$i_importAntennas,
 		$i_notifications,
 		$i_pageLikes,
 		$i_pages,

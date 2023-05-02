@@ -95,7 +95,7 @@
 			<MkFolder v-if="$i && !$i.movedTo">
 				<template #label>{{ i18n.ts.import }}</template>
 				<template #icon><i class="ti ti-upload"></i></template>
-				<MkButton primary :class="$style.button" inline><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+				<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 			</MkFolder>
 		</div>
 	</FormSection>
@@ -188,6 +188,11 @@ const importMuting = async (ev) => {
 const importBlocking = async (ev) => {
 	const file = await selectFile(ev.currentTarget ?? ev.target);
 	os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
+};
+
+const importAntennas = async (ev) => {
+	const file = await selectFile(ev.currentTarget ?? ev.target);
+	os.api('i/import-antennas', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const headerActions = $computed(() => []);

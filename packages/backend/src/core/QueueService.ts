@@ -246,6 +246,17 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createImportAntennasJob(user: ThinUser, fileId: DriveFile['id']) {
+		return this.dbQueue.add('importAntennas', {
+			user: { id: user.id },
+			fileId: fileId,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 		return this.dbQueue.add('deleteAccount', {
 			user: { id: user.id },

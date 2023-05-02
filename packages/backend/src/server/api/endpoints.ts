@@ -203,6 +203,7 @@ import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
+import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
@@ -538,6 +539,7 @@ const eps = [
 	['i/import-following', ep___i_importFollowing],
 	['i/import-muting', ep___i_importMuting],
 	['i/import-user-lists', ep___i_importUserLists],
+	['i/import-antennas', ep___i_importAntennas],
 	['i/notifications', ep___i_notifications],
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
