@@ -60,11 +60,9 @@
 								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 							</MkInput>
 
-							<MkInput v-model="themeColor">
-								<template #prefix><i class="ti ti-palette"></i></template>
+							<MkColorInput v-model="themeColor">
 								<template #label>{{ i18n.ts.themeColor }}</template>
-								<template #caption>#RRGGBB</template>
-							</MkInput>
+							</MkColorInput>
 
 							<MkTextarea v-model="defaultLightTheme">
 								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
@@ -153,6 +151,7 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
+import MkColorInput from '@/components/MkColorInput.vue';
 
 let name: string | null = $ref(null);
 let description: string | null = $ref(null);
