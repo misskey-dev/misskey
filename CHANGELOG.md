@@ -41,6 +41,7 @@
 - Fix: リアクションをホバーした時のユーザーリストで猫耳が切れてしまっていた問題を修正
 - 新しい実績を追加
 - Renoteしたユーザーの一覧を見れるように
+- AiScript APIのMk:dialogで何も返していなかったのをNULLを返すように修正
 
 ### Server
 - 環境変数MISSKEY_CONFIG_YMLで設定ファイルをdefault.ymlから変更可能に
