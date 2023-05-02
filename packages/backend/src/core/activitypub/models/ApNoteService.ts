@@ -32,6 +32,7 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 @Injectable()
 export class ApNoteService {
@@ -130,13 +131,13 @@ export class ApNoteService {
 	
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
-		if (note.id && !note.id.startsWith('https://')) {
+		if (note.id && !checkHttps(note.id)) {
 			throw new Error('unexpected shcema of note.id: ' + note.id);
 		}
 
 		const url = getOneApHrefNullable(note.url);
 
-		if (url && !url.startsWith('https://')) {
+		if (url && !checkHttps(url)) {
 			throw new Error('unexpected shcema of note url: ' + url);
 		}
 	

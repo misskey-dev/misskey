@@ -9,8 +9,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { Instance } from '@/models/entities/Instance.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
 import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, ChannelFollowingsRepository, UserNotePiningsRepository, UserProfilesRepository, InstancesRepository, AnnouncementReadsRepository, AnnouncementsRepository, PagesRepository, UserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
@@ -35,13 +34,13 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 const ajv = new Ajv();
 
 function isLocalUser(user: User): user is LocalUser;
-function isLocalUser<T extends { host: User['host'] }>(user: T): user is T & { host: null; };
+function isLocalUser<T extends { host: User['host'] }>(user: T): user is (T & { host: null; });
 function isLocalUser(user: User | { host: User['host'] }): boolean {
 	return user.host == null;
 }
 
 function isRemoteUser(user: User): user is RemoteUser;
-function isRemoteUser<T extends { host: User['host'] }>(user: T): user is T & { host: string; };
+function isRemoteUser<T extends { host: User['host'] }>(user: T): user is (T & { host: string; });
 function isRemoteUser(user: User | { host: User['host'] }): boolean {
 	return !isLocalUser(user);
 }
@@ -280,6 +279,17 @@ export class UserEntityService implements OnModuleInit {
 		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
 
+	@bindThis
+	public getUserUri(user: LocalUser | PartialLocalUser | RemoteUser | PartialRemoteUser): string {
+		return this.isRemoteUser(user)
+			? user.uri : this.genLocalUserUri(user.id);
+	}
+
+	@bindThis
+	public genLocalUserUri(userId: string): string {
+		return `${this.config.url}/users/${userId}`;
+	}
+
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
 		me?: { id: User['id'] } | null | undefined,
@@ -369,8 +379,11 @@ export class UserEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				url: profile!.url,
 				uri: user.uri,
-				movedToUri: user.movedToUri ? await this.apPersonService.resolvePerson(user.movedToUri) : null,
-				alsoKnownAs: user.alsoKnownAs,
+				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
+				alsoKnownAs: user.alsoKnownAs
+					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
+						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null) as string[])
+					: null,
 				createdAt: user.createdAt.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,

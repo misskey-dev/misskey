@@ -13,6 +13,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	prohibitMoved: true,
+
 	kind: 'write:channels',
 
 	limit: {
@@ -41,6 +43,7 @@ export const paramDef = {
 		name: { type: 'string', minLength: 1, maxLength: 128 },
 		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
+		color: { type: 'string', minLength: 1, maxLength: 16 },
 	},
 	required: ['name'],
 } as const;
@@ -78,6 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				name: ps.name,
 				description: ps.description ?? null,
 				bannerId: banner ? banner.id : null,
+				...(ps.color !== undefined ? { color: ps.color } : {}),
 			} as Channel).then(x => this.channelsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.channelEntityService.pack(channel, me);
