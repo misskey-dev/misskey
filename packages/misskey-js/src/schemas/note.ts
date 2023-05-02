@@ -21,7 +21,6 @@ export const packedNoteSchema = {
 		},
 		text: {
 			type: 'string',
-			optional: false, nullable: true,
 		},
 		cw: {
 			oneOf: [{ type: 'string' }, { type: 'null' }],
@@ -131,7 +130,6 @@ export const packedNoteSchema = {
 		},
 		renoteCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		repliesCount: {
 			type: 'number',

@@ -76,3 +76,5 @@ export type References = [
 ];
 
 export type Packed<T extends keyof typeof refs> = FromSchema<typeof refs[T], { references: References }>
+
+export type PackedNote = Packed<'Note'>;
