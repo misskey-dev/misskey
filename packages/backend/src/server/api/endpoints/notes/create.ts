@@ -12,7 +12,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import index from '../../../../meilisearch.js';
+import { Meili } from '../../../../meili.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -177,6 +177,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
+		private meiliService: Meili,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];
@@ -292,8 +293,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// インデックスに突っ込むかどうかを判定して、突っ込む
-			if ( (note.visibility === 'public' || note.visibility === 'home') && !(note.renoteId && !note.text) ) {
-				index.addDocuments([
+			if ( meiliService.index !== null && !(note.renoteId && !note.text) ) {
+				meiliService.index.addDocuments([
 					{
 						id: note.id,
 						createdAt: note.createdAt,

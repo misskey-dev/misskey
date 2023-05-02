@@ -3,11 +3,13 @@ import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { Note } from '@/models/entities/Note.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
+import { Meili } from '../../../../meili.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -48,6 +50,7 @@ export const paramDef = {
 		},
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+		page: { type: 'integer', minimum: 1, default: 1 },
 	},
 	required: ['query'],
 } as const;
@@ -67,13 +70,47 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private roleService: RoleService,
+		private meiliService: Meili,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);
 			if (!policies.canSearchNotes) {
 				throw new ApiError(meta.errors.unavailable);
 			}
-	
+
+			// 乗っ取る
+			if (meiliService.index !== null) {
+				const meili = await meiliService.index.search(ps.query, {
+					sort: ['createdAt:desc'],
+					attributesToRetrieve: ['id', 'createdAt'],
+					matchingStrategy: 'all',
+					page: ps.page,
+				});
+
+				const fastNotes: Note[] = [];
+				for (const [_, v] of Object.entries(meili.hits)) {
+					const query = this.notesRepository.createQueryBuilder('note');
+					query.andWhere('note.id = :id', { id: v.id })				
+						.innerJoinAndSelect('note.user', 'user')
+						.leftJoinAndSelect('note.reply', 'reply')
+						.leftJoinAndSelect('note.renote', 'renote')
+						.leftJoinAndSelect('reply.user', 'replyUser')
+						.leftJoinAndSelect('renote.user', 'renoteUser');
+
+					this.queryService.generateVisibilityQuery(query, me);
+					if (me) {
+						this.queryService.generateMutedUserQuery(query, me);
+						this.queryService.generateBlockedUserQuery(query, me);
+					}
+					const note = await query.getOne();
+					if (note) {
+						fastNotes.push(note);
+					}
+				}
+
+				return await this.noteEntityService.packMany(fastNotes, me);
+			}// 乗っ取った
+
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
 			if (ps.userId) {
@@ -91,8 +128,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateVisibilityQuery(query, me);
-			if (me) this.queryService.generateMutedUserQuery(query, me);
-			if (me) this.queryService.generateBlockedUserQuery(query, me);
+			// if (me) this.queryService.generateMutedUserQuery(query, me);
+			// if (me) this.queryService.generateBlockedUserQuery(query, me);
 
 			const notes = await query.take(ps.limit).getMany();
 

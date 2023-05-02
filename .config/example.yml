@@ -105,6 +105,40 @@ redis:
 #  user: 
 #  pass: 
 
+#   ┌───────────────────────────┐
+#───┘ MeiliSearch configuration └─────────────────────────────
+
+# Refer to https://www.meilisearch.com/docs for more details. 
+# meilisearch:
+#  host: localhost
+#  port: 7700
+#  apiKey: ""
+#  index: "misskey"
+#  searchType: 'all'
+#  config: {
+#   rankingRules: [
+#    'words',
+# 		'typo',
+# 		'sort',
+# 		'proximity',
+# 		'attribute',
+# 		'exactness',
+# 	],
+# 	searchableAttributes: [
+# 		'text',
+# 		'cw',
+# 	],
+# 	sortableAttributes: [
+# 		'createdAt',
+# 	],
+# 	typoTolerance: {
+# 		enabled: false,
+# 	},
+# 	pagination: {
+# 		maxTotalHits: 10000,
+# 	},
+#  }
+
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
 
