@@ -80,14 +80,16 @@ export class SignupService {
 			throw new Error('USED_USERNAME');
 		}
 
-		if (!opts.ignorePreservedUsernames) {
+		const isTheFirstUser = (await this.usersRepository.countBy({ host: IsNull() })) === 0;
+
+		if (!opts.ignorePreservedUsernames || !isTheFirstUser) {
 			const instance = await this.metaService.fetch(true);
 			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
 				throw new Error('USED_USERNAME');
 			}
 		}
-	
+
 		const keyPair = await new Promise<string[]>((res, rej) =>
 			generateKeyPair('rsa', {
 				modulusLength: 4096,
@@ -123,9 +125,7 @@ export class SignupService {
 				usernameLower: username.toLowerCase(),
 				host: this.utilityService.toPunyNullable(host),
 				token: secret,
-				isRoot: (await this.usersRepository.countBy({
-					host: IsNull(),
-				})) === 0,
+				isRoot: isTheFirstUser,
 			}));
 	
 			await transactionalEntityManager.save(new UserKeypair({

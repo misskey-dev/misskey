@@ -169,7 +169,6 @@ export class SignupApiService {
 			try {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
-					ignorePreservedUsernames: (await this.usersRepository.countBy({ host: IsNull() })) === 0,
 				});
 	
 				const res = await this.userEntityService.pack(account, account, {
