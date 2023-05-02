@@ -41,3 +41,19 @@ export const Detail = {
 		detail: true,
 	},
 } satisfies StoryObj<typeof MkAcct>;
+export const Long = {
+	...Default,
+	args: {
+		...Default.args,
+		user: {
+			...userDetailed(),
+			username: '2c7cc62a697ea3a7826521f3fd34f0cb273693cbe5e9310f35449f43622a5cdc',
+			host: 'nostr.example',
+		},
+	},
+	decorators: [
+		() => ({
+			template: '<div style="width: 360px;"><story/></div>',
+		}),
+	],
+} satisfies StoryObj<typeof MkAcct>;
