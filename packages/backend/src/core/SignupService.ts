@@ -82,7 +82,7 @@ export class SignupService {
 
 		const isTheFirstUser = (await this.usersRepository.countBy({ host: IsNull() })) === 0;
 
-		if (!opts.ignorePreservedUsernames || !isTheFirstUser) {
+		if (!opts.ignorePreservedUsernames && !isTheFirstUser) {
 			const instance = await this.metaService.fetch(true);
 			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
