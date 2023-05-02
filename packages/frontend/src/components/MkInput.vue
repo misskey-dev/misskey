@@ -2,7 +2,7 @@
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
 	<div :class="[$style.input, { inline, disabled, focused }]">
-		<div ref="prefixEl" :class="$style.prefix"><div :class="$style.prefixOrSuffixText"><slot name="prefix"></slot></div></div>
+		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<input
 			ref="inputEl"
 			v-model="v"
@@ -26,7 +26,7 @@
 		<datalist v-if="datalist" :id="id">
 			<option v-for="data in datalist" :key="data" :value="data"/>
 		</datalist>
-		<div ref="suffixEl" :class="$style.suffix"><div :class="$style.prefixOrSuffixText"><slot name="suffix"></slot></div></div>
+		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
 
@@ -233,6 +233,12 @@ onMounted(() => {
 	padding: 0 12px;
 	font-size: 1em;
 	height: v-bind("height + 'px'");
+	min-width: 16px;
+	max-width: 150px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	box-sizing: border-box;
 	pointer-events: none;
 
 	&:empty {
@@ -249,16 +255,6 @@ onMounted(() => {
 	right: 0;
 	padding-left: 6px;
 }
-
-.prefixOrSuffixText {
-	display: inline-block;
-	min-width: 16px;
-	max-width: 150px;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
 .save {
 	margin: 8px 0 0 0;
 }
