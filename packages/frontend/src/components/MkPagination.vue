@@ -114,6 +114,8 @@ let isPausingUpdate = false;
 let timerForSetPause: number | null = null;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
+let pagedCount = 1;
+
 // 先頭が表示されているかどうかを検出
 // https://qiita.com/mkataigi/items/0154aefd2223ce23398e
 let scrollObserver = $ref<IntersectionObserver>();
@@ -164,6 +166,7 @@ async function init(): Promise<void> {
 	await os.api(props.pagination.endpoint, {
 		...params,
 		limit: props.pagination.limit ?? 10,
+		page: pagedCount++,
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
@@ -204,6 +207,7 @@ const fetchMore = async (): Promise<void> => {
 			offset: offset.value,
 		} : {
 			untilId: items.value[items.value.length - 1].id,
+			page: pagedCount++,
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {

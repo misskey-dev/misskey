@@ -65,6 +65,22 @@ export type Source = {
 		pass?: string;
 		index?: string;
 	};
+	meilisearch?: {
+		host: string;
+		port: string;
+		apiKey: string;
+		index: string;
+		searchType?: 'last' | 'all';
+		config: {
+			rankingRules?: string[];
+			searchableAttributes?: string[];
+			typoTolerance?: object; // https://www.meilisearch.com/docs/reference/api/settings#typo-tolerance
+			pagination?: {
+				maxTotalHits: number;
+			}
+		};
+
+	};
 
 	proxy?: string;
 	proxySmtp?: string;
