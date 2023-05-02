@@ -18,7 +18,7 @@ export const meta = {
 	},
 	errors: {
 		noSuchFile: {
-			message: 'No such dile.',
+			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: '3b71d086-c3fa-431c-b01d-ded65a777172',
 		},
