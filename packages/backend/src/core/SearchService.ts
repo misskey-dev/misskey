@@ -69,14 +69,6 @@ export class SearchService {
 			});
 			this.meilisearchNoteIndex = this.meilisearchClient.index('notes');
 			this.meilisearchNoteIndex.updateSettings({
-				rankingRules: [
-					'words',
-					'typo',
-					'sort',
-					'proximity',
-					'attribute',
-					'exactness',
-				],
 				searchableAttributes: [
 					'text',
 					'cw',
@@ -100,7 +92,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async indexNote(note: Note) {
+	public async indexNote(note: Note): Promise<void> {
 		if (this.meilisearchClient) {
 			this.meilisearchNoteIndex!.addDocuments([{
 				id: note.id,
