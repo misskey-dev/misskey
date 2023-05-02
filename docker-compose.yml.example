@@ -8,6 +8,7 @@ services:
       - db
       - redis
 #      - es
+#     - meilisearch
     depends_on:
       db:
         condition: service_healthy
@@ -58,6 +59,19 @@ services:
 #      - internal_network
 #    volumes:
 #      - ./elasticsearch:/usr/share/elasticsearch/data
+
+  meilisearch:
+    restart: always
+    image: getmeili/meilisearch:v1.1.1
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=production
+    env_file:
+      - .config/meilisearch.env
+    networks:
+      - internal_network
+    volumes:
+      - ./meili_data:/meili_data
 
 networks:
   internal_network:
