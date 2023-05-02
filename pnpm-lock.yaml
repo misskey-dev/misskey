@@ -106,9 +106,6 @@ importers:
       '@fastify/view':
         specifier: 7.4.1
         version: 7.4.1
-      '@misskey-dev/slacc':
-        specifier: 0.0.6
-        version: 0.0.6
       '@nestjs/common':
         specifier: 9.4.0
         version: 9.4.0(reflect-metadata@0.1.13)(rxjs@7.8.0)
@@ -337,6 +334,9 @@ importers:
       sharp-read-bmp:
         specifier: github:misskey-dev/sharp-read-bmp
         version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
+      slacc:
+        specifier: 0.0.7
+        version: 0.0.7
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -434,6 +434,39 @@ importers:
       '@tensorflow/tfjs-node':
         specifier: 4.4.0
         version: 4.4.0(seedrandom@3.0.5)
+      slacc-android-arm-eabi:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-android-arm64:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-darwin-arm64:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-darwin-universal:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-darwin-x64:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-arm-gnueabihf:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-arm64-gnu:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-arm64-musl:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-x64-gnu:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-win32-arm64-msvc:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-win32-x64-msvc:
+        specifier: 0.0.7
+        version: 0.0.7
     devDependencies:
       '@jest/globals':
         specifier: 29.5.0
@@ -4313,121 +4346,6 @@ packages:
   /@microsoft/tsdoc@0.14.2:
     resolution: {integrity: sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==}
     dev: true
-
-  /@misskey-dev/slacc-android-arm-eabi@0.0.6:
-    resolution: {integrity: sha512-/c4h+5Y32JkogNJz8EXstCZqDHz0BBuplyoE4OwG/iX+S6wJmbRhtWl7J460bL7qsbpLjYs8YjFJDR1t4grx5A==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-android-arm-eabi/0.0.6/0eedb5eda42a985599aa5eb2d61cf303d83dc467}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-android-arm64@0.0.6:
-    resolution: {integrity: sha512-xhA3VH3kMOwweX1iT2q60nV56eRRvfPV9L1QcNmfnYmSnGvOk0Cq5EeuURFZpFeyNQ4gpV8QvSVhcK8c4IHmWA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-android-arm64/0.0.6/acd4b55a6c7d332acf8e4326d0375d9310fc308f}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-darwin-arm64@0.0.6:
-    resolution: {integrity: sha512-q4rx7n5aBWRlBwE3mtNqXpu72nPqxo3JgG7iVGxS1cqLuBdjx0t7ByckjMvZwegvceuGmW0PqpU3cNZ82g1TqQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-arm64/0.0.6/96786d9c5f54347a3ba7e66ea3afffd0d84737c8}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-darwin-universal@0.0.6:
-    resolution: {integrity: sha512-qH8iM9BCSqfMqNwtUKNtoYqR2pUBovT2jMZqvvYvtXuxPTV8npbqaZdTCzIcrGCIEWBMgOPO41sWwllUqzbLTA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-universal/0.0.6/7ee849b68f4c9ea944ff9d353a9bacad62fd3584}
-    engines: {node: '>= 10'}
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-darwin-x64@0.0.6:
-    resolution: {integrity: sha512-SZNByGL7G2twvsBTkmhjONbG9Gtmh2lYx9t1cMxsqJkpokfYY7ddxpahec01thQRVvVNEOV3wdmfFB2qvzxuYw==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-darwin-x64/0.0.6/fe64b1f4b42fa9cbf779a1e83c88135ff1e5866b}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-linux-arm-gnueabihf@0.0.6:
-    resolution: {integrity: sha512-mq6VHOKLnZKsFQKvHfl7NUu+9zNXnPZGE8pQG02yqj5YyzKq0ORNqFZjwQfYg9ALWy2JAGYhmrz1ZieGJzRDUg==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm-gnueabihf/0.0.6/61560d508acca723c0e149a27bd0d13caec2139e}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-linux-arm64-gnu@0.0.6:
-    resolution: {integrity: sha512-JEfAJVOvJ9spBM13fQ/uLIMTkxdLWsbkqYc8ALjvvXMly1P2MynoxmiBr9T+48JBVdvMKG3vGE0A1YMjUEEJMQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm64-gnu/0.0.6/bcce8cac4c8225a8c4987eefd1af7fa571a73200}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-linux-arm64-musl@0.0.6:
-    resolution: {integrity: sha512-YLNm2dQY80elo56FRgRBHcqWVjKm0q899uJMl0DdgU93uUhbNMqqT0j2QCtczkC9xOrZVYokD3nNAkeXzoA7Xg==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-arm64-musl/0.0.6/4c1551e78979f1b3c50c07545951c7674312f628}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-linux-x64-gnu@0.0.6:
-    resolution: {integrity: sha512-pwECQ7Ha4ZF+mhwY2Sk8unXztuG9WR285Zvje+BUdvuXFqkdK8G6HaC8SI8YHQ0MPUfnsSJW/NwARCfpZKmkxQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-linux-x64-gnu/0.0.6/76b5b92e5864ef1249ac297fe35c27ec0e5b0030}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-win32-arm64-msvc@0.0.6:
-    resolution: {integrity: sha512-xQ5uwdTRMRgE8fGTezm4JSCog0z8PUvocgFtW/yz9YDxdYEyvpMQXIaOFcbWLZbS2xMpU1PHoo/23vAorvwIwA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-win32-arm64-msvc/0.0.6/4da166018b1babd75cd3140dc77dfeca7d4b39e7}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc-win32-x64-msvc@0.0.6:
-    resolution: {integrity: sha512-9Kx9jRnFQ6kguYPeaZ3ttSyj5Ib1d10T9wPumgjw3gBhQMERQOBz0wWNWJ3IDCQ93fQBC3oqE5bwHdPDou76oQ==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc-win32-x64-msvc/0.0.6/77ddeecb56623d6b7c59e12c23c00bbdfe904a52}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@misskey-dev/slacc@0.0.6:
-    resolution: {integrity: sha512-+poaP18G41NVB9pcckSPeVygBZh5AYbgpcQKLS7KfFT+6yG7JdEmDlffnNlhUV9nUGMcc9AkyaWkgLoHHuBXmA==, tarball: https://ghnr.acid.workers.dev/download/@misskey-dev/slacc/0.0.6/e048daadc8e80c9a60c060c30b8e40f105ca7990}
-    engines: {node: '>= 10'}
-    optionalDependencies:
-      '@misskey-dev/slacc-android-arm-eabi': 0.0.6
-      '@misskey-dev/slacc-android-arm64': 0.0.6
-      '@misskey-dev/slacc-darwin-arm64': 0.0.6
-      '@misskey-dev/slacc-darwin-universal': 0.0.6
-      '@misskey-dev/slacc-darwin-x64': 0.0.6
-      '@misskey-dev/slacc-linux-arm-gnueabihf': 0.0.6
-      '@misskey-dev/slacc-linux-arm64-gnu': 0.0.6
-      '@misskey-dev/slacc-linux-arm64-musl': 0.0.6
-      '@misskey-dev/slacc-linux-x64-gnu': 0.0.6
-      '@misskey-dev/slacc-win32-arm64-msvc': 0.0.6
-      '@misskey-dev/slacc-win32-x64-msvc': 0.0.6
-    dev: false
 
   /@mole-inc/bin-wrapper@8.0.1:
     resolution: {integrity: sha512-sTGoeZnjI8N4KS+sW2AN95gDBErhAguvkw/tWdCjeM8bvxpz5lqrnd0vOJABA1A+Ic3zED7PYoLP/RANLgVotA==}
@@ -14604,6 +14522,7 @@ packages:
 
   /minimist@1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
+    dev: false
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -17706,6 +17625,121 @@ packages:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: true
 
+  /slacc-android-arm-eabi@0.0.7:
+    resolution: {integrity: sha512-6TikZlR1jsQscxwphhrf0U4xbsRy6zKJ0zmEULopTzbohgo5OLdZ7L3tQazkYlaaFe3YjGnVLW3FfGhhrajVog==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-android-arm64@0.0.7:
+    resolution: {integrity: sha512-aol/9Rg0Hfqu81hpK+HXcx9sGYu4qqYU+djBCgLtb8I6ZMdWUdE0dp8ACBoTOmYn34hYGcUu4FlJUZ8r7Utucg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-darwin-arm64@0.0.7:
+    resolution: {integrity: sha512-PkV7rO/c9AImNYDacP+kxtOjVuxjy06IIOAxbWerIWvoeqsCNRtiF/dh+OqIACRFBuHIDe0oAyUCEMGUTnzjyQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-darwin-universal@0.0.7:
+    resolution: {integrity: sha512-Y9zXpL40m4Yq3dE5vdnAgfmn0Fxc0Bf0ixC9TSl96gKeIZEd6drkjfpHFdsIDNImzOksIAUo0HHiDdbEfE7zdQ==}
+    engines: {node: '>= 10'}
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-darwin-x64@0.0.7:
+    resolution: {integrity: sha512-yKaGjX2YJl1QHe4NgqQVsY83jees3hjFxEUPoKpuZEQzWbMNn0XSyceFRGXIk1oDqiKU40UcsdcCedjYjSEd0Q==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-arm-gnueabihf@0.0.7:
+    resolution: {integrity: sha512-pdWMdQeX6uA9JfSoWo9EHH0yRiwXKMbaKoS9gflDSyt/hjeR3Qx/KK7Wihd7HeXx7njlNdpr9ycTRmm5NgapQQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-arm64-gnu@0.0.7:
+    resolution: {integrity: sha512-hz9TK/w6fxeNZXyFzuLq5cJD/XRyJbo6BaIdW+VrKKnb9nkLnWlqDQtdtJk7Fw7zHjdY3Uqufjwm0iT6qBVpUQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-arm64-musl@0.0.7:
+    resolution: {integrity: sha512-wCDAYL7e+lh3XL7g87Ui/Bb2Ap9GcBqeJuj2yHIx6MYC8ontwFSXhqRTmd2zmPLmZA5Nc11aKGN11YNu0Pnwlw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-x64-gnu@0.0.7:
+    resolution: {integrity: sha512-E5+2cveizpfHXCk/Hu5VfslWFeDVw47nywODiJ8CsofT2l5ITfYPMFEBXm9ORY25mGBTgsO6lJYiF9Hz4FlS9Q==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-win32-arm64-msvc@0.0.7:
+    resolution: {integrity: sha512-3a+qnkZbP+Pr5RZuzd0Vi1uCal137QiJajRAWT4r7qwu+Zidd50x2oikQ4rAegqZVTm8qTwVmWA+WmH8WHI7iw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-win32-x64-msvc@0.0.7:
+    resolution: {integrity: sha512-ydFdZ7wEXQPsw2Tg+yG9uJdCGTehyPtrWBVUMa7fojr3j1gbtThXS2l9Ad/6fYYi2VwdaYPLWbwV3GYElPGL8g==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc@0.0.7:
+    resolution: {integrity: sha512-rwi2F3oJaGPST9JdCoUd5fnSZaoZFgTL00GFKhKufT48uwtUEAHlOL0t8gEVmon71X+53f9nEdsGWhwtOutJTQ==}
+    engines: {node: '>= 10'}
+    optionalDependencies:
+      slacc-android-arm-eabi: 0.0.7
+      slacc-android-arm64: 0.0.7
+      slacc-darwin-arm64: 0.0.7
+      slacc-darwin-universal: 0.0.7
+      slacc-darwin-x64: 0.0.7
+      slacc-linux-arm-gnueabihf: 0.0.7
+      slacc-linux-arm64-gnu: 0.0.7
+      slacc-linux-arm64-musl: 0.0.7
+      slacc-linux-x64-gnu: 0.0.7
+      slacc-win32-arm64-msvc: 0.0.7
+      slacc-win32-x64-msvc: 0.0.7
+    dev: false
+
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -18718,7 +18752,7 @@ packages:
     dependencies:
       '@types/json5': 0.0.29
       json5: 1.0.1
-      minimist: 1.2.7
+      minimist: 1.2.8
       strip-bom: 3.0.0
     dev: true
 

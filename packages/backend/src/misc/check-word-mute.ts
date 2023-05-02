@@ -1,4 +1,4 @@
-import { AhoCorasick } from '@misskey-dev/slacc';
+import { AhoCorasick } from 'slacc';
 import RE2 from 're2';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
