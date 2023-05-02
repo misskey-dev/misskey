@@ -259,7 +259,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			icon: user.isNoteSubscribing ? 'ti ti-bell-off' : 'ti ti-bell',
 			text: user.isNoteSubscribing ? i18n.ts.noteUnsubscribe : i18n.ts.noteSubscribe,
 			action: toggleNoteSubscribe,
-		}, {
+		}, null, {
 			icon: user.isMuted ? 'ti ti-eye' : 'ti ti-eye-off',
 			text: user.isMuted ? i18n.ts.unmute : i18n.ts.mute,
 			action: toggleMute,
