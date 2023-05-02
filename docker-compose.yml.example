@@ -7,7 +7,7 @@ services:
     links:
       - db
       - redis
-#      - es
+#     - meilisearch
     depends_on:
       db:
         condition: service_healthy
@@ -48,16 +48,18 @@ services:
       interval: 5s
       retries: 20
 
-#  es:
-#    restart: always
-#    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.2
-#    environment:
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - "TAKE_FILE_OWNERSHIP=111"
-#    networks:
-#      - internal_network
-#    volumes:
-#      - ./elasticsearch:/usr/share/elasticsearch/data
+  meilisearch:
+    restart: always
+    image: getmeili/meilisearch:v1.1.1
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=production
+    env_file:
+      - .config/meilisearch.env
+    networks:
+      - internal_network
+    volumes:
+      - ./meili_data:/meili_data
 
 networks:
   internal_network:

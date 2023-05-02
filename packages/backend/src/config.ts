@@ -57,10 +57,11 @@ export type Source = {
 		db?: number;
 		prefix?: string;
 	};
-	meilisearch: {
-		url: string;
-		user?: string;
-		pass?: string;
+	meilisearch?: {
+		host: string;
+		port: string;
+		apiKey: string;
+		searchType?: 'last' | 'all';
 	};
 
 	proxy?: string;
