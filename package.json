@@ -56,11 +56,11 @@
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.59.0",
-		"@typescript-eslint/parser": "5.59.0",
+		"@typescript-eslint/eslint-plugin": "5.59.2",
+		"@typescript-eslint/parser": "5.59.2",
 		"cross-env": "7.0.3",
-		"cypress": "12.10.0",
-		"eslint": "8.38.0",
+		"cypress": "12.11.0",
+		"eslint": "8.39.0",
 		"start-server-and-test": "2.0.0"
 	},
 	"optionalDependencies": {
