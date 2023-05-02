@@ -139,7 +139,7 @@ export class SignupApiService {
 
 			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
-				throw new FastifyReplyError(400, 'USED_USERNAME');
+				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}
 
 			const code = rndstr('a-z0-9', 16);
@@ -169,6 +169,7 @@ export class SignupApiService {
 			try {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
+					ignorePreservedUsernames: (await this.usersRepository.countBy({ host: IsNull() })) === 0,
 				});
 	
 				const res = await this.userEntityService.pack(account, account, {
