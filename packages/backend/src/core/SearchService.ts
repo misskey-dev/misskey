@@ -112,8 +112,8 @@ export class SearchService {
 
 	@bindThis
 	public async searchNote(q: string, me: User | null, opts: {
-		userId?: Note['userId'];
-		channelId?: Note['channelId'];
+		userId?: Note['userId'] | null;
+		channelId?: Note['channelId'] | null;
 	}, pagination: {
 		untilId?: Note['id'];
 		sinceId?: Note['id'];
