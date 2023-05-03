@@ -73,6 +73,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const notes = await this.searchService.searchNote(ps.query, me, {
 				userId: ps.userId,
 				channelId: ps.channelId,
+			}, {
+				untilId: ps.untilId,
+				sinceId: ps.sinceId,
+				limit: ps.limit,
 			});
 
 			return await this.noteEntityService.packMany(notes, me);

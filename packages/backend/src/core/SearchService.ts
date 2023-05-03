@@ -42,8 +42,8 @@ function compileQuery(q: Q): string {
 		case '<': return `(${q.k} < ${compileValue(q.v)})`;
 		case '>=': return `(${q.k} >= ${compileValue(q.v)})`;
 		case '<=': return `(${q.k} <= ${compileValue(q.v)})`;
-		case 'and': return `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
-		case 'or': return `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
+		case 'and': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
+		case 'or': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
 		case 'not': return `(NOT ${compileQuery(q.q)})`;
 		default: throw new Error('unrecognized query operator');
 	}
@@ -108,7 +108,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: User, opts: {
+	public async searchNote(q: string, me: User | null, opts: {
 		userId?: Note['userId'];
 		channelId?: Note['channelId'];
 	}, pagination: {

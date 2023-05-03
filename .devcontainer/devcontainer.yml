@@ -98,7 +98,6 @@ redis:
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
 
-# Refer to https://www.meilisearch.com/docs for more details. 
 #meilisearch:
 #  host: meilisearch
 #  port: 7700
