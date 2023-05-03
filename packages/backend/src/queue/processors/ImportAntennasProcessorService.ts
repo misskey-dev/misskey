@@ -54,17 +54,14 @@ export class ImportAntennasProcessorService {
 			});
 			const antennas: Antenna[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
 			for (const antenna of antennas) {
-				let userList;
+				const users: string[] = [];
 				if (!validate(antenna)) {
 					continue;
 				}
 				if (antenna.src === 'list' && antenna.userListId) {
-					userList = await this.userListsRepository.findOneBy({
-						id: antenna.userListId,
-						userId: job.data.user.id,
-					});
-					if (userList === null) {
-						continue;
+					antenna.src = 'users';
+					for (const user of antenna.userListId) {
+						users.push(user);
 					}
 				}
 				const result = await this.antennasRepository.insert({
@@ -74,10 +71,10 @@ export class ImportAntennasProcessorService {
 					userId: job.data.user.id,
 					name: antenna.name,
 					src: antenna.src,
-					userListId: userList ? userList.id : null,
+					userListId: null,
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
-					users: antenna.users,
+					users: [...antenna.users, ...users],
 					caseSensitive: antenna.caseSensitive,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
