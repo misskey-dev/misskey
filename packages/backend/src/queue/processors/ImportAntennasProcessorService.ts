@@ -50,19 +50,42 @@ export class ImportAntennasProcessorService {
 		try {
 			const validate = new Ajv().compile({
 				type: 'object',
+				properties: {
+					name: { type: 'string', minLength: 1, maxLength: 100 },
+					src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+					userListId: { 
+						type: 'array', 
+						items: {
+							type: 'string',
+						}, 
+						nullable: true,
+					},
+					keywords: { type: 'array', items: {
+						type: 'array', items: {
+							type: 'string',
+						},
+					} },
+					excludeKeywords: { type: 'array', items: {
+						type: 'array', items: {
+							type: 'string',
+						},
+					} },
+					users: { type: 'array', items: {
+						type: 'string',
+					} },
+					caseSensitive: { type: 'boolean' },
+					withReplies: { type: 'boolean' },
+					withFile: { type: 'boolean' },
+					notify: { type: 'boolean' },
+				},
 				required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
 			});
-			const antennas: Antenna[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
+			const antennas: (Omit<Antenna, 'userListId'> & { userListId: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
 			for (const antenna of antennas) {
-				const users: string[] = [];
+				if (antenna.keywords.length === 0 || antenna.keywords[0].every(x => x === '')) continue;
 				if (!validate(antenna)) {
+					this.logger.warn('Validation Failed');
 					continue;
-				}
-				if (antenna.src === 'list' && antenna.userListId) {
-					antenna.src = 'users';
-					for (const user of antenna.userListId) {
-						users.push(user);
-					}
 				}
 				const result = await this.antennasRepository.insert({
 					id: this.idService.genId(),
@@ -70,11 +93,11 @@ export class ImportAntennasProcessorService {
 					lastUsedAt: now,
 					userId: job.data.user.id,
 					name: antenna.name,
-					src: antenna.src,
+					src: antenna.src === 'list' && antenna.userListId ? 'users' : antenna.src,
 					userListId: null,
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
-					users: [...antenna.users, ...users],
+					users: (antenna.src === 'list' && antenna.userListId !== null ? antenna.userListId : antenna.users).filter(Boolean),
 					caseSensitive: antenna.caseSensitive,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
