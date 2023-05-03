@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts">
+const contentSymbol = Symbol();
 const observer = new ResizeObserver((entries) => {
 	for (const entry of entries) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const container = entry.target.parentElement!;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		const contentWidth = entry.contentBoxSize?.[0].inlineSize ?? entry.contentRect.width;
+		const content = (entry.target[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
+		const container = content.parentElement as HTMLSpanElement;
+		const contentWidth = content.getBoundingClientRect().width;
 		const containerWidth = container.getBoundingClientRect().width;
 		container.style.transform = `scaleX(${Math.min(1, containerWidth / contentWidth)})`;
 	}
@@ -20,18 +20,25 @@ const observer = new ResizeObserver((entries) => {
 </script>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const content = ref<HTMLSpanElement>();
 
-onMounted(() => {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const target = content.value!;
-	observer.observe(target);
-
-	return (): void => {
-		observer.unobserve(target);
-	};
+watch(content, (value, oldValue) => {
+	if (oldValue) {
+		delete oldValue[contentSymbol];
+		observer.unobserve(oldValue);
+		if (oldValue.parentElement) {
+			observer.unobserve(oldValue.parentElement);
+		}
+	}
+	if (value) {
+		value[contentSymbol] = contentSymbol;
+		observer.observe(value);
+		if (value.parentElement) {
+			observer.observe(value.parentElement);
+		}
+	}
 });
 </script>
 
