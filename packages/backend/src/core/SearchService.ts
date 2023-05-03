@@ -9,16 +9,17 @@ import { User } from '@/models/index.js';
 import type { NotesRepository } from '@/models/index.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
+import { IdService } from '@/core/IdService.js';
 
 type K = string;
 type V = string | number | boolean;
 type Q =
 	{ op: '=', k: K, v: V } |
 	{ op: '!=', k: K, v: V } |
-	{ op: '>', k: K, v: V } |
-	{ op: '<', k: K, v: V } |
-	{ op: '>=', k: K, v: V } |
-	{ op: '<=', k: K, v: V } |
+	{ op: '>', k: K, v: number } |
+	{ op: '<', k: K, v: number } |
+	{ op: '>=', k: K, v: number } |
+	{ op: '<=', k: K, v: number } |
 	{ op: 'and', qs: Q[] } |
 	{ op: 'or', qs: Q[] } |
 	{ op: 'not', q: Q };
@@ -62,6 +63,7 @@ export class SearchService {
 		private notesRepository: NotesRepository,
 
 		private queryService: QueryService,
+		private idService: IdService,
 	) {
 		if (config.meilisearch) {
 			this.meilisearchClient = new MeiliSearch({
@@ -78,6 +80,7 @@ export class SearchService {
 					'createdAt',
 				],
 				filterableAttributes: [
+					'createdAt',
 					'userId',
 					'userHost',
 					'channelId',
@@ -103,7 +106,9 @@ export class SearchService {
 				channelId: note.channelId,
 				cw: note.cw,
 				text: note.text,
-			}]);
+			}], {
+				primaryKey: 'id',
+			});
 		}
 	}
 
@@ -121,8 +126,8 @@ export class SearchService {
 				op: 'and',
 				qs: [],
 			};
-			if (pagination.untilId) filter.qs.push({ op: '<', k: 'id', v: pagination.untilId });
-			if (pagination.sinceId) filter.qs.push({ op: '>', k: 'id', v: pagination.sinceId });
+			if (pagination.untilId) filter.qs.push({ op: '<', k: 'createdAt', v: this.idService.parse(pagination.untilId).date.getTime() });
+			if (pagination.sinceId) filter.qs.push({ op: '>', k: 'createdAt', v: this.idService.parse(pagination.sinceId).date.getTime() });
 			if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
 			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
 			const res = await this.meilisearchNoteIndex!.search(q, {
