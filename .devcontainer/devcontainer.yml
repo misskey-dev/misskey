@@ -103,7 +103,6 @@ redis:
 #  host: meilisearch
 #  port: 7700
 #  apiKey: ''
-#  searchType: 'all'
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────

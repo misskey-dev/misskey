@@ -5,7 +5,8 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { Note } from '@/models/entities/Note.js';
-import { NotesRepository, User } from '@/models/index.js';
+import { User } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
 

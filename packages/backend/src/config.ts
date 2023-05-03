@@ -61,7 +61,6 @@ export type Source = {
 		host: string;
 		port: string;
 		apiKey: string;
-		searchType?: 'last' | 'all';
 	};
 
 	proxy?: string;
