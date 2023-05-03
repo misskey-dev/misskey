@@ -139,7 +139,7 @@ export class SignupApiService {
 
 			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
-				throw new FastifyReplyError(400, 'USED_USERNAME');
+				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}
 
 			const code = rndstr('a-z0-9', 16);

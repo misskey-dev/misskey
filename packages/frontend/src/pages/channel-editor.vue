@@ -11,6 +11,10 @@
 				<template #label>{{ i18n.ts.description }}</template>
 			</MkTextarea>
 
+			<MkColorInput v-model="color">
+				<template #label>{{ i18n.ts.color }}</template>
+			</MkColorInput>
+
 			<div>
 				<MkButton v-if="bannerId == null" @click="setBannerImage"><i class="ti ti-plus"></i> {{ i18n.ts._channel.setBanner }}</MkButton>
 				<div v-else-if="bannerUrl">
@@ -55,6 +59,7 @@ import { computed, ref, watch, defineAsyncComponent } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkColorInput from '@/components/MkColorInput.vue';
 import { selectFile } from '@/scripts/select-file';
 import * as os from '@/os';
 import { useRouter } from '@/router';
@@ -75,6 +80,7 @@ let name = $ref(null);
 let description = $ref(null);
 let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
+let color = $ref(null);
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
@@ -101,6 +107,7 @@ async function fetchChannel() {
 	pinnedNotes.value = channel.pinnedNoteIds.map(id => ({
 		id,
 	}));
+	color = channel.color;
 }
 
 fetchChannel();
@@ -128,6 +135,7 @@ function save() {
 		description: description,
 		bannerId: bannerId,
 		pinnedNoteIds: pinnedNotes.value.map(x => x.id),
+		color: color,
 	};
 
 	if (props.channelId) {

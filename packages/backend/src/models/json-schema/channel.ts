@@ -59,5 +59,9 @@ export const packedChannelSchema = {
 				format: 'id',
 			},
 		},
+		color: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
