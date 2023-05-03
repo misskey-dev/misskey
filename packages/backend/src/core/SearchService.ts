@@ -1,4 +1,3 @@
-import { Index, MeiliSearch } from 'meilisearch';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -10,6 +9,7 @@ import type { NotesRepository } from '@/models/index.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
+import type { Index, MeiliSearch } from 'meilisearch';
 
 type K = string;
 type V = string | number | boolean;
@@ -52,12 +52,14 @@ function compileQuery(q: Q): string {
 
 @Injectable()
 export class SearchService {
-	private meilisearchClient: MeiliSearch | null = null;
 	private meilisearchNoteIndex: Index | null = null;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meilisearch)
+		private meilisearch: MeiliSearch | null,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -65,12 +67,8 @@ export class SearchService {
 		private queryService: QueryService,
 		private idService: IdService,
 	) {
-		if (config.meilisearch) {
-			this.meilisearchClient = new MeiliSearch({
-				host: `http://${config.meilisearch.host}:${config.meilisearch.port}`, 
-				apiKey: config.meilisearch.apiKey,
-			});
-			this.meilisearchNoteIndex = this.meilisearchClient.index('notes');
+		if (meilisearch) {
+			this.meilisearchNoteIndex = meilisearch.index('notes');
 			this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
@@ -97,7 +95,7 @@ export class SearchService {
 
 	@bindThis
 	public async indexNote(note: Note): Promise<void> {
-		if (this.meilisearchClient) {
+		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.addDocuments([{
 				id: note.id,
 				createdAt: note.createdAt.getTime(),
@@ -121,7 +119,7 @@ export class SearchService {
 		sinceId?: Note['id'];
 		limit?: number;
 	}): Promise<Note[]> {
-		if (this.meilisearchClient) {
+		if (this.meilisearch) {
 			const filter: Q = {
 				op: 'and',
 				qs: [],
