@@ -47,7 +47,6 @@ import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
-import { fill } from '@tensorflow/tfjs-core';
 
 const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -239,9 +238,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
-			if ((data.cw == null) && (data.text != null) && this.isSensiteive(data.text!, sensitiveWords)) {
+			if ((data.cw == null) && (data.text != null) && this.isSensitive(data.text!, sensitiveWords)) {
 				data.visibility = 'home';
-			} else if ((data.cw != null) && this.isSensiteive(data.cw!, sensitiveWords)) {
+			} else if ((data.cw != null) && this.isSensitive(data.cw!, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
@@ -675,7 +674,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 	
 	@bindThis
-	private isSensiteive(text: string, sensitiveWord: string[]): boolean {
+	private isSensitive(text: string, sensitiveWord: string[]): boolean {
 		if (sensitiveWord.length > 0) {
 			if (text === '') return false;
 			const matched = sensitiveWord.some(filter => {
