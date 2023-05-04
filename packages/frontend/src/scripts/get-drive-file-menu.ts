@@ -74,6 +74,12 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile) {
 		icon: 'ti ti-text-caption',
 		action: () => describe(file),
 	}, null, {
+		text: i18n.ts.createNoteFromTheFile,
+		icon: 'ti ti-pencil',
+		action: () => os.post({
+			initialFiles: [file],
+		}),
+	}, {
 		text: i18n.ts.copyUrl,
 		icon: 'ti ti-link',
 		action: () => copyUrl(file),
