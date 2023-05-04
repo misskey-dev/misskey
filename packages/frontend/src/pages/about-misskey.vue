@@ -237,6 +237,7 @@ const patrons = [
 	'けそ',
 	'ずも',
 	'binvinyl',
+	'渡志郎',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
