@@ -3,29 +3,20 @@ import Ajv from 'ajv';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import Logger from '@/logger.js';
-import { Antenna } from '@/models/index.js';
-import type { AntennasRepository, DriveFilesRepository, UserListsRepository, UsersRepository } from '@/models/index.js';
+import type { AntennasRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import { DownloadService } from '@/core/DownloadService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import { DbUserImportJobData } from '../types.js';
+import { DBAntennaImportJobData } from '../types.js';
 import type Bull from 'bull';
 
 @Injectable()
 export class ImportAntennasProcessorService {
 	private logger: Logger;
 	constructor (
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
-		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
 		private queueLoggerService: QueueLoggerService,
-		private downloadService: DownloadService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -33,19 +24,7 @@ export class ImportAntennasProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
-		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
-		if (user === null) {
-			done();
-			return;
-		}
-		const file = await this.driveFilesRepository.findOneBy({
-			id: job.data.fileId,
-		});
-		if (file === null) {
-			done();
-			return;
-		}
+	public async process(job: Bull.Job<DBAntennaImportJobData>, done: () => void): Promise<void> {
 		const now = new Date();
 		try {
 			const validate = new Ajv().compile({
@@ -80,8 +59,7 @@ export class ImportAntennasProcessorService {
 				},
 				required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
 			});
-			const antennas: (Omit<Antenna, 'userListId'> & { userListId: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
-			for (const antenna of antennas) {
+			for (const antenna of job.data.antenna) {
 				if (antenna.keywords.length === 0 || antenna.keywords[0].every(x => x === '')) continue;
 				if (!validate(antenna)) {
 					this.logger.warn('Validation Failed');

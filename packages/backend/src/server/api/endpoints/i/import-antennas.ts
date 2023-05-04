@@ -2,10 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { AntennasRepository, DriveFilesRepository } from '@/models/index.js';
+import type { AntennasRepository, DriveFilesRepository, UsersRepository, Antenna as _Antenna } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 import { RoleService } from '@/core/RoleService.js';
+import { DownloadService } from '@/core/DownloadService.js';
 
 export const meta = {
 	secure: true,
@@ -21,6 +22,11 @@ export const meta = {
 			message: 'No such file.',
 			code: 'NO_SUCH_FILE',
 			id: '3b71d086-c3fa-431c-b01d-ded65a777172',
+		},
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'e842c379-8ac7-4cf7-b07a-4d4de7e4671c',
 		},
 		emptyFile: {
 			message: 'That file is empty.',
@@ -50,18 +56,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFilesRepository: DriveFilesRepository,
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 		private roleService: RoleService,
 		private queueService: QueueService,
+		private downloadService: DownloadService
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const users = await this.usersRepository.findOneBy({ id: me.id });
+			if (users === null) throw new ApiError(meta.errors.noSuchUser);
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-			const currentAntennasCount = await this.antennasRepository.countBy({ userId: me.id });
-			if (currentAntennasCount > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
-				throw new ApiError(meta.errors.tooManyAntennas);
-			}
 			if (file === null) throw new ApiError(meta.errors.noSuchFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
-			this.queueService.createImportAntennasJob(me, file.id);
+			const antennas: (Omit<_Antenna, 'userListId'> & { userListId: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
+			const currentAntennasCount = await this.antennasRepository.countBy({ userId: me.id });
+			if (currentAntennasCount + antennas.length > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
+				throw new ApiError(meta.errors.tooManyAntennas);
+			}
+			this.queueService.createImportAntennasJob(me, antennas);
 		});
 	}
 } 
+
+export type Antenna = (Omit<_Antenna, 'userListId'> & { userListId: string[] | null })[];

@@ -1,3 +1,4 @@
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -33,12 +34,14 @@ export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
 export type DbJobMap = {
 	deleteDriveFiles: DbJobDataWithUser;
 	exportCustomEmojis: DbJobDataWithUser;
+	exportAntennas: DBExportAntennasData;
 	exportNotes: DbJobDataWithUser;
 	exportFavorites: DbJobDataWithUser;
 	exportFollowing: DbExportFollowingData;
 	exportMuting: DbJobDataWithUser;
 	exportBlocking: DbJobDataWithUser;
 	exportUserLists: DbJobDataWithUser;
+	importAntennas: DBAntennaImportJobData;
 	importFollowing: DbUserImportJobData;
 	importFollowingToDb: DbUserImportToDbJobData;
 	importMuting: DbUserImportJobData;
@@ -72,6 +75,11 @@ export type DbUserImportJobData = {
 	user: ThinUser;
 	fileId: DriveFile['id'];
 };
+
+export type DBAntennaImportJobData = {
+	user: ThinUser,
+	antenna: Antenna
+}
 
 export type DbUserImportToDbJobData = {
 	user: ThinUser;
