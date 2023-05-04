@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, NoteReactionsRepository, NotesRepository, User, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, FollowRequestsRepository, NoteReactionsRepository, NotesRepository, User, UsersRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -34,6 +34,9 @@ export class NotificationEntityService implements OnModuleInit {
 
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
+
+		@Inject(DI.followRequestsRepository)
+		private followRequestsRepository: FollowRequestsRepository,
 
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
@@ -130,6 +133,15 @@ export class NotificationEntityService implements OnModuleInit {
 			detail: false,
 		});
 		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
+
+		// 既に解決されたフォローリクエストの通知を除外
+		const followRequestNotifications = validNotifications.filter(x => x.type === 'receiveFollowRequest');
+		if (followRequestNotifications.length > 0) {
+			const reqs = await this.followRequestsRepository.find({
+				where: { followerId: In(followRequestNotifications.map(x => x.notifierId!)) },
+			});
+			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
+		}
 
 		return await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
 			packedNotes,
