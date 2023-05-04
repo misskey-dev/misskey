@@ -77,5 +77,5 @@ export type Packed<x extends GetKeys<References, 'https://misskey-dev.net/api/'>
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;
 
 export type PackedNote = Packed<'Note'>;
-export type DefNote = Def<'/schemas/Note'>;
+export type DefNote = Def<'https://misskey-dev.net/api/'>;
 let renote: PackedNote['reply'];
