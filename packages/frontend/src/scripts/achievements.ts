@@ -464,6 +464,7 @@ const claimingQueue = new Set<string>();
 
 export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	if ($i == null) return;
+	if ($i.movedTo) return;
 	if (claimedAchievements.includes(type)) return;
 	claimingQueue.add(type);
 	claimedAchievements.push(type);

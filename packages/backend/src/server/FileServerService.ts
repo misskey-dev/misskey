@@ -454,7 +454,8 @@ export class FileServerService {
 			fileRole: 'original',
 			file,
 			filename: file.name,
-			mime: file.type,
+			// 古いファイルは修正前のmimeを持っているのでできるだけ修正してあげる
+			mime: this.fileInfoService.fixMime(file.type),
 			ext: null,
 			path,
 		};
