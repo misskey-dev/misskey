@@ -1,8 +1,12 @@
 <template>
-<MkCondensedLine>
+<MkCondensedLine v-if="defaultStore.state.enableCondensedLineForAcct">
 	<span>@{{ user.username }}</span>
 	<span v-if="user.host || detail || defaultStore.state.showFullAcct" style="opacity: 0.5;">@{{ user.host || host }}</span>
 </MkCondensedLine>
+<span v-else>
+	<span>@{{ user.username }}</span>
+	<span v-if="user.host || detail || defaultStore.state.showFullAcct" style="opacity: 0.5;">@{{ user.host || host }}</span>
+</span>
 </template>
 
 <script lang="ts" setup>
