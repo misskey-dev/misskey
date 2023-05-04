@@ -1029,6 +1029,7 @@ pleaseAgreeAllToContinue: "Zum Fortfahren muss allen obigen Feldern zugestimmt w
 continue: "Fortfahren"
 preservedUsernames: "Reservierte Benutzernamen"
 preservedUsernamesDescription: "Gib zu reservierende Benutzernamen durch Zeilenumbrüche getrennt an. Diese werden für die Registrierung gesperrt, können aber von Administratoren zur manuellen Erstellung von Konten verwendet werden. Existierende Konten, die diese Namen bereits verwenden, werden nicht beeinträchtigt."
+createNoteFromTheFile: "Notiz für diese Datei schreiben"
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
 _accountMigration:
