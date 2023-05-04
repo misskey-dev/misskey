@@ -1029,6 +1029,7 @@ pleaseAgreeAllToContinue: "You must agree to all above fields to continue."
 continue: "Continue"
 preservedUsernames: "Reserved usernames"
 preservedUsernamesDescription: "List usernames to reserve separated by linebreaks. These will become unable during normal account creation, but can be used by administrators to manually create accounts. Already existing accounts using these usernames will not be affected."
+createNoteFromTheFile: "Compose note from this file"
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _accountMigration:
