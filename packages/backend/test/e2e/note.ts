@@ -363,10 +363,7 @@ describe('Note', () => {
 				iconUrl: null,
 				displayOrder: 0,
 				target: 'manual',
-				condFormula: {
-					id: '3f0c8882-a5e9-4b23-968f-a8827a421c8c',
-					type: 'isRemote',
-				},
+				condFormula: {},
 				isAdministrator: false,
 				isModerator: false,
 				isPublic: false,
