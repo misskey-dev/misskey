@@ -164,7 +164,7 @@ export const routes = [{
 	}, {
 		path: '/migration',
 		name: 'migration',
-		component: page(() => import('./pages/settings/migration.vue'))
+		component: page(() => import('./pages/settings/migration.vue')),
 	}, {
 		path: '/custom-css',
 		name: 'general',
@@ -174,13 +174,9 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/accounts.vue')),
 	}, {
-		path: '/account-info',
+		path: '/account-stats',
 		name: 'other',
-		component: page(() => import('./pages/settings/account-info.vue')),
-	}, {
-		path: '/delete-account',
-		name: 'other',
-		component: page(() => import('./pages/settings/delete-account.vue')),
+		component: page(() => import('./pages/settings/account-stats.vue')),
 	}, {
 		path: '/other',
 		name: 'other',

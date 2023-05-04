@@ -11,21 +11,50 @@
 	-->
 
 	<div class="_gaps_s">
-		<FormLink to="/settings/account-info"><template #icon><i class="ti ti-info-circle"></i></template>{{ i18n.ts.accountInfo }}</FormLink>
+		<MkFolder>
+			<template #icon><i class="ti ti-info-circle"></i></template>
+			<template #label>{{ i18n.ts.accountInfo }}</template>
+
+			<div class="_gaps_m">
+				<MkKeyValue>
+					<template #key>ID</template>
+					<template #value><span class="_monospace">{{ $i.id }}</span></template>
+				</MkKeyValue>
+
+				<MkKeyValue>
+					<template #key>{{ i18n.ts.registeredDate }}</template>
+					<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
+				</MkKeyValue>
+
+				<FormLink to="/settings/account-stats"><template #icon><i class="ti ti-info-circle"></i></template>{{ i18n.ts.statistics }}</FormLink>
+			</div>
+		</MkFolder>
+
 		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
-		<FormLink to="/settings/delete-account"><template #icon><i class="ti ti-alert-triangle"></i></template>{{ i18n.ts.closeAccount }}</FormLink>
+
+		<MkFolder>
+			<template #icon><i class="ti ti-alert-triangle"></i></template>
+			<template #label>{{ i18n.ts.closeAccount }}</template>
+
+			<div class="_gaps_m">
+				<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
+				<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
+				<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount">{{ i18n.ts._accountDelete.requestAccountDelete }}</MkButton>
+				<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
+			</div>
+		</MkFolder>
+
+		<MkFolder>
+			<template #icon><i class="ti ti-flask"></i></template>
+			<template #label>{{ i18n.ts.experimentalFeatures }}</template>
+
+			<div class="_gaps_m">
+				<MkSwitch v-model="enableCondensedLineForAcct">
+					<template #label>Enable condensed line for acct</template>
+				</MkSwitch>
+			</div>
+		</MkFolder>
 	</div>
-
-	<MkFolder>
-		<template #icon><i class="ti ti-flask"></i></template>
-		<template #label>{{ i18n.ts.experimentalFeatures }}</template>
-
-		<div class="_gaps_m">
-			<MkSwitch v-model="enableCondensedLineForAcct">
-				<template #label>Enable condensed line for acct</template>
-			</MkSwitch>
-		</div>
-	</MkFolder>
 </div>
 </template>
 
@@ -34,9 +63,12 @@ import { computed, watch } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import FormInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
-import { $i } from '@/account';
+import { signout, $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { unisonReload } from '@/scripts/unison-reload';
@@ -50,6 +82,32 @@ function onChangeInjectFeaturedNote(v) {
 	}).then((i) => {
 		$i!.injectFeaturedNote = i.injectFeaturedNote;
 	});
+}
+
+async function deleteAccount() {
+	{
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts.deleteAccountConfirm,
+		});
+		if (canceled) return;
+	}
+
+	const { canceled, result: password } = await os.inputText({
+		title: i18n.ts.password,
+		type: 'password',
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('i/delete-account', {
+		password: password,
+	});
+
+	await os.alert({
+		title: i18n.ts._accountDelete.started,
+	});
+
+	await signout();
 }
 
 async function reloadAsk() {
