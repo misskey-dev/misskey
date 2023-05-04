@@ -229,6 +229,9 @@ importers:
       jsrsasign:
         specifier: 10.8.6
         version: 10.8.6
+      meilisearch:
+        specifier: 0.32.3
+        version: 0.32.3
       mfm-js:
         specifier: 0.23.3
         version: 0.23.3
@@ -9582,7 +9585,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: true
 
   /cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
@@ -14496,6 +14498,14 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
+  /meilisearch@0.32.3:
+    resolution: {integrity: sha512-EOgfBuRE5SiIPIpEDYe2HO0D7a4z5bexIgaAdJFma/dH5hx1kwO+u/qb2g3qKyjG+iA3l8MlmTj/Xd72uahaAw==}
+    dependencies:
+      cross-fetch: 3.1.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /memoizerific@1.11.3:
     resolution: {integrity: sha512-/EuHYwAPdLtXwAwSZkh/Gutery6pD2KYd44oQLhAvQp/50mpyduZh8Q7PYHXTCJ+wuXxt7oij2LXyIJOOYFPog==}
     dependencies:
@@ -14657,6 +14667,7 @@ packages:
 
   /minimist@1.2.7:
     resolution: {integrity: sha512-bzfL1YUZsP41gmu/qjrEk0Q6i2ix/cVeAhbCbqH9u3zYutS1cLg00qhrD0M2MVdCcx4Sc0UpP2eBWo9rotpq6g==}
+    dev: false
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -19700,7 +19711,7 @@ packages:
       axios: 0.27.2(debug@4.3.4)
       joi: 17.7.0
       lodash: 4.17.21
-      minimist: 1.2.7
+      minimist: 1.2.8
       rxjs: 7.8.1
     transitivePeerDependencies:
       - debug

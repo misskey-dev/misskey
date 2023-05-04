@@ -91,6 +91,7 @@
 		"jsdom": "21.1.1",
 		"json5": "2.2.3",
 		"jsonld": "8.1.1",
+		"meilisearch": "0.32.3",
 		"jsrsasign": "10.8.6",
 		"mfm-js": "0.23.3",
 		"mime-types": "2.1.35",

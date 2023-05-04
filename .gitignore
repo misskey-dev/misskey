@@ -44,7 +44,7 @@ built
 /data
 /.cache-loader
 /db
-/elasticsearch
+/meili_data
 npm-debug.log
 *.pem
 run.bat
