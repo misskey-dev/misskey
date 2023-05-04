@@ -73,9 +73,9 @@ export type References = [
     ...UnionToArray<Refs>
 ];
 
-export type Packed<x extends GetKeys<References, 'https://misskey-dev.net/api/'>> = GetDef<References, x, 'https://misskey-dev.net/api/'>;
+export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = GetDef<References, x, 'https://misskey-hub.net/api/schemas/'>;
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;
 
 export type PackedNote = Packed<'Note'>;
-export type DefNote = Def<'https://misskey-dev.net/api/'>;
+export type DefNote = Def<'https://misskey-hub.net/api/schemas/Note'>;
 let renote: PackedNote['reply'];

@@ -1,11 +1,11 @@
 import type { JSONSchema7 } from 'schema-type';
 
 export const packedNoteSchema = {
-	$id: 'https://misskey-hub.net/api/schemas/schemas/Note',
+	$id: 'https://misskey-hub.net/api/schemas/Note',
 
 	type: 'object',
 	properties: {
-		id: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
 			format: 'date-time',
@@ -23,22 +23,22 @@ export const packedNoteSchema = {
 			oneOf: [{ type: 'string' }, { type: 'null' }],
 		},
 		userId: {
-			$ref: 'https://misskey-hub.net/api/schemas/schemas/Id',
+			$ref: 'https://misskey-hub.net/api/schemas/Id',
 		},
 		user: {
-			$ref: 'https://misskey-hub.net/api/schemas/schemas/UserLite',
+			$ref: 'https://misskey-hub.net/api/schemas/UserLite',
 		},
 		replyId: {
-			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' }, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/Id' }, { type: 'null' }],
 		},
 		renoteId: {
-			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' }, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/Id' }, { type: 'null' }],
 		},
 		reply: {
-			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Note' }, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/Note' }, { type: 'null' }],
 		},
 		renote: {
-			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Note' }, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/Note' }, { type: 'null' }],
 		},
 		isHidden: {
 			type: 'boolean',
@@ -48,29 +48,29 @@ export const packedNoteSchema = {
 		},
 		mentions: {
 			type: 'array',
-			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
 		visibleUserIds: {
 			type: 'array',
-			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
 		fileIds: {
 			type: 'array',
-			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
 		files: {
 			type: 'array',
-			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/DriveFile' },
+			items: { $ref: 'https://misskey-hub.net/api/schemas/DriveFile' },
 		},
 		tags: {
 			type: 'array',
 			items: { type: 'string' },
 		},
 		poll: {
-			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Poll' }, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/Poll' }, { type: 'null' }],
 		},
 		channelId: {
-			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' }, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/Id' }, { type: 'null' }],
 		},
 		channel: {
 			oneOf: [{

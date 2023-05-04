@@ -5,7 +5,7 @@ export const packedAntennaSchema = {
 
 	type: 'object',
 	properties: {
-		id: { $ref: '/schemas/Id' },
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
 			format: 'date-time',
