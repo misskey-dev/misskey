@@ -1,5 +1,3 @@
-import type { FromSchema, JSONSchema7Reference } from 'json-schema-to-ts';
-
 import { IdSchema } from './schemas/id.js';
 import {
 	packedUserLiteSchema,
@@ -32,6 +30,7 @@ import { packedQueueCountSchema } from './schemas/queue.js';
 import { packedGalleryPostSchema } from './schemas/gallery-post.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from './schemas/emoji.js';
 import { packedFlashSchema } from './schemas/flash.js';
+import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -65,16 +64,18 @@ export const refs = {
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
-} as const satisfies { [x: string]: JSONSchema7Reference };
+} as const satisfies { [x: string]: JSONSchema7Definition };
 
 type Refs = typeof packedAntennaSchema | typeof packedNoteSchema; // TODO: typeof refs[keyof typeof refs];
-type UnionToArray<T, A extends unknown[] = []> = T extends any ? [T, ...A] : never;
 
 export type References = [
     typeof IdSchema,
     ...UnionToArray<Refs>
 ];
 
-export type Packed<T extends keyof typeof refs> = FromSchema<typeof refs[T], { references: References }>
+export type Packed<x extends GetKeys<References, 'https://misskey-dev.net/api/'>> = GetDef<References, x, 'https://misskey-dev.net/api/'>;
+export type Def<x extends GetKeys<References>> = GetDef<References, x>;
 
 export type PackedNote = Packed<'Note'>;
+export type DefNote = Def<'/schemas/Note'>;
+let renote: PackedNote['reply'];

@@ -1,14 +1,11 @@
-import type { JSONSchema7Reference } from 'json-schema-to-ts';
+import type { JSONSchema7Definition } from 'schema-type';
 
 export const packedAntennaSchema = {
-	$id: '/schemas/Antenna',
+	$id: 'https://misskey-hub.net/api/schemas/Antenna',
 
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			format: 'id',
-		},
+		id: { $ref: '/schemas/Id' },
 		createdAt: {
 			type: 'string',
 			format: 'date-time',
@@ -90,4 +87,4 @@ export const packedAntennaSchema = {
 		'isActive',
 		'hasUnreadNote',
 	],
-} as const satisfies JSONSchema7Reference;
+} as const satisfies JSONSchema7Definition;

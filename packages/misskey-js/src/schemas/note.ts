@@ -1,14 +1,11 @@
-import type { JSONSchema7Reference } from 'json-schema-to-ts';
+import type { JSONSchema7 } from 'schema-type';
 
 export const packedNoteSchema = {
-	$id: '/schemas/Note',
+	$id: 'https://misskey-hub.net/api/schemas/schemas/Note',
 
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			$ref: '/schemas/Id',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
 		createdAt: {
 			type: 'string',
 			format: 'date-time',
@@ -26,34 +23,22 @@ export const packedNoteSchema = {
 			oneOf: [{ type: 'string' }, { type: 'null' }],
 		},
 		userId: {
-			type: 'string',
-			$ref: '/schemas/Id',
+			$ref: 'https://misskey-hub.net/api/schemas/schemas/Id',
 		},
 		user: {
-			type: 'object',
-			$ref: '/schemas/UserLite',
+			$ref: 'https://misskey-hub.net/api/schemas/schemas/UserLite',
 		},
 		replyId: {
-			oneOf: [{
-				type: 'string',
-				$ref: '/schemas/Id',
-			}, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' }, { type: 'null' }],
 		},
 		renoteId: {
-			oneOf: [{
-				type: 'string',
-				$ref: '/schemas/Id',
-			}, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' }, { type: 'null' }],
 		},
 		reply: {
-			oneOf: [{
-				$ref: '/schemas/Note',
-			}, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Note' }, { type: 'null' }],
 		},
 		renote: {
-			oneOf: [{
-				$ref: '/schemas/Note',
-			}, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Note' }, { type: 'null' }],
 		},
 		isHidden: {
 			type: 'boolean',
@@ -63,48 +48,29 @@ export const packedNoteSchema = {
 		},
 		mentions: {
 			type: 'array',
-			items: {
-				type: 'string',
-				$ref: '/schemas/Id',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
 		},
 		visibleUserIds: {
 			type: 'array',
-			items: {
-				type: 'string',
-				$ref: '/schemas/Id',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
 		},
 		fileIds: {
 			type: 'array',
-			items: {
-				type: 'string',
-				$ref: '/schemas/Id',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' },
 		},
 		files: {
 			type: 'array',
-			items: {
-				$ref: '/schemas/DriveFile',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/schemas/DriveFile' },
 		},
 		tags: {
 			type: 'array',
-			items: {
-				type: 'string',
-			},
+			items: { type: 'string' },
 		},
 		poll: {
-			oneOf: [{
-				type: 'object',
-				$ref: '/schemas/Poll',
-			}, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Poll' }, { type: 'null' }],
 		},
 		channelId: {
-			oneOf: [{
-				type: 'string',
-				$ref: '/schemas/Id',
-			}, { type: 'null' }],
+			oneOf: [{ $ref: 'https://misskey-hub.net/api/schemas/schemas/Id' }, { type: 'null' }],
 		},
 		channel: {
 			oneOf: [{
@@ -156,4 +122,4 @@ export const packedNoteSchema = {
 		'renoteCount',
 		'repliesCount',
 	],
-} as const satisfies JSONSchema7Reference;
+} as const satisfies JSONSchema7Definition;

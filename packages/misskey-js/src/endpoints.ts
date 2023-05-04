@@ -1,5 +1,5 @@
 import { localUsernameSchema, passwordSchema } from "./schemas/user";
-import type { JSONSchema7 } from 'json-schema-to-ts';
+import type { JSONSchema7 } from 'schema-type';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
