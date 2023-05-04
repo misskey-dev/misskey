@@ -112,31 +112,32 @@ redis:
 # meilisearch:
 #  host: localhost
 #  port: 7700
-#  apiKey: ""
-#  index: "misskey"
+#  apiKey: ''
+#  index: 'misskey'
 #  searchType: 'all'
+#  indexLocalOnly: false
 #  config: {
 #   rankingRules: [
 #    'words',
-# 		'typo',
-# 		'sort',
-# 		'proximity',
-# 		'attribute',
-# 		'exactness',
-# 	],
-# 	searchableAttributes: [
-# 		'text',
-# 		'cw',
-# 	],
-# 	sortableAttributes: [
-# 		'createdAt',
-# 	],
-# 	typoTolerance: {
-# 		enabled: false,
-# 	},
-# 	pagination: {
-# 		maxTotalHits: 10000,
-# 	},
+#    'typo',
+#    'sort',
+#    'proximity',
+#    'attribute',
+#    'exactness',
+#   ],
+#   searchableAttributes: [
+#    'text',
+#    'cw',
+#   ],
+#   sortableAttributes: [
+#    'createdAt',
+#   ],
+#   typoTolerance: {
+#    enabled: false,
+#   },
+#   pagination: {
+#    maxTotalHits: 10000,
+#   },
 #  }
 
 #   ┌───────────────┐

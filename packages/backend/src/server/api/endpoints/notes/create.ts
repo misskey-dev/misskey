@@ -12,7 +12,6 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
-import { Meili } from '../../../../meili.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -179,7 +178,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
-		private meiliService: Meili,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let visibleUsers: User[] = [];

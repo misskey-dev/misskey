@@ -1,9 +1,11 @@
 import { MeiliSearch, Index } from 'meilisearch';
-import { Inject, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
+import { Note } from '@/models/entities/Note.js';
 
-export class Meili implements OnModuleInit {
+@Injectable()
+export class MeiliService implements OnModuleInit {
 	public index: Index | null = null;
 	private client: MeiliSearch;
 	constructor(
@@ -20,6 +22,20 @@ export class Meili implements OnModuleInit {
 			this.index.updateSettings(
 				this.config.meilisearch.config,
 			);
+		}
+	}
+
+	addNote (note: Note): void {
+		if ( this.index !== null && !(note.renoteId && !note.text) ) {
+			this.index.addDocuments([
+				{
+					id: note.id,
+					createdAt: note.createdAt,
+					text: note.text,
+					cw: note.cw,
+					userHost: note.userHost,
+				},
+			]);			
 		}
 	}
 }

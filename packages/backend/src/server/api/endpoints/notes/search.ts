@@ -8,8 +8,8 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { RoleService } from '@/core/RoleService.js';
+import { MeiliService } from '@/MeiliService.js';
 import { ApiError } from '../../error.js';
-import { Meili } from '../../../../meili.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -67,10 +67,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		private meiliService: MeiliService,
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private roleService: RoleService,
-		private meiliService: Meili,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const policies = await this.roleService.getUserPolicies(me ? me.id : null);

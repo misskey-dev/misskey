@@ -71,6 +71,7 @@ export type Source = {
 		apiKey: string;
 		index: string;
 		searchType?: 'last' | 'all';
+		indexLocalOnly?: boolean;
 		config: {
 			rankingRules?: string[];
 			searchableAttributes?: string[];

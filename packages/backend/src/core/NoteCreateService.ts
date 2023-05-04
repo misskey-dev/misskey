@@ -46,7 +46,7 @@ import { bindThis } from '@/decorators.js';
 import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
-import { Meili } from '@/meili.js';
+import { MeiliService } from '@/MeiliService.js';
 
 const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -181,7 +181,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
-
+		
+		private meiliService: MeiliService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private idService: IdService,
@@ -203,7 +204,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private perUserNotesChart: PerUserNotesChart,
 		private activeUsersChart: ActiveUsersChart,
 		private instanceChart: InstanceChart,
-		private meiliService: Meili,
 	) { }
 
 	@bindThis
@@ -426,17 +426,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 				await this.notesRepository.insert(insert);
 			}
 
-			// 全投稿を検索インデックスに追加する、オプションにしたほうが良さそう。
-			if ( this.meiliService.index !== null && !(insert.renoteId && !insert.text) ) {
-				this.meiliService.index.addDocuments([
-					{
-						id: insert.id,
-						createdAt: insert.createdAt,
-						text: insert.text,
-						cw: insert.cw,
-						userHost: insert.userHost,
-					},
-				]);			
+			// 全投稿をインデックスに追加する
+			if (this.config.meilisearch && (!this.config.meilisearch.indexLocalOnly || insert.localOnly)) {
+				this.meiliService.addNote(insert);
 			}
 
 			return insert;

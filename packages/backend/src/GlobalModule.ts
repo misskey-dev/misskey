@@ -4,7 +4,7 @@ import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
-import { Meili } from './meili.js';
+import { MeiliService } from './MeiliService.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
@@ -73,9 +73,9 @@ const $redisForSub: Provider = {
 
 @Global()
 @Module({
-	imports: [RepositoryModule, Meili],
-	providers: [$config, $db, $redis, $redisForPub, $redisForSub, Meili],
-	exports: [$config, $db, $redis, $redisForPub, $redisForSub, Meili, RepositoryModule],
+	imports: [RepositoryModule],
+	providers: [$config, $db, $redis, $redisForPub, $redisForSub, MeiliService],
+	exports: [$config, $db, $redis, $redisForPub, $redisForSub, MeiliService, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
