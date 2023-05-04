@@ -70,7 +70,8 @@ type Refs = typeof packedAntennaSchema | typeof packedNoteSchema; // TODO: typeo
 
 export type References = [
     typeof IdSchema,
-    ...UnionToArray<Refs>
+    typeof packedAntennaSchema,
+	typeof packedNoteSchema,
 ];
 
 export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = GetDef<References, x, 'https://misskey-hub.net/api/schemas/'>;

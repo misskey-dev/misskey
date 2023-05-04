@@ -1,4 +1,4 @@
-import type { JSONSchema7 } from 'schema-type';
+import type { JSONSchema7Definition } from 'schema-type';
 
 export const packedNoteSchema = {
 	$id: 'https://misskey-hub.net/api/schemas/Note',
