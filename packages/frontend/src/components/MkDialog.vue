@@ -183,7 +183,7 @@ onBeforeUnmount(() => {
 	box-sizing: border-box;
 	text-align: center;
 	background: var(--panel);
-	border-radius: var(--radius);
+	border-radius: 16px;
 }
 
 .icon {
