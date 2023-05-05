@@ -95,6 +95,9 @@ export class SearchService {
 
 	@bindThis
 	public async indexNote(note: Note): Promise<void> {
+		if (note.text == null && note.cw == null) return;
+		if (!['home', 'public'].includes(note.visibility)) return;
+
 		if (this.meilisearch) {
 			this.meilisearchNoteIndex!.addDocuments([{
 				id: note.id,
