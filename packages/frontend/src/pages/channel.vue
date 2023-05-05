@@ -36,6 +36,17 @@
 		<div v-else-if="tab === 'featured'">
 			<MkNotes :pagination="featuredPagination"/>
 		</div>
+		<div v-else-if="tab === 'search'">
+			<div class="_gaps">
+				<div>
+					<MkInput v-model="searchQuery">
+						<template #prefix><i class="ti ti-search"></i></template>
+					</MkInput>
+					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
+				</div>
+				<MkNotes v-if="searchPagination" :key="searchQuery" :pagination="searchPagination"/>
+			</div>
+		</div>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
@@ -63,6 +74,7 @@ import { deviceKind } from '@/scripts/device-kind';
 import MkNotes from '@/components/MkNotes.vue';
 import { url } from '@/config';
 import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
 import { defaultStore } from '@/store';
 import MkNote from '@/components/MkNote.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -76,6 +88,8 @@ const props = defineProps<{
 let tab = $ref('timeline');
 let channel = $ref(null);
 let favorited = $ref(false);
+let searchQuery = $ref('');
+let searchPagination = $ref();
 const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
@@ -123,6 +137,21 @@ async function unfavorite() {
 	});
 }
 
+async function search() {
+	const query = searchQuery.toString().trim();
+
+	if (query == null) return;
+
+	searchPagination = {
+		endpoint: 'notes/search',
+		limit: 10,
+		params: {
+			query: searchQuery,
+			channelId: channel.id,
+		},
+	};
+}
+
 const headerActions = $computed(() => {
 	if (channel && channel.userId) {
 		const share = {
@@ -160,6 +189,10 @@ const headerTabs = $computed(() => [{
 	key: 'featured',
 	title: i18n.ts.featured,
 	icon: 'ti ti-bolt',
+}, {
+	key: 'search',
+	title: i18n.ts.search,
+	icon: 'ti ti-search',
 }]);
 
 definePageMetadata(computed(() => channel ? {
