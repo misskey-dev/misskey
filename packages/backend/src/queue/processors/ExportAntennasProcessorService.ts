@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { format as DateFormat } from 'date-fns';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UsersRepository, UserListsRepository, UserListJoiningsRepository, User } from '@/models/index.js';
+import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, User } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -25,8 +25,6 @@ export class ExportAntennasProcessorService {
 		private usersRepository: UsersRepository,
 		@Inject(DI.antennasRepository)
 		private antennsRepository: AntennasRepository,
-		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
 		private driveService: DriveService,
@@ -59,7 +57,6 @@ export class ExportAntennasProcessorService {
 		};
 		try {
 			const antennas = await this.antennsRepository.findBy({ userId: job.data.user.id });
-			const userLists = this.userListsRepository.findBy({ userId: job.data.user.id });
 			write('[');
 			for (const [index, antenna] of antennas.entries()) {
 				let users: User[] | undefined;
@@ -75,7 +72,7 @@ export class ExportAntennasProcessorService {
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
 					users: antenna.users,
-					userListUser: typeof users !== 'undefined' ? users.map((u) => {
+					userListAcct: typeof users !== 'undefined' ? users.map((u) => {
 						return this.utilityService.getFullApAccount(u.username, u.host); // acct
 					}) : null,
 					caseSensitive: antenna.caseSensitive,
