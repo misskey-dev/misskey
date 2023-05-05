@@ -45,8 +45,8 @@
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
 				<Sortable
-					class="_gaps_s"
 					v-model="fields"
+					class="_gaps_s"
 					item-key="id"
 					:animation="150"
 					:handle="'.' + $style.dragItemHandle"
