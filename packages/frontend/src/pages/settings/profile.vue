@@ -57,14 +57,19 @@
 						<div :class="$style.fieldDragItem">
 							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle"><i class="ti ti-menu"></i></button>
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
-							<FormSplit :min-width="201" :class="$style.dragItemForm">
-								<MkInput v-model="element.name" small>
-									<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ index + 1 }}</template>
-								</MkInput>
-								<MkInput v-model="element.value" small>
-									<template #label>{{ i18n.ts._profile.metadataContent }} #{{ index + 1 }}</template>
-								</MkInput>
-							</FormSplit>
+							<div :class="$style.dragItemForm">
+								<div :class="$style.dragItemFormLabel">
+									{{ i18n.ts._profile.metadata }} #{{ index + 1 }}
+								</div>
+								<FormSplit :min-width="200">
+									<MkInput v-model="element.name" small :aria-label="i18n.ts._profile.metadataLabel">
+										<template #prefix><i class="ti ti-tag"></i></template>
+									</MkInput>
+									<MkInput v-model="element.value" small :aria-label="i18n.ts._profile.metadataContent">
+										<template #prefix><i class="ti ti-pencil"></i></template>
+									</MkInput>
+								</FormSplit>
+							</div>
 						</div>
 					</template>
 				</Sortable>
@@ -277,12 +282,16 @@ definePageMetadata({
 <style lang="scss" module>
 .fieldDragItem {
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 	padding-bottom: .75em;
 	border-bottom: solid 0.5px var(--divider);
 
 	&:last-child {
 		border-bottom: 0;
+	}
+
+	@media (max-width: 500px) {
+		align-items: center;
 	}
 }
 
@@ -315,5 +324,11 @@ definePageMetadata({
 
 .dragItemForm {
 	flex-grow: 1;
+}
+
+.dragItemFormLabel {
+	font-size: 0.85em;
+    padding: 0 0 8px 0;
+    user-select: none;
 }
 </style>
