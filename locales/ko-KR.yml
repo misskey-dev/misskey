@@ -1341,7 +1341,7 @@ _role:
   _condition:
     isLocal: "로컬 사용자"
     isRemote: "리모트 사용자"
-    createdLessThan: "가압한 지 다음 일수 이내인 유저"
+    createdLessThan: "가입한 지 다음 일수 이내인 유저"
     createdMoreThan: "가입한 지 다음 일수 이상인 유저"
     followersLessThanOrEq: "팔로워 수가 다음 이하인 유저"
     followersMoreThanOrEq: "팔로워 수가 다음 이상인 유저"
@@ -1372,7 +1372,7 @@ _ffVisibility:
   private: "비공개"
 _signup:
   almostThere: "거의 다 끝났습니다"
-  emailAddressInfo: "당신이 사용하고 있는 이메일 주소를 입력해 주세요. 이메일 주소는 다른 유저에게 공개되지 않습니다."
+  emailAddressInfo: "당신이 사용하고 있는 이메일 주소를 입력해 주세요. 이메일 주소는 다른 유저에게 공개되지 않습니다."
   emailSent: "입력하신 메일 주소({email})로 확인 메일을 보내드렸습니다. 가입을 완료하시려면 보내드린 메일에 있는 링크로 접속해 주세요."
 _accountDelete:
   accountDelete: "계정 삭제"
