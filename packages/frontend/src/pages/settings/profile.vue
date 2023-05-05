@@ -1,5 +1,5 @@
 <template>
-<div class="_gaps_m">
+<div class="_gaps_m" ref="el">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" @click="changeAvatar"/>
@@ -37,12 +37,21 @@
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div class="_gaps_m">
-				<div>
+			<div>
+				<div :class="$style.metadataMargin">
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					<MkButton v-else inline style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+				</div>
+
+				<div :class="$style.dragFormLabelPC" v-if="!narrow">
+					<div>
+						{{ i18n.ts._profile.metadataLabel }}
+					</div>
+					<div>
+						{{ i18n.ts._profile.metadataContent }}
+					</div>
 				</div>
 				<Sortable
 					v-model="fields"
@@ -55,18 +64,15 @@
 				>
 					<template #item="{element, index}">
 						<div :class="$style.fieldDragItem">
-							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle"><i class="ti ti-menu"></i></button>
+							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 							<div :class="$style.dragItemForm">
-								<div :class="$style.dragItemFormLabel">
-									{{ i18n.ts._profile.metadata }} #{{ index + 1 }}
-								</div>
 								<FormSplit :min-width="200">
-									<MkInput v-model="element.name" small :aria-label="i18n.ts._profile.metadataLabel">
-										<template #prefix><i class="ti ti-tag"></i></template>
+									<MkInput v-model="element.name" small>
+										<template v-if="narrow" #label>{{ i18n.ts._profile.metadataLabel }}</template>
 									</MkInput>
-									<MkInput v-model="element.value" small :aria-label="i18n.ts._profile.metadataContent">
-										<template #prefix><i class="ti ti-pencil"></i></template>
+									<MkInput v-model="element.value" small>
+										<template v-if="narrow" #label>{{ i18n.ts._profile.metadataContent }}</template>
 									</MkInput>
 								</FormSplit>
 							</div>
@@ -99,7 +105,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -138,8 +144,18 @@ watch(() => profile, () => {
 	deep: true,
 });
 
+
 const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
+
+const el = ref<null | Element>(null);
+const narrow = ref(false);
+const NARROW_THRESHOLD = 500;
+const ro = new ResizeObserver((entries, observer) => {
+	if (entries.length === 0) return;
+	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
+});
+
 
 function addField() {
 	fields.value.push({
@@ -248,6 +264,16 @@ definePageMetadata({
 	title: i18n.ts.profile,
 	icon: 'ti ti-user',
 });
+
+onMounted(() => {
+	if (el.value) {
+		ro.observe(el.value);
+	}
+});
+
+onUnmounted(() => {
+	ro.disconnect();
+})
 </script>
 
 <style lang="scss" scoped>
@@ -280,18 +306,18 @@ definePageMetadata({
 }
 </style>
 <style lang="scss" module>
+.metadataMargin {
+	margin-bottom: 1.5em;
+}
+
 .fieldDragItem {
 	display: flex;
-	align-items: flex-end;
+	align-items: center;
 	padding-bottom: .75em;
 	border-bottom: solid 0.5px var(--divider);
 
 	&:last-child {
 		border-bottom: 0;
-	}
-
-	@media (max-width: 500px) {
-		align-items: center;
 	}
 }
 
@@ -326,9 +352,12 @@ definePageMetadata({
 	flex-grow: 1;
 }
 
-.dragItemFormLabel {
+.dragFormLabelPC {
 	font-size: 0.85em;
     padding: 0 0 8px 0;
+	margin-left: 40px;
     user-select: none;
-}
-</style>
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+}</style>
