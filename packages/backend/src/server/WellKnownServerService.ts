@@ -8,6 +8,7 @@ import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
 import type { User } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { FindOptionsWhere } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
@@ -23,6 +24,7 @@ export class WellKnownServerService {
 		private usersRepository: UsersRepository,
 
 		private nodeinfoServerService: NodeinfoServerService,
+		private userEntityService: UserEntityService,
 	) {
 		//this.createServer = this.createServer.bind(this);
 	}
@@ -130,7 +132,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 			const self = {
 				rel: 'self',
 				type: 'application/activity+json',
-				href: `${this.config.url}/users/${user.id}`,
+				href: this.userEntityService.genLocalUserUri(user.id),
 			};
 			const profilePage = {
 				rel: 'http://webfinger.net/rel/profile-page',

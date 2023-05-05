@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { action } from '@storybook/addon-actions';
 import { expect } from '@storybook/jest';
 import { waitFor } from '@storybook/testing-library';
 import { StoryObj } from '@storybook/vue3';
@@ -20,13 +21,20 @@ export const Default = {
 						...this.args,
 					};
 				},
+				events() {
+					return {
+						retry: action('retry'),
+					};
+				},
 			},
-			template: '<MkError v-bind="props" />',
+			template: '<MkError v-bind="props" v-on="events" />',
 		};
 	},
 	async play({ canvasElement }) {
 		await expect(canvasElement.firstElementChild).not.toBeNull();
 		await waitFor(async () => expect(canvasElement.firstElementChild?.classList).not.toContain('_transition_zoom-enter-active'));
+	},
+	args: {
 	},
 	parameters: {
 		layout: 'centered',

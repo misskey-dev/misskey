@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import Limiter from 'ratelimiter';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';

@@ -156,7 +156,7 @@ onUnmounted(() => {
 	}
 
 	&.thin {
-		--height: 42px;
+		--height: 40px;
 
 		> .buttons {
 			> .button {

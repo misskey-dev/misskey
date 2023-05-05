@@ -1,9 +1,10 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment"/>
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode" />
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
-			<b style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}</b>
+			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
 			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 		</div>
 	</div>
@@ -14,7 +15,7 @@
 		:href="image.url"
 		:title="image.name"
 	>
-		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :cover="false"/>
+		<ImgWithBlurhash :hash="image.blurhash" :src="url" :alt="image.comment || image.name" :title="image.comment || image.name" :width="image.properties.width" :height="image.properties.height" :cover="false"/>
 	</a>
 	<div :class="$style.indicators">
 		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
@@ -28,6 +29,7 @@
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
+import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -38,17 +40,18 @@ const props = defineProps<{
 }>();
 
 let hide = $ref(true);
-let darkMode = $ref(defaultStore.state.darkMode);
+let darkMode: boolean = $ref(defaultStore.state.darkMode);
 
-const url = (props.raw || defaultStore.state.loadRawImages)
+const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl;
+		: props.image.thumbnailUrl
+);
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
 watch(() => props.image, () => {
-	hide = (defaultStore.state.nsfw === 'force') ? true : props.image.isSensitive && (defaultStore.state.nsfw !== 'ignore');
+	hide = (defaultStore.state.nsfw === 'force' || defaultStore.state.enableDataSaverMode) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
 }, {
 	deep: true,
 	immediate: true,

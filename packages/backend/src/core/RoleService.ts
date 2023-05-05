@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';

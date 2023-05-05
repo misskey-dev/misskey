@@ -39,9 +39,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const pairs = await Promise.all(followings.map(f => Promise.all([
 				this.usersRepository.findOneByOrFail({ id: f.followerId }),
 				this.usersRepository.findOneByOrFail({ id: f.followeeId }),
-			])));
+			]).then(([from, to]) => [{ id: from.id }, { id: to.id }])));
 
-			this.queueService.createUnfollowJob(pairs.map(p => ({ to: p[0], from: p[1], silent: true })));
+			this.queueService.createUnfollowJob(pairs.map(p => ({ from: p[0], to: p[1], silent: true })));
 		});
 	}
 }

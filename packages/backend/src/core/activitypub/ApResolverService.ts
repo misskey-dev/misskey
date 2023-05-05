@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -151,7 +151,7 @@ export class Resolver {
 				return Promise.all(
 					[parsed.id, parsed.rest].map(id => this.usersRepository.findOneByOrFail({ id })),
 				)
-					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, url)));
+					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower as LocalUser | RemoteUser, followee as LocalUser | RemoteUser, url)));
 			default:
 				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}
