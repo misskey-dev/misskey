@@ -1,5 +1,5 @@
 <template>
-<div class="_gaps_m" ref="el">
+<div ref="el" class="_gaps_m">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" @click="changeAvatar"/>
@@ -45,7 +45,7 @@
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
 
-				<div :class="$style.dragFormLabelPC" v-if="!narrow">
+				<div v-if="!narrow" :class="$style.dragFormLabelPC">
 					<div>
 						{{ i18n.ts._profile.metadataLabel }}
 					</div>
@@ -144,7 +144,6 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-
 const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
 
@@ -155,7 +154,6 @@ const ro = new ResizeObserver((entries, observer) => {
 	if (entries.length === 0) return;
 	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
 });
-
 
 function addField() {
 	fields.value.push({
