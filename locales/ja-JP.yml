@@ -1331,6 +1331,7 @@ _role:
     canInvite: "サーバー招待コードの発行"
     canManageCustomEmojis: "カスタム絵文字の管理"
     driveCapacity: "ドライブ容量"
+    alwaysMarkNsfw: "ファイルにNSFWを常に付与"
     pinMax: "ノートのピン留めの最大数"
     antennaMax: "アンテナの作成可能数"
     wordMuteMax: "ワードミュートの最大文字数"

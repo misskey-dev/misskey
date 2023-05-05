@@ -150,7 +150,7 @@ export class ApNoteService {
 		if (actor.isSuspended) {
 			throw new Error('actor has been suspended');
 		}
-	
+		
 		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
 		let visibility = noteAudience.visibility;
 		const visibleUsers = noteAudience.visibleUsers;
