@@ -273,7 +273,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	ro.disconnect();
-})
+});
 </script>
 
 <style lang="scss" scoped>
