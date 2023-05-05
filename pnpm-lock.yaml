@@ -337,6 +337,9 @@ importers:
       sharp-read-bmp:
         specifier: github:misskey-dev/sharp-read-bmp
         version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
+      slacc:
+        specifier: 0.0.7
+        version: 0.0.7
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -345,7 +348,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e
+        version: github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517
       systeminformation:
         specifier: 5.17.12
         version: 5.17.12
@@ -434,6 +437,39 @@ importers:
       '@tensorflow/tfjs-node':
         specifier: 4.4.0
         version: 4.4.0(seedrandom@3.0.5)
+      slacc-android-arm-eabi:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-android-arm64:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-darwin-arm64:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-darwin-universal:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-darwin-x64:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-arm-gnueabihf:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-arm64-gnu:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-arm64-musl:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-linux-x64-gnu:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-win32-arm64-msvc:
+        specifier: 0.0.7
+        version: 0.0.7
+      slacc-win32-x64-msvc:
+        specifier: 0.0.7
+        version: 0.0.7
     devDependencies:
       '@jest/globals':
         specifier: 29.5.0
@@ -948,7 +984,7 @@ importers:
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.7)(@storybook/components@7.0.7)(@storybook/core-events@7.0.7)(@storybook/manager-api@7.0.7)(@storybook/preview-api@7.0.7)(@storybook/theming@7.0.7)(@storybook/types@7.0.7)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e
+        version: github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517
       vite-plugin-turbosnap:
         specifier: 1.0.2
         version: 1.0.2
@@ -17783,6 +17819,121 @@ packages:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: true
 
+  /slacc-android-arm-eabi@0.0.7:
+    resolution: {integrity: sha512-6TikZlR1jsQscxwphhrf0U4xbsRy6zKJ0zmEULopTzbohgo5OLdZ7L3tQazkYlaaFe3YjGnVLW3FfGhhrajVog==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-android-arm64@0.0.7:
+    resolution: {integrity: sha512-aol/9Rg0Hfqu81hpK+HXcx9sGYu4qqYU+djBCgLtb8I6ZMdWUdE0dp8ACBoTOmYn34hYGcUu4FlJUZ8r7Utucg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-darwin-arm64@0.0.7:
+    resolution: {integrity: sha512-PkV7rO/c9AImNYDacP+kxtOjVuxjy06IIOAxbWerIWvoeqsCNRtiF/dh+OqIACRFBuHIDe0oAyUCEMGUTnzjyQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-darwin-universal@0.0.7:
+    resolution: {integrity: sha512-Y9zXpL40m4Yq3dE5vdnAgfmn0Fxc0Bf0ixC9TSl96gKeIZEd6drkjfpHFdsIDNImzOksIAUo0HHiDdbEfE7zdQ==}
+    engines: {node: '>= 10'}
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-darwin-x64@0.0.7:
+    resolution: {integrity: sha512-yKaGjX2YJl1QHe4NgqQVsY83jees3hjFxEUPoKpuZEQzWbMNn0XSyceFRGXIk1oDqiKU40UcsdcCedjYjSEd0Q==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-arm-gnueabihf@0.0.7:
+    resolution: {integrity: sha512-pdWMdQeX6uA9JfSoWo9EHH0yRiwXKMbaKoS9gflDSyt/hjeR3Qx/KK7Wihd7HeXx7njlNdpr9ycTRmm5NgapQQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-arm64-gnu@0.0.7:
+    resolution: {integrity: sha512-hz9TK/w6fxeNZXyFzuLq5cJD/XRyJbo6BaIdW+VrKKnb9nkLnWlqDQtdtJk7Fw7zHjdY3Uqufjwm0iT6qBVpUQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-arm64-musl@0.0.7:
+    resolution: {integrity: sha512-wCDAYL7e+lh3XL7g87Ui/Bb2Ap9GcBqeJuj2yHIx6MYC8ontwFSXhqRTmd2zmPLmZA5Nc11aKGN11YNu0Pnwlw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-linux-x64-gnu@0.0.7:
+    resolution: {integrity: sha512-E5+2cveizpfHXCk/Hu5VfslWFeDVw47nywODiJ8CsofT2l5ITfYPMFEBXm9ORY25mGBTgsO6lJYiF9Hz4FlS9Q==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-win32-arm64-msvc@0.0.7:
+    resolution: {integrity: sha512-3a+qnkZbP+Pr5RZuzd0Vi1uCal137QiJajRAWT4r7qwu+Zidd50x2oikQ4rAegqZVTm8qTwVmWA+WmH8WHI7iw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-win32-x64-msvc@0.0.7:
+    resolution: {integrity: sha512-ydFdZ7wEXQPsw2Tg+yG9uJdCGTehyPtrWBVUMa7fojr3j1gbtThXS2l9Ad/6fYYi2VwdaYPLWbwV3GYElPGL8g==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc@0.0.7:
+    resolution: {integrity: sha512-rwi2F3oJaGPST9JdCoUd5fnSZaoZFgTL00GFKhKufT48uwtUEAHlOL0t8gEVmon71X+53f9nEdsGWhwtOutJTQ==}
+    engines: {node: '>= 10'}
+    optionalDependencies:
+      slacc-android-arm-eabi: 0.0.7
+      slacc-android-arm64: 0.0.7
+      slacc-darwin-arm64: 0.0.7
+      slacc-darwin-universal: 0.0.7
+      slacc-darwin-x64: 0.0.7
+      slacc-linux-arm-gnueabihf: 0.0.7
+      slacc-linux-arm64-gnu: 0.0.7
+      slacc-linux-arm64-musl: 0.0.7
+      slacc-linux-x64-gnu: 0.0.7
+      slacc-win32-arm64-msvc: 0.0.7
+      slacc-win32-x64-msvc: 0.0.7
+    dev: false
+
   /slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -20248,8 +20399,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/c7d71a9ec2467268b3911dc2ac805c2b8a898d3e}
+  github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/2d63e2a0066f89871e777cc81d43c1ade8c97517}
     name: summaly
     version: 4.0.2
     dependencies:
