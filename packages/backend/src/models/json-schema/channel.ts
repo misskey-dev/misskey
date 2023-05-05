@@ -30,6 +30,10 @@ export const packedChannelSchema = {
 			format: 'url',
 			nullable: true, optional: false,
 		},
+		isArchived: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		notesCount: {
 			type: 'number',
 			nullable: false, optional: false,

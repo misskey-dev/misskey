@@ -46,8 +46,9 @@
 				</div>
 			</MkFolder>
 
-			<div>
+			<div class="_buttons">
 				<MkButton primary @click="save()"><i class="ti ti-device-floppy"></i> {{ channelId ? i18n.ts.save : i18n.ts.create }}</MkButton>
+				<MkButton v-if="channelId" danger @click="archive()"><i class="ti ti-trash"></i> {{ i18n.ts.archive }}</MkButton>
 			</div>
 		</div>
 	</MkSpacer>
@@ -149,6 +150,23 @@ function save() {
 			router.push(`/channels/${created.id}`);
 		});
 	}
+}
+
+async function archive() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.t('channelArchiveConfirmTitle', { name: name }),
+		text: i18n.ts.channelArchiveConfirmDescription,
+	});
+
+	if (canceled) return;
+	
+	os.api('channels/update', {
+		channelId: props.channelId,
+		isArchived: true,
+	}).then(() => {
+		os.success();
+	});
 }
 
 function setBannerImage(evt) {
