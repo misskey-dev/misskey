@@ -1327,6 +1327,7 @@ _role:
     canInvite: "Can create instance invite codes"
     canManageCustomEmojis: "Can manage custom emojis"
     driveCapacity: "Drive capacity"
+    alwaysMarkNsfw: "Always mark files as NSFW"
     pinMax: "Maximum number of pinned notes"
     antennaMax: "Maximum number of antennas"
     wordMuteMax: "Maximum number of characters allowed in word mutes"
