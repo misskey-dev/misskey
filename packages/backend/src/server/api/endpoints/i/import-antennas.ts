@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			if (file === null) throw new ApiError(meta.errors.noSuchFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
-			const antennas: (Omit<_Antenna, 'userListId'> & { userListId: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
+			const antennas: (_Antenna & { userListUser: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
 			const currentAntennasCount = await this.antennasRepository.countBy({ userId: me.id });
 			if (currentAntennasCount + antennas.length > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
 				throw new ApiError(meta.errors.tooManyAntennas);
@@ -78,4 +78,4 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	}
 } 
 
-export type Antenna = (Omit<_Antenna, 'userListId'> & { userListId: string[] | null })[];
+export type Antenna = (_Antenna & { userListUser: string[] | null })[];

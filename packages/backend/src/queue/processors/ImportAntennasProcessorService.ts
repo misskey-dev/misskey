@@ -32,7 +32,7 @@ export class ImportAntennasProcessorService {
 				properties: {
 					name: { type: 'string', minLength: 1, maxLength: 100 },
 					src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
-					userListId: { 
+					userListUser: { 
 						type: 'array', 
 						items: {
 							type: 'string',
@@ -71,11 +71,11 @@ export class ImportAntennasProcessorService {
 					lastUsedAt: now,
 					userId: job.data.user.id,
 					name: antenna.name,
-					src: antenna.src === 'list' && antenna.userListId ? 'users' : antenna.src,
+					src: antenna.src === 'list' && antenna.userListUser ? 'users' : antenna.src,
 					userListId: null,
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
-					users: (antenna.src === 'list' && antenna.userListId !== null ? antenna.userListId : antenna.users).filter(Boolean),
+					users: (antenna.src === 'list' && antenna.userListUser !== null ? antenna.userListUser : antenna.users).filter(Boolean),
 					caseSensitive: antenna.caseSensitive,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,

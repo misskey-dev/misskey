@@ -75,7 +75,7 @@ export class ExportAntennasProcessorService {
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
 					users: antenna.users,
-					userListId: typeof users !== 'undefined' ? users.map((u) => {
+					userListUser: typeof users !== 'undefined' ? users.map((u) => {
 						return this.utilityService.getFullApAccount(u.username, u.host); // acct
 					}) : null,
 					caseSensitive: antenna.caseSensitive,
