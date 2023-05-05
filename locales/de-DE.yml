@@ -1327,6 +1327,7 @@ _role:
     canInvite: "Erstellung von Einladungscodes für diese Instanz"
     canManageCustomEmojis: "Benutzerdefinierte Emojis verwalten"
     driveCapacity: "Drive-Kapazität"
+    alwaysMarkNsfw: "Dateien immer als NSFW markieren"
     pinMax: "Maximale Anzahl an angehefteten Notizen"
     antennaMax: "Maximale Anzahl an Antennen"
     wordMuteMax: "Maximale Zeichenlänge für Wortstummschaltungen"
