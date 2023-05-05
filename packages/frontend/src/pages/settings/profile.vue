@@ -1,5 +1,5 @@
 <template>
-<div ref="el" class="_gaps_m">
+<div class="_gaps_m">
 	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div class="avatar">
 			<MkAvatar class="avatar" :user="$i" @click="changeAvatar"/>
@@ -37,7 +37,7 @@
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div>
+			<div :class="$style.metadataRoot">
 				<div :class="$style.metadataMargin">
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -45,14 +45,6 @@
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
 
-				<div v-if="!narrow" :class="$style.dragFormLabelPC">
-					<div>
-						{{ i18n.ts._profile.metadataLabel }}
-					</div>
-					<div>
-						{{ i18n.ts._profile.metadataContent }}
-					</div>
-				</div>
 				<Sortable
 					v-model="fields"
 					class="_gaps_s"
@@ -69,10 +61,10 @@
 							<div :class="$style.dragItemForm">
 								<FormSplit :min-width="200">
 									<MkInput v-model="element.name" small>
-										<template v-if="narrow" #label>{{ i18n.ts._profile.metadataLabel }}</template>
+										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
 									</MkInput>
 									<MkInput v-model="element.value" small>
-										<template v-if="narrow" #label>{{ i18n.ts._profile.metadataContent }}</template>
+										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
 									</MkInput>
 								</FormSplit>
 							</div>
@@ -146,14 +138,6 @@ watch(() => profile, () => {
 
 const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
 const fieldEditMode = ref(false);
-
-const el = ref<null | Element>(null);
-const narrow = ref(false);
-const NARROW_THRESHOLD = 500;
-const ro = new ResizeObserver((entries, observer) => {
-	if (entries.length === 0) return;
-	narrow.value = entries[0].borderBoxSize[0].inlineSize < NARROW_THRESHOLD;
-});
 
 function addField() {
 	fields.value.push({
@@ -262,16 +246,6 @@ definePageMetadata({
 	title: i18n.ts.profile,
 	icon: 'ti ti-user',
 });
-
-onMounted(() => {
-	if (el.value) {
-		ro.observe(el.value);
-	}
-});
-
-onUnmounted(() => {
-	ro.disconnect();
-});
 </script>
 
 <style lang="scss" scoped>
@@ -310,12 +284,16 @@ onUnmounted(() => {
 
 .fieldDragItem {
 	display: flex;
-	align-items: center;
 	padding-bottom: .75em;
+	align-items: flex-end;
 	border-bottom: solid 0.5px var(--divider);
 
 	&:last-child {
 		border-bottom: 0;
+	}
+
+	@media (max-width: 500px) {
+		align-items: center;
 	}
 }
 
@@ -331,6 +309,7 @@ onUnmounted(() => {
 		cursor: grabbing;
 	}
 }
+
 .dragItemRemove {
 	@extend .dragItemHandle;
 
@@ -349,13 +328,4 @@ onUnmounted(() => {
 .dragItemForm {
 	flex-grow: 1;
 }
-
-.dragFormLabelPC {
-	font-size: 0.85em;
-    padding: 0 0 8px 0;
-	margin-left: 40px;
-    user-select: none;
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 12px;
-}</style>
+</style>
