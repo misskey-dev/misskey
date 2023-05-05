@@ -62,6 +62,7 @@ export const ROLE_POLICIES = [
 	'canSearchNotes',
 	'canHideAds',
 	'driveCapacityMb',
+	'alwaysMarkNsfw',
 	'pinLimit',
 	'antennaLimit',
 	'wordMuteLimit',
