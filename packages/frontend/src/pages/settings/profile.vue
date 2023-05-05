@@ -37,7 +37,7 @@
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div>
+			<div :class="$style.metadataRoot">
 				<div :class="$style.metadataMargin">
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -278,6 +278,10 @@ definePageMetadata({
 }
 </style>
 <style lang="scss" module>
+.metadataRoot {
+	container-type: inline-size;
+}
+
 .metadataMargin {
 	margin-bottom: 1.5em;
 }
@@ -292,7 +296,8 @@ definePageMetadata({
 		border-bottom: 0;
 	}
 
-	@media (max-width: 500px) {
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
 		align-items: center;
 	}
 }
