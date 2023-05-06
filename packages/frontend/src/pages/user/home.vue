@@ -453,6 +453,7 @@ onUnmounted(() => {
 						text-align: left;
 						color: var(--fgTransparent);
 						line-height: 1.5;
+						font-size: 85%;
 					}
 
 					textarea {
