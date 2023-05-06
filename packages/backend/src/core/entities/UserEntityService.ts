@@ -292,7 +292,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
-		me?: { id: User['id']; isRoot: boolean; } | null | undefined,
+		me?: { id: User['id']; } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
@@ -308,7 +308,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
-		const iAmModerator = me ? await this.roleService.isModerator(me) : false;
+		const iAmModerator = me ? await this.roleService.isModerator(me as User) : false;
 
 		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await this.userNotePiningsRepository.createQueryBuilder('pin')
