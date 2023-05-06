@@ -9,10 +9,10 @@ import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
 import { createTemp } from '@/misc/create-temp.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DBExportAntennasData } from '../types.js';
 import type Bull from 'bull';
-import { UtilityService } from '@/core/UtilityService.js';
 
 @Injectable()
 export class ExportAntennasProcessorService {
@@ -21,12 +21,16 @@ export class ExportAntennasProcessorService {
 	constructor (
 		@Inject(DI.config)
 		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
 		@Inject(DI.antennasRepository)
 		private antennsRepository: AntennasRepository,
+
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
+	
 		private driveService: DriveService,
 		private utilityService: UtilityService,
 		private queueLoggerService: QueueLoggerService,
@@ -72,7 +76,7 @@ export class ExportAntennasProcessorService {
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
 					users: antenna.users,
-					userListAcct: typeof users !== 'undefined' ? users.map((u) => {
+					userListAccts: typeof users !== 'undefined' ? users.map((u) => {
 						return this.utilityService.getFullApAccount(u.username, u.host); // acct
 					}) : null,
 					caseSensitive: antenna.caseSensitive,
