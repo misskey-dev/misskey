@@ -449,7 +449,7 @@ if ($i) {
 
 	const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
 	const neverShowDonationInfo = miLocalStorage.getItem('neverShowDonationInfo');
-	if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3)))) {
+	if (neverShowDonationInfo !== 'true' && (new Date($i.createdAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 3))) && !location.pathname.startsWith("/miauth")) {
 		if (latestDonationInfoShownAt == null || (new Date(latestDonationInfoShownAt).getTime() < (Date.now() - (1000 * 60 * 60 * 24 * 30)))) {
 			popup(defineAsyncComponent(() => import('@/components/MkDonation.vue')), {}, {}, 'closed');
 		}
