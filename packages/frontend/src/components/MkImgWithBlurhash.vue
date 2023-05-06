@@ -1,8 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
-	<Transition
-		mode="in-out"
+	<TransitionGroup
 		:enter-active-class="defaultStore.state.animation && (props.transition?.enterActiveClass ?? $style['transition_toggle_enterActive']) || undefined"
 		:leave-active-class="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_toggle_leaveActive']) || undefined"
 		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
@@ -10,9 +8,9 @@
 		:enter-to-class="defaultStore.state.animation && (props.transition?.enterToClass ?? $style['transition_toggle_enterTo']) || undefined"
 		:leave-from-class="defaultStore.state.animation && (props.transition?.leaveFromClass ?? $style['transition_toggle_leaveFrom']) || undefined"
 	>
-		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-else :class="$style.img" :width="props.width" :height="props.height" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined"/>
-	</Transition>
+		<canvas v-show="hide" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
+		<img v-show="!hide" :class="$style.img" :width="props.width" :height="props.height" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" @load="onLoad"/>
+	</TransitionGroup>
 </div>
 </template>
 
@@ -65,6 +63,7 @@ const offscreen = computed(() => {
 let loaded = $ref(false);
 let canvasWidth = $ref(props.width);
 let canvasHeight = $ref(props.height);
+const hide = computed(() => !loaded || props.forceBlurhash);
 
 function onLoad() {
 	loaded = true;
