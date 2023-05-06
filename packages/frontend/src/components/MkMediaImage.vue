@@ -1,6 +1,6 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode" />
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
@@ -46,7 +46,7 @@ const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl
+		: props.image.thumbnailUrl,
 );
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
@@ -135,6 +135,7 @@ watch(() => props.image, () => {
 	color: var(--accentLighten);
 	display: inline-block;
 	font-weight: bold;
-	padding: 0 6px;
+	font-size: 12px;
+	padding: 2px 6px;
 }
 </style>

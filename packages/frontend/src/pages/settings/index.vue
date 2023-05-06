@@ -164,12 +164,12 @@ const menuDef = computed(() => [{
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
-	}, /*{
+	}, {
 		icon: 'ti ti-plane',
-		text: i18n.ts.accountMigration,
+		text: `${i18n.ts.accountMigration} (${i18n.ts.experimental})`,
 		to: '/settings/migration',
 		active: currentPage?.route.name === 'migration',
-	},*/ {
+	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',

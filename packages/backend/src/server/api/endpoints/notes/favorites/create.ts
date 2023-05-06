@@ -12,6 +12,7 @@ export const meta = {
 	tags: ['notes', 'favorites'],
 
 	requireCredential: true,
+	prohibitMoved: true,
 
 	kind: 'write:favorites',
 

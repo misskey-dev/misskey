@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
 	maxHeight: 200,
 });
 
-let content = $ref<HTMLElement>();
+let content = $shallowRef<HTMLElement>();
 let omitted = $ref(false);
 let ignoreOmit = $ref(false);
 
