@@ -4,9 +4,9 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { AntennasRepository, DriveFilesRepository, UsersRepository, Antenna as _Antenna } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { RoleService } from '@/core/RoleService.js';
 import { DownloadService } from '@/core/DownloadService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	secure: true,
@@ -54,13 +54,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor (
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+		
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
 		private roleService: RoleService,
 		private queueService: QueueService,
-		private downloadService: DownloadService
+		private downloadService: DownloadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const users = await this.usersRepository.findOneBy({ id: me.id });
@@ -68,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			if (file === null) throw new ApiError(meta.errors.noSuchFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);
-			const antennas: (_Antenna & { userListAcct: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
+			const antennas: (_Antenna & { userListAccts: string[] | null })[] = JSON.parse(await this.downloadService.downloadTextFile(file.url));
 			const currentAntennasCount = await this.antennasRepository.countBy({ userId: me.id });
 			if (currentAntennasCount + antennas.length > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
 				throw new ApiError(meta.errors.tooManyAntennas);
@@ -78,4 +81,4 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	}
 } 
 
-export type Antenna = (_Antenna & { userListAcct: string[] | null })[];
+export type Antenna = (_Antenna & { userListAccts: string[] | null })[];

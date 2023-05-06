@@ -10,12 +10,47 @@ import { QueueLoggerService } from '../QueueLoggerService.js';
 import { DBAntennaImportJobData } from '../types.js';
 import type Bull from 'bull';
 
+const validate = new Ajv().compile({
+	type: 'object',
+	properties: {
+		name: { type: 'string', minLength: 1, maxLength: 100 },
+		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+		userListAccts: { 
+			type: 'array', 
+			items: {
+				type: 'string',
+			}, 
+			nullable: true,
+		},
+		keywords: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		excludeKeywords: { type: 'array', items: {
+			type: 'array', items: {
+				type: 'string',
+			},
+		} },
+		users: { type: 'array', items: {
+			type: 'string',
+		} },
+		caseSensitive: { type: 'boolean' },
+		withReplies: { type: 'boolean' },
+		withFile: { type: 'boolean' },
+		notify: { type: 'boolean' },
+	},
+	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+});
+
 @Injectable()
 export class ImportAntennasProcessorService {
 	private logger: Logger;
+
 	constructor (
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
+
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
@@ -27,38 +62,6 @@ export class ImportAntennasProcessorService {
 	public async process(job: Bull.Job<DBAntennaImportJobData>, done: () => void): Promise<void> {
 		const now = new Date();
 		try {
-			const validate = new Ajv().compile({
-				type: 'object',
-				properties: {
-					name: { type: 'string', minLength: 1, maxLength: 100 },
-					src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
-					userListAcct: { 
-						type: 'array', 
-						items: {
-							type: 'string',
-						}, 
-						nullable: true,
-					},
-					keywords: { type: 'array', items: {
-						type: 'array', items: {
-							type: 'string',
-						},
-					} },
-					excludeKeywords: { type: 'array', items: {
-						type: 'array', items: {
-							type: 'string',
-						},
-					} },
-					users: { type: 'array', items: {
-						type: 'string',
-					} },
-					caseSensitive: { type: 'boolean' },
-					withReplies: { type: 'boolean' },
-					withFile: { type: 'boolean' },
-					notify: { type: 'boolean' },
-				},
-				required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
-			});
 			for (const antenna of job.data.antenna) {
 				if (antenna.keywords.length === 0 || antenna.keywords[0].every(x => x === '')) continue;
 				if (!validate(antenna)) {
@@ -71,11 +74,11 @@ export class ImportAntennasProcessorService {
 					lastUsedAt: now,
 					userId: job.data.user.id,
 					name: antenna.name,
-					src: antenna.src === 'list' && antenna.userListAcct ? 'users' : antenna.src,
+					src: antenna.src === 'list' && antenna.userListAccts ? 'users' : antenna.src,
 					userListId: null,
 					keywords: antenna.keywords,
 					excludeKeywords: antenna.excludeKeywords,
-					users: (antenna.src === 'list' && antenna.userListAcct !== null ? antenna.userListAcct : antenna.users).filter(Boolean),
+					users: (antenna.src === 'list' && antenna.userListAccts !== null ? antenna.userListAccts : antenna.users).filter(Boolean),
 					caseSensitive: antenna.caseSensitive,
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
