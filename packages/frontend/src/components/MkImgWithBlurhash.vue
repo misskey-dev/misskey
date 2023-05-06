@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<img v-if="!loaded && src && !forceBlurhash" :class="$style.loader" :src="src" @load="onLoad"/>
+	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
 	<Transition
 		mode="in-out"
 		:enter-active-class="defaultStore.state.animation && (props.transition?.enterActiveClass ?? $style['transition_toggle_enterActive']) || undefined"
@@ -10,16 +10,18 @@
 		:enter-to-class="defaultStore.state.animation && (props.transition?.enterToClass ?? $style['transition_toggle_enterTo']) || undefined"
 		:leave-from-class="defaultStore.state.animation && (props.transition?.leaveFromClass ?? $style['transition_toggle_leaveFrom']) || undefined"
 	>
-		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="width" :height="height" :title="title ?? undefined"/>
-		<img v-else :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined"/>
+		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
+		<img v-else :class="$style.img" :width="props.width" :height="props.height" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined"/>
 	</Transition>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef, useCssModule, watch } from 'vue';
-import { decode } from 'blurhash';
+import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
 import { defaultStore } from '@/store';
+import DrawBlurhash from '@/workers/draw-blurhash?worker';
+
+let worker: Worker;
 
 const $style = useCssModule();
 
@@ -52,9 +54,17 @@ const props = withDefaults(defineProps<{
 });
 
 const canvas = shallowRef<HTMLCanvasElement>();
+const offscreen = computed(() => {
+	if (!canvas.value) return;
+	const _offscreen = canvas.value.transferControlToOffscreen();
+	worker.postMessage({
+		canvas: _offscreen,
+	}, [_offscreen]);
+	return _offscreen;
+});
 let loaded = $ref(false);
-let width = $ref(props.width);
-let height = $ref(props.height);
+let canvasWidth = $ref(props.width);
+let canvasHeight = $ref(props.height);
 
 function onLoad() {
 	loaded = true;
@@ -63,31 +73,45 @@ function onLoad() {
 watch([() => props.width, () => props.height], () => {
 	const ratio = props.width / props.height;
 	if (ratio > 1) {
-		width = Math.round(64 * ratio);
-		height = 64;
+		canvasWidth = Math.round(64 * ratio);
+		canvasHeight = 64;
 	} else {
-		width = 64;
-		height = Math.round(64 / ratio);
+		canvasWidth = 64;
+		canvasHeight = Math.round(64 / ratio);
 	}
 }, {
 	immediate: true,
 });
 
 function draw() {
-	if (props.hash == null || !canvas.value) return;
-	const pixels = decode(props.hash, width, height);
-	const ctx = canvas.value.getContext('2d');
-	const imageData = ctx!.createImageData(width, height);
-	imageData.data.set(pixels);
-	ctx!.putImageData(imageData, 0, 0);
+	if (props.hash == null || !offscreen.value) return;
+	worker.postMessage({
+		hash: props.hash,
+		width: canvasWidth,
+		height: canvasHeight,
+	});
 }
 
-watch([() => props.hash, canvas], () => {
+watch([() => props.hash, offscreen], () => {
 	draw();
 });
 
 onMounted(() => {
-	draw();
+	worker = new DrawBlurhash();
+	if (props.forceBlurhash) {
+		draw();
+	} else {
+		// 100ms後に画像の読み込みが完了していなければblurhashを描画する
+		setTimeout(() => {
+			if (!loaded) {
+				draw();
+			}
+		}, 100);
+	}
+});
+
+onUnmounted(() => {
+	worker.terminate();
 });
 </script>
 
