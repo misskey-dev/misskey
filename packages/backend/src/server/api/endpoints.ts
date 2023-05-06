@@ -194,6 +194,7 @@ import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
+import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
@@ -202,6 +203,7 @@ import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
+import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
@@ -528,6 +530,7 @@ const eps = [
 	['i/export-notes', ep___i_exportNotes],
 	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
+	['i/export-antennas', ep___i_exportAntennas],
 	['i/favorites', ep___i_favorites],
 	['i/gallery/likes', ep___i_gallery_likes],
 	['i/gallery/posts', ep___i_gallery_posts],
@@ -536,6 +539,7 @@ const eps = [
 	['i/import-following', ep___i_importFollowing],
 	['i/import-muting', ep___i_importMuting],
 	['i/import-user-lists', ep___i_importUserLists],
+	['i/import-antennas', ep___i_importAntennas],
 	['i/notifications', ep___i_notifications],
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],

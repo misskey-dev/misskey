@@ -102,6 +102,7 @@ redis:
 #  host: localhost
 #  port: 7700
 #  apiKey: ''
+#  ssl: true
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
