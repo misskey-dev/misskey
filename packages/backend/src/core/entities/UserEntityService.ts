@@ -292,7 +292,7 @@ export class UserEntityService implements OnModuleInit {
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
 		src: User['id'] | User,
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: User['id']; } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
@@ -306,26 +306,9 @@ export class UserEntityService implements OnModuleInit {
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
 
-		// migration
-		if (user.avatarId != null && user.avatarUrl === null) {
-			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
-			user.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
-			this.usersRepository.update(user.id, {
-				avatarUrl: user.avatarUrl,
-				avatarBlurhash: avatar.blurhash,
-			});
-		}
-		if (user.bannerId != null && user.bannerUrl === null) {
-			const banner = await this.driveFilesRepository.findOneByOrFail({ id: user.bannerId });
-			user.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
-			this.usersRepository.update(user.id, {
-				bannerUrl: user.bannerUrl,
-				bannerBlurhash: banner.blurhash,
-			});
-		}
-
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
+		const iAmModerator = me ? await this.roleService.isModerator(me as User) : false;
 
 		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await this.userNotePiningsRepository.createQueryBuilder('pin')
@@ -429,6 +412,7 @@ export class UserEntityService implements OnModuleInit {
 					userId: meId,
 					targetUserId: user.id,
 				}).then(row => row?.memo ?? null),
+				moderationNote: iAmModerator ? profile!.moderationNote : null,
 			} : {}),
 
 			...(opts.detail && isMe ? {

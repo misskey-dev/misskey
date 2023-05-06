@@ -44,6 +44,10 @@ export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
+		server: {
+			port: 5173,
+		},
+
 		plugins: [
 			pluginVue({
 				reactivityTransform: true,

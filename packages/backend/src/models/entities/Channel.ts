@@ -71,6 +71,12 @@ export class Channel {
 	public color: string;
 
 	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public isArchived: boolean;
+
+	@Index()
 	@Column('integer', {
 		default: 0,
 		comment: 'The count of notes.',

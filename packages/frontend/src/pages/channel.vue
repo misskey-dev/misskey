@@ -28,6 +28,8 @@
 			</MkFoldableSection>
 		</div>
 		<div v-if="channel && tab === 'timeline'" class="_gaps">
+			<MkInfo v-if="channel.isArchived" warn>{{ i18n.ts.thisChannelArchived }}</MkInfo>
+
 			<!-- スマホ・タブレットの場合、キーボードが表示されると投稿が見づらくなるので、デスクトップ場合のみ自動でフォーカスを当てる -->
 			<MkPostForm v-if="$i && defaultStore.reactiveState.showFixedPostFormInChannel.value" :channel="channel" class="post-form _panel" fixed :autofocus="deviceKind === 'desktop'"/>
 
@@ -77,6 +79,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import { defaultStore } from '@/store';
 import MkNote from '@/components/MkNote.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 const router = useRouter();

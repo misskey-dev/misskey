@@ -28,7 +28,7 @@ const $meilisearch: Provider = {
 	useFactory: (config) => {
 		if (config.meilisearch) {
 			return new MeiliSearch({
-				host: `http://${config.meilisearch.host}:${config.meilisearch.port}`, 
+				host: `${config.meilisearch.ssl ? 'https' : 'http' }://${config.meilisearch.host}:${config.meilisearch.port}`,
 				apiKey: config.meilisearch.apiKey,
 			});
 		} else {
