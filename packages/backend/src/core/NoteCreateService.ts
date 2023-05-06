@@ -238,9 +238,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.visibility === 'public' && data.channel == null) {
 			const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
-			if ((data.cw == null) && (data.text != null) && this.isSensitive(data.text!, sensitiveWords)) {
-				data.visibility = 'home';
-			} else if ((data.cw != null) && this.isSensitive(data.cw!, sensitiveWords)) {
+			if (this.isSensitive(data, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
@@ -674,8 +672,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 	
 	@bindThis
-	private isSensitive(text: string, sensitiveWord: string[]): boolean {
+	private isSensitive(note: Option, sensitiveWord: string[]): boolean {
 		if (sensitiveWord.length > 0) {
+			const text = note.cw ?? note.text ?? '';
 			if (text === '') return false;
 			const matched = sensitiveWord.some(filter => {
 				// represents RegExp
