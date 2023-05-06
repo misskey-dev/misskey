@@ -640,8 +640,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2(rollup@3.21.3)
       '@syuilo/aiscript':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@tabler/icons-webfont':
         specifier: 2.17.0
         version: 2.17.0
@@ -6114,8 +6114,8 @@ packages:
     dev: false
     optional: true
 
-  /@syuilo/aiscript@0.13.1:
-    resolution: {integrity: sha512-WJduqlsm7pq8r1oYbPSAf5cqR6Pve6ipGoPUUSgti51dMytMnxE2dn7d7i8759RF3yftyoclZbL/DC7IjPsTng==}
+  /@syuilo/aiscript@0.13.2:
+    resolution: {integrity: sha512-1aqQSH6U+vV01UDUotXUEjIwJKcZZPASJyIJ9msxXRpSInPGJJ/q1kGkZMgSpVhzYFT7/QBxo0UC1ZVEOsrDTw==}
     dependencies:
       autobind-decorator: 2.4.0
       seedrandom: 3.0.5
