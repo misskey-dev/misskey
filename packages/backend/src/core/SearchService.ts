@@ -139,9 +139,10 @@ export class SearchService {
 				limit: pagination.limit,
 			});
 			if (res.hits.length === 0) return [];
-			return await this.notesRepository.findBy({
+			const notes = await this.notesRepository.findBy({
 				id: In(res.hits.map(x => x.id)),
 			});
+			return notes.sort((a, b) => a.id > b.id ? -1 : 1);
 		} else {
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), pagination.sinceId, pagination.untilId);
 
