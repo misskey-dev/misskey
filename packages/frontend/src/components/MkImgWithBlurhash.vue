@@ -11,7 +11,7 @@
 		:leave-from-class="defaultStore.state.animation && (props.transition?.leaveFromClass ?? $style['transition_toggle_leaveFrom']) || undefined"
 	>
 		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-else :class="$style.img" :width="props.width" :height="props.height" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined"/>
+		<img v-else :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager"/>
 	</Transition>
 </div>
 </template>
