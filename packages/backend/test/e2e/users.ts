@@ -112,6 +112,7 @@ describe('ユーザー', () => {
 			securityKeys: user.securityKeys,
 			roles: user.roles,
 			memo: user.memo,
+			moderationNote: user.moderationNote,
 		});
 	};
 
