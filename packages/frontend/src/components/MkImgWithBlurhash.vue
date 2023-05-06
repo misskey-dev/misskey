@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
-	<img v-if="!loaded && src" :class="$style.loader" :src="src" @load="onLoad"/>
+	<img v-if="!loaded && src" :class="$style.loader" :src="src" loading="eager" @load="onLoad"/>
 	<Transition
 		mode="in-out"
 		:enter-active-class="defaultStore.state.animation && (props.transition?.enterActiveClass ?? $style['transition_toggle_enterActive']) || undefined"
