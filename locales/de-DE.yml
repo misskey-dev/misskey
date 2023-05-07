@@ -1035,6 +1035,7 @@ archive: "Archivieren"
 channelArchiveConfirmTitle: "{name} wirklich archivieren?"
 channelArchiveConfirmDescription: "Ein archivierter Kanal taucht nicht mehr in der Kanalliste oder in Suchergebnissen auf. Zudem können ihm keine Beiträge mehr hinzugefügt werden."
 thisChannelArchived: "Dieser Kanal wurde archiviert."
+displayOfNote: "Anzeige von Notizen"
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
 _accountMigration:
