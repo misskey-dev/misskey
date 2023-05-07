@@ -20,6 +20,7 @@ noNotes: "Aucune note"
 noNotifications: "Aucune notification"
 instance: "Instance"
 settings: "Paramètres"
+notificationSettings: "Paramètres des notifications "
 basicSettings: "Paramètres généraux"
 otherSettings: "Paramètres avancés"
 openInWindow: "Ouvrir dans une nouvelle fenêtre"
@@ -259,12 +260,12 @@ noMoreHistory: "Il n’y a plus d’historique"
 startMessaging: "Commencer à discuter"
 nUsersRead: "Lu par {n} personnes"
 agreeTo: "J’accepte {0}"
-tos: "les conditions d’utilisation"
 start: "Commencer"
 home: "Principal"
 remoteUserCaution: "Les informations de ce compte risqueraient d’être incomplètes du fait que l’utilisateur·rice provient d’une instance distante."
 activity: "Activité"
 images: "Images"
+image: "Images"
 birthday: "Date de naissance"
 yearsOld: "{age} ans"
 registeredDate: "Inscrit le"
@@ -838,13 +839,16 @@ tenMinutes: "10 minutes"
 oneHour: "1 heure"
 oneDay: "1 jour"
 oneWeek: "1 semaine"
+oneMonth: "Un mois"
 reflectMayTakeTime: "Cela peut prendre un certain temps avant que cela ne se termine."
 failedToFetchAccountInformation: "Impossible de récupérer les informations du compte."
 rateLimitExceeded: "Limite de taux dépassée"
 cropImage: "Recadrer l'image"
 cropImageAsk: "Voulez-vous recadrer cette image ?"
+cropYes: "Rogner"
 file: "Fichiers"
 recentNHours: "Dernières {n} heures"
+recentNDays: "Derniers {n} jours"
 noEmailServerWarning: "Serveur de courrier non configuré."
 thereIsUnresolvedAbuseReportWarning: "Il n’y a aucun rapport non résolu."
 recommended: "Recommandé"
@@ -900,11 +904,46 @@ numberOfLikes: "Favoris"
 show: "Affichage"
 neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
+roles: "Rôles"
+role: "Rôles"
+normalUser: "Simple utilisateur·rice"
+assign: "Attribuer"
 color: "Couleur"
+manageCustomEmojis: "Gestion des émojis personnalisés"
+preset: "Préréglage"
+selectFromPresets: "Sélectionner à partir des préréglages"
+license: "Licence"
+video: "Vidéo"
+videos: "Vidéos"
+dataSaver: "Économiseur de données"
+accountMigration: "Migration de compte"
+accountMoved: "Cet·te utilisateur·rice a migré son compte vers :"
+notificationDisplay: "Style des notifications"
+leftTop: "En haut à gauche"
+rightTop: "En haut à droite"
+leftBottom: "En bas à gauche"
+rightBottom: "En bas à droite"
+vertical: "Vertical"
+horizontal: "Latéral"
 _achievements:
   _types:
+    _notes1:
+      description: "Publiez votre première note"
+      flavor: "Passez un bon moment avec Misskey !"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
+    _login3:
+      description: "Se connecter pour un total de 3 jours"
+    _login7:
+      description: "Se connecter pour un total de 7 jours"
+    _login15:
+      description: "Se connecter pour un total de 15 jours"
+    _login30:
+      description: "Se connecter pour un total de 30 jours"
+    _login60:
+      description: "Se connecter pour un total de 60 jours"
+    _login100:
+      description: "Se connecter pour un total de 100 jours"
     _login1000:
       flavor: "Merci d'utiliser Misskey !"
     _markedAsCat:
@@ -912,12 +951,21 @@ _achievements:
       flavor: "Je n'ai pas encore de nom"
     _following50:
       title: "Beaucoup d'amis"
+    _followers10:
+      title: "Abonnez-moi !"
+    _viewInstanceChart:
+      title: "Analyste"
+    _loggedInOnNewYearsDay:
+      title: "Bonne année !"
 _role:
+  assignTarget: "Attribuer"
   priority: "Priorité"
   _priority:
     low: "Basse"
     middle: "Moyen"
     high: "Haute"
+  _options:
+    canManageCustomEmojis: "Gestion des émojis personnalisés"
 _sensitiveMediaDetection:
   description: "L'apprentissage automatique peut être utilisé pour détecter automatiquement les médias sensibles à modérer. La sollicitation des serveurs augmente légèrement."
   sensitivity: "Sensibilité de la détection"
