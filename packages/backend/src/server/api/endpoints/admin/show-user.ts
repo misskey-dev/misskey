@@ -80,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
-				moderationNote: profile.moderationNote,
+				moderationNote: profile.moderationNote ?? '',
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
