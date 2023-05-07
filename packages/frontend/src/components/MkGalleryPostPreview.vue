@@ -6,12 +6,8 @@
 				class="img layered"
 				:transition="safe ? null : {
 					duration: 500,
-					enterActiveClass: $style.transition_toggle_enterActive,
 					leaveActiveClass: $style.transition_toggle_leaveActive,
-					enterFromClass: $style.transition_toggle_enterFrom,
 					leaveToClass: $style.transition_toggle_leaveTo,
-					enterToClass: $style.transition_toggle_enterTo,
-					leaveFromClass: $style.transition_toggle_leaveFrom,
 				}"
 				:src="post.files[0].thumbnailUrl"
 				:hash="post.files[0].blurhash"
