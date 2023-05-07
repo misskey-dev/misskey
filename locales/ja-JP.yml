@@ -1035,6 +1035,7 @@ archive: "アーカイブ"
 channelArchiveConfirmTitle: "{name}をアーカイブしますか？"
 channelArchiveConfirmDescription: "アーカイブすると、チャンネル一覧や検索結果に表示されなくなり、新たな書き込みもできなくなります。"
 thisChannelArchived: "このチャンネルはアーカイブされています。"
+displayOfNote: "ノートの表示"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"

@@ -42,7 +42,7 @@
 	</FormSection>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.appearance }}</template>
+		<template #label>{{ i18n.ts.displayOfNote }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -52,11 +52,28 @@
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
+				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
+				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+			</div>
+
+			<MkRadios v-model="mediaListWithOneImageAppearance">
+				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+				<option value="expand">{{ i18n.ts.default }}</option>
+				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
+				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
+				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
+			</MkRadios>
+		</div>
+	</FormSection>
+
+	<FormSection>
+		<template #label>{{ i18n.ts.appearance }}</template>
+
+		<div class="_gaps_m">
+			<div class="_gaps_s">
 				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
 				<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
 				<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
-				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
-				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
 				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
@@ -80,14 +97,6 @@
 				<option value="1"><span style="font-size: 15px;">Aa</span></option>
 				<option value="2"><span style="font-size: 16px;">Aa</span></option>
 				<option value="3"><span style="font-size: 17px;">Aa</span></option>
-			</MkRadios>
-
-			<MkRadios v-model="mediaListWithOneImageAppearance">
-				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
-				<option value="expand">{{ i18n.ts.default }}</option>
-				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
-				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
-				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
 			</MkRadios>
 		</div>
 	</FormSection>
