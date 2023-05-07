@@ -76,13 +76,14 @@ watch([() => props.width, () => props.height], () => {
 	immediate: true,
 });
 
-function draw() {
+function draw(offscreen: OffscreenCanvas | null = null) {
 	if (props.hash == null) return;
 	worker.postMessage({
 		hash: props.hash,
 		width: canvasWidth,
 		height: canvasHeight,
-	});
+		canvas: offscreen,
+	}, offscreen ? [offscreen] : []);
 }
 
 worker.addEventListener('message', event => {
@@ -98,7 +99,9 @@ watch(() => props.hash, () => {
 });
 
 onMounted(() => {
-	draw();
+	if (canvas.value) {
+		draw(canvas.value.transferControlToOffscreen());
+	}
 });
 
 onUnmounted(() => {
