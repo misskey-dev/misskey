@@ -5,6 +5,7 @@
 			<ImgWithBlurhash
 				class="img layered"
 				:transition="safe ? null : {
+					duration: 500,
 					enterActiveClass: $style.transition_toggle_enterActive,
 					leaveActiveClass: $style.transition_toggle_leaveActive,
 					enterFromClass: $style.transition_toggle_enterFrom,
@@ -55,10 +56,7 @@ function leaveHover(): void {
 <style lang="scss" module>
 .transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	transition: opacity 0.5s;
-	position: absolute;
-	top: 0;
-	left: 0;
+	transition: opacity .5s;
 }
 
 .transition_toggle_enterFrom,
@@ -66,11 +64,10 @@ function leaveHover(): void {
 	opacity: 0;
 }
 
-.transition_toggle_enterTo,
-.transition_toggle_leaveFrom {
-	transition: none;
-	opacity: 1;
-}
+//.transition_toggle_enterTo,
+//.transition_toggle_leaveFrom {
+//	opacity: 1;
+//}
 </style>
 
 <style lang="scss" scoped>
