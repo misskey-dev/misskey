@@ -34,6 +34,7 @@
 		<div :class="$style.indicators">
 			<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
+			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
 		</div>
 		<button v-tooltip="i18n.ts.hide" :class="$style.hide" class="_button" @click.stop.prevent="hide = true"><i class="ti ti-eye-off"></i></button>
 	</template>
@@ -48,6 +49,8 @@ import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import * as os from '@/os';
+import { iAmModerator } from '@/account';
 
 const props = defineProps<{
 	image: misskey.entities.DriveFile;
@@ -77,6 +80,17 @@ watch(() => props.image, () => {
 	deep: true,
 	immediate: true,
 });
+
+function showMenu(ev: MouseEvent) {
+	os.popupMenu([...(iAmModerator ? [{
+		text: i18n.ts.markAsSensitive,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+		},
+	}] : [])], ev.currentTarget ?? ev.target);
+}
+
 </script>
 
 <style lang="scss" module>
@@ -123,6 +137,21 @@ watch(() => props.image, () => {
 	padding: 6px 8px;
 	text-align: center;
 	top: 12px;
+	right: 12px;
+}
+
+.menu {
+	display: block;
+	position: absolute;
+	border-radius: 6px;
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	color: #fff;
+	font-size: 0.8em;
+	padding: 6px 8px;
+	text-align: center;
+	bottom: 12px;
 	right: 12px;
 }
 
