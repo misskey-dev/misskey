@@ -412,7 +412,7 @@ export class UserEntityService implements OnModuleInit {
 					userId: meId,
 					targetUserId: user.id,
 				}).then(row => row?.memo ?? null),
-				moderationNote: iAmModerator ? profile!.moderationNote : null,
+				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : null,
 			} : {}),
 
 			...(opts.detail && isMe ? {
