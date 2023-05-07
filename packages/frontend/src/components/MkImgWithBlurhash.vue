@@ -14,14 +14,15 @@
 	</TransitionGroup>
 </div>
 </template>
-
-<script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
-import { defaultStore } from '@/store';
+<script lang="ts">
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 
 const worker = new DrawBlurhash();
-
+</script>
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
+import { defaultStore } from '@/store';
 const $style = useCssModule();
 
 const props = withDefaults(defineProps<{
@@ -57,6 +58,7 @@ const canvas = shallowRef<HTMLCanvasElement>();
 let loaded = $ref(false);
 let canvasWidth = $ref(props.width);
 let canvasHeight = $ref(props.height);
+let currentDrawId = $ref<string>();
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function onLoad() {
@@ -78,7 +80,9 @@ watch([() => props.width, () => props.height], () => {
 
 function draw() {
 	if (props.hash == null) return;
+	currentDrawId = uuid();
 	worker.postMessage({
+		id: currentDrawId,
 		hash: props.hash,
 		width: canvasWidth,
 		height: canvasHeight,
@@ -87,9 +91,10 @@ function draw() {
 
 worker.addEventListener('message', event => {
 	if (!canvas.value) return;
+	if (event.data.id !== currentDrawId) return;
 	const ctx = canvas.value.getContext('2d');
 	if (!ctx) return;
-	const bitmap = event.data as ImageBitmap;
+	const bitmap = event.data.bitmap as ImageBitmap;
 	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
 });
 
@@ -99,10 +104,6 @@ watch(() => props.hash, () => {
 
 onMounted(() => {
 	draw();
-});
-
-onUnmounted(() => {
-	worker.terminate();
 });
 </script>
 

@@ -14,5 +14,5 @@ onmessage = async (event) => {
 	imageData.data.set(pixels);
 	ctx.putImageData(imageData, 0, 0);
     const bitmap = canvas.transferToImageBitmap();
-    postMessage(bitmap);
+    postMessage({ bitmap, id: event.data.id });
 };
