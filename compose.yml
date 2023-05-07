@@ -21,7 +21,7 @@ services:
 
   redis:
     restart: always
-    image: redis:7.0.10-alpine
+    image: redis:7.0.11-alpine
     init: true
     networks:
       - internal_network
