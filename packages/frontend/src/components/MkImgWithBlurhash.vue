@@ -20,7 +20,7 @@ import DrawBlurhash from '@/workers/draw-blurhash?worker';
 const worker = new DrawBlurhash();
 </script>
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
+import { computed, onMounted, shallowRef, useCssModule, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { defaultStore } from '@/store';
 const $style = useCssModule();
