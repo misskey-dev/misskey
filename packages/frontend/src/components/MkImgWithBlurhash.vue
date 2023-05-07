@@ -3,15 +3,15 @@
 	<img v-if="!loaded && src" :class="$style.loader" :src="src" loading="eager" @load="onLoad"/>
 	<Transition
 		mode="in-out"
-		:enter-active-class="defaultStore.state.animation && (props.transition?.enterActiveClass ?? $style['transition_toggle_enterActive']) || undefined"
+		:enter-active-class="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
 		:leave-active-class="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_toggle_leaveActive']) || undefined"
 		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
 		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
-		:enter-to-class="defaultStore.state.animation && (props.transition?.enterToClass ?? $style['transition_toggle_enterTo']) || undefined"
-		:leave-from-class="defaultStore.state.animation && (props.transition?.leaveFromClass ?? $style['transition_toggle_leaveFrom']) || undefined"
+		:enter-to-class="defaultStore.state.animation && props.transition?.enterToClass || undefined"
+		:leave-from-class="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
 		<canvas v-if="!loaded || forceBlurhash" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-else :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager"/>
+		<img v-else :height="height" :width="width" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager"/>
 	</Transition>
 </div>
 </template>
@@ -116,16 +116,10 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" module>
-.transition_toggle_enterActive,
 .transition_toggle_leaveActive {
 	position: absolute;
 	top: 0;
 	left: 0;
-}
-
-.transition_toggle_enterTo,
-.transition_toggle_leaveFrom {
-	opacity: 0;
 }
 
 .loader {

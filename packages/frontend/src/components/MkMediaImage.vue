@@ -9,7 +9,17 @@
 		:href="image.url"
 		:title="image.name"
 	>
-		<ImgWithBlurhash :hash="image.blurhash" :src="(defaultStore.state.enableDataSaverMode && hide) ? null : url" :force-blurhash="hide" :cover="hide" :alt="image.comment || image.name" :title="image.comment || image.name" :width="image.properties.width" :height="image.properties.height"/>
+		<ImgWithBlurhash
+			:hash="image.blurhash"
+			:src="(defaultStore.state.enableDataSaverMode && hide) ? null : url"
+			:force-blurhash="hide"
+			:cover="hide"
+			:alt="image.comment || image.name"
+			:title="image.comment || image.name"
+			:width="image.properties.width"
+			:height="image.properties.height"
+			:style="hide ? 'filter: brightness(0.5);' : null"
+		/>
 	</a>
 	<template v-if="hide">
 		<div :class="$style.hiddenText">
