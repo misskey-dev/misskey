@@ -1,8 +1,4 @@
 <template>
-<!--
-<div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode"/>
-</div>-->
 <div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
 	<a
 		:class="$style.imageContainer"

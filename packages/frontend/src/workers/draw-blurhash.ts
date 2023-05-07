@@ -3,7 +3,7 @@ import { render } from 'buraha';
 const canvases = new Map<string, OffscreenCanvas>();
 
 onmessage = async (event) => {
-    console.log(event.data);
+    // console.log(event.data);
     if (!('id' in event.data && typeof event.data.id === 'string')) {
         return;
     }
