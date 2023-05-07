@@ -54,20 +54,16 @@ function leaveHover(): void {
 </script>
 
 <style lang="scss" module>
-.transition_toggle_enterActive,
 .transition_toggle_leaveActive {
 	transition: opacity .5s;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
-.transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
 	opacity: 0;
 }
-
-//.transition_toggle_enterTo,
-//.transition_toggle_leaveFrom {
-//	opacity: 1;
-//}
 </style>
 
 <style lang="scss" scoped>
