@@ -20,24 +20,10 @@
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</MkRadios>
 
-	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
-	<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-
 	<FormSection>
-		<template #label>{{ i18n.ts.behavior }}</template>
-
-		<div class="_gaps_m">
-			<div class="_gaps_s">
-				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
-				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
-				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
-			</div>
-			<MkSelect v-model="serverDisconnectedBehavior">
-				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
-				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
-				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
-				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-			</MkSelect>
+		<div class="_gaps_s">
+			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
+			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 		</div>
 	</FormSection>
 
@@ -55,6 +41,20 @@
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 			</div>
+
+			<MkSelect v-model="instanceTicker">
+				<template #label>{{ i18n.ts.instanceTicker }}</template>
+				<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+				<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+				<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+			</MkSelect>
+
+			<MkSelect v-model="nsfw">
+				<template #label>{{ i18n.ts.nsfw }}</template>
+				<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
+				<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
+				<option value="force">{{ i18n.ts._nsfw.force }}</option>
+			</MkSelect>
 
 			<MkRadios v-model="mediaListWithOneImageAppearance">
 				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
@@ -122,27 +122,30 @@
 	</FormSection>
 
 	<FormSection>
-		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+		<template #label>{{ i18n.ts.behavior }}</template>
+
+		<div class="_gaps_m">
+			<div class="_gaps_s">
+				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
+				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
+			</div>
+			<MkSelect v-model="serverDisconnectedBehavior">
+				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
+				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+			</MkSelect>
+			<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
+				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+			</MkRange>
+		</div>
 	</FormSection>
 
-	<MkSelect v-model="instanceTicker">
-		<template #label>{{ i18n.ts.instanceTicker }}</template>
-		<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-		<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-		<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-	</MkSelect>
-
-	<MkSelect v-model="nsfw">
-		<template #label>{{ i18n.ts.nsfw }}</template>
-		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
-		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
-		<option value="force">{{ i18n.ts._nsfw.force }}</option>
-	</MkSelect>
-
-	<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
-		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-	</MkRange>
+	<FormSection>
+		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+	</FormSection>
 
 	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 
