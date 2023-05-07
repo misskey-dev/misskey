@@ -14,15 +14,22 @@
 	</TransitionGroup>
 </div>
 </template>
-<script lang="ts">
-import DrawBlurhash from '@/workers/draw-blurhash?worker';
-
-const worker = new DrawBlurhash();
-</script>
 <script lang="ts" setup>
-import { computed, onMounted, shallowRef, useCssModule, watch } from 'vue';
+import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
+import { render } from 'buraha';
 import { defaultStore } from '@/store';
+import DrawBlurhash from '@/workers/draw-blurhash?worker';
+import TestWebGL2 from '@/workers/test-webgl2?worker';
+
+const workerPromise = new Promise<Worker | null>(resolve => {
+	const testWorker = new TestWebGL2();
+	testWorker.addEventListener('message', event => {
+		if (event.data.result) resolve(new DrawBlurhash());
+		else resolve(null);
+		testWorker.terminate();
+	});
+});
 const $style = useCssModule();
 
 const props = withDefaults(defineProps<{
@@ -54,11 +61,11 @@ const props = withDefaults(defineProps<{
 	forceBlurhash: false,
 });
 
+const viewId = uuid();
 const canvas = shallowRef<HTMLCanvasElement>();
 let loaded = $ref(false);
 let canvasWidth = $ref(props.width);
 let canvasHeight = $ref(props.height);
-let currentDrawId = $ref<string>();
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function onLoad() {
@@ -78,32 +85,38 @@ watch([() => props.width, () => props.height], () => {
 	immediate: true,
 });
 
-function draw() {
-	if (props.hash == null) return;
-	currentDrawId = uuid();
-	worker.postMessage({
-		id: currentDrawId,
-		hash: props.hash,
-		width: canvasWidth,
-		height: canvasHeight,
-	});
+async function draw(transfer: boolean = false) {
+	if (!canvas.value || props.hash == null) return;
+	const worker = await workerPromise;
+	if (worker) {
+		let offscreen: OffscreenCanvas | undefined;
+		if (transfer) {
+			offscreen = canvas.value.transferControlToOffscreen();
+		}
+		worker.postMessage({
+			id: viewId,
+			canvas: offscreen ?? undefined,
+			hash: props.hash,
+		}, offscreen ? [offscreen] : []);
+	} else {
+		try {
+			render(props.hash, canvas.value);
+		} catch (error) {
+			console.error('Error occured during drawing blurhash', error);
+		}
+	}
 }
-
-worker.addEventListener('message', event => {
-	if (!canvas.value) return;
-	if (event.data.id !== currentDrawId) return;
-	const ctx = canvas.value.getContext('2d');
-	if (!ctx) return;
-	const bitmap = event.data.bitmap as ImageBitmap;
-	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
-});
 
 watch(() => props.hash, () => {
 	draw();
 });
 
 onMounted(() => {
-	draw();
+	draw(true);
+});
+
+onUnmounted(() => {
+	workerPromise.then(worker => worker!.terminate());
 });
 </script>
 

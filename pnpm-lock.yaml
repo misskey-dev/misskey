@@ -348,7 +348,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517
+        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
       systeminformation:
         specifier: 5.17.12
         version: 5.17.12
@@ -657,15 +657,15 @@ importers:
       autosize:
         specifier: 5.0.2
         version: 5.0.2
-      blurhash:
-        specifier: 2.0.5
-        version: 2.0.5
       broadcast-channel:
         specifier: 4.20.2
         version: 4.20.2
       browser-image-resizer:
         specifier: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
         version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
+      buraha:
+        specifier: github:misskey-dev/buraha
+        version: github.com/misskey-dev/buraha/3eb01892924dc0bb587a6795adf8a8ed25a816d8
       canvas-confetti:
         specifier: 1.6.0
         version: 1.6.0
@@ -984,7 +984,7 @@ importers:
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.7)(@storybook/components@7.0.7)(@storybook/core-events@7.0.7)(@storybook/manager-api@7.0.7)(@storybook/preview-api@7.0.7)(@storybook/theming@7.0.7)(@storybook/types@7.0.7)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517
+        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
       vite-plugin-turbosnap:
         specifier: 1.0.2
         version: 1.0.2
@@ -20357,6 +20357,12 @@ packages:
     version: 2.2.1-misskey.3
     dev: false
 
+  github.com/misskey-dev/buraha/3eb01892924dc0bb587a6795adf8a8ed25a816d8:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/buraha/tar.gz/3eb01892924dc0bb587a6795adf8a8ed25a816d8}
+    name: buraha
+    version: 0.0.0
+    dev: false
+
   github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
     resolution: {tarball: https://codeload.github.com/misskey-dev/sharp-read-bmp/tar.gz/02d9dc189fa7df0c4bea09330be26741772dac01}
     name: sharp-read-bmp
@@ -20399,8 +20405,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/2d63e2a0066f89871e777cc81d43c1ade8c97517}
+  github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/77dd5654bb82280b38c1f50e51a771c33f3df503}
     name: summaly
     version: 4.0.2
     dependencies:
