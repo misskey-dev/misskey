@@ -51,8 +51,8 @@ describe('ユーザー', () => {
 	
 	type User = MeDetailed & { token: string };	
 
-	const show = async (id: string, me = alice): Promise<MeDetailed | UserDetailedNotMe> => {
-		return successfulApiCall({ endpoint: 'users/show', parameters: { userId: id }, user: root }) as any;
+	const show = async (id: string, me = root): Promise<MeDetailed | UserDetailedNotMe> => {
+		return successfulApiCall({ endpoint: 'users/show', parameters: { userId: id }, user: me }) as any;
 	};
 
 	// UserLiteのキーが過不足なく入っている？
