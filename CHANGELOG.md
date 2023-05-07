@@ -65,6 +65,7 @@
 - Fix: Content-Dispositionのパースでエラーが発生した場合にダウンロードが完了しない問題を修正
 - Fix: API: i/update avatarIdとbannerIdにnullを渡した時、画像がリセットされない問題を修正
 - Fix: .wav, .flacが再生できない問題を修正（新しくアップロードされたファイルのみ修正が適用されます）
+- Fix: 凍結されたユーザーが一部APIのレスポンスに含まれる問題を修正
 - Fix: メモリの使用量を`used - buffers - cached`ではなく`total - available`で求めるように（環境によって正常に計測できていなかったため）
 
 ## 13.11.3
