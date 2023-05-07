@@ -1035,6 +1035,7 @@ archive: "Archive"
 channelArchiveConfirmTitle: "Really archive {name}?"
 channelArchiveConfirmDescription: "An archived channel won't appear in the channel list or search results anymore. New posts can also not be added to it anymore."
 thisChannelArchived: "This channel has been archived."
+displayOfNote: "Note display"
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
 _accountMigration:
