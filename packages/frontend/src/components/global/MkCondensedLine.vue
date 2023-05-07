@@ -54,7 +54,7 @@ watch(content, (value, oldValue) => {
 <style module lang="scss">
 .container {
 	display: inline-block;
-	width: 100%;
+	max-width: 100%;
 	transform-origin: 0;
 }
 
