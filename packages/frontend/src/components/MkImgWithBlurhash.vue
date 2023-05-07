@@ -14,11 +14,7 @@
 	</TransitionGroup>
 </div>
 </template>
-<script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
-import { v4 as uuid } from 'uuid';
-import { render } from 'buraha';
-import { defaultStore } from '@/store';
+<script lang="ts">
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
 
@@ -30,6 +26,12 @@ const workerPromise = new Promise<Worker | null>(resolve => {
 		testWorker.terminate();
 	});
 });
+</script>
+<script lang="ts" setup>
+import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
+import { render } from 'buraha';
+import { defaultStore } from '@/store';
 const $style = useCssModule();
 
 const props = withDefaults(defineProps<{
@@ -100,7 +102,13 @@ async function draw(transfer: boolean = false) {
 		}, offscreen ? [offscreen] : []);
 	} else {
 		try {
-			render(props.hash, canvas.value);
+			const work = document.createElement('canvas');
+			work.width = canvasWidth;
+			work.height = canvasHeight;
+			render(props.hash, work);
+			const bitmap = await createImageBitmap(work);
+			const ctx = canvas.value.getContext('2d');
+			ctx?.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
 		} catch (error) {
 			console.error('Error occured during drawing blurhash', error);
 		}
@@ -116,7 +124,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	workerPromise.then(worker => worker!.terminate());
+	workerPromise.then(worker => worker?.postMessage!({ id: viewId, delete: true }));
 });
 </script>
 
