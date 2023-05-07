@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
+<div ref="root" :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<TransitionGroup
 		:duration="defaultStore.state.animation && props.transition?.duration || undefined"
 		:enter-active-class="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
@@ -10,7 +10,7 @@
 		:leave-from-class="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
 		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-show="!hide" key="img" :height="height" :width="width" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" @load="onLoad"/>
+		<img v-show="!hide" key="img" :height="imgHeight" :width="imgWidth" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" @load="onLoad"/>
 	</TransitionGroup>
 </div>
 </template>
@@ -65,16 +65,19 @@ const props = withDefaults(defineProps<{
 
 const viewId = uuid();
 const canvas = shallowRef<HTMLCanvasElement>();
+const root = shallowRef<HTMLDivElement>();
 let loaded = $ref(false);
-let canvasWidth = $ref(props.width);
-let canvasHeight = $ref(props.height);
+let canvasWidth = $ref(64);
+let canvasHeight = $ref(64);
+let imgWidth = $ref(props.width);
+let imgHeight = $ref(props.height);
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function onLoad() {
 	loaded = true;
 }
 
-watch([() => props.width, () => props.height], () => {
+watch([() => props.width, () => props.height, root], () => {
 	const ratio = props.width / props.height;
 	if (ratio > 1) {
 		canvasWidth = Math.round(64 * ratio);
@@ -83,6 +86,10 @@ watch([() => props.width, () => props.height], () => {
 		canvasWidth = 64;
 		canvasHeight = Math.round(64 / ratio);
 	}
+
+	const clientWidth = root.value?.clientWidth ?? 300;
+	imgWidth = clientWidth;
+	imgHeight = Math.round(clientWidth / ratio);
 }, {
 	immediate: true,
 });
