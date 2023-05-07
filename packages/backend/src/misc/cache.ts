@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
 
 export class RedisKVCache<T> {
@@ -38,7 +38,7 @@ export class RedisKVCache<T> {
 			await this.redisClient.set(
 				`kvcache:${this.name}:${key}`,
 				this.toRedisConverter(value),
-				'ex', Math.round(this.lifetime / 1000),
+				'EX', Math.round(this.lifetime / 1000),
 			);
 		}
 	}
@@ -122,7 +122,7 @@ export class RedisSingleCache<T> {
 			await this.redisClient.set(
 				`singlecache:${this.name}`,
 				this.toRedisConverter(value),
-				'ex', Math.round(this.lifetime / 1000),
+				'EX', Math.round(this.lifetime / 1000),
 			);
 		}
 	}

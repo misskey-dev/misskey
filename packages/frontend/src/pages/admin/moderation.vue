@@ -5,14 +5,30 @@
 		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
-					<FormSection first>
-						<div class="_gaps_m">
-							<MkTextarea v-model="sensitiveWords">
-								<template #label>{{ i18n.ts.sensitiveWords }}</template>
-								<template #caption>{{ i18n.ts.sensitiveWordsDescription }}</template>
-							</MkTextarea>
-						</div>
-					</FormSection>
+					<MkSwitch v-model="enableRegistration">
+						<template #label>{{ i18n.ts.enableRegistration }}</template>
+					</MkSwitch>
+
+					<MkSwitch v-model="emailRequiredForSignup">
+						<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
+					</MkSwitch>
+
+					<FormLink to="/admin/server-rules">{{ i18n.ts.serverRules }}</FormLink>
+
+					<MkInput v-model="tosUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.tosUrl }}</template>
+					</MkInput>
+
+					<MkTextarea v-model="preservedUsernames">
+						<template #label>{{ i18n.ts.preservedUsernames }}</template>
+						<template #caption>{{ i18n.ts.preservedUsernamesDescription }}</template>
+					</MkTextarea>
+					
+					<MkTextarea v-model="sensitiveWords">
+						<template #label>{{ i18n.ts.sensitiveWords }}</template>
+						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -41,17 +57,30 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
+import FormLink from '@/components/form/link.vue';
 
+let enableRegistration: boolean = $ref(false);
+let emailRequiredForSignup: boolean = $ref(false);
 let sensitiveWords: string = $ref('');
+let preservedUsernames: string = $ref('');
+let tosUrl: string | null = $ref(null);
 
 async function init() {
 	const meta = await os.api('admin/meta');
+	enableRegistration = !meta.disableRegistration;
+	emailRequiredForSignup = meta.emailRequiredForSignup;
 	sensitiveWords = meta.sensitiveWords.join('\n');
+	preservedUsernames = meta.preservedUsernames.join('\n');
+	tosUrl = meta.tosUrl;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
+		disableRegistration: !enableRegistration,
+		emailRequiredForSignup,
+		tosUrl,
 		sensitiveWords: sensitiveWords.split('\n'),
+		preservedUsernames: preservedUsernames.split('\n'),
 	}).then(() => {
 		fetchInstance();
 	});

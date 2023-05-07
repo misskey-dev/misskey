@@ -7,7 +7,7 @@
 			<!-- <div class="punished" v-if="user.isSilenced"><i class="ti ti-alert-triangle" style="margin-right: 8px;"></i> {{ i18n.ts.userSilenced }}</div> -->
 
 			<div class="profile _gaps">
-				<MkAccountMoved v-if="user.movedToUri" :host="user.movedToUri.host" :username="user.movedToUri.username"/>
+				<MkAccountMoved v-if="user.movedTo" :moved-to="user.movedTo"/>
 				<MkRemoteCaution v-if="user.host != null" :href="user.url ?? user.uri!" class="warn"/>
 
 				<div :key="user.id" class="main _panel">
@@ -42,6 +42,17 @@
 							<span v-if="user.isBot" :title="i18n.ts.isBot"><i class="ti ti-robot"></i></span>
 						</div>
 					</div>
+					<div v-if="user.roles.length > 0" class="roles">
+						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+							<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+							{{ role.name }}
+						</span>
+					</div>
+					<div v-if="iAmModerator" class="moderationNote">
+						<MkTextarea v-model="moderationNote" manual-save>
+							<template #label>Moderation note</template>
+						</MkTextarea>
+					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
 						<div class="heading" v-text="i18n.ts.memo"/>
 						<textarea
@@ -52,12 +63,6 @@
 							@blur="updateMemo"
 							@input="adjustMemoTextarea"
 						/>
-					</div>
-					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-							{{ role.name }}
-						</span>
 					</div>
 					<div class="description">
 						<MkOmit>
@@ -134,6 +139,7 @@ import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkAccountMoved from '@/components/MkAccountMoved.vue';
 import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { getScrollPosition } from '@/scripts/scroll';
@@ -143,7 +149,7 @@ import { userPage } from '@/filters/user';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { i18n } from '@/i18n';
-import { $i } from '@/account';
+import { $i, iAmModerator } from '@/account';
 import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
@@ -168,8 +174,12 @@ let rootEl = $ref<null | HTMLElement>(null);
 let bannerEl = $ref<null | HTMLElement>(null);
 let memoTextareaEl = $ref<null | HTMLElement>(null);
 let memoDraft = $ref(props.user.memo);
-
 let isEditingMemo = $ref(false);
+let moderationNote = $ref(props.user.moderationNote);
+
+watch($$(moderationNote), async () => {
+	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
+});
 
 const pagination = {
 	endpoint: 'users/notes' as const,
@@ -426,6 +436,10 @@ onUnmounted(() => {
 					}
 				}
 
+				> .moderationNote {
+					margin: 12px 24px 0 154px;
+				}
+
 				> .memo {
 					margin: 12px 24px 0 154px;
 					background: transparent;
@@ -439,6 +453,7 @@ onUnmounted(() => {
 						text-align: left;
 						color: var(--fgTransparent);
 						line-height: 1.5;
+						font-size: 85%;
 					}
 
 					textarea {
@@ -591,6 +606,10 @@ onUnmounted(() => {
 				> .roles {
 					padding: 16px 16px 0 16px;
 					justify-content: center;
+				}
+
+				> .moderationNote {
+					margin: 16px 16px 0 16px;
 				}
 
 				> .memo {

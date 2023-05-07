@@ -64,6 +64,7 @@ export const ACHIEVEMENT_TYPES = [
 	'iLoveMisskey',
 	'foundTreasure',
 	'client30min',
+	'client60min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',
 	'postedAt0min0sec',

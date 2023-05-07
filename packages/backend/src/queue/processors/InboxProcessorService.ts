@@ -84,9 +84,9 @@ export class InboxProcessorService {
 
 		// HTTP-Signature keyIdを元にDBから取得
 		let authUser: {
-		user: RemoteUser;
-		key: UserPublickey | null;
-	} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
+			user: RemoteUser;
+			key: UserPublickey | null;
+		} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
 
 		// keyIdでわからなければ、activity.actorを元にDBから取得 || activity.actorを元にリモートから取得
 		if (authUser == null) {
@@ -174,11 +174,8 @@ export class InboxProcessorService {
 
 		// Update stats
 		this.federatedInstanceService.fetch(authUser.user.host).then(i => {
-			this.instancesRepository.update(i.id, {
+			this.federatedInstanceService.update(i.id, {
 				latestRequestReceivedAt: new Date(),
-				isNotResponding: false,
-			});
-			this.federatedInstanceService.updateCachePartial(host, {
 				isNotResponding: false,
 			});
 
