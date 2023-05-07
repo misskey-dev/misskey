@@ -9,7 +9,7 @@
 		<template #caption>{{ i18n.ts._accountMigration.moveFromSub }}</template>
 
 		<div class="_gaps_m">
-			<FormInfo warn>
+			<FormInfo>
 				{{ i18n.ts._accountMigration.moveFromDescription }}
 			</FormInfo>
 			<div>
