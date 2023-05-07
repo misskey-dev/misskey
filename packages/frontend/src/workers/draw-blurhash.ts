@@ -9,6 +9,7 @@ onmessage = async (event) => {
     }
     if (event.data.delete) {
         canvases.delete(event.data.id);
+        return;
     }
     if (event.data.canvas) {
         canvases.set(event.data.id, event.data.canvas);
