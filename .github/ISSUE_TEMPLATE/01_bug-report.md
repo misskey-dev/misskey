@@ -37,7 +37,10 @@ Please include errors from the developer console and/or server log files if you 
 ## 📌 Environment
 
 <!-- Tell us where on the platform it happens -->
+<!-- DO NOT WRITE "latest". Please provide the specific version. -->
 
 Misskey version:
+PostgreSQL version:
+Redis version:
 Your OS:
 Your browser:
