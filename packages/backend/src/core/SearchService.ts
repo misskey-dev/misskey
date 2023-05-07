@@ -117,6 +117,7 @@ export class SearchService {
 	public async searchNote(q: string, me: User | null, opts: {
 		userId?: Note['userId'] | null;
 		channelId?: Note['channelId'] | null;
+		host?: string | null;
 	}, pagination: {
 		untilId?: Note['id'];
 		sinceId?: Note['id'];
@@ -131,6 +132,13 @@ export class SearchService {
 			if (pagination.sinceId) filter.qs.push({ op: '>', k: 'createdAt', v: this.idService.parse(pagination.sinceId).date.getTime() });
 			if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
 			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
+			if (opts.host) {
+				if (opts.host === '.') {
+					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
+				} else {
+					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
+				}
+			}
 			const res = await this.meilisearchNoteIndex!.search(q, {
 				sort: ['createdAt:desc'],
 				matchingStrategy: 'all',
