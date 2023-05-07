@@ -1035,6 +1035,7 @@ archive: "封存"
 channelArchiveConfirmTitle: "要封存{name}嗎？"
 channelArchiveConfirmDescription: "封存以後，在頻道列表與搜索結果中不會顯示，也無法發布新的貼文。"
 thisChannelArchived: "這個頻道已被封存。"
+displayOfNote: "顯示貼文"
 _serverRules:
   description: "設定伺服器的簡要規則，在新的註冊之前顯示。建議的內容是使用條款的摘要。"
 _accountMigration:
