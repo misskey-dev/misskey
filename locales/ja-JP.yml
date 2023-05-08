@@ -1036,6 +1036,18 @@ channelArchiveConfirmTitle: "{name}をアーカイブしますか？"
 channelArchiveConfirmDescription: "アーカイブすると、チャンネル一覧や検索結果に表示されなくなり、新たな書き込みもできなくなります。"
 thisChannelArchived: "このチャンネルはアーカイブされています。"
 displayOfNote: "ノートの表示"
+initialAccountSetting: "初期設定"
+youFollowing: "フォロー中"
+
+_initialAccountSetting:
+  accountCreated: "アカウントの作成が完了しました！"
+  letsFillYourProfile: "まずはあなたのプロフィールを設定しましょう。"
+  profileSetting: "プロフィール設定"
+  theseSettingsCanEditLater: "これらの設定は後から変更できます。"
+  youCanEditMoreSettingsInSettingsPageLater: "この他にも様々な設定を「設定」ページから行えます。ぜひ後で確認してみてください。"
+  followUsers: "タイムラインを構築するため、気になるユーザーをフォローしてみましょう。"
+  initialAccountSettingCompleted: "初期設定が完了しました！"
+  haveFun: "{name}をお楽しみください！"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
@@ -1822,7 +1834,7 @@ _profile:
   metadataDescription: "プロフィールに表として追加情報を表示することができます。"
   metadataLabel: "ラベル"
   metadataContent: "内容"
-  changeAvatar: "アバター画像を変更"
+  changeAvatar: "アイコン画像を変更"
   changeBanner: "バナー画像を変更"
 
 _exportOrImport:

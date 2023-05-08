@@ -343,6 +343,8 @@ if ($i) {
 	// only add post shortcuts if logged in
 	hotkeys['p|n'] = post;
 
+	popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+
 	if ($i.isDeleted) {
 		alert({
 			type: 'warning',

@@ -1,0 +1,98 @@
+<template>
+<MkModalWindow
+	ref="dialog"
+	:width="500"
+	:height="550"
+	@close="close"
+	@closed="emit('closed')"
+>
+	<template #header>{{ i18n.ts.initialAccountSetting }}</template>
+
+	<div style="overflow-x: clip;">
+		<Transition
+			mode="out-in"
+			:enter-active-class="$style.transition_x_enterActive"
+			:leave-active-class="$style.transition_x_leaveActive"
+			:enter-from-class="$style.transition_x_enterFrom"
+			:leave-to-class="$style.transition_x_leaveTo"
+		>
+			<template v-if="page === 0">
+				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh;">
+					<MkSpacer :margin-min="20" :margin-max="28">
+						<div class="_gaps_s" style="text-align: center;">
+							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
+							<div>{{ i18n.ts._initialAccountSetting.letsFillYourProfile }}</div>
+							<MkButton primary rounded gradate style="margin: 0 auto;" @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
+					</MkSpacer>
+				</div>
+			</template>
+			<template v-else-if="page === 1">
+				<div style="height: 100cqh; overflow: auto;">
+					<MkSpacer :margin-min="20" :margin-max="28">
+						<XProfile/>
+						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					</MkSpacer>
+				</div>
+			</template>
+			<template v-else-if="page === 2">
+				<div style="height: 100cqh; overflow: auto;">
+					<MkSpacer :margin-min="20" :margin-max="28">
+						<XFollow/>
+						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					</MkSpacer>
+				</div>
+			</template>
+			<template v-else-if="page === 3">
+				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh;">
+					<MkSpacer :margin-min="20" :margin-max="28">
+						<div class="_gaps_s" style="text-align: center;">
+							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
+							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
+							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="close">{{ i18n.ts.close }}</MkButton>
+						</div>
+					</MkSpacer>
+				</div>
+			</template>
+		</Transition>
+	</div>
+</MkModalWindow>
+</template>
+
+<script lang="ts" setup>
+import { ref, shallowRef } from 'vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkButton from '@/components/MkButton.vue';
+import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
+import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
+import { host } from '@/config';
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
+}>();
+
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+
+const page = ref(0);
+
+function close() {
+	dialog.value.close();
+}
+</script>
+
+<style lang="scss" module>
+.transition_x_enterActive,
+.transition_x_leaveActive {
+	transition: opacity 0.3s cubic-bezier(0,0,.35,1), transform 0.3s cubic-bezier(0,0,.35,1);
+}
+.transition_x_enterFrom {
+	opacity: 0;
+	transform: translateX(50px);
+}
+.transition_x_leaveTo {
+	opacity: 0;
+	transform: translateX(-50px);
+}
+</style>
