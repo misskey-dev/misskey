@@ -23,7 +23,7 @@
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
-							<div>{{ i18n.ts._initialAccountSetting.letsFillYourProfile }}</div>
+							<div>{{ i18n.ts._initialAccountSetting.letsStartAccountSetup }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</MkSpacer>

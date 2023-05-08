@@ -1041,6 +1041,7 @@ youFollowing: "フォロー中"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
+  letsStartAccountSetup: "アカウントの初期設定を行いましょう。"
   letsFillYourProfile: "まずはあなたのプロフィールを設定しましょう。"
   profileSetting: "プロフィール設定"
   theseSettingsCanEditLater: "これらの設定は後から変更できます。"
