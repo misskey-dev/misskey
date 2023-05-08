@@ -1,5 +1,5 @@
 <template>
-<MkCondensedLine v-if="defaultStore.state.enableCondensedLineForAcct">
+<MkCondensedLine v-if="defaultStore.state.enableCondensedLineForAcct" :min-scale="2 / 3">
 	<span>@{{ user.username }}</span>
 	<span v-if="user.host || detail || defaultStore.state.showFullAcct" style="opacity: 0.5;">@{{ user.host || host }}</span>
 </MkCondensedLine>

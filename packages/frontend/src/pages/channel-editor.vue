@@ -81,7 +81,7 @@ let name = $ref(null);
 let description = $ref(null);
 let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
-let color = $ref(null);
+let color = $ref('#000');
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
