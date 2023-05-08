@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
+import { rest } from 'msw';
+import { commonHandlers } from '../../.storybook/mocks';
+import { userDetailed } from '../../.storybook/fakes';
 import MkUserSetupDialog from './MkUserSetupDialog.vue';
 export const Default = {
 	render(args) {
@@ -27,5 +30,22 @@ export const Default = {
 	},
 	parameters: {
 		layout: 'centered',
+		msw: {
+			handlers: [
+				...commonHandlers,
+				rest.post('/api/users', (req, res, ctx) => {
+					return res(ctx.json([
+						userDetailed('44'),
+						userDetailed('49'),
+					]));
+				}),
+				rest.post('/api/pinned-users', (req, res, ctx) => {
+					return res(ctx.json([
+						userDetailed('44'),
+						userDetailed('49'),
+					]));
+				}),
+			],
+		},
 	},
 } satisfies StoryObj<typeof MkUserSetupDialog>;
