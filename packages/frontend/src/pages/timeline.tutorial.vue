@@ -32,10 +32,10 @@
 
 	<div :class="$style.footer">
 		<template v-if="tutorial === tutorialsNumber - 1">
-			<MkButton :class="$style.footerItem" primary @click="tutorial = -1">{{ i18n.ts.done }} <i class="ti ti-check"></i></MkButton>
+			<MkButton :class="$style.footerItem" primary rounded gradate @click="tutorial = -1">{{ i18n.ts.done }} <i class="ti ti-check"></i></MkButton>
 		</template>
 		<template v-else>
-			<MkButton :class="$style.footerItem" primary @click="tutorial++">{{ i18n.ts.next }} <i class="ti ti-arrow-right"></i></MkButton>
+			<MkButton :class="$style.footerItem" primary rounded gradate @click="tutorial++">{{ i18n.ts.next }} <i class="ti ti-arrow-right"></i></MkButton>
 		</template>
 	</div>
 </div>
