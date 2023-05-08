@@ -3,7 +3,7 @@
 	ref="dialog"
 	:width="500"
 	:height="550"
-	@close="close"
+	@close="close(true)"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.initialAccountSetting }}</template>
@@ -70,7 +70,7 @@
 								</template>
 							</I18n>
 							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
-							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="close">{{ i18n.ts.close }}</MkButton>
+							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="close(false)">{{ i18n.ts.close }}</MkButton>
 						</div>
 					</MkSpacer>
 				</div>
@@ -91,6 +91,7 @@ import { instance } from '@/instance';
 import { host } from '@/config';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store';
+import * as os from '@/os';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -104,7 +105,15 @@ watch(page, () => {
 	defaultStore.set('accountSetupWizard', page.value);
 });
 
-function close() {
+async function close(skip: boolean) {
+	if (skip) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts._initialAccountSetting.skipAreYouSure,
+		});
+		if (canceled) return;
+	}
+
 	dialog.value.close();
 	defaultStore.set('accountSetupWizard', -1);
 }
