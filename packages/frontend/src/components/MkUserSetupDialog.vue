@@ -63,6 +63,12 @@
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
+							<I18n :src="i18n.ts._initialAccountSetting.ifYouNeedLearnMore" tag="div" style="padding: 0 16px;">
+								<template #name>{{ instance.name ?? host }}</template>
+								<template #link>
+									<a href="https://misskey-hub.net/help.html" target="_blank" class="_link">{{ i18n.ts.help }}</a>
+								</template>
+							</I18n>
 							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="close">{{ i18n.ts.close }}</MkButton>
 						</div>
