@@ -344,7 +344,10 @@ if ($i) {
 	hotkeys['p|n'] = post;
 
 	if (defaultStore.state.accountSetupWizard !== -1) {
-		popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+		// このウィザードが実装される前に登録したユーザーには表示させないため
+		if (Date.now() - new Date($i.createdAt).getTime() < 1000 * 60 * 60 * 24) {
+			popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+		}
 	}
 
 	if ($i.isDeleted) {
