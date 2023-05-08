@@ -17,7 +17,7 @@
 			:leave-to-class="$style.transition_x_leaveTo"
 		>
 			<template v-if="page === 0">
-				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh;">
+				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh; padding-bottom: 30px; box-sizing: border-box;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -45,7 +45,7 @@
 				</div>
 			</template>
 			<template v-else-if="page === 3">
-				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh;">
+				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh; padding-bottom: 30px; box-sizing: border-box;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
