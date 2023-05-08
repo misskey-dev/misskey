@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, shallowRef } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
@@ -90,6 +90,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
+import { defaultStore } from '@/store';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -97,10 +98,15 @@ const emit = defineEmits<{
 
 const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
 
-const page = ref(0);
+const page = ref(defaultStore.state.accountSetupWizard);
+
+watch(page, () => {
+	defaultStore.set('accountSetupWizard', page.value);
+});
 
 function close() {
 	dialog.value.close();
+	defaultStore.set('accountSetupWizard', -1);
 }
 </script>
 
