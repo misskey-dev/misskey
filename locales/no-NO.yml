@@ -355,6 +355,8 @@ _time:
   minute: "Minutter"
   hour: "Timer"
   day: "Dager"
+_timelineTutorial:
+  title: "Hvordan bruke Misskey"
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:
@@ -374,14 +376,18 @@ _widgets:
   clock: "Klokke"
   photos: "Bilder"
   button: "Knapp"
+  aiscriptApp: "AiScript App"
   userList: "Brukerliste"
   _userList:
     chooseList: "Velg liste"
 _cw:
   show: "Vis mer"
 _poll:
+  noOnlyOneChoice: "Trenger minst to valger."
+  choiceN: "Valg {n}"
   noMore: "Du kan ikke legge til flere."
   deadlineTime: "Timer"
+  votesCount: "{n} stemmer"
   vote: "Stem"
   showResult: "Vis resultatet"
   voted: "Stemt"
