@@ -89,7 +89,6 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	contain: content;
-	container-type: inline-size;
 	border-radius: var(--radius);
 
 	--root-margin: 24px;
@@ -142,6 +141,7 @@ defineExpose({
 		flex: 1;
 		overflow: auto;
 		background: var(--panel);
+		container-type: size;
 	}
 }
 </style>
