@@ -19,10 +19,11 @@
 			<template v-if="page === 0">
 				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh;">
 					<MkSpacer :margin-min="20" :margin-max="28">
-						<div class="_gaps_s" style="text-align: center;">
+						<div class="_gaps" style="text-align: center;">
+							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
 							<div>{{ i18n.ts._initialAccountSetting.letsFillYourProfile }}</div>
-							<MkButton primary rounded gradate style="margin: 0 auto;" @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</MkSpacer>
 				</div>
@@ -46,7 +47,8 @@
 			<template v-else-if="page === 3">
 				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh;">
 					<MkSpacer :margin-min="20" :margin-max="28">
-						<div class="_gaps_s" style="text-align: center;">
+						<div class="_gaps" style="text-align: center;">
+							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.initialAccountSettingCompleted }}</div>
 							<div>{{ i18n.t('_initialAccountSetting.haveFun', { name: instance.name ?? host }) }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="close">{{ i18n.ts.close }}</MkButton>
