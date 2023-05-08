@@ -84,11 +84,10 @@ queueMicrotask(() => {
 const preview = {
 	decorators: [
 		(Story, context) => {
-			console.log(lastStory, context.unboundStoryFn);
-			if (lastStory === context.unboundStoryFn) {
+			if (lastStory === context.id) {
 				lastStory = null;
 			} else {
-				lastStory = context.unboundStoryFn;
+				lastStory = context.id;
 				const channel = addons.getChannel();
 				const resetIndexedDBPromise = globalThis.indexedDB?.databases
 					? indexedDB.databases().then((r) => {
