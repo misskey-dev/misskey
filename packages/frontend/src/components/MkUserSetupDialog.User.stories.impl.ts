@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
-import MkUserSetupDialog_Follow from './MkUserSetupDialog.Follow.vue';
+import { userDetailed } from '../../.storybook/fakes';
+import MkUserSetupDialog_User from './MkUserSetupDialog.User.vue';
 export const Default = {
 	render(args) {
 		return {
 			components: {
-				MkUserSetupDialog_Follow,
+				MkUserSetupDialog_User,
 			},
 			setup() {
 				return {
@@ -19,13 +20,13 @@ export const Default = {
 					};
 				},
 			},
-			template: '<MkUserSetupDialog_Follow v-bind="props" />',
+			template: '<MkUserSetupDialog_User v-bind="props" />',
 		};
 	},
 	args: {
-		
+		user: userDetailed(),
 	},
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof MkUserSetupDialog_Follow>;
+} satisfies StoryObj<typeof MkUserSetupDialog_User>;

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
-import XProfile from './MkUserSetupDialog.Profile.vue';
+import MkUserSetupDialog_Profile from './MkUserSetupDialog.Profile.vue';
 export const Default = {
 	render(args) {
 		return {
 			components: {
-				XProfile,
+				MkUserSetupDialog_Profile,
 			},
 			setup() {
 				return {
@@ -19,7 +19,7 @@ export const Default = {
 					};
 				},
 			},
-			template: '<XProfile v-bind="props" />',
+			template: '<MkUserSetupDialog_Profile v-bind="props" />',
 		};
 	},
 	args: {
@@ -28,4 +28,4 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof XProfile>;
+} satisfies StoryObj<typeof MkUserSetupDialog_Profile>;
