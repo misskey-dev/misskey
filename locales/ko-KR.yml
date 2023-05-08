@@ -2,7 +2,7 @@
 _lang_: "한국어"
 headlineMisskey: "노트로 연결되는 네트워크"
 introMisskey: "환영합니다! Misskey는 오픈 소스 분산형 마이크로 블로그 서비스입니다.\n'노트'를 작성해서 지금 일어나고 있는 일을 공유하거나, 당신만의 이야기를 모두에게 발신하세요📡\n'리액션' 기능으로 친구의 노트에 총알같이 반응을 추가할 수도 있습니다👍\n새로운 세계를 탐험해 보세요🚀"
-poweredByMisskeyDescription: "{name}은(는) 오픈소스 플랫폼<b>Misskey</b>를 사용한 서버 중 하나입니다."
+poweredByMisskeyDescription: "{name}은(는) 오픈소스 플랫폼 <b>Misskey</b>를 사용한 서버 가운데 하나입니다."
 monthAndDay: "{month}월 {day}일"
 search: "검색"
 notifications: "알림"
