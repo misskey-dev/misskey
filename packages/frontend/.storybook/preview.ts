@@ -11,6 +11,7 @@ import '../src/style.scss';
 
 const appInitialized = Symbol();
 
+let lastStory = null;
 let moduleInitialized = false;
 let unobserve = () => {};
 let misskeyOS = null;
@@ -43,20 +44,16 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 	unobserve = () => observer.disconnect();
 }
 
+function initLocalStorage() {
+	localStorage.clear();
+	localStorage.setItem('account', JSON.stringify(userDetailed()));
+	localStorage.setItem('locale', JSON.stringify(locale));
+}
+
 initialize({
 	onUnhandledRequest,
 });
-
-// Reset local caches
-// TODO: ストーリーごとにリセットするようにしたい
-await window.indexedDB.databases().then((r) => {
-	for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name!);
-});
-localStorage.clear();
-
-localStorage.setItem('account', JSON.stringify(userDetailed()));
-localStorage.setItem('locale', JSON.stringify(locale));
-
+initLocalStorage();
 queueMicrotask(() => {
 	Promise.all([
 		import('../src/components'),
@@ -87,6 +84,28 @@ queueMicrotask(() => {
 const preview = {
 	decorators: [
 		(Story, context) => {
+			console.log(lastStory, context.unboundStoryFn);
+			if (lastStory === context.unboundStoryFn) {
+				lastStory = null;
+			} else {
+				lastStory = context.unboundStoryFn;
+				const channel = addons.getChannel();
+				const resetIndexedDBPromise = globalThis.indexedDB?.databases
+					? indexedDB.databases().then((r) => {
+							for (var i = 0; i < r.length; i++) {
+								indexedDB.deleteDatabase(r[i].name!);
+							}
+						}).catch(() => {})
+					: Promise.resolve();
+				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
+					// @ts-expect-error
+					defaultStore.init();
+				}).catch(() => {});
+				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
+					initLocalStorage();
+					channel.emit(FORCE_REMOUNT, { storyId: context.id });
+				});
+			}
 			const story = Story();
 			if (!moduleInitialized) {
 				const channel = addons.getChannel();
