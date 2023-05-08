@@ -48,6 +48,7 @@ initialize({
 });
 
 // Reset local caches
+// TODO: ストーリーごとにリセットするようにしたい
 await window.indexedDB.databases().then((r) => {
 	for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name!);
 });
@@ -55,6 +56,7 @@ localStorage.clear();
 
 localStorage.setItem('account', JSON.stringify(userDetailed()));
 localStorage.setItem('locale', JSON.stringify(locale));
+
 queueMicrotask(() => {
 	Promise.all([
 		import('../src/components'),
