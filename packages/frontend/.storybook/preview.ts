@@ -3,6 +3,7 @@ import { FORCE_REMOUNT } from '@storybook/core-events';
 import { type Preview, setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswDecorator } from 'msw-storybook-addon';
+import { userDetailed } from './fakes';
 import locale from './locale';
 import { commonHandlers, onUnhandledRequest } from './mocks';
 import themes from './themes';
@@ -45,7 +46,8 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 initialize({
 	onUnhandledRequest,
 });
-localStorage.setItem("locale", JSON.stringify(locale));
+localStorage.setItem('account', JSON.stringify(userDetailed()));
+localStorage.setItem('locale', JSON.stringify(locale));
 queueMicrotask(() => {
 	Promise.all([
 		import('../src/components'),
