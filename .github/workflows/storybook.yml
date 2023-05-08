@@ -77,14 +77,14 @@ jobs:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic will skip testing
       uses: actions/github-script@v6.4.0
-      if: github.event_name == 'pull_request' && github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' && (steps.chromatic_push.outputs.skip == 'true' || steps.chromatic_pull_request.outputs.skip == 'true')
+      if: github.event_name == 'pull_request' && steps.chromatic_pull_request.outputs.skip == 'true'
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.rest.repos.createCommitComment({
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            commit_sha: context.sha,
             body: 'Chromatic will skip testing but you may still have to [review the changes on Chromatic](https://www.chromatic.com/pullrequests?appId=6428f7d7b962f0b79f97d6e4).'
           })
     - name: Upload Artifacts
