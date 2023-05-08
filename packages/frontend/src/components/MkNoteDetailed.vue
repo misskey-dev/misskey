@@ -587,6 +587,7 @@ if (appearNote.replyId) {
 
 		> .main {
 			> .body {
+				container-type: inline-size;
 
 				> .cw {
 					cursor: default;
