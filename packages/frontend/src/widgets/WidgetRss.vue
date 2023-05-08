@@ -7,7 +7,7 @@
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
 		<div v-else-if="(!items || items.length === 0) && widgetProps.showHeader" class="_fullinfo">
-			<img src="https://ca.nfs.pub/misskey-notice-assets/info.png" class="_ghost"/>
+			<img src="https://na.nfs.pub/info.png" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 		<div v-else :class="$style.feed">

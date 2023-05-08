@@ -13,7 +13,7 @@
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
 			<div class="_fullinfo">
-				<img src="https://ca.nfs.pub/misskey-notice-assets/info.png" class="_ghost"/>
+				<img src="https://na.nfs.pub/info.png" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</slot>

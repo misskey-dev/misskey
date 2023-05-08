@@ -10,7 +10,7 @@
 		<MkPagination :pagination="renoteMutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://ca.nfs.pub/misskey-notice-assets/info.png" class="_ghost"/>
+					<img src="https://na.nfs.pub/info.png" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -38,7 +38,7 @@
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://ca.nfs.pub/misskey-notice-assets/info.png" class="_ghost"/>
+					<img src="https://na.nfs.pub/info.png" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -68,7 +68,7 @@
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://ca.nfs.pub/misskey-notice-assets/info.png" class="_ghost"/>
+					<img src="https://na.nfs.pub/info.png" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
