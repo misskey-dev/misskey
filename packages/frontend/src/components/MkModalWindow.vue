@@ -6,7 +6,7 @@
 			<span class="title">
 				<slot name="header"></slot>
 			</span>
-			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
+			<button v-if="!withOkButton" class="_button" data-cy-modal-window-close @click="$emit('close')"><i class="ti ti-x"></i></button>
 			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="ti ti-check"></i></button>
 		</div>
 		<div class="body">
