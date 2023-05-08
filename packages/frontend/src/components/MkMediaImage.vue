@@ -19,12 +19,12 @@
 	</a>
 	<template v-if="hide">
 		<div :class="$style.hiddenText">
-		<div :class="$style.hiddenTextWrapper">
-			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
-			<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
-			<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			<div :class="$style.hiddenTextWrapper">
+				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
+				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
+			</div>
 		</div>
-	</div>
 	</template>
 	<template v-else>
 		<div :class="$style.indicators">
@@ -33,6 +33,7 @@
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
 		</div>
 		<button v-tooltip="i18n.ts.hide" :class="$style.hide" class="_button" @click.stop.prevent="hide = true"><i class="ti ti-eye-off"></i></button>
+		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots"></i></button>
 	</template>
 </div>
 </template>
