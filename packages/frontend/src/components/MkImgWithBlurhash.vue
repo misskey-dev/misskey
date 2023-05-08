@@ -10,7 +10,7 @@
 		:leave-from-class="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
 		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
-		<img v-show="!hide" key="img" :height="imgHeight" :width="imgWidth" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" @load="onLoad"/>
+		<img v-show="!hide" key="img" ref="img" :height="imgHeight" :width="imgWidth" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async"/>
 	</TransitionGroup>
 </div>
 </template>
@@ -30,7 +30,7 @@ const workerPromise = new Promise<Worker | null>(resolve => {
 </script>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { defaultStore } from '@/store';
@@ -68,6 +68,7 @@ const props = withDefaults(defineProps<{
 const viewId = uuid();
 const canvas = shallowRef<HTMLCanvasElement>();
 const root = shallowRef<HTMLDivElement>();
+const img = shallowRef<HTMLImageElement>();
 let loaded = $ref(false);
 let canvasWidth = $ref(64);
 let canvasHeight = $ref(64);
@@ -75,9 +76,24 @@ let imgWidth = $ref(props.width);
 let imgHeight = $ref(props.height);
 const hide = computed(() => !loaded || props.forceBlurhash);
 
-function onLoad() {
-	loaded = true;
+function waitForDecode() {
+	if (props.src != null && props.src !== '') {
+		nextTick()
+			.then(() => img.value?.decode())
+			.then(() => {
+				loaded = true;
+			}, error => {
+				console.error('Error occured during decoding image', img.value, error);
+				throw Error(error);
+			});
+	} else {
+		loaded = false;
+	}
 }
+
+watch(() => props.src, () => {
+	waitForDecode();
+});
 
 watch([() => props.width, () => props.height, root], () => {
 	const ratio = props.width / props.height;
@@ -130,6 +146,7 @@ watch(() => props.hash, () => {
 
 onMounted(() => {
 	draw(true);
+	waitForDecode();
 });
 
 onUnmounted(() => {
