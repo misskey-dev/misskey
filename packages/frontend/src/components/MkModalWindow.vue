@@ -9,7 +9,7 @@
 			<button v-if="!withOkButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
 			<button v-if="withOkButton" class="_button" :disabled="okButtonDisabled" @click="$emit('ok')"><i class="ti ti-check"></i></button>
 		</div>
-		<div class="body">
+		<div class="body" :style="`container-name: modalWindow_${id};`">
 			<slot :width="bodyWidth" :height="bodyHeight"></slot>
 		</div>
 	</div>
@@ -18,6 +18,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted } from 'vue';
+import { v4 as uuid } from 'uuid';
 import MkModal from './MkModal.vue';
 
 const props = withDefaults(defineProps<{
@@ -39,6 +40,7 @@ const emit = defineEmits<{
 	(event: 'ok'): void;
 }>();
 
+const id = uuid();
 let modal = $shallowRef<InstanceType<typeof MkModal>>();
 let rootEl = $shallowRef<HTMLElement>();
 let headerEl = $shallowRef<HTMLElement>();

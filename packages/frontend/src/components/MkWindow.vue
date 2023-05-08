@@ -29,7 +29,7 @@
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
-			<div :class="$style.content">
+			<div :class="$style.content" :style="`container-name: window_${id};`">
 				<slot></slot>
 			</div>
 		</div>
@@ -49,6 +49,7 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide } from 'vue';
+import { v4 as uuid } from 'uuid';
 import contains from '@/scripts/contains';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
@@ -102,6 +103,7 @@ const emit = defineEmits<{
 
 provide('inWindow', true);
 
+const id = uuid();
 let rootEl = $shallowRef<HTMLElement | null>();
 let showing = $ref(true);
 let beforeClickedAt = 0;
