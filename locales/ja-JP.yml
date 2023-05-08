@@ -1046,6 +1046,7 @@ _initialAccountSetting:
   theseSettingsCanEditLater: "これらの設定は後から変更できます。"
   youCanEditMoreSettingsInSettingsPageLater: "この他にも様々な設定を「設定」ページから行えます。ぜひ後で確認してみてください。"
   followUsers: "タイムラインを構築するため、気になるユーザーをフォローしてみましょう。"
+  pushNotificationDescription: "プッシュ通知を有効にすると{name}の通知をお使いのデバイスで受け取ることができます。"
   initialAccountSettingCompleted: "初期設定が完了しました！"
   haveFun: "{name}をお楽しみください！"
 

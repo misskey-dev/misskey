@@ -17,7 +17,7 @@
 			:leave-to-class="$style.transition_x_leaveTo"
 		>
 			<template v-if="page === 0">
-				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh; padding-bottom: 30px; box-sizing: border-box;">
+				<div :class="$style.centerPage">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -45,7 +45,20 @@
 				</div>
 			</template>
 			<template v-else-if="page === 3">
-				<div style="display: flex; justify-content: center; align-items: center; height: 100cqh; padding-bottom: 30px; box-sizing: border-box;">
+				<div :class="$style.centerPage">
+					<MkSpacer :margin-min="20" :margin-max="28">
+						<div class="_gaps" style="text-align: center;">
+							<i class="ti ti-bell-ringing-2" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
+							<div style="font-size: 120%;">{{ i18n.ts.pushNotification }}</div>
+							<div>{{ i18n.t('_initialAccountSetting.pushNotificationDescription', { name: instance.name ?? host }) }}</div>
+							<MkPushNotificationAllowButton primary show-only-to-register style="margin: 0 auto;"/>
+							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
+					</MkSpacer>
+				</div>
+			</template>
+			<template v-else-if="page === 4">
+				<div :class="$style.centerPage">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -70,6 +83,7 @@ import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';
+import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -96,5 +110,14 @@ function close() {
 .transition_x_leaveTo {
 	opacity: 0;
 	transform: translateX(-50px);
+}
+
+.centerPage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100cqh;
+	padding-bottom: 30px;
+	box-sizing: border-box;
 }
 </style>
