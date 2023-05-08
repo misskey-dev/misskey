@@ -159,10 +159,31 @@ describe('After user signed in', () => {
 	});
 
   it('successfully loads', () => {
-		cy.get('[data-cy-open-post-form]').should('be.visible');
+		cy.get('[data-cy-user-setup-continue]').should('be.visible');
+  });
+
+	it('account setup wizard', () => {
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		cy.get('[data-cy-user-setup-user-name] input').type('ありす');
+		cy.get('[data-cy-user-setup-user-description] textarea').type('ほげ');
+		// TODO: アイコン設定テスト
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		// フォローはスキップ
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		// プッシュ通知設定はスキップ
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		cy.get('[data-cy-user-setup-continue]').click();
   });
 
 	it('note', () => {
+		cy.get('[data-cy-open-post-form]').should('be.visible');
 		cy.get('[data-cy-open-post-form]').click();
 		cy.get('[data-cy-post-form-text]').type('Hello, Misskey!');
 		cy.get('[data-cy-open-post-form-submit]').click();
