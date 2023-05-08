@@ -1050,6 +1050,7 @@ _initialAccountSetting:
   initialAccountSettingCompleted: "初期設定が完了しました！"
   haveFun: "{name}をお楽しみください！"
   ifYouNeedLearnMore: "{name}(Misskey)の使い方などを詳しく知るには{link}をご覧ください。"
+  skipAreYouSure: "初期設定をスキップしますか？"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"

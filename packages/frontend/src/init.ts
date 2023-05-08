@@ -345,8 +345,11 @@ if ($i) {
 
 	if (defaultStore.state.accountSetupWizard !== -1) {
 		// このウィザードが実装される前に登録したユーザーには表示させないため
+		// TODO: そのうち消す
 		if (Date.now() - new Date($i.createdAt).getTime() < 1000 * 60 * 60 * 24) {
 			popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+		} else {
+			defaultStore.set('accountSetupWizard', -1);
 		}
 	}
 
