@@ -22,7 +22,7 @@
 		<span :class="$style.title"><slot name="header"></slot></span>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body" v-container :class="$style.body">
+	<div v-show="active" ref="body" :class="$style.body">
 		<slot></slot>
 	</div>
 </section>
@@ -362,7 +362,7 @@ function onDrop(ev) {
 	overflow-x: clip;
 	-webkit-overflow-scrolling: touch;
 	box-sizing: border-box;
-	container-type: inline-size;
+	container-type: size;
 	background-color: var(--bg);
 }
 </style>
