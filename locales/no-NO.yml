@@ -275,6 +275,7 @@ cannotBeChangedLater: "Du kan ikke endre senere."
 likeOnly: "Bare liker"
 retryAllQueuesConfirmTitle: "Vil du prøve igjen akkurat nå?"
 continue: "Fortsett"
+youFollowing: "Følger"
 _achievements:
   _types:
     _noteFavorited1:
@@ -354,10 +355,6 @@ _time:
   minute: "Minutter"
   hour: "Timer"
   day: "Dager"
-_tutorial:
-  title: "Hvordan bruke Misskey"
-  step1_1: "Velkommen."
-  step8_3: "Du kan alltid endre denne innstillingen senere."
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:
