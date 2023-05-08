@@ -14,6 +14,7 @@
 	</TransitionGroup>
 </div>
 </template>
+
 <script lang="ts">
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
@@ -27,6 +28,7 @@ const workerPromise = new Promise<Worker | null>(resolve => {
 	});
 });
 </script>
+
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
