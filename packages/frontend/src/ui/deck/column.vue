@@ -22,7 +22,7 @@
 		<span :class="$style.title"><slot name="header"></slot></span>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body" v-container :class="$style.body">
+	<div v-show="active" ref="body" :class="$style.body">
 		<slot></slot>
 	</div>
 </section>
@@ -243,7 +243,7 @@ function onDrop(ev) {
 <style lang="scss" module>
 .root {
 	--root-margin: 10px;
-	--deckColumnHeaderHeight: 40px;
+	--deckColumnHeaderHeight: 38px;
 
 	height: 100%;
 	overflow: clip;
@@ -318,10 +318,7 @@ function onDrop(ev) {
 	background: var(--panelHeaderBg);
 	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
-
-	&, * {
-		user-select: none;
-	}
+	user-select: none;
 }
 
 .title {
@@ -365,7 +362,7 @@ function onDrop(ev) {
 	overflow-x: clip;
 	-webkit-overflow-scrolling: touch;
 	box-sizing: border-box;
-	container-type: inline-size;
+	container-type: size;
 	background-color: var(--bg);
 }
 </style>

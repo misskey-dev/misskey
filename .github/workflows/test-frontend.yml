@@ -22,7 +22,7 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 7
+        version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3.6.0
@@ -106,7 +106,7 @@ jobs:
         install: false
         start: pnpm start:test
         wait-on: 'http://localhost:61812'
-        headless: false
+        headed: true
         browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
       if: failure()

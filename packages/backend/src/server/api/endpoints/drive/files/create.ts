@@ -15,6 +15,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	prohibitMoved: true,
+
 	limit: {
 		duration: ms('1hour'),
 		max: 120,

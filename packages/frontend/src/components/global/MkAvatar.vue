@@ -222,7 +222,7 @@ watch(() => props.user.avatarBlurhash, () => {
 			transform: rotate(37.5deg) skew(30deg);
 
 			&, &::after {
-				border-radius: 0 75% 75%;
+				border-radius: 25% 75% 75%;
 			}
 
 			> .layer {
@@ -251,7 +251,7 @@ watch(() => props.user.avatarBlurhash, () => {
 			transform: rotate(-37.5deg) skew(-30deg);
 
 			&, &::after {
-				border-radius: 75% 0 75% 75%;
+				border-radius: 75% 25% 75% 75%;
 			}
 
 			> .layer {

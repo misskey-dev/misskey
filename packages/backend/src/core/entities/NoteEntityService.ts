@@ -335,6 +335,7 @@ export class NoteEntityService implements OnModuleInit {
 			channel: channel ? {
 				id: channel.id,
 				name: channel.name,
+				color: channel.color,
 			} : undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
