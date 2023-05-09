@@ -195,6 +195,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	grid-gap: 8px;
 
 	height: 100%;
+	width: 100%;
 
 	&.n1 {
 		grid-template-rows: 1fr;
