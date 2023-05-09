@@ -98,6 +98,27 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	async function editMemo(): Promise<void> {
+		const userDetailed = await os.api('users/show', {
+			userId: user.id,
+		});
+		const { canceled, result } = await os.form(i18n.ts.editMemo, {
+			memo: {
+				type: 'string',
+				required: true,
+				multiline: true,
+				label: i18n.ts.memo,
+				default: userDetailed.memo,
+			},
+		});
+		if (canceled) return;
+
+		os.apiWithDialog('users/update-memo', {
+			memo: result.memo,
+			userId: user.id,
+		});
+	}
+
 	let menu = [{
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
@@ -123,6 +144,12 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			os.post({ specified: user, initialText: `@${user.username} ` });
 		},
 	}, null, {
+		icon: 'ti ti-pencil',
+		text: i18n.ts.editMemo,
+		action: () => {
+			editMemo();
+		},
+	}, {
 		type: 'parent',
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,

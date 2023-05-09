@@ -70,10 +70,10 @@ export class UrlPreviewService {
 				await summaly(url, {
 					followRedirects: false,
 					lang: lang ?? 'ja-JP',
-					agent: {
+					agent: this.config.proxy ? {
 						http: this.httpRequestService.httpAgent,
 						https: this.httpRequestService.httpsAgent,
-					},
+					} : undefined,
 				});
 
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);

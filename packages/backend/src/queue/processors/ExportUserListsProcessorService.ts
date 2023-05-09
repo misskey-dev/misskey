@@ -86,7 +86,7 @@ export class ExportUserListsProcessorService {
 			this.logger.succ(`Exported to: ${path}`);
 
 			const fileName = 'user-lists-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
-			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true });
+			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);
 		} finally {
