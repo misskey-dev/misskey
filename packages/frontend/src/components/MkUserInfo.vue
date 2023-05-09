@@ -131,7 +131,7 @@ defineProps<{
 }
 
 .follow {
-	position: absolute;
+	position: absolute !important;
 	top: 8px;
 	right: 8px;
 }
