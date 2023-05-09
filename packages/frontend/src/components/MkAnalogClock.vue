@@ -99,6 +99,7 @@ const props = withDefaults(defineProps<{
 	graduations?: 'none' | 'dots' | 'numbers';
 	fadeGraduations?: boolean;
 	sAnimation?: 'none' | 'elastic' | 'easeOut';
+	now?: () => Date;
 }>(), {
 	numbers: false,
 	thickness: 0.1,
@@ -107,6 +108,7 @@ const props = withDefaults(defineProps<{
 	graduations: 'dots',
 	fadeGraduations: true,
 	sAnimation: 'elastic',
+	now: () => new Date(),
 });
 
 const graduationsMajor = computed(() => {
@@ -145,11 +147,17 @@ let disableSAnimate = $ref(false);
 let sOneRound = false;
 
 function tick() {
-	const now = new Date();
-	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+	const now = props.now();
+	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
+	const previousS = s;
+	const previousM = m;
+	const previousH = h;
 	s = now.getSeconds();
 	m = now.getMinutes();
 	h = now.getHours();
+	if (previousS === s && previousM === m && previousH === h) {
+		return;
+	}
 	hAngle = Math.PI * (h % (props.twentyfour ? 24 : 12) + (m + s / 60) / 60) / (props.twentyfour ? 12 : 6);
 	mAngle = Math.PI * (m + s / 60) / 30;
 	if (sOneRound) { // 秒針が一周した際のアニメーションをよしなに処理する(これが無いと秒が59->0になったときに期待したアニメーションにならない)

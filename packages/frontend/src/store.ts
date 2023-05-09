@@ -38,7 +38,11 @@ export const pageViewInterruptors: PageViewInterruptor[] = [];
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
 export const defaultStore = markRaw(new Storage('base', {
-	tutorial: {
+	accountSetupWizard: {
+		where: 'account',
+		default: 0,
+	},
+	timelineTutorial: {
 		where: 'account',
 		default: 0,
 	},
@@ -164,7 +168,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animation: {
 		where: 'device',
-		default: !matchMedia('(prefers-reduced-motion)').matches,
+		default: !window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	animatedMfm: {
 		where: 'device',
@@ -182,9 +186,13 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	enableDataSaverMode: {
+		where: 'device',
+		default: false,
+	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: matchMedia('(prefers-reduced-motion)').matches,
+		default: window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	emojiStyle: {
 		where: 'device',
@@ -305,6 +313,22 @@ export const defaultStore = markRaw(new Storage('base', {
 	aiChanMode: {
 		where: 'device',
 		default: false,
+	},
+	mediaListWithOneImageAppearance: {
+		where: 'device',
+		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+	},
+	notificationPosition: {
+		where: 'device',
+		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
+	},
+	notificationStackAxis: {
+		where: 'device',
+		default: 'horizontal' as 'vertical' | 'horizontal',
+	},
+	enableCondensedLineForAcct: {
+		where: 'device',
+		default: true,
 	},
 }));
 

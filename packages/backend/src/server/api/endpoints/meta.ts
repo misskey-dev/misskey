@@ -201,10 +201,6 @@ export const meta = {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					elasticsearch: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
 					hcaptcha: {
 						type: 'boolean',
 						optional: false, nullable: false,
@@ -310,6 +306,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				translatorAvailable: instance.deeplAuthKey != null,
 
+				serverRules: instance.serverRules,
+
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
 				mediaProxy: this.config.mediaProxy,
@@ -329,7 +327,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				response.features = {
 					registration: !instance.disableRegistration,
 					emailRequiredForSignup: instance.emailRequiredForSignup,
-					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,
 					recaptcha: instance.enableRecaptcha,
 					turnstile: instance.enableTurnstile,

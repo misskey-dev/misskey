@@ -12,6 +12,7 @@ import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 @Injectable()
 export class ApImageService {
@@ -48,8 +49,8 @@ export class ApImageService {
 			throw new Error('invalid image: url not privided');
 		}
 
-		if (!image.url.startsWith('https://')) {
-			throw new Error('invalid image: unexpected shcema of url: ' + image.url);
+		if (!checkHttps(image.url)) {
+			throw new Error('invalid image: unexpected schema of url: ' + image.url);
 		}
 
 		this.logger.info(`Creating the Image: ${image.url}`);
