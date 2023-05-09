@@ -274,10 +274,16 @@ letsLookAtTimeline: "La oss se på tidslinje"
 cannotBeChangedLater: "Du kan ikke endre senere."
 likeOnly: "Bare liker"
 retryAllQueuesConfirmTitle: "Vil du prøve igjen akkurat nå?"
+video: "Video"
+videos: "Videoer"
 continue: "Fortsett"
 youFollowing: "Følger"
+_initialAccountSetting:
+  theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
   _types:
+    _notes100000:
+      flavor: "Du har jammen mye å si."
     _noteFavorited1:
       title: "Stjernekikker"
     _myNoteFavorited1:
@@ -290,13 +296,28 @@ _achievements:
       title: "For mange venner"
     _followers10:
       title: "Følg meg!"
+    _followers100:
+      title: "Populær"
+    _postedAtLateNight:
+      flavor: "Det er på tide å gå til sengs."
+    _driveFolderCircularReference:
+      title: "Rundskrivreferanse"
     _reactWithoutRead:
       title: "Leste du det virkelig?"
     _clickedClickHere:
       title: "Klikk her"
       description: "Du har klikket her"
+    _justPlainLucky:
+      title: "Rett og slett heldig"
+    _setNameToSyuilo:
+      description: "Du har satt navnet ditt til \"syuilo\""
     _loggedInOnBirthday:
       title: "Gratulerer med dagen"
+    _loggedInOnNewYearsDay:
+      title: "Godt nytt år"
+    _brainDiver:
+      title: "Brain Diver"
+      flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   options: "Alternativ"
   _priority:
@@ -318,6 +339,7 @@ _registry:
   key: "Nøkkel"
   keys: "Nøkler"
 _aboutMisskey:
+  about: "Misskey er programvare med åpen kildekode som har blitt utviklet av syuilo siden 2014."
   translation: "Oversett Misskey"
 _instanceTicker:
   none: "Ikke vis"
@@ -355,6 +377,8 @@ _time:
   minute: "Minutter"
   hour: "Timer"
   day: "Dager"
+_timelineTutorial:
+  title: "Hvordan bruke Misskey"
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:
@@ -374,14 +398,18 @@ _widgets:
   clock: "Klokke"
   photos: "Bilder"
   button: "Knapp"
+  aiscriptApp: "AiScript App"
   userList: "Brukerliste"
   _userList:
     chooseList: "Velg liste"
 _cw:
   show: "Vis mer"
 _poll:
+  noOnlyOneChoice: "Trenger minst to valger."
+  choiceN: "Valg {n}"
   noMore: "Du kan ikke legge til flere."
   deadlineTime: "Timer"
+  votesCount: "{n} stemmer"
   vote: "Stem"
   showResult: "Vis resultatet"
   voted: "Stemt"
