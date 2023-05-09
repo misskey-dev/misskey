@@ -49,9 +49,12 @@
 						</span>
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
-						<MkTextarea v-model="moderationNote" manual-save>
+						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manual-save>
 							<template #label>Moderation note</template>
 						</MkTextarea>
+						<div v-else>
+							<MkButton small @click="editModerationNote = true">Add moderation note</MkButton>
+						</div>
 					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
 						<div class="heading" v-text="i18n.ts.memo"/>
@@ -142,6 +145,7 @@ import MkRemoteCaution from '@/components/MkRemoteCaution.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkButton from '@/components/MkButton.vue';
 import { getScrollPosition } from '@/scripts/scroll';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import number from '@/filters/number';
@@ -176,6 +180,7 @@ let memoTextareaEl = $ref<null | HTMLElement>(null);
 let memoDraft = $ref(props.user.memo);
 let isEditingMemo = $ref(false);
 let moderationNote = $ref(props.user.moderationNote);
+let editModerationNote = $ref(false);
 
 watch($$(moderationNote), async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
