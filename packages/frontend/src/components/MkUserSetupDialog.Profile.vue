@@ -12,11 +12,11 @@
 		</div>
 	</FormSlot>
 
-	<MkInput v-model="name" :max="30" manual-save>
+	<MkInput v-model="name" :max="30" manual-save data-cy-user-setup-user-name>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="description" :max="500" tall manual-save>
+	<MkTextarea v-model="description" :max="500" tall manual-save data-cy-user-setup-user-description>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 	</MkTextarea>
 

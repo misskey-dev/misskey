@@ -46,7 +46,10 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 
 function initLocalStorage() {
 	localStorage.clear();
-	localStorage.setItem('account', JSON.stringify(userDetailed()));
+	localStorage.setItem('account', JSON.stringify({
+		...userDetailed(),
+		policies: {},
+	}));
 	localStorage.setItem('locale', JSON.stringify(locale));
 }
 
