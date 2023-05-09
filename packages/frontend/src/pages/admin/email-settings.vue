@@ -96,7 +96,9 @@ async function testEmail() {
 	const { canceled, result: destination } = await os.inputText({
 		title: i18n.ts.destination,
 		type: 'email',
-		placeholder: instance.maintainerEmail,
+		default: instance.maintainerEmail ?? '',
+		placeholder: 'test@example.com',
+		minLength: 1,
 	});
 	if (canceled) return;
 	os.apiWithDialog('admin/send-email', {

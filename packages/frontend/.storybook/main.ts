@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import type { StorybookConfig } from '@storybook/vue3-vite';
-import { mergeConfig } from 'vite';
+import { type Plugin, mergeConfig } from 'vite';
 import turbosnap from 'vite-plugin-turbosnap';
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -22,6 +22,10 @@ const config = {
 		disableTelemetry: true,
 	},
 	async viteFinal(config) {
+		const replacePluginForIsChromatic = config.plugins?.findIndex((plugin) => plugin && (plugin as Partial<Plugin>)?.name === 'replace') ?? -1;
+		if (~replacePluginForIsChromatic) {
+			config.plugins?.splice(replacePluginForIsChromatic, 1);
+		}
 		return mergeConfig(config, {
 			plugins: [
 				turbosnap({

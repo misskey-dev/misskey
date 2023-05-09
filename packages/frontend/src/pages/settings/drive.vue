@@ -119,6 +119,13 @@ function saveProfile() {
 	os.api('i/update', {
 		alwaysMarkNsfw: !!alwaysMarkNsfw,
 		autoSensitive: !!autoSensitive,
+	}).catch(err => {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: err.message,
+		});
+		alwaysMarkNsfw = true;
 	});
 }
 

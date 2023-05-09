@@ -5,6 +5,7 @@ import MkA from './global/MkA.vue';
 import MkAcct from './global/MkAcct.vue';
 import MkAvatar from './global/MkAvatar.vue';
 import MkEmoji from './global/MkEmoji.vue';
+import MkCondensedLine from './global/MkCondensedLine.vue';
 import MkCustomEmoji from './global/MkCustomEmoji.vue';
 import MkUserName from './global/MkUserName.vue';
 import MkEllipsis from './global/MkEllipsis.vue';
@@ -33,6 +34,7 @@ export const components = {
 	MkAcct: MkAcct,
 	MkAvatar: MkAvatar,
 	MkEmoji: MkEmoji,
+	MkCondensedLine: MkCondensedLine,
 	MkCustomEmoji: MkCustomEmoji,
 	MkUserName: MkUserName,
 	MkEllipsis: MkEllipsis,
@@ -55,6 +57,7 @@ declare module '@vue/runtime-core' {
 		MkAcct: typeof MkAcct;
 		MkAvatar: typeof MkAvatar;
 		MkEmoji: typeof MkEmoji;
+		MkCondensedLine: typeof MkCondensedLine;
 		MkCustomEmoji: typeof MkCustomEmoji;
 		MkUserName: typeof MkUserName;
 		MkEllipsis: typeof MkEllipsis;

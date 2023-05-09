@@ -75,6 +75,12 @@ export class User {
 	})
 	public movedToUri: string | null;
 
+	@Column('timestamp with time zone', {
+		nullable: true,
+		comment: 'When the user moved to another account',
+	})
+	public movedAt: Date | null;
+
 	@Column('simple-array', {
 		nullable: true,
 		comment: 'URIs the user is known as too',
@@ -253,7 +259,19 @@ export type LocalUser = User & {
 	uri: null;
 }
 
+export type PartialLocalUser = Partial<User> & {
+	id: User['id'];
+	host: null;
+	uri: null;
+}
+
 export type RemoteUser = User & {
+	host: string;
+	uri: string;
+}
+
+export type PartialRemoteUser = Partial<User> & {
+	id: User['id'];
 	host: string;
 	uri: string;
 }

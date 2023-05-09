@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+import Bull from 'bull';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
-import Bull from 'bull';
 
 @Injectable()
 export class QueueService {
@@ -153,6 +154,16 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createExportAntennasJob(user: ThinUser) {
+		return this.dbQueue.add('exportAntennas', {
+			user: { id: user.id },
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importFollowing', {
 			user: { id: user.id },
@@ -236,6 +247,17 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createImportAntennasJob(user: ThinUser, antenna: Antenna) {
+		return this.dbQueue.add('importAntennas', {
+			user: { id: user.id },
+			antenna,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createDeleteAccountJob(user: ThinUser, opts: { soft?: boolean; } = {}) {
 		return this.dbQueue.add('deleteAccount', {
 			user: { id: user.id },
@@ -259,6 +281,12 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createDelayedUnfollowJob(followings: { from: ThinUser, to: ThinUser, requestId?: string }[], delay: number) {
+		const jobs = followings.map(rel => this.generateRelationshipJobData('unfollow', rel, { delay }));
+		return this.relationshipQueue.addBulk(jobs);
+	}
+
+	@bindThis
 	public createBlockJob(blockings: { from: ThinUser, to: ThinUser, silent?: boolean }[]) {
 		const jobs = blockings.map(rel => this.generateRelationshipJobData('block', rel));
 		return this.relationshipQueue.addBulk(jobs);
@@ -271,7 +299,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData): {
+	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobOptions = {}): {
 		name: string,
 		data: RelationshipJobData,
 		opts: Bull.JobOptions,
@@ -287,6 +315,7 @@ export class QueueService {
 			opts: {
 				removeOnComplete: true,
 				removeOnFail: true,
+				...opts,
 			},
 		};
 	}

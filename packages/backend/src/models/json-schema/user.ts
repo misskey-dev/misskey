@@ -80,9 +80,14 @@ export const packedUserDetailedNotMeOnlySchema = {
 		},
 		alsoKnownAs: {
 			type: 'array',
-			format: 'uri',
 			nullable: true,
 			optional: false,
+			items: {
+				type: 'string',
+				format: 'id',
+				nullable: false,
+				optional: false,
+			},
 		},
 		createdAt: {
 			type: 'string',
@@ -143,6 +148,7 @@ export const packedUserDetailedNotMeOnlySchema = {
 		fields: {
 			type: 'array',
 			nullable: false, optional: false,
+			maxItems: 16,
 			items: {
 				type: 'object',
 				nullable: false, optional: false,
@@ -156,7 +162,6 @@ export const packedUserDetailedNotMeOnlySchema = {
 						nullable: false, optional: false,
 					},
 				},
-				maxLength: 4,
 			},
 		},
 		followersCount: {
@@ -248,6 +253,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 		},
 		isRenoteMuted: {
 			type: 'boolean',
+			nullable: false, optional: true,
+		},
+		memo: {
+			type: 'string',
 			nullable: false, optional: true,
 		},
 		//#endregion

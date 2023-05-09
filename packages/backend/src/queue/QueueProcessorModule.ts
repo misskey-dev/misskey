@@ -24,11 +24,13 @@ import { ExportFollowingProcessorService } from './processors/ExportFollowingPro
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
 import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
 import { ExportUserListsProcessorService } from './processors/ExportUserListsProcessorService.js';
+import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
 import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
 import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
 import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
+import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
 import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
@@ -55,11 +57,13 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		ExportMutingProcessorService,
 		ExportBlockingProcessorService,
 		ExportUserListsProcessorService,
+		ExportAntennasProcessorService,
 		ImportFollowingProcessorService,
 		ImportMutingProcessorService,
 		ImportBlockingProcessorService,
 		ImportUserListsProcessorService,
 		ImportCustomEmojisProcessorService,
+		ImportAntennasProcessorService,
 		DeleteAccountProcessorService,
 		DeleteFileProcessorService,
 		CleanRemoteFilesProcessorService,
