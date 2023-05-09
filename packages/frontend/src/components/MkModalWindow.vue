@@ -1,6 +1,6 @@
 <template>
 <MkModal ref="modal" :prefer-type="'dialog'" @click="onBgClick" @closed="$emit('closed')">
-	<div ref="rootEl" class="ebkgoccj" :style="{ width: `${width}px`, height: height ? `${height}px` : null }" @keydown="onKeydown">
+	<div ref="rootEl" class="ebkgoccj" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }" @keydown="onKeydown">
 		<div ref="headerEl" class="header">
 			<button v-if="withOkButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>
 			<span class="title">
@@ -24,12 +24,12 @@ const props = withDefaults(defineProps<{
 	withOkButton: boolean;
 	okButtonDisabled: boolean;
 	width: number;
-	height: number | null;
+	height: number;
 }>(), {
 	withOkButton: false,
 	okButtonDisabled: false,
 	width: 400,
-	height: null,
+	height: 500,
 });
 
 const emit = defineEmits<{
@@ -84,7 +84,6 @@ defineExpose({
 <style lang="scss" scoped>
 .ebkgoccj {
 	margin: auto;
-	max-height: 100%;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
