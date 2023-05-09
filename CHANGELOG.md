@@ -11,6 +11,18 @@
 -
 
 -->
+
+## 13.x.x (unreleased)
+
+### General
+-
+
+### Client
+- Fix: ユーザー選択ダイアログが表示されない問題を修正
+
+### Server
+-
+
 ## 13.12.0
 
 ### NOTE
