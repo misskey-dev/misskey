@@ -1040,6 +1040,7 @@ initialAccountSetting: "Kontoeinrichtung"
 youFollowing: "Gefolgt"
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
+  letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
   letsFillYourProfile: "Lass uns zuerst dein Profil einrichten."
   profileSetting: "Profileinstellungen"
   theseSettingsCanEditLater: "Diese Einstellungen kannst du jederzeit ändern."
