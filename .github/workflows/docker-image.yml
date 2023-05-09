@@ -1,7 +1,9 @@
 name: Build and Push Image (Docker Buildx; GitHub Actions)
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 env:
   DOCKER_REGISTRY_NAME: ghcr.io
