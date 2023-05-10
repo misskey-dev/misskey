@@ -8,9 +8,9 @@ import Channel from '../channel.js';
 
 class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
-	public static shouldShare = true;
+	public static shouldShare = false;
 	public static requireCredential = false;
-	private q: string[][] = [['delmulin']];
+	private tags: string[][] = [['delmulin']];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -24,10 +24,6 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		// this.q = params.q;
-
-		if (this.q == null) return;
-
 		// Subscribe stream
 		this.subscriber.on('notesStream', this.onNote);
 	}
@@ -35,7 +31,7 @@ class LocalTimelineChannel extends Channel {
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
-		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
+		const matched = this.tags.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
 		if (!matched) return;
 
 		// Renoteなら再pack
@@ -49,8 +45,8 @@ class LocalTimelineChannel extends Channel {
 		if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
 		// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 		if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
-		
-		if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
+		if (note.renote && note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
 
 		this.connection.cacheNote(note);
 
