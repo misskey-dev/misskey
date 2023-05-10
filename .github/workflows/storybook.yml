@@ -20,7 +20,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: Checkout HEAD
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request_target'
       run: git checkout ${{ github.head_ref }}
     - name: Install pnpm
       uses: pnpm/action-setup@v2
@@ -41,12 +41,12 @@ jobs:
     - name: Build storybook
       run: pnpm --filter frontend build-storybook
     - name: Publish to Chromatic
-      if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+      if: github.event_name != 'pull_request_target' && github.ref == 'refs/heads/master'
       run: pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Publish to Chromatic
-      if: github.event_name != 'pull_request' && github.ref != 'refs/heads/master'
+      if: github.event_name != 'pull_request_target' && github.ref != 'refs/heads/master'
       id: chromatic_push
       run: |
         DIFF="${{ github.event.before }} HEAD"
@@ -61,7 +61,7 @@ jobs:
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Publish to Chromatic
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request_target'
       id: chromatic_pull_request
       run: |
         DIFF="${{ github.base_ref }} HEAD"
@@ -77,7 +77,7 @@ jobs:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic will skip testing
       uses: actions/github-script@v6.4.0
-      if: github.event_name == 'pull_request' && steps.chromatic_pull_request.outputs.skip == 'true'
+      if: github.event_name == 'pull_request_target' && steps.chromatic_pull_request.outputs.skip == 'true'
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
