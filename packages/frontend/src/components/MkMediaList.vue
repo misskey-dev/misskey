@@ -2,10 +2,16 @@
 <div>
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
-		<div ref="gallery" :class="[$style.medias, count <= 4 ? $style['n' + count] : $style.nMany]">
+		<div
+			ref="gallery"
+			:class="[
+				$style.medias,
+				count <= 4 ? $style['n' + count] : $style.nMany,
+			]"
+		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="media.id" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="media.id" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -13,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule } from 'vue';
+import { onMounted, ref, useCssModule, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -23,6 +29,7 @@ import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os';
 import { FILE_TYPE_BROWSERSAFE } from '@/const';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];
@@ -31,7 +38,7 @@ const props = defineProps<{
 
 const $style = useCssModule();
 
-const gallery = ref(null);
+const gallery = ref<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);

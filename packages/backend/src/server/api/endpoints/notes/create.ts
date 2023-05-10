@@ -18,6 +18,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	prohibitMoved: true,
+
 	limit: {
 		duration: ms('1hour'),
 		max: 300,
@@ -260,7 +262,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let channel: Channel | null = null;
 			if (ps.channelId != null) {
-				channel = await this.channelsRepository.findOneBy({ id: ps.channelId });
+				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
 
 				if (channel == null) {
 					throw new ApiError(meta.errors.noSuchChannel);
