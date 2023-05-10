@@ -8,7 +8,7 @@ import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, Pag
 import type { User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
 import type { UserProfile } from '@/models/entities/UserProfile.js';
-import { notificationTypes } from '@/types.js';
+import { notificationTypes } from 'misskey-js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

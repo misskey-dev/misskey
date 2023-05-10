@@ -9,7 +9,7 @@ import type { Note } from '@/models/entities/Note.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
-import { notificationTypes } from '@/types.js';
+import { notificationTypes } from 'misskey-js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';

@@ -1,4 +1,4 @@
-import { notificationTypes } from '@/types.js';
+import { notificationTypes } from 'misskey-js';
 import { User } from './User.js';
 import { Note } from './Note.js';
 import { FollowRequest } from './FollowRequest.js';

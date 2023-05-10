@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { AchievementService, ACHIEVEMENT_TYPES } from '@/core/AchievementService.js';
+import { AchievementService } from '@/core/AchievementService.js';
+import { ACHIEVEMENT_TYPES } from 'misskey-js';
 
 export const meta = {
 	requireCredential: true,

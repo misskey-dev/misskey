@@ -35,7 +35,7 @@ import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from 'misskey-js';
 
 let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);

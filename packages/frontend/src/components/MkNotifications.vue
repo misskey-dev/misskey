@@ -25,7 +25,7 @@ import MkNote from '@/components/MkNote.vue';
 import { stream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from 'misskey-js';
 
 const props = defineProps<{
 	includeTypes?: typeof notificationTypes[number][];

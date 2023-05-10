@@ -1,5 +1,5 @@
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { obsoleteNotificationTypes, ffVisibility, notificationTypes } from '@/types.js';
+import { obsoleteNotificationTypes, ffVisibility, notificationTypes } from 'misskey-js';
 import { id } from '../id.js';
 import { User } from './User.js';
 import { Page } from './Page.js';

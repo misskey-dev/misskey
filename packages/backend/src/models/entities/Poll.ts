@@ -1,6 +1,6 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
-import { noteVisibilities } from '../../types.js';
+import { noteVisibilities } from 'misskey-js';
 import { Note } from './Note.js';
 import type { User } from './User.js';
 

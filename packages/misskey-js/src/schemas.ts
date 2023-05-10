@@ -64,7 +64,7 @@ export const refs = {
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
-} as const satisfies { [x: string]: JSONSchema7Definition };
+} as const /*satisfies { [x: string]: JSONSchema7Definition }*/;
 
 type Refs = typeof packedAntennaSchema | typeof packedNoteSchema; // TODO: typeof refs[keyof typeof refs];
 

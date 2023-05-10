@@ -14,9 +14,11 @@ export {
 
 export const permissions = consts.permissions;
 export const notificationTypes = consts.notificationTypes;
+export const obsoleteNotificationTypes = consts.obsoleteNotificationTypes;
 export const noteVisibilities = consts.noteVisibilities;
 export const mutedNoteReasons = consts.mutedNoteReasons;
 export const ffVisibility = consts.ffVisibility;
+export const ACHIEVEMENT_TYPES = consts.ACHIEVEMENT_TYPES;
 
 // api extractor not supported yet
 //export * as api from './api.js';

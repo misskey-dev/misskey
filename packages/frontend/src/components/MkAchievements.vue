@@ -44,7 +44,7 @@ import * as misskey from 'misskey-js';
 import { onMounted } from 'vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements';
+import { ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements';
 
 const props = withDefaults(defineProps<{
 	user: misskey.entities.User;
@@ -56,12 +56,12 @@ const props = withDefaults(defineProps<{
 });
 
 let achievements = $ref();
-const lockedAchievements = $computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements ?? []).some(a => a.name === x)));
+const lockedAchievements = $computed(() => misskey.ACHIEVEMENT_TYPES.filter(x => !(achievements ?? []).some(a => a.name === x)));
 
 function fetch() {
 	os.api('users/achievements', { userId: props.user.id }).then(res => {
 		achievements = [];
-		for (const t of ACHIEVEMENT_TYPES) {
+		for (const t of misskey.ACHIEVEMENT_TYPES) {
 			const a = res.find(x => x.name === t);
 			if (a) achievements.push(a);
 		}

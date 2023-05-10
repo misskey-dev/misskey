@@ -22,7 +22,7 @@ import MkNotes from '@/components/MkNotes.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from 'misskey-js';
 
 let tab = $ref('all');
 let includeTypes = $ref<string[] | null>(null);

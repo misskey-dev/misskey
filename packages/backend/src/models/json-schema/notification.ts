@@ -1,4 +1,4 @@
-import { notificationTypes } from '@/types.js';
+import { notificationTypes } from 'misskey-js';
 
 export const packedNotificationSchema = {
 	type: 'object',

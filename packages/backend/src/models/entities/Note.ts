@@ -1,6 +1,6 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { noteVisibilities } from '../../types.js';
+import { noteVisibilities } from 'misskey-js';
 import { User } from './User.js';
 import { Channel } from './Channel.js';
 import type { DriveFile } from './DriveFile.js';

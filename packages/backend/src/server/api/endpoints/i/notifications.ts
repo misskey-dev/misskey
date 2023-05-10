@@ -2,7 +2,7 @@ import { Brackets, In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, NotesRepository } from '@/models/index.js';
-import { obsoleteNotificationTypes, notificationTypes } from '@/types.js';
+import { obsoleteNotificationTypes, notificationTypes } from 'misskey-js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReadService } from '@/core/NoteReadService.js';

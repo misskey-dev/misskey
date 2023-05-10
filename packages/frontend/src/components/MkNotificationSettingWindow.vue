@@ -38,7 +38,7 @@ import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { notificationTypes } from '@/const';
+import { notificationTypes } from 'misskey-js';
 import { i18n } from '@/i18n';
 
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>
