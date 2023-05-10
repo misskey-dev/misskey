@@ -1,107 +1,122 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedDriveFileSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/DriveFile',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
-			example: 'lenna.jpg',
+			examples: 'lenna.jpg',
 		},
 		type: {
 			type: 'string',
-			optional: false, nullable: false,
-			example: 'image/jpeg',
+			examples: 'image/jpeg',
 		},
 		md5: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'md5',
-			example: '15eca7fba0480996e2245f5185bf39f2',
+			examples: '15eca7fba0480996e2245f5185bf39f2',
 		},
 		size: {
 			type: 'number',
-			optional: false, nullable: false,
-			example: 51469,
+			examples: 51469,
 		},
 		isSensitive: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 		blurhash: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		properties: {
 			type: 'object',
-			optional: false, nullable: false,
 			properties: {
 				width: {
 					type: 'number',
-					optional: true, nullable: false,
-					example: 1280,
+					examples: 1280,
 				},
 				height: {
 					type: 'number',
-					optional: true, nullable: false,
-					example: 720,
+					examples: 720,
 				},
 				orientation: {
 					type: 'number',
-					optional: true, nullable: false,
-					example: 8,
+					examples: 8,
 				},
 				avgColor: {
 					type: 'string',
-					optional: true, nullable: false,
-					example: 'rgb(40,65,87)',
+					examples: 'rgb(40,65,87)',
 				},
 			},
+			required: [],
 		},
 		url: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'url',
+			oneOf: [{
+				type: 'string',
+				format: 'url',
+			}, {
+				type: 'null',
+			}],
 		},
 		thumbnailUrl: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'url',
+			oneOf: [{
+				type: 'string',
+				format: 'url',
+			}, {
+				type: 'null',
+			}],
 		},
 		comment: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		folderId: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'id',
-			example: 'xxxxxxxxxx',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/Id',
+			}, {
+				type: 'null',
+			}],
 		},
 		folder: {
-			type: 'object',
-			optional: true, nullable: true,
-			ref: 'DriveFolder',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+			}, {
+				type: 'null',
+			}],
 		},
 		userId: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'id',
-			example: 'xxxxxxxxxx',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/Id',
+			}, {
+				type: 'null',
+			}],
 		},
 		user: {
-			type: 'object',
-			optional: true, nullable: true,
-			ref: 'UserLite',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+			}, {
+				type: 'null',
+			}],
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'name',
+		'type',
+		'md5',
+		'size',
+		'isSensitive',
+		'burlhash',
+		'properties',
+		'url',
+		'thumbnailUrl',
+		'comment',
+		'folderId',
+		'userId',
+	],
+} as const satisfies JSONSchema7Definition;
