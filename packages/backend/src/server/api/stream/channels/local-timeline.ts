@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { checkWordMute } from '@/misc/check-word-mute.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
