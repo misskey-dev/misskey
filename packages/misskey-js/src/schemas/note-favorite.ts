@@ -1,26 +1,22 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedNoteFavoriteSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/NoteFavorite',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		note: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-		noteId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
+		noteId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		note: { $ref: 'https://misskey-hub.net/api/schemas/Note' },
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'note',
+		'noteId',
+	]
+} as const satisfies JSONSchema7Definition;

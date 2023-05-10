@@ -1,34 +1,40 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedHashtagSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Hashtag',
+
 	type: 'object',
 	properties: {
 		tag: {
 			type: 'string',
-			optional: false, nullable: false,
-			example: 'misskey',
+			examples: 'misskey',
 		},
 		mentionedUsersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		mentionedLocalUsersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		mentionedRemoteUsersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		attachedUsersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		attachedLocalUsersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		attachedRemoteUsersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'tag',
+		'mentionedUsersCount',
+		'mentionedLocalUsersCount',
+		'mentionedRemoteUsersCount',
+		'attachedUsersCount',
+		'attachedLocalUsersCount',
+		'attachedRemoteUsersCount',
+	],
+} as const satisfies JSONSchema7Definition;
