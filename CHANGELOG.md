@@ -765,6 +765,8 @@
 - Client: show Unicode emoji tooltip with its name in MkReactionsViewer.reaction @saschanaz
 - Client: OpenSearch support @SoniEx2 @chaoticryptidz
 - Client: Support remote objects in search @SoniEx2
+- Client: Support remote objects by web+ap URI in search @SoniEx2
+- Client: Support Web-First Protocol Handlers @SoniEx2
 - Client: user activity page @syuilo
 - Client: Make widgets of universal/classic sync between devices @tamaina
 - Client: add user list widget @syuilo

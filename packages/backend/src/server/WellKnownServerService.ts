@@ -41,6 +41,7 @@ export class WellKnownServerService {
 
 		const allPath = '/.well-known/*';
 		const webFingerPath = '/.well-known/webfinger';
+		const wfphPath = '/.well-known/protocol-handler';
 		const jrd = 'application/jrd+json';
 		const xrd = 'application/xrd+xml';
 
@@ -80,6 +81,22 @@ export class WellKnownServerService {
 
 		fastify.get('/.well-known/nodeinfo', async (request, reply) => {
 			return { links: this.nodeinfoServerService.getLinks() };
+		});
+
+		fastify.get<{ Querystring: { target: string } }>(wfphPath, async (request, reply) => {
+			if (typeof request.query.target !== 'string') {
+				reply.code(400);
+				return;
+			}
+
+			if (!request.query.target.startsWith('web+ap://')) {
+				reply.code(400);
+				return;
+			}
+
+			const target = encodeURIComponent(request.query.target);
+
+			reply.redirect(307, `/search?q=${target}`);
 		});
 
 		/* TODO
