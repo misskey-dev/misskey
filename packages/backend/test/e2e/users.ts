@@ -371,7 +371,7 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.pinnedNotes, []);
 		assert.strictEqual(response.pinnedPageId, null);
 		assert.strictEqual(response.pinnedPage, null);
-		assert.strictEqual(response.publicReactions, false);
+		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.ffVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
