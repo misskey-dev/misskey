@@ -4,7 +4,10 @@
 	"service": "app",
 	"workspaceFolder": "/workspace",
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/pnpm:2": {}
+		"ghcr.io/devcontainers-contrib/features/pnpm:2": {},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "18.16.0"
+		}
 	},
 	"forwardPorts": [3000],
 	"postCreateCommand": "sudo chmod 755 .devcontainer/init.sh && .devcontainer/init.sh",

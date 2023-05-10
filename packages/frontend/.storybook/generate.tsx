@@ -118,7 +118,7 @@ function toStories(component: string): string {
 				.replace(/[-.]|^(?=\d)/g, '_')
 				.replace(/(?<=^[^A-Z_]*$)/, '_')}
 		/> as estree.Identifier;
-	const parameters = (
+	const parameters =
 		<object-expression
 			properties={[
 				<property
@@ -137,9 +137,8 @@ function toStories(component: string): string {
 					  ]
 					: []),
 			]}
-		/>
-	) as estree.ObjectExpression;
-	const program = (
+		/> as estree.ObjectExpression;
+	const program =
 		<program
 			body={[
 				<import-declaration
@@ -379,11 +378,11 @@ function toStories(component: string): string {
 					declaration={(<identifier name='meta' />) as estree.Identifier}
 				/> as estree.ExportDefaultDeclaration,
 			]}
-		/>
-	) as estree.Program;
+		/> as estree.Program;
 	return format(
 		'/* eslint-disable @typescript-eslint/explicit-function-return-type */\n' +
 			'/* eslint-disable import/no-default-export */\n' +
+			'/* eslint-disable import/no-duplicates */\n' +
 			generate(program, { generator }) +
 			(hasImplStories ? readFileSync(`${implStories}.ts`, 'utf-8') : ''),
 		{
@@ -397,7 +396,12 @@ function toStories(component: string): string {
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
 Promise.all([
 	glob('src/components/global/*.vue'),
+	glob('src/components/Mk{A,B}*.vue'),
 	glob('src/components/MkGalleryPostPreview.vue'),
+	glob('src/components/MkSignupServerRules.vue'),
+	glob('src/components/MkUserSetupDialog.vue'),
+	glob('src/components/MkUserSetupDialog.*.vue'),
+	glob('src/pages/user/home.vue'),
 ])
 	.then((globs) => globs.flat())
 	.then((components) => Promise.all(components.map((component) => {

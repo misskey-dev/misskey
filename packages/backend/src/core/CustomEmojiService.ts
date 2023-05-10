@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, IsNull } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
@@ -13,6 +13,7 @@ import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import type { Config } from '@/config.js';
 import { query } from '@/misc/prelude/url.js';
+import type { Serialized } from '@/server/api/stream/types.js';
 
 @Injectable()
 export class CustomEmojiService {
@@ -43,12 +44,14 @@ export class CustomEmojiService {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60 * 3, // 3m
 			fetcher: () => this.emojisRepository.find({ where: { host: IsNull() } }).then(emojis => new Map(emojis.map(emoji => [emoji.name, emoji]))),
-			toRedisConverter: (value) => JSON.stringify(value.values()),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value.values())),
 			fromRedisConverter: (value) => {
-				// 原因不明だが配列以外が入ってくることがあるため
-				if (!Array.isArray(JSON.parse(value))) return undefined;
-				return new Map(JSON.parse(value).map((x: Emoji) => [x.name, x]));
-			}, // TODO: Date型の変換
+				if (!Array.isArray(JSON.parse(value))) return undefined; // 古いバージョンの壊れたキャッシュが残っていることがある(そのうち消す)
+				return new Map(JSON.parse(value).map((x: Serialized<Emoji>) => [x.name, {
+					...x,
+					updatedAt: x.updatedAt ? new Date(x.updatedAt) : null,
+				}]));
+			},
 		});
 	}
 
@@ -194,6 +197,22 @@ export class CustomEmojiService {
 			emojis: await this.emojiEntityService.packDetailedMany(ids),
 		});
 	}
+	
+	@bindThis
+	public async setLicenseBulk(ids: Emoji['id'][], license: string | null) {
+		await this.emojisRepository.update({
+			id: In(ids),
+		}, {
+			updatedAt: new Date(),
+			license: license,
+		});
+
+		this.localEmojisCache.refresh();
+
+		this.globalEventService.publishBroadcastStream('emojiUpdated', {
+			emojis: await this.emojiEntityService.packDetailedMany(ids),
+		});
+	}
 
 	@bindThis
 	public async delete(id: Emoji['id']) {
@@ -271,16 +290,7 @@ export class CustomEmojiService {
 		const emoji = await this.cache.fetch(`${name} ${host}`, queryOrNull);
 
 		if (emoji == null) return null;
-
-		const isLocal = emoji.host == null;
-		const emojiUrl = emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
-		const url = isLocal
-			? emojiUrl
-			: this.config.proxyRemoteFiles
-				? `${this.config.mediaProxy}/emoji.webp?${query({ url: emojiUrl })}`
-				: emojiUrl;
-
-		return url;
+		return emoji.publicUrl || emoji.originalUrl; // || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 	}
 
 	/**

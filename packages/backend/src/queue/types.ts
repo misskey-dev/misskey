@@ -1,3 +1,4 @@
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -21,13 +22,49 @@ export type InboxJobData = {
 	signature: httpSignature.IParsedSignature;
 };
 
-export type DbJobData = DbUserJobData | DbUserImportJobData | DbUserDeleteJobData;
+export type RelationshipJobData = {
+	from: ThinUser;
+	to: ThinUser;
+	silent?: boolean;
+	requestId?: string;
+}
 
-export type DbUserJobData = {
+export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
+
+export type DbJobMap = {
+	deleteDriveFiles: DbJobDataWithUser;
+	exportCustomEmojis: DbJobDataWithUser;
+	exportAntennas: DBExportAntennasData;
+	exportNotes: DbJobDataWithUser;
+	exportFavorites: DbJobDataWithUser;
+	exportFollowing: DbExportFollowingData;
+	exportMuting: DbJobDataWithUser;
+	exportBlocking: DbJobDataWithUser;
+	exportUserLists: DbJobDataWithUser;
+	importAntennas: DBAntennaImportJobData;
+	importFollowing: DbUserImportJobData;
+	importFollowingToDb: DbUserImportToDbJobData;
+	importMuting: DbUserImportJobData;
+	importBlocking: DbUserImportJobData;
+	importBlockingToDb: DbUserImportToDbJobData;
+	importUserLists: DbUserImportJobData;
+	importCustomEmojis: DbUserImportJobData;
+	deleteAccount: DbUserDeleteJobData;
+}
+
+export type DbJobDataWithUser = {
+	user: ThinUser;
+}
+
+export type DbExportFollowingData = {
 	user: ThinUser;
 	excludeMuting: boolean;
 	excludeInactive: boolean;
 };
+
+export type DBExportAntennasData = {
+	user: ThinUser
+}
 
 export type DbUserDeleteJobData = {
 	user: ThinUser;
@@ -37,6 +74,16 @@ export type DbUserDeleteJobData = {
 export type DbUserImportJobData = {
 	user: ThinUser;
 	fileId: DriveFile['id'];
+};
+
+export type DBAntennaImportJobData = {
+	user: ThinUser,
+	antenna: Antenna
+}
+
+export type DbUserImportToDbJobData = {
+	user: ThinUser;
+	target: string;
 };
 
 export type ObjectStorageJobData = ObjectStorageFileJobData | Record<string, unknown>;

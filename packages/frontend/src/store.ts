@@ -38,7 +38,11 @@ export const pageViewInterruptors: PageViewInterruptor[] = [];
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
 export const defaultStore = markRaw(new Storage('base', {
-	tutorial: {
+	accountSetupWizard: {
+		where: 'account',
+		default: 0,
+	},
+	timelineTutorial: {
 		where: 'account',
 		default: 0,
 	},
@@ -164,7 +168,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animation: {
 		where: 'device',
-		default: !matchMedia('(prefers-reduced-motion)').matches,
+		default: !window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	animatedMfm: {
 		where: 'device',
@@ -182,9 +186,13 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	enableDataSaverMode: {
+		where: 'device',
+		default: false,
+	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: matchMedia('(prefers-reduced-motion)').matches,
+		default: window.matchMedia('(prefers-reduced-motion)').matches,
 	},
 	emojiStyle: {
 		where: 'device',
@@ -298,9 +306,29 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	forceShowAds: {
+		where: 'device',
+		default: false,
+	},
 	aiChanMode: {
 		where: 'device',
 		default: false,
+	},
+	mediaListWithOneImageAppearance: {
+		where: 'device',
+		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+	},
+	notificationPosition: {
+		where: 'device',
+		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
+	},
+	notificationStackAxis: {
+		where: 'device',
+		default: 'horizontal' as 'vertical' | 'horizontal',
+	},
+	enableCondensedLineForAcct: {
+		where: 'device',
+		default: true,
 	},
 }));
 
@@ -339,15 +367,6 @@ export class ColdDeviceStorage {
 		darkTheme,
 		syncDeviceDarkMode: true,
 		plugins: [] as Plugin[],
-		mediaVolume: 0.5,
-		sound_masterVolume: 0.5,
-		sound_note: { type: 'syuilo/n-eca', volume: 0.5 },
-		sound_noteMy: { type: 'syuilo/n-cea-4va', volume: 0.5 },
-		sound_notification: { type: 'syuilo/n-ea', volume: 0.5 },
-		sound_chat: { type: 'syuilo/pope1', volume: 0.5 },
-		sound_chatBg: { type: 'syuilo/waon', volume: 0.5 },
-		sound_antenna: { type: 'syuilo/triple', volume: 0.5 },
-		sound_channel: { type: 'syuilo/square-pico', volume: 0.5 },
 	};
 
 	public static watchers: Watcher[] = [];

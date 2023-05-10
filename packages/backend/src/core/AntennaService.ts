@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
@@ -27,8 +27,8 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.redisForPubsub)
-		private redisForPubsub: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
@@ -52,12 +52,12 @@ export class AntennaService implements OnApplicationShutdown {
 		this.antennasFetched = false;
 		this.antennas = [];
 
-		this.redisForPubsub.on('message', this.onRedisMessage);
+		this.redisForSub.on('message', this.onRedisMessage);
 	}
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisForPubsub.off('message', this.onRedisMessage);
+		this.redisForSub.off('message', this.onRedisMessage);
 	}
 
 	@bindThis
@@ -91,14 +91,24 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addNoteToAntenna(antenna: Antenna, note: Note, noteUser: { id: User['id']; }): Promise<void> {
-		this.redisClient.xadd(
-			`antennaTimeline:${antenna.id}`,
-			'MAXLEN', '~', '200',
-			`${this.idService.parse(note.id).date.getTime()}-*`,
-			'note', note.id);
-		
-		this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
+	public async addNoteToAntennas(note: Note, noteUser: { id: User['id']; username: string; host: string | null; }): Promise<void> {
+		const antennas = await this.getAntennas();
+		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
+		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
+
+		const redisPipeline = this.redisClient.pipeline();
+
+		for (const antenna of matchedAntennas) {
+			redisPipeline.xadd(
+				`antennaTimeline:${antenna.id}`,
+				'MAXLEN', '~', '200',
+				'*',
+				'note', note.id);
+			
+			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
+		}
+
+		redisPipeline.exec();
 	}
 
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている

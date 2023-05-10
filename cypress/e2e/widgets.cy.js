@@ -10,6 +10,10 @@ describe('After user signed in', () => {
 		cy.registerUser('alice', 'alice1234');
 
 		cy.login('alice', 'alice1234');
+
+		// アカウント初期設定ウィザード
+		cy.get('[data-cy-user-setup] [data-cy-modal-window-close]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
 	});
 
 	afterEach(() => {
@@ -19,26 +23,26 @@ describe('After user signed in', () => {
 	});
 
   it('widget edit toggle is visible', () => {
-		cy.get('.mk-widget-edit').should('be.visible');
+		cy.get('[data-cy-widget-edit]').should('be.visible');
   });
 
 	it('widget select should be visible in edit mode', () => {
-		cy.get('.mk-widget-edit').click();
-		cy.get('.mk-widget-select').should('be.visible');
+		cy.get('[data-cy-widget-edit]').click();
+		cy.get('[data-cy-widget-select]').should('be.visible');
   });
 
 	it('first widget should be removed', () => {
-		cy.get('.mk-widget-edit').click();
+		cy.get('[data-cy-widget-edit]').click();
 		cy.get('[data-cy-customize-container]:first-child [data-cy-customize-container-remove]._button').click();
 		cy.get('[data-cy-customize-container]').should('have.length', 2);
 	});
 
 	function buildWidgetTest(widgetName) {
 		it(`${widgetName} widget should get added`, () => {
-			cy.get('.mk-widget-edit').click();
-			cy.get('.mk-widget-select select').select(widgetName, { force: true });
+			cy.get('[data-cy-widget-edit]').click();
+			cy.get('[data-cy-widget-select] select').select(widgetName, { force: true });
 			cy.get('[data-cy-bg]._modalBg[data-cy-transparent]').click({ multiple: true, force: true });
-			cy.get('.mk-widget-add').click({ force: true });
+			cy.get('[data-cy-widget-add]').click({ force: true });
 			cy.get(`[data-cy-mkw-${widgetName}]`).should('exist');
 		});
 	}

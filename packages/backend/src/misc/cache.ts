@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
 
 export class RedisKVCache<T> {
@@ -8,7 +8,7 @@ export class RedisKVCache<T> {
 	private memoryCache: MemoryKVCache<T>;
 	private fetcher: (key: string) => Promise<T>;
 	private toRedisConverter: (value: T) => string;
-	private fromRedisConverter: (value: string) => T | undefined; // undefined means no cache
+	private fromRedisConverter: (value: string) => T | undefined;
 
 	constructor(redisClient: RedisKVCache<T>['redisClient'], name: RedisKVCache<T>['name'], opts: {
 		lifetime: RedisKVCache<T>['lifetime'];
@@ -38,7 +38,7 @@ export class RedisKVCache<T> {
 			await this.redisClient.set(
 				`kvcache:${this.name}:${key}`,
 				this.toRedisConverter(value),
-				'ex', Math.round(this.lifetime / 1000),
+				'EX', Math.round(this.lifetime / 1000),
 			);
 		}
 	}
@@ -92,7 +92,7 @@ export class RedisSingleCache<T> {
 	private memoryCache: MemorySingleCache<T>;
 	private fetcher: () => Promise<T>;
 	private toRedisConverter: (value: T) => string;
-	private fromRedisConverter: (value: string) => T | undefined; // undefined means no cache
+	private fromRedisConverter: (value: string) => T | undefined;
 
 	constructor(redisClient: RedisSingleCache<T>['redisClient'], name: RedisSingleCache<T>['name'], opts: {
 		lifetime: RedisSingleCache<T>['lifetime'];
@@ -122,7 +122,7 @@ export class RedisSingleCache<T> {
 			await this.redisClient.set(
 				`singlecache:${this.name}`,
 				this.toRedisConverter(value),
-				'ex', Math.round(this.lifetime / 1000),
+				'EX', Math.round(this.lifetime / 1000),
 			);
 		}
 	}

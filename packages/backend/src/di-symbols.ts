@@ -1,8 +1,10 @@
 export const DI = {
 	config: Symbol('config'),
 	db: Symbol('db'),
+	meilisearch: Symbol('meilisearch'),
 	redis: Symbol('redis'),
-	redisForPubsub: Symbol('redisForPubsub'),
+	redisForPub: Symbol('redisForPub'),
+	redisForSub: Symbol('redisForSub'),
 
 	//#region Repositories
 	usersRepository: Symbol('usersRepository'),
@@ -69,5 +71,6 @@ export const DI = {
 	roleAssignmentsRepository: Symbol('roleAssignmentsRepository'),
 	flashsRepository: Symbol('flashsRepository'),
 	flashLikesRepository: Symbol('flashLikesRepository'),
+	userMemosRepository: Symbol('userMemosRepository'),
 	//#endregion
 };

@@ -132,6 +132,18 @@ const patronsWithIcon = [{
 }, {
 	name: 'mollinaca',
 	icon: 'https://misskey-hub.net/patrons/ceb36b8f66e549bdadb3b90d5da62314.jpg',
+}, {
+	name: '坂本龍',
+	icon: 'https://misskey-hub.net/patrons/a631cf8b490145cf8dbbe4e7508cfbc2.jpg',
+}, {
+	name: 'takke',
+	icon: 'https://misskey-hub.net/patrons/6c3327e626c046f2914fbcd9f7557935.jpg',
+}, {
+	name: 'ぺんぎん',
+	icon: 'https://misskey-hub.net/patrons/6a652e0534ff4cb1836e7ce4968d76a7.jpg',
+}, {
+	name: 'かみらえっと',
+	icon: 'https://misskey-hub.net/patrons/be1326bda7d940a482f3758ffd9ffaf6.jpg',
 }];
 
 const patrons = [
@@ -218,6 +230,14 @@ const patrons = [
 	'Ebise Lutica',
 	'巣黒るい@リスケモ男の娘VTuber!',
 	'ふぇいぽむ',
+	'依古田イコ',
+	'戸塚こだま',
+	'すー。',
+	'秋雨/Slime-hatena.jp',
+	'けそ',
+	'ずも',
+	'binvinyl',
+	'渡志郎',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

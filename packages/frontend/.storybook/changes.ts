@@ -38,6 +38,7 @@ fs.readFile(
 					path.resolve(__dirname, '../../..', arg)
 				)
 			)
+			.map((path) => path.replace(/(?:(?<=\.stories)\.(?:impl|meta)|\.msw)(?=\.ts$)/g, ''))
 			.map((path) => (path.startsWith('.') ? path : `./${path}`))
 	);
 	if (

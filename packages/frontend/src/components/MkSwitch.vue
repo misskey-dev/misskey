@@ -9,7 +9,7 @@
 		:disabled="disabled"
 		@keydown.enter="toggle"
 	>
-	<span ref="button" v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff" class="button" @click.prevent="toggle">
+	<span ref="button" v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff" class="button" data-cy-switch-toggle @click.prevent="toggle">
 		<div class="knob"></div>
 	</span>
 	<span class="label">

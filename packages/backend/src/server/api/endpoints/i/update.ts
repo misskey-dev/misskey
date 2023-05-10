@@ -3,6 +3,7 @@ import * as mfm from 'mfm-js';
 import { Inject, Injectable } from '@nestjs/common';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
+import * as Acct from '@/misc/acct.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
@@ -19,7 +20,10 @@ import { HashtagService } from '@/core/HashtagService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { CacheService } from '@/core/CacheService.js';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -71,6 +75,30 @@ export const meta = {
 			code: 'TOO_MANY_MUTED_WORDS',
 			id: '010665b1-a211-42d2-bc64-8f6609d79785',
 		},
+
+		noSuchUser: {
+			message: 'No such user.',
+			code: 'NO_SUCH_USER',
+			id: 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5',
+		},
+
+		uriNull: {
+			message: 'User ActivityPup URI is null.',
+			code: 'URI_NULL',
+			id: 'bf326f31-d430-4f97-9933-5d61e4d48a23',
+		},
+
+		forbiddenToSetYourself: {
+			message: 'You can\'t set yourself as your own alias.',
+			code: 'FORBIDDEN_TO_SET_YOURSELF',
+			id: '25c90186-4ab0-49c8-9bba-a1fa6c202ba4',
+		},
+
+		restrictedByRole: {
+			message: 'This feature is restricted by your role.',
+			code: 'RESTRICTED_BY_ROLE',
+			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
+		}
 	},
 
 	res: {
@@ -129,6 +157,12 @@ export const paramDef = {
 		emailNotificationTypes: { type: 'array', items: {
 			type: 'string',
 		} },
+		alsoKnownAs: {
+			type: 'array',
+			maxItems: 10,
+			uniqueItems: true,
+			items: { type: 'string' },
+		},
 	},
 } as const;
 
@@ -153,6 +187,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
+		private accountMoveService: AccountMoveService,
+		private remoteUserResolveService: RemoteUserResolveService,
+		private apiLoggerService: ApiLoggerService,
 		private hashtagService: HashtagService,
 		private roleService: RoleService,
 		private cacheService: CacheService,
@@ -208,7 +245,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
-			if (typeof ps.alwaysMarkNsfw === 'boolean') profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+			if (typeof ps.alwaysMarkNsfw === 'boolean') {
+				if ((await roleService.getUserPolicies(user.id)).alwaysMarkNsfw) throw new ApiError(meta.errors.restrictedByRole);
+				profileUpdates.alwaysMarkNsfw = ps.alwaysMarkNsfw;
+			}
 			if (typeof ps.autoSensitive === 'boolean') profileUpdates.autoSensitive = ps.autoSensitive;
 			if (ps.emailNotificationTypes !== undefined) profileUpdates.emailNotificationTypes = ps.emailNotificationTypes;
 
@@ -221,6 +261,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updates.avatarId = avatar.id;
 				updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
 				updates.avatarBlurhash = avatar.blurhash;
+			} else if (ps.avatarId === null) {
+				updates.avatarId = null;
+				updates.avatarUrl = null;
+				updates.avatarBlurhash = null;
 			}
 
 			if (ps.bannerId) {
@@ -232,6 +276,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				updates.bannerId = banner.id;
 				updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
 				updates.bannerBlurhash = banner.blurhash;
+			} else if (ps.bannerId === null) {
+				updates.bannerId = null;
+				updates.bannerUrl = null;
+				updates.bannerBlurhash = null;
 			}
 
 			if (ps.pinnedPageId) {
@@ -250,6 +298,38 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.map(x => {
 						return { name: x.name, value: x.value };
 					});
+			}
+
+			if (ps.alsoKnownAs) {
+				if (_user.movedToUri) {
+					throw new ApiError({
+						message: 'You have moved your account.',
+						code: 'YOUR_ACCOUNT_MOVED',
+						id: '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31',
+						httpStatusCode: 403,
+					});
+				}
+
+				// Parse user's input into the old account
+				const newAlsoKnownAs = new Set<string>();
+				for (const line of ps.alsoKnownAs) {
+					if (!line) throw new ApiError(meta.errors.noSuchUser);
+					const { username, host } = Acct.parse(line);
+
+					// Retrieve the old account
+					const knownAs = await this.remoteUserResolveService.resolveUser(username, host).catch((e) => {
+						this.apiLoggerService.logger.warn(`failed to resolve dstination user: ${e}`);
+						throw new ApiError(meta.errors.noSuchUser);
+					});
+					if (knownAs.id === _user.id) throw new ApiError(meta.errors.forbiddenToSetYourself);
+
+					const toUrl = this.userEntityService.getUserUri(knownAs);
+					if (!toUrl) throw new ApiError(meta.errors.uriNull);
+
+					newAlsoKnownAs.add(toUrl);
+				}
+
+				updates.alsoKnownAs = newAlsoKnownAs.size > 0 ? Array.from(newAlsoKnownAs) : null;
 			}
 
 			//#region emojis/tags
@@ -279,6 +359,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#endregion
 
 			if (Object.keys(updates).length > 0) await this.usersRepository.update(user.id, updates);
+			if (Object.keys(updates).includes('alsoKnownAs')) {
+				this.cacheService.uriPersonCache.set(this.userEntityService.genLocalUserUri(user.id), { ...user, ...updates });
+			}
 			if (Object.keys(profileUpdates).length > 0) await this.userProfilesRepository.update(user.id, profileUpdates);
 
 			const iObj = await this.userEntityService.pack<true, true>(user.id, user, {

@@ -74,6 +74,8 @@ export class ChannelEntityService {
 			userId: channel.userId,
 			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
 			pinnedNoteIds: channel.pinnedNoteIds,
+			color: channel.color,
+			isArchived: channel.isArchived,
 			usersCount: channel.usersCount,
 			notesCount: channel.notesCount,
 
@@ -84,7 +86,7 @@ export class ChannelEntityService {
 			} : {}),
 
 			...(detailed ? {
-				pinnedNotes: await this.noteEntityService.packMany(pinnedNotes, me),
+				pinnedNotes: (await this.noteEntityService.packMany(pinnedNotes, me)).sort((a, b) => channel.pinnedNoteIds.indexOf(a.id) - channel.pinnedNoteIds.indexOf(b.id)),
 			} : {}),
 		};
 	}

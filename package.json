@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "13.11.1",
+	"version": "13.12.1",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Usuyuki/usuyukey.git"
 	},
-	"packageManager": "pnpm@8.1.1",
+	"packageManager": "pnpm@8.3.1",
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
@@ -51,19 +51,19 @@
 		"gulp-replace": "1.1.4",
 		"gulp-terser": "2.1.0",
 		"js-yaml": "4.1.0",
-		"typescript": "5.0.3"
+		"typescript": "5.0.4"
 	},
 	"devDependencies": {
 		"@types/gulp": "4.0.10",
 		"@types/gulp-rename": "2.0.1",
-		"@typescript-eslint/eslint-plugin": "5.57.1",
-		"@typescript-eslint/parser": "5.57.1",
+		"@typescript-eslint/eslint-plugin": "5.59.2",
+		"@typescript-eslint/parser": "5.59.2",
 		"cross-env": "7.0.3",
-		"cypress": "12.9.0",
-		"eslint": "8.37.0",
+		"cypress": "12.11.0",
+		"eslint": "8.39.0",
 		"start-server-and-test": "2.0.0"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.2.0"
+		"@tensorflow/tfjs-core": "4.4.0"
 	}
 }

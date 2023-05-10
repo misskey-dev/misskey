@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, UserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
@@ -27,8 +27,8 @@ export class CacheService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.redisForPubsub)
-		private redisForPubsub: Redis.Redis,
+		@Inject(DI.redisForSub)
+		private redisForSub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -116,7 +116,7 @@ export class CacheService implements OnApplicationShutdown {
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
 
-		this.redisForPubsub.on('message', this.onMessage);
+		this.redisForSub.on('message', this.onMessage);
 	}
 
 	@bindThis
@@ -167,6 +167,6 @@ export class CacheService implements OnApplicationShutdown {
 
 	@bindThis
 	public onApplicationShutdown(signal?: string | undefined) {
-		this.redisForPubsub.off('message', this.onMessage);
+		this.redisForSub.off('message', this.onMessage);
 	}
 }

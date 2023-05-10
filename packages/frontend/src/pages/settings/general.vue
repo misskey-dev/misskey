@@ -20,29 +20,15 @@
 		<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
 	</MkRadios>
 
-	<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
-	<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-
 	<FormSection>
-		<template #label>{{ i18n.ts.behavior }}</template>
-
-		<div class="_gaps_m">
-			<div class="_gaps_s">
-				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
-				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
-				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
-			</div>
-			<MkSelect v-model="serverDisconnectedBehavior">
-				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
-				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
-				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
-				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
-			</MkSelect>
+		<div class="_gaps_s">
+			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
+			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 		</div>
 	</FormSection>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.appearance }}</template>
+		<template #label>{{ i18n.ts.displayOfNote }}</template>
 
 		<div class="_gaps_m">
 			<div class="_gaps_s">
@@ -52,15 +38,70 @@
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
+				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
+				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
+				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
+			</div>
+
+			<MkSelect v-model="instanceTicker">
+				<template #label>{{ i18n.ts.instanceTicker }}</template>
+				<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
+				<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
+				<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
+			</MkSelect>
+
+			<MkSelect v-model="nsfw">
+				<template #label>{{ i18n.ts.nsfw }}</template>
+				<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
+				<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
+				<option value="force">{{ i18n.ts._nsfw.force }}</option>
+			</MkSelect>
+		<!--
+			<MkRadios v-model="mediaListWithOneImageAppearance">
+				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
+				<option value="expand">{{ i18n.ts.default }}</option>
+				<option value="16_9">{{ i18n.t('limitTo', { x: '16:9' }) }}</option>
+				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
+				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
+			</MkRadios>
+		-->
+		</div>
+	</FormSection>
+
+	<FormSection>
+		<template #label>{{ i18n.ts.notificationDisplay }}</template>
+
+		<div class="_gaps_m">
+			<MkRadios v-model="notificationPosition">
+				<template #label>{{ i18n.ts.position }}</template>
+				<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
+				<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
+				<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
+				<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
+			</MkRadios>
+
+			<MkRadios v-model="notificationStackAxis">
+				<template #label>{{ i18n.ts.stackAxis }}</template>
+				<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
+				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
+			</MkRadios>
+		</div>
+	</FormSection>
+
+	<FormSection>
+		<template #label>{{ i18n.ts.appearance }}</template>
+
+		<div class="_gaps_m">
+			<div class="_gaps_s">
 				<MkSwitch v-model="reduceAnimation">{{ i18n.ts.reduceUiAnimation }}</MkSwitch>
 				<MkSwitch v-model="useBlurEffect">{{ i18n.ts.useBlurEffect }}</MkSwitch>
 				<MkSwitch v-model="useBlurEffectForModal">{{ i18n.ts.useBlurEffectForModal }}</MkSwitch>
-				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
-				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkSwitch v-model="disableShowingAnimatedImages">{{ i18n.ts.disableShowingAnimatedImages }}</MkSwitch>
 				<MkSwitch v-model="squareAvatars">{{ i18n.ts.squareAvatars }}</MkSwitch>
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
+				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
+				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -83,27 +124,29 @@
 	</FormSection>
 
 	<FormSection>
-		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+		<template #label>{{ i18n.ts.behavior }}</template>
+
+		<div class="_gaps_m">
+			<div class="_gaps_s">
+				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
+				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+			</div>
+			<MkSelect v-model="serverDisconnectedBehavior">
+				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
+				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+			</MkSelect>
+			<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
+				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+			</MkRange>
+		</div>
 	</FormSection>
 
-	<MkSelect v-model="instanceTicker">
-		<template #label>{{ i18n.ts.instanceTicker }}</template>
-		<option value="none">{{ i18n.ts._instanceTicker.none }}</option>
-		<option value="remote">{{ i18n.ts._instanceTicker.remote }}</option>
-		<option value="always">{{ i18n.ts._instanceTicker.always }}</option>
-	</MkSelect>
-
-	<MkSelect v-model="nsfw">
-		<template #label>{{ i18n.ts.nsfw }}</template>
-		<option value="respect">{{ i18n.ts._nsfw.respect }}</option>
-		<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
-		<option value="force">{{ i18n.ts._nsfw.force }}</option>
-	</MkSelect>
-
-	<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
-		<template #label>{{ i18n.ts.numberOfPageCache }}</template>
-		<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
-	</MkRange>
+	<FormSection>
+		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+	</FormSection>
 
 	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 
@@ -157,7 +200,9 @@ const advancedMfm = computed(defaultStore.makeGetterSetter('advancedMfm'));
 const emojiStyle = computed(defaultStore.makeGetterSetter('emojiStyle'));
 const disableDrawer = computed(defaultStore.makeGetterSetter('disableDrawer'));
 const disableShowingAnimatedImages = computed(defaultStore.makeGetterSetter('disableShowingAnimatedImages'));
+const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
+const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -168,6 +213,9 @@ const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfin
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
+const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
+const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
+const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
