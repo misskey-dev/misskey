@@ -12,6 +12,17 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### General
+- 投稿したコンテンツのAIによる学習を軽減するオプションを追加
+
+### Client
+-
+
+### Server
+-
+
 ## 13.12.1
 
 ### Client

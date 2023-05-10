@@ -148,6 +148,11 @@ export class UserProfile {
 	public noCrawle: boolean;
 
 	@Column('boolean', {
+		default: true,
+	})
+	public preventAiLarning: boolean;
+
+	@Column('boolean', {
 		default: false,
 	})
 	public alwaysMarkNsfw: boolean;

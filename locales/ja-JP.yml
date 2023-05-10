@@ -1038,6 +1038,8 @@ thisChannelArchived: "このチャンネルはアーカイブされています�
 displayOfNote: "ノートの表示"
 initialAccountSetting: "初期設定"
 youFollowing: "フォロー中"
+preventAiLarning: "AIによる学習を防止"
+preventAiLarningDescription: "投稿したノート、添付した画像などのコンテンツを学習の対象にしないようAIに要求します。これはnoaiフラグをHTMLレスポンスに含めることによって実現されます。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

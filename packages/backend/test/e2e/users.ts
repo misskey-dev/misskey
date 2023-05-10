@@ -145,6 +145,7 @@ describe('ユーザー', () => {
 			carefulBot: user.carefulBot,
 			autoAcceptFollowed: user.autoAcceptFollowed,
 			noCrawle: user.noCrawle,
+			preventAiLarning: user.preventAiLarning,
 			isExplorable: user.isExplorable,
 			isDeleted: user.isDeleted,
 			hideOnlineStatus: user.hideOnlineStatus,
@@ -390,6 +391,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.carefulBot, false);
 		assert.strictEqual(response.autoAcceptFollowed, true);
 		assert.strictEqual(response.noCrawle, false);
+		assert.strictEqual(response.preventAiLarning, true);
 		assert.strictEqual(response.isExplorable, true);
 		assert.strictEqual(response.isDeleted, false);
 		assert.strictEqual(response.hideOnlineStatus, false);
@@ -462,6 +464,8 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ autoAcceptFollowed: false }) },
 		{ parameters: (): object => ({ noCrawle: true }) },
 		{ parameters: (): object => ({ noCrawle: false }) },
+		{ parameters: (): object => ({ preventAiLarning: false }) },
+		{ parameters: (): object => ({ preventAiLarning: true }) },
 		{ parameters: (): object => ({ isBot: true }) },
 		{ parameters: (): object => ({ isBot: false }) },
 		{ parameters: (): object => ({ isCat: true }) },
