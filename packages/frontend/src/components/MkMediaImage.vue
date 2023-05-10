@@ -1,6 +1,6 @@
 <template>
 <div v-if="hide" :class="$style.hidden" @click="hide = false">
-	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode" />
+	<ImgWithBlurhash style="filter: brightness(0.5);" :hash="image.blurhash" :title="image.comment" :alt="image.comment" :width="image.properties.width" :height="image.properties.height" :force-blurhash="defaultStore.state.enableDataSaverMode"/>
 	<div :class="$style.hiddenText">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
@@ -20,8 +20,10 @@
 	<div :class="$style.indicators">
 		<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
 		<div v-if="image.comment" :class="$style.indicator">ALT</div>
+		<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
 	</div>
 	<button v-tooltip="i18n.ts.hide" :class="$style.hide" class="_button" @click="hide = true"><i class="ti ti-eye-off"></i></button>
+	<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots"></i></button>
 </div>
 </template>
 
@@ -33,6 +35,8 @@ import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
+import * as os from '@/os';
+import { iAmModerator } from '@/account';
 
 const props = defineProps<{
 	image: misskey.entities.DriveFile;
@@ -46,7 +50,7 @@ const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 	? props.image.url
 	: defaultStore.state.disableShowingAnimatedImages
 		? getStaticImageUrl(props.image.url)
-		: props.image.thumbnailUrl
+		: props.image.thumbnailUrl,
 );
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
@@ -56,6 +60,17 @@ watch(() => props.image, () => {
 	deep: true,
 	immediate: true,
 });
+
+function showMenu(ev: MouseEvent) {
+	os.popupMenu([...(iAmModerator ? [{
+		text: i18n.ts.markAsSensitive,
+		icon: 'ti ti-eye-off',
+		action: () => {
+			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
+		},
+	}] : [])], ev.currentTarget ?? ev.target);
+}
+
 </script>
 
 <style lang="scss" module>
@@ -105,6 +120,21 @@ watch(() => props.image, () => {
 	right: 12px;
 }
 
+.menu {
+	display: block;
+	position: absolute;
+	border-radius: 6px;
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
+	color: #fff;
+	font-size: 0.8em;
+	padding: 6px 8px;
+	text-align: center;
+	bottom: 12px;
+	right: 12px;
+}
+
 .imageContainer {
 	display: block;
 	cursor: zoom-in;
@@ -135,6 +165,7 @@ watch(() => props.image, () => {
 	color: var(--accentLighten);
 	display: inline-block;
 	font-weight: bold;
-	padding: 0 6px;
+	font-size: 12px;
+	padding: 2px 6px;
 }
 </style>

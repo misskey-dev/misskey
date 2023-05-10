@@ -74,9 +74,7 @@ export class FederatedInstanceService {
 			.then((response) => {
 				return response.raw[0];
 			});
-
-		const updated = result.raw[0];
 	
-		this.federatedInstanceCache.set(updated.host, updated);
+		this.federatedInstanceCache.set(result.host, result);
 	}
 }

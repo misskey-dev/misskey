@@ -403,6 +403,100 @@ describe('Endpoints', () => {
 		});
 	});
 
+	describe('channels/search', () => {
+		test('空白検索で一覧を取得できる', async () => {
+			await api('/channels/create', {
+				name: 'aaa',
+				description: 'bbb',
+			}, bob);
+			await api('/channels/create', {
+				name: 'ccc1',
+				description: 'ddd1',
+			}, bob);
+			await api('/channels/create', {
+				name: 'ccc2',
+				description: 'ddd2',
+			}, bob);
+
+			const res = await api('/channels/search', {
+				query: '',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 3);
+		});
+		test('名前のみの検索で名前を検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'aaa',
+				type: 'nameOnly',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 1);
+			assert.strictEqual(res.body[0].name, 'aaa');
+		});
+		test('名前のみの検索で名前を複数検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ccc',
+				type: 'nameOnly',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 2);
+		});
+		test('名前のみの検索で説明は検索できない', async () => {
+			const res = await api('/channels/search', {
+				query: 'bbb',
+				type: 'nameOnly',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 0);
+		});
+		test('名前と説明の検索で名前を検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ccc1',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 1);
+			assert.strictEqual(res.body[0].name, 'ccc1');
+		});
+		test('名前と説明での検索で説明を検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ddd1',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 1);
+			assert.strictEqual(res.body[0].name, 'ccc1');
+		});
+		test('名前と説明の検索で名前を複数検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ccc',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 2);
+		});
+		test('名前と説明での検索で説明を複数検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ddd',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 2);
+		});
+	});
+
 	describe('drive', () => {
 		test('ドライブ情報を取得できる', async () => {
 			await uploadFile(alice, {

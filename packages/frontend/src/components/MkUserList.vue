@@ -8,7 +8,7 @@
 	</template>
 
 	<template #default="{ items }">
-		<div class="efvhhmdq">
+		<div :class="$style.root">
 			<MkUserInfo v-for="item in items" :key="item.id" class="user" :user="extractor(item)"/>
 		</div>
 	</template>
@@ -29,8 +29,8 @@ const props = withDefaults(defineProps<{
 });
 </script>
 
-<style lang="scss" scoped>
-.efvhhmdq {
+<style lang="scss" module>
+.root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 	grid-gap: var(--margin);
