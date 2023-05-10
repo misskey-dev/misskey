@@ -6,11 +6,11 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import Channel from '../channel.js';
 
-class LocalTimelineChannel extends Channel {
-	public readonly chName = 'localTimeline';
-	public static shouldShare = true;
+class HashtagChannel extends Channel {
+	public readonly chName = 'hashtag';
+	public static shouldShare = false;
 	public static requireCredential = false;
-	private q: string[][] = [['delmulin']];
+	private q: string[][];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -65,9 +65,9 @@ class LocalTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class LocalTimelineChannelService {
-	public readonly shouldShare = LocalTimelineChannel.shouldShare;
-	public readonly requireCredential = LocalTimelineChannel.requireCredential;
+export class HashtagChannelService {
+	public readonly shouldShare = HashtagChannel.shouldShare;
+	public readonly requireCredential = HashtagChannel.requireCredential;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -75,8 +75,8 @@ export class LocalTimelineChannelService {
 	}
 
 	@bindThis
-	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
-		return new LocalTimelineChannel(
+	public create(id: string, connection: Channel['connection']): HashtagChannel {
+		return new HashtagChannel(
 			this.noteEntityService,
 			id,
 			connection,

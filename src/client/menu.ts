@@ -179,6 +179,11 @@ export const menuDef = {
 		show: computed(() => $i != null),
 		to: computed(() => `/@${$i.username}/room`),
 	},
+	mulukhiya: {
+		title: 'mulukhiyaHome',
+		icon: 'fas fa-leaf',
+		to: '/mulukhiya',
+	},
 	ui: {
 		title: 'switchUi',
 		icon: 'fas fa-columns',

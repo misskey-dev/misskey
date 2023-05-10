@@ -89,14 +89,6 @@ function openAccountMenu(ev: MouseEvent) {
 	}, ev);
 }
 
-function mulukhiya(ev: MouseEvent) {
-	window.open('/mulukhiya');
-}
-
-function daisskeyBlog(ev: MouseEvent) {
-	window.open('https://blog.misskey.delmulin.com');
-}
-
 watch(defaultStore.reactiveState.menuDisplay, () => {
 	calcViewState();
 });
