@@ -1,51 +1,46 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedFlashSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Flash',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		updatedAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		title: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		summary: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		script: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
-		userId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		user: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: false, nullable: false,
-		},
+		userId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		user: { $ref: 'https://misskey-hub.net/api/schemas/UserLite' },
 		likedCount: {
-			type: 'number',
-			optional: false, nullable: true,
+			type: ['number', 'null'],
 		},
 		isLiked: {
 			type: 'boolean',
-			optional: true, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'updatedAt',
+		'title',
+		'summary',
+		'script',
+		'userId',
+		'user',
+		'likedCount',
+	],
+} as const satisfies JSONSchema7Definition;
