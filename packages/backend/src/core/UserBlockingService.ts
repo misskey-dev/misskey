@@ -107,7 +107,10 @@ export class UserBlockingService implements OnModuleInit {
 		if (this.userEntityService.isLocalUser(followee)) {
 			this.userEntityService.pack(followee, followee, {
 				detail: true,
-			}).then(packed => this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed));
+			}).then(packed => {
+				this.globalEventService.publishMainStream(followee.id, 'meUpdated', packed);
+				return packed; // somehow this is needed by typescript
+			});
 		}
 
 		if (this.userEntityService.isLocalUser(follower) && !silent) {
@@ -122,6 +125,8 @@ export class UserBlockingService implements OnModuleInit {
 						user: packed,
 					});
 				}
+
+				return packed; // somehow this is needed by typescript
 			});
 		}
 

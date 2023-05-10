@@ -111,7 +111,7 @@ export const packedDriveFileSchema = {
 		'md5',
 		'size',
 		'isSensitive',
-		'burlhash',
+		'blurhash',
 		'properties',
 		'url',
 		'thumbnailUrl',

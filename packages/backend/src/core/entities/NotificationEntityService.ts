@@ -6,7 +6,7 @@ import type { AccessTokensRepository, FollowRequestsRepository, NoteReactionsRep
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { Packed } from 'misskey-js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { notificationTypes } from 'misskey-js';

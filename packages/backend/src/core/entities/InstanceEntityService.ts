@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository } from '@/models/index.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { Packed } from 'misskey-js';
 import type { } from '@/models/entities/Blocking.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { MetaService } from '@/core/MetaService.js';

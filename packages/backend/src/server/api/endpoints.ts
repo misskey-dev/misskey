@@ -1,4 +1,4 @@
-import type { Schema } from '@/misc/json-schema.js';
+import type { JSONSchema7 } from 'schema-type';
 import { RolePolicies } from '@/core/RoleService.js';
 
 import * as ep___admin_meta from './endpoints/admin/meta.js';
@@ -686,7 +686,7 @@ export interface IEndpointMeta {
 		};
 	};
 
-	readonly res?: Schema;
+	readonly res?: JSONSchema7;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
@@ -775,7 +775,7 @@ export interface IEndpointMeta {
 export interface IEndpoint {
 	name: string;
 	meta: IEndpointMeta;
-	params: Schema;
+	params: JSONSchema7;
 }
 
 const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {

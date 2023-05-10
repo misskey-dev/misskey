@@ -1,4 +1,4 @@
-import { notificationTypes } from 'misskey-js';
+import { ACHIEVEMENT_TYPES, notificationTypes } from 'misskey-js';
 import { User } from './User.js';
 import { Note } from './Note.js';
 import { FollowRequest } from './FollowRequest.js';
@@ -39,7 +39,7 @@ export type Notification = {
 
 	choice: number | null;
 
-	achievement: string | null;
+	achievement: typeof ACHIEVEMENT_TYPES[number] | null;
 
 	/**
 	 * アプリ通知のbody

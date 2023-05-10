@@ -8,10 +8,13 @@ import {
 	packedUserDetailedSchema,
 	packedUserSchema,
 } from './schemas/user.js';
+import {
+	packedNotificationSchema,
+	packedNotificationStrictSchema,
+} from './schemas/notification.js';
 import { packedNoteSchema } from './schemas/note.js';
 import { packedUserListSchema } from './schemas/user-list.js';
 import { packedAppSchema } from './schemas/app.js';
-import { packedNotificationSchema } from './schemas/notification.js';
 import { packedDriveFileSchema } from './schemas/drive-file.js';
 import { packedDriveFolderSchema } from './schemas/drive-folder.js';
 import { packedFollowingSchema } from './schemas/following.js';
@@ -49,6 +52,7 @@ export const refs = {
 	NoteReaction: packedNoteReactionSchema,
 	NoteFavorite: packedNoteFavoriteSchema,
 	Notification: packedNotificationSchema,
+	NotificationStrict: packedNotificationStrictSchema,
 	DriveFile: packedDriveFileSchema,
 	DriveFolder: packedDriveFolderSchema,
 	Following: packedFollowingSchema,

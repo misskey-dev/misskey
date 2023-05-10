@@ -17,10 +17,10 @@ export const packedNoteSchema = {
 			}, { type: 'null' }],
 		},
 		text: {
-			type: 'string',
+			type: ['string', 'null'],
 		},
 		cw: {
-			oneOf: [{ type: 'string' }, { type: 'null' }],
+			type: ['string', 'null'],
 		},
 		userId: {
 			$ref: 'https://misskey-hub.net/api/schemas/Id',

@@ -1,4 +1,4 @@
-import type { Packed } from './json-schema.js';
+import type { Packed } from 'misskey-js';
 
 /**
  * 投稿を表す文字列を取得します。

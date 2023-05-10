@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { Packed } from 'misskey-js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
@@ -28,7 +28,7 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 	Detailed extends true ?
 		ExpectsMe extends true ? Packed<'MeDetailed'> :
 		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
-		Packed<'UserDetailed'> :
+		(Packed<'MeDetailed'> | Packed<'UserDetailedNotMe'>) :
 	Packed<'UserLite'>;
 
 const ajv = new Ajv();
@@ -290,7 +290,7 @@ export class UserEntityService implements OnModuleInit {
 		return `${this.config.url}/users/${userId}`;
 	}
 
-	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
+	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false, R = IsMeAndIsUserDetailed<ExpectsMe, D>>(
 		src: User['id'] | User,
 		me?: { id: User['id']; } | null | undefined,
 		options?: {
@@ -298,7 +298,7 @@ export class UserEntityService implements OnModuleInit {
 			includeSecrets?: boolean,
 			userProfile?: UserProfile,
 		},
-	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
+	): Promise<R> {
 		const opts = Object.assign({
 			detail: false,
 			includeSecrets: false,
@@ -499,19 +499,19 @@ export class UserEntityService implements OnModuleInit {
 				isMuted: relation.isMuted,
 				isRenoteMuted: relation.isRenoteMuted,
 			} : {}),
-		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
+		} as Promiseable<R>;
 
 		return await awaitAll(packed);
 	}
 
-	public packMany<D extends boolean = false>(
+	public packMany<D extends boolean = false, R = IsUserDetailed<D>>(
 		users: (User['id'] | User)[],
 		me?: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
 		},
-	): Promise<IsUserDetailed<D>[]> {
-		return Promise.all(users.map(u => this.pack(u, me, options)));
+	): Promise<R[]> {
+		return Promise.all(users.map(u => this.pack<null, D, R>(u, me, options)));
 	}
 }

@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { JTDDataType } from 'ajv/dist/jtd';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { Packed } from 'misskey-js';
 import { paramDef as CreateParamDef } from '@/server/api/endpoints/clips/create.js';
 import { paramDef as UpdateParamDef } from '@/server/api/endpoints/clips/update.js';
 import { paramDef as DeleteParamDef } from '@/server/api/endpoints/clips/delete.js';

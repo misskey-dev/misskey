@@ -1,6 +1,6 @@
 import type { User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
-import type { Packed } from '@/misc/json-schema.js';
+import type { Packed } from 'misskey-js';
 import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
