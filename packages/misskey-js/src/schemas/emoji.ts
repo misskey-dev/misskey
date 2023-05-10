@@ -1,67 +1,54 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedEmojiSimpleSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/EmojiSimple',
+
 	type: 'object',
 	properties: {
 		aliases: {
 			type: 'array',
-			optional: false, nullable: false,
-			items: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		category: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		url: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'aliases',
+		'name',
+		'category',
+		'url',
+	],
+} as const satisfies JSONSchema7Definition;
 
 export const packedEmojiDetailedSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/EmojiDetailed',
+
 	type: 'object',
-	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		aliases: {
-			type: 'array',
-			optional: false, nullable: false,
-			items: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
+	allOf: [{
+		$ref: 'https://misskey-hub.net/api/schemas/EmojiSimple',
+	}, {
+		type: 'object',
+		properties: {
+			id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+			host: {
+				type: ['string', 'null'],
+				description: 'The local host is represented with `null`.',
 			},
+			license: {
+				type: ['string', 'null'],
+			}
 		},
-		name: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		category: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
-		host: {
-			type: 'string',
-			optional: false, nullable: true,
-			description: 'The local host is represented with `null`.',
-		},
-		url: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		license: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
-	},
-} as const;
+		required: [
+			'id',
+			'host',
+			'license',
+		],
+	}],
+} as const satisfies JSONSchema7Definition;
