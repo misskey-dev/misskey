@@ -22,6 +22,14 @@
 			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin">
 				<i class="icon ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
+			<button v-click-anime class="item _button" @click="mulukhiya">
+				<i class="icon ti ti-leaf ti-fw"></i><span class="text">{{ i18n.ts.mulukhiyaHome }}</span>
+				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
+			</button>
+			<button v-click-anime class="item _button" @click="daisskeyBlog">
+				<i class="icon ti ti-file ti-fw"></i><span class="text">{{ i18n.ts.daisskeyBlog }}</span>
+				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
+			</button>
 			<button v-click-anime class="item _button" @click="more">
 				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
@@ -65,6 +73,14 @@ function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({
 		withExtraOperation: true,
 	}, ev);
+}
+
+function mulukhiya(ev: MouseEvent) {
+	window.open('/mulukhiya');
+}
+
+function daisskeyBlog(ev: MouseEvent) {
+	window.open('https://blog.misskey.delmulin.com');
 }
 
 function more() {

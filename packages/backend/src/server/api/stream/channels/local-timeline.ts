@@ -24,7 +24,7 @@ class LocalTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
-		this.q = params.q;
+		// this.q = params.q;
 
 		if (this.q == null) return;
 
