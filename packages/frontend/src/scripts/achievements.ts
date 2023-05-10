@@ -1,5 +1,6 @@
 import * as os from '@/os';
 import { $i } from '@/account';
+import { ACHIEVEMENT_TYPES } from 'misskey-js';
 
 export const ACHIEVEMENT_BADGES = {
 	'notes1': {
