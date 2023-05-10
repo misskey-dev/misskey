@@ -76,7 +76,7 @@ export class UserProfile {
 	public emailNotificationTypes: string[];
 
 	@Column('boolean', {
-		default: false,
+		default: true,
 	})
 	public publicReactions: boolean;
 
