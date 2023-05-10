@@ -1,51 +1,51 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedPageSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Page',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		updatedAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		title: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		summary: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		content: {
 			type: 'array',
-			optional: false, nullable: false,
 		},
 		variables: {
 			type: 'array',
-			optional: false, nullable: false,
+			items: {
+				type: 'object',
+				additionalProperties: true,
+			},
 		},
-		userId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		user: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: false, nullable: false,
-		},
+		userId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		user: { $ref: 'https://misskey-hub.net/api/schemas/UserLite' },
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'updatedAt',
+		'title',
+		'name',
+		'summary',
+		'content',
+		'variables',
+		'userId',
+		'user',
+	],
+} as const satisfies JSONSchema7Definition;
