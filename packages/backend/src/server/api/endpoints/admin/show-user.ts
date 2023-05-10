@@ -68,6 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				emailVerified: profile.emailVerified,
 				autoAcceptFollowed: profile.autoAcceptFollowed,
 				noCrawle: profile.noCrawle,
+				preventAiLarning: profile.preventAiLarning,
 				alwaysMarkNsfw: profile.alwaysMarkNsfw,
 				autoSensitive: profile.autoSensitive,
 				carefulBot: profile.carefulBot,
