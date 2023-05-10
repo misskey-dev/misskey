@@ -348,7 +348,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517
+        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
       systeminformation:
         specifier: 5.17.12
         version: 5.17.12
@@ -984,7 +984,7 @@ importers:
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.7)(@storybook/components@7.0.7)(@storybook/core-events@7.0.7)(@storybook/manager-api@7.0.7)(@storybook/preview-api@7.0.7)(@storybook/theming@7.0.7)(@storybook/types@7.0.7)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517
+        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
       vite-plugin-turbosnap:
         specifier: 1.0.2
         version: 1.0.2
@@ -1020,7 +1020,7 @@ importers:
         version: 4.4.0
       schema-type:
         specifier: github:misskey-dev/schema-type
-        version: github.com/misskey-dev/schema-type/d50e5ea86b7aeb3a6ddfba0717e44c016ac42854(typescript@5.0.4)
+        version: github.com/misskey-dev/schema-type/c771673a44d514658d4d5a4dd2c201b2294f225b(typescript@5.0.4)
       ts-essentials:
         specifier: ^9.3.2
         version: 9.3.2(typescript@5.0.4)
@@ -20321,9 +20321,9 @@ packages:
     version: 2.2.1-misskey.3
     dev: false
 
-  github.com/misskey-dev/schema-type/d50e5ea86b7aeb3a6ddfba0717e44c016ac42854(typescript@5.0.4):
-    resolution: {tarball: https://codeload.github.com/misskey-dev/schema-type/tar.gz/d50e5ea86b7aeb3a6ddfba0717e44c016ac42854}
-    id: github.com/misskey-dev/schema-type/d50e5ea86b7aeb3a6ddfba0717e44c016ac42854
+  github.com/misskey-dev/schema-type/c771673a44d514658d4d5a4dd2c201b2294f225b(typescript@5.0.4):
+    resolution: {tarball: https://codeload.github.com/misskey-dev/schema-type/tar.gz/c771673a44d514658d4d5a4dd2c201b2294f225b}
+    id: github.com/misskey-dev/schema-type/c771673a44d514658d4d5a4dd2c201b2294f225b
     name: schema-type
     version: 1.0.0
     dependencies:
@@ -20376,8 +20376,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/2d63e2a0066f89871e777cc81d43c1ade8c97517:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/2d63e2a0066f89871e777cc81d43c1ade8c97517}
+  github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/77dd5654bb82280b38c1f50e51a771c33f3df503}
     name: summaly
     version: 4.0.2
     dependencies:

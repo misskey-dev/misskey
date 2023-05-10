@@ -1,4 +1,4 @@
-import type { JSONSchema7Definition } from 'schema-type';
+import type { JSONSchema7, JSONSchema7Definition } from 'schema-type';
 
 export const packedUserLiteSchema = {
 	$id: 'https://misskey-hub.net/api/schemas/UserLite',
@@ -63,6 +63,7 @@ export const packedUserLiteSchema = {
 export const packedUserDetailedNotMeOnlySchema = {
 	$id: 'https://misskey-hub.net/api/schemas/UserDetailedNotMeOnly',
 
+	type: 'object',
 	oneOf: [{
 		$ref: '#/$defs/base',
 	}, {
@@ -297,204 +298,199 @@ export const packedUserDetailedNotMeOnlySchema = {
 } as const satisfies JSONSchema7Definition;
 
 export const packedMeDetailedOnlySchema = {
+	$id: 'https://misskey-hub.net/api/schemas/MeDetailedOnly',
+
 	type: 'object',
-	properties: {
-		avatarId: {
-			type: 'string',
-			nullable: true, optional: false,
-			format: 'id',
-		},
-		bannerId: {
-			type: 'string',
-			nullable: true, optional: false,
-			format: 'id',
-		},
-		injectFeaturedNote: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		receiveAnnouncementEmail: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		alwaysMarkNsfw: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		autoSensitive: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		carefulBot: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		autoAcceptFollowed: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		noCrawle: {
-			type: 'boolean',
-			nullable: true, optional: false,
-		},
-		preventAiLarning: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		isExplorable: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		isDeleted: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hideOnlineStatus: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadSpecifiedNotes: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadMentions: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadAnnouncement: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadAntenna: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasUnreadNotification: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		hasPendingReceivedFollowRequest: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		mutedWords: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'array',
-				nullable: false, optional: false,
-				items: {
-					type: 'string',
-					nullable: false, optional: false,
+	oneOf: [{
+		$ref: '#/$defs/base',
+	}, {
+		allOf: [{ $ref: '#/$defs/base' }, { $ref: '#/$defs/secrets' }],
+	}],
+	$defs: {
+		base: {
+			type: 'object',
+			properties: {
+				avatarId: {
+					oneOf: [{
+						$ref: 'https://misskey-hub.net/api/schemas/Id',
+					}, {
+						type: 'null',
+					}],
+				},
+				bannerId: {
+					oneOf: [{
+						$ref: 'https://misskey-hub.net/api/schemas/Id',
+					}, {
+						type: 'null',
+					}],
+				},
+				injectFeaturedNote: {
+					type: ['boolean', 'null'],
+				},
+				receiveAnnouncementEmail: {
+					type: ['boolean', 'null'],
+				},
+				alwaysMarkNsfw: {
+					type: ['boolean', 'null'],
+				},
+				autoSensitive: {
+					type: ['boolean', 'null'],
+				},
+				carefulBot: {
+					type: ['boolean', 'null'],
+				},
+				autoAcceptFollowed: {
+					type: ['boolean', 'null'],
+				},
+				noCrawle: {
+					type: ['boolean', 'null'],
+				},
+				preventAiLarning: {
+					type: 'boolean',
+				},
+				isExplorable: {
+					type: 'boolean',
+				},
+				isDeleted: {
+					type: 'boolean',
+				},
+				hideOnlineStatus: {
+					type: 'boolean',
+				},
+				hasUnreadSpecifiedNotes: {
+					type: 'boolean',
+				},
+				hasUnreadMentions: {
+					type: 'boolean',
+				},
+				hasUnreadAnnouncement: {
+					type: 'boolean',
+				},
+				hasUnreadAntenna: {
+					type: 'boolean',
+				},
+				hasUnreadNotification: {
+					type: 'boolean',
+				},
+				hasPendingReceivedFollowRequest: {
+					type: 'boolean',
+				},
+				mutedWords: {
+					type: 'array',
+					items: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+				},
+				mutedInstances: {
+					oneOf: [{
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					}, {
+						type: 'null',
+					}],
+				},
+				mutingNotificationTypes: {
+					oneOf: [{
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					}, {
+						type: 'null',
+					}],
+				},
+				emailNotificationTypes: {
+					oneOf: [{
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					}, {
+						type: 'null',
+					}],
 				},
 			},
 		},
-		mutedInstances: {
-			type: 'array',
-			nullable: true, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
+		secrets: {
+			type: 'object',
+			properties: {
+				email: {
+					type: ['string', 'null'],
+				},
+				emailVerified: {
+					type: ['boolean', 'null'],
+				},
+				securityKeysList: {
+					type: 'array',
+					items: {
+						type: 'object',
+						additionalProperties: true,
+					},
+				},
 			},
+			required: [
+				'email',
+				'emailVerified',
+				'securityKeysList',
+			],
 		},
-		mutingNotificationTypes: {
-			type: 'array',
-			nullable: true, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-			},
-		},
-		emailNotificationTypes: {
-			type: 'array',
-			nullable: true, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-			},
-		},
-		//#region secrets
-		email: {
-			type: 'string',
-			nullable: true, optional: true,
-		},
-		emailVerified: {
-			type: 'boolean',
-			nullable: true, optional: true,
-		},
-		securityKeysList: {
-			type: 'array',
-			nullable: false, optional: true,
-			items: {
-				type: 'object',
-				nullable: false, optional: false,
-			},
-		},
-		//#endregion
 	},
-} as const;
+} as const satisfies JSONSchema7Definition;
 
 export const packedUserDetailedNotMeSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
+
 	type: 'object',
-	allOf: [
-		{
-			type: 'object',
-			ref: 'UserLite',
-		},
-		{
-			type: 'object',
-			ref: 'UserDetailedNotMeOnly',
-		},
-	],
-} as const;
+	allOf: [{
+		$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+	}, {
+		$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMeOnly',
+	}],
+} as const satisfies JSONSchema7Definition;
 
 export const packedMeDetailedSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/MeDetailed',
+
 	type: 'object',
-	allOf: [
-		{
-			type: 'object',
-			ref: 'UserLite',
-		},
-		{
-			type: 'object',
-			ref: 'UserDetailedNotMeOnly',
-		},
-		{
-			type: 'object',
-			ref: 'MeDetailedOnly',
-		},
-	],
-} as const;
+	allOf: [{
+		$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+	}, {
+		$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMeOnly',
+	}, {
+		$ref: 'https://misskey-hub.net/api/schemas/MeDetailedOnly',
+	}],
+} as const satisfies JSONSchema7Definition;
 
 export const packedUserDetailedSchema = {
-	oneOf: [
-		{
-			type: 'object',
-			ref: 'UserDetailedNotMe',
-		},
-		{
-			type: 'object',
-			ref: 'MeDetailed',
-		},
-	],
-} as const;
+	$id: 'https://misskey-hub.net/api/schemas/UserDetailed',
+
+	type: 'object',
+	oneOf: [{
+		$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
+	}, {
+		$ref: 'https://misskey-hub.net/api/schemas/MeDetailed',
+	}],
+} as const satisfies JSONSchema7Definition;
 
 export const packedUserSchema = {
-	oneOf: [
-		{
-			type: 'object',
-			ref: 'UserLite',
-		},
-		{
-			type: 'object',
-			ref: 'UserDetailed',
-		},
-	],
-} as const;
+	$id: 'https://misskey-hub.net/api/schemas/User',
 
-export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const;
-export const passwordSchema = { type: 'string', minLength: 1 } as const;
-export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 1500 } as const;
-export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const;
-export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const;
+	type: 'object',
+	oneOf: [{
+		$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+	}, {
+		$ref: 'https://misskey-hub.net/api/schemas/UserDetailed',
+	}],
+} as const satisfies JSONSchema7Definition;
+
+export const localUsernameSchema = { type: 'string', pattern: /^\w{1,20}$/.toString().slice(1, -1) } as const satisfies JSONSchema7;
+export const passwordSchema = { type: 'string', minLength: 1 } as const satisfies JSONSchema7;
+export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as const satisfies JSONSchema7;
+export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 1500 } as const satisfies JSONSchema7;
+export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const satisfies JSONSchema7;
+export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const satisfies JSONSchema7;

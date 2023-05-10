@@ -64,19 +64,19 @@ export const refs = {
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
-} as const /*satisfies { [x: string]: JSONSchema7Definition }*/;
+} as const satisfies { [x: string]: JSONSchema7Definition };
 
-type Refs = typeof packedAntennaSchema | typeof packedNoteSchema; // TODO: typeof refs[keyof typeof refs];
+type Refs = typeof refs[keyof typeof refs];
 
 export type References = [
     typeof IdSchema,
-    typeof packedAntennaSchema,
-	typeof packedNoteSchema,
+    ...UnionToArray<Refs>,
 ];
 
 export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = GetDef<References, x, 'https://misskey-hub.net/api/schemas/'>;
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;
 
 export type PackedNote = Packed<'Note'>;
+export type PackedUser = Packed<'User'>;
 export type DefNote = Def<'https://misskey-hub.net/api/schemas/Note'>;
 let renote: PackedNote['reply'];
