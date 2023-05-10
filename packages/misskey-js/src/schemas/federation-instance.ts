@@ -1,97 +1,112 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedFederationInstanceSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/FederationInstance',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		firstRetrievedAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		host: {
 			type: 'string',
-			optional: false, nullable: false,
-			example: 'misskey.example.com',
+			examples: 'misskey.example.com',
 		},
 		usersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		notesCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		followingCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		followersCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 		isNotResponding: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 		isSuspended: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 		isBlocked: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 		softwareName: {
-			type: 'string',
-			optional: false, nullable: true,
-			example: 'misskey',
+			type: ['string', 'null'],
+			examples: 'misskey',
 		},
 		softwareVersion: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		openRegistrations: {
-			type: 'boolean',
-			optional: false, nullable: true,
-			example: true,
+			type: ['boolean', 'null'],
+			examples: true,
 		},
 		name: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		description: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		maintainerName: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		maintainerEmail: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		iconUrl: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'url',
+			oneOf: [{
+				type: 'string',
+				format: 'url',
+			}, {
+				type: 'null',
+			}],
 		},
 		faviconUrl: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'url',
+			oneOf: [{
+				type: 'string',
+				format: 'url',
+			}, {
+				type: 'null',
+			}],
 		},
 		themeColor: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		infoUpdatedAt: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'date-time',
+			oneOf: [{
+				type: 'string',
+				format: 'date-time',
+			}, {
+				type: 'null',
+			}],
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'firstRetrievedAt',
+		'host',
+		'usersCount',
+		'notesCount',
+		'followingCount',
+		'followersCount',
+		'isNotResponding',
+		'isSuspended',
+		'isBlocked',
+		'softwareName',
+		'softwareVersion',
+		'openRegistrations',
+		'name',
+		'description',
+		'maintainerName',
+		'maintainerEmail',
+		'iconUrl',
+		'faviconUrl',
+		'themeColor',
+		'infoUpdatedAt',
+	],
+} as const satisfies JSONSchema7Definition;
