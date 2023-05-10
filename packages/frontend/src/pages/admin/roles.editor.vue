@@ -8,10 +8,9 @@
 		<template #label>{{ i18n.ts._role.description }}</template>
 	</MkTextarea>
 
-	<MkInput v-model="role.color">
+	<MkColorInput v-model="role.color">
 		<template #label>{{ i18n.ts.color }}</template>
-		<template #caption>#RRGGBB</template>
-	</MkInput>
+	</MkColorInput>
 
 	<MkInput v-model="role.iconUrl">
 		<template #label>{{ i18n.ts._role.iconUrl }}</template>
@@ -57,6 +56,11 @@
 	<MkSwitch v-model="role.asBadge" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.asBadge }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
+	</MkSwitch>
+
+	<MkSwitch v-model="role.isExplorable" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.isExplorable }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfIsExplorable }}</template>
 	</MkSwitch>
 
 	<FormSlot>
@@ -206,7 +210,7 @@
 					</MkRange>
 				</div>
 			</MkFolder>
-
+			
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.driveCapacity, 'driveCapacityMb'])">
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 				<template #suffix>
@@ -222,6 +226,26 @@
 						<template #suffix>MB</template>
 					</MkInput>
 					<MkRange v-model="role.policies.driveCapacityMb.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.alwaysMarkNsfw, 'alwaysMarkNsfw'])">
+				<template #label>{{ i18n.ts._role._options.alwaysMarkNsfw }}</template>
+				<template #suffix>
+					<span v-if="role.policies.alwaysMarkNsfw.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.alwaysMarkNsfw.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.alwaysMarkNsfw)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.alwaysMarkNsfw.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.alwaysMarkNsfw.value" :disabled="role.policies.alwaysMarkNsfw.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.alwaysMarkNsfw.priority" :min="0" :max="2" :step="1" easing :text-converter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
 					</MkRange>
 				</div>
@@ -409,6 +433,7 @@ import { watch } from 'vue';
 import { throttle } from 'throttle-debounce';
 import RolesEditorFormula from './RolesEditorFormula.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -475,6 +500,7 @@ const save = throttle(100, () => {
 		isAdministrator: role.isAdministrator,
 		isModerator: role.isModerator,
 		isPublic: role.isPublic,
+		isExplorable: role.isExplorable,
 		asBadge: role.asBadge,
 		canEditMembersByModerator: role.canEditMembersByModerator,
 		policies: role.policies,

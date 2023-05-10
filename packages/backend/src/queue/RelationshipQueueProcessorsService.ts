@@ -17,7 +17,7 @@ export class RelationshipQueueProcessorsService {
 
 	@bindThis
 	public start(q: Bull.Queue): void {
-		const maxJobs = (this.config.deliverJobConcurrency ?? 128) / 4; // conservative?
+		const maxJobs = this.config.relashionshipJobConcurrency ?? 16;
 		q.process('follow', maxJobs, (job) => this.relationshipProcessorService.processFollow(job));
 		q.process('unfollow', maxJobs, (job) => this.relationshipProcessorService.processUnfollow(job));
 		q.process('block', maxJobs, (job) => this.relationshipProcessorService.processBlock(job));

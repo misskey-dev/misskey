@@ -1,5 +1,5 @@
 import { Brackets, In } from 'typeorm';
-import Redis from 'ioredis';
+import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, NotesRepository } from '@/models/index.js';
 import { obsoleteNotificationTypes, notificationTypes } from '@/types.js';
