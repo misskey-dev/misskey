@@ -1038,6 +1038,8 @@ thisChannelArchived: "This channel has been archived."
 displayOfNote: "Note display"
 initialAccountSetting: "Profile setup"
 youFollowing: "Followed"
+preventAiLarning: "Reject usage in Machine Learning (AI)"
+preventAiLarningDescription: "Requests crawlers to not use posted text or image material etc. in machine learning (AI) data sets. This is achieved by adding a \"noai\" HTML-Tag to the respective content. A complete prevention can however not be achieved through this tag, as it may simply be ignored."
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."
