@@ -27,7 +27,7 @@
 					
 					<MkTextarea v-model="sensitiveWords">
 						<template #label>{{ i18n.ts.sensitiveWords }}</template>
-						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}</template>
+						<template #caption>{{ i18n.ts.sensitiveWordsDescription }}<br>{{ i18n.ts.sensitiveWordsDescription2 }}</template>
 					</MkTextarea>
 				</div>
 			</FormSuspense>
