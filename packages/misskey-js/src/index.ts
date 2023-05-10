@@ -2,6 +2,8 @@ import { Endpoints } from './api.types.js';
 import Stream, { Connection } from './streaming.js';
 import { Channels } from './streaming.types.js';
 import { Acct } from './acct.js';
+import type { Packed, Def } from './schemas.js';
+import { refs as _refs } from './schemas.js';
 import * as consts from './consts.js';
 
 export {
@@ -10,7 +12,10 @@ export {
 	Connection as ChannelConnection,
 	Channels,
 	Acct,
+	Packed, Def,
 };
+
+export const refs = _refs;
 
 export const permissions = consts.permissions;
 export const notificationTypes = consts.notificationTypes;

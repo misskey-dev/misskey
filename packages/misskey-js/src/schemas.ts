@@ -33,6 +33,8 @@ import { packedFlashSchema } from './schemas/flash.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
 export const refs = {
+	Id: IdSchema,
+
 	UserLite: packedUserLiteSchema,
 	UserDetailedNotMeOnly: packedUserDetailedNotMeOnlySchema,
 	MeDetailedOnly: packedMeDetailedOnlySchema,
@@ -66,17 +68,7 @@ export const refs = {
 	Flash: packedFlashSchema,
 } as const satisfies { [x: string]: JSONSchema7Definition };
 
-type Refs = typeof refs[keyof typeof refs];
-
-export type References = [
-    typeof IdSchema,
-    ...UnionToArray<Refs>,
-];
+type References = GetRefs<typeof refs>;
 
 export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = GetDef<References, x, 'https://misskey-hub.net/api/schemas/'>;
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;
-
-export type PackedNote = Packed<'Note'>;
-export type PackedUser = Packed<'User'>;
-export type DefNote = Def<'https://misskey-hub.net/api/schemas/Note'>;
-let renote: PackedNote['reply'];

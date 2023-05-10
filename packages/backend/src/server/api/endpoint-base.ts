@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import Ajv from 'ajv';
-import type { Schema, SchemaType } from '@/misc/json-schema.js';
+import type { JSONSchema7, SchemaType } from 'schema-type';
 import type { LocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { ApiError } from './error.js';

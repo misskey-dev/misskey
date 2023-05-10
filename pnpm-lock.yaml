@@ -621,6 +621,9 @@ importers:
       jest-mock:
         specifier: 29.5.0
         version: 29.5.0
+      schema-type:
+        specifier: github:misskey-dev/schema-type
+        version: github.com/misskey-dev/schema-type/c771673a44d514658d4d5a4dd2c201b2294f225b(typescript@5.0.4)
 
   packages/frontend:
     dependencies:
@@ -18896,7 +18899,6 @@ packages:
       typescript: '>=4.1.0'
     dependencies:
       typescript: 5.0.4
-    dev: false
 
   /ts-map@1.0.3:
     resolution: {integrity: sha512-vDWbsl26LIcPGmDpoVzjEP6+hvHZkBkLW7JpvwbCv/5IYPJlsbzCVXY3wsCeAxAUeTclNOUZxnLdGh3VBD/J6w==}
@@ -20332,7 +20334,6 @@ packages:
       tsd: 0.28.1
     transitivePeerDependencies:
       - typescript
-    dev: false
 
   github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
     resolution: {tarball: https://codeload.github.com/misskey-dev/sharp-read-bmp/tar.gz/02d9dc189fa7df0c4bea09330be26741772dac01}

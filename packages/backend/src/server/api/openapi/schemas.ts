@@ -1,5 +1,5 @@
 import type { Schema } from '@/misc/json-schema.js';
-import { refs } from '@/misc/json-schema.js';
+import { refs } from 'misskey-js';
 
 export function convertSchemaToOpenApiSchema(schema: Schema) {
 	const res: any = schema;

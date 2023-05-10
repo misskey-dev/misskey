@@ -1,3 +1,6 @@
+export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
+
+
 import {
 	packedUserLiteSchema,
 	packedUserDetailedNotMeOnlySchema,
@@ -63,8 +66,6 @@ export const refs = {
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
 };
-
-export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;
 
 type TypeStringef = 'null' | 'boolean' | 'integer' | 'number' | 'string' | 'array' | 'object' | 'any';
 type StringDefToType<T extends TypeStringef> =
