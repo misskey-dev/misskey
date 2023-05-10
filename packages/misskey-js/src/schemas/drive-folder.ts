@@ -1,39 +1,43 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedDriveFolderSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/DriveFolder',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		foldersCount: {
 			type: 'number',
-			optional: true, nullable: false,
 		},
 		filesCount: {
 			type: 'number',
-			optional: true, nullable: false,
 		},
 		parentId: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'id',
-			example: 'xxxxxxxxxx',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/Id',
+			}, {
+				type: 'null',
+			}],
 		},
 		parent: {
-			type: 'object',
-			optional: true, nullable: true,
-			ref: 'DriveFolder',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+			}, {
+				type: 'null',
+			}],
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'name',
+		'parentId',
+	],
+} as const satisfies JSONSchema7Definition;
