@@ -1,36 +1,24 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedFollowingSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Following',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		followeeId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		followee: {
-			type: 'object',
-			optional: true, nullable: false,
-			ref: 'UserDetailed',
-		},
-		followerId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		follower: {
-			type: 'object',
-			optional: true, nullable: false,
-			ref: 'UserDetailed',
-		},
+		followeeId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		followee: { $ref: 'https://misskey-hub.net/api/schemas/UserDetailed' },
+		followerId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		follower: { $ref: 'https://misskey-hub.net/api/schemas/UserDetailed' },
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'followeeId',
+		'followerId',
+	],
+} as const satisfies JSONSchema7Definition;

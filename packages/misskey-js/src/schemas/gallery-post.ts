@@ -1,69 +1,53 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedGalleryPostSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/GalleryPost',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		updatedAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		title: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		description: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
-		userId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		user: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: false, nullable: false,
-		},
+		userId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		user: { $ref: 'https://misskey-hub.net/api/schemas/UserLite' },
 		fileIds: {
 			type: 'array',
-			optional: true, nullable: false,
-			items: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
 		files: {
 			type: 'array',
-			optional: true, nullable: false,
-			items: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'DriveFile',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/DriveFile' },
 		},
 		tags: {
 			type: 'array',
-			optional: true, nullable: false,
 			items: {
 				type: 'string',
-				optional: false, nullable: false,
 			},
 		},
 		isSensitive: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'updatedAt',
+		'title',
+		'description',
+		'userId',
+		'user',
+		'isSensitive',
+	],
+} as const satisfies JSONSchema7Definition;
