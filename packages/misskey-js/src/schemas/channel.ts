@@ -1,71 +1,81 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedChannelSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Channel',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		lastNotedAt: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'date-time',
+			oneOf: [{
+				type: 'string',
+				format: 'date-time',
+			}, {
+				type: 'null',
+			}],
 		},
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		description: {
-			type: 'string',
-			nullable: true, optional: false,
+			type: ['string', 'null'],
 		},
 		bannerUrl: {
-			type: 'string',
-			format: 'url',
-			nullable: true, optional: false,
+			oneOf: [{
+				type: 'string',
+				format: 'url',
+			}, {
+				type: 'null',
+			}],
 		},
 		isArchived: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 		notesCount: {
 			type: 'number',
-			nullable: false, optional: false,
 		},
 		usersCount: {
 			type: 'number',
-			nullable: false, optional: false,
 		},
 		isFollowing: {
 			type: 'boolean',
-			optional: true, nullable: false,
 		},
 		isFavorited: {
 			type: 'boolean',
-			optional: true, nullable: false,
 		},
 		userId: {
-			type: 'string',
-			nullable: true, optional: false,
-			format: 'id',
+			oneOf: [{
+				$ref: 'https://misskey-hub.net/api/schemas/Id',
+			}, {
+				type: 'null',
+			}],
 		},
 		pinnedNoteIds: {
 			type: 'array',
-			nullable: false, optional: false,
 			items: {
-				type: 'string',
-				format: 'id',
+				$ref: 'https://misskey-hub.net/api/schemas/Id',
 			},
 		},
 		color: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'lastNotedAt',
+		'name',
+		'description',
+		'bannerUrl',
+		'isArchived',
+		'notesCount',
+		'usersCount',
+		'userId',
+		'pinnedNoteIds',
+		'color',
+	],
+} as const satisfies JSONSchema7Definition;

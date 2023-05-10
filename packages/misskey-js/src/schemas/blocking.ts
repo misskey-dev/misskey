@@ -1,26 +1,22 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedBlockingSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Blocking',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		blockeeId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		blockee: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserDetailed',
-		},
+		blockeeId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		blockee: { $ref: 'https://misskey-hub.net/api/schemas/UserDetailed' },
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'blockeeId',
+		'blockee',
+	],
+} as const satisfies JSONSchema7Definition;

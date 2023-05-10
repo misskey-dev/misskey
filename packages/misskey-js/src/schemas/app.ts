@@ -1,33 +1,34 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedAppSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/App',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		callbackUrl: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		permission: {
 			type: 'array',
-			optional: false, nullable: false,
 			items: {
 				type: 'string',
-				optional: false, nullable: false,
 			},
 		},
 		secret: {
 			type: 'string',
-			optional: true, nullable: false,
 		},
 		isAuthorized: {
 			type: 'boolean',
-			optional: true, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'name',
+		'callbackUrl',
+		'permission',
+	],
+} as const satisfies JSONSchema7Definition;
