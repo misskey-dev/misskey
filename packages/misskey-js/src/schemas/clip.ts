@@ -1,51 +1,50 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedClipSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/Clip',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		lastClippedAt: {
-			type: 'string',
-			optional: false, nullable: true,
-			format: 'date-time',
+			oneOf: [{
+				type: 'string',
+				format: 'date-time',
+			}, {
+				type: 'null',
+			}],
 		},
-		userId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		user: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: false, nullable: false,
-		},
+		userId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		user: { $ref: 'https://misskey-hub.net/api/schemas/UserLite' },
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		description: {
-			type: 'string',
-			optional: false, nullable: true,
+			type: ['string', 'null'],
 		},
 		isPublic: {
 			type: 'boolean',
-			optional: false, nullable: false,
 		},
 		isFavorited: {
 			type: 'boolean',
-			optional: true, nullable: false,
 		},
 		favoritedCount: {
 			type: 'number',
-			optional: false, nullable: false,
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'lastClippedAt',
+		'userId',
+		'user',
+		'name',
+		'description',
+		'isPublic',
+		'favoritedCount',
+	],
+} as const satisfies JSONSchema7Definition;
