@@ -1,26 +1,22 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedRenoteMutingSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/RenoteMuting',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		muteeId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		mutee: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserDetailed',
-		},
+		muteeId: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		mutee: { $ref: 'https://misskey-hub.net/api/schemas/UserDetailed' },
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'muteeId',
+		'mutee',
+	],
+} as const satisfies JSONSchema7Definition;

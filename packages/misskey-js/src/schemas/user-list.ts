@@ -1,29 +1,26 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedUserListSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/UserList',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		createdAt: {
 			type: 'string',
-			optional: false, nullable: false,
 			format: 'date-time',
 		},
 		name: {
 			type: 'string',
-			optional: false, nullable: false,
 		},
 		userIds: {
 			type: 'array',
-			nullable: false, optional: true,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-				format: 'id',
-			},
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'createdAt',
+		'name',
+	],
+} as const satisfies JSONSchema7Definition;

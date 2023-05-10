@@ -1,267 +1,300 @@
+import type { JSONSchema7Definition } from 'schema-type';
+
 export const packedUserLiteSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/UserLite',
+
 	type: 'object',
 	properties: {
-		id: {
-			type: 'string',
-			nullable: false, optional: false,
-			format: 'id',
-			example: 'xxxxxxxxxx',
-		},
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		name: {
-			type: 'string',
-			nullable: true, optional: false,
-			example: '藍',
+			type: ['string', 'null'],
+			examples: '藍',
 		},
 		username: {
 			type: 'string',
-			nullable: false, optional: false,
-			example: 'ai',
+			examples: 'ai',
 		},
 		host: {
-			type: 'string',
-			nullable: true, optional: false,
-			example: 'misskey.example.com',
+			type: ['string', 'null'],
+			examples: 'misskey.example.com',
 			description: 'The local host is represented with `null`.',
 		},
 		avatarUrl: {
-			type: 'string',
-			format: 'url',
-			nullable: true, optional: false,
+			oneOf: [{
+				type: 'string',
+				format: 'url',
+			}, {
+				type: 'null',
+			}],
 		},
 		avatarBlurhash: {
-			type: 'string',
-			nullable: true, optional: false,
+			type: ['string', 'null'],
 		},
 		isAdmin: {
 			type: 'boolean',
-			nullable: false, optional: true,
 			default: false,
 		},
 		isModerator: {
 			type: 'boolean',
-			nullable: false, optional: true,
 			default: false,
 		},
 		isBot: {
 			type: 'boolean',
-			nullable: false, optional: true,
 		},
 		isCat: {
 			type: 'boolean',
-			nullable: false, optional: true,
 		},
 		onlineStatus: {
-			type: 'string',
-			format: 'url',
-			nullable: true, optional: false,
-			enum: ['unknown', 'online', 'active', 'offline'],
+			type: ['string', 'null'],
+			enum: ['unknown', 'online', 'active', 'offline', null],
 		},
 	},
-} as const;
+	required: [
+		'id',
+		'name',
+		'username',
+		'host',
+		'avatarUrl',
+		'avatarBlurhash',
+		'onlineStatus',
+	],
+} as const satisfies JSONSchema7Definition;
 
 export const packedUserDetailedNotMeOnlySchema = {
-	type: 'object',
-	properties: {
-		url: {
-			type: 'string',
-			format: 'url',
-			nullable: true, optional: false,
-		},
-		uri: {
-			type: 'string',
-			format: 'uri',
-			nullable: true, optional: false,
-		},
-		movedToUri: {
-			type: 'string',
-			format: 'uri',
-			nullable: true,
-			optional: false,
-		},
-		alsoKnownAs: {
-			type: 'array',
-			nullable: true,
-			optional: false,
-			items: {
-				type: 'string',
-				format: 'id',
-				nullable: false,
-				optional: false,
-			},
-		},
-		createdAt: {
-			type: 'string',
-			nullable: false, optional: false,
-			format: 'date-time',
-		},
-		updatedAt: {
-			type: 'string',
-			nullable: true, optional: false,
-			format: 'date-time',
-		},
-		lastFetchedAt: {
-			type: 'string',
-			nullable: true, optional: false,
-			format: 'date-time',
-		},
-		bannerUrl: {
-			type: 'string',
-			format: 'url',
-			nullable: true, optional: false,
-		},
-		bannerBlurhash: {
-			type: 'string',
-			nullable: true, optional: false,
-		},
-		isLocked: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		isSilenced: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		isSuspended: {
-			type: 'boolean',
-			nullable: false, optional: false,
-			example: false,
-		},
-		description: {
-			type: 'string',
-			nullable: true, optional: false,
-			example: 'Hi masters, I am Ai!',
-		},
-		location: {
-			type: 'string',
-			nullable: true, optional: false,
-		},
-		birthday: {
-			type: 'string',
-			nullable: true, optional: false,
-			example: '2018-03-12',
-		},
-		lang: {
-			type: 'string',
-			nullable: true, optional: false,
-			example: 'ja-JP',
-		},
-		fields: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'object',
-				nullable: false, optional: false,
-				properties: {
-					name: {
+	$id: 'https://misskey-hub.net/api/schemas/UserDetailedNotMeOnly',
+
+	oneOf: [{
+		$ref: '#/$defs/base',
+	}, {
+		allOf: [{ $ref: '#/$defs/base', }, { $ref: '#/$defs/relations' }],
+	}],
+	$defs: {
+		base: {
+			type: 'object',
+			properties: {
+				url: {
+					oneOf: [{
 						type: 'string',
-						nullable: false, optional: false,
-					},
-					value: {
+						format: 'url',
+					}, {
+						type: 'null',
+					}],
+				},
+				uri: {
+					oneOf: [{
 						type: 'string',
-						nullable: false, optional: false,
+						format: 'uri',
+					}, {
+						type: 'null',
+					}],
+				},
+				movedToUri: {
+					oneOf: [{
+						type: 'string',
+						format: 'uri',
+					}, {
+						type: 'null',
+					}],
+				},
+				alsoKnownAs: {
+					oneOf: [{
+						type: 'array',
+						items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+					}, {
+						type: 'null',
+					}],
+				},
+				createdAt: {
+					type: 'string',
+					format: 'date-time',
+				},
+				updatedAt: {
+					oneOf: [{
+						type: 'string',
+						format: 'date-time',
+					}, {
+						type: 'null',
+					}],
+				},
+				lastFetchedAt: {
+					oneOf: [{
+						type: 'string',
+						format: 'date-time',
+					}, {
+						type: 'null',
+					}],
+				},
+				bannerUrl: {
+					oneOf: [{
+						type: 'string',
+						format: 'url',
+					}, {
+						type: 'null',
+					}],
+				},
+				bannerBlurhash: {
+					type: ['string', 'null'],
+				},
+				isLocked: {
+					type: 'boolean',
+				},
+				isSilenced: {
+					type: 'boolean',
+				},
+				isSuspended: {
+					type: 'boolean',
+					examples: false,
+				},
+				description: {
+					type: ['string', 'null'],
+					examples: 'Hi masters, I am Ai!',
+				},
+				location: {
+					type: ['string', 'null'],
+				},
+				birthday: {
+					type: ['string', 'null'],
+					examples: '2018-03-12',
+				},
+				lang: {
+					type: ['string', 'null'],
+					examples: 'ja-JP',
+				},
+				fields: {
+					type: 'array',
+					maxLength: 4,
+					items: {
+						type: 'object',
+						properties: {
+							name: {
+								type: 'string',
+							},
+							value: {
+								type: 'string',
+							},
+						},
+						required: ['name', 'value'],
 					},
 				},
-				maxLength: 4,
+				followersCount: {
+					type: 'number',
+				},
+				followingCount: {
+					type: 'number',
+				},
+				notesCount: {
+					type: 'number',
+				},
+				pinnedNoteIds: {
+					type: 'array',
+					items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+				},
+				pinnedNotes: {
+					type: 'array',
+					items: { $ref: 'https://misskey-hub.net/api/schemas/Note' },
+				},
+				pinnedPageId: {
+					type: ['string', 'null'],
+				},
+				pinnedPage: {
+					oneOf: [{
+						$ref: 'https://misskey-hub.net/api/schemas/Page',
+					}, {
+						type: 'null',
+					}],
+				},
+				publicReactions: {
+					type: 'boolean',
+				},
+				twoFactorEnabled: {
+					type: 'boolean',
+					default: false,
+				},
+				usePasswordLessLogin: {
+					type: 'boolean',
+					default: false,
+				},
+				securityKeys: {
+					type: 'boolean',
+					default: false,
+				},
 			},
+			required: [
+				'url',
+				'uri',
+				'movedToUri',
+				'alsoKnownAs',
+				'createdAt',
+				'updatedAt',
+				'lastFetchedAt',
+				'bannerUrl',
+				'bannerBlurhash',
+				'isLocked',
+				'isSilenced',
+				'isSuspended',
+				'description',
+				'location',
+				'birthday',
+				'lang',
+				'fields',
+				'followersCount',
+				'followingCount',
+				'notesCount',
+				'pinnedNoteIds',
+				'pinnedNotes',
+				'pinnedPageId',
+				'pinnedPage',
+				'publicReactions',
+				'twoFactorEnabled',
+				'usePasswordLessLogin',
+				'securityKeys',
+			],
 		},
-		followersCount: {
-			type: 'number',
-			nullable: false, optional: false,
-		},
-		followingCount: {
-			type: 'number',
-			nullable: false, optional: false,
-		},
-		notesCount: {
-			type: 'number',
-			nullable: false, optional: false,
-		},
-		pinnedNoteIds: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'string',
-				nullable: false, optional: false,
-				format: 'id',
-			},
-		},
-		pinnedNotes: {
-			type: 'array',
-			nullable: false, optional: false,
-			items: {
-				type: 'object',
-				nullable: false, optional: false,
-				ref: 'Note',
-			},
-		},
-		pinnedPageId: {
-			type: 'string',
-			nullable: true, optional: false,
-		},
-		pinnedPage: {
+		relations: {
 			type: 'object',
-			nullable: true, optional: false,
-			ref: 'Page',
+			properties: {
+				isFollowing: {
+					type: 'boolean',
+				},
+				isFollowed: {
+					type: 'boolean',
+				},
+				hasPendingFollowRequestFromYou: {
+					type: 'boolean',
+				},
+				hasPendingFollowRequestToYou: {
+					type: 'boolean',
+				},
+				isBlocking: {
+					type: 'boolean',
+				},
+				isBlocked: {
+					type: 'boolean',
+				},
+				isMuted: {
+					type: 'boolean',
+				},
+				isRenoteMuted: {
+					type: 'boolean',
+				},
+				memo: {
+					type: 'string',
+				},
+			},
+			required: [
+				'isFollowing',
+				'isFollowed',
+				'hasPendingFollowRequestFromYou',
+				'hasPendingFollowRequestToYou',
+				'isBlocking',
+				'isBlocked',
+				'isMuted',
+				'isRenoteMuted',
+				'memo',
+			],
 		},
-		publicReactions: {
-			type: 'boolean',
-			nullable: false, optional: false,
-		},
-		twoFactorEnabled: {
-			type: 'boolean',
-			nullable: false, optional: false,
-			default: false,
-		},
-		usePasswordLessLogin: {
-			type: 'boolean',
-			nullable: false, optional: false,
-			default: false,
-		},
-		securityKeys: {
-			type: 'boolean',
-			nullable: false, optional: false,
-			default: false,
-		},
-		//#region relations
-		isFollowing: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		isFollowed: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		hasPendingFollowRequestFromYou: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		hasPendingFollowRequestToYou: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		isBlocking: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		isBlocked: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		isMuted: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		isRenoteMuted: {
-			type: 'boolean',
-			nullable: false, optional: true,
-		},
-		memo: {
-			type: 'string',
-			nullable: false, optional: true,
-		},
-		//#endregion
 	},
-} as const;
+} as const satisfies JSONSchema7Definition;
 
 export const packedMeDetailedOnlySchema = {
 	type: 'object',
