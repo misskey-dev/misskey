@@ -13,7 +13,7 @@ class LocalTimelineChannel extends Channel {
 	public readonly chName = 'localTimeline';
 	public static shouldShare = true;
 	public static requireCredential = false;
-	private tags: string[][] = [['delmulin']];
+	private q: string[][] = [['delmulin']];
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -39,7 +39,7 @@ class LocalTimelineChannel extends Channel {
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		const noteTags = note.tags ? note.tags.map((t: string) => t.toLowerCase()) : [];
-		const matched = this.tags.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
+		const matched = this.q.some(tags => tags.every(tag => noteTags.includes(normalizeForSearch(tag))));
 		if (!matched) return;
 
 		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
