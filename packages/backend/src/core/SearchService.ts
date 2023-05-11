@@ -82,6 +82,7 @@ export class SearchService {
 					'userId',
 					'userHost',
 					'channelId',
+					'tags',
 				],
 				typoTolerance: {
 					enabled: false,
@@ -107,6 +108,7 @@ export class SearchService {
 				channelId: note.channelId,
 				cw: note.cw,
 				text: note.text,
+				tags: note.tags,
 			}], {
 				primaryKey: 'id',
 			});
