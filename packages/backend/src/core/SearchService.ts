@@ -68,7 +68,7 @@ export class SearchService {
 		private idService: IdService,
 	) {
 		if (meilisearch) {
-			this.meilisearchNoteIndex = meilisearch.index('notes');
+			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
 			this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
