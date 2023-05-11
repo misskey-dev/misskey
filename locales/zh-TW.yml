@@ -1039,8 +1039,6 @@ thisChannelArchived: "這個頻道已被封存。"
 displayOfNote: "顯示貼文"
 initialAccountSetting: "初始設定"
 youFollowing: "追隨中"
-preventAiLarning: "拒絕AI學習"
-preventAiLarningDescription: "要求AI不以發布的貼文和圖像等內容為學習對象。這是透過在HTML響應中包含noai旗標來實現的。這是實驗性的功能，並不能完全防止AI的學習。"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
