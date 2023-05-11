@@ -1041,6 +1041,8 @@ initialAccountSetting: "Kontoeinrichtung"
 youFollowing: "Gefolgt"
 preventAiLearning: "Verwendung in machinellem Lernen (Generative bzw. Prediktive AI/KI) ablehnen"
 preventAiLearningDescription: "Fordert Crawler auf, gepostetes Text- oder Bildmaterial usw. nicht in Datensätzen für maschinelles Lernen (Generative bzw. Prediktive AI/KI) zu verwenden. Dies wird durch das Hinzufügen einer \"noai\"-Flag in der HTML-Antwort des jeweiligen Inhalts erreicht. Da diese Flag jedoch ignoriert werden kann, ist eine vollständige Verhinderung hierdurch nicht möglich."
+options: "Optionen"
+specifyUser: "Spezifischer Benutzer"
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
   letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
