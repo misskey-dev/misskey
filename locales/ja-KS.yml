@@ -1038,6 +1038,7 @@ thisChannelArchived: "このチャンネル、アーカイブされとるで。"
 displayOfNote: "ノートの表示"
 initialAccountSetting: "初期設定"
 youFollowing: "フォロー中やで"
+options: "オプション"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsFillYourProfile: "最初はあんたのプロフィールを設定しよか。"
