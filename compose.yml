@@ -6,6 +6,7 @@ services:
     links:
       - redis
       - db
+      # - meilisearch
       # - es
     depends_on:
       redis:
@@ -46,6 +47,19 @@ services:
       test: "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"
       interval: 5s
       retries: 20
+
+  # meilisearch:
+  #   restart: always
+  #   image: getmeili/meilisearch:v1.1.1
+  #   environment:
+  #     - MEILI_NO_ANALYTICS=true
+  #     - MEILI_ENV=production
+  #   env_file:
+  #     - .config/meilisearch.env
+  #   networks:
+  #     - internal_network
+  #   volumes:
+  #     - meili_data:/meili_data
 
   # tunnel:
   #   image: cloudflare/cloudflared:2023.2.1
@@ -108,3 +122,4 @@ networks:
 volumes:
   postgres:
   redis:
+  # meili_data:
