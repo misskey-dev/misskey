@@ -25,8 +25,8 @@
 		<template #caption>{{ i18n.ts.noCrawleDescription }}</template>
 	</MkSwitch>
 	<MkSwitch v-model="preventAiLarning" @update:model-value="save()">
-		{{ i18n.ts.preventAiLarning }}<span class="_beta">{{ i18n.ts.beta }}</span>
-		<template #caption>{{ i18n.ts.preventAiLarningDescription }}</template>
+		{{ i18n.ts.preventAiLearning }}<span class="_beta">{{ i18n.ts.beta }}</span>
+		<template #caption>{{ i18n.ts.preventAiLearningDescription }}</template>
 	</MkSwitch>
 	<MkSwitch v-model="isExplorable" @update:model-value="save()">
 		{{ i18n.ts.makeExplorable }}

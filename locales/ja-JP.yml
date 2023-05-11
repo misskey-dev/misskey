@@ -1039,8 +1039,8 @@ thisChannelArchived: "このチャンネルはアーカイブされています�
 displayOfNote: "ノートの表示"
 initialAccountSetting: "初期設定"
 youFollowing: "フォロー中"
-preventAiLarning: "AIによる学習を拒否"
-preventAiLarningDescription: "投稿したノートや画像などのコンテンツを学習の対象にしないようAIに要求します。これはnoaiフラグをHTMLレスポンスに含めることによって実現されます。この機能は実験的であり、AIによる学習を完全に防止するものではありません。"
+preventAiLearning: "生成AIによる学習を拒否"
+preventAiLearningDescription: "外部の文章生成AIや画像生成AIに対して、投稿したノートや画像などのコンテンツを学習の対象にしないように要求します。これはnoaiフラグをHTMLレスポンスに含めることによって実現されますが、この要求に従うかはそのAI次第であるため、学習を完全に防止するものではありません。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
