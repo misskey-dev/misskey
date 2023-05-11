@@ -1020,6 +1020,7 @@ pleaseConfirmBelowBeforeSignup: "Ai sensi del regolamento EU 679/2016 GDPR, auto
 pleaseAgreeAllToContinue: "Per continuare, occorre selezionare ed essere d'accordo su tutto."
 continue: "Continua"
 youFollowing: "Seguiti"
+options: "Opzioni del ruolo"
 _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
 _accountMigration:
