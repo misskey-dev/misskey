@@ -1006,6 +1006,7 @@ videos: "Видео"
 dataSaver: "Экономия трафика"
 horizontal: "Сбоку"
 youFollowing: "Подписки"
+options: "Настройки ролей"
 _achievements:
   earnedAt: "Разблокировано в"
   _types:

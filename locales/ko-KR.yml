@@ -1038,6 +1038,7 @@ thisChannelArchived: "이 채널은 아카이브되었습니다."
 displayOfNote: "노트 표시"
 initialAccountSetting: "초기 설정"
 youFollowing: "팔로잉"
+options: "옵션"
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."

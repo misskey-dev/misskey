@@ -1030,6 +1030,7 @@ continue: "继续"
 preservedUsernames: "保留的用户名"
 createNoteFromTheFile: "从文件创建帖子"
 youFollowing: "正在关注"
+options: "选项"
 _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
 _accountMigration:
