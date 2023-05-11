@@ -1048,6 +1048,7 @@ _initialAccountSetting:
   letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
   letsFillYourProfile: "Lass uns zuerst dein Profil einrichten."
   profileSetting: "Profileinstellungen"
+  privacySetting: "Privatsphäreneinstellungen"
   theseSettingsCanEditLater: "Diese Einstellungen kannst du jederzeit ändern."
   youCanEditMoreSettingsInSettingsPageLater: "In den Einstellungen findest du noch viele weitere Optionen. Schau dort später mal vorbei."
   followUsers: "Folge zuerst ein paar Nutzern, um deine Chronik zu füllen."
