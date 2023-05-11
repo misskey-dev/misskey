@@ -37,8 +37,8 @@ let hideOnlineStatus = ref(false);
 let noCrawle = ref(false);
 let preventAiLearning = ref(true);
 
-watch(isLocked, () => {
-	os.apiWithDialog('i/update', {
+watch([isLocked, hideOnlineStatus, noCrawle, preventAiLearning], () => {
+	os.api('i/update', {
 		isLocked: !!isLocked.value,
 		hideOnlineStatus: !!hideOnlineStatus.value,
 		noCrawle: !!noCrawle.value,
