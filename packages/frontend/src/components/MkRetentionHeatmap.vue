@@ -40,7 +40,7 @@ async function renderChart() {
 
 	let raw = await os.api('retention', { });
 
-	raw = raw.slice(0, maxDays);
+	raw = raw.slice(0, maxDays + 1);
 
 	const data = [];
 	for (const record of raw) {
