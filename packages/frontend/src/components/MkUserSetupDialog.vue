@@ -57,8 +57,10 @@
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<XFollow/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
 					</MkSpacer>
+					<div :class="$style.pageFooter">
+						<MkButton primary rounded gradate style="margin: 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					</div>
 				</div>
 			</template>
 			<template v-else-if="page === 4">
@@ -173,5 +175,15 @@ async function close(skip: boolean) {
 	height: 100cqh;
 	padding-bottom: 30px;
 	box-sizing: border-box;
+}
+
+.pageFooter {
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	padding: 12px;
+	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
 }
 </style>
