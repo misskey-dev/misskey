@@ -35,6 +35,7 @@ function getClient(): AuthorizationCode<'client_id'> {
 	return new AuthorizationCode({
 		client: {
 			id: `http://127.0.0.1:${clientPort}/`,
+			secret: '',
 		},
 		auth: {
 			tokenHost: host,
@@ -113,7 +114,7 @@ describe('OAuth', () => {
 	});
 
 	test('Full flow', async () => {
-		const { code_challenge, code_verifier } = pkceChallenge.default(128);
+		const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 		const client = getClient();
 
@@ -168,8 +169,8 @@ describe('OAuth', () => {
 	test('Two concurrent flows', async () => {
 		const client = getClient();
 
-		const pkceAlice = pkceChallenge.default(128);
-		const pkceBob = pkceChallenge.default(128);
+		const pkceAlice = await pkceChallenge(128);
+		const pkceBob = await pkceChallenge(128);
 
 		const responseAlice = await fetch(client.authorizeURL({
 			redirect_uri,
@@ -285,8 +286,9 @@ describe('OAuth', () => {
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
+		// TODO: Use precomputed challenge/verifier set for this one for deterministic test
 		test('Verify PKCE', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 
@@ -405,7 +407,7 @@ describe('OAuth', () => {
 		});
 
 		test('Partially known scopes', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 
@@ -455,7 +457,7 @@ describe('OAuth', () => {
 		});
 
 		test('Duplicated scopes', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 
@@ -487,7 +489,7 @@ describe('OAuth', () => {
 		});
 
 		test('Scope check by API', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 
@@ -527,7 +529,7 @@ describe('OAuth', () => {
 	});
 
 	test('Authorization header', async () => {
-		const { code_challenge, code_verifier } = pkceChallenge.default(128);
+		const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 		const client = getClient();
 
@@ -624,7 +626,7 @@ describe('OAuth', () => {
 		});
 
 		test('Invalid redirect_uri at token endpoint', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 
@@ -651,7 +653,7 @@ describe('OAuth', () => {
 		});
 
 		test('Invalid redirect_uri including the valid one at token endpoint', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 
@@ -678,7 +680,7 @@ describe('OAuth', () => {
 		});
 
 		test('No redirect_uri at token endpoint', async () => {
-			const { code_challenge, code_verifier } = pkceChallenge.default(128);
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
 			const client = getClient();
 

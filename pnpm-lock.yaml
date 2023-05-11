@@ -300,8 +300,8 @@ importers:
         specifier: 8.11.0
         version: 8.11.0
       pkce-challenge:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^4.0.1
+        version: 4.0.1
       probe-image-size:
         specifier: 7.2.3
         version: 7.2.3
@@ -7722,7 +7722,7 @@ packages:
   /@types/http-link-header@1.0.3:
     resolution: {integrity: sha512-y8HkoD/vyid+5MrJ3aas0FvU3/BVBGcyG9kgxL0Zn4JwstA8CglFPnrR0RuzOjRCXwqzL5uxWC2IO7Ub0rMU2A==}
     dependencies:
-      '@types/node': 20.2.5
+      '@types/node': 20.3.1
     dev: true
 
   /@types/istanbul-lib-coverage@2.0.4:
@@ -10659,10 +10659,6 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-
-  /crypto-js@4.1.1:
-    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
-    dev: false
 
   /crypto-random-string@2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -17156,10 +17152,9 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /pkce-challenge@3.1.0:
-    resolution: {integrity: sha512-bQ/0XPZZ7eX+cdAkd61uYWpfMhakH3NeteUF1R8GNa+LMqX8QFAkbCLqq+AYAns1/ueACBu/BMWhrlKGrdvGZg==}
-    dependencies:
-      crypto-js: 4.1.1
+  /pkce-challenge@4.0.1:
+    resolution: {integrity: sha512-WGmtS1stcStsvRwNXix3iR1ujFcDaJR+sEODRa2ZFruT0lM4lhPAFTL5SUpqD5vTJdRlgtuMQhcp1kIEJx4LUw==}
+    engines: {node: '>=16.20.0'}
     dev: false
 
   /pkg-dir@3.0.0:
