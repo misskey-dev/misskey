@@ -145,6 +145,7 @@ describe('ユーザー', () => {
 			carefulBot: user.carefulBot,
 			autoAcceptFollowed: user.autoAcceptFollowed,
 			noCrawle: user.noCrawle,
+			preventAiLearning: user.preventAiLearning,
 			isExplorable: user.isExplorable,
 			isDeleted: user.isDeleted,
 			hideOnlineStatus: user.hideOnlineStatus,
@@ -370,7 +371,7 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.pinnedNotes, []);
 		assert.strictEqual(response.pinnedPageId, null);
 		assert.strictEqual(response.pinnedPage, null);
-		assert.strictEqual(response.publicReactions, false);
+		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.ffVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
@@ -390,6 +391,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.carefulBot, false);
 		assert.strictEqual(response.autoAcceptFollowed, true);
 		assert.strictEqual(response.noCrawle, false);
+		assert.strictEqual(response.preventAiLearning, true);
 		assert.strictEqual(response.isExplorable, true);
 		assert.strictEqual(response.isDeleted, false);
 		assert.strictEqual(response.hideOnlineStatus, false);
@@ -462,6 +464,8 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ autoAcceptFollowed: false }) },
 		{ parameters: (): object => ({ noCrawle: true }) },
 		{ parameters: (): object => ({ noCrawle: false }) },
+		{ parameters: (): object => ({ preventAiLearning: false }) },
+		{ parameters: (): object => ({ preventAiLearning: true }) },
 		{ parameters: (): object => ({ isBot: true }) },
 		{ parameters: (): object => ({ isBot: false }) },
 		{ parameters: (): object => ({ isCat: true }) },

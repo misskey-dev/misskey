@@ -1038,6 +1038,7 @@ thisChannelArchived: "이 채널은 아카이브되었습니다."
 displayOfNote: "노트 표시"
 initialAccountSetting: "초기 설정"
 youFollowing: "팔로잉"
+options: "옵션"
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."
@@ -1240,6 +1241,7 @@ _achievements:
       title: "잠깐 쉬어"
       description: "클라이언트를 시작하고 30분이 경과하였습니다"
     _client60min:
+      title: "No \"Miss\" in Misskey"
       description: "클라이언트를 시작하고 60분이 경과하였습니다"
     _noteDeletedWithin1min:
       title: "있었는데요 없었습니다"

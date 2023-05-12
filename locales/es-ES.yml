@@ -993,6 +993,7 @@ accountMigration: "Migración de cuenta"
 accountMoved: "Este usuario se ha mudado a una nueva cuenta:"
 horizontal: "Horizontal"
 youFollowing: "Siguiendo"
+options: "Opción"
 _accountMigration:
   moveFrom: "Trasladar de otra cuenta a ésta"
   moveFromLabel: "Cuenta desde la que se realiza el traslado:"
