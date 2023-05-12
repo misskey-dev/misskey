@@ -37,7 +37,7 @@ async function choose() {
 		file = fileResponse[0];
 		emit('update:modelValue', {
 			...props.modelValue,
-			fileId: fileResponse.id,
+			fileId: file.id,
 		});
 	});
 }
