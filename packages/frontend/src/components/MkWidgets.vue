@@ -32,6 +32,7 @@
 	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
+
 <script lang="ts">
 export type Widget = {
 	name: string;
@@ -42,6 +43,7 @@ export type DefaultStoredWidget = {
 	place: string | null;
 } & Widget;
 </script>
+
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import { v4 as uuid } from 'uuid';

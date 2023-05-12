@@ -98,7 +98,7 @@ export const meta = {
 			message: 'This feature is restricted by your role.',
 			code: 'RESTRICTED_BY_ROLE',
 			id: '8feff0ba-5ab5-585b-31f4-4df816663fad',
-		}
+		},
 	},
 
 	res: {
@@ -138,6 +138,7 @@ export const paramDef = {
 		carefulBot: { type: 'boolean' },
 		autoAcceptFollowed: { type: 'boolean' },
 		noCrawle: { type: 'boolean' },
+		preventAiLearning: { type: 'boolean' },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
 		showTimelineReplies: { type: 'boolean' },
@@ -242,6 +243,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
+			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
