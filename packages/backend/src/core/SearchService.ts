@@ -68,7 +68,7 @@ export class SearchService {
 		private idService: IdService,
 	) {
 		if (meilisearch) {
-			this.meilisearchNoteIndex = meilisearch.index('notes');
+			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
 			this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
@@ -82,6 +82,7 @@ export class SearchService {
 					'userId',
 					'userHost',
 					'channelId',
+					'tags',
 				],
 				typoTolerance: {
 					enabled: false,
@@ -107,6 +108,7 @@ export class SearchService {
 				channelId: note.channelId,
 				cw: note.cw,
 				text: note.text,
+				tags: note.tags,
 			}], {
 				primaryKey: 'id',
 			});

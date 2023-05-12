@@ -304,7 +304,7 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
-		preventAiLarning: {
+		preventAiLearning: {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},

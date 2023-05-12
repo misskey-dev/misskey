@@ -278,6 +278,7 @@ video: "Video"
 videos: "Videoer"
 continue: "Fortsett"
 youFollowing: "Følger"
+options: "Alternativ"
 _initialAccountSetting:
   theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
