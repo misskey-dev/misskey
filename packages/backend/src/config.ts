@@ -62,6 +62,7 @@ export type Source = {
 		port: string;
 		apiKey: string;
 		ssl?: boolean;
+		index: string;
 	};
 
 	proxy?: string;
