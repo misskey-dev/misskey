@@ -477,6 +477,7 @@ export const packedUserDetailedSchema = {
 	}],
 } as const satisfies JSONSchema7Definition;
 
+// NOTE: 極力この型を使うのは避け、UserLite か UserDetailed か明示するように
 export const packedUserSchema = {
 	$id: 'https://misskey-hub.net/api/schemas/User',
 

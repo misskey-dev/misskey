@@ -159,4 +159,74 @@ export const endpoints = {
             res: undefined,
         }],
     },
+	"admin/ad/create": {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					url: { type: 'string', minLength: 1 },
+					memo: { type: 'string' },
+					place: { type: 'string' },
+					priority: { type: 'string' },
+					ratio: { type: 'integer' },
+					expiresAt: { type: 'integer' },
+					startsAt: { type: 'integer' },
+					imageUrl: { type: 'string', minLength: 1 },
+				},
+				required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt', 'imageUrl'],
+			},
+			res: undefined,
+		}]
+	},
+	"admin/ad/delete": {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		errors: {
+			noSuchAd: {
+				message: 'No such ad.',
+				code: 'NO_SUCH_AD',
+				id: 'ccac9863-3a03-416e-b899-8a64041118b1',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					id: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['id'],
+			},
+			res: undefined,
+		}],
+	},
+	"admin/ad/list": {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
