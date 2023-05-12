@@ -1,6 +1,6 @@
 <template>
-<div class="lzyxtsnt">
-	<ImgWithBlurhash v-if="image" :hash="image.blurhash" :src="image.url" :alt="image.comment" :title="image.comment" :cover="false"/>
+<div>
+	<ImgWithBlurhash v-if="image" style="max-width: 100%;" :hash="image.blurhash" :src="image.url" :alt="image.comment" :title="image.comment" :width="image.properties.width" :height="image.properties.height" :cover="false"/>
 </div>
 </template>
 
@@ -17,11 +17,3 @@ const props = defineProps<{
 
 const image = props.hpml.page.attachedFiles.find(x => x.id === props.block.fileId);
 </script>
-
-<style lang="scss" scoped>
-.lzyxtsnt {
-	> img {
-		max-width: 100%;
-	}
-}
-</style>
