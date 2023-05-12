@@ -3,7 +3,7 @@
 	<MkSpacer :content-max="700">
 		<div class="xmbcjiokr">
 			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
-				<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
+				<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/list/${ list.id }`">
 					<div class="name">{{ list.name }}</div>
 					<MkAvatars :user-ids="list.userIds"/>
 				</MkA>

@@ -321,6 +321,7 @@ import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
 import * as ep___users_lists_public_list from './endpoints/users/lists/public-list.js';
+import * as ep___users_lists_public_show from './endpoints/users/lists/public-show.js';
 import * as ep___users_lists_setting_visibility from './endpoints/users/lists/setting-visibility.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
@@ -660,6 +661,7 @@ const eps = [
 	['users/lists/show', ep___users_lists_show],
 	['users/lists/update', ep___users_lists_update],
 	['users/lists/public-list', ep___users_lists_public_list],
+	['users/lists/public-show', ep___users_lists_public_show],
 	['users/lists/change-visibility', ep___users_lists_setting_visibility],
 	['users/notes', ep___users_notes],
 	['users/pages', ep___users_pages],

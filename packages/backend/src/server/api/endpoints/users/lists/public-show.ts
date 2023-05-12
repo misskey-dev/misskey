@@ -6,23 +6,18 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
-	tags: ['lists'],
-
-	requireCredential: true,
-
-	kind: 'write:account',
-	
+	tags: ['lists', 'account'],
+	requireCredential: false,
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
 		ref: 'UserList',
 	},
-
 	errors: {
 		noSuchList: {
 			message: 'No such list.',
 			code: 'NO_SUCH_LIST',
-			id: '796666fe-3dff-4d39-becb-8a5932c1d5b7',
+			id: '7bc05c21-1d7a-41ae-88f1-66820f4dc686',
 		},
 	},
 } as const;
@@ -47,18 +42,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Fetch the list
 			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
-				userId: me.id,
+				isPublic: true,
 			});
 
 			if (userList == null) {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			await this.userListsRepository.update(userList.id, {
-				isPublic: !userList.isPublic,
-			});
-
-			return await this.userListEntityService.pack(userList.id);
+			return await this.userListEntityService.pack(userList);
 		});
 	}
 }
