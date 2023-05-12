@@ -6,11 +6,11 @@
 			<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
-				{{ i18n.ts.somethingHappened }}
+				{{ i18n.ts.nothing }}
 			</p>
 		</div>
 	</MKSpacer>
-	<MkSpacer :content-max="700" :class="$style.main">
+	<MkSpacer v-else-if="list" :content-max="700" :class="$style.main">
 		<div v-if="list" class="members _margin">
 			<div :class="$style.member_text">{{ i18n.ts.members }}</div>
 			<div class="_gaps_s">
@@ -21,6 +21,9 @@
 				</div>
 			</div>
 		</div>
+		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" as-like primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" as-like @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
+		<MkButton inline><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -31,6 +34,7 @@ import * as os from '@/os';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 const props = defineProps<{
@@ -53,6 +57,24 @@ function fetchList(): void {
 		});
 	}).catch(err => {
 		error = err;
+	});
+}
+
+function like() {
+	os.apiWithDialog('users/lists/favorite', {
+		listId: list.id,
+	}).then(() => {
+		list.isLiked = true;
+		list.likedCount++;
+	});
+}
+
+function unlike() {
+	os.apiWithDialog('users/lists/unfavorite', {
+		listId: list.id,
+	}).then(() => {
+		list.isLiked = false;
+		list.likedCount--;
 	});
 }
 
@@ -105,5 +127,13 @@ definePageMetadata(computed(() => list ? {
 	height: 128px;
 	margin-bottom: 16px;
 	border-radius: 16px;
+}
+
+.button {
+	margin-right: 10px;
+}
+
+.import {
+	margin-right: 4px;
 }
 </style>

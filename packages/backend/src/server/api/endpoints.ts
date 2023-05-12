@@ -320,6 +320,8 @@ import * as ep___users_lists_list from './endpoints/users/lists/list.js';
 import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
+import * as ep___users_lists_favorite from './endpoints/users/lists/favorite.js';
+import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite.js';
 import * as ep___users_lists_public_list from './endpoints/users/lists/public-list.js';
 import * as ep___users_lists_public_show from './endpoints/users/lists/public-show.js';
 import * as ep___users_lists_setting_visibility from './endpoints/users/lists/setting-visibility.js';
@@ -659,6 +661,8 @@ const eps = [
 	['users/lists/pull', ep___users_lists_pull],
 	['users/lists/push', ep___users_lists_push],
 	['users/lists/show', ep___users_lists_show],
+	['users/lists/favorite', ep___users_lists_favorite],
+	['users/lists/unfavorite', ep___users_lists_unfavorite],
 	['users/lists/update', ep___users_lists_update],
 	['users/lists/public-list', ep___users_lists_public_list],
 	['users/lists/public-show', ep___users_lists_public_show],

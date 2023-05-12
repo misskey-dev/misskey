@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository } from '@/models/index.js';
+import type { UserListFavoritesRepository, UserListsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -17,7 +17,7 @@ export const meta = {
 		noSuchList: {
 			message: 'No such list.',
 			code: 'NO_SUCH_LIST',
-			id: '7bc05c21-1d7a-41ae-88f1-66820f4dc686',
+			id: 'ad13e08a-6786-4b98-9f40-741e36654dd5',
 		},
 	},
 } as const;
@@ -36,9 +36,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
 
+		@Inject(DI.userListFavoritesRepository)
+		private userListFavoritesRepository: UserListFavoritesRepository,
+
 		private userListEntityService: UserListEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(meta, paramDef, async (ps, me) => { 
+			let like: boolean;
 			// Fetch the list
 			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
@@ -49,7 +53,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			return await this.userListEntityService.pack(userList);
+			const likedCount = await this.userListFavoritesRepository.findBy({
+				userListId: ps.listId,
+			});
+
+			if (me !== null) {
+				like = (await this.userListFavoritesRepository.findOneBy({
+					userId: me.id,
+					userListId: ps.listId,
+				}) !== null);
+			} else {
+				like = false;
+			}
+
+			return {
+				...await this.userListEntityService.pack(userList),
+				isLiked: like,
+				likedCount: likedCount.length,
+			};
 		});
 	}
 }
