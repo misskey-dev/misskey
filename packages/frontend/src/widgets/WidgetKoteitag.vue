@@ -114,7 +114,7 @@ const setPrograms = async () => {
 			if (program.subtitle) {commandToot.push(`  - ${program.subtitle}`)};
 			if (program.air) {commandToot.push('  - エア番組')};
 			if (program.livecure) {commandToot.push('  - 実況')};
-			if (program.extra_tags) {program.extra_tags.map(t => commantToot.push(`  - ${t}`))};
+			if (program.extra_tags) {program.extra_tags.map(t => commandToot.push(`  - ${t}`))};
 			if (program.minutes) {commandToot.push(`  minutes: ${program.minutes}`)};
 			break;
 	}
