@@ -320,6 +320,8 @@ import * as ep___users_lists_list from './endpoints/users/lists/list.js';
 import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
+import * as ep___users_lists_public_list from './endpoints/users/lists/public-list.js';
+import * as ep___users_lists_setting_visibility from './endpoints/users/lists/setting-visibility.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
@@ -659,6 +661,8 @@ const $users_lists_pull: Provider = { provide: 'ep:users/lists/pull', useClass: 
 const $users_lists_push: Provider = { provide: 'ep:users/lists/push', useClass: ep___users_lists_push.default };
 const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: ep___users_lists_show.default };
 const $users_lists_update: Provider = { provide: 'ep:users/lists/update', useClass: ep___users_lists_update.default };
+const $users_lists_public_list: Provider = { provide: 'ep:users/lists/public-list', useClass: ep___users_lists_public_list.default };
+const $users_lists_setting_visibility: Provider = { provide: 'ep:users/lists/change-visibility', useClass: ep___users_lists_setting_visibility.default };
 const $users_notes: Provider = { provide: 'ep:users/notes', useClass: ep___users_notes.default };
 const $users_pages: Provider = { provide: 'ep:users/pages', useClass: ep___users_pages.default };
 const $users_reactions: Provider = { provide: 'ep:users/reactions', useClass: ep___users_reactions.default };
@@ -1001,6 +1005,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_push,
 		$users_lists_show,
 		$users_lists_update,
+		$users_lists_public_list,
+		$users_lists_setting_visibility,
 		$users_notes,
 		$users_pages,
 		$users_reactions,
@@ -1335,6 +1341,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_push,
 		$users_lists_show,
 		$users_lists_update,
+		$users_lists_public_list,
+		$users_lists_setting_visibility,
 		$users_notes,
 		$users_pages,
 		$users_reactions,

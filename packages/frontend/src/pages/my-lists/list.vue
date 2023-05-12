@@ -15,11 +15,12 @@
 		</div>
 	</MkSpacer>
 	<template #footer>
-		<div :class="$style.footer">
+		<div v-if="list" :class="$style.footer">
 			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
 				<div class="_buttons">
 					<MkButton inline rounded primary @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
 					<MkButton inline rounded @click="renameList()">{{ i18n.ts.rename }}</MkButton>
+					<MkButton inline rounded @click="changeVisibility()">{{ list.isPublic ? i18n.ts._userList.private : i18n.ts._userList.public}}</MkButton>
 					<MkButton inline rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
 				</div>
 			</MkSpacer>
@@ -115,6 +116,19 @@ async function deleteList() {
 	});
 	userListsCache.delete();
 	mainRouter.push('/my/lists');
+}
+
+async function changeVisibility() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		text: list.isPublic ? i18n.ts._userList.privateWarn : i18n.ts._userList.publicWarn,
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('users/lists/change-visibility', {
+		listId: list.id,
+	});
+	location.reload();
 }
 
 watch(() => props.listId, fetchList, { immediate: true });
