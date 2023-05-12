@@ -40,10 +40,6 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import MkPagination from '@/components/MkPagination.vue';
 
-const emit = defineEmits<{
-	(ev: 'done'): void;
-}>();
-
 const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };
 
 const popularUsers = { endpoint: 'users', limit: 10, noPaging: true, params: {

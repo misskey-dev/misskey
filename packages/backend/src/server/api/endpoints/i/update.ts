@@ -138,7 +138,7 @@ export const paramDef = {
 		carefulBot: { type: 'boolean' },
 		autoAcceptFollowed: { type: 'boolean' },
 		noCrawle: { type: 'boolean' },
-		preventAiLarning: { type: 'boolean' },
+		preventAiLearning: { type: 'boolean' },
 		isBot: { type: 'boolean' },
 		isCat: { type: 'boolean' },
 		showTimelineReplies: { type: 'boolean' },
@@ -243,7 +243,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (typeof ps.carefulBot === 'boolean') profileUpdates.carefulBot = ps.carefulBot;
 			if (typeof ps.autoAcceptFollowed === 'boolean') profileUpdates.autoAcceptFollowed = ps.autoAcceptFollowed;
 			if (typeof ps.noCrawle === 'boolean') profileUpdates.noCrawle = ps.noCrawle;
-			if (typeof ps.preventAiLarning === 'boolean') profileUpdates.preventAiLarning = ps.preventAiLarning;
+			if (typeof ps.preventAiLearning === 'boolean') profileUpdates.preventAiLearning = ps.preventAiLearning;
 			if (typeof ps.isCat === 'boolean') updates.isCat = ps.isCat;
 			if (typeof ps.injectFeaturedNote === 'boolean') profileUpdates.injectFeaturedNote = ps.injectFeaturedNote;
 			if (typeof ps.receiveAnnouncementEmail === 'boolean') profileUpdates.receiveAnnouncementEmail = ps.receiveAnnouncementEmail;
