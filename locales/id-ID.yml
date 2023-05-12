@@ -955,6 +955,7 @@ disableFederationConfirmWarn: "Mematikan federasi tidak membuat kiriman menjadi 
 disableFederationOk: "Matikan federasi"
 horizontal: "Horisontal"
 youFollowing: "Mengikuti"
+options: "Opsi peran"
 _achievements:
   earnedAt: "Terbuka pada"
   _types:

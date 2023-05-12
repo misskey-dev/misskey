@@ -28,9 +28,9 @@
 		<MkFoldableSection ref="tagsEl" :foldable="true" :expanded="false" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
-			<div class="vxjfqztj">
-				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/user-tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
-				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/user-tags/${tag.tag}`">{{ tag.tag }}</MkA>
+			<div>
+				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/user-tags/${tag.tag}`" style="margin-right: 16px; font-weight: bold;">{{ tag.tag }}</MkA>
+				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/user-tags/${tag.tag}`" style="margin-right: 16px;">{{ tag.tag }}</MkA>
 			</div>
 		</MkFoldableSection>
 
@@ -132,15 +132,3 @@ os.api('hashtags/list', {
 	tagsRemote = tags;
 });
 </script>
-
-<style lang="scss" scoped>
-.vxjfqztj {
-	> * {
-		margin-right: 16px;
-
-		&.local {
-			font-weight: bold;
-		}
-	}
-}
-</style>
