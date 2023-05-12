@@ -129,6 +129,10 @@ async function renderChart() {
 						autoSkip: false,
 						callback: (value, index, values) => value,
 					},
+					title: {
+						display: true,
+						text: 'Days later',
+					},
 				},
 				y: {
 					type: 'time',
