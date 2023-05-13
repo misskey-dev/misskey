@@ -26,7 +26,7 @@ const props = defineProps<{
 }>();
 
 const pagination = {
-	endpoint: 'users/lists/public-list' as const,
+	endpoint: 'users/lists/list' as const,
 	noPaging: true,
 	limit: 10,
 	params: {
@@ -42,6 +42,7 @@ const pagination = {
 			padding: 16px;
 			border: solid 1px var(--divider);
 			border-radius: 6px;
+			margin-bottom: 8px;
 
 			&:hover {
 				border: solid 1px var(--accent);

@@ -323,9 +323,6 @@ import * as ep___users_lists_show from './endpoints/users/lists/show.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_lists_favorite from './endpoints/users/lists/favorite.js';
 import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite.js';
-import * as ep___users_lists_public_list from './endpoints/users/lists/public-list.js';
-import * as ep___users_lists_public_show from './endpoints/users/lists/public-show.js';
-import * as ep___users_lists_setting_visibility from './endpoints/users/lists/setting-visibility.js';
 import * as ep___users_lists_create_from_public from './endpoints/users/lists/create-from-public.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
@@ -667,9 +664,6 @@ const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: 
 const $users_lists_update: Provider = { provide: 'ep:users/lists/update', useClass: ep___users_lists_update.default };
 const $users_lists_favorite: Provider = { provide: 'ep:users/lists/favorite', useClass: ep___users_lists_favorite.default };
 const $users_lists_unfavorite: Provider = { provide: 'ep:users/lists/unfavorite', useClass: ep___users_lists_unfavorite.default };
-const $users_lists_public_list: Provider = { provide: 'ep:users/lists/public-list', useClass: ep___users_lists_public_list.default };
-const $users_lists_public_show: Provider = { provide: 'ep:users/lists/public-show', useClass: ep___users_lists_public_show.default };
-const $users_lists_setting_visibility: Provider = { provide: 'ep:users/lists/change-visibility', useClass: ep___users_lists_setting_visibility.default };
 const $users_lists_create_from_public: Provider = { provide: 'ep:users/lists/create-from-public', useClass: ep___users_lists_create_from_public.default };
 const $users_notes: Provider = { provide: 'ep:users/notes', useClass: ep___users_notes.default };
 const $users_pages: Provider = { provide: 'ep:users/pages', useClass: ep___users_pages.default };
@@ -1015,9 +1009,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_update,
 		$users_lists_favorite,
 		$users_lists_unfavorite,
-		$users_lists_public_list,
-		$users_lists_public_show,
-		$users_lists_setting_visibility,
 		$users_lists_create_from_public,
 		$users_notes,
 		$users_pages,
@@ -1355,9 +1346,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_update,
 		$users_lists_favorite,
 		$users_lists_unfavorite,
-		$users_lists_public_list,
-		$users_lists_public_show,
-		$users_lists_setting_visibility,
 		$users_lists_create_from_public,
 		$users_notes,
 		$users_pages,

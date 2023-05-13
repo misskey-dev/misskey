@@ -125,9 +125,11 @@ async function changeVisibility() {
 	});
 	if (canceled) return;
 
-	await os.apiWithDialog('users/lists/change-visibility', {
+	const result = await os.apiWithDialog('users/lists/update', {
 		listId: list.id,
+		isPublic: !list.isPublic,
 	});
+	list.isPublic = result.isPublic;
 	location.reload();
 }
 

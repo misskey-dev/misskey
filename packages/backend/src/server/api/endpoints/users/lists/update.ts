@@ -34,8 +34,12 @@ export const paramDef = {
 	properties: {
 		listId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
+		isPublic: { type: 'boolean' },
 	},
-	required: ['listId', 'name'],
+	oneOf: [
+		{ required: ['listId', 'name'] },
+		{ required: ['listId', 'isPublic'] },
+	],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -58,7 +62,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			await this.userListsRepository.update(userList.id, {
+			await this.userListsRepository.update(userList.id, typeof ps.isPublic !== 'undefined' ? {
+				isPublic: ps.isPublic,
+			} : {
 				name: ps.name,
 			});
 

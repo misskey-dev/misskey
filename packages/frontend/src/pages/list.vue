@@ -46,8 +46,9 @@ let error = $ref();
 let users = $ref([]);
 
 function fetchList(): void {
-	os.api('users/lists/public-show', {
+	os.api('users/lists/show', {
 		listId: props.listId,
+		forPublic: true,
 	}).then(_list => {
 		list = _list;
 		os.api('users/show', {
@@ -110,7 +111,7 @@ definePageMetadata(computed(() => list ? {
 	flex: 1;
 	min-width: 0;
 	margin-right: 8px;
-
+	
 	&:hover {
 		text-decoration: none;
 	}
