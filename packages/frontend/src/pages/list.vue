@@ -23,7 +23,7 @@
 		</div>
 		<MkButton v-if="list.isLiked" v-tooltip="i18n.ts.unlike" inline :class="$style.button" as-like primary @click="unlike()"><i class="ti ti-heart-off"></i><span v-if="list.likedCount > 0" class="count">{{ list.likedCount }}</span></MkButton>
 		<MkButton v-if="!list.isLiked" v-tooltip="i18n.ts.like" inline :class="$style.button" as-like @click="like()"><i class="ti ti-heart"></i><span v-if="1 > 0" class="count">{{ list.likedCount }}</span></MkButton>
-		<MkButton inline><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
+		<MkButton inline @click="create()"><i class="ti ti-download" :class="$style.import"></i>{{ i18n.ts.import }}</MkButton>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -76,6 +76,14 @@ function unlike() {
 		list.isLiked = false;
 		list.likedCount--;
 	});
+}
+
+async function create() {
+	const { canceled, result: name } = await os.inputText({
+		title: i18n.ts.enterListName,
+	});
+	if (canceled) return;
+	await os.apiWithDialog('users/lists/create-from-public', { name: name, listId: list.id });
 }
 
 watch(() => props.listId, fetchList, { immediate: true });

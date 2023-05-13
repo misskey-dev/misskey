@@ -325,6 +325,7 @@ import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite
 import * as ep___users_lists_public_list from './endpoints/users/lists/public-list.js';
 import * as ep___users_lists_public_show from './endpoints/users/lists/public-show.js';
 import * as ep___users_lists_setting_visibility from './endpoints/users/lists/setting-visibility.js';
+import * as ep___users_lists_create_from_public from './endpoints/users/lists/create-from-public.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
@@ -667,6 +668,7 @@ const eps = [
 	['users/lists/public-list', ep___users_lists_public_list],
 	['users/lists/public-show', ep___users_lists_public_show],
 	['users/lists/change-visibility', ep___users_lists_setting_visibility],
+	['users/lists/create-from-public', ep___users_lists_create_from_public],
 	['users/notes', ep___users_notes],
 	['users/pages', ep___users_pages],
 	['users/reactions', ep___users_reactions],
