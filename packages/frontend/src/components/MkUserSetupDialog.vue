@@ -27,6 +27,7 @@
 		>
 			<template v-if="page === 0">
 				<div :class="$style.centerPage">
+					<MkAnimBg style="position: absolute; top: 0;"/>
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -78,6 +79,7 @@
 			</template>
 			<template v-else-if="page === 5">
 				<div :class="$style.centerPage">
+					<MkAnimBg style="position: absolute; top: 0;"/>
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -106,6 +108,7 @@ import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
+import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';
