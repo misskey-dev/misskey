@@ -35,7 +35,7 @@ onMounted(() => {
 });
 
 async function setRole() {
-	const roles = await os.api('roles/list');
+	const roles = (await os.api('roles/list')).filter(x => x.isExplorable);
 	const { canceled, result: role } = await os.select({
 		title: i18n.ts.role,
 		items: roles.map(x => ({
