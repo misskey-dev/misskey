@@ -65,8 +65,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.forPublic && userList.isPublic) {
-				additionalProperties.likedCount = await this.userListsRepository.countBy({
-					id: ps.listId,
+				additionalProperties.likedCount = await this.userListFavoritesRepository.countBy({
+					userListId: ps.listId,
 				});
 				if (me !== null) {
 					additionalProperties.isLiked = (await this.userListFavoritesRepository.findOneBy({
