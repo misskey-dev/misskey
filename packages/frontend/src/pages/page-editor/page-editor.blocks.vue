@@ -9,49 +9,41 @@
 </Sortable>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent } from 'vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
 
-export default defineComponent({
-	components: {
-		Sortable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
-		XSection, XText, XImage, XNote,
-	},
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-	props: {
-		modelValue: {
-			type: Array,
-			required: true,
-		},
-	},
+const props = defineProps<{
+	modelValue: any[];
+}>();
 
-	emits: ['update:modelValue'],
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: any[]): void;
+}>();
 
-	methods: {
-		updateItem(v) {
-			const i = this.modelValue.findIndex(x => x.id === v.id);
-			const newValue = [
-				...this.modelValue.slice(0, i),
-				v,
-				...this.modelValue.slice(i + 1),
-			];
-			this.$emit('update:modelValue', newValue);
-		},
+function updateItem(v) {
+	const i = props.modelValue.findIndex(x => x.id === v.id);
+	const newValue = [
+		...props.modelValue.slice(0, i),
+		v,
+		...props.modelValue.slice(i + 1),
+	];
+	emit('update:modelValue', newValue);
+}
 
-		removeItem(el) {
-			const i = this.modelValue.findIndex(x => x.id === el.id);
-			const newValue = [
-				...this.modelValue.slice(0, i),
-				...this.modelValue.slice(i + 1),
-			];
-			this.$emit('update:modelValue', newValue);
-		},
-	},
-});
+function removeItem(el) {
+	const i = props.modelValue.findIndex(x => x.id === el.id);
+	const newValue = [
+		...props.modelValue.slice(0, i),
+		...props.modelValue.slice(i + 1),
+	];
+	emit('update:modelValue', newValue);
+}
 </script>
 
 <style lang="scss" module>
