@@ -53,7 +53,3 @@ definePageMetadata({
 	icon: 'ti ti-lock',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

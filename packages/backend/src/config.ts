@@ -2,10 +2,10 @@
  * Config loader
  */
 
-import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
-import * as yaml from 'js-yaml';
+import * as fs from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+import * as yaml from "js-yaml";
 
 /**
  * ユーザーが設定する必要のある情報
@@ -62,6 +62,7 @@ export type Source = {
 		port: string;
 		apiKey: string;
 		ssl?: boolean;
+		index: string;
 	};
 
 	proxy?: string;
@@ -78,7 +79,7 @@ export type Source = {
 
 	id: string;
 
-	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
+	outgoingAddressFamily?: "ipv4" | "ipv6" | "dual";
 
 	deliverJobConcurrency?: number;
 	inboxJobConcurrency?: number;
@@ -115,8 +116,8 @@ export type Mixin = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
-	redisForPubsub: NonNullable<Source['redisForPubsub']>;
-	redisForJobQueue: NonNullable<Source['redisForJobQueue']>;
+	redisForPubsub: NonNullable<Source["redisForPubsub"]>;
+	redisForJobQueue: NonNullable<Source["redisForJobQueue"]>;
 };
 
 export type Config = Source & Mixin;
@@ -134,17 +135,26 @@ const dir = `${_dirname}/../../../.config`;
  */
 const path = process.env.MISSKEY_CONFIG_YML
 	? resolve(dir, process.env.MISSKEY_CONFIG_YML)
-	: process.env.NODE_ENV === 'test'
-		? resolve(dir, 'test.yml')
-		: resolve(dir, 'default.yml');
+	: process.env.NODE_ENV === "test"
+	? resolve(dir, "test.yml")
+	: resolve(dir, "default.yml");
 
 export function loadConfig() {
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
-	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
-	const clientManifest = clientManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
-		: { 'src/init.ts': { file: 'src/init.ts' } };
-	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
+	const meta = JSON.parse(
+		fs.readFileSync(`${_dirname}/../../../built/meta.json`, "utf-8")
+	);
+	const clientManifestExists = fs.existsSync(
+		_dirname + "/../../../built/_vite_/manifest.json"
+	);
+	const clientManifest = clientManifestExists
+		? JSON.parse(
+				fs.readFileSync(
+					`${_dirname}/../../../built/_vite_/manifest.json`,
+					"utf-8"
+				)
+		  )
+		: { "src/init.ts": { file: "src/init.ts" } };
+	const config = yaml.load(fs.readFileSync(path, "utf-8")) as Source;
 
 	const mixin = {} as Mixin;
 
@@ -152,30 +162,38 @@ export function loadConfig() {
 
 	config.url = url.origin;
 
-	config.port = config.port ?? parseInt(process.env.PORT ?? '', 10);
+	config.port = config.port ?? parseInt(process.env.PORT ?? "", 10);
 
 	mixin.version = meta.version;
 	mixin.host = url.host;
 	mixin.hostname = url.hostname;
-	mixin.scheme = url.protocol.replace(/:$/, '');
-	mixin.wsScheme = mixin.scheme.replace('http', 'ws');
+	mixin.scheme = url.protocol.replace(/:$/, "");
+	mixin.wsScheme = mixin.scheme.replace("http", "ws");
 	mixin.wsUrl = `${mixin.wsScheme}://${mixin.host}`;
 	mixin.apiUrl = `${mixin.scheme}://${mixin.host}/api`;
 	mixin.authUrl = `${mixin.scheme}://${mixin.host}/auth`;
 	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
 	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
-	mixin.clientEntry = clientManifest['src/init.ts'];
+	mixin.clientEntry = clientManifest["src/init.ts"];
 	mixin.clientManifestExists = clientManifestExists;
 
-	const externalMediaProxy = config.mediaProxy ?
-		config.mediaProxy.endsWith('/') ? config.mediaProxy.substring(0, config.mediaProxy.length - 1) : config.mediaProxy
+	const externalMediaProxy = config.mediaProxy
+		? config.mediaProxy.endsWith("/")
+			? config.mediaProxy.substring(0, config.mediaProxy.length - 1)
+			: config.mediaProxy
 		: null;
 	const internalMediaProxy = `${mixin.scheme}://${mixin.host}/proxy`;
 	mixin.mediaProxy = externalMediaProxy ?? internalMediaProxy;
-	mixin.externalMediaProxyEnabled = externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy;
+	mixin.externalMediaProxyEnabled =
+		externalMediaProxy !== null && externalMediaProxy !== internalMediaProxy;
 
-	mixin.videoThumbnailGenerator = config.videoThumbnailGenerator ?
-		config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
+	mixin.videoThumbnailGenerator = config.videoThumbnailGenerator
+		? config.videoThumbnailGenerator.endsWith("/")
+			? config.videoThumbnailGenerator.substring(
+					0,
+					config.videoThumbnailGenerator.length - 1
+			  )
+			: config.videoThumbnailGenerator
 		: null;
 
 	if (!config.redis.prefix) config.redis.prefix = mixin.host;

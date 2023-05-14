@@ -69,22 +69,23 @@
 	</FormSection>
 
 	<FormSection>
-		<template #label>{{ i18n.ts.notificationDisplay }}</template>
+		<template #label>{{ i18n.ts.behavior }}</template>
 
 		<div class="_gaps_m">
-			<MkRadios v-model="notificationPosition">
-				<template #label>{{ i18n.ts.position }}</template>
-				<option value="leftTop"><i class="ti ti-align-box-left-top"></i> {{ i18n.ts.leftTop }}</option>
-				<option value="rightTop"><i class="ti ti-align-box-right-top"></i> {{ i18n.ts.rightTop }}</option>
-				<option value="leftBottom"><i class="ti ti-align-box-left-bottom"></i> {{ i18n.ts.leftBottom }}</option>
-				<option value="rightBottom"><i class="ti ti-align-box-right-bottom"></i> {{ i18n.ts.rightBottom }}</option>
-			</MkRadios>
-
-			<MkRadios v-model="notificationStackAxis">
-				<template #label>{{ i18n.ts.stackAxis }}</template>
-				<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
-				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
-			</MkRadios>
+			<div class="_gaps_s">
+				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
+				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+			</div>
+			<MkSelect v-model="serverDisconnectedBehavior">
+				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
+				<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
+				<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
+				<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+			</MkSelect>
+			<MkRange v-model="numberOfPageCache" :min="1" :max="10" :step="1" easing>
+				<template #label>{{ i18n.ts.numberOfPageCache }}</template>
+				<template #caption>{{ i18n.ts.numberOfPageCacheDescription }}</template>
+			</MkRange>
 		</div>
 	</FormSection>
 
@@ -145,7 +146,10 @@
 	</FormSection>
 
 	<FormSection>
-		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+		<div class="_gaps_s">
+			<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+			<MkSwitch v-model="devMode">{{ i18n.ts.devMode }}</MkSwitch>
+		</div>
 	</FormSection>
 
 	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
@@ -213,6 +217,7 @@ const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfin
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
+const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));

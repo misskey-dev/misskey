@@ -2,7 +2,7 @@
 _lang_: "Français"
 headlineMisskey: "Réseau relié par des notes"
 introMisskey: "Bienvenue ! Misskey est un service de microblogage décentralisé, libre et ouvert.\nÉcrivez des « notes » et partagez ce qui se passe à l’instant présent, autour de vous avec les autres 📡\nLa fonction « réactions », vous permet également d’ajouter une réaction rapide aux notes des autres utilisateur·rice·s 👍\nExplorons un nouveau monde 🚀"
-poweredByMisskeyDescription: "{nom} est l'un des services propulsés par la plateforme ouverte <b>Misskey</b> (appelée \"instance Misskey\")."
+poweredByMisskeyDescription: '{nom} est l''un des services propulsés par la plateforme ouverte <b>Misskey</b> (appelée "instance Misskey").'
 monthAndDay: "{day}/{month}"
 search: "Rechercher"
 notifications: "Notifications"
@@ -68,7 +68,7 @@ import: "Importer"
 export: "Exporter"
 files: "Fichiers"
 download: "Télécharger"
-driveFileDeleteConfirm: "Êtes-vous sûr·e de vouloir supprimer le fichier \"{name}\" ? Les notes liées à ce fichier seront aussi supprimées."
+driveFileDeleteConfirm: 'Êtes-vous sûr·e de vouloir supprimer le fichier "{name}" ? Les notes liées à ce fichier seront aussi supprimées.'
 unfollowConfirm: "Désirez-vous vous désabonner de {name} ?"
 exportRequested: "Vous avez demandé une exportation. L’opération pourrait prendre un peu de temps. Une terminée, le fichier résultant sera ajouté au Drive."
 importRequested: "Vous avez initié un import. Cela pourrait prendre un peu de temps."
@@ -116,7 +116,7 @@ reaction: "Réactions"
 reactions: "Réactions"
 reactionSetting: "Réactions à afficher dans le sélecteur de réactions"
 reactionSettingDescription2: "Déplacer pour réorganiser, cliquer pour effacer, utiliser « + » pour ajouter."
-rememberNoteVisibility: "Activer l'option \" se souvenir de la visibilité des notes \" vous permet de réutiliser automatiquement la visibilité utilisée lors de la publication de votre note précédente."
+rememberNoteVisibility: 'Activer l''option " se souvenir de la visibilité des notes " vous permet de réutiliser automatiquement la visibilité utilisée lors de la publication de votre note précédente.'
 attachCancel: "Supprimer le fichier attaché"
 markAsSensitive: "Marquer comme sensible"
 unmarkAsSensitive: "Supprimer le marquage comme sensible"
@@ -149,7 +149,7 @@ cacheRemoteFilesDescription: "Lorsque cette option est désactivée, les fichier
 flagAsBot: "Ce compte est un robot"
 flagAsBotDescription: "Si ce compte est géré de manière automatisée, choisissez cette option. Si elle est activée, elle agira comme un marqueur pour les autres développeurs afin d'éviter des chaînes d'interaction sans fin avec d'autres robots et d'ajuster les systèmes internes de Misskey pour traiter ce compte comme un robot."
 flagAsCat: "Ce compte est un chat"
-flagAsCatDescription: "Activer l'option \" Je suis un chat \" pour ce compte."
+flagAsCatDescription: 'Activer l''option " Je suis un chat " pour ce compte.'
 flagShowTimelineReplies: "Afficher les réponses dans le fil"
 flagShowTimelineRepliesDescription: "Affiche les réponses des utilisateurs aux notes des autres utilisateurs dans la timeline si cette option est activée."
 autoAcceptFollowed: "Accepter automatiquement les demandes d’abonnement venant d’utilisateur·rice·s que vous suivez"
@@ -342,7 +342,7 @@ bannerUrl: "URL de l’image de la bannière"
 backgroundImageUrl: "URL de l'image d'arrière-plan"
 basicInfo: "Informations basiques"
 pinnedUsers: "Utilisateur·rice épinglé·e"
-pinnedUsersDescription: "Listez les utilisateur·rice·s que vous souhaitez voir épinglé·e·s sur la page \"Découvrir\", un·e par ligne."
+pinnedUsersDescription: 'Listez les utilisateur·rice·s que vous souhaitez voir épinglé·e·s sur la page "Découvrir", un·e par ligne.'
 pinnedPages: "Pages épinglées"
 pinnedPagesDescription: "Inscrivez le chemin des pages que vous souhaitez épingler en haut de la page de l'instance. Séparez les pages d'un retour à la ligne."
 pinnedClipId: "Identifiant du clip épinglé"
@@ -400,7 +400,7 @@ lastUsed: "Dernier utilisé"
 unregister: "Se désinscrire"
 passwordLessLogin: "Se connecter sans mot de passe"
 resetPassword: "Réinitialiser le mot de passe"
-newPasswordIs: "Votre nouveau mot de passe est \"{password}\""
+newPasswordIs: 'Votre nouveau mot de passe est "{password}"'
 reduceUiAnimation: "Réduire les animations dans l’interface"
 share: "Partager"
 notFound: "Non trouvé"
@@ -452,6 +452,7 @@ native: "Natif"
 disableDrawer: "Les menus ne s'affichent pas dans le tiroir"
 noHistory: "Pas d'historique"
 signinHistory: "Historique de connexion"
+enableAdvancedMfm: "Activer la MFM avancée"
 doing: "En cours..."
 category: "Catégorie"
 tags: "Étiquettes"
@@ -663,7 +664,7 @@ driveFilesCount: "Nombre de fichiers dans le Drive"
 driveUsage: "Utilisation du Drive"
 noCrawle: "Refuser l'indexation par les robots"
 noCrawleDescription: "Demandez aux moteurs de recherche de ne pas indexer votre page de profil, vos notes, vos pages, etc."
-lockedAccountInfo: "À moins que vous ne définissiez la visibilité de votre note sur \"Abonné-e-s\", vos notes sont visibles par tous, même si vous exigez que les demandes d'abonnement soient approuvées manuellement."
+lockedAccountInfo: 'À moins que vous ne définissiez la visibilité de votre note sur "Abonné-e-s", vos notes sont visibles par tous, même si vous exigez que les demandes d''abonnement soient approuvées manuellement.'
 alwaysMarkSensitive: "Marquer les médias comme contenu sensible par défaut"
 loadRawImages: "Affichage complet des images jointes au lieu des vignettes"
 disableShowingAnimatedImages: "Désactiver l'animation des images"
@@ -678,8 +679,8 @@ useSystemFont: "Utiliser la police par défaut du système"
 clips: "Clips"
 experimentalFeatures: "Fonctionnalités expérimentales"
 developer: "Développeur"
-makeExplorable: "Rendre le compte visible sur la page \"Découvrir\"."
-makeExplorableDescription: "Si vous désactivez cette option, votre compte n'apparaîtra pas sur la page \"Découvrir\"."
+makeExplorable: 'Rendre le compte visible sur la page "Découvrir".'
+makeExplorableDescription: 'Si vous désactivez cette option, votre compte n''apparaîtra pas sur la page "Découvrir".'
 showGapBetweenNotesInTimeline: "Afficher un écart entre les notes sur la Timeline"
 duplicate: "Duliquer"
 left: "Gauche"
@@ -846,6 +847,7 @@ rateLimitExceeded: "Limite de taux dépassée"
 cropImage: "Recadrer l'image"
 cropImageAsk: "Voulez-vous recadrer cette image ?"
 cropYes: "Rogner"
+cropNo: "Utiliser en l'état"
 file: "Fichiers"
 recentNHours: "Dernières {n} heures"
 recentNDays: "Derniers {n} jours"
@@ -912,6 +914,7 @@ color: "Couleur"
 manageCustomEmojis: "Gestion des émojis personnalisés"
 preset: "Préréglage"
 selectFromPresets: "Sélectionner à partir des préréglages"
+thisPostMayBeAnnoyingCancel: "Annuler"
 license: "Licence"
 video: "Vidéo"
 videos: "Vidéos"
@@ -925,6 +928,7 @@ leftBottom: "En bas à gauche"
 rightBottom: "En bas à droite"
 vertical: "Vertical"
 horizontal: "Latéral"
+serverRules: "Règles du serveur"
 youFollowing: "Abonné·e"
 _achievements:
   _types:
@@ -934,10 +938,13 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
     _login3:
+      title: "Débutant Ⅰ"
       description: "Se connecter pour un total de 3 jours"
     _login7:
+      title: "Débutant Ⅱ"
       description: "Se connecter pour un total de 7 jours"
     _login15:
+      title: "Débutant Ⅲ"
       description: "Se connecter pour un total de 15 jours"
     _login30:
       description: "Se connecter pour un total de 30 jours"
@@ -945,6 +952,22 @@ _achievements:
       description: "Se connecter pour un total de 60 jours"
     _login100:
       description: "Se connecter pour un total de 100 jours"
+    _login200:
+      description: "Se connecter pour un total de 200 jours"
+    _login300:
+      description: "Se connecter pour un total de 300 jours"
+    _login400:
+      description: "Se connecter pour un total de 400 jours"
+    _login500:
+      description: "Se connecter pour un total de 500 jours"
+    _login600:
+      description: "Se connecter pour un total de 600 jours"
+    _login700:
+      description: "Se connecter pour un total de 700 jours"
+    _login800:
+      description: "Se connecter pour un total de 800 jours"
+    _login900:
+      description: "Se connecter pour un total de 900 jours"
     _login1000:
       flavor: "Merci d'utiliser Misskey !"
     _markedAsCat:
@@ -954,8 +977,12 @@ _achievements:
       title: "Beaucoup d'amis"
     _followers10:
       title: "Abonnez-moi !"
+    _iLoveMisskey:
+      title: "J’adore Misskey"
     _viewInstanceChart:
       title: "Analyste"
+    _loggedInOnBirthday:
+      title: "Joyeux Anniversaire !"
     _loggedInOnNewYearsDay:
       title: "Bonne année !"
 _role:
@@ -1026,12 +1053,12 @@ _preferencesBackups:
   save: "Sauvegarder les changements"
   inputName: "Entrez le nom de la sauvegarde"
   cannotSave: "Impossible de sauvegarder"
-  nameAlreadyExists: "Le nom de sauvegarde \"{name}\" existe déjà. Veuillez spécifier un autre nom."
+  nameAlreadyExists: 'Le nom de sauvegarde "{name}" existe déjà. Veuillez spécifier un autre nom.'
   applyConfirm: "Voulez-vous appliquer la sauvegarde '{name}' au dispositif actuel ? La configuration actuelle de l'appareil sera perdue."
   saveConfirm: "Voulez-vous écraser {name} ?"
   deleteConfirm: "Voulez-vous supprimer {name} ?"
-  renameConfirm: "Voulez-vous remplacer \"{old}\" par \"{new}\" ?"
-  noBackups: "Aucune sauvegarde n'est disponible. L'option \"Nouvelle sauvegarde\" vous permet de sauvegarder la configuration actuelle du client sur le serveur."
+  renameConfirm: 'Voulez-vous remplacer "{old}" par "{new}" ?'
+  noBackups: 'Aucune sauvegarde n''est disponible. L''option "Nouvelle sauvegarde" vous permet de sauvegarder la configuration actuelle du client sur le serveur.'
   createdAt: "Créé : {date} {time}"
   updatedAt: "Mis à jour : {date} {time}"
   cannotLoad: "Échec du chargement"
@@ -1234,7 +1261,7 @@ _permissions:
   "read:gallery-likes": "Voir les mentions « J'aime » dans la galerie"
   "write:gallery-likes": "Gérer les mentions « J'aime » dans la galerie"
 _auth:
-  shareAccess: "Autoriser \"{name}\" à accéder à votre compte ?"
+  shareAccess: 'Autoriser "{name}" à accéder à votre compte ?'
   shareAccessAsk: "Voulez-vous vraiment autoriser cette application à accéder à votre compte?"
   permissionAsk: "Cette application nécessite les autorisations suivantes :"
   pleaseGoBack: "Veuillez retourner à l’application"

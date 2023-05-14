@@ -114,7 +114,7 @@ add: "Tambahkan"
 reaction: "Reaksi"
 reactions: "Reaksi"
 reactionSetting: "Reaksi untuk dimunculkan di bilah reaksi"
-reactionSettingDescription2: "Geser untuk memindah urutkan, klik untuk menghapus, tekan \"+\" untuk menambahkan"
+reactionSettingDescription2: 'Geser untuk memindah urutkan, klik untuk menghapus, tekan "+" untuk menambahkan'
 rememberNoteVisibility: "Ingat pengaturan visibilitas catatan"
 attachCancel: "Hapus lampiran"
 markAsSensitive: "Tandai sebagai konten sensitif"
@@ -241,8 +241,8 @@ announcements: "Pengumuman"
 imageUrl: "URL Gambar"
 remove: "Hapus"
 removed: "Telah dihapus"
-removeAreYouSure: "Apakah kamu yakin ingin menghapus \"{x}\"?"
-deleteAreYouSure: "Apakah kamu yakin ingin menghapus \"{x}\"?"
+removeAreYouSure: 'Apakah kamu yakin ingin menghapus "{x}"?'
+deleteAreYouSure: 'Apakah kamu yakin ingin menghapus "{x}"?'
 resetAreYouSure: "Yakin mau atur ulang?"
 saved: "Telah disimpan"
 messaging: "Pesan"
@@ -345,7 +345,7 @@ bannerUrl: "URL Banner"
 backgroundImageUrl: "URL Gambar latar"
 basicInfo: "Informasi Umum"
 pinnedUsers: "Pengguna yang disematkan"
-pinnedUsersDescription: "Tuliskan satu nama pengguna dalam satu baris. Pengguna yang dituliskan disini akan disematkan dalam bilah \"Jelajahi\"."
+pinnedUsersDescription: 'Tuliskan satu nama pengguna dalam satu baris. Pengguna yang dituliskan disini akan disematkan dalam bilah "Jelajahi".'
 pinnedPages: "Halaman yang disematkan"
 pinnedPagesDescription: "Masukkan tautan dari halaman yang kamu ingin sematkan ke halaman utama dari instansi ini, dipisah dengan membuat baris baru."
 pinnedClipId: "ID dari klip yang disematkan"
@@ -407,7 +407,7 @@ lastUsedAt: "Penggunaan terakhir: {t}"
 unregister: "Batalkan pendaftaran"
 passwordLessLogin: "Setel login tanpa kata sandi"
 resetPassword: "Atur ulang kata sandi"
-newPasswordIs: "Kata sandi baru adalah \"{password}\""
+newPasswordIs: 'Kata sandi baru adalah "{password}"'
 reduceUiAnimation: "Kurangi animasi antarmuka"
 share: "Bagikan"
 notFound: "Tidak dapat ditemukan"
@@ -501,7 +501,7 @@ objectStorageUseSSL: "Gunakan SSL"
 objectStorageUseSSLDesc: "Matikan ini jika kamu tidak akan menggunakan HTTPS untuk koneksi API"
 objectStorageUseProxy: "Hubungkan melalui Proxy"
 objectStorageUseProxyDesc: "Matikan ini jika kamu tidak akan menggunakan Proxy untuk koneksi ObjectStorage"
-objectStorageSetPublicRead: "Setel \"public-read\" disaat mengunggah"
+objectStorageSetPublicRead: 'Setel "public-read" disaat mengunggah'
 serverLogs: "Log Peladen"
 deleteAll: "Hapus semua"
 showFixedPostForm: "Tampilkan form posting di atas linimasa."
@@ -652,7 +652,7 @@ createNew: "Buat baru"
 optional: "Opsional"
 createNewClip: "Buat klip baru"
 unclip: "Batalkan klip"
-confirmToUnclipAlreadyClippedNote: "Catatan ini sudah disertakan di klip \"{name}\". Yakin ingin membatalkan catatan dari klip ini?"
+confirmToUnclipAlreadyClippedNote: 'Catatan ini sudah disertakan di klip "{name}". Yakin ingin membatalkan catatan dari klip ini?'
 public: "Publik"
 i18nInfo: "Misskey diterjemahkan ke dalam banyak bahasa oleh sukarelawan. Kamu dapat ikut membantu di {link}."
 manageAccessTokens: "Kelola access token"
@@ -674,7 +674,7 @@ driveFilesCount: "Jumlah berkas drive"
 driveUsage: "Penggunaan ruang penyimpanan drive"
 noCrawle: "Tolak pengindeksan crawler"
 noCrawleDescription: "Meminta mesin pencari untuk tidak mengindeks halaman profil kamu, catatan, Halaman, dll."
-lockedAccountInfo: "Kecuali kamu menyetel visibilitas catatan milikmu ke \"Hanya pengikut\", catatan milikmu akan dapat dilihat oleh siapa saja, bahkan jika kamu memerlukan pengikut untuk disetujui secara manual."
+lockedAccountInfo: 'Kecuali kamu menyetel visibilitas catatan milikmu ke "Hanya pengikut", catatan milikmu akan dapat dilihat oleh siapa saja, bahkan jika kamu memerlukan pengikut untuk disetujui secara manual.'
 alwaysMarkSensitive: "Tandai media dalam catatan sebagai media sensitif"
 loadRawImages: "Tampilkan lampiran gambar secara penuh daripada thumbnail"
 disableShowingAnimatedImages: "Jangan mainkan gambar bergerak"
@@ -689,8 +689,8 @@ useSystemFont: "Gunakan font bawaan sistem operasi"
 clips: "Klip"
 experimentalFeatures: "Fitur eksperimental"
 developer: "Pengembang"
-makeExplorable: "Buat akun tampil di \"Jelajahi\""
-makeExplorableDescription: "Jika kamu mematikan ini, akun kamu tidak akan muncul di bagian \"Jelajahi:"
+makeExplorable: 'Buat akun tampil di "Jelajahi"'
+makeExplorableDescription: 'Jika kamu mematikan ini, akun kamu tidak akan muncul di bagian "Jelajahi:'
 showGapBetweenNotesInTimeline: "Tampilkan jarak diantara catatan pada linimasa"
 duplicate: "Duplikat"
 left: "Kiri"
@@ -745,7 +745,7 @@ unlikeConfirm: "Yakin ingin hapus sukamu?"
 fullView: "Tampilan penuh"
 quitFullView: "Keluar tampilan penuh"
 addDescription: "Tambahkan deskripsi"
-userPagePinTip: "Kamu dapat membuat catatan untuk ditampilkan disini dengan memilih \"Sematkan ke profil\" dari menu pada catatan individu."
+userPagePinTip: 'Kamu dapat membuat catatan untuk ditampilkan disini dengan memilih "Sematkan ke profil" dari menu pada catatan individu.'
 notSpecifiedMentionWarning: "Catatan ini mengandung sebutan dari pengguna yang tidak dimuat sebagai penerima"
 info: "Informasi"
 userInfo: "Informasi pengguna"
@@ -955,6 +955,7 @@ disableFederationConfirmWarn: "Mematikan federasi tidak membuat kiriman menjadi 
 disableFederationOk: "Matikan federasi"
 horizontal: "Horisontal"
 youFollowing: "Mengikuti"
+options: "Opsi peran"
 _achievements:
   earnedAt: "Terbuka pada"
   _types:
@@ -1118,7 +1119,7 @@ _achievements:
       description: "Lugat daftar pencapaianmu setidaknya 3 menit"
     _iLoveMisskey:
       title: "I Love Misskey"
-      description: "Catat \"I ❤ #Misskey\""
+      description: 'Catat "I ❤ #Misskey"'
       flavor: "Tim pengembang misskey sangat mengapresiasi dukungan kamu!"
     _foundTreasure:
       title: "Berburu Harta Karun"
@@ -1148,7 +1149,7 @@ _achievements:
       description: "Lihat bagan instansimu"
     _outputHelloWorldOnScratchpad:
       title: "Halo, dunia!"
-      description: "Munculkan \"hello world\" di Scratchpad"
+      description: 'Munculkan "hello world" di Scratchpad'
     _open3windows:
       title: "Jendela ganda"
       description: "Memiliki setidaknya 3 jendela yang terbuka secara bersamaan"
@@ -1166,7 +1167,7 @@ _achievements:
       description: "Mendapatkan kesempatan dengan kemungkinan 0.01% setiap 10 detik"
     _setNameToSyuilo:
       title: "God Complex"
-      description: "Atur namamu jadi \"syuilo\""
+      description: 'Atur namamu jadi "syuilo"'
     _passedSinceAccountCreated1:
       title: "Perayaan Satu Tahun"
       description: "Satu tahun telah lewat sejak akunmu dibuat"
@@ -1310,12 +1311,12 @@ _preferencesBackups:
   save: "Simpan perubahan"
   inputName: "Mohon masukkan nama untuk cadangan ini"
   cannotSave: "Gagal menyimpan"
-  nameAlreadyExists: "Cadangan bernama \"{name}\" sudah ada. Mohon gunakan nama lain."
-  applyConfirm: "Apakah kamu yakin untuk menerapkan cadangan \"{name}\" ke perangkat ini? Pengaturan yang sudah ada di perangkat ini nantinya akan ditimpa."
+  nameAlreadyExists: 'Cadangan bernama "{name}" sudah ada. Mohon gunakan nama lain.'
+  applyConfirm: 'Apakah kamu yakin untuk menerapkan cadangan "{name}" ke perangkat ini? Pengaturan yang sudah ada di perangkat ini nantinya akan ditimpa.'
   saveConfirm: "Simpan cadangan sebagai {name}?"
   deleteConfirm: "Hapus cadangan {name}?"
-  renameConfirm: "Ganti cadangan ini dari \"{old}\" ke \"{new}\"?"
-  noBackups: "Tidak ada cadangan. Kamu dapat mencadangkan pengaturanmu di peladen ini dengan menggunakan \"Buat cadangan baru\"."
+  renameConfirm: 'Ganti cadangan ini dari "{old}" ke "{new}"?'
+  noBackups: 'Tidak ada cadangan. Kamu dapat mencadangkan pengaturanmu di peladen ini dengan menggunakan "Buat cadangan baru".'
   createdAt: "Dibuat pada: {date} {time}"
   updatedAt: "Diperbarui pada: {date} {time}"
   cannotLoad: "Gagal memuat"
@@ -1519,7 +1520,7 @@ _permissions:
   "write:gallery-likes": "Sunting daftar postingan galeri yang disukai"
 _auth:
   shareAccessTitle: "Mendapatkan ijin akses aplikasi"
-  shareAccess: "Apakah kamu ingin mengijinkan \"{name}\" untuk mengakses akun ini?"
+  shareAccess: 'Apakah kamu ingin mengijinkan "{name}" untuk mengakses akun ini?'
   shareAccessAsk: "Apakah kamu ingin mengijinkan aplikasi ini untuk mengakses akun kamu?"
   permission: "{name} meminta ijin berikut"
   permissionAsk: "Aplikasi ini membutuhkan beberapa ijin, yaitu:"
@@ -1781,8 +1782,8 @@ _deck:
   newProfile: "Profil baru"
   deleteProfile: "Hapus profil"
   introduction: "Buat antarmuka sempurna untukmu dengan menata kolom secara bebas!"
-  introduction2: "Klik \"+\" pada kanan layar untuk menambahkan kolom baru kapanpun yang kamu mau."
-  widgetsIntroduction: "Mohon pilih \"Sunting gawit\" pada menu kolom dan tambahkan gawit."
+  introduction2: 'Klik "+" pada kanan layar untuk menambahkan kolom baru kapanpun yang kamu mau.'
+  widgetsIntroduction: 'Mohon pilih "Sunting gawit" pada menu kolom dan tambahkan gawit.'
   _columns:
     main: "Utama"
     widgets: "Widget"

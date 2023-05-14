@@ -56,17 +56,17 @@ dbReplications: false
 # You can configure any number of replicas here
 #dbSlaves:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -103,6 +103,7 @@ redis:
 #  port: 7700
 #  apiKey: ''
 #  ssl: true
+#  index: ''
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -120,7 +121,7 @@ redis:
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # ID SETTINGS AFTER THAT!
 
-id: 'aid'
+id: "aid"
 
 #   ┌─────────────────────┐
 #───┘ Other configuration └─────────────────────────────────────
@@ -183,7 +184,6 @@ proxyBypassHosts:
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
-
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]

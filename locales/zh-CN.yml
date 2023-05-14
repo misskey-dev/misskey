@@ -667,7 +667,7 @@ createNew: "新建"
 optional: "可选"
 createNewClip: "新建便签"
 unclip: "移除便签"
-confirmToUnclipAlreadyClippedNote: "本帖已包含在便签\"{name}\"里。您想要将本帖从该便签中移除吗？"
+confirmToUnclipAlreadyClippedNote: '本帖已包含在便签"{name}"里。您想要将本帖从该便签中移除吗？'
 public: "公开"
 i18nInfo: "Misskey已经被志愿者们翻译成了各种语言。如果你也有兴趣，可以通过{link}帮助翻译。"
 manageAccessTokens: "管理 Access Tokens"
@@ -707,7 +707,7 @@ experimental: "实验性的"
 thisIsExperimentalFeature: "这是一项实验性功能。规范可能会变更，或者可能无法正常工作。"
 developer: "开发者"
 makeExplorable: "使账号可见。"
-makeExplorableDescription: "关闭时，账号不会显示在\"发现\"中。"
+makeExplorableDescription: '关闭时，账号不会显示在"发现"中。'
 showGapBetweenNotesInTimeline: "时间线上的帖子分开显示。"
 duplicate: "复制"
 left: "左"
@@ -1030,6 +1030,13 @@ continue: "继续"
 preservedUsernames: "保留的用户名"
 createNoteFromTheFile: "从文件创建帖子"
 youFollowing: "正在关注"
+options: "选项"
+_initialAccountSetting:
+  accountCreated: "账户创建完成了！"
+  letsStartAccountSetup: "来进行帐户的初始设置吧。"
+  letsFillYourProfile: "首先，来设定你的个人档案吧！"
+  profileSetting: "个人资料设置"
+  theseSettingsCanEditLater: "也可以在稍后修改这里的设置。"
 _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
 _accountMigration:
@@ -1038,8 +1045,11 @@ _accountMigration:
   moveFromDescription: "如果迁移时需要继承其他账户的关注者，请在此创造别名。此操作需要在实行迁移之前完成！请如已下输入需要迁移的账户：@person@instance.com"
   moveTo: "把这个账户迁移到新的账户"
   moveToLabel: "迁移后的账户"
+  moveCannotBeUndone: "一旦迁移账户，就无法撤销。"
   moveAccountDescription: "此操作无法取消。请先确认您已在迁移后的账户上，为此账户创造了别名。创造别名后，请如以下输入您的迁移后的账户：@person@instance.com"
+  startMigration: "迁移"
   migrationConfirm: "确定要把此账户迁移到{account}吗？一旦确定后，此操作无法取消，此账户也无法以原来的状态使用。\n同时，请确认迁移后的账户，已创造别名。"
+  movedAndCannotBeUndone: "该账户已被迁移。\n迁移操作无法撤销。"
   movedTo: "迁移后的账户"
 _achievements:
   earnedAt: "达成时间"
@@ -1204,7 +1214,7 @@ _achievements:
       description: "盯着成就看三分钟"
     _iLoveMisskey:
       title: "I Love Misskey"
-      description: "发布\"I ❤ #Misskey\"帖子"
+      description: '发布"I ❤ #Misskey"帖子'
       flavor: "感谢您使用 Misskey ！ by 开发团队"
     _foundTreasure:
       title: "寻宝"
@@ -1406,8 +1416,8 @@ _preferencesBackups:
   save: "覆盖存档"
   inputName: "请输入备份的名称"
   cannotSave: "无法保存"
-  nameAlreadyExists: "备份名称\"{name}\"已经存在，请指定其他名称。"
-  applyConfirm: "您是否要将备份\"{name}\"应用到当前设备上？当前设备现有配置将被丢弃。"
+  nameAlreadyExists: '备份名称"{name}"已经存在，请指定其他名称。'
+  applyConfirm: '您是否要将备份"{name}"应用到当前设备上？当前设备现有配置将被丢弃。'
   saveConfirm: "您确定要覆盖保存 {name} 吗？"
   deleteConfirm: "您确定要删除 {name} 吗？"
   renameConfirm: "您确定要把“{old}”改为“{new}”吗？"
@@ -1572,6 +1582,9 @@ _time:
   minute: "分"
   hour: "小时"
   day: "日"
+_timelineTutorial:
+  step3_1: "将想说的话发出去了吗？"
+  step3_2: "太棒了！现在你可以在你的时间线中看到刚刚发布的帖子了。"
 _2fa:
   alreadyRegistered: "此设备已被注册"
   registerTOTP: "开始设置认证应用"

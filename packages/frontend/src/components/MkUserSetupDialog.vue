@@ -7,9 +7,17 @@
 	@close="close(true)"
 	@closed="emit('closed')"
 >
-	<template #header>{{ i18n.ts.initialAccountSetting }}</template>
+	<template v-if="page === 1" #header><i class="ti ti-user-edit"></i> {{ i18n.ts._initialAccountSetting.profileSetting }}</template>
+	<template v-else-if="page === 2" #header><i class="ti ti-lock"></i> {{ i18n.ts._initialAccountSetting.privacySetting }}</template>
+	<template v-else-if="page === 3" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
+	<template v-else-if="page === 4" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
+	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
+	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
 	<div style="overflow-x: clip;">
+		<div :class="$style.progressBar">
+			<div :class="$style.progressBarValue" :style="{ width: `${(page / 5) * 100}%` }"></div>
+		</div>
 		<Transition
 			mode="out-in"
 			:enter-active-class="$style.transition_x_enterActive"
@@ -19,6 +27,7 @@
 		>
 			<template v-if="page === 0">
 				<div :class="$style.centerPage">
+					<MkAnimBg style="position: absolute; top: 0;"/>
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -33,19 +42,33 @@
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<XProfile/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</MkSpacer>
 				</div>
 			</template>
 			<template v-else-if="page === 2">
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
-						<XFollow/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						<XPrivacy/>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</MkSpacer>
 				</div>
 			</template>
 			<template v-else-if="page === 3">
+				<div style="height: 100cqh; overflow: auto;">
+					<MkSpacer :margin-min="20" :margin-max="28">
+						<XFollow/>
+					</MkSpacer>
+					<div :class="$style.pageFooter">
+						<MkButton primary rounded gradate style="margin: 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					</div>
+				</div>
+			</template>
+			<template v-else-if="page === 4">
 				<div :class="$style.centerPage">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
@@ -58,8 +81,9 @@
 					</MkSpacer>
 				</div>
 			</template>
-			<template v-else-if="page === 4">
+			<template v-else-if="page === 5">
 				<div :class="$style.centerPage">
+					<MkAnimBg style="position: absolute; top: 0;"/>
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -87,6 +111,8 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
+import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
+import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';
@@ -134,6 +160,21 @@ async function close(skip: boolean) {
 	transform: translateX(-50px);
 }
 
+.progressBar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10;
+	width: 100%;
+	height: 4px;
+}
+
+.progressBarValue {
+	height: 100%;
+	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	transition: all 0.5s cubic-bezier(0,.5,.5,1);
+}
+
 .centerPage {
 	display: flex;
 	justify-content: center;
@@ -141,5 +182,15 @@ async function close(skip: boolean) {
 	height: 100cqh;
 	padding-bottom: 30px;
 	box-sizing: border-box;
+}
+
+.pageFooter {
+	position: sticky;
+	bottom: 0;
+	left: 0;
+	padding: 12px;
+	border-top: solid 0.5px var(--divider);
+	-webkit-backdrop-filter: var(--blur, blur(15px));
+	backdrop-filter: var(--blur, blur(15px));
 }
 </style>

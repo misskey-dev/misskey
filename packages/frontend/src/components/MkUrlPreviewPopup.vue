@@ -1,5 +1,5 @@
 <template>
-<div class="fgmtyycl" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
+<div :class="$style.root" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" @after-leave="emit('closed')">
 		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url"/>
 	</Transition>
@@ -36,8 +36,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.fgmtyycl {
+<style lang="scss" module>
+.root {
 	position: absolute;
 	width: 500px;
 	max-width: calc(90vw - 12px);

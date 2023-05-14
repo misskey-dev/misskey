@@ -67,7 +67,7 @@ import: "Importar"
 export: "Exportar"
 files: "Archivos"
 download: "Descargar"
-driveFileDeleteConfirm: "¿Desea borrar el archivo \"{name}\"? Las notas que tengan este archivo como adjunto serán eliminadas"
+driveFileDeleteConfirm: '¿Desea borrar el archivo "{name}"? Las notas que tengan este archivo como adjunto serán eliminadas'
 unfollowConfirm: "¿Desea dejar de seguir a {name}?"
 exportRequested: "Se ha solicitado la exportación. Puede tomar un tiempo. Cuando termine la exportación, se añadirá en el drive"
 importRequested: "Se ha solicitado la importación. Puede tomar un tiempo."
@@ -242,8 +242,8 @@ announcements: "Anuncios"
 imageUrl: "URL de la imágen"
 remove: "Borrar"
 removed: "Borrado"
-removeAreYouSure: "¿Desea borrar \"{x}\"?"
-deleteAreYouSure: "¿Desea borrar \"{x}\"?"
+removeAreYouSure: '¿Desea borrar "{x}"?'
+deleteAreYouSure: '¿Desea borrar "{x}"?'
 resetAreYouSure: "¿Desea reestablecer?"
 saved: "Guardado"
 messaging: "Chat"
@@ -346,7 +346,7 @@ bannerUrl: "URL de la imagen del banner"
 backgroundImageUrl: "URL de la imagen de fondo"
 basicInfo: "Información básica"
 pinnedUsers: "Usuarios fijados"
-pinnedUsersDescription: "Describir los usuarios que quiere fijar en la página \"Descubrir\" separados por una linea nueva"
+pinnedUsersDescription: 'Describir los usuarios que quiere fijar en la página "Descubrir" separados por una linea nueva'
 pinnedPages: "Páginas fijadas"
 pinnedPagesDescription: "Describa las rutas de las páginas que desea fijar a la página principal de la instancia, separadas por lineas nuevas"
 pinnedClipId: "Id del clip fijado"
@@ -410,7 +410,7 @@ unregister: "Cancelar registro"
 passwordLessLogin: "Iniciar sesión sin contraseña"
 passwordLessLoginDescription: "Iniciar sesión con sólo una clave se seguridad / de paso sin usar una contraseña"
 resetPassword: "Resetear contraseña"
-newPasswordIs: "La nueva contraseña es \"{password}\""
+newPasswordIs: 'La nueva contraseña es "{password}"'
 reduceUiAnimation: "Reducir la animación de la UI"
 share: "Compartir"
 notFound: "No se encuentra"
@@ -505,7 +505,7 @@ objectStorageUseSSL: "Usar SSL"
 objectStorageUseSSLDesc: "Desactive esto si no va a usar HTTPS para la conexión API"
 objectStorageUseProxy: "Conectarse a través de Proxy"
 objectStorageUseProxyDesc: "Desactive esto si no va a usar Proxy para la conexión de Almacenamiento de objetos"
-objectStorageSetPublicRead: "Seleccionar \"public-read\" al subir "
+objectStorageSetPublicRead: 'Seleccionar "public-read" al subir '
 s3ForcePathStyleDesc: "Si s3ForcePathStyle esta habilitado el nombre del bucket debe ser especificado como parte de la URL en lugar del nombre de host en la URL. Puede ser necesario activar esta opción cuando se utilice, por ejemplo, Minio en un servidor propio."
 serverLogs: "Registros del servidor"
 deleteAll: "Eliminar todos"
@@ -662,7 +662,7 @@ createNew: "Crear"
 optional: "Opcional"
 createNewClip: "Crear clip nuevo"
 unclip: "Quitar clip"
-confirmToUnclipAlreadyClippedNote: "Esta nota ya está incluida en el clip \"{name}\". ¿Quiere quitar la nota del clip?"
+confirmToUnclipAlreadyClippedNote: 'Esta nota ya está incluida en el clip "{name}". ¿Quiere quitar la nota del clip?'
 public: "Público"
 i18nInfo: "Misskey está siendo traducido a varios idiomas gracias a voluntarios. Se puede colaborar traduciendo en {link}"
 manageAccessTokens: "Administrar tokens de acceso"
@@ -684,7 +684,7 @@ driveFilesCount: "Cantidad de archivos en el drive"
 driveUsage: "Uso del drive"
 noCrawle: "Rechazar indexación del crawler"
 noCrawleDescription: "Pedir a los motores de búsqueda que no indexen tu perfil, notas, páginas, etc."
-lockedAccountInfo: "A menos que configures la visibilidad de tus notas como \"Sólo seguidores\", tus notas serán visibles para cualquiera, incluso si requieres que los seguidores sean aprobados manualmente."
+lockedAccountInfo: 'A menos que configures la visibilidad de tus notas como "Sólo seguidores", tus notas serán visibles para cualquiera, incluso si requieres que los seguidores sean aprobados manualmente.'
 alwaysMarkSensitive: "Marcar los medios de comunicación como contenido sensible por defecto"
 loadRawImages: "Cargar las imágenes originales en lugar de mostrar las miniaturas"
 disableShowingAnimatedImages: "No reproducir imágenes animadas"
@@ -699,8 +699,8 @@ useSystemFont: "Utilizar la tipografía por defecto del sistema"
 clips: "Clip"
 experimentalFeatures: "Características experimentales"
 developer: "Desarrolladores"
-makeExplorable: "Hacer visible la cuenta en \"Explorar\""
-makeExplorableDescription: "Si desactiva esta opción, su cuenta no aparecerá en la sección \"Explorar\"."
+makeExplorable: 'Hacer visible la cuenta en "Explorar"'
+makeExplorableDescription: 'Si desactiva esta opción, su cuenta no aparecerá en la sección "Explorar".'
 showGapBetweenNotesInTimeline: "Mostrar un intervalo entre notas en la línea de tiempo"
 duplicate: "Duplicar"
 left: "Izquierda"
@@ -918,7 +918,7 @@ unsubscribePushNotification: "Desactivar las notificaciones emergentes"
 pushNotificationAlreadySubscribed: "Notificaciones emergentes ya activadas"
 pushNotificationNotSupported: "El navegador o la instancia no admiten notificaciones push"
 sendPushNotificationReadMessage: "Eliminar las notificaciones push después de leer las notificaciones y los mensajes"
-sendPushNotificationReadMessageCaption: "La notificación \"{emptyPushNotificationMessage}\" aparecerá momentáneamente. Esto puede aumentar el consumo de batería del dispositivo."
+sendPushNotificationReadMessageCaption: 'La notificación "{emptyPushNotificationMessage}" aparecerá momentáneamente. Esto puede aumentar el consumo de batería del dispositivo.'
 windowMaximize: "Maximizar"
 windowMinimize: "Minimizar"
 windowRestore: "Regresar"
@@ -975,7 +975,7 @@ likeOnlyForRemote: "Sólo reacciones de instancias remotas"
 rolesAssignedToMe: "Roles asignados a mí"
 resetPasswordConfirm: "¿Realmente quieres cambiar la contraseña?"
 sensitiveWords: "Palabras sensibles"
-sensitiveWordsDescription: "La visibilidad de todas las notas que contienen cualquiera de las palabras configuradas serán puestas en \"Inicio\" automáticamente. Puedes enumerás varias separándolas con saltos de línea"
+sensitiveWordsDescription: 'La visibilidad de todas las notas que contienen cualquiera de las palabras configuradas serán puestas en "Inicio" automáticamente. Puedes enumerás varias separándolas con saltos de línea'
 notesSearchNotAvailable: "No se puede buscar una nota"
 license: "Licencia"
 unfavoriteConfirm: "¿Desea quitar de favoritos?"
@@ -986,13 +986,14 @@ retryAllQueuesConfirmTitle: "Desea ¿reintentar inmediatamente todas las colas?"
 retryAllQueuesConfirmText: "La carga del servidor está incrementándose temporalmente "
 enableChartsForRemoteUser: "Generar gráficas de usuarios remotos."
 enableChartsForFederatedInstances: "Generar gráficos de servidores remotos"
-showClipButtonInNoteFooter: "Añadir \"Clip\" al menú de notas"
+showClipButtonInNoteFooter: 'Añadir "Clip" al menú de notas'
 largeNoteReactions: "Agrandar las reacciones de las notas"
 noteIdOrUrl: "ID o URL de la nota"
 accountMigration: "Migración de cuenta"
 accountMoved: "Este usuario se ha mudado a una nueva cuenta:"
 horizontal: "Horizontal"
 youFollowing: "Siguiendo"
+options: "Opción"
 _accountMigration:
   moveFrom: "Trasladar de otra cuenta a ésta"
   moveFromLabel: "Cuenta desde la que se realiza el traslado:"
@@ -1155,7 +1156,7 @@ _achievements:
       title: "¡Toda una torre de radio!"
       description: "500 seguidores ganados"
     _followers1000:
-      title: "\"Influyente\""
+      title: '"Influyente"'
       description: "1000 seguidores gandos"
     _collectAchievements30:
       title: "Coleccionista"
@@ -1165,7 +1166,7 @@ _achievements:
       description: "Mirando tus logros por 3 minutos"
     _iLoveMisskey:
       title: "¡AMO Misskey!"
-      description: "\"I ❤ #Misskey\" Publicado"
+      description: '"I ❤ #Misskey" Publicado'
       flavor: "El equipo de desarrollo de Misskey, en verdad, ¡aprecia tu apoyo!"
     _foundTreasure:
       title: "Búsqueda del tesoro"
@@ -1195,7 +1196,7 @@ _achievements:
       description: "Gráficas de la instancia mostradas"
     _outputHelloWorldOnScratchpad:
       title: "¡Hola mundo!"
-      description: "Escribir \"hello world\" en el compositor"
+      description: 'Escribir "hello world" en el compositor'
     _open3windows:
       title: "Multiventana"
       description: "Tener más de 3 ventanas al mismo tiempo"
@@ -1236,7 +1237,7 @@ _achievements:
       flavor: "¿Está mal este juego?"
     _brainDiver:
       title: "Brain Diver"
-      description: "Publicaste un vínculo a \"Brain Diver\""
+      description: 'Publicaste un vínculo a "Brain Diver"'
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "Crear rol"
@@ -1362,12 +1363,12 @@ _preferencesBackups:
   save: "Guardar cambios"
   inputName: "Por favor, ingresa un nombre para este respaldo"
   cannotSave: "Fallo al guardar"
-  nameAlreadyExists: "Un respaldo llamado \"{name}\" ya existe. Por favor ingresa un nombre diferente"
-  applyConfirm: "¿Realmente quieres aplicar los cambios desde el archivo \"{name}\" a este dispositivo? Las configuraciones existentes serán sobreescritas. "
-  saveConfirm: "¿Guardar respaldo como \"{name}\"?"
-  deleteConfirm: "¿Borrar el respaldo \"{name}\"?"
-  renameConfirm: "¿Renombrar este respaldo de \"{old}\" a \"{new}\"?"
-  noBackups: "No existen respaldos. Deberás respaldar las configuraciones del cliente en este servidor usando \"Crear nuevo respaldo\""
+  nameAlreadyExists: 'Un respaldo llamado "{name}" ya existe. Por favor ingresa un nombre diferente'
+  applyConfirm: '¿Realmente quieres aplicar los cambios desde el archivo "{name}" a este dispositivo? Las configuraciones existentes serán sobreescritas. '
+  saveConfirm: '¿Guardar respaldo como "{name}"?'
+  deleteConfirm: '¿Borrar el respaldo "{name}"?'
+  renameConfirm: '¿Renombrar este respaldo de "{old}" a "{new}"?'
+  noBackups: 'No existen respaldos. Deberás respaldar las configuraciones del cliente en este servidor usando "Crear nuevo respaldo"'
   createdAt: "Creado: {date} {time}"
   updatedAt: "Actualizado: {date} {time}"
   cannotLoad: "La carga falló"
@@ -1545,7 +1546,7 @@ _2fa:
   securityKeyName: "Ingresa un nombre para la clave"
   tapSecurityKey: "Por favor, sigue tu navegador para registrar una llave de seguridad"
   removeKey: "Quitar la llave de seguridad"
-  removeKeyConfirm: "¿Borrar el respaldo \"{name}\"?"
+  removeKeyConfirm: '¿Borrar el respaldo "{name}"?'
   whyTOTPOnlyRenew: "The authenticator app cannot be removed as long as a security key is registered.\nLa aplicación autenticadora no puede ser eliminada mientras la llave de seguridad se encuentre registrada."
   renewTOTP: "Reconfigurar la aplicación autenticadora"
   renewTOTPConfirm: "This will cause verification codes from your previous app to stop working\nEsto hará que los códigos de verificación de la aplicación anterior dejen de funcionar"
@@ -1586,7 +1587,7 @@ _permissions:
   "write:gallery-likes": "Editar favoritos de la galería"
 _auth:
   shareAccessTitle: "Permisos de la aplicación"
-  shareAccess: "¿Desea permitir el acceso a la cuenta \"{name}\"?"
+  shareAccess: '¿Desea permitir el acceso a la cuenta "{name}"?'
   shareAccessAsk: "¿Está seguro de que desea autorizar esta aplicación para acceder a su cuenta?"
   permission: "{name} solicita los siguientes permisos"
   permissionAsk: "Esta aplicación requiere los siguientes permisos"
@@ -1852,7 +1853,7 @@ _deck:
   deleteProfile: "Eliminar perfil"
   introduction: "¡Crea la interfaz perfecta para tí organizando las columnas libremente!"
   introduction2: "Presiona en la  + de la derecha de la pantalla para añadir nuevas columnas donde quieras."
-  widgetsIntroduction: "Por favor selecciona \"Editar Widgets\" en el menú columna y agrega un widget."
+  widgetsIntroduction: 'Por favor selecciona "Editar Widgets" en el menú columna y agrega un widget.'
   _columns:
     main: "Principal"
     widgets: "Widgets"
@@ -1883,6 +1884,6 @@ _webhookSettings:
     followed: "Cuando se es seguido"
     note: "Cuando se publica una nota"
     reply: "Cuando se recibe una respuesta"
-    renote: "Cuando reciba un \"re-note\""
+    renote: 'Cuando reciba un "re-note"'
     reaction: "Cuando se recibe una reacción"
     mention: "Cuando hay una mención"

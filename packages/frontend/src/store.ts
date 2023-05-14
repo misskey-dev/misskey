@@ -314,6 +314,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	devMode: {
+		where: 'device',
+		default: false,
+	},
 	mediaListWithOneImageAppearance: {
 		where: 'device',
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',

@@ -2,7 +2,7 @@
 _lang_: "Deutsch"
 headlineMisskey: "Ein durch Notizen verbundenes Netzwerk"
 introMisskey: "Willkommen! Misskey ist eine dezentralisierte Open-Source Microblogging-Platform.\nVerfasse „Notizen“ um mitzuteilen, was gerade passiert oder um Ereignisse mit anderen zu teilen. 📡\nMit „Reaktionen“ kannst du außerdem schnell deine Gefühle über Notizen anderer Benutzer zum Ausdruck bringen. 👍\nEine neue Welt wartet auf dich! 🚀"
-poweredByMisskeyDescription: "{name} ist einer der durch die Open-Source-Plattform <b>Misskey</b> betriebenen Dienste (meist als \"Misskey-Instanz\" bezeichnet)."
+poweredByMisskeyDescription: '{name} ist einer der durch die Open-Source-Plattform <b>Misskey</b> betriebenen Dienste (meist als "Misskey-Instanz" bezeichnet).'
 monthAndDay: "{day}.{month}."
 search: "Suchen"
 notifications: "Benachrichtigungen"
@@ -349,7 +349,7 @@ bannerUrl: "Banner-URL"
 backgroundImageUrl: "Hintergrundbild-URL"
 basicInfo: "Grundlegende Informationen"
 pinnedUsers: "Angeheftete Benutzer"
-pinnedUsersDescription: "Gib durch Leerzeichen getrennte Benutzer an, die an die \"Erkunden\"-Seite angeheftet werden sollen."
+pinnedUsersDescription: 'Gib durch Leerzeichen getrennte Benutzer an, die an die "Erkunden"-Seite angeheftet werden sollen.'
 pinnedPages: "Angeheftete Seiten"
 pinnedPagesDescription: "Gib durch Leerzeilen getrennte Pfade zu Seiten an, die an die Startseite dieser Instanz angeheftet werden sollen."
 pinnedClipId: "ID des anzuheftenden Clips"
@@ -373,7 +373,7 @@ name: "Name"
 antennaSource: "Antennenquelle"
 antennaKeywords: "Zu beobachtende Schlüsselwörter"
 antennaExcludeKeywords: "Zu ignorierende Schlüsselwörter"
-antennaKeywordsDescription: "Zum Nutzen einer \"UND\"-Verknüpfung Einträge mit Leerzeichen trennen, zum Nutzen einer \"ODER\"-Verknüpfung Einträge mit einem Zeilenumbruch trennen"
+antennaKeywordsDescription: 'Zum Nutzen einer "UND"-Verknüpfung Einträge mit Leerzeichen trennen, zum Nutzen einer "ODER"-Verknüpfung Einträge mit einem Zeilenumbruch trennen'
 notifyAntenna: "Über neue Notizen benachrichtigen"
 withFileAntenna: "Nur Notizen mit Dateien"
 enableServiceworker: "Push-Benachrichtigungen im Browser aktivieren"
@@ -510,7 +510,7 @@ objectStorageUseSSL: "SSL verwenden"
 objectStorageUseSSLDesc: "Deaktiviere dies, falls du für API-Verbindungen kein HTTPS verwenden wirst"
 objectStorageUseProxy: "Über Proxy verbinden"
 objectStorageUseProxyDesc: "Deaktiviere dies, falls du für Verbindungen zur API keinen Proxy verwenden wirst"
-objectStorageSetPublicRead: "Bei Upload auf \"public-read\" stellen"
+objectStorageSetPublicRead: 'Bei Upload auf "public-read" stellen'
 s3ForcePathStyleDesc: "Ist s3ForcePathStyle aktiviert, so muss der Bucketname nicht im Hostnamen der URL, sondern im Pfad der URL angeben werden. Diese Option muss eventuell aktiviert werden, wenn Dienste wie z.B. eine selbstbetriebene Minio-Instanz verwendet werden."
 serverLogs: "Serverprotokolle"
 deleteAll: "Alle löschen"
@@ -668,7 +668,7 @@ createNew: "Neu erstellen"
 optional: "Optional"
 createNewClip: "Neuen Clip erstellen"
 unclip: "Aus Clip entfernen"
-confirmToUnclipAlreadyClippedNote: "Diese Notiz ist bereits im \"{name}\" Clip enthalten. Möchtest du sie aus diesem Clip entfernen?"
+confirmToUnclipAlreadyClippedNote: 'Diese Notiz ist bereits im "{name}" Clip enthalten. Möchtest du sie aus diesem Clip entfernen?'
 public: "Öffentlich"
 i18nInfo: "Misskey wird durch freiwillige Helfer in viele verschiedene Sprachen übersetzt. Auf {link} kannst du mithelfen."
 manageAccessTokens: "Zugriffstokens verwalten"
@@ -690,7 +690,7 @@ driveFilesCount: "Anzahl der Dateien in Drive"
 driveUsage: "Drive-Auslastung"
 noCrawle: "Crawler-Indexierung ablehnen"
 noCrawleDescription: "Suchmaschinen bitten, die eigene Profilseite, Notizen, Seiten usw. nicht zu indexieren."
-lockedAccountInfo: "Auch wenn du Follow-Anfragen auf manuelle Bestätigung setzt, wird jede deiner Notizen öffentlich sichtbar sein, sofern du ihre Notizsichtbarkeit nicht auf \"Nur Follower\" setzt."
+lockedAccountInfo: 'Auch wenn du Follow-Anfragen auf manuelle Bestätigung setzt, wird jede deiner Notizen öffentlich sichtbar sein, sofern du ihre Notizsichtbarkeit nicht auf "Nur Follower" setzt.'
 alwaysMarkSensitive: "Medien standardmäßig als NSFW markieren"
 loadRawImages: "Anstatt Vorschaubilder immer Originalbilder anzeigen"
 disableShowingAnimatedImages: "Animierte Bilder nicht abspielen"
@@ -698,8 +698,8 @@ verificationEmailSent: "Eine Bestätigungsmail wurde an deine Email-Adresse vers
 notSet: "Nicht konfiguriert"
 emailVerified: "Email-Adresse bestätigt"
 noteFavoritesCount: "Anzahl an als Favorit markierter Notizen"
-pageLikesCount: "Anzahl an als \"Gefällt mir\" markierter Seiten"
-pageLikedCount: "Anzahl erhaltener \"Gefällt mir\" auf Seiten"
+pageLikesCount: 'Anzahl an als "Gefällt mir" markierter Seiten'
+pageLikedCount: 'Anzahl erhaltener "Gefällt mir" auf Seiten'
 contact: "Kontakt"
 useSystemFont: "Standardschriftart des Systems verwenden"
 clips: "Clips"
@@ -759,11 +759,11 @@ showingPastTimeline: "Es wird eine alte Chronik angezeigt"
 clear: "Zurückkehren"
 markAllAsRead: "Alle als gelesen markieren"
 goBack: "Zurück"
-unlikeConfirm: "\"Gefällt mir\" wirklich entfernen?"
+unlikeConfirm: '"Gefällt mir" wirklich entfernen?'
 fullView: "Vollansicht"
 quitFullView: "Vollansicht verlassen"
 addDescription: "Beschreibung hinzufügen"
-userPagePinTip: "Um Notizen hier erscheinen zu lassen, drücke \"An dein Profil anheften\" im Menü individueller Notizen."
+userPagePinTip: 'Um Notizen hier erscheinen zu lassen, drücke "An dein Profil anheften" im Menü individueller Notizen.'
 notSpecifiedMentionWarning: "Diese Notiz enthält Erwähnungen von Nutzern, die nicht als Empfänger ausgewählt sind"
 info: "Über"
 userInfo: "Benutzerinformation"
@@ -937,8 +937,8 @@ tools: "Werkzeuge"
 cannotLoad: "Kann nicht geladen werden"
 numberOfProfileView: "Profilaufrufe"
 like: "Gefällt mir"
-unlike: "\"Gefällt mir\" entfernen"
-numberOfLikes: "\"Gefällt mir\"-Anzahl"
+unlike: '"Gefällt mir" entfernen'
+numberOfLikes: '"Gefällt mir"-Anzahl'
 show: "Anzeigen"
 neverShow: "Nicht wieder anzeigen"
 remindMeLater: "Vielleicht später"
@@ -984,12 +984,13 @@ emailNotSupported: "Diese Instanz unterstützt das Versenden von Emails nicht"
 postToTheChannel: "In Kanal senden"
 cannotBeChangedLater: "Kann später nicht mehr geändert werden."
 reactionAcceptance: "Reaktionsannahme"
-likeOnly: "Nur \"Gefällt mir\""
-likeOnlyForRemote: "Nur \"Gefällt mir\" für fremde Instanzen"
+likeOnly: 'Nur "Gefällt mir"'
+likeOnlyForRemote: 'Nur "Gefällt mir" für fremde Instanzen'
 rolesAssignedToMe: "Mir zugewiesene Rollen"
 resetPasswordConfirm: "Wirklich Passwort zurücksetzen?"
 sensitiveWords: "Sensible Wörter"
-sensitiveWordsDescription: "Die Notizsichtbarkeit aller Notizen, die diese Wörter enthalten, wird automatisch auf \"Startseite\" gesetzt. Durch Zeilenumbrüche können mehrere konfiguriert werden."
+sensitiveWordsDescription: 'Die Notizsichtbarkeit aller Notizen, die diese Wörter enthalten, wird automatisch auf "Startseite" gesetzt. Durch Zeilenumbrüche können mehrere konfiguriert werden.'
+sensitiveWordsDescription2: "Durch die Verwendung von Leerzeichen können AND-Verknüpfungen angegeben werden und durch das Umgeben von Schrägstrichen können reguläre Ausdrücke verwendet werden."
 notesSearchNotAvailable: "Die Notizsuche ist nicht verfügbar."
 license: "Lizenz"
 unfavoriteConfirm: "Wirklich aus Favoriten entfernen?"
@@ -1000,7 +1001,7 @@ retryAllQueuesConfirmTitle: "Wirklich erneut versuchen?"
 retryAllQueuesConfirmText: "Dies wird zu einer temporären Erhöhung der Serverlast führen."
 enableChartsForRemoteUser: "Diagramme für Nutzer fremder Instanzen erstellen"
 enableChartsForFederatedInstances: "Diagramme für fremde Instanzen erstellen"
-showClipButtonInNoteFooter: "\"Clip\" zum Notizmenu hinzufügen"
+showClipButtonInNoteFooter: '"Clip" zum Notizmenu hinzufügen'
 largeNoteReactions: "Reaktionen vergrößert anzeigen"
 noteIdOrUrl: "Notiz-ID oder URL"
 video: "Video"
@@ -1038,10 +1039,16 @@ thisChannelArchived: "Dieser Kanal wurde archiviert."
 displayOfNote: "Anzeige von Notizen"
 initialAccountSetting: "Kontoeinrichtung"
 youFollowing: "Gefolgt"
+preventAiLearning: "Verwendung in machinellem Lernen (Generative bzw. Prediktive AI/KI) ablehnen"
+preventAiLearningDescription: 'Fordert Crawler auf, gepostetes Text- oder Bildmaterial usw. nicht in Datensätzen für maschinelles Lernen (Generative bzw. Prediktive AI/KI) zu verwenden. Dies wird durch das Hinzufügen einer "noai"-Flag in der HTML-Antwort des jeweiligen Inhalts erreicht. Da diese Flag jedoch ignoriert werden kann, ist eine vollständige Verhinderung hierdurch nicht möglich.'
+options: "Optionen"
+specifyUser: "Spezifischer Benutzer"
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
+  letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
   letsFillYourProfile: "Lass uns zuerst dein Profil einrichten."
   profileSetting: "Profileinstellungen"
+  privacySetting: "Privatsphäreneinstellungen"
   theseSettingsCanEditLater: "Diese Einstellungen kannst du jederzeit ändern."
   youCanEditMoreSettingsInSettingsPageLater: "In den Einstellungen findest du noch viele weitere Optionen. Schau dort später mal vorbei."
   followUsers: "Folge zuerst ein paar Nutzern, um deine Chronik zu füllen."
@@ -1230,7 +1237,7 @@ _achievements:
       description: "Schau dir die Liste deiner Errungenschaften für mindestens 3 Minuten an"
     _iLoveMisskey:
       title: "I Love Misskey"
-      description: "Sende \"I ❤ #Misskey\""
+      description: 'Sende "I ❤ #Misskey"'
       flavor: "Danke, dass du Misskey verwendest! - vom Entwicklerteam"
     _foundTreasure:
       title: "Schatzsuche"
@@ -1263,7 +1270,7 @@ _achievements:
       description: "Schau dir die Messwerte der Instanz an"
     _outputHelloWorldOnScratchpad:
       title: "Hallo Welt!"
-      description: "Gib \"hello world\" in der Testumgebung aus"
+      description: 'Gib "hello world" in der Testumgebung aus'
     _open3windows:
       title: "Splitscreen"
       description: "Habe zur gleichen Zeit mindestens 3 Fenster offen"
@@ -1281,7 +1288,7 @@ _achievements:
       description: "Kann alle 10 Sekunden mit einer Warscheinlichkeit von 0.005% erhalten werden"
     _setNameToSyuilo:
       title: "Gottkomplex"
-      description: "Setze deinen Namen auf \"syuilo\""
+      description: 'Setze deinen Namen auf "syuilo"'
     _passedSinceAccountCreated1:
       title: "Einjahresjubiläum"
       description: "Seit der Erstellung deines Kontos ist 1 Jahr vergangen"
@@ -1413,9 +1420,9 @@ _forgotPassword:
   contactAdmin: "Diese Instanz unterstützt die Verwendung von Email-Adressen nicht. Wende dich an den Administrator, um dein Passwort zurückzusetzen."
 _gallery:
   my: "Meine Galerie"
-  liked: "Mit \"Gefällt mir\" markierte Beiträge"
+  liked: 'Mit "Gefällt mir" markierte Beiträge'
   like: "Gefällt mir"
-  unlike: "\"Gefällt mir\" entfernen"
+  unlike: '"Gefällt mir" entfernen'
 _email:
   _follow:
     title: "Du hast einen neuen Follower"
@@ -1433,12 +1440,12 @@ _preferencesBackups:
   save: "Speichern"
   inputName: "Gib einen Namen für dieses Backup ein"
   cannotSave: "Speichern fehlgeschlagen"
-  nameAlreadyExists: "Es existiert bereits ein Backup unter dem Namen \"{name}\". Bitte gib einen anderen Namen ein."
-  applyConfirm: "Wirklich das Backup \"{name}\" auf dieses Gerät anwenden? Bestehende Einstellungen darauf werden überschrieben."
+  nameAlreadyExists: 'Es existiert bereits ein Backup unter dem Namen "{name}". Bitte gib einen anderen Namen ein.'
+  applyConfirm: 'Wirklich das Backup "{name}" auf dieses Gerät anwenden? Bestehende Einstellungen darauf werden überschrieben.'
   saveConfirm: "Als {name} speichern?"
   deleteConfirm: "Das Backup {name} löschen?"
-  renameConfirm: "Soll dieses Backup von \"{old}\" zu \"{new}\" umbenannt werden?"
-  noBackups: "Keine Backups existieren. Backups können über \"Neu erstellen\" erstelllt werden."
+  renameConfirm: 'Soll dieses Backup von "{old}" zu "{new}" umbenannt werden?'
+  noBackups: 'Keine Backups existieren. Backups können über "Neu erstellen" erstelllt werden.'
   createdAt: "Erstellt am: {date} {time}"
   updatedAt: "Aktualisiert am: {date} {time}"
   cannotLoad: "Laden fehlgeschlagen"
@@ -1489,7 +1496,7 @@ _menuDisplay:
   hide: "Ausblenden"
 _wordMute:
   muteWords: "Stummgeschaltete Wörter"
-  muteWordsDescription: "Zum Nutzen einer \"UND\"-Verknüpfung Einträge mit Leerzeichen trennen, zum Nutzen einer \"ODER\"-Verknüpfung Einträge mit einem Zeilenumbruch trennen."
+  muteWordsDescription: 'Zum Nutzen einer "UND"-Verknüpfung Einträge mit Leerzeichen trennen, zum Nutzen einer "ODER"-Verknüpfung Einträge mit einem Zeilenumbruch trennen.'
   muteWordsDescription2: "Umgib Schlüsselworter mit Schrägstrichen, um Reguläre Ausdrücke zu verwenden."
   softDescription: "Notizen, die die angegebenen Konditionen erfüllen, in der Chronik ausblenden."
   hardDescription: "Verhindern, dass Notizen, die die angegebenen Konditionen erfüllen, der Chronik hinzugefügt werden. Zudem werden diese Notizen auch nicht der Chronik hinzugefügt, falls die Konditionen geändert werden."
@@ -1601,13 +1608,13 @@ _time:
   day: "Tag(en)"
 _timelineTutorial:
   title: "Wie du Misskey verwendest"
-  step1_1: "Dieser Bildschirm ist die \"Chronik\". Hier werden alle \"Notizen\" von {name} angezeigt."
-  step1_2: "Es gibt einige verschiedene Chroniken. Beispielsweise werden in der \"Startseite\" alle Notizen von Nutzern, denen du folgst, angezeigt, und in der \"Lokalen Chronik\" werden Notizen aller Nutzer auf {name} angezeigt."
+  step1_1: 'Dieser Bildschirm ist die "Chronik". Hier werden alle "Notizen" von {name} angezeigt.'
+  step1_2: 'Es gibt einige verschiedene Chroniken. Beispielsweise werden in der "Startseite" alle Notizen von Nutzern, denen du folgst, angezeigt, und in der "Lokalen Chronik" werden Notizen aller Nutzer auf {name} angezeigt.'
   step2_1: "Lass uns als nächstes versuchen, eine Notiz zu schreiben. Dies kannst du tun, indem du auf den Knopf mit dem Stift-Icon drückst."
-  step2_2: "Stell dich den anderen vor oder schreibe einfach \"Hallo {name}!\", wenn du darauf keine Lust hast oder dir nichts einfällt."
+  step2_2: 'Stell dich den anderen vor oder schreibe einfach "Hallo {name}!", wenn du darauf keine Lust hast oder dir nichts einfällt.'
   step3_1: "Fertig mit dem Senden deiner ersten Notiz?"
   step3_2: "Falls deine Notiz nun in deiner Chronik auftaucht, hast du alles richtig gemacht."
-  step4_1: "Notizen können zusätzlich mit \"Reaktionen\" ausgestattet werden."
+  step4_1: 'Notizen können zusätzlich mit "Reaktionen" ausgestattet werden.'
   step4_2: "Um eine Reaktion anzufügen, klicke auf das „+“-Symbol einer Notiz und wähle ein Emoji aus, mit dem du reagieren möchtest."
 _2fa:
   alreadyRegistered: "Du hast bereits ein Gerät für Zwei-Faktor-Authentifizierung registriert."
@@ -1665,8 +1672,8 @@ _permissions:
   "write:channels": "Kanäle bedienen"
   "read:gallery": "Beiträge deiner Galerie lesen"
   "write:gallery": "Deine Galerie bearbeiten"
-  "read:gallery-likes": "Liste deiner mit \"Gefällt mir\" markierten Galerie-Beiträge lesen"
-  "write:gallery-likes": "Liste deiner mit \"Gefällt mir\" markierten Galerie-Beiträge bearbeiten"
+  "read:gallery-likes": 'Liste deiner mit "Gefällt mir" markierten Galerie-Beiträge lesen'
+  "write:gallery-likes": 'Liste deiner mit "Gefällt mir" markierten Galerie-Beiträge bearbeiten'
 _auth:
   shareAccessTitle: "Verteilung von App-Berechtigungen"
   shareAccess: "Möchtest du „{name}“ authorisieren, auf dieses Benutzerkonto zugreifen zu können?"
@@ -1831,7 +1838,7 @@ _play:
   editThisPage: "Dieses Play bearbeiten"
   viewSource: "Quelltext anzeigen"
   my: "Meine Plays"
-  liked: "Mit \"Gefällt mir\" markierte Plays"
+  liked: 'Mit "Gefällt mir" markierte Plays'
   featured: "Beliebt"
   title: "Titel"
   script: "Skript"
@@ -1851,7 +1858,7 @@ _pages:
   viewSource: "Quelltext anzeigen"
   viewPage: "Seite anschauen"
   like: "Gefällt mir"
-  unlike: "\"Gefällt mir\" entfernen"
+  unlike: '"Gefällt mir" entfernen'
   my: "Meine Seiten"
   liked: "Seiten, die mir gefallen"
   featured: "Beliebt"
@@ -1935,7 +1942,7 @@ _deck:
   deleteProfile: "Profil löschen"
   introduction: "Erstelle eine auf dich zugeschneiderte Benutzeroberfläche durch das Aneinanderreihen von Spalten!"
   introduction2: "Klicke auf das + rechts um wann immer du möchtest neue Spalten hinzuzufügen."
-  widgetsIntroduction: "Drücke bitte \"Widgets bearbeiten\" im Spaltenmenü und füge ein Widget hinzu."
+  widgetsIntroduction: 'Drücke bitte "Widgets bearbeiten" im Spaltenmenü und füge ein Widget hinzu.'
   _columns:
     main: "Hauptspalte"
     widgets: "Widgets"

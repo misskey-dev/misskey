@@ -37,12 +37,8 @@ import { chooseFileFromPc } from '@/scripts/select-file';
 import * as os from '@/os';
 import { $i } from '@/account';
 
-const emit = defineEmits<{
-	(ev: 'done'): void;
-}>();
-
-const name = ref('');
-const description = ref('');
+const name = ref($i.name ?? '');
+const description = ref($i.description ?? '');
 
 watch(name, () => {
 	os.apiWithDialog('i/update', {
