@@ -3,11 +3,11 @@
 	<div :class="$style.title">
 		<div :class="$style.titleText"><i class="ti ti-info-circle"></i> {{ i18n.ts._timelineTutorial.title }}</div>
 		<div :class="$style.step">
-			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === 0" @click="tutorial--">
+			<button class="_button _focus_m" :class="$style.stepArrow" :disabled="tutorial === 0" @click="tutorial--">
 				<i class="ti ti-chevron-left"></i>
 			</button>
 			<span :class="$style.stepNumber">{{ tutorial + 1 }} / {{ tutorialsNumber }}</span>
-			<button class="_button" :class="$style.stepArrow" :disabled="tutorial === tutorialsNumber - 1" @click="tutorial++">
+			<button class="_button _focus_m" :class="$style.stepArrow" :disabled="tutorial === tutorialsNumber - 1" @click="tutorial++">
 				<i class="ti ti-chevron-right"></i>
 			</button>
 		</div>

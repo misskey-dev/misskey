@@ -1,14 +1,14 @@
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :prefer-type="preferedModalType" :anchor="anchor" :transparent-bg="true" :src="src" @click="modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :prefer-type="preferedModalType" :anchor="anchor" :transparent-bg="true" :src="src" @click="modal.close()" @esc="modal.close()" @closed="emit('closed')">
 	<div class="szkkfdyq _popup _shadow" :class="{ asDrawer: type === 'drawer' }" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : '' }">
 		<div class="main">
 			<template v-for="item in items">
-				<button v-if="item.action" v-click-anime class="_button item" @click="$event => { item.action($event); close(); }">
+				<button v-if="item.action" v-click-anime class="_button _focus_l item" @click="$event => { item.action($event); close(); }">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>
 				</button>
-				<MkA v-else v-click-anime :to="item.to" class="item" @click.passive="close()">
+				<MkA v-else v-click-anime :to="item.to" class="_focus_l item" @click.passive="close()">
 					<i class="icon" :class="item.icon"></i>
 					<div class="text">{{ item.text }}</div>
 					<span v-if="item.indicate" class="indicator"><i class="_indicatorCircle"></i></span>

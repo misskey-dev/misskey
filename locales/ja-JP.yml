@@ -2041,3 +2041,6 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+
+_a11y:
+  skipNavigation: "ナビゲーションをスキップ"

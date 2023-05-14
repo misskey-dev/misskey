@@ -702,6 +702,12 @@ importers:
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
+      focus-trap:
+        specifier: ^7.4.1
+        version: 7.4.1
+      focus-trap-vue:
+        specifier: ^4.0.2
+        version: 4.0.2(focus-trap@7.4.1)(vue@3.3.1)
       gsap:
         specifier: 3.11.5
         version: 3.11.5
@@ -11366,6 +11372,22 @@ packages:
       readable-stream: 2.3.7
     dev: false
 
+  /focus-trap-vue@4.0.2(focus-trap@7.4.1)(vue@3.3.1):
+    resolution: {integrity: sha512-2iQN2xKCSCzyhcD90VpueQcTIAhaCRxxo67fkz7RSqLmEd16QKjfGslCr3KxvBx0LfpVN9j0IAyKKuJKw3Intg==}
+    peerDependencies:
+      focus-trap: ^7.0.0
+      vue: ^3.0.0
+    dependencies:
+      focus-trap: 7.4.1
+      vue: 3.3.1
+    dev: false
+
+  /focus-trap@7.4.1:
+    resolution: {integrity: sha512-rnXP5ERIjlo1gEZp7hQb4ekYqUxRuSDQeyWvxhahH3/GkWtd8h8g1C8Eu/KGpuvbUWNVeogK0kuzzrM4u2Z9jA==}
+    dependencies:
+      tabbable: 6.1.2
+    dev: false
+
   /follow-redirects@1.15.2(debug@4.3.4):
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
@@ -18579,6 +18601,10 @@ packages:
 
   /syuilo-password-strength@0.0.1:
     resolution: {integrity: sha512-g9rPT3V1Q4WjWFZ/t5BdGC1mT/FpYnsLdBl+M5e6MlRkuE1RSR+R43wcY/3mKI59B9KEr+vxdWCuWNMD3oNHKA==}
+    dev: false
+
+  /tabbable@6.1.2:
+    resolution: {integrity: sha512-qCN98uP7i9z0fIS4amQ5zbGBOq+OSigYeGvPy7NDk8Y9yncqDZ9pRPgfsc2PJIVM9RrJj7GIfuRgmjoUU9zTHQ==}
     dev: false
 
   /tar-fs@2.1.1:

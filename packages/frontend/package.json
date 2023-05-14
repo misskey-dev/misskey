@@ -40,6 +40,8 @@
 		"date-fns": "2.30.0",
 		"escape-regexp": "0.0.1",
 		"eventemitter3": "5.0.1",
+		"focus-trap": "^7.4.1",
+		"focus-trap-vue": "^4.0.2",
 		"gsap": "3.11.5",
 		"idb-keyval": "6.2.1",
 		"insert-text-at-cursor": "0.3.0",

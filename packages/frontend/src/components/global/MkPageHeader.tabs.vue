@@ -3,7 +3,7 @@
 	<div :class="$style.tabsInner">
 		<button
 			v-for="t in tabs" :ref="(el) => tabRefs[t.key] = (el as HTMLElement)" v-tooltip.noDelay="t.title"
-			class="_button" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
+			class="_button _focus_l" :class="[$style.tab, { [$style.active]: t.key != null && t.key === props.tab, [$style.animate]: defaultStore.reactiveState.animation.value }]"
 			@mousedown="(ev) => onTabMousedown(t, ev)" @click="(ev) => onTabClick(t, ev)"
 		>
 			<div :class="$style.tabInner">

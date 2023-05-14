@@ -1,10 +1,16 @@
 <template>
+<div :class="$style.skipNavigation" :style="{ zIndex: os.claimZIndex('high') }">
+	<MkButton :primary="true" :rounded="true" @click="skipNavigation()" :aria-label="i18n.ts._a11y.skipNavigation">
+		{{ i18n.ts._a11y.skipNavigation }}
+	</MkButton>
+</div>
+
 <div :class="[$style.root, { [$style.withWallpaper]: wallpaper }]">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
 	<MkStickyContainer :class="$style.contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
-		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
+		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu" ref="mainContent">
 			<div :class="$style.content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
@@ -99,6 +105,8 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
 import { CURRENT_STICKY_BOTTOM } from '@/const';
+import MkButton from '@/components/MkButton.vue';
+
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -117,6 +125,8 @@ let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsEl = $shallowRef<HTMLElement>();
 const widgetsShowing = $ref(false);
 const navFooter = $shallowRef<HTMLElement>();
+
+const mainContent = ref<HTMLElement>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
@@ -206,6 +216,12 @@ const attachSticky = (el) => {
 
 function top() {
 	window.scroll({ top: 0, behavior: 'smooth' });
+}
+
+function skipNavigation() {
+	if (mainContent.value) {
+		mainContent.value.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')?.focus();
+	}
 }
 
 const wallpaper = miLocalStorage.getItem('wallpaper') != null;
@@ -439,5 +455,26 @@ $widgets-hide-threshold: 1090px;
 
 .spacer {
 	height: calc(var(--minBottomSpacing));
+}
+
+.skipNavigation {
+	position: absolute;
+	top: -1000px;
+
+	&:focus-within {
+		top: 10px;
+		left: 92px;
+		z-index: 1;
+		outline: none;
+
+		@media (min-height: 500px) {
+			left: 262px;
+		}
+
+		> * {
+			outline: solid 2px var(--focus);
+    		outline-offset: 2px;
+		}
+	}
 }
 </style>

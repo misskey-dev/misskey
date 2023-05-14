@@ -421,6 +421,24 @@ hr {
 	transform: scale(0.9);
 }
 
+._focus_before_l:focus-visible {
+	outline: none;
+	
+	&::before {
+		box-shadow: inset 0 0 0 3px var(--focus);
+	}
+}
+
+._focus_l:focus-visible {
+	outline: none;
+	box-shadow: inset 0 0 0 3px var(--focus);
+}
+
+._focus_m:focus-visible {
+	outline: none;
+	box-shadow: inset 0 0 0 2px var(--focus);
+}
+
 @keyframes blink {
 	0% { opacity: 1; transform: scale(1); }
 	30% { opacity: 1; transform: scale(1); }

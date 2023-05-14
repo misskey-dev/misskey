@@ -63,17 +63,23 @@ export default {
 			ev.preventDefault();
 		});
 
-		el.addEventListener(start, () => {
+		function show(): void {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
 			self.showTimer = window.setTimeout(self.show, delay);
-		}, { passive: true });
+		}
 
-		el.addEventListener(end, () => {
+		function hide(): void {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
 			self.hideTimer = window.setTimeout(self.close, delay);
-		}, { passive: true });
+		}
+
+		el.addEventListener(start, show, { passive: true });
+		el.addEventListener('focusin', show, { passive: true });
+
+		el.addEventListener(end, hide, { passive: true });
+		el.addEventListener('focusout', hide, { passive: true });
 
 		el.addEventListener('click', () => {
 			window.clearTimeout(self.showTimer);

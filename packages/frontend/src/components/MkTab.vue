@@ -13,7 +13,7 @@ export default defineComponent({
 		return () => h('div', {
 			class: 'pxhvhrfw',
 		}, options.map(option => withDirectives(h('button', {
-			class: ['_button', { active: props.modelValue === option.props.value }],
+			class: ['_button _focus_l', { active: props.modelValue === option.props.value }],
 			key: option.key,
 			disabled: props.modelValue === option.props.value,
 			onClick: () => {
