@@ -1,6 +1,6 @@
 <template>
 <div :class="$style.skipNavigation" :style="{ zIndex: os.claimZIndex('high') }">
-	<MkButton :primary="true" :rounded="true" @click="skipNavigation()" :aria-label="i18n.ts._a11y.skipNavigation">
+	<MkButton :primary="true" :rounded="true" :aria-label="i18n.ts._a11y.skipNavigation" @click="skipNavigation()">
 		{{ i18n.ts._a11y.skipNavigation }}
 	</MkButton>
 </div>
@@ -10,7 +10,7 @@
 
 	<MkStickyContainer :class="$style.contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
-		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu" ref="mainContent">
+		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" ref="mainContent" @contextmenu.stop="onContextmenu">
 			<div :class="$style.content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
@@ -473,7 +473,7 @@ $widgets-hide-threshold: 1090px;
 
 		> * {
 			outline: solid 2px var(--focus);
-    		outline-offset: 2px;
+			outline-offset: 2px;
 		}
 	}
 }
