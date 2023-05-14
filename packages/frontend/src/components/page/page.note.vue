@@ -5,37 +5,25 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, Ref, ref } from 'vue';
+<script lang="ts" setup>
+import { onMounted, Ref, ref } from 'vue';
+import * as Misskey from 'misskey-js';
+import { NoteBlock } from './block.type';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
 import * as os from '@/os';
-import { NoteBlock } from '@/scripts/hpml/block';
 
-export default defineComponent({
-	components: {
-		MkNote,
-		MkNoteDetailed,
-	},
-	props: {
-		block: {
-			type: Object as PropType<NoteBlock>,
-			required: true,
-		},
-	},
-	setup(props, ctx) {
-		const note: Ref<Record<string, any> | null> = ref(null);
+const props = defineProps<{
+	block: NoteBlock,
+	page: Misskey.entities.Page,
+}>();
 
-		onMounted(() => {
-			os.api('notes/show', { noteId: props.block.note })
-				.then(result => {
-					note.value = result;
-				});
+const note: Ref<Misskey.entities.Note | null> = ref(null);
+
+onMounted(() => {
+	os.api('notes/show', { noteId: props.block.note })
+		.then(result => {
+			note.value = result;
 		});
-
-		return {
-			note,
-		};
-	},
 });
 </script>
