@@ -10,7 +10,7 @@
 
 	<MkStickyContainer :class="$style.contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
-		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" ref="mainContent" @contextmenu.stop="onContextmenu">
+		<main ref="mainContent" style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
 			<div :class="$style.content" style="container-type: inline-size;">
 				<RouterView/>
 			</div>
