@@ -7,10 +7,10 @@
 	@close="close(true)"
 	@closed="emit('closed')"
 >
-	<template v-if="page === 1" #header>{{ i18n.ts._initialAccountSetting.profileSetting }}</template>
-	<template v-else-if="page === 2" #header>{{ i18n.ts._initialAccountSetting.privacySetting }}</template>
-	<template v-else-if="page === 3" #header>{{ i18n.ts.follow }}</template>
-	<template v-else-if="page === 4" #header>{{ i18n.ts.pushNotification }}</template>
+	<template v-if="page === 1" #header><i class="ti ti-user-edit"></i> {{ i18n.ts._initialAccountSetting.profileSetting }}</template>
+	<template v-else-if="page === 2" #header><i class="ti ti-lock"></i> {{ i18n.ts._initialAccountSetting.privacySetting }}</template>
+	<template v-else-if="page === 3" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
+	<template v-else-if="page === 4" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
 	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
