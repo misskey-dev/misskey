@@ -14,6 +14,10 @@
 
 ## 13.x.x (unreleased)
 
+
+### General
+- リストを公開できるようになりました
+
 ### Client
 - 開発者モードを追加
 - AiScriptを0.13.3に更新
