@@ -1,5 +1,5 @@
 <template>
-<div class="graojtoi">
+<div>
 	<MkSample/>
 </div>
 </template>
@@ -19,9 +19,3 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-eye',
 })));
 </script>
-
-<style lang="scss" scoped>
-.graojtoi {
-	padding: var(--margin);
-}
-</style>

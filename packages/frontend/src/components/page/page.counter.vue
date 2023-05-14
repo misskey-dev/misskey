@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkButton class="llumlmnx" @click="click()">{{ hpml.interpolate(block.text) }}</MkButton>
+	<MkButton :class="$style.button" @click="click()">{{ hpml.interpolate(block.text) }}</MkButton>
 </div>
 </template>
 
@@ -41,8 +41,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.llumlmnx {
+<style lang="scss" module>
+.button {
 	display: inline-block;
 	min-width: 300px;
 	max-width: 450px;

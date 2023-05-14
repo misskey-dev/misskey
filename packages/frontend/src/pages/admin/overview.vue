@@ -1,6 +1,6 @@
 <template>
 <MkSpacer :content-max="1000">
-	<div ref="rootEl" class="edbbcaef">
+	<div ref="rootEl" :class="$style.root">
 		<MkFoldableSection class="item">
 			<template #header>Stats</template>
 			<XStats/>
@@ -176,8 +176,8 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.edbbcaef {
+<style lang="scss" module>
+.root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 	grid-gap: 16px;

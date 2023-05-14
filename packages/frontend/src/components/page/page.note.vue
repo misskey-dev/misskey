@@ -1,5 +1,5 @@
 <template>
-<div class="voxdxuby">
+<div style="margin: 1em 0;">
 	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>
 	<MkNoteDetailed v-if="note && block.detailed" :key="note.id + ':detail'" v-model:note="note"/>
 </div>
@@ -28,9 +28,9 @@ export default defineComponent({
 
 		onMounted(() => {
 			os.api('notes/show', { noteId: props.block.note })
-			.then(result => {
-				note.value = result;
-			});
+				.then(result => {
+					note.value = result;
+				});
 		});
 
 		return {
@@ -39,9 +39,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.voxdxuby {
-	margin: 1em 0;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkButton class="kudkigyw" :primary="block.primary" @click="click()">{{ hpml.interpolate(block.text) }}</MkButton>
+	<MkButton :class="$style.button" :primary="block.primary" @click="click()">{{ hpml.interpolate(block.text) }}</MkButton>
 </div>
 </template>
 
@@ -56,8 +56,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.kudkigyw {
+<style lang="scss" module>
+.button {
 	display: inline-block;
 	min-width: 200px;
 	max-width: 450px;

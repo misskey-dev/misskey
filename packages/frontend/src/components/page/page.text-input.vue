@@ -1,6 +1,6 @@
 <template>
 <div>
-	<MkInput class="kudkigyw" :model-value="value" type="text" @update:model-value="updateValue($event)">
+	<MkInput :class="$style.input" :model-value="value" type="text" @update:model-value="updateValue($event)">
 		<template #label>{{ hpml.interpolate(block.text) }}</template>
 	</MkInput>
 </div>
@@ -44,8 +44,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.kudkigyw {
+<style lang="scss" module>
+.input {
 	display: inline-block;
 	min-width: 300px;
 	max-width: 450px;

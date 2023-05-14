@@ -1,6 +1,6 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :show-header="false" data-cy-mkw-aichan class="mkw-aichan">
-	<iframe ref="live2d" class="dedjhjmo" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
+	<iframe ref="live2d" :class="$style.root" src="https://misskey-dev.github.io/mascot-web/?scale=1.5&y=1.1&eyeY=100" @click="touched"></iframe>
 </MkContainer>
 </template>
 
@@ -64,8 +64,8 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.dedjhjmo {
+<style lang="scss" module>
+.root {
 	width: 100%;
 	height: 350px;
 	border: none;
