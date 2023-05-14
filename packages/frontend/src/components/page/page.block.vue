@@ -1,33 +1,19 @@
 <template>
-<component :is="'x-' + block.type" :key="block.id" :block="block" :hpml="hpml" :h="h"/>
+<component :is="'x-' + block.type" :key="block.id" :page="page" :block="block" :h="h"/>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
+import * as Misskey from 'misskey-js';
 import XText from './page.text.vue';
 import XSection from './page.section.vue';
 import XImage from './page.image.vue';
 import XNote from './page.note.vue';
-import { Hpml } from '@/scripts/hpml/evaluator';
-import { Block } from '@/scripts/hpml/block';
+import { Block } from './block.type';
 
-export default defineComponent({
-	components: {
-		XText, XSection, XImage, XNote,
-	},
-	props: {
-		block: {
-			type: Object as PropType<Block>,
-			required: true,
-		},
-		hpml: {
-			type: Object as PropType<Hpml>,
-			required: true,
-		},
-		h: {
-			type: Number,
-			required: true,
-		},
-	},
-});
+defineProps<{
+	block: Block,
+	h: number,
+	page: Misskey.entities.Page,
+}>();
 </script>
