@@ -42,7 +42,9 @@
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<XProfile/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</MkSpacer>
 				</div>
 			</template>
@@ -50,7 +52,9 @@
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<XPrivacy/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</MkSpacer>
 				</div>
 			</template>

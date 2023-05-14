@@ -1,5 +1,5 @@
 <template>
-<canvas ref="canvasEl" style="width: 100%; height: 100%;"></canvas>
+<canvas ref="canvasEl" style="width: 100%; height: 100%; pointer-events: none;"></canvas>
 </template>
 
 <script lang="ts" setup>
@@ -191,7 +191,6 @@ onMounted(() => {
 	const u_focus = gl.getUniformLocation(shaderProgram, 'u_focus');
 	const u_itensity = gl.getUniformLocation(shaderProgram, 'u_itensity');
 	gl.uniform2fv(u_resolution, [canvas.width, canvas.height]);
-	gl.uniform1f(u_time, 1.0);
 	gl.uniform1f(u_spread, 1.0);
 	gl.uniform1f(u_speed, 1.0);
 	gl.uniform1f(u_warp, 1.0);
