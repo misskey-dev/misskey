@@ -1,7 +1,7 @@
 <template>
-<form class="eppvobhk" :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
-	<div class="auth _gaps_m">
-		<div v-show="withAvatar" class="avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null, marginBottom: message ? '1.5em' : null }"></div>
+<form :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
+	<div class="_gaps_m">
+		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null, marginBottom: message ? '1.5em' : null }"></div>
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
@@ -236,18 +236,14 @@ function resetPassword() {
 }
 </script>
 
-<style lang="scss" scoped>
-.eppvobhk {
-	> .auth {
-		> .avatar {
-			margin: 0 auto 0 auto;
-			width: 64px;
-			height: 64px;
-			background: #ddd;
-			background-position: center;
-			background-size: cover;
-			border-radius: 100%;
-		}
-	}
+<style lang="scss" module>
+.avatar {
+	margin: 0 auto 0 auto;
+	width: 64px;
+	height: 64px;
+	background: #ddd;
+	background-position: center;
+	background-size: cover;
+	border-radius: 100%;
 }
 </style>

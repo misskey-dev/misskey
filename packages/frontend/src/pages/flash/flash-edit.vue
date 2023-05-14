@@ -442,7 +442,3 @@ definePageMetadata(computed(() => flash ? {
 	title: i18n.ts._play.new,
 }));
 </script>
-
-<style lang="scss" scoped>
-
-</style>
