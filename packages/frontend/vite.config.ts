@@ -99,7 +99,7 @@ export function getConfig(): UserConfig {
 			_DATA_TRANSFER_DRIVE_FILE_: JSON.stringify('mk_drive_file'),
 			_DATA_TRANSFER_DRIVE_FOLDER_: JSON.stringify('mk_drive_folder'),
 			_DATA_TRANSFER_DECK_COLUMN_: JSON.stringify('mk_deck_column'),
-			__VUE_OPTIONS_API__: true,
+			__VUE_OPTIONS_API__: false,
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
