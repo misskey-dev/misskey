@@ -9,7 +9,7 @@
 		</I18n>
 	</template>
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="dpvffvvy _gaps_m">
+		<div class="_gaps_m" :class="$style.root">
 			<div class="">
 				<MkTextarea v-model="comment">
 					<template #label>{{ i18n.ts.details }}</template>
@@ -60,8 +60,8 @@ function send() {
 }
 </script>
 
-<style lang="scss" scoped>
-.dpvffvvy {
+<style lang="scss" module>
+.root {
 	--root-margin: 16px;
 }
 </style>

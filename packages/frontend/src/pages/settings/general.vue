@@ -145,7 +145,10 @@
 	</FormSection>
 
 	<FormSection>
-		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+		<div class="_gaps_s">
+			<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+			<MkSwitch v-model="devMode">{{ i18n.ts.devMode }}</MkSwitch>
+		</div>
 	</FormSection>
 
 	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
@@ -213,6 +216,7 @@ const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfin
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
+const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));

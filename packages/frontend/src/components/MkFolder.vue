@@ -6,7 +6,7 @@
 				<div :class="$style.headerIcon"><slot name="icon"></slot></div>
 				<div :class="$style.headerText">
 					<div :class="$style.headerTextMain">
-						<slot name="label"></slot>
+						<MkCondensedLine :min-scale="2 / 3"><slot name="label"></slot></MkCondensedLine>
 					</div>
 					<div :class="$style.headerTextSub">
 						<slot name="caption"></slot>

@@ -10,8 +10,8 @@
 	<template #header>:{{ emoji.name }}:</template>
 
 	<MkSpacer :margin-min="20" :margin-max="28">
-		<div class="yigymqpb _gaps_m">
-			<img :src="`/emoji/${emoji.name}.webp`" class="img"/>
+		<div class="_gaps_m">
+			<img :src="`/emoji/${emoji.name}.webp`" :class="$style.img"/>
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
 			</MkInput>
@@ -99,12 +99,10 @@ async function del() {
 }
 </script>
 
-<style lang="scss" scoped>
-.yigymqpb {
-	> .img {
-		display: block;
-		height: 64px;
-		margin: 0 auto;
-	}
+<style lang="scss" module>
+.img {
+	display: block;
+	height: 64px;
+	margin: 0 auto;
 }
 </style>

@@ -12,6 +12,12 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### Client
+- 開発者モードを追加
+- AiScriptを0.13.3に更新
+
 ## 13.12.2
 
 ## NOTE
