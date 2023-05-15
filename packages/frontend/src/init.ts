@@ -343,7 +343,7 @@ if ($i) {
 	// only add post shortcuts if logged in
 	hotkeys['p|n'] = post;
 
-	defaultStore.ready.then(() => {
+	defaultStore.loaded.then(() => {
 		if (defaultStore.state.accountSetupWizard !== -1) {
 			popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
 		}
