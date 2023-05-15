@@ -283,7 +283,12 @@ export const endpoints = {
 				properties: {
 					title: { type: 'string', minLength: 1 },
 					text: { type: 'string', minLength: 1 },
-					imageUrl: { type: 'string', nullable: true, minLength: 1 },
+					imageUrl: {
+						oneOf: [
+							{ type: 'string', minLength: 1 },
+							{ type: 'null' },
+						],
+					},
 				},
 				required: ['title', 'text', 'imageUrl'],
 			},
@@ -362,7 +367,12 @@ export const endpoints = {
 					id: { type: 'string', format: 'misskey:id' },
 					title: { type: 'string', minLength: 1 },
 					text: { type: 'string', minLength: 1 },
-					imageUrl: { type: 'string', nullable: true, minLength: 1 },
+					imageUrl: {
+						oneOf: [
+							{ type: 'string', minLength: 1 },
+							{ type: 'null' },
+						],
+					},
 				},
 				required: ['id', 'title', 'text', 'imageUrl'],
 			},
@@ -404,14 +414,28 @@ export const endpoints = {
 					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 					sinceId: { type: 'string', format: 'misskey:id' },
 					untilId: { type: 'string', format: 'misskey:id' },
-					userId: { type: 'string', format: 'misskey:id', nullable: true },
-					type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
+					userId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+					type: {
+						oneOf: [
+							{ type: 'string', pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
+							{ type: 'null' },
+						],
+					},
 					origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
 					hostname: {
-						type: 'string',
-						nullable: true,
-						default: null,
-						description: 'The local host is represented with `null`.',
+						oneOf: [
+							{
+								type: 'string',
+								default: null,
+								description: 'The local host is represented with `null`.',
+							},
+							{ type: 'null' },
+						],
 					},
 				},
 				required: [],
