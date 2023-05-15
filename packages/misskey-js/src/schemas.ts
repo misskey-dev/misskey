@@ -33,6 +33,8 @@ import { packedQueueCountSchema } from './schemas/queue.js';
 import { packedGalleryPostSchema } from './schemas/gallery-post.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from './schemas/emoji.js';
 import { packedFlashSchema } from './schemas/flash.js';
+import { packedAdSchema } from './schemas/ad.js';
+import { packedAnnouncementSchema } from './schemas/announcement.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
 export const refs = {
@@ -70,6 +72,8 @@ export const refs = {
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
+	Ad: packedAdSchema,
+	Announcement: packedAnnouncementSchema,
 } as const satisfies { [x: string]: JSONSchema7Definition };
 
 type References = GetRefs<typeof refs>;
