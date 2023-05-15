@@ -35,7 +35,7 @@ export class Resolver {
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
 		private loggerService: LoggerService,
-		private recursionLimit = 100,
+		private recursionLimit = 1000,
 	) {
 		this.history = new Set();
 		this.logger = this.loggerService.getLogger('ap-resolve');
@@ -81,7 +81,7 @@ export class Resolver {
 		}
 
 		if (this.history.size > this.recursionLimit) {
-			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
+			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)} ${this.history.size} / ${this.recursionLimit}`);
 		}
 
 		this.history.add(value);
