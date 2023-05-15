@@ -11,8 +11,12 @@ export const packedAnnouncementSchema = {
 			format: 'date-time',
 		},
 		updatedAt: {
-			type: 'string',
-			format: 'date-time',
+            oneOf: [{
+                type: 'string',
+                format: 'date-time',
+            }, {
+                type: 'null',
+            }],
 		},
         title: {
             type: 'string',
