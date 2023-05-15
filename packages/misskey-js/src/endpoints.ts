@@ -21,6 +21,8 @@ export type RolePolicies = {
 	rateLimitFactor: number;
 };
 
+export type EndpointDefines = ReadonlyArray<{ req: JSONSchema7 | undefined; res: JSONSchema7 | undefined; }>;
+
 export interface IEndpointMeta {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
 
@@ -34,7 +36,7 @@ export interface IEndpointMeta {
 		};
 	};
 
-	readonly defines: ReadonlyArray<{ req: JSONSchema7 | undefined; res: JSONSchema7 | undefined; }>;
+	readonly defines: EndpointDefines;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
@@ -287,7 +289,187 @@ export const endpoints = {
 			},
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/Announcement',
-			}
+			},
+		}],
+	},
+	"admin/announcements/delete": {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		errors: {
+			noSuchAnnouncement: {
+				message: 'No such announcement.',
+				code: 'NO_SUCH_ANNOUNCEMENT',
+				id: 'ecad8040-a276-4e85-bda9-015a708d291e',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					id: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['id'],
+			},
+			res: undefined,
+		}],
+	},
+	"admin/announcements/list": {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Announcement',
+				},
+			},
+		}],
+	},
+	"admin/announcements/update": {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			noSuchAnnouncement: {
+				message: 'No such announcement.',
+				code: 'NO_SUCH_ANNOUNCEMENT',
+				id: 'd3aae5a7-6372-4cb4-b61c-f511ffc2d7cc',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					id: { type: 'string', format: 'misskey:id' },
+					title: { type: 'string', minLength: 1 },
+					text: { type: 'string', minLength: 1 },
+					imageUrl: { type: 'string', nullable: true, minLength: 1 },
+				},
+				required: ['id', 'title', 'text', 'imageUrl'],
+			},
+			res: undefined,
+		}],
+	},
+	"admin/drive/clean-remote-files": {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: undefined,
+		}],
+	},
+	"admin/drive/clenaup": {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: undefined,
+		}],
+	},
+	"admin/drive/files": {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					userId: { type: 'string', format: 'misskey:id', nullable: true },
+					type: { type: 'string', nullable: true, pattern: /^[a-zA-Z0-9\/\-*]+$/.toString().slice(1, -1) },
+					origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'local' },
+					hostname: {
+						type: 'string',
+						nullable: true,
+						default: null,
+						description: 'The local host is represented with `null`.',
+					},
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+				},
+			},
+		}],
+	},
+	"admin/drive/show-file": {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: 'caf3ca38-c6e5-472e-a30c-b05377dcc240',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					fileId: { type: 'string', format: 'misskey:id' },
+					url: { type: 'string' },
+				},
+				anyOf: [
+					{ required: ['fileId'] },
+					{ required: ['url'] },
+				],
+			},
+			res: {
+				allOf: [{
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+				}, {
+					type: 'object',
+					properties: {
+						requestIp: {
+							type: ['string', 'null'],
+						},
+						requestHeaders: {
+							oneOf: [{
+								type: 'object',
+							}, {
+								type: 'null',
+							}],
+						}
+					},
+					required: ['requestIp', 'requestHeaders'],
+				}],
+			},
 		}],
 	},
 } as const satisfies { [x: string]: IEndpointMeta; };
