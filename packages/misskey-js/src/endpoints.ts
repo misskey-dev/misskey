@@ -133,7 +133,7 @@ export const endpoints = {
                 required: ['username', 'password'],
             },
             res: {
-                $ref: '/schemas/User',
+                $ref: 'https://misskey-hub.net/api/schemas/User',
                 properties: {
                     token: {
                         type: 'string',
@@ -226,6 +226,9 @@ export const endpoints = {
 			},
 			res: {
 				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Ad',
+				},
 			},
 		}],
 	},
