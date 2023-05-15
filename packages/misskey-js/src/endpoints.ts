@@ -133,13 +133,17 @@ export const endpoints = {
                 required: ['username', 'password'],
             },
             res: {
-                $ref: 'https://misskey-hub.net/api/schemas/User',
-                properties: {
-                    token: {
-                        type: 'string',
-                    },
-                },
-				required: ['token'],
+				allOf: [{
+					$ref: 'https://misskey-hub.net/api/schemas/MeDetailed',
+				}, {
+					type: 'object',
+					properties: {
+						token: {
+							type: 'string',
+						},
+					},
+					required: ['token'],
+				}],
             },
         }],
     },
@@ -263,6 +267,27 @@ export const endpoints = {
 				required: ['id', 'memo', 'url', 'imageUrl', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt'],
 			},
 			res: undefined,
+		}],
+	},
+	"admin/announcements/create": {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					title: { type: 'string', minLength: 1 },
+					text: { type: 'string', minLength: 1 },
+					imageUrl: { type: 'string', nullable: true, minLength: 1 },
+				},
+				required: ['title', 'text', 'imageUrl'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Announcement',
+			}
 		}],
 	},
 } as const satisfies { [x: string]: IEndpointMeta; };
