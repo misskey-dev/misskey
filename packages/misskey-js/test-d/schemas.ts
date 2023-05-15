@@ -92,4 +92,10 @@ describe('schemas', () => {
     test('flash', () => {
         type Flash = Packed<'Flash'>;
     });
+    test('announcement', () => {
+        type Announcement = Packed<'Announcement'>;
+    });
+    test('ad', () => {
+        type Ad = Packed<'Ad'>;
+    });
 });
