@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { computed, provide, onUnmounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
@@ -56,6 +56,8 @@ let endpoint;
 let query;
 let connection;
 let connection2;
+
+const stream = useStream();
 
 if (props.src === 'antenna') {
 	endpoint = 'antennas/notes';
