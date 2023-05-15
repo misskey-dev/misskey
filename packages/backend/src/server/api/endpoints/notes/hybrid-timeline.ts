@@ -98,7 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.setParameters(followingQuery.getParameters());
 
 			this.queryService.generateChannelQuery(query, me);
-			this.queryService.generateRepliesQuery(query, me);
+			//this.queryService.generateRepliesQuery(query, me);
 			this.queryService.generateVisibilityQuery(query, me);
 			this.queryService.generateMutedUserQuery(query, me);
 			this.queryService.generateMutedNoteQuery(query, me);

@@ -86,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateChannelQuery(query, me);
-			this.queryService.generateRepliesQuery(query, me);
+			//this.queryService.generateRepliesQuery(query, me);
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateMutedNoteQuery(query, me);
