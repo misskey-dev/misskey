@@ -66,10 +66,8 @@ onMounted(() => {
 		setPosition();
 
 		const loop = () => {
-			loopHandler = window.requestAnimationFrame(() => {
-				setPosition();
-				loop();
-			});
+			setPosition();
+			loopHandler = window.requestAnimationFrame(loop);
 		};
 
 		loop();
