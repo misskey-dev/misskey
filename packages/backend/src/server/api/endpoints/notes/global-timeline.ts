@@ -78,7 +78,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			this.queryService.generateRepliesQuery(query, me);
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);
 				this.queryService.generateMutedNoteQuery(query, me);
