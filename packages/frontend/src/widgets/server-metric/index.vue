@@ -25,7 +25,7 @@ import XDisk from './disk.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 
 const name = 'serverMetric';
@@ -75,7 +75,7 @@ const toggleView = () => {
 	save();
 };
 
-const connection = stream.useChannel('serverStats');
+const connection = useStream().useChannel('serverStats');
 onUnmounted(() => {
 	connection.dispose();
 });

@@ -53,6 +53,17 @@
 					</MkSwitch>
 				</div>
 			</MkFolder>
+
+			<MkFolder>
+				<template #icon><i class="ti ti-code"></i></template>
+				<template #label>{{ i18n.ts.developer }}</template>
+
+				<div class="_gaps_m">
+					<MkSwitch v-model="devMode">
+						<template #label>{{ i18n.ts.devMode }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -80,6 +91,7 @@ import FormSection from '@/components/form/section.vue';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
+const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {

@@ -33,7 +33,7 @@
 import { onBeforeUnmount, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as os from '@/os';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import { claimAchievement } from '@/scripts/achievements';
 import { $i } from '@/account';
@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<{
 let isFollowing = $ref(props.user.isFollowing);
 let hasPendingFollowRequestFromYou = $ref(props.user.hasPendingFollowRequestFromYou);
 let wait = $ref(false);
-const connection = stream.useChannel('main');
+const connection = useStream().useChannel('main');
 
 if (props.user.isFollowing == null) {
 	os.api('users/show', {

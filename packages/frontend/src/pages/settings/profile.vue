@@ -91,8 +91,6 @@
 		<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
 		<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
 	</MkSelect>
-
-	<MkSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 </div>
 </template>
 

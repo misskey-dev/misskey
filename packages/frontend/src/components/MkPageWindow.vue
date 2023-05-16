@@ -12,12 +12,12 @@
 >
 	<template #header>
 		<template v-if="pageMetadata?.value">
-			<i v-if="pageMetadata.value.icon" class="icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
+			<i v-if="pageMetadata.value.icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
 			<span>{{ pageMetadata.value.title }}</span>
 		</template>
 	</template>
 
-	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
+	<div :class="$style.root" style="container-type: inline-size;">
 		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </MkWindow>
