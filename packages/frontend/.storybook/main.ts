@@ -32,9 +32,6 @@ const config = {
 					rootDir: config.root ?? process.cwd(),
 				}),
 			],
-			define: {
-				_IS_CHROMATIC_: true,
-			},
 			build: {
 				target: [
 					'chrome108',

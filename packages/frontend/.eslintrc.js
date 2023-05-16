@@ -82,7 +82,6 @@ module.exports = {
 		'_LANGS_': false,
 		'_VERSION_': false,
 		'_ENV_': false,
-		'_IS_CHROMATIC_': false,
 		'_PERF_PREFIX_': false,
 		'_DATA_TRANSFER_DRIVE_FILE_': false,
 		'_DATA_TRANSFER_DRIVE_FOLDER_': false,
