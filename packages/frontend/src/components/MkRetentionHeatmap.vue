@@ -40,7 +40,7 @@ async function renderChart() {
 
 	let raw = await os.api('retention', { });
 
-	raw = raw.slice(0, maxDays);
+	raw = raw.slice(0, maxDays + 1);
 
 	const data = [];
 	for (const record of raw) {
@@ -90,8 +90,13 @@ async function renderChart() {
 				borderRadius: 3,
 				backgroundColor(c) {
 					const value = c.dataset.data[c.dataIndex].v;
-					const a = value / max(c.dataset.data[c.dataIndex].y);
-					return alpha(color, a);
+					const m = max(c.dataset.data[c.dataIndex].y);
+					if (m === 0) {
+						return alpha(color, 0);
+					} else {
+						const a = value / m;
+						return alpha(color, a);
+					}
 				},
 				fill: true,
 				width(c) {
@@ -128,6 +133,10 @@ async function renderChart() {
 						autoSkipPadding: 0,
 						autoSkip: false,
 						callback: (value, index, values) => value,
+					},
+					title: {
+						display: true,
+						text: 'Days later',
 					},
 				},
 				y: {
@@ -166,7 +175,12 @@ async function renderChart() {
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							return [`Active: ${v.v} (${Math.round((v.v / max(v.y)) * 100)}%)`];
+							const m = max(v.y);
+							if (m === 0) {
+								return [`Active: ${v.v} (-%)`];
+							} else {
+								return [`Active: ${v.v} (${Math.round((v.v / m) * 100)}%)`];
+							}
 						},
 					},
 					//mode: 'index',
