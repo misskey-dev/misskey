@@ -302,7 +302,11 @@ export const packedMeDetailedOnlySchema = {
 		},
 		noCrawle: {
 			type: 'boolean',
-			nullable: true, optional: false,
+			nullable: false, optional: false,
+		},
+		preventAiLearning: {
+			type: 'boolean',
+			nullable: false, optional: false,
 		},
 		isExplorable: {
 			type: 'boolean',

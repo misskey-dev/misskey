@@ -171,6 +171,10 @@ describe('After user signed in', () => {
 
 		cy.get('[data-cy-user-setup-continue]').click();
 
+		// プライバシー設定
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
 		// フォローはスキップ
 
 		cy.get('[data-cy-user-setup-continue]').click();

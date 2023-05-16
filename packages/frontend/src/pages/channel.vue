@@ -46,7 +46,7 @@
 					</MkInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 				</div>
-				<MkNotes v-if="searchPagination" :key="searchQuery" :pagination="searchPagination"/>
+				<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
 			</div>
 		</div>
 	</MkSpacer>
@@ -93,6 +93,7 @@ let channel = $ref(null);
 let favorited = $ref(false);
 let searchQuery = $ref('');
 let searchPagination = $ref();
+let searchKey = $ref('');
 const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
@@ -149,10 +150,12 @@ async function search() {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
-			query: searchQuery,
+			query: query,
 			channelId: channel.id,
 		},
 	};
+
+	searchKey = query;
 }
 
 const headerActions = $computed(() => {

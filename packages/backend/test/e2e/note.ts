@@ -541,6 +541,61 @@ describe('Note', () => {
 
 			assert.strictEqual(res.status, 400);
 		});
+
+		test('センシティブな投稿はhomeになる (単語指定)', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					"test",
+				]
+			}, alice);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note1 = await api('/notes/create', {
+				text: 'hogetesthuge',
+			}, alice);
+
+			assert.strictEqual(note1.status, 200);
+			assert.strictEqual(note1.body.createdNote.visibility, 'home');
+
+		});
+
+		test('センシティブな投稿はhomeになる (正規表現)', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					"/Test/i",
+				]
+			}, alice);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			const note2 = await api('/notes/create', {
+				text: 'hogetesthuge',
+			}, alice);
+
+			assert.strictEqual(note2.status, 200);
+			assert.strictEqual(note2.body.createdNote.visibility, 'home');
+		});
+
+		test('センシティブな投稿はhomeになる (スペースアンド)', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					"Test hoge"
+				]
+			}, alice);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			const note2 = await api('/notes/create', {
+				text: 'hogeTesthuge',
+			}, alice);
+
+			assert.strictEqual(note2.status, 200);
+			assert.strictEqual(note2.body.createdNote.visibility, 'home');
+
+		});
 	});
 
 	describe('notes/delete', () => {
