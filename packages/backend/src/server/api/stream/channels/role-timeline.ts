@@ -46,6 +46,8 @@ class RoleTimelineChannel extends Channel {
 			// 流れてきたNoteがブロックされているユーザーが関わるものだったら無視する
 			if (isUserRelated(note, this.userIdsWhoBlockingMe)) return;
 
+			if (note.renote && !note.text && isUserRelated(note, this.userIdsWhoMeMutingRenotes)) return;
+
 			this.send('note', note);
 		} else {
 			this.send(data.type, data.body);
