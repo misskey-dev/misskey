@@ -33,6 +33,7 @@ export class EmojiEntityService {
 			url: emoji.publicUrl || emoji.originalUrl,
 			isSensitive: emoji.isSensitive ? true : undefined,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length > 0 ? emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : undefined,
+			draft: emoji.draft,
 		};
 	}
 
@@ -61,6 +62,7 @@ export class EmojiEntityService {
 			isSensitive: emoji.isSensitive,
 			localOnly: emoji.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			draft: emoji.draft,
 		};
 	}
 

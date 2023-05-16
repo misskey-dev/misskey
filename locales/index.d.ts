@@ -978,6 +978,7 @@ export interface Locale {
     "unassign": string;
     "color": string;
     "manageCustomEmojis": string;
+    "requestCustomEmojis": string;
     "youCannotCreateAnymore": string;
     "cannotPerformTemporary": string;
     "cannotPerformTemporaryDescription": string;
@@ -1020,6 +1021,7 @@ export interface Locale {
     "sensitiveWordsDescription2": string;
     "notesSearchNotAvailable": string;
     "license": string;
+    "draft": string;
     "unfavoriteConfirm": string;
     "myClips": string;
     "drivecleaner": string;
@@ -1556,6 +1558,7 @@ export interface Locale {
             "inviteLimitCycle": string;
             "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
+            "canRequestCustomEmojis": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
             "pinMax": string;

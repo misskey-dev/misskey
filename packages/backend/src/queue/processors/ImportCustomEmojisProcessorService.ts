@@ -103,6 +103,7 @@ export class ImportCustomEmojisProcessorService {
 					isSensitive: emojiInfo.isSensitive,
 					localOnly: emojiInfo.localOnly,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+					draft: false,
 				});
 			}
 

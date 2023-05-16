@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="400"
+    :with-ok-button="true"
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
@@ -68,7 +69,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSpacer>
 		<div :class="$style.footer">
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
-		</div>
+            <MkSwitch v-if="!isRequest" v-model="draft" :disabled="isRequest">
+                {{ i18n.ts.draft }}
+            </MkSwitch>
+            <MkButton v-if="!isRequest" danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+        </div>
 	</div>
 </MkModalWindow>
 </template>
@@ -87,9 +92,11 @@ import { customEmojiCategories } from '@/custom-emojis.js';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	emoji?: any,
+	isRequest: boolean,
 }>();
 
 let dialog = $ref(null);
@@ -102,80 +109,141 @@ let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
 let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<Misskey.entities.DriveFile>();
+let chooseFile: DriveFile|null = $ref(null);
+let draft = $ref(props.emoji.draft);
+let isRequest = $ref(props.isRequest);
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
 const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
+let draft = $ref(props.emoji.draft);
+let isRequest = $ref(props.isRequest);
 
 const emit = defineEmits<{
 	(ev: 'done', v: { deleted?: boolean; updated?: any; created?: any }): void,
 	(ev: 'closed'): void
 }>();
 
-async function changeImage(ev) {
-	file = await selectFile(ev.currentTarget ?? ev.target, null);
-	const candidate = file.name.replace(/\.(.+)$/, '');
-	if (candidate.match(/^[a-z0-9_]+$/)) {
-		name = candidate;
+function ok() {
+	if (isRequest) {
+		if (chooseFile !== null && name.match(/^[a-zA-Z0-9_]+$/)) {
+			add();
+		}
+	} else {
+		update();
 	}
+}
+
+async function add() {
+	const ret = await os.api('admin/emoji/add-draft', {
+		name: name,
+		category: category,
+		aliases: aliases.split(' '),
+		license: license === '' ? null : license,
+		fileId: chooseFile.id,
+	});
+
+	emit('done', {
+		updated: {
+			id: ret.id,
+			name,
+			category,
+			aliases: aliases.split(' '),
+			license: license === '' ? null : license,
+			draft: true,
+		},
+	});
+
+	dialog.close();
+}
+async function changeImage(ev) {
+    file = await selectFile(ev.currentTarget ?? ev.target, null);
+    const candidate = file.name.replace(/\.(.+)$/, '');
+    if (candidate.match(/^[a-z0-9_]+$/)) {
+        name = candidate;
+    }
 }
 
 async function addRole() {
-	const roles = await os.api('admin/roles/list');
-	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id);
+    const roles = await os.api('admin/roles/list');
+    const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id);
 
-	const { canceled, result: role } = await os.select({
-		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
-	});
-	if (canceled) return;
+    const { canceled, result: role } = await os.select({
+        items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
+    });
+    if (canceled) return;
 
-	rolesThatCanBeUsedThisEmojiAsReaction.push(role);
+    rolesThatCanBeUsedThisEmojiAsReaction.push(role);
 }
 
 async function removeRole(role, ev) {
-	rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
+    rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
 }
-
-async function done() {
-	const params = {
+async function update() {
+	await os.apiWithDialog('admin/emoji/update', {
+		id: props.emoji.id,
 		name,
-		category: category === '' ? null : category,
-		aliases: aliases.split(' ').filter(x => x !== ''),
+		category,
+		aliases: aliases.split(' '),
 		license: license === '' ? null : license,
-		isSensitive,
-		localOnly,
-		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
-	};
+		fileId: chooseFile?.id,
+		draft: draft,
+	});
 
-	if (file) {
-		params.fileId = file.id;
-	}
-
-	if (props.emoji) {
-		await os.apiWithDialog('admin/emoji/update', {
+	emit('done', {
+		updated: {
 			id: props.emoji.id,
-			...params,
-		});
-
-		emit('done', {
-			updated: {
-				id: props.emoji.id,
-				...params,
-			},
-		});
+			name,
+			category,
+			aliases: aliases.split(' '),
+			license: license === '' ? null : license,
+			draft: draft,
+		},
+	});
 
 		dialog.close();
-	} else {
-		const created = await os.apiWithDialog('admin/emoji/add', params);
 
-		emit('done', {
-			created: created,
-		});
+}
+async function done() {
+    const params = {
+        name,
+        category: category === '' ? null : category,
+        aliases: aliases.split(' ').filter(x => x !== ''),
+        license: license === '' ? null : license,
+        isSensitive,
+        localOnly,
+        roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
+    };
 
-		dialog.close();
-	}
+    if (file) {
+        params.fileId = file.id;
+    }
+
+    if (props.emoji) {
+        await os.apiWithDialog('admin/emoji/update', {
+            id: props.emoji.id,
+            ...params,
+        });
+
+        emit('done', {
+            updated: {
+                id: props.emoji.id,
+                ...params,
+            },
+        });
+
+        dialog.close();
+    } else {
+        const created = await os.apiWithDialog('admin/emoji/add', params);
+
+        emit('done', {
+            created: created,
+        });
+
+        dialog.close();
+    }
 }
 
 async function del() {
