@@ -311,6 +311,7 @@ export type CustomEmoji = {
 	url: string;
 	category: string;
 	aliases: string[];
+	draft: boolean;
 };
 
 export type LiteInstanceMetadata = {

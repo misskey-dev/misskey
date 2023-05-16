@@ -6,6 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
+	<MkButton v-if="$i && (!$i.isModerator && !$i.policies.canManageCustomEmojis && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
 
 	<div class="query">
 		<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
@@ -22,21 +23,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkFoldableSection v-if="searchEmojis">
 		<template #header>{{ i18n.ts.searchResult }}</template>
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji"/>
+			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 		</div>
 	</MkFoldableSection>
 
 	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
 		<template #header>{{ category || i18n.ts.other }}</template>
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji"/>
+			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 		</div>
 	</MkFoldableSection>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { watch } from 'vue';
+import { watch, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -44,6 +45,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os';
 import { $i } from '@/account.js';
 
 const customEmojiTags = getCustomEmojiTags();
@@ -79,6 +81,24 @@ function toggleTag(tag) {
 		selectedTags.add(tag);
 	}
 }
+
+const edit = () => {
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+		emoji: {
+			name: '',
+			category: null,
+			aliases: [],
+			license: '',
+			url: '',
+			draft: true,
+		},
+		isRequest: true,
+	}, {
+		done: result => {
+			window.location.reload();
+		},
+	}, 'closed');
+};
 
 watch($$(q), () => {
 	search();

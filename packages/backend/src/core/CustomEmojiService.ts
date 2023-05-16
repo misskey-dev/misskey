@@ -13,10 +13,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiEmoji } from '@/models/Emoji.js';
 import type { EmojisRepository, MiRole, MiUser } from '@/models/_.js';
+import type { DriveFilesRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 
@@ -33,6 +33,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -66,6 +69,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
+        draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}, moderator?: MiUser): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
@@ -82,6 +86,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			draft: data.draft,
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {
@@ -109,27 +114,44 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		category?: string | null;
 		aliases?: string[];
 		license?: string | null;
+        fileId?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
+        draft: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}, moderator?: MiUser): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
+		const driveFile = data.fileId !== null ? await this.driveFilesRepository.findOneBy({ id: data.fileId }) : null;
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
 		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
 
-		await this.emojisRepository.update(emoji.id, {
-			updatedAt: new Date(),
-			name: data.name,
-			category: data.category,
-			aliases: data.aliases,
-			license: data.license,
-			isSensitive: data.isSensitive,
-			localOnly: data.localOnly,
-			originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
-			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
-			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
-			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
-		});
+		if (driveFile !== null) {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				name: data.name,
+				category: data.category,
+				aliases: data.aliases,
+				license: data.license,
+				isSensitive: data.isSensitive,
+				localOnly: data.localOnly,
+				originalUrl: data.driveFile != null ? data.driveFile.url : undefined,
+				publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
+				type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
+				draft: data.draft,
+			});
+		} else {
+			await this.emojisRepository.update(emoji.id, {
+				updatedAt: new Date(),
+				name: data.name,
+				category: data.category,
+				aliases: data.aliases,
+				license: data.license,
+				isSensitive: data.isSensitive,
+				localOnly: data.localOnly,
+				draft: data.draft,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
+			});
+		}
 
 		this.localEmojisCache.refresh();
 

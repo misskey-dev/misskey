@@ -4,7 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<button class="_button" :class="$style.root" @click="menu">
+<button v-if="emoji.draft" class="zuvgdzyu _button emoji-draft" @click="menu">
+	<img :src="emoji.url" class="img" loading="lazy"/>
+	<div class="body">
+		<div class="name _monospace">{{ emoji.name + ' (draft)' }}</div>
+		<div class="info">{{ emoji.aliases.join(' ') }}</div>
+	</div>
+</button>
+<button v-else class="_button" :class="$style.root" @click="menu">
 	<img :src="emoji.url" :class="$style.img" loading="lazy"/>
 	<div :class="$style.body">
 		<div :class="$style.name" class="_monospace">{{ emoji.name }}</div>
@@ -25,6 +32,7 @@ const props = defineProps<{
 		aliases: string[];
 		category: string;
 		url: string;
+		draft: boolean;
 	};
 }>();
 
@@ -90,5 +98,11 @@ function menu(ev) {
 	font-size: 0.9em;
 	text-overflow: ellipsis;
 	overflow: hidden;
+}
+
+.emoji-draft {
+	--c: rgb(255 196 0 / 15%);;
+	background-image: linear-gradient(45deg,var(--c) 16.67%,transparent 16.67%,transparent 50%,var(--c) 50%,var(--c) 66.67%,transparent 66.67%,transparent 100%);
+	background-size: 16px 16px;
 }
 </style>

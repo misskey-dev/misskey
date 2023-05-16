@@ -55,8 +55,9 @@ export const paramDef = {
 		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
 			type: 'string',
 		} },
+		draft: { type: 'boolean' },
 	},
-	required: ['id', 'name', 'aliases'],
+	required: ['id', 'name', 'aliases', 'draft'],
 } as const;
 
 @Injectable()
@@ -93,6 +94,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				fileId: ps.fileId ?? null,
+				draft: ps.draft,
 			}, me);
 		});
 	}
