@@ -4,7 +4,6 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef } from 'vue';
-import isChromatic from 'chromatic/isChromatic';
 
 const canvasEl = shallowRef<HTMLCanvasElement>();
 
@@ -204,7 +203,7 @@ onMounted(() => {
 	const vertices = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
 
-	if (isChromatic()) {
+	if (_IS_CHROMATIC_) {
 		gl!.uniform1f(u_time, 0);
 		gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 	} else {
