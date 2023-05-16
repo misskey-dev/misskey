@@ -335,3 +335,60 @@ definePageMetadata({
 	flex-grow: 1;
 }
 </style>
+<style lang="scss" module>
+.metadataRoot {
+	container-type: inline-size;
+}
+
+.metadataMargin {
+	margin-bottom: 1.5em;
+}
+
+.fieldDragItem {
+	display: flex;
+	padding-bottom: .75em;
+	align-items: flex-end;
+	border-bottom: solid 0.5px var(--divider);
+
+	&:last-child {
+		border-bottom: 0;
+	}
+
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
+		align-items: center;
+	}
+}
+
+.dragItemHandle {
+	cursor: grab;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px 0 0;
+	opacity: 0.5;
+	flex-shrink: 0;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.dragItemRemove {
+	@extend .dragItemHandle;
+
+	color: #ff2a2a;
+	opacity: 1;
+	cursor: pointer;
+
+	&:hover, &:focus {
+		opacity: .7;
+	}
+	&:active {
+		cursor: pointer;
+	}
+}
+
+.dragItemForm {
+	flex-grow: 1;
+}
+</style>

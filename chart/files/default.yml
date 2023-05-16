@@ -77,17 +77,17 @@ dbReplications: false
 # You can configure any number of replicas here
 #dbSlaves:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 #  -
-#    host: 
-#    port: 
-#    db: 
-#    user: 
-#    pass: 
+#    host:
+#    port:
+#    db:
+#    user:
+#    pass:
 
 #   ┌─────────────────────┐
 #───┘ Redis configuration └─────────────────────────────────────
@@ -185,7 +185,6 @@ id: "aid"
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
-
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]

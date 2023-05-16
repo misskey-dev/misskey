@@ -311,7 +311,7 @@ _achievements:
     _justPlainLucky:
       title: "Rett og slett heldig"
     _setNameToSyuilo:
-      description: "Du har satt navnet ditt til \"syuilo\""
+      description: 'Du har satt navnet ditt til "syuilo"'
     _loggedInOnBirthday:
       title: "Gratulerer med dagen"
     _loggedInOnNewYearsDay:

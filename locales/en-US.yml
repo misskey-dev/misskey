@@ -2,7 +2,7 @@
 _lang_: "English"
 headlineMisskey: "A network connected by notes"
 introMisskey: "Welcome! Misskey is an open source, decentralized microblogging service.\nCreate \"notes\" to share your thoughts with everyone around you. 📡\nWith \"reactions\", you can also quickly express your feelings about everyone's notes. 👍\nLet's explore a new world! 🚀"
-poweredByMisskeyDescription: "{name} is one of the services powered by the open source platform <b>Misskey</b> (referred to as a \"Misskey instance\")."
+poweredByMisskeyDescription: '{name} is one of the services powered by the open source platform <b>Misskey</b> (referred to as a "Misskey instance").'
 monthAndDay: "{month}/{day}"
 search: "Search"
 notifications: "Notifications"
@@ -68,7 +68,7 @@ import: "Import"
 export: "Export"
 files: "Files"
 download: "Download"
-driveFileDeleteConfirm: "Are you sure you want to delete \"{name}\"? It will also vanish from all contents that use it."
+driveFileDeleteConfirm: 'Are you sure you want to delete "{name}"? It will also vanish from all contents that use it.'
 unfollowConfirm: "Are you sure you want to unfollow {name}?"
 exportRequested: "You've requested an export. This may take a while. It will be added to your Drive once completed."
 importRequested: "You've requested an import. This may take a while."
@@ -115,7 +115,7 @@ add: "Add"
 reaction: "Reactions"
 reactions: "Reactions"
 reactionSetting: "Reactions to show in the reaction picker"
-reactionSettingDescription2: "Drag to reorder, click to delete, press \"+\" to add."
+reactionSettingDescription2: 'Drag to reorder, click to delete, press "+" to add.'
 rememberNoteVisibility: "Remember note visibility settings"
 attachCancel: "Remove attachment"
 markAsSensitive: "Mark as NSFW"
@@ -243,8 +243,8 @@ announcements: "Announcements"
 imageUrl: "Image URL"
 remove: "Delete"
 removed: "Successfully deleted"
-removeAreYouSure: "Are you sure that you want to remove \"{x}\"?"
-deleteAreYouSure: "Are you sure that you want to delete \"{x}\"?"
+removeAreYouSure: 'Are you sure that you want to remove "{x}"?'
+deleteAreYouSure: 'Are you sure that you want to delete "{x}"?'
 resetAreYouSure: "Really reset?"
 saved: "Saved"
 messaging: "Chat"
@@ -349,7 +349,7 @@ bannerUrl: "Banner image URL"
 backgroundImageUrl: "Background image URL"
 basicInfo: "Basic info"
 pinnedUsers: "Pinned users"
-pinnedUsersDescription: "List usernames separated by line breaks to be pinned in the \"Explore\" tab."
+pinnedUsersDescription: 'List usernames separated by line breaks to be pinned in the "Explore" tab.'
 pinnedPages: "Pinned Pages"
 pinnedPagesDescription: "Enter the paths of the Pages you want to pin to the top page of this instance, separated by line breaks."
 pinnedClipId: "ID of the clip to pin"
@@ -413,7 +413,7 @@ unregister: "Unregister"
 passwordLessLogin: "Password-less login"
 passwordLessLoginDescription: "Allows password-less login using a security- or passkey only"
 resetPassword: "Reset password"
-newPasswordIs: "The new password is \"{password}\""
+newPasswordIs: 'The new password is "{password}"'
 reduceUiAnimation: "Reduce UI animations"
 share: "Share"
 notFound: "Not found"
@@ -510,7 +510,7 @@ objectStorageUseSSL: "Use SSL"
 objectStorageUseSSLDesc: "Turn this off if you are not going to use HTTPS for API connections"
 objectStorageUseProxy: "Connect over Proxy"
 objectStorageUseProxyDesc: "Turn this off if you are not going to use a Proxy for API connections"
-objectStorageSetPublicRead: "Set \"public-read\" on upload"
+objectStorageSetPublicRead: 'Set "public-read" on upload'
 s3ForcePathStyleDesc: "If s3ForcePathStyle is enabled, the bucket name has to included in the path of the URL as opposed to the hostname of the URL. You may need to enable this setting when using services such as a self-hosted Minio instance."
 serverLogs: "Server logs"
 deleteAll: "Delete all"
@@ -668,7 +668,7 @@ createNew: "Create new"
 optional: "Optional"
 createNewClip: "Create new clip"
 unclip: "Unclip"
-confirmToUnclipAlreadyClippedNote: "This note is already part of the \"{name}\" clip. Do you want to remove it from this clip instead?"
+confirmToUnclipAlreadyClippedNote: 'This note is already part of the "{name}" clip. Do you want to remove it from this clip instead?'
 public: "Public"
 i18nInfo: "Misskey is being translated into various languages by volunteers. You can help at {link}."
 manageAccessTokens: "Manage access tokens"
@@ -690,7 +690,7 @@ driveFilesCount: "Number of Drive files"
 driveUsage: "Drive space usage"
 noCrawle: "Reject crawler indexing"
 noCrawleDescription: "Ask search engines to not index your profile page, notes, Pages, etc."
-lockedAccountInfo: "Unless you set your note visiblity to \"Followers only\", your notes will be visible to anyone, even if you require followers to be manually approved."
+lockedAccountInfo: 'Unless you set your note visiblity to "Followers only", your notes will be visible to anyone, even if you require followers to be manually approved.'
 alwaysMarkSensitive: "Mark as NSFW by default"
 loadRawImages: "Load original images instead of showing thumbnails"
 disableShowingAnimatedImages: "Don't play animated images"
@@ -707,8 +707,8 @@ experimentalFeatures: "Experimental features"
 experimental: "Experimental"
 thisIsExperimentalFeature: "This is an experimental feature. Its functionality is subject to change, and it may not operate as intended."
 developer: "Developer"
-makeExplorable: "Make account visible in \"Explore\""
-makeExplorableDescription: "If you turn this off, your account will not show up in the \"Explore\" section."
+makeExplorable: 'Make account visible in "Explore"'
+makeExplorableDescription: 'If you turn this off, your account will not show up in the "Explore" section.'
 showGapBetweenNotesInTimeline: "Show a gap between posts on the timeline"
 duplicate: "Duplicate"
 left: "Left"
@@ -763,7 +763,7 @@ unlikeConfirm: "Really remove your like?"
 fullView: "Full view"
 quitFullView: "Exit full view"
 addDescription: "Add description"
-userPagePinTip: "You can display notes here by selecting \"Pin to profile\" from the menu of individual notes."
+userPagePinTip: 'You can display notes here by selecting "Pin to profile" from the menu of individual notes.'
 notSpecifiedMentionWarning: "This note contains mentions of users not included as recipients"
 info: "About"
 userInfo: "User information"
@@ -847,7 +847,7 @@ ffVisibilityDescription: "Allows you to configure who can see who you follow and
 continueThread: "View thread continuation"
 deleteAccountConfirm: "This will irreversibly delete your account. Proceed?"
 incorrectPassword: "Incorrect password."
-voteConfirm: "Confirm your vote for \"{choice}\"?"
+voteConfirm: 'Confirm your vote for "{choice}"?'
 hide: "Hide"
 useDrawerReactionPickerForMobile: "Display reaction picker as drawer on mobile"
 welcomeBackWithName: "Welcome back, {name}"
@@ -989,7 +989,7 @@ likeOnlyForRemote: "Only likes for remote instances"
 rolesAssignedToMe: "Roles assigned to me"
 resetPasswordConfirm: "Really reset your password?"
 sensitiveWords: "Sensitive words"
-sensitiveWordsDescription: "The visibility of all notes containing any of the configured words will be set to \"Home\" automatically. You can list multiple by separating them via line breaks."
+sensitiveWordsDescription: 'The visibility of all notes containing any of the configured words will be set to "Home" automatically. You can list multiple by separating them via line breaks.'
 sensitiveWordsDescription2: "Using spaces will create AND expressions and surrounding keywords with slashes will turn them into a regular expression."
 notesSearchNotAvailable: "Note search is unavailable."
 license: "License"
@@ -1001,7 +1001,7 @@ retryAllQueuesConfirmTitle: "Really retry all?"
 retryAllQueuesConfirmText: "This will temporarily increase the server load."
 enableChartsForRemoteUser: "Generate remote user data charts"
 enableChartsForFederatedInstances: "Generate remote instance data charts"
-showClipButtonInNoteFooter: "Add \"Clip\" to note action menu"
+showClipButtonInNoteFooter: 'Add "Clip" to note action menu'
 largeNoteReactions: "Enlargen displayed reactions"
 noteIdOrUrl: "Note ID or URL"
 video: "Video"
@@ -1040,7 +1040,7 @@ displayOfNote: "Note display"
 initialAccountSetting: "Profile setup"
 youFollowing: "Followed"
 preventAiLearning: "Reject usage in Machine Learning (Generative AI)"
-preventAiLearningDescription: "Requests crawlers to not use posted text or image material etc. in machine learning (Predictive / Generative AI) data sets. This is achieved by adding a \"noai\" HTML-Response flag to the respective content. A complete prevention can however not be achieved through this flag, as it may simply be ignored."
+preventAiLearningDescription: 'Requests crawlers to not use posted text or image material etc. in machine learning (Predictive / Generative AI) data sets. This is achieved by adding a "noai" HTML-Response flag to the respective content. A complete prevention can however not be achieved through this flag, as it may simply be ignored.'
 options: "Options"
 specifyUser: "Specific user"
 _initialAccountSetting:
@@ -1050,7 +1050,7 @@ _initialAccountSetting:
   profileSetting: "Profile settings"
   privacySetting: "Privacy settings"
   theseSettingsCanEditLater: "You can always change these settings later."
-  youCanEditMoreSettingsInSettingsPageLater: "There are many more settings you can configure from the \"Settings\" page. Be sure to visit it later."
+  youCanEditMoreSettingsInSettingsPageLater: 'There are many more settings you can configure from the "Settings" page. Be sure to visit it later.'
   followUsers: "Try following some users that interest you to build up your timeline."
   pushNotificationDescription: "Enabling push notifications will allow you to receive notifications from {name} directly on your device."
   initialAccountSettingCompleted: "Profile setup complete!"
@@ -1237,7 +1237,7 @@ _achievements:
       description: "Look at your list of achievements for at least 3 minutes"
     _iLoveMisskey:
       title: "I Love Misskey"
-      description: "Post \"I ❤ #Misskey\""
+      description: 'Post "I ❤ #Misskey"'
       flavor: "Misskey's development team greatly appreciates your support!"
     _foundTreasure:
       title: "Treasure Hunt"
@@ -1246,7 +1246,7 @@ _achievements:
       title: "Short break"
       description: "Keep Misskey opened for at least 30 minutes"
     _client60min:
-      title: "No \"Miss\" in Misskey"
+      title: 'No "Miss" in Misskey'
       description: "Keep Misskey opened for at least 60 minutes"
     _noteDeletedWithin1min:
       title: "Nevermind"
@@ -1270,7 +1270,7 @@ _achievements:
       description: "View your instance's charts"
     _outputHelloWorldOnScratchpad:
       title: "Hello, world!"
-      description: "Output \"hello world\" in the Scratchpad"
+      description: 'Output "hello world" in the Scratchpad'
     _open3windows:
       title: "Multi-Window"
       description: "Have at least 3 windows open at the same time"
@@ -1288,7 +1288,7 @@ _achievements:
       description: "Has a chance to be obtained with a probability of 0.005% every 10 seconds"
     _setNameToSyuilo:
       title: "God Complex"
-      description: "Set your name to \"syuilo\""
+      description: 'Set your name to "syuilo"'
     _passedSinceAccountCreated1:
       title: "One Year Anniversary"
       description: "One year has passed since your account was created"
@@ -1440,12 +1440,12 @@ _preferencesBackups:
   save: "Save changes"
   inputName: "Please enter a name for this backup"
   cannotSave: "Saving failed"
-  nameAlreadyExists: "A backup called \"{name}\" already exists. Please enter a different name."
-  applyConfirm: "Do you really want to apply the \"{name}\" backup to this device? Existing settings of this device will be overwritten."
+  nameAlreadyExists: 'A backup called "{name}" already exists. Please enter a different name.'
+  applyConfirm: 'Do you really want to apply the "{name}" backup to this device? Existing settings of this device will be overwritten.'
   saveConfirm: "Save backup as {name}?"
   deleteConfirm: "Delete the {name} backup?"
-  renameConfirm: "Rename this backup from \"{old}\" to \"{new}\"?"
-  noBackups: "No backups exist. You may backup your client settings on this server by using \"Create new backup\"."
+  renameConfirm: 'Rename this backup from "{old}" to "{new}"?'
+  noBackups: 'No backups exist. You may backup your client settings on this server by using "Create new backup".'
   createdAt: "Created at: {date} {time}"
   updatedAt: "Updated at: {date} {time}"
   cannotLoad: "Loading failed"
@@ -1608,14 +1608,14 @@ _time:
   day: "Day(s)"
 _timelineTutorial:
   title: "How to use Misskey"
-  step1_1: "This is the \"timeline\". All \"notes\" submitted on {name} will be chronologically displayed here."
-  step1_2: "There are a few different timelines. For example, the \"Home timeline\" will contain notes of users you follow, and the \"Local timeline\" will contain notes from all users of {name}."
+  step1_1: 'This is the "timeline". All "notes" submitted on {name} will be chronologically displayed here.'
+  step1_2: 'There are a few different timelines. For example, the "Home timeline" will contain notes of users you follow, and the "Local timeline" will contain notes from all users of {name}.'
   step2_1: "Let's try posting a note next. You can do so by pressing the button with a pencil icon."
-  step2_2: "How about writing a self-introduction, or just \"Hello {name}!\" if you don't feel like it?"
+  step2_2: 'How about writing a self-introduction, or just "Hello {name}!" if you don''t feel like it?'
   step3_1: "Finished posting your first note?"
   step3_2: "Your first note should now be displayed on your timeline."
-  step4_1: "You can also attach \"Reactions\" to notes."
-  step4_2: "To attach a reaction, press the \"+\" mark on a note and choose an emoji you'd like to react with."
+  step4_1: 'You can also attach "Reactions" to notes.'
+  step4_2: 'To attach a reaction, press the "+" mark on a note and choose an emoji you''d like to react with.'
 _2fa:
   alreadyRegistered: "You have already registered a 2-factor authentication device."
   registerTOTP: "Register authenticator app"
@@ -1676,7 +1676,7 @@ _permissions:
   "write:gallery-likes": "Edit your list of liked gallery posts"
 _auth:
   shareAccessTitle: "Granting application permissions"
-  shareAccess: "Would you like to authorize \"{name}\" to access this account?"
+  shareAccess: 'Would you like to authorize "{name}" to access this account?'
   shareAccessAsk: "Are you sure you want to authorize this application to access your account?"
   permission: "{name} requests the following permissions"
   permissionAsk: "This application requests the following permissions"
@@ -1942,7 +1942,7 @@ _deck:
   deleteProfile: "Delete profile"
   introduction: "Create the perfect interface for you by arranging columns freely!"
   introduction2: "Click on the + on the right of the screen to add new colums whenever you want."
-  widgetsIntroduction: "Please select \"Edit widgets\" in the column menu and add a widget."
+  widgetsIntroduction: 'Please select "Edit widgets" in the column menu and add a widget.'
   _columns:
     main: "Main"
     widgets: "Widgets"

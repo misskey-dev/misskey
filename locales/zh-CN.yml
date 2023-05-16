@@ -667,7 +667,7 @@ createNew: "新建"
 optional: "可选"
 createNewClip: "新建便签"
 unclip: "移除便签"
-confirmToUnclipAlreadyClippedNote: "本帖已包含在便签\"{name}\"里。您想要将本帖从该便签中移除吗？"
+confirmToUnclipAlreadyClippedNote: '本帖已包含在便签"{name}"里。您想要将本帖从该便签中移除吗？'
 public: "公开"
 i18nInfo: "Misskey已经被志愿者们翻译成了各种语言。如果你也有兴趣，可以通过{link}帮助翻译。"
 manageAccessTokens: "管理 Access Tokens"
@@ -707,7 +707,7 @@ experimental: "实验性的"
 thisIsExperimentalFeature: "这是一项实验性功能。规范可能会变更，或者可能无法正常工作。"
 developer: "开发者"
 makeExplorable: "使账号可见。"
-makeExplorableDescription: "关闭时，账号不会显示在\"发现\"中。"
+makeExplorableDescription: '关闭时，账号不会显示在"发现"中。'
 showGapBetweenNotesInTimeline: "时间线上的帖子分开显示。"
 duplicate: "复制"
 left: "左"
@@ -1214,7 +1214,7 @@ _achievements:
       description: "盯着成就看三分钟"
     _iLoveMisskey:
       title: "I Love Misskey"
-      description: "发布\"I ❤ #Misskey\"帖子"
+      description: '发布"I ❤ #Misskey"帖子'
       flavor: "感谢您使用 Misskey ！ by 开发团队"
     _foundTreasure:
       title: "寻宝"
@@ -1416,8 +1416,8 @@ _preferencesBackups:
   save: "覆盖存档"
   inputName: "请输入备份的名称"
   cannotSave: "无法保存"
-  nameAlreadyExists: "备份名称\"{name}\"已经存在，请指定其他名称。"
-  applyConfirm: "您是否要将备份\"{name}\"应用到当前设备上？当前设备现有配置将被丢弃。"
+  nameAlreadyExists: '备份名称"{name}"已经存在，请指定其他名称。'
+  applyConfirm: '您是否要将备份"{name}"应用到当前设备上？当前设备现有配置将被丢弃。'
   saveConfirm: "您确定要覆盖保存 {name} 吗？"
   deleteConfirm: "您确定要删除 {name} 吗？"
   renameConfirm: "您确定要把“{old}”改为“{new}”吗？"

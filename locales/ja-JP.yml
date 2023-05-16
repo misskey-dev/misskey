@@ -1246,7 +1246,7 @@ _achievements:
       description: "実績一覧を3分以上眺め続けた"
     _iLoveMisskey:
       title: "I Love Misskey"
-      description: "\"I ❤ #Misskey\"を投稿した"
+      description: '"I ❤ #Misskey"を投稿した'
       flavor: "Misskeyを使ってくださりありがとうございます！ by 開発チーム"
     _foundTreasure:
       title: "宝探し"
