@@ -148,6 +148,7 @@
 		<template #label>{{ i18n.ts.other }}</template>
 
 		<div class="_gaps">
+			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
@@ -216,6 +217,7 @@ const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
+const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
