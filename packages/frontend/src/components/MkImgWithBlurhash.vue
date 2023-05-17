@@ -18,12 +18,21 @@
 <script lang="ts">
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
+import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
+import { $ref } from 'vue/macros';
 
-const workerPromise = new Promise<Worker | null>(resolve => {
+const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
 	const testWorker = new TestWebGL2();
 	testWorker.addEventListener('message', event => {
-		if (event.data.result) resolve(new DrawBlurhash());
-		else resolve(null);
+		if (event.data.result) {
+			const workers = new WorkerMultiDispatch(
+				() => new DrawBlurhash(),
+				Math.min(navigator.hardwareConcurrency - 1, 4),
+			);
+			resolve(workers);
+		} else {
+			resolve(null);
+		}
 		testWorker.terminate();
 	});
 });
@@ -74,6 +83,7 @@ let canvasWidth = $ref(64);
 let canvasHeight = $ref(64);
 let imgWidth = $ref(props.width);
 let imgHeight = $ref(props.height);
+let usingWorkerNumber = $ref<number>(-1);
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function waitForDecode() {
@@ -110,17 +120,22 @@ watch([() => props.width, () => props.height, root], () => {
 
 async function draw(transfer: boolean = false) {
 	if (!canvas.value || props.hash == null) return;
-	const worker = await workerPromise;
-	if (worker) {
+	const workers = await workerPromise;
+	if (workers) {
 		let offscreen: OffscreenCanvas | undefined;
 		if (transfer) {
 			offscreen = canvas.value.transferControlToOffscreen();
 		}
-		worker.postMessage({
-			id: viewId,
-			canvas: offscreen ?? undefined,
-			hash: props.hash,
-		}, offscreen ? [offscreen] : []);
+		const workerNumber = workers.postMessage(
+			{
+				id: viewId,
+				canvas: offscreen ?? undefined,
+				hash: props.hash,
+			},
+			offscreen ? [offscreen] : [],
+			usingWorkerNumber === -1 ? undefined : () => usingWorkerNumber,
+		);
+		usingWorkerNumber = workerNumber;
 	} else {
 		try {
 			const work = document.createElement('canvas');
@@ -150,7 +165,11 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	workerPromise.then(worker => worker?.postMessage!({ id: viewId, delete: true }));
+	if (usingWorkerNumber !== -1) {
+		workerPromise.then(worker => {
+			worker?.postMessage!({ id: viewId, delete: true }, undefined, () => usingWorkerNumber);
+		});
+	}
 });
 </script>
 
