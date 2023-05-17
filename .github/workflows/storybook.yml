@@ -16,12 +16,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3.3.0
+      if: github.event_name != 'pull_request_target'
       with:
         fetch-depth: 0
         submodules: true
-    - name: Checkout HEAD
+    - uses: actions/checkout@v3.3.0
       if: github.event_name == 'pull_request_target'
-      run: git checkout ${{ github.head_ref }}
+      with:
+        fetch-depth: 0
+        submodules: true
+        ref: "refs/pull/${{ github.event.number }}/merge"
+    - name: Checkout actual HEAD
+      if: github.event_name == 'pull_request_target'
+      run: git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
