@@ -50,8 +50,10 @@ let handle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 
 onMounted(() => {
 	const canvas = canvasEl.value!;
-	const gl = canvas.getContext('webgl', { premultipliedAlpha: true });
+	canvas.width = canvas.offsetWidth;
+	canvas.height = canvas.offsetHeight;
 
+	const gl = canvas.getContext('webgl', { premultipliedAlpha: true });
 	if (gl == null) return;
 
 	gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -156,8 +158,7 @@ onMounted(() => {
 			vec3 purple = vec3( 1.0 ) - vec3( 195.0 / 255.0, 165.0 / 255.0, 242.0 / 255.0 );
 			vec3 orange = vec3( 1.0 ) - vec3( 255.0 / 255.0, 156.0 / 255.0, 136.0 / 255.0 );
 
-			//float ratio = u_resolution.x / u_resolution.y;
-			float ratio = 1.0;
+			float ratio = u_resolution.x / u_resolution.y;
 
 			vec2 uv = vec2( v_pos.x, v_pos.y / ratio ) * 0.5 + 0.5;
 
