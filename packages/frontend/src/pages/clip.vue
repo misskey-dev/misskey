@@ -5,7 +5,7 @@
 		<div v-if="clip">
 			<div class="okzinsic _panel">
 				<div v-if="clip.description" class="description">
-					<Mfm :text="clip.description" :is-note="false" :i="$i"/>
+					<Mfm :text="clip.description" :isNote="false" :i="$i"/>
 				</div>
 				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>
 				<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-heart"></i><span v-if="clip.favoritedCount > 0" style="margin-left: 6px;">{{ clip.favoritedCount }}</span></MkButton>

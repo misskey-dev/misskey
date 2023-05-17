@@ -8,6 +8,14 @@ import isChromatic from 'chromatic/isChromatic';
 
 const canvasEl = shallowRef<HTMLCanvasElement>();
 
+const props = withDefaults(defineProps<{
+	scale?: number;
+	focus?: number;
+}>(), {
+	scale: 1.0,
+	focus: 1.0,
+});
+
 function loadShader(gl, type, source) {
 	const shader = gl.createShader(type);
 
@@ -50,8 +58,10 @@ let handle: ReturnType<typeof window['requestAnimationFrame']> | null = null;
 
 onMounted(() => {
 	const canvas = canvasEl.value!;
-	const gl = canvas.getContext('webgl', { premultipliedAlpha: true });
+	canvas.width = canvas.offsetWidth;
+	canvas.height = canvas.offsetHeight;
 
+	const gl = canvas.getContext('webgl', { premultipliedAlpha: true });
 	if (gl == null) return;
 
 	gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -63,11 +73,13 @@ onMounted(() => {
 	const shaderProgram = initShaderProgram(gl, `
 		attribute vec2 vertex;
 
+		uniform vec2 u_scale;
+
 		varying vec2 v_pos;
 
 		void main() {
 			gl_Position = vec4(vertex, 0.0, 1.0);
-			v_pos = vertex;
+			v_pos = vertex / u_scale;
 		}
 	`, `
 		precision mediump float;
@@ -156,8 +168,7 @@ onMounted(() => {
 			vec3 purple = vec3( 1.0 ) - vec3( 195.0 / 255.0, 165.0 / 255.0, 242.0 / 255.0 );
 			vec3 orange = vec3( 1.0 ) - vec3( 255.0 / 255.0, 156.0 / 255.0, 136.0 / 255.0 );
 
-			//float ratio = u_resolution.x / u_resolution.y;
-			float ratio = 1.0;
+			float ratio = u_resolution.x / u_resolution.y;
 
 			vec2 uv = vec2( v_pos.x, v_pos.y / ratio ) * 0.5 + 0.5;
 
@@ -190,12 +201,14 @@ onMounted(() => {
 	const u_warp = gl.getUniformLocation(shaderProgram, 'u_warp');
 	const u_focus = gl.getUniformLocation(shaderProgram, 'u_focus');
 	const u_itensity = gl.getUniformLocation(shaderProgram, 'u_itensity');
+	const u_scale = gl.getUniformLocation(shaderProgram, 'u_scale');
 	gl.uniform2fv(u_resolution, [canvas.width, canvas.height]);
 	gl.uniform1f(u_spread, 1.0);
 	gl.uniform1f(u_speed, 1.0);
 	gl.uniform1f(u_warp, 1.0);
-	gl.uniform1f(u_focus, 1.0);
+	gl.uniform1f(u_focus, props.focus);
 	gl.uniform1f(u_itensity, 0.5);
+	gl.uniform2fv(u_scale, [props.scale, props.scale]);
 
 	const vertex = gl.getAttribLocation(shaderProgram, 'vertex');
 	gl.enableVertexAttribArray(vertex);
