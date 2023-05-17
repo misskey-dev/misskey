@@ -136,6 +136,8 @@ async function draw() {
 		worker.postMessage({
 			id: viewId,
 			hash: props.hash,
+			width: canvasWidth,
+			height: canvasHeight,
 		});
 	} else {
 		try {
