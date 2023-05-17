@@ -76,7 +76,7 @@ export class UserProfile {
 	public emailNotificationTypes: string[];
 
 	@Column('boolean', {
-		default: false,
+		default: true,
 	})
 	public publicReactions: boolean;
 
@@ -146,6 +146,11 @@ export class UserProfile {
 		comment: 'Whether reject index by crawler.',
 	})
 	public noCrawle: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public preventAiLearning: boolean;
 
 	@Column('boolean', {
 		default: false,

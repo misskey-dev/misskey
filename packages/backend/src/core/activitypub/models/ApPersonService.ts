@@ -3,9 +3,9 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, MutingsRepository, FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { RemoteUser } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
@@ -42,6 +42,8 @@ import type { ApLoggerService } from '../ApLoggerService.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, IObject } from '../type.js';
+import type { AccountMoveService } from '@/core/AccountMoveService.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -66,6 +68,7 @@ export class ApPersonService implements OnModuleInit {
 	private usersChart: UsersChart;
 	private instanceChart: InstanceChart;
 	private apLoggerService: ApLoggerService;
+	private accountMoveService: AccountMoveService;
 	private logger: Logger;
 
 	constructor(
@@ -131,7 +134,14 @@ export class ApPersonService implements OnModuleInit {
 		this.usersChart = this.moduleRef.get('UsersChart');
 		this.instanceChart = this.moduleRef.get('InstanceChart');
 		this.apLoggerService = this.moduleRef.get('ApLoggerService');
+		this.accountMoveService = this.moduleRef.get('AccountMoveService');
 		this.logger = this.apLoggerService.logger;
+	}
+
+	private punyHost(url: string): string {
+		const urlObj = new URL(url);
+		const host = `${this.utilityService.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		return host;
 	}
 
 	/**
@@ -141,7 +151,7 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
-		const expectHost = this.utilityService.toPuny(new URL(uri).hostname);
+		const expectHost = this.punyHost(uri);
 
 		if (x == null) {
 			throw new Error('invalid Actor: object is null');
@@ -182,7 +192,7 @@ export class ApPersonService implements OnModuleInit {
 			x.summary = truncate(x.summary, summaryLength);
 		}
 
-		const idHost = this.utilityService.toPuny(new URL(x.id!).hostname);
+		const idHost = this.punyHost(x.id);
 		if (idHost !== expectHost) {
 			throw new Error('invalid Actor: id has different host');
 		}
@@ -192,7 +202,7 @@ export class ApPersonService implements OnModuleInit {
 				throw new Error('invalid Actor: publicKey.id is not a string');
 			}
 
-			const publicKeyIdHost = this.utilityService.toPuny(new URL(x.publicKey.id).hostname);
+			const publicKeyIdHost = this.punyHost(x.publicKey.id);
 			if (publicKeyIdHost !== expectHost) {
 				throw new Error('invalid Actor: publicKey.id has different host');
 			}
@@ -202,27 +212,27 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	/**
-	 * Personをフェッチします。
+	 * uriからUser(Person)をフェッチします。
 	 *
-	 * Misskeyに対象のPersonが登録されていればそれを返します。
+	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string, resolver?: Resolver): Promise<User | null> {
+	public async fetchPerson(uri: string): Promise<LocalUser | RemoteUser | null> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
-		const cached = this.cacheService.uriPersonCache.get(uri);
+		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null;
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
-		if (uri.startsWith(this.config.url + '/')) {
+		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
-			const u = await this.usersRepository.findOneBy({ id });
+			const u = await this.usersRepository.findOneBy({ id }) as LocalUser;
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.usersRepository.findOneBy({ uri });
+		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser;
 
 		if (exist) {
 			this.cacheService.uriPersonCache.set(uri, exist);
@@ -237,7 +247,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Personを作成します。
 	 */
 	@bindThis
-	public async createPerson(uri: string, resolver?: Resolver): Promise<User> {
+	public async createPerson(uri: string, resolver?: Resolver): Promise<RemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		if (uri.startsWith(this.config.url)) {
@@ -252,7 +262,7 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Creating the Person: ${person.id}`);
 
-		const host = this.utilityService.toPuny(new URL(object.id).hostname);
+		const host = this.punyHost(object.id);
 
 		const { fields } = this.analyzeAttachments(person.attachment ?? []);
 
@@ -264,8 +274,8 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of person url: ' + url);
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of person url: ' + url);
 		}
 
 		// Create user
@@ -282,6 +292,7 @@ export class ApPersonService implements OnModuleInit {
 					name: truncate(person.name, nameLength),
 					isLocked: !!person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
+					movedAt: person.movedTo ? new Date() : null,
 					alsoKnownAs: person.alsoKnownAs,
 					isExplorable: !!person.discoverable,
 					username: person.preferredUsername,
@@ -404,23 +415,26 @@ export class ApPersonService implements OnModuleInit {
 	/**
 	 * Personの情報を更新します。
 	 * Misskeyに対象のPersonが登録されていなければ無視します。
+	 * もしアカウントの移行が確認された場合、アカウント移行処理を行います。
+	 * 
 	 * @param uri URI of Person
 	 * @param resolver Resolver
 	 * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
+	 * @param movePreventUris ここに指定されたURIがPersonのmovedToに指定されていたり10回より多く回っている場合これ以上アカウント移行を行わない（無限ループ防止）
 	 */
 	@bindThis
-	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject): Promise<void> {
+	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(this.config.url + '/')) {
+		if (uri.startsWith(`${this.config.url}/`)) {
 			return;
 		}
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser | null;
 
-		if (exist == null) {
+		if (exist === null) {
 			return;
 		}
 		//#endregion
@@ -459,8 +473,8 @@ export class ApPersonService implements OnModuleInit {
 
 		const url = getOneApHrefNullable(person.url);
 
-		if (url && !url.startsWith('https://')) {
-			throw new Error('unexpected shcema of person url: ' + url);
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of person url: ' + url);
 		}
 
 		const updates = {
@@ -478,7 +492,16 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: !!person.discoverable,
-		} as Partial<User>;
+		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
+
+		const moving =
+			// 移行先がない→ある
+			(!exist.movedToUri && updates.movedToUri) ||
+			// 移行先がある→別のもの
+			(exist.movedToUri !== updates.movedToUri && exist.movedToUri && updates.movedToUri);
+			// 移行先がある→ない、ない→ないは無視
+
+		if (moving) updates.movedAt = new Date();
 
 		if (avatar) {
 			updates.avatarId = avatar.id;
@@ -523,6 +546,31 @@ export class ApPersonService implements OnModuleInit {
 		});
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
+
+		const updated = { ...exist, ...updates };
+
+		this.cacheService.uriPersonCache.set(uri, updated);
+
+		// 移行処理を行う
+		if (updated.movedAt && (
+			// 初めて移行する場合はmovedAtがnullなので移行処理を許可
+			exist.movedAt == null ||
+			// 以前のmovingから14日以上経過した場合のみ移行処理を許可
+			// （Mastodonのクールダウン期間は30日だが若干緩めに設定しておく）
+			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
+		)) {
+			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
+			return this.processRemoteMove(updated, movePreventUris)
+				.then(result => {
+					this.logger.info(`Processing Move Finished [${result}] @${updated.username}@${updated.host} (${uri})`);
+					return result;
+				})
+				.catch(e => {
+					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${uri})`, { stack: e });
+				});
+		}
+
+		return 'skip';
 	}
 
 	/**
@@ -532,7 +580,7 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<User> {
+	public async resolvePerson(uri: string, resolver?: Resolver): Promise<LocalUser | RemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		//#region このサーバーに既に登録されていたらそれを返す
@@ -606,5 +654,54 @@ export class ApPersonService implements OnModuleInit {
 				});
 			}
 		});
+	}
+
+	/**
+	 * リモート由来のアカウント移行処理を行います
+	 * @param src 移行元アカウント（リモートかつupdatePerson後である必要がある、というかこれ自体がupdatePersonで呼ばれる前提）
+	 * @param movePreventUris ここに列挙されたURIにsrc.movedToUriが含まれる場合、移行処理はしない（無限ループ防止）
+	 */
+	@bindThis
+	private async processRemoteMove(src: RemoteUser, movePreventUris: string[] = []): Promise<string> {
+		if (!src.movedToUri) return 'skip: no movedToUri';
+		if (src.uri === src.movedToUri) return 'skip: movedTo itself (src)'; // ？？？
+		if (movePreventUris.length > 10) return 'skip: too many moves';
+
+		// まずサーバー内で検索して様子見
+		let dst = await this.fetchPerson(src.movedToUri);
+
+		if (dst && this.userEntityService.isLocalUser(dst)) {
+			// targetがローカルユーザーだった場合データベースから引っ張ってくる
+			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as LocalUser;
+		} else if (dst) {
+			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
+
+			// targetを見つけたことがあるならtargetをupdatePersonする
+			await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
+			dst = await this.fetchPerson(src.movedToUri) ?? dst;
+		} else {
+			if (src.movedToUri.startsWith(`${this.config.url}/`)) {
+				// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
+				return 'failed: movedTo is local but not found';
+			}
+
+			// targetが知らない人だったらresolvePerson
+			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
+			dst = await this.resolvePerson(src.movedToUri);
+		}
+ 
+		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
+		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
+		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';
+		if (!dst.alsoKnownAs || dst.alsoKnownAs.length === 0) {
+			return 'skip: dst.alsoKnownAs is empty';
+		}
+		if (!dst.alsoKnownAs?.includes(src.uri)) {
+			return 'skip: alsoKnownAs does not include from.uri';
+		}
+
+		await this.accountMoveService.postMoveProcess(src, dst);
+
+		return 'ok';
 	}
 }

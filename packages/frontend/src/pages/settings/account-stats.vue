@@ -1,18 +1,6 @@
 <template>
 <div class="_gaps_m">
-	<MkKeyValue>
-		<template #key>ID</template>
-		<template #value><span class="_monospace">{{ $i.id }}</span></template>
-	</MkKeyValue>
-
-	<FormSection>
-		<MkKeyValue>
-			<template #key>{{ i18n.ts.registeredDate }}</template>
-			<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
-		</MkKeyValue>
-	</FormSection>
-
-	<FormSection v-if="stats">
+	<FormSection v-if="stats" first>
 		<template #label>{{ i18n.ts.statistics }}</template>
 		<MkKeyValue oneline style="margin: 1em 0;">
 			<template #key>{{ i18n.ts.notesCount }}</template>

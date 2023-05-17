@@ -8,7 +8,7 @@ import type { UserPublickey } from '@/models/entities/UserPublickey.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
-import { RemoteUser, User } from '@/models/entities/User.js';
+import { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
@@ -101,7 +101,7 @@ export class ApDbResolverService {
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject): Promise<User | null> {
+	public async getUserFromApId(value: string | IObject): Promise<LocalUser | RemoteUser | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
@@ -109,11 +109,11 @@ export class ApDbResolverService {
 
 			return await this.cacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
 				id: parsed.id,
-			}).then(x => x ?? undefined)) ?? null;
+			}).then(x => x ?? undefined)) as LocalUser | undefined ?? null;
 		} else {
 			return await this.cacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
 				uri: parsed.uri,
-			}));
+			})) as RemoteUser | null;
 		}
 	}
 

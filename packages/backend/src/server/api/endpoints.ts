@@ -29,6 +29,7 @@ import * as ep___admin_emoji_list from './endpoints/admin/emoji/list.js';
 import * as ep___admin_emoji_removeAliasesBulk from './endpoints/admin/emoji/remove-aliases-bulk.js';
 import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-aliases-bulk.js';
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
+import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
@@ -193,6 +194,7 @@ import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
+import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
@@ -201,6 +203,7 @@ import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
+import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
@@ -222,7 +225,6 @@ import * as ep___i_unpin from './endpoints/i/unpin.js';
 import * as ep___i_updateEmail from './endpoints/i/update-email.js';
 import * as ep___i_update from './endpoints/i/update.js';
 import * as ep___i_move from './endpoints/i/move.js';
-import * as ep___i_knownAs from './endpoints/i/known-as.js';
 import * as ep___i_webhooks_create from './endpoints/i/webhooks/create.js';
 import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
@@ -363,6 +365,7 @@ const eps = [
 	['admin/emoji/remove-aliases-bulk', ep___admin_emoji_removeAliasesBulk],
 	['admin/emoji/set-aliases-bulk', ep___admin_emoji_setAliasesBulk],
 	['admin/emoji/set-category-bulk', ep___admin_emoji_setCategoryBulk],
+	['admin/emoji/set-license-bulk', ep___admin_emoji_setLicenseBulk],
 	['admin/emoji/update', ep___admin_emoji_update],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
@@ -527,6 +530,7 @@ const eps = [
 	['i/export-notes', ep___i_exportNotes],
 	['i/export-favorites', ep___i_exportFavorites],
 	['i/export-user-lists', ep___i_exportUserLists],
+	['i/export-antennas', ep___i_exportAntennas],
 	['i/favorites', ep___i_favorites],
 	['i/gallery/likes', ep___i_gallery_likes],
 	['i/gallery/posts', ep___i_gallery_posts],
@@ -535,6 +539,7 @@ const eps = [
 	['i/import-following', ep___i_importFollowing],
 	['i/import-muting', ep___i_importMuting],
 	['i/import-user-lists', ep___i_importUserLists],
+	['i/import-antennas', ep___i_importAntennas],
 	['i/notifications', ep___i_notifications],
 	['i/page-likes', ep___i_pageLikes],
 	['i/pages', ep___i_pages],
@@ -555,8 +560,7 @@ const eps = [
 	['i/unpin', ep___i_unpin],
 	['i/update-email', ep___i_updateEmail],
 	['i/update', ep___i_update],
-	//['i/move', ep___i_move],
-	//['i/known-as', ep___i_knownAs],
+	['i/move', ep___i_move],
 	['i/webhooks/create', ep___i_webhooks_create],
 	['i/webhooks/list', ep___i_webhooks_list],
 	['i/webhooks/show', ep___i_webhooks_show],
@@ -701,6 +705,12 @@ export interface IEndpointMeta {
 	readonly requireAdmin?: boolean;
 
 	readonly requireRolePolicy?: keyof RolePolicies;
+
+	/**
+	 * 引っ越し済みのユーザーによるリクエストを禁止するか
+	 * 省略した場合は false として解釈されます。
+	 */
+	readonly prohibitMoved?: boolean;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ

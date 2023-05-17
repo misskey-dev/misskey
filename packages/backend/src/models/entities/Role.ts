@@ -154,6 +154,11 @@ export class Role {
 	@Column('boolean', {
 		default: false,
 	})
+	public isExplorable: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public canEditMembersByModerator: boolean;
 
 	// UIに表示する際の並び順用(大きいほど先頭)

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
+import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -15,7 +16,6 @@ import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { IsNull } from 'typeorm';
 
 @Injectable()
 export class SignupApiService {
@@ -135,6 +135,11 @@ export class SignupApiService {
 			// Check deleted username duplication
 			if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
+			}
+
+			const isPreserved = instance.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
+			if (isPreserved) {
+				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}
 
 			const code = rndstr('a-z0-9', 16);

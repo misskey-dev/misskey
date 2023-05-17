@@ -352,6 +352,72 @@ describe('Note', () => {
 			assert.strictEqual(myNote.renote.reply.files.length, 1);
 			assert.strictEqual(myNote.renote.reply.files[0].id, file.body.id);
 		});
+
+		test('NSFWが強制されている場合変更できない', async () => {
+			const file = await uploadFile(alice);
+
+			const res = await api('admin/roles/create', {
+				name: 'test',
+				description: '',
+				color: null,
+				iconUrl: null,
+				displayOrder: 0,
+				target: 'manual',
+				condFormula: {},
+				isAdministrator: false,
+				isModerator: false,
+				isPublic: false,
+				isExplorable: false,
+				asBadge: false,
+				canEditMembersByModerator: false,
+				policies: {
+					alwaysMarkNsfw: {
+						useDefault: false,
+						priority: 0,
+						value: true,
+					},
+				},
+			}, alice);
+			
+			assert.strictEqual(res.status, 200);
+
+			const assign = await api('admin/roles/assign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			}, alice);
+
+			assert.strictEqual(assign.status, 204);
+			assert.strictEqual(file.body.isSensitive, false);
+
+			const nsfwfile = await uploadFile(alice);
+
+			assert.strictEqual(nsfwfile.status, 200);
+			assert.strictEqual(nsfwfile.body.isSensitive, true);
+
+			const liftnsfw = await api('drive/files/update', {
+				fileId: nsfwfile.body.id,
+				isSensitive: false,
+			}, alice);
+
+			assert.strictEqual(liftnsfw.status, 400);
+			assert.strictEqual(liftnsfw.body.error.code, 'RESTRICTED_BY_ROLE');
+
+			const oldaddnsfw = await api('drive/files/update', {
+				fileId: file.body.id,
+				isSensitive: true,
+			}, alice);
+
+			assert.strictEqual(oldaddnsfw.status, 200);
+
+			await api('admin/roles/unassign', {
+				userId: alice.id,
+				roleId: res.body.id,
+			});
+
+			await api('admin/roles/delete', {
+				roleId: res.body.id,
+			}, alice);
+		});
 	});
 
 	describe('notes/create', () => {
@@ -474,6 +540,61 @@ describe('Note', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
+		});
+
+		test('センシティブな投稿はhomeになる (単語指定)', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					"test",
+				]
+			}, alice);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			await new Promise(x => setTimeout(x, 2));
+
+			const note1 = await api('/notes/create', {
+				text: 'hogetesthuge',
+			}, alice);
+
+			assert.strictEqual(note1.status, 200);
+			assert.strictEqual(note1.body.createdNote.visibility, 'home');
+
+		});
+
+		test('センシティブな投稿はhomeになる (正規表現)', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					"/Test/i",
+				]
+			}, alice);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			const note2 = await api('/notes/create', {
+				text: 'hogetesthuge',
+			}, alice);
+
+			assert.strictEqual(note2.status, 200);
+			assert.strictEqual(note2.body.createdNote.visibility, 'home');
+		});
+
+		test('センシティブな投稿はhomeになる (スペースアンド)', async () => {
+			const sensitive = await api('admin/update-meta', {
+				sensitiveWords: [
+					"Test hoge"
+				]
+			}, alice);
+
+			assert.strictEqual(sensitive.status, 204);
+
+			const note2 = await api('/notes/create', {
+				text: 'hogeTesthuge',
+			}, alice);
+
+			assert.strictEqual(note2.status, 200);
+			assert.strictEqual(note2.body.createdNote.visibility, 'home');
+
 		});
 	});
 

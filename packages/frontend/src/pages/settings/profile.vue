@@ -37,19 +37,40 @@
 			<template #icon><i class="ti ti-list"></i></template>
 			<template #label>{{ i18n.ts._profile.metadataEdit }}</template>
 
-			<div class="_gaps_m">
-				<FormSplit v-for="(record, i) in fields" :min-width="250">
-					<MkInput v-model="record.name" small>
-						<template #label>{{ i18n.ts._profile.metadataLabel }} #{{ i + 1 }}</template>
-					</MkInput>
-					<MkInput v-model="record.value" small>
-						<template #label>{{ i18n.ts._profile.metadataContent }} #{{ i + 1 }}</template>
-					</MkInput>
-				</FormSplit>
-				<div>
+			<div :class="$style.metadataRoot">
+				<div :class="$style.metadataMargin">
 					<MkButton :disabled="fields.length >= 16" inline style="margin-right: 8px;" @click="addField"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+					<MkButton v-if="!fieldEditMode" :disabled="fields.length <= 1" inline danger style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+					<MkButton v-else inline style="margin-right: 8px;" @click="fieldEditMode = !fieldEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
 					<MkButton inline primary @click="saveFields"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</div>
+
+				<Sortable
+					v-model="fields"
+					class="_gaps_s"
+					item-key="id"
+					:animation="150"
+					:handle="'.' + $style.dragItemHandle"
+					@start="e => e.item.classList.add('active')"
+					@end="e => e.item.classList.remove('active')"
+				>
+					<template #item="{element, index}">
+						<div :class="$style.fieldDragItem">
+							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
+							<div :class="$style.dragItemForm">
+								<FormSplit :min-width="200">
+									<MkInput v-model="element.name" small>
+										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
+									</MkInput>
+									<MkInput v-model="element.value" small>
+										<template #label>{{ i18n.ts._profile.metadataContent }}</template>
+									</MkInput>
+								</FormSplit>
+							</div>
+						</div>
+					</template>
+				</Sortable>
 			</div>
 		</MkFolder>
 		<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -76,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, watch } from 'vue';
+import { computed, reactive, ref, watch, defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -93,6 +114,8 @@ import { langmap } from '@/scripts/langmap';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement } from '@/scripts/achievements';
 import { defaultStore } from '@/store';
+
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = computed(defaultStore.makeGetterSetter('reactionAcceptance'));
 
@@ -113,22 +136,28 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = reactive($i.fields.map(field => ({ name: field.name, value: field.value })));
+const fields = ref($i?.fields.map(field => ({ id: Math.random().toString(), name: field.name, value: field.value })) ?? []);
+const fieldEditMode = ref(false);
 
 function addField() {
-	fields.push({
+	fields.value.push({
+		id: Math.random().toString(),
 		name: '',
 		value: '',
 	});
 }
 
-while (fields.length < 4) {
+while (fields.value.length < 4) {
 	addField();
+}
+
+function deleteField(index: number) { 
+	fields.value.splice(index, 1);
 }
 
 function saveFields() {
 	os.apiWithDialog('i/update', {
-		fields: fields.filter(field => field.name !== '' && field.value !== ''),
+		fields: fields.value.filter(field => field.name !== '' && field.value !== '').map(field => ({ name: field.name, value: field.value })),
 	});
 }
 
@@ -246,5 +275,62 @@ definePageMetadata({
 		top: 16px;
 		right: 16px;
 	}
+}
+</style>
+<style lang="scss" module>
+.metadataRoot {
+	container-type: inline-size;
+}
+
+.metadataMargin {
+	margin-bottom: 1.5em;
+}
+
+.fieldDragItem {
+	display: flex;
+	padding-bottom: .75em;
+	align-items: flex-end;
+	border-bottom: solid 0.5px var(--divider);
+
+	&:last-child {
+		border-bottom: 0;
+	}
+
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
+		align-items: center;
+	}
+}
+
+.dragItemHandle {
+	cursor: grab;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px 0 0;
+	opacity: 0.5;
+	flex-shrink: 0;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.dragItemRemove {
+	@extend .dragItemHandle;
+
+	color: #ff2a2a;
+	opacity: 1;
+	cursor: pointer;
+
+	&:hover, &:focus {
+		opacity: .7;
+	}
+	&:active {
+		cursor: pointer;
+	}
+}
+
+.dragItemForm {
+	flex-grow: 1;
 }
 </style>

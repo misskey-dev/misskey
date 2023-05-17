@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -13,13 +13,15 @@ import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { IdService } from '@/core/IdService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/index.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository, } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import type { RemoteUser } from '@/models/entities/User.js';
 import { getApHrefNullable, getApId, getApIds, getApType, getOneApHrefNullable, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
@@ -76,6 +78,8 @@ export class ApInboxService {
 		private apNoteService: ApNoteService,
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
+		private accountMoveService: AccountMoveService,
+		private cacheService: CacheService,
 		private queueService: QueueService,
 	) {
 		this.logger = this.apLoggerService.logger;
@@ -140,7 +144,7 @@ export class ApInboxService {
 		} else if (isFlag(activity)) {
 			await this.flag(actor, activity);
 		} else if (isMove(activity)) {
-			//await this.move(actor, activity);
+			await this.move(actor, activity);
 		} else {
 			this.logger.warn(`unrecognized activity type: ${activity.type}`);
 		}
@@ -158,6 +162,7 @@ export class ApInboxService {
 			return 'skip: フォローしようとしているユーザーはローカルユーザーではありません';
 		}
 
+		// don't queue because the sender may attempt again when timeout
 		await this.userFollowingService.follow(actor, followee, activity.id);
 		return 'ok';
 	}
@@ -596,6 +601,7 @@ export class ApInboxService {
 			throw e;
 		});
 
+		// don't queue because the sender may attempt again when timeout
 		if (isFollow(object)) return await this.undoFollow(actor, object);
 		if (isBlock(object)) return await this.undoBlock(actor, object);
 		if (isLike(object)) return await this.undoLike(actor, object);
@@ -736,53 +742,7 @@ export class ApInboxService {
 		// fetch the new and old accounts
 		const targetUri = getApHrefNullable(activity.target);
 		if (!targetUri) return 'skip: invalid activity target';
-		let new_acc = await this.apPersonService.resolvePerson(targetUri);
-		let old_acc = await this.apPersonService.resolvePerson(actor.uri);
 
-		// update them if they're remote
-		if (new_acc.uri) await this.apPersonService.updatePerson(new_acc.uri);
-		if (old_acc.uri) await this.apPersonService.updatePerson(old_acc.uri);
-
-		// retrieve updated users
-		new_acc = await this.apPersonService.resolvePerson(targetUri);
-		old_acc = await this.apPersonService.resolvePerson(actor.uri);
-
-		// check if alsoKnownAs of the new account is valid
-		let isValidMove = true;
-		if (old_acc.uri) {
-			if (!new_acc.alsoKnownAs?.includes(old_acc.uri)) {
-				isValidMove = false;
-			}
-		} else if (!new_acc.alsoKnownAs?.includes(old_acc.id)) {
-			isValidMove = false;
-		}
-		if (!isValidMove) {
-			return 'skip: accounts invalid';
-		}
-
-		// add target uri to movedToUri in order to indicate that the user has moved
-		await this.usersRepository.update(old_acc.id, { movedToUri: targetUri });
-
-		// follow the new account and unfollow the old one
-		const followings = await this.followingsRepository.find({
-			relations: {
-				follower: true,
-			},
-			where: {
-				followeeId: old_acc.id,
-				followerHost: IsNull(), // follower is local
-			},
-		});
-		for (const following of followings) {
-			if (!following.follower) continue;
-			try {
-				await this.userFollowingService.follow(following.follower, new_acc);
-				await this.userFollowingService.unfollow(following.follower, old_acc);
-			} catch {
-				/* empty */
-			}
-		}
-
-		return 'ok';
+		return await this.apPersonService.updatePerson(actor.uri) ?? 'skip: nothing to do';
 	}
 }

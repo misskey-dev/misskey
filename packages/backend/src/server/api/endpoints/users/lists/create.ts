@@ -13,6 +13,8 @@ export const meta = {
 
 	requireCredential: true,
 
+	prohibitMoved: true,
+
 	kind: 'write:account',
 
 	description: 'Create a new list of users.',
@@ -58,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (currentCount > (await this.roleService.getUserPolicies(me.id)).userListLimit) {
 				throw new ApiError(meta.errors.tooManyUserLists);
 			}
-	
+
 			const userList = await this.userListsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),

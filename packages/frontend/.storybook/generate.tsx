@@ -398,6 +398,9 @@ Promise.all([
 	glob('src/components/global/*.vue'),
 	glob('src/components/Mk{A,B}*.vue'),
 	glob('src/components/MkGalleryPostPreview.vue'),
+	glob('src/components/MkSignupServerRules.vue'),
+	glob('src/components/MkUserSetupDialog.vue'),
+	glob('src/components/MkUserSetupDialog.*.vue'),
 	glob('src/pages/user/home.vue'),
 ])
 	.then((globs) => globs.flat())
