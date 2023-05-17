@@ -3,8 +3,9 @@ function defaultUseWorkerNumber(prev: number, totalWorkers: number) {
 }
 
 export class WorkerMultiDispatch<POST = any, RETURN = any> {
-    private sym = Symbol('WorkerMultiDispatch');
-    public workers: Worker[] = [];
+    private symbol = Symbol('WorkerMultiDispatch');
+    private workers: Worker[] = [];
+    private terminated = false;
     private prevWorkerNumber = 0;
     private getUseWorkerNumber = defaultUseWorkerNumber;
     private finalizationRegistry: FinalizationRegistry<symbol>;
@@ -18,7 +19,7 @@ export class WorkerMultiDispatch<POST = any, RETURN = any> {
         this.finalizationRegistry = new FinalizationRegistry(() => {
             this.terminate();
         });
-        this.finalizationRegistry.register(this, this.sym);
+        this.finalizationRegistry.register(this, this.symbol);
 
         if (_DEV_) console.log('WorkerMultiDispatch: Created', this);
     }
@@ -53,10 +54,22 @@ export class WorkerMultiDispatch<POST = any, RETURN = any> {
     }
 
     public terminate() {
+        this.terminated = true;
+        if (_DEV_) console.log('WorkerMultiDispatch: Terminating', this);
         this.workers.forEach(worker => {
             worker.terminate();
         });
         this.workers = [];
         this.finalizationRegistry.unregister(this);
+    }
+
+    public isTerminated() {
+        return this.terminated;
+    }
+    public getWorkers() {
+        return this.workers;
+    }
+    public getSymbol() {
+        return this.symbol;
     }
 }

@@ -20,6 +20,7 @@ import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
 import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
 import { $ref } from 'vue/macros';
+import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 
 const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
 	const testWorker = new TestWebGL2();
@@ -30,8 +31,10 @@ const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
 				Math.min(navigator.hardwareConcurrency - 1, 4),
 			);
 			resolve(workers);
+			if (_DEV_) console.log('WebGL2 in worker is supported!');
 		} else {
 			resolve(null);
+			if (_DEV_) console.log('WebGL2 in worker is not supported...');
 		}
 		testWorker.terminate();
 	});
@@ -83,6 +86,7 @@ let canvasWidth = $ref(64);
 let canvasHeight = $ref(64);
 let imgWidth = $ref(props.width);
 let imgHeight = $ref(props.height);
+let bitmapTmp = $ref<CanvasImageSource | undefined>();
 let usingWorkerNumber = $ref<number>(-1);
 const hide = computed(() => !loaded || props.forceBlurhash);
 
@@ -118,21 +122,41 @@ watch([() => props.width, () => props.height, root], () => {
 	immediate: true,
 });
 
-async function draw(transfer: boolean = false) {
+function drawImage(bitmap: CanvasImageSource) {
+	// canvasがない（mountedされていない）場合はTmpに保存しておく
+	if (!canvas.value) {
+		bitmapTmp = bitmap;
+		return;
+	}
+
+	// canvasがあれば描画する
+	bitmapTmp = undefined;
+	const ctx = canvas.value.getContext('2d');
+	if (!ctx) return;
+	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
+}
+
+async function draw() {
 	if (!canvas.value || props.hash == null) return;
+
+	const ctx = canvas.value.getContext('2d');
+	if (!ctx) return;
+
+	// avgColorでお茶をにごす
+	ctx.beginPath();
+	ctx.fillStyle = extractAvgColorFromBlurhash(props.hash) ?? '#888';
+	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
 	const workers = await workerPromise;
 	if (workers) {
-		let offscreen: OffscreenCanvas | undefined;
-		if (transfer) {
-			offscreen = canvas.value.transferControlToOffscreen();
-		}
 		const workerNumber = workers.postMessage(
 			{
 				id: viewId,
-				canvas: offscreen ?? undefined,
 				hash: props.hash,
+				width: canvasWidth,
+				height: canvasHeight,
 			},
-			offscreen ? [offscreen] : [],
+			undefined,
 			usingWorkerNumber === -1 ? undefined : () => usingWorkerNumber,
 		);
 		usingWorkerNumber = workerNumber;
@@ -142,14 +166,25 @@ async function draw(transfer: boolean = false) {
 			work.width = canvasWidth;
 			work.height = canvasHeight;
 			render(props.hash, work);
-			const bitmap = await createImageBitmap(work);
-			const ctx = canvas.value.getContext('2d');
-			ctx?.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
+			ctx.drawImage(work, 0, 0, canvasWidth, canvasHeight);
 		} catch (error) {
 			console.error('Error occured during drawing blurhash', error);
 		}
 	}
 }
+
+function workerOnMessage(event: MessageEvent) {
+	if (event.data.id !== viewId) return;
+	drawImage(event.data.bitmap as ImageBitmap);
+}
+
+workerPromise.then(worker => {
+	if (worker) {
+		worker.addListener(workerOnMessage);
+	}
+
+	draw();
+});
 
 watch(() => props.src, () => {
 	waitForDecode();
@@ -160,14 +195,17 @@ watch(() => props.hash, () => {
 });
 
 onMounted(() => {
-	draw(true);
+	// drawImageがmountedより先に呼ばれている場合はここで描画する
+	if (bitmapTmp) {
+		drawImage(bitmapTmp);
+	}
 	waitForDecode();
 });
 
 onUnmounted(() => {
 	if (usingWorkerNumber !== -1) {
 		workerPromise.then(worker => {
-			worker?.postMessage!({ id: viewId, delete: true }, undefined, () => usingWorkerNumber);
+			worker?.removeListener(workerOnMessage);
 		});
 	}
 });
