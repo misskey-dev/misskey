@@ -22,13 +22,8 @@ import TestWebGL2 from '@/workers/test-webgl2?worker';
 const workerPromise = new Promise<Worker | null>(resolve => {
 	const testWorker = new TestWebGL2();
 	testWorker.addEventListener('message', event => {
-		if (event.data.result) {
-			console.log('WebGL2 is supported in worker.')
-			resolve(new DrawBlurhash());
-		} else {
-			console.log('WebGL2 is not supported in worker.')
-			resolve(null);
-		}
+		if (event.data.result) resolve(new DrawBlurhash());
+		else resolve(null);
 		testWorker.terminate();
 	});
 });
@@ -79,7 +74,6 @@ let canvasWidth = $ref(64);
 let canvasHeight = $ref(64);
 let imgWidth = $ref(props.width);
 let imgHeight = $ref(props.height);
-let bitmapTmp = $ref<ImageBitmap | undefined>();
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function waitForDecode() {
@@ -114,43 +108,19 @@ watch([() => props.width, () => props.height, root], () => {
 	immediate: true,
 });
 
-workerPromise.then(worker => {
-	if (!worker) return;
-
-	worker.postMessage({
-		id: viewId,
-		hash: props.hash,
-	});
-
-	worker.addEventListener('message', event => {
-		if (event.data.id !== viewId) return;
-		drawImage(event.data.bitmap as ImageBitmap);
-	});
-});
-
-function drawImage(bitmap: CanvasImageSource) {
-	// canvasがない（mountedされていない）場合はTmpに保存しておく
-	if (!canvas.value) {
-		bitmapTmp = bitmap;
-		return;
-	}
-
-	bitmapTmp = undefined;
-
-	// canvasがあったらすぐに描画する
-	const ctx = canvas.value.getContext('2d');
-	if (!ctx) return;
-	ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
-}
-
-async function draw() {
+async function draw(transfer: boolean = false) {
 	if (!canvas.value || props.hash == null) return;
 	const worker = await workerPromise;
 	if (worker) {
+		let offscreen: OffscreenCanvas | undefined;
+		if (transfer) {
+			offscreen = canvas.value.transferControlToOffscreen();
+		}
 		worker.postMessage({
 			id: viewId,
+			canvas: offscreen ?? undefined,
 			hash: props.hash,
-		});
+		}, offscreen ? [offscreen] : []);
 	} else {
 		try {
 			const work = document.createElement('canvas');
@@ -158,7 +128,8 @@ async function draw() {
 			work.height = canvasHeight;
 			render(props.hash, work);
 			const bitmap = await createImageBitmap(work);
-			drawImage(bitmap);
+			const ctx = canvas.value.getContext('2d');
+			ctx?.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
 		} catch (error) {
 			console.error('Error occured during drawing blurhash', error);
 		}
@@ -174,10 +145,8 @@ watch(() => props.hash, () => {
 });
 
 onMounted(() => {
-	// drawImageがmountedより先に呼ばれている場合はここで描画する
-	if (bitmapTmp) {
-		drawImage(bitmapTmp);
-	}
+	draw(true);
+	waitForDecode();
 });
 
 onUnmounted(() => {
