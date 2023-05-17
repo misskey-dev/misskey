@@ -15,7 +15,7 @@
 					<div :class="$style.bannerFade"></div>
 				</div>
 				<div v-if="channel.description" :class="$style.description">
-					<Mfm :text="channel.description" :is-note="false" :i="$i"/>
+					<Mfm :text="channel.description" :isNote="false" :i="$i"/>
 				</div>
 			</div>
 

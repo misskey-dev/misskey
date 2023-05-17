@@ -1,5 +1,5 @@
 <template>
-<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :is-note="isNote" :class="[$style.root, { [$style.nowrap]: nowrap }]"/>
+<MfmCore :text="text" :plain="plain" :nowrap="nowrap" :author="author" :isNote="isNote" :class="[$style.root, { [$style.nowrap]: nowrap }]"/>
 </template>
 
 <script lang="ts" setup>
