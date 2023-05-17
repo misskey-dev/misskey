@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch } from 'vue';
+import { onMounted, ref, useCssModule, watch, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -39,7 +39,7 @@ const props = defineProps<{
 
 const $style = useCssModule();
 
-const gallery = ref<HTMLDivElement>();
+const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
