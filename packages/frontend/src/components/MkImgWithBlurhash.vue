@@ -16,18 +16,31 @@
 </template>
 
 <script lang="ts">
+import DrawBlurhash from '@/workers/draw-blurhash?worker';
+import TestWebGL2 from '@/workers/test-webgl2?worker';
+import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
 import { $ref } from 'vue/macros';
 
-const WEBGL2_IN_OFFSCREENCANVAS_SUPPORTED = (() => {
-	const canvas = new OffscreenCanvas(1, 1);
-	const gl = canvas.getContext('webgl2');
-	if (_DEV_) console.info('WEBGL2_IN_OFFSCREENCANVAS_SUPPORTED', !!gl);
-	return !!gl;
-})();
+const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
+	const testWorker = new TestWebGL2();
+	testWorker.addEventListener('message', event => {
+		if (event.data.result) {
+			const workers = new WorkerMultiDispatch(
+				() => new DrawBlurhash(),
+				Math.min(navigator.hardwareConcurrency - 1, 4),
+			);
+			resolve(workers);
+		} else {
+			resolve(null);
+		}
+		testWorker.terminate();
+	});
+});
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, shallowRef, useCssModule, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
+import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { defaultStore } from '@/store';
 const $style = useCssModule();
@@ -61,6 +74,7 @@ const props = withDefaults(defineProps<{
 	forceBlurhash: false,
 });
 
+const viewId = uuid();
 const canvas = shallowRef<HTMLCanvasElement>();
 const root = shallowRef<HTMLDivElement>();
 const img = shallowRef<HTMLImageElement>();
@@ -69,6 +83,7 @@ let canvasWidth = $ref(64);
 let canvasHeight = $ref(64);
 let imgWidth = $ref(props.width);
 let imgHeight = $ref(props.height);
+let usingWorkerNumber = $ref<number>(-1);
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function waitForDecode() {
@@ -103,39 +118,36 @@ watch([() => props.width, () => props.height, root], () => {
 	immediate: true,
 });
 
-// アクティブなwebgl2をたくさん持てないため、burahaは別のcanvasで描画させる
-// ImageBitmapで送るのは、なるべく早くwebgl2コンテキストを持ったcanvasを解放させるため
-async function drawSub(): Promise<ImageBitmap | void> {
-	if (props.hash == null) return;
-
-	if (WEBGL2_IN_OFFSCREENCANVAS_SUPPORTED) {
-		const work = new OffscreenCanvas(canvasWidth, canvasHeight);
-		render(props.hash, work);
-		return createImageBitmap(work);
-	}
-
-	const work = document.createElement('canvas');
-	work.width = canvasWidth;
-	work.height = canvasHeight;
-	render(props.hash, work);
-	return createImageBitmap(work);
-}
-
-async function draw() {
+async function draw(transfer: boolean = false) {
 	if (!canvas.value || props.hash == null) return;
-	const ctx = canvas.value.getContext('2d');
-
-	if (!ctx) {
-		console.error('Unable to get canvas 2D context');
-		return;
-	}
-
-	try {
-		const bitmap = await drawSub();
-		if (!bitmap) return;
-		ctx.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
-	} catch (error) {
-		console.error('Error occured during drawing blurhash', error);
+	const workers = await workerPromise;
+	if (workers) {
+		let offscreen: OffscreenCanvas | undefined;
+		if (transfer) {
+			offscreen = canvas.value.transferControlToOffscreen();
+		}
+		const workerNumber = workers.postMessage(
+			{
+				id: viewId,
+				canvas: offscreen ?? undefined,
+				hash: props.hash,
+			},
+			offscreen ? [offscreen] : [],
+			usingWorkerNumber === -1 ? undefined : () => usingWorkerNumber,
+		);
+		usingWorkerNumber = workerNumber;
+	} else {
+		try {
+			const work = document.createElement('canvas');
+			work.width = canvasWidth;
+			work.height = canvasHeight;
+			render(props.hash, work);
+			const bitmap = await createImageBitmap(work);
+			const ctx = canvas.value.getContext('2d');
+			ctx?.drawImage(bitmap, 0, 0, canvasWidth, canvasHeight);
+		} catch (error) {
+			console.error('Error occured during drawing blurhash', error);
+		}
 	}
 }
 
@@ -148,8 +160,16 @@ watch(() => props.hash, () => {
 });
 
 onMounted(() => {
-	draw();
+	draw(true);
 	waitForDecode();
+});
+
+onUnmounted(() => {
+	if (usingWorkerNumber !== -1) {
+		workerPromise.then(worker => {
+			worker?.postMessage!({ id: viewId, delete: true }, undefined, () => usingWorkerNumber);
+		});
+	}
 });
 </script>
 
