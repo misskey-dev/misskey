@@ -8,7 +8,7 @@ onmessage = async (event) => {
     if (!('hash' in event.data && typeof event.data.hash === 'string')) {
         return;
     }
-    const work = new OffscreenCanvas(event.data.width ?? 64, event.data.height ?? 64);
+    const work = new OffscreenCanvas(canvas.width, canvas.height);
     render(event.data.hash, work);
     const bitmap = await createImageBitmap(work);
     postMessage({ id: event.data.id, bitmap });
