@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { onUnmounted } from 'vue';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
@@ -32,10 +32,10 @@ function reload() {
 	location.reload();
 }
 
-stream.on('_disconnected_', onDisconnected);
+useStream().on('_disconnected_', onDisconnected);
 
 onUnmounted(() => {
-	stream.off('_disconnected_', onDisconnected);
+	useStream().off('_disconnected_', onDisconnected);
 });
 </script>
 

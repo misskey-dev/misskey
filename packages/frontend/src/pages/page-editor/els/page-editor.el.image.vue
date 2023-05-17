@@ -8,8 +8,8 @@
 		</button>
 	</template>
 
-	<section class="oyyftmcf">
-		<MkDriveFileThumbnail v-if="file" class="preview" :file="file" fit="contain" @click="choose()"/>
+	<section>
+		<MkDriveFileThumbnail v-if="file" style="height: 150px;" :file="file" fit="contain" @click="choose()"/>
 	</section>
 </XContainer>
 </template>
@@ -54,11 +54,3 @@ onMounted(async () => {
 	}
 });
 </script>
-
-<style lang="scss" scoped>
-.oyyftmcf {
-	> .preview {
-		height: 150px;
-	}
-}
-</style>

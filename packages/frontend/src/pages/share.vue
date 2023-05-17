@@ -16,7 +16,7 @@
 			class="_panel"
 			@posted="state = 'posted'"
 		/>
-		<MkButton v-else-if="state === 'posted'" primary class="close" @click="close()">{{ i18n.ts.close }}</MkButton>
+		<MkButton v-else-if="state === 'posted'" primary :class="$style.close" @click="close()">{{ i18n.ts.close }}</MkButton>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
@@ -162,7 +162,7 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .close {
 	margin: 16px auto;
 }

@@ -118,6 +118,3 @@ definePageMetadata({
 	icon: 'ti ti-adjustments',
 });
 </script>
-
-<style lang="scss" scoped>
-</style>

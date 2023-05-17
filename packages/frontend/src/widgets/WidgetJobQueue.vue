@@ -49,7 +49,7 @@
 import { onUnmounted, reactive } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import number from '@/filters/number';
 import * as sound from '@/scripts/sound';
 import { deepClone } from '@/scripts/clone';
@@ -81,7 +81,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const connection = stream.useChannel('queueStats');
+const connection = useStream().useChannel('queueStats');
 const current = reactive({
 	inbox: {
 		activeSincePrevTick: 0,

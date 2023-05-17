@@ -94,7 +94,3 @@ definePageMetadata({
 	icon: 'ti ti-plug',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

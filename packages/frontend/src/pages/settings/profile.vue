@@ -1,11 +1,11 @@
 <template>
 <div class="_gaps_m">
-	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div class="avatar">
-			<MkAvatar class="avatar" :user="$i" @click="changeAvatar"/>
-			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+		<div :class="$style.avatarContainer">
+			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
+			<MkButton primary rounded :class="$style.avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
-		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
 	<MkInput v-model="profile.name" :max="30" manual-save>
@@ -91,8 +91,6 @@
 		<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
 		<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
 	</MkSelect>
-
-	<MkSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 </div>
 </template>
 
@@ -248,36 +246,39 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.llvierxe {
+<style lang="scss" module>
+.avatarAndBanner {
 	position: relative;
 	background-size: cover;
 	background-position: center;
 	border: solid 1px var(--divider);
 	border-radius: 10px;
 	overflow: clip;
-
-	> .avatar {
-		display: inline-block;
-		text-align: center;
-		padding: 16px;
-
-		> .avatar {
-			display: inline-block;
-			width: 72px;
-			height: 72px;
-			margin: 0 auto 16px auto;
-		}
-	}
-
-	> .bannerEdit {
-		position: absolute;
-		top: 16px;
-		right: 16px;
-	}
 }
-</style>
-<style lang="scss" module>
+
+.avatarContainer {
+	display: inline-block;
+	text-align: center;
+	padding: 16px;
+}
+
+.avatar {
+	display: inline-block;
+	width: 72px;
+	height: 72px;
+	margin: 0 auto 16px auto;
+}
+
+.avatarEdit {
+	
+}
+
+.bannerEdit {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+}
+
 .metadataRoot {
 	container-type: inline-size;
 }
