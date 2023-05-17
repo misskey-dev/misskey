@@ -114,6 +114,20 @@ watch([() => props.width, () => props.height, root], () => {
 	immediate: true,
 });
 
+workerPromise.then(worker => {
+	if (!worker) return;
+
+	worker.postMessage({
+		id: viewId,
+		hash: props.hash,
+	});
+
+	worker.addEventListener('message', event => {
+		if (event.data.id !== viewId) return;
+		drawImage(event.data.bitmap as ImageBitmap);
+	});
+});
+
 function drawImage(bitmap: CanvasImageSource) {
 	// canvasがない（mountedされていない）場合はTmpに保存しておく
 	if (!canvas.value) {
@@ -151,19 +165,6 @@ async function draw() {
 	}
 }
 
-function workerOnMessage(event: MessageEvent) {
-	if (event.data.id !== viewId) return;
-	drawImage(event.data.bitmap as ImageBitmap);
-}
-
-workerPromise.then(worker => {
-	if (worker) {
-		worker.addEventListener('message', workerOnMessage);
-	}
-
-	draw();
-});
-
 watch(() => props.src, () => {
 	waitForDecode();
 });
@@ -180,11 +181,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	workerPromise.then(worker => {
-		if (worker) {
-			worker.removeEventListener('message', workerOnMessage);
-		}
-	});
+	workerPromise.then(worker => worker?.postMessage!({ id: viewId, delete: true }));
 });
 </script>
 
