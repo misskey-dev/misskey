@@ -91,10 +91,6 @@ function waitForDecode() {
 	}
 }
 
-watch(() => props.src, () => {
-	waitForDecode();
-});
-
 watch([() => props.width, () => props.height, root], () => {
 	const ratio = props.width / props.height;
 	if (ratio > 1) {
@@ -139,6 +135,10 @@ async function draw(transfer: boolean = false) {
 		}
 	}
 }
+
+watch(() => props.src, () => {
+	waitForDecode();
+});
 
 watch(() => props.hash, () => {
 	draw();
