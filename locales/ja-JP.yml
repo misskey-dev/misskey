@@ -1052,6 +1052,7 @@ failedToPreviewUrl: "プレビューできません"
 update: "更新"
 rolesThatCanBeUsedThisEmojiAsReaction: "リアクションとして使えるロール"
 rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "ロールの指定が一つもない場合、誰でもリアクションとして使えます。"
+rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "ロールは公開ロールである必要があります。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

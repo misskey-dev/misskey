@@ -24,7 +24,16 @@ export const packedEmojiSimpleSchema = {
 		},
 		isSensitive: {
 			type: 'boolean',
-			optional: false, nullable: false,
+			optional: true, nullable: false,
+		},
+		roleIdsThatCanBeUsedThisEmojiAsReaction: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
 		},
 	},
 } as const;
