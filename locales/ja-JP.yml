@@ -1049,6 +1049,9 @@ preventAiLearningDescription: "外部の文章生成AIや画像生成AIに対し
 options: "オプション"
 specifyUser: "ユーザー指定"
 failedToPreviewUrl: "プレビューできません"
+update: "更新"
+rolesThatCanBeUsedThisEmojiAsReaction: "リアクションとして使えるロール"
+rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "ロールの指定が一つもない場合、誰でもリアクションとして使えます。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

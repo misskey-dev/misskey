@@ -22,6 +22,10 @@ export const packedEmojiSimpleSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		isSensitive: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;
 
@@ -62,6 +66,23 @@ export const packedEmojiDetailedSchema = {
 		license: {
 			type: 'string',
 			optional: false, nullable: true,
+		},
+		isSensitive: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		localOnly: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		roleIdsThatCanBeUsedThisEmojiAsReaction: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
 		},
 	},
 } as const;

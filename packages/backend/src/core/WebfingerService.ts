@@ -16,6 +16,9 @@ type IWebFinger = {
 	subject: string;
 };
 
+const urlRegex = /^https?:\/\//;
+const mRegex = /^([^@]+)@(.*)/;
+
 @Injectable()
 export class WebfingerService {
 	constructor(
@@ -35,12 +38,12 @@ export class WebfingerService {
 
 	@bindThis
 	private genUrl(query: string): string {
-		if (query.match(/^https?:\/\//)) {
+		if (query.match(urlRegex)) {
 			const u = new URL(query);
 			return `${u.protocol}//${u.hostname}/.well-known/webfinger?` + urlQuery({ resource: query });
 		}
 
-		const m = query.match(/^([^@]+)@(.*)/);
+		const m = query.match(mRegex);
 		if (m) {
 			const hostname = m[2];
 			const useHttp = process.env.MISSKEY_WEBFINGER_USE_HTTP && process.env.MISSKEY_WEBFINGER_USE_HTTP.toLowerCase() === 'true';

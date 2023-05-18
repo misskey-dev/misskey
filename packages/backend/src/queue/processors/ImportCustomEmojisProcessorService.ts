@@ -107,6 +107,9 @@ export class ImportCustomEmojisProcessorService {
 					aliases: emojiInfo.aliases,
 					driveFile,
 					license: emojiInfo.license,
+					isSensitive: emojiInfo.isSensitive,
+					localOnly: emojiInfo.localOnly,
+					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 				});
 			}
 
