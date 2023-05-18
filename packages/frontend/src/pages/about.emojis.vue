@@ -84,14 +84,6 @@ function toggleTag(tag) {
 
 const edit = () => {
 	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
-		emoji: {
-			name: '',
-			category: null,
-			aliases: [],
-			license: '',
-			url: '',
-			draft: true,
-		},
 		isRequest: true,
 	}, {
 		done: result => {

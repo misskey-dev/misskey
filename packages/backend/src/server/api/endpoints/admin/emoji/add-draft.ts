@@ -36,6 +36,8 @@ export const paramDef = {
 		} },
 		license: { type: 'string', nullable: true },
 		fileId: { type: 'string', format: 'misskey:id' },
+		isSensitive: { type: 'boolean' },
+		localOnly: { type: 'boolean' },
 	},
 	required: ['name', 'fileId'],
 } as const;
@@ -66,6 +68,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				license: ps.license ?? null,
 				host: null,
 				draft: true,
+				isSensitive: ps.isSensitive ?? false,
+				localOnly: ps.localOnly ?? false,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: [],
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
