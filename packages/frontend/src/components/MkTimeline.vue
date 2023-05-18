@@ -70,7 +70,12 @@ if (props.src === 'antenna') {
 	connection.on('note', prepend);
 } else if (props.src === 'home') {
 	endpoint = 'notes/timeline';
-	connection = stream.useChannel('homeTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('homeTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 
 	connection2 = stream.useChannel('main');
@@ -78,15 +83,30 @@ if (props.src === 'antenna') {
 	connection2.on('unfollow', onChangeFollowing);
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
-	connection = stream.useChannel('localTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('localTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 } else if (props.src === 'social') {
 	endpoint = 'notes/hybrid-timeline';
-	connection = stream.useChannel('hybridTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('hybridTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 } else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
-	connection = stream.useChannel('globalTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('globalTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 } else if (props.src === 'mentions') {
 	endpoint = 'notes/mentions';

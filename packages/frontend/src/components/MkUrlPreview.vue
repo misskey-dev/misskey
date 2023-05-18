@@ -41,14 +41,14 @@
 				<h1 v-else-if="fetching" :class="$style.title"><MkEllipsis/></h1>
 				<h1 v-else :class="$style.title" :title="title ?? undefined">{{ title }}</h1>
 			</header>
-			<p v-if="unknownUrl" :class="$style.text">{{ i18n.ts.cannotLoad }}</p>
+			<p v-if="unknownUrl" :class="$style.text">{{ i18n.ts.failedToPreviewUrl }}</p>
 			<p v-else-if="fetching" :class="$style.text"><MkEllipsis/></p>
 			<p v-else-if="description" :class="$style.text" :title="description">{{ description.length > 85 ? description.slice(0, 85) + '…' : description }}</p>
 			<footer :class="$style.footer">
 				<img v-if="icon" :class="$style.siteIcon" :src="icon"/>
-				<p v-if="unknownUrl" :class="$style.siteName">?</p>
+				<p v-if="unknownUrl" :class="$style.siteName">{{ requestUrl.host }}</p>
 				<p v-else-if="fetching" :class="$style.siteName"><MkEllipsis/></p>
-				<p v-else :class="$style.siteName" :title="sitename ?? undefined">{{ sitename }}</p>
+				<p v-else :class="$style.siteName" :title="sitename ?? requestUrl.host">{{ sitename ?? requestUrl.host }}</p>
 			</footer>
 		</article>
 	</component>
@@ -128,17 +128,33 @@ if (requestUrl.hostname === 'music.youtube.com' && requestUrl.pathname.match('^/
 
 requestUrl.hash = '';
 
-window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
-	res.json().then((info: SummalyResult) => {
+window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`)
+	.then(res => {
+		if (!res.ok) {
+			fetching = false;
+			unknownUrl = true;
+			return;
+		}
+
+		return res.json();
+	})
+	.then((info: SummalyResult) => {
+		if (info.url == null) {
+			fetching = false;
+			unknownUrl = true;
+			return;
+		}
+
+		fetching = false;
+		unknownUrl = false;
+
 		title = info.title;
 		description = info.description;
 		thumbnail = info.thumbnail;
 		icon = info.icon;
 		sitename = info.sitename;
-		fetching = false;
 		player = info.player;
 	});
-});
 
 function adjustTweetHeight(message: any) {
 	if (message.origin !== 'https://platform.twitter.com') return;
