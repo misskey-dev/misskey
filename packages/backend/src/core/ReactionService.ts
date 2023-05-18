@@ -54,6 +54,9 @@ type DecodedReaction = {
 	host?: string | null;
 };
 
+const isCustomEmojiRegexp = /^:([\w+-]+)(?:@\.)?:$/;
+const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
+
 @Injectable()
 export class ReactionService {
 	constructor(
@@ -306,7 +309,7 @@ export class ReactionService {
 			return unicode.match('\u200d') ? unicode : unicode.replace(/\ufe0f/g, '');
 		}
 
-		const custom = reaction.match(/^:([\w+-]+)(?:@\.)?:$/);
+		const custom = reaction.match(isCustomEmojiRegexp);
 		if (custom) {
 			const name = custom[1];
 			const emoji = reacterHost == null
@@ -324,7 +327,7 @@ export class ReactionService {
 
 	@bindThis
 	public decodeReaction(str: string): DecodedReaction {
-		const custom = str.match(/^:([\w+-]+)(?:@([\w.-]+))?:$/);
+		const custom = str.match(decodeCustomEmojiRegexp);
 
 		if (custom) {
 			const name = custom[1];
