@@ -28,7 +28,10 @@ jobs:
         ref: "refs/pull/${{ github.event.number }}/merge"
     - name: Checkout actual HEAD
       if: github.event_name == 'pull_request_target'
-      run: git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
+      id: rev
+      run: |
+        echo "base=$(git rev-list --parents -n1 HEAD | cut -d" " -f2)" >> $GITHUB_OUTPUT
+        git checkout $(git rev-list --parents -n1 HEAD | cut -d" " -f3)
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
@@ -75,7 +78,7 @@ jobs:
       if: github.event_name == 'pull_request_target'
       id: chromatic_pull_request
       run: |
-        DIFF="${{ github.base_ref }} HEAD"
+        DIFF="${{ steps.rev.outputs.base }} HEAD"
         if [ "$DIFF" = "0000000000000000000000000000000000000000 HEAD" ]; then
           DIFF="HEAD"
         fi
