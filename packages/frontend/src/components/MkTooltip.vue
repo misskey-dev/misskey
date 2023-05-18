@@ -41,6 +41,9 @@ const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
+// タイミングによっては最初から showing = false な場合があり、その場合に closed 扱いにしないと永久にDOMに残ることになる
+if (!props.showing) emit('closed');
+
 const el = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex('high');
 
@@ -66,10 +69,8 @@ onMounted(() => {
 		setPosition();
 
 		const loop = () => {
-			loopHandler = window.requestAnimationFrame(() => {
-				setPosition();
-				loop();
-			});
+			setPosition();
+			loopHandler = window.requestAnimationFrame(loop);
 		};
 
 		loop();

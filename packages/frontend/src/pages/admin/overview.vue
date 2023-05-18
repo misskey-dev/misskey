@@ -72,7 +72,7 @@ import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import * as os from '@/os';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -87,7 +87,7 @@ let federationSubActive = $ref<number | null>(null);
 let federationSubActiveDiff = $ref<number | null>(null);
 let newUsers = $ref(null);
 let activeInstances = $shallowRef(null);
-const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
+const queueStatsConnection = markRaw(useStream().useChannel('queueStats'));
 const now = new Date();
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,

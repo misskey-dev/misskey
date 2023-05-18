@@ -1048,6 +1048,11 @@ preventAiLearning: "生成AIによる学習を拒否"
 preventAiLearningDescription: "外部の文章生成AIや画像生成AIに対して、投稿したノートや画像などのコンテンツを学習の対象にしないように要求します。これはnoaiフラグをHTMLレスポンスに含めることによって実現されますが、この要求に従うかはそのAI次第であるため、学習を完全に防止するものではありません。"
 options: "オプション"
 specifyUser: "ユーザー指定"
+failedToPreviewUrl: "プレビューできません"
+update: "更新"
+rolesThatCanBeUsedThisEmojiAsReaction: "リアクションとして使えるロール"
+rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "ロールの指定が一つもない場合、誰でもリアクションとして使えます。"
+rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "ロールは公開ロールである必要があります。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
