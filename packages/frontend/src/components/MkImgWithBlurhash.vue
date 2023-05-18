@@ -87,7 +87,6 @@ let canvasHeight = $ref(64);
 let imgWidth = $ref(props.width);
 let imgHeight = $ref(props.height);
 let bitmapTmp = $ref<CanvasImageSource | undefined>();
-let usingWorkerNumber = $ref<number>(-1);
 const hide = computed(() => !loaded || props.forceBlurhash);
 
 function waitForDecode() {
@@ -149,7 +148,7 @@ async function draw() {
 
 	const workers = await workerPromise;
 	if (workers) {
-		const workerNumber = workers.postMessage(
+		workers.postMessage(
 			{
 				id: viewId,
 				hash: props.hash,
@@ -157,9 +156,7 @@ async function draw() {
 				height: canvasHeight,
 			},
 			undefined,
-			usingWorkerNumber === -1 ? undefined : () => usingWorkerNumber,
 		);
-		usingWorkerNumber = workerNumber;
 	} else {
 		try {
 			const work = document.createElement('canvas');
@@ -203,11 +200,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	if (usingWorkerNumber !== -1) {
-		workerPromise.then(worker => {
-			worker?.removeListener(workerOnMessage);
-		});
-	}
+	workerPromise.then(worker => {
+		worker?.removeListener(workerOnMessage);
+	});
 });
 </script>
 
