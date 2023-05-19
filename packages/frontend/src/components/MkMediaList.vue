@@ -7,6 +7,7 @@
 			:class="[
 				$style.medias,
 				count <= 4 ? $style['n' + count] : $style.nMany,
+				$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
@@ -19,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch } from 'vue';
+import { onMounted, ref, useCssModule, watch, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -38,10 +39,41 @@ const props = defineProps<{
 
 const $style = useCssModule();
 
-const gallery = ref<HTMLDivElement>();
+const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
+
+function calcAspectRatio() {
+	if (!gallery.value) return;
+
+	let img = props.mediaList[0];
+
+	if (props.mediaList.length !== 1 || !(img.properties.width && img.properties.height)) {
+		gallery.value.style.aspectRatio = '';
+		return;
+	}
+
+	// アスペクト比上限設定では、横長の場合は高さを縮小させる
+	const ratioMax = (ratio: number) => `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
+
+	switch (defaultStore.state.mediaListWithOneImageAppearance) {
+		case '16_9':
+			gallery.value.style.aspectRatio = ratioMax(16 / 9);
+			break;
+		case '1_1':
+			gallery.value.style.aspectRatio = ratioMax(1);
+			break;
+		case '2_3':
+			gallery.value.style.aspectRatio = ratioMax(2 / 3);
+			break;
+		default:
+			gallery.value.style.aspectRatio = '';
+			break;
+	}
+}
+
+watch([defaultStore.reactiveState.mediaListWithOneImageAppearance, gallery], () => calcAspectRatio());
 
 onMounted(() => {
 	const lightbox = new PhotoSwipeLightbox({
@@ -162,12 +194,37 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	display: grid;
 	grid-gap: 8px;
 
-	// for webkit
 	height: 100%;
+	width: 100%;
 
 	&.n1 {
-		aspect-ratio: 16/9;
 		grid-template-rows: 1fr;
+
+		// default (expand)
+		min-height: 64px;
+		max-height: clamp(
+			64px,
+			50cqh,
+			min(360px, 50vh)
+		);
+
+		&.n116_9 {
+			min-height: none;
+			max-height: none;
+			aspect-ratio: 16 / 9; // fallback
+		}
+
+		&.n11_1{
+			min-height: none;
+			max-height: none;
+			aspect-ratio: 1 / 1; // fallback
+		}
+
+		&.n12_3 {
+			min-height: none;
+			max-height: none;
+			aspect-ratio: 2 / 3; // fallback
+		}
 	}
 
 	&.n2 {
