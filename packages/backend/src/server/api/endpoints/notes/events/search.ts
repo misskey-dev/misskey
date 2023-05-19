@@ -8,8 +8,8 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
-import { ApiError } from '../../../error.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -58,7 +58,7 @@ export const paramDef = {
 			items: {
 				type: 'object',
 				properties: {
-					key: { type: 'string', description: 'the metadata property to filter on.' },
+					key: { type: 'array', items: { type: 'string', nullable: false }, description: 'the metadata string property to filter on. Can filter on nested properties using an array. such as `["location", "postalCode"]`.' },
 					values: { type: 'array', items: { type: 'string', nullable: true }, description: 'The values to match the metadata against (case insensitive regex). Each item in this array is applied as an OR. Include null to indicate match on missing metadata' },
 				},
 			},
@@ -66,6 +66,10 @@ export const paramDef = {
 		sortBy: { type: 'string', nullable: true, default: 'startDate', enum: ['startDate', 'createdAt'] },
 	},
 } as const;
+
+function notAlphaNumeric(s: string) {
+	return null !== s.match(/[^\w]/);
+}
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
@@ -112,13 +116,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				filters.forEach(f => {
 					if (!f.key || !f.values) throw new ApiError(meta.errors.invalidParam);
 					const filterKey = f.key;
+					if (filterKey.some(notAlphaNumeric)) throw new ApiError(meta.errors.invalidParam); // schema properties don't have special characters
 					const filterValues = f.values as (string | null)[];
 					const matches = filterValues.filter(x => x !== null) as string[];
 					const hasNull = filterValues.length !== matches.length;
 					if (matches.length < 1) throw new ApiError(meta.errors.invalidParam);
 					query.andWhere(new Brackets((qb) => {
 						// regex match metadata values case insensitive
-						qb.where('event.metadata ->> :key ~* :values', { key: filterKey, values: `(${ matches.map(m => m.trim()).filter(m => m.length).join('|') })` });
+						qb.where('event.metadata #>> :key ~* :values', { key: `{${filterKey.join(',')}}`, values: `(${ matches.map(m => m.trim()).filter(m => m.length).join('|') })` });
 						if (hasNull) {
 							qb.orWhere('NOT (event.metadata ? :key)', { key: filterKey });
 						}

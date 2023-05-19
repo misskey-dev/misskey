@@ -35,10 +35,13 @@ export class Event {
 	public title: string;
 
 	@Column('jsonb', {
-		default: {},
-		comment: 'metadata mapping for event with more user configurable optional information',
+		default: { 
+			'@context': 'https://schema.org/',
+			'@type': 'Event',
+		},
+		comment: 'metadata object describing the event. Follows https://schema.org/Event',
 	})
-	public metadata: Record<string, string>;
+	public metadata: unknown;
 
 	//#region Denormalized fields
 	@Column('enum', {
