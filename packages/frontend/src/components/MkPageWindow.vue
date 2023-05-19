@@ -1,12 +1,12 @@
 <template>
 <MkWindow
 	ref="windowEl"
-	:initial-width="500"
-	:initial-height="500"
-	:can-resize="true"
-	:close-button="true"
-	:buttons-left="buttonsLeft"
-	:buttons-right="buttonsRight"
+	:initialWidth="500"
+	:initialHeight="500"
+	:canResize="true"
+	:closeButton="true"
+	:buttonsLeft="buttonsLeft"
+	:buttonsRight="buttonsRight"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >

@@ -1,11 +1,11 @@
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@after-leave="$emit('closed')"
+	@afterLeave="$emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">

@@ -1,5 +1,5 @@
 <template>
-<MkWindow ref="uiWindow" :initial-width="400" :initial-height="500" :can-resize="true" @closed="emit('closed')">
+<MkWindow ref="uiWindow" :initialWidth="400" :initialHeight="500" :canResize="true" @closed="emit('closed')">
 	<template #header>
 		<i class="ti ti-exclamation-circle" style="margin-right: 0.5em;"></i>
 		<I18n :src="i18n.ts.reportAbuseOf" tag="span">
@@ -8,7 +8,7 @@
 			</template>
 		</I18n>
 	</template>
-	<MkSpacer :margin-min="20" :margin-max="28">
+	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m" :class="$style.root">
 			<div class="">
 				<MkTextarea v-model="comment">

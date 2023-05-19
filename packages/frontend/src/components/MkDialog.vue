@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="done(true)" @closed="emit('closed')">
+<MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="done(true)" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div v-if="icon" :class="$style.icon">
 			<i :class="icon"></i>

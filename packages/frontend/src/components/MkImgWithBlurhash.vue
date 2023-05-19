@@ -2,12 +2,12 @@
 <div ref="root" :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<TransitionGroup
 		:duration="defaultStore.state.animation && props.transition?.duration || undefined"
-		:enter-active-class="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
-		:leave-active-class="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_leaveActive']) || undefined"
-		:enter-from-class="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
-		:leave-to-class="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
-		:enter-to-class="defaultStore.state.animation && props.transition?.enterToClass || undefined"
-		:leave-from-class="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
+		:enterActiveClass="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
+		:leaveActiveClass="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_leaveActive']) || undefined"
+		:enterFromClass="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
+		:leaveToClass="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
+		:enterToClass="defaultStore.state.animation && props.transition?.enterToClass || undefined"
+		:leaveFromClass="defaultStore.state.animation && props.transition?.leaveFromClass || undefined"
 	>
 		<canvas v-show="hide" key="canvas" ref="canvas" :class="$style.canvas" :width="canvasWidth" :height="canvasHeight" :title="title ?? undefined"/>
 		<img v-show="!hide" key="img" ref="img" :height="imgHeight" :width="imgWidth" :class="$style.img" :src="src ?? undefined" :title="title ?? undefined" :alt="alt ?? undefined" loading="eager" decoding="async"/>
@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
+import { $ref } from 'vue/macros';
 import DrawBlurhash from '@/workers/draw-blurhash?worker';
 import TestWebGL2 from '@/workers/test-webgl2?worker';
 import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
-import { $ref } from 'vue/macros';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 
 const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {

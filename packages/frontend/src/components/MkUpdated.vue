@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :z-priority="'middle'" @click="$refs.modal.close()" @closed="$emit('closed')">
+<MkModal ref="modal" :zPriority="'middle'" @click="$refs.modal.close()" @closed="$emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
