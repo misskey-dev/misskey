@@ -83,7 +83,7 @@ export class MfmService {
 					if (hashtagNames && href && hashtagNames.map(x => x.toLowerCase()).includes(txt.toLowerCase())) {
 						text += txt;
 					// メンション
-					} else if (txt.startsWith('@') && !(rel && rel.value.match(/^me /))) {
+					} else if (txt.startsWith('@') && !(rel && rel.value.startsWith('me '))) {
 						const part = txt.split('@');
 	
 						if (part.length === 2 && href) {

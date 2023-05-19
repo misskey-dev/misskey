@@ -7,10 +7,10 @@
 	@close="close(true)"
 	@closed="emit('closed')"
 >
-	<template v-if="page === 1" #header>{{ i18n.ts._initialAccountSetting.profileSetting }}</template>
-	<template v-else-if="page === 2" #header>{{ i18n.ts._initialAccountSetting.privacySetting }}</template>
-	<template v-else-if="page === 3" #header>{{ i18n.ts.follow }}</template>
-	<template v-else-if="page === 4" #header>{{ i18n.ts.pushNotification }}</template>
+	<template v-if="page === 1" #header><i class="ti ti-user-edit"></i> {{ i18n.ts._initialAccountSetting.profileSetting }}</template>
+	<template v-else-if="page === 2" #header><i class="ti ti-lock"></i> {{ i18n.ts._initialAccountSetting.privacySetting }}</template>
+	<template v-else-if="page === 3" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
+	<template v-else-if="page === 4" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
 	<template v-else-if="page === 5" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
@@ -27,6 +27,7 @@
 		>
 			<template v-if="page === 0">
 				<div :class="$style.centerPage">
+					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-confetti" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -41,7 +42,9 @@
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<XProfile/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</MkSpacer>
 				</div>
 			</template>
@@ -49,7 +52,9 @@
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<XPrivacy/>
-						<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</MkSpacer>
 				</div>
 			</template>
@@ -78,6 +83,7 @@
 			</template>
 			<template v-else-if="page === 5">
 				<div :class="$style.centerPage">
+					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :margin-min="20" :margin-max="28">
 						<div class="_gaps" style="text-align: center;">
 							<i class="ti ti-check" style="display: block; margin: auto; font-size: 3em; color: var(--accent);"></i>
@@ -106,6 +112,7 @@ import MkButton from '@/components/MkButton.vue';
 import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
+import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { host } from '@/config';

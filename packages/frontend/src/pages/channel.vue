@@ -5,6 +5,8 @@
 		<div v-if="channel && tab === 'overview'" class="_gaps">
 			<div class="_panel" :class="$style.bannerContainer">
 				<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
+				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
+				<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
 				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" :class="$style.banner">
 					<div :class="$style.bannerStatus">
 						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
@@ -13,12 +15,9 @@
 					<div :class="$style.bannerFade"></div>
 				</div>
 				<div v-if="channel.description" :class="$style.description">
-					<Mfm :text="channel.description" :is-note="false" :i="$i"/>
+					<Mfm :text="channel.description" :isNote="false" :i="$i"/>
 				</div>
 			</div>
-
-			<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
-			<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-star"></i></MkButton>
 
 			<MkFoldableSection>
 				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
@@ -227,6 +226,13 @@ definePageMetadata(computed(() => channel ? {
 	z-index: 1;
 	top: 16px;
 	left: 16px;
+}
+
+.favorite {
+	position: absolute;
+	z-index: 1;
+	top: 16px;
+	right: 16px;
 }
 
 .banner {

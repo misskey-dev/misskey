@@ -12,8 +12,10 @@
 			</template>
 		</span>
 		<span :class="$style.name">{{ role.name }}</span>
-		<span v-if="role.target === 'manual'" :class="$style.users">{{ role.usersCount }} users</span>
-		<span v-else-if="role.target === 'conditional'" :class="$style.users">({{ i18n.ts._role.conditional }})</span>
+		<template v-if="detailed">
+			<span v-if="role.target === 'manual'" :class="$style.users">{{ role.usersCount }} users</span>
+			<span v-else-if="role.target === 'conditional'" :class="$style.users">({{ i18n.ts._role.conditional }})</span>
+		</template>
 	</div>
 	<div :class="$style.description">{{ role.description }}</div>
 </MkA>
@@ -23,10 +25,13 @@
 import { } from 'vue';
 import { i18n } from '@/i18n';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	role: any;
 	forModeration: boolean;
-}>();
+	detailed: boolean;
+}>(), {
+	detailed: true,
+});
 </script>
 
 <style lang="scss" module>

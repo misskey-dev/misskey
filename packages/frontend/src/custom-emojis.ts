@@ -1,8 +1,7 @@
 import { shallowRef, computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { api, apiGet } from './os';
-import { miLocalStorage } from './local-storage';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { get, set } from '@/scripts/idb-proxy';
 
 const storageCache = await get('emojis');
@@ -16,6 +15,9 @@ export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
 	}
 	return markRaw([...Array.from(categories), null]);
 });
+
+// TODO: ここら辺副作用なのでいい感じにする
+const stream = useStream();
 
 stream.on('emojiAdded', emojiData => {
 	customEmojis.value = [emojiData.emoji, ...customEmojis.value];
@@ -34,10 +36,9 @@ stream.on('emojiDeleted', emojiData => {
 
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
-	const needsMigration = miLocalStorage.getItem('emojis') != null;
 
 	let res;
-	if (force || needsMigration) {
+	if (force) {
 		res = await api('emojis', {});
 	} else {
 		const lastFetchedAt = await get('lastEmojisFetchedAt');
@@ -48,10 +49,6 @@ export async function fetchCustomEmojis(force = false) {
 	customEmojis.value = res.emojis;
 	set('emojis', res.emojis);
 	set('lastEmojisFetchedAt', now);
-	if (needsMigration) {
-		miLocalStorage.removeItem('emojis');
-		miLocalStorage.removeItem('lastEmojisFetchedAt');
-	}
 }
 
 let cachedTags;

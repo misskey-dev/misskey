@@ -15,70 +15,49 @@
 </Transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue';
+<script lang="ts" setup>
+import { ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkButton,
-	},
+const props = defineProps<{
+	p: () => Promise<any>;
+}>();
 
-	props: {
-		p: {
-			type: Function as PropType<() => Promise<any>>,
-			required: true,
-		},
-	},
+const pending = ref(true);
+const resolved = ref(false);
+const rejected = ref(false);
+const result = ref(null);
 
-	setup(props, context) {
-		const pending = ref(true);
-		const resolved = ref(false);
-		const rejected = ref(false);
-		const result = ref(null);
+const process = () => {
+	if (props.p == null) {
+		return;
+	}
+	const promise = props.p();
+	pending.value = true;
+	resolved.value = false;
+	rejected.value = false;
+	promise.then((_result) => {
+		pending.value = false;
+		resolved.value = true;
+		result.value = _result;
+	});
+	promise.catch(() => {
+		pending.value = false;
+		rejected.value = true;
+	});
+};
 
-		const process = () => {
-			if (props.p == null) {
-				return;
-			}
-			const promise = props.p();
-			pending.value = true;
-			resolved.value = false;
-			rejected.value = false;
-			promise.then((_result) => {
-				pending.value = false;
-				resolved.value = true;
-				result.value = _result;
-			});
-			promise.catch(() => {
-				pending.value = false;
-				rejected.value = true;
-			});
-		};
-
-		watch(() => props.p, () => {
-			process();
-		}, {
-			immediate: true,
-		});
-
-		const retry = () => {
-			process();
-		};
-
-		return {
-			pending,
-			resolved,
-			rejected,
-			result,
-			retry,
-			defaultStore,
-			i18n,
-		};
-	},
+watch(() => props.p, () => {
+	process();
+}, {
+	immediate: true,
 });
+
+const retry = () => {
+	process();
+};
 </script>
 
 <style lang="scss" scoped>

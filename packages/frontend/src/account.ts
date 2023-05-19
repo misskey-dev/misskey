@@ -3,11 +3,11 @@ import * as misskey from 'misskey-js';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
 import { i18n } from './i18n';
 import { miLocalStorage } from './local-storage';
+import { MenuButton } from './types/menu';
 import { del, get, set } from '@/scripts/idb-proxy';
 import { apiUrl } from '@/config';
 import { waiting, api, popup, popupMenu, success, alert } from '@/os';
 import { unisonReload, reloadChannel } from '@/scripts/unison-reload';
-import { MenuButton } from './types/menu';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -101,57 +101,57 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 				'Content-Type': 'application/json',
 			},
 		})
-		.then(res => new Promise<Account | { error: Record<string, any> }>((done2, fail2) => {
-			if (res.status >= 500 && res.status < 600) {
+			.then(res => new Promise<Account | { error: Record<string, any> }>((done2, fail2) => {
+				if (res.status >= 500 && res.status < 600) {
 				// サーバーエラー(5xx)の場合をrejectとする
 				// （認証エラーなど4xxはresolve）
-				return fail2(res);
-			}
-			res.json().then(done2, fail2);
-		}))
-		.then(async res => {
-			if (res.error) {
-				if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
+					return fail2(res);
+				}
+				res.json().then(done2, fail2);
+			}))
+			.then(async res => {
+				if (res.error) {
+					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
 					// SUSPENDED
-					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
-						await showSuspendedDialog();
-					}
-				} else if (res.error.id === 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a') {
+						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+							await showSuspendedDialog();
+						}
+					} else if (res.error.id === 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a') {
 					// USER_IS_DELETED
 					// アカウントが削除されている
-					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
-						await alert({
-							type: 'error',
-							title: i18n.ts.accountDeleted,
-							text: i18n.ts.accountDeletedDescription,
-						});
-					}
-				} else if (res.error.id === 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14') {
+						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+							await alert({
+								type: 'error',
+								title: i18n.ts.accountDeleted,
+								text: i18n.ts.accountDeletedDescription,
+							});
+						}
+					} else if (res.error.id === 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14') {
 					// AUTHENTICATION_FAILED
 					// トークンが無効化されていたりアカウントが削除されたりしている
-					if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
+							await alert({
+								type: 'error',
+								title: i18n.ts.tokenRevoked,
+								text: i18n.ts.tokenRevokedDescription,
+							});
+						}
+					} else {
 						await alert({
 							type: 'error',
-							title: i18n.ts.tokenRevoked,
-							text: i18n.ts.tokenRevokedDescription,
+							title: i18n.ts.failedToFetchAccountInformation,
+							text: JSON.stringify(res.error),
 						});
 					}
-				} else {
-					await alert({
-						type: 'error',
-						title: i18n.ts.failedToFetchAccountInformation,
-						text: JSON.stringify(res.error),
-					});
-				}
 
-				// rejectかつ理由がtrueの場合、削除対象であることを示す
-				fail(true);
-			} else {
-				(res as Account).token = token;
-				done(res as Account);
-			}
-		})
-		.catch(fail);
+					// rejectかつ理由がtrueの場合、削除対象であることを示す
+					fail(true);
+				} else {
+					(res as Account).token = token;
+					done(res as Account);
+				}
+			})
+			.catch(fail);
 	});
 }
 
@@ -304,4 +304,8 @@ export async function openAccountMenu(opts: {
 			align: 'left',
 		});
 	}
+}
+
+if (_DEV_) {
+	(window as any).$i = $i;
 }
