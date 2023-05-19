@@ -1,5 +1,5 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :show-header="false" data-cy-mkw-clock class="mkw-clock">
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-clock class="mkw-clock">
 	<div class="vubelbmv" :class="widgetProps.size">
 		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label a abbrev">{{ tzAbbrev }}</div>
 		<MkAnalogClock
@@ -7,11 +7,11 @@
 			:thickness="widgetProps.thickness"
 			:offset="tzOffset"
 			:graduations="widgetProps.graduations"
-			:fade-graduations="widgetProps.fadeGraduations"
+			:fadeGraduations="widgetProps.fadeGraduations"
 			:twentyfour="widgetProps.twentyFour"
-			:s-animation="widgetProps.sAnimation"
+			:sAnimation="widgetProps.sAnimation"
 		/>
-		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :show-s="false" :offset="tzOffset"/>
+		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :showS="false" :offset="tzOffset"/>
 		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label d offset">{{ tzOffsetLabel }}</div>
 	</div>
 </MkContainer>
@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
+import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
@@ -114,11 +114,8 @@ const widgetPropsDef = {
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
-// 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
-//const props = defineProps<WidgetComponentProps<WidgetProps>>();
-//const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
-const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,

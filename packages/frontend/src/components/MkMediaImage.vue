@@ -8,7 +8,7 @@
 		<ImgWithBlurhash
 			:hash="image.blurhash"
 			:src="(defaultStore.state.enableDataSaverMode && hide) ? null : url"
-			:force-blurhash="hide"
+			:forceBlurhash="hide"
 			:cover="hide"
 			:alt="image.comment || image.name"
 			:title="image.comment || image.name"

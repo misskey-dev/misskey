@@ -2,9 +2,9 @@
 <MkModalWindow
 	ref="dialog"
 	:width="450"
-	:can-close="false"
-	:with-ok-button="true"
-	:ok-button-disabled="false"
+	:canClose="false"
+	:withOkButton="true"
+	:okButtonDisabled="false"
 	@click="cancel()"
 	@ok="ok()"
 	@close="cancel()"
@@ -14,7 +14,7 @@
 		{{ title }}
 	</template>
 
-	<MkSpacer :margin-min="20" :margin-max="32">
+	<MkSpacer :marginMin="20" :marginMax="32">
 		<div class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
@@ -41,7 +41,7 @@
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</MkRadios>
-				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter">
+				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :textConverter="form[item].textConverter">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkRange>

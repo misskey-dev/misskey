@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div v-if="tab === 'featured'" class="rknalgpo">
 			<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
 				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>

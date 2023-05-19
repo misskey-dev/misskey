@@ -11,29 +11,29 @@
 	<div v-else-if="c.type === 'buttons'" class="_buttons" :style="{ justifyContent: align }">
 		<MkButton v-for="button in c.buttons" :primary="button.primary" :rounded="button.rounded" :disabled="button.disabled" inline :small="size === 'small'" @click="button.onClick">{{ button.text }}</MkButton>
 	</div>
-	<MkSwitch v-else-if="c.type === 'switch'" :model-value="valueForSwitch" @update:model-value="onSwitchUpdate">
+	<MkSwitch v-else-if="c.type === 'switch'" :modelValue="valueForSwitch" @update:modelValue="onSwitchUpdate">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkSwitch>
-	<MkTextarea v-else-if="c.type === 'textarea'" :model-value="c.default" @update:model-value="c.onInput">
+	<MkTextarea v-else-if="c.type === 'textarea'" :modelValue="c.default" @update:modelValue="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkTextarea>
-	<MkInput v-else-if="c.type === 'textInput'" :small="size === 'small'" :model-value="c.default" @update:model-value="c.onInput">
+	<MkInput v-else-if="c.type === 'textInput'" :small="size === 'small'" :modelValue="c.default" @update:modelValue="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkInput v-else-if="c.type === 'numberInput'" :small="size === 'small'" :model-value="c.default" type="number" @update:model-value="c.onInput">
+	<MkInput v-else-if="c.type === 'numberInput'" :small="size === 'small'" :modelValue="c.default" type="number" @update:modelValue="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :model-value="c.default" @update:model-value="c.onChange">
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="c.default" @update:modelValue="c.onChange">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
 	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" inline @click="openPostForm">{{ c.text }}</MkButton>
-	<MkFolder v-else-if="c.type === 'folder'" :default-open="c.opened">
+	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
 		<template #label>{{ c.title }}</template>
 		<template v-for="child in c.children" :key="child">
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>

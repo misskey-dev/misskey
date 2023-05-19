@@ -1,6 +1,6 @@
 <template>
 <div ref="el" :class="$style.root">
-	<MkMenu :items="items" :align="align" :width="width" :as-drawer="false" @close="onChildClosed"/>
+	<MkMenu :items="items" :align="align" :width="width" :asDrawer="false" @close="onChildClosed"/>
 </div>
 </template>
 
