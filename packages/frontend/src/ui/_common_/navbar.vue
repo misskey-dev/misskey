@@ -8,7 +8,7 @@
 			</button>
 		</div>
 		<div class="middle">
-			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
+			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.timeline" class="item _focus_before_l index" active-class="active" to="/" exact>
 				<i class="icon ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
 			</MkA>
 			<template v-for="item in menu">
@@ -18,7 +18,7 @@
 					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
 					v-click-anime
 					v-tooltip.noDelay.right="navbarItemDef[item].title"
-					class="item _button"
+					class="item _focus_before_l _button"
 					:class="[item, { active: navbarItemDef[item].active }]"
 					active-class="active"
 					:to="navbarItemDef[item].to"
@@ -29,14 +29,14 @@
 				</component>
 			</template>
 			<div class="divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip.noDelay.right="i18n.ts.controlPanel" class="item" active-class="active" to="/admin">
+			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip.noDelay.right="i18n.ts.controlPanel" class="item _focus_before_l" active-class="active" to="/admin">
 				<i class="icon ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
-			<button v-click-anime class="item _button" @click="more">
+			<button v-click-anime v-tooltip.noDelay.right="i18n.ts.more" class="item _focus_before_l _button" @click="more">
 				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 			</button>
-			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.settings" class="item" active-class="active" to="/settings">
+			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.settings" class="item _focus_before_l" active-class="active" to="/settings">
 				<i class="icon ti ti-settings ti-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
 			</MkA>
 		</div>
@@ -155,6 +155,13 @@ function more(ev: MouseEvent) {
 					text-align: center;
 					width: 100%;
 
+					&:focus-visible {
+						> .icon {
+							outline: 4px solid var(--focus);
+							outline-offset: 2px;
+						}
+					}
+
 					> .icon {
 						display: inline-block;
 						width: 38px;
@@ -223,6 +230,12 @@ function more(ev: MouseEvent) {
 					box-sizing: border-box;
 					margin-top: 16px;
 
+					&:focus-visible {
+						> .avatar {
+							box-shadow: 0 0 0 4px var(--focus);
+						}
+					}
+
 					> .avatar {
 						display: block;
 						flex-shrink: 0;
@@ -290,7 +303,7 @@ function more(ev: MouseEvent) {
 						color: var(--navActive);
 					}
 
-					&:hover, &.active {
+					&:hover, &.active, &:focus {
 						color: var(--accent);
 
 						&:before {
@@ -334,6 +347,13 @@ function more(ev: MouseEvent) {
 					text-align: center;
 					width: 100%;
 
+					&:focus-visible {
+						> .icon {
+							outline: 4px solid var(--focus);
+							outline-offset: 2px;
+						}
+					}
+
 					> .icon {
 						display: inline-block;
 						width: 30px;
@@ -373,7 +393,7 @@ function more(ev: MouseEvent) {
 						background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
 					}
 
-					&:hover, &.active {
+					&:hover, &.active, &:focus {
 						&:before {
 							background: var(--accentLighten);
 						}
@@ -393,6 +413,12 @@ function more(ev: MouseEvent) {
 					display: block;
 					text-align: center;
 					width: 100%;
+
+					&:focus-visible {
+						> .avatar {
+							box-shadow: 0 0 0 4px var(--focus);
+						}
+					}
 
 					> .avatar {
 						display: inline-block;
@@ -441,7 +467,7 @@ function more(ev: MouseEvent) {
 						animation: blink 1s infinite;
 					}
 
-					&:hover, &.active {
+					&:hover, &.active, &:focus {
 						text-decoration: none;
 						color: var(--accent);
 

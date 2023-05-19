@@ -3,7 +3,7 @@
 	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
 		<div class="title"><div><slot name="header"></slot></div></div>
 		<div class="divider"></div>
-		<button class="_button">
+		<button class="_button _focus_m">
 			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>

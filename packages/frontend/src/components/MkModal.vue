@@ -22,6 +22,7 @@ import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
 import { deviceKind } from '@/scripts/device-kind';
+import * as focusTrap from 'focus-trap';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -69,6 +70,7 @@ let fixed = $ref(false);
 let transformOrigin = $ref('center');
 let showing = $ref(true);
 let content = $shallowRef<HTMLElement>();
+let focusTrapEl: any;
 const zIndex = os.claimZIndex(props.zPriority);
 let useSendAnime = $ref(false);
 const type = $computed<ModalTypes>(() => {
@@ -116,6 +118,7 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
+	focusTrapEl?.deactivate();
 	emit('close');
 }
 
@@ -262,9 +265,13 @@ const onOpened = () => {
 			}, 100);
 		}, { passive: true, once: true });
 	}, { passive: true });
+
+	focusTrapEl?.activate();
 };
 
 onMounted(() => {
+	focusTrapEl = focusTrap.createFocusTrap(content);
+
 	watch(() => props.src, async () => {
 		if (props.src) {
 			// eslint-disable-next-line vue/no-mutating-props

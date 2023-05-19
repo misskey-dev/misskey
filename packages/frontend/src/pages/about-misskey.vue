@@ -44,27 +44,27 @@
 				<FormSection>
 					<template #label>{{ i18n.ts._aboutMisskey.contributors }}</template>
 					<div :class="$style.contributors">
-						<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor">
+						<a href="https://github.com/syuilo" target="_blank" :class="$style.contributor" class="_focus_m">
 							<img src="https://avatars.githubusercontent.com/u/4439005?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@syuilo</span>
 						</a>
-						<a href="https://github.com/tamaina" target="_blank" :class="$style.contributor">
+						<a href="https://github.com/tamaina" target="_blank" :class="$style.contributor" class="_focus_m">
 							<img src="https://avatars.githubusercontent.com/u/7973572?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@tamaina</span>
 						</a>
-						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor">
+						<a href="https://github.com/acid-chicken" target="_blank" :class="$style.contributor" class="_focus_m">
 							<img src="https://avatars.githubusercontent.com/u/20679825?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@acid-chicken</span>
 						</a>
-						<a href="https://github.com/rinsuki" target="_blank" :class="$style.contributor">
+						<a href="https://github.com/rinsuki" target="_blank" :class="$style.contributor" class="_focus_m">
 							<img src="https://avatars.githubusercontent.com/u/6533808?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@rinsuki</span>
 						</a>
-						<a href="https://github.com/mei23" target="_blank" :class="$style.contributor">
+						<a href="https://github.com/mei23" target="_blank" :class="$style.contributor" class="_focus_m">
 							<img src="https://avatars.githubusercontent.com/u/30769358?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@mei23</span>
 						</a>
-						<a href="https://github.com/robflop" target="_blank" :class="$style.contributor">
+						<a href="https://github.com/robflop" target="_blank" :class="$style.contributor" class="_focus_m">
 							<img src="https://avatars.githubusercontent.com/u/8159402?v=4" :class="$style.contributorAvatar">
 							<span :class="$style.contributorUsername">@robflop</span>
 						</a>

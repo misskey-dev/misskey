@@ -1,6 +1,6 @@
 <template>
 <div class="ffcbddfc" :class="{ inline }">
-	<a v-if="external" class="main _button" :href="to" target="_blank">
+	<a v-if="external" class="main _button _focus_m" :href="to" target="_blank">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
@@ -8,7 +8,7 @@
 			<i class="ti ti-external-link icon"></i>
 		</span>
 	</a>
-	<MkA v-else class="main _button" :class="{ active }" :to="to" :behavior="behavior">
+	<MkA v-else class="main _button _focus_m" :class="{ active }" :to="to" :behavior="behavior">
 		<span class="icon"><slot name="icon"></slot></span>
 		<span class="text"><slot></slot></span>
 		<span class="right">
