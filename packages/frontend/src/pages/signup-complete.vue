@@ -35,7 +35,3 @@ definePageMetadata({
 	icon: 'ti ti-user',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

@@ -101,8 +101,3 @@ defineExpose<WidgetComponentExpose>({
 	id: props.widget ? props.widget.id : null,
 });
 </script>
-
-<style lang="scss" scoped>
-.mkw-button {
-}
-</style>

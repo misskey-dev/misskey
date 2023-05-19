@@ -19,6 +19,12 @@ export class UserList {
 	})
 	public userId: User['id'];
 
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public isPublic: boolean;
+
 	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})

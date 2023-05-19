@@ -3,15 +3,15 @@
 	ref="dialog"
 	:width="400"
 	:height="450"
-	:with-ok-button="true"
-	:ok-button-disabled="false"
+	:withOkButton="true"
+	:okButtonDisabled="false"
 	@ok="ok()"
 	@close="dialog?.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.notificationSetting }}</template>
 
-	<MkSpacer :margin-min="20" :margin-max="28">
+	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m">
 			<template v-if="showGlobalToggle">
 				<MkSwitch v-model="useGlobalSetting">

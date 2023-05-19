@@ -62,8 +62,8 @@ module.exports = {
 		'vue/max-attributes-per-line': 'off',
 		'vue/html-self-closing': 'off',
 		'vue/singleline-html-element-content-newline': 'off',
-		// (vue/vue3-recommended disabled the autofix for Vue 2 compatibility)
-		'vue/v-on-event-hyphenation': ['warn', 'always', { autofix: true }],
+		'vue/v-on-event-hyphenation': ['error', 'never', { autofix: true }],
+		'vue/attribute-hyphenation': ['error', 'never'],
 	},
 	globals: {
 		// Node.js

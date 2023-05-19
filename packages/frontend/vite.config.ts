@@ -117,7 +117,7 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/init.ts',
+					app: './src/_boot_.ts',
 				},
 				output: {
 					manualChunks: {
@@ -137,6 +137,10 @@ export function getConfig(): UserConfig {
 			commonjsOptions: {
 				include: [/misskey-js/, /node_modules/],
 			},
+		},
+
+		worker: {
+			format: 'es',
 		},
 
 		test: {

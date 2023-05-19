@@ -92,7 +92,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: null as 'likeOnly' | 'likeOnlyForRemote' | null,
+		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
 	},
 	mutedWords: {
 		where: 'account',
@@ -101,6 +101,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	mutedAds: {
 		where: 'account',
 		default: [] as string[],
+	},
+	showTimelineReplies: {
+		where: 'account',
+		default: false,
 	},
 
 	menu: {
@@ -311,6 +315,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: false,
 	},
 	aiChanMode: {
+		where: 'device',
+		default: false,
+	},
+	devMode: {
 		where: 'device',
 		default: false,
 	},

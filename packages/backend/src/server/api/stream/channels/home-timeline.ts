@@ -11,6 +11,7 @@ class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = true;
 	public static requireCredential = true;
+	private withReplies: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -24,6 +25,8 @@ class HomeTimelineChannel extends Channel {
 
 	@bindThis
 	public async init(params: any) {
+		this.withReplies = params.withReplies as boolean;
+	
 		this.subscriber.on('notesStream', this.onNote);
 	}
 
@@ -63,7 +66,7 @@ class HomeTimelineChannel extends Channel {
 		}
 
 		// 関係ない返信は除外
-		if (note.reply && !this.user!.showTimelineReplies) {
+		if (note.reply && !this.withReplies) {
 			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
 			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;

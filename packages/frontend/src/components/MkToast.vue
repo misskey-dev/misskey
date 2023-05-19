@@ -1,11 +1,11 @@
 <template>
 <div>
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_toast_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_toast_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_toast_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_toast_leaveTo : ''"
-		appear @after-leave="emit('closed')"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_toast_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_toast_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_toast_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_toast_leaveTo : ''"
+		appear @afterLeave="emit('closed')"
 	>
 		<div v-if="showing" class="_acrylic" :class="$style.root" :style="{ zIndex }">
 			<div style="padding: 16px 24px;">

@@ -246,7 +246,7 @@ export default class Connection {
 
 		const ch: Channel = channelService.create(id, this);
 		this.channels.push(ch);
-		ch.init(params);
+		ch.init(params ?? {});
 
 		if (pong) {
 			this.sendMessageToWs('connected', {
