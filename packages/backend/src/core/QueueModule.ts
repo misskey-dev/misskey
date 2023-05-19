@@ -78,7 +78,7 @@ const $db: Provider = {
 
 const $relationship: Provider = {
 	provide: 'queue:relationship',
-	useFactory: (config: Config) => q(config, 'relationship'),
+	useFactory: (config: Config) => q(config, 'relationship', config.relashionshipJobPerSec ?? 64),
 	inject: [DI.config],
 };
 
