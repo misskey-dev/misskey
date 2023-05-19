@@ -1,8 +1,8 @@
 <template>
 <MkModalWindow
 	ref="dialogEl"
-	:with-ok-button="true"
-	:ok-button-disabled="selected == null"
+	:withOkButton="true"
+	:okButtonDisabled="selected == null"
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
@@ -11,12 +11,12 @@
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div :class="$style.root">
 		<div :class="$style.form">
-			<FormSplit :min-width="170">
-				<MkInput v-model="username" :autofocus="true" @update:model-value="search">
+			<FormSplit :minWidth="170">
+				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" :datalist="[hostname]" @update:model-value="search">
+				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>

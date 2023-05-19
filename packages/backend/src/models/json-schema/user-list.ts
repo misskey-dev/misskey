@@ -25,5 +25,10 @@ export const packedUserListSchema = {
 				format: 'id',
 			},
 		},
+		isPublic: {
+			type: 'boolean',
+			nullable: false,
+			optional: false,
+		},
 	},
 } as const;

@@ -1,9 +1,9 @@
 <template>
-<div ref="el" class="ssazuxis">
-	<header class="_button" :style="{ background: bg }" @click="showBody = !showBody">
-		<div class="title"><div><slot name="header"></slot></div></div>
-		<div class="divider"></div>
-		<button class="_button">
+<div ref="el" :class="$style.root">
+	<header :class="$style.header" class="_button" :style="{ background: bg }" @click="showBody = !showBody">
+		<div :class="$style.title"><div><slot name="header"></slot></div></div>
+		<div :class="$style.divider"></div>
+		<button class="_button" :class="$style.button">
 			<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
@@ -11,9 +11,9 @@
 	<Transition
 		:name="defaultStore.state.animation ? 'folder-toggle' : ''"
 		@enter="enter"
-		@after-enter="afterEnter"
+		@afterEnter="afterEnter"
 		@leave="leave"
-		@after-leave="afterLeave"
+		@afterLeave="afterLeave"
 	>
 		<div v-show="showBody">
 			<slot></slot>
@@ -86,7 +86,7 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .folder-toggle-enter-active, .folder-toggle-leave-active {
 	overflow-y: clip;
 	transition: opacity 0.5s, height 0.5s !important;
@@ -98,45 +98,41 @@ onMounted(() => {
 	opacity: 0;
 }
 
-.ssazuxis {
+.root {
 	position: relative;
+}
 
-	> header {
-		display: flex;
-		position: relative;
-		z-index: 10;
-		position: sticky;
-		top: var(--stickyTop, 0px);
-		-webkit-backdrop-filter: var(--blur, blur(8px));
-		backdrop-filter: var(--blur, blur(20px));
+.header {
+	display: flex;
+	position: relative;
+	z-index: 10;
+	position: sticky;
+	top: var(--stickyTop, 0px);
+	-webkit-backdrop-filter: var(--blur, blur(8px));
+	backdrop-filter: var(--blur, blur(20px));
+}
 
-		> .title {
-			display: grid;
-			place-content: center;
-			margin: 0;
-			padding: 12px 16px 12px 0;
-		}
+.title {
+	display: grid;
+	place-content: center;
+	margin: 0;
+	padding: 12px 16px 12px 0;
+}
 
-		> .divider {
-			flex: 1;
-			margin: auto;
-			height: 1px;
-			background: var(--divider);
-		}
+.divider {
+	flex: 1;
+	margin: auto;
+	height: 1px;
+	background: var(--divider);
+}
 
-		> button {
-			padding: 12px 0 12px 16px;
-		}
-	}
+.button {
+	padding: 12px 0 12px 16px;
 }
 
 @container (max-width: 500px) {
-	.ssazuxis {
-		> header {
-			> .title {
-				padding: 8px 10px 8px 0;
-			}
-		}
+	.title {
+		padding: 8px 10px 8px 0;
 	}
 }
 </style>

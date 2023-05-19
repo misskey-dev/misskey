@@ -6,7 +6,7 @@
 			<slot name="header"></slot>
 		</div>
 		<div :class="$style.headerSub">
-			<slot name="func" :button-style-class="$style.headerButton"></slot>
+			<slot name="func" :buttonStyleClass="$style.headerButton"></slot>
 			<button v-if="foldable" :class="$style.headerButton" class="_button" @click="() => showBody = !showBody">
 				<template v-if="showBody"><i class="ti ti-chevron-up"></i></template>
 				<template v-else><i class="ti ti-chevron-down"></i></template>
@@ -14,14 +14,14 @@
 		</div>
 	</header>
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_toggle_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_toggle_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_toggle_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_toggle_leaveTo : ''"
 		@enter="enter"
-		@after-enter="afterEnter"
+		@afterEnter="afterEnter"
 		@leave="leave"
-		@after-leave="afterLeave"
+		@afterLeave="afterLeave"
 	>
 		<div v-show="showBody" ref="contentEl" :class="[$style.content, { [$style.omitted]: omitted }]">
 			<slot></slot>
