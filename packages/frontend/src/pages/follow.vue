@@ -1,5 +1,5 @@
 <template>
-<div class="mk-follow-page">
+<div>
 </div>
 </template>
 
