@@ -38,6 +38,8 @@ const canToggle = computed(() => !props.reaction.match(/@\w/) && $i);
 async function toggleReaction() {
 	if (!canToggle.value) return;
 
+	// TODO: その絵文字を使う権限があるかどうか確認
+
 	const oldReaction = props.note.myReaction;
 	if (oldReaction) {
 		const confirm = await os.confirm({
