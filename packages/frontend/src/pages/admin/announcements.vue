@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="900">
+	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
 			<section v-for="announcement in announcements" class="">
 				<div class="_panel _gaps_m" style="padding: 24px;">

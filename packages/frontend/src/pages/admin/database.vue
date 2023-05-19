@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
 			<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
 				<template #key>{{ table[0] }}</template>

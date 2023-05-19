@@ -3,7 +3,7 @@
 	<FromSlot>
 		<template #label>{{ i18n.ts.reactionSettingDescription }}</template>
 		<div v-panel style="border-radius: 6px;">
-			<Sortable v-model="reactions" :class="$style.reactions" :item-key="item => item" :animation="150" :delay="100" :delay-on-touch-only="true">
+			<Sortable v-model="reactions" :class="$style.reactions" :itemKey="item => item" :animation="150" :delay="100" :delayOnTouchOnly="true">
 				<template #item="{element}">
 					<button class="_button" :class="$style.reactionsItem" @click="remove(element, $event)">
 						<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true"/>
