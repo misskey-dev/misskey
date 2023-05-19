@@ -1,11 +1,11 @@
 <template>
 <MkStickyContainer>
-	<MkSpacer :content-max="700">
-		<div class="xmbcjiokr">
+	<MkSpacer :contentMax="700">
+		<div>
 			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
-				<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/list/${ list.id }`">
-					<div class="name">{{ list.name }}</div>
-					<MkAvatars :user-ids="list.userIds"/>
+				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/list/${ list.id }`">
+					<div>{{ list.name }}</div>
+					<MkAvatars :userIds="list.userIds"/>
 				</MkA>
 			</MkPagination>
 		</div>
@@ -34,25 +34,18 @@ const pagination = {
 	},
 };
 </script>
-<style lang="scss" scoped>
-.xmbcjiokr {
-	> .lists {
-		> .list {
-			display: block;
-			padding: 16px;
-			border: solid 1px var(--divider);
-			border-radius: 6px;
-			margin-bottom: 8px;
 
-			&:hover {
-				border: solid 1px var(--accent);
-				text-decoration: none;
-			}
+<style lang="scss" module>
+.list {
+	display: block;
+	padding: 16px;
+	border: solid 1px var(--divider);
+	border-radius: 6px;
+	margin-bottom: 8px;
 
-			> .name {
-				margin-bottom: 4px;
-			}
-		}
+	&:hover {
+		border: solid 1px var(--accent);
+		text-decoration: none;
 	}
 }
 </style>

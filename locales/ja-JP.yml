@@ -2050,9 +2050,3 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
-
-_userList:
-  public: "パブリックにする"
-  publicWarn: "リストがパブリックになりますが、よろしいですか？"
-  private: "プライベートにする"
-  privateWarn: "リストがプライベートになりますが、よろしいですか？"
