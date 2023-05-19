@@ -25,9 +25,24 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
 		fileId: { type: 'string', format: 'misskey:id' },
+		category: {
+			type: 'string',
+			nullable: true,
+			description: 'Use `null` to reset the category.',
+		},
+		aliases: { type: 'array', items: {
+			type: 'string',
+		} },
+		license: { type: 'string', nullable: true },
+		isSensitive: { type: 'boolean' },
+		localOnly: { type: 'boolean' },
+		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
+			type: 'string',
+		} },
 	},
-	required: ['fileId'],
+	required: ['name', 'fileId'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す
@@ -45,18 +60,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
-
-			const name = driveFile.name.split('.')[0].match(/^[a-z0-9_]+$/) ? driveFile.name.split('.')[0] : `_${rndstr('a-z0-9', 8)}_`;
 
 			const emoji = await this.customEmojiService.add({
 				driveFile,
-				name,
-				category: null,
-				aliases: [],
+				name: ps.name,
+				category: ps.category ?? null,
+				aliases: ps.aliases ?? [],
 				host: null,
-				license: null,
+				license: ps.license ?? null,
+				isSensitive: ps.isSensitive ?? false,
+				localOnly: ps.localOnly ?? false,
+				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
