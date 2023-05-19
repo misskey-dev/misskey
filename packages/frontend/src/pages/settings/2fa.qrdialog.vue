@@ -1,8 +1,8 @@
 <template>
 <MkModal
 	ref="dialogEl"
-	:prefer-type="'dialog'"
-	:z-priority="'low'"
+	:preferType="'dialog'"
+	:zPriority="'low'"
 	@click="cancel"
 	@close="cancel"
 	@closed="emit('closed')"

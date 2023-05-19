@@ -1,5 +1,5 @@
 <template>
-<div class="geegznzt">
+<div>
 	<XAntenna :antenna="draft" @created="onAntennaCreated"/>
 </div>
 </template>

@@ -12,7 +12,7 @@
 					:class="$style.folder"
 					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
 				>
-					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
+					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :isStacked="true" @parentFocus="moveFocus(id, $event)"/>
 				</section>
 				<DeckColumnCore
 					v-else
@@ -20,9 +20,9 @@
 					:key="ids[0]"
 					:class="$style.column"
 					:column="columns.find(c => c.id === ids[0])"
-					:is-stacked="false"
+					:isStacked="false"
 					:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
-					@parent-focus="moveFocus(ids[0], $event)"
+					@parentFocus="moveFocus(ids[0], $event)"
 				/>
 			</template>
 			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
@@ -53,10 +53,10 @@
 	</div>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -68,10 +68,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>

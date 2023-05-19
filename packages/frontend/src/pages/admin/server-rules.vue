@@ -2,13 +2,13 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<div class="_gaps_m">
 				<div>{{ i18n.ts._serverRules.description }}</div>
 				<Sortable
 					v-model="serverRules"
 					class="_gaps_m"
-					:item-key="(_, i) => i"
+					:itemKey="(_, i) => i"
 					:animation="150"
 					:handle="'.' + $style.itemHandle"
 					@start="e => e.item.classList.add('active')"

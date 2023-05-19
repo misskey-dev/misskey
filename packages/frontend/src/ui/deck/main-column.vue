@@ -1,5 +1,5 @@
 <template>
-<XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :isStacked="isStacked" @parentFocus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<template v-if="pageMetadata?.value">
 			<i :class="pageMetadata?.value.icon"></i>

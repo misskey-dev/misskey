@@ -1,16 +1,16 @@
 <template>
 <!-- TODO: リファクタの余地がありそう -->
 <div v-if="!column">たぶん見えちゃいけないやつ</div>
-<XMainColumn v-else-if="column.type === 'main'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XWidgetsColumn v-else-if="column.type === 'widgets'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XNotificationsColumn v-else-if="column.type === 'notifications'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XTlColumn v-else-if="column.type === 'tl'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XListColumn v-else-if="column.type === 'list'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XChannelColumn v-else-if="column.type === 'channel'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XAntennaColumn v-else-if="column.type === 'antenna'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XMentionsColumn v-else-if="column.type === 'mentions'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XDirectColumn v-else-if="column.type === 'direct'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
-<XRoleTimelineColumn v-else-if="column.type === 'roleTimeline'" :column="column" :is-stacked="isStacked" @parent-focus="emit('parent-focus', $event)"/>
+<XMainColumn v-else-if="column.type === 'main'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XWidgetsColumn v-else-if="column.type === 'widgets'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XNotificationsColumn v-else-if="column.type === 'notifications'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XTlColumn v-else-if="column.type === 'tl'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XListColumn v-else-if="column.type === 'list'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XChannelColumn v-else-if="column.type === 'channel'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XAntennaColumn v-else-if="column.type === 'antenna'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XMentionsColumn v-else-if="column.type === 'mentions'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XDirectColumn v-else-if="column.type === 'direct'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
+<XRoleTimelineColumn v-else-if="column.type === 'roleTimeline'" :column="column" :isStacked="isStacked" @parentFocus="emit('parent-focus', $event)"/>
 </template>
 
 <script lang="ts" setup>

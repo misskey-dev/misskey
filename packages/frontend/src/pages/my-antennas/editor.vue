@@ -1,5 +1,5 @@
 <template>
-<MkSpacer :content-max="700">
+<MkSpacer :contentMax="700">
 	<div>
 		<div class="_gaps_m">
 			<MkInput v-model="name">

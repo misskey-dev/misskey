@@ -11,11 +11,11 @@
 
 <TransitionGroup
 	tag="div" :class="[$style.notifications, $style[`notificationsPosition-${defaultStore.state.notificationPosition}`], $style[`notificationsStackAxis-${defaultStore.state.notificationStackAxis}`]]"
-	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
