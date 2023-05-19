@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<MkPagination :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
@@ -11,7 +11,7 @@
 			</template>
 
 			<template #default="{ items }">
-				<MkDateSeparatedList v-slot="{ item }" :items="items" :direction="'down'" :no-gap="false" :ad="false">
+				<MkDateSeparatedList v-slot="{ item }" :items="items" :direction="'down'" :noGap="false" :ad="false">
 					<MkNote :key="item.id" :note="item.note" :class="$style.note"/>
 				</MkDateSeparatedList>
 			</template>

@@ -1,9 +1,9 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<div class="cwepdizn _gaps_m">
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.backgroundColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -19,7 +19,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.accentColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -30,7 +30,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.textColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -41,7 +41,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="false">
+			<MkFolder :defaultOpen="false">
 				<template #icon><i class="ti ti-code"></i></template>
 				<template #label>{{ i18n.ts.editCode }}</template>
 
@@ -53,7 +53,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="false">
+			<MkFolder :defaultOpen="false">
 				<template #label>{{ i18n.ts.addDescription }}</template>
 
 				<div class="_gaps_m">

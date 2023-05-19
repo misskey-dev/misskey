@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<MkNotes class="" :pagination="pagination"/>
 	</MkSpacer>
 </MkStickyContainer>
