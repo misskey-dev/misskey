@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { action } from '@storybook/addon-actions';
 import { StoryObj } from '@storybook/vue3';
 import cpu_mem from './cpu-mem.vue';
 export const Default = {
@@ -33,6 +34,10 @@ export const Default = {
 			mem: {
 				total: 1,
 			},
+		},
+		connection: {
+			on: action('on'),
+			send: action('send'),
 		},
 	},
 	parameters: {
