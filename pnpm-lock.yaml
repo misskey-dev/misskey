@@ -438,38 +438,41 @@ importers:
         specifier: 4.4.0
         version: 4.4.0(seedrandom@3.0.5)
       slacc-android-arm-eabi:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-android-arm64:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-darwin-arm64:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-darwin-universal:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-darwin-x64:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
+      slacc-freebsd-x64:
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-linux-arm-gnueabihf:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-linux-arm64-gnu:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-linux-arm64-musl:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-linux-x64-gnu:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-win32-arm64-msvc:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
       slacc-win32-x64-msvc:
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: 0.0.9
+        version: 0.0.9
     devDependencies:
       '@jest/globals':
         specifier: 29.5.0
@@ -17934,28 +17937,10 @@ packages:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: true
 
-  /slacc-android-arm-eabi@0.0.7:
-    resolution: {integrity: sha512-6TikZlR1jsQscxwphhrf0U4xbsRy6zKJ0zmEULopTzbohgo5OLdZ7L3tQazkYlaaFe3YjGnVLW3FfGhhrajVog==}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-android-arm-eabi@0.0.9:
     resolution: {integrity: sha512-T5P5kJ5UwW3UMoPXqqHh9TpCnuCJDCoivoiuONDXrYPYKF8sKDPMVVg1x/KU9/m7e562x9vAMBrIyqFFbEW0Jw==}
     engines: {node: '>= 10'}
     cpu: [arm]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /slacc-android-arm64@0.0.7:
-    resolution: {integrity: sha512-aol/9Rg0Hfqu81hpK+HXcx9sGYu4qqYU+djBCgLtb8I6ZMdWUdE0dp8ACBoTOmYn34hYGcUu4FlJUZ8r7Utucg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
     os: [android]
     requiresBuild: true
     dev: false
@@ -17970,15 +17955,6 @@ packages:
     dev: false
     optional: true
 
-  /slacc-darwin-arm64@0.0.7:
-    resolution: {integrity: sha512-PkV7rO/c9AImNYDacP+kxtOjVuxjy06IIOAxbWerIWvoeqsCNRtiF/dh+OqIACRFBuHIDe0oAyUCEMGUTnzjyQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-darwin-arm64@0.0.9:
     resolution: {integrity: sha512-EspX0Hj6t0Afxbsyc6rY9mTOUQQrPVtWPwwNRaljGRorPyRDDefrU1OnJXRcwcIp0oCZrRrivRYlO7lai63EMw==}
     engines: {node: '>= 10'}
@@ -17988,26 +17964,9 @@ packages:
     dev: false
     optional: true
 
-  /slacc-darwin-universal@0.0.7:
-    resolution: {integrity: sha512-Y9zXpL40m4Yq3dE5vdnAgfmn0Fxc0Bf0ixC9TSl96gKeIZEd6drkjfpHFdsIDNImzOksIAUo0HHiDdbEfE7zdQ==}
-    engines: {node: '>= 10'}
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-darwin-universal@0.0.9:
     resolution: {integrity: sha512-oQySg+9MPyKI9rwwwhmSZQkPks2/rq3k1P5HKwUgnaFZDvDtS/hpDycB3BxSDqWdD5kVA8PLCVa8pt9T5KyKfg==}
     engines: {node: '>= 10'}
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /slacc-darwin-x64@0.0.7:
-    resolution: {integrity: sha512-yKaGjX2YJl1QHe4NgqQVsY83jees3hjFxEUPoKpuZEQzWbMNn0XSyceFRGXIk1oDqiKU40UcsdcCedjYjSEd0Q==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: false
@@ -18031,15 +17990,6 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-arm-gnueabihf@0.0.7:
-    resolution: {integrity: sha512-pdWMdQeX6uA9JfSoWo9EHH0yRiwXKMbaKoS9gflDSyt/hjeR3Qx/KK7Wihd7HeXx7njlNdpr9ycTRmm5NgapQQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-linux-arm-gnueabihf@0.0.9:
     resolution: {integrity: sha512-nhP6+jgd30sq+zFxFW7fGhnPwCfCCU0l1JKk3ORGFMl7wH7ippTDd1xGapKq7N+zgdgURbyj83P3wWb2gcRZ1w==}
     engines: {node: '>= 10'}
@@ -18049,26 +17999,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-arm64-gnu@0.0.7:
-    resolution: {integrity: sha512-hz9TK/w6fxeNZXyFzuLq5cJD/XRyJbo6BaIdW+VrKKnb9nkLnWlqDQtdtJk7Fw7zHjdY3Uqufjwm0iT6qBVpUQ==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-linux-arm64-gnu@0.0.9:
     resolution: {integrity: sha512-x7v0rDe0KNVe1Hl6/XCtkCpqdT283pyVaUmk+af0AnoesNRjYEK8DBc8i53N4nhotionHzPIZfu5gPAFkf6RhA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /slacc-linux-arm64-musl@0.0.7:
-    resolution: {integrity: sha512-wCDAYL7e+lh3XL7g87Ui/Bb2Ap9GcBqeJuj2yHIx6MYC8ontwFSXhqRTmd2zmPLmZA5Nc11aKGN11YNu0Pnwlw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -18085,15 +18017,6 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-x64-gnu@0.0.7:
-    resolution: {integrity: sha512-E5+2cveizpfHXCk/Hu5VfslWFeDVw47nywODiJ8CsofT2l5ITfYPMFEBXm9ORY25mGBTgsO6lJYiF9Hz4FlS9Q==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-linux-x64-gnu@0.0.9:
     resolution: {integrity: sha512-Xs/F81H7cKhlIBigFID6CJlgjy0NeDUGV1CI1MI5mSVHsVI8dUO8zXWETjo6o8krJPgfjT5Jd4tAgvUFct5hng==}
     engines: {node: '>= 10'}
@@ -18103,28 +18026,10 @@ packages:
     dev: false
     optional: true
 
-  /slacc-win32-arm64-msvc@0.0.7:
-    resolution: {integrity: sha512-3a+qnkZbP+Pr5RZuzd0Vi1uCal137QiJajRAWT4r7qwu+Zidd50x2oikQ4rAegqZVTm8qTwVmWA+WmH8WHI7iw==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /slacc-win32-arm64-msvc@0.0.9:
     resolution: {integrity: sha512-C+H0VkKbEEnRbcXRIG5rIaXlg7IZw3o1BbvqA71B8ouQRCu/dNRuH9EQsOYXWltndY42zZi8IupNIwydTUg+Mg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /slacc-win32-x64-msvc@0.0.7:
-    resolution: {integrity: sha512-ydFdZ7wEXQPsw2Tg+yG9uJdCGTehyPtrWBVUMa7fojr3j1gbtThXS2l9Ad/6fYYi2VwdaYPLWbwV3GYElPGL8g==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: false
