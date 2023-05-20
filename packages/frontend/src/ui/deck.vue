@@ -19,7 +19,6 @@
 					:class="$style.column"
 					:column="columns.find(c => c.id === id)"
 					:isStacked="ids.length > 1"
-					@parentFocus="moveFocus(id, $event)"
 				/>
 			</section>
 			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
@@ -206,11 +205,8 @@ window.addEventListener('wheel', (ev) => {
 		columnsEl.scrollLeft += ev.deltaY;
 	}
 });
-loadDeck();
 
-function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
-	// TODO??
-}
+loadDeck();
 
 function changeProfile(ev: MouseEvent) {
 	const items = ref([{
