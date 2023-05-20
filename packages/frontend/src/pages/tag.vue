@@ -4,7 +4,7 @@
 	<MkSpacer :contentMax="800">
 		<MkNotes class="" :pagination="pagination"/>
 	</MkSpacer>
-	<template #footer>
+	<template v-if="$i" #footer>
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="800" :marginMin="16" :marginMax="16">
 				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashTag }}</MkButton>
@@ -20,6 +20,7 @@ import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
 
@@ -37,8 +38,11 @@ const pagination = {
 
 const post = async () => {
 	defaultStore.makeGetterSetter('postFormHashtags').set(props.tag);
+	defaultStore.makeGetterSetter('postFormWithHashtags').set(true);
 	await os.post();
 	defaultStore.makeGetterSetter('postFormHashtags').set('');
+	defaultStore.makeGetterSetter('postFormWithHashtags').set(false);
+	location.reload();
 };
 
 const headerActions = $computed(() => []);
