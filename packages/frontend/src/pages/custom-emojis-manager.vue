@@ -142,6 +142,7 @@ const add = async (ev: MouseEvent) => {
 		done: result => {
 			if (result.created) {
 				emojisPaginationComponent.value.prepend(result.created);
+				emojisPaginationComponent.value.reload();
 			}
 		},
 	}, 'closed');
