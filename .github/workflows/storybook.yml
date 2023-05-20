@@ -86,7 +86,7 @@ jobs:
         if [ "$CHROMATIC_PARAMETER" = " --skip" ]; then
           echo "skip=true" >> $GITHUB_OUTPUT
         fi
-        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static $(echo "$CHROMATIC_PARAMETER")
+        pnpm --filter frontend chromatic --exit-once-uploaded -d storybook-static --branch-name ${{ github.event.pull_request.head.ref }} $(echo "$CHROMATIC_PARAMETER")
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic detects changes
