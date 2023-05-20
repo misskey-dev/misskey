@@ -403,6 +403,7 @@ Promise.all([
 	glob('src/components/MkUserSetupDialog.vue'),
 	glob('src/components/MkUserSetupDialog.*.vue'),
 	glob('src/pages/user/home.vue'),
+	glob('src/widgets/server-metric/cpu-mem.vue'),
 ])
 	.then((globs) => globs.flat())
 	.then((components) => Promise.all(components.map((component) => {

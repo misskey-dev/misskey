@@ -1,10 +1,19 @@
 <template>
 <div class="lcfyofjk">
+	<!-- #15c5cd = oklch(75% 0.125 200) -->
+	<!-- #f38c8d = oklch(75% 0.125 20) -->
 	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
 		<defs>
 			<linearGradient :id="cpuGradientId" x1="0" x2="0" y1="1" y2="0">
-				<stop offset="0%" stop-color="hsl(180, 80%, 70%)"></stop>
-				<stop offset="100%" stop-color="hsl(0, 80%, 70%)"></stop>
+				<stop offset="0%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 0%)"></stop>
+				<stop offset="12.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 12.5%)"></stop>
+				<stop offset="25%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 25%)"></stop>
+				<stop offset="37.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 37.5%)"></stop>
+				<stop offset="50%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 50%)"></stop>
+				<stop offset="62.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 62.5%)"></stop>
+				<stop offset="75%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 75%)"></stop>
+				<stop offset="87.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 87.5%)"></stop>
+				<stop offset="100%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 100%)"></stop>
 			</linearGradient>
 			<mask :id="cpuMaskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
 				<polygon
@@ -36,8 +45,15 @@
 	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
 		<defs>
 			<linearGradient :id="memGradientId" x1="0" x2="0" y1="1" y2="0">
-				<stop offset="0%" stop-color="hsl(180, 80%, 70%)"></stop>
-				<stop offset="100%" stop-color="hsl(0, 80%, 70%)"></stop>
+				<stop offset="0%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 0%)"></stop>
+				<stop offset="12.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 12.5%)"></stop>
+				<stop offset="25%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 25%)"></stop>
+				<stop offset="37.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 37.5%)"></stop>
+				<stop offset="50%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 50%)"></stop>
+				<stop offset="62.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 62.5%)"></stop>
+				<stop offset="75%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 75%)"></stop>
+				<stop offset="87.5%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 87.5%)"></stop>
+				<stop offset="100%" stop-color="color-mix(in oklch decreasing hue, #15c5cd, #f38c8d 100%)"></stop>
 			</linearGradient>
 			<mask :id="memMaskId" x="0" y="0" :width="viewBoxX" :height="viewBoxY">
 				<polygon
@@ -73,14 +89,24 @@
 import { onMounted, onBeforeUnmount } from 'vue';
 import { v4 as uuid } from 'uuid';
 
-const props = defineProps<{
+type Stat = {
+	cpu: number;
+	mem: {
+		active: number;
+	};
+};
+
+const props = withDefaults(defineProps<{
+	stats?: Stat[]
 	connection: any,
 	meta: any
-}>();
+}>(), {
+	stats: () => [] as Stat[],
+});
 
 let viewBoxX: number = $ref(50);
 let viewBoxY: number = $ref(30);
-let stats: any[] = $ref([]);
+let stats: Stat[] = $ref(props.stats);
 const cpuGradientId = uuid();
 const cpuMaskId = uuid();
 const memGradientId = uuid();
@@ -134,6 +160,10 @@ function onStatsLog(statsLog) {
 	for (const revStats of [...statsLog].reverse()) {
 		onStats(revStats);
 	}
+}
+
+if (stats.length) {
+	onStatsLog(stats.splice(0, stats.length).reverse());
 }
 </script>
 
