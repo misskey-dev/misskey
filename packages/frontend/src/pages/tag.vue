@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<MkNotes class="" :pagination="pagination"/>
+		<MkNotes ref="notes" class="" :pagination="pagination"/>
 	</MkSpacer>
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -35,6 +35,7 @@ const pagination = {
 		tag: props.tag,
 	})),
 };
+const notes = ref<InstanceType<typeof MkNotes>>();
 
 const post = async () => {
 	defaultStore.makeGetterSetter('postFormHashtags').set(props.tag);
@@ -42,7 +43,7 @@ const post = async () => {
 	await os.post();
 	defaultStore.makeGetterSetter('postFormHashtags').set('');
 	defaultStore.makeGetterSetter('postFormWithHashtags').set(false);
-	location.reload();
+	notes.value?.pagingComponent?.reload();
 };
 
 const headerActions = $computed(() => []);
