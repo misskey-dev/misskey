@@ -22,7 +22,7 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.statistics }}</template>
-		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspect-ratio="6"/>
+		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
 	</FormSection>
 
 	<FormSection>
@@ -39,10 +39,10 @@
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="alwaysMarkNsfw" @update:model-value="saveProfile()">
+			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="autoSensitive" @update:model-value="saveProfile()">
+			<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
 			</MkSwitch>

@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions"/></template>
-		<MkSpacer :content-max="900">
+		<MkSpacer :contentMax="900">
 			<div>
 				<div>
 					<div class="inputs" style="display: flex; gap: var(--margin); flex-wrap: wrap;">
@@ -24,7 +24,7 @@
 							<template #label>MIME type</template>
 						</MkInput>
 					</div>
-					<MkFileListForAdmin :pagination="pagination" :view-mode="viewMode"/>
+					<MkFileListForAdmin :pagination="pagination" :viewMode="viewMode"/>
 				</div>
 			</div>
 		</MkSpacer>

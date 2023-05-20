@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<div class="_gaps">
 			<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
 				<div>{{ relay.inbox }}</div>

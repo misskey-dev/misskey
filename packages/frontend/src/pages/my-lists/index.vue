@@ -1,14 +1,14 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div class="qkcjvfiv">
 			<MkButton primary class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createList }}</MkButton>
 
 			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
 				<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
 					<div class="name">{{ list.name }}</div>
-					<MkAvatars :user-ids="list.userIds"/>
+					<MkAvatars :userIds="list.userIds"/>
 				</MkA>
 			</MkPagination>
 		</div>

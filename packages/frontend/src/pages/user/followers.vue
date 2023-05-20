@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="1000">
+	<MkSpacer :contentMax="1000">
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
 				<XFollowList :user="user" type="followers"/>

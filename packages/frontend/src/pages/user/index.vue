@@ -5,7 +5,7 @@
 		<Transition name="fade" mode="out-in">
 			<div v-if="user">
 				<XHome v-if="tab === 'home'" :user="user"/>
-				<XTimeline v-else-if="tab === 'notes'" :user="user" />
+				<XTimeline v-else-if="tab === 'notes'" :user="user"/>
 				<XActivity v-else-if="tab === 'activity'" :user="user"/>
 				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>

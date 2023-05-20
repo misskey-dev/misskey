@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="tab === 'overview'" :content-max="600" :margin-min="20">
+	<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 		<div class="_gaps_m">
 			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
 				<div style="overflow: clip;">
@@ -80,13 +80,13 @@
 			</FormSection>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'emojis'" :content-max="1000" :margin-min="20">
+	<MkSpacer v-else-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
 		<XEmojis/>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'federation'" :content-max="1000" :margin-min="20">
+	<MkSpacer v-else-if="tab === 'federation'" :contentMax="1000" :marginMin="20">
 		<XFederation/>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'charts'" :content-max="1000" :margin-min="20">
+	<MkSpacer v-else-if="tab === 'charts'" :contentMax="1000" :marginMin="20">
 		<MkInstanceStats/>
 	</MkSpacer>
 </MkStickyContainer>

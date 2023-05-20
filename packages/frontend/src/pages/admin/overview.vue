@@ -1,5 +1,5 @@
 <template>
-<MkSpacer :content-max="1000">
+<MkSpacer :contentMax="1000">
 	<div ref="rootEl" :class="$style.root">
 		<MkFoldableSection class="item">
 			<template #header>Stats</template>
