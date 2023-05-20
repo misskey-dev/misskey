@@ -7,7 +7,7 @@
 			<XSidebar/>
 		</div>
 		<div v-else ref="widgetsLeft" class="widgets left">
-			<XWidgets place="left" :margin-top="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
+			<XWidgets place="left" :marginTop="'var(--margin)'" @mounted="attachSticky(widgetsLeft)"/>
 		</div>
 
 		<main class="main" @contextmenu.stop="onContextmenu">
@@ -17,7 +17,7 @@
 		</main>
 
 		<div v-if="isDesktop" ref="widgetsRight" class="widgets right">
-			<XWidgets :place="showMenuOnTop ? 'right' : null" :margin-top="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
+			<XWidgets :place="showMenuOnTop ? 'right' : null" :marginTop="showMenuOnTop ? '0' : 'var(--margin)'" @mounted="attachSticky(widgetsRight)"/>
 		</div>
 	</div>
 

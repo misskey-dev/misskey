@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<MkClickerGame/>
 	</MkSpacer>
 </MkStickyContainer>

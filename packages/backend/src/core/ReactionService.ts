@@ -106,7 +106,7 @@ export class ReactionService {
 
 		let reaction = _reaction ?? FALLBACK;
 
-		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote') && (user.host != null))) {
+		if (note.reactionAcceptance === 'likeOnly' || ((note.reactionAcceptance === 'likeOnlyForRemote' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && (user.host != null))) {
 			reaction = '❤️';
 		} else if (_reaction) {
 			const custom = reaction.match(isCustomEmojiRegexp);
@@ -124,6 +124,11 @@ export class ReactionService {
 				if (emoji) {
 					if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
+
+						// センシティブ
+						if ((note.reactionAcceptance === 'nonSensitiveOnly') && emoji.isSensitive) {
+							reaction = FALLBACK;
+						}
 					} else {
 						// リアクションとして使う権限がない
 						reaction = FALLBACK;

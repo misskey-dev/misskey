@@ -1,5 +1,5 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked">
 	<template #header>
 		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
@@ -14,13 +14,13 @@
 </template>
 
 <script lang="ts" setup>
+import * as misskey from 'misskey-js';
 import XColumn from './column.vue';
 import { updateColumn, Column } from './deck-store';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
-import * as misskey from 'misskey-js';
 
 const props = defineProps<{
 	column: Column;
@@ -29,7 +29,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'loaded'): void;
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();

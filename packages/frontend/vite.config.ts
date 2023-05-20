@@ -139,6 +139,10 @@ export function getConfig(): UserConfig {
 			},
 		},
 
+		worker: {
+			format: 'es',
+		},
+
 		test: {
 			environment: 'happy-dom',
 			deps: {

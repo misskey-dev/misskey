@@ -1,5 +1,5 @@
 <template>
-<div class="mk-app" style="container-type: inline-size;">
+<div :class="$style.root" style="container-type: inline-size;">
 	<RouterView/>
 
 	<XCommon/>
@@ -26,8 +26,8 @@ provideMetadataReceiver((info) => {
 document.documentElement.style.overflowY = 'scroll';
 </script>
 
-<style lang="scss" scoped>
-.mk-app {
+<style lang="scss" module>
+.root {
 	min-height: 100dvh;
 	box-sizing: border-box;
 }

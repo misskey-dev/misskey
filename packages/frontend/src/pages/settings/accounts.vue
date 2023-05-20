@@ -15,13 +15,13 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
+import type * as Misskey from 'misskey-js';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { getAccounts, addAccount as addAccounts, removeAccount as _removeAccount, login, $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import type * as Misskey from 'misskey-js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const storedAccounts = ref<any>(null);

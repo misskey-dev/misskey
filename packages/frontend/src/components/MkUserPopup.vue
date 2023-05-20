@@ -1,10 +1,10 @@
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
-	appear @after-leave="emit('closed')"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
+	appear @afterLeave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
 		<div v-if="user != null">
