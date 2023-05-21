@@ -37,7 +37,7 @@ export const packedNotificationSchema = {
 } as const satisfies JSONSchema7Definition;
 
 export const packedNotificationStrictSchema = {
-	$id: 'https://misskey-hub.net/api/schemas/PackedNotificationStrict',
+	$id: 'https://misskey-hub.net/api/schemas/NotificationStrict',
 
 	type: 'object',
 	allOf: [

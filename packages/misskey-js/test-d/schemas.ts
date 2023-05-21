@@ -1,10 +1,9 @@
 import { Packed, Def } from '../src/schemas';
-// import { expectType } from 'tsd';
+import { expectType } from 'tsd';
 
 describe('schemas', () => {
     test('user', () => {
         type UserLite = Packed<'UserLite'>;
-        /* Error: is declared too wide for argument type
         expectType<UserLite>({
             id: 'string',
             name: null,
@@ -18,7 +17,6 @@ describe('schemas', () => {
             isCat: false,
             onlineStatus: null,
         });
-        */
         type UserDetailedNotMeOnly = Packed<'UserDetailedNotMeOnly'>;
         type UserDetailedNotMe = Packed<'UserDetailedNotMe'>;
         type MeDetailed = Packed<'MeDetailed'>;
@@ -42,6 +40,7 @@ describe('schemas', () => {
     });
     test('notification', () => {
         type Notification = Packed<'Notification'>;
+        type NotificationStrict = Packed<'NotificationStrict'>;
     });
     test('drive file', () => {
         type DriveFile = Packed<'DriveFile'>;
