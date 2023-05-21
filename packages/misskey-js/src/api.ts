@@ -1,4 +1,4 @@
-import type { Endpoints, SchemaOrUndefined, IEndpointMeta, EndpointDefines } from './endpoints.types';
+import type { Endpoints, SchemaOrUndefined, IEndpointMeta, ResponseOf } from './endpoints.types';
 
 const MK_API_ERROR = Symbol();
 
@@ -25,9 +25,6 @@ export type FetchLike = (input: string, init?: {
 		json(): Promise<any>;
 	}>;
 
-type Response<D extends IEndpointMeta, P extends SchemaOrUndefined<D['defines'][number]['req']>, DD extends EndpointDefines[number] = D['defines'][number]> =
-	P extends DD['req'] ? SchemaOrUndefined<DD['res']> : never;
-
 export class APIClient {
 	public origin: string;
 	public credential: string | null | undefined;
@@ -45,8 +42,8 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
-	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E], R = Response<D, P>>(
-		endpoint: E, params: P = {} as P, credential?: string | null | undefined,
+	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E], R = ResponseOf<D, P>>(
+		endpoint: E, params: P, credential?: string | null | undefined,
 	): Promise<R>
 	{
 		const promise = new Promise((resolve, reject) => {

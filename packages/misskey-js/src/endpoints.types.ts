@@ -37,7 +37,7 @@ export interface IEndpointMeta {
 		};
 	};
 
-	readonly defines: EndpointDefines;
+	readonly defines: ReadonlyArray<{ req: JSONSchema7 | undefined; res: JSONSchema7 | undefined; }>;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
@@ -123,6 +123,9 @@ export interface IEndpointMeta {
 	readonly cacheSec?: number;
 }
 
-export type SchemaOrUndefined<T extends JSONSchema7 | undefined> = T extends JSONSchema7 ? SchemaType<T, References> : never;
+export type SchemaOrUndefined<T extends JSONSchema7 | undefined> = T extends JSONSchema7 ? SchemaType<T, References> : (void | Record<string, never>);
+
+export type ResponseOf<D extends IEndpointMeta, P, DD extends D['defines'][number] = D['defines'][number]> =
+	P extends SchemaOrUndefined<DD['req']> ? SchemaOrUndefined<DD['res']> : never;
 
 export type Endpoints = typeof endpoints;

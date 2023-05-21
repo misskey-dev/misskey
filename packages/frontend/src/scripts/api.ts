@@ -1,21 +1,25 @@
-import { Endpoints } from 'misskey-js/built/api.types';
+import type { Endpoints, SchemaOrUndefined, ResponseOf, IEndpointMeta } from 'misskey-js/built/endpoints.types';
 import { ref } from 'vue';
 import { apiUrl } from '@/config';
 import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any, token?: string | null | undefined, signal?: AbortSignal): Promise<Endpoints[E]['res']> {
+export function api<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpoints[E]['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E]>(
+	endpoint: E, params?: P, token?: string | null | undefined, signal?: AbortSignal
+): Promise<ResponseOf<D, P>> {
+	const data: (P | Record<string, any>) & { i?: string | null } = params ?? {};
+
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<ResponseOf<D, P> | void>((resolve, reject) => {
 		// Append a credential
-		if ($i) (data as any).i = $i.token;
-		if (token !== undefined) (data as any).i = token;
+		if ($i) data.i = $i.token;
+		if (token !== undefined) data.i = token;
 
 		// Send request
 		window.fetch(endpoint.indexOf('://') > -1 ? endpoint : `${apiUrl}/${endpoint}`, {
@@ -42,20 +46,22 @@ export function api<E extends keyof Endpoints, P extends Endpoints[E]['req']>(en
 
 	promise.then(onFinally, onFinally);
 
-	return promise;
+	return promise as Promise<ResponseOf<D, P>>;
 }
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet <E extends keyof Endpoints, P extends Endpoints[E]['req']>(endpoint: E, data: P = {} as any): Promise<Endpoints[E]['res']> {
+export function apiGet<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpoints[E]['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E]>(
+	endpoint: E, params?: P, token?: string | null | undefined, signal?: AbortSignal
+): Promise<ResponseOf<D, P>> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
 		pendingApiRequestsCount.value--;
 	};
 
-	const query = new URLSearchParams(data as any);
+	const query = new URLSearchParams((params ?? {}) as Record<string, string>);
 
-	const promise = new Promise<Endpoints[E]['res'] | void>((resolve, reject) => {
+	const promise = new Promise<ResponseOf<D, P> | void>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
@@ -76,5 +82,5 @@ export function apiGet <E extends keyof Endpoints, P extends Endpoints[E]['req']
 
 	promise.then(onFinally, onFinally);
 
-	return promise;
+	return promise as Promise<ResponseOf<D, P>>;
 }
