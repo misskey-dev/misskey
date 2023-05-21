@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<span v-if="errored">:{{ customEmojiName }}:</span>
+<span v-if="errored || isDraft">:{{ customEmojiName }}:</span>
 <img v-else :class="[$style.root, { [$style.normal]: normal, [$style.noStyle]: noStyle }]" :src="url" :alt="alt" :title="alt" decoding="async" @error="errored = true" @load="errored = false"/>
 </template>
 
@@ -25,6 +25,7 @@ const props = defineProps<{
 
 const customEmojiName = computed(() => (props.name[0] === ':' ? props.name.substring(1, props.name.length - 1) : props.name).replace('@.', ''));
 const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@.') || !customEmojiName.value.includes('@')));
+const isDraft = computed(() => customEmojisNameMap.value.get(customEmojiName.value)?.draft ?? false);
 
 const rawUrl = computed(() => {
 	if (props.url) {
