@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import endpoints from 'misskey-js/built/endpoints';
+import { endpoints } from 'misskey-js/built/endpoints.js';
 
 export const meta = {
 	requireCredential: false,
