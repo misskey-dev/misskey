@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserList, UserSorting, Notification, NoteReaction, Signin,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;

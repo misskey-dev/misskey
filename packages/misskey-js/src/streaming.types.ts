@@ -1,4 +1,4 @@
-import type { Antenna, CustomEmoji, DriveFile, MeDetailed, MessagingMessage, Note, Notification, PageEvent, User } from './entities.js';
+import type { Antenna, CustomEmoji, DriveFile, MeDetailed, Note, Notification, PageEvent, User } from './entities.js';
 
 type FIXME = any;
 
@@ -22,9 +22,6 @@ export type Channels = {
 			readAllUnreadMentions: () => void;
 			unreadSpecifiedNote: (payload: Note['id']) => void;
 			readAllUnreadSpecifiedNotes: () => void;
-			readAllMessagingMessages: () => void;
-			messagingMessage: (payload: MessagingMessage) => void;
-			unreadMessagingMessage: (payload: MessagingMessage) => void;
 			readAllAntennas: () => void;
 			unreadAntenna: (payload: Antenna) => void;
 			readAllAnnouncements: () => void;

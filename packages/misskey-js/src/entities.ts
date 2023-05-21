@@ -1,6 +1,6 @@
 import { Packed } from "./schemas";
 
-export type ID = string;
+export type ID = Packed<'Id'>;
 export type DateString = string;
 
 type TODO = Record<string, any>;
@@ -9,195 +9,34 @@ type TODO = Record<string, any>;
 export type User = Packed<'User'>;
 export type UserLite = Packed<'UserLite'>;
 export type UserDetailed = Packed<'UserDetailed'>;
+export type UserList = Packed<'UserList'>;
+export type MeDetailed = Packed<'MeDetailed'>;
+export type DriveFile = Packed<'DriveFile'>;
+export type DriveFolder = Packed<'DriveFolder'>;
+export type GalleryPost = Packed<'GalleryPost'>;
+export type Note = Packed<'Note'>;
+export type NoteReaction = Packed<'NoteReaction'>;
+export type NoteFavorite = Packed<'NoteFavorite'>;
+export type Notification = Packed<'NotificationStrict'>;
+export type CustomEmoji = Packed<'EmojiSimple'> | Packed<'EmojiDetailed'>;
+export type Page = Packed<'Page'>;
 
-export type UserList = {
-	id: ID;
-	createdAt: DateString;
-	name: string;
-	userIds: User['id'][];
+export type PageEvent = {
+	pageId: Page['id'];
+	event: string;
+	var: any;
+	userId: User['id'];
+	user: User;
 };
 
-export type MeDetailed = UserDetailed & {
-	avatarId: DriveFile['id'];
-	bannerId: DriveFile['id'];
-	autoAcceptFollowed: boolean;
-	alwaysMarkNsfw: boolean;
-	carefulBot: boolean;
-	emailNotificationTypes: string[];
-	hasPendingReceivedFollowRequest: boolean;
-	hasUnreadAnnouncement: boolean;
-	hasUnreadAntenna: boolean;
-	hasUnreadMentions: boolean;
-	hasUnreadMessagingMessage: boolean;
-	hasUnreadNotification: boolean;
-	hasUnreadSpecifiedNotes: boolean;
-	hideOnlineStatus: boolean;
-	injectFeaturedNote: boolean;
-	integrations: Record<string, any>;
-	isDeleted: boolean;
-	isExplorable: boolean;
-	mutedWords: string[][];
-	mutingNotificationTypes: string[];
-	noCrawle: boolean;
-	receiveAnnouncementEmail: boolean;
-	usePasswordLessLogin: boolean;
-	[other: string]: any;
-};
-
-export type DriveFile = {
-	id: ID;
-	createdAt: DateString;
-	isSensitive: boolean;
-	name: string;
-	thumbnailUrl: string;
-	url: string;
-	type: string;
-	size: number;
-	md5: string;
-	blurhash: string;
-	comment: string | null;
-	properties: Record<string, any>;
-};
-
-export type DriveFolder = TODO;
-
-export type GalleryPost = {
-	id: ID;
-	createdAt: DateString;
-	updatedAt: DateString;
-	userId: User['id'];
-	user: User;
-	title: string;
-	description: string | null;
-	fileIds: DriveFile['id'][];
-	files: DriveFile[];
-	isSensitive: boolean;
-	likedCount: number;
-	isLiked?: boolean;
-};
-
-export type Note = {
-	id: ID;
-	createdAt: DateString;
-	text: string | null;
-	cw: string | null;
-	user: User;
-	userId: User['id'];
-	reply?: Note;
-	replyId: Note['id'];
-	renote?: Note;
-	renoteId: Note['id'];
-	files: DriveFile[];
-	fileIds: DriveFile['id'][];
-	visibility: 'public' | 'home' | 'followers' | 'specified';
-	visibleUserIds?: User['id'][];
-	localOnly?: boolean;
-	myReaction?: string;
-	reactions: Record<string, number>;
-	renoteCount: number;
-	repliesCount: number;
-	poll?: {
-		expiresAt: DateString | null;
-		multiple: boolean;
-		choices: {
-			isVoted: boolean;
-			text: string;
-			votes: number;
-		}[];
-	};
-	emojis: {
-		name: string;
-		url: string;
-	}[];
-	uri?: string;
-	url?: string;
-	isHidden?: boolean;
-};
-
-export type NoteReaction = {
-	id: ID;
-	createdAt: DateString;
-	user: UserLite;
-	type: string;
-};
-
-export type Notification = {
-	id: ID;
-	createdAt: DateString;
-	isRead: boolean;
-} & ({
-	type: 'reaction';
-	reaction: string;
-	user: User;
-	userId: User['id'];
-	note: Note;
-} | {
-	type: 'reply';
-	user: User;
-	userId: User['id'];
-	note: Note;
-} | {
-	type: 'renote';
-	user: User;
-	userId: User['id'];
-	note: Note;
-} | {
-	type: 'quote';
-	user: User;
-	userId: User['id'];
-	note: Note;
-} | {
-	type: 'mention';
-	user: User;
-	userId: User['id'];
-	note: Note;
-} | {
-	type: 'pollVote';
-	user: User;
-	userId: User['id'];
-	note: Note;
-} | {
-	type: 'follow';
-	user: User;
-	userId: User['id'];
-} | {
-	type: 'followRequestAccepted';
-	user: User;
-	userId: User['id'];
-} | {
-	type: 'receiveFollowRequest';
-	user: User;
-	userId: User['id'];
-} | {
-	type: 'app';
-	header?: string | null;
-	body: string;
-	icon?: string | null;
-});
-
-export type MessagingMessage = {
-	id: ID;
-	createdAt: DateString;
-	file: DriveFile | null;
-	fileId: DriveFile['id'] | null;
-	isRead: boolean;
-	reads: User['id'][];
-	text: string | null;
-	user: User;
-	userId: User['id'];
-	recipient?: User | null;
-	recipientId: User['id'] | null;
-	group?: UserGroup | null;
-	groupId: UserGroup['id'] | null;
-};
-
-export type CustomEmoji = {
-	id: string;
-	name: string;
-	url: string;
-	category: string;
-	aliases: string[];
-};
+export type Announcement = Packed<'Announcement'>;
+export type Antenna = Packed<'Antenna'>;
+export type App = Packed<'App'>;
+export type Ad = Packed<'Ad'>;
+export type Clip = Packed<'Clip'>;
+export type Channel = Packed<'Channel'>;
+export type Following = Packed<'Following'>;
+export type Blocking = Packed<'Blocking'>;
 
 export type LiteInstanceMetadata = {
 	maintainerName: string | null;
@@ -286,80 +125,10 @@ export type Stats = {
 	driveUsageRemote: number;
 };
 
-export type Page = {
-	id: ID;
-	createdAt: DateString;
-	updatedAt: DateString;
-	userId: User['id'];
-	user: User;
-	content: Record<string, any>[];
-	variables: Record<string, any>[];
-	title: string;
-	name: string;
-	summary: string | null;
-	hideTitleWhenPinned: boolean;
-	alignCenter: boolean;
-	font: string;
-	script: string;
-	eyeCatchingImageId: DriveFile['id'] | null;
-	eyeCatchingImage: DriveFile | null;
-	attachedFiles: any;
-	likedCount: number;
-	isLiked?: boolean;
-};
-
-export type PageEvent = {
-	pageId: Page['id'];
-	event: string;
-	var: any;
-	userId: User['id'];
-	user: User;
-};
-
-export type Announcement = {
-	id: ID;
-	createdAt: DateString;
-	updatedAt: DateString | null;
-	text: string;
-	title: string;
-	imageUrl: string | null;
-	isRead?: boolean;
-};
-
-export type Antenna = {
-	id: ID;
-	createdAt: DateString;
-	name: string;
-	keywords: string[][]; // TODO
-	excludeKeywords: string[][]; // TODO
-	src: 'home' | 'all' | 'users' | 'list' | 'group';
-	userListId: ID | null; // TODO
-	userGroupId: ID | null; // TODO
-	users: string[]; // TODO
-	caseSensitive: boolean;
-	notify: boolean;
-	withReplies: boolean;
-	withFile: boolean;
-	hasUnreadNote: boolean;
-};
-
-export type App = TODO;
-
 export type AuthSession = {
 	id: ID;
 	app: App;
 	token: string;
-};
-
-export type Ad = TODO;
-
-export type Clip = TODO;
-
-export type NoteFavorite = {
-	id: ID;
-	createdAt: DateString;
-	noteId: Note['id'];
-	note: Note;
 };
 
 export type FollowRequest = {
@@ -368,31 +137,12 @@ export type FollowRequest = {
 	followee: User;
 };
 
-export type Channel = {
-	id: ID;
-	// TODO
-};
-
-export type Following = {
-	id: ID;
-	createdAt: DateString;
-	followerId: User['id'];
-	followeeId: User['id'];
-};
-
 export type FollowingFolloweePopulated = Following & {
 	followee: UserDetailed;
 };
 
 export type FollowingFollowerPopulated = Following & {
 	follower: UserDetailed;
-};
-
-export type Blocking = {
-	id: ID;
-	createdAt: DateString;
-	blockeeId: User['id'];
-	blockee: UserDetailed;
 };
 
 export type Instance = {
