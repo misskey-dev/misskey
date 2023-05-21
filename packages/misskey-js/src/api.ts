@@ -1,4 +1,4 @@
-import type { Endpoints, SchemaOrUndefined, IEndpointMeta, ResponseOf } from './endpoints.types';
+import type { Endpoints, SchemaOrUndefined, IEndpointMeta, ResponseOf } from './endpoints.types.js';
 
 const MK_API_ERROR = Symbol();
 
@@ -42,9 +42,9 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
-	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E]>(
+	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E], R = ResponseOf<M, P>>(
 		endpoint: E, params?: P, credential?: string | null | undefined,
-	): Promise<ResponseOf<M, P>>
+	): Promise<R>
 	{
 		const promise = new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
