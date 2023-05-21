@@ -22,10 +22,10 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
+import MkAnimBg from '@/components/MkAnimBg.vue';
 import { login } from '@/account';
 import { i18n } from '@/i18n';
-import MkAnimBg from '@/components/MkAnimBg.vue';
+import * as os from '@/os';
 
 let submitting = $ref(false);
 
