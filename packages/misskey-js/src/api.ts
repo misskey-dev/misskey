@@ -42,7 +42,7 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
-	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E], R = ResponseOf<M, P>>(
+	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<M['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E], R = ResponseOf<M, P>>(
 		endpoint: E, params: P, credential?: string | null | undefined,
 	): Promise<R>
 	{
