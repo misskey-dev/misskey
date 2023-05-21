@@ -37,15 +37,16 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/ad/update'> {
+	name = 'admin/ad/update' as const;
 	constructor(
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const ad = await this.adsRepository.findOneBy({ id: ps.id });
 
-			if (ad == null) throw new ApiError(meta.errors.noSuchAd);
+			if (ad == null) throw new ApiError(this.meta.errors.noSuchAd);
 
 			await this.adsRepository.update(ad.id, {
 				url: ps.url,

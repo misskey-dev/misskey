@@ -19,7 +19,8 @@ import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
-import type { IEndpointMeta, IEndpoint } from './endpoints.js';
+import type { IEndpointMeta } from 'misskey-js/built/endpoints.types.js';
+import { ExecutorWrapper } from './endpoint-base.js';
 
 const pump = promisify(pipeline);
 
@@ -55,7 +56,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public handleRequest(
-		endpoint: IEndpoint & { exec: any },
+		endpoint: { name: string, meta: IEndpointMeta, exec: ExecutorWrapper },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
@@ -96,7 +97,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	public async handleMultipartRequest(
-		endpoint: IEndpoint & { exec: any },
+		endpoint: { name: string, meta: IEndpointMeta, exec: ExecutorWrapper },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
 	) {
@@ -196,7 +197,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 	@bindThis
 	private async call(
-		ep: IEndpoint & { exec: any },
+		ep: { name: string, meta: IEndpointMeta, exec: ExecutorWrapper },
 		user: LocalUser | null | undefined,
 		token: AccessToken | null | undefined,
 		data: any,
@@ -310,10 +311,13 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// Cast non JSON input
-		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
-			for (const k of Object.keys(ep.params.properties)) {
-				const param = ep.params.properties![k];
-				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
+		if ((ep.meta.requireFile || request.method === 'GET') && ep.meta.defines[0]?.req?.properties) {
+			for (const k of Object.keys(ep.meta.defines[0].req.properties)) {
+				const param = ep.meta.defines[0].req.properties[k];
+				if (typeof param === 'object' && (
+					(typeof param.type === 'string' && ['boolean', 'number', 'integer'].includes(param.type ?? '')) ||
+					(Array.isArray(param.type) && param.type.every(t => ['boolean', 'number', 'integer'].includes(t)))
+				) && typeof data[k] === 'string') {
 					try {
 						data[k] = JSON.parse(data[k]);
 					} catch (e) {

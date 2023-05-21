@@ -8,11 +8,12 @@ import type { UsersRepository, InstancesRepository, AccessTokensRepository } fro
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import endpoints from './endpoints.js';
+import { endpoints } from 'misskey-js/built/endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { ExecutorWrapper } from './endpoint-base.js';
 
 @Injectable()
 export class ApiServerService {
@@ -60,21 +61,20 @@ export class ApiServerService {
 			done();
 		});
 
-		for (const endpoint of endpoints) {
+		for (const [name, meta] of Object.entries(endpoints)) {
 			const ep = {
-				name: endpoint.name,
-				meta: endpoint.meta,
-				params: endpoint.params,
-				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
+				name,
+				meta,
+				exec: this.moduleRef.get('ep:' + name, { strict: false }).exec as ExecutorWrapper,
 			};
 
-			if (endpoint.meta.requireFile) {
+			if (meta.requireFile) {
 				fastify.all<{
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, async (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
+				}>('/' + name, async (request, reply) => {
+					if (request.method === 'GET' && !meta.allowGet) {
 						reply.code(405);
 						reply.send();
 						return;
@@ -89,8 +89,8 @@ export class ApiServerService {
 					Params: { endpoint: string; },
 					Body: Record<string, unknown>,
 					Querystring: Record<string, unknown>,
-				}>('/' + endpoint.name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
-					if (request.method === 'GET' && !endpoint.meta.allowGet) {
+				}>('/' + name, { bodyLimit: 1024 * 1024 }, async (request, reply) => {
+					if (request.method === 'GET' && !meta.allowGet) {
 						reply.code(405);
 						reply.send();
 						return;

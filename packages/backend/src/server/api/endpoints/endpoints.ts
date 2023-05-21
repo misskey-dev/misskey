@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import endpoints from '../endpoints.js';
+import endpoints from 'misskey-js/built/endpoints';
 
 export const meta = {
 	requireCredential: false,
@@ -29,13 +29,16 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// !!!!!!!!!!!!!!!!!!!!!!!!DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'endpoints'> {
+	name = 'endpoints' as const;
 	constructor(
 	) {
-		super(meta, paramDef, async () => {
-			return endpoints.map(x => x.name);
+		super(async () => {
+			return Object.keys(endpoints);
 		});
 	}
 }

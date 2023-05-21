@@ -1,10 +1,11 @@
 import * as fs from 'node:fs';
 import Ajv from 'ajv';
-import type { JSONSchema7, SchemaType } from 'schema-type';
 import type { LocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { ApiError } from './error.js';
-import type { IEndpointMeta } from './endpoints.js';
+import { endpoints } from 'misskey-js/built/endpoints.js';
+import type { IEndpointMeta, ResponseOf, SchemaOrUndefined } from 'misskey-js/built/endpoints.types.js';
+import type { Endpoints } from 'misskey-js';
 
 const ajv = new Ajv({
 	useDefaults: true,
@@ -19,21 +20,41 @@ type File = {
 	path: string;
 };
 
-// TODO: paramsの型をT['params']のスキーマ定義から推論する
-type Executor<T extends IEndpointMeta, Ps extends Schema> =
-	(params: SchemaType<Ps>, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, cleanup?: () => any, ip?: string | null, headers?: Record<string, string> | null) =>
-		Promise<T['res'] extends undefined ? Response : SchemaType<NonNullable<T['res']>>>;
+export type Executor<T extends IEndpointMeta, P = SchemaOrUndefined<T['defines'][number]['req']>> =
+	(
+		params: P,
+		user: LocalUser | (T['requireCredential'] extends true ? never : null),
+		token: AccessToken | null,
+		file?: File,
+		cleanup?: () => any,
+		ip?: string | null,
+		headers?: Record<string, string> | null
+	) => Promise<ResponseOf<T, P>>;
 
-export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
-	public exec: (params: any, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => Promise<any>;
+// ExecutorWrapperの型はあえて緩くしておく
+export type ExecutorWrapper =
+	(
+		params: any,
+		user: LocalUser | null,
+		token: AccessToken | null,
+		file?: File,
+		ip?: string | null,
+		headers?: Record<string, string> | null
+	) => Promise<any>;
 
-	constructor(meta: T, paramDef: Ps, cb: Executor<T, Ps>) {
-		const validate = ajv.compile(paramDef);
+export abstract class Endpoint<E extends keyof Endpoints, T extends IEndpointMeta = Endpoints[E]> {
+	public readonly name: E;
+	public readonly meta: Endpoints[E];
+	public exec: ExecutorWrapper;
 
-		this.exec = (params: any, user: T['requireCredential'] extends true ? LocalUser : LocalUser | null, token: AccessToken | null, file?: File, ip?: string | null, headers?: Record<string, string> | null) => {
+	constructor(cb: Executor<T>) {
+		this.meta = endpoints[this.name];
+		const validate = ajv.compile({ oneOf: this.meta.defines.map(d => d.req) });
+
+		this.exec = (params, user, token, file, ip, headers) => {
 			let cleanup: undefined | (() => void) = undefined;
 	
-			if (meta.requireFile) {
+			if (this.meta.requireFile) {
 				cleanup = () => {
 					if (file) fs.unlink(file.path, () => {});
 				};
@@ -60,8 +81,8 @@ export abstract class Endpoint<T extends IEndpointMeta, Ps extends Schema> {
 				});
 				return Promise.reject(err);
 			}
-	
-			return cb(params as SchemaType<Ps>, user, token, file, cleanup, ip, headers);
+
+			return cb(params as any, user as any, token, file, cleanup, ip, headers);
 		};
 	}
 }
