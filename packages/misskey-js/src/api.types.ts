@@ -431,13 +431,6 @@ export type Endpoints = {
 	'i/2fa/remove-key': { req: TODO; res: TODO; };
 	'i/2fa/unregister': { req: TODO; res: TODO; };
 
-	// messaging
-	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
-	'messaging/messages': { req: { userId?: User['id']; groupId?: UserGroup['id']; limit?: number; sinceId?: MessagingMessage['id']; untilId?: MessagingMessage['id']; markAsRead?: boolean; }; res: MessagingMessage[]; };
-	'messaging/messages/create': { req: { userId?: User['id']; groupId?: UserGroup['id']; text?: string; fileId?: DriveFile['id']; }; res: MessagingMessage; };
-	'messaging/messages/delete': { req: { messageId: MessagingMessage['id']; }; res: null; };
-	'messaging/messages/read': { req: { messageId: MessagingMessage['id']; }; res: null; };
-
 	// meta
 	'meta': { req: { detail?: boolean; }; res: {
 		$switch: {
@@ -568,17 +561,6 @@ export type Endpoints = {
 	'users/following': { req: { userId?: User['id']; username?: User['username']; host?: User['host'] | null; limit?: number; sinceId?: Following['id']; untilId?: Following['id']; }; res: FollowingFolloweePopulated[]; };
 	'users/gallery/posts': { req: TODO; res: TODO; };
 	'users/get-frequently-replied-users': { req: TODO; res: TODO; };
-	'users/groups/create': { req: TODO; res: TODO; };
-	'users/groups/delete': { req: { groupId: UserGroup['id'] }; res: null; };
-	'users/groups/invitations/accept': { req: TODO; res: TODO; };
-	'users/groups/invitations/reject': { req: TODO; res: TODO; };
-	'users/groups/invite': { req: TODO; res: TODO; };
-	'users/groups/joined': { req: TODO; res: TODO; };
-	'users/groups/owned': { req: TODO; res: TODO; };
-	'users/groups/pull': { req: TODO; res: TODO; };
-	'users/groups/show': { req: TODO; res: TODO; };
-	'users/groups/transfer': { req: TODO; res: TODO; };
-	'users/groups/update': { req: TODO; res: TODO; };
 	'users/lists/create': { req: { name: string; }; res: UserList; };
 	'users/lists/delete': { req: { listId: UserList['id']; }; res: null; };
 	'users/lists/list': { req: NoParams; res: UserList[]; };
