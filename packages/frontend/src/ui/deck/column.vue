@@ -1,7 +1,5 @@
 <template>
-<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-<section
-	v-hotkey="keymap"
+<div
 	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.isStacked]: isStacked, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
@@ -22,10 +20,10 @@
 		<span :class="$style.title"><slot name="header"></slot></span>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
-	<div v-show="active" ref="body" :class="$style.body">
+	<div v-if="active" ref="body" :class="$style.body">
 		<slot></slot>
 	</div>
-</section>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -49,12 +47,7 @@ const props = withDefaults(defineProps<{
 	naked: false,
 });
 
-const emit = defineEmits<{
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
-	(ev: 'change-active-state', v: boolean): void;
-}>();
-
-let body = $shallowRef<HTMLDivElement>();
+let body = $shallowRef<HTMLDivElement | null>();
 
 let dragging = $ref(false);
 watch($$(dragging), v => os.deckGlobalEvents.emit(v ? 'column.dragStart' : 'column.dragEnd'));
@@ -64,14 +57,6 @@ let dropready = $ref(false);
 
 const isMainColumn = $computed(() => props.column.type === 'main');
 const active = $computed(() => props.column.active !== false);
-watch($$(active), v => emit('change-active-state', v));
-
-const keymap = $computed(() => ({
-	'shift+up': () => emit('parent-focus', 'up'),
-	'shift+down': () => emit('parent-focus', 'down'),
-	'shift+left': () => emit('parent-focus', 'left'),
-	'shift+right': () => emit('parent-focus', 'right'),
-}));
 
 onMounted(() => {
 	os.deckGlobalEvents.on('column.dragStart', onOtherDragStart);
@@ -190,10 +175,12 @@ function onContextmenu(ev: MouseEvent) {
 }
 
 function goTop() {
-	body.scrollTo({
-		top: 0,
-		behavior: 'smooth',
-	});
+	if (body) {
+		body.scrollTo({
+			top: 0,
+			behavior: 'smooth',
+		});
+	}
 }
 
 function onDragstart(ev) {

@@ -8,9 +8,9 @@
 	</template>
 
 	<template #default="{ items: notifications }">
-		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :no-gap="true">
+		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true">
 			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="notification.id" :note="notification.note"/>
-			<XNotification v-else :key="notification.id" :notification="notification" :with-time="true" :full="true" class="_panel notification"/>
+			<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel notification"/>
 		</MkDateSeparatedList>
 	</template>
 </MkPagination>

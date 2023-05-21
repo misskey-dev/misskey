@@ -4,21 +4,21 @@
 		<div class="path" @contextmenu.prevent.stop="() => {}">
 			<XNavFolder
 				:class="{ current: folder == null }"
-				:parent-folder="folder"
+				:parentFolder="folder"
 				@move="move"
 				@upload="upload"
-				@remove-file="removeFile"
-				@remove-folder="removeFolder"
+				@removeFile="removeFile"
+				@removeFolder="removeFolder"
 			/>
 			<template v-for="f in hierarchyFolders">
 				<span class="separator"><i class="ti ti-chevron-right"></i></span>
 				<XNavFolder
 					:folder="f"
-					:parent-folder="folder"
+					:parentFolder="folder"
 					@move="move"
 					@upload="upload"
-					@remove-file="removeFile"
-					@remove-folder="removeFolder"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
 				/>
 			</template>
 			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
@@ -43,13 +43,13 @@
 					v-anim="i"
 					class="folder"
 					:folder="f"
-					:select-mode="select === 'folder'"
-					:is-selected="selectedFolders.some(x => x.id === f.id)"
+					:selectMode="select === 'folder'"
+					:isSelected="selectedFolders.some(x => x.id === f.id)"
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
-					@remove-file="removeFile"
-					@remove-folder="removeFolder"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>
@@ -64,8 +64,8 @@
 					v-anim="i"
 					class="file"
 					:file="file"
-					:select-mode="select === 'file'"
-					:is-selected="selectedFiles.some(x => x.id === file.id)"
+					:selectMode="select === 'file'"
+					:isSelected="selectedFiles.some(x => x.id === file.id)"
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"

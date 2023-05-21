@@ -11,7 +11,7 @@
 				}"
 				:src="post.files[0].thumbnailUrl"
 				:hash="post.files[0].blurhash"
-				:force-blurhash="!show"
+				:forceBlurhash="!show"
 			/>
 		</Transition>
 	</div>

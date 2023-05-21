@@ -1,9 +1,9 @@
 <template>
-<Sortable :model-value="modelValue" tag="div" item-key="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swap-threshold="0.5" @update:model-value="v => $emit('update:modelValue', v)">
+<Sortable :modelValue="modelValue" tag="div" itemKey="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swapThreshold="0.5" @update:modelValue="v => $emit('update:modelValue', v)">
 	<template #item="{element}">
 		<div :class="$style.item">
 			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-			<component :is="'x-' + element.type" :model-value="element" @update:model-value="updateItem" @remove="() => removeItem(element)"/>
+			<component :is="'x-' + element.type" :modelValue="element" @update:modelValue="updateItem" @remove="() => removeItem(element)"/>
 		</div>
 	</template>
 </Sortable>

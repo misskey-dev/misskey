@@ -8,7 +8,7 @@
 >
 	<template #header>{{ i18n.ts.renotesList }}</template>
 
-	<MkSpacer :margin-min="20" :margin-max="28">
+	<MkSpacer :marginMin="20" :marginMax="28">
 		<div v-if="renotes" class="_gaps">
 			<div v-if="renotes.length === 0" class="_fullinfo">
 				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
@@ -16,7 +16,7 @@
 			</div>
 			<template v-else>
 				<MkA v-for="user in users" :key="user.id" :to="userPage(user)" @click="dialog.close()">
-					<MkUserCardMini :user="user" :with-chart="false"/>
+					<MkUserCardMini :user="user" :withChart="false"/>
 				</MkA>
 			</template>
 		</div>

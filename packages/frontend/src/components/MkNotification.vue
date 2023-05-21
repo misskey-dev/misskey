@@ -20,8 +20,8 @@
 				v-else-if="notification.type === 'reaction'"
 				ref="reactionRef"
 				:reaction="notification.reaction ? notification.reaction.replace(/^:(\w+):$/, ':$1@.:') : notification.reaction"
-				:custom-emojis="notification.note.emojis"
-				:no-style="true"
+				:customEmojis="notification.note.emojis"
+				:noStyle="true"
 				style="width: 100%; height: 100%;"
 			/>
 		</div>

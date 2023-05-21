@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="900">
+	<MkSpacer :contentMax="900">
 		<div>
 			<div class="reports">
 				<div class="">
