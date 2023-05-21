@@ -5,7 +5,7 @@ import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import type { IEndpointMeta } from './endpoints.js';
+import type { IEndpointMeta } from 'misskey-js/built/endpoints.types.js';
 
 @Injectable()
 export class RateLimiterService {
