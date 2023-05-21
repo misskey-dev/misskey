@@ -5,9 +5,9 @@ import { $i } from '@/account';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request
-export function api<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpoints[E]['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E]>(
+export function api<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpoints[E]['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E]>(
 	endpoint: E, params?: P, token?: string | null | undefined, signal?: AbortSignal
-): Promise<ResponseOf<D, P>> {
+): Promise<ResponseOf<M, P>> {
 	const data: (P | Record<string, any>) & { i?: string | null } = params ?? {};
 
 	pendingApiRequestsCount.value++;
@@ -16,7 +16,7 @@ export function api<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpo
 		pendingApiRequestsCount.value--;
 	};
 
-	const promise = new Promise<ResponseOf<D, P> | void>((resolve, reject) => {
+	const promise = new Promise<ResponseOf<M, P> | void>((resolve, reject) => {
 		// Append a credential
 		if ($i) data.i = $i.token;
 		if (token !== undefined) data.i = token;
@@ -46,13 +46,13 @@ export function api<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpo
 
 	promise.then(onFinally, onFinally);
 
-	return promise as Promise<ResponseOf<D, P>>;
+	return promise as Promise<ResponseOf<M, P>>;
 }
 
 // Implements Misskey.api.ApiClient.request
-export function apiGet<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpoints[E]['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E]>(
+export function apiGet<E extends keyof Endpoints, P extends SchemaOrUndefined<Endpoints[E]['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E]>(
 	endpoint: E, params?: P, token?: string | null | undefined, signal?: AbortSignal
-): Promise<ResponseOf<D, P>> {
+): Promise<ResponseOf<M, P>> {
 	pendingApiRequestsCount.value++;
 
 	const onFinally = () => {
@@ -61,7 +61,7 @@ export function apiGet<E extends keyof Endpoints, P extends SchemaOrUndefined<En
 
 	const query = new URLSearchParams((params ?? {}) as Record<string, string>);
 
-	const promise = new Promise<ResponseOf<D, P> | void>((resolve, reject) => {
+	const promise = new Promise<ResponseOf<M, P> | void>((resolve, reject) => {
 		// Send request
 		window.fetch(`${apiUrl}/${endpoint}?${query}`, {
 			method: 'GET',
@@ -82,5 +82,5 @@ export function apiGet<E extends keyof Endpoints, P extends SchemaOrUndefined<En
 
 	promise.then(onFinally, onFinally);
 
-	return promise as Promise<ResponseOf<D, P>>;
+	return promise as Promise<ResponseOf<M, P>>;
 }

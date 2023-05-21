@@ -42,9 +42,9 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
-	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, D extends IEndpointMeta = Endpoints[E], R = ResponseOf<D, P>>(
+	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E]>(
 		endpoint: E, params: P, credential?: string | null | undefined,
-	): Promise<R>
+	): Promise<ResponseOf<M, P>>
 	{
 		const promise = new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
@@ -74,6 +74,6 @@ export class APIClient {
 			}).catch(reject);
 		});
 
-		return promise as any;
+		return promise as Promise<ResponseOf<M, P>>;
 	}
 }
