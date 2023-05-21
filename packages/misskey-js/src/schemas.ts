@@ -76,7 +76,7 @@ export const refs = {
 	Announcement: packedAnnouncementSchema,
 } as const satisfies { [x: string]: JSONSchema7Definition };
 
-type References = GetRefs<typeof refs>;
+export type References = GetRefs<typeof refs>;
 
 export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = GetDef<References, x, 'https://misskey-hub.net/api/schemas/'>;
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;
