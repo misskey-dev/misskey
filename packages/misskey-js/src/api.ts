@@ -43,7 +43,7 @@ export class APIClient {
 	}
 
 	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<D['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E], R = ResponseOf<M, P>>(
-		endpoint: E, params?: P, credential?: string | null | undefined,
+		endpoint: E, params: P, credential?: string | null | undefined,
 	): Promise<R>
 	{
 		const promise = new Promise((resolve, reject) => {
