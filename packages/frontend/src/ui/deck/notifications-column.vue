@@ -1,5 +1,5 @@
 <template>
-<XColumn :column="column" :isStacked="isStacked" :menu="menu" @parentFocus="$event => emit('parent-focus', $event)">
+<XColumn :column="column" :isStacked="isStacked" :menu="menu">
 	<template #header><i class="ti ti-bell" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<XNotifications :includeTypes="column.includingTypes"/>
@@ -20,7 +20,6 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 function func() {
