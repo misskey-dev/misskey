@@ -35,6 +35,7 @@ import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from './schemas/em
 import { packedFlashSchema } from './schemas/flash.js';
 import { packedAdSchema } from './schemas/ad.js';
 import { packedAnnouncementSchema } from './schemas/announcement.js';
+import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
 export const refs = {
@@ -74,6 +75,9 @@ export const refs = {
 	Flash: packedFlashSchema,
 	Ad: packedAdSchema,
 	Announcement: packedAnnouncementSchema,
+
+	Error: Error,
+	ApiError: ApiError,
 } as const satisfies { [x: string]: JSONSchema7Definition };
 
 export type References = GetRefs<typeof refs>;

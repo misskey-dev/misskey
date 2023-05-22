@@ -7,6 +7,7 @@ type TODO = Record<string, any>;
 
 // NOTE: 極力この型を使うのは避け、UserLite か UserDetailed か明示するように
 export type User = Packed<'User'>;
+
 export type UserLite = Packed<'UserLite'>;
 export type UserDetailed = Packed<'UserDetailed'>;
 export type UserList = Packed<'UserList'>;

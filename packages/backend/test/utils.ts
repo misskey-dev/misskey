@@ -10,6 +10,7 @@ import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
+import { SchemaOrUndefined } from 'misskey-js/built/endpoints.types.js';
 
 export { server as startServer } from '@/boot/common.js';
 
@@ -25,15 +26,18 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 	return await request(`api/${normalized}`, params, me);
 };
 
-export type ApiRequest = {
-	endpoint: string,
-	parameters: object,
+export type ApiRequest<X extends keyof misskey.Endpoints = keyof misskey.Endpoints, D extends misskey.Endpoints[X]['defines'][number] = misskey.Endpoints[X]['defines'][number], P extends D['req'] = D['req']> = {
+	endpoint: X,
+	parameters: SchemaOrUndefined<P>,
 	user: object | undefined,
 };
 
-export const successfulApiCall = async <T, >(request: ApiRequest, assertion: {
-	status?: number,
-} = {}): Promise<T> => {
+export const successfulApiCall = async <X extends keyof misskey.Endpoints, D extends misskey.Endpoints[X]['defines'][number] = misskey.Endpoints[X]['defines'][number]>(
+	request: ApiRequest<X, D>,
+	assertion: {
+		status?: number,
+	} = {}
+): Promise<SchemaOrUndefined<D['res']>> => {
 	const { endpoint, parameters, user } = request;
 	const res = await api(endpoint, parameters, user);
 	const status = assertion.status ?? (res.body == null ? 204 : 200);
@@ -41,11 +45,11 @@ export const successfulApiCall = async <T, >(request: ApiRequest, assertion: {
 	return res.body;
 };
 
-export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
+export const failedApiCall = async <X extends keyof misskey.Endpoints>(request: ApiRequest<X>, assertion: {
 	status: number,
 	code: string,
 	id: string
-}): Promise<T> => {
+}): Promise<misskey.Packed<'Error#/$defs/Error'>> => {
 	const { endpoint, parameters, user } = request;
 	const { status, code, id } = assertion;
 	const res = await api(endpoint, parameters, user);

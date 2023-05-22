@@ -17,6 +17,6 @@ export const packedBlockingSchema = {
 		'id',
 		'createdAt',
 		'blockeeId',
-		'blockee',
+		//'blockee',
 	],
 } as const satisfies JSONSchema7Definition;

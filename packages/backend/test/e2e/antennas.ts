@@ -3,7 +3,6 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { inspect } from 'node:util';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { Packed } from '@/misc/json-schema.js';
 import {
 	signup,
 	post,
@@ -19,6 +18,7 @@ import {
 } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import type { INestApplicationContext } from '@nestjs/common';
+import { WeakSerialized } from 'schema-type';
 
 const compareBy = <T extends { id: string }>(selector: (s: T) => string = (s: T): string => s.id) => (a: T, b: T): number => {
 	return selector(a).localeCompare(selector(b));
@@ -28,12 +28,9 @@ describe('アンテナ', () => {
 	// エンティティとしてのアンテナを主眼においたテストを記述する
 	// (Antennaを返すエンドポイント、Antennaエンティティを書き換えるエンドポイント、Antennaからノートを取得するエンドポイントをテストする)
 
-	// BUG misskey-jsとjson-schemaが一致していない。
-	// - srcのenumにgroupが残っている
-	// - userGroupIdが残っている, isActiveがない
-	type Antenna = misskey.entities.Antenna | Packed<'Antenna'>;
-	type User = misskey.entities.MeDetailed & { token: string };
-	type Note = misskey.entities.Note;
+	type Antenna = WeakSerialized<misskey.entities.Antenna>;
+	type User = WeakSerialized<misskey.entities.MeDetailed & { token: string }>;
+	type Note = WeakSerialized<misskey.entities.Note>;
 
 	// アンテナを作成できる最小のパラメタ
 	const defaultParam = {

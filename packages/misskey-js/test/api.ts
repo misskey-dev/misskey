@@ -20,7 +20,7 @@ describe('schemas', () => {
 			}
 		});
 
-		test('jointed schema (oneOf)', () => {
+		test('jointed schema', () => {
 			const req = getEndpointSchema('req', key as keyof Endpoints);
 			if (req) ajv.compile(req);
 		});

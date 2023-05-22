@@ -38,7 +38,7 @@ export function genOpenapiSpec(config: Config) {
 		},
 	};
 
-	for (const [name, endpoint] of Object.entries(endpoints).filter(([name, ep]) => !ep.secure)) {
+	for (const [name, endpoint] of Object.entries(endpoints).filter(([name, ep]) => !('secure' in ep) || !ep.secure)) {
 		const errors = {} as any;
 
 		if ('errors' in endpoint && endpoint.errors) {
@@ -107,7 +107,7 @@ export function genOpenapiSpec(config: Config) {
 					content: {
 						'application/json': {
 							schema: {
-								$ref: '#/components/schemas/Error',
+								$ref: '#/components/schemas/ApiError',
 							},
 							examples: { ...errors, ...basicErrors['400'] },
 						},
@@ -118,7 +118,7 @@ export function genOpenapiSpec(config: Config) {
 					content: {
 						'application/json': {
 							schema: {
-								$ref: '#/components/schemas/Error',
+								$ref: '#/components/schemas/ApiError',
 							},
 							examples: basicErrors['401'],
 						},
@@ -129,7 +129,7 @@ export function genOpenapiSpec(config: Config) {
 					content: {
 						'application/json': {
 							schema: {
-								$ref: '#/components/schemas/Error',
+								$ref: '#/components/schemas/ApiError',
 							},
 							examples: basicErrors['403'],
 						},
@@ -140,7 +140,7 @@ export function genOpenapiSpec(config: Config) {
 					content: {
 						'application/json': {
 							schema: {
-								$ref: '#/components/schemas/Error',
+								$ref: '#/components/schemas/ApiError',
 							},
 							examples: basicErrors['418'],
 						},
@@ -152,7 +152,7 @@ export function genOpenapiSpec(config: Config) {
 						content: {
 							'application/json': {
 								schema: {
-									$ref: '#/components/schemas/Error',
+									$ref: '#/components/schemas/ApiError',
 								},
 								examples: basicErrors['429'],
 							},
@@ -164,7 +164,7 @@ export function genOpenapiSpec(config: Config) {
 					content: {
 						'application/json': {
 							schema: {
-								$ref: '#/components/schemas/Error',
+								$ref: '#/components/schemas/ApiError',
 							},
 							examples: basicErrors['500'],
 						},

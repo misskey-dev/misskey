@@ -97,4 +97,8 @@ describe('schemas', () => {
     test('ad', () => {
         type Ad = Packed<'Ad'>;
     });
+    test('error', () => {
+        type Error = Packed<'Error'>;
+        type ApiError = Packed<'ApiError'>;
+    });
 });
