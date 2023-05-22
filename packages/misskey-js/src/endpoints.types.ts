@@ -1,6 +1,7 @@
 import type { JSONSchema7, SchemaType } from 'schema-type';
 import type { References } from './schemas';
 import type { endpoints } from './endpoints';
+import type { DeepOmit } from 'ts-essentials';
 
 export type RolePolicies = {
 	gtlAvailable: boolean;
@@ -22,7 +23,10 @@ export type RolePolicies = {
 	rateLimitFactor: number;
 };
 
-export type EndpointDefines = ReadonlyArray<{ req: JSONSchema7 | undefined; res: JSONSchema7 | undefined; }>;
+export type EndpointDefines = ReadonlyArray<{
+	req: DeepOmit<JSONSchema7, { $ref: never }> | undefined;
+	res: JSONSchema7 | undefined;
+}>;
 
 export interface IEndpointMeta {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
@@ -37,7 +41,7 @@ export interface IEndpointMeta {
 		};
 	};
 
-	readonly defines: ReadonlyArray<{ req: JSONSchema7 | undefined; res: JSONSchema7 | undefined; }>;
+	readonly defines: EndpointDefines;
 
 	/**
 	 * このエンドポイントにリクエストするのにユーザー情報が必須か否か
