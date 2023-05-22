@@ -40,7 +40,6 @@ export const packedAdSchema = {
         'expiresAt',
         'startsAt',
         'place',
-        'property',
         'ratio',
         'imageUrl',
         'memo',

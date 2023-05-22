@@ -6,6 +6,7 @@ import { ApiError } from './error.js';
 import { endpoints } from 'misskey-js/built/endpoints.js';
 import type { IEndpointMeta, ResponseOf, SchemaOrUndefined } from 'misskey-js/built/endpoints.types.js';
 import type { Endpoints } from 'misskey-js';
+import { WeakSerialized } from 'schema-type';
 
 const ajv = new Ajv({
 	useDefaults: true,
@@ -29,7 +30,7 @@ export type Executor<T extends IEndpointMeta, P = SchemaOrUndefined<T['defines']
 		cleanup?: () => any,
 		ip?: string | null,
 		headers?: Record<string, string> | null
-	) => Promise<ResponseOf<T, P>>;
+	) => Promise<WeakSerialized<ResponseOf<T, P>>>;
 
 // ExecutorWrapperの型はあえて緩くしておく
 export type ExecutorWrapper =

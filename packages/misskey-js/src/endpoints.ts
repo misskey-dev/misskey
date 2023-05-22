@@ -269,7 +269,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/drive/clenaup": {
+	"admin/drive/cleanup": {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -354,24 +354,94 @@ export const endpoints = {
 				],
 			},
 			res: {
-				allOf: [{
-					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
-				}, {
-					type: 'object',
-					properties: {
-						requestIp: {
-							type: ['string', 'null'],
-						},
-						requestHeaders: {
-							oneOf: [{
-								type: 'object',
-							}, {
-								type: 'null',
-							}],
-						}
+				type: 'object',
+				properties: {
+					id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+					createdAt: { type: 'string', format: 'date-time' },
+					userId: { 
+						oneOf: [
+							{ $ref: 'https://misskey-hub.net/api/schemas/Id' },
+							{ type: 'null' },
+						]
 					},
-					required: ['requestIp', 'requestHeaders'],
-				}],
+					userHost: { type: ['string', 'null'] },
+					md5: { type: 'string', format: 'md5', examples: '1bc29b36f623ba82aaf6724fd3b16718' },
+					name: { type: 'string', examples: 'lenna.jpg' },
+					type: { type: 'string', examples: 'image/jpeg' },
+					size: { type: 'number', examples: 51469 },
+					comment: { type: ['string', 'null'] },
+					blurhash: { type: ['string', 'null'] },
+					properties: { type: 'object' },
+					storedInternal: { type: ['boolean', 'null'], examples: true },
+					url: {
+						oneOf: [
+							{ type: 'string', format: 'url' },
+							{ type: 'null' },
+						],
+					},
+					thumbnailUrl: {
+						oneOf: [
+							{ type: 'string', format: 'url' },
+							{ type: 'null' },
+						],
+					},
+					webpublicUrl: {
+						oneOf: [
+							{ type: 'string', format: 'url' },
+							{ type: 'null' },
+						],
+					},
+					accessKey: { type: ['string', 'null'] },
+					thumbnailAccessKey: { type: ['string', 'null'] },
+					webpublicAccessKey: { type: ['string', 'null'] },
+					uri: { type: ['string', 'null'] },
+					src: { type: ['string', 'null'] },
+					folderId: {
+						oneOf: [
+							{ $ref: 'https://misskey-hub.net/api/schemas/Id' },
+							{ type: 'null' },
+						]
+					},
+					isSensitive: { type: 'boolean' },
+					isLink: { type: 'boolean' },
+					requestIp: {
+						type: ['string', 'null'],
+					},
+					requestHeaders: {
+						oneOf: [{
+							type: 'object',
+						}, {
+							type: 'null',
+						}],
+					}
+				},
+				required: [
+					'id',
+					'createdAt',
+					'userId',
+					'userHost',
+					'md5',
+					'name',
+					'type',
+					'size',
+					'comment',
+					'blurhash',
+					'properties',
+					'storedInternal',
+					'url',
+					'thumbnailUrl',
+					'webpublicUrl',
+					'accessKey',
+					'thumbnailAccessKey',
+					'webpublicAccessKey',
+					'uri',
+					'src',
+					'folderId',
+					'isSensitive',
+					'isLink',
+					'requestIp',
+					'requestHeaders',
+				],
 			},
 		}],
 	},

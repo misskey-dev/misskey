@@ -7,34 +7,10 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'User',
-		properties: {
-			token: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		username: localUsernameSchema,
-		password: passwordSchema,
-	},
-	required: ['username', 'password'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/accounts/create'> {
+	name = 'admin/accounts/create' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -42,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userEntityService: UserEntityService,
 		private signupService: SignupService,
 	) {
-		super(meta, paramDef, async (ps, _me) => {
+		super(async (ps, _me) => {
 			const me = _me ? await this.usersRepository.findOneByOrFail({ id: _me.id }) : null;
 			const noUsers = (await this.usersRepository.countBy({
 				host: IsNull(),
@@ -55,14 +31,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				ignorePreservedUsernames: true,
 			});
 
-			const res = await this.userEntityService.pack(account, account, {
+			const res = await this.userEntityService.pack<true, true>(account, account, {
 				detail: true,
 				includeSecrets: true,
 			});
 
-			(res as any).token = secret;
-
-			return res;
+			return { ...res, token: secret };
 		});
 	}
 }

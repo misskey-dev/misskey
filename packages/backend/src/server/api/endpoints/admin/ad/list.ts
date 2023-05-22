@@ -23,14 +23,15 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/ad/list'> {
+	name = 'admin/ad/list' as const;
 	constructor(
 		@Inject(DI.adsRepository)
 		private adsRepository: AdsRepository,
 
 		private queryService: QueryService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.adsRepository.createQueryBuilder('ad'), ps.sinceId, ps.untilId);
 			const ads = await query.take(ps.limit).getMany();
 

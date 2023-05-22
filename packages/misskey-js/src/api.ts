@@ -1,4 +1,5 @@
 import type { Endpoints, SchemaOrUndefined, IEndpointMeta, ResponseOf } from './endpoints.types.js';
+import type { Serialized, WeakSerialized } from 'schema-type';
 
 const MK_API_ERROR = Symbol();
 
@@ -42,9 +43,10 @@ export class APIClient {
 		this.fetch = opts.fetch ?? ((...args) => fetch(...args));
 	}
 
+	// WeakSerialized<P>で推論が効くかは知らない
 	public request<E extends keyof Endpoints, P extends SchemaOrUndefined<M['defines'][number]['req']>, M extends IEndpointMeta = Endpoints[E], R = ResponseOf<M, P>>(
-		endpoint: E, params: P, credential?: string | null | undefined,
-	): Promise<R>
+		endpoint: E, params: WeakSerialized<P>, credential?: string | null | undefined,
+	): Promise<Serialized<R>>
 	{
 		const promise = new Promise((resolve, reject) => {
 			this.fetch(`${this.origin}/api/${endpoint}`, {
