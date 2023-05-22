@@ -1,12 +1,13 @@
 <template>
-<div class="matxzzsk">
-	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div class="input" :class="{ inline, disabled, focused }">
-		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
+<div>
+	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
+	<div :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]">
+		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<input
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
+			:class="$style.inputCore"
 			:type="type"
 			:disabled="disabled"
 			:required="required"
@@ -25,11 +26,11 @@
 		<datalist v-if="datalist" :id="id">
 			<option v-for="data in datalist" :key="data" :value="data"/>
 		</datalist>
-		<div ref="suffixEl" class="suffix"><slot name="suffix"></slot></div>
+		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
-	<div class="caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption"><slot name="caption"></slot></div>
 
-	<MkButton v-if="manualSave && changed" primary class="save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
+	<MkButton v-if="manualSave && changed" primary :class="$style.save" @click="updated"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 </div>
 </template>
 
@@ -151,115 +152,110 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.matxzzsk {
-	> .label {
-		font-size: 0.85em;
-		padding: 0 0 8px 0;
-		user-select: none;
+<style lang="scss" module>
+.label {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
 
-		&:empty {
-			display: none;
+	&:empty {
+		display: none;
+	}
+}
+
+.caption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.input {
+	position: relative;
+
+	&.inline {
+		display: inline-block;
+		margin: 0;
+	}
+
+	&.focused {
+		> .inputCore {
+			border-color: var(--accent) !important;
+			//box-shadow: 0 0 0 4px var(--focus);
 		}
 	}
 
-	> .caption {
-		font-size: 0.85em;
-		padding: 8px 0 0 0;
-		color: var(--fgTransparentWeak);
+	&.disabled {
+		opacity: 0.7;
 
-		&:empty {
-			display: none;
+		&,
+		> .inputCore {
+			cursor: not-allowed !important;
 		}
 	}
+}
 
-	> .input {
-		position: relative;
+.inputCore {
+	appearance: none;
+	-webkit-appearance: none;
+	display: block;
+	height: v-bind("height + 'px'");
+	width: 100%;
+	margin: 0;
+	padding: 0 12px;
+	font: inherit;
+	font-weight: normal;
+	font-size: 1em;
+	color: var(--fg);
+	background: var(--panel);
+	border: solid 1px var(--panel);
+	border-radius: 6px;
+	outline: none;
+	box-shadow: none;
+	box-sizing: border-box;
+	transition: border-color 0.1s ease-out;
 
-		> input {
-			appearance: none;
-			-webkit-appearance: none;
-			display: block;
-			height: v-bind("height + 'px'");
-			width: 100%;
-			margin: 0;
-			padding: 0 12px;
-			font: inherit;
-			font-weight: normal;
-			font-size: 1em;
-			color: var(--fg);
-			background: var(--panel);
-			border: solid 1px var(--panel);
-			border-radius: 6px;
-			outline: none;
-			box-shadow: none;
-			box-sizing: border-box;
-			transition: border-color 0.1s ease-out;
-
-			&:hover {
-				border-color: var(--inputBorderHover) !important;
-			}
-		}
-
-		> .prefix,
-		> .suffix {
-			display: flex;
-			align-items: center;
-			position: absolute;
-			z-index: 1;
-			top: 0;
-			padding: 0 12px;
-			font-size: 1em;
-			height: v-bind("height + 'px'");
-			pointer-events: none;
-
-			&:empty {
-				display: none;
-			}
-
-			> * {
-				display: inline-block;
-				min-width: 16px;
-				max-width: 150px;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-			}
-		}
-
-		> .prefix {
-			left: 0;
-			padding-right: 6px;
-		}
-
-		> .suffix {
-			right: 0;
-			padding-left: 6px;
-		}
-
-		&.inline {
-			display: inline-block;
-			margin: 0;
-		}
-
-		&.focused {
-			> input {
-				border-color: var(--accent) !important;
-				//box-shadow: 0 0 0 4px var(--focus);
-			}
-		}
-
-		&.disabled {
-			opacity: 0.7;
-
-			&, * {
-				cursor: not-allowed !important;
-			}
-		}
+	&:hover {
+		border-color: var(--inputBorderHover) !important;
 	}
+}
 
-	> .save {
-		margin: 8px 0 0 0;
+.prefix,
+.suffix {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	padding: 0 12px;
+	font-size: 1em;
+	height: v-bind("height + 'px'");
+	min-width: 16px;
+	max-width: 150px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	box-sizing: border-box;
+	pointer-events: none;
+
+	&:empty {
+		display: none;
 	}
+}
+
+.prefix {
+	left: 0;
+	padding-right: 6px;
+}
+
+.suffix {
+	right: 0;
+	padding-left: 6px;
+}
+.save {
+	margin: 8px 0 0 0;
 }
 </style>

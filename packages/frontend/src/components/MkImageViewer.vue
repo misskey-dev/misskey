@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :z-priority="'middle'" @click="modal.close()" @closed="emit('closed')">
+<MkModal ref="modal" :zPriority="'middle'" @click="modal.close()" @closed="emit('closed')">
 	<div class="xubzgfga">
 		<header>{{ image.name }}</header>
 		<img :src="image.url" :alt="image.comment" :title="image.comment" @click="modal.close()"/>

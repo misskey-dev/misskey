@@ -44,6 +44,10 @@ export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
+		server: {
+			port: 5173,
+		},
+
 		plugins: [
 			pluginVue({
 				reactivityTransform: true,
@@ -113,7 +117,7 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/init.ts',
+					app: './src/_boot_.ts',
 				},
 				output: {
 					manualChunks: {
@@ -133,6 +137,10 @@ export function getConfig(): UserConfig {
 			commonjsOptions: {
 				include: [/misskey-js/, /node_modules/],
 			},
+		},
+
+		worker: {
+			format: 'es',
 		},
 
 		test: {

@@ -1,11 +1,11 @@
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_window_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_window_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_window_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_window_leaveTo : ''"
 	appear
-	@after-leave="$emit('closed')"
+	@afterLeave="$emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
 		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
@@ -29,7 +29,7 @@
 					<button v-if="closeButton" v-tooltip="i18n.ts.close" class="_button" :class="$style.headerButton" @click="close()"><i class="ti ti-x"></i></button>
 				</span>
 			</div>
-			<div v-container :class="$style.content">
+			<div :class="$style.content">
 				<slot></slot>
 			</div>
 		</div>
@@ -541,7 +541,7 @@ defineExpose({
 	flex: 1;
 	overflow: auto;
 	background: var(--panel);
-	container-type: inline-size;
+	container-type: size;
 }
 
 $handleSize: 8px;

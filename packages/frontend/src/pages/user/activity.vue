@@ -1,5 +1,5 @@
 <template>
-<MkSpacer :content-max="700">
+<MkSpacer :contentMax="700">
 	<div class="_gaps">
 		<MkFoldableSection class="item">
 			<template #header><i class="ti ti-activity"></i> Heatmap</template>

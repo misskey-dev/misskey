@@ -5,6 +5,8 @@ block vars
 	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
 	- const url = `${config.url}/notes/${note.id}`;
 	- const isRenote = note.renote && note.text == null && note.fileIds.length == 0 && note.poll == null;
+	- const image = (note.files || []).find(file => file.type.startsWith('image/') && !file.type.isSensitive)
+	- const video = (note.files || []).find(file => file.type.startsWith('video/') && !file.type.isSensitive)
 
 block title
 	= `${title} | ${instanceName}`
@@ -17,11 +19,26 @@ block og
 	meta(property='og:title'       content= title)
 	meta(property='og:description' content= summary)
 	meta(property='og:url'         content= url)
-	meta(property='og:image'       content= avatarUrl)
+	if video
+		meta(property='og:video:url'        content= video.url)
+		meta(property='og:video:secure_url' content= video.url)
+		meta(property='og:video:type'       content= video.type)
+		// FIXME: add width and height
+		// FIXME: add embed player for Twitter
+	if image
+		meta(property='twitter:card' content='summary_large_image')
+		meta(property='og:image'     content= image.url)
+	else
+		meta(property='twitter:card' content='summary')
+		meta(property='og:image'     content= avatarUrl)
+
 
 block meta
 	if user.host || isRenote || profile.noCrawle
 		meta(name='robots' content='noindex')
+	if profile.preventAiLearning
+		meta(name='robots' content='noimageai')
+		meta(name='robots' content='noai')
 
 	meta(name='misskey:user-username' content=user.username)
 	meta(name='misskey:user-id' content=user.id)

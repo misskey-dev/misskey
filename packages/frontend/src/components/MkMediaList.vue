@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch } from 'vue';
+import { onMounted, ref, useCssModule, watch, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -39,7 +39,7 @@ const props = defineProps<{
 
 const $style = useCssModule();
 
-const gallery = ref<HTMLDivElement>();
+const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
@@ -195,6 +195,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	grid-gap: 8px;
 
 	height: 100%;
+	width: 100%;
 
 	&.n1 {
 		grid-template-rows: 1fr;
@@ -203,8 +204,8 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 		min-height: 64px;
 		max-height: clamp(
 			64px,
-			calc(var(--containerHeight, 100svh) * 0.5), // but --containerHeight can broken (too big)
-			min(334px, 50vh)
+			50cqh,
+			min(360px, 50vh)
 		);
 
 		&.n116_9 {

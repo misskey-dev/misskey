@@ -1,24 +1,24 @@
 <template>
-<MkSpacer :content-max="1200">
+<MkSpacer :contentMax="1200">
 	<MkTab v-model="origin" style="margin-bottom: var(--margin);">
 		<option value="local">{{ i18n.ts.local }}</option>
 		<option value="remote">{{ i18n.ts.remote }}</option>
 	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
-			<MkFoldableSection class="_margin" persist-key="explore-pinned-users">
+			<MkFoldableSection class="_margin" persistKey="explore-pinned-users">
 				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
 				<MkUserList :pagination="pinnedUsers"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persist-key="explore-popular-users">
+			<MkFoldableSection class="_margin" persistKey="explore-popular-users">
 				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<MkUserList :pagination="popularUsers"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persist-key="explore-recently-updated-users">
+			<MkFoldableSection class="_margin" persistKey="explore-recently-updated-users">
 				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<MkUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persist-key="explore-recently-registered-users">
+			<MkFoldableSection class="_margin" persistKey="explore-recently-registered-users">
 				<template #header><i class="ti ti-plus ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
 				<MkUserList :pagination="recentlyRegisteredUsers"/>
 			</MkFoldableSection>
@@ -28,9 +28,9 @@
 		<MkFoldableSection ref="tagsEl" :foldable="true" :expanded="false" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
-			<div class="vxjfqztj">
-				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/user-tags/${tag.tag}`" class="local">{{ tag.tag }}</MkA>
-				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/user-tags/${tag.tag}`">{{ tag.tag }}</MkA>
+			<div>
+				<MkA v-for="tag in tagsLocal" :key="'local:' + tag.tag" :to="`/user-tags/${tag.tag}`" style="margin-right: 16px; font-weight: bold;">{{ tag.tag }}</MkA>
+				<MkA v-for="tag in tagsRemote" :key="'remote:' + tag.tag" :to="`/user-tags/${tag.tag}`" style="margin-right: 16px;">{{ tag.tag }}</MkA>
 			</div>
 		</MkFoldableSection>
 
@@ -132,15 +132,3 @@ os.api('hashtags/list', {
 	tagsRemote = tags;
 });
 </script>
-
-<style lang="scss" scoped>
-.vxjfqztj {
-	> * {
-		margin-right: 16px;
-
-		&.local {
-			font-weight: bold;
-		}
-	}
-}
-</style>

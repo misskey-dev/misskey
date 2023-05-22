@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div v-for="user in users" :key="user.id" style="display:inline-block;width:32px;height:32px;margin-right:8px;">
-		<MkAvatar :user="user" style="width:32px;height:32px;" indicator link preview/>
+		<MkAvatar :user="user" style="width:32px; height:32px;" indicator link preview/>
 	</div>
 </div>
 </template>

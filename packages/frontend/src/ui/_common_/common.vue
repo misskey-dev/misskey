@@ -11,11 +11,11 @@
 
 <TransitionGroup
 	tag="div" :class="[$style.notifications, $style[`notificationsPosition-${defaultStore.state.notificationPosition}`], $style[`notificationsStackAxis-${defaultStore.state.notificationStackAxis}`]]"
-	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
 	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
 		<XNotification :notification="notification"/>
@@ -40,7 +40,7 @@ import { popups, pendingApiRequestsCount } from '@/os';
 import { uploads } from '@/scripts/upload';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 
@@ -55,7 +55,7 @@ function onNotification(notification) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
-		stream.send('readNotification');
+		useStream().send('readNotification');
 
 		notifications.unshift(notification);
 		window.setTimeout(() => {
@@ -71,7 +71,7 @@ function onNotification(notification) {
 }
 
 if ($i) {
-	const connection = stream.useChannel('main', null, 'UI');
+	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
 
 	//#region Listen message from SW

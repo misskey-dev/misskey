@@ -1,5 +1,5 @@
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="250" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="250" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div v-for="u in users" :key="u.id" :class="$style.user">
 			<MkAvatar :class="$style.avatar" :user="u"/>

@@ -1,15 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+import Bull from 'bull';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
-import Bull from 'bull';
 
 @Injectable()
 export class QueueService {
@@ -153,6 +154,16 @@ export class QueueService {
 	}
 
 	@bindThis
+	public createExportAntennasJob(user: ThinUser) {
+		return this.dbQueue.add('exportAntennas', {
+			user: { id: user.id },
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
 	public createImportFollowingJob(user: ThinUser, fileId: DriveFile['id']) {
 		return this.dbQueue.add('importFollowing', {
 			user: { id: user.id },
@@ -229,6 +240,17 @@ export class QueueService {
 		return this.dbQueue.add('importCustomEmojis', {
 			user: { id: user.id },
 			fileId: fileId,
+		}, {
+			removeOnComplete: true,
+			removeOnFail: true,
+		});
+	}
+
+	@bindThis
+	public createImportAntennasJob(user: ThinUser, antenna: Antenna) {
+		return this.dbQueue.add('importAntennas', {
+			user: { id: user.id },
+			antenna,
 		}, {
 			removeOnComplete: true,
 			removeOnFail: true,

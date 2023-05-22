@@ -2,6 +2,7 @@ import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
+import { MeiliSearch } from 'meilisearch';
 import { DI } from './di-symbols.js';
 import { loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
@@ -18,6 +19,21 @@ const $db: Provider = {
 	useFactory: async (config) => {
 		const db = createPostgresDataSource(config);
 		return await db.initialize();
+	},
+	inject: [DI.config],
+};
+
+const $meilisearch: Provider = {
+	provide: DI.meilisearch,
+	useFactory: (config) => {
+		if (config.meilisearch) {
+			return new MeiliSearch({
+				host: `${config.meilisearch.ssl ? 'https' : 'http' }://${config.meilisearch.host}:${config.meilisearch.port}`,
+				apiKey: config.meilisearch.apiKey,
+			});
+		} else {
+			return null;
+		}
 	},
 	inject: [DI.config],
 };
@@ -73,8 +89,8 @@ const $redisForSub: Provider = {
 @Global()
 @Module({
 	imports: [RepositoryModule],
-	providers: [$config, $db, $redis, $redisForPub, $redisForSub],
-	exports: [$config, $db, $redis, $redisForPub, $redisForSub, RepositoryModule],
+	providers: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub],
+	exports: [$config, $db, $meilisearch, $redis, $redisForPub, $redisForSub, RepositoryModule],
 })
 export class GlobalModule implements OnApplicationShutdown {
 	constructor(
