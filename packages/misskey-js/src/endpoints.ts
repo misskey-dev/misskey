@@ -446,3 +446,17 @@ export const endpoints = {
 		}],
 	},
 } as const satisfies { [x: string]: IEndpointMeta; };
+
+export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {
+	const endpoint = endpoints[key];
+	const schemas = endpoint.defines.map(d => d[reqres]).filter(d => d !== undefined);
+	if (schemas.length === 0) {
+		return null;
+	}
+	if (schemas.length === 1) {
+		return schemas[0];
+	}
+	return {
+		oneOf: schemas,
+	};
+}

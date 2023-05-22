@@ -3,7 +3,7 @@ import Ajv from 'ajv';
 import type { LocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { ApiError } from './error.js';
-import { endpoints } from 'misskey-js/built/endpoints.js';
+import { endpoints, getEndpointSchema } from 'misskey-js/built/endpoints.js';
 import type { IEndpointMeta, ResponseOf, SchemaOrUndefined } from 'misskey-js/built/endpoints.types.js';
 import type { Endpoints } from 'misskey-js';
 import { WeakSerialized } from 'schema-type';
@@ -50,7 +50,8 @@ export abstract class Endpoint<E extends keyof Endpoints, T extends IEndpointMet
 
 	constructor(cb: Executor<T>) {
 		this.meta = endpoints[this.name];
-		const validate = ajv.compile({ oneOf: this.meta.defines.map(d => d.req) });
+		const req = getEndpointSchema('req', this.name);
+		const validate = req ? ajv.compile(req) : null;
 
 		this.exec = (params, user, token, file, ip, headers) => {
 			let cleanup: undefined | (() => void) = undefined;
@@ -66,21 +67,27 @@ export abstract class Endpoint<E extends keyof Endpoints, T extends IEndpointMet
 					id: '4267801e-70d1-416a-b011-4ee502885d8b',
 				}));
 			}
-	
-			const valid = validate(params);
-			if (!valid) {
-				if (file) cleanup!();
-	
-				const errors = validate.errors!;
-				const err = new ApiError({
-					message: 'Invalid param.',
-					code: 'INVALID_PARAM',
-					id: '3d81ceae-475f-4600-b2a8-2bc116157532',
-				}, {
-					param: errors[0].schemaPath,
-					reason: errors[0].message,
-				});
-				return Promise.reject(err);
+
+			if (validate) {
+				const valid = validate(params);
+
+				if (!valid) {
+					if (file) cleanup!();
+		
+					const errors = validate.errors!;
+					const err = new ApiError({
+						message: 'Invalid param.',
+						code: 'INVALID_PARAM',
+						id: '3d81ceae-475f-4600-b2a8-2bc116157532',
+					}, {
+						param: errors[0].schemaPath,
+						reason: errors[0].message,
+					});
+					return Promise.reject(err);
+				}
+			} else {
+				// validateがnullである場合、paramsがnullや空オブジェクトであるべきではあるが、
+				// 特にチェックはしない
 			}
 
 			return cb(params as any, user as any, token, file, cleanup, ip, headers);

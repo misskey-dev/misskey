@@ -1,5 +1,31 @@
 import { enableFetchMocks } from 'jest-fetch-mock';
 import { APIClient, isAPIError } from '../src/api';
+import Ajv from 'ajv';
+import { endpoints, getEndpointSchema } from '../src/endpoints';
+import { Endpoints } from '@/endpoints.types';
+
+describe('schemas', () => {
+    describe.each(Object.keys(endpoints))('validate schema of %s', async (key) => {
+		const ajv = new Ajv({
+			useDefaults: true,
+		});
+
+		ajv.addFormat('misskey:id', /^[a-zA-Z0-9]+$/);
+
+		const endpoint = (endpoints as any)[key] as unknown as Endpoints[keyof Endpoints];
+		test('each schemas', async () => {
+			for (const def of endpoint.defines) {
+				if (def.res === undefined) continue;
+				ajv.compile(def.req);
+			}
+		});
+
+		test('jointed schema (oneOf)', () => {
+			const req = getEndpointSchema('req', key as keyof Endpoints);
+			if (req) ajv.compile(req);
+		});
+    });
+});
 
 enableFetchMocks();
 

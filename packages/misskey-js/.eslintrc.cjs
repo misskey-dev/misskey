@@ -1,7 +1,7 @@
 module.exports = {
 	parserOptions: {
 		tsconfigRootDir: __dirname,
-		project: ['./tsconfig.json'],
+		project: ['./tsconfig.json', './test/tsconfig.json'],
 	},
 	extends: [
 		'../shared/.eslintrc.js',

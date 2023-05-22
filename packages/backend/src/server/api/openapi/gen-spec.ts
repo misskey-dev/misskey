@@ -1,7 +1,8 @@
 import type { Config } from '@/config.js';
-import endpoints from '../endpoints.js';
+import { endpoints, getEndpointSchema } from 'misskey-js/built/endpoints.js';
 import { errors as basicErrors } from './errors.js';
-import { schemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import { schemas } from './schemas.js';
+import { Endpoints } from 'misskey-js';
 
 export function genOpenapiSpec(config: Config) {
 	const spec = {
@@ -37,11 +38,11 @@ export function genOpenapiSpec(config: Config) {
 		},
 	};
 
-	for (const endpoint of endpoints.filter(ep => !ep.meta.secure)) {
+	for (const [name, endpoint] of Object.entries(endpoints).filter(([name, ep]) => !ep.secure)) {
 		const errors = {} as any;
 
-		if (endpoint.meta.errors) {
-			for (const e of Object.values(endpoint.meta.errors)) {
+		if ('errors' in endpoint && endpoint.errors) {
+			for (const e of Object.values(endpoint.errors)) {
 				errors[e.code] = {
 					value: {
 						error: e,
@@ -50,42 +51,30 @@ export function genOpenapiSpec(config: Config) {
 			}
 		}
 
-		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res) : {};
+		const resSchema = getEndpointSchema('res', name as keyof Endpoints);
 
-		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
-		desc += `**Credential required**: *${endpoint.meta.requireCredential ? 'Yes' : 'No'}*`;
-		if (endpoint.meta.kind) {
-			const kind = endpoint.meta.kind;
+		let desc = ('description' in endpoint ? endpoint.description : 'No description provided.') + '\n\n';
+		desc += `**Credential required**: *${('requireCredential' in endpoint && endpoint.requireCredential) ? 'Yes' : 'No'}*`;
+		if ('kind' in endpoint && endpoint.kind) {
+			const kind = endpoint.kind;
 			desc += ` / **Permission**: *${kind}*`;
 		}
 
-		const requestType = endpoint.meta.requireFile ? 'multipart/form-data' : 'application/json';
-		const schema = { ...endpoint.params };
-
-		if (endpoint.meta.requireFile) {
-			schema.properties = {
-				...schema.properties,
-				file: {
-					type: 'string',
-					format: 'binary',
-					description: 'The file contents.',
-				},
-			};
-			schema.required = [...schema.required ?? [], 'file'];
-		}
+		const requestType = ('requireFile' in endpoint && endpoint.requireFile) ? 'multipart/form-data' : 'application/json';
+		const schema = getEndpointSchema('req', name as keyof Endpoints) ?? {};
 
 		const info = {
-			operationId: endpoint.name,
-			summary: endpoint.name,
+			operationId: name,
+			summary: name,
 			description: desc,
 			externalDocs: {
 				description: 'Source code',
-				url: `https://github.com/misskey-dev/misskey/blob/develop/packages/backend/src/server/api/endpoints/${endpoint.name}.ts`,
+				url: `https://github.com/misskey-dev/misskey/blob/develop/packages/backend/src/server/api/endpoints/${name}.ts`,
 			},
-			...(endpoint.meta.tags ? {
-				tags: [endpoint.meta.tags[0]],
+			...(('tags' in endpoint && endpoint.tags) ? {
+				tags: [endpoint.tags[0]],
 			} : {}),
-			...(endpoint.meta.requireCredential ? {
+			...('requireCredential' in endpoint && endpoint.requireCredential ? {
 				security: [{
 					ApiKeyAuth: [],
 				}],
@@ -99,7 +88,7 @@ export function genOpenapiSpec(config: Config) {
 				},
 			},
 			responses: {
-				...(endpoint.meta.res ? {
+				...(resSchema ? {
 					'200': {
 						description: 'OK (with results)',
 						content: {
@@ -157,7 +146,7 @@ export function genOpenapiSpec(config: Config) {
 						},
 					},
 				},
-				...(endpoint.meta.limit ? {
+				...(('limit' in endpoint && endpoint.limit) ? {
 					'429': {
 						description: 'To many requests',
 						content: {
@@ -184,7 +173,7 @@ export function genOpenapiSpec(config: Config) {
 			},
 		};
 
-		spec.paths['/' + endpoint.name] = {
+		spec.paths['/' + name] = {
 			post: info,
 		};
 	}
