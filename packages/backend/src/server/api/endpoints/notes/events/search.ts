@@ -67,7 +67,7 @@ export const paramDef = {
 	},
 } as const;
 
-function notAlphaNumeric(s: string) {
+function notAlphaNumeric(s: string): boolean {
 	return null !== s.match(/[^\w]/);
 }
 

@@ -15,9 +15,66 @@
 				<MkTime :time="note.event!.end" mode="detail"/>
 			</dd>
 		</template>
-		<template v-for="[key, value] of Object.entries(note.event!.detail)" :key="key">
-			<dt :class="$style.key">{{ key }}</dt>
-			<dd :class="$style.value">{{ value }}</dd>
+		<template v-if="note.event!.metadata.doorTime">
+			<dt :class="$style.key">{{ "Door Time" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.doorTime }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.location">
+			<dt :class="$style.key">{{ "Location" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.location }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.url">
+			<dt :class="$style.key">{{ "URL" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.organizer">
+			<dt :class="$style.key">{{ "Organizer" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.organizer.name }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.audience">
+			<dt :class="$style.key">{{ "Audience" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.audience.name }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.inLanguage">
+			<dt :class="$style.key">{{ "Language" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.inLanguage }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.typicalAgeRange">
+			<dt :class="$style.key">{{ "Ages" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.typicalAgeRange }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.performer">
+			<dt :class="$style.key">{{ "Performers" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.performer.join(', ') }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.offers?.url">
+			<dt :class="$style.key">{{ "Tickets" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.isAccessibleForFree">
+			<dt :class="$style.key">{{ "Free" }}</dt> 
+			<dd :class="$style.value">{{ "Yes" }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.offers?.price">
+			<dt :class="$style.key">{{ "Price" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.offers.price }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.offers?.url">
+			<dt :class="$style.key">{{ "Tickets Available" }}</dt> 
+			<dd :class="$style.value">
+				{{ [
+					(note.event!.metadata.offers.availabilityStarts ? 'From ' + note.event!.metadata.offers.availabilityStarts : ''), 
+					(note.event!.metadata.offers.availabilityEnds ? 'Until ' + note.event!.metadata.offers.availabilityEnds : '')]
+					.join(' ') }}
+			</dd>
+		</template>
+		<template v-if="note.event!.metadata.offers?.url">
+			<dt :class="$style.key">{{ "Tickets" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
+		</template>
+		<template v-if="note.event!.metadata.keywords">
+			<dt :class="$style.key">{{ "Keywords" }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.keywords }}</dd>
 		</template>
 	</dl>
 </div>

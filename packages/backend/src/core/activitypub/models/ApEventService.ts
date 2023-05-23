@@ -3,13 +3,13 @@ import { DI } from '@/di-symbols.js';
 import type { EventsRepository, NotesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
+import { IEvent } from '@/models/entities/Event.js';
 import { isEvent } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApResolverService } from '../ApResolverService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject } from '../type.js';
-import { bindThis } from '@/decorators.js';
-import { IEvent } from '@/models/entities/Event.js';
 
 @Injectable()
 export class ApEventService {
@@ -32,8 +32,8 @@ export class ApEventService {
 	}
 
 	@bindThis
-	public async extractEventFromNote(source: string | IObject, resolver?: Resolver): Promise<IEvent> {
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+	public async extractEventFromNote(source: string | IObject, resolverParam?: Resolver): Promise<IEvent> {
+		const resolver = resolverParam ?? this.apResolverService.createResolver();
 
 		const note = await resolver.resolve(source);
 

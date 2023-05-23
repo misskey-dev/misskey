@@ -515,7 +515,7 @@ export type Endpoints = {
 		sinceDate?: number;
 		untilDate?: number;
 		sortBy?: 'startDate' | 'craetedAt';
-		filters?: { key: string, values: (string | null)[] }[];
+		filters?: { key: string[], values: (string | null)[] }[];
 	}; res: Note[]; };
 	'notes/reactions': { req: { noteId: Note['id']; type?: string | null; limit?: number; }; res: NoteReaction[]; };
 	'notes/reactions/create': { req: { noteId: Note['id']; reaction: string; }; res: null; };

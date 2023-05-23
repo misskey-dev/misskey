@@ -35,13 +35,13 @@ export class Event {
 	public title: string;
 
 	@Column('jsonb', {
-		default: { 
+		default: {
 			'@context': 'https://schema.org/',
 			'@type': 'Event',
 		},
 		comment: 'metadata object describing the event. Follows https://schema.org/Event',
 	})
-	public metadata: unknown;
+	public metadata: EventSchema;
 
 	//#region Denormalized fields
 	@Column('enum', {
@@ -74,9 +74,46 @@ export class Event {
 	}
 }
 
+export type EventSchema = {
+	'@context': 'https://schema.org';
+	'@type': 'Event';
+	name?: string;
+	url?: string;
+	description?: string;
+	audience?: {
+		'@type': 'Audience';
+		name: string;
+	};
+	doorTime?: string;
+	startDate?: string;
+	endDate?: string;
+	eventStatus?: 'https://schema.org/EventCancelled' | 'https://schema.org/EventMovedOnline' | 'https://schema.org/EventPostponed' | 'https://schema.org/EventRescheduled' | 'https://schema.org/EventScheduled';
+	inLanguage?: string;
+	isAccessibleForFree?: boolean;
+	keywords?: string;
+	location?: string;
+	offers?: {
+		'@type': 'Offer';
+		price?: string;
+		priceCurrency?: string;
+		availabilityStarts?: string;
+		availabilityEnds?: string;
+		url?: string;
+	};
+	organizer?: {
+		name: string;
+		sameAs?: string; // ie. URL to website/social
+	};
+	performer?: {
+		name: string;
+		sameAs?: string; // ie. URL to website/social
+	}[];
+	typicalAgeRange?: string;
+}
+
 export type IEvent = {
 	start: Date;
 	end: Date | null
 	title: string;
-	metadata: Record<string, string>;
+	metadata: EventSchema;
 }
