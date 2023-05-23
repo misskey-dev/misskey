@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, watch,ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -118,7 +118,7 @@ let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
 let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<Misskey.entities.DriveFile>();
-let chooseFile: DriveFile|null = $ref(null);
+let chooseFile: MkDriveFile|null = $ref(null);
 let draft = $ref(props.emoji ? props.emoji.draft : false);
 let isRequest = $ref(props.isRequest);
 
@@ -127,8 +127,6 @@ watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 }, { immediate: true });
 
 const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
-let draft = $ref(props.emoji.draft);
-let isRequest = $ref(props.isRequest);
 const validation = computed(() => {
     return name.match(/^[a-zA-Z0-9_]+$/) && imgUrl.value != null;
 })

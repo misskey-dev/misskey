@@ -657,6 +657,8 @@ export interface Locale {
     "regenerateLoginToken": string;
     "regenerateLoginTokenDescription": string;
     "setMultipleBySeparatingWithSpace": string;
+    "emojiNameValidation": string;
+    "isSensitive": string;
     "fileIdOrUrl": string;
     "behavior": string;
     "sample": string;
