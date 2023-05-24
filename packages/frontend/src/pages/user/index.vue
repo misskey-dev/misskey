@@ -11,6 +11,7 @@
 				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
 				<XClips v-else-if="tab === 'clips'" :user="user"/>
 				<XLists v-else-if="tab === 'lists'" :user="user"/>
+				<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
 				<XPages v-else-if="tab === 'pages'" :user="user"/>
 				<XGallery v-else-if="tab === 'gallery'" :user="user"/>
 			</div>
@@ -38,6 +39,7 @@ const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
 const XLists = defineAsyncComponent(() => import('./lists.vue'));
+const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 
@@ -96,6 +98,10 @@ const headerTabs = $computed(() => user ? [{
 	key: 'lists',
 	title: i18n.ts.lists,
 	icon: 'ti ti-list',
+}, {
+	key: 'flashs',
+	title: 'Play',
+	icon: 'ti ti-player-play',
 }, {
 	key: 'pages',
 	title: i18n.ts.pages,
