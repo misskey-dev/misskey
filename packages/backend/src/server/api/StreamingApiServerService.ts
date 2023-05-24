@@ -37,7 +37,7 @@ export class StreamingApiServerService {
 	}
 
 	@bindThis
-	public attachStreamingApi(server: http.Server) {
+	public attachStreamingApi(server: http.Server): void {
 		const wss = new WebSocket.WebSocketServer({
 			server: server,
 		});
@@ -51,8 +51,8 @@ export class StreamingApiServerService {
 
 			const q = new URL(request.url).searchParams;
 
-			let user: LocalUser | null | undefined = null;
-			let app: AccessToken | null | undefined = null;
+			let user: LocalUser | null = null;
+			let app: AccessToken | null = null;
 
 			try {
 				[user, app] = await this.authenticateService.authenticate(q.get('i'));
