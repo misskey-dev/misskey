@@ -49,7 +49,7 @@ export class StreamingApiServerService {
 				return;
 			}
 
-			const q = new URL(request.url).searchParams;
+			const q = new URL(request.url, `http://${request.headers.host}`).searchParams;
 
 			let user: LocalUser | null = null;
 			let app: AccessToken | null = null;
