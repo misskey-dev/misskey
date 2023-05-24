@@ -1,19 +1,19 @@
 import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import * as websocket from 'websocket';
+import * as WebSocket from 'ws';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, UserProfilesRepository, RenoteMutingsRepository } from '@/models/index.js';
+import type { UsersRepository, AccessToken } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { AuthenticateService } from './AuthenticateService.js';
+import { LocalUser } from '@/models/entities/User';
+import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
-import type { ParsedUrlQuery } from 'querystring';
 import type * as http from 'node:http';
 
 @Injectable()
@@ -28,24 +28,6 @@ export class StreamingApiServerService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
-
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
-		@Inject(DI.renoteMutingsRepository)
-		private renoteMutingsRepository: RenoteMutingsRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-	
 		private cacheService: CacheService,
 		private noteReadService: NoteReadService,
 		private authenticateService: AuthenticateService,
@@ -56,23 +38,49 @@ export class StreamingApiServerService {
 
 	@bindThis
 	public attachStreamingApi(server: http.Server) {
-		// Init websocket server
-		const ws = new websocket.server({
-			httpServer: server,
+		const wss = new WebSocket.WebSocketServer({
+			server: server,
 		});
 
-		ws.on('request', async (request) => {
-			const q = request.resourceURL.query as ParsedUrlQuery;
-
-			// TODO: トークンが間違ってるなどしてauthenticateに失敗したら
-			// コネクション切断するなりエラーメッセージ返すなりする
-			// (現状はエラーがキャッチされておらずサーバーのログに流れて邪魔なので)
-			const [user, miapp] = await this.authenticateService.authenticate(q.i as string);
-
-			if (user?.isSuspended) {
-				request.reject(400);
+		server.on('upgrade', async (request, socket, head) => {
+			if (request.url == null) {
+				socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
+				socket.destroy();
 				return;
 			}
+
+			const q = new URL(request.url).searchParams;
+
+			let user: LocalUser | null | undefined = null;
+			let app: AccessToken | null | undefined = null;
+
+			try {
+				[user, app] = await this.authenticateService.authenticate(q.get('i'));
+			} catch (e) {
+				if (e instanceof AuthenticationError) {
+					socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+				} else {
+					socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n');
+				}
+				socket.destroy();
+				return;
+			}
+
+			if (user?.isSuspended) {
+				socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
+				socket.destroy();
+				return;
+			}
+
+			wss.handleUpgrade(request, socket, head, (ws) => {
+				wss.emit('connection', ws, request, {
+					user, app,
+				});
+			});
+		});
+
+		wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: { user: LocalUser | null; app: AccessToken | null }) => {
+			const { user, app } = ctx;
 
 			const ev = new EventEmitter();
 
@@ -88,14 +96,10 @@ export class StreamingApiServerService {
 				this.noteReadService,
 				this.notificationService,
 				this.cacheService,
-				ev, user, miapp,
+				ev, user, app,
 			);
 
-			await main.init();
-
-			const connection = request.accept();
-
-			main.init2(connection);
+			await main.init(connection);
 
 			const intervalId = user ? setInterval(() => {
 				this.usersRepository.update(user.id, {
@@ -116,7 +120,7 @@ export class StreamingApiServerService {
 			});
 
 			connection.on('message', async (data) => {
-				if (data.type === 'utf8' && data.utf8Data === 'ping') {
+				if (data.toString() === 'ping') {
 					connection.send('pong');
 				}
 			});
