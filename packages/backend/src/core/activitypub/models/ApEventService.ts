@@ -50,7 +50,16 @@ export class ApEventService {
 				title,
 				start,
 				end,
-				metadata: {},
+				metadata: {
+					'@context': 'https://schema.org',
+					'@type': 'Event',
+					name: note.name,
+					url: note.href,
+					startDate: note.startTime.toISOString(),
+					endDate: note.endTime?.toISOString(),
+					description: note.summary,
+					identifier: note.id,
+				},
 			};
 		} else {
 			throw new Error('Invalid event properties');

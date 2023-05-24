@@ -109,6 +109,7 @@ export type EventSchema = {
 		sameAs?: string; // ie. URL to website/social
 	}[];
 	typicalAgeRange?: string;
+	identifier?: string;
 }
 
 export type IEvent = {
