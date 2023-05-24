@@ -39,7 +39,7 @@ export class StreamingApiServerService {
 	@bindThis
 	public attachStreamingApi(server: http.Server): void {
 		const wss = new WebSocket.WebSocketServer({
-			server: server,
+			noServer: true,
 		});
 
 		server.on('upgrade', async (request, socket, head) => {
