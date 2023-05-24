@@ -59,7 +59,7 @@
 			<dt :class="$style.key">{{ "Price" }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.offers.price }}</dd>
 		</template>
-		<template v-if="note.event!.metadata.offers?.url">
+		<template v-if="note.event!.metadata.offers?.availabilityStarts || note.event!.metadata.offers?.availabilityEnds">
 			<dt :class="$style.key">{{ "Tickets Available" }}</dt> 
 			<dd :class="$style.value">
 				{{ [
@@ -67,10 +67,6 @@
 					(note.event!.metadata.offers.availabilityEnds ? 'Until ' + note.event!.metadata.offers.availabilityEnds : '')]
 					.join(' ') }}
 			</dd>
-		</template>
-		<template v-if="note.event!.metadata.offers?.url">
-			<dt :class="$style.key">{{ "Tickets" }}</dt> 
-			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.keywords">
 			<dt :class="$style.key">{{ "Keywords" }}</dt> 

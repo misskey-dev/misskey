@@ -22,82 +22,168 @@
 				</MkInput>
 			</section>
 		</div>
+		<div>
+			<section>
+				<MkInput v-model="location" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.location }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="url" small type="url" class="input">
+					<template #label>{{ i18n.ts._event.url }}</template>
+				</MkInput>
+			</section>
+		</div>
+		<div>
+			<section>
+				<MkInput v-model="doorTime" small type="time" class="input">
+					<template #label>{{ i18n.ts._event.doorTime }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="organizer" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.organizer }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="organizerLink" small type="url" class="input">
+					<template #label>{{ i18n.ts._event.organizerLink }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="audience" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.audience }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="language" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.language }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="ageRange" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.ageRange }}</template>
+				</MkInput>
+			</section>
+			<!--<section>
+				<MkInput v-model="performers" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.performers }}</template>
+				</MkInput>
+			</section>-->
+			<section>
+				<MkInput v-model="ticketsUrl" small type="url" class="input">
+					<template #label>{{ i18n.ts._event.ticketsUrl }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkSwitch :model-value="isFree" small type="" class="input">
+					<template #label>{{ i18n.ts._event.isFree }}</template>
+				</MkSwitch>
+			</section>
+			<section>
+				<MkInput v-model="price" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.price }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="availabilityStart" small type="datetime-local" class="input">
+					<template #label>{{ i18n.ts._event.availabilityStart }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="availabilityEnd" small type="datetime-local" class="input">
+					<template #label>{{ i18n.ts._event.availabilityEnd }}</template>
+				</MkInput>
+			</section>
+			<section>
+				<MkInput v-model="keywords" small type="text" class="input">
+					<template #label>{{ i18n.ts._event.keywords }}</template>
+				</MkInput>
+			</section>
+		</div>
 	</section>
-	<p>Details</p>
-	<ul>
-		<li v-for="(entry, i) in meta" :key="i">
-			<MkInput class="input" small :model-value="entry[0]" :placeholder="i18n.ts._event.detailName"
-				@update:model-value="onKeyInput(i, $event)">
-			</MkInput>
-			<MkInput class="input" small :model-value="entry[1]" :placeholder="i18n.ts._event.detailValue"
-				@update:model-value="onValueInput(i, $event)">
-			</MkInput>
-			<button class="_button" @click="remove(i)">
-				<i class="ti ti-x"></i>
-			</button>
-		</li>
-	</ul>
-	<MkButton class="add" @click="add">{{ i18n.ts.add }}</MkButton>
 </div>
 </template>
 
 <script lang="ts" setup>
+import * as misskey from 'misskey-js';
 import { Ref, ref, watch } from 'vue';
 import MkInput from './MkInput.vue';
-import MkButton from './MkButton.vue';
+import MkSwitch from './MkSwitch.vue';
 import { formatDateTimeString } from '@/scripts/format-time-string';
 import { addTime } from '@/scripts/time';
 import { i18n } from '@/i18n';
+import date from '@/filters/date';
 
 const props = defineProps<{
-	modelValue: {
-		title: string,
-		start: string,
-		end: string | null,
-		metadata: Record<string, string>,
-	}
+	modelValue: misskey.entities.Note['event']
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: {
-		title: string,
-		start: string,
-		end: string | null,
-		metadata: Record<string, string>,
+		model: misskey.entities.Note['event']
 	})
 }>();
 
-const title = ref(props.modelValue.title);
+const title = ref(props.modelValue?.title ?? null);
 const startDate = ref(formatDateTimeString(addTime(new Date(), 1, 'day'), 'yyyy-MM-dd'));
 const startTime = ref('00:00');
 const endDate = ref('');
 const endTime = ref('');
-const meta = ref(Object.entries(props.modelValue.metadata));
+const location = ref(props.modelValue?.metadata.location ?? null);
+const url = ref(props.modelValue?.metadata.url ?? null);
+const doorTime = ref(props.modelValue?.metadata.doorTime ?? null);
+const organizer = ref(props.modelValue?.metadata.organizer?.name ?? null);
+const organizerLink = ref(props.modelValue?.metadata.organizer?.sameAs ?? null);
+const audience = ref(props.modelValue?.metadata.audience?.name ?? null);
+const language = ref(props.modelValue?.metadata.inLanguage ?? null);
+const ageRange = ref(props.modelValue?.metadata.typicalAgeRange ?? null);
+const ticketsUrl = ref(props.modelValue?.metadata.offers?.url ?? null);
+const isFree = ref(props.modelValue?.metadata.isAccessibleForFree ?? false);
+const price = ref(props.modelValue?.metadata.offers?.price ?? null);
+const availabilityStart = ref(props.modelValue?.metadata.offers?.availabilityStarts ?? null);
+const availabilityEnd = ref(props.modelValue?.metadata.offers?.availabilityEnds ?? null);
+const keywords = ref(props.modelValue?.metadata.keywords ?? null);
 
-function add() {
-	meta.value.push(['', '']);
-}
-
-function onKeyInput(i, newKey) {
-	meta.value[i][0] = newKey;
-}
-
-function onValueInput(i, value) {
-	meta.value[i][1] = value;
-}
-
-function remove(i) {
-	meta.value.splice(i, 1);
-}
 
 function get() {
 	const calcAt = (date: Ref<string>, time: Ref<string>): number => (new Date(`${date.value} ${time.value}`)).getTime();
 
+	const start = calcAt(startDate, startTime);
+	const end = endDate.value ? calcAt(endDate, endTime) : null;
 	return {
 		title: title.value,
-		start: calcAt(startDate, startTime),
-		end: endDate.value ? calcAt(endDate, endTime) : null,
-		metadata: meta.value.reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {}),
+		start: start,
+		end: end,
+		metadata: {
+			'@context': 'https://schema.org',
+			'@type': 'Event',
+			name: title.value,
+			startDate: (new Date(start)).toISOString(),
+			endDate: end ? (new Date(end)).toISOString() : undefined,
+			location: location.value ?? undefined,
+			url: url.value ?? undefined,
+			doorTime: doorTime.value ?? undefined,
+			organizer: organizer.value ? {
+				'@type': 'Thing',
+				name: organizer.value,
+				sameAs: organizerLink.value ?? undefined,
+			} : undefined,
+			audience: audience.value ? {
+				'@type': 'Audience',
+				name: audience.value,
+			} : undefined,
+			inLanguage: language.value ?? undefined,
+			typicalAgeRange: ageRange.value ?? undefined,
+			offers: ticketsUrl.value || price.value ? {
+				price: price.value ?? undefined,
+				priceCurrency: undefined,
+				availabilityStarts: availabilityStart.value ?? undefined,
+				availabilityEnds: availabilityEnd.value ?? undefined,
+				url: ticketsUrl.value ?? undefined,
+			} : undefined,
+			keywords: keywords.value ?? undefined,
+		},
 	};
 }
 
