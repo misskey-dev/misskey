@@ -114,6 +114,13 @@ export class StreamingApiServerService {
 				});
 			}
 
+			this.#wss.once('close', () => {
+				ev.removeAllListeners();
+				main.dispose();
+				this.redisForSub.off('message', onRedisMessage);
+				if (intervalId) clearInterval(intervalId);
+			});
+
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				main.dispose();
