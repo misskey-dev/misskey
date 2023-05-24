@@ -18,6 +18,8 @@ import type * as http from 'node:http';
 
 @Injectable()
 export class StreamingApiServerService {
+	#wss: WebSocket.WebSocketServer;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -37,8 +39,8 @@ export class StreamingApiServerService {
 	}
 
 	@bindThis
-	public attachStreamingApi(server: http.Server): void {
-		const wss = new WebSocket.WebSocketServer({
+	public attach(server: http.Server): void {
+		this.#wss = new WebSocket.WebSocketServer({
 			noServer: true,
 		});
 
@@ -72,14 +74,14 @@ export class StreamingApiServerService {
 				return;
 			}
 
-			wss.handleUpgrade(request, socket, head, (ws) => {
-				wss.emit('connection', ws, request, {
+			this.#wss.handleUpgrade(request, socket, head, (ws) => {
+				this.#wss.emit('connection', ws, request, {
 					user, app,
 				});
 			});
 		});
 
-		wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: { user: LocalUser | null; app: AccessToken | null }) => {
+		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: { user: LocalUser | null; app: AccessToken | null }) => {
 			const { user, app } = ctx;
 
 			const ev = new EventEmitter();
@@ -124,6 +126,13 @@ export class StreamingApiServerService {
 					connection.send('pong');
 				}
 			});
+		});
+	}
+
+	@bindThis
+	public detach(): Promise<void> {
+		return new Promise((resolve) => {
+			this.#wss.close(() => resolve());
 		});
 	}
 }
