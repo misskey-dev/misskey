@@ -46,12 +46,6 @@ const onUserRemoved = () => {
 	tlComponent.pagingComponent?.reload();
 };
 
-const onChangeFollowing = () => {
-	if (!tlComponent.pagingComponent?.backed) {
-		tlComponent.pagingComponent?.reload();
-	}
-};
-
 let endpoint;
 let query;
 let connection;
@@ -79,8 +73,6 @@ if (props.src === 'antenna') {
 	connection.on('note', prepend);
 
 	connection2 = stream.useChannel('main');
-	connection2.on('follow', onChangeFollowing);
-	connection2.on('unfollow', onChangeFollowing);
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
 	query = {

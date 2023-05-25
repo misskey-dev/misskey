@@ -1,8 +1,10 @@
 <template>
-<div data-cy-mkw-onlineUsers class="mkw-onlineUsers" :class="{ _panel: !widgetProps.transparent, pad: !widgetProps.transparent }">
-	<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" textTag="span" class="text">
-		<template #n><b>{{ number(onlineUsersCount) }}</b></template>
-	</I18n>
+<div data-cy-mkw-onlineUsers :class="[$style.root, { _panel: !widgetProps.transparent, [$style.pad]: !widgetProps.transparent }]">
+	<span :class="$style.text">
+		<I18n v-if="onlineUsersCount" :src="i18n.ts.onlineUsersCount" textTag="span">
+			<template #n><b style="color: #41b781;">{{ number(onlineUsersCount) }}</b></template>
+		</I18n>
+	</span>
 </div>
 </template>
 
@@ -55,22 +57,16 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.mkw-onlineUsers {
+<style lang="scss" module>
+.root {
 	text-align: center;
 
 	&.pad {
 		padding: 16px 0;
 	}
+}
 
-	> .text {
-		::v-deep(b) {
-			color: #41b781;
-		}
-
-		::v-deep(span) {
-			opacity: 0.7;
-		}
-	}
+.text {
+	color: var(--fgTransparentWeak);
 }
 </style>
