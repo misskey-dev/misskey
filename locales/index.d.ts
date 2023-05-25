@@ -1060,6 +1060,7 @@ export interface Locale {
     "rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn": string;
     "cancelReactionConfirm": string;
     "changeReactionConfirm": string;
+    "later": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -1074,6 +1075,7 @@ export interface Locale {
         "haveFun": string;
         "ifYouNeedLearnMore": string;
         "skipAreYouSure": string;
+        "laterAreYouSure": string;
     };
     "_serverRules": {
         "description": string;

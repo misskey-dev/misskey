@@ -34,6 +34,7 @@
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
 							<div>{{ i18n.ts._initialAccountSetting.letsStartAccountSetup }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
+							<MkButton style="margin: 0 auto; background: #0000" @click="later(true)">{{ i18n.ts.later }}</MkButton>
 						</div>
 					</MkSpacer>
 				</div>
@@ -152,6 +153,19 @@ async function close(skip: boolean) {
 
 	dialog.value.close();
 	defaultStore.set('accountSetupWizard', -1);
+}
+
+async function later(later: boolean) {
+	if (later) {
+		const { canceled } = await os.confirm({
+			type: 'warning',
+			text: i18n.ts._initialAccountSetting.laterAreYouSure,
+		});
+		if (canceled) return;
+	}
+
+	dialog.value.close();
+	defaultStore.set('accountSetupWizard', 0);
 }
 </script>
 
