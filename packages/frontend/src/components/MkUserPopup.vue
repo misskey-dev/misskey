@@ -30,14 +30,26 @@
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<div :class="$style.statusItem">
-					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
-					<div>{{ number(user.followingCount) }}</div>
-				</div>
-				<div :class="$style.statusItem">
-					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
-					<div>{{ number(user.followersCount) }}</div>
-				</div>
+				<template v-if="isFfVisibility()">
+					<div :class="$style.statusItem">
+						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
+						<div>{{ number(user.followingCount) }}</div>
+					</div>
+					<div :class="$style.statusItem">
+						<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
+						<div>{{ number(user.followersCount) }}</div>
+					</div>
+				</template>
+				<template v-else>
+					<div :class="$style.statusItem">
+						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
+						<div>{{ i18n.ts._ffVisibility.private }}</div>
+					</div>
+					<div :class="$style.statusItem">
+						<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
+						<div>{{ i18n.ts._ffVisibility.private }}</div>
+					</div>
+				</template>
 			</div>
 			<button class="_button" :class="$style.menu" @click="showMenu"><i class="ti ti-dots"></i></button>
 			<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
@@ -75,6 +87,24 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
+
+const isFfVisibility = () => {
+	if ($i.id === user.id) {
+		return true;
+	}
+
+	switch (user.ffVisibility) {
+		case 'private':
+			return false;
+		case 'followers':
+			if (!user.isFollowing) {
+				return false;
+			}
+			// fallthrough
+		default: return true;
+	}
+};
+
 let user = $ref<misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);
 let left = $ref(0);

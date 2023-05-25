@@ -17,12 +17,22 @@
 		<div :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ user.notesCount }}</span>
 		</div>
-		<div :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ user.followingCount }}</span>
-		</div>
-		<div :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ user.followersCount }}</span>
-		</div>
+		<template v-if="isFfVisibility()">
+			<div :class="$style.statusItem">
+				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ user.followingCount }}</span>
+			</div>
+			<div :class="$style.statusItem">
+				<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ user.followersCount }}</span>
+			</div>
+		</template>
+		<template v-else>
+			<div :class="$style.statusItem">
+				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ i18n.ts._ffVisibility.private }}</span>
+			</div>
+			<div :class="$style.statusItem">
+				<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ i18n.ts._ffVisibility.private }}</span>
+			</div>
+		</template>
 	</div>
 	<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
 </div>
@@ -35,9 +45,26 @@ import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
 
-defineProps<{
+const props = defineProps<{
 	user: misskey.entities.UserDetailed;
 }>();
+
+const isFfVisibility = () => {
+	if ($i.id === props.user.id) {
+		return true;
+	}
+
+	switch (props.user.ffVisibility) {
+		case 'private':
+			return false;
+		case 'followers':
+			if (!props.user.isFollowing) {
+				return false;
+			}
+			// fallthrough
+		default: return true;
+	}
+};
 </script>
 
 <style lang="scss" module>
