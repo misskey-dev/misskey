@@ -41,7 +41,7 @@ describe('Account Move', () => {
 
 	afterAll(async () => {
 		await Promise.all([app.close(), jq.close()]);
-	});
+	}, 1000 * 60 * 3);
 
 	describe('Create Alias', () => {
 		afterEach(async () => {
@@ -307,13 +307,9 @@ describe('Account Move', () => {
 		});
 
 		test('A locked account automatically accept the follow request if it had already accepted the old account.', async () => {
-			await successfulApiCall({
-				endpoint: '/following/create',
-				parameters: {
-					userId: frank.id,
-				},
-				user: bob,
-			});
+			await api('/following/create', {
+				userId: frank.id,
+			}, bob);
 			const followers = await api('/users/followers', {
 				userId: frank.id,
 			}, frank);

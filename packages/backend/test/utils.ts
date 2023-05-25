@@ -31,17 +31,17 @@ export type ApiRequest = {
 	user: object | undefined,
 };
 
-export const successfulApiCall = async <T, >(request: ApiRequest, assertion: {
+export const apiOk = async <T = any,>(request: ApiRequest, assertion: {
 	status?: number,
 } = {}): Promise<T> => {
 	const { endpoint, parameters, user } = request;
 	const res = await api(endpoint, parameters, user);
 	const status = assertion.status ?? (res.body == null ? 204 : 200);
-	assert.strictEqual(res.status, status, inspect(res.body, { depth: 5, colors: true }));
+	assert.strictEqual(res.status, status, `endpoint:\n${endpoint}\n\nrequest:\n${inspect(parameters)}\n\nresponse:\n${inspect(res.body, { depth: 5, colors: true })}`);
 	return res.body;
 };
 
-export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
+export const apiError = async <T,>(request: ApiRequest, assertion: {
 	status: number,
 	code: string,
 	id: string
@@ -49,7 +49,7 @@ export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
 	const { endpoint, parameters, user } = request;
 	const { status, code, id } = assertion;
 	const res = await api(endpoint, parameters, user);
-	assert.strictEqual(res.status, status, inspect(res.body));
+	assert.strictEqual(res.status, status, `endpoint:\n${endpoint}\n\nrequest:\n${inspect(parameters)}\n\nresponse:\n${inspect(res.body, { depth: 5, colors: true })}`);
 	assert.strictEqual(res.body.error.code, code, inspect(res.body));
 	assert.strictEqual(res.body.error.id, id, inspect(res.body));
 	return res.body;
@@ -115,6 +115,23 @@ export const hiddenNote = (note: any): any => {
 	delete temp.visibleUserIds;
 	delete temp.poll;
 	return temp;
+};
+
+export const antenna = async (user: any, antenna: object = {}): Promise<any> => {
+	const res = await api('antennas/create', {
+		caseSensitive: false,
+		excludeKeywords: [['']],
+		keywords: [['keyword']],
+		name: 'test',
+		notify: false,
+		src: 'all' as const,
+		userListId: null,
+		users: [''],
+		withFile: false,
+		withReplies: false,
+		...antenna,
+	}, user);
+	return res.body;
 };
 
 export const react = async (user: any, note: any, reaction: string): Promise<any> => {
@@ -213,8 +230,8 @@ export const role = async (user: any, role: any = {}, policies: any = {}): Promi
 		isPublic: false,
 		name: 'New Role',
 		target: 'manual',
-		policies: { 
-			...Object.entries(DEFAULT_POLICIES).map(([k, v]) => [k, { 
+		policies: {
+			...Object.entries(DEFAULT_POLICIES).map(([k, v]) => [k, {
 				priority: 0,
 				useDefault: true,
 				value: v,
@@ -351,11 +368,11 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export type SimpleGetResponse = { 
-	status: number, 
-	body: any | JSDOM | null, 
-	type: string | null, 
-	location: string | null 
+export type SimpleGetResponse = {
+	status: number,
+	body: any | JSDOM | null,
+	type: string | null,
+	location: string | null
 };
 export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
@@ -374,10 +391,10 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 		'text/html; charset=utf-8',
 	];
 
-	const body = 
-		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() : 
-		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) : 
-		null;
+	const body =
+		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
+			htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
+				null;
 
 	return {
 		status: res.status,
