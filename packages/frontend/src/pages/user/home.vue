@@ -102,17 +102,7 @@
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<template v-if="user.ffVisibility == 'private'">
-							<div>
-								<b>{{ i18n.ts._ffVisibility.private }}</b>
-								<span>{{ i18n.ts.following }}</span>
-							</div>
-							<div>
-								<b>{{ i18n.ts._ffVisibility.private }}</b>
-								<span>{{ i18n.ts.followers }}</span>
-							</div>
-						</template>
-						<template v-else>
+						<template v-if="isFfVisibility()">
 							<MkA v-click-anime :to="userPage(user, 'following')">
 								<b>{{ number(user.followingCount) }}</b>
 								<span>{{ i18n.ts.following }}</span>
@@ -121,6 +111,16 @@
 								<b>{{ number(user.followersCount) }}</b>
 								<span>{{ i18n.ts.followers }}</span>
 							</MkA>
+						</template>
+						<template v-else>
+							<div>
+								<b>{{ i18n.ts._ffVisibility.private }}</b>
+								<span>{{ i18n.ts.following }}</span>
+							</div>
+							<div>
+								<b>{{ i18n.ts._ffVisibility.private }}</b>
+								<span>{{ i18n.ts.followers }}</span>
+							</div>
 						</template>
 					</div>
 				</div>
@@ -183,6 +183,23 @@ const props = withDefaults(defineProps<{
 });
 
 const router = useRouter();
+
+const isFfVisibility = () => {
+	if ($i.id === props.user.id) {
+		return true;
+	}
+
+	switch (props.user.ffVisibility) {
+		case 'private': 
+			return false;
+		case 'followers':
+			if (!props.user.isFollowing) {
+				return false;
+			}
+			// fallthrough
+		default: return true;
+	}
+};
 
 let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
