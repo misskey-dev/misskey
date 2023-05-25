@@ -31,7 +31,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		userId: { type: 'string', format: 'misskey:id' },
 	},
-	required: [],
+	required: ['userId'],
 } as const;
 
 @Injectable() // eslint-disable-next-line import/no-default-export
