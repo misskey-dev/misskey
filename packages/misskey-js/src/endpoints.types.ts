@@ -127,9 +127,9 @@ export interface IEndpointMeta {
 	readonly cacheSec?: number;
 }
 
-export type SchemaOrUndefined<T extends JSONSchema7 | undefined> = T extends JSONSchema7 ? SchemaType<T, References> : (void | Record<string, never>);
+export type SchemaOrUndefined<T extends JSONSchema7 | undefined, IsResponse extends boolean = false> = T extends JSONSchema7 ? SchemaType<T, References, IsResponse> : (void | Record<string, never>);
 
-export type ResponseOf<D extends IEndpointMeta, P, DD extends D['defines'][number] = D['defines'][number]> =
-	P extends SchemaOrUndefined<DD['req']> ? SchemaOrUndefined<DD['res']> : never;
+export type ResponseOf<D extends IEndpointMeta, P, IsResponse extends boolean = false, DD extends D['defines'][number] = D['defines'][number]> =
+	P extends SchemaOrUndefined<DD['req'], IsResponse> ? SchemaOrUndefined<DD['res']> : never;
 
 export type Endpoints = typeof endpoints;

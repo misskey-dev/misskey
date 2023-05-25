@@ -10,46 +10,12 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
-
-	errors: {
-		noSuchEmoji: {
-			message: 'No such emoji.',
-			code: 'NO_SUCH_EMOJI',
-			id: 'e2785b66-dca3-4087-9cac-b93c541cc425',
-		},
-	},
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		emojiId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['emojiId'],
-} as const;
-
 // TODO: ロジックをサービスに切り出す
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/emoji/copy'> {
+	name = 'admin/emoji/copy' as const;
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -62,11 +28,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private driveService: DriveService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const emoji = await this.emojisRepository.findOneBy({ id: ps.emojiId });
 
 			if (emoji == null) {
-				throw new ApiError(meta.errors.noSuchEmoji);
+				throw new ApiError(this.meta.errors.noSuchEmoji);
 			}
 
 			let driveFile: DriveFile;

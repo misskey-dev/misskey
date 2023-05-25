@@ -7,68 +7,10 @@ import { DI } from '@/di-symbols.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 //import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				aliases: {
-					type: 'array',
-					optional: false, nullable: false,
-					items: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-				},
-				name: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				category: {
-					type: 'string',
-					optional: false, nullable: true,
-				},
-				host: {
-					type: 'string',
-					optional: false, nullable: true,
-					description: 'The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files.',
-				},
-				url: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		query: { type: 'string', nullable: true, default: null },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/emoji/list'> {
+	name = 'admin/emoji/list' as const;
 	constructor(
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -76,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private emojiEntityService: EmojiEntityService,
 		private queryService: QueryService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const q = this.queryService.makePaginationQuery(this.emojisRepository.createQueryBuilder('emoji'), ps.sinceId, ps.untilId)
 				.andWhere('emoji.host IS NULL');
 

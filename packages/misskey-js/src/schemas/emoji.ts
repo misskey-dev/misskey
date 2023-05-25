@@ -18,6 +18,13 @@ export const packedEmojiSimpleSchema = {
 		url: {
 			type: 'string',
 		},
+		isSensitive: {
+			type: 'boolean',
+		},
+		roleIdsThatCanBeUsedThisEmojiAsReaction: {
+			type: 'array',
+			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		}
 	},
 	required: [
 		'aliases',
@@ -36,6 +43,13 @@ export const packedEmojiDetailedSchema = {
 	}, {
 		type: 'object',
 		properties: {
+			isSensitive: {
+				type: 'boolean',
+			},
+			roleIdsThatCanBeUsedThisEmojiAsReaction: {
+				type: 'array',
+				items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+			},
 			id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 			host: {
 				type: ['string', 'null'],
@@ -43,12 +57,18 @@ export const packedEmojiDetailedSchema = {
 			},
 			license: {
 				type: ['string', 'null'],
-			}
+			},
+			localOnly: {
+				type: 'boolean',
+			},
 		},
 		required: [
+			'isSensitive',
+			'roleIdsThatCanBeUsedThisEmojiAsReaction',
 			'id',
 			'host',
 			'license',
+			'localOnly',
 		],
 	}],
 } as const satisfies JSONSchema7Definition;

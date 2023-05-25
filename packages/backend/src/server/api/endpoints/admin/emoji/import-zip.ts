@@ -18,11 +18,12 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/emoji/import-zip'> {
+	name = 'admin/emoji/import-zip' as const;
 	constructor(
 		private queueService: QueueService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			this.queueService.createImportCustomEmojisJob(me, ps.fileId);
 		});
 	}

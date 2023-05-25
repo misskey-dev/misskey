@@ -6,6 +6,7 @@
 	"types": "./built/index.d.ts",
 	"scripts": {
 		"build": "tsc",
+		"dev": "tsc -w",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",

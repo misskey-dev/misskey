@@ -1,8 +1,8 @@
-import { IEndpointMeta } from "./endpoints.types";
-import { localUsernameSchema, passwordSchema } from "./schemas/user";
+import { IEndpointMeta } from './endpoints.types';
+import { localUsernameSchema, passwordSchema } from './schemas/user';
 
 export const endpoints = {
-    "admin/accounts/create": {
+    'admin/accounts/create': {
         tags: ['admin'],
         defines: [{
             req: {
@@ -28,7 +28,7 @@ export const endpoints = {
             },
         }],
     },
-    "admin/accounts/delete": {
+    'admin/accounts/delete': {
         tags: ['admin'],
     
         requireCredential: true,
@@ -44,7 +44,7 @@ export const endpoints = {
             res: undefined,
         }],
     },
-	"admin/ad/create": {
+	'admin/ad/create': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -68,7 +68,7 @@ export const endpoints = {
 			res: undefined,
 		}]
 	},
-	"admin/ad/delete": {
+	'admin/ad/delete': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -93,7 +93,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/ad/list": {
+	'admin/ad/list': {
 		tags: ['admin'],
 	
 		requireCredential: true,
@@ -117,7 +117,7 @@ export const endpoints = {
 			},
 		}],
 	},
-	"admin/ad/update": {
+	'admin/ad/update': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -150,7 +150,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/announcements/create": {
+	'admin/announcements/create': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -176,7 +176,7 @@ export const endpoints = {
 			},
 		}],
 	},
-	"admin/announcements/delete": {
+	'admin/announcements/delete': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -201,7 +201,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/announcements/list": {
+	'admin/announcements/list': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -225,7 +225,7 @@ export const endpoints = {
 			},
 		}],
 	},
-	"admin/announcements/update": {
+	'admin/announcements/update': {
 		tags: ['admin'],
 	
 		requireCredential: true,
@@ -258,7 +258,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/drive/clean-remote-files": {
+	'admin/drive/clean-remote-files': {
 		tags: ['admin'],
 	
 		requireCredential: true,
@@ -269,7 +269,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/drive/cleanup": {
+	'admin/drive/cleanup': {
 		tags: ['admin'],
 
 		requireCredential: true,
@@ -280,7 +280,7 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
-	"admin/drive/files": {
+	'admin/drive/files': {
 		tags: ['admin'],
 	
 		requireCredential: true,
@@ -327,7 +327,7 @@ export const endpoints = {
 			},
 		}],
 	},
-	"admin/drive/show-file": {
+	'admin/drive/show-file': {
 		tags: ['admin'],
 	
 		requireCredential: true,
@@ -443,6 +443,219 @@ export const endpoints = {
 					'requestHeaders',
 				],
 			},
+		}],
+	},
+	'admin/emoji/add-aliases-bulk': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					ids: { type: 'array', items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					aliases: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['ids', 'aliases'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/emoji/add': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
+					fileId: { type: 'string', format: 'misskey:id' },
+					category: {
+						type: ['string', 'null'],
+						description: 'Use `null` to reset the category.',
+					},
+					aliases: { type: 'array', items: {
+						type: 'string',
+					} },
+					license: { type: ['string', 'null'] },
+					isSensitive: { type: 'boolean' },
+					localOnly: { type: 'boolean' },
+					roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['name', 'fileId'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+				},
+				required: ['id'],
+			},
+		}],
+	},
+	'admin/emoji/copy': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		errors: {
+			noSuchEmoji: {
+				message: 'No such emoji.',
+				code: 'NO_SUCH_EMOJI',
+				id: 'e2785b66-dca3-4087-9cac-b93c541cc425',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					emojiId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['emojiId'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+				},
+				required: ['id'],
+			}
+		}],
+	},
+	'admin/emoji/delete-bulk': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					ids: { type: 'array', items: {
+						type: 'string', format: 'misskey:id',
+					} },
+				},
+				required: ['ids'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/emoji/delete': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+	
+		errors: {
+			noSuchEmoji: {
+				message: 'No such emoji.',
+				code: 'NO_SUCH_EMOJI',
+				id: 'be83669b-773a-44b7-b1f8-e5e5170ac3c2',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					id: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['id'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/emoji/import-zip': {
+		secure: true,
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					fileId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['fileId'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/emoji/list-remote': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					query: { type: ['string', 'null'], default: null },
+					host: {
+						type: ['string', 'null'],
+						default: null,
+						description: 'Use `null` to represent the local host.',
+					},
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/EmojiDetailed',
+				},
+			},
+		}],
+	},
+	'admin/emoji/list': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					query: { type: ['string', 'null'], default: null },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/EmojiDetailed',
+				},
+			}
 		}],
 	},
 } as const satisfies { [x: string]: IEndpointMeta; };

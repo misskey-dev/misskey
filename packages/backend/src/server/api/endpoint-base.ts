@@ -21,7 +21,7 @@ type File = {
 	path: string;
 };
 
-export type Executor<T extends IEndpointMeta, P = SchemaOrUndefined<T['defines'][number]['req']>> =
+export type Executor<T extends IEndpointMeta, P = SchemaOrUndefined<T['defines'][number]['req'], true>> =
 	(
 		params: P,
 		user: LocalUser | (T['requireCredential'] extends true ? never : null),
@@ -30,7 +30,7 @@ export type Executor<T extends IEndpointMeta, P = SchemaOrUndefined<T['defines']
 		cleanup?: () => any,
 		ip?: string | null,
 		headers?: Record<string, string> | null
-	) => Promise<WeakSerialized<ResponseOf<T, P>>>;
+	) => Promise<WeakSerialized<ResponseOf<T, P, true>>>;
 
 // ExecutorWrapperの型はあえて緩くしておく
 export type ExecutorWrapper =
