@@ -1060,6 +1060,7 @@ export interface Locale {
     "rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn": string;
     "cancelReactionConfirm": string;
     "changeReactionConfirm": string;
+    "goToMisskey": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
