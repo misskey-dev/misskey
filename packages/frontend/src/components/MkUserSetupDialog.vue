@@ -10,14 +10,15 @@
 	<template v-if="page === 1" #header><i class="ti ti-user-edit"></i> {{ i18n.ts._initialAccountSetting.profileSetting }}</template>
 	<template v-else-if="page === 2" #header><i class="ti ti-lock"></i> {{ i18n.ts._initialAccountSetting.privacySetting }}</template>
 	<template v-else-if="page === 3" #header><i class="ti ti-blur"></i> {{ i18n.ts._initialAccountSetting.blurEffectsSetting }}</template>
-	<template v-else-if="page === 4" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
-	<template v-else-if="page === 5" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
-	<template v-else-if="page === 6" #header>{{ i18n.ts.done }}</template>
+	<template v-else-if="page === 4" #header><i class="ti ti-mood-happy"></i> {{ i18n.ts._initialAccountSetting.mfmAndAnimatedImagesSetting }}</template>
+	<template v-else-if="page === 5" #header><i class="ti ti-user-plus"></i> {{ i18n.ts.follow }}</template>
+	<template v-else-if="page === 6" #header><i class="ti ti-bell-plus"></i> {{ i18n.ts.pushNotification }}</template>
+	<template v-else-if="page === 7" #header>{{ i18n.ts.done }}</template>
 	<template v-else #header>{{ i18n.ts.initialAccountSetting }}</template>
 
 	<div style="overflow-x: clip;">
 		<div :class="$style.progressBar">
-			<div :class="$style.progressBarValue" :style="{ width: `${(page / 6) * 100}%` }"></div>
+			<div :class="$style.progressBarValue" :style="{ width: `${(page / 7) * 100}%` }"></div>
 		</div>
 		<Transition
 			mode="out-in"
@@ -76,6 +77,17 @@
 			<template v-else-if="page === 4">
 				<div style="height: 100cqh; overflow: auto;">
 					<MkSpacer :marginMin="20" :marginMax="28">
+						<XMfm/>
+						<div class="_buttonsCenter" style="margin-top: 16px;">
+							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+							<MkButton primary rounded gradate data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
+					</MkSpacer>
+				</div>
+			</template>
+			<template v-else-if="page === 5">
+				<div style="height: 100cqh; overflow: auto;">
+					<MkSpacer :marginMin="20" :marginMax="28">
 						<XFollow/>
 					</MkSpacer>
 					<div :class="$style.pageFooter">
@@ -86,7 +98,7 @@
 					</div>
 				</div>
 			</template>
-			<template v-else-if="page === 5">
+			<template v-else-if="page === 6">
 				<div :class="$style.centerPage">
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<div class="_gaps" style="text-align: center;">
@@ -102,7 +114,7 @@
 					</MkSpacer>
 				</div>
 			</template>
-			<template v-else-if="page === 6">
+			<template v-else-if="page === 7">
 				<div :class="$style.centerPage">
 					<MkAnimBg style="position: absolute; top: 0;" :scale="1.5"/>
 					<MkSpacer :marginMin="20" :marginMax="28">
@@ -137,6 +149,7 @@ import XProfile from '@/components/MkUserSetupDialog.Profile.vue';
 import XFollow from '@/components/MkUserSetupDialog.Follow.vue';
 import XPrivacy from '@/components/MkUserSetupDialog.Privacy.vue';
 import XBlur from '@/components/MkUserSetupDialog.Blur.vue';
+import XMfm from '@/components/MkUserSetupDialog.MisskeyFlavoredMarkdown.vue';
 import MkAnimBg from '@/components/MkAnimBg.vue';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';

@@ -472,7 +472,9 @@ export interface Locale {
     "noHistory": string;
     "signinHistory": string;
     "enableAdvancedMfm": string;
+    "enableAdvancedMfmDescription": string;
     "enableAnimatedMfm": string;
+    "enableAnimatedMfmDescription": string;
     "doing": string;
     "category": string;
     "tags": string;
@@ -699,6 +701,7 @@ export interface Locale {
     "alwaysMarkSensitive": string;
     "loadRawImages": string;
     "disableShowingAnimatedImages": string;
+    "disableShowingAnimatedImagesDescription": string;
     "verificationEmailSent": string;
     "notSet": string;
     "emailVerified": string;
@@ -1065,6 +1068,7 @@ export interface Locale {
     "later": string;
     "goToMisskey": string;
     "performanceWarning": string;
+    "photosensitiveSeizuresWarning": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -1072,6 +1076,7 @@ export interface Locale {
         "profileSetting": string;
         "privacySetting": string;
         "blurEffectsSetting": string;
+        "mfmAndAnimatedImagesSetting": string;
         "theseSettingsCanEditLater": string;
         "youCanEditMoreSettingsInSettingsPageLater": string;
         "followUsers": string;
