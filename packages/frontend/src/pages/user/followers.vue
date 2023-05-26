@@ -56,6 +56,3 @@ definePageMetadata(computed(() => user ? {
 	avatar: user,
 } : null));
 </script>
-
-<style lang="scss" scoped>
-</style>
