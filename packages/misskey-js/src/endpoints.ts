@@ -962,6 +962,12 @@ export const endpoints = {
 	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
+/**
+ * JSON Schema規格に沿った形でreq/resのスキーマを取得する
+ * 
+ * 全てundefinedであればnullが返る
+ * 複数の定義がある場合はoneOfで返される
+ */
 export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {
 	const endpoint = endpoints[key];
 	const schemas = endpoint.defines.map(d => d[reqres]).filter(d => d !== undefined);
