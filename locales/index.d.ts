@@ -795,6 +795,7 @@ export interface Locale {
     "noBotProtectionWarning": string;
     "configure": string;
     "postToGallery": string;
+    "postToHashtag": string;
     "gallery": string;
     "recentPosts": string;
     "popularPosts": string;
