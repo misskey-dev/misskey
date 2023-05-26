@@ -857,6 +857,79 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
+	'admin/promo/create': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			noSuchNote: {
+				message: 'No such note.',
+				code: 'NO_SUCH_NOTE',
+				id: 'ee449fbe-af2a-453b-9cae-cf2fe7c895fc',
+			},
+	
+			alreadyPromoted: {
+				message: 'The note has already promoted.',
+				code: 'ALREADY_PROMOTED',
+				id: 'ae427aa2-7a41-484f-a18c-2c1104051604',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					noteId: { type: 'string', format: 'misskey:id' },
+					expiresAt: { type: 'integer' },
+				},
+				required: ['noteId', 'expiresAt'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/queue/clear': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: undefined,
+		}],
+	},
+	'admin/queue/deliver-delayed': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					type: 'array',
+					items: {
+						anyOf: [
+							{
+								type: 'string',
+							},
+							{
+								type: 'number',
+							},
+						],
+					},
+				},
+				examples: [[
+					'example.com',
+					12,
+				]],
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {

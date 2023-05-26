@@ -41,11 +41,12 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/queue/deliver-delayed'> {
+	name = 'admin/queue/deliver-delayed' as const;
 	constructor(
 		@Inject('queue:deliver') public deliverQueue: DeliverQueue,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const jobs = await this.deliverQueue.getJobs(['delayed']);
 
 			const res = [] as [string, number][];
