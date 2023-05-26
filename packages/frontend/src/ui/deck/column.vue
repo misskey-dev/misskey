@@ -241,7 +241,7 @@ function onDrop(ev) {
 	height: 100%;
 	overflow: clip;
 	contain: strict;
-	border-radius: 8px;
+	border-radius: 10px;
 
 	&.draghover {
 		&:after {
@@ -319,7 +319,7 @@ function onDrop(ev) {
 	z-index: 2;
 	line-height: var(--deckColumnHeaderHeight);
 	height: var(--deckColumnHeaderHeight);
-	padding: 0 16px 0 28px;
+	padding: 0 16px 0 30px;
 	font-size: 0.9em;
 	color: var(--panelHeaderFg);
 	background: var(--panelHeaderBg);
@@ -330,10 +330,10 @@ function onDrop(ev) {
 
 .color {
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	top: 12px;
+	left: 12px;
 	width: 3px;
-	height: calc(100% - 20px);
+	height: calc(100% - 24px);
 	background: var(--accent);
 	border-radius: 999px;
 }
