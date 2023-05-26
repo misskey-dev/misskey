@@ -34,7 +34,7 @@
 							<div style="font-size: 120%;">{{ i18n.ts._initialAccountSetting.accountCreated }}</div>
 							<div>{{ i18n.ts._initialAccountSetting.letsStartAccountSetup }}</div>
 							<MkButton primary rounded gradate style="margin: 16px auto 0 auto;" data-cy-user-setup-continue @click="page++">{{ i18n.ts._initialAccountSetting.profileSetting }} <i class="ti ti-arrow-right"></i></MkButton>
-							<MkButton style="margin: 0 auto; background: #0000" @click="later(true)">{{ i18n.ts.later }}</MkButton>
+							<MkButton style="margin: 0 auto;" transparent rounded @click="later(true)">{{ i18n.ts.later }}</MkButton>
 						</div>
 					</MkSpacer>
 				</div>
@@ -66,9 +66,11 @@
 					<MkSpacer :marginMin="20" :marginMax="28">
 						<XFollow/>
 					</MkSpacer>
-					<div class="_buttonsCenter" style="margin-bottom: 24px;">
-						<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
-						<MkButton primary rounded gradate style="" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+					<div :class="$style.pageFooter">
+						<div class="_buttonsCenter">
+							<MkButton rounded data-cy-user-setup-back @click="page--"><i class="ti ti-arrow-left"></i> {{ i18n.ts.goBack }}</MkButton>
+							<MkButton primary rounded gradate style="" data-cy-user-setup-continue @click="page++">{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</div>
 				</div>
 			</template>
@@ -213,7 +215,7 @@ async function later(later: boolean) {
 	left: 0;
 	padding: 12px;
 	border-top: solid 0.5px var(--divider);
-	-webkit-backdrop-filter: var(--blur, blur(15px));
-	backdrop-filter: var(--blur, blur(15px));
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
 }
 </style>
