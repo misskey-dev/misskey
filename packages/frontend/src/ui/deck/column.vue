@@ -13,6 +13,12 @@
 		@dragend="onDragend"
 		@contextmenu.prevent.stop="onContextmenu"
 	>
+		<svg viewBox="0 0 256 128" :class="$style.tabShape">
+			<g transform="matrix(6.2431,0,0,6.2431,-677.417,-29.3839)">
+				<path d="M149.512,4.707L108.507,4.707C116.252,4.719 118.758,14.958 118.758,14.958C118.758,14.958 121.381,25.283 129.009,25.209L149.512,25.209L149.512,4.707Z" style="fill:var(--deckBg);"/>
+			</g>
+		</svg>
+		<div :class="$style.color"></div>
 		<button v-if="isStacked && !isMainColumn" :class="$style.toggleActive" class="_button" @click="toggleActive">
 			<template v-if="active"><i class="ti ti-chevron-up"></i></template>
 			<template v-else><i class="ti ti-chevron-down"></i></template>
@@ -235,6 +241,7 @@ function onDrop(ev) {
 	height: 100%;
 	overflow: clip;
 	contain: strict;
+	border-radius: 10px;
 
 	&.draghover {
 		&:after {
@@ -274,6 +281,7 @@ function onDrop(ev) {
 	&:not(.active) {
 		flex-basis: var(--deckColumnHeaderHeight);
 		min-height: var(--deckColumnHeaderHeight);
+		border-bottom-right-radius: 0;
 	}
 
 	&.naked {
@@ -286,10 +294,22 @@ function onDrop(ev) {
 			box-shadow: none;
 			color: var(--fg);
 		}
+
+		> .body {
+			&::-webkit-scrollbar-track {
+				background: inherit;
+			}
+		}
 	}
 
 	&.paged {
 		background: var(--bg) !important;
+
+		> .body {
+			&::-webkit-scrollbar-track {
+				background: inherit;
+			}
+		}
 	}
 }
 
@@ -299,13 +319,31 @@ function onDrop(ev) {
 	z-index: 2;
 	line-height: var(--deckColumnHeaderHeight);
 	height: var(--deckColumnHeaderHeight);
-	padding: 0 16px;
+	padding: 0 16px 0 30px;
 	font-size: 0.9em;
 	color: var(--panelHeaderFg);
 	background: var(--panelHeaderBg);
 	box-shadow: 0 1px 0 0 var(--panelHeaderDivider);
 	cursor: pointer;
 	user-select: none;
+}
+
+.color {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	width: 3px;
+	height: calc(100% - 24px);
+	background: var(--accent);
+	border-radius: 999px;
+}
+
+.tabShape {
+	position: absolute;
+	top: 0;
+	right: -8px;
+	width: auto;
+	height: calc(100% - 6px);
 }
 
 .title {
@@ -351,5 +389,9 @@ function onDrop(ev) {
 	box-sizing: border-box;
 	container-type: size;
 	background-color: var(--bg);
+
+	&::-webkit-scrollbar-track {
+		background: var(--panel);
+	}
 }
 </style>

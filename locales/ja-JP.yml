@@ -1058,6 +1058,7 @@ rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "ロールは公開ロー�
 cancelReactionConfirm: "リアクションを取り消しますか？"
 changeReactionConfirm: "リアクションを変更しますか？"
 later: "あとで"
+goToMisskey: "Misskeyへ"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

@@ -1061,6 +1061,7 @@ export interface Locale {
     "cancelReactionConfirm": string;
     "changeReactionConfirm": string;
     "later": string;
+    "goToMisskey": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
