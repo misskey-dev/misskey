@@ -37,14 +37,14 @@ const pagination = {
 };
 const notes = ref<InstanceType<typeof MkNotes>>();
 
-const post = async () => {
-	defaultStore.makeGetterSetter('postFormHashtags').set(props.tag);
-	defaultStore.makeGetterSetter('postFormWithHashtags').set(true);
+async function post() {
+	defaultStore.set('postFormHashtags', props.tag);
+	defaultStore.set('postFormWithHashtags', true);
 	await os.post();
-	defaultStore.makeGetterSetter('postFormHashtags').set('');
-	defaultStore.makeGetterSetter('postFormWithHashtags').set(false);
+	defaultStore.set('postFormHashtags', '');
+	defaultStore.set('postFormWithHashtags', false);
 	notes.value?.pagingComponent?.reload();
-};
+}
 
 const headerActions = $computed(() => []);
 
@@ -55,6 +55,7 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-hash',
 })));
 </script>
+
 <style lang="scss" module>
 .footer {
 	-webkit-backdrop-filter: var(--blur, blur(15px));
