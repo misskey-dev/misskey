@@ -1057,6 +1057,7 @@ rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "ロールの指定が一
 rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "ロールは公開ロールである必要があります。"
 cancelReactionConfirm: "リアクションを取り消しますか？"
 changeReactionConfirm: "リアクションを変更しますか？"
+goToMisskey: "Misskeyへ"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
