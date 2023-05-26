@@ -2,18 +2,18 @@ import { IEndpointMeta } from './endpoints.types';
 import { localUsernameSchema, passwordSchema } from './schemas/user';
 
 export const endpoints = {
-    'admin/accounts/create': {
-        tags: ['admin'],
-        defines: [{
-            req: {
-                type: 'object',
-                properties: {
-                    username: localUsernameSchema,
-                    password: passwordSchema,
-                },
-                required: ['username', 'password'],
-            },
-            res: {
+	'admin/accounts/create': {
+		tags: ['admin'],
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					username: localUsernameSchema,
+					password: passwordSchema,
+				},
+				required: ['username', 'password'],
+			},
+			res: {
 				allOf: [{
 					$ref: 'https://misskey-hub.net/api/schemas/MeDetailed',
 				}, {
@@ -25,25 +25,25 @@ export const endpoints = {
 					},
 					required: ['token'],
 				}],
-            },
-        }],
-    },
-    'admin/accounts/delete': {
-        tags: ['admin'],
+			},
+		}],
+	},
+	'admin/accounts/delete': {
+		tags: ['admin'],
     
-        requireCredential: true,
-        requireAdmin: true,
-        defines: [{
-            req: {
-                type: 'object',
-                properties: {
-                    userId: { type: 'string', format: 'misskey:id' },
-                },
-                required: ['userId'],
-            },
-            res: undefined,
-        }],
-    },
+		requireCredential: true,
+		requireAdmin: true,
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}],
+	},
 	'admin/ad/create': {
 		tags: ['admin'],
 
@@ -66,7 +66,7 @@ export const endpoints = {
 				required: ['url', 'memo', 'place', 'priority', 'ratio', 'expiresAt', 'startsAt', 'imageUrl'],
 			},
 			res: undefined,
-		}]
+		}],
 	},
 	'admin/ad/delete': {
 		tags: ['admin'],
@@ -362,7 +362,7 @@ export const endpoints = {
 						oneOf: [
 							{ $ref: 'https://misskey-hub.net/api/schemas/Id' },
 							{ type: 'null' },
-						]
+						],
 					},
 					userHost: { type: ['string', 'null'] },
 					md5: { type: 'string', format: 'md5', examples: '1bc29b36f623ba82aaf6724fd3b16718' },
@@ -400,7 +400,7 @@ export const endpoints = {
 						oneOf: [
 							{ $ref: 'https://misskey-hub.net/api/schemas/Id' },
 							{ type: 'null' },
-						]
+						],
 					},
 					isSensitive: { type: 'boolean' },
 					isLink: { type: 'boolean' },
@@ -413,7 +413,7 @@ export const endpoints = {
 						}, {
 							type: 'null',
 						}],
-					}
+					},
 				},
 				required: [
 					'id',
@@ -540,7 +540,7 @@ export const endpoints = {
 					id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 				},
 				required: ['id'],
-			}
+			},
 		}],
 	},
 	'admin/emoji/delete-bulk': {
@@ -655,7 +655,7 @@ export const endpoints = {
 				items: {
 					$ref: 'https://misskey-hub.net/api/schemas/EmojiDetailed',
 				},
-			}
+			},
 		}],
 	},
 	'admin/emoji/remove-aliases-bulk': {
