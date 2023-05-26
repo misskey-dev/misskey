@@ -658,6 +658,73 @@ export const endpoints = {
 			}
 		}],
 	},
+	'admin/emoji/remove-aliases-bulk': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					ids: { type: 'array', items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					aliases: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['ids', 'aliases'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/emoji/set-aliases-bulk': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					ids: { type: 'array', items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					aliases: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['ids', 'aliases'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/emoji/set-category-bulk': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					ids: { type: 'array', items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					category: {
+						type: ['string', 'null'],
+						description: 'Use `null` to reset the category.',
+					},
+				},
+				required: ['ids'],
+			},
+			res: undefined,
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {

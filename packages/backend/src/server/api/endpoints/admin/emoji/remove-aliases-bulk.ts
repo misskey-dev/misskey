@@ -24,11 +24,12 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/emoji/remove-aliases-bulk'> {
+	name = 'admin/emoji/remove-aliases-bulk' as const;
 	constructor(
 		private customEmojiService: CustomEmojiService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			await this.customEmojiService.removeAliasesBulk(ps.ids, ps.aliases);
 		});
 	}
