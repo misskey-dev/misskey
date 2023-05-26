@@ -4,7 +4,7 @@
 
 	<div :class="$style.main">
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.sections, deckStore.reactiveState.columnAlign.value, { [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 			<section
 				v-for="ids in layout"
@@ -310,11 +310,11 @@ async function deleteProfile() {
 
 	&.center {
 		> .section:first-of-type {
-			margin-left: auto;
+			margin-left: auto !important;
 		}
 
 		> .section:last-of-type {
-			margin-right: auto;
+			margin-right: auto !important;
 		}
 	}
 
