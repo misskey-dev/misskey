@@ -725,6 +725,29 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
+	'admin/emoji/set-license-bulk': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					ids: { type: 'array', items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					license: {
+						type: ['string', 'null'],
+						description: 'Use `null` to reset the license.',
+					},
+				},
+				required: ['ids'],
+			},
+			res: undefined,
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {
