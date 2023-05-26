@@ -3,49 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { InboxQueue } from '@/core/QueueModule.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'array',
-			optional: false, nullable: false,
-			items: {
-				anyOf: [
-					{
-						type: 'string',
-					},
-					{
-						type: 'number',
-					},
-				],
-			},
-		},
-		example: [[
-			'example.com',
-			12,
-		]],
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/queue/inboc-delayed'> {
+	name = 'admin/queue/inboc-delayed' as const;
 	constructor(
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const jobs = await this.inboxQueue.getJobs(['delayed']);
 
 			const res = [] as [string, number][];

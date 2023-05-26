@@ -930,6 +930,36 @@ export const endpoints = {
 			},
 		}],
 	},
+	'admin/queue/inboc-delayed': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					type: 'array',
+					items: {
+						anyOf: [
+							{
+								type: 'string',
+							},
+							{
+								type: 'number',
+							},
+						],
+					},
+				},
+				examples: [[
+					'example.com',
+					12,
+				]],
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {
