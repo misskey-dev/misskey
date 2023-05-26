@@ -2,7 +2,7 @@
 <button
 	v-if="!link"
 	ref="el" class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
 	:type="type"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
@@ -14,7 +14,7 @@
 </button>
 <MkA
 	v-else class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
 	:to="to"
 	@mousedown="onMousedown"
 >
@@ -44,6 +44,7 @@ const props = defineProps<{
 	full?: boolean;
 	small?: boolean;
 	large?: boolean;
+	transparent?: boolean;
 	asLike?: boolean;
 }>();
 
@@ -192,6 +193,10 @@ function onMousedown(evt: MouseEvent): void {
 				background: rgb(241 92 128);
 			}
 		}
+	}
+
+	&.transparent {
+		background: transparent;
 	}
 
 	&.gradate {

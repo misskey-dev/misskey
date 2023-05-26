@@ -21,7 +21,8 @@ export default class extends Endpoint<'admin/announcements/update'> {
 				updatedAt: new Date(),
 				title: ps.title,
 				text: ps.text,
-				imageUrl: ps.imageUrl,
+				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
+				imageUrl: ps.imageUrl || null, 
 			});
 		});
 	}
