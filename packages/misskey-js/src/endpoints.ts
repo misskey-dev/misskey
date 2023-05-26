@@ -748,6 +748,115 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
+	'admin/emoji/update': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireRolePolicy: 'canManageCustomEmojis',
+	
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: '14fb9fd9-0731-4e2f-aeb9-f09e4740333d',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					id: { type: 'string', format: 'misskey:id' },
+					name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
+					fileId: { type: 'string', format: 'misskey:id' },
+					category: {
+						type: ['string', 'null'],
+						description: 'Use `null` to reset the category.',
+					},
+					aliases: { type: 'array', items: {
+						type: 'string',
+					} },
+					license: { type: ['string', 'null'] },
+					isSensitive: { type: 'boolean' },
+					localOnly: { type: 'boolean' },
+					roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['id', 'name', 'aliases'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/federation/delete-all-files': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+				},
+				required: ['host'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/federation/refresh-remote-instance-metadata': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+				},
+				required: ['host'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/federation/remove-all-following': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+				},
+				required: ['host'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/federation/update-instance': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+					isSuspended: { type: 'boolean' },
+				},
+				required: ['host', 'isSuspended'],
+			},
+			res: undefined,
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 export function getEndpointSchema(reqres: 'req' | 'res', key: keyof typeof endpoints) {

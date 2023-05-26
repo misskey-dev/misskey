@@ -23,7 +23,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/federation/update-instance'> {
+	name = 'admin/federation/update-instance' as const;
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -31,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private utilityService: UtilityService,
 		private federatedInstanceService: FederatedInstanceService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const instance = await this.instancesRepository.findOneBy({ host: this.utilityService.toPuny(ps.host) });
 
 			if (instance == null) {

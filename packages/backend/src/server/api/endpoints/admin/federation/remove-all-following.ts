@@ -4,24 +4,10 @@ import type { FollowingsRepository, UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { QueueService } from '@/core/QueueService.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		host: { type: 'string' },
-	},
-	required: ['host'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/federation/remove-all-following'> {
+	name = 'admin/federation/remove-all-following' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -31,7 +17,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private queueService: QueueService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const followings = await this.followingsRepository.findBy({
 				followerHost: ps.host,
 			});

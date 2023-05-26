@@ -5,7 +5,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 // eslint-disable-next-line import/no-default-export
 @Injectable()
 export default class extends Endpoint<'admin/emoji/set-category-bulk'> {
-	name = 'admin/emoji/set-category-bulk' as const
+	name = 'admin/emoji/set-category-bulk' as const;
 	constructor(
 		private customEmojiService: CustomEmojiService,
 	) {
