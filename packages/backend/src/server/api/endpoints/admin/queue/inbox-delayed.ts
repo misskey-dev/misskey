@@ -5,8 +5,8 @@ import type { InboxQueue } from '@/core/QueueModule.js';
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<'admin/queue/inboc-delayed'> {
-	name = 'admin/queue/inboc-delayed' as const;
+export default class extends Endpoint<'admin/queue/inbox-delayed'> {
+	name = 'admin/queue/inbox-delayed' as const;
 	constructor(
 		@Inject('queue:inbox') public inboxQueue: InboxQueue,
 	) {

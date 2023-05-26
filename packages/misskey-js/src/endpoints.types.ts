@@ -24,9 +24,30 @@ export type RolePolicies = {
 };
 
 export type EndpointDefines = ReadonlyArray<{
+	/**
+	 * 要求のJSON Schema
+	 * 何もないときはundefined
+	 * $refは使えない(ajv由来)
+	 */
 	req: DeepOmit<JSONSchema7, { $ref: never }> | undefined;
+
+	/**
+	 * 応答のJSON Schema
+	 * 何もないときはundefined
+	 */
 	res: JSONSchema7 | undefined;
 }>;
+
+/**
+ * JSON Schemaのとき型に変換し、undefinedのときvoid | Record<string, never>を返す
+ */
+export type SchemaOrUndefined<T extends JSONSchema7 | undefined, IsResponse extends boolean = false> = T extends JSONSchema7 ? SchemaType<T, References, IsResponse> : (void | Record<string, never>);
+
+/**
+ * reqからresを推論する
+ */
+export type ResponseOf<D extends IEndpointMeta, P, IsResponse extends boolean = false, DD extends D['defines'][number] = D['defines'][number]> =
+	P extends SchemaOrUndefined<DD['req'], IsResponse> ? SchemaOrUndefined<DD['res']> : never;
 
 export interface IEndpointMeta {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
@@ -126,10 +147,5 @@ export interface IEndpointMeta {
 	 */
 	readonly cacheSec?: number;
 }
-
-export type SchemaOrUndefined<T extends JSONSchema7 | undefined, IsResponse extends boolean = false> = T extends JSONSchema7 ? SchemaType<T, References, IsResponse> : (void | Record<string, never>);
-
-export type ResponseOf<D extends IEndpointMeta, P, IsResponse extends boolean = false, DD extends D['defines'][number] = D['defines'][number]> =
-	P extends SchemaOrUndefined<DD['req'], IsResponse> ? SchemaOrUndefined<DD['res']> : never;
 
 export type Endpoints = typeof endpoints;

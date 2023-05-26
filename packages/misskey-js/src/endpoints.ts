@@ -930,7 +930,7 @@ export const endpoints = {
 			},
 		}],
 	},
-	'admin/queue/inboc-delayed': {
+	'admin/queue/inbox-delayed': {
 		tags: ['admin'],
 	
 		requireCredential: true,
