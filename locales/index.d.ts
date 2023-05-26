@@ -821,6 +821,7 @@ export interface Locale {
     "hashtags": string;
     "troubleshooting": string;
     "useBlurEffect": string;
+    "useBlurEffectDescription": string;
     "learnMore": string;
     "misskeyUpdated": string;
     "whatIsNew": string;
@@ -1063,12 +1064,14 @@ export interface Locale {
     "changeReactionConfirm": string;
     "later": string;
     "goToMisskey": string;
+    "performanceWarning": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
         "letsFillYourProfile": string;
         "profileSetting": string;
         "privacySetting": string;
+        "blurEffectsSetting": string;
         "theseSettingsCanEditLater": string;
         "youCanEditMoreSettingsInSettingsPageLater": string;
         "followUsers": string;
