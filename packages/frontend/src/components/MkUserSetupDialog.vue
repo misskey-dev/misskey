@@ -157,6 +157,7 @@ import { host } from '@/config';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { defaultStore } from '@/store';
 import * as os from '@/os';
+import { unisonReload } from "@/scripts/unison-reload";
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
@@ -181,6 +182,7 @@ async function close(skip: boolean) {
 
 	dialog.value.close();
 	defaultStore.set('accountSetupWizard', -1);
+	unisonReload();
 }
 
 async function later(later: boolean) {
