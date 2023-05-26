@@ -7,7 +7,7 @@
 	<template v-if="$i" #footer>
 		<div :class="$style.footer">
 			<MkSpacer :contentMax="800" :marginMin="16" :marginMax="16">
-				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashTag }}</MkButton>
+				<MkButton rounded primary :class="$style.button" @click="post()"><i class="ti ti-pencil"></i>{{ i18n.ts.postToHashtag }}</MkButton>
 			</MkSpacer>
 		</div>
 	</template>
