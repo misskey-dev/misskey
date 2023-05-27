@@ -1039,7 +1039,116 @@ export const endpoints = {
 				},
 			},
 		}],
-	}
+	},
+	'admin/relays/remove': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					inbox: { type: 'string' },
+				},
+				required: ['inbox'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/roles/assign': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			noSuchRole: {
+				message: 'No such role.',
+				code: 'NO_SUCH_ROLE',
+				id: '6503c040-6af4-4ed9-bf07-f2dd16678eab',
+			},
+	
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '558ea170-f653-4700-94d0-5a818371d0df',
+			},
+	
+			accessDenied: {
+				message: 'Only administrators can edit members of the role.',
+				code: 'ACCESS_DENIED',
+				id: '25b5bc31-dc79-4ebd-9bd2-c84978fd052c',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					roleId: { type: 'string', format: 'misskey:id' },
+					userId: { type: 'string', format: 'misskey:id' },
+					expiresAt: {
+						type: ['integer', 'null'],
+					},
+				},
+				required: [
+					'roleId',
+					'userId',
+				],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/roles/create': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireAdmin: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					description: { type: 'string' },
+					color: { type: ['string', 'null'] },
+					iconUrl: { type: ['string', 'null'] },
+					target: { type: 'string', enum: ['manual', 'conditional'] },
+					condFormula: { type: 'object' },
+					isPublic: { type: 'boolean' },
+					isModerator: { type: 'boolean' },
+					isAdministrator: { type: 'boolean' },
+					isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility
+					asBadge: { type: 'boolean' },
+					canEditMembersByModerator: { type: 'boolean' },
+					displayOrder: { type: 'number' },
+					policies: {
+						type: 'object',
+					},
+				},
+				required: [
+					'name',
+					'description',
+					'color',
+					'iconUrl',
+					'target',
+					'condFormula',
+					'isPublic',
+					'isModerator',
+					'isAdministrator',
+					'asBadge',
+					'canEditMembersByModerator',
+					'displayOrder',
+					'policies',
+				],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Role',
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
