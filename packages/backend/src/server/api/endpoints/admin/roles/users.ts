@@ -43,7 +43,7 @@ export default class extends Endpoint<'admin/roles/users'> {
 				.take(ps.limit)
 				.getMany();
 
-			return await Promise.all(assigns.map(async (assign): Promise<Packed<'RoleAssign'>> => ({
+			return await Promise.all<Promise<Packed<'RoleAssign'>>[]>(assigns.map(async (assign): Promise<Packed<'RoleAssign'>> => ({
 				id: assign.id,
 				createdAt: assign.createdAt,
 				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),
