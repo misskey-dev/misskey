@@ -304,7 +304,7 @@ export class OAuth2ProviderService {
 		// 	},
 		// });
 
-		// XXX: But MemoryKVCache just grows forever without being cleared...
+		// XXX: But MemoryKVCache just grows forever without being cleared if grant codes are left unused
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
 			userId: string,
