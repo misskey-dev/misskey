@@ -12,6 +12,7 @@ import fastifyView from '@fastify/view';
 import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
+import { verifyChallenge } from 'pkce-challenge';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -251,12 +252,6 @@ async function discoverClientInformation(httpRequestService: HttpRequestService,
 // 	};
 // }
 
-function pkceS256(codeVerifier: string): string {
-	return crypto.createHash('sha256')
-		.update(codeVerifier, 'ascii')
-		.digest('base64url');
-}
-
 type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
@@ -365,7 +360,8 @@ export class OAuth2ProviderService {
 				delete TEMP_GRANT_CODES[code];
 				if (body.client_id !== granted.clientId) return [false];
 				if (redirectUri !== granted.redirectUri) return [false];
-				if (!body.code_verifier || pkceS256(body.code_verifier as string) !== granted.codeChallenge) return [false];
+				if (!body.code_verifier) return [false];
+				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return [false];
 
 				const accessToken = secureRndstr(128, true);
 
