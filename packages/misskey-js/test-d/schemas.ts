@@ -97,6 +97,9 @@ describe('schemas', () => {
     test('ad', () => {
         type Ad = Packed<'Ad'>;
     });
+    test('relay', () => {
+        type Relay = Packed<'Relay'>;
+    });
     test('error', () => {
         type Error = Packed<'Error'>;
         type ApiError = Packed<'ApiError'>;

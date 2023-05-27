@@ -38,6 +38,7 @@ export type Clip = Packed<'Clip'>;
 export type Channel = Packed<'Channel'>;
 export type Following = Packed<'Following'>;
 export type Blocking = Packed<'Blocking'>;
+export type Relay = Packed<'Relay'>;
 
 export type LiteInstanceMetadata = {
 	maintainerName: string | null;

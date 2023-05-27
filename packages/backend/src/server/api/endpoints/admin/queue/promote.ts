@@ -3,29 +3,15 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueueService } from '@/core/QueueService.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		type: { type: 'string', enum: ['deliver', 'inbox'] },
-	},
-	required: ['type'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/queue/promote'> {
+	name = 'admin/queue/promote' as const;
 	constructor(
 		private moderationLogService: ModerationLogService,
 		private queueService: QueueService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			let delayedQueues;
 
 			switch (ps.type) {

@@ -960,6 +960,86 @@ export const endpoints = {
 			},
 		}],
 	},
+	'admin/queue/promote': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					type: { type: 'string', enum: ['deliver', 'inbox'] },
+				},
+				required: ['type'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/queue/stats': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'object',
+				properties: {
+					deliver: { $ref: 'https://misskey-hub.net/api/schemas/QueueCount' },
+					inbox: { $ref: 'https://misskey-hub.net/api/schemas/QueueCount' },
+					db: { $ref: 'https://misskey-hub.net/api/schemas/QueueCount' },
+					objectStorage: { $ref: 'https://misskey-hub.net/api/schemas/QueueCount' },
+				},
+				required: ['deliver', 'inbox', 'db', 'objectStorage'],
+			}
+		}],
+	},
+	'admin/relays/add': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			invalidUrl: {
+				message: 'Invalid URL',
+				code: 'INVALID_URL',
+				id: 'fb8c92d3-d4e5-44e7-b3d4-800d5cef8b2c',
+			},
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					inbox: { type: 'string' },
+				},
+				required: ['inbox'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Relay',
+			},
+		}],
+	},
+	'admin/relays/list': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Relay',
+				},
+			},
+		}],
+	}
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
