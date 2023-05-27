@@ -36,7 +36,12 @@ import { packedFlashSchema } from './schemas/flash.js';
 import { packedAdSchema } from './schemas/ad.js';
 import { packedAnnouncementSchema } from './schemas/announcement.js';
 import { packedRelaySchema } from './schemas/relay.js';
-import { packedRoleAssignSchema } from './schemas/role.js';
+import {
+	packedRoleSchema,
+	packedRoleAssignSchema,
+	packedRolePolicySchema,
+	packedRoleCondFormulaSchema,
+} from './schemas/role.js';
 import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
@@ -78,8 +83,10 @@ export const refs = {
 	Ad: packedAdSchema,
 	Announcement: packedAnnouncementSchema,
 	Relay: packedRelaySchema,
-
+	Role: packedRoleSchema,
 	RoleAssign: packedRoleAssignSchema,
+	RolePolicy: packedRolePolicySchema,
+	RoleCondFormula: packedRoleCondFormulaSchema,
 
 	Error: Error,
 	ApiError: ApiError,

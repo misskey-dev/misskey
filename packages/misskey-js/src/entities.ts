@@ -39,6 +39,10 @@ export type Channel = Packed<'Channel'>;
 export type Following = Packed<'Following'>;
 export type Blocking = Packed<'Blocking'>;
 export type Relay = Packed<'Relay'>;
+export type Role = Packed<'Role'>;
+export type RoleAssign = Packed<'RoleAssign'>;
+export type RolePolicy = Packed<'RolePolicy'>;
+export type RoleCondFormula = Packed<'RoleCondFormula'>;
 
 export type LiteInstanceMetadata = {
 	maintainerName: string | null;

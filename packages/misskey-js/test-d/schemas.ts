@@ -100,9 +100,12 @@ describe('schemas', () => {
     test('relay', () => {
         type Relay = Packed<'Relay'>;
     });
-    test('role': () => {
-
+    test('role', () => {
+        type Role = Packed<'Role'>;
+        type CF = Role['condFormula'];
         type RoleAssign = Packed<'RoleAssign'>;
+        type RolePolicy = Packed<'RolePolicy'>;
+        type RoleCondFormula = Packed<'RoleCondFormula'>;
     });
     test('error', () => {
         type Error = Packed<'Error'>;
