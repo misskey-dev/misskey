@@ -130,6 +130,14 @@ mainRouter.navHook = (path, flag): boolean => {
 	return false;
 };
 
+if (mainRouter.currentRoute.value.path !== '/') {
+	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
+	if (deckStore.state.navWindow || noMainColumn) {
+		os.pageWindow(mainRouter.currentRoute.value.path);
+		mainRouter.replace('/');
+	}
+}
+
 const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
