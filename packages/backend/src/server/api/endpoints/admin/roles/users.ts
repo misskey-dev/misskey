@@ -6,36 +6,12 @@ import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '../../../error.js';
-
-export const meta = {
-	tags: ['admin', 'role', 'users'],
-
-	requireCredential: false,
-	requireAdmin: true,
-
-	errors: {
-		noSuchRole: {
-			message: 'No such role.',
-			code: 'NO_SUCH_ROLE',
-			id: '224eff5e-2488-4b18-b3e7-f50d94421648',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roleId: { type: 'string', format: 'misskey:id' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-	},
-	required: ['roleId'],
-} as const;
+import { Packed } from 'misskey-js';
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/roles/users'> {
+	name = 'admin/roles/users' as const;
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
@@ -46,13 +22,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 		private userEntityService: UserEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({
 				id: ps.roleId,
 			});
 
 			if (role == null) {
-				throw new ApiError(meta.errors.noSuchRole);
+				throw new ApiError(this.meta.errors.noSuchRole);
 			}
 
 			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId)
@@ -67,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.take(ps.limit)
 				.getMany();
 
-			return await Promise.all(assigns.map(async assign => ({
+			return await Promise.all(assigns.map(async (assign): Promise<Packed<'RoleAssign'>> => ({
 				id: assign.id,
 				createdAt: assign.createdAt,
 				user: await this.userEntityService.pack(assign.user!, me, { detail: true }),

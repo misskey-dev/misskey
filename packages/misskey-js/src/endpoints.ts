@@ -1149,6 +1149,235 @@ export const endpoints = {
 			},
 		}],
 	},
+	'admin/roles/delete': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireAdmin: true,
+	
+		errors: {
+			noSuchRole: {
+				message: 'No such role.',
+				code: 'NO_SUCH_ROLE',
+				id: 'de0d6ecd-8e0a-4253-88ff-74bc89ae3d45',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					roleId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [
+					'roleId',
+				],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/roles/list': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Role',
+				},
+			},
+		}],
+	},
+	'admin/roles/show': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			noSuchRole: {
+				message: 'No such role.',
+				code: 'NO_SUCH_ROLE',
+				id: '07dc7d34-c0d8-49b7-96c6-db3ce64ee0b3',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					roleId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [
+					'roleId',
+				],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Role',
+			}
+		}],
+	},
+	'admin/roles/unassign': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		errors: {
+			noSuchRole: {
+				message: 'No such role.',
+				code: 'NO_SUCH_ROLE',
+				id: '6e519036-a70d-4c76-b679-bc8fb18194e2',
+			},
+	
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '2b730f78-1179-461b-88ad-d24c9af1a5ce',
+			},
+	
+			notAssigned: {
+				message: 'Not assigned.',
+				code: 'NOT_ASSIGNED',
+				id: 'b9060ac7-5c94-4da4-9f55-2047c953df44',
+			},
+	
+			accessDenied: {
+				message: 'Only administrators can edit members of the role.',
+				code: 'ACCESS_DENIED',
+				id: '24636eee-e8c1-493e-94b2-e16ad401e262',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					roleId: { type: 'string', format: 'misskey:id' },
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [
+					'roleId',
+					'userId',
+				],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/roles/update-default-policies': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireAdmin: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					policies: {
+						type: 'object',
+					},
+				},
+				required: [
+					'policies',
+				],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/roles/update': {
+		tags: ['admin', 'role'],
+	
+		requireCredential: true,
+		requireAdmin: true,
+	
+		errors: {
+			noSuchRole: {
+				message: 'No such role.',
+				code: 'NO_SUCH_ROLE',
+				id: 'cd23ef55-09ad-428a-ac61-95a45e124b32',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					roleId: { type: 'string', format: 'misskey:id' },
+					name: { type: 'string' },
+					description: { type: 'string' },
+					color: { type: ['string', 'null'] },
+					iconUrl: { type: ['string', 'null'] },
+					target: { type: 'string', enum: ['manual', 'conditional'] },
+					condFormula: { type: 'object' },
+					isPublic: { type: 'boolean' },
+					isModerator: { type: 'boolean' },
+					isAdministrator: { type: 'boolean' },
+					isExplorable: { type: 'boolean' },
+					asBadge: { type: 'boolean' },
+					canEditMembersByModerator: { type: 'boolean' },
+					displayOrder: { type: 'number' },
+					policies: {
+						type: 'object',
+					},
+				},
+				required: [
+					'roleId',
+					'name',
+					'description',
+					'color',
+					'iconUrl',
+					'target',
+					'condFormula',
+					'isPublic',
+					'isModerator',
+					'isAdministrator',
+					'asBadge',
+					'canEditMembersByModerator',
+					'displayOrder',
+					'policies',
+				],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/roles/users': {
+		tags: ['admin', 'role', 'users'],
+	
+		requireCredential: false,
+		requireAdmin: true,
+	
+		errors: {
+			noSuchRole: {
+				message: 'No such role.',
+				code: 'NO_SUCH_ROLE',
+				id: '224eff5e-2488-4b18-b3e7-f50d94421648',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					roleId: { type: 'string', format: 'misskey:id' },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				},
+				required: ['roleId'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/RoleAssign'
+				},
+			}
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

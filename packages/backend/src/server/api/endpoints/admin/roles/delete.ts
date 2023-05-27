@@ -5,44 +5,20 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 
-export const meta = {
-	tags: ['admin', 'role'],
-
-	requireCredential: true,
-	requireAdmin: true,
-
-	errors: {
-		noSuchRole: {
-			message: 'No such role.',
-			code: 'NO_SUCH_ROLE',
-			id: 'de0d6ecd-8e0a-4253-88ff-74bc89ae3d45',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		roleId: { type: 'string', format: 'misskey:id' },
-	},
-	required: [
-		'roleId',
-	],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/roles/delete'> {
+	name = 'admin/roles/delete' as const;
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
 
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(async (ps) => {
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
 			if (role == null) {
-				throw new ApiError(meta.errors.noSuchRole);
+				throw new ApiError(this.meta.errors.noSuchRole);
 			}
 			await this.rolesRepository.delete({
 				id: ps.roleId,

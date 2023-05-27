@@ -100,6 +100,10 @@ describe('schemas', () => {
     test('relay', () => {
         type Relay = Packed<'Relay'>;
     });
+    test('role': () => {
+
+        type RoleAssign = Packed<'RoleAssign'>;
+    });
     test('error', () => {
         type Error = Packed<'Error'>;
         type ApiError = Packed<'ApiError'>;

@@ -4,31 +4,17 @@ import type { RolesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
 
-export const meta = {
-	tags: ['admin', 'role'],
-
-	requireCredential: true,
-	requireModerator: true,
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-	},
-	required: [
-	],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/roles/list'> {
+	name = 'admin/roles/list' as const;
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
 
 		private roleEntityService: RoleEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const roles = await this.rolesRepository.find({
 				order: { lastUsedAt: 'DESC' },
 			});
