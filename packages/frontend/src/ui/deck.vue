@@ -133,7 +133,7 @@ mainRouter.navHook = (path, flag): boolean => {
 if (mainRouter.currentRoute.value.path !== '/') {
 	const noMainColumn = !deckStore.state.columns.some(x => x.type === 'main');
 	if (deckStore.state.navWindow || noMainColumn) {
-		os.pageWindow(mainRouter.currentRoute.value.path);
+		os.pageWindow(location.pathname + location.search + location.hash);
 		mainRouter.replace('/');
 	}
 }
