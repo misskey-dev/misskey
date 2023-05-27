@@ -1,7 +1,7 @@
 <template>
-<div class="mrdgzndn">
+<div class="_gaps">
 	<Mfm :text="block.text" :isNote="false" :i="$i"/>
-	<MkUrlPreview v-for="url in urls" :key="url" :url="url" class="url"/>
+	<MkUrlPreview v-for="url in urls" :key="url" :url="url"/>
 </div>
 </template>
 
@@ -22,19 +22,3 @@ const props = defineProps<{
 
 const urls = props.block.text ? extractUrlFromMfm(mfm.parse(props.block.text)) : [];
 </script>
-
-<style lang="scss" scoped>
-.mrdgzndn {
-	&:not(:first-child) {
-		margin-top: 0.5em;
-	}
-
-	&:not(:last-child) {
-		margin-bottom: 0.5em;
-	}
-
-	> .url {
-		margin: 0.5em 0;
-	}
-}
-</style>
