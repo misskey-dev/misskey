@@ -172,12 +172,6 @@ export function pageWindow(path: string) {
 	}, {}, 'closed');
 }
 
-export function modalPageWindow(path: string) {
-	popup(defineAsyncComponent(() => import('@/components/MkModalPageWindow.vue')), {
-		initialPath: path,
-	}, {}, 'closed');
-}
-
 export function toast(message: string) {
 	popup(MkToast, {
 		message,
