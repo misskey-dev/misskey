@@ -5,8 +5,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { type OAuth2, AuthorizationError } from 'oauth2orize';
-import * as oauth2Query from 'oauth2orize/lib/response/query.js';
+import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import expressSession from 'express-session';
 import fastifyView from '@fastify/view';
@@ -45,11 +44,12 @@ function validateClientId(raw: string): URL {
 	// MUST contain a path component (new URL() implicitly adds one)
 
 	// MUST NOT contain single-dot or double-dot path segments,
-	// url.
 	const segments = url.pathname.split('/');
 	if (segments.includes('.') || segments.includes('..')) {
 		throw new AuthorizationError('client_id must not contain dot path segments', 'invalid_request');
 	}
+
+	// (MAY contain a query string component)
 
 	// MUST NOT contain a fragment component
 	if (url.hash) {
@@ -261,14 +261,9 @@ type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
 
-interface OAuthRequest {
-	type: string;
-	clientID: string;
-	redirectURI: string;
-	state: string;
+interface OAuthRequest extends OAuth2Req {
 	codeChallenge: string;
 	codeChallengeMethod: string;
-	scope: string[];
 }
 
 @Injectable()
@@ -323,17 +318,22 @@ export class OAuth2ProviderService {
 			scopes: string[],
 		}> = {};
 
-		const query = (txn, res, params) => {
-			// RFC 9207
-			// TODO: Oh no, perhaps returning to oidc-provider is better. Hacks everywhere here.
-			params.iss = config.url;
-			oauth2Query.default(txn, res, params);
-		};
-
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
-			modes: { query },
-		}, (client, redirectUri, token, ares, areq, done) => {
+			modes: {
+				query: (txn, res, params) => {
+					// RFC 9207
+					params.iss = config.url;
+
+					const parsed = new URL(txn.redirectURI);
+					for (const [key, value] of Object.entries(params)) {
+						parsed.searchParams.append(key, value as string);
+					}
+
+					return (res as any).redirect(parsed.toString());
+				},
+			},
+		}, (client, redirectUri, token, ares, areq, locals, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
 				const code = secureRndstr(32, true);
@@ -348,13 +348,13 @@ export class OAuth2ProviderService {
 					clientId: client.id,
 					userId: user.id,
 					redirectUri,
-					codeChallenge: areq.codeChallenge,
+					codeChallenge: (areq as OAuthRequest).codeChallenge,
 					scopes: areq.scope,
 				};
 				return [code];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
-		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, done) => {
+		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, authInfo, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				const granted = TEMP_GRANT_CODES[code];
 				console.log(granted, body, code, redirectUri);
@@ -365,7 +365,7 @@ export class OAuth2ProviderService {
 				delete TEMP_GRANT_CODES[code];
 				if (body.client_id !== granted.clientId) return [false];
 				if (redirectUri !== granted.redirectUri) return [false];
-				if (!body.code_verifier || pkceS256(body.code_verifier) !== granted.codeChallenge) return [false];
+				if (!body.code_verifier || pkceS256(body.code_verifier as string) !== granted.codeChallenge) return [false];
 
 				const accessToken = secureRndstr(128, true);
 
@@ -383,7 +383,7 @@ export class OAuth2ProviderService {
 					permission: granted.scopes,
 				});
 
-				return [accessToken, { scope: granted.scopes.join(' ') }];
+				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
 		this.#server.serializeClient((client, done) => done(null, client));
@@ -432,7 +432,7 @@ export class OAuth2ProviderService {
 		// this feature for some time, given that this is security related.
 		fastify.get('/oauth/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as any).oauth2 as OAuth2;
-			console.log('HIT /oauth/authorize', request.query, oauth2, request.raw.session);
+			console.log('HIT /oauth/authorize', request.query, oauth2, (request.raw as any).session);
 
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
@@ -458,11 +458,11 @@ export class OAuth2ProviderService {
 		await fastify.register(fastifyExpress);
 		// TODO: use redis session store to prevent memory leak
 		fastify.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }) as any);
-		fastify.use('/oauth/authorize', this.#server.authorization((areq: OAuthRequest, done: (err: Error | null, client?: any, redirectURI?: string) => void) => {
+		fastify.use('/oauth/authorize', this.#server.authorize(((areq, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT /oauth/authorize validation middleware', areq);
 
-				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq;
+				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq as OAuthRequest;
 
 				const scopes = [...new Set(scope)].filter(s => kinds.includes(s));
 				if (!scopes.length) {
@@ -497,7 +497,7 @@ export class OAuth2ProviderService {
 
 				return [clientInfo, redirectURI];
 			})().then(args => done(null, ...args), err => done(err));
-		}));
+		}) as ValidateFunctionArity2));
 		// TODO: use mode: indirect
 		// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2.1
 		// But make sure not to redirect to an invalid redirect_uri
