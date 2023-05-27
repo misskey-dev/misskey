@@ -328,12 +328,12 @@ async function deleteProfile() {
 	flex-direction: column;
 	scroll-snap-align: start;
 	flex-shrink: 0;
-	margin-top: var(--columnGap);
-	margin-bottom: var(--columnGap);
-	margin-right: var(--columnGap);
+	padding-top: var(--columnGap);
+	padding-bottom: var(--columnGap);
+	padding-right: var(--columnGap);
 
 	&:first-of-type {
-		margin-left: var(--columnGap);
+		padding-left: var(--columnGap);
 	}
 
 	> .column:not(:last-of-type) {
