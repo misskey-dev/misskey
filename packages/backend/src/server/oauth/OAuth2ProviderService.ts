@@ -1,6 +1,5 @@
 import dns from 'node:dns/promises';
 import { fileURLToPath } from 'node:url';
-import crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
@@ -24,6 +23,7 @@ import type { AccessTokensRepository, UsersRepository } from '@/models/index.js'
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import type * as Redis from 'ioredis';
 import type { FastifyInstance } from 'fastify';
 
@@ -304,14 +304,14 @@ export class OAuth2ProviderService {
 		// 	},
 		// });
 
-		// TODO: store this in Redis
-		const TEMP_GRANT_CODES: Record<string, {
+		// XXX: But MemoryKVCache just grows forever without being cleared...
+		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
 			userId: string,
 			redirectUri: string,
 			codeChallenge: string,
 			scopes: string[],
-		}> = {};
+		}>(1000 * 60 * 5); // 5m
 
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
@@ -339,25 +339,24 @@ export class OAuth2ProviderService {
 					throw new AuthorizationError('No such user', 'invalid_request');
 				}
 
-				TEMP_GRANT_CODES[code] = {
+				grantCodeCache.set(code, {
 					clientId: client.id,
 					userId: user.id,
 					redirectUri,
 					codeChallenge: (areq as OAuthRequest).codeChallenge,
 					scopes: areq.scope,
-				};
+				});
 				return [code];
 			})().then(args => done(null, ...args), err => done(err));
 		}));
 		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, authInfo, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
-				const granted = TEMP_GRANT_CODES[code];
+				const granted = grantCodeCache.get(code);
 				console.log(granted, body, code, redirectUri);
 				if (!granted) {
-					// TODO: throw TokenError?
 					return [false];
 				}
-				delete TEMP_GRANT_CODES[code];
+				grantCodeCache.delete(code);
 				if (body.client_id !== granted.clientId) return [false];
 				if (redirectUri !== granted.redirectUri) return [false];
 				if (!body.code_verifier) return [false];
