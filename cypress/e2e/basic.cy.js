@@ -177,6 +177,16 @@ describe('After user signed in', () => {
 		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
+		// ぼかし効果設定
+
+		cy.get('[data-cy-user-setup-back]').click();
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		// MFMとアニメーション画像設定
+
+		cy.get('[data-cy-user-setup-back]').click();
+		cy.get('[data-cy-user-setup-continue]').click();
+
 		// フォローはスキップ
 
 		cy.get('[data-cy-user-setup-back]').click();
