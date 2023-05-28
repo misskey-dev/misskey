@@ -67,6 +67,10 @@ export default class Connection {
 
 	@bindThis
 	public async init(wsConnection: WebSocket.WebSocket) {
+		/**
+		 * wsConnection.on('message') must be called before `await this.fetch()`
+		 * see https://github.com/misskey-dev/misskey/pull/10884#issuecomment-1566160806
+		 */
 		this.wsConnection = wsConnection;
 		this.wsConnection.on('message', this.onWsConnectionMessage);
 
