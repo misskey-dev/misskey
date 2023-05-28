@@ -105,6 +105,17 @@ export class QueueProcessorService {
 
 	@bindThis
 	public start() {
+		const workerOptions: Bull.WorkerOptions = {
+			connection: {
+				port: this.config.redisForJobQueue.port,
+				host: this.config.redisForJobQueue.host,
+				family: this.config.redisForJobQueue.family == null ? 0 : this.config.redisForJobQueue.family,
+				password: this.config.redisForJobQueue.pass,
+				db: this.config.redisForJobQueue.db ?? 0,
+			},
+			prefix: this.config.redisForJobQueue.prefix ? `${this.config.redisForJobQueue.prefix}:queue` : 'queue',
+		};
+
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある
 				return {
@@ -132,6 +143,8 @@ export class QueueProcessorService {
 				case 'clean': return this.cleanProcessorService.process();
 				default: throw new Error(`unrecognized job type ${job.name} for system`);
 			}
+		}, {
+			...workerOptions,
 		});
 
 		const systemLogger = this.logger.createSubLogger('system');
@@ -167,6 +180,8 @@ export class QueueProcessorService {
 				case 'deleteAccount': return this.deleteAccountProcessorService.process(job);
 				default: throw new Error(`unrecognized job type ${job.name} for db`);
 			}
+		}, {
+			...workerOptions,
 		});
 
 		const dbLogger = this.logger.createSubLogger('db');
@@ -181,6 +196,7 @@ export class QueueProcessorService {
 
 		//#region deliver
 		const deliverQueueWorker = new Bull.Worker('deliver', (job) => this.deliverProcessorService.process(job), {
+			...workerOptions,
 			concurrency: this.config.deliverJobConcurrency ?? 128,
 			limiter: {
 				max: this.config.deliverJobPerSec ?? 128,
@@ -203,6 +219,7 @@ export class QueueProcessorService {
 
 		//#region inbox
 		const inboxQueueWorker = new Bull.Worker('inbox', (job) => this.inboxProcessorService.process(job), {
+			...workerOptions,
 			concurrency: this.config.inboxJobConcurrency ?? 16,
 			limiter: {
 				max: this.config.inboxJobPerSec ?? 16,
@@ -225,6 +242,7 @@ export class QueueProcessorService {
 
 		//#region webhook deliver
 		const webhookDeliverQueueWorker = new Bull.Worker('webhookDeliver', (job) => this.webhookDeliverProcessorService.process(job), {
+			...workerOptions,
 			concurrency: 64,
 			limiter: {
 				max: 64,
@@ -255,6 +273,7 @@ export class QueueProcessorService {
 				default: throw new Error(`unrecognized job type ${job.name} for relationship`);
 			}
 		}, {
+			...workerOptions,
 			concurrency: this.config.relashionshipJobConcurrency ?? 16,
 			limiter: {
 				max: this.config.relashionshipJobPerSec ?? 64,
@@ -280,6 +299,7 @@ export class QueueProcessorService {
 				default: throw new Error(`unrecognized job type ${job.name} for objectStorage`);
 			}
 		}, {
+			...workerOptions,
 			concurrency: 16,
 		});
 
@@ -294,7 +314,9 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region ended poll notification
-		const endedPollNotificationWorker = new Bull.Worker('endedPollNotification', (job) => this.endedPollNotificationProcessorService.process(job));
+		const endedPollNotificationWorker = new Bull.Worker('endedPollNotification', (job) => this.endedPollNotificationProcessorService.process(job), {
+			...workerOptions,
+		});
 		//#endregion
 	}
 }
