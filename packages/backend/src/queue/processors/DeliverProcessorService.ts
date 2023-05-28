@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UnrecoverableError } from 'bullmq';
+import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, InstancesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -17,7 +17,6 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 import type { DeliverJobData } from '../types.js';
 
 @Injectable()
@@ -124,7 +123,7 @@ export class DeliverProcessorService {
 						});
 						return `${host} is gone`;
 					}
-					throw new UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
+					throw new Bull.UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
 				}
 
 				// 5xx etc.
