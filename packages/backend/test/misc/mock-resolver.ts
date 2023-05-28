@@ -45,6 +45,7 @@ export class MockResolver extends Resolver {
 		});
 	}
 
+	/*
 	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
 		if (typeof value !== 'string') return value;
@@ -63,4 +64,5 @@ export class MockResolver extends Resolver {
 
 		return object;
 	}
+	*/
 }
