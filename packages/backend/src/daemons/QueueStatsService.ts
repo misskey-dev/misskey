@@ -5,6 +5,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { QUEUE, baseQueueOptions } from '@/queue/const.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
@@ -37,26 +38,8 @@ export class QueueStatsService implements OnApplicationShutdown {
 		let activeDeliverJobs = 0;
 		let activeInboxJobs = 0;
 
-		const deliverQueueEvents = new Bull.QueueEvents('deliver', {
-			connection: {
-				port: this.config.redisForJobQueue.port,
-				host: this.config.redisForJobQueue.host,
-				family: this.config.redisForJobQueue.family == null ? 0 : this.config.redisForJobQueue.family,
-				password: this.config.redisForJobQueue.pass,
-				db: this.config.redisForJobQueue.db ?? 0,
-			},
-			prefix: this.config.redisForJobQueue.prefix ? `${this.config.redisForJobQueue.prefix}:queue` : 'queue',
-		});
-		const inboxQueueEvents = new Bull.QueueEvents('inbox', {
-			connection: {
-				port: this.config.redisForJobQueue.port,
-				host: this.config.redisForJobQueue.host,
-				family: this.config.redisForJobQueue.family == null ? 0 : this.config.redisForJobQueue.family,
-				password: this.config.redisForJobQueue.pass,
-				db: this.config.redisForJobQueue.db ?? 0,
-			},
-			prefix: this.config.redisForJobQueue.prefix ? `${this.config.redisForJobQueue.prefix}:queue` : 'queue',
-		});
+		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config, QUEUE.DELIVER));
+		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config, QUEUE.INBOX));
 
 		deliverQueueEvents.on('active', () => {
 			activeDeliverJobs++;

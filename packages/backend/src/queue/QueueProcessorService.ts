@@ -34,6 +34,7 @@ import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMu
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
+import { QUEUE, baseQueueOptions } from './const.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
@@ -105,17 +106,6 @@ export class QueueProcessorService {
 
 	@bindThis
 	public start() {
-		const workerOptions: Bull.WorkerOptions = {
-			connection: {
-				port: this.config.redisForJobQueue.port,
-				host: this.config.redisForJobQueue.host,
-				family: this.config.redisForJobQueue.family == null ? 0 : this.config.redisForJobQueue.family,
-				password: this.config.redisForJobQueue.pass,
-				db: this.config.redisForJobQueue.db ?? 0,
-			},
-			prefix: this.config.redisForJobQueue.prefix ? `${this.config.redisForJobQueue.prefix}:queue` : 'queue',
-		};
-
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある
 				return {
@@ -133,7 +123,7 @@ export class QueueProcessorService {
 		}
 
 		//#region system
-		const systemQueueWorker = new Bull.Worker('system', (job) => {
+		const systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
 			switch (job.name) {
 				case 'tickCharts': return this.tickChartsProcessorService.process();
 				case 'resyncCharts': return this.resyncChartsProcessorService.process();
@@ -144,7 +134,7 @@ export class QueueProcessorService {
 				default: throw new Error(`unrecognized job type ${job.name} for system`);
 			}
 		}, {
-			...workerOptions,
+			...baseQueueOptions(this.config, QUEUE.SYSTEM),
 		});
 
 		const systemLogger = this.logger.createSubLogger('system');
@@ -158,7 +148,7 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region db
-		const dbQueueWorker = new Bull.Worker('db', (job) => {
+		const dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
 			switch (job.name) {
 				case 'deleteDriveFiles': return this.deleteDriveFilesProcessorService.process(job);
 				case 'exportCustomEmojis': return this.exportCustomEmojisProcessorService.process(job);
@@ -181,7 +171,7 @@ export class QueueProcessorService {
 				default: throw new Error(`unrecognized job type ${job.name} for db`);
 			}
 		}, {
-			...workerOptions,
+			...baseQueueOptions(this.config, QUEUE.DB),
 		});
 
 		const dbLogger = this.logger.createSubLogger('db');
@@ -195,8 +185,8 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region deliver
-		const deliverQueueWorker = new Bull.Worker('deliver', (job) => this.deliverProcessorService.process(job), {
-			...workerOptions,
+		const deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => this.deliverProcessorService.process(job), {
+			...baseQueueOptions(this.config, QUEUE.DELIVER),
 			concurrency: this.config.deliverJobConcurrency ?? 128,
 			limiter: {
 				max: this.config.deliverJobPerSec ?? 128,
@@ -218,8 +208,8 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region inbox
-		const inboxQueueWorker = new Bull.Worker('inbox', (job) => this.inboxProcessorService.process(job), {
-			...workerOptions,
+		const inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => this.inboxProcessorService.process(job), {
+			...baseQueueOptions(this.config, QUEUE.INBOX),
 			concurrency: this.config.inboxJobConcurrency ?? 16,
 			limiter: {
 				max: this.config.inboxJobPerSec ?? 16,
@@ -241,8 +231,8 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region webhook deliver
-		const webhookDeliverQueueWorker = new Bull.Worker('webhookDeliver', (job) => this.webhookDeliverProcessorService.process(job), {
-			...workerOptions,
+		const webhookDeliverQueueWorker = new Bull.Worker(QUEUE.WEBHOOK_DELIVER, (job) => this.webhookDeliverProcessorService.process(job), {
+			...baseQueueOptions(this.config, QUEUE.WEBHOOK_DELIVER),
 			concurrency: 64,
 			limiter: {
 				max: 64,
@@ -264,7 +254,7 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region relationship
-		const relationshipQueueWorker = new Bull.Worker('relationship', (job) => {
+		const relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
 			switch (job.name) {
 				case 'follow': return this.relationshipProcessorService.processFollow(job);
 				case 'unfollow': return this.relationshipProcessorService.processUnfollow(job);
@@ -273,7 +263,7 @@ export class QueueProcessorService {
 				default: throw new Error(`unrecognized job type ${job.name} for relationship`);
 			}
 		}, {
-			...workerOptions,
+			...baseQueueOptions(this.config, QUEUE.RELATIONSHIP),
 			concurrency: this.config.relashionshipJobConcurrency ?? 16,
 			limiter: {
 				max: this.config.relashionshipJobPerSec ?? 64,
@@ -292,14 +282,14 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region object storage
-		const objectStorageQueueWorker = new Bull.Worker('objectStorage', (job) => {
+		const objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
 			switch (job.name) {
 				case 'deleteFile': return this.deleteFileProcessorService.process(job);
 				case 'cleanRemoteFiles': return this.cleanRemoteFilesProcessorService.process(job);
 				default: throw new Error(`unrecognized job type ${job.name} for objectStorage`);
 			}
 		}, {
-			...workerOptions,
+			...baseQueueOptions(this.config, QUEUE.OBJECT_STORAGE),
 			concurrency: 16,
 		});
 
@@ -314,8 +304,8 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region ended poll notification
-		const endedPollNotificationWorker = new Bull.Worker('endedPollNotification', (job) => this.endedPollNotificationProcessorService.process(job), {
-			...workerOptions,
+		const endedPollNotificationWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => this.endedPollNotificationProcessorService.process(job), {
+			...baseQueueOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 		});
 		//#endregion
 	}
