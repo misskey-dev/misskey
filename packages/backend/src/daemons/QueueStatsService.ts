@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import Xev from 'xev';
+import * as Bull from 'bullmq';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
@@ -13,6 +16,9 @@ export class QueueStatsService implements OnApplicationShutdown {
 	private intervalId: NodeJS.Timer;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		private queueService: QueueService,
 	) {
 	}
@@ -31,11 +37,32 @@ export class QueueStatsService implements OnApplicationShutdown {
 		let activeDeliverJobs = 0;
 		let activeInboxJobs = 0;
 
-		this.queueService.deliverQueue.on('global:active', () => {
+		const deliverQueueEvents = new Bull.QueueEvents('deliver', {
+			connection: {
+				port: this.config.redisForJobQueue.port,
+				host: this.config.redisForJobQueue.host,
+				family: this.config.redisForJobQueue.family == null ? 0 : this.config.redisForJobQueue.family,
+				password: this.config.redisForJobQueue.pass,
+				db: this.config.redisForJobQueue.db ?? 0,
+			},
+			prefix: this.config.redisForJobQueue.prefix ? `${this.config.redisForJobQueue.prefix}:queue` : 'queue',
+		});
+		const inboxQueueEvents = new Bull.QueueEvents('inbox', {
+			connection: {
+				port: this.config.redisForJobQueue.port,
+				host: this.config.redisForJobQueue.host,
+				family: this.config.redisForJobQueue.family == null ? 0 : this.config.redisForJobQueue.family,
+				password: this.config.redisForJobQueue.pass,
+				db: this.config.redisForJobQueue.db ?? 0,
+			},
+			prefix: this.config.redisForJobQueue.prefix ? `${this.config.redisForJobQueue.prefix}:queue` : 'queue',
+		});
+
+		deliverQueueEvents.on('active', () => {
 			activeDeliverJobs++;
 		});
 
-		this.queueService.inboxQueue.on('global:active', () => {
+		inboxQueueEvents.on('active', () => {
 			activeInboxJobs++;
 		});
 
