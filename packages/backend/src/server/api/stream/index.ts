@@ -67,14 +67,14 @@ export default class Connection {
 
 	@bindThis
 	public async init(wsConnection: WebSocket.WebSocket) {
+		this.wsConnection = wsConnection;
+		this.wsConnection.on('message', this.onWsConnectionMessage);
+
 		if (this.user != null) {
 			await this.fetch();
 
 			this.fetchIntervalId = setInterval(this.fetch, 1000 * 10);
 		}
-
-		this.wsConnection = wsConnection;
-		this.wsConnection.on('message', this.onWsConnectionMessage);
 
 		this.subscriber.on('broadcast', data => {
 			this.onBroadcastMessage(data);
