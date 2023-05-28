@@ -10,6 +10,7 @@ import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type { DbQueue, DeliverQueue, EndedPollNotificationQueue, InboxQueue, ObjectStorageQueue, RelationshipQueue, SystemQueue, WebhookDeliverQueue } from './QueueModule.js';
 import type { DbJobData, RelationshipJobData, ThinUser } from '../queue/types.js';
 import type httpSignature from '@peertube/http-signature';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class QueueService {
@@ -245,7 +246,7 @@ export class QueueService {
 	private generateToDbJobData<T extends 'importFollowingToDb' | 'importBlockingToDb', D extends DbJobData<T>>(name: T, data: D): {
 		name: string,
 		data: D,
-		opts: Bull.JobOptions,
+		opts: Bull.JobsOptions,
 	} {
 		return {
 			name,
@@ -332,10 +333,10 @@ export class QueueService {
 	}
 
 	@bindThis
-	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobOptions = {}): {
+	private generateRelationshipJobData(name: 'follow' | 'unfollow' | 'block' | 'unblock', data: RelationshipJobData, opts: Bull.JobsOptions = {}): {
 		name: string,
 		data: RelationshipJobData,
-		opts: Bull.JobOptions,
+		opts: Bull.JobsOptions,
 	} {
 		return {
 			name,
