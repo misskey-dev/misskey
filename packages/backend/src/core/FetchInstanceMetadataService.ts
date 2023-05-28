@@ -116,14 +116,14 @@ export class FetchInstanceMetadataService {
 			const wellknown = await this.httpRequestService.getJson('https://' + instance.host + '/.well-known/nodeinfo')
 				.catch(err => {
 					if (err.statusCode === 404) {
-						throw 'No nodeinfo provided';
+						throw new Error('No nodeinfo provided');
 					} else {
 						throw err.statusCode ?? err.message;
 					}
 				}) as Record<string, unknown>;
 	
 			if (wellknown.links == null || !Array.isArray(wellknown.links)) {
-				throw 'No wellknown links';
+				throw new Error('No wellknown links');
 			}
 	
 			const links = wellknown.links as any[];
@@ -134,7 +134,7 @@ export class FetchInstanceMetadataService {
 			const link = lnik2_1 ?? lnik2_0 ?? lnik1_0;
 	
 			if (link == null) {
-				throw 'No nodeinfo link provided';
+				throw new Error('No nodeinfo link provided');
 			}
 	
 			const info = await this.httpRequestService.getJson(link.href)

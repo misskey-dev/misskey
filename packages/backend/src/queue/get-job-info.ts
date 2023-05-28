@@ -1,4 +1,4 @@
-import Bull from 'bull';
+import type * as Bull from 'bullmq';
 
 export function getJobInfo(job: Bull.Job, increment = false) {
 	const age = Date.now() - job.timestamp;

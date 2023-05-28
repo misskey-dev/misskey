@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UnrecoverableError } from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, InstancesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -16,7 +17,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 import type { DeliverJobData } from '../types.js';
 
 @Injectable()
@@ -123,13 +124,11 @@ export class DeliverProcessorService {
 						});
 						return `${host} is gone`;
 					}
-					// HTTPステータスコード4xxはクライアントエラーであり、それはつまり
-					// 何回再送しても成功することはないということなのでエラーにはしないでおく
-					return `${res.statusCode} ${res.statusMessage}`;
+					throw new UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
 				}
 
 				// 5xx etc.
-				throw `${res.statusCode} ${res.statusMessage}`;
+				throw new Error(`${res.statusCode} ${res.statusMessage}`);
 			} else {
 				// DNS error, socket error, timeout ...
 				throw res;

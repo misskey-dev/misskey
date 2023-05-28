@@ -1,14 +1,14 @@
 import { setTimeout } from 'node:timers/promises';
 import { Inject, Module, OnApplicationShutdown } from '@nestjs/common';
-import Bull from 'bull';
+import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Provider } from '@nestjs/common';
 import type { DeliverJobData, InboxJobData, DbJobData, ObjectStorageJobData, EndedPollNotificationJobData, WebhookDeliverJobData, RelationshipJobData, DbJobMap } from '../queue/types.js';
 
-function q<T>(config: Config, name: string, limitPerSec = -1) {
-	return new Bull<T>(name, {
-		redis: {
+function q<T>(config: Config, name: string) {
+	return new Bull.Queue<T>(name, {
+		connection: {
 			port: config.redisForJobQueue.port,
 			host: config.redisForJobQueue.host,
 			family: config.redisForJobQueue.family == null ? 0 : config.redisForJobQueue.family,
@@ -16,26 +16,7 @@ function q<T>(config: Config, name: string, limitPerSec = -1) {
 			db: config.redisForJobQueue.db ?? 0,
 		},
 		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue` : 'queue',
-		limiter: limitPerSec > 0 ? {
-			max: limitPerSec,
-			duration: 1000,
-		} : undefined,
-		settings: {
-			backoffStrategies: {
-				apBackoff,
-			},
-		},
 	});
-}
-
-// ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
-function apBackoff(attemptsMade: number, err: Error) {
-	const baseDelay = 60 * 1000;	// 1min
-	const maxBackoff = 8 * 60 * 60 * 1000;	// 8hours
-	let backoff = (Math.pow(2, attemptsMade) - 1) * baseDelay;
-	backoff = Math.min(backoff, maxBackoff);
-	backoff += Math.round(backoff * Math.random() * 0.2);
-	return backoff;
 }
 
 export type SystemQueue = Bull.Queue<Record<string, unknown>>;
@@ -61,13 +42,13 @@ const $endedPollNotification: Provider = {
 
 const $deliver: Provider = {
 	provide: 'queue:deliver',
-	useFactory: (config: Config) => q(config, 'deliver', config.deliverJobPerSec ?? 128),
+	useFactory: (config: Config) => q(config, 'deliver'),
 	inject: [DI.config],
 };
 
 const $inbox: Provider = {
 	provide: 'queue:inbox',
-	useFactory: (config: Config) => q(config, 'inbox', config.inboxJobPerSec ?? 16),
+	useFactory: (config: Config) => q(config, 'inbox'),
 	inject: [DI.config],
 };
 
@@ -79,7 +60,7 @@ const $db: Provider = {
 
 const $relationship: Provider = {
 	provide: 'queue:relationship',
-	useFactory: (config: Config) => q(config, 'relationship', config.relashionshipJobPerSec ?? 64),
+	useFactory: (config: Config) => q(config, 'relationship'),
 	inject: [DI.config],
 };
 
@@ -91,7 +72,7 @@ const $objectStorage: Provider = {
 
 const $webhookDeliver: Provider = {
 	provide: 'queue:webhookDeliver',
-	useFactory: (config: Config) => q(config, 'webhookDeliver', 64),
+	useFactory: (config: Config) => q(config, 'webhookDeliver'),
 	inject: [DI.config],
 };
 

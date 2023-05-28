@@ -8,10 +8,10 @@ import { DriveService } from '@/core/DriveService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Note } from '@/models/entities/Note.js';
 import { EmailService } from '@/core/EmailService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
-import type { DbUserDeleteJobData } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
+import type { DbUserDeleteJobData } from '../types.js';
 
 @Injectable()
 export class DeleteAccountProcessorService {

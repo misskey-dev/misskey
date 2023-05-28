@@ -1,6 +1,7 @@
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import httpSignature from '@peertube/http-signature';
+import { UnrecoverableError } from 'bullmq';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -23,7 +24,7 @@ import { LdSignatureService } from '@/core/activitypub/LdSignatureService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 import type { InboxJobData } from '../types.js';
 
 // ユーザーのinboxにアクティビティが届いた時の処理
@@ -93,12 +94,12 @@ export class InboxProcessorService {
 			try {
 				authUser = await this.apDbResolverService.getAuthUserFromApId(getApId(activity.actor));
 			} catch (err) {
-			// 対象が4xxならスキップ
+				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
 					if (err.isClientError) {
-						return `skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`;
+						throw new UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
 					}
-					throw `Error in actor ${activity.actor} - ${err.statusCode ?? err}`;
+					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode ?? err}`);
 				}
 			}
 		}
