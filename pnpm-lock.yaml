@@ -146,7 +146,7 @@ importers:
         specifier: 2.0.5
         version: 2.0.5
       bullmq:
-        specifier: ^3.14.1
+        specifier: 3.14.1
         version: 3.14.1
       cacheable-lookup:
         specifier: 6.1.0
