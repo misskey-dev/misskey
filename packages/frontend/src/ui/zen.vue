@@ -3,6 +3,14 @@
 	<RouterView/>
 
 	<XCommon/>
+
+	<!--
+		デッキUIの場合はデッキUIに戻れるようにする
+		See https://github.com/misskey-dev/misskey/issues/10905
+	-->
+	<div v-if="ui === 'deck'" :class="$style.bottom">
+		<button v-tooltip="i18n.ts.goToMisskey" :class="['_button', '_shadow', $style.button]" @click="goToMisskey"><i class="ti ti-home"></i></button>
+	</div>
 </div>
 </template>
 
@@ -11,7 +19,8 @@ import { provide, ComputedRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { instanceName } from '@/config';
+import { instanceName, ui } from '@/config';
+import { i18n } from '@/i18n';
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
@@ -23,6 +32,10 @@ provideMetadataReceiver((info) => {
 	}
 });
 
+function goToMisskey() {
+	window.location.href = '/';
+}
+
 document.documentElement.style.overflowY = 'scroll';
 </script>
 
@@ -30,5 +43,28 @@ document.documentElement.style.overflowY = 'scroll';
 .root {
 	min-height: 100dvh;
 	box-sizing: border-box;
+}
+
+.bottom {
+	position: sticky !important;
+	z-index: 9999999;
+	bottom: 0;
+	left: 0;
+	height: calc(60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px));
+	width: 100%;
+}
+
+.button {
+	position: absolute;
+	padding: 0;
+	aspect-ratio: 1;
+	width: 100%;
+	max-width: 60px;
+	margin: auto;
+	border-radius: 100%;
+	background: var(--panel);
+	color: var(--fg);
+	right: var(--margin);
+	bottom: calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 }
 </style>
