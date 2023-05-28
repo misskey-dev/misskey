@@ -1,8 +1,8 @@
 <template>
-<section class="sdgxphyu">
-	<component :is="'h' + h">{{ block.title }}</component>
+<section>
+	<component :is="'h' + h" :class="h < 5 ? $style['h' + h] : null">{{ block.title }}</component>
 
-	<div class="children">
+	<div class="_gaps">
 		<XBlock v-for="child in block.children" :key="child.id" :page="page" :block="child" :h="h + 1"/>
 	</div>
 </section>
@@ -22,27 +22,19 @@ defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
-.sdgxphyu {
-	margin: 1.5em 0;
+<style lang="scss" module>
+.h2 {
+	font-size: 1.35em;
+	margin: 0 0 0.5em 0;
+}
 
-	> h2 {
-		font-size: 1.35em;
-		margin: 0 0 0.5em 0;
-	}
+.h3 {
+	font-size: 1em;
+	margin: 0 0 0.5em 0;
+}
 
-	> h3 {
-		font-size: 1em;
-		margin: 0 0 0.5em 0;
-	}
-
-	> h4 {
-		font-size: 1em;
-		margin: 0 0 0.5em 0;
-	}
-
-	> .children {
-		//padding 16px
-	}
+.h4 {
+	font-size: 1em;
+	margin: 0 0 0.5em 0;
 }
 </style>

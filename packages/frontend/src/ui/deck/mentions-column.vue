@@ -1,5 +1,5 @@
 <template>
-<XColumn :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :column="column" :isStacked="isStacked">
 	<template #header><i class="ti ti-at" style="margin-right: 8px;"></i>{{ column.name }}</template>
 
 	<MkNotes :pagination="pagination"/>
@@ -18,7 +18,6 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 const pagination = {

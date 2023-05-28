@@ -10,7 +10,10 @@
 			<XReactions v-else-if="tab === 'reactions'" :user="user"/>
 			<XClips v-else-if="tab === 'clips'" :user="user"/>
 			<XLists v-else-if="tab === 'lists'" :user="user"/>
+<<<<<<< HEAD
 			<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
+=======
+>>>>>>> upstream/develop
 			<XPages v-else-if="tab === 'pages'" :user="user"/>
 			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
 		</div>

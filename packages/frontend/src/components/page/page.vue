@@ -1,5 +1,5 @@
 <template>
-<div class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }">
+<div :class="{ [$style.center]: page.alignCenter, [$style.serif]: page.font === 'serif' }">
 	<XBlock v-for="child in page.content" :key="child.id" :block="child" :h="2"/>
 </div>
 </template>
@@ -14,16 +14,12 @@ defineProps<{
 }>();
 </script>
 
-<style lang="scss" scoped>
-.iroscrza {
-	&.serif {
-		> div {
-			font-family: serif;
-		}
-	}
+<style lang="scss" module>
+.serif {
+	font-family: serif;
+}
 
-	&.center {
-		text-align: center;
-	}
+.center {
+	text-align: center;
 }
 </style>
