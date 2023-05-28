@@ -4,7 +4,6 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import { getJobInfo } from './get-job-info.js';
 import { WebhookDeliverProcessorService } from './processors/WebhookDeliverProcessorService.js';
 import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
 import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
@@ -44,6 +43,22 @@ function httpRelatedBackoff(attemptsMade: number) {
 	backoff = Math.min(backoff, maxBackoff);
 	backoff += Math.round(backoff * Math.random() * 0.2);
 	return backoff;
+}
+
+function getJobInfo(job: Bull.Job | undefined, increment = false): string {
+	if (job == null) return '-';
+
+	const age = Date.now() - job.timestamp;
+
+	const formated = age > 60000 ? `${Math.floor(age / 1000 / 60)}m`
+		: age > 10000 ? `${Math.floor(age / 1000)}s`
+		: `${age}ms`;
+
+	// onActiveとかonCompletedのattemptsMadeがなぜか0始まりなのでインクリメントする
+	const currentAttempts = job.attemptsMade + (increment ? 1 : 0);
+	const maxAttempts = job.opts ? job.opts.attempts : 0;
+
+	return `id=${job.id} attempts=${currentAttempts}/${maxAttempts} age=${formated}`;
 }
 
 @Injectable()
@@ -122,12 +137,11 @@ export class QueueProcessorService {
 		const systemLogger = this.logger.createSubLogger('system');
 
 		systemQueueWorker
-			.on('waiting', (jobId) => systemLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => systemLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
-			.on('error', (job: any, err: Error) => systemLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => systemLogger.warn(`stalled id=${job.id}`));
+			.on('failed', (job, err) => systemLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => systemLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => systemLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region db
@@ -158,12 +172,11 @@ export class QueueProcessorService {
 		const dbLogger = this.logger.createSubLogger('db');
 
 		dbQueueWorker
-			.on('waiting', (jobId) => dbLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => dbLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
-			.on('error', (job: any, err: Error) => dbLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => dbLogger.warn(`stalled id=${job.id}`));
+			.on('failed', (job, err) => dbLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => dbLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => dbLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region deliver
@@ -181,12 +194,11 @@ export class QueueProcessorService {
 		const deliverLogger = this.logger.createSubLogger('deliver');
 
 		deliverQueueWorker
-			.on('waiting', (jobId) => deliverLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => deliverLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-			.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job.data.to}`))
-			.on('error', (job: any, err: Error) => deliverLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => deliverLogger.warn(`stalled ${getJobInfo(job)} to=${job.data.to}`));
+			.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
+			.on('error', (err: Error) => deliverLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => deliverLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region inbox
@@ -204,12 +216,11 @@ export class QueueProcessorService {
 		const inboxLogger = this.logger.createSubLogger('inbox');
 
 		inboxQueueWorker
-			.on('waiting', (jobId) => inboxLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
-			.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) ${getJobInfo(job)} activity=${job.data.activity ? job.data.activity.id : 'none'}`, { job, e: renderError(err) }))
-			.on('error', (job: any, err: Error) => inboxLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => inboxLogger.warn(`stalled ${getJobInfo(job)} activity=${job.data.activity ? job.data.activity.id : 'none'}`));
+			.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => inboxLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => inboxLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region webhook deliver
@@ -227,12 +238,11 @@ export class QueueProcessorService {
 		const webhookLogger = this.logger.createSubLogger('webhook');
 
 		webhookDeliverQueueWorker
-			.on('waiting', (jobId) => webhookLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
-			.on('failed', (job, err) => webhookLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job.data.to}`))
-			.on('error', (job: any, err: Error) => webhookLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => webhookLogger.warn(`stalled ${getJobInfo(job)} to=${job.data.to}`));
+			.on('failed', (job, err) => webhookLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
+			.on('error', (err: Error) => webhookLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => webhookLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region relationship
@@ -255,12 +265,11 @@ export class QueueProcessorService {
 		const relationshipLogger = this.logger.createSubLogger('relationship');
 	
 		relationshipQueueWorker
-			.on('waiting', (jobId) => relationshipLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
-			.on('error', (job: any, err: Error) => relationshipLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => relationshipLogger.warn(`stalled id=${job.id}`));
+			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => relationshipLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => relationshipLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region object storage
@@ -277,12 +286,11 @@ export class QueueProcessorService {
 		const objectStorageLogger = this.logger.createSubLogger('objectStorage');
 
 		objectStorageQueueWorker
-			.on('waiting', (jobId) => objectStorageLogger.debug(`waiting id=${jobId}`))
 			.on('active', (job) => objectStorageLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => objectStorageLogger.debug(`completed(${result}) id=${job.id}`))
-			.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err}) id=${job.id}`, { job, e: renderError(err) }))
-			.on('error', (job: any, err: Error) => objectStorageLogger.error(`error ${err}`, { job, e: renderError(err) }))
-			.on('stalled', (job) => objectStorageLogger.warn(`stalled id=${job.id}`));
+			.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
+			.on('error', (err: Error) => objectStorageLogger.error(`error ${err}`, { e: renderError(err) }))
+			.on('stalled', (jobId) => objectStorageLogger.warn(`stalled id=${jobId}`));
 		//#endregion
 
 		//#region ended poll notification
