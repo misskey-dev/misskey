@@ -169,20 +169,25 @@ describe('After user signed in', () => {
 		cy.get('[data-cy-user-setup-user-description] textarea').type('ほげ');
 		// TODO: アイコン設定テスト
 
+		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		// プライバシー設定
 
+		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		// フォローはスキップ
 
+		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
 		// プッシュ通知設定はスキップ
 
+		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
 
+		cy.get('[data-cy-user-setup-back]').click();
 		cy.get('[data-cy-user-setup-continue]').click();
   });
 });

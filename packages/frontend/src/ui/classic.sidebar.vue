@@ -20,14 +20,14 @@
 		</component>
 	</template>
 	<div class="divider"></div>
-	<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" activeClass="active" to="/admin" :behavior="settingsWindowed ? 'modalWindow' : null">
+	<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" activeClass="active" to="/admin" :behavior="settingsWindowed ? 'window' : null">
 		<i class="ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
 	</MkA>
 	<button v-click-anime class="item _button" @click="more">
 		<i class="ti ti-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
 		<span v-if="otherNavItemIndicated" class="indicator"><i class="_indicatorCircle"></i></span>
 	</button>
-	<MkA v-click-anime class="item" activeClass="active" to="/settings" :behavior="settingsWindowed ? 'modalWindow' : null">
+	<MkA v-click-anime class="item" activeClass="active" to="/settings" :behavior="settingsWindowed ? 'window' : null">
 		<i class="ti ti-settings ti-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
 	</MkA>
 	<div class="divider"></div>

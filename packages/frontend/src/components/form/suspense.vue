@@ -1,18 +1,16 @@
 <template>
-<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
-	<div v-if="pending">
-		<MkLoading/>
+<div v-if="pending">
+	<MkLoading/>
+</div>
+<div v-else-if="resolved">
+	<slot :result="result"></slot>
+</div>
+<div v-else>
+	<div :class="$style.error">
+		<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
+		<MkButton inline style="margin-top: 16px;" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
 	</div>
-	<div v-else-if="resolved">
-		<slot :result="result"></slot>
-	</div>
-	<div v-else>
-		<div class="wszdbhzo">
-			<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</div>
-			<MkButton inline class="retry" @click="retry"><i class="ti ti-reload"></i> {{ i18n.ts.retry }}</MkButton>
-		</div>
-	</div>
-</Transition>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -60,22 +58,9 @@ const retry = () => {
 };
 </script>
 
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity 0.125s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-.wszdbhzo {
+<style lang="scss" module>
+.error {
 	padding: 16px;
 	text-align: center;
-
-	> .retry {
-		margin-top: 16px;
-	}
 }
 </style>
