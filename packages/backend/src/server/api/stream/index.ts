@@ -77,7 +77,9 @@ export default class Connection {
 		if (this.user != null) {
 			await this.fetch();
 
-			this.fetchIntervalId = setInterval(this.fetch, 1000 * 10);
+			if (!this.fetchIntervalId) {
+				this.fetchIntervalId = setInterval(this.fetch, 1000 * 10);
+			}
 		}
 	}
 
