@@ -1,16 +1,16 @@
 <template>
-<div :class="$style.root" style="container-type: inline-size;">
+<div :class="ui === 'deck' ? $style.rootWithBottom : $style.root" style="container-type: inline-size;">
 	<RouterView/>
 
 	<XCommon/>
+</div>
 
-	<!--
-		デッキUIの場合はデッキUIに戻れるようにする
-		See https://github.com/misskey-dev/misskey/issues/10905
-	-->
-	<div v-if="ui === 'deck'" :class="$style.bottom">
-		<button v-tooltip="i18n.ts.goToMisskey" :class="['_button', '_shadow', $style.button]" @click="goToMisskey"><i class="ti ti-home"></i></button>
-	</div>
+<!--
+	デッキUIの場合はデッキUIに戻れるようにする
+	See https://github.com/misskey-dev/misskey/issues/10905
+-->
+<div v-if="ui === 'deck'" :class="$style.bottom">
+	<button v-tooltip="i18n.ts.goToMisskey" :class="['_button', '_shadow', $style.button]" @click="goToMisskey"><i class="ti ti-home"></i></button>
 </div>
 </template>
 
@@ -45,17 +45,19 @@ document.documentElement.style.overflowY = 'scroll';
 	box-sizing: border-box;
 }
 
+.rootWithBottom {
+	min-height: calc(100dvh - (60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px)));
+	box-sizing: border-box;
+}
+
 .bottom {
-	position: sticky !important;
-	z-index: 9999999;
-	bottom: 0;
-	left: 0;
 	height: calc(60px + (var(--margin) * 2) + env(safe-area-inset-bottom, 0px));
 	width: 100%;
+	margin-top: auto;
 }
 
 .button {
-	position: absolute;
+	position: fixed !important;
 	padding: 0;
 	aspect-ratio: 1;
 	width: 100%;
