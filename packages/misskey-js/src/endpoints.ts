@@ -1470,7 +1470,7 @@ export const endpoints = {
 	'admin/get-index-stats': {
 		requireCredential: true,
 		requireAdmin: true,
-	
+
 		tags: ['admin'],
 
 		defines: [{
@@ -1491,9 +1491,9 @@ export const endpoints = {
 	'admin/get-table-stats': {
 		requireCredential: true,
 		requireAdmin: true,
-	
+
 		tags: ['admin'],
-	
+
 		defines: [{
 			req: undefined,
 			res: {
@@ -1511,7 +1511,7 @@ export const endpoints = {
 	},
 	'admin/get-user-ips': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -1538,7 +1538,7 @@ export const endpoints = {
 	},
 	'admin/meta': {
 		tags: ['meta'],
-	
+
 		requireCredential: true,
 		requireAdmin: true,
 
@@ -1548,7 +1548,71 @@ export const endpoints = {
 				$ref: 'https://misskey-hub.net/api/schemas/InstanceMetaAdmin',
 			},
 		}],
-	}
+	},
+	'admin/reset-password': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					password: {
+						type: 'string',
+						minLength: 8,
+						maxLength: 8,
+					},
+				},
+				required: ['password'],
+			},
+		}],
+	},
+	'admin/resolve-abuse-user-report': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					reportId: { type: 'string', format: 'misskey:id' },
+					forward: { type: 'boolean', default: false },
+				},
+				required: ['reportId'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/send-email': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					to: { type: 'string' },
+					subject: { type: 'string' },
+					text: { type: 'string' },
+				},
+				required: ['to', 'subject', 'text'],
+			},
+			res: undefined,
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

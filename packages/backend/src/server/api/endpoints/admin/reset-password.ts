@@ -5,37 +5,10 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			password: {
-				type: 'string',
-				optional: false, nullable: false,
-				minLength: 8,
-				maxLength: 8,
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['userId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/reset-password'> {
+	name = 'admin/reset-password' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -43,7 +16,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(async (ps) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {
