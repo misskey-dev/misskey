@@ -12,7 +12,7 @@ import type { Poll } from '@/models/entities/Poll.js';
 import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
@@ -39,12 +39,11 @@ export class ExportNotesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
 		this.logger.info(`Exporting notes of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -87,7 +86,7 @@ export class ExportNotesProcessorService {
 				}) as Note[];
 
 				if (notes.length === 0) {
-					job.progress(100);
+					job.updateProgress(100);
 					break;
 				}
 
@@ -108,7 +107,7 @@ export class ExportNotesProcessorService {
 					userId: user.id,
 				});
 
-				job.progress(exportedNotesCount / total);
+				job.updateProgress(exportedNotesCount / total);
 			}
 
 			await write(']');
@@ -123,8 +122,6 @@ export class ExportNotesProcessorService {
 		} finally {
 			cleanup();
 		}
-
-		done();
 	}
 }
 
