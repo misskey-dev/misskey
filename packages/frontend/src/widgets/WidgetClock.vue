@@ -1,9 +1,9 @@
 <template>
-<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-clock class="mkw-clock">
-	<div class="vubelbmv" :class="widgetProps.size">
-		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label a abbrev">{{ tzAbbrev }}</div>
+<MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-clock>
+	<div :class="[$style.root, $style[widgetProps.size]]">
+		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace" :class="[$style.label, $style.a]">{{ tzAbbrev }}</div>
 		<MkAnalogClock
-			class="clock"
+			:class="$style.clock"
 			:thickness="widgetProps.thickness"
 			:offset="tzOffset"
 			:graduations="widgetProps.graduations"
@@ -11,8 +11,8 @@
 			:twentyfour="widgetProps.twentyFour"
 			:sAnimation="widgetProps.sAnimation"
 		/>
-		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" class="_monospace label c time" :showS="false" :offset="tzOffset"/>
-		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace label d offset">{{ tzOffsetLabel }}</div>
+		<MkDigitalClock v-if="widgetProps.label === 'time' || widgetProps.label === 'timeAndTz'" :class="[$style.label, $style.c]" class="_monospace" :showS="false" :offset="tzOffset"/>
+		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace" :class="[$style.label, $style.d]">{{ tzOffsetLabel }}</div>
 	</div>
 </MkContainer>
 </template>
@@ -140,38 +140,9 @@ defineExpose<WidgetComponentExpose>({
 });
 </script>
 
-<style lang="scss" scoped>
-.vubelbmv {
+<style lang="scss" module>
+.root {
 	position: relative;
-
-	> .label {
-		position: absolute;
-		opacity: 0.7;
-
-		&.a {
-			top: 14px;
-			left: 14px;
-		}
-
-		&.b {
-			top: 14px;
-			right: 14px;
-		}
-
-		&.c {
-			bottom: 14px;
-			left: 14px;
-		}
-
-		&.d {
-			bottom: 14px;
-			right: 14px;
-		}
-	}
-
-	> .clock {
-		margin: auto;
-	}
 
 	&.small {
 		padding: 12px;
@@ -196,5 +167,34 @@ defineExpose<WidgetComponentExpose>({
 			height: 200px;
 		}
 	}
+}
+
+.label {
+	position: absolute;
+	opacity: 0.7;
+
+	&.a {
+		top: 14px;
+		left: 14px;
+	}
+
+	&.b {
+		top: 14px;
+		right: 14px;
+	}
+
+	&.c {
+		bottom: 14px;
+		left: 14px;
+	}
+
+	&.d {
+		bottom: 14px;
+		right: 14px;
+	}
+}
+
+.clock {
+	margin: auto;
 }
 </style>

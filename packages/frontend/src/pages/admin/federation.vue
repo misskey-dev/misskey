@@ -3,7 +3,7 @@
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions"/></template>
 		<MkSpacer :contentMax="900">
-			<div>
+			<div class="_gaps">
 				<div>
 					<MkInput v-model="host" :debounce="true" class="">
 						<template #prefix><i class="ti ti-search"></i></template>

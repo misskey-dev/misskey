@@ -2,21 +2,19 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div>
-		<Transition name="fade" mode="out-in">
-			<div v-if="user">
-				<XHome v-if="tab === 'home'" :user="user"/>
-				<XTimeline v-else-if="tab === 'notes'" :user="user"/>
-				<XActivity v-else-if="tab === 'activity'" :user="user"/>
-				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
-				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
-				<XClips v-else-if="tab === 'clips'" :user="user"/>
-				<XLists v-else-if="tab === 'lists'" :user="user"/>
-				<XPages v-else-if="tab === 'pages'" :user="user"/>
-				<XGallery v-else-if="tab === 'gallery'" :user="user"/>
-			</div>
-			<MkError v-else-if="error" @retry="fetchUser()"/>
-			<MkLoading v-else/>
-		</Transition>
+		<div v-if="user">
+			<XHome v-if="tab === 'home'" :user="user"/>
+			<XTimeline v-else-if="tab === 'notes'" :user="user"/>
+			<XActivity v-else-if="tab === 'activity'" :user="user"/>
+			<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
+			<XReactions v-else-if="tab === 'reactions'" :user="user"/>
+			<XClips v-else-if="tab === 'clips'" :user="user"/>
+			<XLists v-else-if="tab === 'lists'" :user="user"/>
+			<XPages v-else-if="tab === 'pages'" :user="user"/>
+			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
+		</div>
+		<MkError v-else-if="error" @retry="fetchUser()"/>
+		<MkLoading v-else/>
 	</div>
 </MkStickyContainer>
 </template>
@@ -118,14 +116,3 @@ definePageMetadata(computed(() => user ? {
 	},
 } : null));
 </script>
-
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity 0.125s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-</style>

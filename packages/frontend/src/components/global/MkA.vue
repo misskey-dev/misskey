@@ -15,7 +15,7 @@ import { useRouter } from '@/router';
 const props = withDefaults(defineProps<{
 	to: string;
 	activeClass?: null | string;
-	behavior?: null | 'window' | 'browser' | 'modalWindow';
+	behavior?: null | 'window' | 'browser';
 }>(), {
 	activeClass: null,
 	behavior: null,
@@ -70,14 +70,6 @@ function openWindow() {
 	os.pageWindow(props.to);
 }
 
-function modalWindow() {
-	os.modalPageWindow(props.to);
-}
-
-function popout() {
-	popout_(props.to);
-}
-
 function nav(ev: MouseEvent) {
 	if (props.behavior === 'browser') {
 		location.href = props.to;
@@ -87,8 +79,6 @@ function nav(ev: MouseEvent) {
 	if (props.behavior) {
 		if (props.behavior === 'window') {
 			return openWindow();
-		} else if (props.behavior === 'modalWindow') {
-			return modalWindow();
 		}
 	}
 

@@ -6,6 +6,7 @@ import { type UserConfig, defineConfig } from 'vite';
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
 import locales from '../../locales';
+import generateDTS from '../../locales/generateDTS';
 import meta from '../../package.json';
 import pluginJson5 from './vite.json5';
 
@@ -64,6 +65,10 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
+			{
+				name: 'locale:generateDTS',
+				buildStart: generateDTS,
+			},
 		],
 
 		resolve: {

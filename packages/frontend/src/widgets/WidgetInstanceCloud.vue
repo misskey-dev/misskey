@@ -72,7 +72,3 @@ defineExpose<WidgetComponentExpose>({
 	id: props.widget ? props.widget.id : null,
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

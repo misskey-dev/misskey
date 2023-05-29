@@ -160,37 +160,41 @@
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
-			<h1>出现了一些问题！</h1>
-			<button class="button-big" onclick="location.reload();">
+			<h1>加载失败</h1>
+			<button class="button-big" onclick="location.reload(true);">
 				<span class="button-label-big">刷新</span>
 			</button>
-			<p class="dont-worry">不用担心，这(应该)不是您的错。</p>
-			<p>如果该错误在刷新后仍然出现，请联系您实例的管理员。<br>您也可以尝试以下的选项：</p>
+			<p><b>以下操作或许可以解决这个问题。</b></p>
+			<p>清除浏览器缓存</p>
 			<p>更新您的操作系统和浏览器</p>
 			<p>停用广告拦截器</p>
-			<a href="/flush">
-				<button class="button-small">
-					<span class="button-label-small">清理偏好设置与缓存</span>
-				</button>
-			</a>
-			<br>
-			<a href="/cli">
-				<button class="button-small">
-					<span class="button-label-small">启动简单客户端</span>
-				</button>
-			</a>
-			<br>
-			<a href="/bios">
-				<button class="button-small">
-					<span class="button-label-small">启动修复工具</span>
-				</button>
-			</a>
+			<details style="color: #62b6e7;">
+				<summary>其他选项</summary>
+				<a href="/flush">
+					<button class="button-small">
+						<span class="button-label-small">清理偏好设置与缓存</span>
+					</button>
+				</a>
+				<br>
+				<a href="/cli">
+					<button class="button-small">
+						<span class="button-label-small">启动简单客户端</span>
+					</button>
+				</a>
+				<br>
+				<a href="/bios">
+					<button class="button-small">
+						<span class="button-label-small">启动修复工具</span>
+					</button>
+				</a>
+			</details>
 			<br>
 			<div id="errors"></div>
 			`;
 			errorsElement = document.getElementById('errors');
 		}
 		const detailsElement = document.createElement('details');
+		detailsElement.id = 'errorInfo';
 		detailsElement.innerHTML = `
 		<br>
 		<summary>
@@ -247,7 +251,7 @@
 		.button-label-big {
 			color: #222;
 			font-weight: bold;
-			font-size: 20px;
+			font-size: 1.2em;
 			padding: 12px;
 		}
 
@@ -267,11 +271,6 @@
 			font-size: 16px;
 		}
 
-		.dont-worry,
-		#msg {
-			font-size: 18px;
-		}
-
 		.icon-warning {
 			color: #dec340;
 			height: 4rem;
@@ -279,14 +278,15 @@
 		}
 
 		h1 {
-			font-size: 32px;
+			font-size: 1.5em;
+			margin: 1em;
 		}
 
 		code {
 			font-family: Fira, FiraCode, monospace;
 		}
 
-		details {
+		#errorInfo {
 			background: #333;
 			margin-bottom: 2rem;
 			padding: 0.5rem 1rem;
@@ -296,16 +296,16 @@
 			margin: auto;
 		}
 
-		summary {
+		#errorInfo summary {
 			cursor: pointer;
 		}
 
-		summary > * {
+		#errorInfo summary > * {
 			display: inline;
 		}
 
 		@media screen and (max-width: 500px) {
-			details {
+			#errorInfo {
 				width: 50%;
 			}
         }
