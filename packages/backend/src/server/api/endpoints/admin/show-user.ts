@@ -81,7 +81,7 @@ export default class extends Endpoint<'admin/show-user'> {
 				isModerator: isModerator,
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
-				lastActiveDate: user.lastActiveDate,
+				lastActiveDate: user.lastActiveDate ? user.lastActiveDate.toISOString() : null,
 				moderationNote: profile.moderationNote ?? '',
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
