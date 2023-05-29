@@ -122,7 +122,13 @@ export class NoteReadService implements OnApplicationShutdown {
 		}
 	}
 
-	onApplicationShutdown(signal?: string | undefined): void {
+	@bindThis
+	public dispose(): void {
 		this.#shutdownController.abort();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }
