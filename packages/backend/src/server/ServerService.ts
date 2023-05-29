@@ -222,7 +222,13 @@ export class ServerService implements OnApplicationShutdown {
 		await fastify.ready();
 	}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
+	@bindThis
+	public async dispose(): Promise<void> {
 		await this.#fastify.close();
+	}
+
+	@bindThis
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }
