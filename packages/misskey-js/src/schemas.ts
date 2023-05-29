@@ -51,6 +51,9 @@ import {
 	ServerInfoSchema,
 	ServerInfoAdminSchema,
 } from './schemas/server-info.js';
+import {
+	SignInSchema,
+} from './schemas/sign-in.js';
 import { packedModerationLogSchema } from './schemas/moderation-log.js';
 import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
@@ -103,6 +106,7 @@ export const refs = {
 	ServerInfo: ServerInfoSchema,
 	ServerInfoAdmin: ServerInfoAdminSchema,
 	ModerationLog: packedModerationLogSchema,
+	SignIn: SignInSchema,
 
 	Error: Error,
 	ApiError: ApiError,

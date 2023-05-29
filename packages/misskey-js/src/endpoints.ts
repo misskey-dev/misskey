@@ -1650,6 +1650,9 @@ export const endpoints = {
 			}
 		}],
 	},
+	'admin/show-user': {
+
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
