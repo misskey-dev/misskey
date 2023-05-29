@@ -1613,6 +1613,19 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
+	'admin/server-info': {
+		requireCredential: true,
+		requireModerator: true,
+	
+		tags: ['admin', 'meta'],
+	
+		defines: [{
+			req: undefined,
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/ServerInfoAdmin',
+			}
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

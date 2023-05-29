@@ -47,6 +47,10 @@ import {
 	InstanceMetaSharedSchema,
 	InstanceMetaAdminSchema,
 } from './schemas/instance-meta.js';
+import {
+	ServerInfoSchema,
+	ServerInfoAdminSchema,
+} from './schemas/server-info.js';
 import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
@@ -95,6 +99,8 @@ export const refs = {
 	AbuseUserReport: packedAbuseUserReportSchema,
 	InstanceMetaShared: InstanceMetaSharedSchema,
 	InstanceMetaAdmin: InstanceMetaAdminSchema,
+	ServerInfo: ServerInfoSchema,
+	ServerInfoAdmin: ServerInfoAdminSchema,
 
 	Error: Error,
 	ApiError: ApiError,

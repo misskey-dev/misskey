@@ -110,6 +110,15 @@ describe('schemas', () => {
     test('abuse user report', () => {
         type AbuseUserReport = Packed<'AbuseUserReport'>;
     });
+    test('meta', () => {
+        type MetaShared = Packed<'InstanceMetaShared'>;
+        //type Meta = Packed<'InstanceMeta'>;
+        type MetaAdmin = Packed<'InstanceMetaAdmin'>;
+    });
+    test('server info', () => {
+        type ServerInfo = Packed<'ServerInfo'>;
+        type ServerInfoAdmin = Packed<'ServerInfoAdmin'>;
+    });
     test('error', () => {
         type Error = Packed<'Error'>;
         type ApiError = Packed<'ApiError'>;

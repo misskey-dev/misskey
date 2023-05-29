@@ -6,98 +6,10 @@ import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	requireCredential: true,
-	requireModerator: true,
-
-	tags: ['admin', 'meta'],
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			machine: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			os: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: 'linux',
-			},
-			node: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			psql: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			cpu: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					model: {
-						type: 'string',
-						optional: false, nullable: false,
-					},
-					cores: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-				},
-			},
-			mem: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					total: {
-						type: 'number',
-						optional: false, nullable: false,
-						format: 'bytes',
-					},
-				},
-			},
-			fs: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					total: {
-						type: 'number',
-						optional: false, nullable: false,
-						format: 'bytes',
-					},
-					used: {
-						type: 'number',
-						optional: false, nullable: false,
-						format: 'bytes',
-					},
-				},
-			},
-			net: {
-				type: 'object',
-				optional: false, nullable: false,
-				properties: {
-					interface: {
-						type: 'string',
-						optional: false, nullable: false,
-						example: 'eth0',
-					},
-				},
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/server-info'> {
+	name = 'admin/server-info' as const;
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -106,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private redisClient: Redis.Redis,
 
 	) {
-		super(meta, paramDef, async () => {
+		super(async () => {
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();
 			const netInterface = await si.networkInterfaceDefault();
