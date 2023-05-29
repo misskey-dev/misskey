@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -63,8 +63,16 @@ function getJobInfo(job: Bull.Job | undefined, increment = false): string {
 }
 
 @Injectable()
-export class QueueProcessorService {
+export class QueueProcessorService implements OnApplicationShutdown {
 	private logger: Logger;
+	private systemQueueWorker: Bull.Worker;
+	private dbQueueWorker: Bull.Worker;
+	private deliverQueueWorker: Bull.Worker;
+	private inboxQueueWorker: Bull.Worker;
+	private webhookDeliverQueueWorker: Bull.Worker;
+	private relationshipQueueWorker: Bull.Worker;
+	private objectStorageQueueWorker: Bull.Worker;
+	private endedPollNotificationQueueWorker: Bull.Worker;
 
 	constructor(
 		@Inject(DI.config)
@@ -102,10 +110,7 @@ export class QueueProcessorService {
 		private cleanProcessorService: CleanProcessorService,
 	) {
 		this.logger = this.queueLoggerService.logger;
-	}
 
-	@bindThis
-	public start() {
 		function renderError(e: Error): any {
 			if (e) { // 何故かeがundefinedで来ることがある
 				return {
@@ -123,7 +128,7 @@ export class QueueProcessorService {
 		}
 
 		//#region system
-		const systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
+		this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
 			switch (job.name) {
 				case 'tickCharts': return this.tickChartsProcessorService.process();
 				case 'resyncCharts': return this.resyncChartsProcessorService.process();
@@ -135,11 +140,12 @@ export class QueueProcessorService {
 			}
 		}, {
 			...baseQueueOptions(this.config, QUEUE.SYSTEM),
+			autorun: false,
 		});
 
 		const systemLogger = this.logger.createSubLogger('system');
 
-		systemQueueWorker
+		this.systemQueueWorker
 			.on('active', (job) => systemLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => systemLogger.debug(`completed(${result}) id=${job.id}`))
 			.on('failed', (job, err) => systemLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
@@ -148,7 +154,7 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region db
-		const dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
+		this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
 			switch (job.name) {
 				case 'deleteDriveFiles': return this.deleteDriveFilesProcessorService.process(job);
 				case 'exportCustomEmojis': return this.exportCustomEmojisProcessorService.process(job);
@@ -172,11 +178,12 @@ export class QueueProcessorService {
 			}
 		}, {
 			...baseQueueOptions(this.config, QUEUE.DB),
+			autorun: false,
 		});
 
 		const dbLogger = this.logger.createSubLogger('db');
 
-		dbQueueWorker
+		this.dbQueueWorker
 			.on('active', (job) => dbLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => dbLogger.debug(`completed(${result}) id=${job.id}`))
 			.on('failed', (job, err) => dbLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
@@ -185,8 +192,9 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region deliver
-		const deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => this.deliverProcessorService.process(job), {
+		this.deliverQueueWorker = new Bull.Worker(QUEUE.DELIVER, (job) => this.deliverProcessorService.process(job), {
 			...baseQueueOptions(this.config, QUEUE.DELIVER),
+			autorun: false,
 			concurrency: this.config.deliverJobConcurrency ?? 128,
 			limiter: {
 				max: this.config.deliverJobPerSec ?? 128,
@@ -199,7 +207,7 @@ export class QueueProcessorService {
 
 		const deliverLogger = this.logger.createSubLogger('deliver');
 
-		deliverQueueWorker
+		this.deliverQueueWorker
 			.on('active', (job) => deliverLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => deliverLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('failed', (job, err) => deliverLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
@@ -208,8 +216,9 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region inbox
-		const inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => this.inboxProcessorService.process(job), {
+		this.inboxQueueWorker = new Bull.Worker(QUEUE.INBOX, (job) => this.inboxProcessorService.process(job), {
 			...baseQueueOptions(this.config, QUEUE.INBOX),
+			autorun: false,
 			concurrency: this.config.inboxJobConcurrency ?? 16,
 			limiter: {
 				max: this.config.inboxJobPerSec ?? 16,
@@ -222,7 +231,7 @@ export class QueueProcessorService {
 
 		const inboxLogger = this.logger.createSubLogger('inbox');
 
-		inboxQueueWorker
+		this.inboxQueueWorker
 			.on('active', (job) => inboxLogger.debug(`active ${getJobInfo(job, true)}`))
 			.on('completed', (job, result) => inboxLogger.debug(`completed(${result}) ${getJobInfo(job, true)}`))
 			.on('failed', (job, err) => inboxLogger.warn(`failed(${err}) ${getJobInfo(job)} activity=${job ? (job.data.activity ? job.data.activity.id : 'none') : '-'}`, { job, e: renderError(err) }))
@@ -231,8 +240,9 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region webhook deliver
-		const webhookDeliverQueueWorker = new Bull.Worker(QUEUE.WEBHOOK_DELIVER, (job) => this.webhookDeliverProcessorService.process(job), {
+		this.webhookDeliverQueueWorker = new Bull.Worker(QUEUE.WEBHOOK_DELIVER, (job) => this.webhookDeliverProcessorService.process(job), {
 			...baseQueueOptions(this.config, QUEUE.WEBHOOK_DELIVER),
+			autorun: false,
 			concurrency: 64,
 			limiter: {
 				max: 64,
@@ -245,7 +255,7 @@ export class QueueProcessorService {
 
 		const webhookLogger = this.logger.createSubLogger('webhook');
 
-		webhookDeliverQueueWorker
+		this.webhookDeliverQueueWorker
 			.on('active', (job) => webhookLogger.debug(`active ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('completed', (job, result) => webhookLogger.debug(`completed(${result}) ${getJobInfo(job, true)} to=${job.data.to}`))
 			.on('failed', (job, err) => webhookLogger.warn(`failed(${err}) ${getJobInfo(job)} to=${job ? job.data.to : '-'}`))
@@ -254,7 +264,7 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region relationship
-		const relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
+		this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
 			switch (job.name) {
 				case 'follow': return this.relationshipProcessorService.processFollow(job);
 				case 'unfollow': return this.relationshipProcessorService.processUnfollow(job);
@@ -264,6 +274,7 @@ export class QueueProcessorService {
 			}
 		}, {
 			...baseQueueOptions(this.config, QUEUE.RELATIONSHIP),
+			autorun: false,
 			concurrency: this.config.relashionshipJobConcurrency ?? 16,
 			limiter: {
 				max: this.config.relashionshipJobPerSec ?? 64,
@@ -273,7 +284,7 @@ export class QueueProcessorService {
 
 		const relationshipLogger = this.logger.createSubLogger('relationship');
 	
-		relationshipQueueWorker
+		this.relationshipQueueWorker
 			.on('active', (job) => relationshipLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => relationshipLogger.debug(`completed(${result}) id=${job.id}`))
 			.on('failed', (job, err) => relationshipLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
@@ -282,7 +293,7 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region object storage
-		const objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
+		this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
 			switch (job.name) {
 				case 'deleteFile': return this.deleteFileProcessorService.process(job);
 				case 'cleanRemoteFiles': return this.cleanRemoteFilesProcessorService.process(job);
@@ -290,12 +301,13 @@ export class QueueProcessorService {
 			}
 		}, {
 			...baseQueueOptions(this.config, QUEUE.OBJECT_STORAGE),
+			autorun: false,
 			concurrency: 16,
 		});
 
 		const objectStorageLogger = this.logger.createSubLogger('objectStorage');
 
-		objectStorageQueueWorker
+		this.objectStorageQueueWorker
 			.on('active', (job) => objectStorageLogger.debug(`active id=${job.id}`))
 			.on('completed', (job, result) => objectStorageLogger.debug(`completed(${result}) id=${job.id}`))
 			.on('failed', (job, err) => objectStorageLogger.warn(`failed(${err}) id=${job ? job.id : '-'}`, { job, e: renderError(err) }))
@@ -304,9 +316,41 @@ export class QueueProcessorService {
 		//#endregion
 
 		//#region ended poll notification
-		const endedPollNotificationWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => this.endedPollNotificationProcessorService.process(job), {
+		this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => this.endedPollNotificationProcessorService.process(job), {
 			...baseQueueOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
+			autorun: false,
 		});
 		//#endregion
+	}
+
+	@bindThis
+	public start() {
+		this.systemQueueWorker.run();
+		this.dbQueueWorker.run();
+		this.deliverQueueWorker.run();
+		this.inboxQueueWorker.run();
+		this.webhookDeliverQueueWorker.run();
+		this.relationshipQueueWorker.run();
+		this.objectStorageQueueWorker.run();
+		this.endedPollNotificationQueueWorker.run();
+	}
+
+	@bindThis
+	public async stop(): Promise<void> {
+		await Promise.all([
+			this.systemQueueWorker.close(),
+			this.dbQueueWorker.close(),
+			this.deliverQueueWorker.close(),
+			this.inboxQueueWorker.close(),
+			this.webhookDeliverQueueWorker.close(),
+			this.relationshipQueueWorker.close(),
+			this.objectStorageQueueWorker.close(),
+			this.endedPollNotificationQueueWorker.close(),
+		]);
+	}
+
+	@bindThis
+	public async onApplicationShutdown(signal?: string | undefined): Promise<void> {
+		await this.stop();
 	}
 }
