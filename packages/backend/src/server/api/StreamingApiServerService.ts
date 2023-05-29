@@ -74,15 +74,29 @@ export class StreamingApiServerService {
 				return;
 			}
 
+			const stream = new MainStreamConnection(
+				this.channelsService,
+				this.noteReadService,
+				this.notificationService,
+				this.cacheService,
+				user, app,
+			);
+
+			await stream.init();
+
 			this.#wss.handleUpgrade(request, socket, head, (ws) => {
 				this.#wss.emit('connection', ws, request, {
-					user, app,
+					stream, user, app,
 				});
 			});
 		});
 
-		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: { user: LocalUser | null; app: AccessToken | null }) => {
-			const { user, app } = ctx;
+		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {
+			stream: MainStreamConnection,
+			user: LocalUser | null;
+			app: AccessToken | null
+		}) => {
+			const { stream, user, app } = ctx;
 
 			const ev = new EventEmitter();
 
@@ -93,15 +107,7 @@ export class StreamingApiServerService {
 
 			this.redisForSub.on('message', onRedisMessage);
 
-			const main = new MainStreamConnection(
-				this.channelsService,
-				this.noteReadService,
-				this.notificationService,
-				this.cacheService,
-				ev, user, app,
-			);
-
-			await main.init(connection);
+			await stream.listen(ev, connection);
 
 			const intervalId = user ? setInterval(() => {
 				this.usersRepository.update(user.id, {
@@ -114,16 +120,9 @@ export class StreamingApiServerService {
 				});
 			}
 
-			this.#wss.once('close', () => {
-				ev.removeAllListeners();
-				main.dispose();
-				this.redisForSub.off('message', onRedisMessage);
-				if (intervalId) clearInterval(intervalId);
-			});
-
 			connection.once('close', () => {
 				ev.removeAllListeners();
-				main.dispose();
+				stream.dispose();
 				this.redisForSub.off('message', onRedisMessage);
 				if (intervalId) clearInterval(intervalId);
 			});

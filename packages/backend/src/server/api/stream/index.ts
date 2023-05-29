@@ -37,11 +37,9 @@ export default class Connection {
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 
-		subscriber: EventEmitter,
 		user: User | null | undefined,
 		token: AccessToken | null | undefined,
 	) {
-		this.subscriber = subscriber;
 		if (user) this.user = user;
 		if (token) this.token = token;
 	}
@@ -66,18 +64,7 @@ export default class Connection {
 	}
 
 	@bindThis
-	public async init(wsConnection: WebSocket.WebSocket) {
-		/**
-		 * wsConnection.on('message') must be called before `await this.fetch()`
-		 * see https://github.com/misskey-dev/misskey/pull/10884#issuecomment-1566160806
-		 */
-		this.wsConnection = wsConnection;
-		this.wsConnection.on('message', this.onWsConnectionMessage);
-
-		this.subscriber.on('broadcast', data => {
-			this.onBroadcastMessage(data);
-		});
-
+	public async init() {
 		if (this.user != null) {
 			await this.fetch();
 
@@ -85,6 +72,18 @@ export default class Connection {
 				this.fetchIntervalId = setInterval(this.fetch, 1000 * 10);
 			}
 		}
+	}
+
+	@bindThis
+	public async listen(subscriber: EventEmitter, wsConnection: WebSocket.WebSocket) {
+		this.subscriber = subscriber;
+
+		this.wsConnection = wsConnection;
+		this.wsConnection.on('message', this.onWsConnectionMessage);
+
+		this.subscriber.on('broadcast', data => {
+			this.onBroadcastMessage(data);
+		});
 	}
 
 	/**
