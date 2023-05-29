@@ -51,6 +51,7 @@ import {
 	ServerInfoSchema,
 	ServerInfoAdminSchema,
 } from './schemas/server-info.js';
+import { packedModerationLogSchema } from './schemas/moderation-log.js';
 import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
@@ -101,6 +102,7 @@ export const refs = {
 	InstanceMetaAdmin: InstanceMetaAdminSchema,
 	ServerInfo: ServerInfoSchema,
 	ServerInfoAdmin: ServerInfoAdminSchema,
+	ModerationLog: packedModerationLogSchema,
 
 	Error: Error,
 	ApiError: ApiError,

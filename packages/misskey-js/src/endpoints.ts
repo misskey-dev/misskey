@@ -1626,6 +1626,30 @@ export const endpoints = {
 			}
 		}],
 	},
+	'admin/show-moderation-logs': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/ModerationLog',
+				},
+			}
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

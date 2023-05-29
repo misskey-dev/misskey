@@ -119,6 +119,9 @@ describe('schemas', () => {
         type ServerInfo = Packed<'ServerInfo'>;
         type ServerInfoAdmin = Packed<'ServerInfoAdmin'>;
     });
+    test('moderation log', () => {
+        type ModerationLog = Packed<'ModerationLog'>;
+    });
     test('error', () => {
         type Error = Packed<'Error'>;
         type ApiError = Packed<'ApiError'>;
