@@ -908,12 +908,14 @@ neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
 roles: "Rôles"
 role: "Rôles"
+noRole: "Aucun rôle"
 normalUser: "Simple utilisateur·rice"
 assign: "Attribuer"
 color: "Couleur"
 manageCustomEmojis: "Gestion des émojis personnalisés"
 preset: "Préréglage"
 selectFromPresets: "Sélectionner à partir des préréglages"
+thisPostMayBeAnnoying: "Cette note peut gêner d'autres personnes."
 thisPostMayBeAnnoyingCancel: "Annuler"
 license: "Licence"
 video: "Vidéo"
@@ -921,6 +923,7 @@ videos: "Vidéos"
 dataSaver: "Économiseur de données"
 accountMigration: "Migration de compte"
 accountMoved: "Cet·te utilisateur·rice a migré son compte vers :"
+addMemo: "Ajouter un mémo"
 notificationDisplay: "Style des notifications"
 leftTop: "En haut à gauche"
 rightTop: "En haut à droite"
@@ -935,6 +938,8 @@ _achievements:
     _notes1:
       description: "Publiez votre première note"
       flavor: "Passez un bon moment avec Misskey !"
+    _notes100:
+      title: "Beaucoup de notes"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
     _login3:
@@ -985,6 +990,8 @@ _achievements:
       title: "Joyeux Anniversaire !"
     _loggedInOnNewYearsDay:
       title: "Bonne année !"
+    _cookieClicked:
+      flavor: "Attendez une minute, vous êtes sur le mauvais site web ?"
 _role:
   assignTarget: "Attribuer"
   priority: "Priorité"
