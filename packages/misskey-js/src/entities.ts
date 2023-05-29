@@ -106,20 +106,7 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 
 export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 
-export type ServerInfo = {
-	machine: string;
-	cpu: {
-		model: string;
-		cores: number;
-	};
-	mem: {
-		total: number;
-	};
-	fs: {
-		total: number;
-		used: number;
-	};
-};
+export type ServerInfo = Packed<'ServerInfo'>;
 
 export type Stats = {
 	notesCount: number;
