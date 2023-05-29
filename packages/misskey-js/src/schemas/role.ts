@@ -34,9 +34,10 @@ export const packedRoleSchema = {
 		},
 		condFormula: {
 			type: 'object',
-			// 循環参照なので難しい
 			//$ref: 'https://misskey-hub.net/api/schemas/RoleCondFormula',
-		},
+			// 循環参照なので難しい
+			// のでschema-typeのproperty type assertionに頼る
+		} as unknown as RoleCondFormulaValue,
 		isPublic: {
 			type: 'boolean',
 		},
@@ -281,3 +282,81 @@ export const packedRoleCondFormulaSchema = {
 		},
 	}
 } as const satisfies JSONSchema7Definition;
+
+type CondFormulaValueAnd = {
+	type: 'and';
+	values: RoleCondFormulaValue[];
+};
+
+type CondFormulaValueOr = {
+	type: 'or';
+	values: RoleCondFormulaValue[];
+};
+
+type CondFormulaValueNot = {
+	type: 'not';
+	value: RoleCondFormulaValue;
+};
+
+type CondFormulaValueIsLocal = {
+	type: 'isLocal';
+};
+
+type CondFormulaValueIsRemote = {
+	type: 'isRemote';
+};
+
+type CondFormulaValueCreatedLessThan = {
+	type: 'createdLessThan';
+	sec: number;
+};
+
+type CondFormulaValueCreatedMoreThan = {
+	type: 'createdMoreThan';
+	sec: number;
+};
+
+type CondFormulaValueFollowersLessThanOrEq = {
+	type: 'followersLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueFollowersMoreThanOrEq = {
+	type: 'followersMoreThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueFollowingLessThanOrEq = {
+	type: 'followingLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueFollowingMoreThanOrEq = {
+	type: 'followingMoreThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueNotesLessThanOrEq = {
+	type: 'notesLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueNotesMoreThanOrEq = {
+	type: 'notesMoreThanOrEq';
+	value: number;
+};
+
+export type RoleCondFormulaValue =
+	CondFormulaValueAnd |
+	CondFormulaValueOr |
+	CondFormulaValueNot |
+	CondFormulaValueIsLocal |
+	CondFormulaValueIsRemote |
+	CondFormulaValueCreatedLessThan |
+	CondFormulaValueCreatedMoreThan |
+	CondFormulaValueFollowersLessThanOrEq |
+	CondFormulaValueFollowersMoreThanOrEq |
+	CondFormulaValueFollowingLessThanOrEq |
+	CondFormulaValueFollowingMoreThanOrEq |
+	CondFormulaValueNotesLessThanOrEq |
+	CondFormulaValueNotesMoreThanOrEq;
