@@ -107,6 +107,9 @@ describe('schemas', () => {
         type RolePolicy = Packed<'RolePolicy'>;
         type RoleCondFormula = Packed<'RoleCondFormula'>;
     });
+    test('abuse user report', () => {
+        type AbuseUserReport = Packed<'AbuseUserReport'>;
+    });
     test('error', () => {
         type Error = Packed<'Error'>;
         type ApiError = Packed<'ApiError'>;

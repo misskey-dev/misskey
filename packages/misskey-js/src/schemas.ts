@@ -36,6 +36,7 @@ import { packedFlashSchema } from './schemas/flash.js';
 import { packedAdSchema } from './schemas/ad.js';
 import { packedAnnouncementSchema } from './schemas/announcement.js';
 import { packedRelaySchema } from './schemas/relay.js';
+import { packedAbuseUserReportSchema } from './schemas/abuse-user-report.js';
 import {
 	packedRoleSchema,
 	packedRoleAssignSchema,
@@ -87,6 +88,7 @@ export const refs = {
 	RoleAssign: packedRoleAssignSchema,
 	RolePolicy: packedRolePolicySchema,
 	RoleCondFormula: packedRoleCondFormulaSchema,
+	AbuseUserReport: packedAbuseUserReportSchema,
 
 	Error: Error,
 	ApiError: ApiError,

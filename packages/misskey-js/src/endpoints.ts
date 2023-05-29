@@ -1378,6 +1378,34 @@ export const endpoints = {
 			}
 		}],
 	},
+	'admin/abuse-user-reports': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					state: { type: ['string', 'null'], default: null },
+					reporterOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
+					targetUserOrigin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
+					forwarded: { type: 'boolean', default: false },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/AbuseUserReport',
+				},
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
