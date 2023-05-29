@@ -324,15 +324,17 @@ export class QueueProcessorService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public start() {
-		this.systemQueueWorker.run();
-		this.dbQueueWorker.run();
-		this.deliverQueueWorker.run();
-		this.inboxQueueWorker.run();
-		this.webhookDeliverQueueWorker.run();
-		this.relationshipQueueWorker.run();
-		this.objectStorageQueueWorker.run();
-		this.endedPollNotificationQueueWorker.run();
+	public async start(): Promise<void> {
+		await Promise.all([
+			this.systemQueueWorker.run(),
+			this.dbQueueWorker.run(),
+			this.deliverQueueWorker.run(),
+			this.inboxQueueWorker.run(),
+			this.webhookDeliverQueueWorker.run(),
+			this.relationshipQueueWorker.run(),
+			this.objectStorageQueueWorker.run(),
+			this.endedPollNotificationQueueWorker.run(),
+		]);
 	}
 
 	@bindThis
