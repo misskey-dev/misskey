@@ -3,38 +3,15 @@ import { DataSource } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	requireCredential: true,
-	requireAdmin: true,
-
-	tags: ['admin'],
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		example: {
-			migrations: {
-				count: 66,
-				size: 32768,
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/get-table-stats'> {
+	name = 'admin/get-table-stats' as const;
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
 	) {
-		super(meta, paramDef, async () => {
+		super(async () => {
 			const sizes = await this.db.query(`
 			SELECT relname AS "table", reltuples as "count", pg_total_relation_size(C.oid) AS "size"
 			FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)

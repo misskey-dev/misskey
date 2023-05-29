@@ -1482,6 +1482,55 @@ export const endpoints = {
 						tablename: { type: 'string' },
 						indexname: { type: 'string' },
 					},
+					required: ['tablename', 'indexname'],
+				},
+			},
+		}],
+	},
+	'admin/get-table-stats': {
+		requireCredential: true,
+		requireAdmin: true,
+	
+		tags: ['admin'],
+	
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'object',
+				additionalProperties: {
+					type: 'object',
+					properties: {
+						count: { type: 'number' },
+						size: { type: 'number' },
+					},
+					required: ['count', 'size'],
+				},
+			},
+		}],
+	},
+	'admin/get-user-ips': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						ip: { type: 'string' },
+						createdAt: { type: 'string', format: 'date-time' },
+					},
+					required: ['ip', 'createdAt'],
 				},
 			},
 		}],
