@@ -222,8 +222,14 @@ export class ServerService implements OnApplicationShutdown {
 		await fastify.ready();
 	}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
-		await this.streamingApiServerService.detach();
+	@bindThis
+	public async dispose(): Promise<void> {
+    await this.streamingApiServerService.detach();
 		await this.#fastify.close();
+	}
+
+	@bindThis
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }

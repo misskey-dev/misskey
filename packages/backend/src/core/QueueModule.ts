@@ -100,7 +100,7 @@ export class QueueModule implements OnApplicationShutdown {
 		@Inject('queue:webhookDeliver') public webhookDeliverQueue: WebhookDeliverQueue,
 	) {}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
+	public async dispose(): Promise<void> {
 		if (process.env.NODE_ENV === 'test') {
 			// XXX:
 			// Shutting down the existing connections causes errors on Jest as
@@ -119,5 +119,9 @@ export class QueueModule implements OnApplicationShutdown {
 			this.objectStorageQueue.close(),
 			this.webhookDeliverQueue.close(),
 		]);
+	}
+
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }
