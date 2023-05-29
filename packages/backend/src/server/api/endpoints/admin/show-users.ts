@@ -6,45 +6,10 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { RoleService } from '@/core/RoleService.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-
-	res: {
-		type: 'array',
-		nullable: false, optional: false,
-		items: {
-			type: 'object',
-			nullable: false, optional: false,
-			ref: 'UserDetailed',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'] },
-		state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended'], default: 'all' },
-		origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
-		username: { type: 'string', nullable: true, default: null },
-		hostname: {
-			type: 'string',
-			nullable: true,
-			default: null,
-			description: 'The local host is represented with `null`.',
-		},
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/show-users'> {
+	name = 'admin/show-users' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -52,7 +17,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userEntityService: UserEntityService,
 		private roleService: RoleService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.usersRepository.createQueryBuilder('user');
 
 			switch (ps.state) {

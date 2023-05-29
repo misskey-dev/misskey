@@ -1588,7 +1588,7 @@ export const endpoints = {
 				properties: {
 					reportId: { type: 'string', format: 'misskey:id' },
 					forward: { type: 'boolean', default: false },
-				},
+				} satisfies Record<string, JSONSchema7>,
 				required: ['reportId'],
 			},
 			res: undefined,
@@ -1639,7 +1639,7 @@ export const endpoints = {
 					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 					sinceId: { type: 'string', format: 'misskey:id' },
 					untilId: { type: 'string', format: 'misskey:id' },
-				},
+				} satisfies Record<string, JSONSchema7>,
 				required: [],
 			},
 			res: {
@@ -1725,7 +1725,7 @@ export const endpoints = {
 							$ref: 'https://misskey-hub.net/api/schemas/Role',
 						}
 					},
-				},
+				} satisfies Record<string, JSONSchema7>,
 				required: [
 					'email',
 					'emailVerified',
@@ -1752,6 +1752,38 @@ export const endpoints = {
 			}
 		}],
 	},
+	'admin/show-users': {
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					offset: { type: 'integer', default: 0 },
+					sort: { type: 'string', enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt', '+lastActiveDate', '-lastActiveDate'] },
+					state: { type: 'string', enum: ['all', 'alive', 'available', 'admin', 'moderator', 'adminOrModerator', 'suspended'], default: 'all' },
+					origin: { type: 'string', enum: ['combined', 'local', 'remote'], default: 'combined' },
+					username: { type: ['string', 'null'], default: null },
+					hostname: {
+						type: ['string', 'null'],
+						default: null,
+						description: 'The local host is represented with `null`.',
+					},
+				} satisfies Record<string, JSONSchema7>,
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/UserDetailed',
+				},
+			}
+		}],
+	}
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
