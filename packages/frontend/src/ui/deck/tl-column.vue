@@ -15,7 +15,7 @@
 		</p>
 		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
-	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
+	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl"/>
 </XColumn>
 </template>
 
@@ -32,10 +32,6 @@ import { instance } from '@/instance';
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
 }>();
 
 let disabled = $ref(false);

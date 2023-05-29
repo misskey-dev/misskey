@@ -8,7 +8,7 @@
 		<div style="padding: 8px; text-align: center;">
 			<MkButton primary gradate rounded inline @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
-		<MkTimeline ref="timeline" src="channel" :channel="column.channelId" @after="() => emit('loaded')"/>
+		<MkTimeline ref="timeline" src="channel" :channel="column.channelId"/>
 	</template>
 </XColumn>
 </template>
@@ -25,10 +25,6 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
 }>();
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
