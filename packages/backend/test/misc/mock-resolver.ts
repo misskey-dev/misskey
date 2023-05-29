@@ -45,7 +45,6 @@ export class MockResolver extends Resolver {
 		});
 	}
 
-	/*
 	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
 		if (typeof value !== 'string') return value;
@@ -53,16 +52,11 @@ export class MockResolver extends Resolver {
 		const r = this._rs.get(value);
 
 		if (!r) {
-			throw {
-				name: 'StatusError',
-				statusCode: 404,
-				message: 'Not registed for mock',
-			};
+			throw new Error('Not registed for mock');
 		}
 
 		const object = JSON.parse(r.content);
 
 		return object;
 	}
-	*/
 }
