@@ -291,9 +291,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
-				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 				defaultLightTheme: instance.defaultLightTheme,
 				defaultDarkTheme: instance.defaultDarkTheme,
+				enableEmail: instance.enableEmail,
+				enableServiceWorker: instance.enableServiceWorker,
+				translatorAvailable: instance.deeplAuthKey != null,
+				policies: { ...DEFAULT_POLICIES, ...instance.policies },
+
+				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 				ads: ads.map(ad => ({
 					id: ad.id,
 					url: ad.url,
@@ -301,14 +306,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					ratio: ad.ratio,
 					imageUrl: ad.imageUrl,
 				})),
-				enableEmail: instance.enableEmail,
-				enableServiceWorker: instance.enableServiceWorker,
-
-				translatorAvailable: instance.deeplAuthKey != null,
-
 				serverRules: instance.serverRules,
-
-				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
 				mediaProxy: this.config.mediaProxy,
 

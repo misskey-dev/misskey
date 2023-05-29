@@ -1,3 +1,4 @@
+import { JSONSchema7 } from 'schema-type';
 import { IEndpointMeta } from './endpoints.types';
 import { localUsernameSchema, passwordSchema } from './schemas/user';
 
@@ -1535,6 +1536,19 @@ export const endpoints = {
 			},
 		}],
 	},
+	'admin/meta': {
+		tags: ['meta'],
+	
+		requireCredential: true,
+		requireAdmin: true,
+
+		defines: [{
+			req: undefined,
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/InstanceMetaAdmin',
+			},
+		}],
+	}
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

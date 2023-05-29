@@ -43,6 +43,10 @@ import {
 	packedRolePolicySchema,
 	packedRoleCondFormulaSchema,
 } from './schemas/role.js';
+import {
+	InstanceMetaSharedSchema,
+	InstanceMetaAdminSchema,
+} from './schemas/instance-meta.js';
 import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
@@ -89,6 +93,8 @@ export const refs = {
 	RolePolicy: packedRolePolicySchema,
 	RoleCondFormula: packedRoleCondFormulaSchema,
 	AbuseUserReport: packedAbuseUserReportSchema,
+	InstanceMetaShared: InstanceMetaSharedSchema,
+	InstanceMetaAdmin: InstanceMetaAdminSchema,
 
 	Error: Error,
 	ApiError: ApiError,
