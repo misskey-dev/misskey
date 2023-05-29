@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :naked="widgetProps.transparent">
+<MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent">
 	<template #icon><i class="ti ti-server"></i></template>
 	<template #header>{{ i18n.ts._widgets.serverMetric }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="toggleView()"><i class="ti ti-selector"></i></button></template>
