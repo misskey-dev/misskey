@@ -121,7 +121,7 @@ export class DeliverProcessorService {
 								isSuspended: true,
 							});
 						});
-						return `${host} is gone`;
+						throw new Bull.UnrecoverableError(`${host} is gone`);
 					}
 					throw new Bull.UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
 				}
