@@ -30,7 +30,7 @@ export const endpoints = {
 	},
 	'admin/accounts/delete': {
 		tags: ['admin'],
-    
+
 		requireCredential: true,
 		requireAdmin: true,
 		defines: [{
@@ -95,7 +95,7 @@ export const endpoints = {
 	},
 	'admin/ad/list': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -227,10 +227,10 @@ export const endpoints = {
 	},
 	'admin/announcements/update': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			noSuchAnnouncement: {
 				message: 'No such announcement.',
@@ -260,7 +260,7 @@ export const endpoints = {
 	},
 	'admin/drive/clean-remote-files': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -282,7 +282,7 @@ export const endpoints = {
 	},
 	'admin/drive/files': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -329,10 +329,10 @@ export const endpoints = {
 	},
 	'admin/drive/show-file': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			noSuchFile: {
 				message: 'No such file.',
@@ -358,7 +358,7 @@ export const endpoints = {
 				properties: {
 					id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 					createdAt: { type: 'string', format: 'date-time' },
-					userId: { 
+					userId: {
 						oneOf: [
 							{ $ref: 'https://misskey-hub.net/api/schemas/Id' },
 							{ type: 'null' },
@@ -455,12 +455,16 @@ export const endpoints = {
 			req: {
 				type: 'object',
 				properties: {
-					ids: { type: 'array', items: {
-						type: 'string', format: 'misskey:id',
-					} },
-					aliases: { type: 'array', items: {
-						type: 'string',
-					} },
+					ids: {
+						type: 'array', items: {
+							type: 'string', format: 'misskey:id',
+						}
+					},
+					aliases: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['ids', 'aliases'],
 			},
@@ -491,15 +495,19 @@ export const endpoints = {
 						type: ['string', 'null'],
 						description: 'Use `null` to reset the category.',
 					},
-					aliases: { type: 'array', items: {
-						type: 'string',
-					} },
+					aliases: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 					license: { type: ['string', 'null'] },
 					isSensitive: { type: 'boolean' },
 					localOnly: { type: 'boolean' },
-					roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-						type: 'string',
-					} },
+					roleIdsThatCanBeUsedThisEmojiAsReaction: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['name', 'fileId'],
 			},
@@ -553,9 +561,11 @@ export const endpoints = {
 			req: {
 				type: 'object',
 				properties: {
-					ids: { type: 'array', items: {
-						type: 'string', format: 'misskey:id',
-					} },
+					ids: {
+						type: 'array', items: {
+							type: 'string', format: 'misskey:id',
+						}
+					},
 				},
 				required: ['ids'],
 			},
@@ -564,10 +574,10 @@ export const endpoints = {
 	},
 	'admin/emoji/delete': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireRolePolicy: 'canManageCustomEmojis',
-	
+
 		errors: {
 			noSuchEmoji: {
 				message: 'No such emoji.',
@@ -668,12 +678,16 @@ export const endpoints = {
 			req: {
 				type: 'object',
 				properties: {
-					ids: { type: 'array', items: {
-						type: 'string', format: 'misskey:id',
-					} },
-					aliases: { type: 'array', items: {
-						type: 'string',
-					} },
+					ids: {
+						type: 'array', items: {
+							type: 'string', format: 'misskey:id',
+						}
+					},
+					aliases: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['ids', 'aliases'],
 			},
@@ -682,7 +696,7 @@ export const endpoints = {
 	},
 	'admin/emoji/set-aliases-bulk': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireRolePolicy: 'canManageCustomEmojis',
 
@@ -690,12 +704,16 @@ export const endpoints = {
 			req: {
 				type: 'object',
 				properties: {
-					ids: { type: 'array', items: {
-						type: 'string', format: 'misskey:id',
-					} },
-					aliases: { type: 'array', items: {
-						type: 'string',
-					} },
+					ids: {
+						type: 'array', items: {
+							type: 'string', format: 'misskey:id',
+						}
+					},
+					aliases: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['ids', 'aliases'],
 			},
@@ -704,7 +722,7 @@ export const endpoints = {
 	},
 	'admin/emoji/set-category-bulk': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireRolePolicy: 'canManageCustomEmojis',
 
@@ -712,9 +730,11 @@ export const endpoints = {
 			req: {
 				type: 'object',
 				properties: {
-					ids: { type: 'array', items: {
-						type: 'string', format: 'misskey:id',
-					} },
+					ids: {
+						type: 'array', items: {
+							type: 'string', format: 'misskey:id',
+						}
+					},
 					category: {
 						type: ['string', 'null'],
 						description: 'Use `null` to reset the category.',
@@ -727,7 +747,7 @@ export const endpoints = {
 	},
 	'admin/emoji/set-license-bulk': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireRolePolicy: 'canManageCustomEmojis',
 
@@ -735,9 +755,11 @@ export const endpoints = {
 			req: {
 				type: 'object',
 				properties: {
-					ids: { type: 'array', items: {
-						type: 'string', format: 'misskey:id',
-					} },
+					ids: {
+						type: 'array', items: {
+							type: 'string', format: 'misskey:id',
+						}
+					},
 					license: {
 						type: ['string', 'null'],
 						description: 'Use `null` to reset the license.',
@@ -750,10 +772,10 @@ export const endpoints = {
 	},
 	'admin/emoji/update': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireRolePolicy: 'canManageCustomEmojis',
-	
+
 		errors: {
 			noSuchFile: {
 				message: 'No such file.',
@@ -773,15 +795,19 @@ export const endpoints = {
 						type: ['string', 'null'],
 						description: 'Use `null` to reset the category.',
 					},
-					aliases: { type: 'array', items: {
-						type: 'string',
-					} },
+					aliases: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 					license: { type: ['string', 'null'] },
 					isSensitive: { type: 'boolean' },
 					localOnly: { type: 'boolean' },
-					roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
-						type: 'string',
-					} },
+					roleIdsThatCanBeUsedThisEmojiAsReaction: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['id', 'name', 'aliases'],
 			},
@@ -790,7 +816,7 @@ export const endpoints = {
 	},
 	'admin/federation/delete-all-files': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -807,7 +833,7 @@ export const endpoints = {
 	},
 	'admin/federation/refresh-remote-instance-metadata': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -824,7 +850,7 @@ export const endpoints = {
 	},
 	'admin/federation/remove-all-following': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -841,7 +867,7 @@ export const endpoints = {
 	},
 	'admin/federation/update-instance': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -859,17 +885,17 @@ export const endpoints = {
 	},
 	'admin/promo/create': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			noSuchNote: {
 				message: 'No such note.',
 				code: 'NO_SUCH_NOTE',
 				id: 'ee449fbe-af2a-453b-9cae-cf2fe7c895fc',
 			},
-	
+
 			alreadyPromoted: {
 				message: 'The note has already promoted.',
 				code: 'ALREADY_PROMOTED',
@@ -891,7 +917,7 @@ export const endpoints = {
 	},
 	'admin/queue/clear': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -902,7 +928,7 @@ export const endpoints = {
 	},
 	'admin/queue/deliver-delayed': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -932,7 +958,7 @@ export const endpoints = {
 	},
 	'admin/queue/inbox-delayed': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -962,7 +988,7 @@ export const endpoints = {
 	},
 	'admin/queue/promote': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -979,10 +1005,10 @@ export const endpoints = {
 	},
 	'admin/queue/stats': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		defines: [{
 			req: undefined,
 			res: {
@@ -999,10 +1025,10 @@ export const endpoints = {
 	},
 	'admin/relays/add': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			invalidUrl: {
 				message: 'Invalid URL',
@@ -1010,7 +1036,7 @@ export const endpoints = {
 				id: 'fb8c92d3-d4e5-44e7-b3d4-800d5cef8b2c',
 			},
 		},
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -1026,7 +1052,7 @@ export const endpoints = {
 	},
 	'admin/relays/list': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -1042,7 +1068,7 @@ export const endpoints = {
 	},
 	'admin/relays/remove': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -1059,23 +1085,23 @@ export const endpoints = {
 	},
 	'admin/roles/assign': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			noSuchRole: {
 				message: 'No such role.',
 				code: 'NO_SUCH_ROLE',
 				id: '6503c040-6af4-4ed9-bf07-f2dd16678eab',
 			},
-	
+
 			noSuchUser: {
 				message: 'No such user.',
 				code: 'NO_SUCH_USER',
 				id: '558ea170-f653-4700-94d0-5a818371d0df',
 			},
-	
+
 			accessDenied: {
 				message: 'Only administrators can edit members of the role.',
 				code: 'ACCESS_DENIED',
@@ -1103,7 +1129,7 @@ export const endpoints = {
 	},
 	'admin/roles/create': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireAdmin: true,
 
@@ -1151,10 +1177,10 @@ export const endpoints = {
 	},
 	'admin/roles/delete': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireAdmin: true,
-	
+
 		errors: {
 			noSuchRole: {
 				message: 'No such role.',
@@ -1178,7 +1204,7 @@ export const endpoints = {
 	},
 	'admin/roles/list': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -1194,10 +1220,10 @@ export const endpoints = {
 	},
 	'admin/roles/show': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			noSuchRole: {
 				message: 'No such role.',
@@ -1223,29 +1249,29 @@ export const endpoints = {
 	},
 	'admin/roles/unassign': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		errors: {
 			noSuchRole: {
 				message: 'No such role.',
 				code: 'NO_SUCH_ROLE',
 				id: '6e519036-a70d-4c76-b679-bc8fb18194e2',
 			},
-	
+
 			noSuchUser: {
 				message: 'No such user.',
 				code: 'NO_SUCH_USER',
 				id: '2b730f78-1179-461b-88ad-d24c9af1a5ce',
 			},
-	
+
 			notAssigned: {
 				message: 'Not assigned.',
 				code: 'NOT_ASSIGNED',
 				id: 'b9060ac7-5c94-4da4-9f55-2047c953df44',
 			},
-	
+
 			accessDenied: {
 				message: 'Only administrators can edit members of the role.',
 				code: 'ACCESS_DENIED',
@@ -1270,7 +1296,7 @@ export const endpoints = {
 	},
 	'admin/roles/update-default-policies': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireAdmin: true,
 
@@ -1291,10 +1317,10 @@ export const endpoints = {
 	},
 	'admin/roles/update': {
 		tags: ['admin', 'role'],
-	
+
 		requireCredential: true,
 		requireAdmin: true,
-	
+
 		errors: {
 			noSuchRole: {
 				message: 'No such role.',
@@ -1347,10 +1373,10 @@ export const endpoints = {
 	},
 	'admin/roles/users': {
 		tags: ['admin', 'role', 'users'],
-	
+
 		requireCredential: false,
 		requireAdmin: true,
-	
+
 		errors: {
 			noSuchRole: {
 				message: 'No such role.',
@@ -1380,10 +1406,10 @@ export const endpoints = {
 	},
 	'admin/abuse-user-reports': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -1406,6 +1432,40 @@ export const endpoints = {
 			},
 		}],
 	},
+	'admin/delete-account': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireAdmin: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/delete-all-files-of-a-user': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireAdmin: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}],
+	}
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
