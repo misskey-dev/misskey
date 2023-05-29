@@ -19,9 +19,6 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-const emit = defineEmits<{
-}>();
-
 function func() {
 	os.popup(defineAsyncComponent(() => import('@/components/MkNotificationSettingWindow.vue')), {
 		includingTypes: props.column.includingTypes,

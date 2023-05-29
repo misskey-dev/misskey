@@ -21,7 +21,7 @@ export default class extends Endpoint<'admin/relays/add'> {
 	) {
 		super(async (ps, me) => {
 			try {
-				if (new URL(ps.inbox).protocol !== 'https:') throw 'https only';
+				if (new URL(ps.inbox).protocol !== 'https:') throw new Error('https only');
 			} catch {
 				throw new ApiError(this.meta.errors.invalidUrl);
 			}
