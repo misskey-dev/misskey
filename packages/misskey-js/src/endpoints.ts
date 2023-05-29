@@ -1465,7 +1465,27 @@ export const endpoints = {
 			},
 			res: undefined,
 		}],
-	}
+	},
+	'admin/get-index-stats': {
+		requireCredential: true,
+		requireAdmin: true,
+	
+		tags: ['admin'],
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						tablename: { type: 'string' },
+						indexname: { type: 'string' },
+					},
+				},
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
