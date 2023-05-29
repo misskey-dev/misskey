@@ -27,7 +27,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/show-user'> {
+	name = 'admin/show-user' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -41,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 		private roleEntityService: RoleEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const [user, profile] = await Promise.all([
 				this.usersRepository.findOneBy({ id: ps.userId }),
 				this.userProfilesRepository.findOneBy({ userId: ps.userId }),

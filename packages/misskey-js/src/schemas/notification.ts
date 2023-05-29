@@ -1,6 +1,11 @@
 import type { JSONSchema7Definition } from 'schema-type';
 import { ACHIEVEMENT_TYPES, notificationTypes } from '../consts';
 
+export const notificationTypeSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/NotificationTypes',
+	enum: [...notificationTypes],
+} as const satisfies JSONSchema7Definition;
+
 export const packedNotificationSchema = {
 	$id: 'https://misskey-hub.net/api/schemas/Notification',
 	type: 'object',
@@ -10,10 +15,7 @@ export const packedNotificationSchema = {
 			type: 'string',
 			format: 'date-time',
 		},
-		type: {
-			type: 'string',
-			enum: [...notificationTypes],
-		},
+		type: { $ref: 'https://misskey-hub.net/api/schemas/NotificationType' },
 		userId: {
 			oneOf: [
 				{ $ref: 'https://misskey-hub.net/api/schemas/Id' },

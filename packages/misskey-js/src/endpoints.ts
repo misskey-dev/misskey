@@ -1651,7 +1651,106 @@ export const endpoints = {
 		}],
 	},
 	'admin/show-user': {
-
+		tags: ['admin'],
+	
+		requireCredential: true,
+		requireModerator: true,
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					email: { type: ['string', 'null'] },
+					emailVerified: { type: 'boolean' },
+					autoAcceptFollowed: { type: 'boolean' },
+					noCrawle: { type: 'boolean' },
+					preventAiLearning: { type: 'boolean' },
+					alwaysMarkNsfw: { type: 'boolean' },
+					autoSensitive: { type: 'boolean' },
+					carefulBot: { type: 'boolean' },
+					injectFeaturedNote: { type: 'boolean' },
+					receiveAnnouncementEmail: { type: 'boolean' },
+					mutedWords: {
+						type: 'array',
+						items: {
+							type: 'array',
+							items: {
+								type: 'string',
+							},
+						},
+					},
+					mutedInstances: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					mutingNotificationTypes: {
+						type: 'array',
+						items: {
+							$ref: 'https://misskey-hub.net/api/schemas/NotificationType',
+						},
+					},
+					isModerator: { type: 'boolean' },
+					isSilenced: { type: 'boolean' },
+					isSuspended: { type: 'boolean' },
+					lastActiveDate: {
+						oneOf: [{
+							type: 'string',
+							format: 'date-time',
+						}, {
+							type: 'null',
+						}],
+					},
+					moderationNote: { type: 'string' },
+					signins: {
+						type: 'array',
+						items: {
+							$ref: 'https://misskey-hub.net/api/schemas/SignIn',
+						}
+					},
+					policies: {
+						type: 'object',
+					},
+					roles: {
+						type: 'array',
+						items: {
+							$ref: 'https://misskey-hub.net/api/schemas/Role',
+						}
+					},
+				},
+				required: [
+					'email',
+					'emailVerified',
+					'autoAcceptFollowed',
+					'noCrawle',
+					'preventAiLearning',
+					'alwaysMarkNsfw',
+					'autoSensitive',
+					'carefulBot',
+					'injectFeaturedNote',
+					'receiveAnnouncementEmail',
+					'mutedWords',
+					'mutedInstances',
+					'mutingNotificationTypes',
+					'isModerator',
+					'isSilenced',
+					'isSuspended',
+					'lastActiveDate',
+					'moderationNote',
+					'signins',
+					'policies',
+					'roles',
+				],
+			}
+		}],
 	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 

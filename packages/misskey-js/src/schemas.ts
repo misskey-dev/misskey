@@ -9,6 +9,7 @@ import {
 	packedUserSchema,
 } from './schemas/user.js';
 import {
+	notificationTypeSchema,
 	packedNotificationSchema,
 	packedNotificationStrictSchema,
 } from './schemas/notification.js';
@@ -74,6 +75,7 @@ export const refs = {
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
 	NoteFavorite: packedNoteFavoriteSchema,
+	NotificationType: notificationTypeSchema,
 	Notification: packedNotificationSchema,
 	NotificationStrict: packedNotificationStrictSchema,
 	DriveFile: packedDriveFileSchema,

@@ -107,7 +107,7 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 
 export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 
-export type ServerInfo = Selialized<Packed<'ServerInfo'>>;
+export type ServerInfo = Serialized<Packed<'ServerInfo'>>;
 
 export type Stats = {
 	notesCount: number;
