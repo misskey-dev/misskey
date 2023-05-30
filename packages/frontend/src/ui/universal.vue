@@ -13,7 +13,7 @@
 	</MkStickyContainer>
 
 	<div v-if="isDesktop" :class="$style.widgets">
-		<XWidgets :marginTop="'var(--margin)'"/>
+		<XWidgets/>
 	</div>
 
 	<button v-if="!isDesktop && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
