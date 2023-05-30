@@ -1,7 +1,7 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
 	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
-	<div ref="emojisEl" class="emojis">
+	<div ref="emojisEl" class="emojis" tabindex="-1">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
 				<button
