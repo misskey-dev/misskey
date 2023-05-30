@@ -1,5 +1,5 @@
 <template>
-<div :class="$style.root" :style="{ paddingTop: marginTop }">
+<div :class="$style.root">
 	<XWidgets :class="$style.widgets" :edit="editMode" :widgets="widgets" @addWidget="addWidget" @removeWidget="removeWidget" @updateWidget="updateWidget" @updateWidgets="updateWidgets" @exit="editMode = false"/>
 
 	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
@@ -11,7 +11,7 @@
 let editMode = $ref(false);
 </script>
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { } from 'vue';
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
@@ -21,26 +21,14 @@ const props = withDefaults(defineProps<{
 	// left = place: leftだけを表示
 	// right = rightとnullを表示
 	place?: 'left' | null | 'right';
-	marginTop?: string;
 }>(), {
 	place: null,
-	marginTop: '0',
 });
-
-const emit = defineEmits<{
-	(ev: 'mounted', el?: Element): void;
-}>();
-
-let rootEl = $shallowRef<HTMLDivElement>();
 
 const widgets = $computed(() => {
 	if (props.place === null) return defaultStore.reactiveState.widgets.value;
 	if (props.place === 'left') return defaultStore.reactiveState.widgets.value.filter(w => w.place === 'left');
 	return defaultStore.reactiveState.widgets.value.filter(w => w.place !== 'left');
-});
-
-onMounted(() => {
-	emit('mounted', rootEl);
 });
 
 function addWidget(widget) {
@@ -83,13 +71,6 @@ function updateWidgets(thisWidgets) {
 
 <style lang="scss" module>
 .root {
-	position: sticky;
-	height: min-content;
-	box-sizing: border-box;
-}
-
-.widgets {
-	width: 300px;
 }
 
 .edit {

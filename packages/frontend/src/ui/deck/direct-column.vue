@@ -17,9 +17,6 @@ defineProps<{
 	isStacked: boolean;
 }>();
 
-const emit = defineEmits<{
-}>();
-
 const pagination = {
 	endpoint: 'notes/mentions' as const,
 	limit: 10,

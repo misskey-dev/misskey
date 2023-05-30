@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+		<MkSpacer :contentMax="700">
 			<div class="_gaps">
 				<div class="_buttons">
 					<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
@@ -11,9 +11,9 @@
 				<MkFolder>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :model-value="role" readonly/>
+					<XEditor :modelValue="role" readonly/>
 				</MkFolder>
-				<MkFolder v-if="role.target === 'manual'" default-open>
+				<MkFolder v-if="role.target === 'manual'" defaultOpen>
 					<template #icon><i class="ti ti-users"></i></template>
 					<template #label>{{ i18n.ts.users }}</template>
 					<template #suffix>{{ role.usersCount }}</template>

@@ -93,7 +93,7 @@ function showFileMenu(file, ev: MouseEvent) {
 		action: () => { rename(file); },
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
+		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
 		action: () => { toggleSensitive(file); },
 	}, {
 		text: i18n.ts.describeFile,
