@@ -14,8 +14,8 @@
 >
 	<MkEmojiPicker
 		ref="picker"
-		class="ryghynhb _popup _shadow"
-		:class="{ drawer: type === 'drawer' }"
+		class="_popup _shadow"
+		:class="{ [$style.drawer]: type === 'drawer' }"
 		:showPinned="showPinned"
 		:asReactionPicker="asReactionPicker"
 		:asDrawer="type === 'drawer'"
@@ -67,12 +67,10 @@ function opening() {
 }
 </script>
 
-<style lang="scss" scoped>
-.ryghynhb {
-	&.drawer {
-		border-radius: 24px;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-	}
+<style lang="scss" module>
+.drawer {
+	border-radius: 24px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
 }
 </style>

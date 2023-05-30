@@ -100,7 +100,7 @@ export class GlobalModule implements OnApplicationShutdown {
 		@Inject(DI.redisForSub) private redisForSub: Redis.Redis,
 	) {}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
+	public async dispose(): Promise<void> {
 		if (process.env.NODE_ENV === 'test') {
 			// XXX:
 			// Shutting down the existing connections causes errors on Jest as
@@ -115,5 +115,9 @@ export class GlobalModule implements OnApplicationShutdown {
 			this.redisForPub.disconnect(),
 			this.redisForSub.disconnect(),
 		]);
+	}
+
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }

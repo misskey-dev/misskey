@@ -1,30 +1,30 @@
 <template>
 <button
-	class="kpoogebi _button"
-	:class="{ wait, active: isFollowing || hasPendingFollowRequestFromYou, full, large }"
+	class="_button"
+	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing || hasPendingFollowRequestFromYou, [$style.full]: full, [$style.large]: large }]"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="hasPendingFollowRequestFromYou && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequestPending }}</span><i class="ti ti-hourglass-empty"></i>
 		</template>
 		<template v-else-if="hasPendingFollowRequestFromYou && !user.isLocked">
 			<!-- つまりリモートフォローの場合。 -->
-			<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 		</template>
 		<template v-else-if="isFollowing">
-			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else-if="!isFollowing && user.isLocked">
-			<span v-if="full">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.followRequest }}</span><i class="ti ti-plus"></i>
 		</template>
 		<template v-else-if="!isFollowing && !user.isLocked">
-			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
+		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true" :colored="false"/>
 	</template>
 </button>
 </template>
@@ -126,8 +126,8 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.kpoogebi {
+<style lang="scss" module>
+.root {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
@@ -196,9 +196,9 @@ onBeforeUnmount(() => {
 		cursor: wait !important;
 		opacity: 0.7;
 	}
+}
 
-	> span {
-		margin-right: 6px;
-	}
+.text {
+	margin-right: 6px;
 }
 </style>

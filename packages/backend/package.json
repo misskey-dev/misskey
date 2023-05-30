@@ -35,6 +35,7 @@
 		"@swc/core-win32-x64-msvc": "1.3.56",
 		"@tensorflow/tfjs": "4.4.0",
 		"@tensorflow/tfjs-node": "4.4.0",
+		"bufferutil": "^4.0.7",
 		"slacc-android-arm-eabi": "0.0.9",
 		"slacc-android-arm64": "0.0.9",
 		"slacc-darwin-arm64": "0.0.9",
@@ -46,7 +47,8 @@
 		"slacc-linux-arm64-musl": "0.0.9",
 		"slacc-linux-x64-gnu": "0.0.9",
 		"slacc-win32-arm64-msvc": "0.0.9",
-		"slacc-win32-x64-msvc": "0.0.9"
+		"slacc-win32-x64-msvc": "0.0.9",
+		"utf-8-validate": "^6.0.3"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "3.321.1",
@@ -76,7 +78,7 @@
 		"autwh": "0.1.0",
 		"bcryptjs": "2.4.3",
 		"blurhash": "2.0.5",
-		"bull": "4.10.4",
+		"bullmq": "3.14.1",
 		"cacheable-lookup": "6.1.0",
 		"cbor": "8.1.0",
 		"chalk": "5.2.0",
@@ -103,8 +105,8 @@
 		"jsdom": "21.1.1",
 		"json5": "2.2.3",
 		"jsonld": "8.1.1",
-		"meilisearch": "0.32.4",
 		"jsrsasign": "10.8.6",
+		"meilisearch": "0.32.4",
 		"mfm-js": "0.23.3",
 		"mime-types": "2.1.35",
 		"misskey-js": "workspace:*",
@@ -157,7 +159,6 @@
 		"uuid": "9.0.0",
 		"vary": "1.1.2",
 		"web-push": "3.6.1",
-		"websocket": "1.0.34",
 		"ws": "8.13.0",
 		"xev": "3.0.2"
 	},
@@ -167,7 +168,6 @@
 		"@types/accepts": "1.3.5",
 		"@types/archiver": "5.3.2",
 		"@types/bcryptjs": "2.4.2",
-		"@types/bull": "4.10.0",
 		"@types/cbor": "6.0.0",
 		"@types/color-convert": "2.0.0",
 		"@types/content-disposition": "0.5.5",

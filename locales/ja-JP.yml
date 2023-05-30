@@ -792,6 +792,7 @@ noMaintainerInformationWarning: "管理者情報が設定されていません�
 noBotProtectionWarning: "Botプロテクションが設定されていません。"
 configure: "設定する"
 postToGallery: "ギャラリーへ投稿"
+postToHashtag: "このハッシュタグで投稿"
 gallery: "ギャラリー"
 recentPosts: "最近の投稿"
 popularPosts: "人気の投稿"
@@ -1057,6 +1058,8 @@ rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "ロールの指定が一
 rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "ロールは公開ロールである必要があります。"
 cancelReactionConfirm: "リアクションを取り消しますか？"
 changeReactionConfirm: "リアクションを変更しますか？"
+later: "あとで"
+goToMisskey: "Misskeyへ"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
@@ -1072,6 +1075,7 @@ _initialAccountSetting:
   haveFun: "{name}をお楽しみください！"
   ifYouNeedLearnMore: "{name}(Misskey)の使い方などを詳しく知るには{link}をご覧ください。"
   skipAreYouSure: "初期設定をスキップしますか？"
+  laterAreYouSure: "初期設定をあとでやり直しますか？"
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"

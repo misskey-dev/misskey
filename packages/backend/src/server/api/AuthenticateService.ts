@@ -36,7 +36,7 @@ export class AuthenticateService {
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null | undefined, AccessToken | null | undefined]> {
+	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, AccessToken | null]> {
 		if (token == null) {
 			return [null, null];
 		}

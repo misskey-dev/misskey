@@ -1,12 +1,12 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="1400">
+	<MkSpacer :contentMax="1400">
 		<div class="_root">
 			<div v-if="tab === 'explore'">
 				<MkFoldableSection class="_margin">
 					<template #header><i class="ti ti-clock"></i>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disable-auto-load="true">
+					<MkPagination v-slot="{items}" :pagination="recentPostsPagination" :disableAutoLoad="true">
 						<div :class="$style.items">
 							<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 						</div>
@@ -14,7 +14,7 @@
 				</MkFoldableSection>
 				<MkFoldableSection class="_margin">
 					<template #header><i class="ti ti-comet"></i>{{ i18n.ts.popularPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="popularPostsPagination" :disable-auto-load="true">
+					<MkPagination v-slot="{items}" :pagination="popularPostsPagination" :disableAutoLoad="true">
 						<div :class="$style.items">
 							<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 						</div>
