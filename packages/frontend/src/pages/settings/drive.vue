@@ -141,6 +141,7 @@ definePageMetadata({
 
 <style lang="scss" module>
 .meter {
+	height: 10px;
 	background: rgba(0, 0, 0, 0.1);
 	border-radius: 999px;
 	overflow: clip;
