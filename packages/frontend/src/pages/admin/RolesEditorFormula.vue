@@ -25,11 +25,11 @@
 	</div>
 
 	<div v-if="type === 'and' || type === 'or'" :class="$style.values" class="_gaps">
-		<Sortable v-model="v.values" tag="div" class="_gaps" item-key="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swap-threshold="0.5">
+		<Sortable v-model="v.values" tag="div" class="_gaps" itemKey="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swapThreshold="0.5">
 			<template #item="{element}">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-					<RolesEditorFormula :model-value="element" draggable @update:model-value="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
+					<RolesEditorFormula :modelValue="element" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
 				</div>
 			</template>
 		</Sortable>

@@ -1,20 +1,20 @@
 <template>
 <button
-	class="hdcaacmi _button"
-	:class="{ wait, active: isFollowing, full }"
+	class="_button"
+	:class="[$style.root, { [$style.wait]: wait, [$style.active]: isFollowing, [$style.full]: full }]"
 	:disabled="wait"
 	@click="onClick"
 >
 	<template v-if="!wait">
 		<template v-if="isFollowing">
-			<span v-if="full">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.unfollow }}</span><i class="ti ti-minus"></i>
 		</template>
 		<template v-else>
-			<span v-if="full">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
+			<span v-if="full" :class="$style.text">{{ i18n.ts.follow }}</span><i class="ti ti-plus"></i>
 		</template>
 	</template>
 	<template v-else>
-		<span v-if="full">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
+		<span v-if="full" :class="$style.text">{{ i18n.ts.processing }}</span><MkLoading :em="true"/>
 	</template>
 </button>
 </template>
@@ -57,8 +57,8 @@ async function onClick() {
 }
 </script>
 
-<style lang="scss" scoped>
-.hdcaacmi {
+<style lang="scss" module>
+.root {
 	position: relative;
 	display: inline-block;
 	font-weight: bold;
@@ -103,7 +103,7 @@ async function onClick() {
 	}
 
 	&.active {
-		color: #fff;
+		color: var(--fgOnAccent);
 		background: var(--accent);
 
 		&:hover {
@@ -121,9 +121,9 @@ async function onClick() {
 		cursor: wait !important;
 		opacity: 0.7;
 	}
+}
 
-	> span {
-		margin-right: 6px;
-	}
+.text {
+	margin-right: 6px;
 }
 </style>

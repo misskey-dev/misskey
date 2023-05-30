@@ -4,7 +4,7 @@
 		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" @after="() => emit('loaded')"/>
+	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId"/>
 </XColumn>
 </template>
 
@@ -19,10 +19,6 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
 }>();
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();

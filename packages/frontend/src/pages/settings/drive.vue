@@ -4,8 +4,8 @@
 		<template #label>{{ i18n.ts.usageAmount }}</template>
 
 		<div class="_gaps_m">
-			<div class="uawsfosz">
-				<div class="meter"><div :style="meterStyle"></div></div>
+			<div>
+				<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
 			</div>
 			<FormSplit>
 				<MkKeyValue>
@@ -139,22 +139,15 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+.meter {
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 999px;
+	overflow: clip;
+}
 
-@use "sass:math";
-
-.uawsfosz {
-
-	> .meter {
-		$size: 12px;
-		background: rgba(0, 0, 0, 0.1);
-		border-radius: math.div($size, 2);
-		overflow: hidden;
-
-		> div {
-			height: $size;
-			border-radius: math.div($size, 2);
-		}
-	}
+.meterValue {
+	height: 100%;
+	border-radius: 999px;
 }
 </style>

@@ -21,9 +21,6 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-const emit = defineEmits<{
-}>();
-
 let edit = $ref(false);
 
 function addWidget(widget) {
