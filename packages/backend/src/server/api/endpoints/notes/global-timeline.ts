@@ -97,9 +97,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.doNotShowNsfwContentsOnTheTimeline) {
 				for (const timelineNote of timeline) {
-					if (timelineNote.fileIds.length > 0) {
+					let renoteNoteFileIds: string[] = [];
+					let replyNoteFileIds: string[] = [];
+					if (timelineNote.renoteId) {
+						renoteNoteFileIds = (await this.notesRepository.findOneByOrFail({
+							id: timelineNote.renoteId,
+						})).fileIds;
+					}
+					if (timelineNote.replyId) {
+						replyNoteFileIds = (await this.notesRepository.findOneByOrFail({
+							id: timelineNote.replyId,
+						})).fileIds;
+					}
+					if (timelineNote.fileIds.length > 0 || renoteNoteFileIds.length > 0 || replyNoteFileIds.length > 0) {
 						const query = this.driveFilesRepository.createQueryBuilder('files');
-						query.where('files.id IN (:...noteFileIds)', { noteFileIds: timelineNote.fileIds });
+						query.where('files.id IN (:...noteFileIds)', { noteFileIds: [...timelineNote.fileIds, ...renoteNoteFileIds, ...replyNoteFileIds] });
 						query.andWhere('files.isSensitive = true');
 						if (!(await query.getExists())) result.push(timelineNote);
 					} else {
