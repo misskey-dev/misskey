@@ -81,6 +81,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				const moduleTree = new Map(cssModuleTreeNode.declarations[0].init.properties.flatMap((property) => {
 					if (property.type !== 'Property') return [];
 					if (property.key.type !== 'Identifier') return [];
+					if (property.value.type === 'Literal') return [[property.key.name, property.value.value as string]];
 					if (property.value.type !== 'Identifier') return [];
 					const labelledValue = property.value.name;
 					const actualValue = parent.body.find((x) => {
