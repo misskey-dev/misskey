@@ -278,6 +278,7 @@ $widgets-hide-threshold: 1090px;
 	min-width: 0;
 	overflow: auto;
 	overflow-y: scroll;
+	overscroll-behavior: contain;
 	background: var(--bg);
 }
 

@@ -101,7 +101,7 @@ import { isTouchUsing } from '@/scripts/touch';
 import { deviceKind } from '@/scripts/device-kind';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
-import { customEmojiCategories, customEmojis } from '@/custom-emojis';
+import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis';
 import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
@@ -337,7 +337,7 @@ function done(query?: string): boolean | void {
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojis.value.find(emoji => emoji.name === q2);
+	const exactMatchCustom = customEmojisMap.get(q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;
