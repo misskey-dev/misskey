@@ -55,9 +55,7 @@ export function getConfig(): UserConfig {
 				reactivityTransform: true,
 			}),
 			ReactivityTransform(),
-			/*
 			pluginUnwindCssModuleClassName(),
-			 */
 			pluginJson5(),
 			...process.env.NODE_ENV === 'production'
 				? [
