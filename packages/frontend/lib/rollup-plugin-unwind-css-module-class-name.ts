@@ -20,13 +20,17 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 			const ident = node.declarations[0].init.arguments[0].name;
 			if (!ident.startsWith('_sfc_main')) return;
 			if (node.declarations[0].init.arguments[1].type !== 'ArrayExpression') return;
-			if (node.declarations[0].init.arguments[1].elements.length !== 1) return;
-			if (node.declarations[0].init.arguments[1].elements[0]?.type !== 'ArrayExpression') return;
-			if (node.declarations[0].init.arguments[1].elements[0].elements.length !== 2) return;
-			if (node.declarations[0].init.arguments[1].elements[0].elements[0]?.type !== 'Literal') return;
-			if (node.declarations[0].init.arguments[1].elements[0].elements[0].value !== '__cssModules') return;
-			if (node.declarations[0].init.arguments[1].elements[0].elements[1]?.type !== 'Identifier') return;
-			const cssModuleForestName = node.declarations[0].init.arguments[1].elements[0].elements[1].name;
+			if (node.declarations[0].init.arguments[1].elements.length === 0) return;
+			const __cssModulesIndex = node.declarations[0].init.arguments[1].elements.findIndex((x) => {
+				if (x?.type !== 'ArrayExpression') return false;
+				if (x.elements.length !== 2) return false;
+				if (x.elements[0]?.type !== 'Literal') return false;
+				if (x.elements[0].value !== '__cssModules') return false;
+				if (x.elements[1]?.type !== 'Identifier') return false;
+				return true;
+			});
+			if (!~__cssModulesIndex) return;
+			const cssModuleForestName = node.declarations[0].init.arguments[1].elements[__cssModulesIndex].elements[1].name;
 			const cssModuleForestNode = parent.body.find((x) => {
 				if (x.type !== 'VariableDeclaration') return false;
 				if (x.declarations.length !== 1) return false;
@@ -130,21 +134,49 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 					},
 				});
 			}
-			this.replace({
-				type: 'VariableDeclaration',
-				declarations: [{
-					type: 'VariableDeclarator',
-					id: {
-						type: 'Identifier',
-						name: node.declarations[0].id.name,
-					},
-					init: {
-						type: 'Identifier',
-						name: ident,
-					},
-				}],
-				kind: 'const',
-			});
+			if (node.declarations[0].init.arguments[1].elements.length === 1) {
+				this.replace({
+					type: 'VariableDeclaration',
+					declarations: [{
+						type: 'VariableDeclarator',
+						id: {
+							type: 'Identifier',
+							name: node.declarations[0].id.name,
+						},
+						init: {
+							type: 'Identifier',
+							name: ident,
+						},
+					}],
+					kind: 'const',
+				});
+			} else {
+				this.replace({
+					type: 'VariableDeclaration',
+					declarations: [{
+						type: 'VariableDeclarator',
+						id: {
+							type: 'Identifier',
+							name: node.declarations[0].id.name,
+						},
+						init: {
+							type: 'CallExpression',
+							callee: {
+								type: 'Identifier',
+								name: '_export_sfc',
+							},
+							arguments: [{
+								type: 'Identifier',
+								name: ident,
+							}, {
+								type: 'ArrayExpression',
+								elements: node.declarations[0].init.arguments[1].elements.slice(0, __cssModulesIndex).concat(node.declarations[0].init.arguments[1].elements.slice(__cssModulesIndex + 1)),
+							}],
+						},
+					}],
+					kind: 'const',
+				});
+			}
 		},
 	});
 }
