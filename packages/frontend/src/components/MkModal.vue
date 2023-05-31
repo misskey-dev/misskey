@@ -1,30 +1,30 @@
 <template>
 <Transition
 	:name="transitionName"
-	:enterActiveClass="{
+	:enterActiveClass="normalizeClass({
 		[$style.transition_modalDrawer_enterActive]: transitionName === 'modal-drawer',
 		[$style.transition_modalPopup_enterActive]: transitionName === 'modal-popup',
 		[$style.transition_modal_enterActive]: transitionName === 'modal',
 		[$style.transition_send_enterActive]: transitionName === 'send',
-	}"
-	:leaveActiveClass="{
+	})"
+	:leaveActiveClass="normalizeClass({
 		[$style.transition_modalDrawer_leaveActive]: transitionName === 'modal-drawer',
 		[$style.transition_modalPopup_leaveActive]: transitionName === 'modal-popup',
 		[$style.transition_modal_leaveActive]: transitionName === 'modal',
 		[$style.transition_send_leaveActive]: transitionName === 'send',
-	}"
-	:enterFromClass="{
+	})"
+	:enterFromClass="normalizeClass({
 		[$style.transition_modalDrawer_enterFrom]: transitionName === 'modal-drawer',
 		[$style.transition_modalPopup_enterFrom]: transitionName === 'modal-popup',
 		[$style.transition_modal_enterFrom]: transitionName === 'modal',
 		[$style.transition_send_enterFrom]: transitionName === 'send',
-	}"
-	:leaveToClass="{
+	})"
+	:leaveToClass="normalizeClass({
 		[$style.transition_modalDrawer_leaveTo]: transitionName === 'modal-drawer',
 		[$style.transition_modalPopup_leaveTo]: transitionName === 'modal-popup',
 		[$style.transition_modal_leaveTo]: transitionName === 'modal',
 		[$style.transition_send_leaveTo]: transitionName === 'send',
-	}"
+	})"
 	:duration="transitionDuration" appear @afterLeave="emit('closed')" @enter="emit('opening')" @afterEnter="onOpened"
 >
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, watch, provide } from 'vue';
+import { nextTick, normalizeClass, onMounted, watch, provide } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
