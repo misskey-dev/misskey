@@ -42,11 +42,10 @@ const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
 </script>
 
 <script lang="ts" setup>
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, useCssModule, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { render } from 'buraha';
 import { defaultStore } from '@/store';
-const $style = useCssModule();
 
 const props = withDefaults(defineProps<{
 	transition?: {

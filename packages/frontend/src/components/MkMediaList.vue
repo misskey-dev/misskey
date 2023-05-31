@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch, shallowRef } from 'vue';
+import { onMounted, watch, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -36,8 +36,6 @@ const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
-
-const $style = useCssModule();
 
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
@@ -96,7 +94,7 @@ onMounted(() => {
 				return item;
 			}),
 		gallery: gallery.value,
-		mainClass: $style.pswp,
+		mainClass: 'pswp',
 		children: '.image',
 		thumbSelector: '.image',
 		loop: false,
@@ -268,7 +266,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	border-radius: 8px;
 }
 
-.pswp {
+:global(.pswp) {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
 	--pswp-bg: var(--modalBg) !important;
 }
