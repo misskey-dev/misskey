@@ -3,7 +3,7 @@
 	<template #item="{element}">
 		<div :class="$style.item">
 			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-			<component :is="'x-' + element.type" :modelValue="element" @update:modelValue="updateItem" @remove="() => removeItem(element)"/>
+			<component :is="getComponent(element.type)" :modelValue="element" @update:modelValue="updateItem" @remove="() => removeItem(element)"/>
 		</div>
 	</template>
 </Sortable>
@@ -15,6 +15,16 @@ import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
+
+function getComponent(type: string) {
+	switch (type) {
+		case 'section': return XSection;
+		case 'text': return XText;
+		case 'image': return XImage;
+		case 'note': return XNote;
+		default: return null;
+	}
+}
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
