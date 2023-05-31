@@ -205,8 +205,11 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
+	(appearNote.text.includes('$[x2')) ||
 	(appearNote.text.includes('$[x3')) ||
 	(appearNote.text.includes('$[x4')) ||
+	(appearNote.text.includes('$[scale')) ||
+	(appearNote.text.includes('$[position')) ||
 	(appearNote.text.split('\n').length > 9) ||
 	(appearNote.text.length > 500) ||
 	(appearNote.files.length >= 5) ||
@@ -274,7 +277,7 @@ function renote(viaKeyboard = false) {
 					const y = rect.top + (el.offsetHeight / 2);
 					os.popup(MkRippleEffect, { x, y }, {}, 'end');
 				}
-					
+
 				os.api('notes/create', {
 					renoteId: appearNote.id,
 					channelId: appearNote.channelId,
@@ -305,7 +308,7 @@ function renote(viaKeyboard = false) {
 				const y = rect.top + (el.offsetHeight / 2);
 				os.popup(MkRippleEffect, { x, y }, {}, 'end');
 			}
-				
+
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
