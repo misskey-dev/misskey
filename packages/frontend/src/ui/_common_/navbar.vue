@@ -118,6 +118,7 @@ function more(ev: MouseEvent) {
 		box-sizing: border-box;
 		overflow: auto;
 		overflow-x: clip;
+		overscroll-behavior: contain;
 		background: var(--navBg);
 		contain: strict;
 		display: flex;
