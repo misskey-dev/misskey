@@ -80,8 +80,9 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				if (cssModuleTreeNode.declarations[0].init?.type !== 'ObjectExpression') return;
 				const moduleTree = new Map(cssModuleTreeNode.declarations[0].init.properties.flatMap((property) => {
 					if (property.type !== 'Property') return [];
-					if (property.key.type !== 'Identifier') return [];
-					if (property.value.type === 'Literal') return [[property.key.name, property.value.value as string]];
+					const actualKey = property.key.type === 'Identifier' ? property.key.name : property.key.type === 'Literal' ? property.key.value : null;
+					if (typeof actualKey !== 'string') return [];
+					if (property.value.type === 'Literal') return [[actualKey, property.value.value as string]];
 					if (property.value.type !== 'Identifier') return [];
 					const labelledValue = property.value.name;
 					const actualValue = parent.body.find((x) => {
@@ -92,7 +93,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						return true;
 					}) as unknown as estree.VariableDeclaration;
 					if (actualValue.declarations[0].init?.type !== 'Literal') return [];
-					return [[property.key.name, actualValue.declarations[0].init.value as string]];
+					return [[actualKey, actualValue.declarations[0].init.value as string]];
 				}));
 				(walk as typeof estreeWalker.walk)(render.argument.body, {
 					enter(childNode) {
