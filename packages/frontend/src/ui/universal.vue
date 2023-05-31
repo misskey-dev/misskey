@@ -5,7 +5,7 @@
 	<MkStickyContainer :class="$style.contents">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
 		<main style="min-width: 0;" @contextmenu.stop="onContextmenu">
-			<div :class="$style.content" style="container-type: inline-size;">
+			<div style="container-type: inline-size;">
 				<RouterView/>
 			</div>
 			<div :class="$style.spacer"></div>

@@ -11,6 +11,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 			if (node.type !== 'VariableDeclaration') return;
 			if (node.declarations.length !== 1) return;
 			if (node.declarations[0].id.type !== 'Identifier') return;
+			const name = node.declarations[0].id.name;
 			if (node.declarations[0].init?.type !== 'CallExpression') return;
 			if (node.declarations[0].init.callee.type !== 'Identifier') return;
 			if (node.declarations[0].init.callee.name !== '_export_sfc') return;
@@ -121,10 +122,10 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						if (childNode.object.property.type !== 'Identifier') return;
 						if (childNode.object.property.name !== key) return;
 						if (childNode.property.type !== 'Identifier') return;
-						console.error(`${key}.${childNode.property.name} is not a valid css module class name`);
+						console.error(`Undefined style detected: ${key}.${childNode.property.name} (in ${name})`);
 						this.replace({
-							type: 'Literal',
-							value: null,
+							type: 'Identifier',
+							name: 'undefined',
 						});
 					},
 				});
@@ -152,9 +153,8 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 export default function pluginUnwindCssModuleClassName(): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',
-		renderChunk(code, chunk): { code: string } {
+		renderChunk(code): { code: string } {
 			const ast = this.parse(code) as unknown as estree.Node;
-			console.log(`======= ${chunk.fileName} =======`);
 			unwindCssModuleClassName(ast);
 			return { code: generate(ast) };
 		},

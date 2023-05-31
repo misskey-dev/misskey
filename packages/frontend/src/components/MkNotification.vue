@@ -46,7 +46,7 @@
 			<span v-else>{{ notification.header }}</span>
 			<MkTime v-if="withTime" :time="notification.createdAt" :class="$style.headerTime"/>
 		</header>
-		<div :class="$style.content">
+		<div>
 			<MkA v-if="notification.type === 'reaction'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
@@ -253,9 +253,6 @@ useTooltip(reactionRef, (showing) => {
 .headerTime {
 	margin-left: auto;
 	font-size: 0.9em;
-}
-
-.content {
 }
 
 .text {
