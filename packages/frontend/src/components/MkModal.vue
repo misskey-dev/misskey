@@ -1,10 +1,30 @@
 <template>
 <Transition
 	:name="transitionName"
-	:enterActiveClass="$style['transition_' + transitionName + '_enterActive']"
-	:leaveActiveClass="$style['transition_' + transitionName + '_leaveActive']"
-	:enterFromClass="$style['transition_' + transitionName + '_enterFrom']"
-	:leaveToClass="$style['transition_' + transitionName + '_leaveTo']"
+	:enterActiveClass="{
+		[$style.transition_modalDrawer_enterActive]: transitionName === 'modal-drawer',
+		[$style.transition_modalPopup_enterActive]: transitionName === 'modal-popup',
+		[$style.transition_modal_enterActive]: transitionName === 'modal',
+		[$style.transition_send_enterActive]: transitionName === 'send',
+	}"
+	:leaveActiveClass="{
+		[$style.transition_modalDrawer_leaveActive]: transitionName === 'modal-drawer',
+		[$style.transition_modalPopup_leaveActive]: transitionName === 'modal-popup',
+		[$style.transition_modal_leaveActive]: transitionName === 'modal',
+		[$style.transition_send_leaveActive]: transitionName === 'send',
+	}"
+	:enterFromClass="{
+		[$style.transition_modalDrawer_enterFrom]: transitionName === 'modal-drawer',
+		[$style.transition_modalPopup_enterFrom]: transitionName === 'modal-popup',
+		[$style.transition_modal_enterFrom]: transitionName === 'modal',
+		[$style.transition_send_enterFrom]: transitionName === 'send',
+	}"
+	:leaveToClass="{
+		[$style.transition_modalPopup_leaveTo]: transitionName === 'modal-popup',
+		[$style.transition_modalPopup_leaveTo]: transitionName === 'modal-popup',
+		[$style.transition_modal_leaveTo]: transitionName === 'modal',
+		[$style.transition_send_leaveTo]: transitionName === 'send',
+	}"
 	:duration="transitionDuration" appear @afterLeave="emit('closed')" @enter="emit('opening')" @afterEnter="onOpened"
 >
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
@@ -339,8 +359,8 @@ defineExpose({
 	}
 }
 
-.transition_modal-popup_enterActive,
-.transition_modal-popup_leaveActive {
+.transition_modalPopup_enterActive,
+.transition_modalPopup_leaveActive {
 	> .bg {
 		transition: opacity 0.1s !important;
 	}
@@ -350,8 +370,8 @@ defineExpose({
 		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
-.transition_modal-popup_enterFrom,
-.transition_modal-popup_leaveTo {
+.transition_modalPopup_enterFrom,
+.transition_modalPopup_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -364,7 +384,7 @@ defineExpose({
 	}
 }
 
-.transition_modal-drawer_enterActive {
+.transition_modalDrawer_enterActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -373,7 +393,7 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.transition_modal-drawer_leaveActive {
+.transition_modalDrawer_leaveActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}

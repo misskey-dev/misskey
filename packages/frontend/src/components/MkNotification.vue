@@ -5,7 +5,19 @@
 		<MkAvatar v-else-if="notification.type === 'achievementEarned'" :class="$style.icon" :user="$i" link preview/>
 		<MkAvatar v-else-if="notification.user" :class="$style.icon" :user="notification.user" link preview/>
 		<img v-else-if="notification.icon" :class="$style.icon" :src="notification.icon" alt=""/>
-		<div :class="[$style.subIcon, $style['t_' + notification.type]]">
+		<div
+			:class="[$style.subIcon, {
+				[$style.t_follow]: notification.type === 'follow',
+				[$style.t_followRequestAccepted]: notification.type === 'followRequestAccepted',
+				[$style.t_receiveFollowRequest]: notification.type === 'receiveFollowRequest',
+				[$style.t_renote]: notification.type === 'renote',
+				[$style.t_reply]: notification.type === 'reply',
+				[$style.t_mention]: notification.type === 'mention',
+				[$style.t_quote]: notification.type === 'quote',
+				[$style.t_pollEnded]: notification.type === 'pollEnded',
+				[$style.t_achievementEarned]: notification.type === 'achievementEarned',
+			}]"
+		>
 			<i v-if="notification.type === 'follow'" class="ti ti-plus"></i>
 			<i v-else-if="notification.type === 'receiveFollowRequest'" class="ti ti-clock"></i>
 			<i v-else-if="notification.type === 'followRequestAccepted'" class="ti ti-check"></i>

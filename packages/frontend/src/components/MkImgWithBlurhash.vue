@@ -3,7 +3,7 @@
 	<TransitionGroup
 		:duration="defaultStore.state.animation && props.transition?.duration || undefined"
 		:enterActiveClass="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
-		:leaveActiveClass="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style['transition_leaveActive']) || undefined"
+		:leaveActiveClass="defaultStore.state.animation && (props.transition?.leaveActiveClass ?? $style.transition_leaveActive) || undefined"
 		:enterFromClass="defaultStore.state.animation && props.transition?.enterFromClass || undefined"
 		:leaveToClass="defaultStore.state.animation && props.transition?.leaveToClass || undefined"
 		:enterToClass="defaultStore.state.animation && props.transition?.enterToClass || undefined"

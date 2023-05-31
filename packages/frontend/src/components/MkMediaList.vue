@@ -6,8 +6,11 @@
 			ref="gallery"
 			:class="[
 				$style.medias,
-				count <= 4 ? $style['n' + count] : $style.nMany,
-				$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]
+				count === 1 ? [$style.n1, {
+					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
+					[$style.n1_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
+					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
+				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
