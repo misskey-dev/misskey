@@ -1,6 +1,6 @@
 <template>
 <div :class="{ [$style.center]: page.alignCenter, [$style.serif]: page.font === 'serif' }">
-	<XBlock v-for="child in page.content" :key="child.id" :block="child" :h="2"/>
+	<XBlock v-for="child in page.content" :key="child.id" :page="page" :block="child" :h="2"/>
 </div>
 </template>
 

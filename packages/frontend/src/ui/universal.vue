@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.root, { [$style.withWallpaper]: wallpaper }]">
+<div :class="$style.root">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
 	<MkStickyContainer :class="$style.contents">
@@ -12,8 +12,8 @@
 		</main>
 	</MkStickyContainer>
 
-	<div v-if="isDesktop" ref="widgetsEl" :class="$style.widgets">
-		<XWidgets :marginTop="'var(--margin)'" @mounted="attachSticky"/>
+	<div v-if="isDesktop" :class="$style.widgets">
+		<XWidgets/>
 	</div>
 
 	<button v-if="!isDesktop && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
@@ -87,7 +87,6 @@
 import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef, watch, inject, Ref } from 'vue';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -114,7 +113,6 @@ window.addEventListener('resize', () => {
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsEl = $shallowRef<HTMLElement>();
 const widgetsShowing = $ref(false);
 const navFooter = $shallowRef<HTMLElement>();
 
@@ -139,8 +137,6 @@ const drawerMenuShowing = ref(false);
 mainRouter.on('change', () => {
 	drawerMenuShowing.value = false;
 });
-
-document.documentElement.style.overflowY = 'scroll';
 
 if (window.innerWidth > 1024) {
 	const tempUI = miLocalStorage.getItem('ui_temp');
@@ -197,18 +193,9 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
-const attachSticky = (el) => {
-	const sticky = new StickySidebar(widgetsEl);
-	window.addEventListener('scroll', () => {
-		sticky.calc(window.scrollY);
-	}, { passive: true });
-};
-
 function top() {
-	window.scroll({ top: 0, behavior: 'smooth' });
+	// TODO
 }
-
-const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 
 let navFooterHeight = $ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
@@ -275,14 +262,10 @@ $widgets-hide-threshold: 1090px;
 }
 
 .root {
-	min-height: 100dvh;
+	height: 100dvh;
+	overflow: clip;
 	box-sizing: border-box;
 	display: flex;
-}
-
-.withWallpaper {
-	background: var(--wallpaperOverlay);
-	//backdrop-filter: var(--blur, blur(4px));
 }
 
 .sidebar {
@@ -290,13 +273,20 @@ $widgets-hide-threshold: 1090px;
 }
 
 .contents {
-	width: 100%;
+	flex: 1;
+	height: 100%;
 	min-width: 0;
+	overflow: auto;
+	overflow-y: scroll;
 	background: var(--bg);
 }
 
 .widgets {
-	padding: 0 var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+	width: 350px;
+	height: 100%;
+	box-sizing: border-box;
+	overflow: auto;
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
