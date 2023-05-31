@@ -367,6 +367,7 @@ Meilisearchの設定に`index`が必要になりました。値はMisskeyサー�
 - アンテナでCWも検索対象にするように
 - ノートの操作部をホバー時のみ表示するオプションを追加
 - サウンドを追加
+- enhance(client): MFMのx2, scale, positionが含まれていたらノートをたたむように
 - サーバーのパフォーマンスを改善
 
 ### Bugfixes
