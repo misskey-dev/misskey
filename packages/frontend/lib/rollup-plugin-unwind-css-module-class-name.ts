@@ -112,22 +112,38 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						});
 					},
 				});
-				this.replace({
-					type: 'VariableDeclaration',
-					declarations: [{
-						type: 'VariableDeclarator',
-						id: {
-							type: 'Identifier',
-							name: node.declarations[0].id.name,
-						},
-						init: {
-							type: 'Identifier',
-							name: ident,
-						},
-					}],
-					kind: 'const',
+				(walk as typeof estreeWalker.walk)(render.argument.body, {
+					enter(childNode) {
+						if (childNode.type !== 'MemberExpression') return;
+						if (childNode.object.type !== 'MemberExpression') return;
+						if (childNode.object.object.type !== 'Identifier') return;
+						if (childNode.object.object.name !== ctx.name) return;
+						if (childNode.object.property.type !== 'Identifier') return;
+						if (childNode.object.property.name !== key) return;
+						if (childNode.property.type !== 'Identifier') return;
+						console.error(`${key}.${childNode.property.name} is not a valid css module class name`);
+						this.replace({
+							type: 'Literal',
+							value: null,
+						});
+					},
 				});
 			}
+			this.replace({
+				type: 'VariableDeclaration',
+				declarations: [{
+					type: 'VariableDeclarator',
+					id: {
+						type: 'Identifier',
+						name: node.declarations[0].id.name,
+					},
+					init: {
+						type: 'Identifier',
+						name: ident,
+					},
+				}],
+				kind: 'const',
+			});
 		},
 	});
 }
@@ -138,6 +154,7 @@ export default function pluginUnwindCssModuleClassName(): Plugin {
 		name: 'UnwindCssModuleClassName',
 		renderChunk(code, chunk): { code: string } {
 			const ast = this.parse(code) as unknown as estree.Node;
+			console.log(`======= ${chunk.fileName} =======`);
 			unwindCssModuleClassName(ast);
 			return { code: generate(ast) };
 		},

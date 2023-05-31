@@ -20,7 +20,7 @@
 		[$style.transition_send_enterFrom]: transitionName === 'send',
 	}"
 	:leaveToClass="{
-		[$style.transition_modalPopup_leaveTo]: transitionName === 'modal-popup',
+		[$style.transition_modalDrawer_leaveTo]: transitionName === 'modal-drawer',
 		[$style.transition_modalPopup_leaveTo]: transitionName === 'modal-popup',
 		[$style.transition_modal_leaveTo]: transitionName === 'modal',
 		[$style.transition_send_leaveTo]: transitionName === 'send',
@@ -402,8 +402,8 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.transition_modal-drawer_enterFrom,
-.transition_modal-drawer_leaveTo {
+.transition_modalDrawer_enterFrom,
+.transition_modalDrawer_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
