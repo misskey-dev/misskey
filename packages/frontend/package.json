@@ -78,7 +78,6 @@
 		"vuedraggable": "next"
 	},
 	"devDependencies": {
-		"@babel/types": "^7.22.4",
 		"@storybook/addon-actions": "7.0.18",
 		"@storybook/addon-essentials": "7.0.18",
 		"@storybook/addon-interactions": "7.0.18",
@@ -99,7 +98,6 @@
 		"@storybook/vue3-vite": "7.0.18",
 		"@testing-library/jest-dom": "5.16.5",
 		"@testing-library/vue": "7.0.0",
-		"@types/babel__traverse": "^7.20.0",
 		"@types/escape-regexp": "0.0.1",
 		"@types/estree": "1.0.1",
 		"@types/gulp": "4.0.10",

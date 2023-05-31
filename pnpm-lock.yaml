@@ -818,9 +818,6 @@ importers:
         specifier: next
         version: 4.1.0(vue@3.3.4)
     devDependencies:
-      '@babel/types':
-        specifier: ^7.22.4
-        version: 7.22.4
       '@storybook/addon-actions':
         specifier: 7.0.18
         version: 7.0.18(react-dom@18.2.0)(react@18.2.0)
@@ -881,9 +878,6 @@ importers:
       '@testing-library/vue':
         specifier: 7.0.0
         version: 7.0.0(@vue/compiler-sfc@3.3.4)(vue@3.3.4)
-      '@types/babel__traverse':
-        specifier: ^7.20.0
-        version: 7.20.0
       '@types/escape-regexp':
         specifier: 0.0.1
         version: 0.0.1

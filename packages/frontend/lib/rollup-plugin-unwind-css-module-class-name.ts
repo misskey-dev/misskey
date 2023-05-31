@@ -69,7 +69,6 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 			if (ctx.type !== 'Identifier') return;
 			if (ctx.name !== '_ctx') return;
 			if (render.argument.body.type !== 'BlockStatement') return;
-			//console.dir(render, { depth: Infinity });
 			for (const [key, value] of moduleForest) {
 				const cssModuleTreeNode = parent.body.find((x) => {
 					if (x.type !== 'VariableDeclaration') return false;
