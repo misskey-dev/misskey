@@ -7,49 +7,25 @@ import type { Plugin } from 'vite';
 export function unwindCssModuleClassName(ast: estree.Node): void {
 	(walk as typeof estreeWalker.walk)(ast, {
 		enter(node, parent): void {
-			// FIXME: support multiple exports
-			if (node.type !== 'ExportNamedDeclaration') return;
-			if (node.specifiers.length !== 1) return;
-			if (node.specifiers[0].local.name === '_sfc_main') return;
-			if (node.specifiers[0].exported.name !== 'default') return;
 			if (parent?.type !== 'Program') return;
-			const endIndex = parent.body.indexOf(node);
-			const previousNode = parent.body[endIndex - 1];
-			if (previousNode.type !== 'VariableDeclaration') return;
-			if (previousNode.declarations.length !== 1) return;
-			if (previousNode.declarations[0].id.type !== 'Identifier') return;
-			if (previousNode.declarations[0].id.name !== node.specifiers[0].local.name) return;
-			if (previousNode.declarations[0].init?.type !== 'CallExpression') return;
-			if (previousNode.declarations[0].init.callee.type !== 'Identifier') return;
-			if (previousNode.declarations[0].init.callee.name !== '_export_sfc') return;
-			if (previousNode.declarations[0].init.arguments.length !== 2) return;
-			if (previousNode.declarations[0].init.arguments[0].type !== 'Identifier') return;
-			if (previousNode.declarations[0].init.arguments[0].name !== '_sfc_main') return;
-			if (previousNode.declarations[0].init.arguments[1].type !== 'ArrayExpression') return;
-			if (previousNode.declarations[0].init.arguments[1].elements.length !== 1) return;
-			if (previousNode.declarations[0].init.arguments[1].elements[0]?.type !== 'ArrayExpression') return;
-			if (previousNode.declarations[0].init.arguments[1].elements[0].elements.length !== 2) return;
-			if (previousNode.declarations[0].init.arguments[1].elements[0].elements[0]?.type !== 'Literal') return;
-			if (previousNode.declarations[0].init.arguments[1].elements[0].elements[0].value !== '__cssModules') return;
-			if (previousNode.declarations[0].init.arguments[1].elements[0].elements[1]?.type !== 'Identifier') return;
-			const cssModuleForestName = previousNode.declarations[0].init.arguments[1].elements[0].elements[1].name;
-			parent.body[endIndex - 1] = {
-				type: 'VariableDeclaration',
-				declarations: [
-					{
-						type: 'VariableDeclarator',
-						id: {
-							type: 'Identifier',
-							name: node.specifiers[0].local.name,
-						},
-						init: {
-							type: 'Identifier',
-							name: '_sfc_main',
-						},
-					},
-				],
-				kind: 'const',
-			};
+			if (node.type !== 'VariableDeclaration') return;
+			if (node.declarations.length !== 1) return;
+			if (node.declarations[0].id.type !== 'Identifier') return;
+			if (node.declarations[0].init?.type !== 'CallExpression') return;
+			if (node.declarations[0].init.callee.type !== 'Identifier') return;
+			if (node.declarations[0].init.callee.name !== '_export_sfc') return;
+			if (node.declarations[0].init.arguments.length !== 2) return;
+			if (node.declarations[0].init.arguments[0].type !== 'Identifier') return;
+			const ident = node.declarations[0].init.arguments[0].name;
+			if (!ident.startsWith('_sfc_main')) return;
+			if (node.declarations[0].init.arguments[1].type !== 'ArrayExpression') return;
+			if (node.declarations[0].init.arguments[1].elements.length !== 1) return;
+			if (node.declarations[0].init.arguments[1].elements[0]?.type !== 'ArrayExpression') return;
+			if (node.declarations[0].init.arguments[1].elements[0].elements.length !== 2) return;
+			if (node.declarations[0].init.arguments[1].elements[0].elements[0]?.type !== 'Literal') return;
+			if (node.declarations[0].init.arguments[1].elements[0].elements[0].value !== '__cssModules') return;
+			if (node.declarations[0].init.arguments[1].elements[0].elements[1]?.type !== 'Identifier') return;
+			const cssModuleForestName = node.declarations[0].init.arguments[1].elements[0].elements[1].name;
 			const cssModuleForestNode = parent.body.find((x) => {
 				if (x.type !== 'VariableDeclaration') return false;
 				if (x.declarations.length !== 1) return false;
@@ -68,7 +44,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				if (x.type !== 'VariableDeclaration') return false;
 				if (x.declarations.length !== 1) return false;
 				if (x.declarations[0].id.type !== 'Identifier') return false;
-				if (x.declarations[0].id.name !== '_sfc_main') return false;
+				if (x.declarations[0].id.name !== ident) return false;
 				return true;
 			}) as unknown as estree.VariableDeclaration;
 			if (sfcMain.declarations[0].init?.type !== 'CallExpression') return;
@@ -88,8 +64,10 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				return true;
 			}) as unknown as estree.ReturnStatement;
 			if (render.argument?.type !== 'ArrowFunctionExpression') return;
+			if (render.argument.params.length !== 2) return;
 			const ctx = render.argument.params[0];
 			if (ctx.type !== 'Identifier') return;
+			if (ctx.name !== '_ctx') return;
 			if (render.argument.body.type !== 'BlockStatement') return;
 			//console.dir(render, { depth: Infinity });
 			for (const [key, value] of moduleForest) {
@@ -133,6 +111,21 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						});
 					},
 				});
+				this.replace({
+					type: 'VariableDeclaration',
+					declarations: [{
+						type: 'VariableDeclarator',
+						id: {
+							type: 'Identifier',
+							name: node.declarations[0].id.name,
+						},
+						init: {
+							type: 'Identifier',
+							name: ident,
+						},
+					}],
+					kind: 'const',
+				});
 			}
 		},
 	});
@@ -143,12 +136,8 @@ export default function pluginUnwindCssModuleClassName(): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',
 		renderChunk(code, chunk): { code: string } {
-			console.log(`=======${chunk.fileName} BEFORE=======`);
-			console.log(code);
 			const ast = this.parse(code) as unknown as estree.Node;
 			unwindCssModuleClassName(ast);
-			console.log(`=======${chunk.fileName} AFTER=======`);
-			console.log(generate(ast));
 			return { code: generate(ast) };
 		},
 	};

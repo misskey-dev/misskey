@@ -3,7 +3,7 @@ import { generate } from 'astring';
 import { expect, it } from 'vitest';
 import { unwindCssModuleClassName } from './rollup-plugin-unwind-css-module-class-name';
 
-it('Composition API', () => {
+it('Composition API (standard)', () => {
 	const ast = parse(`
 import { c as api, d as defaultStore, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc } from './app-!~{001}~.js';
 import { M as MkContainer } from './MkContainer-!~{03M}~.js';
@@ -212,5 +212,338 @@ const cssModules = {
 };
 const index_photos = _sfc_main;
 export {index_photos as default};
+`.slice(1));
+});
+
+it('Composition API (with `useCssModule()`)', () => {
+	const ast = parse(`
+import { a7 as getCurrentInstance, b as defineComponent, G as useCssModule, a1 as h, H as TransitionGroup } from './!~{002}~.js';
+import { d as defaultStore, aK as toast, b5 as MkAd, i as i18n, _ as _export_sfc } from './app-!~{001}~.js';
+
+function isDebuggerEnabled(id) {
+  try {
+    return localStorage.getItem(\`DEBUG_\${id}\`) !== null;
+  } catch {
+    return false;
+  }
+}
+function stackTraceInstances() {
+  let instance = getCurrentInstance();
+  const stack = [];
+  while (instance) {
+    stack.push(instance);
+    instance = instance.parent;
+  }
+  return stack;
+}
+
+const _sfc_main = defineComponent({
+  props: {
+    items: {
+      type: Array,
+      required: true
+    },
+    direction: {
+      type: String,
+      required: false,
+      default: "down"
+    },
+    reversed: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    noGap: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    ad: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  setup(props, { slots, expose }) {
+    const $style = useCssModule();
+    function getDateText(time) {
+      const date = new Date(time).getDate();
+      const month = new Date(time).getMonth() + 1;
+      return i18n.t("monthAndDay", {
+        month: month.toString(),
+        day: date.toString()
+      });
+    }
+    if (props.items.length === 0)
+      return;
+    const renderChildrenImpl = () => props.items.map((item, i) => {
+      if (!slots || !slots.default)
+        return;
+      const el = slots.default({
+        item
+      })[0];
+      if (el.key == null && item.id)
+        el.key = item.id;
+      if (i !== props.items.length - 1 && new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()) {
+        const separator = h("div", {
+          class: $style["separator"],
+          key: item.id + ":separator"
+        }, h("p", {
+          class: $style["date"]
+        }, [
+          h("span", {
+            class: $style["date-1"]
+          }, [
+            h("i", {
+              class: \`ti ti-chevron-up \${$style["date-1-icon"]}\`
+            }),
+            getDateText(item.createdAt)
+          ]),
+          h("span", {
+            class: $style["date-2"]
+          }, [
+            getDateText(props.items[i + 1].createdAt),
+            h("i", {
+              class: \`ti ti-chevron-down \${$style["date-2-icon"]}\`
+            })
+          ])
+        ]));
+        return [el, separator];
+      } else {
+        if (props.ad && item._shouldInsertAd_) {
+          return [h(MkAd, {
+            key: item.id + ":ad",
+            prefer: ["horizontal", "horizontal-big"]
+          }), el];
+        } else {
+          return el;
+        }
+      }
+    });
+    const renderChildren = () => {
+      const children = renderChildrenImpl();
+      if (isDebuggerEnabled(6864)) {
+        const nodes = children.flatMap((node) => node ?? []);
+        const keys = new Set(nodes.map((node) => node.key));
+        if (keys.size !== nodes.length) {
+          const id = crypto.randomUUID();
+          const instances = stackTraceInstances();
+          toast(instances.reduce((a, c) => \`\${a} at \${c.type.name}\`, \`[DEBUG_6864 (\${id})]: \${nodes.length - keys.size} duplicated keys found\`));
+          console.warn({ id, debugId: 6864, stack: instances });
+        }
+      }
+      return children;
+    };
+    function onBeforeLeave(el) {
+      el.style.top = \`\${el.offsetTop}px\`;
+      el.style.left = \`\${el.offsetLeft}px\`;
+    }
+    function onLeaveCanceled(el) {
+      el.style.top = "";
+      el.style.left = "";
+    }
+    return () => h(
+      defaultStore.state.animation ? TransitionGroup : "div",
+      {
+        class: {
+          [$style["date-separated-list"]]: true,
+          [$style["date-separated-list-nogap"]]: props.noGap,
+          [$style["reversed"]]: props.reversed,
+          [$style["direction-down"]]: props.direction === "down",
+          [$style["direction-up"]]: props.direction === "up"
+        },
+        ...defaultStore.state.animation ? {
+          name: "list",
+          tag: "div",
+          onBeforeLeave,
+          onLeaveCanceled
+        } : {}
+      },
+      { default: renderChildren }
+    );
+  }
+});
+
+const reversed = "xxiZh";
+const separator = "xxeDx";
+const date = "xxawD";
+const style0 = {
+        "date-separated-list": "xfKPa",
+        "date-separated-list-nogap": "xf9zr",
+        "direction-up": "x7AeO",
+        "direction-down": "xBIqc",
+        reversed: reversed,
+        separator: separator,
+        date: date,
+        "date-1": "xwtmh",
+        "date-1-icon": "xsNPa",
+        "date-2": "x1xvw",
+        "date-2-icon": "x9ZiG"
+};
+
+const cssModules = {
+  "$style": style0
+};
+const MkDateSeparatedList = /* @__PURE__ */ _export_sfc(_sfc_main, [["__cssModules", cssModules]]);
+
+export { MkDateSeparatedList as M };
+`.slice(1), { sourceType: 'module' });
+	unwindCssModuleClassName(ast);
+	expect(generate(ast)).toBe(`
+import {a7 as getCurrentInstance, b as defineComponent, G as useCssModule, a1 as h, H as TransitionGroup} from './!~{002}~.js';
+import {d as defaultStore, aK as toast, b5 as MkAd, i as i18n, _ as _export_sfc} from './app-!~{001}~.js';
+function isDebuggerEnabled(id) {
+  try {
+    return localStorage.getItem(\`DEBUG_\${id}\`) !== null;
+  } catch {
+    return false;
+  }
+}
+function stackTraceInstances() {
+  let instance = getCurrentInstance();
+  const stack = [];
+  while (instance) {
+    stack.push(instance);
+    instance = instance.parent;
+  }
+  return stack;
+}
+const _sfc_main = defineComponent({
+  props: {
+    items: {
+      type: Array,
+      required: true
+    },
+    direction: {
+      type: String,
+      required: false,
+      default: "down"
+    },
+    reversed: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    noGap: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    ad: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  setup(props, {slots, expose}) {
+    const $style = useCssModule();
+    function getDateText(time) {
+      const date = new Date(time).getDate();
+      const month = new Date(time).getMonth() + 1;
+      return i18n.t("monthAndDay", {
+        month: month.toString(),
+        day: date.toString()
+      });
+    }
+    if (props.items.length === 0) return;
+    const renderChildrenImpl = () => props.items.map((item, i) => {
+      if (!slots || !slots.default) return;
+      const el = slots.default({
+        item
+      })[0];
+      if (el.key == null && item.id) el.key = item.id;
+      if (i !== props.items.length - 1 && new Date(item.createdAt).getDate() !== new Date(props.items[i + 1].createdAt).getDate()) {
+        const separator = h("div", {
+          class: $style["separator"],
+          key: item.id + ":separator"
+        }, h("p", {
+          class: $style["date"]
+        }, [h("span", {
+          class: $style["date-1"]
+        }, [h("i", {
+          class: \`ti ti-chevron-up \${$style["date-1-icon"]}\`
+        }), getDateText(item.createdAt)]), h("span", {
+          class: $style["date-2"]
+        }, [getDateText(props.items[i + 1].createdAt), h("i", {
+          class: \`ti ti-chevron-down \${$style["date-2-icon"]}\`
+        })])]));
+        return [el, separator];
+      } else {
+        if (props.ad && item._shouldInsertAd_) {
+          return [h(MkAd, {
+            key: item.id + ":ad",
+            prefer: ["horizontal", "horizontal-big"]
+          }), el];
+        } else {
+          return el;
+        }
+      }
+    });
+    const renderChildren = () => {
+      const children = renderChildrenImpl();
+      if (isDebuggerEnabled(6864)) {
+        const nodes = children.flatMap(node => node ?? []);
+        const keys = new Set(nodes.map(node => node.key));
+        if (keys.size !== nodes.length) {
+          const id = crypto.randomUUID();
+          const instances = stackTraceInstances();
+          toast(instances.reduce((a, c) => \`\${a} at \${c.type.name}\`, \`[DEBUG_6864 (\${id})]: \${nodes.length - keys.size} duplicated keys found\`));
+          console.warn({
+            id,
+            debugId: 6864,
+            stack: instances
+          });
+        }
+      }
+      return children;
+    };
+    function onBeforeLeave(el) {
+      el.style.top = \`\${el.offsetTop}px\`;
+      el.style.left = \`\${el.offsetLeft}px\`;
+    }
+    function onLeaveCanceled(el) {
+      el.style.top = "";
+      el.style.left = "";
+    }
+    return () => h(defaultStore.state.animation ? TransitionGroup : "div", {
+      class: {
+        [$style["date-separated-list"]]: true,
+        [$style["date-separated-list-nogap"]]: props.noGap,
+        [$style["reversed"]]: props.reversed,
+        [$style["direction-down"]]: props.direction === "down",
+        [$style["direction-up"]]: props.direction === "up"
+      },
+      ...defaultStore.state.animation ? {
+        name: "list",
+        tag: "div",
+        onBeforeLeave,
+        onLeaveCanceled
+      } : {}
+    }, {
+      default: renderChildren
+    });
+  }
+});
+const reversed = "xxiZh";
+const separator = "xxeDx";
+const date = "xxawD";
+const style0 = {
+  "date-separated-list": "xfKPa",
+  "date-separated-list-nogap": "xf9zr",
+  "direction-up": "x7AeO",
+  "direction-down": "xBIqc",
+  reversed: reversed,
+  separator: separator,
+  date: date,
+  "date-1": "xwtmh",
+  "date-1-icon": "xsNPa",
+  "date-2": "x1xvw",
+  "date-2-icon": "x9ZiG"
+};
+const cssModules = {
+  "$style": style0
+};
+const MkDateSeparatedList = _export_sfc(_sfc_main, [["__cssModules", cssModules]]);
+export {MkDateSeparatedList as M};
 `.slice(1));
 });
