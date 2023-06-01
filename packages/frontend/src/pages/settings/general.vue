@@ -147,6 +147,10 @@
 		<template #label>{{ i18n.ts.other }}</template>
 
 		<div class="_gaps">
+			<MkFolder>
+				<template #label>{{ i18n.ts.additionalEmojiDictionary }}</template>
+				<MkButton @click="downloadEmojiIndex('en-US')"><i class="ti ti-download"></i> en-US</MkButton>
+			</MkFolder>
 			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
@@ -161,6 +165,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -252,6 +258,22 @@ watch([
 ], async () => {
 	await reloadAsk();
 });
+
+async function downloadEmojiIndex(lang: string) {
+	async function main() {
+		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+		function download() {
+			switch (lang) {
+				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
+				default: throw new Error('unrecognized lang: ' + lang);
+			}
+		}
+		currentIndexes[lang] = await download();
+		defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+	}
+
+	os.promiseDialog(main());
+}
 
 const headerActions = $computed(() => []);
 
