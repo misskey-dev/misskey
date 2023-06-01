@@ -583,7 +583,7 @@ onUnmounted(() => {
 					
 					>div {
 						flex: 1;
-                        text-align: center;
+						text-align: center;
 
 						> b {
 							display: block;
