@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, watch, provide } from 'vue';
+import { nextTick, onMounted, watch, provide, onUnmounted } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
@@ -38,7 +38,7 @@ type ModalTypes = 'popup' | 'dialog' | 'drawer';
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	anchor?: { x: string; y: string; };
-	src?: HTMLElement;
+	src?: HTMLElement | null;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
@@ -264,6 +264,10 @@ const onOpened = () => {
 	}, { passive: true });
 };
 
+const alignObserver = new ResizeObserver((entries, observer) => {
+	align();
+});
+
 onMounted(() => {
 	watch(() => props.src, async () => {
 		if (props.src) {
@@ -278,10 +282,12 @@ onMounted(() => {
 	}, { immediate: true });
 
 	nextTick(() => {
-		new ResizeObserver((entries, observer) => {
-			align();
-		}).observe(content!);
+		alignObserver.observe(content!);
 	});
+});
+
+onUnmounted(() => {
+	alignObserver.disconnect();
 });
 
 defineExpose({
