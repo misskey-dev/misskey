@@ -1080,7 +1080,7 @@ _serverRules:
 _accountMigration:
   moveFrom: "다른 계정에서 이 계정으로 이사"
   moveFromSub: "다른 계정에 대한 별칭을 생성"
-  moveFromLabel: "기존 계정  #{n}"
+  moveFromLabel: "기존 계정 #{n}"
   moveFromDescription: "다른 계정에서 이 계정으로 팔로워를 가져오려면, 우선 여기에서 별칭을 지정해야 합니다. 반드시 이사하기 전에 지정해야 합니다! 기존 계정을 다음과 같은 형식으로 입력해 주십시오: @person@instance.com"
   moveTo: "이 계정에서 다른 계정으로 이사"
   moveToLabel: "이사할 계정:"
