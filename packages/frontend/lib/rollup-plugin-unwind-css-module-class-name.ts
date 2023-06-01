@@ -4,6 +4,73 @@ import { walk } from '../node_modules/estree-walker/src/index.js';
 import type * as estreeWalker from 'estree-walker';
 import type { Plugin } from 'vite';
 
+function isFalsyIdentifier(identifier: estree.Identifier): boolean {
+	return identifier.name === 'undefined' || identifier.name === 'NaN';
+}
+
+function normalizeClassWalker(tree: estree.Node): string | null {
+	if (tree.type === 'Identifier') return isFalsyIdentifier(tree) ? '' : null;
+	if (tree.type === 'Literal') return typeof tree.value === 'string' ? tree.value : '';
+	if (tree.type === 'BinaryExpression') {
+		if (tree.operator !== '+') return null;
+		const left = normalizeClassWalker(tree.left);
+		const right = normalizeClassWalker(tree.right);
+		if (left === null || right === null) return null;
+		return `${left}${right}`;
+	}
+	if (tree.type === 'TemplateLiteral') {
+		if (tree.expressions.some((x) => x.type !== 'Literal' && (x.type !== 'Identifier' || !isFalsyIdentifier(x)))) return null;
+		return tree.quasis.reduce((a, c, i) => {
+			const v = i === tree.quasis.length - 1 ? '' : (tree.expressions[i] as Partial<estree.Literal>).value;
+			return a + c.value.raw + (typeof v === 'string' ? v : '');
+		}, '');
+	}
+	if (tree.type === 'ArrayExpression') {
+		const values = tree.elements.map((treeNode) => {
+			if (treeNode === null) return '';
+			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument);
+			return normalizeClassWalker(treeNode);
+		});
+		if (values.some((x) => x === null)) return null;
+		return values.join(' ');
+	}
+	if (tree.type === 'ObjectExpression') {
+		const values = tree.properties.map((treeNode) => {
+			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument);
+			let x = treeNode.value;
+			let inveted = false;
+			while (x.type === 'UnaryExpression' && x.operator === '!') {
+				x = x.argument;
+				inveted = !inveted;
+			}
+			if (x.type === 'Literal') {
+				if (inveted === !x.value) {
+					return treeNode.key.type === 'Identifier' ? treeNode.computed ? null : treeNode.key.name : treeNode.key.type === 'Literal' ? treeNode.key.value : '';
+				} else {
+					return '';
+				}
+			}
+			if (x.type === 'Identifier') {
+				if (inveted !== isFalsyIdentifier(x)) {
+					return '';
+				} else {
+					return null;
+				}
+			}
+			return null;
+		});
+		if (values.some((x) => x === null)) return null;
+		return values.join(' ');
+	}
+	console.error(`Unexpected node type: ${tree.type}`);
+	return null;
+}
+
+export function normalizeClass(tree: estree.Node): string | null {
+	const walked = normalizeClassWalker(tree);
+	return walked && walked.replace(/^\s+|\s+(?=\s)|\s+$/g, '');
+}
+
 export function unwindCssModuleClassName(ast: estree.Node): void {
 	(walk as typeof estreeWalker.walk)(ast, {
 		enter(node, parent): void {
@@ -30,7 +97,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				return true;
 			});
 			if (!~__cssModulesIndex) return;
-			const cssModuleForestName = node.declarations[0].init.arguments[1].elements[__cssModulesIndex].elements[1].name;
+			const cssModuleForestName = ((node.declarations[0].init.arguments[1].elements[__cssModulesIndex] as estree.ArrayExpression).elements[1] as estree.Identifier).name;
 			const cssModuleForestNode = parent.body.find((x) => {
 				if (x.type !== 'VariableDeclaration') return false;
 				if (x.declarations.length !== 1) return false;
@@ -130,6 +197,20 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						this.replace({
 							type: 'Identifier',
 							name: 'undefined',
+						});
+					},
+				});
+				(walk as typeof estreeWalker.walk)(render.argument.body, {
+					enter(childNode) {
+						if (childNode.type !== 'CallExpression') return;
+						if (childNode.callee.type !== 'Identifier') return;
+						if (childNode.callee.name !== 'normalizeClass') return;
+						if (childNode.arguments.length !== 1) return;
+						const normalized = normalizeClass(childNode.arguments[0]);
+						if (normalized === null) return;
+						this.replace({
+							type: 'Literal',
+							value: normalized,
 						});
 					},
 				});
