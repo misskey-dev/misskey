@@ -304,6 +304,7 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: transparent;
 			}
+			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 
@@ -316,6 +317,7 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: inherit;
 			}
+			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 }
@@ -400,5 +402,6 @@ function onDrop(ev) {
 	&::-webkit-scrollbar-track {
 		background: var(--panel);
 	}
+	scrollbar-color: var(--scrollbarHandle) var(--panel);
 }
 </style>
