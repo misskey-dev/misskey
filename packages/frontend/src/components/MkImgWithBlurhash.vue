@@ -23,6 +23,11 @@ import { WorkerMultiDispatch } from '@/scripts/worker-multi-dispatch';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 
 const workerPromise = new Promise<WorkerMultiDispatch | null>(resolve => {
+	// テスト環境で Web Worker インスタンスは作成できない
+	if (import.meta.env.MODE === 'test') {
+		resolve(null);
+		return;
+	}
 	const testWorker = new TestWebGL2();
 	testWorker.addEventListener('message', event => {
 		if (event.data.result) {
