@@ -25,7 +25,7 @@ otherSettings: "Andre innstillinger"
 openInWindow: "Åpne i vindu"
 profile: "Profil"
 timeline: "Tidslinje"
-noAccountDescription: "Denne brukeren har ikke skrevet sin bio ennå."
+noAccountDescription: "Denne brukeren har ikke skrevet sin biografi ennå."
 login: "Logg inn"
 loggingIn: "Logget inn"
 logout: "Logg ut"
@@ -603,6 +603,7 @@ _time:
   day: "Dager"
 _timelineTutorial:
   title: "Hvordan bruke Misskey"
+  step2_2: "Hva med å skrive en selvpresentasjon, eller bare \"Hei {name}!\" hvis du ikke har lyst?"
 _2fa:
   renewTOTPCancel: "Avbryt"
 _weekday:
@@ -651,6 +652,7 @@ _postForm:
 _profile:
   name: "Navn"
   username: "Brukernavn"
+  description: "Biografi"
   metadataContent: "Innhold"
 _exportOrImport:
   followingList: "Følg"
