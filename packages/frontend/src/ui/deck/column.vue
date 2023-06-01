@@ -381,7 +381,7 @@ function onDrop(ev) {
 	height: var(--deckColumnHeaderHeight);
 	cursor: move;
 	user-select: none;
-	opacity: 0.7;
+	opacity: 0.5;
 }
 
 .menu {
