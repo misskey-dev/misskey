@@ -1063,6 +1063,7 @@ export interface Locale {
     "changeReactionConfirm": string;
     "later": string;
     "goToMisskey": string;
+    "additionalEmojiDictionary": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
