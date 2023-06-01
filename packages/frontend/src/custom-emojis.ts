@@ -1,4 +1,4 @@
-import { shallowRef, computed, markRaw } from 'vue';
+import { shallowRef, computed, markRaw, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { api, apiGet } from './os';
 import { useStream } from '@/stream';
@@ -15,6 +15,14 @@ export const customEmojiCategories = computed<[ ...string[], null ]>(() => {
 	}
 	return markRaw([...Array.from(categories), null]);
 });
+
+export const customEmojisMap = new Map<string, Misskey.entities.CustomEmoji>();
+watch(customEmojis, emojis => {
+	customEmojisMap.clear();
+	for (const emoji of emojis) {
+		customEmojisMap.set(emoji.name, emoji);
+	}
+}, { immediate: true });
 
 // TODO: ここら辺副作用なのでいい感じにする
 const stream = useStream();

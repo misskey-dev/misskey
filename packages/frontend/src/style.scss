@@ -22,11 +22,7 @@
 } 
 
 html {
-	touch-action: manipulation;
 	background-color: var(--bg);
-	background-attachment: fixed;
-	background-size: cover;
-	background-position: center;
 	color: var(--fg);
 	accent-color: var(--accent);
 	overflow: auto;
@@ -87,6 +83,7 @@ html._themeChanging_ {
 }
 
 html, body {
+	touch-action: manipulation;
 	margin: 0;
 	padding: 0;
 	scroll-behavior: smooth;
