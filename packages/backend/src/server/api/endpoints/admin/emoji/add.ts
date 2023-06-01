@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
 			});
 
-			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
+			this.moderationLogService.log(me, 'addEmoji', {
 				emojiId: emoji.id,
 			});
 

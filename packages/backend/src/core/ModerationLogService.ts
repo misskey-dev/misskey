@@ -16,7 +16,7 @@ export class ModerationLogService {
 	}
 
 	@bindThis
-	public async insertModerationLog(moderator: { id: User['id'] }, type: string, info?: Record<string, any>) {
+	public async log(moderator: { id: User['id'] }, type: string, info?: Record<string, any>) {
 		await this.moderationLogsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),

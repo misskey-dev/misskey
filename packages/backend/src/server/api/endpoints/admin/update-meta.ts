@@ -398,7 +398,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			await this.metaService.update(set);
-			this.moderationLogService.insertModerationLog(me, 'updateMeta');
+			this.moderationLogService.log(me, 'updateMeta');
 		});
 	}
 }

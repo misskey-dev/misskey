@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSuspended: false,
 			});
 
-			this.moderationLogService.insertModerationLog(me, 'unsuspend', {
+			this.moderationLogService.log(me, 'unsuspend', {
 				targetId: user.id,
 			});
 

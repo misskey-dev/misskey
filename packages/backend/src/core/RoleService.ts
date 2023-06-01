@@ -14,6 +14,7 @@ import { StreamMessages } from '@/server/api/stream/types.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Packed } from '@/misc/json-schema';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 export type RolePolicies = {
@@ -87,6 +88,7 @@ export class RoleService implements OnApplicationShutdown {
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private idService: IdService,
+		private moderationLogService: ModerationLogService,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
@@ -355,8 +357,10 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async assign(userId: User['id'], roleId: Role['id'], expiresAt: Date | null = null): Promise<void> {
+	public async assign(userId: User['id'], roleId: Role['id'], expiresAt: Date | null = null, moderator?: User): Promise<void> {
 		const now = new Date();
+
+		const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
 
 		const existing = await this.roleAssignmentsRepository.findOneBy({
 			roleId: roleId,
@@ -387,11 +391,22 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleAssigned', created);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'roleAssigned', {
+				roleId: roleId,
+				roleName: role.name,
+				userId: userId,
+				expiresAt: expiresAt,
+			});
+		}
 	}
 
 	@bindThis
-	public async unassign(userId: User['id'], roleId: Role['id']): Promise<void> {
+	public async unassign(userId: User['id'], roleId: Role['id'], moderator?: User): Promise<void> {
 		const now = new Date();
+
+		const role = await this.rolesRepository.findOneByOrFail({ id: roleId });
 	
 		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
 		if (existing == null) {
@@ -411,6 +426,14 @@ export class RoleService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('userRoleUnassigned', existing);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'roleUnassigned', {
+				roleId: roleId,
+				roleName: role.name,
+				userId: userId,
+			});
+		}
 	}
 
 	@bindThis
