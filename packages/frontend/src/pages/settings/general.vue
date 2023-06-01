@@ -24,6 +24,7 @@
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 		</div>
 	</FormSection>
 
@@ -149,9 +150,11 @@
 		<div class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.additionalEmojiDictionary }}</template>
-				<MkButton @click="downloadEmojiIndex('en-US')"><i class="ti ti-download"></i> en-US</MkButton>
+				<div v-for="lang in emojiIndexLangs" class="_buttons">
+					<MkButton @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ lang }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+					<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				</div>
 			</MkFolder>
-			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
@@ -259,7 +262,9 @@ watch([
 	await reloadAsk();
 });
 
-async function downloadEmojiIndex(lang: string) {
+const emojiIndexLangs = ['en-US'];
+
+function downloadEmojiIndex(lang: string) {
 	async function main() {
 		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
 		function download() {
@@ -269,7 +274,17 @@ async function downloadEmojiIndex(lang: string) {
 			}
 		}
 		currentIndexes[lang] = await download();
-		defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+	}
+
+	os.promiseDialog(main());
+}
+
+function removeEmojiIndex(lang: string) {
+	async function main() {
+		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+		delete currentIndexes[lang];
+		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
 	}
 
 	os.promiseDialog(main());
