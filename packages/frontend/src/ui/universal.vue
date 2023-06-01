@@ -266,6 +266,7 @@ $widgets-hide-threshold: 1090px;
 .root {
 	height: 100dvh;
 	overflow: clip;
+	contain: strict;
 	box-sizing: border-box;
 	display: flex;
 }
@@ -321,6 +322,7 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	right: 0;
 	z-index: 1001;
+	width: 310px;
 	height: 100dvh;
 	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
