@@ -3,7 +3,7 @@
 	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
 			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
-			<MkButton primary rounded :class="$style.avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
@@ -269,10 +269,6 @@ definePageMetadata({
 	width: 72px;
 	height: 72px;
 	margin: 0 auto 16px auto;
-}
-
-.avatarEdit {
-	
 }
 
 .bannerEdit {

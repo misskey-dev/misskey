@@ -1,6 +1,14 @@
 <template>
 <div v-if="chosen && !shouldHide" :class="$style.root">
-	<div v-if="!showMenu" :class="[$style.main, $style['form_' + chosen.place]]">
+	<div
+		v-if="!showMenu"
+		:class="[$style.main, {
+			[$style.form_square]: chosen.place === 'square',
+			[$style.form_horizontal]: chosen.place === 'horizontal',
+			[$style.form_horizontalBig]: chosen.place === 'horizontal-big',
+			[$style.form_vertical]: chosen.place === 'vertical',
+		}]"
+	>
 		<a :href="chosen.url" target="_blank" :class="$style.link">
 			<img :src="chosen.imageUrl" :class="$style.img">
 			<button class="_button" :class="$style.i" @click.prevent.stop="toggleMenu"><i :class="$style.iIcon" class="ti ti-info-circle"></i></button>
@@ -122,7 +130,7 @@ function reduceFrequency(): void {
 		}
 	}
 
-	&.form_horizontal-big {
+	&.form_horizontalBig {
 		padding: 8px;
 
 		> .link,

@@ -11,6 +11,7 @@
 		bg: '#232323',
 		fg: 'rgb(199, 209, 216)',
 		fgHighlighted: '#fff',
+		fgOnWhite: '@accent',
 		divider: 'rgba(255, 255, 255, 0.14)',
 		panel: '#2d2d2d',
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',

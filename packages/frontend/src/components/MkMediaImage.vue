@@ -87,6 +87,7 @@ function showMenu(ev: MouseEvent) {
 	}, ...(iAmModerator ? [{
 		text: i18n.ts.markAsSensitive,
 		icon: 'ti ti-eye-exclamation',
+		danger: true,
 		action: () => {
 			os.apiWithDialog('drive/files/update', { fileId: props.image.id, isSensitive: true });
 		},

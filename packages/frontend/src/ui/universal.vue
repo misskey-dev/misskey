@@ -2,14 +2,10 @@
 <div :class="$style.root">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-	<MkStickyContainer :class="$style.contents">
+	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
-		<main style="min-width: 0;" @contextmenu.stop="onContextmenu">
-			<div :class="$style.content" style="container-type: inline-size;">
-				<RouterView/>
-			</div>
-			<div :class="$style.spacer"></div>
-		</main>
+		<RouterView/>
+		<div :class="$style.spacer"></div>
 	</MkStickyContainer>
 
 	<div v-if="isDesktop" :class="$style.widgets">
@@ -84,8 +80,9 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef, watch, inject, Ref } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef, watch, shallowRef, Ref } from 'vue';
 import XCommon from './_common_/common.vue';
+import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import { instanceName } from '@/config';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os';
@@ -98,6 +95,7 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
 import { CURRENT_STICKY_BOTTOM } from '@/const';
+
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -115,6 +113,7 @@ window.addEventListener('resize', () => {
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 const widgetsShowing = $ref(false);
 const navFooter = $shallowRef<HTMLElement>();
+const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
@@ -194,7 +193,10 @@ const onContextmenu = (ev) => {
 };
 
 function top() {
-	// TODO
+	contents.value.rootEl.scrollTo({
+		top: 0,
+		behavior: 'smooth',
+	});
 }
 
 let navFooterHeight = $ref(0);
@@ -264,6 +266,7 @@ $widgets-hide-threshold: 1090px;
 .root {
 	height: 100dvh;
 	overflow: clip;
+	contain: strict;
 	box-sizing: border-box;
 	display: flex;
 }
@@ -319,6 +322,7 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	right: 0;
 	z-index: 1001;
+	width: 310px;
 	height: 100dvh;
 	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
