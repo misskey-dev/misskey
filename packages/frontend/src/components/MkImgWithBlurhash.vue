@@ -1,5 +1,5 @@
 <template>
-<div ref="root" :class="[$style.root, { [$style.cover]: cover }]" :title="title ?? ''">
+<div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<TransitionGroup
 		:duration="defaultStore.state.animation && props.transition?.duration || undefined"
 		:enterActiveClass="defaultStore.state.animation && props.transition?.enterActiveClass || undefined"
