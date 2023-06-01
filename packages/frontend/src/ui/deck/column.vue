@@ -1,6 +1,6 @@
 <template>
 <div
-	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.isStacked]: isStacked, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
+	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"

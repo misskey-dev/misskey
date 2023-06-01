@@ -1,6 +1,12 @@
 <template>
 <MkContainer :naked="widgetProps.transparent" :showHeader="false" data-cy-mkw-clock>
-	<div :class="[$style.root, $style[widgetProps.size]]">
+	<div
+		:class="[$style.root, {
+			[$style.small]: widgetProps.size === 'small',
+			[$style.medium]: widgetProps.size === 'medium',
+			[$style.large]: widgetProps.size === 'large',
+		}]"
+	>
 		<div v-if="widgetProps.label === 'tz' || widgetProps.label === 'timeAndTz'" class="_monospace" :class="[$style.label, $style.a]">{{ tzAbbrev }}</div>
 		<MkAnalogClock
 			:class="$style.clock"

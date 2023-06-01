@@ -10,7 +10,7 @@
 		</li>
 		<li tabindex="-1" :class="$style.item" @click="chooseUser()" @keydown="onKeydown">{{ i18n.ts.selectUser }}</li>
 	</ol>
-	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="[$style.list, $style.hashtags]">
+	<ol v-else-if="hashtags.length > 0" ref="suggests" :class="$style.list">
 		<li v-for="hashtag in hashtags" tabindex="-1" :class="$style.item" @click="complete(type, hashtag)" @keydown="onKeydown">
 			<span class="name">{{ hashtag }}</span>
 		</li>

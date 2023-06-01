@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div :class="$style.content">
+	<div>
 		<slot></slot>
 	</div>
 	<div :class="$style.caption"><slot name="caption"></slot></div>
