@@ -336,7 +336,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	enableCondensedLineForAcct: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
