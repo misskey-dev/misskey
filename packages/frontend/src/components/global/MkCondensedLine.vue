@@ -13,13 +13,17 @@ interface Props {
 
 const contentSymbol = Symbol();
 const observer = new ResizeObserver((entries) => {
+  const results = [];
 	for (const entry of entries) {
 		const content = (entry.target[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
 		const props: Required<Props> = content[contentSymbol];
 		const container = content.parentElement as HTMLSpanElement;
 		const contentWidth = content.getBoundingClientRect().width;
 		const containerWidth = container.getBoundingClientRect().width;
-		container.style.transform = `scaleX(${Math.max(props.minScale, Math.min(1, containerWidth / contentWidth))})`;
+		results.append({container, minScale: props.minScale, containerWidth, contentWidth});
+	}
+	for (const result in results) {
+		result.container.style.transform = `scaleX(${Math.max(result.minScale, Math.min(1, result.containerWidth / result.contentWidth))})`;
 	}
 });
 </script>
