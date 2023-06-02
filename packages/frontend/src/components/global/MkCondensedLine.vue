@@ -20,9 +20,9 @@ const observer = new ResizeObserver((entries) => {
 		const container = content.parentElement as HTMLSpanElement;
 		const contentWidth = content.getBoundingClientRect().width;
 		const containerWidth = container.getBoundingClientRect().width;
-		results.append({container, minScale: props.minScale, containerWidth, contentWidth});
+		results.push({container, minScale: props.minScale, containerWidth, contentWidth});
 	}
-	for (const result in results) {
+	for (const result of results) {
 		result.container.style.transform = `scaleX(${Math.max(result.minScale, Math.min(1, result.containerWidth / result.contentWidth))})`;
 	}
 });
