@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
+import ms from '@/misc/ms.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { AntennasRepository, DriveFilesRepository, UsersRepository, Antenna as _Antenna } from '@/models/index.js';

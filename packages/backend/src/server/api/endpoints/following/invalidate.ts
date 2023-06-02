@@ -1,4 +1,4 @@
-import ms from 'ms';
+import ms from '@/misc/ms.js';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';

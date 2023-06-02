@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import rndstr from 'rndstr';
-import ms from 'ms';
 import bcrypt from 'bcryptjs';
+import rndstr from '@/misc/rndstr.js';
+import ms from '@/misc/ms.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';

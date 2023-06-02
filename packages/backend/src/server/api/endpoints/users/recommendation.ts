@@ -1,5 +1,5 @@
-import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
+import ms from '@/misc/ms.js';
 import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';

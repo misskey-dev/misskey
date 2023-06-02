@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
+import ms from '@/misc/ms.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const checkMoving = await this.accountMoveService.validateAlsoKnownAs(
 				me,
 				(old, src) => !!src.movedAt && src.movedAt.getTime() + 1000 * 60 * 60 * 2 > (new Date()).getTime(),
-				true
+				true,
 			);
 			if (checkMoving ? file.size > 32 * 1024 * 1024 : file.size > 64 * 1024) throw new ApiError(meta.errors.tooBigFile);
 

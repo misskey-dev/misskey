@@ -1,9 +1,9 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import rndstr from 'rndstr';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
+import rndstr from '@/misc/rndstr.js';
 
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -13,8 +13,8 @@ import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IActor } from '@/core/activitypub/type.js';
-import { MockResolver } from '../misc/mock-resolver.js';
 import { Note } from '@/models/index.js';
+import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
 

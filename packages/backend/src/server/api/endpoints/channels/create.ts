@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
+import ms from '@/misc/ms.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Channel } from '@/models/entities/Channel.js';

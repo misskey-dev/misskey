@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import rndstr from 'rndstr';
+import rndstr from '@/misc/rndstr.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';

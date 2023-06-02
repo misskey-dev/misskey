@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import rndstr from 'rndstr';
+import rndstr from '@/misc/rndstr.js';
 import { loadConfig } from '@/config.js';
 import { User, UsersRepository } from '@/models/index.js';
 import { jobQueue } from '@/boot/common.js';

@@ -3,7 +3,6 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { KEYWORD } from 'color-convert/conversions';
 
 @Injectable()
 export class LoggerService {
@@ -14,7 +13,7 @@ export class LoggerService {
 	}
 
 	@bindThis
-	public getLogger(domain: string, color?: KEYWORD | undefined, store?: boolean) {
+	public getLogger(domain: string, color?: string | undefined, store?: boolean) {
 		return new Logger(domain, color, store);
 	}
 }
