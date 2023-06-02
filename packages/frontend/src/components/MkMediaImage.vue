@@ -32,7 +32,7 @@
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
 		</div>
-		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots"></i></button>
+		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
 	</template>
 </div>
 </template>
@@ -131,13 +131,14 @@ function showMenu(ev: MouseEvent) {
 .menu {
 	display: block;
 	position: absolute;
-	border-radius: 6px;
+	border-radius: 999px;
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
 	color: #fff;
 	font-size: 0.8em;
-	padding: 6px 8px;
+	width: 32px;
+	height: 32px;
 	text-align: center;
 	bottom: 10px;
 	right: 10px;
