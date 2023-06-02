@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
+import type { NotesRepository, FollowingsRepository, Note, DriveFilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -48,6 +48,7 @@ export const paramDef = {
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		withReplies: { type: 'boolean', default: false },
+		doNotShowNsfwContentsOnTheTimeline: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -61,6 +62,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
@@ -138,12 +142,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#endregion
 
 			const timeline = await query.take(ps.limit).getMany();
+			let result: Note[] = [];
+			if (ps.doNotShowNsfwContentsOnTheTimeline) {
+				for (const timelineNote of timeline) {
+					let renoteNoteFileIds: string[] = [];
+					let replyNoteFileIds: string[] = [];
+					if (timelineNote.renoteId) {
+						renoteNoteFileIds = (await this.notesRepository.findOneByOrFail({
+							id: timelineNote.renoteId,
+						})).fileIds;
+					}
+					if (timelineNote.replyId) {
+						replyNoteFileIds = (await this.notesRepository.findOneByOrFail({
+							id: timelineNote.replyId,
+						})).fileIds;
+					}
+					if (timelineNote.fileIds.length + renoteNoteFileIds.length + replyNoteFileIds.length) {
+						const query = this.driveFilesRepository.createQueryBuilder('files');
+						query.where('files.id IN (:...noteFileIds)', { noteFileIds: [...timelineNote.fileIds, ...renoteNoteFileIds, ...replyNoteFileIds] });
+						query.andWhere('files.isSensitive = true');
+						if (!(await query.getExists())) result.push(timelineNote);
+					} else {
+						result.push(timelineNote);
+					}
+				}
+			} else {
+				result = timeline;
+			}
 
 			process.nextTick(() => {
 				this.activeUsersChart.read(me);
 			});
 
-			return await this.noteEntityService.packMany(timeline, me);
+			return await this.noteEntityService.packMany(result, me);
 		});
 	}
 }

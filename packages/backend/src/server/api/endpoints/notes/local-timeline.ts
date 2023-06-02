@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository, Note, DriveFilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -47,6 +47,7 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
+		doNotShowNsfwContentsOnTheTimeline: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -57,6 +58,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
@@ -111,6 +115,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#endregion
 
 			const timeline = await query.take(ps.limit).getMany();
+			let result: Note[] = [];
+			if (ps.doNotShowNsfwContentsOnTheTimeline) {
+				for (const timelineNote of timeline) {
+					let renoteNoteFileIds: string[] = [];
+					let replyNoteFileIds: string[] = [];
+					if (timelineNote.renoteId) {
+						renoteNoteFileIds = (await this.notesRepository.findOneByOrFail({
+							id: timelineNote.renoteId,
+						})).fileIds;
+					}
+					if (timelineNote.replyId) {
+						replyNoteFileIds = (await this.notesRepository.findOneByOrFail({
+							id: timelineNote.replyId,
+						})).fileIds;
+					}
+					if (timelineNote.fileIds.length + renoteNoteFileIds.length + replyNoteFileIds.length) {
+						const query = this.driveFilesRepository.createQueryBuilder('files');
+						query.where('files.id IN (:...noteFileIds)', { noteFileIds: [...timelineNote.fileIds, ...renoteNoteFileIds, ...replyNoteFileIds] });
+						query.andWhere('files.isSensitive = true');
+						if (!(await query.getExists())) result.push(timelineNote);
+					} else {
+						result.push(timelineNote);
+					}
+				}
+			} else {
+				result = timeline;
+			}
 
 			process.nextTick(() => {
 				if (me) {
@@ -118,7 +149,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			});
 
-			return await this.noteEntityService.packMany(timeline, me);
+			return await this.noteEntityService.packMany(result, me);
 		});
 	}
 }
