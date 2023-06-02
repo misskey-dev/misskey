@@ -153,8 +153,8 @@ importers:
         specifier: 3.15.0
         version: 3.15.0
       cacheable-lookup:
-        specifier: 6.1.0
-        version: 6.1.0
+        specifier: 7.0.0
+        version: 7.0.0
       cbor:
         specifier: 9.0.0
         version: 9.0.0
@@ -201,8 +201,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       got:
-        specifier: 12.6.0
-        version: 12.6.0
+        specifier: 13.0.0
+        version: 13.0.0
       happy-dom:
         specifier: 9.20.3
         version: 9.20.3
@@ -311,9 +311,6 @@ importers:
       rename:
         specifier: 1.0.4
         version: 1.0.4
-      rndstr:
-        specifier: 1.0.0
-        version: 1.0.0
       rss-parser:
         specifier: 3.13.0
         version: 3.13.0
@@ -326,9 +323,6 @@ importers:
       sanitize-html:
         specifier: 2.10.0
         version: 2.10.0
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
       semver:
         specifier: 7.5.1
         version: 7.5.1
@@ -341,9 +335,6 @@ importers:
       slacc:
         specifier: 0.0.9
         version: 0.0.9
-      strict-event-emitter-types:
-        specifier: 2.0.0
-        version: 2.0.0
       stringz:
         specifier: 2.1.0
         version: 2.1.0
@@ -748,9 +739,6 @@ importers:
       querystring:
         specifier: 0.2.1
         version: 0.2.1
-      rndstr:
-        specifier: 1.0.0
-        version: 1.0.0
       rollup:
         specifier: 3.23.0
         version: 3.23.0
@@ -763,9 +751,6 @@ importers:
       sass:
         specifier: 1.62.1
         version: 1.62.1
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -902,9 +887,6 @@ importers:
       '@types/sanitize-html':
         specifier: 2.9.0
         version: 2.9.0
-      '@types/seedrandom':
-        specifier: 3.0.5
-        version: 3.0.5
       '@types/testing-library__jest-dom':
         specifier: ^5.14.6
         version: 5.14.6
@@ -7935,10 +7917,6 @@ packages:
     resolution: {integrity: sha512-AnxLHewubLVzoF/A4qdxBGHCKifw8cY32iro3DQX9TPcetE95zBeVt3jnsvtvAUf1vwzMfwzp4t/L2yqPlnjkQ==}
     dev: false
 
-  /@types/seedrandom@3.0.5:
-    resolution: {integrity: sha512-kopEpYpFQvQdYsZkZVwht/0THHmTFFYXDaqV/lM45eweJ8kcGVDgZHs0RVTolSq55UPZNmjhKc9r7UvLu/mQQg==}
-    dev: true
-
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
 
@@ -9944,11 +9922,6 @@ packages:
 
   /cacheable-lookup@5.0.4:
     resolution: {integrity: sha512-2/kNscPhpcxrOigMZzbiWF7dz8ilhb/nIHU3EyZiXWXpeq/au8qJ8VhdftMkty3n7Gj6HIGalQG8oiBNB3AJgA==}
-    engines: {node: '>=10.6.0'}
-    dev: false
-
-  /cacheable-lookup@6.1.0:
-    resolution: {integrity: sha512-KJ/Dmo1lDDhmW2XDPMo+9oiy/CeqosPguPCrgcVzKyZrL6pM1gU2GmPY/xo6OQPTUaA/c0kwHuywB4E6nmT9ww==}
     engines: {node: '>=10.6.0'}
     dev: false
 
@@ -13262,6 +13235,23 @@ packages:
       lowercase-keys: 3.0.0
       p-cancelable: 3.0.0
       responselike: 3.0.0
+
+  /got@13.0.0:
+    resolution: {integrity: sha512-XfBk1CxOOScDcMr9O1yKkNaQyy865NbYs+F7dr4H0LZMVgCj2Le59k6PqbNHoL5ToeaEQUYh6c6yMfVcc6SJxA==}
+    engines: {node: '>=16'}
+    dependencies:
+      '@sindresorhus/is': 5.3.0
+      '@szmarczak/http-timer': 5.0.1
+      cacheable-lookup: 7.0.0
+      cacheable-request: 10.2.8
+      decompress-response: 6.0.0
+      form-data-encoder: 2.1.4
+      get-stream: 6.0.1
+      http2-wrapper: 2.2.0
+      lowercase-keys: 3.0.0
+      p-cancelable: 3.0.0
+      responselike: 3.0.0
+    dev: false
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -18180,10 +18170,6 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /rangestr@0.0.1:
-    resolution: {integrity: sha512-9CRCUX/w4+fNMzlYgA8GeJz7BZwBPwaGm3FhAm9Hi50k8wNy2CyiJQa8awygWJay87uVVCV0/FwbLcD6+/A9KQ==}
-    dev: false
-
   /ratelimiter@3.4.1:
     resolution: {integrity: sha512-5FJbRW/Jkkdk29ksedAfWFkQkhbUrMx3QJGwMKAypeIiQf4yrLW+gtPKZiaWt4zPrtw1uGufOjGO7UGM6VllsQ==}
     dev: false
@@ -18845,13 +18831,6 @@ packages:
     dependencies:
       glob: 7.2.3
 
-  /rndstr@1.0.0:
-    resolution: {integrity: sha512-3KN+BHTiHcsyW1qjRw3Xhms8TQfTIN4fUVgqqJpj6FnmuCnto5/lLyppSmGfdTmOiKDWeuXU4XPp58I9fsoWFQ==}
-    dependencies:
-      rangestr: 0.0.1
-      seedrandom: 2.4.2
-    dev: false
-
   /rollup@3.23.0:
     resolution: {integrity: sha512-h31UlwEi7FHihLe1zbk+3Q7z1k/84rb9BSwmBSr/XjOCEaBJ2YyedQDuM0t/kfOS0IxM+vk1/zI9XxYj9V+NJQ==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
@@ -18969,10 +18948,6 @@ packages:
 
   /secure-json-parse@2.7.0:
     resolution: {integrity: sha512-6aU+Rwsezw7VR8/nyvKTx8QpWH9FrcYiXXlqC4z5d5XQBDRqtbfsRjnwGyqbi3gddNtWHuEk9OANUotL26qKUw==}
-    dev: false
-
-  /seedrandom@2.4.2:
-    resolution: {integrity: sha512-uQ72txMoObtuJooiBLSVs5Yu2e9d/lHQz0boaqHjW8runXB9vR8nFtaZV54wYii613N0C8ZqTBLsfwDhAdpvqQ==}
     dev: false
 
   /seedrandom@3.0.5:
