@@ -4,7 +4,15 @@
 		<div v-if="icon" :class="$style.icon">
 			<i :class="icon"></i>
 		</div>
-		<div v-else-if="!input && !select" :class="[$style.icon, $style['type_' + type]]">
+		<div
+			v-else-if="!input && !select"
+			:class="[$style.icon, {
+				[$style.type_success]: type === 'success',
+				[$style.type_error]: type === 'error',
+				[$style.type_warning]: type === 'warning',
+				[$style.type_info]: type === 'info',
+			}]"
+		>
 			<i v-if="type === 'success'" :class="$style.iconInner" class="ti ti-check"></i>
 			<i v-else-if="type === 'error'" :class="$style.iconInner" class="ti ti-circle-x"></i>
 			<i v-else-if="type === 'warning'" :class="$style.iconInner" class="ti ti-alert-triangle"></i>

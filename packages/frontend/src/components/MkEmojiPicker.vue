@@ -1,7 +1,8 @@
 <template>
 <div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
 	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
-	<div ref="emojisEl" class="emojis">
+	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
+	<div ref="emojisEl" class="emojis" tabindex="-1">
 		<section class="result">
 			<div v-if="searchResultCustom.length > 0" class="body">
 				<button
@@ -223,7 +224,6 @@ watch(q, () => {
 		if (newQ.includes(' ')) { // AND検索
 			const keywords = newQ.split(' ');
 
-			// 名前にキーワードが含まれている
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
@@ -232,11 +232,12 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
-			// 名前にキーワードが含まれている
-			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
+			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
+				for (const emoji of emojis) {
+					if (keywords.every(keyword => index[emoji.char].some(k => k.includes(keyword)))) {
+						matches.add(emoji);
+						if (matches.size >= max) break;
+					}
 				}
 			}
 		} else {
@@ -248,6 +249,15 @@ watch(q, () => {
 			}
 			if (matches.size >= max) return matches;
 
+			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
+				for (const emoji of emojis) {
+					if (index[emoji.char].some(k => k.startsWith(newQ))) {
+						matches.add(emoji);
+						if (matches.size >= max) break;
+					}
+				}
+			}
+
 			for (const emoji of emojis) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
@@ -255,6 +265,15 @@ watch(q, () => {
 				}
 			}
 			if (matches.size >= max) return matches;
+
+			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
+				for (const emoji of emojis) {
+					if (index[emoji.char].some(k => k.includes(newQ))) {
+						matches.add(emoji);
+						if (matches.size >= max) break;
+					}
+				}
+			}
 		}
 
 		return matches;

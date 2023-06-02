@@ -5,7 +5,7 @@
 		<span :class="$style.text"><slot></slot></span>
 		<span :class="$style.suffix">
 			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
-			<i class="ti ti-external-link" :class="$style.suffixIcon"></i>
+			<i class="ti ti-external-link"></i>
 		</span>
 	</a>
 	<MkA v-else :class="[$style.main, { [$style.active]: active }]" class="_button" :to="to" :behavior="behavior">
@@ -13,7 +13,7 @@
 		<span :class="$style.text"><slot></slot></span>
 		<span :class="$style.suffix">
 			<span :class="$style.suffixText"><slot name="suffix"></slot></span>
-			<i class="ti ti-chevron-right" :class="$style.suffixIcon"></i>
+			<i class="ti ti-chevron-right"></i>
 		</span>
 	</MkA>
 </div>

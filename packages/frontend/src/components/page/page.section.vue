@@ -1,6 +1,15 @@
 <template>
 <section>
-	<component :is="'h' + h" :class="h < 5 ? $style['h' + h] : null">{{ block.title }}</component>
+	<component
+		:is="'h' + h"
+		:class="{
+			'h2': h === 2,
+			'h3': h === 3,
+			'h4': h === 4,
+		}"
+	>
+		{{ block.title }}
+	</component>
 
 	<div class="_gaps">
 		<XBlock v-for="child in block.children" :key="child.id" :page="page" :block="child" :h="h + 1"/>

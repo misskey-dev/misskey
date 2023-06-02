@@ -14,7 +14,7 @@
 					<MkA :to="`/instance-info/${instance.host}`" :class="$style.host" class="_monospace">
 						{{ instance.host }}
 					</MkA>
-					<span :class="$style.divider"></span>
+					<span></span>
 				</span>
 			</MarqueeText>
 		</Transition>
