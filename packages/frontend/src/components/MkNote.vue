@@ -379,6 +379,7 @@ function undoReact(note): void {
 function onContextmenu(ev: MouseEvent): void {
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
+		// 再生速度の選択などのために、Audio要素のコンテキストメニューはブラウザデフォルトとする。
 		if (el.tagName === "AUDIO") return true;
 		if (el.parentElement) {
 			return isLink(el.parentElement);
