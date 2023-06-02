@@ -456,6 +456,26 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async update(role: Role, params: Partial<Role>, moderator?: User): Promise<void> {
+		const date = new Date();
+		await this.rolesRepository.update(role.id, {
+			updatedAt: date,
+			...params,
+		});
+
+		const updated = await this.rolesRepository.findOneByOrFail({ id: role.id });
+		this.globalEventService.publishInternalEvent('roleUpdated', updated);
+
+		if (moderator) {
+			this.moderationLogService.log(moderator, 'roleUpdated', {
+				roleId: role.id,
+				before: role,
+				after: updated,
+			});
+		}
+	}
+
+	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
 	}

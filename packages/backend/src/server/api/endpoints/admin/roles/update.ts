@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RolesRepository } from '@/models/index.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin', 'role'],
@@ -66,16 +66,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
 
-		private globalEventService: GlobalEventService,
+		private roleService: RoleService,
 	) {
-		super(meta, paramDef, async (ps) => {
+		super(meta, paramDef, async (ps, me) => {
 			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
 			const date = new Date();
-			await this.rolesRepository.update(ps.roleId, {
+			await this.roleService.update(role, {
 				updatedAt: date,
 				name: ps.name,
 				description: ps.description,
@@ -91,9 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				canEditMembersByModerator: ps.canEditMembersByModerator,
 				displayOrder: ps.displayOrder,
 				policies: ps.policies,
-			});
-			const updated = await this.rolesRepository.findOneByOrFail({ id: ps.roleId });
-			this.globalEventService.publishInternalEvent('roleUpdated', updated);
+			}, me);
 		});
 	}
 }
