@@ -77,7 +77,7 @@ if (props.src === 'antenna') {
 	endpoint = 'notes/local-timeline';
 	query = {
 		withReplies: defaultStore.state.showTimelineReplies,
-		doNotShowNsfwContentsOnTheTimeline: defaultStore.state.showNsfwContentsOnTheTimeline,
+		doNotShowNsfwContentsOnTheTimeline: defaultStore.state.doNotShowNsfwContentsOnTheTimeline,
 	};
 	connection = stream.useChannel('localTimeline', {
 		withReplies: defaultStore.state.showTimelineReplies,
@@ -87,7 +87,7 @@ if (props.src === 'antenna') {
 	endpoint = 'notes/hybrid-timeline';
 	query = {
 		withReplies: defaultStore.state.showTimelineReplies,
-		doNotShowNsfwContentsOnTheTimeline: defaultStore.state.showNsfwContentsOnTheTimeline,
+		doNotShowNsfwContentsOnTheTimeline: defaultStore.state.doNotShowNsfwContentsOnTheTimeline,
 	};
 	connection = stream.useChannel('hybridTimeline', {
 		withReplies: defaultStore.state.showTimelineReplies,
@@ -97,7 +97,7 @@ if (props.src === 'antenna') {
 	endpoint = 'notes/global-timeline';
 	query = {
 		withReplies: defaultStore.state.showTimelineReplies,
-		doNotShowNsfwContentsOnTheTimeline: defaultStore.state.showNsfwContentsOnTheTimeline,
+		doNotShowNsfwContentsOnTheTimeline: defaultStore.state.doNotShowNsfwContentsOnTheTimeline,
 	};
 	connection = stream.useChannel('globalTimeline', {
 		withReplies: defaultStore.state.showTimelineReplies,

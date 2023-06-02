@@ -106,7 +106,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
-	showNsfwContentsOnTheTimeline: {
+	doNotShowNsfwContentsOnTheTimeline: {
 		where: 'account',
 		default: false,
 	},

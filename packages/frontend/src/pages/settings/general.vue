@@ -24,7 +24,7 @@
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-			<MkSwitch v-model="showNsfwContentsOnTheTimeline">{{ i18n.ts.doNotShowNsfwContentsOnTheTimeline }}</MkSwitch>
+			<MkSwitch v-model="doNotShowNsfwContentsOnTheTimeline">{{ i18n.ts.doNotShowNsfwContentsOnTheTimeline }}</MkSwitch>
 			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 		</div>
 	</FormSection>
@@ -227,7 +227,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
-const showNsfwContentsOnTheTimeline = computed(defaultStore.makeGetterSetter('showNsfwContentsOnTheTimeline'));
+const doNotShowNsfwContentsOnTheTimeline = computed(defaultStore.makeGetterSetter('doNotShowNsfwContentsOnTheTimeline'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
