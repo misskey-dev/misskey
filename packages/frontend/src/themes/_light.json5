@@ -21,6 +21,7 @@
 		fgTransparent: ':alpha<0.5<@fg',
 		fgHighlighted: ':darken<3<@fg',
 		fgOnAccent: '#fff',
+		fgOnWhite: '#333',
 		divider: 'rgba(0, 0, 0, 0.1)',
 		indicator: '@accent',
 		panel: ':lighten<3<@bg',

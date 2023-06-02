@@ -30,10 +30,10 @@ for (let i = 0; i < emojilist.length; i++) {
 
 export const emojiCharByCategory = _charGroupByCategory;
 
-export function getEmojiName(char: string): string | undefined {
+export function getEmojiName(char: string): string | null {
 	const idx = _indexByChar.get(char);
-	if (typeof idx === 'undefined') {
-		return undefined;
+	if (idx == null) {
+		return null;
 	} else {
 		return emojilist[idx].name;
 	}

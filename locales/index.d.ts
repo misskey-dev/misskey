@@ -1064,6 +1064,8 @@ export interface Locale {
     "later": string;
     "goToMisskey": string;
     "doNotShowNsfwContentsOnTheTimeline": string;
+    "additionalEmojiDictionary": string;
+    "installed": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;

@@ -11,6 +11,7 @@
 		bg: 'rgb(31, 33, 31)',
 		fg: '#cdd8c7',
 		fgHighlighted: '#fff',
+		fgOnWhite: '@accent',
 		divider: 'rgba(255, 255, 255, 0.14)',
 		panel: 'rgb(41, 43, 41)',
 		infoFg: '@fg',
