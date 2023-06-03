@@ -56,7 +56,7 @@ function getMeta(html: string): { transactionId: string | undefined, clientName:
 	};
 }
 
-function fetchDecision(cookie: string, transactionId: string, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
+function fetchDecision(transactionId: string, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
@@ -67,16 +67,14 @@ function fetchDecision(cookie: string, transactionId: string, user: misskey.enti
 		redirect: 'manual',
 		headers: {
 			'content-type': 'application/x-www-form-urlencoded',
-			cookie,
 		},
 	});
 }
 
 async function fetchDecisionFromResponse(response: Response, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
-	const cookie = response.headers.get('set-cookie');
 	const { transactionId } = getMeta(await response.text());
 
-	return await fetchDecision(cookie!, transactionId!, user, { cancel });
+	return await fetchDecision(transactionId!, user, { cancel });
 }
 
 describe('OAuth', () => {
@@ -126,14 +124,12 @@ describe('OAuth', () => {
 			code_challenge_method: 'S256',
 		} as AuthorizationParamsExtended));
 		assert.strictEqual(response.status, 200);
-		const cookie = response.headers.get('set-cookie');
-		assert.ok(cookie?.startsWith('connect.sid='));
 
 		const meta = getMeta(await response.text());
 		assert.strictEqual(typeof meta.transactionId, 'string');
 		assert.strictEqual(meta.clientName, 'Misklient');
 
-		const decisionResponse = await fetchDecision(cookie!, meta.transactionId!, alice);
+		const decisionResponse = await fetchDecision(meta.transactionId!, alice);
 		assert.strictEqual(decisionResponse.status, 302);
 		assert.ok(decisionResponse.headers.has('location'));
 

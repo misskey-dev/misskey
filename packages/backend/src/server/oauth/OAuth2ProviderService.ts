@@ -6,14 +6,12 @@ import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
-import expressSession from 'express-session';
 import fastifyView from '@fastify/view';
 import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { kinds } from '@/misc/api-permissions.js';
 import type { Config } from '@/config.js';
@@ -24,7 +22,6 @@ import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import type * as Redis from 'ioredis';
 import type { FastifyInstance } from 'fastify';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
@@ -105,153 +102,6 @@ async function discoverClientInformation(httpRequestService: HttpRequestService,
 	}
 }
 
-// class MisskeyAdapter implements Adapter {
-// 	name = 'oauth2';
-
-// 	constructor(private redisClient: Redis.Redis, private httpRequestService: HttpRequestService) { }
-
-// 	key(id: string): string {
-// 		return `oauth2:${id}`;
-// 	}
-
-// 	async upsert(id: string, payload: AdapterPayload, expiresIn: number): Promise<void> {
-// 		console.log('oauth upsert', id, payload, expiresIn);
-
-// 		const key = this.key(id);
-
-// 		const multi = this.redisClient.multi();
-// 		if (consumable.has(this.name)) {
-// 			multi.hset(key, { payload: JSON.stringify(payload) });
-// 		} else {
-// 			multi.set(key, JSON.stringify(payload));
-// 		}
-
-// 		if (expiresIn) {
-// 			multi.expire(key, expiresIn);
-// 		}
-
-// 		if (grantable.has(this.name) && payload.grantId) {
-// 			const grantKey = grantKeyFor(payload.grantId);
-// 			multi.rpush(grantKey, key);
-// 			// if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
-// 			// here to trim the list to an appropriate length
-// 			const ttl = await this.redisClient.ttl(grantKey);
-// 			if (expiresIn > ttl) {
-// 				multi.expire(grantKey, expiresIn);
-// 			}
-// 		}
-
-// 		if (payload.userCode) {
-// 			const userCodeKey = userCodeKeyFor(payload.userCode);
-// 			multi.set(userCodeKey, id);
-// 			multi.expire(userCodeKey, expiresIn);
-// 		}
-
-// 		if (payload.uid) {
-// 			const uidKey = uidKeyFor(payload.uid);
-// 			multi.set(uidKey, id);
-// 			multi.expire(uidKey, expiresIn);
-// 		}
-
-// 		await multi.exec();
-// 	}
-
-// async find(id: string): Promise<void | AdapterPayload> {
-// 	console.log('oauth find', id);
-
-// 	// XXX: really?
-// 	const fromRedis = await this.findRedis(id);
-// 	if (fromRedis) {
-// 		return fromRedis;
-// 	}
-
-// 	// Find client information from the remote.
-// 	const url = validateClientId(id);
-
-// 	if (process.env.NODE_ENV !== 'test') {
-// 		const lookup = await dns.lookup(url.hostname);
-// 		if (ipaddr.parse(lookup.address).range() === 'loopback') {
-// 			throw new Error('client_id unexpectedly resolves to loopback IP.');
-// 		}
-// 	}
-
-// 	const redirectUri = await fetchFromClientId(this.httpRequestService, id);
-// 	if (!redirectUri) {
-// 		// IndieAuth also implicitly allows any path under the same scheme+host,
-// 		// but oidc-provider requires explicit list of uris.
-// 		throw new Error('The URL of client_id must provide `redirect_uri` as HTTP Link header or HTML <link> element.');
-// 	}
-
-// 	return {
-// 		client_id: id,
-// 		token_endpoint_auth_method: 'none',
-// 		redirect_uris: [redirectUri],
-// 	};
-// }
-
-// 	async findRedis(id: string | null): Promise<void | AdapterPayload> {
-// 		if (!id) {
-// 			return;
-// 		}
-
-// 		const data = consumable.has(this.name)
-// 			? await this.redisClient.hgetall(this.key(id))
-// 			: await this.redisClient.get(this.key(id));
-
-// 		if (!data || (typeof data === 'object' && !Object.entries(data).length)) {
-// 			return undefined;
-// 		}
-
-// 		if (typeof data === 'string') {
-// 			return JSON.parse(data);
-// 		}
-// 		const { payload, ...rest } = data as any;
-// 		return {
-// 			...rest,
-// 			...JSON.parse(payload),
-// 		};
-// 	}
-
-// 	async findByUserCode(userCode: string): Promise<void | AdapterPayload> {
-// 		console.log('oauth findByUserCode', userCode);
-// 		const id = await this.redisClient.get(userCodeKeyFor(userCode));
-// 		return this.findRedis(id);
-// 	}
-
-// 	async findByUid(uid: string): Promise<void | AdapterPayload> {
-// 		console.log('oauth findByUid', uid);
-// 		const id = await this.redisClient.get(uidKeyFor(uid));
-// 		return this.findRedis(id);
-// 	}
-
-// 	async consume(id: string): Promise<void> {
-// 		console.log('oauth consume', id);
-// 		await this.redisClient.hset(this.key(id), 'consumed', Math.floor(Date.now() / 1000));
-// 	}
-
-// 	async destroy(id: string): Promise<void | undefined> {
-// 		console.log('oauth destroy', id);
-// 		const key = this.key(id);
-// 		await this.redisClient.del(key);
-// 	}
-
-// 	async revokeByGrantId(grantId: string): Promise<void | undefined> {
-// 		console.log('oauth revokeByGrandId', grantId);
-// 		const multi = this.redisClient.multi();
-// 		const tokens = await this.redisClient.lrange(grantKeyFor(grantId), 0, -1);
-// 		tokens.forEach((token) => multi.del(token));
-// 		multi.del(grantKeyFor(grantId));
-// 		await multi.exec();
-// 	}
-// }
-
-// function promisify<T>(callback: T) {
-// 	return (...args: Parameters<T>) => {
-
-// 		args[args.length - 1]();
-// 	};
-// }
-
 type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
@@ -261,18 +111,47 @@ interface OAuthRequest extends OAuth2Req {
 	codeChallengeMethod: string;
 }
 
+class OAuth2Store {
+	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // 5min
+
+	load(req: any, cb: (err: Error | null, txn?: OAuth2) => void): void {
+		console.log(req);
+		const { transaction_id } = req.body;
+		if (!transaction_id) {
+			cb(new Error('Missing transaction ID'));
+			return;
+		}
+		const loaded = this.#cache.get(transaction_id);
+		if (!loaded) {
+			cb(new Error('Failed to load transaction'));
+			return;
+		}
+		cb(null, loaded);
+	}
+
+	store(req: any, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
+		const transactionId = secureRndstr(128, true);
+		this.#cache.set(transactionId, oauth2);
+		cb(null, transactionId);
+	}
+
+	remove(req: any, tid: string, cb: () => void): void {
+		this.#cache.delete(tid);
+		cb();
+	}
+}
+
 @Injectable()
 export class OAuth2ProviderService {
 	// #provider: Provider;
-	#server = oauth2orize.createServer();
+	#server = oauth2orize.createServer({
+		store: new OAuth2Store(),
+	});
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
 		private httpRequestService: HttpRequestService,
-		private metaService: MetaService,
 		@Inject(DI.accessTokensRepository)
 		accessTokensRepository: AccessTokensRepository,
 		idService: IdService,
@@ -280,30 +159,6 @@ export class OAuth2ProviderService {
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 	) {
-		// this.#provider = new Provider(config.url, {
-		// 	clientAuthMethods: ['none'],
-		// 	pkce: {
-		// 		// This is the default, but be explicit here as we announce it below
-		// 		methods: ['S256'],
-		// 	},
-		// 	routes: {
-		// 		// defaults to '/auth' but '/authorize' is more consistent with many
-		// 		// other services eg. Mastodon/Twitter/Facebook/GitLab/GitHub/etc.
-		// 		authorization: '/authorize',
-		// 	},
-		// 	scopes: kinds,
-		// 	async findAccount(ctx, id): Promise<Account | undefined> {
-		// 		console.log(id);
-		// 		return undefined;
-		// 	},
-		// 	adapter(): MisskeyAdapter {
-		// 		return new MisskeyAdapter(redisClient, httpRequestService);
-		// 	},
-		// 	async renderError(ctx, out, error): Promise<void> {
-		// 		console.log(error);
-		// 	},
-		// });
-
 		// XXX: But MemoryKVCache just grows forever without being cleared if grant codes are left unused
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
@@ -438,8 +293,6 @@ export class OAuth2ProviderService {
 		});
 		fastify.post('/oauth/decision', async () => { });
 		fastify.post('/oauth/token', async () => { });
-		// fastify.get('/oauth/interaction/:uid', async () => { });
-		// fastify.get('/oauth/interaction/:uid/login', async () => { });
 
 		fastify.register(fastifyView, {
 			root: fileURLToPath(new URL('../web/views', import.meta.url)),
@@ -451,8 +304,6 @@ export class OAuth2ProviderService {
 		});
 
 		await fastify.register(fastifyExpress);
-		// TODO: use redis session store to prevent memory leak
-		fastify.use(expressSession({ secret: 'keyboard cat', resave: false, saveUninitialized: false }) as any);
 		fastify.use('/oauth/authorize', this.#server.authorize(((areq, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT /oauth/authorize validation middleware', areq);
@@ -497,7 +348,6 @@ export class OAuth2ProviderService {
 		// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2.1
 		// But make sure not to redirect to an invalid redirect_uri
 		fastify.use('/oauth/authorize', this.#server.errorHandler());
-		// for (const middleware of this.#server.decision()) {
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/decision', this.#server.decision((req, done) => {
@@ -512,8 +362,5 @@ export class OAuth2ProviderService {
 		fastify.use('/oauth/token', bodyParser.json({ strict: true }));
 		fastify.use('/oauth/token', this.#server.token());
 		fastify.use('/oauth/token', this.#server.errorHandler());
-		// }
-
-		// fastify.use('/oauth', this.#provider.callback());
 	}
 }
