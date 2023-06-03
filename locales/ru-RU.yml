@@ -1531,6 +1531,8 @@ _time:
   minute: "мин"
   hour: "ч"
   day: "сут"
+_timelineTutorial:
+  title: "Как пользоваться Misskey"
 _2fa:
   alreadyRegistered: "Двухфакторная аутентификация уже настроена."
   registerTOTP: "Начните настраивать приложение-аутентификатор"
