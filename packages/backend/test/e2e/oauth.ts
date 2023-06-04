@@ -82,6 +82,31 @@ async function fetchDecisionFromResponse(response: Response, user: misskey.entit
 	return await fetchDecision(transactionId!, user, { cancel });
 }
 
+async function fetchAuthorizationCode(user: ImmediateSignup, scope: string, code_challenge: string) {
+	const client = getClient();
+
+	const response = await fetch(client.authorizeURL({
+		redirect_uri,
+		scope,
+		state: 'state',
+		code_challenge,
+		code_challenge_method: 'S256',
+	} as AuthorizationParamsExtended));
+	assert.strictEqual(response.status, 200);
+
+	// TODO: this fetch-decision-code checks are everywhere, maybe get a helper for this.
+	const decisionResponse = await fetchDecisionFromResponse(response, user);
+	assert.strictEqual(decisionResponse.status, 302);
+
+	const location = new URL(decisionResponse.headers.get('location')!);
+	assert.ok(location.searchParams.has('code'));
+
+	const code = new URL(location).searchParams.get('code')!;
+	assert.ok(!!code);
+
+	return { client, code };
+}
+
 describe('OAuth', () => {
 	let app: INestApplicationContext;
 	let fastify: FastifyInstance;
@@ -301,23 +326,7 @@ describe('OAuth', () => {
 		describe('Verify PKCE', () => {
 			for (const [title, code_verifier] of Object.entries(tests)) {
 				test(title, async () => {
-					const client = getClient();
-
-					const response = await fetch(client.authorizeURL({
-						redirect_uri,
-						scope: 'write:notes',
-						state: 'state',
-						code_challenge,
-						code_challenge_method: 'S256',
-					} as AuthorizationParamsExtended));
-					assert.strictEqual(response.status, 200);
-
-					// TODO: this fetch-decision-code checks are everywhere, maybe get a helper for this.
-					const decisionResponse = await fetchDecisionFromResponse(response, alice);
-					assert.strictEqual(decisionResponse.status, 302);
-
-					const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
-					assert.ok(!!code);
+					const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
 					await assert.rejects(client.getToken({
 						code,
@@ -404,27 +413,12 @@ describe('OAuth', () => {
 		test('Partially known scopes', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-			const client = getClient();
-
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes test:unknown test:unknown2',
-				state: 'state',
-				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-
 			// Just get the known scope for this case for backward compatibility
-			assert.strictEqual(response.status, 200);
-
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
-
-			const location = new URL(decisionResponse.headers.get('location')!);
-			assert.ok(location.searchParams.has('code'));
-
-			const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
-			assert.ok(!!code);
+			const { client, code } = await fetchAuthorizationCode(
+				alice,
+				'write:notes test:unknown test:unknown2',
+				code_challenge,
+			);
 
 			const token = await client.getToken({
 				code,
@@ -454,26 +448,11 @@ describe('OAuth', () => {
 		test('Duplicated scopes', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-			const client = getClient();
-
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes write:notes read:account read:account',
-				state: 'state',
+			const { client, code } = await fetchAuthorizationCode(
+				alice,
+				'write:notes write:notes read:account read:account',
 				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-
-			assert.strictEqual(response.status, 200);
-
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
-
-			const location = new URL(decisionResponse.headers.get('location')!);
-			assert.ok(location.searchParams.has('code'));
-
-			const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
-			assert.ok(!!code);
+			);
 
 			const token = await client.getToken({
 				code,
@@ -486,25 +465,10 @@ describe('OAuth', () => {
 		test('Scope check by API', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-			const client = getClient();
-
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'read:account',
-				state: 'state',
-				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
-
-			const location = new URL(decisionResponse.headers.get('location')!);
-			assert.ok(location.searchParams.has('code'));
+			const { client, code } = await fetchAuthorizationCode(alice, 'read:account', code_challenge);
 
 			const token = await client.getToken({
-				code: location.searchParams.get('code')!,
+				code,
 				redirect_uri,
 				code_verifier,
 			} as AuthorizationTokenConfigExtended);
@@ -526,25 +490,10 @@ describe('OAuth', () => {
 	test('Authorization header', async () => {
 		const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-		const client = getClient();
-
-		const response = await fetch(client.authorizeURL({
-			redirect_uri,
-			scope: 'write:notes',
-			state: 'state',
-			code_challenge,
-			code_challenge_method: 'S256',
-		} as AuthorizationParamsExtended));
-		assert.strictEqual(response.status, 200);
-
-		const decisionResponse = await fetchDecisionFromResponse(response, alice);
-		assert.strictEqual(decisionResponse.status, 302);
-
-		const location = new URL(decisionResponse.headers.get('location')!);
-		assert.ok(location.searchParams.has('code'));
+		const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
 		const token = await client.getToken({
-			code: location.searchParams.get('code')!,
+			code,
 			redirect_uri,
 			code_verifier,
 		} as AuthorizationTokenConfigExtended);
@@ -623,25 +572,10 @@ describe('OAuth', () => {
 		test('Invalid redirect_uri at token endpoint', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-			const client = getClient();
-
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
-
-			const location = new URL(decisionResponse.headers.get('location')!);
-			assert.ok(location.searchParams.has('code'));
+			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
 			await assert.rejects(client.getToken({
-				code: location.searchParams.get('code')!,
+				code,
 				redirect_uri: 'http://127.0.0.2/',
 				code_verifier,
 			} as AuthorizationTokenConfigExtended));
@@ -650,25 +584,10 @@ describe('OAuth', () => {
 		test('Invalid redirect_uri including the valid one at token endpoint', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-			const client = getClient();
-
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
-
-			const location = new URL(decisionResponse.headers.get('location')!);
-			assert.ok(location.searchParams.has('code'));
+			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
 			await assert.rejects(client.getToken({
-				code: location.searchParams.get('code')!,
+				code,
 				redirect_uri: 'http://127.0.0.1/redirection',
 				code_verifier,
 			} as AuthorizationTokenConfigExtended));
@@ -677,25 +596,10 @@ describe('OAuth', () => {
 		test('No redirect_uri at token endpoint', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-			const client = getClient();
-
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
-
-			const location = new URL(decisionResponse.headers.get('location')!);
-			assert.ok(location.searchParams.has('code'));
+			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
 			await assert.rejects(client.getToken({
-				code: location.searchParams.get('code')!,
+				code,
 				code_verifier,
 			} as AuthorizationTokenConfigExtended));
 		});
