@@ -5,37 +5,10 @@ import { QueryService } from '@/core/QueryService.js';
 import { BlockingEntityService } from '@/core/entities/BlockingEntityService.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['account'],
-
-	requireCredential: true,
-
-	kind: 'read:blocks',
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Blocking',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'blocking/list'> {
+	name = 'blocking/list' as const;
 	constructor(
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
@@ -43,7 +16,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private blockingEntityService: BlockingEntityService,
 		private queryService: QueryService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.blockingsRepository.createQueryBuilder('blocking'), ps.sinceId, ps.untilId)
 				.andWhere('blocking.blockerId = :meId', { meId: me.id });
 

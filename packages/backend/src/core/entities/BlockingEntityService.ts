@@ -7,6 +7,7 @@ import type { Blocking } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
+import { Serialized } from 'schema-type';
 
 @Injectable()
 export class BlockingEntityService {
@@ -22,7 +23,7 @@ export class BlockingEntityService {
 	public async pack(
 		src: Blocking['id'] | Blocking,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Packed<'Blocking'>> {
+	): Promise<Serialized<Packed<'Blocking'>>> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
@@ -39,7 +40,7 @@ export class BlockingEntityService {
 	public packMany(
 		blockings: any[],
 		me: { id: User['id'] },
-	) {
+	): Promise<Serialized<Packed<'Blocking'>>[]> {
 		return Promise.all(blockings.map(x => this.pack(x, me)));
 	}
 }
