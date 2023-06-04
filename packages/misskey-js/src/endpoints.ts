@@ -2524,29 +2524,29 @@ export const endpoints = {
 	},
 	'blocking/delete': {
 		tags: ['account'],
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 100,
 		},
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:blocks',
-	
+
 		errors: {
 			noSuchUser: {
 				message: 'No such user.',
 				code: 'NO_SUCH_USER',
 				id: '8621d8bf-c358-4303-a066-5ea78610eb3f',
 			},
-	
+
 			blockeeIsYourself: {
 				message: 'Blockee is yourself.',
 				code: 'BLOCKEE_IS_YOURSELF',
 				id: '06f6fac6-524b-473c-a354-e97a40ae6eac',
 			},
-	
+
 			notBlocking: {
 				message: 'You are not blocking that user.',
 				code: 'NOT_BLOCKING',
@@ -2569,9 +2569,9 @@ export const endpoints = {
 	},
 	'blocking/list': {
 		tags: ['account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:blocks',
 
 		defines: [{
@@ -2597,13 +2597,13 @@ export const endpoints = {
 	//#region channels
 	'channels/create': {
 		tags: ['channels'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:channels',
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 10,
@@ -2645,13 +2645,13 @@ export const endpoints = {
 	},
 	'channels/favorite': {
 		tags: ['channels'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:channels',
-	
+
 		errors: {
 			noSuchChannel: {
 				message: 'No such channel.',
@@ -2673,7 +2673,7 @@ export const endpoints = {
 	},
 	'channels/featured': {
 		tags: ['channels'],
-	
+
 		requireCredential: false,
 
 		defines: [{
@@ -2688,13 +2688,13 @@ export const endpoints = {
 	},
 	'channels/follow': {
 		tags: ['channels'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:channels',
-	
+
 		errors: {
 			noSuchChannel: {
 				message: 'No such channel.',
@@ -2716,11 +2716,11 @@ export const endpoints = {
 	},
 	'channels/followed': {
 		tags: ['channels', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:channels',
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -2741,11 +2741,11 @@ export const endpoints = {
 	},
 	'channels/my-favorites': {
 		tags: ['channels', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:channels',
-	
+
 		defines: [{
 			req: undefined,
 			res: {
@@ -2758,9 +2758,9 @@ export const endpoints = {
 	},
 	'channels/owned': {
 		tags: ['channels', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:channels',
 
 		defines: [{
@@ -2783,7 +2783,7 @@ export const endpoints = {
 	},
 	'channels/search': {
 		tags: ['channels'],
-	
+
 		requireCredential: false,
 
 		defines: [{
@@ -2808,7 +2808,7 @@ export const endpoints = {
 	},
 	'channels/show': {
 		tags: ['channels'],
-	
+
 		requireCredential: false,
 
 		errors: {
@@ -2834,7 +2834,7 @@ export const endpoints = {
 	},
 	'channels/timeline': {
 		tags: ['notes', 'channels'],
-	
+
 		requireCredential: false,
 
 		errors: {
@@ -2868,13 +2868,13 @@ export const endpoints = {
 	},
 	'channels/unfavorite': {
 		tags: ['channels'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:channels',
-	
+
 		errors: {
 			noSuchChannel: {
 				message: 'No such channel.',
@@ -2882,7 +2882,7 @@ export const endpoints = {
 				id: '353c68dd-131a-476c-aa99-88a345e83668',
 			},
 		},
-		
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -2896,13 +2896,13 @@ export const endpoints = {
 	},
 	'channels/unfollow': {
 		tags: ['channels'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:channels',
-	
+
 		errors: {
 			noSuchChannel: {
 				message: 'No such channel.',
@@ -2924,24 +2924,24 @@ export const endpoints = {
 	},
 	'channels/update': {
 		tags: ['channels'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:channels',
-	
+
 		errors: {
 			noSuchChannel: {
 				message: 'No such channel.',
 				code: 'NO_SUCH_CHANNEL',
 				id: 'f9c5467f-d492-4c3c-9a8d-a70dacc86512',
 			},
-	
+
 			accessDenied: {
 				message: 'You do not have edit privilege of the channel.',
 				code: 'ACCESS_DENIED',
 				id: '1fb7cb09-d46a-4fdf-b8df-057788cce513',
 			},
-	
+
 			noSuchFile: {
 				message: 'No such file.',
 				code: 'NO_SUCH_FILE',
