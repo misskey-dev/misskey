@@ -2341,7 +2341,113 @@ export const endpoints = {
 				$ref: 'https://misskey-hub.net/api/schemas/App',
 			},
 		}],
-	}
+	},
+	//#endregion
+
+	//#region auth
+	'auth/session/genrate': {
+		tags: ['auth'],
+	
+		requireCredential: false,
+	
+		errors: {
+			noSuchApp: {
+				message: 'No such app.',
+				code: 'NO_SUCH_APP',
+				id: '92f93e63-428e-4f2f-a5a4-39e1407fe998',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					appSecret: { type: 'string' },
+				},
+				required: ['appSecret'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					token: { type: 'string' },
+					url: { type: 'string', format: 'url' },
+				},
+				required: ['token', 'url'],
+			},
+		}],
+	},
+	'auth/session/show': {
+		tags: ['auth'],
+	
+		requireCredential: false,
+	
+		errors: {
+			noSuchSession: {
+				message: 'No such session.',
+				code: 'NO_SUCH_SESSION',
+				id: 'bd72c97d-eba7-4adb-a467-f171b8847250',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					token: { type: 'string' },
+				},
+				required: ['token'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/AuthSession',
+			},
+		}],
+	},
+	'auth/session/userkey': {
+		tags: ['auth'],
+	
+		requireCredential: false,
+	
+		errors: {
+			noSuchApp: {
+				message: 'No such app.',
+				code: 'NO_SUCH_APP',
+				id: 'fcab192a-2c5a-43b7-8ad8-9b7054d8d40d',
+			},
+	
+			noSuchSession: {
+				message: 'No such session.',
+				code: 'NO_SUCH_SESSION',
+				id: '5b5a1503-8bc8-4bd0-8054-dc189e8cdcb3',
+			},
+	
+			pendingSession: {
+				message: 'This session is not completed yet.',
+				code: 'PENDING_SESSION',
+				id: '8c8a4145-02cc-4cca-8e66-29ba60445a8e',
+			},
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					appSecret: { type: 'string' },
+					token: { type: 'string' },
+				},
+				required: ['appSecret', 'token'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					accessToken: { type: 'string' },
+					user: {
+						$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
+					}
+				},
+				required: ['accessToken', 'user'],
+			}
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

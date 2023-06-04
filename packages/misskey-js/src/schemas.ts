@@ -56,6 +56,7 @@ import {
 	SignInSchema,
 } from './schemas/sign-in.js';
 import { packedModerationLogSchema } from './schemas/moderation-log.js';
+import { packedAuthSessionSchema } from './schemas/auth-session.js';
 import { Error, ApiError } from './schemas/error.js';
 import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
 
@@ -109,6 +110,7 @@ export const refs = {
 	ServerInfoAdmin: ServerInfoAdminSchema,
 	ModerationLog: packedModerationLogSchema,
 	SignIn: SignInSchema,
+	AuthSession: packedAuthSessionSchema,
 
 	Error: Error,
 	ApiError: ApiError,

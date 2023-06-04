@@ -5,66 +5,24 @@ import { AuthSessionEntityService } from '@/core/entities/AuthSessionEntityServi
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['auth'],
-
-	requireCredential: false,
-
-	errors: {
-		noSuchSession: {
-			message: 'No such session.',
-			code: 'NO_SUCH_SESSION',
-			id: 'bd72c97d-eba7-4adb-a467-f171b8847250',
-		},
-	},
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
-			},
-			app: {
-				type: 'object',
-				optional: false, nullable: false,
-				ref: 'App',
-			},
-			token: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		token: { type: 'string' },
-	},
-	required: ['token'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'auth/session/show'> {
+	name = 'auth/session/show' as const;
 	constructor(
 		@Inject(DI.authSessionsRepository)
 		private authSessionsRepository: AuthSessionsRepository,
 
 		private authSessionEntityService: AuthSessionEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Lookup session
 			const session = await this.authSessionsRepository.findOneBy({
 				token: ps.token,
 			});
 
 			if (session == null) {
-				throw new ApiError(meta.errors.noSuchSession);
+				throw new ApiError(this.meta.errors.noSuchSession);
 			}
 
 			return await this.authSessionEntityService.pack(session, me);

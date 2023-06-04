@@ -7,47 +7,10 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['auth'],
-
-	requireCredential: false,
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		properties: {
-			token: {
-				type: 'string',
-				optional: false, nullable: false,
-			},
-			url: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'url',
-			},
-		},
-	},
-
-	errors: {
-		noSuchApp: {
-			message: 'No such app.',
-			code: 'NO_SUCH_APP',
-			id: '92f93e63-428e-4f2f-a5a4-39e1407fe998',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		appSecret: { type: 'string' },
-	},
-	required: ['appSecret'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'auth/session/genrate'> {
+	name = 'auth/session/genrate' as const;
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -60,14 +23,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Lookup app
 			const app = await this.appsRepository.findOneBy({
 				secret: ps.appSecret,
 			});
 
 			if (app == null) {
-				throw new ApiError(meta.errors.noSuchApp);
+				throw new ApiError(this.meta.errors.noSuchApp);
 			}
 
 			// Generate token

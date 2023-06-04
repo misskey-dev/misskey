@@ -119,11 +119,7 @@ export type Stats = {
 	driveUsageRemote: number;
 };
 
-export type AuthSession = {
-	id: ID;
-	app: App;
-	token: string;
-};
+export type AuthSession = Serialized<Packed<'AuthSession'>>;
 
 export type FollowRequest = {
 	id: ID;

@@ -6,6 +6,7 @@ import type { AuthSession } from '@/models/entities/AuthSession.js';
 import type { User } from '@/models/entities/User.js';
 import { AppEntityService } from './AppEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { Packed } from 'misskey-js';
 
 @Injectable()
 export class AuthSessionEntityService {
@@ -21,7 +22,7 @@ export class AuthSessionEntityService {
 	public async pack(
 		src: AuthSession['id'] | AuthSession,
 		me?: { id: User['id'] } | null | undefined,
-	) {
+	): Promise<Packed<'AuthSession'>> {
 		const session = typeof src === 'object' ? src : await this.authSessionsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({

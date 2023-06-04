@@ -1,3 +1,4 @@
+import { test } from 'node:test';
 import { Packed, Def } from '../src/schemas';
 import { expectType } from 'tsd';
 
@@ -121,6 +122,9 @@ describe('schemas', () => {
     });
     test('moderation log', () => {
         type ModerationLog = Packed<'ModerationLog'>;
+    });
+    test('auth session', () => {
+        type AuthSession = Packed<'AuthSession'>;
     });
     test('error', () => {
         type Error = Packed<'Error'>;
