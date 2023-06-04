@@ -20,6 +20,9 @@ export class SigninEntityService {
 	public async pack(
 		src: Signin,
 	): Promise<Packed<'SignIn'>> {
-		return src;
+		return {
+			...src,
+			createdAt: src.createdAt.toISOString(),
+		};
 	}
 }
