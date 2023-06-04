@@ -204,17 +204,17 @@ export class OAuth2ProviderService {
 			})().then(args => done(null, ...args), err => done(err));
 		}));
 		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, authInfo, done) => {
-			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
+			(async (): Promise<OmitFirstElement<Parameters<typeof done>> | undefined> => {
 				const granted = grantCodeCache.get(code);
 				console.log(granted, body, code, redirectUri);
 				if (!granted) {
-					return [false];
+					return;
 				}
 				grantCodeCache.delete(code);
-				if (body.client_id !== granted.clientId) return [false];
-				if (redirectUri !== granted.redirectUri) return [false];
-				if (!body.code_verifier) return [false];
-				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return [false];
+				if (body.client_id !== granted.clientId) return;
+				if (redirectUri !== granted.redirectUri) return;
+				if (!body.code_verifier) return;
+				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return;
 
 				const accessToken = secureRndstr(128, true);
 
@@ -233,7 +233,7 @@ export class OAuth2ProviderService {
 				});
 
 				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
-			})().then(args => done(null, ...args), err => done(err));
+			})().then(args => done(null, ...args ?? []), err => done(err));
 		}));
 		this.#server.serializeClient((client, done) => done(null, client));
 		this.#server.deserializeClient((id, done) => done(null, id));
@@ -265,9 +265,6 @@ export class OAuth2ProviderService {
 				issuer: this.config.url,
 				authorization_endpoint: new URL('/oauth/authorize', this.config.url),
 				token_endpoint: new URL('/oauth/token', this.config.url),
-				// TODO: support or not?
-				// introspection_endpoint: ...
-				// introspection_endpoint_auth_methods_supported: ...
 				scopes_supported: kinds,
 				response_types_supported: ['code'],
 				grant_types_supported: ['authorization_code'],
