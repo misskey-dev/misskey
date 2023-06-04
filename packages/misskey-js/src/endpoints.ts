@@ -2320,7 +2320,7 @@ export const endpoints = {
 	},
 	'app/show': {
 		tags: ['app'],
-	
+
 		errors: {
 			noSuchApp: {
 				message: 'No such app.',
@@ -2347,9 +2347,9 @@ export const endpoints = {
 	//#region auth
 	'auth/session/genrate': {
 		tags: ['auth'],
-	
+
 		requireCredential: false,
-	
+
 		errors: {
 			noSuchApp: {
 				message: 'No such app.',
@@ -2378,9 +2378,9 @@ export const endpoints = {
 	},
 	'auth/session/show': {
 		tags: ['auth'],
-	
+
 		requireCredential: false,
-	
+
 		errors: {
 			noSuchSession: {
 				message: 'No such session.',
@@ -2404,29 +2404,29 @@ export const endpoints = {
 	},
 	'auth/session/userkey': {
 		tags: ['auth'],
-	
+
 		requireCredential: false,
-	
+
 		errors: {
 			noSuchApp: {
 				message: 'No such app.',
 				code: 'NO_SUCH_APP',
 				id: 'fcab192a-2c5a-43b7-8ad8-9b7054d8d40d',
 			},
-	
+
 			noSuchSession: {
 				message: 'No such session.',
 				code: 'NO_SUCH_SESSION',
 				id: '5b5a1503-8bc8-4bd0-8054-dc189e8cdcb3',
 			},
-	
+
 			pendingSession: {
 				message: 'This session is not completed yet.',
 				code: 'PENDING_SESSION',
 				id: '8c8a4145-02cc-4cca-8e66-29ba60445a8e',
 			},
 		},
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -2442,7 +2442,7 @@ export const endpoints = {
 					accessToken: { type: 'string' },
 					user: {
 						$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
-					}
+					},
 				},
 				required: ['accessToken', 'user'],
 			}
