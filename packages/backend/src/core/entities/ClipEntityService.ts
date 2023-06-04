@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { ClipFavoritesRepository, ClipsRepository, User } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Serialized } from 'schema-type';
 import type { Clip } from '@/models/entities/Clip.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -25,7 +25,7 @@ export class ClipEntityService {
 	public async pack(
 		src: Clip['id'] | Clip,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Packed<'Clip'>> {
+	): Promise<Serialized<Packed<'Clip'>>> {
 		const meId = me ? me.id : null;
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
 
@@ -47,7 +47,7 @@ export class ClipEntityService {
 	public packMany(
 		clips: Clip[],
 		me?: { id: User['id'] } | null | undefined,
-	) {
+	): Promise<Serialized<Packed<'Clip'>>[]> {
 		return Promise.all(clips.map(x => this.pack(x, me)));
 	}
 }

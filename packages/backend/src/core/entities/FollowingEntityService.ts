@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { Following } from '@/models/entities/Following.js';
 import { bindThis } from '@/decorators.js';
@@ -71,7 +71,7 @@ export class FollowingEntityService {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		},
-	): Promise<Packed<'Following'>> {
+	): Promise<Serialized<Packed<'Following'>>> {
 		const following = typeof src === 'object' ? src : await this.followingsRepository.findOneByOrFail({ id: src });
 
 		if (opts == null) opts = {};

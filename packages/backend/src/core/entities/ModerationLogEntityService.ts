@@ -2,12 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ModerationLogsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { } from '@/models/entities/Blocking.js';
 import type { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { Serialized } from 'schema-type';
-import { Packed } from 'misskey-js';
+import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class ModerationLogEntityService {

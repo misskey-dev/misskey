@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NoteFavoritesRepository } from '@/models/index.js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { NoteFavorite } from '@/models/entities/NoteFavorite.js';
 import { NoteEntityService } from './NoteEntityService.js';
@@ -21,7 +22,7 @@ export class NoteFavoriteEntityService {
 	public async pack(
 		src: NoteFavorite['id'] | NoteFavorite,
 		me?: { id: User['id'] } | null | undefined,
-	) {
+	): Promise<Serialized<Packed<'NoteFavorite'>>> {
 		const favorite = typeof src === 'object' ? src : await this.noteFavoritesRepository.findOneByOrFail({ id: src });
 
 		return {

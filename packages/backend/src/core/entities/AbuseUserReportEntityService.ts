@@ -5,8 +5,8 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { Packed } from 'misskey-js';
-import { Serialized } from 'schema-type';
+import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class AbuseUserReportEntityService {

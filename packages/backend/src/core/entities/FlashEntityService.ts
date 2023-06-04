@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { Flash } from '@/models/entities/Flash.js';
 import { bindThis } from '@/decorators.js';
@@ -26,7 +26,7 @@ export class FlashEntityService {
 	public async pack(
 		src: Flash['id'] | Flash,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Packed<'Flash'>> {
+	): Promise<Serialized<Packed<'Flash'>>> {
 		const meId = me ? me.id : null;
 		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
 

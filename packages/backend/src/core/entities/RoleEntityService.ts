@@ -8,8 +8,8 @@ import type { Role } from '@/models/entities/Role.js';
 import { bindThis } from '@/decorators.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { UserEntityService } from './UserEntityService.js';
-import { Packed } from 'misskey-js';
-import { Serialized } from 'schema-type';
+import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class RoleEntityService {

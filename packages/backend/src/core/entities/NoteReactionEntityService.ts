@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NoteReactionsRepository } from '@/models/index.js';
 import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 import { bindThis } from '@/decorators.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -43,7 +43,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 		options?: {
 			withNote: boolean;
 		},
-	): Promise<Packed<'NoteReaction'>> {
+	): Promise<Serialized<Packed<'NoteReaction'>>> {
 		const opts = Object.assign({
 			withNote: false,
 		}, options);

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AntennasRepository } from '@/models/index.js';
 import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import { bindThis } from '@/decorators.js';
 
@@ -16,7 +17,7 @@ export class AntennaEntityService {
 	@bindThis
 	public async pack(
 		src: Antenna['id'] | Antenna,
-	): Promise<Packed<'Antenna'>> {
+	): Promise<Serialized<Packed<'Antenna'>>> {
 		const antenna = typeof src === 'object' ? src : await this.antennasRepository.findOneByOrFail({ id: src });
 
 		return {

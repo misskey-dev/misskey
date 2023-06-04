@@ -7,7 +7,7 @@ import type { Blocking } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
-import { Serialized } from 'schema-type';
+import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class BlockingEntityService {

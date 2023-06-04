@@ -17,10 +17,15 @@ export const packedUserListSchema = {
 			type: 'array',
 			items: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
 		},
+		isPublic: {
+			type: 'boolean',
+		},
 	},
 	required: [
 		'id',
 		'createdAt',
 		'name',
+		'userIds',
+		'isPublic',
 	],
 } as const satisfies JSONSchema7Definition;

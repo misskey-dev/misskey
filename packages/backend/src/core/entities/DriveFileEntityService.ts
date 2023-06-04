@@ -4,6 +4,7 @@ import { DI } from '@/di-symbols.js';
 import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
@@ -187,7 +188,7 @@ export class DriveFileEntityService {
 	public async pack(
 		src: DriveFile['id'] | DriveFile,
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'>> {
+	): Promise<Serialized<Packed<'DriveFile'>>> {
 		const opts = Object.assign({
 			detail: false,
 			self: false,
@@ -195,7 +196,7 @@ export class DriveFileEntityService {
 
 		const file = typeof src === 'object' ? src : await this.driveFilesRepository.findOneByOrFail({ id: src });
 
-		return await awaitAll<Packed<'DriveFile'>>({
+		return await awaitAll<Serialized<Packed<'DriveFile'>>>({
 			id: file.id,
 			createdAt: file.createdAt.toISOString(),
 			name: file.name,
@@ -221,7 +222,7 @@ export class DriveFileEntityService {
 	public async packNullable(
 		src: DriveFile['id'] | DriveFile,
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'> | null> {
+	): Promise<Serialized<Packed<'DriveFile'>> | null> {
 		const opts = Object.assign({
 			detail: false,
 			self: false,
@@ -230,7 +231,7 @@ export class DriveFileEntityService {
 		const file = typeof src === 'object' ? src : await this.driveFilesRepository.findOneBy({ id: src });
 		if (file == null) return null;
 
-		return await awaitAll<Packed<'DriveFile'>>({
+		return await awaitAll<Serialized<Packed<'DriveFile'>>>({
 			id: file.id,
 			createdAt: file.createdAt.toISOString(),
 			name: file.name,
@@ -256,20 +257,20 @@ export class DriveFileEntityService {
 	public async packMany(
 		files: DriveFile[],
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'>[]> {
+	): Promise<Serialized<Packed<'DriveFile'>>[]> {
 		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
-		return items.filter((x): x is Packed<'DriveFile'> => x != null);
+		return items.filter((x): x is Serialized<Packed<'DriveFile'>> => x != null);
 	}
 
 	@bindThis
 	public async packManyByIdsMap(
 		fileIds: DriveFile['id'][],
 		options?: PackOptions,
-	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
+	): Promise<Map<Serialized<Packed<'DriveFile'>>['id'], Serialized<Packed<'DriveFile'>> | null>> {
 		if (fileIds.length === 0) return new Map();
 		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
 		const packedFiles = await this.packMany(files, options);
-		const map = new Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>(packedFiles.map(f => [f.id, f]));
+		const map = new Map<Serialized<Packed<'DriveFile'>>['id'], Serialized<Packed<'DriveFile'>> | null>(packedFiles.map(f => [f.id, f]));
 		for (const id of fileIds) {
 			if (!map.has(id)) map.set(id, null);
 		}
@@ -280,7 +281,7 @@ export class DriveFileEntityService {
 	public async packManyByIds(
 		fileIds: DriveFile['id'][],
 		options?: PackOptions,
-	): Promise<Packed<'DriveFile'>[]> {
+	): Promise<Serialized<Packed<'DriveFile'>>[]> {
 		if (fileIds.length === 0) return [];
 		const filesMap = await this.packManyByIdsMap(fileIds, options);
 		return fileIds.map(id => filesMap.get(id)).filter(isNotNull);

@@ -25,6 +25,9 @@ export const packedPageSchema = {
 		},
 		content: {
 			type: 'array',
+			items: {
+				type: 'object',
+			},
 		},
 		variables: {
 			type: 'array',

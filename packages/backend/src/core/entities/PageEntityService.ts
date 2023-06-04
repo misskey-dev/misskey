@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { Page } from '@/models/entities/Page.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
@@ -32,7 +32,7 @@ export class PageEntityService {
 	public async pack(
 		src: Page['id'] | Page,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Packed<'Page'>> {
+	): Promise<Serialized<Packed<'Page'>>> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
 

@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { RenoteMutingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { RenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { bindThis } from '@/decorators.js';
@@ -23,7 +23,7 @@ export class RenoteMutingEntityService {
 	public async pack(
 		src: RenoteMuting['id'] | RenoteMuting,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Packed<'RenoteMuting'>> {
+	): Promise<Serialized<Packed<'RenoteMuting'>>> {
 		const muting = typeof src === 'object' ? src : await this.renoteMutingsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({

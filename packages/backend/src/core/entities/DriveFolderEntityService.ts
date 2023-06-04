@@ -3,7 +3,7 @@ import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { } from '@/models/entities/Blocking.js';
+import type { Serialized } from 'schema-type';
 import type { DriveFolder } from '@/models/entities/DriveFolder.js';
 import { bindThis } from '@/decorators.js';
 
@@ -24,7 +24,7 @@ export class DriveFolderEntityService {
 		options?: {
 			detail: boolean
 		},
-	): Promise<Packed<'DriveFolder'>> {
+	): Promise<Serialized<Packed<'DriveFolder'>>> {
 		const opts = Object.assign({
 			detail: false,
 		}, options);

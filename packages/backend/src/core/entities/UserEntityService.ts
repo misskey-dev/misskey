@@ -6,6 +6,7 @@ import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { Packed } from 'misskey-js';
+import type { Serialized } from 'schema-type';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
@@ -23,13 +24,13 @@ import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
 
-type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Packed<'UserDetailed'> : Packed<'UserLite'>;
+type IsUserDetailed<Detailed extends boolean> = Detailed extends true ? Serialized<Packed<'UserDetailed'>> : Serialized<Packed<'UserLite'>>;
 type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends boolean> =
 	Detailed extends true ?
-		ExpectsMe extends true ? Packed<'MeDetailed'> :
-		ExpectsMe extends false ? Packed<'UserDetailedNotMe'> :
-		(Packed<'MeDetailed'> | Packed<'UserDetailedNotMe'>) :
-	Packed<'UserLite'>;
+		ExpectsMe extends true ? Serialized<Packed<'MeDetailed'>> :
+		ExpectsMe extends false ? Serialized<Packed<'UserDetailedNotMe'>> :
+		(Packed<'MeDetailed'> | Serialized<Packed<'UserDetailedNotMe'>>) :
+	Serialized<Packed<'UserLite'>>;
 
 const ajv = new Ajv();
 

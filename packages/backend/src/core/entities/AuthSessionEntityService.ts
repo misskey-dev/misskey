@@ -6,7 +6,7 @@ import type { AuthSession } from '@/models/entities/AuthSession.js';
 import type { User } from '@/models/entities/User.js';
 import { AppEntityService } from './AppEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { Packed } from 'misskey-js';
+import type { Packed } from 'misskey-js';
 
 @Injectable()
 export class AuthSessionEntityService {
