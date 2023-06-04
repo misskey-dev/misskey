@@ -65,7 +65,7 @@ function fetchDecision(transactionId: string, user: misskey.entities.MeSignup, {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
 		body: new URLSearchParams({
-			transaction_id: transactionId!,
+			transaction_id: transactionId,
 			login_token: user.token,
 			cancel: cancel ? 'cancel' : '',
 		}),
@@ -78,11 +78,12 @@ function fetchDecision(transactionId: string, user: misskey.entities.MeSignup, {
 
 async function fetchDecisionFromResponse(response: Response, user: misskey.entities.MeSignup, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	const { transactionId } = getMeta(await response.text());
+	assert.ok(transactionId);
 
-	return await fetchDecision(transactionId!, user, { cancel });
+	return await fetchDecision(transactionId, user, { cancel });
 }
 
-async function fetchAuthorizationCode(user: ImmediateSignup, scope: string, code_challenge: string) {
+async function fetchAuthorizationCode(user: ImmediateSignup, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
 	const client = getClient();
 
 	const response = await fetch(client.authorizeURL({
@@ -98,11 +99,14 @@ async function fetchAuthorizationCode(user: ImmediateSignup, scope: string, code
 	const decisionResponse = await fetchDecisionFromResponse(response, user);
 	assert.strictEqual(decisionResponse.status, 302);
 
-	const location = new URL(decisionResponse.headers.get('location')!);
+	const locationHeader = decisionResponse.headers.get('location');
+	assert.ok(locationHeader);
+
+	const location = new URL(locationHeader);
 	assert.ok(location.searchParams.has('code'));
 
-	const code = new URL(location).searchParams.get('code')!;
-	assert.ok(!!code);
+	const code = new URL(location).searchParams.get('code');
+	assert.ok(code);
 
 	return { client, code };
 }
@@ -157,20 +161,27 @@ describe('OAuth', () => {
 
 		const meta = getMeta(await response.text());
 		assert.strictEqual(typeof meta.transactionId, 'string');
+		assert.ok(meta.transactionId);
 		assert.strictEqual(meta.clientName, 'Misklient');
 
-		const decisionResponse = await fetchDecision(meta.transactionId!, alice);
+		const decisionResponse = await fetchDecision(meta.transactionId, alice);
 		assert.strictEqual(decisionResponse.status, 302);
 		assert.ok(decisionResponse.headers.has('location'));
 
-		const location = new URL(decisionResponse.headers.get('location')!);
+		const locationHeader = decisionResponse.headers.get('location');
+		assert.ok(locationHeader);
+
+		const location = new URL(locationHeader);
 		assert.strictEqual(location.origin + location.pathname, redirect_uri);
 		assert.ok(location.searchParams.has('code'));
 		assert.strictEqual(location.searchParams.get('state'), 'state');
 		assert.strictEqual(location.searchParams.get('iss'), 'http://misskey.local'); // RFC 9207
 
+		const code = new URL(location).searchParams.get('code');
+		assert.ok(code);
+
 		const token = await client.getToken({
-			code: location.searchParams.get('code')!,
+			code,
 			redirect_uri,
 			code_verifier,
 		} as AuthorizationTokenConfigExtended);
