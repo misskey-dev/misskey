@@ -2032,16 +2032,16 @@ export const endpoints = {
 			},
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/Antenna',
-			}
+			},
 		}],
 	},
 	'antennas/delete': {
 		tags: ['antennas'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:account',
-	
+
 		errors: {
 			noSuchAntenna: {
 				message: 'No such antenna.',
@@ -2060,7 +2060,60 @@ export const endpoints = {
 			},
 			res: undefined,
 		}],
-	}
+	},
+	'antennas/list': {
+		tags: ['antennas', 'account'],
+
+		requireCredential: true,
+
+		kind: 'read:account',
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Antenna',
+				},
+			},
+		}],
+	},
+	'antennas/notes': {
+		tags: ['antennas', 'account', 'notes'],
+
+		requireCredential: true,
+
+		kind: 'read:account',
+
+		errors: {
+			noSuchAntenna: {
+				message: 'No such antenna.',
+				code: 'NO_SUCH_ANTENNA',
+				id: '850926e0-fd3b-49b6-b69a-b28a5dbd82fe',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					antennaId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					sinceDate: { type: 'integer' },
+					untilDate: { type: 'integer' },
+				},
+				required: ['antennaId'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Note',
+				},
+			},
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

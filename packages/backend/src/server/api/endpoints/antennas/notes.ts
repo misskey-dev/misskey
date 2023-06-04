@@ -50,7 +50,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'antennas/notes'> {
+	name = 'antennas/notes' as const;
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -66,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 		private noteReadService: NoteReadService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
 				userId: me.id,
