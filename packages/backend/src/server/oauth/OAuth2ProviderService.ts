@@ -286,7 +286,7 @@ export class OAuth2ProviderService {
 			return await reply.view('oauth', {
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
-				scope: (oauth2.req.scope as any as string[]).join(' '),
+				scope: oauth2.req.scope.join(' '),
 			});
 		});
 		fastify.post('/oauth/decision', async () => { });
