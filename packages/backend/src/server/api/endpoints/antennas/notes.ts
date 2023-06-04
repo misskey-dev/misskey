@@ -35,7 +35,7 @@ export default class extends Endpoint<'antennas/notes'> {
 			});
 
 			if (antenna == null) {
-				throw new ApiError(meta.errors.noSuchAntenna);
+				throw new ApiError(this.meta.errors.noSuchAntenna);
 			}
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
