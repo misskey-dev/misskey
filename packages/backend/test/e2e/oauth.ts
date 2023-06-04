@@ -10,7 +10,7 @@ import { AuthorizationCode, type AuthorizationTokenConfig } from 'simple-oauth2'
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 import * as misskey from 'misskey-js';
-import Fastify, { type FastifyInstance } from 'fastify';
+import Fastify, { type FastifyReply, type FastifyInstance } from 'fastify';
 import { port, relativeFetch, signup, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 
@@ -83,7 +83,7 @@ async function fetchDecisionFromResponse(response: Response, user: misskey.entit
 	return await fetchDecision(transactionId, user, { cancel });
 }
 
-async function fetchAuthorizationCode(user: ImmediateSignup, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
+async function fetchAuthorizationCode(user: misskey.entities.MeSignup, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
 	const client = getClient();
 
 	const response = await fetch(client.authorizeURL({
@@ -627,107 +627,59 @@ describe('OAuth', () => {
 
 	describe('Client Information Discovery', () => {
 		describe('Redirection', () => {
-			test('Read HTTP header', async () => {
-				await fastify.close();
-
-				fastify = Fastify();
-				fastify.get('/', async (request, reply) => {
+			const tests: Record<string, (reply: FastifyReply) => void> = {
+				'Read HTTP header': reply => {
 					reply.header('Link', '</redirect>; rel="redirect_uri"');
 					reply.send(`
-					<!DOCTYPE html>
-					<div class="h-app"><div class="p-name">Misklient
-				`);
-				});
-				await fastify.listen({ port: clientPort });
-
-				const client = getClient();
-
-				const response = await fetch(client.authorizeURL({
-					redirect_uri,
-					scope: 'write:notes',
-					state: 'state',
-					code_challenge: 'code',
-					code_challenge_method: 'S256',
-				} as AuthorizationParamsExtended));
-				assert.strictEqual(response.status, 200);
-			});
-
-			test('Mixed links', async () => {
-				await fastify.close();
-
-				fastify = Fastify();
-				fastify.get('/', async (request, reply) => {
+						<!DOCTYPE html>
+						<div class="h-app"><div class="p-name">Misklient
+					`);
+				},
+				'Mixed links': reply => {
 					reply.header('Link', '</redirect>; rel="redirect_uri"');
 					reply.send(`
-					<!DOCTYPE html>
-					<link rel="redirect_uri" href="/redirect2" />
-					<div class="h-app"><div class="p-name">Misklient
-				`);
-				});
-				await fastify.listen({ port: clientPort });
-
-				const client = getClient();
-
-				const response = await fetch(client.authorizeURL({
-					redirect_uri,
-					scope: 'write:notes',
-					state: 'state',
-					code_challenge: 'code',
-					code_challenge_method: 'S256',
-				} as AuthorizationParamsExtended));
-				assert.strictEqual(response.status, 200);
-			});
-
-			test('Multiple items in Link header', async () => {
-				await fastify.close();
-
-				fastify = Fastify();
-				fastify.get('/', async (request, reply) => {
+						<!DOCTYPE html>
+						<link rel="redirect_uri" href="/redirect2" />
+						<div class="h-app"><div class="p-name">Misklient
+					`);
+				},
+				'Multiple items in Link header': reply => {
 					reply.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
 					reply.send(`
-					<!DOCTYPE html>
-					<div class="h-app"><div class="p-name">Misklient
-				`);
-				});
-				await fastify.listen({ port: clientPort });
-
-				const client = getClient();
-
-				const response = await fetch(client.authorizeURL({
-					redirect_uri,
-					scope: 'write:notes',
-					state: 'state',
-					code_challenge: 'code',
-					code_challenge_method: 'S256',
-				} as AuthorizationParamsExtended));
-				assert.strictEqual(response.status, 200);
-			});
-
-			test('Multiple items in HTML', async () => {
-				await fastify.close();
-
-				fastify = Fastify();
-				fastify.get('/', async (request, reply) => {
+						<!DOCTYPE html>
+						<div class="h-app"><div class="p-name">Misklient
+					`);
+				},
+				'Multiple items in HTML': reply => {
 					reply.send(`
-					<!DOCTYPE html>
-					<link rel="redirect_uri" href="/redirect2" />
-					<link rel="redirect_uri" href="/redirect" />
-					<div class="h-app"><div class="p-name">Misklient
-				`);
+						<!DOCTYPE html>
+						<link rel="redirect_uri" href="/redirect2" />
+						<link rel="redirect_uri" href="/redirect" />
+						<div class="h-app"><div class="p-name">Misklient
+					`);
+				},
+			};
+
+			for (const [title, replyFunc] of Object.entries(tests)) {
+				test(title, async () => {
+					await fastify.close();
+
+					fastify = Fastify();
+					fastify.get('/', async (request, reply) => replyFunc(reply));
+					await fastify.listen({ port: clientPort });
+
+					const client = getClient();
+
+					const response = await fetch(client.authorizeURL({
+						redirect_uri,
+						scope: 'write:notes',
+						state: 'state',
+						code_challenge: 'code',
+						code_challenge_method: 'S256',
+					} as AuthorizationParamsExtended));
+					assert.strictEqual(response.status, 200);
 				});
-				await fastify.listen({ port: clientPort });
-
-				const client = getClient();
-
-				const response = await fetch(client.authorizeURL({
-					redirect_uri,
-					scope: 'write:notes',
-					state: 'state',
-					code_challenge: 'code',
-					code_challenge_method: 'S256',
-				} as AuthorizationParamsExtended));
-				assert.strictEqual(response.status, 200);
-			});
+			}
 
 			test('No item', async () => {
 				await fastify.close();
