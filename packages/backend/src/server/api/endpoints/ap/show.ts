@@ -17,73 +17,13 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
-
-export const meta = {
-	tags: ['federation'],
-
-	requireCredential: true,
-
-	limit: {
-		duration: ms('1hour'),
-		max: 30,
-	},
-
-	errors: {
-		noSuchObject: {
-			message: 'No such object.',
-			code: 'NO_SUCH_OBJECT',
-			id: 'dc94d745-1262-4e63-a17d-fecaa57efc82',
-		},
-	},
-
-	res: {
-		optional: false, nullable: false,
-		oneOf: [
-			{
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						optional: false, nullable: false,
-						enum: ['User'],
-					},
-					object: {
-						type: 'object',
-						optional: false, nullable: false,
-						ref: 'UserDetailedNotMe',
-					},
-				},
-			},
-			{
-				type: 'object',
-				properties: {
-					type: {
-						type: 'string',
-						optional: false, nullable: false,
-						enum: ['Note'],
-					},
-					object: {
-						type: 'object',
-						optional: false, nullable: false,
-						ref: 'Note',
-					},
-				},
-			},
-		],
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		uri: { type: 'string' },
-	},
-	required: ['uri'],
-} as const;
+import { Endpoints } from 'misskey-js';
+import { References } from 'misskey-js/built/schemas.js';
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'ap/show'> {
+	name = 'ap/show' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -100,12 +40,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private apPersonService: ApPersonService,
 		private apNoteService: ApNoteService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const object = await this.fetchAny(ps.uri, me);
 			if (object) {
 				return object;
 			} else {
-				throw new ApiError(meta.errors.noSuchObject);
+				throw new ApiError(this.meta.errors.noSuchObject);
 			}
 		});
 	}
@@ -114,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	 * URIからUserかNoteを解決する
 	 */
 	@bindThis
-	private async fetchAny(uri: string, me: LocalUser | null | undefined): Promise<SchemaType<typeof meta['res']> | null> {
+	private async fetchAny(uri: string, me: LocalUser | null | undefined): Promise<SchemaType<Endpoints['ap/show']['defines'][number]['res'], References> | null> {
 	// ブロックしてたら中断
 		const fetchedMeta = await this.metaService.fetch();
 		if (this.utilityService.isBlockedHost(fetchedMeta.blockedHosts, this.utilityService.extractDbHost(uri))) return null;
@@ -147,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	}
 
 	@bindThis
-	private async mergePack(me: LocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+	private async mergePack(me: LocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<Endpoints['ap/show']['defines'][number]['res'], References> | null> {
 		if (user != null) {
 			return {
 				type: 'User',

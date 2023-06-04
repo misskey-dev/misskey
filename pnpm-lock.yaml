@@ -630,7 +630,7 @@ importers:
         version: 29.5.0
       schema-type:
         specifier: github:misskey-dev/schema-type
-        version: github.com/misskey-dev/schema-type/65413af4ef676dafb5d06ebc04dce39c74b3a8f9(typescript@5.0.4)
+        version: github.com/misskey-dev/schema-type/65413af4ef676dafb5d06ebc04dce39c74b3a8f9(typescript@5.1.3)
 
   packages/frontend:
     dependencies:
@@ -1028,6 +1028,9 @@ importers:
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
+      ms:
+        specifier: 3.0.0-canary.1
+        version: 3.0.0-canary.1
       reconnecting-websocket:
         specifier: 4.4.0
         version: 4.4.0
@@ -20334,6 +20337,15 @@ packages:
       typescript: '>=4.1.0'
     dependencies:
       typescript: 5.0.4
+    dev: false
+
+  /ts-essentials@9.3.2(typescript@5.1.3):
+    resolution: {integrity: sha512-JxKJzuWqH1MmH4ZFHtJzGEhkfN3QvVR3C3w+4BIoWeoY68UVVoA2Np/Bca9z0IPSErVCWhv439aT0We4Dks8kQ==}
+    peerDependencies:
+      typescript: '>=4.1.0'
+    dependencies:
+      typescript: 5.1.3
+    dev: true
 
   /ts-map@1.0.3:
     resolution: {integrity: sha512-vDWbsl26LIcPGmDpoVzjEP6+hvHZkBkLW7JpvwbCv/5IYPJlsbzCVXY3wsCeAxAUeTclNOUZxnLdGh3VBD/J6w==}
@@ -20584,7 +20596,6 @@ packages:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
     hasBin: true
-    dev: true
 
   /typescript@5.1.3:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
@@ -21755,6 +21766,20 @@ packages:
       tsd: 0.28.1
     transitivePeerDependencies:
       - typescript
+    dev: false
+
+  github.com/misskey-dev/schema-type/65413af4ef676dafb5d06ebc04dce39c74b3a8f9(typescript@5.1.3):
+    resolution: {tarball: https://codeload.github.com/misskey-dev/schema-type/tar.gz/65413af4ef676dafb5d06ebc04dce39c74b3a8f9}
+    id: github.com/misskey-dev/schema-type/65413af4ef676dafb5d06ebc04dce39c74b3a8f9
+    name: schema-type
+    version: 1.0.0
+    dependencies:
+      '@types/json-schema': 7.0.11
+      ts-essentials: 9.3.2(typescript@5.1.3)
+      tsd: 0.28.1
+    transitivePeerDependencies:
+      - typescript
+    dev: true
 
   github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
     resolution: {tarball: https://codeload.github.com/misskey-dev/sharp-read-bmp/tar.gz/02d9dc189fa7df0c4bea09330be26741772dac01}

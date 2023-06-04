@@ -1,6 +1,7 @@
-import { JSONSchema7 } from 'schema-type';
+import type { JSONSchema7 } from 'schema-type';
 import { IEndpointMeta } from './endpoints.types';
 import { localUsernameSchema, passwordSchema } from './schemas/user';
+import ms from 'ms';
 
 export const endpoints = {
 	//#region admin
@@ -2203,6 +2204,84 @@ export const endpoints = {
 			},
 		}],
 	},
+	//#endregion
+
+	//#region ap
+	'ap/get': {
+		tags: ['federation'],
+	
+		requireCredential: true,
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 30,
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					uri: { type: 'string' },
+				},
+				required: ['uri'],
+			},
+			res: {
+				type: 'object',
+			},
+		}],
+	},
+	'ap/show': {
+		tags: ['federation'],
+	
+		requireCredential: true,
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 30,
+		},
+	
+		errors: {
+			noSuchObject: {
+				message: 'No such object.',
+				code: 'NO_SUCH_OBJECT',
+				id: 'dc94d745-1262-4e63-a17d-fecaa57efc82',
+			},
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					uri: { type: 'string' },
+				},
+				required: ['uri'],
+			},
+			res: {
+				oneOf: [
+					{
+						type: 'object',
+						properties: {
+							type: { const: 'User' },
+							object: {
+								$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
+							},
+						},
+						required: ['type', 'object'],
+					},
+					{
+						type: 'object',
+						properties: {
+							type: { const: 'Note' },
+							object: {
+								$ref: 'https://misskey-hub.net/api/schemas/Note',
+							},
+						},
+						required: ['type', 'object'],
+					},
+				],
+			},
+		}],
+	}
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
