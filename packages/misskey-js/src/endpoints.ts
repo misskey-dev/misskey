@@ -2142,6 +2142,67 @@ export const endpoints = {
 			},
 		}],
 	},
+	'antennas/update': {
+		tags: ['antennas'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:account',
+	
+		errors: {
+			noSuchAntenna: {
+				message: 'No such antenna.',
+				code: 'NO_SUCH_ANTENNA',
+				id: '10c673ac-8852-48eb-aa1f-f5b67f069290',
+			},
+	
+			noSuchUserList: {
+				message: 'No such user list.',
+				code: 'NO_SUCH_USER_LIST',
+				id: '1c6b35c9-943e-48c2-81e4-2844989407f7',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					antennaId: { type: 'string', format: 'misskey:id' },
+					name: { type: 'string', minLength: 1, maxLength: 100 },
+					src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+					userListId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+					keywords: { type: 'array', items: {
+						type: 'array', items: {
+							type: 'string',
+						},
+					} },
+					excludeKeywords: { type: 'array', items: {
+						type: 'array', items: {
+							type: 'string',
+						},
+					} },
+					users: { type: 'array', items: {
+						type: 'string',
+					} },
+					caseSensitive: { type: 'boolean' },
+					withReplies: { type: 'boolean' },
+					withFile: { type: 'boolean' },
+					notify: { type: 'boolean' },
+				},
+				required: ['antennaId', 'name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Antenna',
+			},
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
