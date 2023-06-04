@@ -2739,6 +2739,73 @@ export const endpoints = {
 			},
 		}],
 	},
+	'channels/my-favorites': {
+		tags: ['channels', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'read:channels',
+	
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Channel',
+				},
+			},
+		}],
+	},
+	'channels/owned': {
+		tags: ['channels', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'read:channels',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Channel',
+				},
+			},
+		}],
+	},
+	'channels/search': {
+		tags: ['channels'],
+	
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					query: { type: 'string' },
+					type: { type: 'string', enum: ['nameAndDescription', 'nameOnly'], default: 'nameAndDescription' },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
+				},
+				required: ['query'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Channel',
+				},
+			},
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
