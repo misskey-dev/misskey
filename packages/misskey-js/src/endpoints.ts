@@ -3,6 +3,7 @@ import { IEndpointMeta } from './endpoints.types';
 import { localUsernameSchema, passwordSchema } from './schemas/user';
 
 export const endpoints = {
+	//#region admin
 	'admin/accounts/create': {
 		tags: ['admin'],
 		defines: [{
@@ -1964,7 +1965,11 @@ export const endpoints = {
 			},
 			res: undefined,
 		}],
-	}
+	},
+	//#endregion
+
+	//#region antenna
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
