@@ -13,4 +13,4 @@ export function isFfVisibility(id, user):boolean {
 			// fallthrough
 		default: return true;
 	}
-};
+}
