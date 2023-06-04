@@ -282,9 +282,10 @@ describe('OAuth', () => {
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
-		// TODO: Use precomputed challenge/verifier set for this one for deterministic test
 		test('Verify PKCE', async () => {
-			const { code_challenge, code_verifier } = await pkceChallenge(128);
+			// Use precomputed challenge/verifier set for this one for deterministic test
+			const code_challenge = '4w2GDuvaxXlw2l46k5PFIoIcTGHdzw2i3hrn-C_Q6f7u0-nTYKd-beVEYy9XinYsGtAix.Nnvr.GByD3lAii2ibPRsSDrZgIN0YQb.kfevcfR9aDKoTLyOUm4hW4ABhs';
+			const code_verifier = 'Ew8VSBiH59JirLlg7ocFpLQ6NXuFC1W_rn8gmRzBKc8';
 
 			const client = getClient();
 
