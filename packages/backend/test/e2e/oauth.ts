@@ -1,3 +1,8 @@
+/**
+ * Basic OAuth tests to make sure the library is correctly integrated to Misskey
+ * and not regressed by version updates or potential migration to another library.
+ */
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -28,7 +33,7 @@ interface AuthorizationParamsExtended {
 }
 
 interface AuthorizationTokenConfigExtended extends AuthorizationTokenConfig {
-	code_verifier: string;
+	code_verifier: string | undefined;
 }
 
 function getClient(): AuthorizationCode<'client_id'> {
@@ -282,59 +287,52 @@ describe('OAuth', () => {
 			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
 		});
 
-		test('Verify PKCE', async () => {
-			// Use precomputed challenge/verifier set for this one for deterministic test
-			const code_challenge = '4w2GDuvaxXlw2l46k5PFIoIcTGHdzw2i3hrn-C_Q6f7u0-nTYKd-beVEYy9XinYsGtAix.Nnvr.GByD3lAii2ibPRsSDrZgIN0YQb.kfevcfR9aDKoTLyOUm4hW4ABhs';
-			const code_verifier = 'Ew8VSBiH59JirLlg7ocFpLQ6NXuFC1W_rn8gmRzBKc8';
+		// Use precomputed challenge/verifier set here for deterministic test
+		const code_challenge = '4w2GDuvaxXlw2l46k5PFIoIcTGHdzw2i3hrn-C_Q6f7u0-nTYKd-beVEYy9XinYsGtAix.Nnvr.GByD3lAii2ibPRsSDrZgIN0YQb.kfevcfR9aDKoTLyOUm4hW4ABhs';
+		const code_verifier = 'Ew8VSBiH59JirLlg7ocFpLQ6NXuFC1W_rn8gmRzBKc8';
 
-			const client = getClient();
+		const tests: Record<string, string | undefined> = {
+			'Code followed by some junk code': code_verifier + 'x',
+			'Clipped code': code_verifier.slice(0, 80),
+			'Some part of code is replaced': code_verifier.slice(0, -10) + 'x'.repeat(10),
+			'No verifier': undefined,
+		};
 
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge,
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
+		describe('Verify PKCE', () => {
+			for (const [title, code_verifier] of Object.entries(tests)) {
+				test(title, async () => {
+					const client = getClient();
 
-			const decisionResponse = await fetchDecisionFromResponse(response, alice);
-			assert.strictEqual(decisionResponse.status, 302);
+					const response = await fetch(client.authorizeURL({
+						redirect_uri,
+						scope: 'write:notes',
+						state: 'state',
+						code_challenge,
+						code_challenge_method: 'S256',
+					} as AuthorizationParamsExtended));
+					assert.strictEqual(response.status, 200);
 
-			const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
-			assert.ok(!!code);
+					// TODO: this fetch-decision-code checks are everywhere, maybe get a helper for this.
+					const decisionResponse = await fetchDecisionFromResponse(response, alice);
+					assert.strictEqual(decisionResponse.status, 302);
 
-			// Pattern 1: code followed by some junk code
-			await assert.rejects(client.getToken({
-				code,
-				redirect_uri,
-				code_verifier: code_verifier + 'x',
-			} as AuthorizationTokenConfigExtended));
+					const code = new URL(decisionResponse.headers.get('location')!).searchParams.get('code')!;
+					assert.ok(!!code);
 
-			// TODO: The following patterns may fail only because of pattern 1's failure. Let's split them.
+					await assert.rejects(client.getToken({
+						code,
+						redirect_uri,
+						code_verifier,
+					} as AuthorizationTokenConfigExtended));
 
-			// Pattern 2: clipped code
-			await assert.rejects(client.getToken({
-				code,
-				redirect_uri,
-				code_verifier: code_verifier.slice(0, 80),
-			} as AuthorizationTokenConfigExtended));
-
-			// Pattern 3: Some part of code is replaced
-			await assert.rejects(client.getToken({
-				code,
-				redirect_uri,
-				code_verifier: code_verifier.slice(0, -10) + 'x'.repeat(10),
-			} as AuthorizationTokenConfigExtended));
-
-			// TODO: pattern 4: no code_verifier
-
-			// And now the code is invalidated by the previous failures
-			await assert.rejects(client.getToken({
-				code,
-				redirect_uri,
-				code_verifier,
-			} as AuthorizationTokenConfigExtended));
+					// And now the code is invalidated by the previous failure
+					await assert.rejects(client.getToken({
+						code,
+						redirect_uri,
+						code_verifier,
+					} as AuthorizationTokenConfigExtended));
+				});
+			}
 		});
 	});
 

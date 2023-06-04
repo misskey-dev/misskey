@@ -143,7 +143,6 @@ class OAuth2Store {
 
 @Injectable()
 export class OAuth2ProviderService {
-	// #provider: Provider;
 	#server = oauth2orize.createServer({
 		store: new OAuth2Store(),
 	});
