@@ -30,7 +30,7 @@
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<template v-if="isFfVisibility()">
+				<template v-if="isFfVisibility($i.id, user)">
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 						<div>{{ number(user.followingCount) }}</div>
@@ -43,11 +43,11 @@
 				<template v-else>
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
-						<div>{{ i18n.ts._ffVisibility.private }}</div>
+						<div><i class="ti ti-lock"></i></div>
 					</div>
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
-						<div>{{ i18n.ts._ffVisibility.private }}</div>
+						<div><i class="ti ti-lock"></i></div>
 					</div>
 				</template>
 			</div>
@@ -73,6 +73,7 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
+import { isFfVisibility } from '@/scripts/is-ff-visibility';
 
 const props = defineProps<{
 	showing: boolean;
@@ -87,23 +88,6 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-
-const isFfVisibility = () => {
-	if ($i.id === user.id) {
-		return true;
-	}
-
-	switch (user.ffVisibility) {
-		case 'private':
-			return false;
-		case 'followers':
-			if (!user.isFollowing) {
-				return false;
-			}
-			// fallthrough
-		default: return true;
-	}
-};
 
 let user = $ref<misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);

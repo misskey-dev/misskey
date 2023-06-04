@@ -102,7 +102,7 @@
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<template v-if="isFfVisibility()">
+						<template v-if="isFfVisibility($i.id, props.user)">
 							<MkA v-click-anime :to="userPage(user, 'following')">
 								<b>{{ number(user.followingCount) }}</b>
 								<span>{{ i18n.ts.following }}</span>
@@ -114,11 +114,11 @@
 						</template>
 						<template v-else>
 							<div>
-								<b>{{ i18n.ts._ffVisibility.private }}</b>
+								<i class="ti ti-lock"></i>
 								<span>{{ i18n.ts.following }}</span>
 							</div>
 							<div>
-								<b>{{ i18n.ts._ffVisibility.private }}</b>
+								<i class="ti ti-lock"></i>
 								<span>{{ i18n.ts.followers }}</span>
 							</div>
 						</template>
@@ -170,6 +170,7 @@ import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os';
+import { isFfVisibility } from '@/scripts/is-ff-visibility';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -183,23 +184,6 @@ const props = withDefaults(defineProps<{
 });
 
 const router = useRouter();
-
-const isFfVisibility = () => {
-	if ($i.id === props.user.id) {
-		return true;
-	}
-
-	switch (props.user.ffVisibility) {
-		case 'private': 
-			return false;
-		case 'followers':
-			if (!props.user.isFollowing) {
-				return false;
-			}
-			// fallthrough
-		default: return true;
-	}
-};
 
 let parallaxAnimationId = $ref<null | number>(null);
 let narrow = $ref<null | boolean>(null);
@@ -585,9 +569,10 @@ onUnmounted(() => {
 						flex: 1;
 						text-align: center;
 
-						> b {
+						> i {
 							display: block;
 							line-height: 16px;
+							margin: 0 auto;
 						}
 
 						> span {

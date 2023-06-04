@@ -17,7 +17,7 @@
 		<div :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ user.notesCount }}</span>
 		</div>
-		<template v-if="isFfVisibility()">
+		<template v-if="isFfVisibility($i.id, props.user)">
 			<div :class="$style.statusItem">
 				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ user.followingCount }}</span>
 			</div>
@@ -27,10 +27,10 @@
 		</template>
 		<template v-else>
 			<div :class="$style.statusItem">
-				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ i18n.ts._ffVisibility.private }}</span>
+				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue"><i class="ti ti-lock"></i></span>
 			</div>
 			<div :class="$style.statusItem">
-				<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ i18n.ts._ffVisibility.private }}</span>
+				<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue"><i class="ti ti-lock"></i></span>
 			</div>
 		</template>
 	</div>
@@ -44,27 +44,12 @@ import MkFollowButton from '@/components/MkFollowButton.vue';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { isFfVisibility } from '@/scripts/is-ff-visibility';
 
 const props = defineProps<{
 	user: misskey.entities.UserDetailed;
 }>();
 
-const isFfVisibility = () => {
-	if ($i.id === props.user.id) {
-		return true;
-	}
-
-	switch (props.user.ffVisibility) {
-		case 'private':
-			return false;
-		case 'followers':
-			if (!props.user.isFollowing) {
-				return false;
-			}
-			// fallthrough
-		default: return true;
-	}
-};
 </script>
 
 <style lang="scss" module>
