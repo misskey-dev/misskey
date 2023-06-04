@@ -8,36 +8,6 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
-export const meta = {
-	tags: ['antennas'],
-
-	requireCredential: true,
-
-	prohibitMoved: true,
-
-	kind: 'write:account',
-
-	errors: {
-		noSuchUserList: {
-			message: 'No such user list.',
-			code: 'NO_SUCH_USER_LIST',
-			id: '95063e93-a283-4b8b-9aa5-bcdb8df69a7f',
-		},
-
-		tooManyAntennas: {
-			message: 'You cannot create antenna any more.',
-			code: 'TOO_MANY_ANTENNAS',
-			id: 'faf47050-e8b5-438c-913c-db2b1576fde4',
-		},
-	},
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Antenna',
-	},
-} as const;
-
 export const paramDef = {
 	type: 'object',
 	properties: {
@@ -67,7 +37,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'antenna/create'> {
+	name = 'antenna/create' as const;
 	constructor(
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
@@ -80,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			if ((ps.keywords.length === 0) || ps.keywords[0].every(x => x === '')) {
 				throw new Error('invalid param');
 			}
@@ -89,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 			});
 			if (currentAntennasCount > (await this.roleService.getUserPolicies(me.id)).antennaLimit) {
-				throw new ApiError(meta.errors.tooManyAntennas);
+				throw new ApiError(this.meta.errors.tooManyAntennas);
 			}
 
 			let userList;
@@ -101,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 
 				if (userList == null) {
-					throw new ApiError(meta.errors.noSuchUserList);
+					throw new ApiError(this.meta.errors.noSuchUserList);
 				}
 			}
 

@@ -1969,6 +1969,72 @@ export const endpoints = {
 	//#endregion
 
 	//#region antenna
+	'antenna/create': {
+		tags: ['antennas'],
+
+		requireCredential: true,
+
+		prohibitMoved: true,
+
+		kind: 'write:account',
+
+		errors: {
+			noSuchUserList: {
+				message: 'No such user list.',
+				code: 'NO_SUCH_USER_LIST',
+				id: '95063e93-a283-4b8b-9aa5-bcdb8df69a7f',
+			},
+
+			tooManyAntennas: {
+				message: 'You cannot create antenna any more.',
+				code: 'TOO_MANY_ANTENNAS',
+				id: 'faf47050-e8b5-438c-913c-db2b1576fde4',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string', minLength: 1, maxLength: 100 },
+					src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
+					userListId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+					keywords: {
+						type: 'array', items: {
+							type: 'array', items: {
+								type: 'string',
+							},
+						}
+					},
+					excludeKeywords: {
+						type: 'array', items: {
+							type: 'array', items: {
+								type: 'string',
+							},
+						}
+					},
+					users: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
+					caseSensitive: { type: 'boolean' },
+					withReplies: { type: 'boolean' },
+					withFile: { type: 'boolean' },
+					notify: { type: 'boolean' },
+				},
+				required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile', 'notify'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Antenna',
+			}
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
