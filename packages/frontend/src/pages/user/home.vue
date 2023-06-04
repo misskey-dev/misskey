@@ -102,7 +102,7 @@
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<template v-if="isFfVisibility($i.id, props.user)">
+						<template v-if="isFfVisibility(id, props.user)">
 							<MkA v-click-anime :to="userPage(user, 'following')">
 								<b>{{ number(user.followingCount) }}</b>
 								<span>{{ i18n.ts.following }}</span>
@@ -220,6 +220,13 @@ const age = $computed(() => {
 });
 
 const animation = $ref(defaultStore.state.animation);
+
+const id = () => {
+	if ($i) {
+		return 'dummy';
+	}
+	return $i.id;
+};
 
 function menu(ev) {
 	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);

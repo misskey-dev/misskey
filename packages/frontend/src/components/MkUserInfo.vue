@@ -17,7 +17,7 @@
 		<div :class="$style.statusItem">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ user.notesCount }}</span>
 		</div>
-		<template v-if="isFfVisibility($i.id, props.user)">
+		<template v-if="isFfVisibility(id, props.user)">
 			<div :class="$style.statusItem">
 				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ user.followingCount }}</span>
 			</div>
@@ -50,6 +50,12 @@ const props = defineProps<{
 	user: misskey.entities.UserDetailed;
 }>();
 
+const id = () => {
+	if ($i) {
+		return 'dummy';
+	}
+	return $i.id;
+};
 </script>
 
 <style lang="scss" module>

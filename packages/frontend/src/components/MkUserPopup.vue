@@ -30,7 +30,7 @@
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<template v-if="isFfVisibility($i.id, user)">
+				<template v-if="isFfVisibility(id, user)">
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 						<div>{{ number(user.followingCount) }}</div>
@@ -88,6 +88,13 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
+
+const id = () => {
+	if ($i) {
+		return 'dummy';
+	}
+	return $i.id;
+};
 
 let user = $ref<misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);
