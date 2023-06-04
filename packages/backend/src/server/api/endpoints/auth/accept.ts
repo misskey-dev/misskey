@@ -29,7 +29,7 @@ export default class extends Endpoint<'auth/accept'> {
 				.findOneBy({ token: ps.token });
 
 			if (session == null) {
-				throw new ApiError(meta.errors.noSuchSession);
+				throw new ApiError(this.meta.errors.noSuchSession);
 			}
 
 			const accessToken = secureRndstr(32, true);

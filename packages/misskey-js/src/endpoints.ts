@@ -2450,11 +2450,11 @@ export const endpoints = {
 	},
 	'auth/accept': {
 		tags: ['auth'],
-	
+
 		requireCredential: true,
-	
+
 		secure: true,
-	
+
 		errors: {
 			noSuchSession: {
 				message: 'No such session.',
@@ -2473,7 +2473,55 @@ export const endpoints = {
 			},
 			res: undefined,
 		}],
-	}
+	},
+	//#endregion
+
+	//#region blocking
+	'blocking/create': {
+		tags: ['account'],
+
+		limit: {
+			duration: ms('1hour'),
+			max: 20,
+		},
+
+		requireCredential: true,
+
+		kind: 'write:blocks',
+
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '7cc4f851-e2f1-4621-9633-ec9e1d00c01e',
+			},
+
+			blockeeIsYourself: {
+				message: 'Blockee is yourself.',
+				code: 'BLOCKEE_IS_YOURSELF',
+				id: '88b19138-f28d-42c0-8499-6a31bbd0fdc6',
+			},
+
+			alreadyBlocking: {
+				message: 'You are already blocking that user.',
+				code: 'ALREADY_BLOCKING',
+				id: '787fed64-acb9-464a-82eb-afbd745b9614',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
+			},
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
