@@ -7,33 +7,10 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
-export const meta = {
-	tags: ['auth'],
-
-	requireCredential: true,
-
-	secure: true,
-
-	errors: {
-		noSuchSession: {
-			message: 'No such session.',
-			code: 'NO_SUCH_SESSION',
-			id: '9c72d8de-391a-43c1-9d06-08d29efde8df',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		token: { type: 'string' },
-	},
-	required: ['token'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'auth/accept'> {
+	name = 'auth/accept' as const;
 	constructor(
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
@@ -46,7 +23,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Fetch token
 			const session = await this.authSessionsRepository
 				.findOneBy({ token: ps.token });

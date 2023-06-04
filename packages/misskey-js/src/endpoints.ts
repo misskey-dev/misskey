@@ -2448,6 +2448,32 @@ export const endpoints = {
 			}
 		}],
 	},
+	'auth/accept': {
+		tags: ['auth'],
+	
+		requireCredential: true,
+	
+		secure: true,
+	
+		errors: {
+			noSuchSession: {
+				message: 'No such session.',
+				code: 'NO_SUCH_SESSION',
+				id: '9c72d8de-391a-43c1-9d06-08d29efde8df',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					token: { type: 'string' },
+				},
+				required: ['token'],
+			},
+			res: undefined,
+		}],
+	}
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
