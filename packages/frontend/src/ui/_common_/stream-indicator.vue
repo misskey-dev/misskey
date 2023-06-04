@@ -2,8 +2,8 @@
 <div v-if="hasDisconnected && defaultStore.state.serverDisconnectedBehavior === 'quiet'" :class="$style.root" class="_panel _shadow" @click="resetDisconnected">
 	<div><i class="ti ti-alert-triangle"></i> {{ i18n.ts.disconnectedFromServer }}</div>
 	<div :class="$style.command" class="_buttons">
-		<MkButton :class="$style.commandButton" small primary @click="reload">{{ i18n.ts.reload }}</MkButton>
-		<MkButton :class="$style.commandButton" small>{{ i18n.ts.doNothing }}</MkButton>
+		<MkButton small primary @click="reload">{{ i18n.ts.reload }}</MkButton>
+		<MkButton small>{{ i18n.ts.doNothing }}</MkButton>
 	</div>
 </div>
 </template>
@@ -53,8 +53,5 @@ onUnmounted(() => {
 
 .command {
 	margin-top: 8px;
-}
-
-.commandButton {
 }
 </style>

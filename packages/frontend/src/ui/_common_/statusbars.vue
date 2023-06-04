@@ -4,7 +4,6 @@
 		v-for="x in defaultStore.reactiveState.statusbars.value" :key="x.id" :class="[$style.item, { [$style.black]: x.black,
 			[$style.verySmall]: x.size === 'verySmall',
 			[$style.small]: x.size === 'small',
-			[$style.medium]: x.size === 'medium',
 			[$style.large]: x.size === 'large',
 			[$style.veryLarge]: x.size === 'veryLarge',
 		}]"

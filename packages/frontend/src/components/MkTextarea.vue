@@ -6,7 +6,7 @@
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
-			:class="[$style.textarea, { [$style.code]: code, _monospace: code }]"
+			:class="[$style.textarea, { _monospace: code }]"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
