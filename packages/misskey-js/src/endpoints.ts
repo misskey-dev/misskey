@@ -2145,20 +2145,20 @@ export const endpoints = {
 	},
 	'antennas/update': {
 		tags: ['antennas'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:account',
-	
+
 		errors: {
 			noSuchAntenna: {
 				message: 'No such antenna.',
 				code: 'NO_SUCH_ANTENNA',
 				id: '10c673ac-8852-48eb-aa1f-f5b67f069290',
 			},
-	
+
 			noSuchUserList: {
 				message: 'No such user list.',
 				code: 'NO_SUCH_USER_LIST',
@@ -2179,19 +2179,25 @@ export const endpoints = {
 							{ type: 'null' },
 						],
 					},
-					keywords: { type: 'array', items: {
+					keywords: {
+						type: 'array', items: {
+							type: 'array', items: {
+								type: 'string',
+							},
+						}
+					},
+					excludeKeywords: {
+						type: 'array', items: {
+							type: 'array', items: {
+								type: 'string',
+							},
+						}
+					},
+					users: {
 						type: 'array', items: {
 							type: 'string',
-						},
-					} },
-					excludeKeywords: { type: 'array', items: {
-						type: 'array', items: {
-							type: 'string',
-						},
-					} },
-					users: { type: 'array', items: {
-						type: 'string',
-					} },
+						}
+					},
 					caseSensitive: { type: 'boolean' },
 					withReplies: { type: 'boolean' },
 					withFile: { type: 'boolean' },
@@ -2209,14 +2215,14 @@ export const endpoints = {
 	//#region ap
 	'ap/get': {
 		tags: ['federation'],
-	
+
 		requireCredential: true,
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 30,
 		},
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -2232,14 +2238,14 @@ export const endpoints = {
 	},
 	'ap/show': {
 		tags: ['federation'],
-	
+
 		requireCredential: true,
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 30,
 		},
-	
+
 		errors: {
 			noSuchObject: {
 				message: 'No such object.',
@@ -2247,7 +2253,7 @@ export const endpoints = {
 				id: 'dc94d745-1262-4e63-a17d-fecaa57efc82',
 			},
 		},
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -2279,6 +2285,60 @@ export const endpoints = {
 						required: ['type', 'object'],
 					},
 				],
+			},
+		}],
+	},
+	//#endregion
+
+	//#region app
+	'app/create': {
+		tags: ['app'],
+
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					description: { type: 'string' },
+					permission: {
+						type: 'array',
+						uniqueItems: true,
+						items: {
+							type: 'string',
+						},
+					},
+					callbackUrl: { type: ['string', 'null'] },
+				} as const satisfies Record<string, JSONSchema7>,
+				required: ['name', 'description', 'permission'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/App',
+			},
+		}],
+	},
+	'app/show': {
+		tags: ['app'],
+	
+		errors: {
+			noSuchApp: {
+				message: 'No such app.',
+				code: 'NO_SUCH_APP',
+				id: 'dce83913-2dc6-4093-8a7b-71dbb11718a3',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					appId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['appId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/App',
 			},
 		}],
 	}

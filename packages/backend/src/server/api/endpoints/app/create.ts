@@ -7,34 +7,10 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { AppEntityService } from '@/core/entities/AppEntityService.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['app'],
-
-	requireCredential: false,
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'App',
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string' },
-		description: { type: 'string' },
-		permission: { type: 'array', uniqueItems: true, items: {
-			type: 'string',
-		} },
-		callbackUrl: { type: 'string', nullable: true },
-	},
-	required: ['name', 'description', 'permission'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'app/create'> {
+	name = 'app/create' as const; 
 	constructor(
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
@@ -42,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private appEntityService: AppEntityService,
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Generate secret
 			const secret = secureRndstr(32, true);
 
