@@ -3,25 +3,10 @@ import type { UserProfilesRepository, UsersRepository } from '@/models/index.js'
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-		text: { type: 'string' },
-	},
-	required: ['userId', 'text'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/update-user-note'> {
+	name = 'admin/update-user-note' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -29,7 +14,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {

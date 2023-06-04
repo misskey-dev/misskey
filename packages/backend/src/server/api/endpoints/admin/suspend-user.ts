@@ -11,24 +11,10 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { QueueService } from '@/core/QueueService.js';
 
-export const meta = {
-	tags: ['admin'],
-
-	requireCredential: true,
-	requireModerator: true,
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		userId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['userId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'admin/suspend-user'> {
+	name = 'admin/suspend-user' as const;
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -41,7 +27,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private moderationLogService: ModerationLogService,
 		private queueService: QueueService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const user = await this.usersRepository.findOneBy({ id: ps.userId });
 
 			if (user == null) {

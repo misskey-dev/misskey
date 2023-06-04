@@ -1588,7 +1588,7 @@ export const endpoints = {
 				properties: {
 					reportId: { type: 'string', format: 'misskey:id' },
 					forward: { type: 'boolean', default: false },
-				} satisfies Record<string, JSONSchema7>,
+				} as const satisfies Record<string, JSONSchema7>,
 				required: ['reportId'],
 			},
 			res: undefined,
@@ -1616,9 +1616,9 @@ export const endpoints = {
 	'admin/server-info': {
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		tags: ['admin', 'meta'],
-	
+
 		defines: [{
 			req: undefined,
 			res: {
@@ -1628,7 +1628,7 @@ export const endpoints = {
 	},
 	'admin/show-moderation-logs': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -1639,7 +1639,7 @@ export const endpoints = {
 					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 					sinceId: { type: 'string', format: 'misskey:id' },
 					untilId: { type: 'string', format: 'misskey:id' },
-				} satisfies Record<string, JSONSchema7>,
+				} as const satisfies Record<string, JSONSchema7>,
 				required: [],
 			},
 			res: {
@@ -1652,10 +1652,10 @@ export const endpoints = {
 	},
 	'admin/show-user': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -1725,7 +1725,7 @@ export const endpoints = {
 							$ref: 'https://misskey-hub.net/api/schemas/Role',
 						}
 					},
-				} satisfies Record<string, JSONSchema7>,
+				} as const satisfies Record<string, JSONSchema7>,
 				required: [
 					'email',
 					'emailVerified',
@@ -1754,7 +1754,7 @@ export const endpoints = {
 	},
 	'admin/show-users': {
 		tags: ['admin'],
-	
+
 		requireCredential: true,
 		requireModerator: true,
 
@@ -1773,7 +1773,7 @@ export const endpoints = {
 						default: null,
 						description: 'The local host is represented with `null`.',
 					},
-				} satisfies Record<string, JSONSchema7>,
+				} as const satisfies Record<string, JSONSchema7>,
 				required: [],
 			},
 			res: {
@@ -1781,7 +1781,188 @@ export const endpoints = {
 				items: {
 					$ref: 'https://misskey-hub.net/api/schemas/UserDetailed',
 				},
-			}
+			},
+		}],
+	},
+	'admin/suspend-user': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/unsuspend-user': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/update-meta': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireAdmin: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					disableRegistration: { type: ['boolean', 'null'] },
+					pinnedUsers: {
+						oneOf: [{
+							type: 'array',
+							items: { type: 'string', format: 'misskey:id' },
+						}, {
+							type: 'null',
+						}],
+					},
+					hiddenTags: {
+						oneOf: [{
+							type: 'array',
+							items: { type: 'string' },
+						}, {
+							type: 'null',
+						}],
+					},
+					blockedHosts: {
+						oneOf: [{
+							type: 'array',
+							items: { type: 'string' },
+						}, {
+							type: 'null',
+						}],
+					},
+					sensitiveWords: {
+						oneOf: [{
+							type: 'array',
+							items: { type: 'string' },
+						}, {
+							type: 'null',
+						}],
+					},
+					themeColor: {
+						oneOf: [
+							{ type: 'string', pattern: '^#[0-9a-fA-F]{6}$' },
+							{ type: 'null' },
+						],
+					},
+					mascotImageUrl: { type: ['string', 'null'] },
+					bannerUrl: { type: ['string', 'null'] },
+					errorImageUrl: { type: ['string', 'null'] },
+					iconUrl: { type: ['string', 'null'] },
+					backgroundImageUrl: { type: ['string', 'null'] },
+					logoImageUrl: { type: ['string', 'null'] },
+					name: { type: ['string', 'null'] },
+					description: { type: ['string', 'null'] },
+					defaultLightTheme: { type: ['string', 'null'] },
+					defaultDarkTheme: { type: ['string', 'null'] },
+					cacheRemoteFiles: { type: 'boolean' },
+					emailRequiredForSignup: { type: 'boolean' },
+					enableHcaptcha: { type: 'boolean' },
+					hcaptchaSiteKey: { type: ['string', 'null'] },
+					hcaptchaSecretKey: { type: ['string', 'null'] },
+					enableRecaptcha: { type: 'boolean' },
+					recaptchaSiteKey: { type: ['string', 'null'] },
+					recaptchaSecretKey: { type: ['string', 'null'] },
+					enableTurnstile: { type: 'boolean' },
+					turnstileSiteKey: { type: ['string', 'null'] },
+					turnstileSecretKey: { type: ['string', 'null'] },
+					sensitiveMediaDetection: { enum: ['none', 'all', 'local', 'remote'] },
+					sensitiveMediaDetectionSensitivity: { enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
+					setSensitiveFlagAutomatically: { type: 'boolean' },
+					enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
+					proxyAccountId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+					maintainerName: { type: ['string', 'null'] },
+					maintainerEmail: { type: ['string', 'null'] },
+					langs: {
+						type: 'array',
+						items: {
+							type: 'string',
+						},
+					},
+					summalyProxy: { type: ['string', 'null'] },
+					deeplAuthKey: { type: ['string', 'null'] },
+					deeplIsPro: { type: 'boolean' },
+					enableEmail: { type: 'boolean' },
+					email: { type: ['string', 'null'] },
+					smtpSecure: { type: 'boolean' },
+					smtpHost: { type: ['string', 'null'] },
+					smtpPort: { type: ['integer', 'null'] },
+					smtpUser: { type: ['string', 'null'] },
+					smtpPass: { type: ['string', 'null'] },
+					enableServiceWorker: { type: 'boolean' },
+					swPublicKey: { type: ['string', 'null'] },
+					swPrivateKey: { type: ['string', 'null'] },
+					tosUrl: { type: ['string', 'null'] },
+					repositoryUrl: { type: 'string' },
+					feedbackUrl: { type: 'string' },
+					useObjectStorage: { type: 'boolean' },
+					objectStorageBaseUrl: { type: ['string', 'null'] },
+					objectStorageBucket: { type: ['string', 'null'] },
+					objectStoragePrefix: { type: ['string', 'null'] },
+					objectStorageEndpoint: { type: ['string', 'null'] },
+					objectStorageRegion: { type: ['string', 'null'] },
+					objectStoragePort: { type: ['integer', 'null'] },
+					objectStorageAccessKey: { type: ['string', 'null'] },
+					objectStorageSecretKey: { type: ['string', 'null'] },
+					objectStorageUseSSL: { type: 'boolean' },
+					objectStorageUseProxy: { type: 'boolean' },
+					objectStorageSetPublicRead: { type: 'boolean' },
+					objectStorageS3ForcePathStyle: { type: 'boolean' },
+					enableIpLogging: { type: 'boolean' },
+					enableActiveEmailValidation: { type: 'boolean' },
+					enableChartsForRemoteUser: { type: 'boolean' },
+					enableChartsForFederatedInstances: { type: 'boolean' },
+					serverRules: { type: 'array', items: { type: 'string' } },
+					preservedUsernames: { type: 'array', items: { type: 'string' } },
+				} as const satisfies Record<string, JSONSchema7>,
+				required: [],
+			},
+			res: undefined,
+		}],
+	},
+	'admin/update-user-note': {
+		tags: ['admin'],
+
+		requireCredential: true,
+		requireModerator: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+					text: { type: 'string' },
+				},
+				required: ['userId', 'text'],
+			},
+			res: undefined,
 		}],
 	}
 } as const satisfies { [x: string]: IEndpointMeta; };
