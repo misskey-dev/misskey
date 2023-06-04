@@ -2114,6 +2114,34 @@ export const endpoints = {
 			},
 		}],
 	},
+	'antennas/show': {
+		tags: ['antennas', 'account'],
+
+		requireCredential: true,
+
+		kind: 'read:account',
+
+		errors: {
+			noSuchAntenna: {
+				message: 'No such antenna.',
+				code: 'NO_SUCH_ANTENNA',
+				id: 'c06569fb-b025-4f23-b22d-1fcd20d2816b',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					antennaId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['antennaId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Antenna',
+			},
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
