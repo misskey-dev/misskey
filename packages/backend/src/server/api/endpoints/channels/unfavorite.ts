@@ -4,35 +4,10 @@ import type { ChannelFavoritesRepository, ChannelsRepository } from '@/models/in
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
-export const meta = {
-	tags: ['channels'],
-
-	requireCredential: true,
-
-	prohibitMoved: true,
-
-	kind: 'write:channels',
-
-	errors: {
-		noSuchChannel: {
-			message: 'No such channel.',
-			code: 'NO_SUCH_CHANNEL',
-			id: '353c68dd-131a-476c-aa99-88a345e83668',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		channelId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['channelId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'channels/unfavorite'> {
+	name = 'channels/unfavorite' as const;
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
@@ -40,13 +15,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.channelFavoritesRepository)
 		private channelFavoritesRepository: ChannelFavoritesRepository,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
 
 			if (channel == null) {
-				throw new ApiError(meta.errors.noSuchChannel);
+				throw new ApiError(this.meta.errors.noSuchChannel);
 			}
 
 			await this.channelFavoritesRepository.delete({
