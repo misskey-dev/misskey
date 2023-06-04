@@ -2035,6 +2035,32 @@ export const endpoints = {
 			}
 		}],
 	},
+	'antennas/delete': {
+		tags: ['antennas'],
+	
+		requireCredential: true,
+	
+		kind: 'write:account',
+	
+		errors: {
+			noSuchAntenna: {
+				message: 'No such antenna.',
+				code: 'NO_SUCH_ANTENNA',
+				id: 'b34dcf9d-348f-44bb-99d0-6c9314cfe2df',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					antennaId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['antennaId'],
+			},
+			res: undefined,
+		}],
+	}
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
