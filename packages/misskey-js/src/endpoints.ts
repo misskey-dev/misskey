@@ -2593,6 +2593,153 @@ export const endpoints = {
 		}],
 	},
 	//#endregion
+
+	//#region channels
+	'channels/create': {
+		tags: ['channels'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:channels',
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 10,
+		},
+
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: 'cd1e9f3e-5a12-4ab4-96f6-5d0a2cc32050',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string', minLength: 1, maxLength: 128 },
+					description: {
+						oneOf: [
+							{ type: 'string', minLength: 1, maxLength: 2048 },
+							{ type: 'null' },
+						],
+					},
+					bannerId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+					color: { type: 'string', minLength: 1, maxLength: 16 },
+				},
+				required: ['name'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Channel',
+			}
+		}],
+	},
+	'channels/favorite': {
+		tags: ['channels'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:channels',
+	
+		errors: {
+			noSuchChannel: {
+				message: 'No such channel.',
+				code: 'NO_SUCH_CHANNEL',
+				id: '4938f5f3-6167-4c04-9149-6607b7542861',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					channelId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['channelId'],
+			},
+			res: undefined,
+		}]
+	},
+	'channels/featured': {
+		tags: ['channels'],
+	
+		requireCredential: false,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Channel',
+				},
+			},
+		}],
+	},
+	'channels/follow': {
+		tags: ['channels'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:channels',
+	
+		errors: {
+			noSuchChannel: {
+				message: 'No such channel.',
+				code: 'NO_SUCH_CHANNEL',
+				id: 'c0031718-d573-4e85-928e-10039f1fbb68',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					channelId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['channelId'],
+			},
+			res: undefined,
+		}],
+	},
+	'channels/followed': {
+		tags: ['channels', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'read:channels',
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 5 },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Channel',
+				},
+			},
+		}],
+	},
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

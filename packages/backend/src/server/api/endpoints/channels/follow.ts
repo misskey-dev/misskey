@@ -6,35 +6,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
-export const meta = {
-	tags: ['channels'],
-
-	requireCredential: true,
-
-	prohibitMoved: true,
-
-	kind: 'write:channels',
-
-	errors: {
-		noSuchChannel: {
-			message: 'No such channel.',
-			code: 'NO_SUCH_CHANNEL',
-			id: 'c0031718-d573-4e85-928e-10039f1fbb68',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		channelId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['channelId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'channels/follow'> {
+	name = 'channels/follow' as const;
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
@@ -44,13 +19,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({
 				id: ps.channelId,
 			});
 
 			if (channel == null) {
-				throw new ApiError(meta.errors.noSuchChannel);
+				throw new ApiError(this.meta.errors.noSuchChannel);
 			}
 
 			await this.channelFollowingsRepository.insert({
