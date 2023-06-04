@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository } from '@/models/index.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 import type { Instance } from '@/models/entities/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
@@ -23,7 +22,7 @@ export class InstanceEntityService {
 	@bindThis
 	public async pack(
 		instance: Instance,
-	): Promise<Serialized<Packed<'FederationInstance'>>> {
+	): Promise<Packed<'FederationInstance'>> {
 		const meta = await this.metaService.fetch();
 		return {
 			id: instance.id,

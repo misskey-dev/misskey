@@ -9,7 +9,6 @@ import { bindThis } from '@/decorators.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { UserEntityService } from './UserEntityService.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class RoleEntityService {
@@ -28,7 +27,7 @@ export class RoleEntityService {
 	public async pack(
 		src: Role['id'] | Role,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Serialized<Packed<'Role'>>> {
+	): Promise<Packed<'Role'>> {
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
 		const assignedCount = await this.roleAssignmentsRepository.createQueryBuilder('assign')
@@ -74,7 +73,7 @@ export class RoleEntityService {
 	public packMany(
 		roles: any[],
 		me: { id: User['id'] },
-	): Promise<Serialized<Packed<'Role'>>[]> {
+	): Promise<Packed<'Role'>[]> {
 		return Promise.all(roles.map(x => this.pack(x, me)));
 	}
 }

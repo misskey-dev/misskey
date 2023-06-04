@@ -3,7 +3,6 @@ import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
@@ -28,7 +27,7 @@ export class GalleryPostEntityService {
 	public async pack(
 		src: GalleryPost['id'] | GalleryPost,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Serialized<Packed<'GalleryPost'>>> {
+	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
 

@@ -6,7 +6,6 @@ import type { ModerationLog } from '@/models/entities/ModerationLog.js';
 import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class ModerationLogEntityService {
@@ -21,7 +20,7 @@ export class ModerationLogEntityService {
 	@bindThis
 	public async pack(
 		src: ModerationLog['id'] | ModerationLog,
-	): Promise<Serialized<Packed<'ModerationLog'>>> {
+	): Promise<Packed<'ModerationLog'>> {
 		const log = typeof src === 'object' ? src : await this.moderationLogsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
@@ -39,7 +38,7 @@ export class ModerationLogEntityService {
 	@bindThis
 	public packMany(
 		reports: any[],
-	): Promise<Serialized<Packed<'ModerationLog'>>[]> {
+	): Promise<Packed<'ModerationLog'>[]> {
 		return Promise.all(reports.map(x => this.pack(x)));
 	}
 }

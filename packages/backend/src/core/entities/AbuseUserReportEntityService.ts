@@ -6,7 +6,6 @@ import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 
 @Injectable()
 export class AbuseUserReportEntityService {
@@ -21,7 +20,7 @@ export class AbuseUserReportEntityService {
 	@bindThis
 	public async pack(
 		src: AbuseUserReport['id'] | AbuseUserReport,
-	): Promise<Serialized<Packed<'AbuseUserReport'>>> {
+	): Promise<Packed<'AbuseUserReport'>> {
 		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
@@ -48,7 +47,7 @@ export class AbuseUserReportEntityService {
 	@bindThis
 	public packMany(
 		reports: any[],
-	): Promise<Serialized<Packed<'AbuseUserReport'>>[]> {
+	): Promise<Packed<'AbuseUserReport'>[]> {
 		return Promise.all(reports.map(x => this.pack(x)));
 	}
 }

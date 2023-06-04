@@ -58,7 +58,7 @@ import {
 import { packedModerationLogSchema } from './schemas/moderation-log.js';
 import { packedAuthSessionSchema } from './schemas/auth-session.js';
 import { Error, ApiError } from './schemas/error.js';
-import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray } from 'schema-type';
+import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray, Serialized } from 'schema-type';
 
 export const refs = {
 	Id: IdSchema,
@@ -118,5 +118,5 @@ export const refs = {
 
 export type References = GetRefs<typeof refs>;
 
-export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = GetDef<References, x, false, 'https://misskey-hub.net/api/schemas/'>;
+export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = Serialized<GetDef<References, x, false, 'https://misskey-hub.net/api/schemas/'>>;
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;

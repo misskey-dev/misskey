@@ -227,7 +227,7 @@ export type StreamMessages = {
 	};
 	notes: {
 		name: 'notesStream';
-		payload: Serialized<Packed<'Note'>>;
+		payload: Packed<'Note'>;
 	};
 };
 

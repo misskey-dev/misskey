@@ -1,4 +1,3 @@
-import { Serialized } from "schema-type";
 import { Packed } from "./schemas";
 
 export type ID = Packed<'Id'>;
@@ -7,21 +6,21 @@ export type DateString = string;
 type TODO = Record<string, any>;
 
 // NOTE: 極力この型を使うのは避け、UserLite か UserDetailed か明示するように
-export type User = Serialized<Packed<'User'>>;
+export type User = Packed<'User'>;
 
-export type UserLite = Serialized<Packed<'UserLite'>>;
-export type UserDetailed = Serialized<Packed<'UserDetailed'>>;
-export type UserList = Serialized<Packed<'UserList'>>;
-export type MeDetailed = Serialized<Packed<'MeDetailed'>>;
-export type DriveFile = Serialized<Packed<'DriveFile'>>;
-export type DriveFolder = Serialized<Packed<'DriveFolder'>>;
-export type GalleryPost = Serialized<Packed<'GalleryPost'>>;
-export type Note = Serialized<Packed<'Note'>>;
-export type NoteReaction = Serialized<Packed<'NoteReaction'>>;
-export type NoteFavorite = Serialized<Packed<'NoteFavorite'>>;
-export type Notification = Serialized<Packed<'NotificationStrict'>>;
-export type CustomEmoji = Serialized<Packed<'EmojiSimple'> | Packed<'EmojiDetailed'>>;
-export type Page = Serialized<Packed<'Page'>>;
+export type UserLite = Packed<'UserLite'>;
+export type UserDetailed = Packed<'UserDetailed'>;
+export type UserList = Packed<'UserList'>;
+export type MeDetailed = Packed<'MeDetailed'>;
+export type DriveFile = Packed<'DriveFile'>;
+export type DriveFolder = Packed<'DriveFolder'>;
+export type GalleryPost = Packed<'GalleryPost'>;
+export type Note = Packed<'Note'>;
+export type NoteReaction = Packed<'NoteReaction'>;
+export type NoteFavorite = Packed<'NoteFavorite'>;
+export type Notification = Packed<'NotificationStrict'>;
+export type CustomEmoji = Packed<'EmojiSimple'> | Packed<'EmojiDetailed'>;
+export type Page = Packed<'Page'>;
 
 export type PageEvent = {
 	pageId: Page['id'];
@@ -31,19 +30,19 @@ export type PageEvent = {
 	user: User;
 };
 
-export type Announcement = Serialized<Packed<'Announcement'>>;
-export type Antenna = Serialized<Packed<'Antenna'>>;
-export type App = Serialized<Packed<'App'>>;
-export type Ad = Serialized<Packed<'Ad'>>;
-export type Clip = Serialized<Packed<'Clip'>>;
-export type Channel = Serialized<Packed<'Channel'>>;
-export type Following = Serialized<Packed<'Following'>>;
-export type Blocking = Serialized<Packed<'Blocking'>>;
-export type Relay = Serialized<Packed<'Relay'>>;
-export type Role = Serialized<Packed<'Role'>>;
-export type RoleAssign = Serialized<Packed<'RoleAssign'>>;
-export type RolePolicy = Serialized<Packed<'RolePolicy'>>;
-export type RoleCondFormula = Serialized<Packed<'RoleCondFormula'>>;
+export type Announcement = Packed<'Announcement'>;
+export type Antenna = Packed<'Antenna'>;
+export type App = Packed<'App'>;
+export type Ad = Packed<'Ad'>;
+export type Clip = Packed<'Clip'>;
+export type Channel = Packed<'Channel'>;
+export type Following = Packed<'Following'>;
+export type Blocking = Packed<'Blocking'>;
+export type Relay = Packed<'Relay'>;
+export type Role = Packed<'Role'>;
+export type RoleAssign = Packed<'RoleAssign'>;
+export type RolePolicy = Packed<'RolePolicy'>;
+export type RoleCondFormula = Packed<'RoleCondFormula'>;
 
 export type LiteInstanceMetadata = {
 	maintainerName: string | null;
@@ -107,7 +106,7 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 
 export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 
-export type ServerInfo = Serialized<Packed<'ServerInfo'>>;
+export type ServerInfo = Packed<'ServerInfo'>;
 
 export type Stats = {
 	notesCount: number;
@@ -119,7 +118,7 @@ export type Stats = {
 	driveUsageRemote: number;
 };
 
-export type AuthSession = Serialized<Packed<'AuthSession'>>;
+export type AuthSession = Packed<'AuthSession'>;
 
 export type FollowRequest = {
 	id: ID;
@@ -164,7 +163,7 @@ export type Instance = {
 	infoUpdatedAt: DateString | null;
 };
 
-export type Signin = Serialized<Packed<'SignIn'>>;
+export type Signin = Packed<'SignIn'>;
 
 export type UserSorting =
 	| '+follower'

@@ -4,7 +4,6 @@ import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 import { nyaize } from '@/misc/nyaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
@@ -71,7 +70,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 	
 	@bindThis
-	private async hideNote(packedNote: Serialized<Packed<'Note'>>, meId: User['id'] | null) {
+	private async hideNote(packedNote: Packed<'Note'>, meId: User['id'] | null) {
 	// TODO: isVisibleForMe を使うようにしても良さそう(型違うけど)
 		let hide = false;
 
@@ -256,7 +255,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async packAttachedFiles(fileIds: Note['fileIds'], packedFiles: Map<Note['fileIds'][number], Serialized<Packed<'DriveFile'>> | null>): Promise<Serialized<Packed<'DriveFile'>>[]> {
+	public async packAttachedFiles(fileIds: Note['fileIds'], packedFiles: Map<Note['fileIds'][number], Packed<'DriveFile'> | null>): Promise<Packed<'DriveFile'>[]> {
 		const missingIds = [];
 		for (const id of fileIds) {
 			if (!packedFiles.has(id)) missingIds.push(id);
@@ -279,10 +278,10 @@ export class NoteEntityService implements OnModuleInit {
 			skipHide?: boolean;
 			_hint_?: {
 				myReactions: Map<Note['id'], NoteReaction | null>;
-				packedFiles: Map<Note['fileIds'][number], Serialized<Packed<'DriveFile'>> | null>;
+				packedFiles: Map<Note['fileIds'][number], Packed<'DriveFile'> | null>;
 			};
 		},
-	): Promise<Serialized<Packed<'Note'>>> {
+	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
 			skipHide: false,
@@ -309,7 +308,7 @@ export class NoteEntityService implements OnModuleInit {
 			.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
 		const packedFiles = options?._hint_?.packedFiles;
 
-		const packed: Serialized<Packed<'Note'>> = await awaitAll({
+		const packed: Packed<'Note'> = await awaitAll({
 			id: note.id,
 			createdAt: note.createdAt.toISOString(),
 			userId: note.userId,

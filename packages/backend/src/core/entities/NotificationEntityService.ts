@@ -7,7 +7,6 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Notification } from '@/models/entities/Notification.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import { notificationTypes } from 'misskey-js';
@@ -63,10 +62,10 @@ export class NotificationEntityService implements OnModuleInit {
 			
 		},
 		hint?: {
-			packedNotes: Map<Note['id'], Serialized<Packed<'Note'>>>;
-			packedUsers: Map<User['id'], Serialized<Packed<'User'>>>;
+			packedNotes: Map<Note['id'], Packed<'Note'>>;
+			packedUsers: Map<User['id'], Packed<'User'>>;
 		},
-	): Promise<Serialized<Packed<'Notification'>>> {
+	): Promise<Packed<'Notification'>> {
 		const notification = src;
 		const token = notification.appAccessTokenId ? await this.accessTokensRepository.findOneByOrFail({ id: notification.appAccessTokenId }) : null;
 		const noteIfNeed = NOTE_REQUIRED_NOTIFICATION_TYPES.has(notification.type) && notification.noteId != null ? (

@@ -23,7 +23,7 @@ export class BlockingEntityService {
 	public async pack(
 		src: Blocking['id'] | Blocking,
 		me?: { id: User['id'] } | null | undefined,
-	): Promise<Serialized<Packed<'Blocking'>>> {
+	): Promise<Packed<'Blocking'>> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
 
 		return await awaitAll({
@@ -40,7 +40,7 @@ export class BlockingEntityService {
 	public packMany(
 		blockings: any[],
 		me: { id: User['id'] },
-	): Promise<Serialized<Packed<'Blocking'>>[]> {
+	): Promise<Packed<'Blocking'>[]> {
 		return Promise.all(blockings.map(x => this.pack(x, me)));
 	}
 }

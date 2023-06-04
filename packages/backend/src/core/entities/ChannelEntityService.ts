@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ChannelFavoritesRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository, NotesRepository } from '@/models/index.js';
 import type { Packed } from 'misskey-js';
-import type { Serialized } from 'schema-type';
 import type { User } from '@/models/entities/User.js';
 import type { Channel } from '@/models/entities/Channel.js';
 import { bindThis } from '@/decorators.js';
@@ -41,7 +40,7 @@ export class ChannelEntityService {
 		src: Channel['id'] | Channel,
 		me?: { id: User['id'] } | null | undefined,
 		detailed?: boolean,
-	): Promise<Serialized<Packed<'Channel'>>> {
+	): Promise<Packed<'Channel'>> {
 		const channel = typeof src === 'object' ? src : await this.channelsRepository.findOneByOrFail({ id: src });
 		const meId = me ? me.id : null;
 
