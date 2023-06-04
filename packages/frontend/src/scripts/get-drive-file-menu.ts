@@ -73,7 +73,7 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile) {
 		action: () => rename(file),
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-off',
+		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
 		action: () => toggleSensitive(file),
 	}, {
 		text: i18n.ts.describeFile,

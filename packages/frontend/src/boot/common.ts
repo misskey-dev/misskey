@@ -1,6 +1,5 @@
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
 import { compareVersions } from 'compare-versions';
-import JSON5 from 'json5';
 import widgets from '@/widgets';
 import directives from '@/directives';
 import components from '@/components';
@@ -180,8 +179,8 @@ export async function common(createVue: () => App<Element>) {
 
 	fetchInstanceMetaPromise.then(() => {
 		if (defaultStore.state.themeInitial) {
-			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON5.parse(instance.defaultLightTheme));
-			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON5.parse(instance.defaultDarkTheme));
+			if (instance.defaultLightTheme != null) ColdDeviceStorage.set('lightTheme', JSON.parse(instance.defaultLightTheme));
+			if (instance.defaultDarkTheme != null) ColdDeviceStorage.set('darkTheme', JSON.parse(instance.defaultDarkTheme));
 			defaultStore.set('themeInitial', false);
 		}
 	});

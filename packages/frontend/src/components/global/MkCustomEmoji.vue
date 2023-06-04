@@ -7,7 +7,7 @@
 import { computed } from 'vue';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/scripts/media-proxy';
 import { defaultStore } from '@/store';
-import { customEmojis } from '@/custom-emojis';
+import { customEmojisMap } from '@/custom-emojis';
 
 const props = defineProps<{
 	name: string;
@@ -26,7 +26,7 @@ const rawUrl = computed(() => {
 		return props.url;
 	}
 	if (isLocal.value) {
-		return customEmojis.value.find(x => x.name === customEmojiName.value)?.url ?? null;
+		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });

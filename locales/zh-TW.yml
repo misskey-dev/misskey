@@ -1055,6 +1055,11 @@ failedToPreviewUrl: "無法預覽"
 update: "更新"
 rolesThatCanBeUsedThisEmojiAsReaction: "可以當成反應使用的角色"
 rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "如果是未指定角色的情況，則任何人都可以被當成反應來使用。"
+rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "角色必須是公開的角色。"
+cancelReactionConfirm: "要取消做出的反應嗎？"
+changeReactionConfirm: "要變更做出的反應嗎？"
+later: "稍後再說"
+goToMisskey: "往Misskey"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
@@ -1069,6 +1074,7 @@ _initialAccountSetting:
   haveFun: "盡情享受{name}吧！"
   ifYouNeedLearnMore: "關於如何使用{name}(Misskey)的詳細資訊，請見{link}。"
   skipAreYouSure: "要略過初始設定嗎？"
+  laterAreYouSure: "稍後再重新進行初始設定嗎？"
 _serverRules:
   description: "設定伺服器的簡要規則，在新的註冊之前顯示。建議的內容是使用條款的摘要。"
 _accountMigration:

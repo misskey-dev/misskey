@@ -306,6 +306,7 @@ async function deleteProfile() {
 	display: flex;
 	overflow-x: auto;
 	overflow-y: clip;
+	overscroll-behavior: contain;
 	background: var(--deckBg);
 
 	&.center {

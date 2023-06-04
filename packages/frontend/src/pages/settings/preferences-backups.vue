@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, useCssModule } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -47,8 +47,6 @@ import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
 const { t, ts } = i18n;
-
-useCssModule();
 
 const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'menu',
