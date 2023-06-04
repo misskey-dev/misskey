@@ -29,6 +29,7 @@ type Keys =
 	`ui:folder:${string}` |
 	`themes:${string}` |
 	`aiscript:${string}` |
+	`aiscriptSecure:${string}` |
 	'lastEmojisFetchedAt' | // DEPRECATED, stored in indexeddb (13.9.0~)
 	'emojis' // DEPRECATED, stored in indexeddb (13.9.0~);
 

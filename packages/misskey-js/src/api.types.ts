@@ -431,6 +431,8 @@ export type Endpoints = {
 	'i/2fa/remove-key': { req: TODO; res: TODO; };
 	'i/2fa/unregister': { req: TODO; res: TODO; };
 
+	// flash
+	'flash/gen-token': { req: TODO; res: TODO; };
 	// messaging
 	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
 	'messaging/messages': { req: { userId?: User['id']; groupId?: UserGroup['id']; limit?: number; sinceId?: MessagingMessage['id']; untilId?: MessagingMessage['id']; markAsRead?: boolean; }; res: MessagingMessage[]; };

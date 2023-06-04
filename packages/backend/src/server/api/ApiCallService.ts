@@ -20,6 +20,7 @@ import { AuthenticateService, AuthenticationError } from './AuthenticateService.
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
+import type { FlashToken } from '@/misc/flash-token.js';
 
 const pump = promisify(pipeline);
 
@@ -68,8 +69,8 @@ export class ApiCallService implements OnApplicationShutdown {
 			reply.code(400);
 			return;
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, body, null, request).then((res) => {
+		this.authenticateService.authenticate(token).then(([user, app, flashToken]) => {
+			this.call(endpoint, user, app, flashToken, body, null, request).then((res) => {
 				if (request.method === 'GET' && endpoint.meta.cacheSec && !body?.['i'] && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
@@ -122,8 +123,8 @@ export class ApiCallService implements OnApplicationShutdown {
 			reply.code(400);
 			return;
 		}
-		this.authenticateService.authenticate(token).then(([user, app]) => {
-			this.call(endpoint, user, app, fields, {
+		this.authenticateService.authenticate(token).then(([user, app, flashToken]) => {
+			this.call(endpoint, user, app, flashToken, fields, {
 				name: multipartData.filename,
 				path: path,
 			}, request).then((res) => {
@@ -199,6 +200,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		ep: IEndpoint & { exec: any },
 		user: LocalUser | null | undefined,
 		token: AccessToken | null | undefined,
+		flashToken: FlashToken | null | undefined,
 		data: any,
 		file: {
 			name: string;
@@ -206,7 +208,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		} | null,
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 	) {
-		const isSecure = user != null && token == null;
+		const isSecure = user != null && token == null && flashToken == null;
 
 		if (ep.meta.secure && !isSecure) {
 			throw new ApiError(accessDenied);
@@ -306,6 +308,14 @@ export class ApiCallService implements OnApplicationShutdown {
 				message: 'Your app does not have the necessary permissions to use this endpoint.',
 				code: 'PERMISSION_DENIED',
 				id: '1370e5b7-d4eb-4566-bb1d-7748ee6a1838',
+			});
+		}
+
+		if (flashToken && ep.meta.kind && !flashToken.permissions.some(p => p === ep.meta.kind)) {
+			throw new ApiError({
+				message: 'Your flash does not have the necessary permissions to use this endpoint.',
+				code: 'PERMISSION_DENIED',
+				id: '11924d17-113a-4ab0-954a-c567ee8a6ce5',
 			});
 		}
 

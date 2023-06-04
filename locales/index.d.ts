@@ -1063,6 +1063,9 @@ export interface Locale {
     "changeReactionConfirm": string;
     "later": string;
     "goToMisskey": string;
+    "additionalPermissionsForFlash": string;
+    "thisFlashRequiresTheFollowingPermissions": string;
+    "doYouWantToAllowThisPlayToAccessYourAccount": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
