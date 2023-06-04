@@ -19,6 +19,14 @@ const host = `http://127.0.0.1:${port}`;
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
 
+const basicAuthParams: AuthorizationParamsExtended = {
+	redirect_uri,
+	scope: 'write:notes',
+	state: 'state',
+	code_challenge: 'code',
+	code_challenge_method: 'S256',
+};
+
 interface OAuthErrorResponse {
 	error: string;
 	error_description: string;
@@ -95,7 +103,6 @@ async function fetchAuthorizationCode(user: misskey.entities.MeSignup, scope: st
 	} as AuthorizationParamsExtended));
 	assert.strictEqual(response.status, 200);
 
-	// TODO: this fetch-decision-code checks are everywhere, maybe get a helper for this.
 	const decisionResponse = await fetchDecisionFromResponse(response, user);
 	assert.strictEqual(decisionResponse.status, 302);
 
@@ -532,7 +539,7 @@ describe('OAuth', () => {
 		// RFC 6750 section 3.1 says 401 but it's SHOULD not MUST. 403 should be okay for now.
 		assert.strictEqual(createResponse.status, 403);
 
-		// TODO: error code (invalid_token)
+		// TODO: error code (wrong Authorization header should emit OAuth error instead of Misskey API error)
 	});
 
 	describe('Redirection', () => {
@@ -623,6 +630,65 @@ describe('OAuth', () => {
 		const body = await response.json();
 		assert.strictEqual(body.issuer, 'http://misskey.local');
 		assert.ok(body.scopes_supported.includes('write:notes'));
+	});
+
+	describe('Decision endpoint', () => {
+		test('No login token', async () => {
+			const client = getClient();
+
+			const response = await fetch(client.authorizeURL(basicAuthParams));
+			assert.strictEqual(response.status, 200);
+
+			const { transactionId } = getMeta(await response.text());
+			assert.ok(transactionId);
+
+			const decisionResponse = await fetch(new URL('/oauth/decision', host), {
+				method: 'post',
+				body: new URLSearchParams({
+					transaction_id: transactionId,
+				}),
+				redirect: 'manual',
+				headers: {
+					'content-type': 'application/x-www-form-urlencoded',
+				},
+			});
+
+			assert.strictEqual(decisionResponse.status, 400);
+			assert.strictEqual((await decisionResponse.json() as OAuthErrorResponse).error, 'invalid_request');
+		});
+
+		test('No transaction ID', async () => {
+			const decisionResponse = await fetch(new URL('/oauth/decision', host), {
+				method: 'post',
+				body: new URLSearchParams({
+					login_token: alice.token,
+				}),
+				redirect: 'manual',
+				headers: {
+					'content-type': 'application/x-www-form-urlencoded',
+				},
+			});
+
+			assert.strictEqual(decisionResponse.status, 400);
+			assert.strictEqual((await decisionResponse.json() as OAuthErrorResponse).error, 'invalid_request');
+		});
+
+		test('Invalid transaction ID', async () => {
+			const decisionResponse = await fetch(new URL('/oauth/decision', host), {
+				method: 'post',
+				body: new URLSearchParams({
+					login_token: alice.token,
+					transaction_id: 'invalid_id',
+				}),
+				redirect: 'manual',
+				headers: {
+					'content-type': 'application/x-www-form-urlencoded',
+				},
+			});
+
+			assert.strictEqual(decisionResponse.status, 403);
+			assert.strictEqual((await decisionResponse.json() as OAuthErrorResponse).error, 'access_denied');
+		});
 	});
 
 	describe('Client Information Discovery', () => {
@@ -747,8 +813,6 @@ describe('OAuth', () => {
 			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
 		});
 	});
-
-	// TODO: Invalid decision endpoint parameters
 
 	// TODO: Unknown OAuth endpoint
 

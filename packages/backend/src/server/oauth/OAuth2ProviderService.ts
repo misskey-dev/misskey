@@ -115,15 +115,14 @@ class OAuth2Store {
 	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // 5min
 
 	load(req: any, cb: (err: Error | null, txn?: OAuth2) => void): void {
-		console.log(req);
 		const { transaction_id } = req.body;
 		if (!transaction_id) {
-			cb(new Error('Missing transaction ID'));
+			cb(new AuthorizationError('Missing transaction ID', 'invalid_request'));
 			return;
 		}
 		const loaded = this.#cache.get(transaction_id);
 		if (!loaded) {
-			cb(new Error('Failed to load transaction'));
+			cb(new AuthorizationError('Failed to load transaction', 'access_denied'));
 			return;
 		}
 		cb(null, loaded);
@@ -187,6 +186,9 @@ export class OAuth2ProviderService {
 				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
 				const code = secureRndstr(32, true);
 
+				if (!token) {
+					throw new AuthorizationError('No user', 'invalid_request');
+				}
 				const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
 					() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
 				if (!user) {
