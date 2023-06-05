@@ -3388,9 +3388,9 @@ export const endpoints = {
 	},
 	'clips/my-favorites': {
 		tags: ['account', 'clip'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:clip-favorite',
 
 		defines: [{
@@ -3405,11 +3405,11 @@ export const endpoints = {
 	},
 	'clips/notes': {
 		tags: ['account', 'notes', 'clips'],
-	
+
 		requireCredential: false,
-	
+
 		kind: 'read:account',
-	
+
 		errors: {
 			noSuchClip: {
 				message: 'No such clip.',
@@ -3439,20 +3439,20 @@ export const endpoints = {
 	},
 	'clips/remove-note': {
 		tags: ['account', 'notes', 'clips'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:account',
-	
+
 		errors: {
 			noSuchClip: {
 				message: 'No such clip.',
 				code: 'NO_SUCH_CLIP',
 				id: 'b80525c6-97f7-49d7-a42d-ebccd49cfd52',
 			},
-	
+
 			noSuchNote: {
 				message: 'No such note.',
 				code: 'NO_SUCH_NOTE',
@@ -3474,11 +3474,11 @@ export const endpoints = {
 	},
 	'clips/show': {
 		tags: ['clips', 'account'],
-	
+
 		requireCredential: false,
-	
+
 		kind: 'read:account',
-	
+
 		errors: {
 			noSuchClip: {
 				message: 'No such clip.',
@@ -3502,20 +3502,20 @@ export const endpoints = {
 	},
 	'clips/unfavorite': {
 		tags: ['clip'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:clip-favorite',
-	
+
 		errors: {
 			noSuchClip: {
 				message: 'No such clip.',
 				code: 'NO_SUCH_CLIP',
 				id: '2603966e-b865-426c-94a7-af4a01241dc1',
 			},
-	
+
 			notFavorited: {
 				message: 'You have not favorited the clip.',
 				code: 'NOT_FAVORITED',
@@ -3536,13 +3536,13 @@ export const endpoints = {
 	},
 	'clips/update': {
 		tags: ['clips'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:account',
-	
+
 		errors: {
 			noSuchClip: {
 				message: 'No such clip.',
@@ -3572,11 +3572,11 @@ export const endpoints = {
 	//#region drive
 	'drive/files/attached-notes': {
 		tags: ['drive', 'notes'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:drive',
-	
+
 		description: 'Find the notes to which the given file is attached.',
 
 		errors: {
@@ -3605,13 +3605,13 @@ export const endpoints = {
 	},
 	'drive/files/check-existence': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:drive',
-	
+
 		description: 'Check if a given file exists.',
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -3627,20 +3627,20 @@ export const endpoints = {
 	},
 	'drive/files/create': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 120,
 		},
-	
+
 		requireFile: true,
-	
+
 		kind: 'write:drive',
-	
+
 		description: 'Upload a new drive file.',
 
 		errors: {
@@ -3649,13 +3649,13 @@ export const endpoints = {
 				code: 'INVALID_FILE_NAME',
 				id: 'f449b209-0c60-4e51-84d5-29486263bfd4',
 			},
-	
+
 			inappropriate: {
 				message: 'Cannot upload the file because it has been determined that it possibly contains inappropriate content.',
 				code: 'INAPPROPRIATE',
 				id: 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2',
 			},
-	
+
 			noFreeSpace: {
 				message: 'Cannot upload the file because you have no free space of drive.',
 				code: 'NO_FREE_SPACE',
@@ -3666,7 +3666,7 @@ export const endpoints = {
 				message: 'Comment is too long.',
 				code: 'COMMENT_TOO_LONG',
 				id: 'f0b0f2a0-0b0a-4b0a-8b0a-0b0a0b0a0b0a',
-			}
+			},
 		},
 
 		defines: [{
