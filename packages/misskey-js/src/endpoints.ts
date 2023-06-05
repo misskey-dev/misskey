@@ -3,8 +3,7 @@ import { IEndpointMeta } from './endpoints.types';
 import { localUsernameSchema, passwordSchema } from './schemas/user';
 import ms from 'ms';
 import { getJsonSchema } from './schemas';
-import * as perUserDriveChartSchema from './schemas/charts/per-user-drive';
-import * as driveChartSchema from './schemas/charts/drive';
+import { chartsSchemas } from './schemas/charts.js';
 
 export const endpoints = {
 	//#region admin
@@ -3006,7 +3005,7 @@ export const endpoints = {
 				},
 				required: ['span', 'userId'],
 			},
-			res: getJsonSchema(perUserDriveChartSchema.schema) satisfies JSONSchema7,
+			res: getJsonSchema(chartsSchemas.perUserDrive) satisfies JSONSchema7,
 		}],
 	},
 	//#endregion
