@@ -1,11 +1,11 @@
 <template>
-<MkNotes ref="tlComponent" :no-gap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
 
 <script lang="ts" setup>
 import { computed, provide, onUnmounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
@@ -46,16 +46,12 @@ const onUserRemoved = () => {
 	tlComponent.pagingComponent?.reload();
 };
 
-const onChangeFollowing = () => {
-	if (!tlComponent.pagingComponent?.backed) {
-		tlComponent.pagingComponent?.reload();
-	}
-};
-
 let endpoint;
 let query;
 let connection;
 let connection2;
+
+const stream = useStream();
 
 if (props.src === 'antenna') {
 	endpoint = 'antennas/notes';
@@ -68,23 +64,41 @@ if (props.src === 'antenna') {
 	connection.on('note', prepend);
 } else if (props.src === 'home') {
 	endpoint = 'notes/timeline';
-	connection = stream.useChannel('homeTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('homeTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 
 	connection2 = stream.useChannel('main');
-	connection2.on('follow', onChangeFollowing);
-	connection2.on('unfollow', onChangeFollowing);
 } else if (props.src === 'local') {
 	endpoint = 'notes/local-timeline';
-	connection = stream.useChannel('localTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('localTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 } else if (props.src === 'social') {
 	endpoint = 'notes/hybrid-timeline';
-	connection = stream.useChannel('hybridTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('hybridTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 } else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
-	connection = stream.useChannel('globalTimeline');
+	query = {
+		withReplies: defaultStore.state.showTimelineReplies,
+	};
+	connection = stream.useChannel('globalTimeline', {
+		withReplies: defaultStore.state.showTimelineReplies,
+	});
 	connection.on('note', prepend);
 } else if (props.src === 'mentions') {
 	endpoint = 'notes/mentions';

@@ -10,6 +10,7 @@
 		accent: 'rgb(255, 89, 117)',
 		bg: 'rgb(28, 28, 37)',
 		fg: 'rgb(236, 239, 244)',
+		fgOnWhite: '@accent',
 		panel: 'rgb(35, 35, 47)',
 		renote: '@accent',
 		link: '@accent',

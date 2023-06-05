@@ -1,6 +1,6 @@
 <template>
-<MkSpacer :content-max="1000">
-	<div ref="rootEl" class="edbbcaef">
+<MkSpacer :contentMax="1000">
+	<div ref="rootEl" :class="$style.root">
 		<MkFoldableSection class="item">
 			<template #header>Stats</template>
 			<XStats/>
@@ -72,7 +72,7 @@ import XRetention from './overview.retention.vue';
 import XModerators from './overview.moderators.vue';
 import XHeatmap from './overview.heatmap.vue';
 import * as os from '@/os';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
@@ -87,7 +87,7 @@ let federationSubActive = $ref<number | null>(null);
 let federationSubActiveDiff = $ref<number | null>(null);
 let newUsers = $ref(null);
 let activeInstances = $shallowRef(null);
-const queueStatsConnection = markRaw(stream.useChannel('queueStats'));
+const queueStatsConnection = markRaw(useStream().useChannel('queueStats'));
 const now = new Date();
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
@@ -176,8 +176,8 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.edbbcaef {
+<style lang="scss" module>
+.root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 	grid-gap: 16px;

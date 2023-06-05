@@ -21,7 +21,7 @@ function getNoise(): string {
 
 export function genAid(date: Date): string {
 	const t = date.getTime();
-	if (isNaN(t)) throw 'Failed to create AID: Invalid Date';
+	if (isNaN(t)) throw new Error('Failed to create AID: Invalid Date');
 	counter++;
 	return getTime(t) + getNoise();
 }

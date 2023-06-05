@@ -2,9 +2,9 @@
 <MkModalWindow
 	ref="dialog"
 	:width="450"
-	:can-close="false"
-	:with-ok-button="true"
-	:ok-button-disabled="false"
+	:canClose="false"
+	:withOkButton="true"
+	:okButtonDisabled="false"
 	@click="cancel()"
 	@ok="ok()"
 	@close="cancel()"
@@ -14,7 +14,7 @@
 		{{ title }}
 	</template>
 
-	<MkSpacer :margin-min="20" :margin-max="32">
+	<MkSpacer :marginMin="20" :marginMax="32">
 		<div class="_gaps_m">
 			<template v-for="item in Object.keys(form).filter(item => !form[item].hidden)">
 				<MkInput v-if="form[item].type === 'number'" v-model="values[item]" type="number" :step="form[item].step || 1">
@@ -41,7 +41,7 @@
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<option v-for="item in form[item].options" :key="item.value" :value="item.value">{{ item.label }}</option>
 				</MkRadios>
-				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :text-converter="form[item].textConverter">
+				<MkRange v-else-if="form[item].type === 'range'" v-model="values[item]" :min="form[item].min" :max="form[item].max" :step="form[item].step" :textConverter="form[item].textConverter">
 					<template #label><span v-text="form[item].label || item"></span><span v-if="form[item].required === false"> ({{ i18n.ts.optional }})</span></template>
 					<template v-if="form[item].description" #caption>{{ form[item].description }}</template>
 				</MkRange>
@@ -54,8 +54,8 @@
 </MkModalWindow>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { reactive, shallowRef } from 'vue';
 import MkInput from './MkInput.vue';
 import MkTextarea from './MkTextarea.vue';
 import MkSwitch from './MkSwitch.vue';
@@ -66,58 +66,36 @@ import MkRadios from './MkRadios.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n';
 
-export default defineComponent({
-	components: {
-		MkModalWindow,
-		MkInput,
-		MkTextarea,
-		MkSwitch,
-		MkSelect,
-		MkRange,
-		MkButton,
-		MkRadios,
-	},
+const props = defineProps<{
+	title: string;
+	form: any;
+}>();
 
-	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-		form: {
-			type: Object,
-			required: true,
-		},
-	},
+const emit = defineEmits<{
+	(ev: 'done', v: {
+		canceled?: boolean;
+		result?: any;
+	}): void;
+}>();
 
-	emits: ['done'],
+const dialog = shallowRef<InstanceType<typeof MkModalWindow>>();
+const values = reactive({});
 
-	data() {
-		return {
-			values: {},
-			i18n,
-		};
-	},
+for (const item in props.form) {
+	values[item] = props.form[item].default ?? null;
+}
 
-	created() {
-		for (const item in this.form) {
-			this.values[item] = this.form[item].default ?? null;
-		}
-	},
+function ok() {
+	emit('done', {
+		result: values,
+	});
+	dialog.value.close();
+}
 
-	methods: {
-		ok() {
-			this.$emit('done', {
-				result: this.values,
-			});
-			this.$refs.dialog.close();
-		},
-
-		cancel() {
-			this.$emit('done', {
-				canceled: true,
-			});
-			this.$refs.dialog.close();
-		},
-	},
-});
+function cancel() {
+	emit('done', {
+		canceled: true,
+	});
+	dialog.value.close();
+}
 </script>

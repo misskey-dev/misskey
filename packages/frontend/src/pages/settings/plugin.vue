@@ -8,7 +8,7 @@
 			<div v-for="plugin in plugins" :key="plugin.id" class="_panel _gaps_s" style="padding: 20px;">
 				<span style="display: flex;"><b>{{ plugin.name }}</b><span style="margin-left: auto;">v{{ plugin.version }}</span></span>
 
-				<MkSwitch :model-value="plugin.active" @update:model-value="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
+				<MkSwitch :modelValue="plugin.active" @update:modelValue="changeActive(plugin, $event)">{{ i18n.ts.makeActive }}</MkSwitch>
 
 				<MkKeyValue>
 					<template #key>{{ i18n.ts.author }}</template>
@@ -94,7 +94,3 @@ definePageMetadata({
 	icon: 'ti ti-plug',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>
