@@ -7,30 +7,6 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '@/server/api/error.js';
 
-export const meta = {
-	tags: ['clips'],
-
-	requireCredential: true,
-
-	prohibitMoved: true,
-
-	kind: 'write:account',
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Clip',
-	},
-
-	errors: {
-		tooManyClips: {
-			message: 'You cannot create clip any more.',
-			code: 'TOO_MANY_CLIPS',
-			id: '920f7c2d-6208-4b76-8082-e632020f5883',
-		},
-	},
-} as const;
-
 export const paramDef = {
 	type: 'object',
 	properties: {
@@ -43,7 +19,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'clips/create'> {
+	name = 'clips/create' as const;
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
@@ -52,12 +29,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const currentCount = await this.clipsRepository.countBy({
 				userId: me.id,
 			});
 			if (currentCount > (await this.roleService.getUserPolicies(me.id)).clipLimit) {
-				throw new ApiError(meta.errors.tooManyClips);
+				throw new ApiError(this.meta.errors.tooManyClips);
 			}
 
 			const clip = await this.clipsRepository.insert({
