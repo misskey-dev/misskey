@@ -1,43 +1,18 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="tab === 'note'" :content-max="800">
-		<div v-if="notesSearchAvailable" class="_gaps">
-			<div class="_gaps">
-				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
-					<template #prefix><i class="ti ti-search"></i></template>
-				</MkInput>
-				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
-			</div>
 
-			<MkFoldableSection v-if="notePagination">
-				<template #header>{{ i18n.ts.searchResult }}</template>
-				<MkNotes :key="key" :pagination="notePagination"/>
-			</MkFoldableSection>
+	<MkSpacer v-if="tab === 'note'" :contentMax="800">
+		<div v-if="notesSearchAvailable">
+			<XNote/>
 		</div>
 		<div v-else>
 			<MkInfo warn>{{ i18n.ts.notesSearchNotAvailable }}</MkInfo>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'user'" :content-max="800">
-		<div class="_gaps">
-			<div class="_gaps">
-				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
-					<template #prefix><i class="ti ti-search"></i></template>
-				</MkInput>
-				<MkRadios v-model="searchOrigin" @update:model-value="search()">
-					<option value="combined">{{ i18n.ts.all }}</option>
-					<option value="local">{{ i18n.ts.local }}</option>
-					<option value="remote">{{ i18n.ts.remote }}</option>
-				</MkRadios>
-				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
-			</div>
 
-			<MkFoldableSection v-if="userPagination">
-				<template #header>{{ i18n.ts.searchResult }}</template>
-				<MkUserList :key="key" :pagination="userPagination"/>
-			</MkFoldableSection>
-		</div>
+	<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
+		<XUser/>
 	</MkSpacer>
 	<MkSpacer v-else-if="tab === 'event'" :content-max="800">
 		<div class="_gaps">
@@ -71,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue';
+import { computed, defineAsyncComponent, onMounted } from 'vue';
 import MkNotes from '@/components/MkNotes.vue';
 import MkUserList from '@/components/MkUserList.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -81,22 +56,13 @@ import MkSelect from '@/components/MkSelect.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import * as os from '@/os';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import MkInfo from '@/components/MkInfo.vue';
-import { useRouter } from '@/router';
 
-const router = useRouter();
+const XNote = defineAsyncComponent(() => import('./search.note.vue'));
+const XUser = defineAsyncComponent(() => import('./search.user.vue'));
 
-const props = defineProps<{
-	query: string;
-	channel?: string;
-	type?: string;
-	origin?: string;
-}>();
-
-let key = $ref('');
 let tab = $ref('note');
 let searchQuery = $ref('');
 let searchOrigin = $ref('combined');
@@ -196,7 +162,7 @@ const headerTabs = $computed(() => [{
 }]);
 
 definePageMetadata(computed(() => ({
-	title: searchQuery ? i18n.t('searchWith', { q: searchQuery }) : i18n.ts.search,
+	title: i18n.ts.search,
 	icon: 'ti ti-search',
 })));
 </script>

@@ -16,7 +16,7 @@
 				:get-date="getDate"
 				:direction="pagination.reversed ? 'up' : 'down'"
 				:reversed="pagination.reversed"
-				:no-gap="noGap"
+				:noGap="noGap"
 				:ad="true"
 				:class="$style.notes"
 			>

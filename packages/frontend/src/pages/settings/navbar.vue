@@ -2,10 +2,10 @@
 <div class="_gaps_m">
 	<FormSlot>
 		<template #label>{{ i18n.ts.navbar }}</template>
-		<MkContainer :show-header="false">
+		<MkContainer :showHeader="false">
 			<Sortable 
 				v-model="items"
-				item-key="id"
+				itemKey="id"
 				:animation="150"
 				:handle="'.' + $style.itemHandle"
 				@start="e => e.item.classList.add('active')"

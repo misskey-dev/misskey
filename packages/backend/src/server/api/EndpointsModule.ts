@@ -194,6 +194,7 @@ import * as ep___i_exportMute from './endpoints/i/export-mute.js';
 import * as ep___i_exportNotes from './endpoints/i/export-notes.js';
 import * as ep___i_exportFavorites from './endpoints/i/export-favorites.js';
 import * as ep___i_exportUserLists from './endpoints/i/export-user-lists.js';
+import * as ep___i_exportAntennas from './endpoints/i/export-antennas.js';
 import * as ep___i_favorites from './endpoints/i/favorites.js';
 import * as ep___i_gallery_likes from './endpoints/i/gallery/likes.js';
 import * as ep___i_gallery_posts from './endpoints/i/gallery/posts.js';
@@ -202,6 +203,7 @@ import * as ep___i_importBlocking from './endpoints/i/import-blocking.js';
 import * as ep___i_importFollowing from './endpoints/i/import-following.js';
 import * as ep___i_importMuting from './endpoints/i/import-muting.js';
 import * as ep___i_importUserLists from './endpoints/i/import-user-lists.js';
+import * as ep___i_importAntennas from './endpoints/i/import-antennas.js';
 import * as ep___i_notifications from './endpoints/i/notifications.js';
 import * as ep___i_pageLikes from './endpoints/i/page-likes.js';
 import * as ep___i_pages from './endpoints/i/pages.js';
@@ -320,6 +322,9 @@ import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
+import * as ep___users_lists_favorite from './endpoints/users/lists/favorite.js';
+import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite.js';
+import * as ep___users_lists_create_from_public from './endpoints/users/lists/create-from-public.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
 import * as ep___users_reactions from './endpoints/users/reactions.js';
@@ -531,6 +536,7 @@ const $i_exportMute: Provider = { provide: 'ep:i/export-mute', useClass: ep___i_
 const $i_exportNotes: Provider = { provide: 'ep:i/export-notes', useClass: ep___i_exportNotes.default };
 const $i_exportFavorites: Provider = { provide: 'ep:i/export-favorites', useClass: ep___i_exportFavorites.default };
 const $i_exportUserLists: Provider = { provide: 'ep:i/export-user-lists', useClass: ep___i_exportUserLists.default };
+const $i_exportAntennas: Provider = { provide: 'ep:i/export-antennas', useClass: ep___i_exportAntennas.default };
 const $i_favorites: Provider = { provide: 'ep:i/favorites', useClass: ep___i_favorites.default };
 const $i_gallery_likes: Provider = { provide: 'ep:i/gallery/likes', useClass: ep___i_gallery_likes.default };
 const $i_gallery_posts: Provider = { provide: 'ep:i/gallery/posts', useClass: ep___i_gallery_posts.default };
@@ -539,6 +545,7 @@ const $i_importBlocking: Provider = { provide: 'ep:i/import-blocking', useClass:
 const $i_importFollowing: Provider = { provide: 'ep:i/import-following', useClass: ep___i_importFollowing.default };
 const $i_importMuting: Provider = { provide: 'ep:i/import-muting', useClass: ep___i_importMuting.default };
 const $i_importUserLists: Provider = { provide: 'ep:i/import-user-lists', useClass: ep___i_importUserLists.default };
+const $i_importAntennas: Provider = { provide: 'ep:i/import-antennas', useClass: ep___i_importAntennas.default };
 const $i_notifications: Provider = { provide: 'ep:i/notifications', useClass: ep___i_notifications.default };
 const $i_pageLikes: Provider = { provide: 'ep:i/page-likes', useClass: ep___i_pageLikes.default };
 const $i_pages: Provider = { provide: 'ep:i/pages', useClass: ep___i_pages.default };
@@ -657,6 +664,9 @@ const $users_lists_pull: Provider = { provide: 'ep:users/lists/pull', useClass: 
 const $users_lists_push: Provider = { provide: 'ep:users/lists/push', useClass: ep___users_lists_push.default };
 const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: ep___users_lists_show.default };
 const $users_lists_update: Provider = { provide: 'ep:users/lists/update', useClass: ep___users_lists_update.default };
+const $users_lists_favorite: Provider = { provide: 'ep:users/lists/favorite', useClass: ep___users_lists_favorite.default };
+const $users_lists_unfavorite: Provider = { provide: 'ep:users/lists/unfavorite', useClass: ep___users_lists_unfavorite.default };
+const $users_lists_create_from_public: Provider = { provide: 'ep:users/lists/create-from-public', useClass: ep___users_lists_create_from_public.default };
 const $users_notes: Provider = { provide: 'ep:users/notes', useClass: ep___users_notes.default };
 const $users_pages: Provider = { provide: 'ep:users/pages', useClass: ep___users_pages.default };
 const $users_reactions: Provider = { provide: 'ep:users/reactions', useClass: ep___users_reactions.default };
@@ -872,6 +882,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportNotes,
 		$i_exportFavorites,
 		$i_exportUserLists,
+		$i_exportAntennas,
 		$i_favorites,
 		$i_gallery_likes,
 		$i_gallery_posts,
@@ -880,6 +891,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importFollowing,
 		$i_importMuting,
 		$i_importUserLists,
+		$i_importAntennas,
 		$i_notifications,
 		$i_pageLikes,
 		$i_pages,
@@ -998,6 +1010,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_push,
 		$users_lists_show,
 		$users_lists_update,
+		$users_lists_favorite,
+		$users_lists_unfavorite,
+		$users_lists_create_from_public,
 		$users_notes,
 		$users_pages,
 		$users_reactions,
@@ -1207,6 +1222,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_exportNotes,
 		$i_exportFavorites,
 		$i_exportUserLists,
+		$i_exportAntennas,
 		$i_favorites,
 		$i_gallery_likes,
 		$i_gallery_posts,
@@ -1215,6 +1231,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_importFollowing,
 		$i_importMuting,
 		$i_importUserLists,
+		$i_importAntennas,
 		$i_notifications,
 		$i_pageLikes,
 		$i_pages,
@@ -1331,6 +1348,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_push,
 		$users_lists_show,
 		$users_lists_update,
+		$users_lists_favorite,
+		$users_lists_unfavorite,
+		$users_lists_create_from_public,
 		$users_notes,
 		$users_pages,
 		$users_reactions,

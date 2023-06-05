@@ -50,6 +50,7 @@ import { User } from '@/models/entities/User.js';
 import { UserIp } from '@/models/entities/UserIp.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UserList } from '@/models/entities/UserList.js';
+import { UserListFavorite } from './entities/UserListFavorite.js';
 import { UserListJoining } from '@/models/entities/UserListJoining.js';
 import { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { UserPending } from '@/models/entities/UserPending.js';
@@ -119,6 +120,7 @@ export {
 	UserIp,
 	UserKeypair,
 	UserList,
+	UserListFavorite,
 	UserListJoining,
 	UserNotePining,
 	UserPending,
@@ -187,6 +189,7 @@ export type UsersRepository = Repository<User>;
 export type UserIpsRepository = Repository<UserIp>;
 export type UserKeypairsRepository = Repository<UserKeypair>;
 export type UserListsRepository = Repository<UserList>;
+export type UserListFavoritesRepository = Repository<UserListFavorite>;
 export type UserListJoiningsRepository = Repository<UserListJoining>;
 export type UserNotePiningsRepository = Repository<UserNotePining>;
 export type UserPendingsRepository = Repository<UserPending>;

@@ -57,13 +57,12 @@ export type Source = {
 		db?: number;
 		prefix?: string;
 	};
-	elasticsearch: {
+	meilisearch?: {
 		host: string;
-		port: number;
+		port: string;
+		apiKey: string;
 		ssl?: boolean;
-		user?: string;
-		pass?: string;
-		index?: string;
+		index: string;
 	};
 
 	proxy?: string;
@@ -139,12 +138,13 @@ const path = process.env.MISSKEY_CONFIG_YML
 	: process.env.NODE_ENV === 'test'
 		? resolve(dir, 'test.yml')
 		: resolve(dir, 'default.yml');
+
 export function loadConfig() {
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
 	const clientManifestExists = fs.existsSync(_dirname + '/../../../built/_vite_/manifest.json');
 	const clientManifest = clientManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_vite_/manifest.json`, 'utf-8'))
-		: { 'src/init.ts': { file: 'src/init.ts' } };
+		: { 'src/_boot_.ts': { file: 'src/_boot_.ts' } };
 	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const mixin = {} as Mixin;
@@ -165,7 +165,7 @@ export function loadConfig() {
 	mixin.authUrl = `${mixin.scheme}://${mixin.host}/auth`;
 	mixin.driveUrl = `${mixin.scheme}://${mixin.host}/files`;
 	mixin.userAgent = `Misskey/${meta.version} (${config.url})`;
-	mixin.clientEntry = clientManifest['src/init.ts'];
+	mixin.clientEntry = clientManifest['src/_boot_.ts'];
 	mixin.clientManifestExists = clientManifestExists;
 
 	const externalMediaProxy = config.mediaProxy ?
@@ -190,6 +190,6 @@ function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
 	} catch (e) {
-		throw `url="${url}" is not a valid URL.`;
+		throw new Error(`url="${url}" is not a valid URL.`);
 	}
 }

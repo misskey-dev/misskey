@@ -31,6 +31,10 @@ export const routes = [{
 	path: '/notes/:noteId',
 	component: page(() => import('./pages/note.vue')),
 }, {
+	name: 'list',
+	path: '/list/:listId',
+	component: page(() => import('./pages/list.vue')),
+}, {
 	path: '/clips/:clipId',
 	component: page(() => import('./pages/clip.vue')),
 }, {
@@ -164,7 +168,7 @@ export const routes = [{
 	}, {
 		path: '/migration',
 		name: 'migration',
-		component: page(() => import('./pages/settings/migration.vue'))
+		component: page(() => import('./pages/settings/migration.vue')),
 	}, {
 		path: '/custom-css',
 		name: 'general',
@@ -174,13 +178,9 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/accounts.vue')),
 	}, {
-		path: '/account-info',
+		path: '/account-stats',
 		name: 'other',
-		component: page(() => import('./pages/settings/account-info.vue')),
-	}, {
-		path: '/delete-account',
-		name: 'other',
-		component: page(() => import('./pages/settings/delete-account.vue')),
+		component: page(() => import('./pages/settings/account-stats.vue')),
 	}, {
 		path: '/other',
 		name: 'other',
@@ -246,9 +246,6 @@ export const routes = [{
 }, {
 	path: '/scratchpad',
 	component: page(() => import('./pages/scratchpad.vue')),
-}, {
-	path: '/preview',
-	component: page(() => import('./pages/preview.vue')),
 }, {
 	path: '/auth/:token',
 	component: page(() => import('./pages/auth.vue')),

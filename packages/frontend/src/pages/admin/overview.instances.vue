@@ -1,9 +1,9 @@
 <template>
-<div class="wbrkwale">
+<div>
 	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
-		<div v-else class="instances">
-			<MkA v-for="(instance, i) in instances" :key="instance.id" v-tooltip.mfm.noDelay="`${instance.name}\n${instance.host}\n${instance.softwareName} ${instance.softwareVersion}`" :to="`/instance-info/${instance.host}`" class="instance">
+		<div v-else :class="$style.instances">
+			<MkA v-for="(instance, i) in instances" :key="instance.id" v-tooltip.mfm.noDelay="`${instance.name}\n${instance.host}\n${instance.softwareName} ${instance.softwareVersion}`" :to="`/instance-info/${instance.host}`" :class="$style.instance">
 				<MkInstanceCardMini :instance="instance"/>
 			</MkA>
 		</div>
@@ -36,16 +36,14 @@ useInterval(fetch, 1000 * 60, {
 });
 </script>
 
-<style lang="scss" scoped>
-.wbrkwale {
-	> .instances {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-		grid-gap: 12px;
+<style lang="scss" module>
+.instances {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	grid-gap: 12px;
+}
 
-		> .instance:hover {
-			text-decoration: none;
-		}
-	}
+.instance:hover {
+	text-decoration: none;
 }
 </style>

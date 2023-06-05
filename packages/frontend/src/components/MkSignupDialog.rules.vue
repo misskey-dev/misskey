@@ -3,7 +3,7 @@
 	<div :class="$style.banner">
 		<i class="ti ti-checklist"></i>
 	</div>
-	<MkSpacer :margin-min="20" :margin-max="28">
+	<MkSpacer :marginMin="20" :marginMax="28">
 		<div class="_gaps_m">
 			<div v-if="instance.disableRegistration">
 				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
@@ -11,7 +11,7 @@
 
 			<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
 
-			<MkFolder v-if="availableServerRules" :default-open="true">
+			<MkFolder v-if="availableServerRules" :defaultOpen="true">
 				<template #label>{{ i18n.ts.serverRules }}</template>
 				<template #suffix><i v-if="agreeServerRules" class="ti ti-check" style="color: var(--success)"></i></template>
 
@@ -22,7 +22,7 @@
 				<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkFolder v-if="availableTos" :default-open="true">
+			<MkFolder v-if="availableTos" :defaultOpen="true">
 				<template #label>{{ i18n.ts.termsOfService }}</template>
 				<template #suffix><i v-if="agreeTos" class="ti ti-check" style="color: var(--success)"></i></template>
 
@@ -31,7 +31,7 @@
 				<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.basicNotesBeforeCreateAccount }}</template>
 				<template #suffix><i v-if="agreeNote" class="ti ti-check" style="color: var(--success)"></i></template>
 

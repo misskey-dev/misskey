@@ -208,7 +208,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateRepliesQuery(q: SelectQueryBuilder<any>, me?: Pick<User, 'id' | 'showTimelineReplies'> | null): void {
+	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me?: Pick<User, 'id'> | null): void {
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
 				.where('note.replyId IS NULL') // 返信ではない
@@ -217,7 +217,7 @@ export class QueryService {
 					.andWhere('note.replyUserId = note.userId');
 				}));
 			}));
-		} else if (!me.showTimelineReplies) {
+		} else if (!withReplies) {
 			q.andWhere(new Brackets(qb => { qb
 				.where('note.replyId IS NULL') // 返信ではない
 				.orWhere('note.replyUserId = :meId', { meId: me.id }) // 返信だけど自分のノートへの返信

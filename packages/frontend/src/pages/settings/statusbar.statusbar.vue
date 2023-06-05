@@ -7,7 +7,7 @@
 		<option value="userList">User list timeline</option>
 	</MkSelect>
 
-	<MkInput v-model="statusbar.name" manual-save>
+	<MkInput v-model="statusbar.name" manualSave>
 		<template #label>{{ i18n.ts.label }}</template>
 	</MkInput>
 
@@ -25,13 +25,13 @@
 	</MkRadios>
 
 	<template v-if="statusbar.type === 'rss'">
-		<MkInput v-model="statusbar.props.url" manual-save type="url">
+		<MkInput v-model="statusbar.props.url" manualSave type="url">
 			<template #label>URL</template>
 		</MkInput>
 		<MkSwitch v-model="statusbar.props.shuffle">
 			<template #label>{{ i18n.ts.shuffle }}</template>
 		</MkSwitch>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -43,7 +43,7 @@
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -62,7 +62,7 @@
 			<template #label>{{ i18n.ts.userList }}</template>
 			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manual-save type="number">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">

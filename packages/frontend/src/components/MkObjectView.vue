@@ -1,5 +1,5 @@
 <template>
-<div class="zhyxdalp">
+<div>
 	<XValue :value="value" :collapsed="false"/>
 </div>
 </template>
@@ -12,9 +12,3 @@ const props = defineProps<{
 	value: Record<string, unknown>;
 }>();
 </script>
-
-<style lang="scss" scoped>
-.zhyxdalp {
-
-}
-</style>

@@ -9,11 +9,11 @@
 		</template>
 		<template #default="{items}">
 			<div class="_gaps">
-				<div v-for="token in items" :key="token.id" class="_panel bfomjevm">
-					<img v-if="token.iconUrl" class="icon" :src="token.iconUrl" alt=""/>
-					<div class="body">
-						<div class="name">{{ token.name }}</div>
-						<div class="description">{{ token.description }}</div>
+				<div v-for="token in items" :key="token.id" class="_panel" :class="$style.app">
+					<img v-if="token.iconUrl" :class="$style.appIcon" :src="token.iconUrl" alt=""/>
+					<div :class="$style.appBody">
+						<div :class="$style.appName">{{ token.name }}</div>
+						<div>{{ token.description }}</div>
 						<MkKeyValue oneline>
 							<template #key>{{ i18n.ts.installedDate }}</template>
 							<template #value><MkTime :time="token.createdAt"/></template>
@@ -28,7 +28,7 @@
 								<li v-for="p in token.permission" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
 							</ul>
 						</details>
-						<div class="actions">
+						<div>
 							<MkButton inline danger @click="revoke(token)"><i class="ti ti-trash"></i></MkButton>
 						</div>
 					</div>
@@ -75,27 +75,27 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.bfomjevm {
+<style lang="scss" module>
+.app {
 	display: flex;
 	padding: 16px;
+}
 
-	> .icon {
-		display: block;
-		flex-shrink: 0;
-		margin: 0 12px 0 0;
-		width: 50px;
-		height: 50px;
-		border-radius: 8px;
-	}
+.appIcon {
+	display: block;
+	flex-shrink: 0;
+	margin: 0 12px 0 0;
+	width: 50px;
+	height: 50px;
+	border-radius: 8px;
+}
 
-	> .body {
-		width: calc(100% - 62px);
-		position: relative;
+.appBody {
+	width: calc(100% - 62px);
+	position: relative;
+}
 
-		> .name {
-			font-weight: bold;
-		}
-	}
+.appName {
+	font-weight: bold;
 }
 </style>
