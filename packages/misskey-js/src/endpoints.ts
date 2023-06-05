@@ -3028,6 +3028,66 @@ export const endpoints = {
 			res: chartSchemaToJSONSchema(chartsSchemas.perUserFollowing) satisfies JSONSchema7,
 		}],
 	},
+	'charts/user/notes': {
+		tags: ['charts', 'users', 'notes'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['span', 'userId'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.perUserNotes) satisfies JSONSchema7,
+		}],
+	},
+	'charts/user/pv': {
+		tags: ['charts', 'users'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['span', 'userId'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.perUserPv) satisfies JSONSchema7,			
+		}],
+	},
+	'charts/user/reactions': {
+		tags: ['charts', 'users', 'reactions'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['span', 'userId'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.perUserReactions) satisfies JSONSchema7,
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

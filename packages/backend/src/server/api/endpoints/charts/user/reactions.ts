@@ -26,11 +26,12 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'charts/user/reactions'> {
+	name = 'charts/user/reactions' as const;
 	constructor(
 		private perUserReactionsChart: PerUserReactionsChart,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			return await this.perUserReactionsChart.getChart(ps.span, ps.limit, ps.offset ? new Date(ps.offset) : null, ps.userId);
 		});
 	}
