@@ -342,24 +342,53 @@ describe('OAuth', () => {
 		};
 
 		describe('Verify PKCE', () => {
-			for (const [title, code_verifier] of Object.entries(tests)) {
+			for (const [title, wrong_verifier] of Object.entries(tests)) {
 				test(title, async () => {
 					const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
 					await assert.rejects(client.getToken({
 						code,
 						redirect_uri,
-						code_verifier,
-					} as AuthorizationTokenConfigExtended));
-
-					// And now the code is invalidated by the previous failure
-					await assert.rejects(client.getToken({
-						code,
-						redirect_uri,
-						code_verifier,
+						code_verifier: wrong_verifier,
 					} as AuthorizationTokenConfigExtended));
 				});
 			}
+		});
+	});
+
+	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2
+	// "If an authorization code is used more than once, the authorization server
+	// MUST deny the request and SHOULD revoke (when possible) all tokens
+	// previously issued based on that authorization code."
+	describe('Revoking authorization code', () => {
+		test('On success', async () => {
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
+			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
+
+			await client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			} as AuthorizationTokenConfigExtended);
+
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			} as AuthorizationTokenConfigExtended));
+		});
+
+		test('On failure', async () => {
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
+			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
+
+			await assert.rejects(client.getToken({ code, redirect_uri }));
+
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			} as AuthorizationTokenConfigExtended));
 		});
 	});
 
@@ -816,5 +845,5 @@ describe('OAuth', () => {
 
 	// TODO: Unknown OAuth endpoint
 
-	// TODO: successful token exchange should invalidate the grant token (spec?)
+	// TODO: Add spec links to tests
 });
