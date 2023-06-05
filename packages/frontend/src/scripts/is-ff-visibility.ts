@@ -1,16 +1,32 @@
-export function isFfVisibility(id, user):boolean {
-	if (id === user.id) {
-		return true;
-	}
+export function isFfVisibility(i, user):boolean {
+
+	let checkFlag:boolean;
 
 	switch (user.ffVisibility) {
 		case 'private': 
-			return false;
+			checkFlag = false;
+			break;
 		case 'followers':
 			if (!user.isFollowing) {
-				return false;
+				checkFlag = false;
+				break;
 			}
 			// fallthrough
-		default: return true;
+		default: checkFlag = true;
 	}
+
+	if (!i) {
+		if (checkFlag) {
+			return true;
+		}
+		return false;
+	}
+
+	//自分自身の場合は一律true
+	if (i.id === user.id) {
+		return true;
+	}
+
+	return checkFlag;
+
 }
