@@ -38,7 +38,11 @@ export const pageViewInterruptors: PageViewInterruptor[] = [];
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
 export const defaultStore = markRaw(new Storage('base', {
-	tutorial: {
+	accountSetupWizard: {
+		where: 'account',
+		default: 0,
+	},
+	timelineTutorial: {
 		where: 'account',
 		default: 0,
 	},
@@ -88,7 +92,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: null as 'likeOnly' | 'likeOnlyForRemote' | null,
+		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
 	},
 	mutedWords: {
 		where: 'account',
@@ -97,6 +101,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	mutedAds: {
 		where: 'account',
 		default: [] as string[],
+	},
+	showTimelineReplies: {
+		where: 'account',
+		default: false,
 	},
 
 	menu: {
@@ -310,6 +318,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	devMode: {
+		where: 'device',
+		default: false,
+	},
 	mediaListWithOneImageAppearance: {
 		where: 'device',
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
@@ -321,6 +333,14 @@ export const defaultStore = markRaw(new Storage('base', {
 	notificationStackAxis: {
 		where: 'device',
 		default: 'horizontal' as 'vertical' | 'horizontal',
+	},
+	enableCondensedLineForAcct: {
+		where: 'device',
+		default: false,
+	},
+	additionalUnicodeEmojiIndexes: {
+		where: 'device',
+		default: {} as Record<string, Record<string, string[]>>,
 	},
 }));
 

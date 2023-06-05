@@ -64,6 +64,18 @@ export class Channel {
 	})
 	public pinnedNoteIds: string[];
 
+	@Column('varchar', {
+		length: 16,
+		default: '#86b300',
+	})
+	public color: string;
+
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public isArchived: boolean;
+
 	@Index()
 	@Column('integer', {
 		default: 0,

@@ -36,6 +36,12 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 	os.api('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
+	}).catch(err => {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.error,
+			text: err.message,
+		});
 	});
 }
 
@@ -67,13 +73,19 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile) {
 		action: () => rename(file),
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-off',
+		icon: file.isSensitive ? 'ti ti-eye' : 'ti ti-eye-exclamation',
 		action: () => toggleSensitive(file),
 	}, {
 		text: i18n.ts.describeFile,
 		icon: 'ti ti-text-caption',
 		action: () => describe(file),
 	}, null, {
+		text: i18n.ts.createNoteFromTheFile,
+		icon: 'ti ti-pencil',
+		action: () => os.post({
+			initialFiles: [file],
+		}),
+	}, {
 		text: i18n.ts.copyUrl,
 		icon: 'ti ti-link',
 		action: () => copyUrl(file),

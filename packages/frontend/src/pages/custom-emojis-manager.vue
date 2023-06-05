@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="900">
+		<MkSpacer :contentMax="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
@@ -123,15 +123,14 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
-
-	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
-		fileId: file.id,
-	})));
-	promise.then(() => {
-		emojisPaginationComponent.value.reload();
-	});
-	os.promiseDialog(promise);
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	}, {
+		done: result => {
+			if (result.created) {
+				emojisPaginationComponent.value.prepend(result.created);
+			}
+		},
+	}, 'closed');
 };
 
 const edit = (emoji) => {

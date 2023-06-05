@@ -5,16 +5,13 @@
 			<ImgWithBlurhash
 				class="img layered"
 				:transition="safe ? null : {
-					enterActiveClass: $style.transition_toggle_enterActive,
+					duration: 500,
 					leaveActiveClass: $style.transition_toggle_leaveActive,
-					enterFromClass: $style.transition_toggle_enterFrom,
 					leaveToClass: $style.transition_toggle_leaveTo,
-					enterToClass: $style.transition_toggle_enterTo,
-					leaveFromClass: $style.transition_toggle_leaveFrom,
 				}"
 				:src="post.files[0].thumbnailUrl"
 				:hash="post.files[0].blurhash"
-				:force-blurhash="!show"
+				:forceBlurhash="!show"
 			/>
 		</Transition>
 	</div>
@@ -53,23 +50,15 @@ function leaveHover(): void {
 </script>
 
 <style lang="scss" module>
-.transition_toggle_enterActive,
 .transition_toggle_leaveActive {
-	transition: opacity 0.5s;
+	transition: opacity .5s;
 	position: absolute;
 	top: 0;
 	left: 0;
 }
 
-.transition_toggle_enterFrom,
 .transition_toggle_leaveTo {
 	opacity: 0;
-}
-
-.transition_toggle_enterTo,
-.transition_toggle_leaveFrom {
-	transition: none;
-	opacity: 1;
 }
 </style>
 

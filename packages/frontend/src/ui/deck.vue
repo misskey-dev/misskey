@@ -4,27 +4,23 @@
 
 	<div :class="$style.main">
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.columns, deckStore.reactiveState.columnAlign.value, { [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
-			<template v-for="ids in layout">
-				<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
-				<section
-					v-if="ids.length > 1"
-					:class="$style.folder"
-					:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
-				>
-					<DeckColumnCore v-for="id in ids" :ref="id" :key="id" :column="columns.find(c => c.id === id)" :is-stacked="true" @parent-focus="moveFocus(id, $event)"/>
-				</section>
-				<DeckColumnCore
-					v-else
-					:ref="ids[0]"
-					:key="ids[0]"
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
+			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
+			<section
+				v-for="ids in layout"
+				:class="$style.section"
+				:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+			>
+				<component
+					:is="columnComponents[columns.find(c => c.id === id)!.type] ?? XTlColumn"
+					v-for="id in ids"
+					:ref="id"
+					:key="id"
 					:class="$style.column"
-					:column="columns.find(c => c.id === ids[0])"
-					:is-stacked="false"
-					:style="columns.find(c => c.id === ids[0])!.flexible ? { flex: 1, minWidth: '350px' } : { width: columns.find(c => c.id === ids[0])!.width + 'px' }"
-					@parent-focus="moveFocus(ids[0], $event)"
+					:column="columns.find(c => c.id === id)"
+					:isStacked="ids.length > 1"
 				/>
-			</template>
+			</section>
 			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
 				<div>{{ i18n.ts._deck.introduction }}</div>
 				<MkButton primary style="margin: 1em auto;" @click="addColumn">{{ i18n.ts._deck.addColumn }}</MkButton>
@@ -53,10 +49,10 @@
 	</div>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -68,10 +64,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menu">
 			<XDrawerMenu/>
@@ -87,7 +83,6 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XCommon from './_common_/common.vue';
 import { deckStore, addColumn as addColumnToStore, loadDeck, getProfiles, deleteProfile as deleteProfile_ } from './deck/deck-store';
-import DeckColumnCore from '@/ui/deck/column-core.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -100,7 +95,30 @@ import { mainRouter } from '@/router';
 import { unisonReload } from '@/scripts/unison-reload';
 import { deviceKind } from '@/scripts/device-kind';
 import { defaultStore } from '@/store';
+import XMainColumn from '@/ui/deck/main-column.vue';
+import XTlColumn from '@/ui/deck/tl-column.vue';
+import XAntennaColumn from '@/ui/deck/antenna-column.vue';
+import XListColumn from '@/ui/deck/list-column.vue';
+import XChannelColumn from '@/ui/deck/channel-column.vue';
+import XNotificationsColumn from '@/ui/deck/notifications-column.vue';
+import XWidgetsColumn from '@/ui/deck/widgets-column.vue';
+import XMentionsColumn from '@/ui/deck/mentions-column.vue';
+import XDirectColumn from '@/ui/deck/direct-column.vue';
+import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
+
+const columnComponents = {
+	main: XMainColumn,
+	widgets: XWidgetsColumn,
+	notifications: XNotificationsColumn,
+	tl: XTlColumn,
+	list: XListColumn,
+	channel: XChannelColumn,
+	antenna: XAntennaColumn,
+	mentions: XMentionsColumn,
+	direct: XDirectColumn,
+	roleTimeline: XRoleTimelineColumn,
+};
 
 mainRouter.navHook = (path, flag): boolean => {
 	if (flag === 'forcePage') return false;
@@ -187,11 +205,8 @@ window.addEventListener('wheel', (ev) => {
 		columnsEl.scrollLeft += ev.deltaY;
 	}
 });
-loadDeck();
 
-function moveFocus(id: string, direction: 'up' | 'down' | 'left' | 'right') {
-	// TODO??
-}
+loadDeck();
 
 function changeProfile(ev: MouseEvent) {
 	const items = ref([{
@@ -267,7 +282,7 @@ async function deleteProfile() {
 
 	--margin: var(--marginHalf);
 
-	--deckDividerThickness: 5px;
+	--columnGap: 6px;
 
 	display: flex;
 	height: 100dvh;
@@ -286,19 +301,21 @@ async function deleteProfile() {
 	flex-direction: column;
 }
 
-.columns {
+.sections {
 	flex: 1;
 	display: flex;
 	overflow-x: auto;
 	overflow-y: clip;
+	overscroll-behavior: contain;
+	background: var(--deckBg);
 
 	&.center {
-		> .column:first-of-type {
-			margin-left: auto;
+		> .section:first-of-type {
+			margin-left: auto !important;
 		}
 
-		> .column:last-of-type {
-			margin-right: auto;
+		> .section:last-of-type {
+			margin-right: auto !important;
 		}
 	}
 
@@ -307,23 +324,17 @@ async function deleteProfile() {
 	}
 }
 
-.column {
-	scroll-snap-align: start;
-	flex-shrink: 0;
-	border-right: solid var(--deckDividerThickness) var(--deckDivider);
-
-	&:first-of-type {
-		border-left: solid var(--deckDividerThickness) var(--deckDivider);
-	}
-}
-
-.folder {
-	composes: column;
+.section {
 	display: flex;
 	flex-direction: column;
+	scroll-snap-align: start;
+	flex-shrink: 0;
+	padding-top: var(--columnGap);
+	padding-bottom: var(--columnGap);
+	padding-left: var(--columnGap);
 
-	> *:not(:last-of-type) {
-		border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
+	> .column:not(:last-of-type) {
+		margin-bottom: var(--columnGap);
 	}
 }
 

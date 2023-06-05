@@ -1,10 +1,10 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked">
 	<template #header>
 		<i class="ti ti-badge"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId" @after="() => emit('loaded')"/>
+	<MkTimeline v-if="column.roleId" ref="timeline" src="role" :role="column.roleId"/>
 </XColumn>
 </template>
 
@@ -21,11 +21,6 @@ const props = defineProps<{
 	isStacked: boolean;
 }>();
 
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
-}>();
-
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
 
 onMounted(() => {
@@ -35,7 +30,7 @@ onMounted(() => {
 });
 
 async function setRole() {
-	const roles = await os.api('roles/list');
+	const roles = (await os.api('roles/list')).filter(x => x.isExplorable);
 	const { canceled, result: role } = await os.select({
 		title: i18n.ts.role,
 		items: roles.map(x => ({

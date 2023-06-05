@@ -12,7 +12,7 @@
 
 		<div class="_gaps_m">
 			<MkPushNotificationAllowButton ref="allowButton"/>
-			<MkSwitch :disabled="!pushRegistrationInServer" :model-value="sendReadMessage" @update:model-value="onChangeSendReadMessage">
+			<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
 				<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
 				<template #caption>
 					<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">

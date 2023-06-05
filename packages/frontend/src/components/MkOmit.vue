@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
@@ -21,16 +21,22 @@ let content = $shallowRef<HTMLElement>();
 let omitted = $ref(false);
 let ignoreOmit = $ref(false);
 
-onMounted(() => {
-	const calcOmit = () => {
-		if (omitted || ignoreOmit) return;
-		omitted = content.offsetHeight > props.maxHeight;
-	};
+const calcOmit = () => {
+	if (omitted || ignoreOmit) return;
+	omitted = content.offsetHeight > props.maxHeight;
+};
 
+const omitObserver = new ResizeObserver((entries, observer) => {
 	calcOmit();
-	new ResizeObserver((entries, observer) => {
-		calcOmit();
-	}).observe(content);
+});
+
+onMounted(() => {
+	calcOmit();
+	omitObserver.observe(content);
+});
+
+onUnmounted(() => {
+	omitObserver.disconnect();
 });
 </script>
 
