@@ -1,6 +1,6 @@
 import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import type { AdsRepository, UsersRepository } from '@/models/index.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

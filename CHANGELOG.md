@@ -12,6 +12,11 @@
 
 -->
 
+## 13.13.1 (unreleased)
+
+### Server
+- Fix: api/metaで`TypeError: JSON5.parse is not a function`エラーが発生する問題を修正
+
 ## 13.13.0
 
 ### General
