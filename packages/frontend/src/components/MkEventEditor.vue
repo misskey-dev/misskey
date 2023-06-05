@@ -9,6 +9,8 @@
 				<MkInput v-model="startDate" small type="date" class="input">
 					<template #label>*{{ i18n.ts._event.startDate }}</template>
 				</MkInput>
+			</section>
+			<section>
 				<MkInput v-model="startTime" small type="time" class="input">
 					<template #label>*{{ i18n.ts._event.startTime }}</template>
 				</MkInput>
@@ -17,12 +19,12 @@
 				<MkInput v-model="endDate" small type="date" class="input">
 					<template #label>{{ i18n.ts._event.endDate }}</template>
 				</MkInput>
+			</section>
+			<section>
 				<MkInput v-model="endTime" small type="time" class="input">
 					<template #label>{{ i18n.ts._event.endTime }}</template>
 				</MkInput>
 			</section>
-		</div>
-		<div>
 			<section>
 				<MkInput v-model="location" small type="text" class="input">
 					<template #label>{{ i18n.ts._event.location }}</template>
@@ -34,6 +36,7 @@
 				</MkInput>
 			</section>
 		</div>
+		<br/>
 		<div>
 			<section>
 				<MkInput v-model="doorTime" small type="time" class="input">
@@ -76,8 +79,8 @@
 				</MkInput>
 			</section>
 			<section>
-				<MkSwitch :model-value="isFree" small type="" class="input">
-					<template #label>{{ i18n.ts._event.isFree }}</template>
+				<MkSwitch v-model="isFree" :disabled="false">
+					{{ i18n.ts._event.isFree }}
 				</MkSwitch>
 			</section>
 			<section>
