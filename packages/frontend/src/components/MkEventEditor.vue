@@ -145,8 +145,7 @@ const availabilityStart = ref(props.modelValue?.metadata.offers?.availabilitySta
 const availabilityEnd = ref(props.modelValue?.metadata.offers?.availabilityEnds ?? null);
 const keywords = ref(props.modelValue?.metadata.keywords ?? null);
 
-
-function get() {
+function get(): misskey.entities.Note['event'] {
 	const calcAt = (date: Ref<string>, time: Ref<string>): number => (new Date(`${date.value} ${time.value}`)).getTime();
 
 	const start = calcAt(startDate, startTime);
@@ -187,7 +186,8 @@ function get() {
 	};
 }
 
-watch([title, startDate, startTime, endDate, endTime, meta], () => emit('update:modelValue', get()), {
+watch([title, startDate, startTime, endDate, endTime, location, url, doorTime, organizer, organizerLink, audience, language, 
+							ageRange, ticketsUrl, isFree, price, availabilityStart, availabilityEnd, keywords], () => emit('update:modelValue', get()), {
 	deep: true,
 });
 </script>
