@@ -3088,6 +3088,140 @@ export const endpoints = {
 			res: chartSchemaToJSONSchema(chartsSchemas.perUserReactions) satisfies JSONSchema7,
 		}],
 	},
+	'charts/active-users': {
+		tags: ['charts', 'users'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+				},
+				required: ['span'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.activeUsers) satisfies JSONSchema7,
+		}],
+	},
+	'charts/ap-request': {
+		tags: ['charts'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+				},
+				required: ['span'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.apRequest) satisfies JSONSchema7,
+		}],
+	},
+	'charts/drive': {
+		tags: ['charts', 'drive'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+				},
+				required: ['span'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.drive) satisfies JSONSchema7,
+		}],
+	},
+	'charts/federation': {
+		tags: ['charts'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+				},
+				required: ['span'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.federation) satisfies JSONSchema7,
+		}],
+	},
+	'charts/instance': {
+		tags: ['charts'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+					host: { type: 'string' },
+				},
+				required: ['span', 'host'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.instance) satisfies JSONSchema7,
+		}],
+	},
+	'charts/notes': {
+		tags: ['charts', 'notes'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+				},
+				required: ['span'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.notes) satisfies JSONSchema7,
+		}],
+	},
+	'charts/users': {
+		tags: ['charts', 'users'],
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					span: { type: 'string', enum: ['day', 'hour'] },
+					limit: { type: 'integer', minimum: 1, maximum: 500, default: 30 },
+					offset: { type: 'integer', nullable: true, default: null },
+				},
+				required: ['span'],
+			},
+			res: chartSchemaToJSONSchema(chartsSchemas.users) satisfies JSONSchema7,
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
