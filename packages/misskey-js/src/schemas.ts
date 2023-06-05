@@ -157,7 +157,7 @@ type ToJsonSchema<S> = {
 	required: (keyof S)[];
 };
 
-export function getJsonSchema<S extends ChartSchema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+export function chartSchemaToJSONSchema<S extends ChartSchema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
 	const jsonSchema = {
 		type: 'object',
 		properties: {} as Record<string, unknown>,
