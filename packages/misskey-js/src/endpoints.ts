@@ -3385,7 +3385,188 @@ export const endpoints = {
 				},
 			}
 		}],
-	}
+	},
+	'clips/my-favorites': {
+		tags: ['account', 'clip'],
+	
+		requireCredential: true,
+	
+		kind: 'read:clip-favorite',
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Clip',
+				},
+			},
+		}],
+	},
+	'clips/notes': {
+		tags: ['account', 'notes', 'clips'],
+	
+		requireCredential: false,
+	
+		kind: 'read:account',
+	
+		errors: {
+			noSuchClip: {
+				message: 'No such clip.',
+				code: 'NO_SUCH_CLIP',
+				id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					clipId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['clipId'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Note',
+				},
+			},
+		}],
+	},
+	'clips/remove-note': {
+		tags: ['account', 'notes', 'clips'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:account',
+	
+		errors: {
+			noSuchClip: {
+				message: 'No such clip.',
+				code: 'NO_SUCH_CLIP',
+				id: 'b80525c6-97f7-49d7-a42d-ebccd49cfd52',
+			},
+	
+			noSuchNote: {
+				message: 'No such note.',
+				code: 'NO_SUCH_NOTE',
+				id: 'aff017de-190e-434b-893e-33a9ff5049d8',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					clipId: { type: 'string', format: 'misskey:id' },
+					noteId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['clipId', 'noteId'],
+			},
+			res: undefined,
+		}],
+	},
+	'clips/show': {
+		tags: ['clips', 'account'],
+	
+		requireCredential: false,
+	
+		kind: 'read:account',
+	
+		errors: {
+			noSuchClip: {
+				message: 'No such clip.',
+				code: 'NO_SUCH_CLIP',
+				id: 'c3c5fe33-d62c-44d2-9ea5-d997703f5c20',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					clipId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['clipId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Clip',
+			},
+		}],
+	},
+	'clips/unfavorite': {
+		tags: ['clip'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:clip-favorite',
+	
+		errors: {
+			noSuchClip: {
+				message: 'No such clip.',
+				code: 'NO_SUCH_CLIP',
+				id: '2603966e-b865-426c-94a7-af4a01241dc1',
+			},
+	
+			notFavorited: {
+				message: 'You have not favorited the clip.',
+				code: 'NOT_FAVORITED',
+				id: '90c3a9e8-b321-4dae-bf57-2bf79bbcc187',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					clipId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['clipId'],
+			},
+			res: undefined,
+		}]
+	},
+	'clips/update': {
+		tags: ['clips'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:account',
+	
+		errors: {
+			noSuchClip: {
+				message: 'No such clip.',
+				code: 'NO_SUCH_CLIP',
+				id: 'b4d92d70-b216-46fa-9a3f-a8c811699257',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					clipId: { type: 'string', format: 'misskey:id' },
+					name: { type: 'string', minLength: 1, maxLength: 100 },
+					isPublic: { type: 'boolean' },
+					description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
+				},
+				required: ['clipId', 'name'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Clip',
+			},
+		}]
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

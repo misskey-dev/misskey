@@ -6,46 +6,10 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
-export const meta = {
-	tags: ['account', 'notes', 'clips'],
-
-	requireCredential: false,
-
-	kind: 'read:account',
-
-	errors: {
-		noSuchClip: {
-			message: 'No such clip.',
-			code: 'NO_SUCH_CLIP',
-			id: '1d7645e6-2b6d-4635-b0fe-fe22b0e72e00',
-		},
-	},
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		clipId: { type: 'string', format: 'misskey:id' },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['clipId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'clips/notes'> {
+	name = 'clips/notes' as const;
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
@@ -59,17 +23,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const clip = await this.clipsRepository.findOneBy({
 				id: ps.clipId,
 			});
 
 			if (clip == null) {
-				throw new ApiError(meta.errors.noSuchClip);
+				throw new ApiError(this.meta.errors.noSuchClip);
 			}
 
 			if (!clip.isPublic && (me == null || (clip.userId !== me.id))) {
-				throw new ApiError(meta.errors.noSuchClip);
+				throw new ApiError(this.meta.errors.noSuchClip);
 			}
 
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)

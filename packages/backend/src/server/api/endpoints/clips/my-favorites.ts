@@ -4,41 +4,17 @@ import type { ClipFavoritesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 
-export const meta = {
-	tags: ['account', 'clip'],
-
-	requireCredential: true,
-
-	kind: 'read:clip-favorite',
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Clip',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'clips/my-favorites'> {
+	name = 'clips/my-favorites' as const;
 	constructor(
 		@Inject(DI.clipFavoritesRepository)
 		private clipFavoritesRepository: ClipFavoritesRepository,
 
 		private clipEntityService: ClipEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.clipFavoritesRepository.createQueryBuilder('favorite')
 				.andWhere('favorite.userId = :meId', { meId: me.id })
 				.leftJoinAndSelect('favorite.clip', 'clip');
