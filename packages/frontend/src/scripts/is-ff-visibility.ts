@@ -1,5 +1,4 @@
 export function isFfVisibility(i, user):boolean {
-
 	let checkFlag:boolean;
 
 	switch (user.ffVisibility) {
@@ -28,5 +27,4 @@ export function isFfVisibility(i, user):boolean {
 	}
 
 	return checkFlag;
-
 }
