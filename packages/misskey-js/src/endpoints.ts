@@ -3568,6 +3568,132 @@ export const endpoints = {
 		}]
 	},
 	//#endregion
+
+	//#region drive
+	'drive/files/attached-notes': {
+		tags: ['drive', 'notes'],
+	
+		requireCredential: true,
+	
+		kind: 'read:drive',
+	
+		description: 'Find the notes to which the given file is attached.',
+
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: 'c118ece3-2e4b-4296-99d1-51756e32d232',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					fileId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['fileId'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Note',
+				},
+			},
+		}],
+	},
+	'drive/files/check-existence': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		kind: 'read:drive',
+	
+		description: 'Check if a given file exists.',
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					md5: { type: 'string' },
+				},
+				required: ['md5'],
+			},
+			res: {
+				type: 'boolean',
+			},
+		}],
+	},
+	'drive/files/create': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 120,
+		},
+	
+		requireFile: true,
+	
+		kind: 'write:drive',
+	
+		description: 'Upload a new drive file.',
+
+		errors: {
+			invalidFileName: {
+				message: 'Invalid file name.',
+				code: 'INVALID_FILE_NAME',
+				id: 'f449b209-0c60-4e51-84d5-29486263bfd4',
+			},
+	
+			inappropriate: {
+				message: 'Cannot upload the file because it has been determined that it possibly contains inappropriate content.',
+				code: 'INAPPROPRIATE',
+				id: 'bec5bd69-fba3-43c9-b4fb-2894b66ad5d2',
+			},
+	
+			noFreeSpace: {
+				message: 'Cannot upload the file because you have no free space of drive.',
+				code: 'NO_FREE_SPACE',
+				id: 'd08dbc37-a6a9-463a-8c47-96c32ab5f064',
+			},
+
+			commentTooLong: {
+				message: 'Comment is too long.',
+				code: 'COMMENT_TOO_LONG',
+				id: 'f0b0f2a0-0b0a-4b0a-8b0a-0b0a0b0a0b0a',
+			}
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					file: { type: 'binary' },
+					folderId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+						default: null,
+					},
+					name: { type: ['string', 'null'], default: null },
+					comment: { type: ['string', 'null'], default: null },
+					isSensitive: { type: 'boolean', default: false },
+					force: { type: 'boolean', default: false },
+				},
+				required: ['file'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+			},
+		}],
+	},
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

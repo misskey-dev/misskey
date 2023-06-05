@@ -5,45 +5,10 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['drive', 'notes'],
-
-	requireCredential: true,
-
-	kind: 'read:drive',
-
-	description: 'Find the notes to which the given file is attached.',
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Note',
-		},
-	},
-
-	errors: {
-		noSuchFile: {
-			message: 'No such file.',
-			code: 'NO_SUCH_FILE',
-			id: 'c118ece3-2e4b-4296-99d1-51756e32d232',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['fileId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'drive/files/attached-notes'> {
+	name = 'drive/files/attached-notes' as const;
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -53,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Fetch file
 			const file = await this.driveFilesRepository.findOneBy({
 				id: ps.fileId,
@@ -61,7 +26,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			if (file == null) {
-				throw new ApiError(meta.errors.noSuchFile);
+				throw new ApiError(this.meta.errors.noSuchFile);
 			}
 
 			const notes = await this.notesRepository.createQueryBuilder('note')
