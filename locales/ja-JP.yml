@@ -1062,6 +1062,7 @@ later: "あとで"
 goToMisskey: "Misskeyへ"
 additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
+errorImage: "エラー画像"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

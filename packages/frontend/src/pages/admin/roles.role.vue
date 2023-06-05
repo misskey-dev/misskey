@@ -23,7 +23,7 @@
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+									<img :src="infoImageUrl" class="_ghost"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -69,6 +69,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { infoImageUrl } from '@/instance';
 
 const router = useRouter();
 
