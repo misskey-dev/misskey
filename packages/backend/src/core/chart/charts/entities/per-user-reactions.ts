@@ -1,10 +1,7 @@
 import Chart from '../../core.js';
 
-export const name = 'perUserReaction';
-
-export const schema = {
-	'local.count': { range: 'small' },
-	'remote.count': { range: 'small' },
-} as const;
+import * as _ from 'misskey-js/built/schemas/charts/per-user-reactions.js';
+export const name = _.name;
+export const schema = _.schema;
 
 export const entity = Chart.schemaToEntity(name, schema, true);

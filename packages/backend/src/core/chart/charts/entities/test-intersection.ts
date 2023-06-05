@@ -1,11 +1,7 @@
 import Chart from '../../core.js';
 
-export const name = 'testIntersection';
-
-export const schema = {
-	'a': { uniqueIncrement: true },
-	'b': { uniqueIncrement: true },
-	'aAndB': { intersection: ['a', 'b'] },
-} as const;
+import * as _ from 'misskey-js/built/schemas/charts/test-intersection.js';
+export const name = _.name;
+export const schema = _.schema;
 
 export const entity = Chart.schemaToEntity(name, schema);

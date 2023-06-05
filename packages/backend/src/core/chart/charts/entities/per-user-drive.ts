@@ -1,14 +1,7 @@
 import Chart from '../../core.js';
 
-export const name = 'perUserDrive';
-
-export const schema = {
-	'totalCount': { accumulate: true },
-	'totalSize': { accumulate: true }, // in kilobyte
-	'incCount': { range: 'small' },
-	'incSize': {}, // in kilobyte
-	'decCount': { range: 'small' },
-	'decSize': {}, // in kilobyte
-} as const;
+import * as _ from 'misskey-js/built/schemas/charts/per-user-drive.js';
+export const name = _.name;
+export const schema = _.schema;
 
 export const entity = Chart.schemaToEntity(name, schema, true);

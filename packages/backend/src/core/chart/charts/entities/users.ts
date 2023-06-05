@@ -1,14 +1,7 @@
 import Chart from '../../core.js';
 
-export const name = 'users';
-
-export const schema = {
-	'local.total': { accumulate: true },
-	'local.inc': { range: 'small' },
-	'local.dec': { range: 'small' },
-	'remote.total': { accumulate: true },
-	'remote.inc': { range: 'small' },
-	'remote.dec': { range: 'small' },
-} as const;
+import * as _ from 'misskey-js/built/schemas/charts/users.js';
+export const name = _.name;
+export const schema = _.schema;
 
 export const entity = Chart.schemaToEntity(name, schema);

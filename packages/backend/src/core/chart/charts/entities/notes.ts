@@ -1,22 +1,7 @@
 import Chart from '../../core.js';
 
-export const name = 'notes';
-
-export const schema = {
-	'local.total': { accumulate: true },
-	'local.inc': {},
-	'local.dec': {},
-	'local.diffs.normal': {},
-	'local.diffs.reply': {},
-	'local.diffs.renote': {},
-	'local.diffs.withFile': {},
-	'remote.total': { accumulate: true },
-	'remote.inc': {},
-	'remote.dec': {},
-	'remote.diffs.normal': {},
-	'remote.diffs.reply': {},
-	'remote.diffs.renote': {},
-	'remote.diffs.withFile': {},
-} as const;
+import * as _ from 'misskey-js/built/schemas/charts/notes.js';
+export const name = _.name;
+export const schema = _.schema;
 
 export const entity = Chart.schemaToEntity(name, schema);

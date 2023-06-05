@@ -10,21 +10,11 @@ import { dateUTC, isTimeSame, isTimeBefore, subtractTime, addTime } from '@/misc
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import type { Repository, DataSource } from 'typeorm';
+import type { ChartSchema as Schema, ChartResult, Unflatten } from 'misskey-js/built/schemas';
 
 const COLUMN_PREFIX = '___' as const;
 const UNIQUE_TEMP_COLUMN_PREFIX = 'unique_temp___' as const;
 const COLUMN_DELIMITER = '_' as const;
-
-type Schema = Record<string, {
-	uniqueIncrement?: boolean;
-
-	intersection?: string[] | ReadonlyArray<string>;
-
-	range?: 'big' | 'small' | 'medium';
-
-	// previousな値を引き継ぐかどうか
-	accumulate?: boolean;
-}>;
 
 type KeyToColumnName<T extends string> = T extends `${infer R1}.${infer R2}` ? `${R1}${typeof COLUMN_DELIMITER}${KeyToColumnName<R2>}` : T;
 
@@ -63,47 +53,6 @@ type Commit<S extends Schema> = {
 export type KVs<S extends Schema> = {
 	[K in keyof S]: number;
 };
-
-type ChartResult<T extends Schema> = {
-	[P in keyof T]: number[];
-};
-
-type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never;
-
-type UnflattenSingleton<K extends string, V> = K extends `${infer A}.${infer B}`
-	? { [_ in A]: UnflattenSingleton<B, V>; }
-	: { [_ in K]: V; };
-
-type Unflatten<T extends Record<string, any>> = UnionToIntersection<
-	{
-		[K in Extract<keyof T, string>]: UnflattenSingleton<K, T[K]>;
-	}[Extract<keyof T, string>]
->;
-
-type ToJsonSchema<S> = {
-	type: 'object';
-	properties: {
-		[K in keyof S]: S[K] extends number[] ? { type: 'array'; items: { type: 'number'; }; } : ToJsonSchema<S[K]>;
-	},
-	required: (keyof S)[];
-};
-
-export function getJsonSchema<S extends Schema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
-	const jsonSchema = {
-		type: 'object',
-		properties: {} as Record<string, unknown>,
-		required: [],
-	};
-
-	for (const k in schema) {
-		jsonSchema.properties[k] = {
-			type: 'array',
-			items: { type: 'number' },
-		};
-	}
-
-	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;
-}
 
 /**
  * 様々なチャートの管理を司るクラス

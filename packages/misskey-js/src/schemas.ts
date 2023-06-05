@@ -58,7 +58,7 @@ import {
 import { packedModerationLogSchema } from './schemas/moderation-log.js';
 import { packedAuthSessionSchema } from './schemas/auth-session.js';
 import { Error, ApiError } from './schemas/error.js';
-import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray, Serialized } from 'schema-type';
+import type { JSONSchema7, JSONSchema7Definition, GetDef, GetRefs, GetKeys, UnionToArray, Serialized, Projected } from 'schema-type';
 
 export const refs = {
 	Id: IdSchema,
@@ -120,3 +120,57 @@ export type References = GetRefs<typeof refs>;
 
 export type Packed<x extends GetKeys<References, 'https://misskey-hub.net/api/schemas/'>> = Serialized<GetDef<References, x, false, 'https://misskey-hub.net/api/schemas/'>>;
 export type Def<x extends GetKeys<References>> = GetDef<References, x>;
+
+//#reginon Chart
+export type ChartSchema = Record<string, {
+	uniqueIncrement?: boolean;
+
+	intersection?: string[] | ReadonlyArray<string>;
+
+	range?: 'big' | 'small' | 'medium';
+
+	// previousな値を引き継ぐかどうか
+	accumulate?: boolean;
+}>;
+
+export type ChartResult<T extends ChartSchema> = {
+	[P in keyof T]: number[];
+};
+
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never;
+
+type UnflattenSingleton<K extends string, V> = K extends `${infer A}.${infer B}`
+	? { [_ in A]: UnflattenSingleton<B, V>; }
+	: { [_ in K]: V; };
+
+export type Unflatten<T extends Record<string, any>> = Projected<UnionToIntersection<
+	{
+		[K in Extract<keyof T, string>]: UnflattenSingleton<K, T[K]>;
+	}[Extract<keyof T, string>]
+>>;
+
+type ToJsonSchema<S> = {
+	type: 'object';
+	properties: {
+		[K in keyof S]: S[K] extends number[] ? { type: 'array'; items: { type: 'number'; }; } : ToJsonSchema<S[K]>;
+	},
+	required: (keyof S)[];
+};
+
+export function getJsonSchema<S extends ChartSchema>(schema: S): ToJsonSchema<Unflatten<ChartResult<S>>> {
+	const jsonSchema = {
+		type: 'object',
+		properties: {} as Record<string, unknown>,
+		required: [],
+	};
+
+	for (const k in schema) {
+		jsonSchema.properties[k] = {
+			type: 'array',
+			items: { type: 'number' },
+		};
+	}
+
+	return jsonSchema as ToJsonSchema<Unflatten<ChartResult<S>>>;
+}
+//#endregion
