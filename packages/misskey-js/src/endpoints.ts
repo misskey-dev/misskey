@@ -3065,7 +3065,7 @@ export const endpoints = {
 				},
 				required: ['span', 'userId'],
 			},
-			res: chartSchemaToJSONSchema(chartsSchemas.perUserPv) satisfies JSONSchema7,			
+			res: chartSchemaToJSONSchema(chartsSchemas.perUserPv) satisfies JSONSchema7,
 		}],
 	},
 	'charts/user/reactions': {
