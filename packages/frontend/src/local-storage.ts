@@ -13,7 +13,7 @@ type Keys =
 	'hashtags' |
 	'wallpaper' |
 	'theme' |
-	'colorSchema' |
+	'colorScheme' |
 	'useSystemFont' | 
 	'fontSize' |
 	'ui' |
