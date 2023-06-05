@@ -1062,9 +1062,9 @@ later: "あとで"
 goToMisskey: "Misskeyへ"
 additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
-additionalPermissionsForFlash: "プレイへの追加許可"
-thisFlashRequiresTheFollowingPermissions: "このプレイは以下の権限を要求しています"
-doYouWantToAllowThisPlayToAccessYourAccount: "このプレイによるアカウントへのアクセスを許可しますか？"
+additionalPermissionsForFlash: "Playへの追加許可"
+thisFlashRequiresTheFollowingPermissions: "このPlayは以下の権限を要求しています"
+doYouWantToAllowThisPlayToAccessYourAccount: "このPlayによるアカウントへのアクセスを許可しますか？"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
