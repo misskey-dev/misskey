@@ -36,7 +36,3 @@ definePageMetadata({
 	icon: 'ti ti-antenna',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

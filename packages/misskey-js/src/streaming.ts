@@ -186,6 +186,14 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.stream.send(JSON.stringify(typeOrPayload));
 	}
 
+	public ping(): void {
+		this.stream.send('ping');
+	}
+
+	public heartbeat(): void {
+		this.stream.send('h');
+	}
+
 	/**
 	 * Close this connection
 	 */

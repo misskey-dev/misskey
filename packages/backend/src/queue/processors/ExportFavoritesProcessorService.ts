@@ -12,7 +12,7 @@ import type { Poll } from '@/models/entities/Poll.js';
 import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
@@ -42,12 +42,11 @@ export class ExportFavoritesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
 		this.logger.info(`Exporting favorites of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -91,7 +90,7 @@ export class ExportFavoritesProcessorService {
 				}) as (NoteFavorite & { note: Note & { user: User } })[];
 
 				if (favorites.length === 0) {
-					job.progress(100);
+					job.updateProgress(100);
 					break;
 				}
 
@@ -112,7 +111,7 @@ export class ExportFavoritesProcessorService {
 					userId: user.id,
 				});
 
-				job.progress(exportedFavoritesCount / total);
+				job.updateProgress(exportedFavoritesCount / total);
 			}
 
 			await write(']');
@@ -127,8 +126,6 @@ export class ExportFavoritesProcessorService {
 		} finally {
 			cleanup();
 		}
-
-		done();
 	}
 }
 

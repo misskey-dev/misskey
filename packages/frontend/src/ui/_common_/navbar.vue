@@ -1,51 +1,50 @@
 <template>
-<div class="mvcprjjd" :class="{ iconOnly }">
-	<div class="body">
-		<div class="top">
-			<div class="banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
-			<button v-click-anime v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="item _button instance" @click="openInstanceMenu">
-				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
+<div :class="[$style.root, { [$style.iconOnly]: iconOnly }]">
+	<div :class="$style.body">
+		<div :class="$style.top">
+			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
+			<button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance" @click="openInstanceMenu">
+				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
 			</button>
 		</div>
-		<div class="middle">
-			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.timeline" class="item index" active-class="active" to="/" exact>
-				<i class="icon ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
+		<div :class="$style.middle">
+			<MkA v-tooltip.noDelay.right="i18n.ts.timeline" :class="$style.item" :activeClass="$style.active" to="/" exact>
+				<i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.timeline }}</span>
 			</MkA>
 			<template v-for="item in menu">
-				<div v-if="item === '-'" class="divider"></div>
+				<div v-if="item === '-'" :class="$style.divider"></div>
 				<component
 					:is="navbarItemDef[item].to ? 'MkA' : 'button'"
 					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
-					v-click-anime
 					v-tooltip.noDelay.right="navbarItemDef[item].title"
-					class="item _button"
-					:class="[item, { active: navbarItemDef[item].active }]"
-					active-class="active"
+					class="_button"
+					:class="[$style.item, { [$style.active]: navbarItemDef[item].active }]"
+					:activeClass="$style.active"
 					:to="navbarItemDef[item].to"
 					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
 				>
-					<i class="icon ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
-					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
+					<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item].icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item].title }}</span>
+					<span v-if="navbarItemDef[item].indicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
 				</component>
 			</template>
-			<div class="divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime v-tooltip.noDelay.right="i18n.ts.controlPanel" class="item" active-class="active" to="/admin">
-				<i class="icon ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
+			<div :class="$style.divider"></div>
+			<MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item" :activeClass="$style.active" to="/admin">
+				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
-			<button v-click-anime class="item _button" @click="more">
-				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
+			<button class="_button" :class="$style.item" @click="more">
+				<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.more }}</span>
+				<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
 			</button>
-			<MkA v-click-anime v-tooltip.noDelay.right="i18n.ts.settings" class="item" active-class="active" to="/settings">
-				<i class="icon ti ti-settings ti-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
+			<MkA v-tooltip.noDelay.right="i18n.ts.settings" :class="$style.item" :activeClass="$style.active" to="/settings">
+				<i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.settings }}</span>
 			</MkA>
 		</div>
-		<div class="bottom">
-			<button v-tooltip.noDelay.right="i18n.ts.note" class="item _button post" data-cy-open-post-form @click="os.post">
-				<i class="icon ti ti-pencil ti-fw"></i><span class="text">{{ i18n.ts.note }}</span>
+		<div :class="$style.bottom">
+			<button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form @click="os.post">
+				<i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{ i18n.ts.note }}</span>
 			</button>
-			<button v-click-anime v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="item _button account" @click="openAccountMenu">
-				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text _nowrap" :user="$i"/>
+			<button v-tooltip.noDelay.right="`${i18n.ts.account}: @${$i.username}`" class="_button" :class="[$style.account]" @click="openAccountMenu">
+				<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct class="_nowrap" :class="$style.acct" :user="$i"/>
 			</button>
 		</div>
 	</div>
@@ -99,374 +98,376 @@ function more(ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
-.mvcprjjd {
-	$nav-width: 250px;
-	$nav-icon-only-width: 80px;
+<style lang="scss" module>
+.root {
+	--nav-width: 250px;
+	--nav-icon-only-width: 72px;
 
-	flex: 0 0 $nav-width;
-	width: $nav-width;
+	flex: 0 0 var(--nav-width);
+	width: var(--nav-width);
 	box-sizing: border-box;
+}
 
-	> .body {
-		position: fixed;
+.body {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	width: var(--nav-icon-only-width);
+	height: 100dvh;
+	box-sizing: border-box;
+	overflow: auto;
+	overflow-x: clip;
+	overscroll-behavior: contain;
+	background: var(--navBg);
+	contain: strict;
+	display: flex;
+	flex-direction: column;
+}
+
+.root:not(.iconOnly) {
+	.body {
+		width: var(--nav-width);
+	}
+
+	.top {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		padding: 20px 0;
+		background: var(--X14);
+		-webkit-backdrop-filter: var(--blur, blur(8px));
+		backdrop-filter: var(--blur, blur(8px));
+	}
+
+	.banner {
+		position: absolute;
 		top: 0;
 		left: 0;
-		z-index: 1001;
-		width: $nav-icon-only-width;
-		height: 100dvh;
-		box-sizing: border-box;
-		overflow: auto;
-		overflow-x: clip;
-		background: var(--navBg);
-		contain: strict;
+		width: 100%;
+		height: 100%;
+		background-size: cover;
+		background-position: center center;
+		-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
+		mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
+	}
+
+	.instance {
+		position: relative;
+		display: block;
+		text-align: center;
+		width: 100%;
+	}
+
+	.instanceIcon {
+		display: inline-block;
+		width: 38px;
+		aspect-ratio: 1;
+	}
+
+	.bottom {
+		position: sticky;
+		bottom: 0;
+		padding: 20px 0;
+		background: var(--X14);
+		-webkit-backdrop-filter: var(--blur, blur(8px));
+		backdrop-filter: var(--blur, blur(8px));
+	}
+
+	.post {
+		position: relative;
+		display: block;
+		width: 100%;
+		height: 40px;
+		color: var(--fgOnAccent);
+		font-weight: bold;
+		text-align: left;
+
+		&:before {
+			content: "";
+			display: block;
+			width: calc(100% - 38px);
+			height: 100%;
+			margin: auto;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			border-radius: 999px;
+			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		}
+
+		&:hover, &.active {
+			&:before {
+				background: var(--accentLighten);
+			}
+		}
+	}
+
+	.postIcon {
+		position: relative;
+		margin-left: 30px;
+		margin-right: 8px;
+		width: 32px;
+	}
+
+	.postText {
+		position: relative;
+	}
+
+	.account {
+		position: relative;
 		display: flex;
-		flex-direction: column;
+		align-items: center;
+		padding-left: 30px;
+		width: 100%;
+		text-align: left;
+		box-sizing: border-box;
+		margin-top: 16px;
 	}
 
-	&:not(.iconOnly) {
-		> .body {
-			width: $nav-width;
+	.avatar {
+		display: block;
+		flex-shrink: 0;
+		position: relative;
+		width: 32px;
+		aspect-ratio: 1;
+		margin-right: 8px;
+	}
 
-			> .top {
-				position: sticky;
+	.acct {
+		display: block;
+		flex-shrink: 1;
+		padding-right: 8px;
+	}
+
+	.middle {
+		flex: 1;
+	}
+
+	.divider {
+		margin: 16px 16px;
+		border-top: solid 0.5px var(--divider);
+	}
+
+	.item {
+		position: relative;
+		display: block;
+		padding-left: 30px;
+		line-height: 2.85rem;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+		width: 100%;
+		text-align: left;
+		box-sizing: border-box;
+		color: var(--navFg);
+
+		&:hover {
+			text-decoration: none;
+			color: var(--navHoverFg);
+		}
+
+		&.active {
+			color: var(--navActive);
+		}
+
+		&:hover, &.active {
+			color: var(--accent);
+
+			&:before {
+				content: "";
+				display: block;
+				width: calc(100% - 34px);
+				height: 100%;
+				margin: auto;
+				position: absolute;
 				top: 0;
-				z-index: 1;
-				padding: 20px 0;
-				background: var(--X14);
-				-webkit-backdrop-filter: var(--blur, blur(8px));
-				backdrop-filter: var(--blur, blur(8px));
-
-				> .banner {
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: 100%;
-					height: 100%;
-					background-size: cover;
-					background-position: center center;
-					-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-					mask-image: linear-gradient(0deg, rgba(0,0,0,0) 15%, rgba(0,0,0,0.75) 100%);
-				}
-
-				> .instance {
-					position: relative;
-					display: block;
-					text-align: center;
-					width: 100%;
-
-					> .icon {
-						display: inline-block;
-						width: 38px;
-						aspect-ratio: 1;
-					}
-				}
-			}
-
-			> .bottom {
-				position: sticky;
+				left: 0;
+				right: 0;
 				bottom: 0;
-				padding: 20px 0;
-				background: var(--X14);
-				-webkit-backdrop-filter: var(--blur, blur(8px));
-				backdrop-filter: var(--blur, blur(8px));
-
-				> .post {
-					position: relative;
-					display: block;
-					width: 100%;
-					height: 40px;
-					color: var(--fgOnAccent);
-					font-weight: bold;
-					text-align: left;
-
-					&:before {
-						content: "";
-						display: block;
-						width: calc(100% - 38px);
-						height: 100%;
-						margin: auto;
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
-						border-radius: 999px;
-						background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-					}
-
-					&:hover, &.active {
-						&:before {
-							background: var(--accentLighten);
-						}
-					}
-
-					> .icon {
-						position: relative;
-						margin-left: 30px;
-						margin-right: 8px;
-						width: 32px;
-					}
-
-					> .text {
-						position: relative;
-					}
-				}
-
-				> .account {
-					position: relative;
-					display: flex;
-					align-items: center;
-					padding-left: 30px;
-					width: 100%;
-					text-align: left;
-					box-sizing: border-box;
-					margin-top: 16px;
-
-					> .avatar {
-						display: block;
-						flex-shrink: 0;
-						position: relative;
-						width: 32px;
-						aspect-ratio: 1;
-						margin-right: 8px;
-					}
-
-					> .text {
-						display: block;
-						flex-shrink: 1;
-						padding-right: 8px;
-					}
-				}
-			}
-
-			> .middle {
-				flex: 1;
-
-				> .divider {
-					margin: 16px 16px;
-					border-top: solid 0.5px var(--divider);
-				}
-
-				> .item {
-					position: relative;
-					display: block;
-					padding-left: 30px;
-					line-height: 2.85rem;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
-					width: 100%;
-					text-align: left;
-					box-sizing: border-box;
-					color: var(--navFg);
-
-					> .icon {
-						position: relative;
-						width: 32px;
-						margin-right: 8px;
-					}
-
-					> .indicator {
-						position: absolute;
-						top: 0;
-						left: 20px;
-						color: var(--navIndicator);
-						font-size: 8px;
-						animation: blink 1s infinite;
-					}
-
-					> .text {
-						position: relative;
-						font-size: 0.9em;
-					}
-
-					&:hover {
-						text-decoration: none;
-						color: var(--navHoverFg);
-					}
-
-					&.active {
-						color: var(--navActive);
-					}
-
-					&:hover, &.active {
-						color: var(--accent);
-
-						&:before {
-							content: "";
-							display: block;
-							width: calc(100% - 34px);
-							height: 100%;
-							margin: auto;
-							position: absolute;
-							top: 0;
-							left: 0;
-							right: 0;
-							bottom: 0;
-							border-radius: 999px;
-							background: var(--accentedBg);
-						}
-					}
-				}
+				border-radius: 999px;
+				background: var(--accentedBg);
 			}
 		}
 	}
 
-	&.iconOnly {
-		flex: 0 0 $nav-icon-only-width;
-		width: $nav-icon-only-width;
+	.itemIcon {
+		position: relative;
+		width: 32px;
+		margin-right: 8px;
+	}
 
-		> .body {
-			width: $nav-icon-only-width;
+	.itemIndicator {
+		position: absolute;
+		top: 0;
+		left: 20px;
+		color: var(--navIndicator);
+		font-size: 8px;
+		animation: blink 1s infinite;
+	}
 
-			> .top {
-				position: sticky;
-				top: 0;
-				z-index: 1;
-				padding: 20px 0;
-				background: var(--X14);
-				-webkit-backdrop-filter: var(--blur, blur(8px));
-				backdrop-filter: var(--blur, blur(8px));
+	.itemText {
+		position: relative;
+		font-size: 0.9em;
+	}
+}
 
-				> .instance {
-					display: block;
-					text-align: center;
-					width: 100%;
+.root.iconOnly {
+	flex: 0 0 var(--nav-icon-only-width);
+	width: var(--nav-icon-only-width);
 
-					> .icon {
-						display: inline-block;
-						width: 30px;
-						aspect-ratio: 1;
-					}
-				}
-			}
+	.body {
+		width: var(--nav-icon-only-width);
+	}
 
-			> .bottom {
-				position: sticky;
-				bottom: 0;
-				padding: 20px 0;
-				background: var(--X14);
-				-webkit-backdrop-filter: var(--blur, blur(8px));
-				backdrop-filter: var(--blur, blur(8px));
+	.top {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		padding: 20px 0;
+		background: var(--X14);
+		-webkit-backdrop-filter: var(--blur, blur(8px));
+		backdrop-filter: var(--blur, blur(8px));
+	}
 
-				> .post {
-					display: block;
-					position: relative;
-					width: 100%;
-					height: 52px;
-					margin-bottom: 16px;
-					text-align: center;
+	.instance {
+		display: block;
+		text-align: center;
+		width: 100%;
+	}
 
-					&:before {
-						content: "";
-						display: block;
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
-						margin: auto;
-						width: 52px;
-						aspect-ratio: 1/1;
-						border-radius: 100%;
-						background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-					}
+	.instanceIcon {
+		display: inline-block;
+		width: 30px;
+		aspect-ratio: 1;
+	}
 
-					&:hover, &.active {
-						&:before {
-							background: var(--accentLighten);
-						}
-					}
+	.bottom {
+		position: sticky;
+		bottom: 0;
+		padding: 20px 0;
+		background: var(--X14);
+		-webkit-backdrop-filter: var(--blur, blur(8px));
+		backdrop-filter: var(--blur, blur(8px));
+	}
 
-					> .icon {
-						position: relative;
-						color: var(--fgOnAccent);
-					}
+	.post {
+		display: block;
+		position: relative;
+		width: 100%;
+		height: 52px;
+		margin-bottom: 16px;
+		text-align: center;
 
-					> .text {
-						display: none;
-					}
-				}
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			margin: auto;
+			width: 52px;
+			aspect-ratio: 1/1;
+			border-radius: 100%;
+			background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+		}
 
-				> .account {
-					display: block;
-					text-align: center;
-					width: 100%;
-
-					> .avatar {
-						display: inline-block;
-						width: 38px;
-						aspect-ratio: 1;
-					}
-
-					> .text {
-						display: none;
-					}
-				}
-			}
-
-			> .middle {
-				flex: 1;
-
-				> .divider {
-					margin: 8px auto;
-					width: calc(100% - 32px);
-					border-top: solid 0.5px var(--divider);
-				}
-
-				> .item {
-					display: block;
-					position: relative;
-					padding: 18px 0;
-					width: 100%;
-					text-align: center;
-
-					> .icon {
-						display: block;
-						margin: 0 auto;
-						opacity: 0.7;
-					}
-
-					> .text {
-						display: none;
-					}
-
-					> .indicator {
-						position: absolute;
-						top: 6px;
-						left: 24px;
-						color: var(--navIndicator);
-						font-size: 8px;
-						animation: blink 1s infinite;
-					}
-
-					&:hover, &.active {
-						text-decoration: none;
-						color: var(--accent);
-
-						&:before {
-							content: "";
-							display: block;
-							height: 100%;
-							aspect-ratio: 1;
-							margin: auto;
-							position: absolute;
-							top: 0;
-							left: 0;
-							right: 0;
-							bottom: 0;
-							border-radius: 999px;
-							background: var(--accentedBg);
-						}
-
-						> .icon, > .text {
-							opacity: 1;
-						}
-					}
-				}
+		&:hover, &.active {
+			&:before {
+				background: var(--accentLighten);
 			}
 		}
+	}
+
+	.postIcon {
+		position: relative;
+		color: var(--fgOnAccent);
+	}
+
+	.postText {
+		display: none;
+	}
+
+	.account {
+		display: block;
+		text-align: center;
+		width: 100%;
+	}
+
+	.avatar {
+		display: inline-block;
+		width: 38px;
+		aspect-ratio: 1;
+	}
+
+	.acct {
+		display: none;
+	}
+
+	.middle {
+		flex: 1;
+	}
+
+	.divider {
+		margin: 8px auto;
+		width: calc(100% - 32px);
+		border-top: solid 0.5px var(--divider);
+	}
+
+	.item {
+		display: block;
+		position: relative;
+		padding: 18px 0;
+		width: 100%;
+		text-align: center;
+
+		&:hover, &.active {
+			text-decoration: none;
+			color: var(--accent);
+
+			&:before {
+				content: "";
+				display: block;
+				height: 100%;
+				aspect-ratio: 1;
+				margin: auto;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				border-radius: 999px;
+				background: var(--accentedBg);
+			}
+
+			> .icon,
+			> .text {
+				opacity: 1;
+			}
+		}
+	}
+
+	.itemIcon {
+		display: block;
+		margin: 0 auto;
+		opacity: 0.7;
+	}
+
+	.itemText {
+		display: none;
+	}
+
+	.itemIndicator {
+		position: absolute;
+		top: 6px;
+		left: 24px;
+		color: var(--navIndicator);
+		font-size: 8px;
+		animation: blink 1s infinite;
 	}
 }
 </style>

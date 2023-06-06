@@ -2606,6 +2606,10 @@ export class Stream extends EventEmitter<StreamEvents> {
     //
     // (undocumented)
     disconnectToChannel(connection: NonSharedConnection): void;
+    // (undocumented)
+    heartbeat(): void;
+    // (undocumented)
+    ping(): void;
     // Warning: (ae-forgotten-export) The symbol "SharedConnection" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)

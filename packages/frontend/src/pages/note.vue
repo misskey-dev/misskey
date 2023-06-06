@@ -1,33 +1,33 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800">
-		<div class="fcuexfpr">
+	<MkSpacer :contentMax="800">
+		<div>
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
-				<div v-if="note" class="note">
+				<div v-if="note">
 					<div v-if="showNext" class="_margin">
-						<MkNotes class="" :pagination="nextPagination" :no-gap="true"/>
+						<MkNotes class="" :pagination="nextPagination" :noGap="true"/>
 					</div>
 
-					<div class="main _margin">
-						<MkButton v-if="!showNext && hasNext" class="load next" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
-						<div class="note _margin _gaps_s">
+					<div class="_margin">
+						<MkButton v-if="!showNext && hasNext" :class="$style.loadNext" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
+						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-							<MkNoteDetailed :key="note.id" v-model:note="note" class="note"/>
+							<MkNoteDetailed :key="note.id" v-model:note="note" :class="$style.note"/>
 						</div>
-						<div v-if="clips && clips.length > 0" class="clips _margin">
-							<div class="title">{{ i18n.ts.clip }}</div>
+						<div v-if="clips && clips.length > 0" class="_margin">
+							<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
 							<div class="_gaps">
 								<MkA v-for="item in clips" :key="item.id" :to="`/clips/${item.id}`">
 									<MkClipPreview :clip="item"/>
 								</MkA>
 							</div>
 						</div>
-						<MkButton v-if="!showPrev && hasPrev" class="load prev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
+						<MkButton v-if="!showPrev && hasPrev" :class="$style.loadPrev" @click="showPrev = true"><i class="ti ti-chevron-down"></i></MkButton>
 					</div>
 
 					<div v-if="showPrev" class="_margin">
-						<MkNotes class="" :pagination="prevPagination" :no-gap="true"/>
+						<MkNotes class="" :pagination="prevPagination" :noGap="true"/>
 					</div>
 				</div>
 				<MkError v-else-if="error" @retry="fetchNote()"/>
@@ -137,7 +137,7 @@ definePageMetadata(computed(() => note ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity 0.125s ease;
@@ -147,39 +147,23 @@ definePageMetadata(computed(() => note ? {
 	opacity: 0;
 }
 
-.fcuexfpr {
-	background: var(--bg);
+.loadNext,
+.loadPrev {
+	min-width: 0;
+	margin: 0 auto;
+	border-radius: 999px;
+}
 
-	> .note {
-		> .main {
-			> .load {
-				min-width: 0;
-				margin: 0 auto;
-				border-radius: 999px;
+.loadNext {
+	margin-bottom: var(--margin);
+}
 
-				&.next {
-					margin-bottom: var(--margin);
-				}
+.loadPrev {
+	margin-top: var(--margin);
+}
 
-				&.prev {
-					margin-top: var(--margin);
-				}
-			}
-
-			> .note {
-				> .note {
-					border-radius: var(--radius);
-					background: var(--panel);
-				}
-			}
-
-			> .clips {
-				> .title {
-					font-weight: bold;
-					padding: 12px;
-				}
-			}
-		}
-	}
+.note {
+	border-radius: var(--radius);
+	background: var(--panel);
 }
 </style>

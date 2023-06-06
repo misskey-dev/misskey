@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as crypto from 'node:crypto';
-import * as cbor from 'cbor';
+import cbor from 'cbor';
 import * as OTPAuth from 'otpauth';
 import { loadConfig } from '../../src/config.js';
 import { signup, api, post, react, startServer, waitFire } from '../utils.js';

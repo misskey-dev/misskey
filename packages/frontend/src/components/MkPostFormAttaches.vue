@@ -1,16 +1,16 @@
 <template>
-<div v-show="props.modelValue.length != 0" class="skeikyzd">
-	<Sortable :model-value="props.modelValue" class="files" item-key="id" :animation="150" :delay="100" :delay-on-touch-only="true" @update:model-value="v => emit('update:modelValue', v)">
+<div v-show="props.modelValue.length != 0" :class="$style.root">
+	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
 		<template #item="{element}">
-			<div class="file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
-				<MkDriveFileThumbnail :data-id="element.id" class="thumbnail" :file="element" fit="cover"/>
-				<div v-if="element.isSensitive" class="sensitive">
-					<i class="ti ti-alert-triangle icon"></i>
+			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
+				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
+				<div v-if="element.isSensitive" :class="$style.sensitive">
+					<i class="ti ti-alert-triangle" style="margin: auto;"></i>
 				</div>
 			</div>
 		</template>
 	</Sortable>
-	<p class="remain">{{ 16 - props.modelValue.length }}/16</p>
+	<p :class="$style.remain">{{ 16 - props.modelValue.length }}/16</p>
 </div>
 </template>
 
@@ -93,7 +93,7 @@ function showFileMenu(file, ev: MouseEvent) {
 		action: () => { rename(file); },
 	}, {
 		text: file.isSensitive ? i18n.ts.unmarkAsSensitive : i18n.ts.markAsSensitive,
-		icon: file.isSensitive ? 'ti ti-eye-off' : 'ti ti-eye',
+		icon: file.isSensitive ? 'ti ti-eye-exclamation' : 'ti ti-eye',
 		action: () => { toggleSensitive(file); },
 	}, {
 		text: i18n.ts.describeFile,
@@ -108,60 +108,53 @@ function showFileMenu(file, ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
-.skeikyzd {
+<style lang="scss" module>
+.root {
 	padding: 8px 16px;
 	position: relative;
+}
 
-	> .files {
-		display: flex;
-		flex-wrap: wrap;
+.files {
+	display: flex;
+	flex-wrap: wrap;
+}
 
-		> .file {
-			position: relative;
-			width: 64px;
-			height: 64px;
-			margin-right: 4px;
-			border-radius: 4px;
-			overflow: hidden;
-			cursor: move;
+.file {
+	position: relative;
+	width: 64px;
+	height: 64px;
+	margin-right: 4px;
+	border-radius: 4px;
+	overflow: hidden;
+	cursor: move;
+}
 
-			&:hover > .remove {
-				display: block;
-			}
+.thumbnail {
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	color: var(--fg);
+}
 
-			> .thumbnail {
-				width: 100%;
-				height: 100%;
-				z-index: 1;
-				color: var(--fg);
-			}
+.sensitive {
+	display: flex;
+	position: absolute;
+	width: 64px;
+	height: 64px;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	background: rgba(17, 17, 17, .7);
+	color: #fff;
+}
 
-			> .sensitive {
-				display: flex;
-				position: absolute;
-				width: 64px;
-				height: 64px;
-				top: 0;
-				left: 0;
-				z-index: 2;
-				background: rgba(17, 17, 17, .7);
-				color: #fff;
-
-				> .icon {
-					margin: auto;
-				}
-			}
-		}
-	}
-
-	> .remain {
-		display: block;
-		position: absolute;
-		top: 8px;
-		right: 8px;
-		margin: 0;
-		padding: 0;
-	}
+.remain {
+	display: block;
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	margin: 0;
+	padding: 0;
+	font-size: 90%;
 }
 </style>

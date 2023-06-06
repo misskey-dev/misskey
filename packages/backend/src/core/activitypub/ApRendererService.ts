@@ -277,7 +277,7 @@ export class ApRendererService {
 			const name = reaction.replaceAll(':', '');
 			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
 
-			if (emoji) object.tag = [this.renderEmoji(emoji)];
+			if (emoji && !emoji.localOnly) object.tag = [this.renderEmoji(emoji)];
 		}
 
 		return object;
@@ -400,7 +400,7 @@ export class ApRendererService {
 		}));
 
 		const emojis = await this.getEmojis(note.emojis);
-		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
+		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
 		const tag = [
 			...hashtagTags,
@@ -479,7 +479,7 @@ export class ApRendererService {
 		}
 
 		const emojis = await this.getEmojis(user.emojis);
-		const apemojis = emojis.map(emoji => this.renderEmoji(emoji));
+		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
 		const hashtagTags = (user.tags ?? []).map(tag => this.renderHashtag(tag));
 

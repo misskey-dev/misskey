@@ -8,7 +8,7 @@
 	</div>
 	<span v-if="$i && $i.id !== user.id && user.isFollowed" :class="$style.followed">{{ i18n.ts.followsYou }}</span>
 	<div :class="$style.description">
-		<div v-if="user.description" class="mfm">
+		<div v-if="user.description" :class="$style.mfm">
 			<Mfm :text="user.description" :author="user" :i="$i"/>
 		</div>
 		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
@@ -105,7 +105,7 @@ defineProps<{
 .mfm {
 	display: -webkit-box;
 	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;  
+	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
 

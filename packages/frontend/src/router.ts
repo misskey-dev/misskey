@@ -31,6 +31,10 @@ export const routes = [{
 	path: '/notes/:noteId',
 	component: page(() => import('./pages/note.vue')),
 }, {
+	name: 'list',
+	path: '/list/:listId',
+	component: page(() => import('./pages/list.vue')),
+}, {
 	path: '/clips/:clipId',
 	component: page(() => import('./pages/clip.vue')),
 }, {
@@ -242,9 +246,6 @@ export const routes = [{
 }, {
 	path: '/scratchpad',
 	component: page(() => import('./pages/scratchpad.vue')),
-}, {
-	path: '/preview',
-	component: page(() => import('./pages/preview.vue')),
 }, {
 	path: '/auth/:token',
 	component: page(() => import('./pages/auth.vue')),

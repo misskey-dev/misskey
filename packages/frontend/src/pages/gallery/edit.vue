@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init" class="_gaps">
 			<MkInput v-model="title">
 				<template #label>{{ i18n.ts.title }}</template>
