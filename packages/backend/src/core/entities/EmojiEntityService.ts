@@ -26,6 +26,8 @@ export class EmojiEntityService {
 			category: emoji.category,
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url: emoji.publicUrl || emoji.originalUrl,
+			isSensitive: emoji.isSensitive ? true : undefined,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length > 0 ? emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : undefined,
 		};
 	}
 
@@ -51,6 +53,9 @@ export class EmojiEntityService {
 			// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 			url: emoji.publicUrl || emoji.originalUrl,
 			license: emoji.license,
+			isSensitive: emoji.isSensitive,
+			localOnly: emoji.localOnly,
+			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
 		};
 	}
 

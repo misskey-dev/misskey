@@ -33,9 +33,9 @@
 import { markRaw, onMounted, onUnmounted, ref } from 'vue';
 import XChart from './overview.queue.chart.vue';
 import number from '@/filters/number';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 
-const connection = markRaw(stream.useChannel('queueStats'));
+const connection = markRaw(useStream().useChannel('queueStats'));
 
 const activeSincePrevTick = ref(0);
 const active = ref(0);

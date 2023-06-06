@@ -12,11 +12,11 @@
 		</div>
 	</FormSlot>
 
-	<MkInput v-model="name" :max="30" manual-save data-cy-user-setup-user-name>
+	<MkInput v-model="name" :max="30" manualSave data-cy-user-setup-user-name>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="description" :max="500" tall manual-save data-cy-user-setup-user-description>
+	<MkTextarea v-model="description" :max="500" tall manualSave data-cy-user-setup-user-description>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 	</MkTextarea>
 
@@ -37,12 +37,8 @@ import { chooseFileFromPc } from '@/scripts/select-file';
 import * as os from '@/os';
 import { $i } from '@/account';
 
-const emit = defineEmits<{
-	(ev: 'done'): void;
-}>();
-
-const name = ref('');
-const description = ref('');
+const name = ref($i.name ?? '');
+const description = ref($i.description ?? '');
 
 watch(name, () => {
 	os.apiWithDialog('i/update', {

@@ -9,7 +9,7 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination" disable-auto-load>
+		<MkPagination :pagination="pagination" disableAutoLoad>
 			<template #default="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">

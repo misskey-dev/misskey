@@ -57,6 +57,7 @@ import { User } from '@/models/entities/User.js';
 import { UserIp } from '@/models/entities/UserIp.js';
 import { UserKeypair } from '@/models/entities/UserKeypair.js';
 import { UserList } from '@/models/entities/UserList.js';
+import { UserListFavorite } from '@/models/entities/UserListFavorite.js';
 import { UserListJoining } from '@/models/entities/UserListJoining.js';
 import { UserNotePining } from '@/models/entities/UserNotePining.js';
 import { UserPending } from '@/models/entities/UserPending.js';
@@ -132,6 +133,7 @@ export const entities = [
 	UserKeypair,
 	UserPublickey,
 	UserList,
+	UserListFavorite,
 	UserListJoining,
 	UserNotePining,
 	UserSecurityKey,

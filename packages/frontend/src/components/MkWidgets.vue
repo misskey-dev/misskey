@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.root">
 	<template v-if="edit">
-		<header :class="$style['edit-header']">
+		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" style="margin-bottom: var(--margin)" data-cy-widget-select>
 				<template #label>{{ i18n.ts.selectWidget }}</template>
 				<option v-for="widget in widgetDefs" :key="widget" :value="widget">{{ i18n.t(`_widgets.${widget}`) }}</option>
@@ -10,28 +10,29 @@
 			<MkButton inline @click="$emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<Sortable
-			:model-value="props.widgets"
-			item-key="id"
+			:modelValue="props.widgets"
+			itemKey="id"
 			handle=".handle"
 			:animation="150"
 			:group="{ name: 'SortableMkWidgets' }"
-			:class="$style['edit-editing']"
-			@update:model-value="v => emit('updateWidgets', v)"
+			:class="$style.editEditing"
+			@update:modelValue="v => emit('updateWidgets', v)"
 		>
 			<template #item="{element}">
-				<div :class="[$style.widget, $style['customize-container']]" data-cy-customize-container>
-					<button :class="$style['customize-container-config']" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button :class="$style['customize-container-remove']" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
+				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
+					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
+					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
 					<div class="handle">
-						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style['customize-container-handle-widget']" :widget="element" @update-props="updateWidget(element.id, $event)"/>
+						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
 					</div>
 				</div>
 			</template>
 		</Sortable>
 	</template>
-	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @update-props="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`widget-${widget.name}`" v-for="widget in widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
+
 <script lang="ts">
 export type Widget = {
 	name: string;
@@ -42,6 +43,7 @@ export type DefaultStoredWidget = {
 	place: string | null;
 } & Widget;
 </script>
+
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import { v4 as uuid } from 'uuid';
@@ -128,7 +130,7 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 }
 
 .edit {
-	&-header {
+	&Header {
 		margin: 16px 0;
 
 		> * {
@@ -137,17 +139,17 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		}
 	}
 
-	&-editing {
+	&Editing {
 		min-height: 100px;
 	}
 }
 
-.customize-container {
+.customizeContainer {
 	position: relative;
 	cursor: move;
 
-	&-config,
-	&-remove {
+	&Config,
+	&Remove {
 		position: absolute;
 		z-index: 10000;
 		top: 8px;
@@ -158,17 +160,17 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 		border-radius: 4px;
 	}
 
-	&-config {
+	&Config {
 		right: 8px + 8px + 32px;
 	}
 
-	&-remove {
+	&Remove {
 		right: 8px;
 	}
 
-	&-handle {
+	&Handle {
 
-		&-widget {
+		&Widget {
 			pointer-events: none;
 		}
 	}

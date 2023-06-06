@@ -2,7 +2,7 @@
 <div class="_gaps">
 	<div style="text-align: center;">{{ i18n.ts._initialAccountSetting.followUsers }}</div>
 
-	<MkFolder :default-open="true">
+	<MkFolder :defaultOpen="true">
 		<template #label>{{ i18n.ts.recommended }}</template>
 
 		<MkPagination :pagination="pinnedUsers">
@@ -14,7 +14,7 @@
 		</MkPagination>
 	</MkFolder>
 
-	<MkFolder :default-open="true">
+	<MkFolder :defaultOpen="true">
 		<template #label>{{ i18n.ts.popularUsers }}</template>
 
 		<MkPagination :pagination="popularUsers">
@@ -39,10 +39,6 @@ import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { $i } from '@/account';
 import MkPagination from '@/components/MkPagination.vue';
-
-const emit = defineEmits<{
-	(ev: 'done'): void;
-}>();
 
 const pinnedUsers = { endpoint: 'pinned-users', noPaging: true };
 

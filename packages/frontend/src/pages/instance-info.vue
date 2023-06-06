@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="instance" :content-max="600" :margin-min="16" :margin-max="32">
+	<MkSpacer v-if="instance" :contentMax="600" :marginMin="16" :marginMax="32">
 		<div v-if="tab === 'overview'" class="_gaps_m">
 			<div class="fnfelxur">
 				<img :src="faviconUrl" alt="" class="icon"/>
@@ -29,8 +29,8 @@
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
 				<div class="_gaps_s">
-					<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
-					<MkSwitch v-model="isBlocked" @update:model-value="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
+					<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
+					<MkSwitch v-model="isBlocked" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>

@@ -1,10 +1,12 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :class="$style.main">
+	<MkSpacer :contentMax="700" :class="$style.main">
 		<div v-if="channel && tab === 'overview'" class="_gaps">
 			<div class="_panel" :class="$style.bannerContainer">
 				<XChannelFollowButton :channel="channel" :full="true" :class="$style.subscribe"/>
+				<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" asLike class="button" rounded primary :class="$style.favorite" @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
+				<MkButton v-else v-tooltip="i18n.ts.favorite" asLike class="button" rounded :class="$style.favorite" @click="favorite()"><i class="ti ti-star"></i></MkButton>
 				<div :style="{ backgroundImage: channel.bannerUrl ? `url(${channel.bannerUrl})` : null }" :class="$style.banner">
 					<div :class="$style.bannerStatus">
 						<div><i class="ti ti-users ti-fw"></i><I18n :src="i18n.ts._channel.usersCount" tag="span" style="margin-left: 4px;"><template #n><b>{{ channel.usersCount }}</b></template></I18n></div>
@@ -13,12 +15,9 @@
 					<div :class="$style.bannerFade"></div>
 				</div>
 				<div v-if="channel.description" :class="$style.description">
-					<Mfm :text="channel.description" :is-note="false" :i="$i"/>
+					<Mfm :text="channel.description" :isNote="false" :i="$i"/>
 				</div>
 			</div>
-
-			<MkButton v-if="favorited" v-tooltip="i18n.ts.unfavorite" as-like class="button" rounded primary @click="unfavorite()"><i class="ti ti-star"></i></MkButton>
-			<MkButton v-else v-tooltip="i18n.ts.favorite" as-like class="button" rounded @click="favorite()"><i class="ti ti-star"></i></MkButton>
 
 			<MkFoldableSection>
 				<template #header><i class="ti ti-pin ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedNotes }}</template>
@@ -46,13 +45,13 @@
 					</MkInput>
 					<MkButton primary rounded style="margin-top: 8px;" @click="search()">{{ i18n.ts.search }}</MkButton>
 				</div>
-				<MkNotes v-if="searchPagination" :key="searchQuery" :pagination="searchPagination"/>
+				<MkNotes v-if="searchPagination" :key="searchKey" :pagination="searchPagination"/>
 			</div>
 		</div>
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
 				<div class="_buttonsCenter">
 					<MkButton inline rounded primary gradate @click="openPostForm()"><i class="ti ti-pencil"></i> {{ i18n.ts.postToTheChannel }}</MkButton>
 				</div>
@@ -93,6 +92,7 @@ let channel = $ref(null);
 let favorited = $ref(false);
 let searchQuery = $ref('');
 let searchPagination = $ref();
+let searchKey = $ref('');
 const featuredPagination = $computed(() => ({
 	endpoint: 'notes/featured' as const,
 	limit: 10,
@@ -149,10 +149,12 @@ async function search() {
 		endpoint: 'notes/search',
 		limit: 10,
 		params: {
-			query: searchQuery,
+			query: query,
 			channelId: channel.id,
 		},
 	};
+
+	searchKey = query;
 }
 
 const headerActions = $computed(() => {
@@ -224,6 +226,13 @@ definePageMetadata(computed(() => channel ? {
 	z-index: 1;
 	top: 16px;
 	left: 16px;
+}
+
+.favorite {
+	position: absolute;
+	z-index: 1;
+	top: 16px;
+	right: 16px;
 }
 
 .banner {

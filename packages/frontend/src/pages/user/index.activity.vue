@@ -9,7 +9,7 @@
 	</template>
 
 	<div style="padding: 8px;">
-		<MkChart :src="chartSrc" :args="{ user, withoutAll: true }" span="day" :limit="limit" :bar="true" :stacked="true" :detailed="false" :aspect-ratio="5"/>
+		<MkChart :src="chartSrc" :args="{ user, withoutAll: true }" span="day" :limit="limit" :bar="true" :stacked="true" :detailed="false" :aspectRatio="5"/>
 	</div>
 </MkContainer>
 </template>

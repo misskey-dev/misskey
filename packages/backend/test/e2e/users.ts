@@ -43,7 +43,6 @@ describe('ユーザー', () => {
 
 	type MeDetailed = UserDetailedNotMe & 
 		misskey.entities.MeDetailed & {
-		showTimelineReplies: boolean,
 		achievements: object[],
 		loggedInDays: number,
 		policies: object,
@@ -145,6 +144,7 @@ describe('ユーザー', () => {
 			carefulBot: user.carefulBot,
 			autoAcceptFollowed: user.autoAcceptFollowed,
 			noCrawle: user.noCrawle,
+			preventAiLearning: user.preventAiLearning,
 			isExplorable: user.isExplorable,
 			isDeleted: user.isDeleted,
 			hideOnlineStatus: user.hideOnlineStatus,
@@ -159,7 +159,6 @@ describe('ユーザー', () => {
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
 			emailNotificationTypes: user.emailNotificationTypes,
-			showTimelineReplies: user.showTimelineReplies,
 			achievements: user.achievements, 
 			loggedInDays: user.loggedInDays,
 			policies: user.policies,
@@ -370,7 +369,7 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.pinnedNotes, []);
 		assert.strictEqual(response.pinnedPageId, null);
 		assert.strictEqual(response.pinnedPage, null);
-		assert.strictEqual(response.publicReactions, false);
+		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.ffVisibility, 'public');
 		assert.strictEqual(response.twoFactorEnabled, false);
 		assert.strictEqual(response.usePasswordLessLogin, false);
@@ -390,6 +389,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.carefulBot, false);
 		assert.strictEqual(response.autoAcceptFollowed, true);
 		assert.strictEqual(response.noCrawle, false);
+		assert.strictEqual(response.preventAiLearning, true);
 		assert.strictEqual(response.isExplorable, true);
 		assert.strictEqual(response.isDeleted, false);
 		assert.strictEqual(response.hideOnlineStatus, false);
@@ -404,7 +404,6 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.mutedInstances, []);
 		assert.deepStrictEqual(response.mutingNotificationTypes, []);
 		assert.deepStrictEqual(response.emailNotificationTypes, ['follow', 'receiveFollowRequest']);
-		assert.strictEqual(response.showTimelineReplies, false);
 		assert.deepStrictEqual(response.achievements, []);
 		assert.deepStrictEqual(response.loggedInDays, 0);
 		assert.deepStrictEqual(response.policies, DEFAULT_POLICIES); 
@@ -462,12 +461,12 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ autoAcceptFollowed: false }) },
 		{ parameters: (): object => ({ noCrawle: true }) },
 		{ parameters: (): object => ({ noCrawle: false }) },
+		{ parameters: (): object => ({ preventAiLearning: false }) },
+		{ parameters: (): object => ({ preventAiLearning: true }) },
 		{ parameters: (): object => ({ isBot: true }) },
 		{ parameters: (): object => ({ isBot: false }) },
 		{ parameters: (): object => ({ isCat: true }) },
 		{ parameters: (): object => ({ isCat: false }) },
-		{ parameters: (): object => ({ showTimelineReplies: true }) },
-		{ parameters: (): object => ({ showTimelineReplies: false }) },
 		{ parameters: (): object => ({ injectFeaturedNote: true }) },
 		{ parameters: (): object => ({ injectFeaturedNote: false }) },
 		{ parameters: (): object => ({ receiveAnnouncementEmail: true }) },

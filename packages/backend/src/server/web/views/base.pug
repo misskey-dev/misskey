@@ -25,7 +25,6 @@ html
 		meta(name='referrer' content='origin')
 		meta(name='theme-color' content= themeColor || '#86b300')
 		meta(name='theme-color-orig' content= themeColor || '#86b300')
-		meta(property='twitter:card' content='summary')
 		meta(property='og:site_name' content= instanceName || 'Misskey')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
 		link(rel='icon' href= icon || '/favicon.ico')
@@ -36,7 +35,7 @@ html
 		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
 		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
 		//- https://github.com/misskey-dev/misskey/issues/9842
-		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.17.0')
+		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.21.0')
 		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
 
 		if !config.clientManifestExists
@@ -59,6 +58,7 @@ html
 			meta(property='og:title'       content= title || 'Misskey') 
 			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨') 
 			meta(property='og:image'       content= img)
+			meta(property='twitter:card'   content='summary')
 
 		style
 			include ../style.css

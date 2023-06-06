@@ -4,7 +4,7 @@
 	:width="800"
 	:height="500"
 	:scroll="false"
-	:with-ok-button="true"
+	:withOkButton="true"
 	@close="cancel()"
 	@ok="ok()"
 	@closed="$emit('closed')"

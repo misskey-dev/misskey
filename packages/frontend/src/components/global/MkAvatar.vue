@@ -1,8 +1,8 @@
 <template>
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
-	<img :class="$style.inner" :src="url" decoding="async"/>
+	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true"/>
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
-	<div v-if="user.isCat" :class="[$style.ears, { [$style.mask]: useBlurEffect }]">
+	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
 			<div v-if="false" :class="$style.layer">
 				<div :class="$style.plot" :style="{ backgroundImage: `url(${JSON.stringify(url)})` }"/>
@@ -24,6 +24,7 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
+import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
@@ -153,24 +154,6 @@ watch(() => props.user.avatarBlurhash, () => {
 		height: 100%;
 		padding: 50%;
 		pointer-events: none;
-
-		&.mask {
-			-webkit-mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') center / 50% 50%,
-				linear-gradient(#fff, #fff);
-			-webkit-mask-composite: destination-out, source-over;
-			mask:
-				url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><filter id="a"><feGaussianBlur in="SourceGraphic" stdDeviation="1"/></filter><circle cx="16" cy="16" r="15" filter="url(%23a)"/></svg>') exclude center / 50% 50%,
-				linear-gradient(#fff, #fff); // polyfill of `image(#fff)`
-
-			> .earLeft {
-				animation: eartightleft 6s infinite;
-			}
-
-			> .earRight {
-				animation: eartightright 6s infinite;
-			}
-		}
 
 		> .earLeft,
 		> .earRight {

@@ -452,6 +452,7 @@ native: "Natif"
 disableDrawer: "Les menus ne s'affichent pas dans le tiroir"
 noHistory: "Pas d'historique"
 signinHistory: "Historique de connexion"
+enableAdvancedMfm: "Activer la MFM avancée"
 doing: "En cours..."
 category: "Catégorie"
 tags: "Étiquettes"
@@ -846,6 +847,7 @@ rateLimitExceeded: "Limite de taux dépassée"
 cropImage: "Recadrer l'image"
 cropImageAsk: "Voulez-vous recadrer cette image ?"
 cropYes: "Rogner"
+cropNo: "Utiliser en l'état"
 file: "Fichiers"
 recentNHours: "Dernières {n} heures"
 recentNDays: "Derniers {n} jours"
@@ -906,18 +908,22 @@ neverShow: "Ne plus afficher"
 remindMeLater: "Peut-être plus tard"
 roles: "Rôles"
 role: "Rôles"
+noRole: "Aucun rôle"
 normalUser: "Simple utilisateur·rice"
 assign: "Attribuer"
 color: "Couleur"
 manageCustomEmojis: "Gestion des émojis personnalisés"
 preset: "Préréglage"
 selectFromPresets: "Sélectionner à partir des préréglages"
+thisPostMayBeAnnoying: "Cette note peut gêner d'autres personnes."
+thisPostMayBeAnnoyingCancel: "Annuler"
 license: "Licence"
 video: "Vidéo"
 videos: "Vidéos"
 dataSaver: "Économiseur de données"
 accountMigration: "Migration de compte"
 accountMoved: "Cet·te utilisateur·rice a migré son compte vers :"
+addMemo: "Ajouter un mémo"
 notificationDisplay: "Style des notifications"
 leftTop: "En haut à gauche"
 rightTop: "En haut à droite"
@@ -925,19 +931,25 @@ leftBottom: "En bas à gauche"
 rightBottom: "En bas à droite"
 vertical: "Vertical"
 horizontal: "Latéral"
+serverRules: "Règles du serveur"
 youFollowing: "Abonné·e"
 _achievements:
   _types:
     _notes1:
       description: "Publiez votre première note"
       flavor: "Passez un bon moment avec Misskey !"
+    _notes100:
+      title: "Beaucoup de notes"
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
     _login3:
+      title: "Débutant Ⅰ"
       description: "Se connecter pour un total de 3 jours"
     _login7:
+      title: "Débutant Ⅱ"
       description: "Se connecter pour un total de 7 jours"
     _login15:
+      title: "Débutant Ⅲ"
       description: "Se connecter pour un total de 15 jours"
     _login30:
       description: "Se connecter pour un total de 30 jours"
@@ -945,6 +957,22 @@ _achievements:
       description: "Se connecter pour un total de 60 jours"
     _login100:
       description: "Se connecter pour un total de 100 jours"
+    _login200:
+      description: "Se connecter pour un total de 200 jours"
+    _login300:
+      description: "Se connecter pour un total de 300 jours"
+    _login400:
+      description: "Se connecter pour un total de 400 jours"
+    _login500:
+      description: "Se connecter pour un total de 500 jours"
+    _login600:
+      description: "Se connecter pour un total de 600 jours"
+    _login700:
+      description: "Se connecter pour un total de 700 jours"
+    _login800:
+      description: "Se connecter pour un total de 800 jours"
+    _login900:
+      description: "Se connecter pour un total de 900 jours"
     _login1000:
       flavor: "Merci d'utiliser Misskey !"
     _markedAsCat:
@@ -954,10 +982,16 @@ _achievements:
       title: "Beaucoup d'amis"
     _followers10:
       title: "Abonnez-moi !"
+    _iLoveMisskey:
+      title: "J’adore Misskey"
     _viewInstanceChart:
       title: "Analyste"
+    _loggedInOnBirthday:
+      title: "Joyeux Anniversaire !"
     _loggedInOnNewYearsDay:
       title: "Bonne année !"
+    _cookieClicked:
+      flavor: "Attendez une minute, vous êtes sur le mauvais site web ?"
 _role:
   assignTarget: "Attribuer"
   priority: "Priorité"
