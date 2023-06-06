@@ -1060,6 +1060,8 @@ cancelReactionConfirm: "Really delete your reaction?"
 changeReactionConfirm: "Really change your reaction?"
 later: "Later"
 goToMisskey: "To Misskey"
+additionalEmojiDictionary: "Additional emoji dictionaries"
+installed: "Installed"
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."

@@ -1061,6 +1061,7 @@ changeReactionConfirm: "リアクションを変更しますか？"
 later: "あとで"
 goToMisskey: "Misskeyへ"
 additionalEmojiDictionary: "絵文字の追加辞書"
+installed: "インストール済み"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
