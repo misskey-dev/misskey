@@ -843,7 +843,10 @@ describe('OAuth', () => {
 		});
 	});
 
-	// TODO: Unknown OAuth endpoint
+	test('Unknown OAuth endpoint', async () => {
+		const response = await fetch(new URL('/oauth/foo', host));
+		assert.strictEqual(response.status, 404);
+	});
 
 	// TODO: Add spec links to tests
 });
