@@ -14,6 +14,9 @@
 
 ## 13.13.1 (unreleased)
 
+### Client
+- Fix: タブがアクティブな間はstreamが切断されないように
+
 ### Server
 - Fix: api/metaで`TypeError: JSON5.parse is not a function`エラーが発生する問題を修正
 
