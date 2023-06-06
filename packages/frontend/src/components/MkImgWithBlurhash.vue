@@ -25,7 +25,10 @@ import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-bl
 const canvasPromise = new Promise<WorkerMultiDispatch | HTMLCanvasElement>(resolve => {
 	// テスト環境で Web Worker インスタンスは作成できない
 	if (import.meta.env.MODE === 'test') {
-		resolve(document.createElement('canvas'));
+		const canvas = document.createElement('canvas');
+		canvas.width = 64;
+		canvas.height = 64;
+		resolve(canvas);
 		return;
 	}
 	const testWorker = new TestWebGL2();
