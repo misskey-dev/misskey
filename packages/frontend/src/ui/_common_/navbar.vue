@@ -32,11 +32,11 @@
 				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
 
-			<button v-click-anime class="item _button" v-tooltip.noDelay.right="i18n.ts.mulukhiyaHome" @click="mulukhiya">
-				<i class="icon ti ti-leaf ti-fw"></i><span class="text">{{ i18n.ts.mulukhiyaHome }}</span>
+			<button class="_button" :class="$style.item" v-tooltip.noDelay.right="i18n.ts.mulukhiyaHome" @click="mulukhiya">
+				<i :class="$style.itemIcon" class="ti ti-leaf ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.mulukhiyaHome }}</span>
 			</button>
-			<button v-click-anime class="item _button" v-tooltip.noDelay.right="i18n.ts.daisskeyBlog" @click="daisskeyBlog">
-				<i class="icon ti ti-file ti-fw"></i><span class="text">{{ i18n.ts.daisskeyBlog }}</span>
+			<button class="_button" :class="$style.item" v-tooltip.noDelay.right="i18n.ts.daisskeyBlog" @click="daisskeyBlog">
+				<i :class="$style.itemIcon" class="ti ti-file ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.daisskeyBlog }}</span>
 			</button>
 
 			<button class="_button" :class="$style.item" @click="more">
