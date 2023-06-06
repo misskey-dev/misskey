@@ -19,7 +19,7 @@ export function useStream(): Misskey.Stream {
 
 function heartbeat(): void {
 	if (stream != null && document.visibilityState === 'visible') {
-		stream.send('ping');
+		stream.heartbeat();
 	}
 	window.setTimeout(heartbeat, 1000 * 60);
 }
