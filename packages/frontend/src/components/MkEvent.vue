@@ -16,60 +16,60 @@
 			</dd>
 		</template>
 		<template v-if="note.event!.metadata.doorTime">
-			<dt :class="$style.key">{{ "Door Time" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.doorTime }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.doorTime }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.location">
-			<dt :class="$style.key">{{ "Location" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.location }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.location }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.url">
-			<dt :class="$style.key">{{ "URL" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.url }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.organizer">
-			<dt :class="$style.key">{{ "Organizer" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.organizer }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.organizer.name }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.audience">
-			<dt :class="$style.key">{{ "Audience" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.audience }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.audience.name }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.inLanguage">
-			<dt :class="$style.key">{{ "Language" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.language }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.inLanguage }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.typicalAgeRange">
-			<dt :class="$style.key">{{ "Ages" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.ageRange }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.typicalAgeRange }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.performer">
-			<dt :class="$style.key">{{ "Performers" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.performers }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.performer.join(', ') }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.offers?.url">
-			<dt :class="$style.key">{{ "Tickets" }}</dt> 
-			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
+			<dt :class="$style.key">{{ i18n.ts._event.ticketsUrl }}</dt> 
+			<dd :class="$style.value">{{ note.event!.metadata.offers.url }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.isAccessibleForFree">
-			<dt :class="$style.key">{{ "Free" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.isFree }}</dt> 
 			<dd :class="$style.value">{{ "Yes" }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.offers?.price">
-			<dt :class="$style.key">{{ "Price" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.price }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.offers.price }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.offers?.availabilityStarts || note.event!.metadata.offers?.availabilityEnds">
-			<dt :class="$style.key">{{ "Tickets Available" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.availability }}</dt> 
 			<dd :class="$style.value">
 				{{ [
-					(note.event!.metadata.offers.availabilityStarts ? 'From ' + note.event!.metadata.offers.availabilityStarts : ''), 
-					(note.event!.metadata.offers.availabilityEnds ? 'Until ' + note.event!.metadata.offers.availabilityEnds : '')]
+					(note.event!.metadata.offers.availabilityStarts ? i18n.ts._event.from + note.event!.metadata.offers.availabilityStarts : ''), 
+					(note.event!.metadata.offers.availabilityEnds ? i18n.ts._event.until + note.event!.metadata.offers.availabilityEnds : '')]
 					.join(' ') }}
 			</dd>
 		</template>
 		<template v-if="note.event!.metadata.keywords">
-			<dt :class="$style.key">{{ "Keywords" }}</dt> 
+			<dt :class="$style.key">{{ i18n.ts._event.keywords }}</dt> 
 			<dd :class="$style.value">{{ note.event!.metadata.keywords }}</dd>
 		</template>
 	</dl>
