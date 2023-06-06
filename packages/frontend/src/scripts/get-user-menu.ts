@@ -4,7 +4,7 @@ import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host } from '@/config';
 import * as os from '@/os';
-import { userActions } from '@/store';
+import { defaultStore, userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
@@ -237,6 +237,16 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-exclamation-circle',
 			text: i18n.ts.reportAbuse,
 			action: reportAbuse,
+		}]);
+	}
+
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyUserId,
+			action: () => {
+				copyToClipboard(user.id);
+			},
 		}]);
 	}
 

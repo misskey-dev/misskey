@@ -307,6 +307,14 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
+	public async isExplorable(role: { id: Role['id']} | null): Promise<boolean> {
+		if (role == null) return false;
+		const check = await this.rolesRepository.findOneBy({ id: role.id });
+		if (check == null) return false;
+		return check.isExplorable;
+	}
+
+	@bindThis
 	public async getModeratorIds(includeAdmins = true): Promise<User['id'][]> {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
 		const moderatorRoles = includeAdmins ? roles.filter(r => r.isModerator || r.isAdministrator) : roles.filter(r => r.isModerator);
@@ -425,7 +433,12 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

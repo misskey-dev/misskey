@@ -1,24 +1,24 @@
 <template>
-<MkSpacer :content-max="1200">
+<MkSpacer :contentMax="1200">
 	<MkTab v-model="origin" style="margin-bottom: var(--margin);">
 		<option value="local">{{ i18n.ts.local }}</option>
 		<option value="remote">{{ i18n.ts.remote }}</option>
 	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
-			<MkFoldableSection class="_margin" persist-key="explore-pinned-users">
+			<MkFoldableSection class="_margin" persistKey="explore-pinned-users">
 				<template #header><i class="ti ti-bookmark ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.pinnedUsers }}</template>
 				<MkUserList :pagination="pinnedUsers"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persist-key="explore-popular-users">
+			<MkFoldableSection class="_margin" persistKey="explore-popular-users">
 				<template #header><i class="ti ti-chart-line ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularUsers }}</template>
 				<MkUserList :pagination="popularUsers"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persist-key="explore-recently-updated-users">
+			<MkFoldableSection class="_margin" persistKey="explore-recently-updated-users">
 				<template #header><i class="ti ti-message ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyUpdatedUsers }}</template>
 				<MkUserList :pagination="recentlyUpdatedUsers"/>
 			</MkFoldableSection>
-			<MkFoldableSection class="_margin" persist-key="explore-recently-registered-users">
+			<MkFoldableSection class="_margin" persistKey="explore-recently-registered-users">
 				<template #header><i class="ti ti-plus ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.recentlyRegisteredUsers }}</template>
 				<MkUserList :pagination="recentlyRegisteredUsers"/>
 			</MkFoldableSection>

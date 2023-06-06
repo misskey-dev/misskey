@@ -4,8 +4,8 @@
 		<template #label>{{ i18n.ts.usageAmount }}</template>
 
 		<div class="_gaps_m">
-			<div class="uawsfosz">
-				<div class="meter"><div :style="meterStyle"></div></div>
+			<div>
+				<div :class="$style.meter"><div :class="$style.meterValue" :style="meterStyle"></div></div>
 			</div>
 			<FormSplit>
 				<MkKeyValue>
@@ -22,7 +22,7 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.statistics }}</template>
-		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspect-ratio="6"/>
+		<MkChart src="per-user-drive" :args="{ user: $i }" span="day" :limit="7 * 5" :bar="true" :stacked="true" :detailed="false" :aspectRatio="6"/>
 	</FormSection>
 
 	<FormSection>
@@ -39,10 +39,10 @@
 				<template #label>{{ i18n.ts.keepOriginalUploading }}</template>
 				<template #caption>{{ i18n.ts.keepOriginalUploadingDescription }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="alwaysMarkNsfw" @update:model-value="saveProfile()">
+			<MkSwitch v-model="alwaysMarkNsfw" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.alwaysMarkSensitive }}</template>
 			</MkSwitch>
-			<MkSwitch v-model="autoSensitive" @update:model-value="saveProfile()">
+			<MkSwitch v-model="autoSensitive" @update:modelValue="saveProfile()">
 				<template #label>{{ i18n.ts.enableAutoSensitive }}<span class="_beta">{{ i18n.ts.beta }}</span></template>
 				<template #caption>{{ i18n.ts.enableAutoSensitiveDescription }}</template>
 			</MkSwitch>
@@ -139,22 +139,16 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+.meter {
+	height: 10px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 999px;
+	overflow: clip;
+}
 
-@use "sass:math";
-
-.uawsfosz {
-
-	> .meter {
-		$size: 12px;
-		background: rgba(0, 0, 0, 0.1);
-		border-radius: math.div($size, 2);
-		overflow: hidden;
-
-		> div {
-			height: $size;
-			border-radius: math.div($size, 2);
-		}
-	}
+.meterValue {
+	height: 100%;
+	border-radius: 999px;
 }
 </style>

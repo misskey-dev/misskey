@@ -5,10 +5,10 @@ import type { UsersRepository, DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
-import type { DbJobDataWithUser } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
+import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
 export class DeleteDriveFilesProcessorService {
@@ -31,12 +31,11 @@ export class DeleteDriveFilesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
 		this.logger.info(`Deleting drive files of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -56,7 +55,7 @@ export class DeleteDriveFilesProcessorService {
 			});
 
 			if (files.length === 0) {
-				job.progress(100);
+				job.updateProgress(100);
 				break;
 			}
 
@@ -71,10 +70,9 @@ export class DeleteDriveFilesProcessorService {
 				userId: user.id,
 			});
 
-			job.progress(deletedCount / total);
+			job.updateProgress(deletedCount / total);
 		}
 
 		this.logger.succ(`All drive files (${deletedCount}) of ${user.id} has been deleted.`);
-		done();
 	}
 }

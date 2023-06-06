@@ -1,28 +1,28 @@
 <template>
 <div class="_gaps_m">
-	<div class="llvierxe" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
-		<div class="avatar">
-			<MkAvatar class="avatar" :user="$i" @click="changeAvatar"/>
-			<MkButton primary rounded class="avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
+		<div :class="$style.avatarContainer">
+			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
+			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
-		<MkButton primary rounded class="bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
+		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
 
-	<MkInput v-model="profile.name" :max="30" manual-save>
+	<MkInput v-model="profile.name" :max="30" manualSave>
 		<template #label>{{ i18n.ts._profile.name }}</template>
 	</MkInput>
 
-	<MkTextarea v-model="profile.description" :max="500" tall manual-save>
+	<MkTextarea v-model="profile.description" :max="500" tall manualSave>
 		<template #label>{{ i18n.ts._profile.description }}</template>
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
 
-	<MkInput v-model="profile.location" manual-save>
+	<MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
 	</MkInput>
 
-	<MkInput v-model="profile.birthday" type="date" manual-save>
+	<MkInput v-model="profile.birthday" type="date" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
 		<template #prefix><i class="ti ti-cake"></i></template>
 	</MkInput>
@@ -48,7 +48,7 @@
 				<Sortable
 					v-model="fields"
 					class="_gaps_s"
-					item-key="id"
+					itemKey="id"
 					:animation="150"
 					:handle="'.' + $style.dragItemHandle"
 					@start="e => e.item.classList.add('active')"
@@ -59,7 +59,7 @@
 							<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
 							<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 							<div :class="$style.dragItemForm">
-								<FormSplit :min-width="200">
+								<FormSplit :minWidth="200">
 									<MkInput v-model="element.name" small>
 										<template #label>{{ i18n.ts._profile.metadataLabel }}</template>
 									</MkInput>
@@ -88,11 +88,11 @@
 	<MkSelect v-model="reactionAcceptance">
 		<template #label>{{ i18n.ts.reactionAcceptance }}</template>
 		<option :value="null">{{ i18n.ts.all }}</option>
-		<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
 		<option value="likeOnlyForRemote">{{ i18n.ts.likeOnlyForRemote }}</option>
+		<option value="nonSensitiveOnly">{{ i18n.ts.nonSensitiveOnly }}</option>
+		<option value="nonSensitiveOnlyForLocalLikeOnlyForRemote">{{ i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote }}</option>
+		<option value="likeOnly">{{ i18n.ts.likeOnly }}</option>
 	</MkSelect>
-
-	<MkSwitch v-model="profile.showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 </div>
 </template>
 
@@ -248,36 +248,35 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.llvierxe {
+<style lang="scss" module>
+.avatarAndBanner {
 	position: relative;
 	background-size: cover;
 	background-position: center;
 	border: solid 1px var(--divider);
 	border-radius: 10px;
 	overflow: clip;
-
-	> .avatar {
-		display: inline-block;
-		text-align: center;
-		padding: 16px;
-
-		> .avatar {
-			display: inline-block;
-			width: 72px;
-			height: 72px;
-			margin: 0 auto 16px auto;
-		}
-	}
-
-	> .bannerEdit {
-		position: absolute;
-		top: 16px;
-		right: 16px;
-	}
 }
-</style>
-<style lang="scss" module>
+
+.avatarContainer {
+	display: inline-block;
+	text-align: center;
+	padding: 16px;
+}
+
+.avatar {
+	display: inline-block;
+	width: 72px;
+	height: 72px;
+	margin: 0 auto 16px auto;
+}
+
+.bannerEdit {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+}
+
 .metadataRoot {
 	container-type: inline-size;
 }

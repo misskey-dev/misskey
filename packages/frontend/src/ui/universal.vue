@@ -1,19 +1,15 @@
 <template>
-<div :class="[$style.root, { [$style.withWallpaper]: wallpaper }]">
+<div :class="$style.root">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
-	<MkStickyContainer :class="$style.contents">
+	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
 		<template #header><XStatusBars :class="$style.statusbars"/></template>
-		<main style="min-width: 0;" :style="{ background: pageMetadata?.value?.bg }" @contextmenu.stop="onContextmenu">
-			<div :class="$style.content" style="container-type: inline-size;">
-				<RouterView/>
-			</div>
-			<div :class="$style.spacer"></div>
-		</main>
+		<RouterView/>
+		<div :class="$style.spacer"></div>
 	</MkStickyContainer>
 
-	<div v-if="isDesktop" ref="widgetsEl" :class="$style.widgets">
-		<XWidgets :margin-top="'var(--margin)'" @mounted="attachSticky"/>
+	<div v-if="isDesktop" :class="$style.widgets">
+		<XWidgets/>
 	</div>
 
 	<button v-if="!isDesktop && !isMobile" :class="$style.widgetButton" class="_button" @click="widgetsShowing = true"><i class="ti ti-apps"></i></button>
@@ -27,10 +23,10 @@
 	</div>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="drawerMenuShowing"
@@ -42,10 +38,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_menuDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_menuDrawer_leaveTo : ''"
 	>
 		<div v-if="drawerMenuShowing" :class="$style.menuDrawer">
 			<XDrawerMenu/>
@@ -53,10 +49,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawerBg_leaveTo : ''"
 	>
 		<div
 			v-if="widgetsShowing"
@@ -68,10 +64,10 @@
 	</Transition>
 
 	<Transition
-		:enter-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
-		:leave-active-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
-		:enter-from-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
-		:leave-to-class="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_widgetsDrawer_leaveTo : ''"
 	>
 		<div v-if="widgetsShowing" :class="$style.widgetsDrawer">
 			<button class="_button" :class="$style.widgetsCloseButton" @click="widgetsShowing = false"><i class="ti ti-x"></i></button>
@@ -84,10 +80,10 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef, watch, inject, Ref } from 'vue';
+import { defineAsyncComponent, provide, onMounted, computed, ref, ComputedRef, watch, shallowRef, Ref } from 'vue';
 import XCommon from './_common_/common.vue';
+import type MkStickyContainer from '@/components/global/MkStickyContainer.vue';
 import { instanceName } from '@/config';
-import { StickySidebar } from '@/scripts/sticky-sidebar';
 import XDrawerMenu from '@/ui/_common_/navbar-for-mobile.vue';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -99,6 +95,7 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
 import { CURRENT_STICKY_BOTTOM } from '@/const';
+
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -114,9 +111,9 @@ window.addEventListener('resize', () => {
 });
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
-const widgetsEl = $shallowRef<HTMLElement>();
 const widgetsShowing = $ref(false);
 const navFooter = $shallowRef<HTMLElement>();
+const contents = shallowRef<InstanceType<typeof MkStickyContainer>>();
 
 provide('router', mainRouter);
 provideMetadataReceiver((info) => {
@@ -139,8 +136,6 @@ const drawerMenuShowing = ref(false);
 mainRouter.on('change', () => {
 	drawerMenuShowing.value = false;
 });
-
-document.documentElement.style.overflowY = 'scroll';
 
 if (window.innerWidth > 1024) {
 	const tempUI = miLocalStorage.getItem('ui_temp');
@@ -197,18 +192,12 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
-const attachSticky = (el) => {
-	const sticky = new StickySidebar(widgetsEl);
-	window.addEventListener('scroll', () => {
-		sticky.calc(window.scrollY);
-	}, { passive: true });
-};
-
 function top() {
-	window.scroll({ top: 0, behavior: 'smooth' });
+	contents.value.rootEl.scrollTo({
+		top: 0,
+		behavior: 'smooth',
+	});
 }
-
-const wallpaper = miLocalStorage.getItem('wallpaper') != null;
 
 let navFooterHeight = $ref(0);
 provide<Ref<number>>(CURRENT_STICKY_BOTTOM, $$(navFooterHeight));
@@ -275,14 +264,11 @@ $widgets-hide-threshold: 1090px;
 }
 
 .root {
-	min-height: 100dvh;
+	height: 100dvh;
+	overflow: clip;
+	contain: strict;
 	box-sizing: border-box;
 	display: flex;
-}
-
-.withWallpaper {
-	background: var(--wallpaperOverlay);
-	//backdrop-filter: var(--blur, blur(4px));
 }
 
 .sidebar {
@@ -290,13 +276,21 @@ $widgets-hide-threshold: 1090px;
 }
 
 .contents {
-	width: 100%;
+	flex: 1;
+	height: 100%;
 	min-width: 0;
+	overflow: auto;
+	overflow-y: scroll;
+	overscroll-behavior: contain;
 	background: var(--bg);
 }
 
 .widgets {
-	padding: 0 var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
+	width: 350px;
+	height: 100%;
+	box-sizing: border-box;
+	overflow: auto;
+	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px));
 	border-left: solid 0.5px var(--divider);
 	background: var(--bg);
 
@@ -328,6 +322,7 @@ $widgets-hide-threshold: 1090px;
 	top: 0;
 	right: 0;
 	z-index: 1001;
+	width: 310px;
 	height: 100dvh;
 	padding: var(--margin) var(--margin) calc(var(--margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;

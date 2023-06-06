@@ -15,6 +15,7 @@ class HybridTimelineChannel extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = true;
 	private q: string[][] = [['delmulin']];
+	private withReplies: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -32,6 +33,8 @@ class HybridTimelineChannel extends Channel {
 	public async init(params: any): Promise<void> {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.ltlAvailable) return;
+
+		this.withReplies = params.withReplies as boolean;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);

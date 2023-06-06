@@ -34,11 +34,8 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		withFiles: {
-			type: 'boolean',
-			default: false,
-			description: 'Only show notes that have attached files.',
-		},
+		withFiles: { type: 'boolean', default: false },
+		withReplies: { type: 'boolean', default: false },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },

@@ -24,6 +24,7 @@
 		<div class="_gaps_s">
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 		</div>
 	</FormSection>
 
@@ -56,7 +57,7 @@
 				<option value="ignore">{{ i18n.ts._nsfw.ignore }}</option>
 				<option value="force">{{ i18n.ts._nsfw.force }}</option>
 			</MkSelect>
-		<!--
+
 			<MkRadios v-model="mediaListWithOneImageAppearance">
 				<template #label>{{ i18n.ts.mediaListWithOneImageAppearance }}</template>
 				<option value="expand">{{ i18n.ts.default }}</option>
@@ -64,7 +65,6 @@
 				<option value="1_1">{{ i18n.t('limitTo', { x: '1:1' }) }}</option>
 				<option value="2_3">{{ i18n.t('limitTo', { x: '2:3' }) }}</option>
 			</MkRadios>
-		-->
 		</div>
 	</FormSection>
 
@@ -145,12 +145,20 @@
 	</FormSection>
 
 	<FormSection>
-		<MkSwitch v-model="aiChanMode">{{ i18n.ts.aiChanMode }}</MkSwitch>
+		<template #label>{{ i18n.ts.other }}</template>
+
+		<div class="_gaps">
+			<MkFolder>
+				<template #label>{{ i18n.ts.additionalEmojiDictionary }}</template>
+				<div v-for="lang in emojiIndexLangs" class="_buttons">
+					<MkButton @click="downloadEmojiIndex(lang)"><i class="ti ti-download"></i> {{ lang }}{{ defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang] ? ` (${ i18n.ts.installed })` : '' }}</MkButton>
+					<MkButton v-if="defaultStore.reactiveState.additionalUnicodeEmojiIndexes.value[lang]" danger @click="removeEmojiIndex(lang)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+				</div>
+			</MkFolder>
+			<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
+			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
+		</div>
 	</FormSection>
-
-	<FormLink to="/settings/deck">{{ i18n.ts.deck }}</FormLink>
-
-	<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 </div>
 </template>
 
@@ -160,6 +168,8 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkRange from '@/components/MkRange.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
@@ -212,10 +222,10 @@ const instanceTicker = computed(defaultStore.makeGetterSetter('instanceTicker'))
 const enableInfiniteScroll = computed(defaultStore.makeGetterSetter('enableInfiniteScroll'));
 const useReactionPickerForContextMenu = computed(defaultStore.makeGetterSetter('useReactionPickerForContextMenu'));
 const squareAvatars = computed(defaultStore.makeGetterSetter('squareAvatars'));
-const aiChanMode = computed(defaultStore.makeGetterSetter('aiChanMode'));
 const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('mediaListWithOneImageAppearance'));
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
+const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -244,7 +254,6 @@ watch([
 	useSystemFont,
 	enableInfiniteScroll,
 	squareAvatars,
-	aiChanMode,
 	showNoteActionsOnlyHover,
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
@@ -252,6 +261,34 @@ watch([
 ], async () => {
 	await reloadAsk();
 });
+
+const emojiIndexLangs = ['en-US'];
+
+function downloadEmojiIndex(lang: string) {
+	async function main() {
+		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+		function download() {
+			switch (lang) {
+				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
+				default: throw new Error('unrecognized lang: ' + lang);
+			}
+		}
+		currentIndexes[lang] = await download();
+		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+	}
+
+	os.promiseDialog(main());
+}
+
+function removeEmojiIndex(lang: string) {
+	async function main() {
+		const currentIndexes = defaultStore.state.additionalUnicodeEmojiIndexes;
+		delete currentIndexes[lang];
+		await defaultStore.set('additionalUnicodeEmojiIndexes', currentIndexes);
+	}
+
+	os.promiseDialog(main());
+}
 
 const headerActions = $computed(() => []);
 

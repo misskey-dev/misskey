@@ -2,12 +2,12 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
+		<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
 			<XEditor v-if="data" v-model="data"/>
 		</MkSpacer>
 		<template #footer>
 			<div :class="$style.footer">
-				<MkSpacer :content-max="600" :margin-min="16" :margin-max="16">
+				<MkSpacer :contentMax="600" :marginMin="16" :marginMax="16">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</MkSpacer>
 			</div>

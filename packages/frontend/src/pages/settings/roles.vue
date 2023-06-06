@@ -3,7 +3,7 @@
 	<FormSection first>
 		<template #label>{{ i18n.ts.rolesAssignedToMe }}</template>
 		<div class="_gaps_s">
-			<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :for-moderation="false"/>
+			<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
 		</div>
 	</FormSection>
 	<FormSection>

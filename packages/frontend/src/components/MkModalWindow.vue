@@ -1,5 +1,5 @@
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" @click="onBgClick" @closed="$emit('closed')">
+<MkModal ref="modal" :preferType="'dialog'" @click="onBgClick" @closed="$emit('closed')">
 	<div ref="rootEl" :class="$style.root" :style="{ width: `${width}px`, height: `min(${height}px, 100%)` }" @keydown="onKeydown">
 		<div ref="headerEl" :class="$style.header">
 			<button v-if="withOkButton" :class="$style.headerButton" class="_button" @click="$emit('close')"><i class="ti ti-x"></i></button>

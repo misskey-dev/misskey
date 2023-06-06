@@ -14,6 +14,7 @@ class LocalTimelineChannel extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = false;
 	private q: string[][] = [['delmulin']];
+	private withReplies: boolean;
 
 	constructor(
 		private noteEntityService: NoteEntityService,
@@ -31,6 +32,8 @@ class LocalTimelineChannel extends Channel {
 	public async init(params: any) {
 		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
 		if (!policies.ltlAvailable) return;
+
+		this.withReplies = params.withReplies as boolean;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);

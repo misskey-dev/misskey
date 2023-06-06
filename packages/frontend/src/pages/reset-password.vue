@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer v-if="token" :content-max="700" :margin-min="16" :margin-max="32">
+	<MkSpacer v-if="token" :contentMax="700" :marginMin="16" :marginMax="32">
 		<div class="_gaps_m">
 			<MkInput v-model="password" type="password">
 				<template #prefix><i class="ti ti-lock"></i></template>
@@ -53,7 +53,3 @@ definePageMetadata({
 	icon: 'ti ti-lock',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

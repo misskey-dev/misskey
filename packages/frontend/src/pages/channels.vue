@@ -1,13 +1,13 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div v-if="tab === 'search'">
 			<div class="_gaps">
 				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
-				<MkRadios v-model="searchType" @update:model-value="search()">
+				<MkRadios v-model="searchType" @update:modelValue="search()">
 					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
 					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
 				</MkRadios>

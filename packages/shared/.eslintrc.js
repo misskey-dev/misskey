@@ -49,7 +49,7 @@ module.exports = {
 		'no-multi-spaces': ['error'],
 		'no-var': ['error'],
 		'prefer-arrow-callback': ['error'],
-		'no-throw-literal': ['warn'],
+		'no-throw-literal': ['error'],
 		'no-param-reassign': ['warn'],
 		'no-constant-condition': ['warn'],
 		'no-empty-pattern': ['warn'],

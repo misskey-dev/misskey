@@ -3,8 +3,8 @@
 	ref="dialog"
 	:width="800"
 	:height="500"
-	:with-ok-button="true"
-	:ok-button-disabled="(type === 'file') && (selected.length === 0)"
+	:withOkButton="true"
+	:okButtonDisabled="(type === 'file') && (selected.length === 0)"
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
@@ -14,7 +14,7 @@
 		{{ multiple ? ((type === 'file') ? i18n.ts.selectFiles : i18n.ts.selectFolders) : ((type === 'file') ? i18n.ts.selectFile : i18n.ts.selectFolder) }}
 		<span v-if="selected.length > 0" style="margin-left: 8px; opacity: 0.5;">({{ number(selected.length) }})</span>
 	</template>
-	<XDrive :multiple="multiple" :select="type" @change-selection="onChangeSelection" @selected="ok()"/>
+	<XDrive :multiple="multiple" :select="type" @changeSelection="onChangeSelection" @selected="ok()"/>
 </MkModalWindow>
 </template>
 
