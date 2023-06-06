@@ -1,5 +1,5 @@
 <template>
-<div ref="rootEl" class="_panel" :class="[$style.root, { [$style.naked]: naked, [$style.thin]: thin, [$style.hideHeader]: !showHeader, [$style.scrollable]: scrollable, [$style.closed]: !showBody }]">
+<div ref="rootEl" class="_panel" :class="[$style.root, { [$style.naked]: naked, [$style.thin]: thin, [$style.scrollable]: scrollable }]">
 	<header v-if="showHeader" ref="headerEl" :class="$style.header">
 		<div :class="$style.title">
 			<span :class="$style.titleIcon"><slot name="icon"></slot></span>

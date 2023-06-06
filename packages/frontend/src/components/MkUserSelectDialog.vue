@@ -9,7 +9,7 @@
 	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
-	<div :class="$style.root">
+	<div>
 		<div :class="$style.form">
 			<FormSplit :minWidth="170">
 				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
@@ -126,8 +126,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
-.root {
-}
 
 .form {
 	padding: 0 var(--root-margin);
