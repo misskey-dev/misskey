@@ -1,53 +1,4 @@
 <template>
-<<<<<<< HEAD
-<div class="kmwsukvl">
-	<div class="body">
-		<div class="top">
-			<div class="banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
-			<button v-click-anime class="item _button instance" @click="openInstanceMenu">
-				<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" class="icon"/>
-			</button>
-		</div>
-		<div class="middle">
-			<MkA v-click-anime class="item index" active-class="active" to="/" exact>
-				<i class="icon ti ti-home ti-fw"></i><span class="text">{{ i18n.ts.timeline }}</span>
-			</MkA>
-			<template v-for="item in menu">
-				<div v-if="item === '-'" class="divider"></div>
-				<component :is="navbarItemDef[item].to ? 'MkA' : 'button'" v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)" v-click-anime class="item _button" :class="[item, { active: navbarItemDef[item].active }]" active-class="active" :to="navbarItemDef[item].to" v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}">
-					<i class="icon ti-fw" :class="navbarItemDef[item].icon"></i><span class="text">{{ navbarItemDef[item].title }}</span>
-					<span v-if="navbarItemDef[item].indicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
-				</component>
-			</template>
-			<div class="divider"></div>
-			<MkA v-if="$i.isAdmin || $i.isModerator" v-click-anime class="item" active-class="active" to="/admin">
-				<i class="icon ti ti-dashboard ti-fw"></i><span class="text">{{ i18n.ts.controlPanel }}</span>
-			</MkA>
-			<button v-click-anime class="item _button" @click="mulukhiya">
-				<i class="icon ti ti-leaf ti-fw"></i><span class="text">{{ i18n.ts.mulukhiyaHome }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
-			</button>
-			<button v-click-anime class="item _button" @click="daisskeyBlog">
-				<i class="icon ti ti-file ti-fw"></i><span class="text">{{ i18n.ts.daisskeyBlog }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
-			</button>
-			<button v-click-anime class="item _button" @click="more">
-				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
-			</button>
-			<MkA v-click-anime class="item" active-class="active" to="/settings">
-				<i class="icon ti ti-settings ti-fw"></i><span class="text">{{ i18n.ts.settings }}</span>
-			</MkA>
-		</div>
-		<div class="bottom">
-			<button class="item _button post" data-cy-open-post-form @click="os.post">
-				<i class="icon ti ti-pencil ti-fw"></i><span class="text">{{ i18n.ts.note }}</span>
-			</button>
-			<button v-click-anime class="item _button account" @click="openAccountMenu">
-				<MkAvatar :user="$i" class="avatar"/><MkAcct class="text _nowrap" :user="$i"/>
-			</button>
-		</div>
-=======
 <div :class="$style.root">
 	<div :class="$style.top">
 		<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }"></div>
@@ -70,6 +21,14 @@
 		<MkA v-if="$i.isAdmin || $i.isModerator" :class="$style.item" :activeClass="$style.active" to="/admin">
 			<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 		</MkA>
+
+		<button :class="$style.item" class="_button" @click="mulukhiya">
+			<i :class="$style.itemIcon" class="ti ti-leaf ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.mulukhiyaHome }}</span>
+		</button>
+		<button :class="$style.item" class="_button" @click="daisskeyBlog">
+			<i :class="$style.itemIcon" class="ti ti-file ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.daisskeyBlog }}</span>
+		</button>
+
 		<button :class="$style.item" class="_button" @click="more">
 			<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.more }}</span>
 			<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
@@ -85,7 +44,6 @@
 		<button class="_button" :class="$style.account" @click="openAccountMenu">
 			<MkAvatar :user="$i" :class="$style.avatar"/><MkAcct :class="$style.acct" class="_nowrap" :user="$i"/>
 		</button>
->>>>>>> main.pooza
 	</div>
 </div>
 </template>

@@ -31,23 +31,17 @@
 			<MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item" :activeClass="$style.active" to="/admin">
 				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
-<<<<<<< HEAD
+
 			<button v-click-anime class="item _button" v-tooltip.noDelay.right="i18n.ts.mulukhiyaHome" @click="mulukhiya">
 				<i class="icon ti ti-leaf ti-fw"></i><span class="text">{{ i18n.ts.mulukhiyaHome }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 			</button>
 			<button v-click-anime class="item _button" v-tooltip.noDelay.right="i18n.ts.daisskeyBlog" @click="daisskeyBlog">
 				<i class="icon ti ti-file ti-fw"></i><span class="text">{{ i18n.ts.daisskeyBlog }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
 			</button>
-			<button v-click-anime class="item _button" @click="more">
-				<i class="icon ti ti-grid-dots ti-fw"></i><span class="text">{{ i18n.ts.more }}</span>
-				<span v-if="otherMenuItemIndicated" class="indicator"><i class="icon _indicatorCircle"></i></span>
-=======
+
 			<button class="_button" :class="$style.item" @click="more">
 				<i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.more }}</span>
 				<span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
->>>>>>> main.pooza
 			</button>
 			<MkA v-tooltip.noDelay.right="i18n.ts.settings" :class="$style.item" :activeClass="$style.active" to="/settings">
 				<i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span :class="$style.itemText">{{ i18n.ts.settings }}</span>
