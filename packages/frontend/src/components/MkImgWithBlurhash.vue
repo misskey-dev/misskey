@@ -214,7 +214,7 @@ onMounted(() => {
 onUnmounted(() => {
 	canvasPromise.then(work => {
 		if (work instanceof WorkerMultiDispatch) {
-			work?.removeListener(workerOnMessage);
+			work.removeListener(workerOnMessage);
 		}
 	});
 });
