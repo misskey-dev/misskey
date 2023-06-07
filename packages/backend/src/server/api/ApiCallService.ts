@@ -341,7 +341,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
-		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
+		return await ep.exec(data, user, token, flashToken, file, request.ip, request.headers).catch((err: Error) => {
 			if (err instanceof ApiError || err instanceof AuthenticationError) {
 				throw err;
 			} else {

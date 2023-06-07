@@ -78,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private metaService: MetaService,
 		private driveService: DriveService,
 	) {
-		super(meta, paramDef, async (ps, me, _, file, cleanup, ip, headers) => {
+		super(meta, paramDef, async (ps, me, _1, _2, file, cleanup, ip, headers) => {
 			// Get 'name' parameter
 			let name = ps.name ?? file!.name ?? null;
 			if (name != null) {

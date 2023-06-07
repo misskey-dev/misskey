@@ -40,8 +40,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private appEntityService: AppEntityService,
 	) {
-		super(meta, paramDef, async (ps, user, token) => {
-			const isSecure = user != null && token == null;
+		super(meta, paramDef, async (ps, user, token, flashToken) => {
+			const isSecure = user != null && token == null && flashToken == null;
 
 			// Lookup app
 			const ap = await this.appsRepository.findOneBy({ id: ps.appId });

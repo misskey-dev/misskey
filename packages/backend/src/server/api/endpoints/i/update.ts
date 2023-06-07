@@ -194,9 +194,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 		private cacheService: CacheService,
 	) {
-		super(meta, paramDef, async (ps, _user, token) => {
+		super(meta, paramDef, async (ps, _user, token, flashToken) => {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
-			const isSecure = token == null;
+			const isSecure = token == null && flashToken == null;
 
 			const updates = {} as Partial<User>;
 			const profileUpdates = {} as Partial<UserProfile>;

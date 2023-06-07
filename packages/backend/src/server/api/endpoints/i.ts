@@ -44,8 +44,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private userEntityService: UserEntityService,
 	) {
-		super(meta, paramDef, async (ps, user, token) => {
-			const isSecure = token == null;
+		super(meta, paramDef, async (ps, user, token, flashToken) => {
+			const isSecure = token == null && flashToken == null;
 
 			const now = new Date();
 			const today = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
