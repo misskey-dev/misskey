@@ -180,6 +180,7 @@ import * as ep___i_2fa_keyDone from './endpoints/i/2fa/key-done.js';
 import * as ep___i_2fa_passwordLess from './endpoints/i/2fa/password-less.js';
 import * as ep___i_2fa_registerKey from './endpoints/i/2fa/register-key.js';
 import * as ep___i_2fa_register from './endpoints/i/2fa/register.js';
+import * as ep___i_2fa_generateRecoveryCodes from './endpoints/i/2fa/generate-recovery-codes.js';
 import * as ep___i_2fa_updateKey from './endpoints/i/2fa/update-key.js';
 import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
@@ -521,6 +522,7 @@ const $i_2fa_keyDone: Provider = { provide: 'ep:i/2fa/key-done', useClass: ep___
 const $i_2fa_passwordLess: Provider = { provide: 'ep:i/2fa/password-less', useClass: ep___i_2fa_passwordLess.default };
 const $i_2fa_registerKey: Provider = { provide: 'ep:i/2fa/register-key', useClass: ep___i_2fa_registerKey.default };
 const $i_2fa_register: Provider = { provide: 'ep:i/2fa/register', useClass: ep___i_2fa_register.default };
+const $i_2fa_generateRecoveryCodes: Provider = { provide: 'ep:i/2fa/generate-recovery-codes', useClass: ep___i_2fa_generateRecoveryCodes.default};
 const $i_2fa_updateKey: Provider = { provide: 'ep:i/2fa/update-key', useClass: ep___i_2fa_updateKey.default };
 const $i_2fa_removeKey: Provider = { provide: 'ep:i/2fa/remove-key', useClass: ep___i_2fa_removeKey.default };
 const $i_2fa_unregister: Provider = { provide: 'ep:i/2fa/unregister', useClass: ep___i_2fa_unregister.default };
@@ -866,6 +868,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_passwordLess,
 		$i_2fa_registerKey,
 		$i_2fa_register,
+		$i_2fa_generateRecoveryCodes,
 		$i_2fa_updateKey,
 		$i_2fa_removeKey,
 		$i_2fa_unregister,
@@ -1205,6 +1208,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_2fa_passwordLess,
 		$i_2fa_registerKey,
 		$i_2fa_register,
+		$i_2fa_generateRecoveryCodes,
 		$i_2fa_updateKey,
 		$i_2fa_removeKey,
 		$i_2fa_unregister,
