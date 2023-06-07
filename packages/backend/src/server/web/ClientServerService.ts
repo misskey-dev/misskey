@@ -353,6 +353,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=30');
 			return await reply.view('base', {
 				img: meta.bannerUrl,
+				url: this.config.url,
 				title: meta.name ?? 'Misskey',
 				desc: meta.description,
 				...this.generateCommonPugData(meta),
