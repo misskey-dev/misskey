@@ -2,8 +2,9 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { Component, shallowRef, ShallowRef } from 'vue';
-import { pleaseLogin } from '@/scripts/please-login';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
+import { $i } from '@/account';
+import { page } from '@/router';
 
 type RouteDef = {
 	path: string;
@@ -23,7 +24,7 @@ type ParsedPath = (string | {
 	optional?: boolean;
 })[];
 
-export type Resolved = { route: RouteDef; props: Map<string, string>; child?: Resolved; };
+export type Resolved = { route: RouteDef; props: Map<string, string | boolean>; child?: Resolved; };
 
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
@@ -212,8 +213,9 @@ export class Router extends EventEmitter<{
 			throw new Error('no route found for: ' + path);
 		}
 
-		if (res.route.loginRequired) {
-			pleaseLogin('/');
+		if (res.route.loginRequired && !$i) {
+			res.route.component = page(() => import('@/pages/not-found.vue'));
+			res.props.set('showLoginPopup', true);
 		}
 
 		const isSamePath = beforePath === path;
