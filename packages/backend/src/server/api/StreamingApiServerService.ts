@@ -139,6 +139,7 @@ export class StreamingApiServerService {
 			});
 		});
 
+		// 一定期間通信が無いコネクションは実際には切断されている可能性があるため定期的にterminateする
 		this.#cleanConnectionsIntervalId = setInterval(() => {
 			const now = Date.now();
 			for (const [connection, lastActive] of this.#connections.entries()) {

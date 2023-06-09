@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="_fullinfo">
-		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
+		<img :src="notFoundImageUrl" class="_ghost"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
 	</div>
 </div>
@@ -11,6 +11,7 @@
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { pleaseLogin } from '@/scripts/please-login';
+import { notFoundImageUrl } from '@/instance';
 
 const props = defineProps<{
 	showLoginPopup?: boolean;

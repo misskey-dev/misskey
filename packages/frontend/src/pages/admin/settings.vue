@@ -48,6 +48,21 @@
 								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 							</MkInput>
 
+							<MkInput v-model="notFoundImageUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.notFoundDescription }}</template>
+							</MkInput>
+
+							<MkInput v-model="infoImageUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.nothing }}</template>
+							</MkInput>
+
+							<MkInput v-model="serverErrorImageUrl">
+								<template #prefix><i class="ti ti-link"></i></template>
+								<template #label>{{ i18n.ts.somethingHappened }}</template>
+							</MkInput>
+
 							<MkColorInput v-model="themeColor">
 								<template #label>{{ i18n.ts.themeColor }}</template>
 							</MkColorInput>
@@ -151,6 +166,9 @@ let backgroundImageUrl: string | null = $ref(null);
 let themeColor: any = $ref(null);
 let defaultLightTheme: any = $ref(null);
 let defaultDarkTheme: any = $ref(null);
+let serverErrorImageUrl: string | null = $ref(null);
+let infoImageUrl: string | null = $ref(null);
+let notFoundImageUrl: string | null = $ref(null);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
@@ -169,6 +187,9 @@ async function init() {
 	themeColor = meta.themeColor;
 	defaultLightTheme = meta.defaultLightTheme;
 	defaultDarkTheme = meta.defaultDarkTheme;
+	serverErrorImageUrl = meta.serverErrorImageUrl;
+	infoImageUrl = meta.infoImageUrl;
+	notFoundImageUrl = meta.notFoundImageUrl;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
 	pinnedUsers = meta.pinnedUsers.join('\n');
@@ -190,6 +211,9 @@ function save() {
 		themeColor: themeColor === '' ? null : themeColor,
 		defaultLightTheme: defaultLightTheme === '' ? null : defaultLightTheme,
 		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
+		infoImageUrl,
+		notFoundImageUrl,
+		serverErrorImageUrl,
 		maintainerName,
 		maintainerEmail,
 		pinnedUsers: pinnedUsers.split('\n'),
