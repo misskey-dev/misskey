@@ -48,26 +48,6 @@
 								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
 							</MkInput>
 
-							<MkColorInput v-model="themeColor">
-								<template #label>{{ i18n.ts.themeColor }}</template>
-							</MkColorInput>
-
-							<MkTextarea v-model="defaultLightTheme">
-								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-
-							<MkTextarea v-model="defaultDarkTheme">
-								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-						</div>
-					</FormSection>
-
-					<FormSection>
-						<template #label>{{ i18n.ts.errorImage }}</template>
-
-						<div class="_gaps_m">
 							<MkInput v-model="notFoundImageUrl">
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.notFoundDescription }}</template>
@@ -82,6 +62,20 @@
 								<template #prefix><i class="ti ti-link"></i></template>
 								<template #label>{{ i18n.ts.somethingHappened }}</template>
 							</MkInput>
+
+							<MkColorInput v-model="themeColor">
+								<template #label>{{ i18n.ts.themeColor }}</template>
+							</MkColorInput>
+
+							<MkTextarea v-model="defaultLightTheme">
+								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
+								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
+							</MkTextarea>
+
+							<MkTextarea v-model="defaultDarkTheme">
+								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
+								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
+							</MkTextarea>
 						</div>
 					</FormSection>
 
