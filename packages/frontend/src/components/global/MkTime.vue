@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import isChromatic from 'chromatic/isChromatic';
-import { onUnmounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { i18n } from '@/i18n';
 import { dateTimeFormat } from '@/scripts/intl-const';
 
@@ -49,17 +49,22 @@ const relative = $computed<string>(() => {
 let tickId: number;
 
 function tick() {
-	now = props.origin ?? (new Date()).getTime();
-	const ago = (now - _time) / 1000/*ms*/;
+	const _now = (new Date()).getTime();
+	const ago = (_now - _time) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
-	tickId = window.setTimeout(tick, next);
+	if (_now - now > next) {
+		now = _now;
+	}
 }
 
-if (props.mode === 'relative' || props.mode === 'detail') {
-	tick();
+if (!invalid && (props.mode === 'relative' || props.mode === 'detail' || props.origin === null)) {
+	onMounted(() => {
+		tick();
+		tickId = window.setInterval(tick, 10000);
+	});
 	onUnmounted(() => {
-		window.clearTimeout(tickId);
+		if (tickId) window.clearInterval(tickId);
 	});
 }
 </script>
