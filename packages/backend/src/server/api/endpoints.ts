@@ -180,7 +180,7 @@ import * as ep___i_2fa_keyDone from './endpoints/i/2fa/key-done.js';
 import * as ep___i_2fa_passwordLess from './endpoints/i/2fa/password-less.js';
 import * as ep___i_2fa_registerKey from './endpoints/i/2fa/register-key.js';
 import * as ep___i_2fa_register from './endpoints/i/2fa/register.js';
-import * as ep___i_2fa_generateRecoveryCodes from './endpoints/i/2fa/generate-recovery-codes.js'
+import * as ep___i_2fa_generateRecoveryCodes from './endpoints/i/2fa/generate-recovery-codes.js';
 import * as ep___i_2fa_updateKey from './endpoints/i/2fa/update-key.js';
 import * as ep___i_2fa_removeKey from './endpoints/i/2fa/remove-key.js';
 import * as ep___i_2fa_unregister from './endpoints/i/2fa/unregister.js';
