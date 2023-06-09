@@ -292,4 +292,9 @@ export class QueryService {
 		
 		q.setParameters(mutingQuery.getParameters());
 	}
+
+	@bindThis
+	public generateBlockNsfwContentsQuery(q: SelectQueryBuilder<any>) {
+		q.andWhere('0 = (SELECT COUNT(*) FROM drive_file df WHERE (df.id = ANY(note."fileIds") OR df.id = ANY(renote."fileIds") OR df.id = ANY(reply."fileIds")) AND df."isSensitive" = true)');
+	}
 }

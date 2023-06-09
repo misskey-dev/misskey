@@ -89,6 +89,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queryService.generateChannelQuery(query, me);
 			this.queryService.generateRepliesQuery(query, ps.withReplies, me);
 			this.queryService.generateVisibilityQuery(query, me);
+			
+			if (ps.doNotShowNsfwContentsOnTheTimeline) {
+				this.queryService.generateBlockNsfwContentsQuery(query);
+			}
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateMutedNoteQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);

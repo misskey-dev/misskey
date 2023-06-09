@@ -80,6 +80,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateRepliesQuery(query, ps.withReplies, me);
+			if (ps.doNotShowNsfwContentsOnTheTimeline) {
+				this.queryService.generateBlockNsfwContentsQuery(query);
+			}
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);
 				this.queryService.generateMutedNoteQuery(query, me);
@@ -93,41 +96,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#endregion
 
 			const timeline = await query.take(ps.limit).getMany();
-			let result: Note[] = [];
 
-			if (ps.doNotShowNsfwContentsOnTheTimeline) {
-				for (const timelineNote of timeline) {
-					let renoteNoteFileIds: string[] = [];
-					let replyNoteFileIds: string[] = [];
-					if (timelineNote.renoteId) {
-						renoteNoteFileIds = (await this.notesRepository.findOneByOrFail({
-							id: timelineNote.renoteId,
-						})).fileIds;
-					}
-					if (timelineNote.replyId) {
-						replyNoteFileIds = (await this.notesRepository.findOneByOrFail({
-							id: timelineNote.replyId,
-						})).fileIds;
-					}
-					if (timelineNote.fileIds.length + renoteNoteFileIds.length + replyNoteFileIds.length) {
-						const query = this.driveFilesRepository.createQueryBuilder('files');
-						query.where('files.id IN (:...noteFileIds)', { noteFileIds: [...timelineNote.fileIds, ...renoteNoteFileIds, ...replyNoteFileIds] });
-						query.andWhere('files.isSensitive = true');
-						if (!(await query.getExists())) result.push(timelineNote);
-					} else {
-						result.push(timelineNote);
-					}
-				}
-			} else {
-				result = timeline;
-			}
 			process.nextTick(() => {
 				if (me) {
 					this.activeUsersChart.read(me);
 				}
 			});
 
-			return await this.noteEntityService.packMany(result, me);
+			return await this.noteEntityService.packMany(timeline, me);
 		});
 	}
 }
