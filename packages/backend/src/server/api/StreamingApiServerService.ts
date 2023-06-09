@@ -132,11 +132,8 @@ export class StreamingApiServerService {
 				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
 			});
 
-			connection.on('message', async (data) => {
+			connection.on('pong', () => {
 				this.#connections.set(connection, Date.now());
-				if (data.toString() === 'ping') {
-					connection.send('pong');
-				}
 			});
 		});
 
@@ -144,12 +141,14 @@ export class StreamingApiServerService {
 		this.#cleanConnectionsIntervalId = setInterval(() => {
 			const now = Date.now();
 			for (const [connection, lastActive] of this.#connections.entries()) {
-				if (now - lastActive > 1000 * 60 * 5) {
+				if (now - lastActive > 1000 * 60 * 2) {
 					connection.terminate();
 					this.#connections.delete(connection);
+				} else {
+					connection.ping();
 				}
 			}
-		}, 1000 * 60 * 5);
+		}, 1000 * 60);
 	}
 
 	@bindThis
