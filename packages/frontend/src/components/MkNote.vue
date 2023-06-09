@@ -44,8 +44,8 @@
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<MkAvatar :class="$style.avatar" :user="appearNote.user" link preview/>
 		<div :class="$style.main">
-			<MkNoteHeader :class="$style.header" :note="appearNote" :mini="true"/>
-			<MkInstanceTicker v-if="showTicker" :class="$style.ticker" :instance="appearNote.user.instance"/>
+			<MkNoteHeader :note="appearNote" :mini="true"/>
+			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
 					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
@@ -58,13 +58,13 @@
 						<Mfm v-if="appearNote.text" :text="appearNote.text" :author="appearNote.user" :i="$i" :emojiUrls="appearNote.emojis"/>
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
-							<div v-else :class="$style.translated">
+							<div v-else>
 								<b>{{ i18n.t('translatedFrom', { x: translation.sourceLang }) }}: </b>
 								<Mfm :text="translation.text" :author="appearNote.user" :i="$i" :emojiUrls="appearNote.emojis"/>
 							</div>
 						</div>
 					</div>
-					<div v-if="appearNote.files.length > 0" :class="$style.files">
+					<div v-if="appearNote.files.length > 0">
 						<MkMediaList :mediaList="appearNote.files"/>
 					</div>
 					<MkPoll v-if="appearNote.poll" :note="appearNote" :class="$style.poll"/>
@@ -382,6 +382,8 @@ function undoReact(note): void {
 function onContextmenu(ev: MouseEvent): void {
 	const isLink = (el: HTMLElement) => {
 		if (el.tagName === 'A') return true;
+		// 再生速度の選択などのために、Audio要素のコンテキストメニューはブラウザデフォルトとする。
+		if (el.tagName === 'AUDIO') return true;
 		if (el.parentElement) {
 			return isLink(el.parentElement);
 		}

@@ -12,7 +12,7 @@
 			<Transition :name="$style.change" mode="default" appear>
 				<MarqueeText :key="key" :duration="widgetProps.duration" :reverse="widgetProps.reverse">
 					<span v-for="item in items" :key="item.link" :class="$style.item">
-						<a :class="$style.link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
+						<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 					</span>
 				</MarqueeText>
 			</Transition>

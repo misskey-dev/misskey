@@ -1,6 +1,6 @@
 <template>
 <div
-	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.isStacked]: isStacked, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
+	:class="[$style.root, { [$style.paged]: isMainColumn, [$style.naked]: naked, [$style.active]: active, [$style.draghover]: draghover, [$style.dragging]: dragging, [$style.dropready]: dropready }]"
 	@dragover.prevent.stop="onDragover"
 	@dragleave="onDragleave"
 	@drop.prevent.stop="onDrop"
@@ -24,6 +24,9 @@
 			<template v-else><i class="ti ti-chevron-down"></i></template>
 		</button>
 		<span :class="$style.title"><slot name="header"></slot></span>
+		<svg viewBox="0 0 16 16" version="1.1" :class="$style.grabber">
+			<path fill="currentColor" d="M10 13a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0-4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm-4 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm5-9a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+		</svg>
 		<button v-tooltip="i18n.ts.settings" :class="$style.menu" class="_button" @click.stop="showSettingsMenu"><i class="ti ti-dots"></i></button>
 	</header>
 	<div v-if="active" ref="body" :class="$style.body">
@@ -301,6 +304,7 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: transparent;
 			}
+			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 
@@ -313,6 +317,7 @@ function onDrop(ev) {
 			&::-webkit-scrollbar-track {
 				background: inherit;
 			}
+			scrollbar-color: var(--scrollbarHandle) transparent;
 		}
 	}
 }
@@ -364,23 +369,24 @@ function onDrop(ev) {
 	z-index: 1;
 	width: var(--deckColumnHeaderHeight);
 	line-height: var(--deckColumnHeaderHeight);
-	color: var(--faceTextButton);
-
-	&:hover {
-		color: var(--faceTextButtonHover);
-	}
-
-	&:active {
-		color: var(--faceTextButtonActive);
-	}
 }
 
 .toggleActive {
 	margin-left: -16px;
 }
 
-.menu {
+.grabber {
 	margin-left: auto;
+	margin-right: 10px;
+	padding: 8px 8px;
+	box-sizing: border-box;
+	height: var(--deckColumnHeaderHeight);
+	cursor: move;
+	user-select: none;
+	opacity: 0.5;
+}
+
+.menu {
 	margin-right: -16px;
 }
 
@@ -396,5 +402,6 @@ function onDrop(ev) {
 	&::-webkit-scrollbar-track {
 		background: var(--panel);
 	}
+	scrollbar-color: var(--scrollbarHandle) var(--panel);
 }
 </style>

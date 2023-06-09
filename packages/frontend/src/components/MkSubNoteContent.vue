@@ -1,6 +1,6 @@
 <template>
 <div :class="[$style.root, { [$style.collapsed]: collapsed }]">
-	<div :class="$style.body">
+	<div>
 		<span v-if="note.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 		<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deleted }})</span>
 		<MkA v-if="note.replyId" :class="$style.reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
@@ -74,10 +74,6 @@ const collapsed = $ref(
 			}
 		}
 	}
-}
-
-.body {
-
 }
 
 .reply {

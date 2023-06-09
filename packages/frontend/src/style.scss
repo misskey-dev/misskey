@@ -34,7 +34,7 @@ html {
 	tab-size: 2;
 
 	&, * {
-		scrollbar-color: var(--scrollbarHandle) inherit;
+		scrollbar-color: var(--scrollbarHandle) transparent;
 		scrollbar-width: thin;
 
 		&::-webkit-scrollbar {
