@@ -49,7 +49,7 @@ const relative = $computed<string>(() => {
 let tickId: number;
 
 function tick() {
-	const _now = (props.origin ?? new Date()).getTime()
+	const _now = (new Date()).getTime();
 	const ago = (_now - _time) / 1000/*ms*/;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
@@ -58,7 +58,7 @@ function tick() {
 	}
 }
 
-if (!invalid && (props.mode === 'relative' || props.mode === 'detail')) {
+if (!invalid && props.origin === null && (props.mode === 'relative' || props.mode === 'detail')) {
 	onMounted(() => {
 		tickId = window.setInterval(tick, 10000);
 	});
