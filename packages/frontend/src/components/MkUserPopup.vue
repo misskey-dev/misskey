@@ -43,11 +43,11 @@
 				<template v-else>
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
-						<div><i class="ti ti-lock" :class="{ [$style.animation]: animation }"></i></div>
+						<div><i class="ti ti-lock" :class="[$style.keywigglearea, { [$style.animation]: animation }]"></i></div>
 					</div>
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
-						<div><i class="ti ti-lock" :class="{ [$style.animation]: animation }"></i></div>
+						<div><i class="ti ti-lock" :class="[$style.keywigglearea, { [$style.animation]: animation }]"></i></div>
 					</div>
 				</template>
 			</div>
@@ -223,13 +223,6 @@ onMounted(() => {
 	display: inline-block;
 	width: 33%;
 	text-align: center;
-
-	> div {
-		> i {
-			display: block;
-			margin: 0 auto;
-		}
-	}
 }
 
 .statusItemLabel {
@@ -250,6 +243,11 @@ onMounted(() => {
 	position: absolute !important;
 	top: 8px;
 	right: 8px;
+}
+
+.keywigglearea {
+	display: block;
+	margin: 0 auto;
 }
 
 @keyframes keywiggle {
