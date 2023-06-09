@@ -43,11 +43,11 @@
 				<template v-else>
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
-						<div><i class="ti ti-lock" :class="{[$style.animation]: animation}"></i></div>
+						<div><i class="ti ti-lock" :class="{ [$style.animation]: animation}"></i></div>
 					</div>
 					<div :class="$style.statusItem">
 						<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
-						<div><i class="ti ti-lock" :class="{[$style.animation]: animation}"></i></div>
+						<div><i class="ti ti-lock" :class="{ [$style.animation]: animation}"></i></div>
 					</div>
 				</template>
 			</div>
