@@ -27,10 +27,10 @@
 		</template>
 		<template v-else>
 			<div :class="$style.statusItem">
-				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue"><i class="ti ti-lock" :class="[$style.keywigglearea, { [$style.animation]: animation }]"></i></span>
+				<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue"><i class="ti ti-lock" :class="[$style.keyWiggleArea, { [$style.animation]: animation }]"></i></span>
 			</div>
 			<div :class="$style.statusItem">
-				<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue"><i class="ti ti-lock" :class="[$style.keywigglearea, { [$style.animation]: animation }]"></i></span>
+				<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue"><i class="ti ti-lock" :class="[$style.keyWiggleArea, { [$style.animation]: animation }]"></i></span>
 			</div>
 		</template>
 	</div>
@@ -150,7 +150,7 @@ const animation = $ref(defaultStore.state.animation);
 	right: 8px;
 }
 
-.keywigglearea {
+.keyWiggleArea {
 	display: block;
 }
 
