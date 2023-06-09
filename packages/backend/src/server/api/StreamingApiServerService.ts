@@ -128,6 +128,7 @@ export class StreamingApiServerService {
 				ev.removeAllListeners();
 				stream.dispose();
 				this.redisForSub.off('message', onRedisMessage);
+				this.#connections.delete(connection);
 				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
 			});
 
