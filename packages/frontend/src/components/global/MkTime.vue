@@ -58,7 +58,7 @@ function tick() {
 	}
 }
 
-if (!invalid && (props.mode === 'relative' || props.mode === 'detail' || props.origin === null)) {
+if (!invalid && (props.mode === 'relative' || props.mode === 'detail')) {
 	onMounted(() => {
 		tickId = window.setInterval(tick, 10000);
 	});
