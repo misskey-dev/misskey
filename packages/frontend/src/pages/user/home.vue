@@ -114,11 +114,11 @@
 						</template>
 						<template v-else>
 							<div>
-								<i class="ti ti-lock" :class="{ [$style.animation]: animation}"></i>
+								<i class="ti ti-lock" :class="{ [$style.animation]: animation }"></i>
 								<span>{{ i18n.ts.following }}</span>
 							</div>
 							<div>
-								<i class="ti ti-lock" :class="{ [$style.animation]: animation}"></i>
+								<i class="ti ti-lock" :class="{ [$style.animation]: animation }"></i>
 								<span>{{ i18n.ts.followers }}</span>
 							</div>
 						</template>
