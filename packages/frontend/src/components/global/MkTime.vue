@@ -60,7 +60,6 @@ function tick() {
 
 if (!invalid && (props.mode === 'relative' || props.mode === 'detail' || props.origin === null)) {
 	onMounted(() => {
-		tick();
 		tickId = window.setInterval(tick, 10000);
 	});
 	onUnmounted(() => {
