@@ -1,23 +1,23 @@
 <template>
 <MkWindow
 	ref="windowEl"
-	:initial-width="500"
-	:initial-height="500"
-	:can-resize="true"
-	:close-button="true"
-	:buttons-left="buttonsLeft"
-	:buttons-right="buttonsRight"
+	:initialWidth="500"
+	:initialHeight="500"
+	:canResize="true"
+	:closeButton="true"
+	:buttonsLeft="buttonsLeft"
+	:buttonsRight="buttonsRight"
 	:contextmenu="contextmenu"
 	@closed="$emit('closed')"
 >
 	<template #header>
 		<template v-if="pageMetadata?.value">
-			<i v-if="pageMetadata.value.icon" class="icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
+			<i v-if="pageMetadata.value.icon" :class="pageMetadata.value.icon" style="margin-right: 0.5em;"></i>
 			<span>{{ pageMetadata.value.title }}</span>
 		</template>
 	</template>
 
-	<div :class="$style.root" :style="{ background: pageMetadata?.value?.bg }" style="container-type: inline-size;">
+	<div :class="$style.root" style="container-type: inline-size;">
 		<RouterView :key="reloadCount" :router="router"/>
 	</div>
 </MkWindow>

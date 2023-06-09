@@ -1,10 +1,10 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div class="_gaps_m">
 			<div class="_gaps_m">
-				<MkInput v-model="endpoint" :datalist="endpoints" @update:model-value="onEndpointChange()">
+				<MkInput v-model="endpoint" :datalist="endpoints" @update:modelValue="onEndpointChange()">
 					<template #label>Endpoint</template>
 				</MkInput>
 				<MkTextarea v-model="body" code>

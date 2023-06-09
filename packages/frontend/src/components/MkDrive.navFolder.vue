@@ -1,13 +1,13 @@
 <template>
-<div class="drylbebk"
-	:class="{ draghover }"
+<div
+	:class="[$style.root, { [$style.draghover]: draghover }]"
 	@click="onClick"
 	@dragover.prevent.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<i v-if="folder == null" class="ti ti-cloud"></i>
+	<i v-if="folder == null" class="ti ti-cloud" style="margin-right: 4px;"></i>
 	<span>{{ folder == null ? i18n.ts.drive : folder.name }}</span>
 </div>
 </template>
@@ -130,18 +130,10 @@ function onDrop(ev: DragEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
-.drylbebk {
-	> * {
-		pointer-events: none;
-	}
-
+<style lang="scss" module>
+.root {
 	&.draghover {
 		background: #eee;
-	}
-
-	> i {
-		margin-right: 4px;
 	}
 }
 </style>

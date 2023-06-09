@@ -72,28 +72,28 @@ function subscribe() {
 		userVisibleOnly: true,
 		applicationServerKey: urlBase64ToUint8Array(instance.swPublickey),
 	})
-	.then(async subscription => {
-		pushSubscription = subscription;
+		.then(async subscription => {
+			pushSubscription = subscription;
 
-		// Register
-		pushRegistrationInServer = await api('sw/register', {
-			endpoint: subscription.endpoint,
-			auth: encode(subscription.getKey('auth')),
-			publickey: encode(subscription.getKey('p256dh')),
-		});
-	}, async err => { // When subscribe failed
+			// Register
+			pushRegistrationInServer = await api('sw/register', {
+				endpoint: subscription.endpoint,
+				auth: encode(subscription.getKey('auth')),
+				publickey: encode(subscription.getKey('p256dh')),
+			});
+		}, async err => { // When subscribe failed
 		// 通知が許可されていなかったとき
-		if (err?.name === 'NotAllowedError') {
-			console.info('User denied the notification permission request.');
-			return;
-		}
+			if (err?.name === 'NotAllowedError') {
+				console.info('User denied the notification permission request.');
+				return;
+			}
 
-		// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
-		// 既に存在していることが原因でエラーになった可能性があるので、
-		// そのサブスクリプションを解除しておく
-		// （これは実行されなさそうだけど、おまじない的に古い実装から残してある）
-		await unsubscribe();
-	}), null, null);
+			// 違うapplicationServerKey (または gcm_sender_id)のサブスクリプションが
+			// 既に存在していることが原因でエラーになった可能性があるので、
+			// そのサブスクリプションを解除しておく
+			// （これは実行されなさそうだけど、おまじない的に古い実装から残してある）
+			await unsubscribe();
+		}), null, null);
 }
 
 async function unsubscribe() {

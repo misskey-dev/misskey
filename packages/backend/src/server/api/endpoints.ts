@@ -320,6 +320,9 @@ import * as ep___users_lists_list from './endpoints/users/lists/list.js';
 import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
+import * as ep___users_lists_favorite from './endpoints/users/lists/favorite.js';
+import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite.js';
+import * as ep___users_lists_create_from_public from './endpoints/users/lists/create-from-public.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
@@ -656,7 +659,10 @@ const eps = [
 	['users/lists/pull', ep___users_lists_pull],
 	['users/lists/push', ep___users_lists_push],
 	['users/lists/show', ep___users_lists_show],
+	['users/lists/favorite', ep___users_lists_favorite],
+	['users/lists/unfavorite', ep___users_lists_unfavorite],
 	['users/lists/update', ep___users_lists_update],
+	['users/lists/create-from-public', ep___users_lists_create_from_public],
 	['users/notes', ep___users_notes],
 	['users/pages', ep___users_pages],
 	['users/reactions', ep___users_reactions],

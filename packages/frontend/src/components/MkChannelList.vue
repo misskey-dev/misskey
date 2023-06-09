@@ -26,6 +26,3 @@ const props = withDefaults(defineProps<{
 	extractor: (item) => item,
 });
 </script>
-
-<style lang="scss" scoped>
-</style>

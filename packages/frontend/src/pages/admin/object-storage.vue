@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkSwitch v-model="useObjectStorage">{{ i18n.ts.useObjectStorage }}</MkSwitch>
@@ -33,7 +33,7 @@
 						<template #caption>{{ i18n.ts.objectStorageRegionDesc }}</template>
 					</MkInput>
 
-					<FormSplit :min-width="280">
+					<FormSplit :minWidth="280">
 						<MkInput v-model="objectStorageAccessKey">
 							<template #prefix><i class="ti ti-key"></i></template>
 							<template #label>Access key</template>
@@ -69,7 +69,7 @@
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
 				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</MkSpacer>
 		</div>

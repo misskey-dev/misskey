@@ -1,7 +1,6 @@
 <template>
 <div
-	class="rghtznwe"
-	:class="{ draghover }"
+	:class="[$style.root, { [$style.draghover]: draghover }]"
 	draggable="true"
 	:title="title"
 	@click="onClick"
@@ -15,15 +14,15 @@
 	@dragstart="onDragstart"
 	@dragend="onDragend"
 >
-	<p class="name">
-		<template v-if="hover"><i class="ti ti-folder ti-fw"></i></template>
-		<template v-if="!hover"><i class="ti ti-folder ti-fw"></i></template>
+	<p :class="$style.name">
+		<template v-if="hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
+		<template v-if="!hover"><i :class="$style.icon" class="ti ti-folder ti-fw"></i></template>
 		{{ folder.name }}
 	</p>
-	<p v-if="defaultStore.state.uploadFolder == folder.id" class="upload">
+	<p v-if="defaultStore.state.uploadFolder == folder.id" :class="$style.upload">
 		{{ i18n.ts.uploadFolder }}
 	</p>
-	<button v-if="selectMode" class="checkbox _button" :class="{ checked: isSelected }" @click.prevent.stop="checkboxClicked"></button>
+	<button v-if="selectMode" class="_button" :class="[$style.checkbox, { [$style.checked]: isSelected }]" @click.prevent.stop="checkboxClicked"></button>
 </div>
 </template>
 
@@ -267,35 +266,14 @@ function onContextmenu(ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
-.rghtznwe {
+<style lang="scss" module>
+.root {
 	position: relative;
 	padding: 8px;
 	height: 64px;
 	background: var(--driveFolderBg);
 	border-radius: 4px;
-
-	&, * {
-		cursor: pointer;
-	}
-
-	*:not(.checkbox) {
-		pointer-events: none;
-	}
-
-	> .checkbox {
-		position: absolute;
-		bottom: 8px;
-		right: 8px;
-		width: 16px;
-		height: 16px;
-		background: #fff;
-		border: solid 1px #000;
-
-		&.checked {
-			background: var(--accent);
-		}
-	}
+	cursor: pointer;
 
 	&.draghover {
 		&:after {
@@ -310,24 +288,38 @@ function onContextmenu(ev: MouseEvent) {
 			border-radius: 4px;
 		}
 	}
+}
 
-	> .name {
-		margin: 0;
-		font-size: 0.9em;
-		color: var(--desktopDriveFolderFg);
+.checkbox {
+	position: absolute;
+	bottom: 8px;
+	right: 8px;
+	width: 16px;
+	height: 16px;
+	background: #fff;
+	border: solid 1px #000;
 
-		> i {
-			margin-right: 4px;
-			margin-left: 2px;
-			text-align: left;
-		}
+	&.checked {
+		background: var(--accent);
 	}
+}
 
-	> .upload {
-		margin: 4px 4px;
-		font-size: 0.8em;
-		text-align: right;
-		color: var(--desktopDriveFolderFg);
-	}
+.name {
+	margin: 0;
+	font-size: 0.9em;
+	color: var(--desktopDriveFolderFg);
+}
+
+.icon {
+	margin-right: 4px;
+	margin-left: 2px;
+	text-align: left;
+}
+
+.upload {
+	margin: 4px 4px;
+	font-size: 0.8em;
+	text-align: right;
+	color: var(--desktopDriveFolderFg);
 }
 </style>

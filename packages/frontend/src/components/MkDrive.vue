@@ -1,89 +1,90 @@
 <template>
-<div class="yfudmmck">
-	<nav>
-		<div class="path" @contextmenu.prevent.stop="() => {}">
+<div :class="$style.root">
+	<nav :class="$style.nav">
+		<div :class="$style.navPath" @contextmenu.prevent.stop="() => {}">
 			<XNavFolder
-				:class="{ current: folder == null }"
-				:parent-folder="folder"
+				:class="[$style.navPathItem, { [$style.navCurrent]: folder == null }]"
+				:parentFolder="folder"
 				@move="move"
 				@upload="upload"
-				@remove-file="removeFile"
-				@remove-folder="removeFolder"
+				@removeFile="removeFile"
+				@removeFolder="removeFolder"
 			/>
 			<template v-for="f in hierarchyFolders">
-				<span class="separator"><i class="ti ti-chevron-right"></i></span>
+				<span :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
 				<XNavFolder
 					:folder="f"
-					:parent-folder="folder"
+					:parentFolder="folder"
+					:class="[$style.navPathItem]"
 					@move="move"
 					@upload="upload"
-					@remove-file="removeFile"
-					@remove-folder="removeFolder"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
 				/>
 			</template>
-			<span v-if="folder != null" class="separator"><i class="ti ti-chevron-right"></i></span>
-			<span v-if="folder != null" class="folder current">{{ folder.name }}</span>
+			<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
+			<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 		</div>
-		<button class="menu _button" @click="showMenu"><i class="ti ti-dots"></i></button>
+		<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
 	</nav>
 	<div
-		ref="main" class="main"
-		:class="{ uploading: uploadings.length > 0, fetching }"
+		ref="main"
+		:class="[$style.main, { [$style.uploading]: uploadings.length > 0, [$style.fetching]: fetching }]"
 		@dragover.prevent.stop="onDragover"
 		@dragenter="onDragenter"
 		@dragleave="onDragleave"
 		@drop.prevent.stop="onDrop"
 		@contextmenu.stop="onContextmenu"
 	>
-		<div ref="contents" class="contents">
-			<div v-show="folders.length > 0" ref="foldersContainer" class="folders">
+		<div ref="contents">
+			<div v-show="folders.length > 0" ref="foldersContainer" :class="$style.folders">
 				<XFolder
 					v-for="(f, i) in folders"
 					:key="f.id"
 					v-anim="i"
-					class="folder"
+					:class="$style.folder"
 					:folder="f"
-					:select-mode="select === 'folder'"
-					:is-selected="selectedFolders.some(x => x.id === f.id)"
+					:selectMode="select === 'folder'"
+					:isSelected="selectedFolders.some(x => x.id === f.id)"
 					@chosen="chooseFolder"
 					@move="move"
 					@upload="upload"
-					@remove-file="removeFile"
-					@remove-folder="removeFolder"
+					@removeFile="removeFile"
+					@removeFolder="removeFolder"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
 				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
-			<div v-show="files.length > 0" ref="filesContainer" class="files">
+			<div v-show="files.length > 0" ref="filesContainer" :class="$style.files">
 				<XFile
 					v-for="(file, i) in files"
 					:key="file.id"
 					v-anim="i"
-					class="file"
+					:class="$style.file"
 					:file="file"
-					:select-mode="select === 'file'"
-					:is-selected="selectedFiles.some(x => x.id === file.id)"
+					:selectMode="select === 'file'"
+					:isSelected="selectedFiles.some(x => x.id === file.id)"
 					@chosen="chooseFile"
 					@dragstart="isDragSource = true"
 					@dragend="isDragSource = false"
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
-				<div v-for="(n, i) in 16" :key="i" class="padding"></div>
+				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
 				<MkButton v-show="moreFiles" ref="loadMoreFiles" @click="fetchMoreFiles">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
-			<div v-if="files.length == 0 && folders.length == 0 && !fetching" class="empty">
-				<p v-if="draghover">{{ i18n.t('empty-draghover') }}</p>
-				<p v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</p>
-				<p v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</p>
+			<div v-if="files.length == 0 && folders.length == 0 && !fetching" :class="$style.empty">
+				<div v-if="draghover">{{ i18n.t('empty-draghover') }}</div>
+				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong><br/>{{ i18n.t('empty-drive-description') }}</div>
+				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
 		</div>
 		<MkLoading v-if="fetching"/>
 	</div>
-	<div v-if="draghover" class="dropzone"></div>
-	<input ref="fileInput" type="file" accept="*/*" multiple tabindex="-1" @change="onChangeFileInput"/>
+	<div v-if="draghover" :class="$style.dropzone"></div>
+	<input ref="fileInput" style="display: none;" type="file" accept="*/*" multiple tabindex="-1" @change="onChangeFileInput"/>
 </div>
 </template>
 
@@ -95,7 +96,7 @@ import XNavFolder from '@/components/MkDrive.navFolder.vue';
 import XFolder from '@/components/MkDrive.folder.vue';
 import XFile from '@/components/MkDrive.file.vue';
 import * as os from '@/os';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { uploadFile, uploads } from '@/scripts/upload';
@@ -131,7 +132,7 @@ const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const selectedFiles = ref<Misskey.entities.DriveFile[]>([]);
 const selectedFolders = ref<Misskey.entities.DriveFolder[]>([]);
 const uploadings = uploads;
-const connection = stream.useChannel('drive');
+const connection = useStream().useChannel('drive');
 const keepOriginal = ref<boolean>(defaultStore.state.keepOriginalUploading); // 外部渡しが多いので$refは使わないほうがよい
 
 // ドロップされようとしているか
@@ -658,147 +659,116 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.yfudmmck {
+<style lang="scss" module>
+.root {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+}
 
-	> nav {
-		display: flex;
-		z-index: 2;
-		width: 100%;
-		padding: 0 8px;
-		box-sizing: border-box;
-		overflow: auto;
-		font-size: 0.9em;
-		box-shadow: 0 1px 0 var(--divider);
+.nav {
+	display: flex;
+	z-index: 2;
+	width: 100%;
+	padding: 0 8px;
+	box-sizing: border-box;
+	overflow: auto;
+	font-size: 0.9em;
+	box-shadow: 0 1px 0 var(--divider);
+	user-select: none;
+}
 
-		&, * {
-			user-select: none;
-		}
+.navPath {
+	display: inline-block;
+	vertical-align: bottom;
+	line-height: 42px;
+	white-space: nowrap;
+}
 
-		> .path {
-			display: inline-block;
-			vertical-align: bottom;
-			line-height: 42px;
-			white-space: nowrap;
+.navPathItem {
+	display: inline-block;
+	margin: 0;
+	padding: 0 8px;
+	line-height: 42px;
+	cursor: pointer;
 
-			> * {
-				display: inline-block;
-				margin: 0;
-				padding: 0 8px;
-				line-height: 42px;
-				cursor: pointer;
+	&:hover {
+		text-decoration: underline;
+	}
 
-				* {
-					pointer-events: none;
-				}
+	&.navCurrent {
+		font-weight: bold;
+		cursor: default;
 
-				&:hover {
-					text-decoration: underline;
-				}
-
-				&.current {
-					font-weight: bold;
-					cursor: default;
-
-					&:hover {
-						text-decoration: none;
-					}
-				}
-
-				&.separator {
-					margin: 0;
-					padding: 0;
-					opacity: 0.5;
-					cursor: default;
-
-					> i {
-						margin: 0;
-					}
-				}
-			}
-		}
-
-		> .menu {
-			margin-left: auto;
-			padding: 0 12px;
+		&:hover {
+			text-decoration: none;
 		}
 	}
 
-	> .main {
-		flex: 1;
-		overflow: auto;
-		padding: var(--margin);
-
-		&, * {
-			user-select: none;
-		}
-
-		&.fetching {
-			cursor: wait !important;
-
-			* {
-				pointer-events: none;
-			}
-
-			> .contents {
-				opacity: 0.5;
-			}
-		}
-
-		&.uploading {
-			height: calc(100% - 38px - 100px);
-		}
-
-		> .contents {
-
-			> .folders,
-			> .files {
-				display: flex;
-				flex-wrap: wrap;
-
-				> .folder,
-				> .file {
-					flex-grow: 1;
-					width: 128px;
-					margin: 4px;
-					box-sizing: border-box;
-				}
-
-				> .padding {
-					flex-grow: 1;
-					pointer-events: none;
-					width: 128px + 8px;
-				}
-			}
-
-			> .empty {
-				padding: 16px;
-				text-align: center;
-				pointer-events: none;
-				opacity: 0.5;
-
-				> p {
-					margin: 0;
-				}
-			}
-		}
+	&.navSeparator {
+		margin: 0;
+		padding: 0;
+		opacity: 0.5;
+		cursor: default;
 	}
+}
 
-	> .dropzone {
-		position: absolute;
-		left: 0;
-		top: 38px;
-		width: 100%;
-		height: calc(100% - 38px);
-		border: dashed 2px var(--focus);
+.navMenu {
+	margin-left: auto;
+	padding: 0 12px;
+}
+
+.main {
+	flex: 1;
+	overflow: auto;
+	padding: var(--margin);
+	user-select: none;
+
+	&.fetching {
+		cursor: wait !important;
+		opacity: 0.5;
 		pointer-events: none;
 	}
 
-	> input {
-		display: none;
+	&.uploading {
+		height: calc(100% - 38px - 100px);
 	}
+}
+
+.folders,
+.files {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.folder,
+.file {
+	flex-grow: 1;
+	width: 128px;
+	margin: 4px;
+	box-sizing: border-box;
+}
+
+.padding {
+	flex-grow: 1;
+	pointer-events: none;
+	width: 128px + 8px;
+}
+
+.empty {
+	padding: 16px;
+	text-align: center;
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+.dropzone {
+	position: absolute;
+	left: 0;
+	top: 38px;
+	width: 100%;
+	height: calc(100% - 38px);
+	border: dashed 2px var(--focus);
+	pointer-events: none;
 }
 </style>

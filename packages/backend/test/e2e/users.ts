@@ -43,7 +43,6 @@ describe('ユーザー', () => {
 
 	type MeDetailed = UserDetailedNotMe & 
 		misskey.entities.MeDetailed & {
-		showTimelineReplies: boolean,
 		achievements: object[],
 		loggedInDays: number,
 		policies: object,
@@ -160,7 +159,6 @@ describe('ユーザー', () => {
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
 			emailNotificationTypes: user.emailNotificationTypes,
-			showTimelineReplies: user.showTimelineReplies,
 			achievements: user.achievements, 
 			loggedInDays: user.loggedInDays,
 			policies: user.policies,
@@ -406,7 +404,6 @@ describe('ユーザー', () => {
 		assert.deepStrictEqual(response.mutedInstances, []);
 		assert.deepStrictEqual(response.mutingNotificationTypes, []);
 		assert.deepStrictEqual(response.emailNotificationTypes, ['follow', 'receiveFollowRequest']);
-		assert.strictEqual(response.showTimelineReplies, false);
 		assert.deepStrictEqual(response.achievements, []);
 		assert.deepStrictEqual(response.loggedInDays, 0);
 		assert.deepStrictEqual(response.policies, DEFAULT_POLICIES); 
@@ -470,8 +467,6 @@ describe('ユーザー', () => {
 		{ parameters: (): object => ({ isBot: false }) },
 		{ parameters: (): object => ({ isCat: true }) },
 		{ parameters: (): object => ({ isCat: false }) },
-		{ parameters: (): object => ({ showTimelineReplies: true }) },
-		{ parameters: (): object => ({ showTimelineReplies: false }) },
 		{ parameters: (): object => ({ injectFeaturedNote: true }) },
 		{ parameters: (): object => ({ injectFeaturedNote: false }) },
 		{ parameters: (): object => ({ receiveAnnouncementEmail: true }) },

@@ -6,7 +6,7 @@ import { $i } from './account';
 import { api } from './os';
 import { get, set } from './scripts/idb-proxy';
 import { defaultStore } from './store';
-import { stream } from './stream';
+import { useStream } from './stream';
 import { deepClone } from './scripts/clone';
 
 type StateDef = Record<string, {
@@ -25,8 +25,6 @@ type PizzaxChannelMessage<T extends StateDef> = {
 	value: T[keyof T]['default'];
 	userId?: string;
 };
-
-const connection = $i && stream.useChannel('main');
 
 export class Storage<T extends StateDef> {
 	public readonly ready: Promise<void>;
@@ -105,8 +103,10 @@ export class Storage<T extends StateDef> {
 		});
 
 		if ($i) {
+			const connection = useStream().useChannel('main');
+
 			// streamingのuser storage updateイベントを監視して更新
-			connection?.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
+			connection.on('registryUpdated', ({ scope, key, value }: { scope?: string[], key: keyof T, value: T[typeof key]['default'] }) => {
 				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 
 				this.reactiveState[key].value = this.state[key] = value;
