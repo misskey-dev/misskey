@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -53,11 +54,17 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.error.twoFactorNotSetup);
 			}
 
-			const recoveryCodes: string[] = [];
-			for (let i = 0; i < 8; i++) {
-				//TODO
-			}
-			return ['12345678', 'abcdefgh', 'gfhiduawi', 'da2389ejh', 'qwertyui', '09876543', '23478567', 'zxcvbnmk'];
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const recoveryCodes: string[] = [...Array(8).keys()].map(_ => rndstr({ length: 8 }));
+			await this.userProfilesRepository.update(me.id, {
+				twoFactorRecoveryCodes: recoveryCodes,
+			});
+			this.globalEventService.publishMainStream(me.id, 'meUpdated', await this.userEntityService.pack(me.id, me, {
+				detail: true,
+				includeSecrets: true,
+			}));
+
+			return recoveryCodes;
 		});
 	}
 }

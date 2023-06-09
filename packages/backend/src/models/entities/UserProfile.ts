@@ -101,6 +101,11 @@ export class UserProfile {
 	})
 	public twoFactorEnabled: boolean;
 
+	@Column('simple-array', {
+		default: [],
+	})
+	public twoFactorRecoveryCodes: string[];
+
 	@Column('boolean', {
 		default: false,
 	})

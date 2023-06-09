@@ -14,11 +14,9 @@
 					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 				</template>
 				<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
-				<MkButton @click="generateRecoveryCode">リカバリーコードを生成する</MkButton>
+				<MkButton @click="generateRecoveryCode">{{ i18n.ts._2fa.generateRecoveryCode }}</MkButton>
 				<div v-if="showRecoveryCode">
-					これらのリカバリーコードを安全な場所にメモしてください。<br>
-					メモし忘れた場合再生成する必要があります。<br>
-					各リカバリーコードは1回のみ使用可能です。
+					{{ i18n.ts._2fa.recoveryCodeInfo }}
 					<li v-for="code in recoveryCodes" :key="code">{{ code }}</li>
 				</div>
 			</div>
@@ -167,10 +165,10 @@ function renewTOTP() {
 async function generateRecoveryCode() {
 	const confirm = await os.confirm({
 		type: 'warning',
-		title: 'リカバリーコードを発行',
-		text: 'すでに発行されているリカバリーコードは使用できなくなります',
-		okText: '発行する',
-		cancelText: 'やめておく',
+		title: i18n.ts._2fa.generateRecoveryCode,
+		text: i18n.ts._2fa.generateRecoveryCodeConfirm,
+		okText: i18n.ts._2fa.generateRecoveryCodeOK,
+		cancelText: i18n.ts._2fa.generateRecoveryCodeCancel,
 	});
 	if (confirm.canceled) return;
 
@@ -180,7 +178,7 @@ async function generateRecoveryCode() {
 		autocomplete: 'current-password',
 	});
 	const codes = await os.apiWithDialog('i/2fa/generate-recovery-codes', {
-		password: password.result
+		password: password.result,
 	});
 	recoveryCodes.value = codes;
 	showRecoveryCode.value = true;

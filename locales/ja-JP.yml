@@ -1693,6 +1693,11 @@ _2fa:
   renewTOTPConfirm: "今までの認証アプリの確認コードは使用できなくなります"
   renewTOTPOk: "再設定する"
   renewTOTPCancel: "やめておく"
+  generateRecoveryCode: "リカバリーコードを発行"
+  generateRecoveryCodeConfirm: "すでに発行されているリカバリーコードは使用できなくなります"
+  generateRecoveryCodeOK: "発行する"
+  generateRecoveryCodeCancel: "やめておく"
+  recoveryCodeInfo: "これらのリカバリーコードを安全な場所にメモしてください。\nメモし忘れた場合再生成する必要があります。\n各リカバリーコードは1回のみ使用可能です。"
 
 _permissions:
   "read:account": "アカウントの情報を見る"

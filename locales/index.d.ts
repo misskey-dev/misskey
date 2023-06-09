@@ -1775,6 +1775,11 @@ export interface Locale {
         "renewTOTPConfirm": string;
         "renewTOTPOk": string;
         "renewTOTPCancel": string;
+        "generateRecoveryCode": string;
+        "generateRecoveryCodeConfirm": string;
+        "generateRecoveryCodeOK": string;
+        "generateRecoveryCodeCancel": string;
+        "recoveryCodeInfo": string;
     };
     "_permissions": {
         "read:account": string;
