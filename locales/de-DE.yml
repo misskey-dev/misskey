@@ -1062,6 +1062,7 @@ later: "Später"
 goToMisskey: "Zu Misskey"
 additionalEmojiDictionary: "Zusätzliche Emoji-Wörterbücher"
 installed: "Installiert"
+branding: "Branding"
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
   letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
