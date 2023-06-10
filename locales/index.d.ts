@@ -1431,6 +1431,8 @@ export interface Locale {
         "isConditionalRole": string;
         "isPublic": string;
         "descriptionOfIsPublic": string;
+        "isPublicUsers": string;
+        "descriptionOfIsPublicUsers": string;
         "options": string;
         "policies": string;
         "baseRole": string;

@@ -26,6 +26,7 @@ export const paramDef = {
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
 		isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility
+		isPublicUsers: { type: 'boolean', default: true }, // optional for backward compatibility
 		asBadge: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
 		displayOrder: { type: 'number' },
@@ -78,6 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isAdministrator: ps.isAdministrator,
 				isModerator: ps.isModerator,
 				isExplorable: ps.isExplorable,
+				isPublicUsers: ps.isPublicUsers,
 				asBadge: ps.asBadge,
 				canEditMembersByModerator: ps.canEditMembersByModerator,
 				displayOrder: ps.displayOrder,
