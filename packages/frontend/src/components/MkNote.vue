@@ -165,6 +165,7 @@ import { getNoteSummary } from '@/scripts/get-note-summary';
 import { MenuItem } from '@/types/menu';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog';
+import { shouldCollapsed } from '@/scripts/collapsed';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
@@ -204,17 +205,7 @@ let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const isLong = (appearNote.cw == null && appearNote.text != null && (
-	(appearNote.text.includes('$[x2')) ||
-	(appearNote.text.includes('$[x3')) ||
-	(appearNote.text.includes('$[x4')) ||
-	(appearNote.text.includes('$[scale')) ||
-	(appearNote.text.includes('$[position')) ||
-	(appearNote.text.split('\n').length > 9) ||
-	(appearNote.text.length > 500) ||
-	(appearNote.files.length >= 5) ||
-	(urls && urls.length >= 4)
-));
+const isLong = shouldCollapsed(appearNote);
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
