@@ -1,7 +1,8 @@
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import * as Misskey from 'misskey-js';
 import { api } from './os';
 import { miLocalStorage } from './local-storage';
+import { DEFAULT_INFO_IMAGE_URL, DEFAULT_NOT_FOUND_IMAGE_URL, DEFAULT_SERVER_ERROR_IMAGE_URL } from '@/const';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -12,6 +13,12 @@ const cached = miLocalStorage.getItem('instance');
 export const instance: Misskey.entities.InstanceMetadata = reactive(cached ? JSON.parse(cached) : {
 	// TODO: set default values
 });
+
+export const serverErrorImageUrl = computed(() => instance.serverErrorImageUrl ?? DEFAULT_SERVER_ERROR_IMAGE_URL);
+
+export const infoImageUrl = computed(() => instance.infoImageUrl ?? DEFAULT_INFO_IMAGE_URL);
+
+export const notFoundImageUrl = computed(() => instance.notFoundImageUrl ?? DEFAULT_NOT_FOUND_IMAGE_URL);
 
 export async function fetchInstance() {
 	const meta = await api('meta', {
