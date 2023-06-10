@@ -12,7 +12,7 @@
 			<MkDateSeparatedList
 				ref="notes"
 				v-slot="{ item: note }"
-				:items="notes.filter((note) => defaultStore.state.nsfw === 'block' ? (((note.files.filter(file => file.isSensitive).length !== note.files.length) || note.text !== null) || note.files.length === 0): true)"
+				:items="notes.filter((note) => defaultStore.state.nsfw === 'block' ? ((note.files.filter(file => file.isSensitive).length !== note.files.length) || note.text !== null || note.files.length === 0): true)"
 				:direction="pagination.reversed ? 'up' : 'down'"
 				:reversed="pagination.reversed"
 				:noGap="noGap"

@@ -1060,7 +1060,6 @@ cancelReactionConfirm: "リアクションを取り消しますか？"
 changeReactionConfirm: "リアクションを変更しますか？"
 later: "あとで"
 goToMisskey: "Misskeyへ"
-doNotShowNsfwContentsOnTheTimeline: "NSFWコンテンツをタイムラインに表示しない"
 additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
 

@@ -1063,7 +1063,6 @@ export interface Locale {
     "changeReactionConfirm": string;
     "later": string;
     "goToMisskey": string;
-    "doNotShowNsfwContentsOnTheTimeline": string;
     "additionalEmojiDictionary": string;
     "installed": string;
     "_initialAccountSetting": {
