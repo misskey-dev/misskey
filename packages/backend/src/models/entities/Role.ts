@@ -167,6 +167,11 @@ export class Role {
 	})
 	public displayOrder: number;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public isPublicUsers: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})
