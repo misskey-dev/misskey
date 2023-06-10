@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import escapeRegexp from 'escape-regexp';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
@@ -30,7 +30,7 @@ export type UriParseResult = {
 };
 
 @Injectable()
-export class ApDbResolverService {
+export class ApDbResolverService implements OnApplicationShutdown {
 	private publicKeyCache: MemoryKVCache<UserPublickey | null>;
 	private publicKeyByUserIdCache: MemoryKVCache<UserPublickey | null>;
 
@@ -161,5 +161,16 @@ export class ApDbResolverService {
 			user,
 			key,
 		};
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.publicKeyCache.dispose();
+		this.publicKeyByUserIdCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

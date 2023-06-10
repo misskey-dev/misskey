@@ -54,6 +54,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
+			if (!role.isPublicUsers) {
+				return [];
+			}
 
 			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId)
 				.andWhere('assign.roleId = :roleId', { roleId: role.id })

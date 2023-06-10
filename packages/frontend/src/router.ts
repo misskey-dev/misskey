@@ -393,6 +393,10 @@ export const routes = [{
 		name: 'settings',
 		component: page(() => import('./pages/admin/settings.vue')),
 	}, {
+		path: '/branding',
+		name: 'branding',
+		component: page(() => import('./pages/admin/branding.vue')),
+	}, {
 		path: '/moderation',
 		name: 'moderation',
 		component: page(() => import('./pages/admin/moderation.vue')),

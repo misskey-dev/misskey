@@ -30,56 +30,6 @@
 					</MkTextarea>
 
 					<FormSection>
-						<template #label>{{ i18n.ts.theme }}</template>
-
-						<div class="_gaps_m">
-							<MkInput v-model="iconUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.iconUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="bannerUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.bannerUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="backgroundImageUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="notFoundImageUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.notFoundDescription }}</template>
-							</MkInput>
-
-							<MkInput v-model="infoImageUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.nothing }}</template>
-							</MkInput>
-
-							<MkInput v-model="serverErrorImageUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.somethingHappened }}</template>
-							</MkInput>
-
-							<MkColorInput v-model="themeColor">
-								<template #label>{{ i18n.ts.themeColor }}</template>
-							</MkColorInput>
-
-							<MkTextarea v-model="defaultLightTheme">
-								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-
-							<MkTextarea v-model="defaultDarkTheme">
-								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-						</div>
-					</FormSection>
-
-					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
 
 						<div class="_gaps_m">
@@ -160,15 +110,6 @@ let name: string | null = $ref(null);
 let description: string | null = $ref(null);
 let maintainerName: string | null = $ref(null);
 let maintainerEmail: string | null = $ref(null);
-let iconUrl: string | null = $ref(null);
-let bannerUrl: string | null = $ref(null);
-let backgroundImageUrl: string | null = $ref(null);
-let themeColor: any = $ref(null);
-let defaultLightTheme: any = $ref(null);
-let defaultDarkTheme: any = $ref(null);
-let serverErrorImageUrl: string | null = $ref(null);
-let infoImageUrl: string | null = $ref(null);
-let notFoundImageUrl: string | null = $ref(null);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
@@ -181,15 +122,6 @@ async function init() {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
 	description = meta.description;
-	iconUrl = meta.iconUrl;
-	bannerUrl = meta.bannerUrl;
-	backgroundImageUrl = meta.backgroundImageUrl;
-	themeColor = meta.themeColor;
-	defaultLightTheme = meta.defaultLightTheme;
-	defaultDarkTheme = meta.defaultDarkTheme;
-	serverErrorImageUrl = meta.serverErrorImageUrl;
-	infoImageUrl = meta.infoImageUrl;
-	notFoundImageUrl = meta.notFoundImageUrl;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
 	pinnedUsers = meta.pinnedUsers.join('\n');
@@ -205,15 +137,6 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		name,
 		description,
-		iconUrl,
-		bannerUrl,
-		backgroundImageUrl,
-		themeColor: themeColor === '' ? null : themeColor,
-		defaultLightTheme: defaultLightTheme === '' ? null : defaultLightTheme,
-		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
-		infoImageUrl,
-		notFoundImageUrl,
-		serverErrorImageUrl,
 		maintainerName,
 		maintainerEmail,
 		pinnedUsers: pinnedUsers.split('\n'),
