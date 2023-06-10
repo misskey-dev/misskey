@@ -1508,6 +1508,7 @@ _aboutMisskey:
 _nsfw:
   respect: "閲覧注意のメディアは隠す"
   ignore: "閲覧注意のメディアを隠さない"
+  block: "閲覧注意のメディアを非表示にする"
   force: "常にメディアを隠す"
 
 _instanceTicker:

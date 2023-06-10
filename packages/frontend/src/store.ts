@@ -106,10 +106,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
-	doNotShowNsfwContentsOnTheTimeline: {
-		where: 'account',
-		default: false,
-	},
 	menu: {
 		where: 'deviceAccount',
 		default: [
@@ -171,7 +167,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	nsfw: {
 		where: 'device',
-		default: 'respect' as 'respect' | 'force' | 'ignore',
+		default: 'respect' as 'respect' | 'force' | 'ignore' | 'block',
 	},
 	animation: {
 		where: 'device',

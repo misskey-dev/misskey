@@ -12,7 +12,7 @@
 			<MkDateSeparatedList
 				ref="notes"
 				v-slot="{ item: note }"
-				:items="notes"
+				:items="notes.filter((note) => defaultStore.state.nsfw === 'block' ? (((note.files.filter(file => file.isSensitive).length !== note.files.length) || note.text !== null) || note.files.length === 0): true)"
 				:direction="pagination.reversed ? 'up' : 'down'"
 				:reversed="pagination.reversed"
 				:noGap="noGap"
@@ -31,6 +31,7 @@ import { shallowRef } from 'vue';
 import MkNote from '@/components/MkNote.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 
 const props = defineProps<{

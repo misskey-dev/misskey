@@ -41,7 +41,6 @@ export const paramDef = {
 		untilId: { type: 'string', format: 'misskey:id' },
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
-		doNotShowNsfwContentsOnTheTimeline: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -80,9 +79,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			this.queryService.generateRepliesQuery(query, ps.withReplies, me);
-			if (ps.doNotShowNsfwContentsOnTheTimeline) {
-				this.queryService.generateBlockNsfwContentsQuery(query);
-			}
 			if (me) {
 				this.queryService.generateMutedUserQuery(query, me);
 				this.queryService.generateMutedNoteQuery(query, me);

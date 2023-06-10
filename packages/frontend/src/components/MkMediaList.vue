@@ -14,8 +14,8 @@
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
-				<XVideo v-if="media.type.startsWith('video')" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
-				<XImage v-else-if="media.type.startsWith('image')" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
+				<XVideo v-if="media.type.startsWith('video') && !(defaultStore.state.nsfw === 'block' && media.isSensitive)" :key="`video:${media.id}`" :class="$style.media" :video="media"/>
+				<XImage v-else-if="media.type.startsWith('image') && !(defaultStore.state.nsfw === 'block' && media.isSensitive)" :key="`image:${media.id}`" :class="$style.media" class="image" :data-id="media.id" :image="media" :raw="raw"/>
 			</template>
 		</div>
 	</div>
@@ -43,7 +43,7 @@ const props = defineProps<{
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
-const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
+const count = $computed(() => props.mediaList.filter(media => previewable(media) && !(defaultStore.state.nsfw === 'block' && media.isSensitive)).length);
 
 function calcAspectRatio() {
 	if (!gallery.value) return;

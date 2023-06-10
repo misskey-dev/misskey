@@ -48,7 +48,6 @@ export const paramDef = {
 		includeLocalRenotes: { type: 'boolean', default: true },
 		withFiles: { type: 'boolean', default: false },
 		withReplies: { type: 'boolean', default: false },
-		doNotShowNsfwContentsOnTheTimeline: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -105,10 +104,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queryService.generateMutedNoteQuery(query, me);
 			this.queryService.generateBlockedUserQuery(query, me);
 			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
-			
-			if (ps.doNotShowNsfwContentsOnTheTimeline) {
-				this.queryService.generateBlockNsfwContentsQuery(query);
-			}
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {
 					qb.orWhere('note.userId != :meId', { meId: me.id });

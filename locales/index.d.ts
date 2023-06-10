@@ -1590,6 +1590,7 @@ export interface Locale {
     "_nsfw": {
         "respect": string;
         "ignore": string;
+        "block": string;
         "force": string;
     };
     "_instanceTicker": {
