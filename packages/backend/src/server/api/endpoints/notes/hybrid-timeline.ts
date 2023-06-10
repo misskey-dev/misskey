@@ -101,6 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queryService.generateMutedNoteQuery(query, me);
 			this.queryService.generateBlockedUserQuery(query, me);
 			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+			
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {
 					qb.orWhere('note.userId != :meId', { meId: me.id });
