@@ -54,6 +54,8 @@ function tick() {
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
 	if (_now - now > next) {
+		// nowが代入されるとrelativeが再計算される
+		// relativeが再計算されると色々重たいので、nowの更新は必要以上に行わない
 		now = _now;
 	}
 }
