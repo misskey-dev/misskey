@@ -21,6 +21,7 @@
 - エラー時や項目が存在しないときなどのアイコン画像をサーバー管理者が設定できるようになりました
 
 ### Server
+- Fix: キャッシュが溜まり続けないように
 - Fix: api/metaで`TypeError: JSON5.parse is not a function`エラーが発生する問題を修正
 
 ## 13.13.0
