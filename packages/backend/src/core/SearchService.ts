@@ -116,6 +116,15 @@ export class SearchService {
 	}
 
 	@bindThis
+	public async unindexNote(note: Note): Promise<void> {
+		if (!['home', 'public'].includes(note.visibility)) return;
+
+		if (this.meilisearch) {
+			this.meilisearchNoteIndex!.deleteDocument(note.id);
+		}
+	}
+
+	@bindThis
 	public async searchNote(q: string, me: User | null, opts: {
 		userId?: Note['userId'] | null;
 		channelId?: Note['channelId'] | null;
