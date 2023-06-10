@@ -50,19 +50,25 @@ let tickId: number;
 
 function tick() {
 	const _now = (new Date()).getTime();
-	const ago = (_now - _time) / 1000/*ms*/;
+	const agoPrev = (now - _time) / 1000/*ms*/; // 現状のinterval
+
+	now = _now;
+
+	const ago = (now - _time) / 1000/*ms*/; // 次のinterval
+	const prev = agoPrev < 60 ? 10000 : agoPrev < 3600 ? 60000 : 180000;
 	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
-	if (_now - now > next) {
-		// nowが代入されるとrelativeが再計算される
-		// relativeが再計算されると色々重たいので、nowの更新は必要以上に行わない
-		now = _now;
+	if (!tickId) {
+		tickId = window.setInterval(tick, next);
+	} else if (prev < next) {
+		window.clearInterval(tickId);
+		tickId = window.setInterval(tick, next);
 	}
 }
 
 if (!invalid && props.origin === null && (props.mode === 'relative' || props.mode === 'detail')) {
 	onMounted(() => {
-		tickId = window.setInterval(tick, 10000);
+		tick();
 	});
 	onUnmounted(() => {
 		if (tickId) window.clearInterval(tickId);
