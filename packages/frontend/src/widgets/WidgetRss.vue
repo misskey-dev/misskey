@@ -7,7 +7,7 @@
 	<div class="ekmkgxbj">
 		<MkLoading v-if="fetching"/>
 		<div v-else-if="(!items || items.length === 0) && widgetProps.showHeader" class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<img :src="infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.nothing }}</div>
 		</div>
 		<div v-else :class="$style.feed">
@@ -25,6 +25,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import { url as base } from '@/config';
 import { i18n } from '@/i18n';
 import { useInterval } from '@/scripts/use-interval';
+import { infoImageUrl } from '@/instance';
 
 const name = 'rss';
 
