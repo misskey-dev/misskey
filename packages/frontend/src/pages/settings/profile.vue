@@ -3,7 +3,7 @@
 	<div :class="$style.avatarAndBanner" :style="{ backgroundImage: $i.bannerUrl ? `url(${ $i.bannerUrl })` : null }">
 		<div :class="$style.avatarContainer">
 			<MkAvatar :class="$style.avatar" :user="$i" @click="changeAvatar"/>
-			<MkButton primary rounded :class="$style.avatarEdit" @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
+			<MkButton primary rounded @click="changeAvatar">{{ i18n.ts._profile.changeAvatar }}</MkButton>
 		</div>
 		<MkButton primary rounded :class="$style.bannerEdit" @click="changeBanner">{{ i18n.ts._profile.changeBanner }}</MkButton>
 	</div>
@@ -127,7 +127,6 @@ const profile = reactive({
 	lang: $i.lang,
 	isBot: $i.isBot,
 	isCat: $i.isCat,
-	showTimelineReplies: $i.showTimelineReplies,
 });
 
 watch(() => profile, () => {
@@ -151,7 +150,7 @@ while (fields.value.length < 4) {
 	addField();
 }
 
-function deleteField(index: number) { 
+function deleteField(index: number) {
 	fields.value.splice(index, 1);
 }
 
@@ -176,7 +175,6 @@ function save() {
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,
-		showTimelineReplies: !!profile.showTimelineReplies,
 	});
 	claimAchievement('profileFilled');
 	if (profile.name === 'syuilo' || profile.name === 'しゅいろ') {
@@ -269,10 +267,6 @@ definePageMetadata({
 	width: 72px;
 	height: 72px;
 	margin: 0 auto 16px auto;
-}
-
-.avatarEdit {
-	
 }
 
 .bannerEdit {

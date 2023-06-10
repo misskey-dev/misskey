@@ -6,8 +6,11 @@
 			ref="gallery"
 			:class="[
 				$style.medias,
-				count <= 4 ? $style['n' + count] : $style.nMany,
-				$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]
+				count === 1 ? [$style.n1, {
+					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
+					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
+					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
+				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
@@ -20,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch, shallowRef } from 'vue';
+import { onMounted, watch, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -36,8 +39,6 @@ const props = defineProps<{
 	mediaList: misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
-
-const $style = useCssModule();
 
 const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
@@ -96,7 +97,7 @@ onMounted(() => {
 				return item;
 			}),
 		gallery: gallery.value,
-		mainClass: $style.pswp,
+		mainClass: 'pswp',
 		children: '.image',
 		thumbSelector: '.image',
 		loop: false,
@@ -268,7 +269,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	border-radius: 8px;
 }
 
-.pswp {
+:global(.pswp) {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
 	--pswp-bg: var(--modalBg) !important;
 }

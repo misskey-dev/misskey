@@ -10,7 +10,7 @@
 		<MkPagination :pagination="renoteMutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<img :src="infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -38,7 +38,7 @@
 		<MkPagination :pagination="mutingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<img :src="infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -68,7 +68,7 @@
 		<MkPagination :pagination="blockingPagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<img :src="infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noUsers }}</div>
 				</div>
 			</template>
@@ -107,6 +107,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os';
+import { infoImageUrl } from '@/instance';
 
 let tab = $ref('renoteMute');
 

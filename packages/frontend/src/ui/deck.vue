@@ -4,7 +4,7 @@
 
 	<div :class="$style.main">
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.sections, deckStore.reactiveState.columnAlign.value, { [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 			<section
 				v-for="ids in layout"
@@ -254,6 +254,28 @@ async function deleteProfile() {
 }
 </script>
 
+<style>
+html,
+body {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overscroll-behavior: none;
+}
+
+#misskey_app {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+</style>
+
 <style lang="scss" module>
 .transition_menuDrawerBg_enterActive,
 .transition_menuDrawerBg_leaveActive {
@@ -282,7 +304,7 @@ async function deleteProfile() {
 
 	--margin: var(--marginHalf);
 
-	--deckDividerThickness: 5px;
+	--columnGap: 6px;
 
 	display: flex;
 	height: 100dvh;
@@ -306,14 +328,16 @@ async function deleteProfile() {
 	display: flex;
 	overflow-x: auto;
 	overflow-y: clip;
+	overscroll-behavior: contain;
+	background: var(--deckBg);
 
 	&.center {
 		> .section:first-of-type {
-			margin-left: auto;
+			margin-left: auto !important;
 		}
 
 		> .section:last-of-type {
-			margin-right: auto;
+			margin-right: auto !important;
 		}
 	}
 
@@ -327,14 +351,12 @@ async function deleteProfile() {
 	flex-direction: column;
 	scroll-snap-align: start;
 	flex-shrink: 0;
-	border-right: solid var(--deckDividerThickness) var(--deckDivider);
-
-	&:first-of-type {
-		border-left: solid var(--deckDividerThickness) var(--deckDivider);
-	}
+	padding-top: var(--columnGap);
+	padding-bottom: var(--columnGap);
+	padding-left: var(--columnGap);
 
 	> .column:not(:last-of-type) {
-		border-bottom: solid var(--deckDividerThickness) var(--deckDivider);
+		margin-bottom: var(--columnGap);
 	}
 }
 

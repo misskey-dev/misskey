@@ -30,6 +30,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const roles = await this.rolesRepository.findBy({
 				isPublic: true,
+				isExplorable: true,
 			});
 			return await this.roleEntityService.packMany(roles, me);
 		});

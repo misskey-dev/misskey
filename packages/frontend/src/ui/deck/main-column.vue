@@ -25,9 +25,6 @@ defineProps<{
 	isStacked: boolean;
 }>();
 
-const emit = defineEmits<{
-}>();
-
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
