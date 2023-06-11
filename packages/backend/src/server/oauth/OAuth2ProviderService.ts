@@ -357,6 +357,7 @@ export class OAuth2ProviderService {
 			mode: 'indirect',
 			modes: getQueryMode(this.config.url),
 		}));
+		fastify.use('/oauth/authorize', this.#server.errorHandler());
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/decision', this.#server.decision((req, done) => {
@@ -373,3 +374,5 @@ export class OAuth2ProviderService {
 		fastify.use('/oauth/token', this.#server.errorHandler());
 	}
 }
+
+// TODO: remove console.log and use proper logger

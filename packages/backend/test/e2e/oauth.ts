@@ -125,13 +125,7 @@ async function assertDirectError(response: Response, status: number, error: stri
 	assert.strictEqual(response.status, status);
 
 	const data = await response.json();
-	// `mode: indirect` may throw a direct error with `code` while the default direct mode uses `error`
-	// For now this doesn't matter too much since direct errors are not intended to be sent to clients.
-	if ('code' in data) {
-		assert.strictEqual(data.code, error);
-	} else {
-		assert.strictEqual(data.error, error);
-	}
+	assert.strictEqual(data.error, error);
 }
 
 describe('OAuth', () => {
