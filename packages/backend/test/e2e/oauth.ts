@@ -322,7 +322,7 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
 			assertIndirectError(response, 'invalid_request');
 
-			// Pattern 2: Only code_challenge_method
+			// Pattern 3: Only code_challenge_method
 			response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
@@ -331,7 +331,7 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
 			assertIndirectError(response, 'invalid_request');
 
-			// Pattern 3: Unsupported code_challenge_method
+			// Pattern 4: Unsupported code_challenge_method
 			response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
