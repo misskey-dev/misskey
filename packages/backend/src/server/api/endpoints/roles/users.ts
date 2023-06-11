@@ -49,7 +49,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const role = await this.rolesRepository.findOneBy({
 				id: ps.roleId,
 				isPublic: true,
-				isExplorable: true,
 			});
 
 			if (role == null) {

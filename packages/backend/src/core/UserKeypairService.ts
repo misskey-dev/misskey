@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { User } from '@/models/entities/User.js';
 import type { UserKeypairsRepository } from '@/models/index.js';
@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class UserKeypairService implements OnApplicationShutdown {
+export class UserKeypairService {
 	private cache: RedisKVCache<UserKeypair>;
 
 	constructor(
@@ -30,15 +30,5 @@ export class UserKeypairService implements OnApplicationShutdown {
 	@bindThis
 	public async getUserKeypair(userId: User['id']): Promise<UserKeypair> {
 		return await this.cache.fetch(userId);
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.cache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

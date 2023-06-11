@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { InstancesRepository } from '@/models/index.js';
 import type { Instance } from '@/models/entities/Instance.js';
@@ -9,7 +9,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class FederatedInstanceService implements OnApplicationShutdown {
+export class FederatedInstanceService {
 	public federatedInstanceCache: RedisKVCache<Instance | null>;
 
 	constructor(
@@ -76,15 +76,5 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 			});
 	
 		this.federatedInstanceCache.set(result.host, result);
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.federatedInstanceCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
 import type { LocalUser } from '@/models/entities/User.js';
@@ -18,7 +18,7 @@ export class AuthenticationError extends Error {
 }
 
 @Injectable()
-export class AuthenticateService implements OnApplicationShutdown {
+export class AuthenticateService {
 	private appCache: MemoryKVCache<App>;
 
 	constructor(
@@ -90,15 +90,5 @@ export class AuthenticateService implements OnApplicationShutdown {
 				return [user, accessToken, null];
 			}
 		}
-	}
-
-	@bindThis
-	public dispose(): void {
-		this.appCache.dispose();
-	}
-
-	@bindThis
-	public onApplicationShutdown(signal?: string | undefined): void {
-		this.dispose();
 	}
 }

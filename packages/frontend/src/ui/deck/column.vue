@@ -313,7 +313,6 @@ function onDrop(ev) {
 
 		> .body {
 			background: var(--bg) !important;
-			overflow-y: scroll !important;
 
 			&::-webkit-scrollbar-track {
 				background: inherit;
