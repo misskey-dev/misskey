@@ -111,6 +111,22 @@ interface OAuthRequest extends OAuth2Req {
 	codeChallengeMethod: string;
 }
 
+function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
+	return {
+		query: (txn, res, params): void => {
+			// RFC 9207
+			params.iss = issuerUrl;
+
+			const parsed = new URL(txn.redirectURI);
+			for (const [key, value] of Object.entries(params)) {
+				parsed.searchParams.append(key, value as string);
+			}
+
+			return (res as any).redirect(parsed.toString());
+		},
+	};
+}
+
 class OAuth2Store {
 	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // 5min
 
@@ -128,13 +144,13 @@ class OAuth2Store {
 		cb(null, loaded);
 	}
 
-	store(req: any, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
+	store(req: unknown, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
 		const transactionId = secureRndstr(128, true);
 		this.#cache.set(transactionId, oauth2);
 		cb(null, transactionId);
 	}
 
-	remove(req: any, tid: string, cb: () => void): void {
+	remove(req: unknown, tid: string, cb: () => void): void {
 		this.#cache.delete(tid);
 		cb();
 	}
@@ -168,19 +184,7 @@ export class OAuth2ProviderService {
 
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
-			modes: {
-				query: (txn, res, params) => {
-					// RFC 9207
-					params.iss = config.url;
-
-					const parsed = new URL(txn.redirectURI);
-					for (const [key, value] of Object.entries(params)) {
-						parsed.searchParams.append(key, value as string);
-					}
-
-					return (res as any).redirect(parsed.toString());
-				},
-			},
+			modes: getQueryMode(config.url),
 		}, (client, redirectUri, token, ares, areq, locals, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
@@ -303,26 +307,13 @@ export class OAuth2ProviderService {
 
 		await fastify.register(fastifyExpress);
 		fastify.use('/oauth/authorize', this.#server.authorize(((areq, done) => {
-			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
+			(async (): Promise<Parameters<typeof done>> => {
 				console.log('HIT /oauth/authorize validation middleware', areq);
 
+				// This should return client/redirectURI AND the error, or
+				// the handler can't send error to the redirection URI
+
 				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq as OAuthRequest;
-
-				const scopes = [...new Set(scope)].filter(s => kinds.includes(s));
-				if (!scopes.length) {
-					throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
-				}
-				areq.scope = scopes;
-
-				if (type !== 'code') {
-					throw new AuthorizationError('`response_type` parameter must be set as "code"', 'invalid_request');
-				}
-				if (typeof codeChallenge !== 'string') {
-					throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
-				}
-				if (codeChallengeMethod !== 'S256') {
-					throw new AuthorizationError('`code_challenge_method` parameter must be set as S256', 'invalid_request');
-				}
 
 				const clientUrl = validateClientId(clientID);
 
@@ -339,13 +330,33 @@ export class OAuth2ProviderService {
 					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
 				}
 
-				return [clientInfo, redirectURI];
-			})().then(args => done(null, ...args), err => done(err));
+				try {
+					const scopes = [...new Set(scope)].filter(s => kinds.includes(s));
+					if (!scopes.length) {
+						throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
+					}
+					areq.scope = scopes;
+
+					if (type !== 'code') {
+						throw new AuthorizationError('`response_type` parameter must be set as "code"', 'invalid_request');
+					}
+					if (typeof codeChallenge !== 'string') {
+						throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
+					}
+					if (codeChallengeMethod !== 'S256') {
+						throw new AuthorizationError('`code_challenge_method` parameter must be set as S256', 'invalid_request');
+					}
+				} catch (err) {
+					return [err as Error, clientInfo, redirectURI];
+				}
+
+				return [null, clientInfo, redirectURI];
+			})().then(args => done(...args), err => done(err));
 		}) as ValidateFunctionArity2));
-		// TODO: use mode: indirect
-		// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2.1
-		// But make sure not to redirect to an invalid redirect_uri
-		fastify.use('/oauth/authorize', this.#server.errorHandler());
+		fastify.use('/oauth/authorize', this.#server.errorHandler({
+			mode: 'indirect',
+			modes: getQueryMode(this.config.url),
+		}));
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/decision', this.#server.decision((req, done) => {

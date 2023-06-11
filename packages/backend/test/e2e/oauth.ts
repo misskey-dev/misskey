@@ -32,6 +32,10 @@ interface OAuthErrorResponse {
 	error_description: string;
 }
 
+interface OAuthErrorDirectResponse {
+	code: string;
+}
+
 interface AuthorizationParamsExtended {
 	redirect_uri: string;
 	scope: string | string[];
@@ -294,9 +298,12 @@ describe('OAuth', () => {
 				redirect_uri,
 				scope: 'write:notes',
 				state: 'state',
-			}));
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			}), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
+
+			let location = response.headers.get('location');
+			assert.ok(location);
+			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
 
 			// Pattern 2: Only code_challenge
 			response = await fetch(client.authorizeURL({
@@ -304,9 +311,12 @@ describe('OAuth', () => {
 				scope: 'write:notes',
 				state: 'state',
 				code_challenge: 'code',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			} as AuthorizationParamsExtended), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
+
+			location = response.headers.get('location');
+			assert.ok(location);
+			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
 
 			// Pattern 2: Only code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -314,9 +324,12 @@ describe('OAuth', () => {
 				scope: 'write:notes',
 				state: 'state',
 				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			} as AuthorizationParamsExtended), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
+
+			location = response.headers.get('location');
+			assert.ok(location);
+			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
 
 			// Pattern 3: Unsupported code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -325,9 +338,12 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'SSSS',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			} as AuthorizationParamsExtended), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
+
+			location = response.headers.get('location');
+			assert.ok(location);
+			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
 		});
 
 		// Use precomputed challenge/verifier set here for deterministic test
@@ -407,7 +423,10 @@ describe('OAuth', () => {
 		const decisionResponse = await fetchDecisionFromResponse(response, alice, { cancel: true });
 		assert.strictEqual(decisionResponse.status, 302);
 
-		const location = new URL(decisionResponse.headers.get('location')!);
+		const locationHeader = decisionResponse.headers.get('location');
+		assert.ok(locationHeader);
+
+		const location = new URL(locationHeader);
 		assert.ok(!location.searchParams.has('code'));
 		assert.ok(location.searchParams.has('error'));
 	});
@@ -421,10 +440,13 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
+			} as AuthorizationParamsExtended), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
 
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
+			const locationHeader = response.headers.get('location');
+			assert.ok(locationHeader);
+
+			assert.strictEqual(new URL(locationHeader).searchParams.get('error'), 'invalid_scope');
 		});
 
 		test('Empty scope', async () => {
@@ -436,10 +458,13 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
+			} as AuthorizationParamsExtended), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
 
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
+			const locationHeader = response.headers.get('location');
+			assert.ok(locationHeader);
+
+			assert.strictEqual(new URL(locationHeader).searchParams.get('error'), 'invalid_scope');
 		});
 
 		test('Unknown scopes', async () => {
@@ -451,10 +476,13 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
+			} as AuthorizationParamsExtended), { redirect: 'manual' });
+			assert.strictEqual(response.status, 302);
 
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_scope');
+			const locationHeader = response.headers.get('location');
+			assert.ok(locationHeader);
+
+			assert.strictEqual(new URL(locationHeader).searchParams.get('error'), 'invalid_scope');
 		});
 
 		test('Partially known scopes', async () => {
@@ -584,7 +612,7 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri including the valid one at authorization endpoint', async () => {
@@ -599,7 +627,7 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
 		});
 
 		test('No redirect_uri at authorization endpoint', async () => {
@@ -613,7 +641,7 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri at token endpoint', async () => {
@@ -799,7 +827,7 @@ describe('OAuth', () => {
 				} as AuthorizationParamsExtended));
 
 				assert.strictEqual(response.status, 400);
-				assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+				assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
 			});
 		});
 
@@ -816,7 +844,7 @@ describe('OAuth', () => {
 			} as AuthorizationParamsExtended));
 
 			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorResponse).error, 'invalid_request');
+			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
 		});
 
 		test('Missing name', async () => {
