@@ -435,6 +435,7 @@ export class RoleService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
+		this.roleAssignmentByUserIdCache.dispose();
 	}
 
 	@bindThis
