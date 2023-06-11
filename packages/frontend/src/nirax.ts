@@ -3,8 +3,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { Component, shallowRef, ShallowRef } from 'vue';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
-import { $i } from '@/account';
-import { page } from '@/router';
 
 type RouteDef = {
 	path: string;
@@ -76,15 +74,19 @@ export class Router extends EventEmitter<{
 	public currentRef: ShallowRef<Resolved> = shallowRef();
 	public currentRoute: ShallowRef<RouteDef> = shallowRef();
 	private currentPath: string;
+	private isLoggedIn: boolean;
+	private notFoundPageComponent: Component;
 	private currentKey = Date.now().toString();
 
 	public navHook: ((path: string, flag?: any) => boolean) | null = null;
 
-	constructor(routes: Router['routes'], currentPath: Router['currentPath']) {
+	constructor(routes: Router['routes'], currentPath: Router['currentPath'], isLoggedIn: boolean, notFoundPageComponent: Component) {
 		super();
 
 		this.routes = routes;
 		this.currentPath = currentPath;
+		this.isLoggedIn = isLoggedIn;
+		this.notFoundPageComponent = notFoundPageComponent;
 		this.navigate(currentPath, null, false);
 	}
 
@@ -213,8 +215,8 @@ export class Router extends EventEmitter<{
 			throw new Error('no route found for: ' + path);
 		}
 
-		if (res.route.loginRequired && !$i) {
-			res.route.component = page(() => import('@/pages/not-found.vue'));
+		if (res.route.loginRequired && !this.isLoggedIn) {
+			res.route.component = this.notFoundPageComponent;
 			res.props.set('showLoginPopup', true);
 		}
 

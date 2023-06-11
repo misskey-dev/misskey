@@ -30,7 +30,8 @@ import MkWindow from '@/components/MkWindow.vue';
 import { popout as _popout } from '@/scripts/popout';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
-import { mainRouter, routes } from '@/router';
+import { mainRouter, routes, page } from '@/router';
+import { $i } from '@/account';
 import { Router } from '@/nirax';
 import { i18n } from '@/i18n';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
@@ -45,7 +46,7 @@ defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const router = new Router(routes, props.initialPath);
+const router = new Router(routes, props.initialPath, !!$i, page(() => import('@/pages/not-found.vue')));
 
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 let windowEl = $shallowRef<InstanceType<typeof MkWindow>>();

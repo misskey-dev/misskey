@@ -509,7 +509,7 @@ export const routes = [{
 	component: page(() => import('./pages/not-found.vue')),
 }];
 
-export const mainRouter = new Router(routes, location.pathname + location.search + location.hash);
+export const mainRouter = new Router(routes, location.pathname + location.search + location.hash, !!$i, page(() => import('@/pages/not-found.vue')));
 
 window.history.replaceState({ key: mainRouter.getCurrentKey() }, '', location.href);
 
