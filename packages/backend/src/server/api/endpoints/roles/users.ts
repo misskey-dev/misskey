@@ -49,13 +49,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const role = await this.rolesRepository.findOneBy({
 				id: ps.roleId,
 				isPublic: true,
+				isExplorable: true,
 			});
 
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
-			}
-			if (!role.isPublicUsers) {
-				return [];
 			}
 
 			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId)

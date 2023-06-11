@@ -1062,6 +1062,7 @@ later: "稍後再說"
 goToMisskey: "往Misskey"
 additionalEmojiDictionary: "表情符號的附加辭典"
 installed: "已安裝"
+branding: "品牌宣傳"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
