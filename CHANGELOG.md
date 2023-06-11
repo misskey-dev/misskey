@@ -11,6 +11,10 @@
 -
 
 -->
+## 13.13.3 (unreleased)
+
+### Client
+- Fix: 非ログイン時にクレデンシャルが必要なページに行くとエラーが出る問題を修正
 
 ## 13.13.2
 
@@ -28,7 +32,6 @@
 
 ### Client
 - Fix: タブがアクティブな間はstreamが切断されないように
-- Fix: 非ログイン時にクレデンシャルが必要なページに行くとエラーが出る問題を修正
 
 ### Server
 - Fix: api/metaで`TypeError: JSON5.parse is not a function`エラーが発生する問題を修正
