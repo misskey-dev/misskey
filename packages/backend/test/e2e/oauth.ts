@@ -27,15 +27,6 @@ const basicAuthParams: AuthorizationParamsExtended = {
 	code_challenge_method: 'S256',
 };
 
-interface OAuthErrorResponse {
-	error: string;
-	error_description: string;
-}
-
-interface OAuthErrorDirectResponse {
-	code: string;
-}
-
 interface AuthorizationParamsExtended {
 	redirect_uri: string;
 	scope: string | string[];
@@ -120,6 +111,27 @@ async function fetchAuthorizationCode(user: misskey.entities.MeSignup, scope: st
 	assert.ok(code);
 
 	return { client, code };
+}
+
+function assertIndirectError(response: Response, error: string): void {
+	assert.strictEqual(response.status, 302);
+
+	const location = response.headers.get('location');
+	assert.ok(location);
+	assert.strictEqual(new URL(location).searchParams.get('error'), error);
+}
+
+async function assertDirectError(response: Response, status: number, error: string): Promise<void> {
+	assert.strictEqual(response.status, status);
+
+	const data = await response.json();
+	// `mode: indirect` may throw a direct error with `code` while the default direct mode uses `error`
+	// For now this doesn't matter too much since direct errors are not intended to be sent to clients.
+	if ('code' in data) {
+		assert.strictEqual(data.code, error);
+	} else {
+		assert.strictEqual(data.error, error);
+	}
 }
 
 describe('OAuth', () => {
@@ -299,11 +311,7 @@ describe('OAuth', () => {
 				scope: 'write:notes',
 				state: 'state',
 			}), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			let location = response.headers.get('location');
-			assert.ok(location);
-			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
+			assertIndirectError(response, 'invalid_request');
 
 			// Pattern 2: Only code_challenge
 			response = await fetch(client.authorizeURL({
@@ -312,11 +320,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge: 'code',
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			location = response.headers.get('location');
-			assert.ok(location);
-			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
+			assertIndirectError(response, 'invalid_request');
 
 			// Pattern 2: Only code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -325,11 +329,7 @@ describe('OAuth', () => {
 				state: 'state',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			location = response.headers.get('location');
-			assert.ok(location);
-			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
+			assertIndirectError(response, 'invalid_request');
 
 			// Pattern 3: Unsupported code_challenge_method
 			response = await fetch(client.authorizeURL({
@@ -339,11 +339,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'SSSS',
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			location = response.headers.get('location');
-			assert.ok(location);
-			assert.strictEqual(new URL(location).searchParams.get('error'), 'invalid_request');
+			assertIndirectError(response, 'invalid_request');
 		});
 
 		// Use precomputed challenge/verifier set here for deterministic test
@@ -441,12 +437,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			const locationHeader = response.headers.get('location');
-			assert.ok(locationHeader);
-
-			assert.strictEqual(new URL(locationHeader).searchParams.get('error'), 'invalid_scope');
+			assertIndirectError(response, 'invalid_scope');
 		});
 
 		test('Empty scope', async () => {
@@ -459,12 +450,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			const locationHeader = response.headers.get('location');
-			assert.ok(locationHeader);
-
-			assert.strictEqual(new URL(locationHeader).searchParams.get('error'), 'invalid_scope');
+			assertIndirectError(response, 'invalid_scope');
 		});
 
 		test('Unknown scopes', async () => {
@@ -477,12 +463,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended), { redirect: 'manual' });
-			assert.strictEqual(response.status, 302);
-
-			const locationHeader = response.headers.get('location');
-			assert.ok(locationHeader);
-
-			assert.strictEqual(new URL(locationHeader).searchParams.get('error'), 'invalid_scope');
+			assertIndirectError(response, 'invalid_scope');
 		});
 
 		test('Partially known scopes', async () => {
@@ -610,9 +591,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended));
-
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
+			await assertDirectError(response, 400, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri including the valid one at authorization endpoint', async () => {
@@ -625,9 +604,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended));
-
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
+			await assertDirectError(response, 400, 'invalid_request');
 		});
 
 		test('No redirect_uri at authorization endpoint', async () => {
@@ -639,9 +616,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended));
-
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
+			await assertDirectError(response, 400, 'invalid_request');
 		});
 
 		test('Invalid redirect_uri at token endpoint', async () => {
@@ -689,6 +664,8 @@ describe('OAuth', () => {
 		assert.ok(body.scopes_supported.includes('write:notes'));
 	});
 
+	// Any error on decision endpoint is solely on Misskey side and nothing to do with the client.
+	// Do not use indirect error here.
 	describe('Decision endpoint', () => {
 		test('No login token', async () => {
 			const client = getClient();
@@ -709,9 +686,7 @@ describe('OAuth', () => {
 					'content-type': 'application/x-www-form-urlencoded',
 				},
 			});
-
-			assert.strictEqual(decisionResponse.status, 400);
-			assert.strictEqual((await decisionResponse.json() as OAuthErrorResponse).error, 'invalid_request');
+			await assertDirectError(decisionResponse, 400, 'invalid_request');
 		});
 
 		test('No transaction ID', async () => {
@@ -725,9 +700,7 @@ describe('OAuth', () => {
 					'content-type': 'application/x-www-form-urlencoded',
 				},
 			});
-
-			assert.strictEqual(decisionResponse.status, 400);
-			assert.strictEqual((await decisionResponse.json() as OAuthErrorResponse).error, 'invalid_request');
+			await assertDirectError(decisionResponse, 400, 'invalid_request');
 		});
 
 		test('Invalid transaction ID', async () => {
@@ -742,9 +715,7 @@ describe('OAuth', () => {
 					'content-type': 'application/x-www-form-urlencoded',
 				},
 			});
-
-			assert.strictEqual(decisionResponse.status, 403);
-			assert.strictEqual((await decisionResponse.json() as OAuthErrorResponse).error, 'access_denied');
+			await assertDirectError(decisionResponse, 403, 'access_denied');
 		});
 	});
 
@@ -826,8 +797,8 @@ describe('OAuth', () => {
 					code_challenge_method: 'S256',
 				} as AuthorizationParamsExtended));
 
-				assert.strictEqual(response.status, 400);
-				assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
+				// direct error because there's no redirect URI to ping
+				await assertDirectError(response, 400, 'invalid_request');
 			});
 		});
 
@@ -842,9 +813,7 @@ describe('OAuth', () => {
 				code_challenge: 'code',
 				code_challenge_method: 'S256',
 			} as AuthorizationParamsExtended));
-
-			assert.strictEqual(response.status, 400);
-			assert.strictEqual((await response.json() as OAuthErrorDirectResponse).code, 'invalid_request');
+			await assertDirectError(response, 400, 'invalid_request');
 		});
 
 		test('Missing name', async () => {
