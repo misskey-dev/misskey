@@ -840,4 +840,6 @@ describe('OAuth', () => {
 	});
 
 	// TODO: Add spec links to tests
+
+	// TODO: Check whether indirect errors have state and iss
 });

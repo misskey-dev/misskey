@@ -22,6 +22,8 @@ import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import Logger from '@/logger.js';
 import type { FastifyInstance } from 'fastify';
 
 // https://indieauth.spec.indieweb.org/#client-identifier
@@ -161,6 +163,7 @@ export class OAuth2ProviderService {
 	#server = oauth2orize.createServer({
 		store: new OAuth2Store(),
 	});
+	#logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
@@ -172,7 +175,10 @@ export class OAuth2ProviderService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
+		loggerService: LoggerService,
 	) {
+		this.#logger = loggerService.getLogger('oauth');
+
 		// XXX: But MemoryKVCache just grows forever without being cleared if grant codes are left unused
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
@@ -187,7 +193,7 @@ export class OAuth2ProviderService {
 			modes: getQueryMode(config.url),
 		}, (client, redirectUri, token, ares, areq, locals, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
-				console.log('HIT grant code:', client, redirectUri, token, ares, areq);
+				this.#logger.info(`Checking the user before sending authorization code to ${client.id}`);
 				const code = secureRndstr(32, true);
 
 				if (!token) {
@@ -199,6 +205,7 @@ export class OAuth2ProviderService {
 					throw new AuthorizationError('No such user', 'invalid_request');
 				}
 
+				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${client.id} through ${redirectUri}, with scope: [${areq.scope}]`);
 				grantCodeCache.set(code, {
 					clientId: client.id,
 					userId: user.id,
@@ -211,8 +218,8 @@ export class OAuth2ProviderService {
 		}));
 		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, authInfo, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>> | undefined> => {
+				this.#logger.info('Checking the received authorization code for the exchange');
 				const granted = grantCodeCache.get(code);
-				console.log(granted, body, code, redirectUri);
 				if (!granted) {
 					return;
 				}
@@ -238,6 +245,8 @@ export class OAuth2ProviderService {
 					permission: granted.scopes,
 				});
 
+				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
+
 				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
 			})().then(args => done(null, ...args ?? []), err => done(err));
 		}));
@@ -246,9 +255,10 @@ export class OAuth2ProviderService {
 	}
 
 	// Return 404 for any unknown paths under /oauth so that clients can know
-	// certain endpoints are unsupported.
+	// whether a certain endpoint is supported or not.
 	// Registering separately because otherwise fastify.use() will match the
 	// wildcard too.
+	// TODO: is this separation still needed?
 	@bindThis
 	public async createServerWildcard(fastify: FastifyInstance): Promise<void> {
 		fastify.all('/oauth/*', async (_request, reply) => {
@@ -284,7 +294,7 @@ export class OAuth2ProviderService {
 		// this feature for some time, given that this is security related.
 		fastify.get('/oauth/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as any).oauth2 as OAuth2;
-			console.log('HIT /oauth/authorize', request.query, oauth2, (request.raw as any).session);
+			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
 			return await reply.view('oauth', {
@@ -308,12 +318,12 @@ export class OAuth2ProviderService {
 		await fastify.register(fastifyExpress);
 		fastify.use('/oauth/authorize', this.#server.authorize(((areq, done) => {
 			(async (): Promise<Parameters<typeof done>> => {
-				console.log('HIT /oauth/authorize validation middleware', areq);
-
 				// This should return client/redirectURI AND the error, or
 				// the handler can't send error to the redirection URI
 
 				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq as OAuthRequest;
+
+				this.#logger.info(`Validating authorization parameters, with client_id: ${clientID}, redirect_uri: ${redirectURI}, scope: ${scope}`);
 
 				const clientUrl = validateClientId(clientID);
 
@@ -361,7 +371,7 @@ export class OAuth2ProviderService {
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/decision', this.#server.decision((req, done) => {
-			console.log('HIT decision:', req.oauth2, (req as any).body);
+			this.#logger.info(`Received the decision. Cancel: ${!!(req as any).body.cancel}`);
 			req.user = (req as any).body.login_token;
 			done(null, undefined);
 		}));
@@ -374,5 +384,3 @@ export class OAuth2ProviderService {
 		fastify.use('/oauth/token', this.#server.errorHandler());
 	}
 }
-
-// TODO: remove console.log and use proper logger
