@@ -83,6 +83,16 @@ export class RedisKVCache<T> {
 
 		// TODO: イベント発行して他プロセスのメモリキャッシュも更新できるようにする
 	}
+
+	@bindThis
+	public gc() {
+		this.memoryCache.gc();
+	}
+
+	@bindThis
+	public dispose() {
+		this.memoryCache.dispose();
+	}
 }
 
 export class RedisSingleCache<T> {
@@ -174,10 +184,15 @@ export class RedisSingleCache<T> {
 export class MemoryKVCache<T> {
 	public cache: Map<string, { date: number; value: T; }>;
 	private lifetime: number;
+	private gcIntervalHandle: NodeJS.Timer;
 
 	constructor(lifetime: MemoryKVCache<never>['lifetime']) {
 		this.cache = new Map();
 		this.lifetime = lifetime;
+
+		this.gcIntervalHandle = setInterval(() => {
+			this.gc();
+		}, 1000 * 60 * 3);
 	}
 
 	@bindThis
@@ -200,7 +215,7 @@ export class MemoryKVCache<T> {
 	}
 
 	@bindThis
-	public delete(key: string) {
+	public delete(key: string): void {
 		this.cache.delete(key);
 	}
 
@@ -254,6 +269,21 @@ export class MemoryKVCache<T> {
 			this.set(key, value);
 		}
 		return value;
+	}
+
+	@bindThis
+	public gc(): void {
+		const now = Date.now();
+		for (const [key, { date }] of this.cache.entries()) {
+			if ((now - date) > this.lifetime) {
+				this.cache.delete(key);
+			}
+		}
+	}
+
+	@bindThis
+	public dispose(): void {
+		clearInterval(this.gcIntervalHandle);
 	}
 }
 
