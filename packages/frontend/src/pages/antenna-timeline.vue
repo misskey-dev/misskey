@@ -1,19 +1,20 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<div ref="rootEl" v-hotkey.global="keymap" class="tqmomfks">
-		<div v-if="queue > 0" class="new"><button class="_buttonPrimary" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
-		<div class="tl">
-			<MkTimeline
-				ref="tlEl" :key="antennaId"
-				class="tl"
-				src="antenna"
-				:antenna="antennaId"
-				:sound="true"
-				@queue="queueUpdated"
-			/>
+	<MkSpacer :contentMax="800">
+		<div ref="rootEl" v-hotkey.global="keymap">
+			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+			<div :class="$style.tl">
+				<MkTimeline
+					ref="tlEl" :key="antennaId"
+					src="antenna"
+					:antenna="antennaId"
+					:sound="true"
+					@queue="queueUpdated"
+				/>
+			</div>
 		</div>
-	</div>
+	</MkSpacer>
 </MkStickyContainer>
 </template>
 
@@ -89,36 +90,29 @@ definePageMetadata(computed(() => antenna ? {
 } : null));
 </script>
 
-<style lang="scss" scoped>
-.tqmomfks {
-	padding: var(--margin);
+<style lang="scss" module>
+.new {
+	position: sticky;
+	top: calc(var(--stickyTop, 0px) + 16px);
+	z-index: 1000;
+	width: 100%;
+	margin: calc(-0.675em - 8px) 0;
 
-	> .new {
-		position: sticky;
-		top: calc(var(--stickyTop, 0px) + 16px);
-		z-index: 1000;
-		width: 100%;
-		margin: calc(-0.675em - 8px - var(--margin)) 0 calc(-0.675em - 8px);
-
-		> button {
-			display: block;
-			margin: var(--margin) auto 0 auto;
-			padding: 8px 16px;
-			border-radius: 32px;
-		}
-	}
-
-	> .tl {
-		background: var(--bg);
-		border-radius: var(--radius);
-		overflow: clip;
+	&:first-child {
+		margin-top: calc(-0.675em - 8px - var(--margin));
 	}
 }
 
-@container (min-width: 800px) {
-	.tqmomfks {
-		max-width: 800px;
-		margin: 0 auto;
-	}
+.newButton {
+	display: block;
+	margin: var(--margin) auto 0 auto;
+	padding: 8px 16px;
+	border-radius: 32px;
+}
+
+.tl {
+	background: var(--bg);
+	border-radius: var(--radius);
+	overflow: clip;
 }
 </style>

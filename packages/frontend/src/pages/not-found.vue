@@ -1,7 +1,7 @@
 <template>
-<div class="ipledcug">
+<div>
 	<div class="_fullinfo">
-		<img src="https://xn--931a.moe/assets/not-found.jpg" class="_ghost"/>
+		<img :src="notFoundImageUrl" class="_ghost"/>
 		<div>{{ i18n.ts.notFoundDescription }}</div>
 	</div>
 </div>
@@ -10,6 +10,7 @@
 <script lang="ts" setup>
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { notFoundImageUrl } from '@/instance';
 
 const headerActions = $computed(() => []);
 

@@ -10,51 +10,64 @@
 	<MkSwitch v-model="reportError">{{ i18n.ts.sendErrorReports }}<template #caption>{{ i18n.ts.sendErrorReportsDescription }}</template></MkSwitch>
 	-->
 
-	<div class="_gaps_s">
-		<MkFolder>
-			<template #icon><i class="ti ti-info-circle"></i></template>
-			<template #label>{{ i18n.ts.accountInfo }}</template>
+	<FormSection first>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #icon><i class="ti ti-info-circle"></i></template>
+				<template #label>{{ i18n.ts.accountInfo }}</template>
 
-			<div class="_gaps_m">
-				<MkKeyValue>
-					<template #key>ID</template>
-					<template #value><span class="_monospace">{{ $i.id }}</span></template>
-				</MkKeyValue>
+				<div class="_gaps_m">
+					<MkKeyValue>
+						<template #key>ID</template>
+						<template #value><span class="_monospace">{{ $i.id }}</span></template>
+					</MkKeyValue>
 
-				<MkKeyValue>
-					<template #key>{{ i18n.ts.registeredDate }}</template>
-					<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
-				</MkKeyValue>
+					<MkKeyValue>
+						<template #key>{{ i18n.ts.registeredDate }}</template>
+						<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
+					</MkKeyValue>
+				</div>
+			</MkFolder>
 
-				<FormLink to="/settings/account-stats"><template #icon><i class="ti ti-info-circle"></i></template>{{ i18n.ts.statistics }}</FormLink>
-			</div>
-		</MkFolder>
+			<MkFolder>
+				<template #icon><i class="ti ti-alert-triangle"></i></template>
+				<template #label>{{ i18n.ts.closeAccount }}</template>
 
+				<div class="_gaps_m">
+					<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
+					<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
+					<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount">{{ i18n.ts._accountDelete.requestAccountDelete }}</MkButton>
+					<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #icon><i class="ti ti-flask"></i></template>
+				<template #label>{{ i18n.ts.experimentalFeatures }}</template>
+
+				<div class="_gaps_m">
+					<MkSwitch v-model="enableCondensedLineForAcct">
+						<template #label>Enable condensed line for acct</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #icon><i class="ti ti-code"></i></template>
+				<template #label>{{ i18n.ts.developer }}</template>
+
+				<div class="_gaps_m">
+					<MkSwitch v-model="devMode">
+						<template #label>{{ i18n.ts.devMode }}</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+		</div>
+	</FormSection>
+
+	<FormSection>
 		<FormLink to="/registry"><template #icon><i class="ti ti-adjustments"></i></template>{{ i18n.ts.registry }}</FormLink>
-
-		<MkFolder>
-			<template #icon><i class="ti ti-alert-triangle"></i></template>
-			<template #label>{{ i18n.ts.closeAccount }}</template>
-
-			<div class="_gaps_m">
-				<FormInfo warn>{{ i18n.ts._accountDelete.mayTakeTime }}</FormInfo>
-				<FormInfo>{{ i18n.ts._accountDelete.sendEmail }}</FormInfo>
-				<MkButton v-if="!$i.isDeleted" danger @click="deleteAccount">{{ i18n.ts._accountDelete.requestAccountDelete }}</MkButton>
-				<MkButton v-else disabled>{{ i18n.ts._accountDelete.inProgress }}</MkButton>
-			</div>
-		</MkFolder>
-
-		<MkFolder>
-			<template #icon><i class="ti ti-flask"></i></template>
-			<template #label>{{ i18n.ts.experimentalFeatures }}</template>
-
-			<div class="_gaps_m">
-				<MkSwitch v-model="enableCondensedLineForAcct">
-					<template #label>Enable condensed line for acct</template>
-				</MkSwitch>
-			</div>
-		</MkFolder>
-	</div>
+	</FormSection>
 </div>
 </template>
 
@@ -72,9 +85,11 @@ import { signout, $i } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { unisonReload } from '@/scripts/unison-reload';
+import FormSection from '@/components/form/section.vue';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
+const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {

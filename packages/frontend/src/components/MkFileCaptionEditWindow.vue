@@ -3,14 +3,14 @@
 	ref="dialog"
 	:width="400"
 	:height="450"
-	:with-ok-button="true"
-	:ok-button-disabled="false"
+	:withOkButton="true"
+	:okButtonDisabled="false"
 	@ok="ok()"
 	@close="dialog.close()"
 	@closed="emit('closed')"
 >
 	<template #header>{{ i18n.ts.describeFile }}</template>
-	<MkSpacer :margin-min="20" :margin-max="28">
+	<MkSpacer :marginMin="20" :marginMax="28">
 		<MkDriveFileThumbnail :file="file" fit="contain" style="height: 100px; margin-bottom: 16px;"/>
 		<MkTextarea v-model="caption" autofocus :placeholder="i18n.ts.inputNewDescription">
 			<template #label>{{ i18n.ts.caption }}</template>

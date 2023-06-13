@@ -3,6 +3,7 @@ import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import RE2 from 're2';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
@@ -238,7 +239,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel != null) data.localOnly = true;
 
 		if (data.visibility === 'public' && data.channel == null) {
-			if ((data.text != null) && (await this.metaService.fetch()).sensitiveWords.some(w => data.text!.includes(w))) {
+			const sensitiveWords = (await this.metaService.fetch()).sensitiveWords;
+			if (this.isSensitive(data, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
 				data.visibility = 'home';
@@ -508,7 +510,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.poll && data.poll.expiresAt) {
 			const delay = data.poll.expiresAt.getTime() - Date.now();
-			this.queueService.endedPollNotificationQueue.add({
+			this.queueService.endedPollNotificationQueue.add(note.id, {
 				noteId: note.id,
 			}, {
 				delay,
@@ -670,6 +672,31 @@ export class NoteCreateService implements OnApplicationShutdown {
 		// Register to search database
 		this.index(note);
 	}
+	
+	@bindThis
+	private isSensitive(note: Option, sensitiveWord: string[]): boolean {
+		if (sensitiveWord.length > 0) {
+			const text = note.cw ?? note.text ?? '';
+			if (text === '') return false;
+			const matched = sensitiveWord.some(filter => {
+				// represents RegExp
+				const regexp = filter.match(/^\/(.+)\/(.*)$/);
+				// This should never happen due to input sanitisation.
+				if (!regexp) {
+					const words = filter.split(' ');
+					return words.every(keyword => text.includes(keyword));
+				}
+				try {
+					return new RE2(regexp[1], regexp[2]).test(text);
+				} catch (err) {
+					// This should never happen due to input sanitisation.
+					return false;
+				}
+			});
+			if (matched) return true;
+		}
+		return false;
+	}
 
 	@bindThis
 	private incRenoteCount(renote: Note) {
@@ -763,7 +790,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 		return mentionedUsers;
 	}
 
-	onApplicationShutdown(signal?: string | undefined) {
+	@bindThis
+	public dispose(): void {
 		this.#shutdownController.abort();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

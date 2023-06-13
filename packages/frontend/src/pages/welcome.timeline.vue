@@ -3,16 +3,16 @@
 	<div ref="scrollEl" :class="[$style.scrollbox, { [$style.scroll]: isScrolling }]">
 		<div v-for="note in notes" :key="note.id" :class="$style.note">
 			<div class="_panel" :class="$style.content">
-				<div :class="$style.body">
+				<div>
 					<MkA v-if="note.replyId" class="reply" :to="`/notes/${note.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
 					<Mfm v-if="note.text" :text="note.text" :author="note.user" :i="$i"/>
 					<MkA v-if="note.renoteId" class="rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 				</div>
 				<div v-if="note.files.length > 0" :class="$style.richcontent">
-					<MkMediaList :media-list="note.files"/>
+					<MkMediaList :mediaList="note.files"/>
 				</div>
 				<div v-if="note.poll">
-					<MkPoll :note="note" :read-only="true"/>
+					<MkPoll :note="note" :readOnly="true"/>
 				</div>
 			</div>
 			<MkReactionsViewer ref="reactionsViewer" :note="note"/>

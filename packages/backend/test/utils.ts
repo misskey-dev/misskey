@@ -124,6 +124,13 @@ export const react = async (user: any, note: any, reaction: string): Promise<any
 	}, user);
 };
 
+export const userList = async (user: any, userList: any = {}): Promise<any> => {
+	const res = await api('users/lists/create', {
+		name: 'test',
+	}, user);
+	return res.body;
+};
+
 export const page = async (user: any, page: any = {}): Promise<any> => {
 	const res = await api('pages/create', {
 		alignCenter: false,
@@ -380,8 +387,98 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	};
 };
 
+/**
+ * あるAPIエンドポイントのPaginationが複数の条件で一貫した挙動であることをテストします。
+ * (sinceId, untilId, sinceDate, untilDate, offset, limit)
+ * @param expected 期待値となるEntityの並び（例：Note[]）昇順降順が一致している必要がある
+ * @param fetchEntities Entity[]を返却するテスト対象のAPIを呼び出す関数
+ * @param offsetBy 何をキーとしてPaginationするか。
+ * @param ordering 昇順・降順
+ */
+export async function testPaginationConsistency<Entity extends { id: string, createdAt?: string }>(
+	expected: Entity[],
+	fetchEntities: (paginationParam: {
+		limit?: number,
+		offset?: number,
+		sinceId?: string,
+		untilId?: string,
+		sinceDate?: number,
+		untilDate?: number,
+	}) => Promise<Entity[]>,
+	offsetBy: 'offset' | 'id' | 'createdAt' = 'id',
+	ordering: 'desc' | 'asc' = 'desc'): Promise<void> {
+	const rangeToParam = (p: { limit?: number, until?: Entity, since?: Entity }): object => {
+		if (offsetBy === 'id') {
+			return { limit: p.limit, sinceId: p.since?.id, untilId: p.until?.id };
+		} else {
+			const sinceDate = p.since?.createdAt !== undefined ? new Date(p.since.createdAt).getTime() : undefined;
+			const untilDate = p.until?.createdAt !== undefined ? new Date(p.until.createdAt).getTime() : undefined;
+			return { limit: p.limit, sinceDate, untilDate };
+		}
+	};
+
+	for (const limit of [1, 5, 10, 100, undefined]) {
+		// 1. sinceId/DateとuntilId/Dateで両端を指定して取得した結果が期待通りになっていること
+		if (ordering === 'desc') {
+			const end = expected[expected.length - 1];
+			let last = await fetchEntities(rangeToParam({ limit, since: end }));
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities(rangeToParam({ limit, until: last[last.length - 1], since: end }));
+			}
+			actual.push(end);
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+
+		// 2. sinceId/Date指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
+		if (ordering === 'asc') {
+			// 昇順にしたときの先頭(一番古いもの)をもってくる（expected[1]を基準に降順にして0番目）
+			let last = await fetchEntities({ limit: 1, untilId: expected[1].id });
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities(rangeToParam({ limit, since: last[last.length - 1] }));
+			}
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+
+		// 3. untilId指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
+		if (ordering === 'desc') {
+			let last = await fetchEntities({ limit });
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities(rangeToParam({ limit, until: last[last.length - 1] }));
+			}
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+
+		// 4. offset指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
+		if (offsetBy === 'offset') {
+			let last = await fetchEntities({ limit, offset: 0 });
+			let offset = limit ?? 10;
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities({ limit, offset });
+				offset += limit ?? 10;
+			}
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+	}
+}
+
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
-	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
+	if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
 
 	const db = new DataSource({
 		type: 'postgres',

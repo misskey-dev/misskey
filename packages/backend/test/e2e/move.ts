@@ -10,6 +10,7 @@ import type { INestApplicationContext } from '@nestjs/common';
 
 describe('Account Move', () => {
 	let app: INestApplicationContext;
+	let jq: INestApplicationContext;
 	let url: URL;
 
 	let root: any;
@@ -24,7 +25,7 @@ describe('Account Move', () => {
 
 	beforeAll(async () => {
 		app = await startServer();
-		await jobQueue();
+		jq = await jobQueue();
 		const config = loadConfig();
 		url = new URL(config.url);
 		const connection = await initTestDb(false);
@@ -39,7 +40,7 @@ describe('Account Move', () => {
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {
-		await app.close();
+		await Promise.all([app.close(), jq.close()]);
 	});
 
 	describe('Create Alias', () => {

@@ -1,26 +1,27 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :tabs="headerTabs"/></template>
-	<MKSpacer v-if="!(typeof error === 'undefined')" :content-max="1200">
+	<MKSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ error }}
 			</p>
 		</div>
 	</MKSpacer>
-	<MkSpacer v-else-if="tab === 'users'" :content-max="1200">
+	<MkSpacer v-else-if="tab === 'users'" :contentMax="1200">
 		<div class="_gaps_s">
 			<div v-if="role">{{ role.description }}</div>
 			<MkUserList :pagination="users" :extractor="(item) => item.user"/>
 		</div>
 	</MkSpacer>
-	<MkSpacer v-else-if="tab === 'timeline'" :content-max="700">
+	<MkSpacer v-else-if="tab === 'timeline'" :contentMax="700">
 		<MkTimeline ref="timeline" src="role" :role="props.role"/>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
+
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import * as os from '@/os';
@@ -29,6 +30,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import MkTimeline from '@/components/MkTimeline.vue';
 import { instanceName } from '@/config';
+import { serverErrorImageUrl } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	role: string;
@@ -80,6 +82,7 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-badge',
 })));
 </script>
+
 <style lang="scss" module>
 .root {
 	padding: 32px;

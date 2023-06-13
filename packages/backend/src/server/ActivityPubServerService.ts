@@ -585,7 +585,7 @@ export class ActivityPubServerService {
 				name: request.params.emoji,
 			});
 
-			if (emoji == null) {
+			if (emoji == null || emoji.localOnly) {
 				reply.code(404);
 				return;
 			}
