@@ -121,7 +121,10 @@ function assertIndirectError(response: Response, error: string): void {
 
 	const location = new URL(locationHeader);
 	assert.strictEqual(location.searchParams.get('error'), error);
+
+	// https://datatracker.ietf.org/doc/html/rfc9207#name-response-parameter-iss
 	assert.strictEqual(location.searchParams.get('iss'), 'http://misskey.local');
+	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2.1
 	assert.ok(location.searchParams.has('state'));
 }
 
@@ -146,7 +149,7 @@ describe('OAuth', () => {
 	}, 1000 * 60 * 2);
 
 	beforeEach(async () => {
-		process.env.MISSKEY_TEST_DISALLOW_LOOPBACK = '';
+		process.env.MISSKEY_TEST_CHECK_IP_RANGE = '';
 		fastify = Fastify();
 		fastify.get('/', async (request, reply) => {
 			reply.send(`
@@ -196,7 +199,8 @@ describe('OAuth', () => {
 		assert.strictEqual(location.origin + location.pathname, redirect_uri);
 		assert.ok(location.searchParams.has('code'));
 		assert.strictEqual(location.searchParams.get('state'), 'state');
-		assert.strictEqual(location.searchParams.get('iss'), 'http://misskey.local'); // RFC 9207
+		// https://datatracker.ietf.org/doc/html/rfc9207#name-response-parameter-iss
+		assert.strictEqual(location.searchParams.get('iss'), 'http://misskey.local');
 
 		const code = new URL(location).searchParams.get('code');
 		assert.ok(code);
@@ -299,7 +303,11 @@ describe('OAuth', () => {
 		assert.strictEqual(createResponseBodyBob.createdNote.user.username, 'bob');
 	});
 
+	// https://datatracker.ietf.org/doc/html/rfc7636.html
 	describe('PKCE', () => {
+		// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.4.1
+		// '... the authorization endpoint MUST return the authorization
+		// error response with the "error" value set to "invalid_request".'
 		test('Require PKCE', async () => {
 			const client = getClient();
 
@@ -425,7 +433,13 @@ describe('OAuth', () => {
 		assert.ok(location.searchParams.has('error'));
 	});
 
+	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.3
 	describe('Scope', () => {
+		// "If the client omits the scope parameter when requesting
+		// authorization, the authorization server MUST either process the
+		// request using a pre-defined default value or fail the request
+		// indicating an invalid scope."
+		// (And Misskey does the latter)
 		test('Missing scope', async () => {
 			const client = getClient();
 
@@ -464,6 +478,11 @@ describe('OAuth', () => {
 			assertIndirectError(response, 'invalid_scope');
 		});
 
+		// "If the issued access token scope
+		// is different from the one requested by the client, the authorization
+		// server MUST include the "scope" response parameter to inform the
+		// client of the actual scope granted."
+		// (Although Misskey always return scope, which is also fine)
 		test('Partially known scopes', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 
@@ -480,8 +499,6 @@ describe('OAuth', () => {
 				code_verifier,
 			} as AuthorizationTokenConfigExtended);
 
-			// OAuth2 requires returning `scope` in the token response if the resulting scope is different than the requested one
-			// (Although Misskey always return scope, which is also fine)
 			assert.strictEqual(token.token.scope, 'write:notes');
 		});
 
@@ -541,6 +558,7 @@ describe('OAuth', () => {
 		});
 	});
 
+	// https://datatracker.ietf.org/doc/html/rfc6750.html
 	test('Authorization header', async () => {
 		const { code_challenge, code_verifier } = await pkceChallenge(128);
 
@@ -572,12 +590,22 @@ describe('OAuth', () => {
 			},
 			body: JSON.stringify({ text: 'test' }),
 		});
-		// RFC 6750 section 3.1 says 401 but it's SHOULD not MUST. 403 should be okay for now.
+
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-3.1
+		// "The access token provided is expired, revoked, malformed, or
+		// invalid for other reasons.  The resource SHOULD respond with
+		// the HTTP 401 (Unauthorized) status code."
+		// (but it's SHOULD not MUST. 403 should be okay for now.)
 		assert.strictEqual(createResponse.status, 403);
 
 		// TODO: error code (wrong Authorization header should emit OAuth error instead of Misskey API error)
 	});
 
+	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.4
+	// "If an authorization request fails validation due to a missing,
+	// invalid, or mismatching redirection URI, the authorization server
+	// SHOULD inform the resource owner of the error and MUST NOT
+	// automatically redirect the user-agent to the invalid redirection URI."
 	describe('Redirection', () => {
 		test('Invalid redirect_uri at authorization endpoint', async () => {
 			const client = getClient();
@@ -653,6 +681,7 @@ describe('OAuth', () => {
 		});
 	});
 
+	// https://datatracker.ietf.org/doc/html/rfc8414
 	test('Server metadata', async () => {
 		const response = await fetch(new URL('.well-known/oauth-authorization-server', host));
 		assert.strictEqual(response.status, 200);
@@ -717,6 +746,7 @@ describe('OAuth', () => {
 		});
 	});
 
+	// https://indieauth.spec.indieweb.org/#client-information-discovery
 	describe('Client Information Discovery', () => {
 		describe('Redirection', () => {
 			const tests: Record<string, (reply: FastifyReply) => void> = {
@@ -801,7 +831,7 @@ describe('OAuth', () => {
 		});
 
 		test('Disallow loopback', async () => {
-			process.env.MISSKEY_TEST_DISALLOW_LOOPBACK = '1';
+			process.env.MISSKEY_TEST_CHECK_IP_RANGE = '1';
 
 			const client = getClient();
 			const response = await fetch(client.authorizeURL({

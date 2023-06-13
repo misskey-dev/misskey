@@ -36,9 +36,13 @@ function validateClientId(raw: string): URL {
 	})();
 
 	// Client identifier URLs MUST have either an https or http scheme
-	// XXX: but why allow http in 2023?
-	if (!['http:', 'https:'].includes(url.protocol)) {
-		throw new AuthorizationError('client_id must be either https or http URL', 'invalid_request');
+	// But then again:
+	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.1
+	// 'The redirection endpoint SHOULD require the use of TLS as described
+	// in Section 1.6 when the requested response type is "code" or "token"'
+	const allowedProtocols = process.env.NODE_ENV === 'test' ? ['http:', 'https:'] : ['https:'];
+	if (!allowedProtocols.includes(url.protocol)) {
+		throw new AuthorizationError('client_id must be a valid HTTPS URL', 'invalid_request');
 	}
 
 	// MUST contain a path component (new URL() implicitly adds one)
@@ -116,7 +120,10 @@ interface OAuthRequest extends OAuth2Req {
 function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
 	return {
 		query: (txn, res, params): void => {
-			// RFC 9207
+			// https://datatracker.ietf.org/doc/html/rfc9207#name-response-parameter-iss
+			// "In authorization responses to the client, including error responses,
+			// an authorization server supporting this specification MUST indicate its
+			// identity by including the iss parameter in the response."
 			params.iss = issuerUrl;
 
 			const parsed = new URL(txn.redirectURI);
@@ -188,6 +195,7 @@ export class OAuth2ProviderService {
 			scopes: string[],
 		}>(1000 * 60 * 5); // 5m
 
+		// https://datatracker.ietf.org/doc/html/rfc7636.html
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
 			modes: getQueryMode(config.url),
@@ -307,10 +315,14 @@ export class OAuth2ProviderService {
 
 				const clientUrl = validateClientId(clientID);
 
-				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_DISALLOW_LOOPBACK === '1') {
+				// TODO: Consider allowing this for native apps (RFC 8252)
+				// The current setup requires an explicit list of redirect_uris per
+				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
+				// which blocks the support. But we could loose the rule in this case.
+				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
 					const lookup = await dns.lookup(clientUrl.hostname);
-					if (ipaddr.parse(lookup.address).range() === 'loopback') {
-						throw new AuthorizationError('client_id unexpectedly resolves to loopback IP.', 'invalid_request');
+					if (ipaddr.parse(lookup.address).range() !== 'unicast') {
+						throw new AuthorizationError('client_id resolves to disallowed IP range.', 'invalid_request');
 					}
 				}
 
