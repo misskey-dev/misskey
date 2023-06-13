@@ -51,6 +51,8 @@ export interface Locale {
     "delete": string;
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
+    "deleteAndTagging": string;
+    "deleteAndTaggingConfirm": string;
     "addToList": string;
     "sendMessage": string;
     "copyRSS": string;
@@ -667,6 +669,8 @@ export interface Locale {
     "random": string;
     "system": string;
     "switchUi": string;
+    "mulukhiyaHome": string;
+    "daisskeyBlog": string;
     "desktop": string;
     "clip": string;
     "createNew": string;
@@ -1867,6 +1871,7 @@ export interface Locale {
             "chooseList": string;
         };
         "clicker": string;
+        "koteitag": string;
     };
     "_cw": {
         "hide": string;
