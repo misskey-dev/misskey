@@ -116,9 +116,13 @@ async function fetchAuthorizationCode(user: misskey.entities.MeSignup, scope: st
 function assertIndirectError(response: Response, error: string): void {
 	assert.strictEqual(response.status, 302);
 
-	const location = response.headers.get('location');
-	assert.ok(location);
-	assert.strictEqual(new URL(location).searchParams.get('error'), error);
+	const locationHeader = response.headers.get('location');
+	assert.ok(locationHeader);
+
+	const location = new URL(locationHeader);
+	assert.strictEqual(location.searchParams.get('error'), error);
+	assert.strictEqual(location.searchParams.get('iss'), 'http://misskey.local');
+	assert.ok(location.searchParams.has('state'));
 }
 
 async function assertDirectError(response: Response, status: number, error: string): Promise<void> {
@@ -840,6 +844,4 @@ describe('OAuth', () => {
 	});
 
 	// TODO: Add spec links to tests
-
-	// TODO: Check whether indirect errors have state and iss
 });
