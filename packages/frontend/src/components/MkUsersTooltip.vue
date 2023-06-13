@@ -1,11 +1,11 @@
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="250" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="250" @closed="emit('closed')">
 	<div :class="$style.root">
 		<div v-for="u in users" :key="u.id" :class="$style.user">
 			<MkAvatar :class="$style.avatar" :user="u"/>
-			<MkUserName :class="$style.name" :user="u" :nowrap="true"/>
+			<MkUserName :user="u" :nowrap="true"/>
 		</div>
-		<div v-if="users.length < count" :class="$style.omitted">+{{ count - users.length }}</div>
+		<div v-if="users.length < count">+{{ count - users.length }}</div>
 	</div>
 </MkTooltip>
 </template>
@@ -41,14 +41,6 @@ const emit = defineEmits<{
 	&:not(:last-child) {
 		margin-bottom: 3px;
 	}
-}
-
-.name {
-
-}
-
-.omitted {
-	
 }
 
 .avatar {

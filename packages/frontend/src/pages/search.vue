@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 
-	<MkSpacer v-if="tab === 'note'" :content-max="800">
+	<MkSpacer v-if="tab === 'note'" :contentMax="800">
 		<div v-if="notesSearchAvailable">
 			<XNote/>
 		</div>
@@ -11,7 +11,7 @@
 		</div>
 	</MkSpacer>
 
-	<MkSpacer v-else-if="tab === 'user'" :content-max="800">
+	<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
 		<XUser/>
 	</MkSpacer>
 </MkStickyContainer>

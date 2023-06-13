@@ -1,9 +1,9 @@
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="900">
-		<div class="uqshojas">
-			<div v-for="ad in ads" class="_panel _gaps_m ad">
+	<MkSpacer :contentMax="900">
+		<div>
+			<div v-for="ad in ads" class="_panel _gaps_m" :class="$style.ad">
 				<MkAd v-if="ad.url" :specify="ad"/>
 				<MkInput v-model="ad.url" type="url">
 					<template #label>URL</template>
@@ -196,14 +196,12 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.uqshojas {
-	> .ad {
-		padding: 32px;
+<style lang="scss" module>
+.ad {
+	padding: 32px;
 
-		&:not(:last-child) {
-			margin-bottom: var(--margin);
-		}
+	&:not(:last-child) {
+		margin-bottom: var(--margin);
 	}
 }
 </style>

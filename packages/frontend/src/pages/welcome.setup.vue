@@ -1,27 +1,32 @@
 <template>
-<form :class="$style.root" class="_panel" @submit.prevent="submit()">
-	<div :class="$style.title">
-		<div>Welcome to Misskey!</div>
-		<div :class="$style.version">v{{ version }}</div>
+<div>
+	<MkAnimBg style="position: fixed; top: 0;"/>
+	<div :class="$style.formContainer">
+		<form :class="$style.form" class="_panel" @submit.prevent="submit()">
+			<div :class="$style.title">
+				<div>Welcome to Misskey!</div>
+				<div :class="$style.version">v{{ version }}</div>
+			</div>
+			<div class="_gaps_m" style="padding: 32px;">
+				<div>{{ i18n.ts.intro }}</div>
+				<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
+					<template #label>{{ i18n.ts.username }}</template>
+					<template #prefix>@</template>
+					<template #suffix>@{{ host }}</template>
+				</MkInput>
+				<MkInput v-model="password" type="password" data-cy-admin-password>
+					<template #label>{{ i18n.ts.password }}</template>
+					<template #prefix><i class="ti ti-lock"></i></template>
+				</MkInput>
+				<div>
+					<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
+						{{ submitting ? i18n.ts.processing : i18n.ts.done }}<MkEllipsis v-if="submitting"/>
+					</MkButton>
+				</div>
+			</div>
+		</form>
 	</div>
-	<div class="_gaps_m" style="padding: 32px;">
-		<div>{{ i18n.ts.intro }}</div>
-		<MkInput v-model="username" pattern="^[a-zA-Z0-9_]{1,20}$" :spellcheck="false" required data-cy-admin-username>
-			<template #label>{{ i18n.ts.username }}</template>
-			<template #prefix>@</template>
-			<template #suffix>@{{ host }}</template>
-		</MkInput>
-		<MkInput v-model="password" type="password" data-cy-admin-password>
-			<template #label>{{ i18n.ts.password }}</template>
-			<template #prefix><i class="ti ti-lock"></i></template>
-		</MkInput>
-		<div>
-			<MkButton gradate large rounded type="submit" :disabled="submitting" data-cy-admin-ok style="margin: 0 auto;">
-				{{ submitting ? i18n.ts.processing : i18n.ts.done }}<MkEllipsis v-if="submitting"/>
-			</MkButton>
-		</div>
-	</div>
-</form>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +37,7 @@ import { host, version } from '@/config';
 import * as os from '@/os';
 import { login } from '@/account';
 import { i18n } from '@/i18n';
+import MkAnimBg from '@/components/MkAnimBg.vue';
 
 let username = $ref('');
 let password = $ref('');
@@ -58,12 +64,21 @@ function submit() {
 </script>
 
 <style lang="scss" module>
-.root {
+.formContainer {
+	min-height: 100svh;
+	padding: 32px 32px 64px 32px;
+	box-sizing: border-box;
+display: grid;
+place-content: center;
+}
+
+.form {
+	position: relative;
+	z-index: 10;
 	border-radius: var(--radius);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
+	overflow: clip;
 	max-width: 500px;
-	margin: 32px auto;
 }
 
 .title {

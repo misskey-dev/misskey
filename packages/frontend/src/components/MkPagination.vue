@@ -1,9 +1,9 @@
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 	mode="out-in"
 >
 	<MkLoading v-if="fetching"/>
@@ -13,7 +13,7 @@
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
 			<div class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<img :src="infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 		</slot>
@@ -73,6 +73,8 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 };
 </script>
 <script lang="ts" setup>
+import { infoImageUrl } from '@/instance';
+
 const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;

@@ -1,27 +1,27 @@
 <template>
-<div class="mk-media-banner">
-	<div v-if="media.isSensitive && hide" class="sensitive" @click="hide = false">
-		<span class="icon"><i class="ti ti-alert-triangle"></i></span>
+<div :class="$style.root">
+	<div v-if="media.isSensitive && hide" :class="$style.sensitive" @click="hide = false">
+		<span style="font-size: 1.6em;"><i class="ti ti-alert-triangle"></i></span>
 		<b>{{ i18n.ts.sensitive }}</b>
 		<span>{{ i18n.ts.clickToShow }}</span>
 	</div>
-	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" class="audio">
-		<VuePlyr :options="{ volume: 0.5 }">
-			<audio controls preload="metadata">
-				<source
-					:src="media.url"
-					:type="media.type"
-				/>
-			</audio>
-		</VuePlyr>
+	<div v-else-if="media.type.startsWith('audio') && media.type !== 'audio/midi'" :class="$style.audio">
+		<audio
+			ref="audioEl"
+			:src="media.url"
+			:title="media.name"
+			controls
+			preload="metadata"
+			@volumechange="volumechange"
+		/>
 	</div>
 	<a
-		v-else class="download"
+		v-else :class="$style.download"
 		:href="media.url"
 		:title="media.name"
 		:download="media.name"
 	>
-		<span class="icon"><i class="ti ti-download"></i></span>
+		<span style="font-size: 1.6em;"><i class="ti ti-download"></i></span>
 		<b>{{ media.name }}</b>
 	</a>
 </div>
@@ -30,9 +30,7 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import * as misskey from 'misskey-js';
-import VuePlyr from 'vue-plyr';
 import { soundConfigStore } from '@/scripts/sound';
-import 'vue-plyr/dist/vue-plyr.css';
 import { i18n } from '@/i18n';
 
 const props = withDefaults(defineProps<{
@@ -52,55 +50,34 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.mk-media-banner {
+<style lang="scss" module>
+.root {
 	width: 100%;
 	border-radius: 4px;
 	margin-top: 4px;
-	// overflow: clip;
+	overflow: clip;
+}
 
-	--plyr-color-main: var(--accent);
-	--plyr-audio-controls-background: var(--bg);
-	--plyr-audio-controls-color: var(--accentLighten);
+.download,
+.sensitive {
+	display: flex;
+	align-items: center;
+	font-size: 12px;
+	padding: 8px 12px;
+	white-space: nowrap;
+}
 
-	> .download,
-	> .sensitive {
-		display: flex;
-		align-items: center;
-		font-size: 12px;
-		padding: 8px 12px;
-		white-space: nowrap;
+.download {
+	background: var(--noteAttachedFile);
+}
 
-		> * {
-			display: block;
-		}
+.sensitive {
+	background: #111;
+	color: #fff;
+}
 
-		> b {
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		> *:not(:last-child) {
-			margin-right: .2em;
-		}
-
-		> .icon {
-			font-size: 1.6em;
-		}
-	}
-
-	> .download {
-		background: var(--noteAttachedFile);
-	}
-
-	> .sensitive {
-		background: #111;
-		color: #fff;
-	}
-
-	> .audio {
-		border-radius: 8px;
-		// overflow: clip;
-	}
+.audio {
+	border-radius: 8px;
+	overflow: clip;
 }
 </style>

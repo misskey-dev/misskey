@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
-import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.vue';
 import { within } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
+import MkMisskeyFlavoredMarkdown from './MkMisskeyFlavoredMarkdown.ts';
 export const Default = {
 	render(args) {
 		return {

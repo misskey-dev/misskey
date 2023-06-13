@@ -1,10 +1,16 @@
 <template>
-<span v-if="!fetching" class="xbhtxfms">
+<span v-if="!fetching" :class="$style.root">
 	<template v-if="display === 'marquee'">
-		<Transition name="change" mode="default">
+		<Transition
+			:enterActiveClass="$style.transition_change_enterActive"
+			:leaveActiveClass="$style.transition_change_leaveActive"
+			:enterFromClass="$style.transition_change_enterFrom"
+			:leaveToClass="$style.transition_change_leaveTo"
+			mode="default"
+		>
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
-				<span v-for="item in items" class="item">
-					<a class="link" :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span class="divider"></span>
+				<span v-for="item in items" :class="$style.item">
+					<a :href="item.link" rel="nofollow noopener" target="_blank" :title="item.title">{{ item.title }}</a><span :class="$style.divider"></span>
 				</span>
 			</MarqueeText>
 		</Transition>
@@ -54,39 +60,40 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 });
 </script>
 
-<style lang="scss" scoped>
-.change-enter-active, .change-leave-active {
+<style lang="scss" module>
+.transition_change_enterActive,
+.transition_change_leaveActive {
 	position: absolute;
 	top: 0;
   transition: all 1s ease;
 }
-.change-enter-from {
-  opacity: 0;
+.transition_change_enterFrom {
+	opacity: 0;
 	transform: translateY(-100%);
 }
-.change-leave-to {
-  opacity: 0;
+.transition_change_leaveTo {
+	opacity: 0;
 	transform: translateY(100%);
 }
 
-.xbhtxfms {
+.root {
 	display: inline-block;
 	position: relative;
+}
 
-	::v-deep(.item) {
-		display: inline-flex;
-		align-items: center;
-		vertical-align: bottom;
-		margin: 0;
+.item {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: bottom;
+	margin: 0;
+}
 
-		> .divider {
-			display: inline-block;
-			width: 0.5px;
-			height: var(--height);
-			margin: 0 3em;
-			background: currentColor;
-			opacity: 0.3;
-		}
-	}
+.divider {
+	display: inline-block;
+	width: 0.5px;
+	height: var(--height);
+	margin: 0 3em;
+	background: currentColor;
+	opacity: 0.3;
 }
 </style>

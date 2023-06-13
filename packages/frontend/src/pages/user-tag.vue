@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 
-	<MkSpacer :content-max="1200">
+	<MkSpacer :contentMax="1200">
 		<div class="_gaps_s">
 			<MkUserList :pagination="tagUsers"/>
 		</div>
