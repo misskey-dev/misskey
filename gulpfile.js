@@ -38,8 +38,8 @@ gulp.task('copy:frontend:locales', cb => {
 gulp.task('build:backend:script', () => {
 	const clientManifestExists = fs.existsSync('./built/_vite_/manifest.json');
 	const clientEntry = clientManifestExists ?
-		JSON.parse(fs.readFileSync('./built/_vite_/manifest.json', 'utf-8'))['src/init.ts'].file
-		: 'src/init.ts'
+		JSON.parse(fs.readFileSync('./built/_vite_/manifest.json', 'utf-8'))['src/_boot_.ts'].file
+		: 'src/_boot_.ts'
 
 	return gulp.src(['./packages/backend/src/server/web/boot.js', './packages/backend/src/server/web/bios.js', './packages/backend/src/server/web/cli.js', './packages/backend/src/server/web/flush.js'])
 		.pipe(replace('LANGS', JSON.stringify(Object.keys(locales))))
