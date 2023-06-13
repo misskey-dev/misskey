@@ -1065,6 +1065,7 @@ export interface Locale {
     "goToMisskey": string;
     "additionalEmojiDictionary": string;
     "installed": string;
+    "branding": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;

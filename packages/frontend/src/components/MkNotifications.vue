@@ -2,7 +2,7 @@
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
 		<div class="_fullinfo">
-			<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+			<img :src="infoImageUrl" class="_ghost"/>
 			<div>{{ i18n.ts.noNotifications }}</div>
 		</div>
 	</template>
@@ -26,6 +26,7 @@ import { useStream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { notificationTypes } from '@/const';
+import { infoImageUrl } from '@/instance';
 
 const props = defineProps<{
 	includeTypes?: typeof notificationTypes[number][];
