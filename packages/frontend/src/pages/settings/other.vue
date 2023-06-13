@@ -26,8 +26,6 @@
 						<template #key>{{ i18n.ts.registeredDate }}</template>
 						<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
 					</MkKeyValue>
-
-					<FormLink to="/settings/account-stats"><template #icon><i class="ti ti-info-circle"></i></template>{{ i18n.ts.statistics }}</FormLink>
 				</div>
 			</MkFolder>
 
@@ -50,6 +48,17 @@
 				<div class="_gaps_m">
 					<MkSwitch v-model="enableCondensedLineForAcct">
 						<template #label>Enable condensed line for acct</template>
+					</MkSwitch>
+				</div>
+			</MkFolder>
+
+			<MkFolder>
+				<template #icon><i class="ti ti-code"></i></template>
+				<template #label>{{ i18n.ts.developer }}</template>
+
+				<div class="_gaps_m">
+					<MkSwitch v-model="devMode">
+						<template #label>{{ i18n.ts.devMode }}</template>
 					</MkSwitch>
 				</div>
 			</MkFolder>
@@ -80,6 +89,7 @@ import FormSection from '@/components/form/section.vue';
 
 const reportError = computed(defaultStore.makeGetterSetter('reportError'));
 const enableCondensedLineForAcct = computed(defaultStore.makeGetterSetter('enableCondensedLineForAcct'));
+const devMode = computed(defaultStore.makeGetterSetter('devMode'));
 
 function onChangeInjectFeaturedNote(v) {
 	os.api('i/update', {

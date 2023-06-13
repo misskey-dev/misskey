@@ -10,6 +10,7 @@
 		accent: '#9f8989',
 		bg: '#f5f3f3',
 		fg: '#7f6666',
+		fgOnWhite: '@accent',
 		panel: '#fff',
 		divider: 'rgba(87, 68, 68, 0.1)',
 		renote: 'rgb(160, 172, 125)',

@@ -4,7 +4,7 @@ import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { MeiliSearch } from 'meilisearch';
 import { DI } from './di-symbols.js';
-import { loadConfig } from './config.js';
+import { Config, loadConfig } from './config.js';
 import { createPostgresDataSource } from './postgres.js';
 import { RepositoryModule } from './models/RepositoryModule.js';
 import type { Provider, OnApplicationShutdown } from '@nestjs/common';
@@ -25,7 +25,7 @@ const $db: Provider = {
 
 const $meilisearch: Provider = {
 	provide: DI.meilisearch,
-	useFactory: (config) => {
+	useFactory: (config: Config) => {
 		if (config.meilisearch) {
 			return new MeiliSearch({
 				host: `${config.meilisearch.ssl ? 'https' : 'http' }://${config.meilisearch.host}:${config.meilisearch.port}`,
@@ -40,7 +40,7 @@ const $meilisearch: Provider = {
 
 const $redis: Provider = {
 	provide: DI.redis,
-	useFactory: (config) => {
+	useFactory: (config: Config) => {
 		return new Redis.Redis({
 			port: config.redis.port,
 			host: config.redis.host,
@@ -55,7 +55,7 @@ const $redis: Provider = {
 
 const $redisForPub: Provider = {
 	provide: DI.redisForPub,
-	useFactory: (config) => {
+	useFactory: (config: Config) => {
 		const redis = new Redis.Redis({
 			port: config.redisForPubsub.port,
 			host: config.redisForPubsub.host,
@@ -71,7 +71,7 @@ const $redisForPub: Provider = {
 
 const $redisForSub: Provider = {
 	provide: DI.redisForSub,
-	useFactory: (config) => {
+	useFactory: (config: Config) => {
 		const redis = new Redis.Redis({
 			port: config.redisForPubsub.port,
 			host: config.redisForPubsub.host,
@@ -100,7 +100,7 @@ export class GlobalModule implements OnApplicationShutdown {
 		@Inject(DI.redisForSub) private redisForSub: Redis.Redis,
 	) {}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
+	public async dispose(): Promise<void> {
 		if (process.env.NODE_ENV === 'test') {
 			// XXX:
 			// Shutting down the existing connections causes errors on Jest as
@@ -115,5 +115,9 @@ export class GlobalModule implements OnApplicationShutdown {
 			this.redisForPub.disconnect(),
 			this.redisForSub.disconnect(),
 		]);
+	}
+
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }

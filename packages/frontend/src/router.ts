@@ -31,6 +31,10 @@ export const routes = [{
 	path: '/notes/:noteId',
 	component: page(() => import('./pages/note.vue')),
 }, {
+	name: 'list',
+	path: '/list/:listId',
+	component: page(() => import('./pages/list.vue')),
+}, {
 	path: '/clips/:clipId',
 	component: page(() => import('./pages/clip.vue')),
 }, {
@@ -174,10 +178,6 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/accounts.vue')),
 	}, {
-		path: '/account-stats',
-		name: 'other',
-		component: page(() => import('./pages/settings/account-stats.vue')),
-	}, {
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
@@ -242,9 +242,6 @@ export const routes = [{
 }, {
 	path: '/scratchpad',
 	component: page(() => import('./pages/scratchpad.vue')),
-}, {
-	path: '/preview',
-	component: page(() => import('./pages/preview.vue')),
 }, {
 	path: '/auth/:token',
 	component: page(() => import('./pages/auth.vue')),
@@ -391,6 +388,10 @@ export const routes = [{
 		path: '/settings',
 		name: 'settings',
 		component: page(() => import('./pages/admin/settings.vue')),
+	}, {
+		path: '/branding',
+		name: 'branding',
+		component: page(() => import('./pages/admin/branding.vue')),
 	}, {
 		path: '/moderation',
 		name: 'moderation',

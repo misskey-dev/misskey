@@ -3,7 +3,14 @@
 	<div v-if="achievements" :class="$style.root">
 		<div v-for="achievement in achievements" :key="achievement" :class="$style.achievement" class="_panel">
 			<div :class="$style.icon">
-				<div :class="[$style.iconFrame, $style['iconFrame_' + ACHIEVEMENT_BADGES[achievement.name].frame]]">
+				<div
+					:class="[$style.iconFrame, {
+						[$style.iconFrame_bronze]: ACHIEVEMENT_BADGES[achievement.name].frame === 'bronze',
+						[$style.iconFrame_silver]: ACHIEVEMENT_BADGES[achievement.name].frame === 'silver',
+						[$style.iconFrame_gold]: ACHIEVEMENT_BADGES[achievement.name].frame === 'gold',
+						[$style.iconFrame_platinum]: ACHIEVEMENT_BADGES[achievement.name].frame === 'platinum',
+					}]"
+				>
 					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg }">
 						<img :class="$style.iconImg" :src="ACHIEVEMENT_BADGES[achievement.name].img">
 					</div>

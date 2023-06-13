@@ -49,8 +49,8 @@
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>
-	<div v-if="childMenu" :class="$style.child">
-		<XChild ref="child" :items="childMenu" :target-element="childTarget" :root-element="itemsEl" showing @actioned="childActioned"/>
+	<div v-if="childMenu">
+		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned"/>
 	</div>
 </div>
 </template>

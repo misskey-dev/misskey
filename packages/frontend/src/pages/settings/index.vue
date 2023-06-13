@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
+	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">

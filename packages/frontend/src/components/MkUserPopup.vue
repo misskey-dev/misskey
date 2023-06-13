@@ -1,10 +1,10 @@
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
-	appear @after-leave="emit('closed')"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
+	appear @afterLeave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
 		<div v-if="user != null">
@@ -22,7 +22,7 @@
 				<div :class="$style.username"><MkAcct :user="user"/></div>
 			</div>
 			<div :class="$style.description">
-				<Mfm v-if="user.description" :text="user.description" :author="user" :i="$i"/>
+				<Mfm v-if="user.description" :class="$style.mfm" :text="user.description" :author="user" :i="$i"/>
 				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
@@ -190,6 +190,13 @@ onMounted(() => {
 	text-align: center;
 	border-top: solid 1px var(--divider);
 	border-bottom: solid 1px var(--divider);
+}
+
+.mfm {
+	display: -webkit-box;
+	-webkit-line-clamp: 5;
+	-webkit-box-orient: vertical;  
+	overflow: hidden;
 }
 
 .status {
