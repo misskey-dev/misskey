@@ -254,26 +254,6 @@ export class OAuth2ProviderService {
 		this.#server.deserializeClient((id, done) => done(null, id));
 	}
 
-	// Return 404 for any unknown paths under /oauth so that clients can know
-	// whether a certain endpoint is supported or not.
-	// Registering separately because otherwise fastify.use() will match the
-	// wildcard too.
-	// TODO: is this separation still needed?
-	@bindThis
-	public async createServerWildcard(fastify: FastifyInstance): Promise<void> {
-		fastify.all('/oauth/*', async (_request, reply) => {
-			reply.code(404);
-			reply.send({
-				error: {
-					message: 'Unknown OAuth endpoint.',
-					code: 'UNKNOWN_OAUTH_ENDPOINT',
-					id: 'aa49e620-26cb-4e28-aad6-8cbcb58db147',
-					kind: 'client',
-				},
-			});
-		});
-	}
-
 	@bindThis
 	public async createServer(fastify: FastifyInstance): Promise<void> {
 		fastify.get('/.well-known/oauth-authorization-server', async (_request, reply) => {
@@ -382,5 +362,19 @@ export class OAuth2ProviderService {
 		fastify.use('/oauth/token', bodyParser.json({ strict: true }));
 		fastify.use('/oauth/token', this.#server.token());
 		fastify.use('/oauth/token', this.#server.errorHandler());
+
+		// Return 404 for any unknown paths under /oauth so that clients can know
+		// whether a certain endpoint is supported or not.
+		fastify.all('/oauth/*', async (_request, reply) => {
+			reply.code(404);
+			reply.send({
+				error: {
+					message: 'Unknown OAuth endpoint.',
+					code: 'UNKNOWN_OAUTH_ENDPOINT',
+					id: 'aa49e620-26cb-4e28-aad6-8cbcb58db147',
+					kind: 'client',
+				},
+			});
+		});
 	}
 }
