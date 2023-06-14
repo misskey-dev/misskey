@@ -1062,6 +1062,7 @@ later: "나중에"
 goToMisskey: "Misskey로"
 additionalEmojiDictionary: "이모지 추가 사전"
 installed: "설치됨"
+branding: "브랜딩"
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."
