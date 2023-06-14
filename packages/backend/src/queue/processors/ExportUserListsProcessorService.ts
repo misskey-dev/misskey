@@ -9,10 +9,10 @@ import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 import type { DbJobDataWithUser } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ExportUserListsProcessorService {
@@ -39,11 +39,12 @@ export class ExportUserListsProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
 		this.logger.info(`Exporting user lists of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
+			done();
 			return;
 		}
 
@@ -91,5 +92,7 @@ export class ExportUserListsProcessorService {
 		} finally {
 			cleanup();
 		}
+
+		done();
 	}
 }
