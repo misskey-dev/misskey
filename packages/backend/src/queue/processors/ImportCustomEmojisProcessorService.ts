@@ -12,7 +12,7 @@ import { DriveService } from '@/core/DriveService.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 import type { DbUserImportJobData } from '../types.js';
 
 // TODO: 名前衝突時の動作を選べるようにする
@@ -45,13 +45,14 @@ export class ImportCustomEmojisProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserImportJobData>): Promise<void> {
+	public async process(job: Bull.Job<DbUserImportJobData>, done: () => void): Promise<void> {
 		this.logger.info('Importing custom emojis ...');
 
 		const file = await this.driveFilesRepository.findOneBy({
 			id: job.data.fileId,
 		});
 		if (file == null) {
+			done();
 			return;
 		}
 
@@ -115,6 +116,7 @@ export class ImportCustomEmojisProcessorService {
 			cleanup();
 	
 			this.logger.succ('Imported');
+			done();
 		});
 		unzipStream.pipe(extractor);
 		this.logger.succ(`Unzipping to ${outputPath}`);

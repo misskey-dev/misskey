@@ -18,7 +18,6 @@ import { PollService } from '@/core/PollService.js';
 import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import { checkHttps } from '@/misc/check-https.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ApLoggerService } from '../ApLoggerService.js';
@@ -33,6 +32,7 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
+import { checkHttps } from '@/misc/check-https.js';
 
 @Injectable()
 export class ApNoteService {

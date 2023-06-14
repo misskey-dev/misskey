@@ -7,7 +7,7 @@ import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 
 @Injectable()
 export class CleanProcessorService {
@@ -36,7 +36,7 @@ export class CleanProcessorService {
 	}
 
 	@bindThis
-	public async process(): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Cleaning...');
 
 		this.userIpsRepository.delete({
@@ -72,5 +72,6 @@ export class CleanProcessorService {
 		}
 
 		this.logger.succ('Cleaned.');
+		done();
 	}
 }
