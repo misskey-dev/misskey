@@ -26,7 +26,9 @@ import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import type { FastifyInstance } from 'fastify';
 
-// https://indieauth.spec.indieweb.org/#client-identifier
+// Follows https://indieauth.spec.indieweb.org/#client-identifier
+// This is also mostly similar to https://developers.google.com/identity/protocols/oauth2/web-server#uri-validation
+// although Google has stricter rule.
 function validateClientId(raw: string): URL {
 	// Clients are identified by a [URL].
 	const url = ((): URL => {
