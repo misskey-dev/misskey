@@ -1,3 +1,7 @@
+if (!OffscreenCanvas) {
+    postMessage({ result: false });
+    return;
+}
 const canvas = new OffscreenCanvas(1, 1);
 const gl = canvas.getContext('webgl2');
 if (gl) {
