@@ -15,7 +15,7 @@ const start = async () => {
 		if (!stat) throw new Error("not exist yet");
 		if (stat.size === 0) throw new Error("not built yet");
 
-		await execa(
+		const subprocess = await execa(
 			"pnpm",
 			["start-server-and-test", "start", config.url, "dev:watch"],
 			{
@@ -24,6 +24,12 @@ const start = async () => {
 				stderr: process.stderr,
 			}
 		);
+
+		// なぜかworkerだけが終了してmasterが残るのでその対策
+		process.on("SIGINT", () => {
+			subprocess.kill("SIGINT");
+			process.exit(0);
+		});
 	} catch (e) {
 		await new Promise((resolve) => setTimeout(resolve, 3000));
 		start();
