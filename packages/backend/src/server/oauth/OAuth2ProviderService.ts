@@ -84,6 +84,7 @@ interface ClientInformation {
 	name: string;
 }
 
+// https://indieauth.spec.indieweb.org/#client-information-discovery
 async function discoverClientInformation(httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
 	try {
 		const res = await httpRequestService.send(id);

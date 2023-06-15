@@ -553,8 +553,7 @@ describe('OAuth', () => {
 				},
 				body: JSON.stringify({ text: 'test' }),
 			});
-			// XXX: PERMISSION_DENIED is not using kind: 'permission' and gives 400 instead of 403
-			assert.strictEqual(createResponse.status, 400);
+			assert.strictEqual(createResponse.status, 403);
 		});
 	});
 
