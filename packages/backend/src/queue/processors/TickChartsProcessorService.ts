@@ -16,7 +16,7 @@ import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 
 @Injectable()
 export class TickChartsProcessorService {
@@ -45,7 +45,7 @@ export class TickChartsProcessorService {
 	}
 
 	@bindThis
-	public async process(): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Tick charts...');
 
 		await Promise.all([
@@ -64,5 +64,6 @@ export class TickChartsProcessorService {
 		]);
 
 		this.logger.succ('All charts successfully ticked.');
+		done();
 	}
 }

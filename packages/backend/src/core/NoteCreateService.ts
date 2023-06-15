@@ -510,7 +510,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.poll && data.poll.expiresAt) {
 			const delay = data.poll.expiresAt.getTime() - Date.now();
-			this.queueService.endedPollNotificationQueue.add(note.id, {
+			this.queueService.endedPollNotificationQueue.add({
 				noteId: note.id,
 			}, {
 				delay,

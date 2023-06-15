@@ -5,9 +5,9 @@ import type { DriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
-import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class CleanRemoteFilesProcessorService {
@@ -27,7 +27,7 @@ export class CleanRemoteFilesProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<Record<string, unknown>>): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Deleting cached remote files...');
 
 		let deletedCount = 0;
@@ -47,7 +47,7 @@ export class CleanRemoteFilesProcessorService {
 			});
 
 			if (files.length === 0) {
-				job.updateProgress(100);
+				job.progress(100);
 				break;
 			}
 
@@ -62,9 +62,10 @@ export class CleanRemoteFilesProcessorService {
 				isLink: false,
 			});
 
-			job.updateProgress(deletedCount / total);
+			job.progress(deletedCount / total);
 		}
 
 		this.logger.succ('All cached remote files has been deleted.');
+		done();
 	}
 }

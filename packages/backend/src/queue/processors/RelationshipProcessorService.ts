@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
