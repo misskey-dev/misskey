@@ -12,7 +12,7 @@ import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DBExportAntennasData } from '../types.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class ExportAntennasProcessorService {
@@ -39,10 +39,9 @@ export class ExportAntennasProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DBExportAntennasData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DBExportAntennasData>): Promise<void> {
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 		const [path, cleanup] = await createTemp();
@@ -96,7 +95,6 @@ export class ExportAntennasProcessorService {
 			this.logger.succ('Exported to: ' + driveFile.id);
 		} finally {
 			cleanup();
-			done();
 		}
 	}
 }
