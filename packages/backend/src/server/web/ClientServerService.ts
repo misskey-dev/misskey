@@ -670,11 +670,6 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'private, max-age=0');
 		});
 
-		// Render base html for all requests
-		fastify.get('*', async (request, reply) => {
-			return await renderBase(reply);
-		});
-
 		fastify.setErrorHandler(async (error, request, reply) => {
 			const errId = uuid();
 			this.clientLoggerService.logger.error(`Internal error occured in ${request.routerPath}: ${error.message}`, {

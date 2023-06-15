@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { EndpointsModule } from '@/server/api/EndpointsModule.js';
+import { GraphQLModule } from '@/server/graphql/GraphQLModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { ApiCallService } from './api/ApiCallService.js';
 import { FileServerService } from './FileServerService.js';
@@ -40,6 +41,7 @@ import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.
 @Module({
 	imports: [
 		EndpointsModule,
+		GraphQLModule,
 		CoreModule,
 	],
 	providers: [
