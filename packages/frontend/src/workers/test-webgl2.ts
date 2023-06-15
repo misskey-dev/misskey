@@ -1,4 +1,5 @@
-if (window.OffscreenCanvas) {
+try {
+    // throw ReferenceError in Safari <= 16.3
     const canvas = new OffscreenCanvas(1, 1);
     const gl = canvas.getContext('webgl2');
     if (gl) {
@@ -6,6 +7,7 @@ if (window.OffscreenCanvas) {
     } else {
         postMessage({ result: false });
     }
-} else {
+} catch (e) {
+    // assert(e instanceof ReferenceError)
     postMessage({ result: false });
 }
