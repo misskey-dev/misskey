@@ -42,6 +42,7 @@ function validateClientId(raw: string): URL {
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.1
 	// 'The redirection endpoint SHOULD require the use of TLS as described
 	// in Section 1.6 when the requested response type is "code" or "token"'
+	// TODO: Consider allowing custom URIs per RFC 8252.
 	const allowedProtocols = process.env.NODE_ENV === 'test' ? ['http:', 'https:'] : ['https:'];
 	if (!allowedProtocols.includes(url.protocol)) {
 		throw new AuthorizationError('client_id must be a valid HTTPS URL', 'invalid_request');
@@ -318,7 +319,7 @@ export class OAuth2ProviderService {
 
 				const clientUrl = validateClientId(clientID);
 
-				// TODO: Consider allowing this for native apps (RFC 8252)
+				// TODO: Consider allowing localhost for native apps (RFC 8252)
 				// The current setup requires an explicit list of redirect_uris per
 				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
 				// which blocks the support. But we could loose the rule in this case.
