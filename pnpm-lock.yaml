@@ -21146,7 +21146,7 @@ packages:
   github.com/misskey-dev/buraha/92b20c1ab15c5cb5a224cf3b1ecd4f6baca12b7c:
     resolution: {tarball: https://codeload.github.com/misskey-dev/buraha/tar.gz/92b20c1ab15c5cb5a224cf3b1ecd4f6baca12b7c}
     name: buraha
-    version: 0.0.1
+    version: 0.0.0
     dev: false
 
   github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
