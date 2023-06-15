@@ -7,7 +7,7 @@ try {
     } else {
         postMessage({ result: false });
     }
-} catch (e) {
+} catch (err) {
     // assert(e instanceof ReferenceError)
     postMessage({ result: false });
 }
