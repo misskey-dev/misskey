@@ -660,7 +660,7 @@ importers:
         version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
       buraha:
         specifier: github:misskey-dev/buraha
-        version: github.com/misskey-dev/buraha/822d4be21126156c3e1827a771444b3fceb6be58
+        version: github.com/misskey-dev/buraha/92b20c1ab15c5cb5a224cf3b1ecd4f6baca12b7c
       canvas-confetti:
         specifier: 1.6.0
         version: 1.6.0
@@ -13008,23 +13008,6 @@ packages:
       lowercase-keys: 3.0.0
       p-cancelable: 3.0.0
       responselike: 3.0.0
-    dev: false
-
-  /got@12.6.1:
-    resolution: {integrity: sha512-mThBblvlAF1d4O5oqyvN+ZxLAYwIJK7bpMxgYqPD9okW0C3qm5FFn7k811QrcuEBwaogR3ngOFoCfs6mRv7teQ==}
-    engines: {node: '>=14.16'}
-    dependencies:
-      '@sindresorhus/is': 5.4.1
-      '@szmarczak/http-timer': 5.0.1
-      cacheable-lookup: 7.0.0
-      cacheable-request: 10.2.10
-      decompress-response: 6.0.0
-      form-data-encoder: 2.1.4
-      get-stream: 6.0.1
-      http2-wrapper: 2.2.0
-      lowercase-keys: 3.0.0
-      p-cancelable: 3.0.0
-      responselike: 3.0.0
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -21160,8 +21143,8 @@ packages:
     version: 2.2.1-misskey.3
     dev: false
 
-  github.com/misskey-dev/buraha/822d4be21126156c3e1827a771444b3fceb6be58:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/buraha/tar.gz/822d4be21126156c3e1827a771444b3fceb6be58}
+  github.com/misskey-dev/buraha/92b20c1ab15c5cb5a224cf3b1ecd4f6baca12b7c:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/buraha/tar.gz/92b20c1ab15c5cb5a224cf3b1ecd4f6baca12b7c}
     name: buraha
     version: 0.0.1
     dev: false
@@ -21215,7 +21198,7 @@ packages:
     dependencies:
       cheerio: 1.0.0-rc.12
       escape-regexp: 0.0.1
-      got: 12.6.1
+      got: 12.6.0
       html-entities: 2.3.2
       iconv-lite: 0.6.3
       jschardet: 3.0.0
