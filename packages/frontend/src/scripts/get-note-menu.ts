@@ -7,7 +7,7 @@ import { instance } from '@/instance';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
-import { noteActions } from '@/store';
+import { defaultStore, noteActions } from '@/store';
 import { miLocalStorage } from '@/local-storage';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import { clipsCache } from '@/cache';
@@ -211,6 +211,12 @@ export function getNoteMenu(props: {
 		}, {}, 'closed');
 	}
 
+	function showRenotes(): void {
+		os.popup(defineAsyncComponent(() => import('@/components/MkRenotedUsersDialog.vue')), {
+			noteId: appearNote.id,
+		}, {}, 'closed');
+	}
+
 	async function translate(): Promise<void> {
 		if (props.translation.value != null) return;
 		props.translating.value = true;
@@ -241,8 +247,12 @@ export function getNoteMenu(props: {
 				text: i18n.ts.details,
 				action: openDetail,
 			}, {
-				icon: 'ti ti-users',
-				text: i18n.ts.reactions,
+				icon: 'ti ti-repeat',
+				text: i18n.ts.renotesList,
+				action: showRenotes,
+			}, {
+				icon: 'ti ti-icons',
+				text: i18n.ts.reactionsList,
 				action: showReactions,
 			}, {
 				icon: 'ti ti-copy',
@@ -384,6 +394,16 @@ export function getNoteMenu(props: {
 				action.handler(appearNote);
 			},
 		}))]);
+	}
+
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyNoteId,
+			action: () => {
+				copyToClipboard(appearNote.id);
+			},
+		}]);
 	}
 
 	return menu;

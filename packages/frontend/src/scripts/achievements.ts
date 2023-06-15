@@ -60,6 +60,7 @@ export const ACHIEVEMENT_TYPES = [
 	'iLoveMisskey',
 	'foundTreasure',
 	'client30min',
+	'client60min',
 	'noteDeletedWithin1min',
 	'postedAtLateNight',
 	'postedAt0min0sec',
@@ -343,6 +344,11 @@ export const ACHIEVEMENT_BADGES = {
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
 		frame: 'bronze',
 	},
+	'client60min': {
+		img: '/fluent-emoji/1f552.png',
+		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
+		frame: 'silver',
+	},
 	'noteDeletedWithin1min': {
 		img: '/fluent-emoji/1f5d1.png',
 		bg: 'linear-gradient(0deg, rgb(220 223 225), rgb(172 192 207))',
@@ -458,6 +464,7 @@ const claimingQueue = new Set<string>();
 
 export async function claimAchievement(type: typeof ACHIEVEMENT_TYPES[number]) {
 	if ($i == null) return;
+	if ($i.movedTo) return;
 	if (claimedAchievements.includes(type)) return;
 	claimingQueue.add(type);
 	claimedAchievements.push(type);

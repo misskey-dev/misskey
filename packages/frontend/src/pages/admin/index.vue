@@ -1,7 +1,7 @@
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
 	<div v-if="!narrow || currentPage?.route.name == null" class="nav">	
-		<MkSpacer :content-max="700" :margin-min="16">
+		<MkSpacer :contentMax="700" :marginMin="16">
 			<div class="lxpfedzu">
 				<div class="banner">
 					<img :src="instance.iconUrl || '/favicon.ico'" alt="" class="icon"/>
@@ -143,6 +143,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.general,
 		to: '/admin/settings',
 		active: currentPage?.route.name === 'settings',
+	}, {
+		icon: 'ti ti-paint',
+		text: i18n.ts.branding,
+		to: '/admin/branding',
+		active: currentPage?.route.name === 'branding',
 	}, {
 		icon: 'ti ti-shield',
 		text: i18n.ts.moderation,

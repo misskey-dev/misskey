@@ -1,5 +1,13 @@
 <template>
-<div v-tooltip="text" :class="[$style.root, $style['status_' + user.onlineStatus]]"></div>
+<div
+	v-tooltip="text"
+	:class="[$style.root, {
+		[$style.status_online]: user.onlineStatus === 'online',
+		[$style.status_active]: user.onlineStatus === 'active',
+		[$style.status_offline]: user.onlineStatus === 'offline',
+		[$style.status_unknown]: user.onlineStatus === 'unknown',
+	}]"
+></div>
 </template>
 
 <script lang="ts" setup>

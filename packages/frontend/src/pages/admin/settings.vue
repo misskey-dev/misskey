@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+		<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 			<FormSuspense :p="init">
 				<div class="_gaps_m">
 					<MkInput v-model="name">
@@ -13,12 +13,7 @@
 						<template #label>{{ i18n.ts.instanceDescription }}</template>
 					</MkTextarea>
 
-					<MkInput v-model="tosUrl">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.tosUrl }}</template>
-					</MkInput>
-
-					<FormSplit :min-width="300">
+					<FormSplit :minWidth="300">
 						<MkInput v-model="maintainerName">
 							<template #label>{{ i18n.ts.maintainerName }}</template>
 						</MkInput>
@@ -33,63 +28,6 @@
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
 					</MkTextarea>
-
-					<FormSection>
-						<div class="_gaps_s">
-							<MkSwitch v-model="enableRegistration">
-								<template #label>{{ i18n.ts.enableRegistration }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="emailRequiredForSignup">
-								<template #label>{{ i18n.ts.emailRequiredForSignup }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="enableChartsForRemoteUser">
-								<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
-							</MkSwitch>
-
-							<MkSwitch v-model="enableChartsForFederatedInstances">
-								<template #label>{{ i18n.ts.enableChartsForFederatedInstances }}</template>
-							</MkSwitch>
-						</div>
-					</FormSection>
-
-					<FormSection>
-						<template #label>{{ i18n.ts.theme }}</template>
-
-						<div class="_gaps_m">
-							<MkInput v-model="iconUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.iconUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="bannerUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.bannerUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="backgroundImageUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="themeColor">
-								<template #prefix><i class="ti ti-palette"></i></template>
-								<template #label>{{ i18n.ts.themeColor }}</template>
-								<template #caption>#RRGGBB</template>
-							</MkInput>
-
-							<MkTextarea v-model="defaultLightTheme">
-								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-
-							<MkTextarea v-model="defaultDarkTheme">
-								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-						</div>
-					</FormSection>
 
 					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
@@ -143,7 +81,7 @@
 		</MkSpacer>
 		<template #footer>
 			<div :class="$style.footer">
-				<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+				<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</MkSpacer>
 			</div>
@@ -166,25 +104,15 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
+import MkColorInput from '@/components/MkColorInput.vue';
 
 let name: string | null = $ref(null);
 let description: string | null = $ref(null);
-let tosUrl: string | null = $ref(null);
 let maintainerName: string | null = $ref(null);
 let maintainerEmail: string | null = $ref(null);
-let iconUrl: string | null = $ref(null);
-let bannerUrl: string | null = $ref(null);
-let backgroundImageUrl: string | null = $ref(null);
-let themeColor: any = $ref(null);
-let defaultLightTheme: any = $ref(null);
-let defaultDarkTheme: any = $ref(null);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
-let enableRegistration: boolean = $ref(false);
-let emailRequiredForSignup: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
-let enableChartsForRemoteUser: boolean = $ref(false);
-let enableChartsForFederatedInstances: boolean = $ref(false);
 let swPublicKey: any = $ref(null);
 let swPrivateKey: any = $ref(null);
 let deeplAuthKey: string = $ref('');
@@ -194,22 +122,11 @@ async function init() {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
 	description = meta.description;
-	tosUrl = meta.tosUrl;
-	iconUrl = meta.iconUrl;
-	bannerUrl = meta.bannerUrl;
-	backgroundImageUrl = meta.backgroundImageUrl;
-	themeColor = meta.themeColor;
-	defaultLightTheme = meta.defaultLightTheme;
-	defaultDarkTheme = meta.defaultDarkTheme;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
-	enableRegistration = !meta.disableRegistration;
-	emailRequiredForSignup = meta.emailRequiredForSignup;
 	enableServiceWorker = meta.enableServiceWorker;
-	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
-	enableChartsForFederatedInstances = meta.enableChartsForFederatedInstances;
 	swPublicKey = meta.swPublickey;
 	swPrivateKey = meta.swPrivateKey;
 	deeplAuthKey = meta.deeplAuthKey;
@@ -220,22 +137,11 @@ function save() {
 	os.apiWithDialog('admin/update-meta', {
 		name,
 		description,
-		tosUrl,
-		iconUrl,
-		bannerUrl,
-		backgroundImageUrl,
-		themeColor: themeColor === '' ? null : themeColor,
-		defaultLightTheme: defaultLightTheme === '' ? null : defaultLightTheme,
-		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
 		maintainerName,
 		maintainerEmail,
 		pinnedUsers: pinnedUsers.split('\n'),
 		cacheRemoteFiles,
-		disableRegistration: !enableRegistration,
-		emailRequiredForSignup,
 		enableServiceWorker,
-		enableChartsForRemoteUser,
-		enableChartsForFederatedInstances,
 		swPublicKey,
 		swPrivateKey,
 		deeplAuthKey,

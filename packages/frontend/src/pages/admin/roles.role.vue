@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+		<MkSpacer :contentMax="700">
 			<div class="_gaps">
 				<div class="_buttons">
 					<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
@@ -11,9 +11,9 @@
 				<MkFolder>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :model-value="role" readonly/>
+					<XEditor :modelValue="role" readonly/>
 				</MkFolder>
-				<MkFolder v-if="role.target === 'manual'" default-open>
+				<MkFolder v-if="role.target === 'manual'" defaultOpen>
 					<template #icon><i class="ti ti-users"></i></template>
 					<template #label>{{ i18n.ts.users }}</template>
 					<template #suffix>{{ role.usersCount }}</template>
@@ -23,7 +23,7 @@
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+									<img :src="infoImageUrl" class="_ghost"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -69,6 +69,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { infoImageUrl } from '@/instance';
 
 const router = useRouter();
 

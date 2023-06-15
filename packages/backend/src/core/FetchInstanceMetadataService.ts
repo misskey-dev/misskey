@@ -10,6 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { DOMWindow } from 'jsdom';
 
 type NodeInfo = {
@@ -42,6 +43,7 @@ export class FetchInstanceMetadataService {
 		private appLockService: AppLockService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
+		private federatedInstanceService: FederatedInstanceService,
 	) {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');
 	}
@@ -96,7 +98,7 @@ export class FetchInstanceMetadataService {
 			if (favicon) updates.faviconUrl = favicon;
 			if (themeColor) updates.themeColor = themeColor;
 	
-			await this.instancesRepository.update(instance.id, updates);
+			await this.federatedInstanceService.update(instance.id, updates);
 	
 			this.logger.succ(`Successfuly updated metadata of ${instance.host}`);
 		} catch (e) {
@@ -114,14 +116,14 @@ export class FetchInstanceMetadataService {
 			const wellknown = await this.httpRequestService.getJson('https://' + instance.host + '/.well-known/nodeinfo')
 				.catch(err => {
 					if (err.statusCode === 404) {
-						throw 'No nodeinfo provided';
+						throw new Error('No nodeinfo provided');
 					} else {
 						throw err.statusCode ?? err.message;
 					}
 				}) as Record<string, unknown>;
 	
 			if (wellknown.links == null || !Array.isArray(wellknown.links)) {
-				throw 'No wellknown links';
+				throw new Error('No wellknown links');
 			}
 	
 			const links = wellknown.links as any[];
@@ -132,7 +134,7 @@ export class FetchInstanceMetadataService {
 			const link = lnik2_1 ?? lnik2_0 ?? lnik1_0;
 	
 			if (link == null) {
-				throw 'No nodeinfo link provided';
+				throw new Error('No nodeinfo link provided');
 			}
 	
 			const info = await this.httpRequestService.getJson(link.href)

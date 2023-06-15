@@ -55,6 +55,7 @@
 		codeNumber: '#cfff9e',
 		codeString: '#ffb675',
 		fgOnAccent: '#fff',
+		fgOnWhite: '@accent',
 		infoWarnBg: '#42321c',
 		infoWarnFg: '#ffbd3e',
 		navHoverFg: ':lighten<17<@fg',
@@ -83,6 +84,6 @@
 		fgTransparentWeak: ':alpha<0.75<@fg',
 		panelHeaderDivider: 'rgba(0, 0, 0, 0)',
 		scrollbarHandleHover: 'rgba(255, 255, 255, 0.4)',
-		deckDivider: '#142022',
+		deckBg: '#142022',
 	},
 }

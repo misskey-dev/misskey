@@ -6,8 +6,11 @@
 			ref="gallery"
 			:class="[
 				$style.medias,
-				count <= 4 ? $style['n' + count] : $style.nMany,
-				$style[`n1${defaultStore.reactiveState.mediaListWithOneImageAppearance.value}`]
+				count === 1 ? [$style.n1, {
+					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
+					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
+					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
+				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
 			<template v-for="media in mediaList.filter(media => previewable(media))">
@@ -20,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useCssModule, watch } from 'vue';
+import { onMounted, watch, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
@@ -37,9 +40,7 @@ const props = defineProps<{
 	raw?: boolean;
 }>();
 
-const $style = useCssModule();
-
-const gallery = ref<HTMLDivElement>();
+const gallery = shallowRef<HTMLDivElement>();
 const pswpZIndex = os.claimZIndex('middle');
 document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = $computed(() => props.mediaList.filter(media => previewable(media)).length);
@@ -96,7 +97,7 @@ onMounted(() => {
 				return item;
 			}),
 		gallery: gallery.value,
-		mainClass: $style.pswp,
+		mainClass: 'pswp',
 		children: '.image',
 		thumbSelector: '.image',
 		loop: false,
@@ -195,6 +196,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	grid-gap: 8px;
 
 	height: 100%;
+	width: 100%;
 
 	&.n1 {
 		grid-template-rows: 1fr;
@@ -203,8 +205,8 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 		min-height: 64px;
 		max-height: clamp(
 			64px,
-			calc(var(--containerHeight, 100svh) * 0.5), // but --containerHeight can broken (too big)
-			min(334px, 50vh)
+			50cqh,
+			min(360px, 50vh)
 		);
 
 		&.n116_9 {
@@ -267,7 +269,7 @@ const previewable = (file: misskey.entities.DriveFile): boolean => {
 	border-radius: 8px;
 }
 
-.pswp {
+:global(.pswp) {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
 	--pswp-bg: var(--modalBg) !important;
 }

@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="900" :margin-min="20" :margin-max="32">
+	<MkSpacer :contentMax="900" :marginMin="20" :marginMax="32">
 		<div ref="el" class="vvcocwet" :class="{ wide: !narrow }">
 			<div class="body">
 				<div v-if="!narrow || currentPage?.route.name == null" class="nav">
@@ -164,12 +164,12 @@ const menuDef = computed(() => [{
 		text: i18n.ts.importAndExport,
 		to: '/settings/import-export',
 		active: currentPage?.route.name === 'import-export',
-	}, /*{
+	}, {
 		icon: 'ti ti-plane',
-		text: i18n.ts.accountMigration,
+		text: `${i18n.ts.accountMigration} (${i18n.ts.experimental})`,
 		to: '/settings/migration',
 		active: currentPage?.route.name === 'migration',
-	},*/ {
+	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
 		to: '/settings/other',

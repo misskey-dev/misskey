@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="900">
+		<MkSpacer :contentMax="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
@@ -15,9 +15,10 @@
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
+						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-						<MkButton inline @click="setTagBulk">Set tag</MkButton>
+						<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
@@ -122,15 +123,14 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
-
-	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
-		fileId: file.id,
-	})));
-	promise.then(() => {
-		emojisPaginationComponent.value.reload();
-	});
-	os.promiseDialog(promise);
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	}, {
+		done: result => {
+			if (result.created) {
+				emojisPaginationComponent.value.prepend(result.created);
+			}
+		},
+	}, 'closed');
 };
 
 const edit = (emoji) => {
@@ -217,6 +217,18 @@ const setCategoryBulk = async () => {
 	await os.apiWithDialog('admin/emoji/set-category-bulk', {
 		ids: selectedEmojis.value,
 		category: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const setLisenceBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'License',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-license-bulk', {
+		ids: selectedEmojis.value,
+		license: result,
 	});
 	emojisPaginationComponent.value.reload();
 };

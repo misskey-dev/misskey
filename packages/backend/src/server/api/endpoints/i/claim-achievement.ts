@@ -4,6 +4,7 @@ import { AchievementService, ACHIEVEMENT_TYPES } from '@/core/AchievementService
 
 export const meta = {
 	requireCredential: true,
+	prohibitMoved: true,
 } as const;
 
 export const paramDef = {

@@ -8,8 +8,8 @@
 >
 	<template #header>{{ i18n.ts.login }}</template>
 
-	<MkSpacer :margin-min="20" :margin-max="28">
-		<MkSignin :auto-set="autoSet" :message="message" @login="onLogin"/>
+	<MkSpacer :marginMin="20" :marginMax="28">
+		<MkSignin :autoSet="autoSet" :message="message" @login="onLogin"/>
 	</MkSpacer>
 </MkModalWindow>
 </template>

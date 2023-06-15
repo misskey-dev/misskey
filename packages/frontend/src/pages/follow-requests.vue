@@ -1,11 +1,11 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<MkPagination ref="paginationComponent" :pagination="pagination">
 			<template #empty>
 				<div class="_fullinfo">
-					<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+					<img :src="infoImageUrl" class="_ghost"/>
 					<div>{{ i18n.ts.noFollowRequests }}</div>
 				</div>
 			</template>
@@ -39,6 +39,7 @@ import { userPage, acct } from '@/filters/user';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { infoImageUrl } from '@/instance';
 
 const paginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 

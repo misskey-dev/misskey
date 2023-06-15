@@ -4,8 +4,9 @@ import * as assert from 'assert';
 // node-fetch only supports it's own Blob yet
 // https://github.com/node-fetch/node-fetch/pull/1664
 import { Blob } from 'node-fetch';
-import { startServer, signup, post, api, uploadFile, simpleGet } from '../utils.js';
+import { startServer, signup, post, api, uploadFile, simpleGet, initTestDb } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import { User } from '@/models/index.js';
 
 describe('Endpoints', () => {
 	let app: INestApplicationContext;
@@ -289,6 +290,16 @@ describe('Endpoints', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 200);
+
+			const connection = await initTestDb(true);
+			const Users = connection.getRepository(User);
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.followersCount, 0);
+			assert.strictEqual(newBob.followingCount, 1);
+			const newAlice = await Users.findOneByOrFail({ id: alice.id });
+			assert.strictEqual(newAlice.followersCount, 1);
+			assert.strictEqual(newAlice.followingCount, 0);
+			connection.destroy();
 		});
 
 		test('既にフォローしている場合は怒る', async () => {
@@ -341,6 +352,16 @@ describe('Endpoints', () => {
 			}, bob);
 
 			assert.strictEqual(res.status, 200);
+
+			const connection = await initTestDb(true);
+			const Users = connection.getRepository(User);
+			const newBob = await Users.findOneByOrFail({ id: bob.id });
+			assert.strictEqual(newBob.followersCount, 0);
+			assert.strictEqual(newBob.followingCount, 0);
+			const newAlice = await Users.findOneByOrFail({ id: alice.id });
+			assert.strictEqual(newAlice.followersCount, 0);
+			assert.strictEqual(newAlice.followingCount, 0);
+			connection.destroy();
 		});
 
 		test('フォローしていない場合は怒る', async () => {
@@ -379,6 +400,100 @@ describe('Endpoints', () => {
 			}, alice);
 
 			assert.strictEqual(res.status, 400);
+		});
+	});
+
+	describe('channels/search', () => {
+		test('空白検索で一覧を取得できる', async () => {
+			await api('/channels/create', {
+				name: 'aaa',
+				description: 'bbb',
+			}, bob);
+			await api('/channels/create', {
+				name: 'ccc1',
+				description: 'ddd1',
+			}, bob);
+			await api('/channels/create', {
+				name: 'ccc2',
+				description: 'ddd2',
+			}, bob);
+
+			const res = await api('/channels/search', {
+				query: '',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 3);
+		});
+		test('名前のみの検索で名前を検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'aaa',
+				type: 'nameOnly',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 1);
+			assert.strictEqual(res.body[0].name, 'aaa');
+		});
+		test('名前のみの検索で名前を複数検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ccc',
+				type: 'nameOnly',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 2);
+		});
+		test('名前のみの検索で説明は検索できない', async () => {
+			const res = await api('/channels/search', {
+				query: 'bbb',
+				type: 'nameOnly',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 0);
+		});
+		test('名前と説明の検索で名前を検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ccc1',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 1);
+			assert.strictEqual(res.body[0].name, 'ccc1');
+		});
+		test('名前と説明での検索で説明を検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ddd1',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 1);
+			assert.strictEqual(res.body[0].name, 'ccc1');
+		});
+		test('名前と説明の検索で名前を複数検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ccc',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 2);
+		});
+		test('名前と説明での検索で説明を複数検索できる', async () => {
+			const res = await api('/channels/search', {
+				query: 'ddd',
+			}, bob);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && Array.isArray(res.body), true);
+			assert.strictEqual(res.body.length, 2);
 		});
 	});
 

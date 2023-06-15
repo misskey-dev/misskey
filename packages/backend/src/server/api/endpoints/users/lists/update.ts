@@ -34,8 +34,9 @@ export const paramDef = {
 	properties: {
 		listId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
+		isPublic: { type: 'boolean' },
 	},
-	required: ['listId', 'name'],
+	required: ['listId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -48,7 +49,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListEntityService: UserListEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// Fetch the list
 			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
@@ -60,6 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await this.userListsRepository.update(userList.id, {
 				name: ps.name,
+				isPublic: ps.isPublic,
 			});
 
 			return await this.userListEntityService.pack(userList.id);

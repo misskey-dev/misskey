@@ -40,7 +40,7 @@ export class ServerStatsService implements OnApplicationShutdown {
 			const stats = {
 				cpu: roundCpu(cpu),
 				mem: {
-					used: round(memStats.used - memStats.buffers - memStats.cached),
+					used: round(memStats.total - memStats.available),
 					active: round(memStats.active),
 				},
 				net: {
@@ -63,8 +63,13 @@ export class ServerStatsService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		clearInterval(this.intervalId);
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }
 

@@ -2,9 +2,13 @@ import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import { type UserConfig, defineConfig } from 'vite';
+// @ts-expect-error https://github.com/sxzz/unplugin-vue-macros/issues/257#issuecomment-1410752890
+import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
 
 import locales from '../../locales';
+import generateDTS from '../../locales/generateDTS';
 import meta from '../../package.json';
+import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name';
 import pluginJson5 from './vite.json5';
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -42,10 +46,16 @@ export function getConfig(): UserConfig {
 	return {
 		base: '/vite/',
 
+		server: {
+			port: 5173,
+		},
+
 		plugins: [
 			pluginVue({
 				reactivityTransform: true,
 			}),
+			ReactivityTransform(),
+			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
 			...process.env.NODE_ENV === 'production'
 				? [
@@ -57,6 +67,10 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
+			{
+				name: 'locale:generateDTS',
+				buildStart: generateDTS,
+			},
 		],
 
 		resolve: {
@@ -110,13 +124,15 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/init.ts',
+					app: './src/_boot_.ts',
 				},
 				output: {
 					manualChunks: {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
 					},
+					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
+					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
 				},
 			},
 			cssCodeSplit: true,
@@ -130,6 +146,10 @@ export function getConfig(): UserConfig {
 			commonjsOptions: {
 				include: [/misskey-js/, /node_modules/],
 			},
+		},
+
+		worker: {
+			format: 'es',
 		},
 
 		test: {

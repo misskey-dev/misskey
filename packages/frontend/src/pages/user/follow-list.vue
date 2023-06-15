@@ -1,8 +1,8 @@
 <template>
 <div>
-	<MkPagination v-slot="{items}" ref="list" :pagination="type === 'following' ? followingPagination : followersPagination" class="mk-following-or-followers">
-		<div class="users">
-			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" class="user" :user="user"/>
+	<MkPagination v-slot="{items}" ref="list" :pagination="type === 'following' ? followingPagination : followersPagination">
+		<div :class="$style.users">
+			<MkUserInfo v-for="user in items.map(x => type === 'following' ? x.followee : x.follower)" :key="user.id" :user="user"/>
 		</div>
 	</MkPagination>
 </div>
@@ -36,12 +36,10 @@ const followersPagination = {
 };
 </script>
 
-<style lang="scss" scoped>
-.mk-following-or-followers {
-	> .users {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		grid-gap: var(--margin);
-	}
+<style lang="scss" module>
+.users {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	grid-gap: var(--margin);
 }
 </style>

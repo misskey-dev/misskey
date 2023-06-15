@@ -61,10 +61,17 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			errorImageUrl: {
+			serverErrorImageUrl: {
 				type: 'string',
 				optional: false, nullable: true,
-				default: 'https://xn--931a.moe/aiart/yubitun.png',
+			},
+			infoImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			notFoundImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			iconUrl: {
 				type: 'string',
@@ -113,6 +120,14 @@ export const meta = {
 			sensitiveWords: {
 				type: 'array',
 				optional: true, nullable: false,
+				items: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+			},
+			preservedUsernames: {
+				type: 'array',
+				optional: false, nullable: false,
 				items: {
 					type: 'string',
 					optional: false, nullable: false,
@@ -297,7 +312,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
 				bannerUrl: instance.bannerUrl,
-				errorImageUrl: instance.errorImageUrl,
+				serverErrorImageUrl: instance.serverErrorImageUrl,
+				notFoundImageUrl: instance.notFoundImageUrl,
+				infoImageUrl: instance.infoImageUrl,
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
@@ -311,6 +328,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				hiddenTags: instance.hiddenTags,
 				blockedHosts: instance.blockedHosts,
 				sensitiveWords: instance.sensitiveWords,
+				preservedUsernames: instance.preservedUsernames,
 				hcaptchaSecretKey: instance.hcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,
