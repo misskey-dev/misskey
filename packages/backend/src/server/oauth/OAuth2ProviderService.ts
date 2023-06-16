@@ -35,14 +35,14 @@ import type { FastifyInstance } from 'fastify';
 // This is also mostly similar to https://developers.google.com/identity/protocols/oauth2/web-server#uri-validation
 // although Google has stricter rule.
 function validateClientId(raw: string): URL {
-	// Clients are identified by a [URL].
+	// "Clients are identified by a [URL]."
 	const url = ((): URL => {
 		try {
 			return new URL(raw);
 		} catch { throw new AuthorizationError('client_id must be a valid URL', 'invalid_request'); }
 	})();
 
-	// Client identifier URLs MUST have either an https or http scheme
+	// "Client identifier URLs MUST have either an https or http scheme"
 	// But then again:
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.1
 	// 'The redirection endpoint SHOULD require the use of TLS as described
@@ -53,30 +53,30 @@ function validateClientId(raw: string): URL {
 		throw new AuthorizationError('client_id must be a valid HTTPS URL', 'invalid_request');
 	}
 
-	// MUST contain a path component (new URL() implicitly adds one)
+	// "MUST contain a path component (new URL() implicitly adds one)"
 
-	// MUST NOT contain single-dot or double-dot path segments,
+	// "MUST NOT contain single-dot or double-dot path segments,"
 	const segments = url.pathname.split('/');
 	if (segments.includes('.') || segments.includes('..')) {
 		throw new AuthorizationError('client_id must not contain dot path segments', 'invalid_request');
 	}
 
-	// (MAY contain a query string component)
+	// ("MAY contain a query string component")
 
-	// MUST NOT contain a fragment component
+	// "MUST NOT contain a fragment component"
 	if (url.hash) {
 		throw new AuthorizationError('client_id must not contain a fragment component', 'invalid_request');
 	}
 
-	// MUST NOT contain a username or password component
+	// "MUST NOT contain a username or password component"
 	if (url.username || url.password) {
 		throw new AuthorizationError('client_id must not contain a username or a password', 'invalid_request');
 	}
 
-	// (MAY contain a port)
+	// ("MAY contain a port")
 
-	// host names MUST be domain names or a loopback interface and MUST NOT be
-	// IPv4 or IPv6 addresses except for IPv4 127.0.0.1 or IPv6 [::1].
+	// "host names MUST be domain names or a loopback interface and MUST NOT be
+	// IPv4 or IPv6 addresses except for IPv4 127.0.0.1 or IPv6 [::1]."
 	if (!url.hostname.match(/\.\w+$/) && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {
 		throw new AuthorizationError('client_id must have a domain name as a host name', 'invalid_request');
 	}
@@ -91,6 +91,16 @@ interface ClientInformation {
 }
 
 // https://indieauth.spec.indieweb.org/#client-information-discovery
+// "Authorization servers SHOULD support parsing the [h-app] Microformat from the client_id,
+// and if there is an [h-app] with a url property matching the client_id URL,
+// then it should use the name and icon and display them on the authorization prompt."
+// (But we don't display any icon for now)
+// https://indieauth.spec.indieweb.org/#redirect-url
+// "The client SHOULD publish one or more <link> tags or Link HTTP headers with a rel attribute
+// of redirect_uri at the client_id URL.
+// Authorization endpoints verifying that a redirect_uri is allowed for use by a client MUST
+// look for an exact match of the given redirect_uri in the request against the list of
+// redirect_uris discovered after resolving any relative URLs."
 async function discoverClientInformation(httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
 	try {
 		const res = await httpRequestService.send(id);
@@ -341,9 +351,8 @@ export class OAuth2ProviderService {
 				const clientUrl = validateClientId(clientID);
 
 				// TODO: Consider allowing localhost for native apps (RFC 8252)
-				// The current setup requires an explicit list of redirect_uris per
-				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
-				// which blocks the support. But we could loose the rule in this case.
+				// This is currently blocked by the redirect_uri check below, but we can theoretically
+				// loosen the rule for localhost as the data never leaves the client machine.
 				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
 					const lookup = await dns.lookup(clientUrl.hostname);
 					if (ipaddr.parse(lookup.address).range() !== 'unicast') {
@@ -353,6 +362,9 @@ export class OAuth2ProviderService {
 
 				// Find client information from the remote.
 				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
+
+				// Requires an explicit list of redirect_uris per
+				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
 				if (!clientInfo.redirectUris.includes(redirectURI)) {
 					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
 				}
