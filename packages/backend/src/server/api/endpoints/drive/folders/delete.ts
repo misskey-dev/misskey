@@ -5,39 +5,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['drive'],
-
-	requireCredential: true,
-
-	kind: 'write:drive',
-
-	errors: {
-		noSuchFolder: {
-			message: 'No such folder.',
-			code: 'NO_SUCH_FOLDER',
-			id: '1069098f-c281-440f-b085-f9932edbe091',
-		},
-
-		hasChildFilesOrFolders: {
-			message: 'This folder has child files or folders.',
-			code: 'HAS_CHILD_FILES_OR_FOLDERS',
-			id: 'b0fc8a17-963c-405d-bfbc-859a487295e1',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		folderId: { type: 'string', format: 'misskey:id' },
-	},
-	required: ['folderId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'drive/folders/delete'> {
+	name = 'drive/folders/delete' as const;
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -47,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Get folder
 			const folder = await this.driveFoldersRepository.findOneBy({
 				id: ps.folderId,
@@ -55,7 +26,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			if (folder == null) {
-				throw new ApiError(meta.errors.noSuchFolder);
+				throw new ApiError(this.meta.errors.noSuchFolder);
 			}
 
 			const [childFoldersCount, childFilesCount] = await Promise.all([
@@ -64,7 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			]);
 
 			if (childFoldersCount !== 0 || childFilesCount !== 0) {
-				throw new ApiError(meta.errors.hasChildFilesOrFolders);
+				throw new ApiError(this.meta.errors.hasChildFilesOrFolders);
 			}
 
 			await this.driveFoldersRepository.delete(folder.id);

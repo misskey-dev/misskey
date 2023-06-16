@@ -8,45 +8,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['drive'],
-
-	requireCredential: true,
-
-	kind: 'write:drive',
-
-	limit: {
-		duration: ms('1hour'),
-		max: 10,
-	},
-
-	errors: {
-		noSuchFolder: {
-			message: 'No such folder.',
-			code: 'NO_SUCH_FOLDER',
-			id: '53326628-a00d-40a6-a3cd-8975105c0f95',
-		},
-	},
-
-	res: {
-		type: 'object' as const,
-		optional: false as const, nullable: false as const,
-		ref: 'DriveFolder',
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		name: { type: 'string', default: 'Untitled', maxLength: 200 },
-		parentId: { type: 'string', format: 'misskey:id', nullable: true },
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'drive/folders/create'> {
+	name = 'drive/folders/create' as const;
 	constructor(
 		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: DriveFoldersRepository,
@@ -55,7 +20,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// If the parent folder is specified
 			let parent = null;
 			if (ps.parentId) {
@@ -66,7 +31,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 
 				if (parent == null) {
-					throw new ApiError(meta.errors.noSuchFolder);
+					throw new ApiError(this.meta.errors.noSuchFolder);
 				}
 			}
 

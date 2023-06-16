@@ -3914,6 +3914,182 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
+	'drive/folders/create': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		kind: 'write:drive',
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 10,
+		},
+	
+		errors: {
+			noSuchFolder: {
+				message: 'No such folder.',
+				code: 'NO_SUCH_FOLDER',
+				id: '53326628-a00d-40a6-a3cd-8975105c0f95',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string', default: 'Untitled', maxLength: 200 },
+					parentId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+				},
+				required: [],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+			},
+		}],
+	},
+	'drive/folders/delete': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		kind: 'write:drive',
+	
+		errors: {
+			noSuchFolder: {
+				message: 'No such folder.',
+				code: 'NO_SUCH_FOLDER',
+				id: '1069098f-c281-440f-b085-f9932edbe091',
+			},
+	
+			hasChildFilesOrFolders: {
+				message: 'This folder has child files or folders.',
+				code: 'HAS_CHILD_FILES_OR_FOLDERS',
+				id: 'b0fc8a17-963c-405d-bfbc-859a487295e1',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					folderId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['folderId'],
+			},
+			res: undefined,
+		}],
+	},
+	'drive/folders/find': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		kind: 'read:drive',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					parentId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+						default: null,
+					},
+				},
+				required: ['name'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+				},
+			}
+		}]
+	},
+	'drive/folders/show': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		kind: 'read:drive',
+
+		errors: {
+			noSuchFolder: {
+				message: 'No such folder.',
+				code: 'NO_SUCH_FOLDER',
+				id: 'd74ab9eb-bb09-4bba-bf24-fb58f761e1e9',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					folderId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['folderId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+			}
+		}],
+	},
+	'drive/folders/update': {
+		tags: ['drive'],
+	
+		requireCredential: true,
+	
+		kind: 'write:drive',
+	
+		errors: {
+			noSuchFolder: {
+				message: 'No such folder.',
+				code: 'NO_SUCH_FOLDER',
+				id: 'f7974dac-2c0d-4a27-926e-23583b28e98e',
+			},
+	
+			noSuchParentFolder: {
+				message: 'No such parent folder.',
+				code: 'NO_SUCH_PARENT_FOLDER',
+				id: 'ce104e3a-faaf-49d5-b459-10ff0cbbcaa1',
+			},
+	
+			recursiveNesting: {
+				message: 'It can not be structured like nesting folders recursively.',
+				code: 'RECURSIVE_NESTING',
+				id: 'dbeb024837894013aed44279f9199740',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					folderId: { type: 'string', format: 'misskey:id' },
+					name: { type: 'string', maxLength: 200 },
+					parentId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+					},
+				},
+				required: ['folderId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+			}
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

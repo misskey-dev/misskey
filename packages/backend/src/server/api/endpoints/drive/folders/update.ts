@@ -6,53 +6,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['drive'],
-
-	requireCredential: true,
-
-	kind: 'write:drive',
-
-	errors: {
-		noSuchFolder: {
-			message: 'No such folder.',
-			code: 'NO_SUCH_FOLDER',
-			id: 'f7974dac-2c0d-4a27-926e-23583b28e98e',
-		},
-
-		noSuchParentFolder: {
-			message: 'No such parent folder.',
-			code: 'NO_SUCH_PARENT_FOLDER',
-			id: 'ce104e3a-faaf-49d5-b459-10ff0cbbcaa1',
-		},
-
-		recursiveNesting: {
-			message: 'It can not be structured like nesting folders recursively.',
-			code: 'RECURSIVE_NESTING',
-			id: 'dbeb024837894013aed44279f9199740',
-		},
-	},
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'DriveFolder',
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		folderId: { type: 'string', format: 'misskey:id' },
-		name: { type: 'string', maxLength: 200 },
-		parentId: { type: 'string', format: 'misskey:id', nullable: true },
-	},
-	required: ['folderId'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'drive/folders/update'> {
+	name = 'drive/folders/update' as const;
 	constructor(
 		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: DriveFoldersRepository,
@@ -60,7 +17,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFolderEntityService: DriveFolderEntityService,
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			// Fetch folder
 			const folder = await this.driveFoldersRepository.findOneBy({
 				id: ps.folderId,
@@ -68,14 +25,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			if (folder == null) {
-				throw new ApiError(meta.errors.noSuchFolder);
+				throw new ApiError(this.meta.errors.noSuchFolder);
 			}
 
 			if (ps.name) folder.name = ps.name;
 
 			if (ps.parentId !== undefined) {
 				if (ps.parentId === folder.id) {
-					throw new ApiError(meta.errors.recursiveNesting);
+					throw new ApiError(this.meta.errors.recursiveNesting);
 				} else if (ps.parentId === null) {
 					folder.parentId = null;
 				} else {
@@ -86,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					});
 
 					if (parent == null) {
-						throw new ApiError(meta.errors.noSuchParentFolder);
+						throw new ApiError(this.meta.errors.noSuchParentFolder);
 					}
 
 					// Check if the circular reference will occur
@@ -107,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 					if (parent.parentId !== null) {
 						if (await checkCircle(parent.parentId)) {
-							throw new ApiError(meta.errors.recursiveNesting);
+							throw new ApiError(this.meta.errors.recursiveNesting);
 						}
 					}
 
