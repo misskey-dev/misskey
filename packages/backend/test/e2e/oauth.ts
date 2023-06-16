@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { AuthorizationCode, ResourceOwnerPassword, type AuthorizationTokenConfig, ClientCredentials } from 'simple-oauth2';
+import { AuthorizationCode, ResourceOwnerPassword, type AuthorizationTokenConfig, ClientCredentials, ModuleOptions } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 import type * as misskey from 'misskey-js';
@@ -39,22 +39,20 @@ interface AuthorizationTokenConfigExtended extends AuthorizationTokenConfig {
 	code_verifier: string | undefined;
 }
 
-function getClient(): AuthorizationCode<'client_id'> {
-	return new AuthorizationCode({
-		client: {
-			id: `http://127.0.0.1:${clientPort}/`,
-			secret: '',
-		},
-		auth: {
-			tokenHost: host,
-			tokenPath: '/oauth/token',
-			authorizePath: '/oauth/authorize',
-		},
-		options: {
-			authorizationMethod: 'body',
-		},
-	});
-}
+const clientConfig: ModuleOptions<'client_id'> = {
+	client: {
+		id: `http://127.0.0.1:${clientPort}/`,
+		secret: '',
+	},
+	auth: {
+		tokenHost: host,
+		tokenPath: '/oauth/token',
+		authorizePath: '/oauth/authorize',
+	},
+	options: {
+		authorizationMethod: 'body',
+	},
+};
 
 function getMeta(html: string): { transactionId: string | undefined, clientName: string | undefined } {
 	const fragment = JSDOM.fragment(html);
@@ -87,7 +85,7 @@ async function fetchDecisionFromResponse(response: Response, user: misskey.entit
 }
 
 async function fetchAuthorizationCode(user: misskey.entities.MeSignup, scope: string, code_challenge: string): Promise<{ client: AuthorizationCode, code: string }> {
-	const client = getClient();
+	const client = new AuthorizationCode(clientConfig);
 
 	const response = await fetch(client.authorizeURL({
 		redirect_uri,
@@ -172,7 +170,7 @@ describe('OAuth', () => {
 	test('Full flow', async () => {
 		const { code_challenge, code_verifier } = await pkceChallenge(128);
 
-		const client = getClient();
+		const client = new AuthorizationCode(clientConfig);
 
 		const response = await fetch(client.authorizeURL({
 			redirect_uri,
@@ -229,7 +227,7 @@ describe('OAuth', () => {
 	});
 
 	test('Two concurrent flows', async () => {
-		const client = getClient();
+		const client = new AuthorizationCode(clientConfig);
 
 		const pkceAlice = await pkceChallenge(128);
 		const pkceBob = await pkceChallenge(128);
@@ -316,7 +314,7 @@ describe('OAuth', () => {
 		// '... the authorization endpoint MUST return the authorization
 		// error response with the "error" value set to "invalid_request".'
 		test('Require PKCE', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			// Pattern 1: No PKCE fields at all
 			let response = await fetch(client.authorizeURL({
@@ -430,7 +428,7 @@ describe('OAuth', () => {
 	});
 
 	test('Cancellation', async () => {
-		const client = getClient();
+		const client = new AuthorizationCode(clientConfig);
 
 		const response = await fetch(client.authorizeURL({
 			redirect_uri,
@@ -460,7 +458,7 @@ describe('OAuth', () => {
 		// indicating an invalid scope."
 		// (And Misskey does the latter)
 		test('Missing scope', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
@@ -472,7 +470,7 @@ describe('OAuth', () => {
 		});
 
 		test('Empty scope', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
@@ -485,7 +483,7 @@ describe('OAuth', () => {
 		});
 
 		test('Unknown scopes', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
@@ -522,7 +520,7 @@ describe('OAuth', () => {
 		});
 
 		test('Known scopes', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
@@ -626,7 +624,7 @@ describe('OAuth', () => {
 	// automatically redirect the user-agent to the invalid redirection URI."
 	describe('Redirection', () => {
 		test('Invalid redirect_uri at authorization endpoint', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri: 'http://127.0.0.2/',
@@ -639,7 +637,7 @@ describe('OAuth', () => {
 		});
 
 		test('Invalid redirect_uri including the valid one at authorization endpoint', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri: 'http://127.0.0.1/redirection',
@@ -652,7 +650,7 @@ describe('OAuth', () => {
 		});
 
 		test('No redirect_uri at authorization endpoint', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				scope: 'write:notes',
@@ -722,7 +720,7 @@ describe('OAuth', () => {
 	// Do not use indirect error here.
 	describe('Decision endpoint', () => {
 		test('No login token', async () => {
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL(basicAuthParams));
 			assert.strictEqual(response.status, 200);
@@ -784,16 +782,10 @@ describe('OAuth', () => {
 
 		test('Resource owner grant is not supported', async () => {
 			const client = new ResourceOwnerPassword({
-				client: {
-					id: `http://127.0.0.1:${clientPort}/`,
-					secret: '',
-				},
+				...clientConfig,
 				auth: {
 					tokenHost: host,
 					tokenPath: '/oauth/token',
-				},
-				options: {
-					authorizationMethod: 'body',
 				},
 			});
 
@@ -808,16 +800,10 @@ describe('OAuth', () => {
 
 		test('Client credential grant is not supported', async () => {
 			const client = new ClientCredentials({
-				client: {
-					id: `http://127.0.0.1:${clientPort}/`,
-					secret: '',
-				},
+				...clientConfig,
 				auth: {
 					tokenHost: host,
 					tokenPath: '/oauth/token',
-				},
-				options: {
-					authorizationMethod: 'body',
 				},
 			});
 
@@ -872,7 +858,7 @@ describe('OAuth', () => {
 					fastify.get('/', async (request, reply) => replyFunc(reply));
 					await fastify.listen({ port: clientPort });
 
-					const client = getClient();
+					const client = new AuthorizationCode(clientConfig);
 
 					const response = await fetch(client.authorizeURL({
 						redirect_uri,
@@ -897,7 +883,7 @@ describe('OAuth', () => {
 				});
 				await fastify.listen({ port: clientPort });
 
-				const client = getClient();
+				const client = new AuthorizationCode(clientConfig);
 
 				const response = await fetch(client.authorizeURL({
 					redirect_uri,
@@ -915,7 +901,7 @@ describe('OAuth', () => {
 		test('Disallow loopback', async () => {
 			process.env.MISSKEY_TEST_CHECK_IP_RANGE = '1';
 
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
 				scope: 'write:notes',
@@ -936,7 +922,7 @@ describe('OAuth', () => {
 			});
 			await fastify.listen({ port: clientPort });
 
-			const client = getClient();
+			const client = new AuthorizationCode(clientConfig);
 
 			const response = await fetch(client.authorizeURL({
 				redirect_uri,
