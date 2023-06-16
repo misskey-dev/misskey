@@ -1,10 +1,11 @@
 import dns from 'node:dns/promises';
 import { fileURLToPath } from 'node:url';
+import { ServerResponse } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req } from 'oauth2orize';
+import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyView from '@fastify/view';
 import pug from 'pug';
@@ -116,9 +117,21 @@ type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
 	? R
 	: [];
 
-interface OAuthRequest extends OAuth2Req {
+interface OAuthParsedRequest extends OAuth2Req {
 	codeChallenge: string;
 	codeChallengeMethod: string;
+}
+
+interface OAuthHttpResponse extends ServerResponse {
+	redirect(location: string): void;
+}
+
+interface OAuth2DecisionRequest extends MiddlewareRequest {
+	body: {
+		transaction_id: string;
+		cancel: boolean;
+		login_token: string;
+	}
 }
 
 function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
@@ -135,7 +148,7 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
 				parsed.searchParams.append(key, value as string);
 			}
 
-			return (res as any).redirect(parsed.toString());
+			return (res as OAuthHttpResponse).redirect(parsed.toString());
 		},
 	};
 }
@@ -143,7 +156,7 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
 class OAuth2Store {
 	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // 5min
 
-	load(req: any, cb: (err: Error | null, txn?: OAuth2) => void): void {
+	load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): void {
 		const { transaction_id } = req.body;
 		if (!transaction_id) {
 			cb(new AuthorizationError('Missing transaction ID', 'invalid_request'));
@@ -157,13 +170,13 @@ class OAuth2Store {
 		cb(null, loaded);
 	}
 
-	store(req: unknown, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
+	store(req: OAuth2DecisionRequest, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
 		const transactionId = secureRndstr(128, true);
 		this.#cache.set(transactionId, oauth2);
 		cb(null, transactionId);
 	}
 
-	remove(req: unknown, tid: string, cb: () => void): void {
+	remove(req: OAuth2DecisionRequest, tid: string, cb: () => void): void {
 		this.#cache.delete(tid);
 		cb();
 	}
@@ -222,7 +235,7 @@ export class OAuth2ProviderService {
 					clientId: client.id,
 					userId: user.id,
 					redirectUri,
-					codeChallenge: (areq as OAuthRequest).codeChallenge,
+					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
 					scopes: areq.scope,
 				});
 				return [code];
@@ -285,7 +298,11 @@ export class OAuth2ProviderService {
 		// For now only allow the basic OAuth endpoints, to start small and evaluate
 		// this feature for some time, given that this is security related.
 		fastify.get('/oauth/authorize', async (request, reply) => {
-			const oauth2 = (request.raw as any).oauth2 as OAuth2;
+			const oauth2 = (request.raw as MiddlewareRequest).oauth2;
+			if (!oauth2) {
+				throw new Error('Unexpected lack of authorization information');
+			}
+
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
@@ -313,7 +330,7 @@ export class OAuth2ProviderService {
 				// This should return client/redirectURI AND the error, or
 				// the handler can't send error to the redirection URI
 
-				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq as OAuthRequest;
+				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq as OAuthParsedRequest;
 
 				this.#logger.info(`Validating authorization parameters, with client_id: ${clientID}, redirect_uri: ${redirectURI}, scope: ${scope}`);
 
@@ -367,8 +384,9 @@ export class OAuth2ProviderService {
 
 		fastify.use('/oauth/decision', bodyParser.urlencoded({ extended: false }));
 		fastify.use('/oauth/decision', this.#server.decision((req, done) => {
-			this.#logger.info(`Received the decision. Cancel: ${!!(req as any).body.cancel}`);
-			req.user = (req as any).body.login_token;
+			const { body } = req as OAuth2DecisionRequest;
+			this.#logger.info(`Received the decision. Cancel: ${!!body.cancel}`);
+			req.user = body.login_token;
 			done(null, undefined);
 		}));
 		fastify.use('/oauth/decision', this.#server.errorHandler());

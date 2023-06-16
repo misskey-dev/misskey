@@ -224,7 +224,7 @@ describe('OAuth', () => {
 		});
 		assert.strictEqual(createResponse.status, 200);
 
-		const createResponseBody: any = await createResponse.json();
+		const createResponseBody = await createResponse.json() as { createdNote: Note };
 		assert.strictEqual(createResponseBody.createdNote.text, 'test');
 	});
 
@@ -258,20 +258,27 @@ describe('OAuth', () => {
 		const decisionResponseBob = await fetchDecisionFromResponse(responseBob, bob);
 		assert.strictEqual(decisionResponseBob.status, 302);
 
-		const locationAlice = new URL(decisionResponseAlice.headers.get('location')!);
-		assert.ok(locationAlice.searchParams.has('code'));
+		const locationHeaderAlice = decisionResponseAlice.headers.get('location');
+		assert.ok(locationHeaderAlice);
+		const locationAlice = new URL(locationHeaderAlice);
 
-		const locationBob = new URL(decisionResponseBob.headers.get('location')!);
-		assert.ok(locationBob.searchParams.has('code'));
+		const locationHeaderBob = decisionResponseBob.headers.get('location');
+		assert.ok(locationHeaderBob);
+		const locationBob = new URL(locationHeaderBob);
+
+		const codeAlice = locationAlice.searchParams.get('code');
+		assert.ok(codeAlice);
+		const codeBob = locationBob.searchParams.get('code');
+		assert.ok(codeBob);
 
 		const tokenAlice = await client.getToken({
-			code: locationAlice.searchParams.get('code')!,
+			code: codeAlice,
 			redirect_uri,
 			code_verifier: pkceAlice.code_verifier,
 		} as AuthorizationTokenConfigExtended);
 
 		const tokenBob = await client.getToken({
-			code: locationBob.searchParams.get('code')!,
+			code: codeBob,
 			redirect_uri,
 			code_verifier: pkceBob.code_verifier,
 		} as AuthorizationTokenConfigExtended);
