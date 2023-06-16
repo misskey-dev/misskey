@@ -168,6 +168,17 @@ export class CacheService implements OnApplicationShutdown {
 	@bindThis
 	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
+		this.userByIdCache.dispose();
+		this.localUserByNativeTokenCache.dispose();
+		this.localUserByIdCache.dispose();
+		this.uriPersonCache.dispose();
+		this.userProfileCache.dispose();
+		this.userMutingsCache.dispose();
+		this.userBlockingCache.dispose();
+		this.userBlockedCache.dispose();
+		this.renoteMutingsCache.dispose();
+		this.userFollowingsCache.dispose();
+		this.userFollowingChannelsCache.dispose();
 	}
 
 	@bindThis

@@ -178,10 +178,6 @@ export const routes = [{
 		name: 'profile',
 		component: page(() => import('./pages/settings/accounts.vue')),
 	}, {
-		path: '/account-stats',
-		name: 'other',
-		component: page(() => import('./pages/settings/account-stats.vue')),
-	}, {
 		path: '/other',
 		name: 'other',
 		component: page(() => import('./pages/settings/other.vue')),
@@ -392,6 +388,10 @@ export const routes = [{
 		path: '/settings',
 		name: 'settings',
 		component: page(() => import('./pages/admin/settings.vue')),
+	}, {
+		path: '/branding',
+		name: 'branding',
+		component: page(() => import('./pages/admin/branding.vue')),
 	}, {
 		path: '/moderation',
 		name: 'moderation',

@@ -56,6 +56,18 @@ export default class extends Endpoint<'admin/update-meta'> {
 				set.iconUrl = ps.iconUrl;
 			}
 
+			if (ps.serverErrorImageUrl !== undefined) {
+				set.serverErrorImageUrl = ps.serverErrorImageUrl;
+			}
+
+			if (ps.infoImageUrl !== undefined) {
+				set.infoImageUrl = ps.infoImageUrl;
+			}
+
+			if (ps.notFoundImageUrl !== undefined) {
+				set.notFoundImageUrl = ps.notFoundImageUrl;
+			}
+
 			if (ps.backgroundImageUrl !== undefined) {
 				set.backgroundImageUrl = ps.backgroundImageUrl;
 			}
@@ -186,10 +198,6 @@ export default class extends Endpoint<'admin/update-meta'> {
 
 			if (ps.smtpPass !== undefined) {
 				set.smtpPass = ps.smtpPass;
-			}
-
-			if (ps.errorImageUrl !== undefined) {
-				set.errorImageUrl = ps.errorImageUrl;
 			}
 
 			if (ps.enableServiceWorker !== undefined) {

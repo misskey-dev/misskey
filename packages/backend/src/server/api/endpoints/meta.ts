@@ -1,6 +1,6 @@
 import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import * as JSON5 from 'json5';
+import JSON5 from 'json5';
 import type { AdsRepository, UsersRepository } from '@/models/index.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -124,10 +124,17 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
-			errorImageUrl: {
+			serverErrorImageUrl: {
 				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://xn--931a.moe/aiart/yubitun.png',
+				optional: false, nullable: true,
+			},
+			infoImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			notFoundImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			iconUrl: {
 				type: 'string',
@@ -288,7 +295,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
 				bannerUrl: instance.bannerUrl,
-				errorImageUrl: instance.errorImageUrl,
+				infoImageUrl: instance.infoImageUrl,
+				serverErrorImageUrl: instance.serverErrorImageUrl,
+				notFoundImageUrl: instance.notFoundImageUrl,
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
