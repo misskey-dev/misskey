@@ -32,10 +32,9 @@ export const InstanceMetaSharedSchema = {
             default: '/assets/ai.png',
         },
         bannerUrl: { type: ['string', 'null'] },
-        errorImageUrl: {
-            type: ['string', 'null'],
-            default: 'https://xn--931a.moe/aiart/yubitun.png',
-        },
+		serverErrorImageUrl: { type: ['string', 'null'] },
+		infoImageUrl: { type: ['string', 'null'] },
+		notFoundImageUrl: { type: ['string', 'null'] },
         iconUrl: { type: ['string', 'null'] },
         backgroundImageUrl: { type: ['string', 'null'] },
         logoImageUrl: { type: ['string', 'null'] },
