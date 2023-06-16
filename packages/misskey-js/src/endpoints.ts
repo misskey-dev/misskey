@@ -3695,6 +3695,225 @@ export const endpoints = {
 			},
 		}],
 	},
+	'drive/files/delete': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'write:drive',
+
+		description: 'Delete an existing drive file.',
+
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: '908939ec-e52b-4458-b395-1025195cea58',
+			},
+
+			accessDenied: {
+				message: 'Access denied.',
+				code: 'ACCESS_DENIED',
+				id: '5eb8d909-2540-4970-90b8-dd6f86088121',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					fileId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['fileId'],
+			},
+			res: undefined,
+		}],
+	},
+	'drive/files/find-by-hash': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'read:drive',
+
+		description: 'Search for a drive file by a hash of the contents.',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					md5: { type: 'string' },
+				},
+				required: ['md5'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+				},
+			},
+		}],
+	},
+	'drive/files/find': {
+		requireCredential: true,
+
+		tags: ['drive'],
+
+		kind: 'read:drive',
+
+		description: 'Search for a drive file by the given parameters.',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+					folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+				},
+				required: ['name'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+				},
+			},
+		}],
+	},
+	'drive/files/show': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'read:drive',
+
+		description: 'Show the properties of a drive file.',
+
+		errors: {
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: '067bc436-2718-4795-b0fb-ecbe43949e31',
+			},
+
+			accessDenied: {
+				message: 'Access denied.',
+				code: 'ACCESS_DENIED',
+				id: '25b73c73-68b1-41d0-bad1-381cfdf6579f',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					fileId: { type: 'string', format: 'misskey:id' },
+					url: { type: 'string' },
+				},
+				anyOf: [
+					{ required: ['fileId'] },
+					{ required: ['url'] },
+				],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+			},
+		}],
+	},
+	'drive/files/update': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'write:drive',
+
+		description: 'Update the properties of a drive file.',
+
+		errors: {
+			invalidFileName: {
+				message: 'Invalid file name.',
+				code: 'INVALID_FILE_NAME',
+				id: '395e7156-f9f0-475e-af89-53c3c23080c2',
+			},
+
+			noSuchFile: {
+				message: 'No such file.',
+				code: 'NO_SUCH_FILE',
+				id: 'e7778c7e-3af9-49cd-9690-6dbc3e6c972d',
+			},
+
+			accessDenied: {
+				message: 'Access denied.',
+				code: 'ACCESS_DENIED',
+				id: '01a53b27-82fc-445b-a0c1-b558465a8ed2',
+			},
+
+			noSuchFolder: {
+				message: 'No such folder.',
+				code: 'NO_SUCH_FOLDER',
+				id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73',
+			},
+
+			restrictedByRole: {
+				message: 'This feature is restricted by your role.',
+				code: 'RESTRICTED_BY_ROLE',
+				id: '7f59dccb-f465-75ab-5cf4-3ce44e3282f7',
+			},
+		},
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					fileId: { type: 'string', format: 'misskey:id' },
+					folderId: { type: 'string', format: 'misskey:id', nullable: true },
+					name: { type: 'string' },
+					isSensitive: { type: 'boolean' },
+					comment: {
+						oneOf: [
+							{ type: 'string', maxLength: 512 },
+							{ type: 'null' },
+						],
+					},
+				},
+				required: ['fileId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+			},
+		}],
+	},
+	'drive/files/upload-from-url': {
+		tags: ['drive'],
+
+		limit: {
+			duration: ms('1hour'),
+			max: 60,
+		},
+
+		description: 'Request the server to download a new drive file from the specified URL.',
+
+		requireCredential: true,
+
+		prohibitMoved: true,
+
+		kind: 'write:drive',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					url: { type: 'string' },
+					folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+					isSensitive: { type: 'boolean', default: false },
+					comment: { type: 'string', nullable: true, maxLength: 512, default: null },
+					marker: { type: 'string', nullable: true, default: null },
+					force: { type: 'boolean', default: false },
+				},
+				required: ['url'],
+			},
+			res: undefined,
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

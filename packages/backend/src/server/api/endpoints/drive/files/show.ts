@@ -7,51 +7,10 @@ import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../../error.js';
 
-export const meta = {
-	tags: ['drive'],
-
-	requireCredential: true,
-
-	kind: 'read:drive',
-
-	description: 'Show the properties of a drive file.',
-
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'DriveFile',
-	},
-
-	errors: {
-		noSuchFile: {
-			message: 'No such file.',
-			code: 'NO_SUCH_FILE',
-			id: '067bc436-2718-4795-b0fb-ecbe43949e31',
-		},
-
-		accessDenied: {
-			message: 'Access denied.',
-			code: 'ACCESS_DENIED',
-			id: '25b73c73-68b1-41d0-bad1-381cfdf6579f',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		fileId: { type: 'string', format: 'misskey:id' },
-		url: { type: 'string' },
-	},
-	anyOf: [
-		{ required: ['fileId'] },
-		{ required: ['url'] },
-	],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'drive/files/show'> {
+	name = 'drive/files/show' as const;
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -59,7 +18,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFileEntityService: DriveFileEntityService,
 		private roleService: RoleService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			let file: DriveFile | null = null;
 
 			if (ps.fileId) {
@@ -77,11 +36,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (file == null) {
-				throw new ApiError(meta.errors.noSuchFile);
+				throw new ApiError(this.meta.errors.noSuchFile);
 			}
 
 			if (!await this.roleService.isModerator(me) && (file.userId !== me.id)) {
-				throw new ApiError(meta.errors.accessDenied);
+				throw new ApiError(this.meta.errors.accessDenied);
 			}
 
 			return await this.driveFileEntityService.pack(file, {
