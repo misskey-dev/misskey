@@ -39,6 +39,14 @@ interface AuthorizationTokenConfigExtended extends AuthorizationTokenConfig {
 	code_verifier: string | undefined;
 }
 
+interface GetTokenError {
+	data: {
+		payload: {
+			error: string;
+		}
+	}
+}
+
 const clientConfig: ModuleOptions<'client_id'> = {
 	client: {
 		id: `http://127.0.0.1:${clientPort}/`,
@@ -373,7 +381,7 @@ describe('OAuth', () => {
 						code,
 						redirect_uri,
 						code_verifier: wrong_verifier,
-					} as AuthorizationTokenConfigExtended), (err: any) => {
+					} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
 						assert.strictEqual(err.data.payload.error, 'invalid_grant');
 						return true;
 					});
@@ -401,7 +409,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier,
-			} as AuthorizationTokenConfigExtended), (err: any) => {
+			} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
@@ -411,7 +419,7 @@ describe('OAuth', () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
-			await assert.rejects(client.getToken({ code, redirect_uri }), (err: any) => {
+			await assert.rejects(client.getToken({ code, redirect_uri }), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
@@ -420,7 +428,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier,
-			} as AuthorizationTokenConfigExtended), (err: any) => {
+			} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
@@ -670,7 +678,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri: 'http://127.0.0.2/',
 				code_verifier,
-			} as AuthorizationTokenConfigExtended), (err: any) => {
+			} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
@@ -685,7 +693,7 @@ describe('OAuth', () => {
 				code,
 				redirect_uri: 'http://127.0.0.1/redirection',
 				code_verifier,
-			} as AuthorizationTokenConfigExtended), (err: any) => {
+			} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
@@ -699,7 +707,7 @@ describe('OAuth', () => {
 			await assert.rejects(client.getToken({
 				code,
 				code_verifier,
-			} as AuthorizationTokenConfigExtended), (err: any) => {
+			} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
@@ -792,7 +800,7 @@ describe('OAuth', () => {
 			await assert.rejects(client.getToken({
 				username: 'alice',
 				password: 'test',
-			}), (err: any) => {
+			}), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'unsupported_grant_type');
 				return true;
 			});
@@ -807,7 +815,7 @@ describe('OAuth', () => {
 				},
 			});
 
-			await assert.rejects(client.getToken({}), (err: any) => {
+			await assert.rejects(client.getToken({}), (err: GetTokenError) => {
 				assert.strictEqual(err.data.payload.error, 'unsupported_grant_type');
 				return true;
 			});
