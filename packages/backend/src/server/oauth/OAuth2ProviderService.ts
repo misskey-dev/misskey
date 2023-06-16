@@ -363,7 +363,7 @@ export class OAuth2ProviderService {
 				// Find client information from the remote.
 				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
 
-				// Requires an explicit list of redirect_uris per
+				// Require an explicit list of redirect_uris per
 				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
 				if (!clientInfo.redirectUris.includes(redirectURI)) {
 					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
