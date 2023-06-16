@@ -27,6 +27,10 @@ import Logger from '@/logger.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
+// TODO: Consider migrating to @node-oauth/oauth2-server once
+// https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
+// Upstream the redirection URI validation below and RFC9207 implementation in that case.
+
 // Follows https://indieauth.spec.indieweb.org/#client-identifier
 // This is also mostly similar to https://developers.google.com/identity/protocols/oauth2/web-server#uri-validation
 // although Google has stricter rule.
