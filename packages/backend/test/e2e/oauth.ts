@@ -9,7 +9,7 @@ import * as assert from 'assert';
 import { AuthorizationCode, type AuthorizationTokenConfig } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
-import * as misskey from 'misskey-js';
+import type * as misskey from 'misskey-js';
 import Fastify, { type FastifyReply, type FastifyInstance } from 'fastify';
 import { port, relativeFetch, signup, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
@@ -224,7 +224,7 @@ describe('OAuth', () => {
 		});
 		assert.strictEqual(createResponse.status, 200);
 
-		const createResponseBody = await createResponse.json() as { createdNote: Note };
+		const createResponseBody = await createResponse.json() as misskey.Endpoints['notes/create']['res'];
 		assert.strictEqual(createResponseBody.createdNote.text, 'test');
 	});
 
@@ -303,10 +303,10 @@ describe('OAuth', () => {
 		});
 		assert.strictEqual(createResponseAlice.status, 200);
 
-		const createResponseBodyAlice = await createResponseAlice.json() as { createdNote: misskey.entities.Note };
+		const createResponseBodyAlice = await createResponseAlice.json() as misskey.Endpoints['notes/create']['res'];
 		assert.strictEqual(createResponseBodyAlice.createdNote.user.username, 'alice');
 
-		const createResponseBodyBob = await createResponseBob.json() as { createdNote: misskey.entities.Note };
+		const createResponseBodyBob = await createResponseBob.json() as misskey.Endpoints['notes/create']['res'];
 		assert.strictEqual(createResponseBodyBob.createdNote.user.username, 'bob');
 	});
 

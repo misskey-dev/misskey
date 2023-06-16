@@ -1,6 +1,5 @@
 import dns from 'node:dns/promises';
 import { fileURLToPath } from 'node:url';
-import { ServerResponse } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import httpLinkHeader from 'http-link-header';
@@ -19,12 +18,13 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
-import { IdService } from '@/core/IdService.js';
-import { CacheService } from '@/core/CacheService.js';
+import type { IdService } from '@/core/IdService.js';
+import type { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import { LoggerService } from '@/core/LoggerService.js';
+import type { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
+import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
 // Follows https://indieauth.spec.indieweb.org/#client-identifier
