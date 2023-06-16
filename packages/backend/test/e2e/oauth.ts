@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { AuthorizationCode, type AuthorizationTokenConfig } from 'simple-oauth2';
+import { AuthorizationCode, ResourceOwnerPassword, type AuthorizationTokenConfig, ClientCredentials } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 import type * as misskey from 'misskey-js';
@@ -375,7 +375,10 @@ describe('OAuth', () => {
 						code,
 						redirect_uri,
 						code_verifier: wrong_verifier,
-					} as AuthorizationTokenConfigExtended));
+					} as AuthorizationTokenConfigExtended), (err: any) => {
+						assert.strictEqual(err.data.payload.error, 'invalid_grant');
+						return true;
+					});
 				});
 			}
 		});
@@ -400,20 +403,29 @@ describe('OAuth', () => {
 				code,
 				redirect_uri,
 				code_verifier,
-			} as AuthorizationTokenConfigExtended));
+			} as AuthorizationTokenConfigExtended), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
 		});
 
 		test('On failure', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
 			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
 
-			await assert.rejects(client.getToken({ code, redirect_uri }));
+			await assert.rejects(client.getToken({ code, redirect_uri }), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
 
 			await assert.rejects(client.getToken({
 				code,
 				redirect_uri,
 				code_verifier,
-			} as AuthorizationTokenConfigExtended));
+			} as AuthorizationTokenConfigExtended), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
 		});
 	});
 
@@ -660,7 +672,10 @@ describe('OAuth', () => {
 				code,
 				redirect_uri: 'http://127.0.0.2/',
 				code_verifier,
-			} as AuthorizationTokenConfigExtended));
+			} as AuthorizationTokenConfigExtended), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
 		});
 
 		test('Invalid redirect_uri including the valid one at token endpoint', async () => {
@@ -672,7 +687,10 @@ describe('OAuth', () => {
 				code,
 				redirect_uri: 'http://127.0.0.1/redirection',
 				code_verifier,
-			} as AuthorizationTokenConfigExtended));
+			} as AuthorizationTokenConfigExtended), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
 		});
 
 		test('No redirect_uri at token endpoint', async () => {
@@ -683,7 +701,10 @@ describe('OAuth', () => {
 			await assert.rejects(client.getToken({
 				code,
 				code_verifier,
-			} as AuthorizationTokenConfigExtended));
+			} as AuthorizationTokenConfigExtended), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
 		});
 	});
 
@@ -749,6 +770,61 @@ describe('OAuth', () => {
 				},
 			});
 			await assertDirectError(decisionResponse, 403, 'access_denied');
+		});
+	});
+
+	// Only authorization code grant is supported
+	describe('Grant type', () => {
+		test('Implicit grant is not supported', async () => {
+			const url = new URL('/oauth/authorize', host);
+			url.searchParams.append('response_type', 'token');
+			const response = await fetch(url);
+			assertDirectError(response, 501, 'unsupported_response_type');
+		});
+
+		test('Resource owner grant is not supported', async () => {
+			const client = new ResourceOwnerPassword({
+				client: {
+					id: `http://127.0.0.1:${clientPort}/`,
+					secret: '',
+				},
+				auth: {
+					tokenHost: host,
+					tokenPath: '/oauth/token',
+				},
+				options: {
+					authorizationMethod: 'body',
+				},
+			});
+
+			await assert.rejects(client.getToken({
+				username: 'alice',
+				password: 'test',
+			}), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'unsupported_grant_type');
+				return true;
+			});
+		});
+
+		test('Client credential grant is not supported', async () => {
+			const client = new ClientCredentials({
+				client: {
+					id: `http://127.0.0.1:${clientPort}/`,
+					secret: '',
+				},
+				auth: {
+					tokenHost: host,
+					tokenPath: '/oauth/token',
+				},
+				options: {
+					authorizationMethod: 'body',
+				},
+			});
+
+			await assert.rejects(client.getToken({}), (err: any) => {
+				assert.strictEqual(err.data.payload.error, 'unsupported_grant_type');
+				return true;
+			});
 		});
 	});
 

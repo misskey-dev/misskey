@@ -18,11 +18,11 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
-import type { IdService } from '@/core/IdService.js';
-import type { CacheService } from '@/core/CacheService.js';
+import { IdService } from '@/core/IdService.js';
+import { CacheService } from '@/core/CacheService.js';
 import type { LocalUser } from '@/models/entities/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import type { LoggerService } from '@/core/LoggerService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
@@ -376,9 +376,9 @@ export class OAuth2ProviderService {
 					}
 					areq.scope = scopes;
 
-					if (type !== 'code') {
-						throw new AuthorizationError('`response_type` parameter must be set as "code"', 'invalid_request');
-					}
+					// Require PKCE parameters.
+					// Recommended by https://indieauth.spec.indieweb.org/#authorization-request, but also prevents downgrade attack:
+					// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-pkce-downgrade-attack
 					if (typeof codeChallenge !== 'string') {
 						throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
 					}
