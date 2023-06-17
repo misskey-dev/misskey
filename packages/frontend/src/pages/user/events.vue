@@ -1,5 +1,5 @@
 <template>
-<MkSpacer :content-max="800" style="padding-top: 0">
+<MkSpacer :contentMax="800" style="padding-top: 0">
 	<MkStickyContainer>
 		<template #header>
 			<MkTab v-model="include" :class="$style.tab">
@@ -7,7 +7,7 @@
 				<option :value="null">{{ i18n.ts.reverseChronological }}</option>
 			</MkTab>
 		</template>
-		<MkNotes :no-gap="true" :pagination="pagination" :class="$style.tl" :get-date="include === 'upcoming' ? note => note.event.start : undefined "/>
+		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl" :getDate="include === 'upcoming' ? note => note.event.start : undefined "/>
 	</MkStickyContainer>
 </MkSpacer>
 </template>
