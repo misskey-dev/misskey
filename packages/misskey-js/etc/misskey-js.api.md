@@ -1772,7 +1772,7 @@ export type Endpoints = {
             untilDate?: number;
             sortBy?: 'startDate' | 'craetedAt';
             filters?: {
-                key: string;
+                key: string[];
                 values: (string | null)[];
             }[];
         };
