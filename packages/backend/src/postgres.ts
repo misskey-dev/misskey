@@ -6,6 +6,7 @@ import { DataSource, Logger } from 'typeorm';
 import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 
+import { AbuseReportResolver } from '@/models/entities/AbuseReportResolver.js';
 import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { AccessToken } from '@/models/entities/AccessToken.js';
 import { Ad } from '@/models/entities/Ad.js';
@@ -121,6 +122,7 @@ class MyCustomLogger implements Logger {
 }
 
 export const entities = [
+	AbuseReportResolver,
 	Announcement,
 	AnnouncementRead,
 	Meta,

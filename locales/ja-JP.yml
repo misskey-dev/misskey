@@ -2057,3 +2057,21 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+
+_abuse:
+  _resolver:
+    1hour: "一時間"
+    12hours: "半日"
+    1day: "一日"
+    1week: "一週間"
+    1month: "一ヶ月"
+    3months: "三ヶ月"
+    6months: "六ヶ月"
+    1year: "一年"
+    indefinitely: "無期限"
+    expiresAt: "この条件の有効期限"
+    targetUserPattern: "通報先のパターン"
+    reporterPattern: "通報元のパターン"
+    reportContentPattern: "通報内容のパターン"
+    list: "一覧"
+    resolver: "リソルバー"

@@ -43,6 +43,10 @@ export type Endpoints = {
 	'admin/announcements/delete': { req: { id: Announcement['id'] }; res: null; };
 	'admin/announcements/list': { req: TODO; res: TODO; };
 	'admin/announcements/update': { req: TODO; res: TODO; };
+	'admin/abuse-report-resolver/create': { req: TODO; res: TODO; };
+	'admin/abuse-report-resolver/list': { req: TODO; res: TODO; };
+	'admin/abuse-report-resolver/update': { req: TODO; res: TODO; };
+	'admin/abuse-report-resolver/delete': { req: TODO; res: TODO; };
 	'admin/drive/clean-remote-files': { req: TODO; res: TODO; };
 	'admin/drive/cleanup': { req: TODO; res: TODO; };
 	'admin/drive/files': { req: TODO; res: TODO; };

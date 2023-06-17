@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -300,6 +301,11 @@ export class QueueService {
 			removeOnComplete: true,
 			removeOnFail: true,
 		});
+	}
+
+	@bindThis
+	public createReportAbuseJob(report: AbuseUserReport) {
+		return this.dbQueue.add('reportAbuse', report);
 	}
 
 	@bindThis

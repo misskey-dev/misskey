@@ -1,3 +1,4 @@
+import { AbuseReportResolver } from '@/models/entities/AbuseReportResolver.js';
 import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { AccessToken } from '@/models/entities/AccessToken.js';
 import { Ad } from '@/models/entities/Ad.js';
@@ -67,6 +68,7 @@ import { FlashLike } from '@/models/entities/FlashLike.js';
 import type { Repository } from 'typeorm';
 
 export {
+	AbuseReportResolver,
 	AbuseUserReport,
 	AccessToken,
 	Ad,
@@ -135,6 +137,7 @@ export {
 	UserMemo,
 };
 
+export type AbuseReportResolversRepository = Repository<AbuseReportResolver>;
 export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
 export type AccessTokensRepository = Repository<AccessToken>;
 export type AdsRepository = Repository<Ad>;
