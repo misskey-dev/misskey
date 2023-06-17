@@ -29,7 +29,7 @@ import type { FastifyInstance } from 'fastify';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
-// Upstream the redirection URI validation below and RFC9207 implementation in that case.
+// Upstream the various validations and RFC9207 implementation in that case.
 
 // Follows https://indieauth.spec.indieweb.org/#client-identifier
 // This is also mostly similar to https://developers.google.com/identity/protocols/oauth2/web-server#uri-validation
@@ -263,8 +263,12 @@ export class OAuth2ProviderService {
 					return;
 				}
 				grantCodeCache.delete(code);
+
+				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (body.client_id !== granted.clientId) return;
 				if (redirectUri !== granted.redirectUri) return;
+
+				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
 				if (!body.code_verifier) return;
 				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return;
 
@@ -344,7 +348,7 @@ export class OAuth2ProviderService {
 				// This should return client/redirectURI AND the error, or
 				// the handler can't send error to the redirection URI
 
-				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope, type } = areq as OAuthParsedRequest;
+				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope } = areq as OAuthParsedRequest;
 
 				this.#logger.info(`Validating authorization parameters, with client_id: ${clientID}, redirect_uri: ${redirectURI}, scope: ${scope}`);
 

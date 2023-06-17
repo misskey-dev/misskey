@@ -394,6 +394,7 @@ describe('OAuth', () => {
 	// "If an authorization code is used more than once, the authorization server
 	// MUST deny the request and SHOULD revoke (when possible) all tokens
 	// previously issued based on that authorization code."
+	// TODO: implement the "revoke all tokens" part, since we currently only deny the request.
 	describe('Revoking authorization code', () => {
 		test('On success', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
@@ -948,6 +949,4 @@ describe('OAuth', () => {
 		const response = await fetch(new URL('/oauth/foo', host));
 		assert.strictEqual(response.status, 404);
 	});
-
-	// TODO: Add spec links to tests
 });
