@@ -394,7 +394,6 @@ describe('OAuth', () => {
 	// "If an authorization code is used more than once, the authorization server
 	// MUST deny the request and SHOULD revoke (when possible) all tokens
 	// previously issued based on that authorization code."
-	// TODO: implement the "revoke all tokens" part, since we currently only deny the request.
 	describe('Revoking authorization code', () => {
 		test('On success', async () => {
 			const { code_challenge, code_verifier } = await pkceChallenge(128);
@@ -433,6 +432,46 @@ describe('OAuth', () => {
 				assert.strictEqual(err.data.payload.error, 'invalid_grant');
 				return true;
 			});
+		});
+
+		test('Revoke the already granted access token', async () => {
+			const { code_challenge, code_verifier } = await pkceChallenge(128);
+			const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
+
+			const token = await client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			} as AuthorizationTokenConfigExtended);
+
+			const createResponse = await relativeFetch('api/notes/create', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token.token.access_token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ text: 'test' }),
+			});
+			assert.strictEqual(createResponse.status, 200);
+
+			await assert.rejects(client.getToken({
+				code,
+				redirect_uri,
+				code_verifier,
+			} as AuthorizationTokenConfigExtended), (err: GetTokenError) => {
+				assert.strictEqual(err.data.payload.error, 'invalid_grant');
+				return true;
+			});
+
+			const createResponse2 = await relativeFetch('api/notes/create', {
+				method: 'POST',
+				headers: {
+					Authorization: `Bearer ${token.token.access_token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ text: 'test' }),
+			});
+			assert.strictEqual(createResponse2.status, 403);
 		});
 	});
 

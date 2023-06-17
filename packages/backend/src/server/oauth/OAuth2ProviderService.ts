@@ -224,6 +224,11 @@ export class OAuth2ProviderService {
 			redirectUri: string,
 			codeChallenge: string,
 			scopes: string[],
+
+			// fields to prevent multiple code use
+			grantedToken?: string,
+			revoked?: boolean,
+			used?: boolean,
 		}>(1000 * 60 * 5); // 5m
 
 		// https://datatracker.ietf.org/doc/html/rfc7636.html
@@ -262,7 +267,21 @@ export class OAuth2ProviderService {
 				if (!granted) {
 					return;
 				}
-				grantCodeCache.delete(code);
+
+				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2
+				// "If an authorization code is used more than once, the authorization server
+				// MUST deny the request and SHOULD revoke (when possible) all tokens
+				// previously issued based on that authorization code."
+				if (granted.used) {
+					this.#logger.info(`Detected multiple code use from ${granted.clientId} for user ${granted.userId}. Revoking the code.`);
+					grantCodeCache.delete(code);
+					granted.revoked = true;
+					if (granted.grantedToken) {
+						await accessTokensRepository.delete({ token: granted.grantedToken });
+					}
+					return;
+				}
+				granted.used = true;
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (body.client_id !== granted.clientId) return;
@@ -273,10 +292,8 @@ export class OAuth2ProviderService {
 				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return;
 
 				const accessToken = secureRndstr(128, true);
-
 				const now = new Date();
 
-				// Insert access token doc
 				await accessTokensRepository.insert({
 					id: idService.genId(),
 					createdAt: now,
@@ -288,6 +305,13 @@ export class OAuth2ProviderService {
 					permission: granted.scopes,
 				});
 
+				if (granted.revoked) {
+					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
+					await accessTokensRepository.delete({ token: accessToken });
+					return;
+				}
+
+				granted.grantedToken = accessToken;
 				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
 
 				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
