@@ -59,12 +59,14 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import MkInfo from '@/components/MkInfo.vue';
+import { $ref } from 'vue/macros';
 
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));
 const XUser = defineAsyncComponent(() => import('./search.user.vue'));
 
 let tab = $ref('note');
 let searchQuery = $ref('');
+let key = $ref('');
 let searchOrigin = $ref('combined');
 let eventSort = $ref('startDate');
 let notePagination = $ref();
@@ -74,12 +76,6 @@ let startDate = $ref(null);
 let endDate = $ref(null);
 
 const notesSearchAvailable = (($i == null && instance.policies.canSearchNotes) || ($i != null && $i.policies.canSearchNotes));
-
-onMounted(() => {
-	tab = props.type ?? 'note';
-	searchQuery = props.query ?? '';
-	searchOrigin = props.origin ?? 'combined';
-});
 
 async function search() {
 	const query = searchQuery.toString().trim();
