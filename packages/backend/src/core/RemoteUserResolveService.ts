@@ -10,6 +10,7 @@ import type Logger from '@/logger.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { WebfingerService } from '@/core/WebfingerService.js';
 import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { bindThis } from '@/decorators.js';
 
@@ -27,6 +28,7 @@ export class RemoteUserResolveService {
 		private utilityService: UtilityService,
 		private webfingerService: WebfingerService,
 		private remoteLoggerService: RemoteLoggerService,
+		private apDbResolverService: ApDbResolverService,
 		private apPersonService: ApPersonService,
 	) {
 		this.logger = this.remoteLoggerService.logger.createSubLogger('resolve-user');
@@ -66,7 +68,23 @@ export class RemoteUserResolveService {
 	
 		if (user == null) {
 			const self = await this.resolveSelf(acctLower);
-	
+
+			if (self.href.startsWith(this.config.url)) {
+				const local = this.apDbResolverService.parseUri(self.href);
+				if (local.local && local.type === 'users') {
+					// the LR points to local
+					return (await this.apDbResolverService
+						.getUserFromApId(self.href)
+						.then((u) => {
+							if (u == null) {
+								throw new Error('local user not found');
+							} else {
+								return u;
+							}
+						})) as LocalUser;
+				}
+			}
+
 			this.logger.succ(`return new remote user: ${chalk.magenta(acctLower)}`);
 			return await this.apPersonService.createPerson(self.href);
 		}
