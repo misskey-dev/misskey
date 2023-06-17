@@ -8,7 +8,7 @@ import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { WebfingerService } from '@/core/WebfingerService.js';
+import { ILink, WebfingerService } from '@/core/WebfingerService.js';
 import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -137,7 +137,7 @@ export class RemoteUserResolveService {
 	}
 
 	@bindThis
-	private async resolveSelf(acctLower: string) {
+	private async resolveSelf(acctLower: string): ILink {
 		this.logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await this.webfingerService.webfinger(acctLower).catch(err => {
 			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ err.statusCode ?? err.message }`);
