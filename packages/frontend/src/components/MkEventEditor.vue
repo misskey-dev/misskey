@@ -36,9 +36,12 @@
 				</MkInput>
 			</section>
 		</div>
-		<br/>
-		<MkFoldableSection>
-			<template #header>{{ i18n.ts.advanced }}</template>
+		<div>
+			<section>
+				<MkSwitch v-model="showAdvanced" :disabled="false" class="input">{{ i18n.ts.advanced }}</MkSwitch>
+			</section>
+		</div>
+		<div v-show="showAdvanced">
 			<section>
 				<MkInput v-model="doorTime" small type="time" class="input">
 					<template #label>{{ i18n.ts._event.doorTime }}</template>
@@ -104,7 +107,7 @@
 					<template #label>{{ i18n.ts._event.keywords }}</template>
 				</MkInput>
 			</section>
-		</MkFoldableSection>
+		</div>
 	</section>
 </div>
 </template>
@@ -136,6 +139,7 @@ const endDate = ref('');
 const endTime = ref('');
 const location = ref(props.modelValue?.metadata.location ?? null);
 const url = ref(props.modelValue?.metadata.url ?? null);
+const showAdvanced = ref(false);
 const doorTime = ref(props.modelValue?.metadata.doorTime ?? null);
 const organizer = ref(props.modelValue?.metadata.organizer?.name ?? null);
 const organizerLink = ref(props.modelValue?.metadata.organizer?.sameAs ?? null);
@@ -178,6 +182,7 @@ function get(): misskey.entities.Note['event'] {
 			} : undefined,
 			inLanguage: language.value ?? undefined,
 			typicalAgeRange: ageRange.value ?? undefined,
+			isAccessibleForFree: isFree,
 			offers: ticketsUrl.value || price.value ? {
 				price: price.value ?? undefined,
 				priceCurrency: undefined,
@@ -231,11 +236,6 @@ watch([title, startDate, startTime, endDate, endTime, location, url, doorTime, o
 				padding: 4px 0;
 			}
 		}
-	}
-
-	>.add {
-		margin: 8px 0;
-		z-index: 1;
 	}
 
 	>section {

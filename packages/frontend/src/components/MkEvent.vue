@@ -53,7 +53,7 @@
 		</template>
 		<template v-if="note.event!.metadata.isAccessibleForFree">
 			<dt :class="$style.key">{{ i18n.ts._event.isFree }}</dt> 
-			<dd :class="$style.value">{{ "Yes" }}</dd>
+			<dd :class="$style.value">{{ i18n.ts.yes }}</dd>
 		</template>
 		<template v-if="note.event!.metadata.offers?.price">
 			<dt :class="$style.key">{{ i18n.ts._event.price }}</dt> 
