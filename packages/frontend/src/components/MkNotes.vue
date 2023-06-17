@@ -13,7 +13,7 @@
 				ref="notes"
 				v-slot="{ item: note }"
 				:items="notes"
-				:get-date="getDate"
+				:getDate="getDate"
 				:direction="pagination.reversed ? 'up' : 'down'"
 				:reversed="pagination.reversed"
 				:noGap="noGap"
