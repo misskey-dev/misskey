@@ -1060,6 +1060,7 @@ cancelReactionConfirm: "要取消回应吗？"
 changeReactionConfirm: "要更改回应吗？"
 later: "一会再说"
 goToMisskey: "去往Misskey"
+additionalEmojiDictionary: "表情符号追加字典"
 installed: "已安装"
 _initialAccountSetting:
   accountCreated: "账户创建完成了！"
