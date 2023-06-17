@@ -1108,9 +1108,13 @@ export interface Locale {
         "ticketsUrl": string;
         "isFree": string;
         "price": string;
+        "availability": string;
+        "from": string;
+        "until": string;
         "availabilityStart": string;
         "availabilityEnd": string;
         "keywords": string;
+        "performers": string;
     };
     "_accountMigration": {
         "moveFrom": string;

@@ -25,7 +25,7 @@
 		</template>
 		<template v-if="note.event!.metadata.url">
 			<dt :class="$style.key">{{ i18n.ts._event.url }}</dt> 
-			<dd :class="$style.value">{{ note.event!.metadata.url }}</dd>
+			<dd :class="$style.value"><a :href="note.event!.metadata.url">{{ note.event!.metadata.url }}</a></dd>
 		</template>
 		<template v-if="note.event!.metadata.organizer">
 			<dt :class="$style.key">{{ i18n.ts._event.organizer }}</dt> 
@@ -49,7 +49,7 @@
 		</template>
 		<template v-if="note.event!.metadata.offers?.url">
 			<dt :class="$style.key">{{ i18n.ts._event.ticketsUrl }}</dt> 
-			<dd :class="$style.value">{{ note.event!.metadata.offers.url }}</dd>
+			<dd :class="$style.value"><a :href="note.event!.metadata.offers.url">{{ note.event!.metadata.offers.url }}</a></dd>
 		</template>
 		<template v-if="note.event!.metadata.isAccessibleForFree">
 			<dt :class="$style.key">{{ i18n.ts._event.isFree }}</dt> 

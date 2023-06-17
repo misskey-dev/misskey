@@ -37,7 +37,8 @@
 			</section>
 		</div>
 		<br/>
-		<div>
+		<MkFoldableSection>
+			<template #header>{{ i18n.ts.advanced }}</template>
 			<section>
 				<MkInput v-model="doorTime" small type="time" class="input">
 					<template #label>{{ i18n.ts._event.doorTime }}</template>
@@ -103,7 +104,7 @@
 					<template #label>{{ i18n.ts._event.keywords }}</template>
 				</MkInput>
 			</section>
-		</div>
+		</MkFoldableSection>
 	</section>
 </div>
 </template>
