@@ -163,7 +163,6 @@ function get(): misskey.entities.Note['event'] {
 		start: start,
 		end: end,
 		metadata: {
-			'@context': 'https://schema.org',
 			'@type': 'Event',
 			name: title.value,
 			startDate: (new Date(start)).toISOString(),

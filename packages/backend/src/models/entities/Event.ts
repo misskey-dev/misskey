@@ -75,7 +75,6 @@ export class Event {
 }
 
 export type EventSchema = {
-	'@context': 'https://schema.org';
 	'@type': 'Event';
 	name?: string;
 	url?: string;

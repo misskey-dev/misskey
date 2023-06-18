@@ -32,7 +32,6 @@ export const Default = {
 				start: '2017-10-25T15:00:00+0900',
 				end: '2017-10-25T18:00:00+0900',
 				metadata: {
-					'@context': 'https://schema.org',
 					'@type': 'Event',
 					location: 'Kawasaki, Japan',
 					description: 'Let\'s have a tea party!',

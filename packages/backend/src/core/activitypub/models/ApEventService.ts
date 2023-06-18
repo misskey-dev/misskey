@@ -51,7 +51,6 @@ export class ApEventService {
 				start,
 				end,
 				metadata: {
-					'@context': 'https://schema.org',
 					'@type': 'Event',
 					name: note.name,
 					url: note.href,
