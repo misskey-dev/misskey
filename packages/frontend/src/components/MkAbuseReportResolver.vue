@@ -56,6 +56,7 @@ const props = defineProps<{
 		expiresAt: string;
 		forward: boolean;
 		expirationDate: string;
+		beforeExpiresAt?: string;
 	}
 	editable: boolean;
 	data?: {
@@ -77,9 +78,6 @@ const emit = defineEmits(['update:modelValue']);
 
 const value = computed({
 	get() {
-		if (props.modelValue && props.editable) {
-			emit('update:modelValue', props.data ?? props.modelValue);
-		}
 		const data = props.data ?? props.modelValue ?? {
 			name: '',
 			targetUserPattern: '',
@@ -92,6 +90,9 @@ const value = computed({
 			if (_value === null) {
 				data[key] = '';
 			}
+		}
+		if (props.modelValue && props.editable) {
+			emit('update:modelValue', data);
 		}
 		return data as unknown as Exclude<NonNullType<typeof props.modelValue>, undefined>;
 	},
@@ -116,6 +117,11 @@ function renderExpirationDate(empty = false) {
 
 watch(() => value.value.expirationDate, () => renderExpirationDate(), { immediate: true });
 watch(() => value.value.expiresAt, () => renderExpirationDate(true));
+watch(() => props.editable, () => {
+	if (props.editable) {
+		value.value.beforeExpiresAt = value.value.expiresAt;
+	}
+});
 
 </script>
 <style lang="scss">

@@ -123,6 +123,7 @@ let editingResolver = $ref<{
 	expiresAt: string;
 	expirationDate: string;
 	forward: boolean;
+	beforeExpiresAt?: string;
 }>(defaultResolver);
 
 const pagination = {
@@ -155,7 +156,9 @@ function save(): void {
 		targetUserPattern: editingResolver.targetUserPattern || null,
 		reporterPattern: editingResolver.reporterPattern || null,
 		reportContentPattern: editingResolver.reportContentPattern || null,
-		expiresAt: editingResolver.expiresAt,
+		...(editingResolver.beforeExpiresAt && editingResolver.beforeExpiresAt === editingResolver.expiresAt ? {} : {
+			expiresAt: editingResolver.expiresAt,
+		}),
 		forward: editingResolver.forward,
 	}).then(() => {
 		editableResolver = null;
