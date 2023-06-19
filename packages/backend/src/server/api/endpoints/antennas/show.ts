@@ -55,6 +55,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
+			this.antennasRepository.update(antenna.id, {
+				isActive: true,
+				lastUsedAt: new Date(),
+			});
+
 			return await this.antennaEntityService.pack(antenna);
 		});
 	}
