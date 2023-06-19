@@ -68,6 +68,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.invalidRegularExpressionForTargetUser);
 				}
 				properties.targetUserPattern = ps.targetUserPattern;
+			} else if (ps.targetUserPattern === null) {
+				properties.targetUserPattern = null;
 			}
 			if (ps.reporterPattern) {
 				try {
@@ -76,6 +78,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.invalidRegularExpressionForReporter);
 				}
 				properties.reporterPattern = ps.reporterPattern;
+			} else if (ps.reporterPattern === null) {
+				properties.targetUserPattern = null;
 			}
 			if (ps.reportContentPattern) {
 				try {
@@ -84,6 +88,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.invalidRegularExpressionForReportContent);
 				}
 				properties.reportContentPattern = ps.reportContentPattern;
+			} else if (ps.reportContentPattern === null) {
+				properties.reportContentPattern = null;
 			}
 			if (ps.forward) properties.forward = ps.forward;
 			if (ps.expiresAt) {
