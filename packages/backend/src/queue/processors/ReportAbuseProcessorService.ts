@@ -68,11 +68,14 @@ export class ReportAbuseProcessorService {
 		const reporterAcct = reporter.host ? `${reporter.username.toLowerCase()}@${reporter.host}` : reporter.username.toLowerCase();
 
 		for (const resolver of resolvers) {
-			const isTargetUserPatternMatched = resolver.targetUserPattern ? new RE2(resolver.targetUserPattern).test(targetUserAcct) : false;
-			const isReporterPatternMatched = resolver.reporterPattern ? new RE2(resolver.reporterPattern).test(reporterAcct) : false;
-			const isReportContentPatternMatched = resolver.reportContentPattern ? new RE2(resolver.reportContentPattern).test(job.data.comment) : false;
+			if (!(resolver.targetUserPattern || resolver.reporterPattern || resolver.reportContentPattern)) {
+				continue;
+			}
+			const isTargetUserPatternMatched = resolver.targetUserPattern ? new RE2(resolver.targetUserPattern).test(targetUserAcct) : true;
+			const isReporterPatternMatched = resolver.reporterPattern ? new RE2(resolver.reporterPattern).test(reporterAcct) : true;
+			const isReportContentPatternMatched = resolver.reportContentPattern ? new RE2(resolver.reportContentPattern).test(job.data.comment) : true;
 
-			if (isTargetUserPatternMatched || isReporterPatternMatched || isReportContentPatternMatched) {
+			if (isTargetUserPatternMatched && isReporterPatternMatched && isReportContentPatternMatched) {
 				if (resolver.forward && job.data.targetUserHost !== null) {
 					const targetUser = await this.usersRepository.findOneByOrFail({ id: job.data.targetUserId });
 					this.queueService.deliver(actor, this.apRendererService.addContext(this.apRendererService.renderFlag(actor, targetUser.uri!, job.data.comment)), targetUser.inbox, false);
