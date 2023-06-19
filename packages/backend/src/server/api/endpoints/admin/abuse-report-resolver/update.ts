@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 				properties.reporterPattern = ps.reporterPattern;
 			} else if (ps.reporterPattern === null) {
-				properties.targetUserPattern = null;
+				properties.reporterPattern = null;
 			}
 			if (ps.reportContentPattern) {
 				try {
