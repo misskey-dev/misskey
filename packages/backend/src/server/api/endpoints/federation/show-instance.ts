@@ -5,32 +5,10 @@ import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js'
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['federation'],
-
-	requireCredential: false,
-
-	res: {
-		oneOf: [{
-			type: 'object',
-			ref: 'FederationInstance',
-		}, {
-			type: 'null',
-		}],
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		host: { type: 'string' },
-	},
-	required: ['host'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'federation/show-instance'> {
+	name = 'federation/show-instance' as const;
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -38,7 +16,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private utilityService: UtilityService,
 		private instanceEntityService: InstanceEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const instance = await this.instancesRepository
 				.findOneBy({ host: this.utilityService.toPuny(ps.host) });
 

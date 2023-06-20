@@ -25,7 +25,8 @@ export const paramDef = {
 
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'federation/stats'> {
+	name = 'federation/stats' as const;
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -35,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private instanceEntityService: InstanceEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const [topSubInstances, topPubInstances, allSubCount, allPubCount] = await Promise.all([
 				this.instancesRepository.find({
 					where: {

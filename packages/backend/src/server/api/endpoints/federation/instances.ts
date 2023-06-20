@@ -6,44 +6,10 @@ import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
-export const meta = {
-	tags: ['federation'],
-
-	requireCredential: false,
-	allowGet: true,
-	cacheSec: 3600,
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'FederationInstance',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		host: { type: 'string', nullable: true, description: 'Omit or use `null` to not filter by host.' },
-		blocked: { type: 'boolean', nullable: true },
-		notResponding: { type: 'boolean', nullable: true },
-		suspended: { type: 'boolean', nullable: true },
-		federating: { type: 'boolean', nullable: true },
-		subscribing: { type: 'boolean', nullable: true },
-		publishing: { type: 'boolean', nullable: true },
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
-		offset: { type: 'integer', default: 0 },
-		sort: { type: 'string' },
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'federation/instances'> {
+	name = 'federation/instances' as const;
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -51,7 +17,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private instanceEntityService: InstanceEntityService,
 		private metaService: MetaService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.instancesRepository.createQueryBuilder('instance');
 
 			switch (ps.sort) {

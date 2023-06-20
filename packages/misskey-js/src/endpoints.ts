@@ -4104,9 +4104,21 @@ export const endpoints = {
 					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 					sinceId: { type: 'string', format: 'misskey:id' },
 					untilId: { type: 'string', format: 'misskey:id' },
-					folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
-					type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
-					sort: { type: 'string', nullable: true, enum: ['+createdAt', '-createdAt', '+name', '-name', '+size', '-size'] },
+					folderId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+						default: null,
+					},
+					type: {
+						oneOf: [
+							{ type: 'string', pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
+							{ type: 'null' },
+						],
+						default: null,
+					},
+					sort: { enum: [null, '+createdAt', '-createdAt', '+name', '-name', '+size', '-size'] },
 				},
 				required: [],
 			},
@@ -4132,7 +4144,13 @@ export const endpoints = {
 					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 					sinceId: { type: 'string', format: 'misskey:id' },
 					untilId: { type: 'string', format: 'misskey:id' },
-					folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+					folderId: {
+						oneOf: [
+							{ type: 'string', format: 'misskey:id' },
+							{ type: 'null' },
+						],
+						default: null,
+					},
 				},
 				required: [],
 			},
@@ -4174,9 +4192,9 @@ export const endpoints = {
 
 	'email-address/available': {
 		tags: ['users'],
-	
+
 		requireCredential: false,
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -4190,10 +4208,7 @@ export const endpoints = {
 				properties: {
 					available: { type: 'boolean' },
 					reason: {
-						oneOf: [
-							{ type: 'string', enum: ['used', 'format', 'disposable', 'mx', 'smtp'] },
-							{ type: 'null' },
-						],
+						enum: [null, 'used', 'format', 'disposable', 'mx', 'smtp']
 					},
 				},
 				required: [
@@ -4203,6 +4218,198 @@ export const endpoints = {
 			},
 		}],
 	},
+
+	//#region federation
+	'federation/followers': {
+		tags: ['federation'],
+
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				},
+				required: ['host'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Following',
+				},
+			}
+		}]
+	},
+	'federation/followings': {
+		tags: ['federation'],
+
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				},
+				required: ['host'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Following',
+				},
+			}
+		}]
+	},
+	'federation/instances': {
+		tags: ['federation'],
+
+		requireCredential: false,
+		allowGet: true,
+		cacheSec: 3600,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: ['string', 'null'], description: 'Omit or use `null` to not filter by host.' },
+					blocked: { type: ['boolean', 'null'] },
+					notResponding: { type: ['boolean', 'null'] },
+					suspended: { type: ['boolean', 'null'] },
+					federating: { type: ['boolean', 'null'] },
+					subscribing: { type: ['boolean', 'null'] },
+					publishing: { type: ['boolean', 'null'] },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
+					offset: { type: 'integer', default: 0 },
+					sort: { type: 'string' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/FederationInstance',
+				},
+			},
+		}],
+	},
+	'federation/show-instance': {
+		tags: ['federation'],
+
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+				},
+				required: ['host'],
+			},
+			res: {
+				oneOf: [{
+					$ref: 'https://misskey-hub.net/api/schemas/FederationInstance',
+				}, {
+					type: 'null',
+				}],
+			}
+		}]
+	},
+	'federation/stats': {
+		tags: ['federation'],
+
+		requireCredential: false,
+
+		allowGet: true,
+		cacheSec: 60 * 60,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				},
+				required: [],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					topSubInstances: {
+						type: 'array',
+						items: {
+							$ref: 'https://misskey-hub.net/api/schemas/FederationInstance',
+						},
+					},
+					otherFollowersCount: {
+						type: 'number',
+					},
+					topPubInstances: {
+						type: 'array',
+						items: {
+							$ref: 'https://misskey-hub.net/api/schemas/FederationInstance',
+						},
+					},
+					otherFollowingCount: {
+						type: 'number',
+					},
+				},
+				required: [
+					'topSubInstances',
+					'otherFollowersCount',
+					'topPubInstances',
+					'otherFollowingCount',
+				],
+			},
+		}],
+	},
+	'federation/update-remote-user': {
+		tags: ['federation'],
+
+		requireCredential: true,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}],
+	},
+	'federation/users': {
+		tags: ['federation'],
+
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					host: { type: 'string' },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				},
+				required: ['host'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/UserDetailedNotMe',
+				},
+			},
+		}],
+	},
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
