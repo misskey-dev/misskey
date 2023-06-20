@@ -4171,6 +4171,38 @@ export const endpoints = {
 		}],
 	},
 	//#endregion
+
+	'email-address/available': {
+		tags: ['users'],
+	
+		requireCredential: false,
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					emailAddress: { type: 'string' },
+				},
+				required: ['emailAddress'],
+			},
+			res: {
+				type: 'object',
+				properties: {
+					available: { type: 'boolean' },
+					reason: {
+						oneOf: [
+							{ type: 'string', enum: ['used', 'format', 'disposable', 'mx', 'smtp'] },
+							{ type: 'null' },
+						],
+					},
+				},
+				required: [
+					'available',
+					'reason',
+				],
+			},
+		}],
+	},
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
