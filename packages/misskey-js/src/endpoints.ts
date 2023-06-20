@@ -3916,16 +3916,16 @@ export const endpoints = {
 	},
 	'drive/folders/create': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:drive',
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 10,
 		},
-	
+
 		errors: {
 			noSuchFolder: {
 				message: 'No such folder.',
@@ -3955,18 +3955,18 @@ export const endpoints = {
 	},
 	'drive/folders/delete': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:drive',
-	
+
 		errors: {
 			noSuchFolder: {
 				message: 'No such folder.',
 				code: 'NO_SUCH_FOLDER',
 				id: '1069098f-c281-440f-b085-f9932edbe091',
 			},
-	
+
 			hasChildFilesOrFolders: {
 				message: 'This folder has child files or folders.',
 				code: 'HAS_CHILD_FILES_OR_FOLDERS',
@@ -3987,9 +3987,9 @@ export const endpoints = {
 	},
 	'drive/folders/find': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:drive',
 
 		defines: [{
@@ -4017,9 +4017,9 @@ export const endpoints = {
 	},
 	'drive/folders/show': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:drive',
 
 		errors: {
@@ -4045,24 +4045,24 @@ export const endpoints = {
 	},
 	'drive/folders/update': {
 		tags: ['drive'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:drive',
-	
+
 		errors: {
 			noSuchFolder: {
 				message: 'No such folder.',
 				code: 'NO_SUCH_FOLDER',
 				id: 'f7974dac-2c0d-4a27-926e-23583b28e98e',
 			},
-	
+
 			noSuchParentFolder: {
 				message: 'No such parent folder.',
 				code: 'NO_SUCH_PARENT_FOLDER',
 				id: 'ce104e3a-faaf-49d5-b459-10ff0cbbcaa1',
 			},
-	
+
 			recursiveNesting: {
 				message: 'It can not be structured like nesting folders recursively.',
 				code: 'RECURSIVE_NESTING',
@@ -4088,6 +4088,86 @@ export const endpoints = {
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
 			}
+		}],
+	},
+	'drive/files': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'read:drive',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+					type: { type: 'string', nullable: true, pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
+					sort: { type: 'string', nullable: true, enum: ['+createdAt', '-createdAt', '+name', '-name', '+size', '-size'] },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+				},
+			},
+		}],
+	},
+	'drive/folders': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'read:drive',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					folderId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFolder',
+				},
+			},
+		}],
+	},
+	'drive/stream': {
+		tags: ['drive'],
+
+		requireCredential: true,
+
+		kind: 'read:drive',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					type: { type: 'string', pattern: /^[a-zA-Z\/\-*]+$/.toString().slice(1, -1) },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/DriveFile',
+				},
+			},
 		}],
 	},
 	//#endregion
