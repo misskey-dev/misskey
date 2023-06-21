@@ -167,8 +167,16 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
 	};
 }
 
+/**
+ * Maps the transaction ID and the oauth/authorize parameters.
+ *
+ * Flow:
+ * 1. oauth/authorize endpoint will call store() to store the parameters
+ *    and puts the generated transaction ID to the dialog page
+ * 2. oauth/decision will call load() to retrieve the parameters and then remove()
+ */
 class OAuth2Store {
-	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // 5min
+	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // expires after 5min
 
 	load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): void {
 		const { transaction_id } = req.body;
@@ -178,7 +186,7 @@ class OAuth2Store {
 		}
 		const loaded = this.#cache.get(transaction_id);
 		if (!loaded) {
-			cb(new AuthorizationError('Failed to load transaction', 'access_denied'));
+			cb(new AuthorizationError('Invalid or expired transaction ID', 'access_denied'));
 			return;
 		}
 		cb(null, loaded);
@@ -217,7 +225,6 @@ export class OAuth2ProviderService {
 	) {
 		this.#logger = loggerService.getLogger('oauth');
 
-		// XXX: But MemoryKVCache just grows forever without being cleared if grant codes are left unused
 		const grantCodeCache = new MemoryKVCache<{
 			clientId: string,
 			userId: string,
@@ -229,7 +236,7 @@ export class OAuth2ProviderService {
 			grantedToken?: string,
 			revoked?: boolean,
 			used?: boolean,
-		}>(1000 * 60 * 5); // 5m
+		}>(1000 * 60 * 5); // expires after 5m
 
 		// https://datatracker.ietf.org/doc/html/rfc7636.html
 		this.#server.grant(oauth2Pkce.extensions());
@@ -238,7 +245,7 @@ export class OAuth2ProviderService {
 		}, (client, redirectUri, token, ares, areq, locals, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				this.#logger.info(`Checking the user before sending authorization code to ${client.id}`);
-				const code = secureRndstr(32, true);
+				const code = secureRndstr(128, true);
 
 				if (!token) {
 					throw new AuthorizationError('No user', 'invalid_request');

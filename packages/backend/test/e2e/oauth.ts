@@ -471,7 +471,7 @@ describe('OAuth', () => {
 				},
 				body: JSON.stringify({ text: 'test' }),
 			});
-			assert.strictEqual(createResponse2.status, 403);
+			assert.strictEqual(createResponse2.status, 401);
 		});
 	});
 
@@ -659,10 +659,7 @@ describe('OAuth', () => {
 		// "The access token provided is expired, revoked, malformed, or
 		// invalid for other reasons.  The resource SHOULD respond with
 		// the HTTP 401 (Unauthorized) status code."
-		// (but it's SHOULD not MUST. 403 should be okay for now.)
-		assert.strictEqual(createResponse.status, 403);
-
-		// TODO: error code (wrong Authorization header should emit OAuth error instead of Misskey API error)
+		await assertDirectError(createResponse as Response, 401, 'invalid_token');
 	});
 
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.4
