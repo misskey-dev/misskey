@@ -301,6 +301,7 @@ export class OAuth2ProviderService {
 				const accessToken = secureRndstr(128, true);
 				const now = new Date();
 
+				// NOTE: we don't have a setup for automatic token expiration
 				await accessTokensRepository.insert({
 					id: idService.genId(),
 					createdAt: now,
