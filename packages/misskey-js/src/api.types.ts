@@ -604,5 +604,4 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
-	'users/stats': { req: TODO; res: TODO; };
 };
