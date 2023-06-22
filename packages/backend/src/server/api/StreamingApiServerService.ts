@@ -128,26 +128,27 @@ export class StreamingApiServerService {
 				ev.removeAllListeners();
 				stream.dispose();
 				this.redisForSub.off('message', onRedisMessage);
+				this.#connections.delete(connection);
 				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
 			});
 
-			connection.on('message', async (data) => {
+			connection.on('pong', () => {
 				this.#connections.set(connection, Date.now());
-				if (data.toString() === 'ping') {
-					connection.send('pong');
-				}
 			});
 		});
 
+		// 一定期間通信が無いコネクションは実際には切断されている可能性があるため定期的にterminateする
 		this.#cleanConnectionsIntervalId = setInterval(() => {
 			const now = Date.now();
 			for (const [connection, lastActive] of this.#connections.entries()) {
-				if (now - lastActive > 1000 * 60 * 5) {
+				if (now - lastActive > 1000 * 60 * 2) {
 					connection.terminate();
 					this.#connections.delete(connection);
+				} else {
+					connection.ping();
 				}
 			}
-		}, 1000 * 60 * 5);
+		}, 1000 * 60);
 	}
 
 	@bindThis
