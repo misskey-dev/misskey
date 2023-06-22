@@ -238,14 +238,14 @@ export class OAuth2ProviderService {
 			used?: boolean,
 		}>(1000 * 60 * 5); // expires after 5m
 
-		// https://datatracker.ietf.org/doc/html/rfc7636.html
+		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
+		// Authorization servers MUST support PKCE [RFC7636].
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
 			modes: getQueryMode(config.url),
 		}, (client, redirectUri, token, ares, areq, locals, done) => {
 			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
 				this.#logger.info(`Checking the user before sending authorization code to ${client.id}`);
-				const code = secureRndstr(128, true);
 
 				if (!token) {
 					throw new AuthorizationError('No user', 'invalid_request');
@@ -257,6 +257,8 @@ export class OAuth2ProviderService {
 				}
 
 				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${client.id} through ${redirectUri}, with scope: [${areq.scope}]`);
+
+				const code = secureRndstr(128, true);
 				grantCodeCache.set(code, {
 					clientId: client.id,
 					userId: user.id,

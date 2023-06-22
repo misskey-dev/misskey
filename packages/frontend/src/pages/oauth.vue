@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<div v-if="$i">
 			<div v-if="_permissions.length > 0">
 				<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
