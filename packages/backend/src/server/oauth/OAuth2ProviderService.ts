@@ -239,7 +239,7 @@ export class OAuth2ProviderService {
 		}>(1000 * 60 * 5); // expires after 5m
 
 		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
-		// Authorization servers MUST support PKCE [RFC7636].
+		// "Authorization servers MUST support PKCE [RFC7636]."
 		this.#server.grant(oauth2Pkce.extensions());
 		this.#server.grant(oauth2orize.grant.code({
 			modes: getQueryMode(config.url),
