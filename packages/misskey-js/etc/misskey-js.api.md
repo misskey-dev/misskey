@@ -1953,9 +1953,7 @@ export type Endpoints = {
             'g-recaptcha-response'?: string;
             'turnstile-response'?: string;
         };
-        res: (MeDetailedWithSecret & {
-            token: string;
-        }) | null;
+        res: MeSignup | null;
     };
     'stats': {
         req: NoParams;
@@ -2175,6 +2173,7 @@ declare namespace entities {
         UserList,
         MeDetailed,
         MeDetailedWithSecret,
+        MeSignup,
         DriveFile,
         DriveFolder,
         GalleryPost,
@@ -2399,6 +2398,11 @@ type MeDetailedWithSecret = MeDetailed & {
         name: string;
         lastUsed: string;
     }[];
+};
+
+// @public (undocumented)
+type MeSignup = MeDetailedWithSecret & {
+    token: string;
 };
 
 // @public (undocumented)

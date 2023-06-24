@@ -21,13 +21,13 @@ describe('API visibility', () => {
 		/** ヒロイン */
 		let alice: misskey.entities.MeSignup;
 		/** フォロワー */
-		let follower: any;
+		let follower: misskey.entities.MeSignup;
 		/** 非フォロワー */
-		let other: any;
+		let other: misskey.entities.MeSignup;
 		/** 非フォロワーでもリプライやメンションをされた人 */
-		let target: any;
+		let target: misskey.entities.MeSignup;
 		/** specified mentionでmentionを飛ばされる人 */
-		let target2: any;
+		let target2: misskey.entities.MeSignup;
 
 		/** public-post */
 		let pub: any;
