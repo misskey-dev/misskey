@@ -122,7 +122,6 @@
 		"oauth": "0.10.0",
 		"oauth2orize": "^1.11.1",
 		"oauth2orize-pkce": "^0.1.2",
-		"oidc-provider": "^8.1.1",
 		"os-utils": "0.0.14",
 		"otpauth": "9.1.2",
 		"parse5": "7.1.2",
