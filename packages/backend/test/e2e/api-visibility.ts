@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { signup, api, post, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
 
 describe('API visibility', () => {
 	let app: INestApplicationContext;
@@ -18,7 +19,7 @@ describe('API visibility', () => {
 	describe('Note visibility', () => {
 		//#region vars
 		/** ヒロイン */
-		let alice: any;
+		let alice: misskey.entities.MeSignup;
 		/** フォロワー */
 		let follower: any;
 		/** 非フォロワー */

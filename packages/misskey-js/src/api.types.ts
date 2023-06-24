@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -548,6 +548,21 @@ export type Endpoints = {
 	// room
 	'room/show': { req: TODO; res: TODO; };
 	'room/update': { req: TODO; res: TODO; };
+
+	// signup
+	'signup': {
+		req: {
+			username: string;
+			password: string;
+			host?: string;
+			invitationCode?: string;
+			emailAddress?: string;
+			'hcaptcha-response'?: string;
+			'g-recaptcha-response'?: string;
+			'turnstile-response'?: string;
+		};
+		res: MeSignup | null;
+	};
 
 	// stats
 	'stats': { req: NoParams; res: Stats; };
