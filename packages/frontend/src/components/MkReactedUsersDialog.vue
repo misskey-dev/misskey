@@ -11,7 +11,7 @@
 	<MkSpacer :marginMin="20" :marginMax="28">
 		<div v-if="note" class="_gaps">
 			<div v-if="reactions.length === 0" class="_fullinfo">
-				<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+				<img :src="infoImageUrl" class="_ghost"/>
 				<div>{{ i18n.ts.nothing }}</div>
 			</div>
 			<template v-else>
@@ -42,6 +42,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
+import { infoImageUrl } from '@/instance';
 
 const emit = defineEmits<{
 	(ev: 'closed'): void,
