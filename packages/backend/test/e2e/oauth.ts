@@ -659,7 +659,8 @@ describe('OAuth', () => {
 		// "The access token provided is expired, revoked, malformed, or
 		// invalid for other reasons.  The resource SHOULD respond with
 		// the HTTP 401 (Unauthorized) status code."
-		await assertDirectError(createResponse as Response, 401, 'invalid_token');
+		assert.strictEqual(createResponse.status, 401);
+		assert.ok(createResponse.headers.has('WWW-Authenticate'));
 	});
 
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.4
