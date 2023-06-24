@@ -327,12 +327,12 @@ export class OAuth2ProviderService {
 				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
 			})().then(args => done(null, ...args ?? []), err => done(err));
 		}));
-		this.#server.serializeClient((client, done) => done(null, client));
-		this.#server.deserializeClient((id, done) => done(null, id));
 	}
 
 	@bindThis
 	public async createServer(fastify: FastifyInstance): Promise<void> {
+		// https://datatracker.ietf.org/doc/html/rfc8414.html
+		// https://indieauth.spec.indieweb.org/#indieauth-server-metadata
 		fastify.get('/.well-known/oauth-authorization-server', async (_request, reply) => {
 			reply.send({
 				issuer: this.config.url,
@@ -347,8 +347,6 @@ export class OAuth2ProviderService {
 			});
 		});
 
-		// For now only allow the basic OAuth endpoints, to start small and evaluate
-		// this feature for some time, given that this is security related.
 		fastify.get('/oauth/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as MiddlewareRequest).oauth2;
 			if (!oauth2) {
@@ -401,7 +399,7 @@ export class OAuth2ProviderService {
 				// Find client information from the remote.
 				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
 
-				// Require an explicit list of redirect_uris per
+				// Require the redirect URI to be included in an explicit list, per
 				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
 				if (!clientInfo.redirectUris.includes(redirectURI)) {
 					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
