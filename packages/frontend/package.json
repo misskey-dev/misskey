@@ -28,7 +28,7 @@
 		"autosize": "6.0.1",
 		"broadcast-channel": "5.1.0",
 		"browser-image-resizer": "github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
-		"buraha": "github:misskey-dev/buraha",
+		"buraha": "0.0.1",
 		"canvas-confetti": "1.6.0",
 		"chart.js": "4.3.0",
 		"chartjs-adapter-date-fns": "3.0.0",

@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';
 import { NestLogger } from '@/NestLogger.js';
@@ -10,7 +11,10 @@ import { ServerService } from '@/server/ServerService.js';
 import { MainModule } from '@/MainModule.js';
 
 export async function server() {
-	const app = await NestFactory.createApplicationContext(MainModule, {
+	const app = await NestFactory.create<NestFastifyApplication>(MainModule, new FastifyAdapter({
+		trustProxy: true,
+		logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
+	}), {
 		logger: new NestLogger(),
 	});
 	app.enableShutdownHooks();

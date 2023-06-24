@@ -2,7 +2,7 @@ import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import Fastify, { FastifyInstance } from 'fastify';
+import { HttpAdapterHost } from '@nestjs/core';
 import fastifyStatic from '@fastify/static';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -24,13 +24,14 @@ import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+import type { FastifyAdapter } from '@nestjs/platform-fastify';
+import type { FastifyInstance } from 'fastify/types/instance.js';
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
 @Injectable()
 export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
-	#fastify: FastifyInstance;
 
 	constructor(
 		@Inject(DI.config)
@@ -45,6 +46,7 @@ export class ServerService implements OnApplicationShutdown {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		private adapterHost: HttpAdapterHost<FastifyAdapter>,
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
 		private openApiServerService: OpenApiServerService,
@@ -62,11 +64,7 @@ export class ServerService implements OnApplicationShutdown {
 
 	@bindThis
 	public async launch() {
-		const fastify = Fastify({
-			trustProxy: true,
-			logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
-		});
-		this.#fastify = fastify;
+		const fastify = this.adapterHost.httpAdapter.getInstance() as FastifyInstance;
 
 		// HSTS
 		// 6months (15552000sec)
@@ -217,15 +215,13 @@ export class ServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.listen({ port: this.config.port, host: '0.0.0.0' });
-
-		await fastify.ready();
+		await fastify.listen({ port: this.config.port, host: '0.0.0.0' });
 	}
 
 	@bindThis
 	public async dispose(): Promise<void> {
-    await this.streamingApiServerService.detach();
-		await this.#fastify.close();
+		await this.streamingApiServerService.detach();
+		await this.adapterHost.httpAdapter.getInstance().close();
 	}
 
 	@bindThis
