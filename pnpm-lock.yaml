@@ -674,8 +674,8 @@ importers:
         specifier: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
         version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
       buraha:
-        specifier: github:misskey-dev/buraha
-        version: github.com/misskey-dev/buraha/822d4be21126156c3e1827a771444b3fceb6be58
+        specifier: 0.0.1
+        version: 0.0.1
       canvas-confetti:
         specifier: 1.6.0
         version: 1.6.0
@@ -9608,6 +9608,10 @@ packages:
       uuid: 9.0.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /buraha@0.0.1:
+    resolution: {integrity: sha512-G563A0mTbzknm2jDaNxfZuNKIdeArs8T+XQN6t+KbmgnOoevXSXhKDkyf8Md/36Jrx99ikwbCag37VGe3myExQ==}
     dev: false
 
   /busboy@1.6.0:
@@ -21174,12 +21178,6 @@ packages:
     resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0227e860621e55cbed0aabe6dc601096a7748c4a}
     name: browser-image-resizer
     version: 2.2.1-misskey.3
-    dev: false
-
-  github.com/misskey-dev/buraha/822d4be21126156c3e1827a771444b3fceb6be58:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/buraha/tar.gz/822d4be21126156c3e1827a771444b3fceb6be58}
-    name: buraha
-    version: 0.0.1
     dev: false
 
   github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
