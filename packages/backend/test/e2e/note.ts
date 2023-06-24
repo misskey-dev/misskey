@@ -4,13 +4,14 @@ import * as assert from 'assert';
 import { Note } from '@/models/entities/Note.js';
 import { signup, post, uploadUrl, startServer, initTestDb, api, uploadFile } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
 	let app: INestApplicationContext;
 	let Notes: any;
 
-	let alice: any;
-	let bob: any;
+	let alice: misskey.entities.MeSignup;
+	let bob: misskey.entities.MeSignup;
 
 	beforeAll(async () => {
 		app = await startServer();
@@ -378,7 +379,7 @@ describe('Note', () => {
 					},
 				},
 			}, alice);
-			
+
 			assert.strictEqual(res.status, 200);
 
 			const assign = await api('admin/roles/assign', {

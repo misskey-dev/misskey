@@ -7,6 +7,7 @@ import { User, UsersRepository } from '@/models/index.js';
 import { jobQueue } from '@/boot/common.js';
 import { uploadFile, signup, startServer, initTestDb, api, sleep, successfulApiCall } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
 
 describe('Account Move', () => {
 	let app: INestApplicationContext;
@@ -14,12 +15,12 @@ describe('Account Move', () => {
 	let url: URL;
 
 	let root: any;
-	let alice: any;
-	let bob: any;
-	let carol: any;
-	let dave: any;
-	let eve: any;
-	let frank: any;
+	let alice: misskey.entities.MeSignup;
+	let bob: misskey.entities.MeSignup;
+	let carol: misskey.entities.MeSignup;
+	let dave: misskey.entities.MeSignup;
+	let eve: misskey.entities.MeSignup;
+	let frank: misskey.entities.MeSignup;
 
 	let Users: UsersRepository;
 
