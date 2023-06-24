@@ -215,6 +215,9 @@ importers:
       ip-cidr:
         specifier: 3.1.0
         version: 3.1.0
+      ipaddr.js:
+        specifier: 2.1.0
+        version: 2.1.0
       is-svg:
         specifier: 4.3.2
         version: 4.3.2
@@ -272,9 +275,6 @@ importers:
       pg:
         specifier: 8.11.0
         version: 8.11.0
-      private-ip:
-        specifier: 3.0.0
-        version: 3.0.0
       probe-image-size:
         specifier: 7.2.3
         version: 7.2.3
@@ -662,8 +662,8 @@ importers:
         specifier: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
         version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
       buraha:
-        specifier: github:misskey-dev/buraha
-        version: github.com/misskey-dev/buraha/822d4be21126156c3e1827a771444b3fceb6be58
+        specifier: 0.0.1
+        version: 0.0.1
       canvas-confetti:
         specifier: 1.6.0
         version: 1.6.0
@@ -911,7 +911,7 @@ importers:
       '@typescript-eslint/parser':
         specifier: 5.60.0
         version: 5.60.0(eslint@8.43.0)(typescript@5.1.3)
-      '@vitest/coverage-c8':
+      '@vitest/coverage-v8':
         specifier: 0.32.2
         version: 0.32.2(vitest@0.32.2)
       '@vue/runtime-core':
@@ -4366,10 +4366,6 @@ packages:
     resolution: {integrity: sha512-BxOqI5LgsIQP1odU5KMwV9yoijleOPzHL18/YvNqF9KFSGF2K/DLlYAbDQsWqd/1nbaFuSkYD/191dpMtNh4vw==}
     dev: false
 
-  /@chainsafe/is-ip@2.0.1:
-    resolution: {integrity: sha512-nqSJ8u2a1Rv9FYbyI8qpDhTYujaKEyLknNrTejLYoSWmdeg+2WB7R6BZqPZYfrJzDxVi3rl6ZQuoaEvpKRZWgQ==}
-    dev: false
-
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
@@ -5099,7 +5095,7 @@ packages:
       slash: 3.0.0
       string-length: 4.0.2
       strip-ansi: 6.0.1
-      v8-to-istanbul: 9.0.1
+      v8-to-istanbul: 9.1.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8185,17 +8181,25 @@ packages:
       vite: 4.3.9(@types/node@20.3.1)(sass@1.63.6)
       vue: 3.3.4
 
-  /@vitest/coverage-c8@0.32.2(vitest@0.32.2):
-    resolution: {integrity: sha512-z07kMTN6e4t1jDY4XXU6W1LxCb3V5Rw7KAZId4VM6BCIGLGz1QqwH9UWYWv7LemqQVnARl5CwaDDwVrkcYgwPg==}
+  /@vitest/coverage-v8@0.32.2(vitest@0.32.2):
+    resolution: {integrity: sha512-/+V3nB3fyeuuSeKxCfi6XmWjDIxpky7AWSkGVfaMjAk7di8igBwRsThLjultwIZdTDH1RAxpjmCXEfSqsMFZOA==}
     peerDependencies:
-      vitest: '>=0.30.0 <1'
+      vitest: '>=0.32.0 <1'
     dependencies:
       '@ampproject/remapping': 2.2.1
-      c8: 7.13.0
+      '@bcoe/v8-coverage': 0.2.3
+      istanbul-lib-coverage: 3.2.0
+      istanbul-lib-report: 3.0.0
+      istanbul-lib-source-maps: 4.0.1
+      istanbul-reports: 3.1.5
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.2
+      test-exclude: 6.0.0
+      v8-to-istanbul: 9.1.0
       vitest: 0.32.2(happy-dom@9.20.3)(sass@1.63.6)
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@vitest/expect@0.32.2:
@@ -8339,7 +8343,7 @@ packages:
       '@vue/compiler-dom': 3.3.4
       '@vue/reactivity': 3.3.4
       '@vue/shared': 3.3.4
-      minimatch: 9.0.0
+      minimatch: 9.0.2
       muggle-string: 0.3.1
       typescript: 5.1.3
       vue-template-compiler: 2.7.14
@@ -9585,6 +9589,10 @@ packages:
       - supports-color
     dev: false
 
+  /buraha@0.0.1:
+    resolution: {integrity: sha512-G563A0mTbzknm2jDaNxfZuNKIdeArs8T+XQN6t+KbmgnOoevXSXhKDkyf8Md/36Jrx99ikwbCag37VGe3myExQ==}
+    dev: false
+
   /busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
     engines: {node: '>=10.16.0'}
@@ -9616,7 +9624,7 @@ packages:
       istanbul-reports: 3.1.5
       rimraf: 3.0.2
       test-exclude: 6.0.0
-      v8-to-istanbul: 9.0.1
+      v8-to-istanbul: 9.1.0
       yargs: 16.2.0
       yargs-parser: 20.2.9
     dev: true
@@ -13514,11 +13522,6 @@ packages:
     resolution: {integrity: sha512-B9ZWJxHHOHUhUjCPrMpLD4xEq35bUTClHM1S6CBU5ixQnkZmwipwgc96vAd7AAGM9TGHvJR+Uss+/Ak6UphK+Q==}
     engines: {node: '>=8'}
 
-  /ip-regex@5.0.0:
-    resolution: {integrity: sha512-fOCG6lhoKKakwv+C6KdsOnGvgXnmgfmp0myi3bcNwj3qfwPAxRKWEuFhvEFF7ceYIz6+1jRZ+yguLFAmUNPEfw==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dev: false
-
   /ip@2.0.0:
     resolution: {integrity: sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==}
 
@@ -13526,8 +13529,8 @@ packages:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
 
-  /ipaddr.js@2.0.1:
-    resolution: {integrity: sha512-1qTgH9NG+IIJ4yfKs2e6Pp1bZg8wbDbKHT21HrLIeYBTRLgMYKnMTPAuI3Lcs61nfx5h1xlXnbJtH1kX5/d/ng==}
+  /ipaddr.js@2.1.0:
+    resolution: {integrity: sha512-LlbxQ7xKzfBusov6UMi4MFpEg0m+mAm9xyNGEduwXMEDuf4WfzB/RZwMVYEd7IKGvh4IUkEXYxtAVu9T3OelJQ==}
     engines: {node: '>= 10'}
 
   /irregular-plurals@3.5.0:
@@ -15518,19 +15521,11 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
-  /minimatch@9.0.0:
-    resolution: {integrity: sha512-0jJj8AvgKqWN05mrwuqi8QYKx1WmYSUoKSxu5Qhs9prezTz10sxAHGNZe9J9cqIJzta8DWsleh2KaVaLl6Ru2w==}
-    engines: {node: '>=16 || 14 >=14.17'}
-    dependencies:
-      brace-expansion: 2.0.1
-    dev: true
-
   /minimatch@9.0.2:
     resolution: {integrity: sha512-PZOT9g5v2ojiTL7r1xF6plNHLtOeTpSlDI007As2NlA2aYBMfVom17yqa6QzhmDP8QOhn7LjHTg7DFCVSSa6yg==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: false
 
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
@@ -17293,19 +17288,9 @@ packages:
     resolution: {integrity: sha512-5zyFfekIVUOTVbL92hc8LJOtE/gyGHeREHkJ2yTyByP8Q2YZVoBqLg3EfYLeF0oVvGqtaEX2t2Qovja0/gStXw==}
     dependencies:
       ip-regex: 4.3.0
-      ipaddr.js: 2.0.1
+      ipaddr.js: 2.1.0
       is-ip: 3.1.0
       netmask: 2.0.2
-
-  /private-ip@3.0.0:
-    resolution: {integrity: sha512-HkMBs4nMtrP+cvcw0bDi2BAZIGgiKI4Zq8Oc+dMqNBpHS8iGL4+WO/pRtc8Bwnv9rjnV0QwMDwEBymFtqv7Kww==}
-    engines: {node: '>=14.16'}
-    dependencies:
-      '@chainsafe/is-ip': 2.0.1
-      ip-regex: 5.0.0
-      ipaddr.js: 2.0.1
-      netmask: 2.0.2
-    dev: false
 
   /probe-image-size@7.2.3:
     resolution: {integrity: sha512-HubhG4Rb2UH8YtV4ba0Vp5bQ7L78RTONYu/ujmCu5nBI8wGv24s4E9xSKBi0N1MowRpxk76pFCpJtW0KPzOK0w==}
@@ -20295,8 +20280,8 @@ packages:
   /uuid@9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
 
-  /v8-to-istanbul@9.0.1:
-    resolution: {integrity: sha512-74Y4LqY74kLE6IFyIjPtkSTWzUZmj8tdHT9Ii/26dvQ6K9Dl2NbEfj0XgU2sHCtKgt5VupqhlO/5aWuqS+IY1w==}
+  /v8-to-istanbul@9.1.0:
+    resolution: {integrity: sha512-6z3GW9x8G1gd+JIIgQQQxXuiJtCXeAjp6RaPEPLv62mH3iPHPxV6W3robxtCzNErRo6ZwTmzWhsbNvjyEBKzKA==}
     engines: {node: '>=10.12.0'}
     dependencies:
       '@jridgewell/trace-mapping': 0.3.17
@@ -21141,12 +21126,6 @@ packages:
     resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0227e860621e55cbed0aabe6dc601096a7748c4a}
     name: browser-image-resizer
     version: 2.2.1-misskey.3
-    dev: false
-
-  github.com/misskey-dev/buraha/822d4be21126156c3e1827a771444b3fceb6be58:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/buraha/tar.gz/822d4be21126156c3e1827a771444b3fceb6be58}
-    name: buraha
-    version: 0.0.1
     dev: false
 
   github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
