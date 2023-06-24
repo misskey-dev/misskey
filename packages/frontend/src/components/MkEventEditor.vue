@@ -204,39 +204,6 @@ watch([title, startDate, startTime, endDate, endTime, location, url, doorTime, o
 .zmdxowut {
 	padding: 8px 16px;
 
-	>.caution {
-		margin: 0 0 8px 0;
-		font-size: 0.8em;
-		color: #f00;
-
-		>i {
-			margin-right: 4px;
-		}
-	}
-
-	>ul {
-		display: block;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-
-		>li {
-			display: flex;
-			margin: 8px 0;
-			padding: 0;
-			width: 100%;
-
-			>.input {
-				flex: 1;
-			}
-
-			>button {
-				width: 32px;
-				padding: 4px 0;
-			}
-		}
-	}
-
 	>section {
 		margin: 16px 0 0 0;
 
