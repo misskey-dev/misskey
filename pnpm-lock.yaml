@@ -335,6 +335,9 @@ importers:
       slacc:
         specifier: 0.0.9
         version: 0.0.9
+      strict-event-emitter-types:
+        specifier: 2.0.0
+        version: 2.0.0
       stringz:
         specifier: 2.1.0
         version: 2.1.0
