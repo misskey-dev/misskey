@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from '@/misc/ms.js';
+import ms from 'ms';
 
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';

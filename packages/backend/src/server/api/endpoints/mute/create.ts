@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from '@/misc/ms.js';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { MutingsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';

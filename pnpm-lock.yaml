@@ -248,6 +248,9 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
+      ms:
+        specifier: 3.0.0-canary.1
+        version: 3.0.0-canary.1
       nested-property:
         specifier: 4.0.0
         version: 4.0.0
@@ -520,6 +523,9 @@ importers:
       '@types/mime-types':
         specifier: 2.1.1
         version: 2.1.1
+      '@types/ms':
+        specifier: ^0.7.31
+        version: 0.7.31
       '@types/node':
         specifier: 20.3.1
         version: 20.3.1
@@ -15686,6 +15692,11 @@ packages:
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  /ms@3.0.0-canary.1:
+    resolution: {integrity: sha512-kh8ARjh8rMN7Du2igDRO9QJnqCb2xYTJxyQYK7vJJS4TvLLmsbyhiKpSW+t+y26gyOyMd0riphX0GeWKU3ky5g==}
+    engines: {node: '>=12.13'}
+    dev: false
 
   /msgpackr-extract@3.0.2:
     resolution: {integrity: sha512-SdzXp4kD/Qf8agZ9+iTu6eql0m3kWm1A2y1hkpTeVNENutaB0BwHlSvAIaMxwntmRUAUjon2V4L8Z/njd0Ct8A==}

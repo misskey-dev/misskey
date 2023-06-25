@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from '@/misc/ms.js';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFoldersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import ms from '@/misc/ms.js';
+import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import type { AntennasRepository, DriveFilesRepository, UsersRepository, Antenna as _Antenna } from '@/models/index.js';
@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor (
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-		
+
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -79,6 +79,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queueService.createImportAntennasJob(me, antennas);
 		});
 	}
-} 
+}
 
 export type Antenna = (_Antenna & { userListAccts: string[] | null })[];

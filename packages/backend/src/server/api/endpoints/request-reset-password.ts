@@ -1,7 +1,7 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import rndstr from '@/misc/rndstr.js';
-import ms from '@/misc/ms.js';
+import ms from 'ms';
 import type { PasswordResetRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 

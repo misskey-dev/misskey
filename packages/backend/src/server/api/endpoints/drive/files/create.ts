@@ -1,4 +1,4 @@
-import ms from '@/misc/ms.js';
+import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import type { DriveFilesRepository } from '@/models/index.js';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
