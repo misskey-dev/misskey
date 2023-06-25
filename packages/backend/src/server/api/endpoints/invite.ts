@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import rndstr from '@/misc/rndstr.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
