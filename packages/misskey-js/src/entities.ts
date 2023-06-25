@@ -107,6 +107,20 @@ export type MeDetailed = UserDetailed & {
 	[other: string]: any;
 };
 
+export type MeDetailedWithSecret = MeDetailed & {
+	email: string;
+	emailVerified: boolean;
+	securityKeysList: {
+		id: string;
+		name: string;
+		lastUsed: string;
+	}[];
+};
+
+export type MeSignup = MeDetailedWithSecret & {
+	token: string;
+};
+
 export type DriveFile = {
 	id: ID;
 	createdAt: DateString;

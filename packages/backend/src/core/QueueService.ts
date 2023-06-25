@@ -400,11 +400,11 @@ export class QueueService {
 		this.deliverQueue.once('cleaned', (jobs, status) => {
 			//deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
-		this.deliverQueue.clean(0, Infinity, 'delayed');
+		this.deliverQueue.clean(0, 0, 'delayed');
 
 		this.inboxQueue.once('cleaned', (jobs, status) => {
 			//inboxLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
-		this.inboxQueue.clean(0, Infinity, 'delayed');
+		this.inboxQueue.clean(0, 0, 'delayed');
 	}
 }
