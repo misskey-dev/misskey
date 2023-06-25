@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor (
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-		
+
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -79,6 +79,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queueService.createImportAntennasJob(me, antennas);
 		});
 	}
-} 
+}
 
 export type Antenna = (_Antenna & { userListAccts: string[] | null })[];
