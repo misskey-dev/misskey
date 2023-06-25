@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import ms from 'ms';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 

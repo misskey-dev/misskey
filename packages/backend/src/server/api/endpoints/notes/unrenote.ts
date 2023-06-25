@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
+import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteDeleteService } from '@/core/NoteDeleteService.js';

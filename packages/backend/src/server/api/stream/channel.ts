@@ -1,5 +1,5 @@
 import { bindThis } from '@/decorators.js';
-import type Connection from './index.js';
+import type Connection from '.';
 
 /**
  * Stream channel

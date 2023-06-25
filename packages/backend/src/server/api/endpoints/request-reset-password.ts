@@ -1,7 +1,7 @@
+import ms from 'ms';
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import rndstr from '@/misc/rndstr.js';
-import ms from 'ms';
 import type { PasswordResetRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
