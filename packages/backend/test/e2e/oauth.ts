@@ -9,9 +9,9 @@ import * as assert from 'assert';
 import { AuthorizationCode, ResourceOwnerPassword, type AuthorizationTokenConfig, ClientCredentials, ModuleOptions } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
-import type * as misskey from 'misskey-js';
 import Fastify, { type FastifyReply, type FastifyInstance } from 'fastify';
 import { port, relativeFetch, signup, startServer } from '../utils.js';
+import type * as misskey from 'misskey-js';
 import type { INestApplicationContext } from '@nestjs/common';
 
 const host = `http://127.0.0.1:${port}`;
