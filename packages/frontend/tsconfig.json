@@ -23,12 +23,12 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
+			"@/*": ["./src/*"]
 		},
 		"typeRoots": [
 			"node_modules/@types",
 			"node_modules/@vue-macros",
-			"@types",
+			"@types"
 		],
 		"types": [
 			"vite/client",
@@ -47,6 +47,6 @@
 		"./**/*.vue"
 	],
 	"exclude": [
-		".storybook/**/*",
+		".storybook/**/*"
 	]
 }
