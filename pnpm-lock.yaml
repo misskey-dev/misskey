@@ -314,9 +314,6 @@ importers:
       rename:
         specifier: 1.0.4
         version: 1.0.4
-      rndstr:
-        specifier: 1.0.0
-        version: 1.0.0
       rss-parser:
         specifier: 3.13.0
         version: 3.13.0
