@@ -55,7 +55,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchSession);
 			}
 
-			const accessToken = secureRndstr(32, true);
+			const accessToken = secureRndstr(32);
 
 			// Fetch exist access token
 			const exist = await this.accessTokensRepository.findOneBy({
