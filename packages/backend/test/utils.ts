@@ -83,7 +83,7 @@ const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
-export const signup = async (params?: any): Promise<any> => {
+export const signup = async (params?: Partial<misskey.Endpoints['signup']['req']>): Promise<NonNullable<misskey.Endpoints['signup']['res']>> => {
 	const q = Object.assign({
 		username: 'test',
 		password: 'test',
@@ -213,8 +213,8 @@ export const role = async (user: any, role: any = {}, policies: any = {}): Promi
 		isPublic: false,
 		name: 'New Role',
 		target: 'manual',
-		policies: { 
-			...Object.entries(DEFAULT_POLICIES).map(([k, v]) => [k, { 
+		policies: {
+			...Object.entries(DEFAULT_POLICIES).map(([k, v]) => [k, {
 				priority: 0,
 				useDefault: true,
 				value: v,
@@ -351,11 +351,11 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export type SimpleGetResponse = { 
-	status: number, 
-	body: any | JSDOM | null, 
-	type: string | null, 
-	location: string | null 
+export type SimpleGetResponse = {
+	status: number,
+	body: any | JSDOM | null,
+	type: string | null,
+	location: string | null
 };
 export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
@@ -374,9 +374,9 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 		'text/html; charset=utf-8',
 	];
 
-	const body = 
-		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() : 
-		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) : 
+	const body =
+		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() :
+		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) :
 		null;
 
 	return {

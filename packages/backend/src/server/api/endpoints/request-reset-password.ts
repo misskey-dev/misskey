@@ -8,6 +8,7 @@ import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { EmailService } from '@/core/EmailService.js';
+import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['reset password'],
@@ -77,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				return;
 			}
 
-			const token = rndstr('a-z0-9', 64);
+			const token = secureRndstr(64, { chars: L_CHARS });
 
 			await this.passwordResetRequestsRepository.insert({
 				id: this.idService.genId(),
