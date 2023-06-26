@@ -1,13 +1,13 @@
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader/></template>
 	<MkSpacer :contentMax="800">
 		<div v-if="$i">
-			<div v-if="_permissions.length > 0">
+			<div v-if="permissions.length > 0">
 				<p v-if="name">{{ i18n.t('_auth.permission', { name }) }}</p>
 				<p v-else>{{ i18n.ts._auth.permissionAsk }}</p>
 				<ul>
-					<li v-for="p in _permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
+					<li v-for="p in permissions" :key="p">{{ i18n.t(`_permissions.${p}`) }}</li>
 				</ul>
 			</div>
 			<div v-if="name">{{ i18n.t('_auth.shareAccess', { name }) }}</div>
@@ -28,7 +28,6 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
 import MkSignin from '@/components/MkSignin.vue';
 import MkButton from '@/components/MkButton.vue';
 import { $i, login } from '@/account';
@@ -41,15 +40,11 @@ if (transactionIdMeta) {
 }
 
 const name = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:client-name"]')?.content;
-const _permissions = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:scope"]')?.content.split(' ') ?? [];
+const permissions = document.querySelector<HTMLMetaElement>('meta[name="misskey:oauth:scope"]')?.content.split(' ') ?? [];
 
 function onLogin(res): void {
 	login(res.i);
 }
-
-const headerActions = $computed(() => []);
-
-const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: 'OAuth',
