@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { MoreThan, IsNull } from 'typeorm';
 import RE2 from 're2';
-import * as sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { RoleService } from '@/core/RoleService.js';
