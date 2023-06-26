@@ -2073,5 +2073,5 @@ _abuse:
     targetUserPattern: "通報先のパターン"
     reporterPattern: "通報元のパターン"
     reportContentPattern: "通報内容のパターン"
-    list: "一覧"
-    resolver: "リソルバー"
+  list: "一覧"
+  resolver: "リソルバー"

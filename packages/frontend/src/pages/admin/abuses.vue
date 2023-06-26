@@ -197,10 +197,10 @@ const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => [{
 	key: 'list',
-	title: i18n.ts._abuse._resolver.list,
+	title: i18n.ts._abuse.list,
 }, {
 	key: 'resolver',
-	title: i18n.ts._abuse._resolver.resolver,
+	title: i18n.ts._abuse.resolver,
 }]);
 
 definePageMetadata({

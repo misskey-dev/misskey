@@ -2159,9 +2159,9 @@ export interface Locale {
             "targetUserPattern": string;
             "reporterPattern": string;
             "reportContentPattern": string;
-            "list": string;
-            "resolver": string;
         };
+        "list": string;
+        "resolver": string;
     };
 }
 declare const locales: {
