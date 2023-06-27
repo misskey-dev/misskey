@@ -91,8 +91,8 @@ export class NoteDeleteService {
 			}
 
 			// also deliever delete activity to cascaded notes
-			const cascadingNotesFilter = (cascadingNotes).filter(note => !note.localOnly && note.userHost === null); // filter out local-only notes
-			for (const cascadingNote of cascadingNotesFilter) {
+			const federatedLocalCascadingNotes = (cascadingNotes).filter(note => !note.localOnly && note.userHost === null); // filter out local-only notes
+			for (const cascadingNote of federatedLocalCascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
 				const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
