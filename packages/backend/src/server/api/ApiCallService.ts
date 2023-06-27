@@ -289,8 +289,8 @@ export class ApiCallService implements OnApplicationShutdown {
 				throw new ApiError({
 					message: 'You have moved your account.',
 					code: 'YOUR_ACCOUNT_MOVED',
+					kind: 'permission',
 					id: '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31',
-					httpStatusCode: 403,
 				});
 			}
 		}
