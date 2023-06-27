@@ -59,14 +59,14 @@ export class ApiCallService implements OnApplicationShutdown {
 			reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
 		} else if (err.kind === 'client') {
 			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
-			statusCode = 400;
+			statusCode = statusCode ?? 400;
 		} else if (err.kind === 'permission') {
 			// (ROLE_PERMISSION_DENIEDは関係ない)
 			if (err.code === 'PERMISSION_DENIED') {
 				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
 			}
-			statusCode = 403;
-		} else {
+			statusCode = statusCode ?? 403;
+		} else if (!statusCode) {
 			statusCode = 500;
 		}
 		this.send(reply, statusCode, err);
