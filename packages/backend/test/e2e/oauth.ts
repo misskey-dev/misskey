@@ -660,7 +660,27 @@ describe('OAuth', () => {
 		// invalid for other reasons.  The resource SHOULD respond with
 		// the HTTP 401 (Unauthorized) status code."
 		assert.strictEqual(createResponse.status, 401);
-		assert.ok(createResponse.headers.has('WWW-Authenticate'));
+
+		let wwwAuthenticate = createResponse.headers.get('WWW-Authenticate');
+		assert.ok(wwwAuthenticate?.startsWith('Bearer realm="Misskey", error="invalid_token"'));
+
+		// Pattern 3: No token
+		createResponse = await relativeFetch('api/notes/create', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: 'test' }),
+		});
+		wwwAuthenticate = createResponse.headers.get('WWW-Authenticate');
+
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-3.1
+		// "If the request lacks any authentication information (e.g., the client
+		// was unaware that authentication is necessary or attempted using an
+		// unsupported authentication method), the resource server SHOULD NOT
+		// include an error code or other error information."
+		assert.strictEqual(createResponse.status, 401);
+		assert.strictEqual(wwwAuthenticate, 'Bearer realm="Misskey"');
 	});
 
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.4
