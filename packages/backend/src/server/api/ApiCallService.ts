@@ -97,8 +97,9 @@ export class ApiCallService implements OnApplicationShutdown {
 			: request.body;
 
 		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const token = request.headers.authorization?.startsWith('Bearer ') ?
-			request.headers.authorization.slice(7) : body?.['i'];
+		const token = request.headers.authorization?.startsWith('Bearer ')
+			? request.headers.authorization.slice(7)
+			: body?.['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
