@@ -58,23 +58,28 @@ export class ApiCallService implements OnApplicationShutdown {
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	) {
+	): void {
 		const body = request.method === 'GET'
 			? request.query
 			: request.body;
 
-		const token = body?.['i'];
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+		const token = request.headers.authorization?.startsWith('Bearer ') ?
+			request.headers.authorization.slice(7) : body?.['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
 			this.call(endpoint, user, app, body, null, request).then((res) => {
-				if (request.method === 'GET' && endpoint.meta.cacheSec && !body?.['i'] && !user) {
+				if (request.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
+				if (err.httpStatusCode === 401) {
+					reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
+				}
 				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
 			});
 
@@ -83,8 +88,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}).catch(err => {
 			if (err instanceof AuthenticationError) {
+				const message = 'Authentication failed. Please ensure your token is correct.';
+				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
 				this.send(reply, 401, new ApiError({
-					message: 'Authentication failed. Please ensure your token is correct.',
+					message,
 					code: 'AUTHENTICATION_FAILED',
 					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
 				}));
@@ -99,7 +106,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	) {
+	): Promise<void> {
 		const multipartData = await request.file().catch(() => {
 			/* Fastify throws if the remote didn't send multipart data. Return 400 below. */
 		});
@@ -117,7 +124,9 @@ export class ApiCallService implements OnApplicationShutdown {
 			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
 		}
 
-		const token = fields['i'];
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+		const token = request.headers.authorization?.startsWith('Bearer ') ?
+			request.headers.authorization.slice(7) : fields['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
@@ -129,6 +138,9 @@ export class ApiCallService implements OnApplicationShutdown {
 			}, request).then((res) => {
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
+				if (err.httpStatusCode === 401) {
+					reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
+				}
 				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
 			});
 
@@ -137,6 +149,8 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}).catch(err => {
 			if (err instanceof AuthenticationError) {
+				const message = 'Authentication failed. Please ensure your token is correct.';
+				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
 				this.send(reply, 401, new ApiError({
 					message: 'Authentication failed. Please ensure your token is correct.',
 					code: 'AUTHENTICATION_FAILED',
@@ -213,7 +227,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.limit) {
-		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
+			// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 			let limitActor: string;
 			if (user) {
 				limitActor = user.id;
@@ -321,7 +335,7 @@ export class ApiCallService implements OnApplicationShutdown {
 					try {
 						data[k] = JSON.parse(data[k]);
 					} catch (e) {
-						throw	new ApiError({
+						throw new ApiError({
 							message: 'Invalid param.',
 							code: 'INVALID_PARAM',
 							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
