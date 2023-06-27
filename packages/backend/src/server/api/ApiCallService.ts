@@ -53,6 +53,39 @@ export class ApiCallService implements OnApplicationShutdown {
 		}, 1000 * 60 * 60);
 	}
 
+	#sendApiError(reply: FastifyReply, err: ApiError): void {
+		let statusCode = err.httpStatusCode;
+		if (err.httpStatusCode === 401) {
+			reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
+		} else if (err.kind === 'client') {
+			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
+			statusCode = 400;
+		} else if (err.kind === 'permission') {
+			// (ROLE_PERMISSION_DENIEDは関係ない)
+			if (err.code === 'PERMISSION_DENIED') {
+				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
+			}
+			statusCode = 403;
+		} else {
+			statusCode = 500;
+		}
+		this.send(reply, statusCode, err);
+	}
+
+	#sendAuthenticationError(reply: FastifyReply, err: unknown): void {
+		if (err instanceof AuthenticationError) {
+			const message = 'Authentication failed. Please ensure your token is correct.';
+			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
+			this.send(reply, 401, new ApiError({
+				message: 'Authentication failed. Please ensure your token is correct.',
+				code: 'AUTHENTICATION_FAILED',
+				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+			}));
+		} else {
+			this.send(reply, 500, new ApiError());
+		}
+	}
+
 	@bindThis
 	public handleRequest(
 		endpoint: IEndpoint & { exec: any },
@@ -77,27 +110,14 @@ export class ApiCallService implements OnApplicationShutdown {
 				}
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				if (err.httpStatusCode === 401) {
-					reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
-				}
-				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
+				this.#sendApiError(reply, err);
 			});
 
 			if (user) {
 				this.logIp(request, user);
 			}
 		}).catch(err => {
-			if (err instanceof AuthenticationError) {
-				const message = 'Authentication failed. Please ensure your token is correct.';
-				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
-				this.send(reply, 401, new ApiError({
-					message,
-					code: 'AUTHENTICATION_FAILED',
-					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
-				}));
-			} else {
-				this.send(reply, 500, new ApiError());
-			}
+			this.#sendAuthenticationError(reply, err);
 		});
 	}
 
@@ -138,27 +158,14 @@ export class ApiCallService implements OnApplicationShutdown {
 			}, request).then((res) => {
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				if (err.httpStatusCode === 401) {
-					reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
-				}
-				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
+				this.#sendApiError(reply, err);
 			});
 
 			if (user) {
 				this.logIp(request, user);
 			}
 		}).catch(err => {
-			if (err instanceof AuthenticationError) {
-				const message = 'Authentication failed. Please ensure your token is correct.';
-				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
-				this.send(reply, 401, new ApiError({
-					message: 'Authentication failed. Please ensure your token is correct.',
-					code: 'AUTHENTICATION_FAILED',
-					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
-				}));
-			} else {
-				this.send(reply, 500, new ApiError());
-			}
+			this.#sendAuthenticationError(reply, err);
 		});
 	}
 

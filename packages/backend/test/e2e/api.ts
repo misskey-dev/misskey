@@ -160,36 +160,38 @@ describe('API', () => {
 	});
 
 	describe('tokenエラー応答でWWW-Authenticate headerを送る', () => {
-		test('一般リクエスト', async () => {
-			const result = await api('/admin/get-index-stats', {}, {
-				token: 'syuilo',
-				bearer: true,
-			});
-			assert.strictEqual(result.status, 401);
-			assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
-		});
-
-		test('multipartリクエスト', async () => {
-			const result = await uploadFile({
-				token: 'syuilo',
-				bearer: true,
-			});
-			assert.strictEqual(result.status, 401);
-			assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
-		});
-
-		test('streaming', async () => {
-			await assert.rejects(connectStream(
-				{
+		describe('invalid_token', () => {
+			test('一般リクエスト', async () => {
+				const result = await api('/admin/get-index-stats', {}, {
 					token: 'syuilo',
 					bearer: true,
-				},
-				'homeTimeline',
-				() => { },
-			), (err: IncomingMessage) => {
-				assert.strictEqual(err.statusCode, 401);
-				assert.ok(err.headers['www-authenticate']?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
-				return true;
+				});
+				assert.strictEqual(result.status, 401);
+				assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
+			});
+
+			test('multipartリクエスト', async () => {
+				const result = await uploadFile({
+					token: 'syuilo',
+					bearer: true,
+				});
+				assert.strictEqual(result.status, 401);
+				assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
+			});
+
+			test('streaming', async () => {
+				await assert.rejects(connectStream(
+					{
+						token: 'syuilo',
+						bearer: true,
+					},
+					'homeTimeline',
+					() => { },
+				), (err: IncomingMessage) => {
+					assert.strictEqual(err.statusCode, 401);
+					assert.ok(err.headers['www-authenticate']?.startsWith('Bearer realm="Misskey", error="invalid_token", error_description'));
+					return true;
+				});
 			});
 		});
 
@@ -206,5 +208,16 @@ describe('API', () => {
 				assert.strictEqual(result.headers.get('WWW-Authenticate'), 'Bearer realm="Misskey"');
 			});
 		});
+
+		test('invalid_request', async () => {
+			const result = await api('/notes/create', { text: true }, {
+				token: alice.token,
+				bearer: true,
+			});
+			assert.strictEqual(result.status, 400);
+			assert.ok(result.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="invalid_request", error_description'));
+		});
+
+		// TODO: insufficient_scope test (authテストが全然なくて書けない)
 	});
 });
