@@ -61,8 +61,9 @@ export class StreamingApiServerService {
 			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1
 			// Note that the standard WHATWG WebSocket API does not support setting any headers,
 			// but non-browser apps may still be able to set it.
-			const token = request.headers.authorization?.startsWith('Bearer ') ?
-				request.headers.authorization.slice(7) : q.get('i');
+			const token = request.headers.authorization?.startsWith('Bearer ')
+				? request.headers.authorization.slice(7)
+				: q.get('i');
 
 			try {
 				[user, app] = await this.authenticateService.authenticate(token);
