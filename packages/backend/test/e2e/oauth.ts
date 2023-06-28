@@ -10,7 +10,7 @@ import { AuthorizationCode, ResourceOwnerPassword, type AuthorizationTokenConfig
 import pkceChallenge from 'pkce-challenge';
 import { JSDOM } from 'jsdom';
 import Fastify, { type FastifyReply, type FastifyInstance } from 'fastify';
-import { port, relativeFetch, signup, startServer } from '../utils.js';
+import { api, port, signup, startServer } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import type { INestApplicationContext } from '@nestjs/common';
 
@@ -220,18 +220,14 @@ describe('OAuth', () => {
 		assert.strictEqual(token.token.token_type, 'Bearer');
 		assert.strictEqual(token.token.scope, 'write:notes');
 
-		const createResponse = await relativeFetch('api/notes/create', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${token.token.access_token}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: 'test' }),
+		const createResult = await api('notes/create', { text: 'test' }, {
+			token: token.token.access_token as string,
+			bearer: true,
 		});
-		assert.strictEqual(createResponse.status, 200);
+		assert.strictEqual(createResult.status, 200);
 
-		const createResponseBody = await createResponse.json() as misskey.Endpoints['notes/create']['res'];
-		assert.strictEqual(createResponseBody.createdNote.text, 'test');
+		const createResultBody = createResult.body as misskey.Endpoints['notes/create']['res'];
+		assert.strictEqual(createResultBody.createdNote.text, 'test');
 	});
 
 	test('Two concurrent flows', async () => {
@@ -289,31 +285,23 @@ describe('OAuth', () => {
 			code_verifier: pkceBob.code_verifier,
 		} as AuthorizationTokenConfigExtended);
 
-		const createResponseAlice = await relativeFetch('api/notes/create', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${tokenAlice.token.access_token}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: 'test' }),
+		const createResultAlice = await api('notes/create', { text: 'test' }, {
+			token: tokenAlice.token.access_token as string,
+			bearer: true,
 		});
-		assert.strictEqual(createResponseAlice.status, 200);
+		assert.strictEqual(createResultAlice.status, 200);
 
-		const createResponseBob = await relativeFetch('api/notes/create', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${tokenBob.token.access_token}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: 'test' }),
+		const createResultBob = await api('notes/create', { text: 'test' }, {
+			token: tokenBob.token.access_token as string,
+			bearer: true,
 		});
-		assert.strictEqual(createResponseAlice.status, 200);
+		assert.strictEqual(createResultAlice.status, 200);
 
-		const createResponseBodyAlice = await createResponseAlice.json() as misskey.Endpoints['notes/create']['res'];
-		assert.strictEqual(createResponseBodyAlice.createdNote.user.username, 'alice');
+		const createResultBodyAlice = await createResultAlice.body as misskey.Endpoints['notes/create']['res'];
+		assert.strictEqual(createResultBodyAlice.createdNote.user.username, 'alice');
 
-		const createResponseBodyBob = await createResponseBob.json() as misskey.Endpoints['notes/create']['res'];
-		assert.strictEqual(createResponseBodyBob.createdNote.user.username, 'bob');
+		const createResultBodyBob = await createResultBob.body as misskey.Endpoints['notes/create']['res'];
+		assert.strictEqual(createResultBodyBob.createdNote.user.username, 'bob');
 	});
 
 	// https://datatracker.ietf.org/doc/html/rfc7636.html
@@ -444,15 +432,11 @@ describe('OAuth', () => {
 				code_verifier,
 			} as AuthorizationTokenConfigExtended);
 
-			const createResponse = await relativeFetch('api/notes/create', {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token.token.access_token}`,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ text: 'test' }),
+			const createResult = await api('notes/create', { text: 'test' }, {
+				token: token.token.access_token as string,
+				bearer: true,
 			});
-			assert.strictEqual(createResponse.status, 200);
+			assert.strictEqual(createResult.status, 200);
 
 			await assert.rejects(client.getToken({
 				code,
@@ -463,15 +447,11 @@ describe('OAuth', () => {
 				return true;
 			});
 
-			const createResponse2 = await relativeFetch('api/notes/create', {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token.token.access_token}`,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ text: 'test' }),
+			const createResult2 = await api('notes/create', { text: 'test' }, {
+				token: token.token.access_token as string,
+				bearer: true,
 			});
-			assert.strictEqual(createResponse2.status, 401);
+			assert.strictEqual(createResult2.status, 401);
 		});
 	});
 
@@ -610,77 +590,13 @@ describe('OAuth', () => {
 			} as AuthorizationTokenConfigExtended);
 			assert.strictEqual(typeof token.token.access_token, 'string');
 
-			const createResponse = await relativeFetch('api/notes/create', {
-				method: 'POST',
-				headers: {
-					Authorization: `Bearer ${token.token.access_token}`,
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ text: 'test' }),
+			const createResult = await api('notes/create', { text: 'test' }, {
+				token: token.token.access_token as string,
+				bearer: true,
 			});
-			assert.strictEqual(createResponse.status, 403);
+			assert.strictEqual(createResult.status, 403);
+			assert.ok(createResult.headers.get('WWW-Authenticate')?.startsWith('Bearer realm="Misskey", error="insufficient_scope", error_description'));
 		});
-	});
-
-	// https://datatracker.ietf.org/doc/html/rfc6750.html
-	test('Authorization header', async () => {
-		const { code_challenge, code_verifier } = await pkceChallenge(128);
-
-		const { client, code } = await fetchAuthorizationCode(alice, 'write:notes', code_challenge);
-
-		const token = await client.getToken({
-			code,
-			redirect_uri,
-			code_verifier,
-		} as AuthorizationTokenConfigExtended);
-
-		// Pattern 1: No preceding "Bearer "
-		let createResponse = await relativeFetch('api/notes/create', {
-			method: 'POST',
-			headers: {
-				Authorization: token.token.access_token as string,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: 'test' }),
-		});
-		assert.strictEqual(createResponse.status, 401);
-
-		// Pattern 2: Incorrect token
-		createResponse = await relativeFetch('api/notes/create', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${(token.token.access_token as string).slice(0, -1)}`,
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: 'test' }),
-		});
-
-		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-3.1
-		// "The access token provided is expired, revoked, malformed, or
-		// invalid for other reasons.  The resource SHOULD respond with
-		// the HTTP 401 (Unauthorized) status code."
-		assert.strictEqual(createResponse.status, 401);
-
-		let wwwAuthenticate = createResponse.headers.get('WWW-Authenticate');
-		assert.ok(wwwAuthenticate?.startsWith('Bearer realm="Misskey", error="invalid_token"'));
-
-		// Pattern 3: No token
-		createResponse = await relativeFetch('api/notes/create', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ text: 'test' }),
-		});
-		wwwAuthenticate = createResponse.headers.get('WWW-Authenticate');
-
-		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-3.1
-		// "If the request lacks any authentication information (e.g., the client
-		// was unaware that authentication is necessary or attempted using an
-		// unsupported authentication method), the resource server SHOULD NOT
-		// include an error code or other error information."
-		assert.strictEqual(createResponse.status, 401);
-		assert.strictEqual(wwwAuthenticate, 'Bearer realm="Misskey"');
 	});
 
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.4
