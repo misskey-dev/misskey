@@ -53,44 +53,72 @@ export class ApiCallService implements OnApplicationShutdown {
 		}, 1000 * 60 * 60);
 	}
 
+	#sendApiError(reply: FastifyReply, err: ApiError): void {
+		let statusCode = err.httpStatusCode;
+		if (err.httpStatusCode === 401) {
+			reply.header('WWW-Authenticate', 'Bearer realm="Misskey"');
+		} else if (err.kind === 'client') {
+			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_request", error_description="${err.message}"`);
+			statusCode = statusCode ?? 400;
+		} else if (err.kind === 'permission') {
+			// (ROLE_PERMISSION_DENIEDは関係ない)
+			if (err.code === 'PERMISSION_DENIED') {
+				reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="insufficient_scope", error_description="${err.message}"`);
+			}
+			statusCode = statusCode ?? 403;
+		} else if (!statusCode) {
+			statusCode = 500;
+		}
+		this.send(reply, statusCode, err);
+	}
+
+	#sendAuthenticationError(reply: FastifyReply, err: unknown): void {
+		if (err instanceof AuthenticationError) {
+			const message = 'Authentication failed. Please ensure your token is correct.';
+			reply.header('WWW-Authenticate', `Bearer realm="Misskey", error="invalid_token", error_description="${message}"`);
+			this.send(reply, 401, new ApiError({
+				message: 'Authentication failed. Please ensure your token is correct.',
+				code: 'AUTHENTICATION_FAILED',
+				id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
+			}));
+		} else {
+			this.send(reply, 500, new ApiError());
+		}
+	}
+
 	@bindThis
 	public handleRequest(
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown> | undefined, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	) {
+	): void {
 		const body = request.method === 'GET'
 			? request.query
 			: request.body;
 
-		const token = body?.['i'];
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+		const token = request.headers.authorization?.startsWith('Bearer ')
+			? request.headers.authorization.slice(7)
+			: body?.['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
 		}
 		this.authenticateService.authenticate(token).then(([user, app]) => {
 			this.call(endpoint, user, app, body, null, request).then((res) => {
-				if (request.method === 'GET' && endpoint.meta.cacheSec && !body?.['i'] && !user) {
+				if (request.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
 					reply.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 				}
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
+				this.#sendApiError(reply, err);
 			});
 
 			if (user) {
 				this.logIp(request, user);
 			}
 		}).catch(err => {
-			if (err instanceof AuthenticationError) {
-				this.send(reply, 401, new ApiError({
-					message: 'Authentication failed. Please ensure your token is correct.',
-					code: 'AUTHENTICATION_FAILED',
-					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
-				}));
-			} else {
-				this.send(reply, 500, new ApiError());
-			}
+			this.#sendAuthenticationError(reply, err);
 		});
 	}
 
@@ -99,7 +127,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		endpoint: IEndpoint & { exec: any },
 		request: FastifyRequest<{ Body: Record<string, unknown>, Querystring: Record<string, unknown> }>,
 		reply: FastifyReply,
-	) {
+	): Promise<void> {
 		const multipartData = await request.file().catch(() => {
 			/* Fastify throws if the remote didn't send multipart data. Return 400 below. */
 		});
@@ -117,7 +145,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			fields[k] = typeof v === 'object' && 'value' in v ? v.value : undefined;
 		}
 
-		const token = fields['i'];
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
+		const token = request.headers.authorization?.startsWith('Bearer ')
+			? request.headers.authorization.slice(7)
+			: fields['i'];
 		if (token != null && typeof token !== 'string') {
 			reply.code(400);
 			return;
@@ -129,22 +160,14 @@ export class ApiCallService implements OnApplicationShutdown {
 			}, request).then((res) => {
 				this.send(reply, res);
 			}).catch((err: ApiError) => {
-				this.send(reply, err.httpStatusCode ? err.httpStatusCode : err.kind === 'client' ? 400 : err.kind === 'permission' ? 403 : 500, err);
+				this.#sendApiError(reply, err);
 			});
 
 			if (user) {
 				this.logIp(request, user);
 			}
 		}).catch(err => {
-			if (err instanceof AuthenticationError) {
-				this.send(reply, 401, new ApiError({
-					message: 'Authentication failed. Please ensure your token is correct.',
-					code: 'AUTHENTICATION_FAILED',
-					id: 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14',
-				}));
-			} else {
-				this.send(reply, 500, new ApiError());
-			}
+			this.#sendAuthenticationError(reply, err);
 		});
 	}
 
@@ -213,7 +236,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.limit) {
-		// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
+			// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
 			let limitActor: string;
 			if (user) {
 				limitActor = user.id;
@@ -255,8 +278,8 @@ export class ApiCallService implements OnApplicationShutdown {
 				throw new ApiError({
 					message: 'Your account has been suspended.',
 					code: 'YOUR_ACCOUNT_SUSPENDED',
+					kind: 'permission',
 					id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
-					httpStatusCode: 403,
 				});
 			}
 		}
@@ -266,8 +289,8 @@ export class ApiCallService implements OnApplicationShutdown {
 				throw new ApiError({
 					message: 'You have moved your account.',
 					code: 'YOUR_ACCOUNT_MOVED',
+					kind: 'permission',
 					id: '56f20ec9-fd06-4fa5-841b-edd6d7d4fa31',
-					httpStatusCode: 403,
 				});
 			}
 		}
@@ -321,7 +344,7 @@ export class ApiCallService implements OnApplicationShutdown {
 					try {
 						data[k] = JSON.parse(data[k]);
 					} catch (e) {
-						throw	new ApiError({
+						throw new ApiError({
 							message: 'Invalid param.',
 							code: 'INVALID_PARAM',
 							id: '0b5f1631-7c1a-41a6-b399-cce335f34d85',
