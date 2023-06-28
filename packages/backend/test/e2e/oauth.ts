@@ -243,6 +243,7 @@ describe('OAuth', () => {
 			code_challenge: pkceAlice.code_challenge,
 			code_challenge_method: 'S256',
 		} as AuthorizationParamsExtended));
+		console.log(await responseAlice.text(), 'なんでこわれた');
 		assert.strictEqual(responseAlice.status, 200);
 
 		const responseBob = await fetch(client.authorizeURL({
