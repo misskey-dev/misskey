@@ -130,7 +130,8 @@ async function discoverClientInformation(httpRequestService: HttpRequestService,
 			redirectUris: redirectUris.map(uri => new URL(uri, res.url).toString()),
 			name,
 		};
-	} catch {
+	} catch (err) {
+		console.error(err);
 		throw new AuthorizationError('Failed to fetch client information', 'server_error');
 	}
 }
