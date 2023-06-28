@@ -193,7 +193,7 @@ class OAuth2Store {
 	}
 
 	store(req: OAuth2DecisionRequest, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
-		const transactionId = secureRndstr(128, true);
+		const transactionId = secureRndstr(128);
 		this.#cache.set(transactionId, oauth2);
 		cb(null, transactionId);
 	}
@@ -258,7 +258,7 @@ export class OAuth2ProviderService {
 
 				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${client.id} through ${redirectUri}, with scope: [${areq.scope}]`);
 
-				const code = secureRndstr(128, true);
+				const code = secureRndstr(128);
 				grantCodeCache.set(code, {
 					clientId: client.id,
 					userId: user.id,
@@ -300,7 +300,7 @@ export class OAuth2ProviderService {
 				if (!body.code_verifier) return;
 				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return;
 
-				const accessToken = secureRndstr(128, true);
+				const accessToken = secureRndstr(128);
 				const now = new Date();
 
 				// NOTE: we don't have a setup for automatic token expiration
