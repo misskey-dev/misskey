@@ -255,7 +255,5 @@ describe('API', () => {
 				assert.strictEqual(result.status, 401);
 			});
 		});
-
-		// TODO: insufficient_scope test (authテストが全然なくて書けない)
 	});
 });
