@@ -104,18 +104,26 @@ interface ClientInformation {
 async function discoverClientInformation(httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
 	try {
 		const res = await httpRequestService.send(id);
+		console.log('TEST', 'marker1');
 		const redirectUris: string[] = [];
 
 		const linkHeader = res.headers.get('link');
 		if (linkHeader) {
 			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(r => r.uri));
 		}
+		console.log('TEST', 'marker2');
 
 		const fragment = JSDOM.fragment(await res.text());
 
+		console.log('TEST', 'marker3');
+
 		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
 
+		console.log('TEST', 'marker4');
+
 		const name = fragment.querySelector<HTMLElement>('.h-app .p-name')?.textContent?.trim() ?? id;
+
+		console.log('TEST', 'marker5');
 
 		return {
 			id,
