@@ -123,7 +123,6 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			name,
 		};
 	} catch (err) {
-		console.error(err);
 		logger.error('Failed to fetch client information', { err });
 		throw new AuthorizationError('Failed to fetch client information', 'server_error');
 	}

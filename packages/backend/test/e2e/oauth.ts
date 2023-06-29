@@ -148,32 +148,34 @@ describe('OAuth', () => {
 	let alice: misskey.entities.MeSignup;
 	let bob: misskey.entities.MeSignup;
 
+	let sender: (reply: FastifyReply) => void;
+
 	beforeAll(async () => {
 		app = await startServer();
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
+
+		fastify = Fastify();
+		fastify.get('/', async (request, reply) => {
+			sender(reply);
+		});
+		await fastify.listen({ port: clientPort });
 	}, 1000 * 60 * 2);
 
 	beforeEach(async () => {
 		process.env.MISSKEY_TEST_CHECK_IP_RANGE = '';
-		fastify = Fastify();
-		fastify.get('/', async (request, reply) => {
+		sender = (reply): void => {
 			reply.send(`
 				<!DOCTYPE html>
 				<link rel="redirect_uri" href="/redirect" />
 				<div class="h-app"><div class="p-name">Misklient
 			`);
-		});
-		await fastify.listen({ port: clientPort });
+		};
 	});
 
 	afterAll(async () => {
-		await app.close();
-	});
-
-	afterEach(async () => {
 		await fastify.close();
-		fastify.server.unref();
+		await app.close();
 	});
 
 	test('Full flow', async () => {
@@ -835,11 +837,7 @@ describe('OAuth', () => {
 
 			for (const [title, replyFunc] of Object.entries(tests)) {
 				test(title, async () => {
-					await fastify.close();
-
-					fastify = Fastify();
-					fastify.get('/', async (request, reply) => replyFunc(reply));
-					await fastify.listen({ port: clientPort });
+					sender = replyFunc;
 
 					const client = new AuthorizationCode(clientConfig);
 
@@ -855,16 +853,12 @@ describe('OAuth', () => {
 			}
 
 			test('No item', async () => {
-				await fastify.close();
-
-				fastify = Fastify();
-				fastify.get('/', async (request, reply) => {
+				sender = (reply): void => {
 					reply.send(`
-					<!DOCTYPE html>
-					<div class="h-app"><div class="p-name">Misklient
-				`);
-				});
-				await fastify.listen({ port: clientPort });
+						<!DOCTYPE html>
+						<div class="h-app"><div class="p-name">Misklient
+					`);
+				};
 
 				const client = new AuthorizationCode(clientConfig);
 
@@ -896,14 +890,10 @@ describe('OAuth', () => {
 		});
 
 		test('Missing name', async () => {
-			await fastify.close();
-
-			fastify = Fastify();
-			fastify.get('/', async (request, reply) => {
+			sender = (reply): void => {
 				reply.header('Link', '</redirect>; rel="redirect_uri"');
 				reply.send();
-			});
-			await fastify.listen({ port: clientPort });
+			};
 
 			const client = new AuthorizationCode(clientConfig);
 
