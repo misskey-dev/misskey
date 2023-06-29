@@ -960,8 +960,14 @@ export type Endpoints = {
         res: TODO;
     };
     'drive/files/create': {
-        req: TODO;
-        res: TODO;
+        req: {
+            folderId?: string;
+            name?: string;
+            comment?: string;
+            isSentisive?: boolean;
+            force?: boolean;
+        };
+        res: DriveFile;
     };
     'drive/files/delete': {
         req: {
@@ -1942,6 +1948,19 @@ export type Endpoints = {
         req: TODO;
         res: TODO;
     };
+    'signup': {
+        req: {
+            username: string;
+            password: string;
+            host?: string;
+            invitationCode?: string;
+            emailAddress?: string;
+            'hcaptcha-response'?: string;
+            'g-recaptcha-response'?: string;
+            'turnstile-response'?: string;
+        };
+        res: MeSignup | null;
+    };
     'stats': {
         req: NoParams;
         res: Stats;
@@ -2159,6 +2178,8 @@ declare namespace entities {
         UserGroup,
         UserList,
         MeDetailed,
+        MeDetailedWithSecret,
+        MeSignup,
         DriveFile,
         DriveFolder,
         GalleryPost,
@@ -2372,6 +2393,22 @@ type MeDetailed = UserDetailed & {
     receiveAnnouncementEmail: boolean;
     usePasswordLessLogin: boolean;
     [other: string]: any;
+};
+
+// @public (undocumented)
+type MeDetailedWithSecret = MeDetailed & {
+    email: string;
+    emailVerified: boolean;
+    securityKeysList: {
+        id: string;
+        name: string;
+        lastUsed: string;
+    }[];
+};
+
+// @public (undocumented)
+type MeSignup = MeDetailedWithSecret & {
+    token: string;
 };
 
 // @public (undocumented)
@@ -2719,7 +2756,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:596:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:620:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
