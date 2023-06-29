@@ -29,6 +29,11 @@
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>GitHub</template>
 						</FormLink>
+						<FormLink to="https://github.com/Fairy-Phy/misskey.dream" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.source }}(Misskey.Dream)
+							<template #suffix>GitHub</template>
+						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
 							<template #icon><i class="ti ti-language-hiragana"></i></template>
 							{{ i18n.ts._aboutMisskey.translation }}
@@ -115,6 +120,7 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
 import { $i } from '@/account';
+import * as Misskey from 'misskey-js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
