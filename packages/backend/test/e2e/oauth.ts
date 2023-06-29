@@ -168,7 +168,7 @@ describe('OAuth', () => {
 			reply.send(`
 				<!DOCTYPE html>
 				<link rel="redirect_uri" href="/redirect" />
-				<div class="h-app"><div class="p-name">Misklient
+				<div class="h-app"><a href="/" class="u-url p-name">Misklient
 			`);
 		};
 	});
@@ -807,7 +807,7 @@ describe('OAuth', () => {
 					reply.header('Link', '</redirect>; rel="redirect_uri"');
 					reply.send(`
 						<!DOCTYPE html>
-						<div class="h-app"><div class="p-name">Misklient
+						<div class="h-app"><a href="/" class="u-url p-name">Misklient
 					`);
 				},
 				'Mixed links': reply => {
@@ -815,14 +815,14 @@ describe('OAuth', () => {
 					reply.send(`
 						<!DOCTYPE html>
 						<link rel="redirect_uri" href="/redirect2" />
-						<div class="h-app"><div class="p-name">Misklient
+						<div class="h-app"><a href="/" class="u-url p-name">Misklient
 					`);
 				},
 				'Multiple items in Link header': reply => {
 					reply.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
 					reply.send(`
 						<!DOCTYPE html>
-						<div class="h-app"><div class="p-name">Misklient
+						<div class="h-app"><a href="/" class="u-url p-name">Misklient
 					`);
 				},
 				'Multiple items in HTML': reply => {
@@ -830,7 +830,7 @@ describe('OAuth', () => {
 						<!DOCTYPE html>
 						<link rel="redirect_uri" href="/redirect2" />
 						<link rel="redirect_uri" href="/redirect" />
-						<div class="h-app"><div class="p-name">Misklient
+						<div class="h-app"><a href="/" class="u-url p-name">Misklient
 					`);
 				},
 			};
@@ -856,7 +856,7 @@ describe('OAuth', () => {
 				sender = (reply): void => {
 					reply.send(`
 						<!DOCTYPE html>
-						<div class="h-app"><div class="p-name">Misklient
+						<div class="h-app"><a href="/" class="u-url p-name">Misklient
 					`);
 				};
 
@@ -892,6 +892,29 @@ describe('OAuth', () => {
 		test('Missing name', async () => {
 			sender = (reply): void => {
 				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send();
+			};
+
+			const client = new AuthorizationCode(clientConfig);
+
+			const response = await fetch(client.authorizeURL({
+				redirect_uri,
+				scope: 'write:notes',
+				state: 'state',
+				code_challenge: 'code',
+				code_challenge_method: 'S256',
+			} as AuthorizationParamsExtended));
+			assert.strictEqual(response.status, 200);
+			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
+		});
+
+		test('Mismatching URL in h-app', async () => {
+			sender = (reply): void => {
+				reply.header('Link', '</redirect>; rel="redirect_uri"');
+				reply.send(`
+					<!DOCTYPE html>
+					<div class="h-app"><a href="/foo" class="u-url p-name">Misklient
+				`);
 				reply.send();
 			};
 

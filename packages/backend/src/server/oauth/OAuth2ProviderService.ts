@@ -11,6 +11,7 @@ import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
+import { mf2 } from 'microformats-parser';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { kinds } from '@/misc/api-permissions.js';
@@ -24,6 +25,7 @@ import type { LocalUser } from '@/models/entities/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
+import type { StatusError } from '@/misc/status-error.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -111,20 +113,33 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(r => r.uri));
 		}
 
-		const fragment = JSDOM.fragment(await res.text());
+		const text = await res.text();
+		const fragment = JSDOM.fragment(text);
 
 		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
 
-		const name = fragment.querySelector<HTMLElement>('.h-app .p-name')?.textContent?.trim() ?? id;
+		let name = id;
+		if (text) {
+			const microformats = mf2(text, { baseUrl: res.url });
+			const nameProperty = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url?.includes(id))?.properties.name[0];
+			if (typeof nameProperty === 'string') {
+				name = nameProperty;
+			}
+		}
 
 		return {
 			id,
 			redirectUris: redirectUris.map(uri => new URL(uri, res.url).toString()),
-			name,
+			name: typeof name === 'string' ? name : id,
 		};
 	} catch (err) {
-		logger.error('Failed to fetch client information', { err });
-		throw new AuthorizationError('Failed to fetch client information', 'server_error');
+		console.error(err);
+		logger.error('Error while fetching client information', { err });
+		if (err instanceof StatusError) {
+			throw new AuthorizationError('Failed to fetch client information', 'invalid_request');
+		} else {
+			throw new AuthorizationError('Failed to parse client information', 'server_error');
+		}
 	}
 }
 

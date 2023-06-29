@@ -99,7 +99,7 @@ importers:
         specifier: 8.3.0
         version: 8.3.0
       '@fastify/express':
-        specifier: ^2.3.0
+        specifier: 2.3.0
         version: 2.3.0
       '@fastify/http-proxy':
         specifier: 9.2.1
@@ -153,7 +153,7 @@ importers:
         specifier: 2.0.5
         version: 2.0.5
       body-parser:
-        specifier: ^1.20.2
+        specifier: 1.20.2
         version: 1.20.2
       bullmq:
         specifier: 4.1.0
@@ -216,7 +216,7 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       http-link-header:
-        specifier: ^1.1.0
+        specifier: 1.1.0
         version: 1.1.0
       ioredis:
         specifier: 5.3.2
@@ -251,6 +251,9 @@ importers:
       mfm-js:
         specifier: 0.23.3
         version: 0.23.3
+      microformats-parser:
+        specifier: 1.4.1
+        version: 1.4.1
       mime-types:
         specifier: 2.1.35
         version: 2.1.35
@@ -276,10 +279,10 @@ importers:
         specifier: 0.10.0
         version: 0.10.0
       oauth2orize:
-        specifier: ^1.11.1
+        specifier: 1.11.1
         version: 1.11.1
       oauth2orize-pkce:
-        specifier: ^0.1.2
+        specifier: 0.1.2
         version: 0.1.2
       os-utils:
         specifier: 0.0.14
@@ -294,7 +297,7 @@ importers:
         specifier: 8.11.0
         version: 8.11.0
       pkce-challenge:
-        specifier: ^4.0.1
+        specifier: 4.0.1
         version: 4.0.1
       probe-image-size:
         specifier: 7.2.3
@@ -509,7 +512,7 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       '@types/body-parser':
-        specifier: ^1.19.2
+        specifier: 1.19.2
         version: 1.19.2
       '@types/cbor':
         specifier: 6.0.0
@@ -527,7 +530,7 @@ importers:
         specifier: 2.1.21
         version: 2.1.21
       '@types/http-link-header':
-        specifier: ^1.0.3
+        specifier: 1.0.3
         version: 1.0.3
       '@types/jest':
         specifier: 29.5.2
@@ -548,7 +551,7 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       '@types/ms':
-        specifier: ^0.7.31
+        specifier: 0.7.31
         version: 0.7.31
       '@types/node':
         specifier: 20.3.1
@@ -563,7 +566,7 @@ importers:
         specifier: 0.9.1
         version: 0.9.1
       '@types/oauth2orize':
-        specifier: ^1.11.0
+        specifier: 1.11.0
         version: 1.11.0
       '@types/pg':
         specifier: 8.10.2
@@ -599,7 +602,7 @@ importers:
         specifier: 0.32.0
         version: 0.32.0
       '@types/simple-oauth2':
-        specifier: ^5.0.4
+        specifier: 5.0.4
         version: 5.0.4
       '@types/sinonjs__fake-timers':
         specifier: 8.1.2
@@ -656,7 +659,7 @@ importers:
         specifier: 29.5.0
         version: 29.5.0
       simple-oauth2:
-        specifier: ^5.0.0
+        specifier: 5.0.0
         version: 5.0.0
 
   packages/frontend:
@@ -15526,6 +15529,13 @@ packages:
     resolution: {integrity: sha512-o8scYmbey6rMUmWAlT3k3ntt6khaCLdxlmHhAWV5wTTMj2OK1atQvZfRUq0SIVm1Jig08qlZg/ps71xUqrScNA==}
     dependencies:
       twemoji-parser: 14.0.0
+    dev: false
+
+  /microformats-parser@1.4.1:
+    resolution: {integrity: sha512-BSg9Y/Aik8hvvme/fkxnXMRvTKuVwOeTapeZdaPQ+92DEubyM31iMtwbgFZ1383om643UvfYY5G23E9s1FY2KQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      parse5: 6.0.1
     dev: false
 
   /micromatch@3.1.10:
