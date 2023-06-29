@@ -205,12 +205,10 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
 const isLong = (appearNote.cw == null && appearNote.text != null && (
-	(appearNote.text.includes('$[x2')) ||
 	(appearNote.text.includes('$[x3')) ||
 	(appearNote.text.includes('$[x4')) ||
-	(appearNote.text.includes('$[scale')) ||
-	(appearNote.text.includes('$[position')) ||
-	(appearNote.text.split('\n').length > 9) ||
+	(/\$\[scale\.(([xy]=[2345](\.\d)*){1}|([xy]=[12345](\.\d)*){1}(,[xy]=[2345](\.\d)*){1})/.test(appearNote.text)) ||
+	(appearNote.text.split('\n').length > 10) ||
 	(appearNote.text.length > 500) ||
 	(appearNote.files.length >= 5) ||
 	(urls && urls.length >= 4)
