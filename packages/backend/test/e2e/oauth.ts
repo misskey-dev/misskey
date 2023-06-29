@@ -173,6 +173,7 @@ describe('OAuth', () => {
 
 	afterEach(async () => {
 		await fastify.close();
+		fastify.server.unref();
 	});
 
 	test('Full flow', async () => {

@@ -101,29 +101,21 @@ interface ClientInformation {
 // Authorization endpoints verifying that a redirect_uri is allowed for use by a client MUST
 // look for an exact match of the given redirect_uri in the request against the list of
 // redirect_uris discovered after resolving any relative URLs."
-async function discoverClientInformation(httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
+async function discoverClientInformation(logger: Logger, httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
 	try {
 		const res = await httpRequestService.send(id);
-		console.log('TEST', 'marker1');
 		const redirectUris: string[] = [];
 
 		const linkHeader = res.headers.get('link');
 		if (linkHeader) {
 			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(r => r.uri));
 		}
-		console.log('TEST', 'marker2');
 
 		const fragment = JSDOM.fragment(await res.text());
 
-		console.log('TEST', 'marker3');
-
 		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
 
-		console.log('TEST', 'marker4');
-
 		const name = fragment.querySelector<HTMLElement>('.h-app .p-name')?.textContent?.trim() ?? id;
-
-		console.log('TEST', 'marker5');
 
 		return {
 			id,
@@ -132,6 +124,7 @@ async function discoverClientInformation(httpRequestService: HttpRequestService,
 		};
 	} catch (err) {
 		console.error(err);
+		logger.error('Failed to fetch client information', { err });
 		throw new AuthorizationError('Failed to fetch client information', 'server_error');
 	}
 }
@@ -406,7 +399,7 @@ export class OAuth2ProviderService {
 				}
 
 				// Find client information from the remote.
-				const clientInfo = await discoverClientInformation(this.httpRequestService, clientUrl.href);
+				const clientInfo = await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
 
 				// Require the redirect URI to be included in an explicit list, per
 				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
