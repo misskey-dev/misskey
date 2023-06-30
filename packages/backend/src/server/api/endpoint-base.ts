@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import Ajv from 'ajv';
+import _Ajv from 'ajv';
 import type { LocalUser } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
 import { ApiError } from './error.js';
@@ -7,6 +7,8 @@ import { endpoints, getEndpointSchema } from 'misskey-js/built/endpoints.js';
 import type { IEndpointMeta, ResponseOf, SchemaOrUndefined } from 'misskey-js/built/endpoints.types.js';
 import type { Endpoints } from 'misskey-js';
 import { WeakSerialized } from 'schema-type';
+
+const Ajv = _Ajv.default;
 
 const ajv = new Ajv({
 	useDefaults: true,

@@ -32,7 +32,7 @@ export default class extends Endpoint<'auth/accept'> {
 				throw new ApiError(this.meta.errors.noSuchSession);
 			}
 
-			const accessToken = secureRndstr(32, true);
+			const accessToken = secureRndstr(32);
 
 			// Fetch exist access token
 			const exist = await this.accessTokensRepository.findOneBy({
