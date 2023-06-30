@@ -8,5 +8,6 @@ export const dateTimeFormat = new Intl.DateTimeFormat(versatileLang, {
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric',
+    fractionalSecondDigits: 3,
 });
 export const numberFormat = new Intl.NumberFormat(versatileLang);
