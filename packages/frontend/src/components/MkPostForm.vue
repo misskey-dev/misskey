@@ -14,6 +14,7 @@
 			</button>
 		</div>
 		<div :class="$style.headerRight">
+			<div :class="['_acrylic', $style.textCount, { [$style.textWarn]: maxTextLength - textLength < 100 && textLength <= maxTextLength }, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 			<template v-if="!(channel != null && fixed)">
 				<button v-if="channel == null" ref="visibilityButton" v-click-anime v-tooltip="i18n.ts.visibility" :class="['_button', $style.headerRightItem, $style.visibility]" @click="setVisibility">
 					<span v-if="visibility === 'public'"><i class="ti ti-world"></i></span>
@@ -63,7 +64,6 @@
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
 		<textarea ref="textareaEl" v-model="text" :class="[$style.text]" :disabled="posting || posted" :placeholder="placeholder" data-cy-post-form-text @keydown="onKeydown" @paste="onPaste" @compositionupdate="onCompositionUpdate" @compositionend="onCompositionEnd"/>
-		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
 	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
@@ -892,7 +892,7 @@ defineExpose({
 
 	&.modal {
 		width: 100%;
-		max-width: 520px;
+		max-width: 800px;
 	}
 }
 
@@ -1105,15 +1105,18 @@ defineExpose({
 }
 
 .textCount {
-	position: absolute;
-	top: 0;
-	right: 2px;
+	//position: absolute;
+	//top: 0;
+	//right: 2px;
 	padding: 4px 6px;
-	font-size: .9em;
-	color: var(--warn);
+	font-size: .925em;
 	border-radius: 6px;
 	min-width: 1.6em;
 	text-align: center;
+
+	&.textWarn {
+		color: var(--warn);
+	}
 
 	&.textOver {
 		color: #ff2a2a;

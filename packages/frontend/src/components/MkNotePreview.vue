@@ -28,8 +28,10 @@ const props = defineProps<{
 	display: flex;
 	margin: 0;
 	padding: 0;
-	overflow: clip;
-	font-size: 0.95em;
+	overflow-x: clip;
+	overflow-y: scroll;
+	font-size: 1.05em;
+	max-height: 50vh;
 }
 
 .avatar {
