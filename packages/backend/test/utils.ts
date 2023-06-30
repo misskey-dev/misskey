@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import { isAbsolute, basename } from 'node:path';
 import { inspect } from 'node:util';
-import WebSocket from 'ws';
+import WebSocket, { ClientOptions } from 'ws';
 import fetch, { Blob, File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
 import { JSDOM } from 'jsdom';
@@ -13,7 +13,10 @@ import type * as misskey from 'misskey-js';
 
 export { server as startServer } from '@/boot/common.js';
 
-interface UserToken { token: string }
+interface UserToken {
+	token: string;
+	bearer?: boolean;
+}
 
 const config = loadConfig();
 export const port = config.port;
@@ -57,27 +60,33 @@ export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
 	return res.body;
 };
 
-const request = async (path: string, params: any, me?: UserToken): Promise<{ body: any, status: number }> => {
-	const auth = me ? {
-		i: me.token,
-	} : {};
+const request = async (path: string, params: any, me?: UserToken): Promise<{ status: number, headers: Headers, body: any }> => {
+	const bodyAuth: Record<string, string> = {};
+	const headers: Record<string, string> = {
+		'Content-Type': 'application/json',
+	};
+
+	if (me?.bearer) {
+		headers.Authorization = `Bearer ${me.token}`;
+	} else if (me) {
+		bodyAuth.i = me.token;
+	}
 
 	const res = await relativeFetch(path, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(Object.assign(auth, params)),
+		headers,
+		body: JSON.stringify(Object.assign(bodyAuth, params)),
 		redirect: 'manual',
 	});
 
-	const status = res.status;
 	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
 		? await res.json()
 		: null;
 
 	return {
-		body, status,
+		status: res.status,
+		headers: res.headers,
+		body,
 	};
 };
 
@@ -241,7 +250,7 @@ interface UploadOptions {
  * Upload file
  * @param user User
  */
-export const uploadFile = async (user: UserToken, { path, name, blob }: UploadOptions = {}): Promise<any> => {
+export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadOptions = {}): Promise<{ status: number, headers: Headers, body: misskey.Endpoints['drive/files/create']['res'] | null }> => {
 	const absPath = path == null
 		? new URL('resources/Lenna.jpg', import.meta.url)
 		: isAbsolute(path.toString())
@@ -249,7 +258,6 @@ export const uploadFile = async (user: UserToken, { path, name, blob }: UploadOp
 			: new URL(path, new URL('resources/', import.meta.url));
 
 	const formData = new FormData();
-	formData.append('i', user.token);
 	formData.append('file', blob ??
 		new File([await readFile(absPath)], basename(absPath.toString())));
 	formData.append('force', 'true');
@@ -257,15 +265,24 @@ export const uploadFile = async (user: UserToken, { path, name, blob }: UploadOp
 		formData.append('name', name);
 	}
 
+	const headers: Record<string, string> = {};
+	if (user?.bearer) {
+		headers.Authorization = `Bearer ${user.token}`;
+	} else if (user) {
+		formData.append('i', user.token);
+	}
+
 	const res = await relativeFetch('api/drive/files/create', {
 		method: 'POST',
 		body: formData,
+		headers,
 	});
 
-	const body = res.status !== 204 ? await res.json() : null;
+	const body = res.status !== 204 ? await res.json() as misskey.Endpoints['drive/files/create']['res'] : null;
 
 	return {
 		status: res.status,
+		headers: res.headers,
 		body,
 	};
 };
@@ -294,8 +311,16 @@ export const uploadUrl = async (user: UserToken, url: string) => {
 
 export function connectStream(user: UserToken, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
-		const ws = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${user.token}`);
+		const url = new URL(`ws://127.0.0.1:${port}/streaming`);
+		const options: ClientOptions = {};
+		if (user.bearer) {
+			options.headers = { Authorization: `Bearer ${user.token}` };
+		} else {
+			url.searchParams.set('i', user.token);
+		}
+		const ws = new WebSocket(url, options);
 
+		ws.on('unexpected-response', (req, res) => rej(res));
 		ws.on('open', () => {
 			ws.on('message', data => {
 				const msg = JSON.parse(data.toString());
