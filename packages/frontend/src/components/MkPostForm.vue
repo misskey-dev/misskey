@@ -662,13 +662,13 @@ async function post(ev?: MouseEvent) {
 		text.includes('$[scale') ||
 		text.includes('$[position');
 
-	if (annoying && visibility === 'public') {
+	if (annoying && !localOnly && visibility !== "specified") {
 		const { canceled, result } = await os.actions({
 			type: 'warning',
 			text: i18n.ts.thisPostMayBeAnnoying,
 			actions: [{
-				value: 'home',
-				text: i18n.ts.thisPostMayBeAnnoyingHome,
+				value: 'local',
+				text: i18n.ts.thisPostMayBeAnnoyingLocal,
 				primary: true,
 			}, {
 				value: 'cancel',
@@ -681,8 +681,8 @@ async function post(ev?: MouseEvent) {
 
 		if (canceled) return;
 		if (result === 'cancel') return;
-		if (result === 'home') {
-			visibility = 'home';
+		if (result === 'local') {
+			localOnly = true;
 		}
 	}
 

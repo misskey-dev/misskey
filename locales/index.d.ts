@@ -975,7 +975,7 @@ export interface Locale {
     "gotInvalidResponseError": string;
     "gotInvalidResponseErrorDescription": string;
     "thisPostMayBeAnnoying": string;
-    "thisPostMayBeAnnoyingHome": string;
+    "thisPostMayBeAnnoyingLocal": string;
     "thisPostMayBeAnnoyingCancel": string;
     "thisPostMayBeAnnoyingIgnore": string;
     "collapseRenotes": string;
