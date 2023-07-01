@@ -1784,7 +1784,7 @@ _visibility:
   followersDescription: "Visibile solo ai tuoi follower"
   specified: "Nota diretta"
   specifiedDescription: "Visibile solo ai profili menzionati"
-  disableFederation: "Federazione disabilitata"
+  disableFederation: "Non federare"
   disableFederationDescription: "Non spedire attività alle altre istanze remote"
 _postForm:
   replyPlaceholder: "Rispondi a questa nota..."
