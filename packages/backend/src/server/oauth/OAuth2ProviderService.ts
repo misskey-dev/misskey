@@ -49,7 +49,6 @@ function validateClientId(raw: string): URL {
 	// https://datatracker.ietf.org/doc/html/rfc6749.html#section-3.1.2.1
 	// 'The redirection endpoint SHOULD require the use of TLS as described
 	// in Section 1.6 when the requested response type is "code" or "token"'
-	// TODO: Consider allowing custom URIs per RFC 8252.
 	const allowedProtocols = process.env.NODE_ENV === 'test' ? ['http:', 'https:'] : ['https:'];
 	if (!allowedProtocols.includes(url.protocol)) {
 		throw new AuthorizationError('client_id must be a valid HTTPS URL', 'invalid_request');
@@ -402,9 +401,10 @@ export class OAuth2ProviderService {
 
 				const clientUrl = validateClientId(clientID);
 
-				// TODO: Consider allowing localhost for native apps (RFC 8252)
-				// This is currently blocked by the redirect_uri check below, but we can theoretically
-				// loosen the rule for localhost as the data never leaves the client machine.
+				// https://indieauth.spec.indieweb.org/#client-information-discovery
+				// "the server may want to resolve the domain name first and avoid fetching the document
+				// if the IP address is within the loopback range defined by [RFC5735]
+				// or any other implementation-specific internal IP address."
 				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
 					const lookup = await dns.lookup(clientUrl.hostname);
 					if (ipaddr.parse(lookup.address).range() !== 'unicast') {
