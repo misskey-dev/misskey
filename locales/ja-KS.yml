@@ -1062,6 +1062,7 @@ later: "あとで"
 goToMisskey: "Misskeyへ"
 additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
+branding: "あ"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
@@ -1635,7 +1636,7 @@ _timelineTutorial:
   step3_1: "投稿できた？"
   step3_2: "あんたのノートがタイムラインに出てきたら成功や。"
   step4_1: "ノートには、「ツッコミ」を付けれるで。"
-  step4_2: "ツッコむんやったら、ノートの「+」マークを押して、好きな絵文字を選ぶで。"
+  step4_2: "ツッコむんやったら、ノートの「+」マークを押して、好きな絵文字を選ぶんやで。"
 _2fa:
   alreadyRegistered: "もう設定終わっとるわ。"
   registerTOTP: "認証アプリの設定はじめる"
