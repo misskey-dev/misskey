@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private cacheService: CacheService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const token = secureRndstr(32, true);
+			const token = secureRndstr(32);
 			await this.cacheService.flashAccessTokensCache.set(token, {
 				user: me,
 				permissions: ps.permissions,

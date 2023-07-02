@@ -1065,10 +1065,10 @@ export interface Locale {
     "goToMisskey": string;
     "additionalEmojiDictionary": string;
     "installed": string;
+    "branding": string;
     "additionalPermissionsForFlash": string;
     "thisFlashRequiresTheFollowingPermissions": string;
     "doYouWantToAllowThisPlayToAccessYourAccount": string;
-    "branding": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;

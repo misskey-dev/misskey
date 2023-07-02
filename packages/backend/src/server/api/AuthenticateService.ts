@@ -8,7 +8,7 @@ import type { App } from '@/models/entities/App.js';
 import { CacheService } from '@/core/CacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 import { bindThis } from '@/decorators.js';
-import type { FlashToken } from '@/misc/flash-token';
+import type { FlashToken } from '@/misc/flash-token.js';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {

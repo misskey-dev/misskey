@@ -7,7 +7,7 @@ import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
-import type { FlashToken } from '@/misc/flash-token';
+import type { FlashToken } from '@/misc/flash-token.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
