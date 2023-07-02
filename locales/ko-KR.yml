@@ -1063,6 +1063,8 @@ goToMisskey: "Misskey로"
 additionalEmojiDictionary: "이모지 추가 사전"
 installed: "설치됨"
 branding: "브랜딩"
+enableServerMachineStats: "서버의 머신 사양을 공개하기"
+enableIdenticonGeneration: "유저마다의 Identicon 생성 유효화"
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."
