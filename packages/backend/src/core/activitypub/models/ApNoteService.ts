@@ -328,6 +328,7 @@ export class ApNoteService {
 
 	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<Emoji[]> {
+		// eslint-disable-next-line no-param-reassign
 		host = this.utilityService.toPuny(host);
 
 		if (!tags) return [];
