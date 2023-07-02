@@ -335,11 +335,11 @@ export class ApNoteService {
 
 		const existingEmojis = await this.emojisRepository.findBy({
 			host,
-			name: In(eomjiTags.map(tag => tag.name!.replaceAll(':', ''))),
+			name: In(eomjiTags.map(tag => tag.name.replaceAll(':', ''))),
 		});
 
 		return await Promise.all(eomjiTags.map(async tag => {
-			const name = tag.name!.replaceAll(':', '');
+			const name = tag.name.replaceAll(':', '');
 			tag.icon = toSingle(tag.icon);
 
 			const exists = existingEmojis.find(x => x.name === name);
