@@ -111,12 +111,10 @@ export class ApNoteService {
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
 		if (err) {
-			this.logger.error(`${err.message}`, {
-				resolver: {
-					history: resolver.getHistory(),
-				},
-				value: value,
-				object: object,
+			this.logger.error(err.message, {
+				resolver: { history: resolver.getHistory() },
+				value,
+				object,
 			});
 			throw new Error('invalid note');
 		}
