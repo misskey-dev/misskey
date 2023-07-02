@@ -343,15 +343,15 @@ export class ApNoteService {
 				if ((exists.updatedAt == null)
 					|| (tag.id != null && exists.uri == null)
 					|| (new Date(tag.updated) > exists.updatedAt)
-					|| (tag.icon!.url !== exists.originalUrl)
+					|| (tag.icon.url !== exists.originalUrl)
 				) {
 					await this.emojisRepository.update({
 						host,
 						name,
 					}, {
 						uri: tag.id,
-						originalUrl: tag.icon!.url,
-						publicUrl: tag.icon!.url,
+						originalUrl: tag.icon.url,
+						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
 					});
 
@@ -370,8 +370,8 @@ export class ApNoteService {
 				host,
 				name,
 				uri: tag.id,
-				originalUrl: tag.icon!.url,
-				publicUrl: tag.icon!.url,
+				originalUrl: tag.icon.url,
+				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
 			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
