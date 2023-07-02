@@ -168,11 +168,14 @@ export class ServerService implements OnApplicationShutdown {
 		});
 
 		fastify.get<{ Params: { x: string } }>('/identicon/:x', async (request, reply) => {
+			/*
 			const [temp, cleanup] = await createTemp();
 			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
 			reply.header('Cache-Control', 'public, max-age=86400');
 			return fs.createReadStream(temp).on('close', () => cleanup());
+			*/
+			return reply.redirect('/static-assets/avatar.png');
 		});
 
 		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
