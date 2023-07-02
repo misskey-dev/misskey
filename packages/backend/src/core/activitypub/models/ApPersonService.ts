@@ -230,6 +230,7 @@ export class ApPersonService implements OnModuleInit {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri) as any;
