@@ -243,7 +243,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const host = this.punyHost(object.id);
 
-		const { fields } = this.analyzeAttachments(person.attachment ?? []);
+		const fields = this.analyzeAttachments(person.attachment ?? []);
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
@@ -444,7 +444,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
-		const { fields } = this.analyzeAttachments(person.attachment ?? []);
+		const fields = this.analyzeAttachments(person.attachment ?? []);
 
 		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
 
@@ -577,8 +577,8 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	@bindThis
-	// TODO: `attachments`が`IObject`だった場合、返り値が`{ fields: [] }`になるようだが構わないのか？
-	public analyzeAttachments(attachments: IObject | IObject[] | undefined): { fields: Field[] } {
+	// TODO: `attachments`が`IObject`だった場合、返り値が`[]`になるようだが構わないのか？
+	public analyzeAttachments(attachments: IObject | IObject[] | undefined): Field[] {
 		const fields: Field[] = [];
 
 		if (Array.isArray(attachments)) {
@@ -590,7 +590,7 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
-		return { fields };
+		return fields;
 	}
 
 	@bindThis
