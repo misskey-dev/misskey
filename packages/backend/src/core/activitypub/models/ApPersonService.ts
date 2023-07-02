@@ -560,8 +560,6 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async resolvePerson(uri: string, resolver?: Resolver): Promise<LocalUser | RemoteUser> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
-
 		//#region このサーバーに既に登録されていたらそれを返す
 		const exist = await this.fetchPerson(uri);
 
