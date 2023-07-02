@@ -202,13 +202,13 @@ export class ApPersonService implements OnModuleInit {
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
-			const u = await this.usersRepository.findOneBy({ id }) as LocalUser;
+			const u = await this.usersRepository.findOneBy({ id }) as LocalUser | null;
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser | null;
 
 		if (exist) {
 			this.cacheService.uriPersonCache.set(uri, exist);
