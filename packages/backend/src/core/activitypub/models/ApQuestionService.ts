@@ -68,7 +68,7 @@ export class ApQuestionService {
 	 * @returns true if updated
 	 */
 	@bindThis
-	public async updateQuestion(value: string | IObject, resolver?: Resolver) {
+	public async updateQuestion(value: string | IObject, resolver?: Resolver): Promise<boolean> {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error(''); // TODO
 
