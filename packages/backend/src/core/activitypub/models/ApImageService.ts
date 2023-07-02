@@ -62,7 +62,7 @@ export class ApImageService {
 
 		const instance = await this.metaService.fetch();
 
-		let file = await this.driveService.uploadFromUrl({
+		const file = await this.driveService.uploadFromUrl({
 			url: image.url,
 			user: actor,
 			uri: image.url,
@@ -70,21 +70,11 @@ export class ApImageService {
 			isLink: !instance.cacheRemoteFiles,
 			comment: truncate(image.name ?? undefined, DB_MAX_IMAGE_COMMENT_LENGTH),
 		});
+		if (!file.isLink || file.url === image.url) return file;
 
-		if (file.isLink) {
-			// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
-			// URLを更新する
-			if (file.url !== image.url) {
-				await this.driveFilesRepository.update({ id: file.id }, {
-					url: image.url,
-					uri: image.url,
-				});
-
-				file = await this.driveFilesRepository.findOneByOrFail({ id: file.id });
-			}
-		}
-
-		return file;
+		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、URLを更新する
+		await this.driveFilesRepository.update({ id: file.id }, { url: image.url, uri: image.url });
+		return await this.driveFilesRepository.findOneByOrFail({ id: file.id });
 	}
 
 	/**
