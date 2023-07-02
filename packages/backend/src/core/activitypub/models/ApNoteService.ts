@@ -260,7 +260,7 @@ export class ApNoteService {
 
 		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
-			return [] as Emoji[];
+			return [];
 		});
 
 		const apEmojis = emojis.map(emoji => emoji.name);
