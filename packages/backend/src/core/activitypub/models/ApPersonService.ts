@@ -48,6 +48,8 @@ import type { IActor, IObject } from '../type.js';
 const nameLength = 128;
 const summaryLength = 2048;
 
+type Field = Record<'name' | 'value', string>;
+
 @Injectable()
 export class ApPersonService implements OnModuleInit {
 	private utilityService: UtilityService;
@@ -576,11 +578,10 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	@bindThis
-	public analyzeAttachments(attachments: IObject | IObject[] | undefined) {
-		const fields: {
-		name: string,
-		value: string
-	}[] = [];
+	// TODO: `attachments`が`IObject`だった場合、返り値が`{ fields: [] }`になるようだが構わないのか？
+	public analyzeAttachments(attachments: IObject | IObject[] | undefined): { fields: Field[] } {
+		const fields: Field[] = [];
+
 		if (Array.isArray(attachments)) {
 			for (const attachment of attachments.filter(isPropertyValue)) {
 				fields.push({
