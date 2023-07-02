@@ -204,16 +204,8 @@ export class ApNoteService {
 				if (!uri.match(/^https?:/)) return { status: 'permerror' };
 				try {
 					const res = await this.resolveNote(uri);
-					if (res) {
-						return {
-							status: 'ok',
-							res,
-						};
-					} else {
-						return {
-							status: 'permerror',
-						};
-					}
+					if (res == null) return { status: 'permerror' };
+					return { status: 'ok', res };
 				} catch (e) {
 					return {
 						status: (e instanceof StatusError && e.isClientError) ? 'permerror' : 'temperror',
