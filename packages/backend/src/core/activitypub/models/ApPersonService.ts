@@ -570,6 +570,7 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		// リモートサーバーからフェッチしてきて登録
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}
