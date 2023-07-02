@@ -135,10 +135,6 @@ export class ApPersonService implements OnModuleInit {
 	private validateActor(x: IObject, uri: string): IActor {
 		const expectHost = this.punyHost(uri);
 
-		if (x == null) {
-			throw new Error('invalid Actor: object is null');
-		}
-
 		if (!isActor(x)) {
 			throw new Error(`invalid Actor type '${x.type}'`);
 		}
