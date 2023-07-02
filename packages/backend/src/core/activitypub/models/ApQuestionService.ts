@@ -31,6 +31,7 @@ export class ApQuestionService {
 
 	@bindThis
 	public async extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const question = await resolver.resolve(source);
