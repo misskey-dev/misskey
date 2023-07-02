@@ -4,6 +4,14 @@
 	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_s">
+				<MkSwitch v-model="enableServerMachineStats">
+					<template #label>{{ i18n.ts.enableServerMachineStats }}</template>
+				</MkSwitch>
+
+				<MkSwitch v-model="enableIdenticonGeneration">
+					<template #label>{{ i18n.ts.enableIdenticonGeneration }}</template>
+				</MkSwitch>
+
 				<MkSwitch v-model="enableChartsForRemoteUser">
 					<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
 				</MkSwitch>
@@ -27,17 +35,23 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkSwitch from '@/components/MkSwitch.vue';
 
+let enableServerMachineStats: boolean = $ref(false);
+let enableIdenticonGeneration: boolean = $ref(false);
 let enableChartsForRemoteUser: boolean = $ref(false);
 let enableChartsForFederatedInstances: boolean = $ref(false);
 
 async function init() {
 	const meta = await os.api('admin/meta');
+	enableServerMachineStats = meta.enableServerMachineStats;
+	enableIdenticonGeneration = meta.enableIdenticonGeneration;
 	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
 	enableChartsForFederatedInstances = meta.enableChartsForFederatedInstances;
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
+		enableServerMachineStats,
+		enableIdenticonGeneration,
 		enableChartsForRemoteUser,
 		enableChartsForFederatedInstances,
 	}).then(() => {
