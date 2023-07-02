@@ -50,8 +50,6 @@ export class ApImageService {
 			throw new Error('invalid image: url not privided');
 		}
 
-		// TODO?
-		// const url = getOneApHrefNullable(image.url);
 		if (typeof image.url !== 'string') {
 			throw new Error('invalid image: unexpected type of url: ' + JSON.stringify(image.url));
 		}
