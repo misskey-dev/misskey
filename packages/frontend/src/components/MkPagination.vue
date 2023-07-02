@@ -21,14 +21,14 @@
 
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAhead : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAheadAppear : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="items" :fetching="fetching || moreFetching"></slot>
+		<slot :items="itemsComputed" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAppear : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -94,12 +94,29 @@ let backed = $ref(false);
 
 let scrollRemove = $ref<(() => void) | null>(null);
 
+/**
+ * 表示するアイテムのソース
+ * 最新が0番目
+ */
 const items = ref<MisskeyEntity[]>([]);
+
+/**
+ * タブが非アクティブなどの場合に更新を貯めておく
+ * 最新が0番目
+ */
 const queue = ref<MisskeyEntity[]>([]);
+
 const offset = ref(0);
+
+/**
+ * 初期化中かどうか（trueならMkLoadingで全て隠す）
+ */
 const fetching = ref(true);
+
 const moreFetching = ref(false);
 const more = ref(false);
+const preventFetchMore = ref(false);
+const preventFetchMoreTimer = ref<number | null>(null);
 const isBackTop = ref(false);
 const empty = computed(() => items.value.length === 0);
 const error = ref(false);
@@ -109,6 +126,23 @@ const {
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
+
+/**
+ * 実際にレンダリングするアイテム
+ * fetchとprependが同時にやってくると重複するので、重複を排除する
+ */
+const itemsComputed = computed(() => {
+	let _items = [...items.value];
+	const ids = new Set();
+	_items = _items.reduce((acc, item) => {
+		if (acc.length >= props.displayLimit) return acc;
+		if (ids.has(item.id)) return acc;
+		ids.add(item.id);
+		acc.push(item);
+		return acc;
+	}, [] as MisskeyEntity[]);
+	return _items;
+});
 
 const visibility = useDocumentVisibility();
 
@@ -173,11 +207,13 @@ async function init(): Promise<void> {
 		}
 
 		if (res.length === 0 || props.pagination.noPaging) {
-			items.value = res;
+			// prependで追加されたアイテムの後ろに追加する
+			items.value = [...items.value, ...res];
 			more.value = false;
 		} else {
 			if (props.pagination.reversed) moreFetching.value = true;
-			items.value = res;
+			// prependで追加されたアイテムの後ろに追加する
+			items.value = [...items.value, ...res];
 			more.value = true;
 		}
 
@@ -286,6 +322,27 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
+const fetchMoreApperTimeoutFn = (): void => {
+	preventFetchMore.value = false;
+	preventFetchMoreTimer.value = null;
+};
+const fetchMoreAppearTimeout = (): void => {
+	preventFetchMore.value = true;
+	preventFetchMoreTimer.value = window.setTimeout(fetchMoreApperTimeoutFn, 600);
+};
+
+const fetchMoreAppear = async (): Promise<void> => {
+	if (preventFetchMore.value) return;
+	await fetchMore();
+	fetchMoreAppearTimeout();
+};
+
+const fetchMoreAheadAppear = async (): Promise<void> => {
+	if (preventFetchMore.value) return;
+	await fetchMoreAhead();
+	fetchMoreAppearTimeout();
+};
+
 const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
 
 watch(visibility, () => {
@@ -308,10 +365,14 @@ watch(visibility, () => {
 	}
 });
 
+/**
+ * 最新のものとして1つだけアイテムを追加する
+ * ストリーミングから降ってきたアイテムはこれで追加する
+ */
 const prepend = (item: MisskeyEntity): void => {
-	// 初回表示時はunshiftだけでOK
-	if (!rootEl) {
+	if (items.value.length === 0) {
 		items.value.unshift(item);
+		fetching.value = false;
 		return;
 	}
 
@@ -387,6 +448,10 @@ onBeforeUnmount(() => {
 	if (timerForSetPause) {
 		clearTimeout(timerForSetPause);
 		timerForSetPause = null;
+	}
+	if (preventFetchMoreTimer.value) {
+		clearTimeout(preventFetchMoreTimer.value);
+		preventFetchMoreTimer.value = null;
 	}
 	scrollObserver.disconnect();
 });
