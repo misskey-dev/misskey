@@ -51,7 +51,7 @@ export class ApImageService {
 		}
 
 		if (typeof image.url !== 'string') {
-			throw new Error('invalid image: unexpected type of url: ' + JSON.stringify(image.url));
+			throw new Error('invalid image: unexpected type of url: ' + JSON.stringify(image.url, null, 2));
 		}
 
 		if (!checkHttps(image.url)) {
