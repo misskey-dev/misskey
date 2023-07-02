@@ -274,7 +274,7 @@ export class ApPersonService implements OnModuleInit {
 					alsoKnownAs: person.alsoKnownAs,
 					isExplorable: !!person.discoverable,
 					username: person.preferredUsername,
-					usernameLower: person.preferredUsername!.toLowerCase(),
+					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
 					inbox: person.inbox,
 					sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
