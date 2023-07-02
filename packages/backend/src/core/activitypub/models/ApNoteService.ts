@@ -71,7 +71,7 @@ export class ApNoteService {
 	}
 
 	@bindThis
-	public validateNote(object: IObject, uri: string) {
+	public validateNote(object: IObject, uri: string): Error | null {
 		const expectHost = this.utilityService.extractDbHost(uri);
 
 		if (object == null) {
