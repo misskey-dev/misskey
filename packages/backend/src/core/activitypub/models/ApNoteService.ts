@@ -164,7 +164,7 @@ export class ApNoteService {
 		}
 
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
-		const apHashtags = await extractApHashtags(note.tag);
+		const apHashtags = extractApHashtags(note.tag);
 
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
