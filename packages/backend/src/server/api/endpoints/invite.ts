@@ -1,9 +1,9 @@
-import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -42,9 +42,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const code = rndstr({
-				length: 8,
-				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
+			const code = secureRndstr(8, {
+				chars: '23456789ABCDEFGHJKLMNPQRSTUVWXYZ', // [0-9A-Z] w/o [01IO] (32 patterns)
 			});
 
 			await this.registrationTicketsRepository.insert({

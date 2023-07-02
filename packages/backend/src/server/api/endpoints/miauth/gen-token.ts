@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Generate access token
-			const accessToken = secureRndstr(32, true);
+			const accessToken = secureRndstr(32);
 
 			const now = new Date();
 
