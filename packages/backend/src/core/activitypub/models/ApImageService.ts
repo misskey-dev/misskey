@@ -10,9 +10,10 @@ import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { DriveService } from '@/core/DriveService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { checkHttps } from '@/misc/check-https.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
-import { checkHttps } from '@/misc/check-https.js';
+import type { IObject } from '../type.js';
 
 @Injectable()
 export class ApImageService {
@@ -37,16 +38,20 @@ export class ApImageService {
 	 * Imageを作成します。
 	 */
 	@bindThis
-	public async createImage(actor: RemoteUser, value: any): Promise<DriveFile> {
+	public async createImage(actor: RemoteUser, value: string | IObject): Promise<DriveFile> {
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
 			throw new Error('actor has been suspended');
 		}
 
-		const image = await this.apResolverService.createResolver().resolve(value) as any;
+		const image = await this.apResolverService.createResolver().resolve(value);
 
 		if (image.url == null) {
 			throw new Error('invalid image: url not privided');
+		}
+
+		if (typeof image.url !== 'string') {
+			throw new Error('invalid image: unexpected type of url: ' + JSON.stringify(image.url));
 		}
 
 		if (!checkHttps(image.url)) {
@@ -63,7 +68,7 @@ export class ApImageService {
 			uri: image.url,
 			sensitive: image.sensitive,
 			isLink: !instance.cacheRemoteFiles,
-			comment: truncate(image.name, DB_MAX_IMAGE_COMMENT_LENGTH),
+			comment: truncate(image.name ?? undefined, DB_MAX_IMAGE_COMMENT_LENGTH),
 		});
 
 		if (file.isLink) {
@@ -89,7 +94,7 @@ export class ApImageService {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolveImage(actor: RemoteUser, value: any): Promise<DriveFile> {
+	public async resolveImage(actor: RemoteUser, value: string | IObject): Promise<DriveFile> {
 		// TODO
 
 		// リモートサーバーからフェッチしてきて登録
