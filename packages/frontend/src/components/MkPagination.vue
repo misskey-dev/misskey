@@ -135,7 +135,6 @@ const itemsComputed = computed(() => {
 	let _items = [...items.value];
 	const ids = new Set();
 	_items = _items.reduce((acc, item) => {
-		if (acc.length >= props.displayLimit) return acc;
 		if (ids.has(item.id)) return acc;
 		ids.add(item.id);
 		acc.push(item);
