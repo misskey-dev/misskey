@@ -233,7 +233,8 @@ export class ApPersonService implements OnModuleInit {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(uri) as any;
+		const object = await resolver.resolve(uri);
+		if (object.id == null) throw new Error(''); // TODO
 
 		const person = this.validateActor(object, uri);
 
