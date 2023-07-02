@@ -379,7 +379,7 @@ export class ApNoteService {
 				publicUrl: tag.icon!.url,
 				updatedAt: new Date(),
 				aliases: [],
-			} as Partial<Emoji>).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 		}));
 	}
 }
