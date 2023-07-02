@@ -103,9 +103,7 @@ export class ApQuestionService {
 			}
 		}
 
-		await this.pollsRepository.update({ noteId: note.id }, {
-			votes: poll.votes,
-		});
+		await this.pollsRepository.update({ noteId: note.id }, { votes: poll.votes });
 
 		return changed;
 	}
