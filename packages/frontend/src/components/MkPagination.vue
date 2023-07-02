@@ -207,13 +207,11 @@ async function init(): Promise<void> {
 		}
 
 		if (res.length === 0 || props.pagination.noPaging) {
-			// prependで追加されたアイテムの後ろに追加する
-			items.value = [...items.value, ...res];
+			concatItems(res);
 			more.value = false;
 		} else {
 			if (props.pagination.reversed) moreFetching.value = true;
-			// prependで追加されたアイテムの後ろに追加する
-			items.value = [...items.value, ...res];
+			concatItems(res);
 			more.value = true;
 		}
 
@@ -383,6 +381,13 @@ const prepend = (item: MisskeyEntity): void => {
 function unshiftItems(newItems: MisskeyEntity[]) {
 	const length = newItems.length + items.value.length;
 	items.value = [...newItems, ...items.value].slice(0, props.displayLimit);
+
+	if (length >= props.displayLimit) more.value = true;
+}
+
+function concatItems(oldItems: MisskeyEntity[]) {
+	const length = oldItems.length + items.value.length;
+	items.value = [...items.value, ...oldItems].slice(0, props.displayLimit);
 
 	if (length >= props.displayLimit) more.value = true;
 }
