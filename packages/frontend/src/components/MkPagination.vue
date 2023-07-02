@@ -392,7 +392,6 @@ function concatItems(oldItems: MisskeyEntity[]) {
 }
 
 function executeQueue() {
-	if (queue.value.length === 0) return;
 	unshiftItems(queue.value);
 	queue.value = [];
 }
