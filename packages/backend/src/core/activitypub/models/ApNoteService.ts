@@ -105,6 +105,7 @@ export class ApNoteService {
 	 */
 	@bindThis
 	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(value);
