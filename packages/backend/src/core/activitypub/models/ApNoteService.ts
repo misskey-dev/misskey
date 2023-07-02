@@ -360,10 +360,9 @@ export class ApNoteService {
 						updatedAt: new Date(),
 					});
 
-					return await this.emojisRepository.findOneBy({
-						host,
-						name,
-					}) as Emoji;
+					const emoji = await this.emojisRepository.findOneBy({ host, name });
+					if (emoji == null) throw new Error(''); // TODO
+					return emoji;
 				}
 
 				return exists;
