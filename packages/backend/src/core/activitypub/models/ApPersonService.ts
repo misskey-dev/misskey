@@ -623,13 +623,13 @@ export class ApPersonService implements OnModuleInit {
 
 			// とりあえずidを別の時間で生成して順番を維持
 			let td = 0;
-			for (const note of featuredNotes.filter(note => note != null)) {
+			for (const note of featuredNotes.filter((note): note is Note => note != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(UserNotePining, {
 					id: this.idService.genId(new Date(Date.now() + td)),
 					createdAt: new Date(),
 					userId: user.id,
-					noteId: note!.id,
+					noteId: note.id,
 				});
 			}
 		});
