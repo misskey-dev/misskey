@@ -1069,6 +1069,8 @@ export interface Locale {
     "additionalPermissionsForFlash": string;
     "thisFlashRequiresTheFollowingPermissions": string;
     "doYouWantToAllowThisPlayToAccessYourAccount": string;
+    "enableServerMachineStats": string;
+    "enableIdenticonGeneration": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
