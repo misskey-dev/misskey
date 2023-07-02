@@ -170,14 +170,11 @@ export class ApNoteService {
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
 		// Noteがsensitiveなら添付もsensitiveにする
-		const limit = promiseLimit(2);
+		const limit = promiseLimit<DriveFile>(2);
 
-		note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
-		const files = note.attachment
-			.map(attach => attach.sensitive = note.sensitive)
-			? (await Promise.all(note.attachment.map(x => limit(() => this.apImageService.resolveImage(actor, x)) as Promise<DriveFile>)))
-				.filter(image => image != null)
-			: [];
+		note.attachment = toArray(note.attachment);
+		note.attachment.forEach(attach => attach.sensitive = note.sensitive);
+		const files = (await Promise.all(note.attachment.map(x => limit(() => this.apImageService.resolveImage(actor, x)))));
 
 		// リプライ
 		const reply: Note | null = note.inReplyTo
