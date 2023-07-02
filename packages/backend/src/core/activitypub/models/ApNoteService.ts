@@ -345,9 +345,9 @@ export class ApNoteService {
 			const exists = existingEmojis.find(x => x.name === name);
 
 			if (exists) {
-				if ((tag.updated != null && exists.updatedAt == null)
+				if ((exists.updatedAt == null)
 					|| (tag.id != null && exists.uri == null)
-					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
+					|| (new Date(tag.updated) > exists.updatedAt)
 					|| (tag.icon!.url !== exists.originalUrl)
 				) {
 					await this.emojisRepository.update({
