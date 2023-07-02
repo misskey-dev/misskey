@@ -74,10 +74,6 @@ export class ApNoteService {
 	public validateNote(object: IObject, uri: string): Error | null {
 		const expectHost = this.utilityService.extractDbHost(uri);
 
-		if (object == null) {
-			return new Error('invalid Note: object is null');
-		}
-
 		if (!validPost.includes(getApType(object))) {
 			return new Error(`invalid Note: invalid object type ${getApType(object)}`);
 		}
