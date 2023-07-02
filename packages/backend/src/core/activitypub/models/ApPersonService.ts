@@ -196,8 +196,6 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async fetchPerson(uri: string): Promise<LocalUser | RemoteUser | null> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
-
 		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null;
 		if (cached) return cached;
 
