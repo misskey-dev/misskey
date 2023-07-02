@@ -1049,8 +1049,8 @@ goToMisskey: "ถึง Misskey"
 installed: "ติดตั้งแล้ว"
 branding: "แบรนดิ้ง"
 _initialAccountSetting:
-  profileSetting: "การตั้งค่าโปรไฟล์"
-  privacySetting: "การตั้งค่าความเป็นส่วนตัว"
+  profileSetting: "ตั้งค่าโปรไฟล์"
+  privacySetting: "ตั้งค่าความเป็นส่วนตัว"
 _serverRules:
   description: "ชุดของกฎที่จะแสดงก่อนการลงทะเบียนเราขอแนะนำให้ตั้งค่าสรุปข้อกำหนดในการให้บริการ"
 _accountMigration:
