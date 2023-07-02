@@ -59,12 +59,7 @@ export class ApQuestionService {
 				return 0;
 			});
 
-		return {
-			choices,
-			votes,
-			multiple,
-			expiresAt,
-		};
+		return { choices, votes, multiple, expiresAt };
 	}
 
 	/**
