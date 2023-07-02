@@ -107,6 +107,20 @@ export type MeDetailed = UserDetailed & {
 	[other: string]: any;
 };
 
+export type MeDetailedWithSecret = MeDetailed & {
+	email: string;
+	emailVerified: boolean;
+	securityKeysList: {
+		id: string;
+		name: string;
+		lastUsed: string;
+	}[];
+};
+
+export type MeSignup = MeDetailedWithSecret & {
+	token: string;
+};
+
 export type DriveFile = {
 	id: ID;
 	createdAt: DateString;
@@ -294,7 +308,9 @@ export type LiteInstanceMetadata = {
 	themeColor: string | null;
 	mascotImageUrl: string | null;
 	bannerUrl: string | null;
-	errorImageUrl: string | null;
+	serverErrorImageUrl: string | null;
+	infoImageUrl: string | null;
+	notFoundImageUrl: string | null;
 	iconUrl: string | null;
 	backgroundImageUrl: string | null;
 	logoImageUrl: string | null;

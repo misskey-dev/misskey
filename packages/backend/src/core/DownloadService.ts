@@ -2,8 +2,7 @@ import * as fs from 'node:fs';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
-import IPCIDR from 'ip-cidr';
-import PrivateIp from 'private-ip';
+import ipaddr from 'ipaddr.js';
 import chalk from 'chalk';
 import got, * as Got from 'got';
 import { parse } from 'content-disposition';
@@ -123,15 +122,15 @@ export class DownloadService {
 	public async downloadTextFile(url: string): Promise<string> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
-	
+
 		this.logger.info(`text file: Temp file is ${path}`);
-	
+
 		try {
 			// write content at URL to temp file
 			await this.downloadUrl(url, path);
-	
+
 			const text = await util.promisify(fs.readFile)(path, 'utf8');
-	
+
 			return text;
 		} finally {
 			cleanup();
@@ -140,13 +139,14 @@ export class DownloadService {
 
 	@bindThis
 	private isPrivateIp(ip: string): boolean {
+		const parsedIp = ipaddr.parse(ip);
+
 		for (const net of this.config.allowedPrivateNetworks ?? []) {
-			const cidr = new IPCIDR(net);
-			if (cidr.contains(ip)) {
+			if (parsedIp.match(ipaddr.parseCIDR(net))) {
 				return false;
 			}
 		}
 
-		return PrivateIp(ip) ?? false;
+		return parsedIp.range() !== 'unicast';
 	}
 }

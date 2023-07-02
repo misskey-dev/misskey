@@ -26,8 +26,6 @@
 						<template #key>{{ i18n.ts.registeredDate }}</template>
 						<template #value><MkTime :time="$i.createdAt" mode="detail"/></template>
 					</MkKeyValue>
-
-					<FormLink to="/settings/account-stats"><template #icon><i class="ti ti-info-circle"></i></template>{{ i18n.ts.statistics }}</FormLink>
 				</div>
 			</MkFolder>
 

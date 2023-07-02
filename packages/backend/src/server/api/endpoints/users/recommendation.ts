@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
-		
+
 		private userEntityService: UserEntityService,
 		private queryService: QueryService,
 	) {
