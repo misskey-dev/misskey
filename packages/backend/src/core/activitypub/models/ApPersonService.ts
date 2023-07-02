@@ -245,7 +245,7 @@ export class ApPersonService implements OnModuleInit {
 
 		const { fields } = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
+		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
 		const isBot = getApType(object) === 'Service';
 
