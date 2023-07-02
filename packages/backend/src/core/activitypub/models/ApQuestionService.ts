@@ -68,8 +68,9 @@ export class ApQuestionService {
 	 * @returns true if updated
 	 */
 	@bindThis
-	public async updateQuestion(value: any, resolver?: Resolver) {
+	public async updateQuestion(value: string | IObject, resolver?: Resolver) {
 		const uri = typeof value === 'string' ? value : value.id;
+		if (uri == null) throw new Error(''); // TODO
 
 		// URIがこのサーバーを指しているならスキップ
 		if (uri.startsWith(this.config.url + '/')) throw new Error('uri points local');
