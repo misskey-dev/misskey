@@ -416,6 +416,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 		//#endregion
 
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
