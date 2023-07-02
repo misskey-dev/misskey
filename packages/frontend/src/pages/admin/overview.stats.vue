@@ -73,7 +73,7 @@ let fetching = $ref(true);
 onMounted(async () => {
 	const [_stats, _onlineUsersCount] = await Promise.all([
 		os.api('stats', {}),
-		os.api('get-online-users-count').then(res => res.count),
+		os.apiGet('get-online-users-count').then(res => res.count),
 	]);
 	stats = _stats;
 	onlineUsersCount = _onlineUsersCount;
