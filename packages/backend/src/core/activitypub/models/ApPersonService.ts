@@ -97,7 +97,7 @@ export class ApPersonService implements OnModuleInit {
 	) {
 	}
 
-	onModuleInit() {
+	onModuleInit(): void {
 		this.utilityService = this.moduleRef.get('UtilityService');
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
