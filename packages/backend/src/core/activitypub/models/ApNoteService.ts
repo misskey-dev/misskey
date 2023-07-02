@@ -140,7 +140,11 @@ export class ApNoteService {
 		this.logger.info(`Creating the Note: ${note.id}`);
 
 		// 投稿者をフェッチ
-		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo!), resolver) as RemoteUser;
+		if (note.attributedTo == null) {
+			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
+		}
+
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as RemoteUser;
 
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
