@@ -94,24 +94,6 @@ export class ApPersonService implements OnModuleInit {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
-
-		//private utilityService: UtilityService,
-		//private userEntityService: UserEntityService,
-		//private idService: IdService,
-		//private globalEventService: GlobalEventService,
-		//private metaService: MetaService,
-		//private federatedInstanceService: FederatedInstanceService,
-		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		//private cacheService: CacheService,
-		//private apResolverService: ApResolverService,
-		//private apNoteService: ApNoteService,
-		//private apImageService: ApImageService,
-		//private apMfmService: ApMfmService,
-		//private mfmService: MfmService,
-		//private hashtagService: HashtagService,
-		//private usersChart: UsersChart,
-		//private instanceChart: InstanceChart,
-		//private apLoggerService: ApLoggerService,
 	) {
 	}
 
