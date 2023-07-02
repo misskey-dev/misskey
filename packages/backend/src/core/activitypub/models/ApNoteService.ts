@@ -178,17 +178,19 @@ export class ApNoteService {
 
 		// リプライ
 		const reply: Note | null = note.inReplyTo
-			? await this.resolveNote(note.inReplyTo, resolver).then(x => {
-				if (x == null) {
-					this.logger.warn('Specified inReplyTo, but not found');
-					throw new Error('inReplyTo not found');
-				} else {
+			? await this.resolveNote(note.inReplyTo, resolver)
+				.then(x => {
+					if (x == null) {
+						this.logger.warn('Specified inReplyTo, but not found');
+						throw new Error('inReplyTo not found');
+					}
+
 					return x;
-				}
-			}).catch(async err => {
-				this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
-				throw err;
-			})
+				})
+				.catch(async err => {
+					this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
+					throw err;
+				})
 			: null;
 
 		// 引用
