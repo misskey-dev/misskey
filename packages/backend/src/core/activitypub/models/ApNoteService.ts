@@ -294,19 +294,18 @@ export class ApNoteService {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('missing uri');
 
-		// ブロックしてたら中断
+		// ブロックしていたら中断
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) throw new StatusError('blocked host', 451);
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) {
+			throw new StatusError('blocked host', 451);
+		}
 
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			//#region このサーバーに既に登録されていたらそれを返す
 			const exist = await this.fetchNote(uri);
-
-			if (exist) {
-				return exist;
-			}
+			if (exist) return exist;
 			//#endregion
 
 			if (uri.startsWith(this.config.url)) {
