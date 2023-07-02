@@ -331,8 +331,6 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		host = this.utilityService.toPuny(host);
 
-		if (!tags) return [];
-
 		const eomjiTags = toArray(tags).filter(isEmoji);
 
 		const existingEmojis = await this.emojisRepository.findBy({
