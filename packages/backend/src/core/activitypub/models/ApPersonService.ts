@@ -562,10 +562,7 @@ export class ApPersonService implements OnModuleInit {
 	public async resolvePerson(uri: string, resolver?: Resolver): Promise<LocalUser | RemoteUser> {
 		//#region このサーバーに既に登録されていたらそれを返す
 		const exist = await this.fetchPerson(uri);
-
-		if (exist) {
-			return exist;
-		}
+		if (exist) return exist;
 		//#endregion
 
 		// リモートサーバーからフェッチしてきて登録
