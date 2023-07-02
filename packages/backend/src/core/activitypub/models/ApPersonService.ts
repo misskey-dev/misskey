@@ -594,7 +594,7 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async updateFeatured(userId: User['id'], resolver?: Resolver) {
+	public async updateFeatured(userId: User['id'], resolver?: Resolver): Promise<void> {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
