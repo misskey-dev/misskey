@@ -210,7 +210,7 @@ export class ApNoteService {
 			};
 
 			const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
-			const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
+			const results = await Promise.all(uris.map(tryResolveNote));
 
 			quote = results.filter((x): x is { status: 'ok', res: Note } => x.status === 'ok').map(x => x.res).at(0);
 			if (!quote) {
