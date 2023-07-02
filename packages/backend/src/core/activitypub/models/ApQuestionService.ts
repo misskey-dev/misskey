@@ -47,11 +47,17 @@ export class ApQuestionService {
 			throw new Error('invalid question');
 		}
 
-		const choices = question[multiple ? 'anyOf' : 'oneOf']!
-			.map((x, i) => x.name!);
+		const choices = question[multiple ? 'anyOf' : 'oneOf']
+			?.map((x) => x.name)
+			.filter((x): x is string => typeof x === 'string')
+			?? [];
 
-		const votes = question[multiple ? 'anyOf' : 'oneOf']!
-			.map((x, i) => x.replies && x.replies.totalItems || x._misskey_votes || 0);
+		const votes = question[multiple ? 'anyOf' : 'oneOf']
+			?.map((x) => {
+				if (x.replies) return x.replies.totalItems;
+				if (x._misskey_votes) return x._misskey_votes;
+				return 0;
+			});
 
 		return {
 			choices,
