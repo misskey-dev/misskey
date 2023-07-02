@@ -197,7 +197,7 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async fetchPerson(uri: string): Promise<LocalUser | RemoteUser | null> {
-		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null;
+		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null | undefined;
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
