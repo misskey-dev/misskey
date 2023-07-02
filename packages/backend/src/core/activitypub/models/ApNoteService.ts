@@ -197,12 +197,10 @@ export class ApNoteService {
 		let quote: Note | undefined | null;
 
 		if (note._misskey_quote || note.quoteUrl) {
-			const tryResolveNote = async (uri: string): Promise<{
-				status: 'ok';
-				res: Note | null;
-			} | {
-				status: 'permerror' | 'temperror';
-			}> => {
+			const tryResolveNote = async (uri: string): Promise<
+				| { status: 'ok'; res: Note }
+				| { status: 'permerror' | 'temperror' }
+			> => {
 				if (typeof uri !== 'string' || !uri.match(/^https?:/)) return { status: 'permerror' };
 				try {
 					const res = await this.resolveNote(uri);
@@ -226,7 +224,7 @@ export class ApNoteService {
 			const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
 			const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
 
-			quote = results.filter((x): x is { status: 'ok', res: Note | null } => x.status === 'ok').map(x => x.res).find(x => x);
+			quote = results.filter((x): x is { status: 'ok', res: Note } => x.status === 'ok').map(x => x.res).at(0);
 			if (!quote) {
 				if (results.some(x => x.status === 'temperror')) {
 					throw new Error('quote resolve failed');
