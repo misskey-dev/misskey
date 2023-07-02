@@ -257,7 +257,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Create user
-		let user: RemoteUser;
+		let user: RemoteUser | null = null;
 		try {
 		// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
@@ -323,6 +323,8 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
+		if (user == null) throw new Error(''); // TODO
+
 		// Register host
 		this.federatedInstanceService.fetch(host).then(async i => {
 			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
@@ -332,10 +334,10 @@ export class ApPersonService implements OnModuleInit {
 			}
 		});
 
-		this.usersChart.update(user!, true);
+		this.usersChart.update(user, true);
 
 		// ハッシュタグ更新
-		this.hashtagService.updateUsertags(user!, tags);
+		this.hashtagService.updateUsertags(user, tags);
 
 		//#region アバターとヘッダー画像をフェッチ
 		const [avatar, banner] = await Promise.all([
@@ -354,7 +356,7 @@ export class ApPersonService implements OnModuleInit {
 		const avatarBlurhash = avatar ? avatar.blurhash : null;
 		const bannerBlurhash = banner ? banner.blurhash : null;
 
-		await this.usersRepository.update(user!.id, {
+		await this.usersRepository.update(user.id, {
 			avatarId,
 			bannerId,
 			avatarUrl,
@@ -363,12 +365,12 @@ export class ApPersonService implements OnModuleInit {
 			bannerBlurhash,
 		});
 
-		user!.avatarId = avatarId;
-		user!.bannerId = bannerId;
-		user!.avatarUrl = avatarUrl;
-		user!.bannerUrl = bannerUrl;
-		user!.avatarBlurhash = avatarBlurhash;
-		user!.bannerBlurhash = bannerBlurhash;
+		user.avatarId = avatarId;
+		user.bannerId = bannerId;
+		user.avatarUrl = avatarUrl;
+		user.bannerUrl = bannerUrl;
+		user.avatarBlurhash = avatarBlurhash;
+		user.bannerBlurhash = bannerBlurhash;
 		//#endregion
 
 		//#region カスタム絵文字取得
@@ -379,14 +381,12 @@ export class ApPersonService implements OnModuleInit {
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
-		await this.usersRepository.update(user!.id, {
-			emojis: emojiNames,
-		});
+		await this.usersRepository.update(user.id, { emojis: emojiNames });
 		//#endregion
 
-		await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
+		await this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err));
 
-		return user!;
+		return user;
 	}
 
 	/**
