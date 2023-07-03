@@ -191,7 +191,7 @@ export class ApNoteService {
 			: null;
 
 		// 引用
-		let quote: Note | undefined | null;
+		let quote: Note | undefined | null = null;
 
 		if (note._misskey_quote || note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<
