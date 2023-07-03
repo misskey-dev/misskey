@@ -460,12 +460,23 @@ export class ApPersonService implements OnModuleInit {
 			isExplorable: !!person.discoverable,
 		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
-		const moving =
+		const moving = ((): boolean => {
 			// 移行先がない→ある
-			(!exist.movedToUri && updates.movedToUri) ||
+			if (
+				exist.movedToUri === null &&
+				updates.movedToUri
+			) return true;
+
 			// 移行先がある→別のもの
-			(exist.movedToUri !== updates.movedToUri && exist.movedToUri && updates.movedToUri);
+			if (
+				exist.movedToUri !== null &&
+				updates.movedToUri !== null &&
+				exist.movedToUri !== updates.movedToUri
+			) return true;
+
 			// 移行先がある→ない、ない→ないは無視
+			return false;
+		})();
 
 		if (moving) updates.movedAt = new Date();
 
