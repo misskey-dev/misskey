@@ -1,7 +1,6 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import rndstr from 'rndstr';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
 
@@ -13,13 +12,14 @@ import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IActor } from '@/core/activitypub/type.js';
-import { MockResolver } from '../misc/mock-resolver.js';
 import { Note } from '@/models/index.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
 
 function createRandomActor(): IActor & { id: string } {
-	const preferredUsername = `${rndstr('A-Z', 4)}${rndstr('a-z', 4)}`;
+	const preferredUsername = secureRndstr(8);
 	const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
 
 	return {
@@ -61,7 +61,7 @@ describe('ActivityPub', () => {
 
 		const post = {
 			'@context': 'https://www.w3.org/ns/activitystreams',
-			id: `${host}/users/${rndstr('0-9a-z', 8)}`,
+			id: `${host}/users/${secureRndstr(8)}`,
 			type: 'Note',
 			attributedTo: actor.id,
 			to: 'https://www.w3.org/ns/activitystreams#Public',
@@ -94,7 +94,7 @@ describe('ActivityPub', () => {
 		test('Truncate long name', async () => {
 			const actor = {
 				...createRandomActor(),
-				name: rndstr('0-9a-z', 129),
+				name: secureRndstr(129),
 			};
 
 			resolver._register(actor.id, actor);
