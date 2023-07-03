@@ -341,14 +341,11 @@ export class ApPersonService implements OnModuleInit {
 		this.hashtagService.updateUsertags(user, tags);
 
 		//#region アバターとヘッダー画像をフェッチ
-		const [avatar, banner] = await Promise.all([
-			person.icon,
-			person.image,
-		].map(img =>
-			img == null
-				? Promise.resolve(null)
-				: this.apImageService.resolveImage(user!, img).catch(() => null),
-		));
+		const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
+			if (img == null) return null;
+			if (user == null) throw new Error(''); // TODO
+			return this.apImageService.resolveImage(user, img).catch(() => null);
+		}));
 
 		const avatarId = avatar ? avatar.id : null;
 		const bannerId = banner ? banner.id : null;
@@ -427,14 +424,10 @@ export class ApPersonService implements OnModuleInit {
 		this.logger.info(`Updating the Person: ${person.id}`);
 
 		// アバターとヘッダー画像をフェッチ
-		const [avatar, banner] = await Promise.all([
-			person.icon,
-			person.image,
-		].map(img =>
-			img == null
-				? Promise.resolve(null)
-				: this.apImageService.resolveImage(exist, img).catch(() => null),
-		));
+		const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
+			if (img == null) return null;
+			return this.apImageService.resolveImage(exist, img).catch(() => null);
+		}));	
 
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
