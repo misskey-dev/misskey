@@ -4972,6 +4972,251 @@ export const endpoints = {
 		}],
 	},
 	//#endregion
+
+	//#region gallery
+	'gallery/posts/create': {
+		tags: ['gallery'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:gallery',
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 20,
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					title: { type: 'string', minLength: 1 },
+					description: { type: ['string', 'null'] },
+					fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					isSensitive: { type: 'boolean', default: false },
+				},
+				required: ['title', 'fileIds'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+			},
+		}],
+	},
+	'gallery/posts/delete': {
+		tags: ['gallery'],
+	
+		requireCredential: true,
+	
+		kind: 'write:gallery',
+	
+		errors: {
+			noSuchPost: {
+				message: 'No such post.',
+				code: 'NO_SUCH_POST',
+				id: 'ae52f367-4bd7-4ecd-afc6-5672fff427f5',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					postId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['postId'],
+			},
+			res: undefined,
+		}],
+	},
+	'gallery/posts/like': {
+		tags: ['gallery'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:gallery-likes',
+	
+		errors: {
+			noSuchPost: {
+				message: 'No such post.',
+				code: 'NO_SUCH_POST',
+				id: '56c06af3-1287-442f-9701-c93f7c4a62ff',
+			},
+	
+			yourPost: {
+				message: 'You cannot like your post.',
+				code: 'YOUR_POST',
+				id: 'f78f1511-5ebc-4478-a888-1198d752da68',
+			},
+	
+			alreadyLiked: {
+				message: 'The post has already been liked.',
+				code: 'ALREADY_LIKED',
+				id: '40e9ed56-a59c-473a-bf3f-f289c54fb5a7',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					postId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['postId'],
+			},
+			res: undefined,
+		}],
+	},
+	'gallery/posts/show': {
+		tags: ['gallery'],
+	
+		requireCredential: false,
+	
+		errors: {
+			noSuchPost: {
+				message: 'No such post.',
+				code: 'NO_SUCH_POST',
+				id: '1137bf14-c5b0-4604-85bb-5b5371b1cd45',
+			},
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					postId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['postId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+			},
+		}],
+	},
+	'gallery/posts/unlike': {
+		tags: ['gallery'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:gallery-likes',
+	
+		errors: {
+			noSuchPost: {
+				message: 'No such post.',
+				code: 'NO_SUCH_POST',
+				id: 'c32e6dd0-b555-4413-925e-b3757d19ed84',
+			},
+	
+			notLiked: {
+				message: 'You have not liked that post.',
+				code: 'NOT_LIKED',
+				id: 'e3e8e06e-be37-41f7-a5b4-87a8250288f0',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					postId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['postId'],
+			},
+			res: undefined,
+		}]
+	},
+	'gallery/posts/update': {
+		tags: ['gallery'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:gallery',
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 300,
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					postId: { type: 'string', format: 'misskey:id' },
+					title: { type: 'string', minLength: 1 },
+					description: { type: ['string', 'null'] },
+					fileIds: { type: 'array', uniqueItems: true, minItems: 1, maxItems: 32, items: {
+						type: 'string', format: 'misskey:id',
+					} },
+					isSensitive: { type: 'boolean', default: false },
+				},
+				required: ['postId', 'title', 'fileIds'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+			},
+		}],
+	},
+	'gallery/featured': {
+		tags: ['gallery'],
+	
+		requireCredential: false,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+				},
+			},
+		}],
+	},
+	'gallery/popular': {
+		tags: ['gallery'],
+	
+		requireCredential: false,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+				},
+			},
+		}],
+	},
+	'gallery/posts': {
+		tags: ['gallery'],
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+				},
+			},
+		}],
+	},
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
