@@ -11,10 +11,10 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class CacheService implements OnApplicationShutdown {
-	public userByIdCache: MemoryKVCache<User>;
-	public localUserByNativeTokenCache: MemoryKVCache<LocalUser | null>;
+	public userByIdCache: MemoryKVCache<User, User | string>;
+	public localUserByNativeTokenCache: MemoryKVCache<LocalUser | null, string | null>;
 	public localUserByIdCache: MemoryKVCache<LocalUser>;
-	public uriPersonCache: MemoryKVCache<User | null>;
+	public uriPersonCache: MemoryKVCache<User | null, string | null>;
 	public userProfileCache: RedisKVCache<UserProfile>;
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
@@ -55,10 +55,24 @@ export class CacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new MemoryKVCache<User>(Infinity);
-		this.localUserByNativeTokenCache = new MemoryKVCache<LocalUser | null>(Infinity);
-		this.localUserByIdCache = new MemoryKVCache<LocalUser>(Infinity);
-		this.uriPersonCache = new MemoryKVCache<User | null>(Infinity);
+		const localUserByIdCache = new MemoryKVCache<LocalUser>(1000 * 60 * 60 * 6 /* 6h */);
+		this.localUserByIdCache	= localUserByIdCache;
+
+		// ローカルユーザーならlocalUserByIdCacheにデータを追加し、こちらにはid(文字列)だけを追加する
+		const userByIdCache = new MemoryKVCache<User, User | string>(1000 * 60 * 60 * 6 /* 6h */, {
+			toMapConverter: user => user.host === null ? user.id : user,
+			fromMapConverter: userOrId => typeof userOrId === 'string' ? localUserByIdCache.get(userOrId) : userOrId,
+		});
+		this.userByIdCache = userByIdCache;
+
+		this.localUserByNativeTokenCache = new MemoryKVCache<LocalUser | null, string | null>(Infinity, {
+			toMapConverter: user => user === null ? null : user.id,
+			fromMapConverter: id => id === null ? null : localUserByIdCache.get(id),
+		});
+		this.uriPersonCache = new MemoryKVCache<User | null, string | null>(Infinity, {
+			toMapConverter: user => user === null ? null : user.id,
+			fromMapConverter: id => id === null ? null : userByIdCache.get(id),
+		});
 
 		this.userProfileCache = new RedisKVCache<UserProfile>(this.redisClient, 'userProfile', {
 			lifetime: 1000 * 60 * 30, // 30m
@@ -131,7 +145,7 @@ export class CacheService implements OnApplicationShutdown {
 					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
 					this.userByIdCache.set(user.id, user);
 					for (const [k, v] of this.uriPersonCache.cache.entries()) {
-						if (v.value?.id === user.id) {
+						if (v.value === user.id) {
 							this.uriPersonCache.set(k, user);
 						}
 					}
