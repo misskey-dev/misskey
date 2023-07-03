@@ -506,7 +506,7 @@ export class ApPersonService implements OnModuleInit {
 			url,
 			fields,
 			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-			birthday: bday ? bday[0] : null,
+			birthday: bday?.[0] ?? null,
 			location: person['vcard:Address'] ?? null,
 		});
 
