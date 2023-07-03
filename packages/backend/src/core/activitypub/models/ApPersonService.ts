@@ -503,7 +503,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		await this.userProfilesRepository.update({ userId: exist.id }, {
-			url: url,
+			url,
 			fields,
 			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 			birthday: bday ? bday[0] : null,
