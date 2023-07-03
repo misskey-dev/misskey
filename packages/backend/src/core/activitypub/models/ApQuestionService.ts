@@ -35,10 +35,8 @@ export class ApQuestionService {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const question = await resolver.resolve(source);
+		if (!isQuestion(question)) throw new Error('invalid type');
 
-		if (!isQuestion(question)) {
-			throw new Error('invalid type');
-		}
 
 		const multiple = !question.oneOf;
 		const expiresAt = question.endTime ? new Date(question.endTime) : question.closed ? new Date(question.closed) : null;
