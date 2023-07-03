@@ -6,40 +6,10 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 
-export const meta = {
-	tags: ['flash'],
-
-	requireCredential: true,
-
-	prohibitMoved: true,
-
-	kind: 'write:flash',
-
-	limit: {
-		duration: ms('1hour'),
-		max: 10,
-	},
-
-	errors: {
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		title: { type: 'string' },
-		summary: { type: 'string' },
-		script: { type: 'string' },
-		permissions: { type: 'array', items: {
-			type: 'string',
-		} },
-	},
-	required: ['title', 'summary', 'script', 'permissions'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'flash/create'> {
+	name = 'flash/create' as const;
 	constructor(
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
@@ -47,7 +17,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private flashEntityService: FlashEntityService,
 		private idService: IdService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const flash = await this.flashsRepository.insert({
 				id: this.idService.genId(),
 				userId: me.id,

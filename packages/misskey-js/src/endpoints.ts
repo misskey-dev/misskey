@@ -4412,6 +4412,44 @@ export const endpoints = {
 		}],
 	},
 	//#endregion
+
+	//#region flash
+	'flash/create': {
+		tags: ['flash'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:flash',
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 10,
+		},
+	
+		errors: {
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					title: { type: 'string' },
+					summary: { type: 'string' },
+					script: { type: 'string' },
+					permissions: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['title', 'summary', 'script', 'permissions'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Flash',
+			},
+		}]
+	},
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**
