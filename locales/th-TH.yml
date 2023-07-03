@@ -1061,9 +1061,11 @@ branding: "แบรนดิ้ง"
 _initialAccountSetting:
   profileSetting: "ตั้งค่าโปรไฟล์"
   privacySetting: "ตั้งค่าความเป็นส่วนตัว"
+  theseSettingsCanEditLater: "คุณสามารถเปลี่ยนการตั้งค่าเหล่านี้ได้ในภายหลังได้ตลอดเวลานะ"
   initialAccountSettingCompleted: "ตั้งค่าโปรไฟล์เสร็จสมบูรณ์แล้ว!"
   haveFun: "สนุกกับ {name}!"
   skipAreYouSure: "ต้องการข้ามการตั้งค่าโปรไฟล์จริงๆแบบนั้นหรอ?"
+  laterAreYouSure: "ต้องการตั้งค่าโปรไฟล์ในภายหลังจริงๆอย่างงั้นหรอ?"
 _serverRules:
   description: "ชุดของกฎที่จะแสดงก่อนการลงทะเบียนเราขอแนะนำให้ตั้งค่าสรุปข้อกำหนดในการให้บริการ"
 _accountMigration:
