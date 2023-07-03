@@ -1945,6 +1945,8 @@ export const endpoints = {
 					enableActiveEmailValidation: { type: 'boolean' },
 					enableChartsForRemoteUser: { type: 'boolean' },
 					enableChartsForFederatedInstances: { type: 'boolean' },
+					enableServerMachineStats: { type: 'boolean' },
+					enableIdenticonGeneration: { type: 'boolean' },
 					serverRules: { type: 'array', items: { type: 'string' } },
 					preservedUsernames: { type: 'array', items: { type: 'string' } },
 				} as const satisfies Record<string, JSONSchema7>,
