@@ -47,12 +47,7 @@ export class ApQuestionService {
 			.filter((x): x is string => typeof x === 'string')
 			?? [];
 
-		const votes = question[multiple ? 'anyOf' : 'oneOf']
-			?.map((x) => {
-				if (x.replies) return x.replies.totalItems;
-				if (x._misskey_votes) return x._misskey_votes;
-				return 0;
-			});
+		const votes = question[multiple ? 'anyOf' : 'oneOf']?.map((x) => x.replies?.totalItems ?? x._misskey_votes ?? 0);
 
 		return { choices, votes, multiple, expiresAt };
 	}
