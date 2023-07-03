@@ -37,13 +37,10 @@ export class ApQuestionService {
 		const question = await resolver.resolve(source);
 		if (!isQuestion(question)) throw new Error('invalid type');
 
+		const multiple = question.oneOf === undefined;
+		if (multiple && question.anyOf === undefined) throw new Error('invalid question');
 
-		const multiple = !question.oneOf;
 		const expiresAt = question.endTime ? new Date(question.endTime) : question.closed ? new Date(question.closed) : null;
-
-		if (multiple && !question.anyOf) {
-			throw new Error('invalid question');
-		}
 
 		const choices = question[multiple ? 'anyOf' : 'oneOf']
 			?.map((x) => x.name)
