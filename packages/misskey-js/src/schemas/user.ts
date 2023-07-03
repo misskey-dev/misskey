@@ -495,3 +495,11 @@ export const nameSchema = { type: 'string', minLength: 1, maxLength: 50 } as con
 export const descriptionSchema = { type: 'string', minLength: 1, maxLength: 1500 } as const satisfies JSONSchema7;
 export const locationSchema = { type: 'string', minLength: 1, maxLength: 50 } as const satisfies JSONSchema7;
 export const birthdaySchema = { type: 'string', pattern: /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.toString().slice(1, -1) } as const satisfies JSONSchema7;
+
+export const userSortingSchema = {
+	enum: ['+follower', '-follower', '+createdAt', '-createdAt', '+updatedAt', '-updatedAt'],
+} as const satisfies JSONSchema7;
+
+export const userOriginSchema = {
+	enum: ['combined', 'local', 'remote'],
+} as const satisfies JSONSchema7;

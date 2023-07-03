@@ -1,6 +1,6 @@
 import type { JSONSchema7 } from 'schema-type';
 import { IEndpointMeta } from './endpoints.types.js';
-import { localUsernameSchema, passwordSchema } from './schemas/user.js';
+import { localUsernameSchema, passwordSchema, userOriginSchema, userSortingSchema } from './schemas/user.js';
 import ms from 'ms';
 import { chartSchemaToJSONSchema } from './schemas.js';
 import { chartsSchemas } from './schemas/charts.js';
@@ -5212,6 +5212,137 @@ export const endpoints = {
 				type: 'array',
 				items: {
 					$ref: 'https://misskey-hub.net/api/schemas/GalleryPost',
+				},
+			},
+		}],
+	},
+	//#endregion
+
+	//#region hashtags
+	'hashtags/list': {
+		tags: ['hashtags'],
+	
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					attachedToUserOnly: { type: 'boolean', default: false },
+					attachedToLocalUserOnly: { type: 'boolean', default: false },
+					attachedToRemoteUserOnly: { type: 'boolean', default: false },
+					sort: { type: 'string', enum: ['+mentionedUsers', '-mentionedUsers', '+mentionedLocalUsers', '-mentionedLocalUsers', '+mentionedRemoteUsers', '-mentionedRemoteUsers', '+attachedUsers', '-attachedUsers', '+attachedLocalUsers', '-attachedLocalUsers', '+attachedRemoteUsers', '-attachedRemoteUsers'] },
+				},
+				required: ['sort'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Hashtag',
+				},
+			},
+		}],
+	},
+	'hashtags/search': {
+		tags: ['hashtags'],
+	
+		requireCredential: false,
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					query: { type: 'string' },
+					offset: { type: 'integer', default: 0 },
+				},
+				required: ['query'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					type: 'string',
+				},
+			},
+		}],
+	},
+	'hashtags/show': {
+		tags: ['hashtags'],
+	
+		requireCredential: false,
+
+		errors: {
+			noSuchHashtag: {
+				message: 'No such hashtag.',
+				code: 'NO_SUCH_HASHTAG',
+				id: '110ee688-193e-4a3a-9ecf-c167b2e6981e',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					tag: { type: 'string' },
+				},
+				required: ['tag'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Hashtag',
+			},
+		}],
+	},
+	'hashtags/trend': {
+		tags: ['hashtags'],
+
+		requireCredential: false,
+		allowGet: true,
+		cacheSec: 60 * 1,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						tag: { type: 'string' },
+						chart: {
+							type: 'array',
+							items: { type: 'number' },
+						},
+						usersCount: { type: 'number' },
+					},
+					required: ['tag', 'chart', 'usersCount'],
+				},
+			},
+		}],
+	},
+	'hashtags/users': {
+		requireCredential: false,
+	
+		tags: ['hashtags', 'users'],
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					tag: { type: 'string' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sort: userSortingSchema,
+					state: { type: 'string', enum: ['all', 'alive'], default: 'all' },
+					origin: {
+						...userOriginSchema,
+						default: 'local',
+					},
+				},
+				required: ['tag', 'sort'],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/UserDetailed',
 				},
 			},
 		}],

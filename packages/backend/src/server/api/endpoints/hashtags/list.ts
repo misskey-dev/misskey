@@ -4,44 +4,17 @@ import type { HashtagsRepository } from '@/models/index.js';
 import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['hashtags'],
-
-	requireCredential: false,
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'Hashtag',
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		attachedToUserOnly: { type: 'boolean', default: false },
-		attachedToLocalUserOnly: { type: 'boolean', default: false },
-		attachedToRemoteUserOnly: { type: 'boolean', default: false },
-		sort: { type: 'string', enum: ['+mentionedUsers', '-mentionedUsers', '+mentionedLocalUsers', '-mentionedLocalUsers', '+mentionedRemoteUsers', '-mentionedRemoteUsers', '+attachedUsers', '-attachedUsers', '+attachedLocalUsers', '-attachedLocalUsers', '+attachedRemoteUsers', '-attachedRemoteUsers'] },
-	},
-	required: ['sort'],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'hashtags/list'> {
+	name = 'hashtags/list' as const;
 	constructor(
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
 
 		private hashtagEntityService: HashtagEntityService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.hashtagsRepository.createQueryBuilder('tag');
 
 			if (ps.attachedToUserOnly) query.andWhere('tag.attachedUsersCount != 0');

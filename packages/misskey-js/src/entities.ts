@@ -1,4 +1,6 @@
+import { SchemaType } from "schema-type";
 import { Packed } from "./schemas.js";
+import type { userOriginSchema, userSortingSchema } from "./schemas/user.js";
 
 export type ID = Packed<'Id'>;
 export type DateString = string;
@@ -163,13 +165,8 @@ export type Instance = {
 
 export type Signin = Packed<'SignIn'>;
 
-export type UserSorting =
-	| '+follower'
-	| '-follower'
-	| '+createdAt'
-	| '-createdAt'
-	| '+updatedAt'
-	| '-updatedAt';
-export type OriginType = 'combined' | 'local' | 'remote';
+export type UserSorting = SchemaType<typeof userSortingSchema, []>;
+
+export type OriginType = SchemaType<typeof userOriginSchema, []>;
 
 export type MeSignup = TODO;

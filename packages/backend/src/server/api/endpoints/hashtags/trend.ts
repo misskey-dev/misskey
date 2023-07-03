@@ -22,57 +22,17 @@ const rangeA = 1000 * 60 * 60; // 60分
 
 const max = 5;
 
-export const meta = {
-	tags: ['hashtags'],
-
-	requireCredential: false,
-	allowGet: true,
-	cacheSec: 60 * 1,
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			optional: false, nullable: false,
-			properties: {
-				tag: {
-					type: 'string',
-					optional: false, nullable: false,
-				},
-				chart: {
-					type: 'array',
-					optional: false, nullable: false,
-					items: {
-						type: 'number',
-						optional: false, nullable: false,
-					},
-				},
-				usersCount: {
-					type: 'number',
-					optional: false, nullable: false,
-				},
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'hashtags/trend'> {
+	name = 'hashtags/trend' as const;
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
 		private metaService: MetaService,
 	) {
-		super(meta, paramDef, async () => {
+		super(async () => {
 			const instance = await this.metaService.fetch(true);
 			const hiddenTags = instance.hiddenTags.map(t => normalizeForSearch(t));
 
@@ -95,9 +55,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const tags: {
-		name: string;
-		users: Note['userId'][];
-	}[] = [];
+				name: string;
+				users: Note['userId'][];
+			}[] = [];
 
 			for (const note of tagNotes) {
 				for (const tag of note.tags) {
