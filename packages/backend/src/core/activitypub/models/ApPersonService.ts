@@ -8,7 +8,6 @@ import { UserNotePining } from '@/models/entities/UserNotePining.js';
 import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
 import { truncate } from '@/misc/truncate.js';
 import { StatusError } from '@/misc/status-error.js';
 import { toArray } from '@/misc/prelude/array.js';
@@ -374,7 +373,7 @@ export class ApPersonService implements OnModuleInit {
 		//#region カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
 			this.logger.info(`extractEmojis: ${err}`);
-			return [] as Emoji[];
+			return [];
 		});
 
 		const emojiNames = emojis.map(emoji => emoji.name);
@@ -432,8 +431,8 @@ export class ApPersonService implements OnModuleInit {
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
-			return [] as Emoji[];
-		});
+			return [];
+		});	
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
