@@ -738,11 +738,11 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async move(actor: RemoteUser, activity: IMove): Promise<string> {
+	private async move(actor: RemoteUser, activity: IMove): Promise<void> {
 		// fetch the new and old accounts
 		const targetUri = getApHrefNullable(activity.target);
-		if (!targetUri) return 'skip: invalid activity target';
+		if (!targetUri) return;
 
-		return await this.apPersonService.updatePerson(actor.uri) ?? 'skip: nothing to do';
+		await this.apPersonService.updatePerson(actor.uri);
 	}
 }
