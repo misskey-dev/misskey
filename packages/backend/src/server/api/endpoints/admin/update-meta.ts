@@ -304,6 +304,14 @@ export default class extends Endpoint<'admin/update-meta'> {
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
 			}
 
+			if (ps.enableServerMachineStats !== undefined) {
+				set.enableServerMachineStats = ps.enableServerMachineStats;
+			}
+
+			if (ps.enableIdenticonGeneration !== undefined) {
+				set.enableIdenticonGeneration = ps.enableIdenticonGeneration;
+			}
+
 			if (ps.serverRules !== undefined) {
 				set.serverRules = ps.serverRules;
 			}

@@ -96,6 +96,8 @@ export default class extends Endpoint<'admin/meta'> {
 				enableActiveEmailValidation: instance.enableActiveEmailValidation,
 				enableChartsForRemoteUser: instance.enableChartsForRemoteUser,
 				enableChartsForFederatedInstances: instance.enableChartsForFederatedInstances,
+				enableServerMachineStats: instance.enableServerMachineStats,
+				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 			};
 		});
 	}
