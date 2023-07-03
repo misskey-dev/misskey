@@ -23,6 +23,10 @@
 
 html {
 	background-color: var(--bg);
+	background-size: var(--bg-size, cover);
+	background-repeat: var(--bg-repeat, no-repeat);
+	background-position: var(--bg-position, center center);
+
 	color: var(--fg);
 	accent-color: var(--accent);
 	overflow: auto;
