@@ -943,6 +943,7 @@ leftTop: "أعلى اليسار"
 rightTop: "أعلى اليمين"
 leftBottom: "أسفل اليسار"
 rightBottom: "أسفل اليمين"
+stackAxis: "اتجاه التكديس"
 vertical: "عمودي"
 horizontal: "جانبي"
 position: "الموضع"
@@ -966,16 +967,87 @@ failedToPreviewUrl: "تتعذر المعاينة"
 update: "حدِّث"
 rolesThatCanBeUsedThisEmojiAsReaction: "الأدوار التي يُسمح لأصحابها استخدام هذا اإيموجي في اللتفاعل"
 rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "إذا لم تحدد دورًا يمكن للجميع استخدام هذا الإيموجي في التفاعل."
+rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "يجب أن تكون الأدوار علنية."
 cancelReactionConfirm: "أتريد حذف تفاعلك؟"
 changeReactionConfirm: "أتريد تعديل تفاعلك؟"
 later: "لاحقاً"
+goToMisskey: "لميسكي"
+additionalEmojiDictionary: "قواميس إيموجي إضافية"
 installed: "مُثبت"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
+  letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."
   letsFillYourProfile: "أولًا لنعد ملفك الشخصي."
   profileSetting: "إعدادات الملف الشخصي"
   privacySetting: "إعدادات الخصوصية"
   theseSettingsCanEditLater: "يمكنك تغيير هذه الإعدادات لاحقًا."
+_accountMigration:
+  moveFrom: "انقل حسابًا آخر لهذا الحساب"
+  moveFromLabel: "الحساب الأصلي #{n}"
+  moveTo: "انقل هذا الحساب لحساب آخر"
+  moveToLabel: "الحساب الوجهة:"
+  moveCannotBeUndone: "لا يمكن التراجع عن نقل الحساب."
+  movedTo: "الحساب الوجهة:"
+_achievements:
+  _types:
+    _notes1:
+      description: "انشر ملاحظتك الأولى"
+      flavor: "تمتع باستخدام ميسكي!"
+    _notes10:
+      title: "بعض الملاحظات"
+      description: "انشر 10 ملاحظات"
+    _notes100:
+      title: "كثير من الملاحظات"
+      description: "انشر 100 ملاحظة"
+    _notes500:
+      description: "انشر 500 ملاحظة"
+    _notes1000:
+      title: "جبل ملاحظات"
+      description: "انشر 1000 ملاحظة"
+    _notes5000:
+      description: "انشر 5000 ملاحظة"
+    _notes10000:
+      description: "انشر 10000 ملاحظة"
+    _notes20000:
+      title: "أريد...ملاحظات...أكثر"
+      description: "انشر 20000 ملاحظة"
+    _notes30000:
+      title: "ملاحظات وملاحظات وملاحظات"
+      description: "انشر 30000 ملاحظة"
+    _notes40000:
+      title: "مصنع ملاحظات"
+      description: "انشر 40000 ملاحظة"
+    _notes50000:
+      title: "كوكب ملاحظات"
+      description: "انشر 50000 ملاحظة"
+    _notes60000:
+      title: "نجم ملاحظات"
+      description: "انشر 60000 ملاحظة"
+    _notes70000:
+      title: "ثقب أسود للملاحظات"
+      description: "انشر 70000 ملاحظة"
+    _notes80000:
+      title: "مجرة ملاحظات"
+      description: "انشر 80000 ملاحظة"
+    _notes90000:
+      title: "كوْن ملاحظات"
+      description: "انشر 90000 ملاحظة"
+    _notes100000:
+      title: "كل ملاحظاتك لنا"
+      description: "انشر 100000 ملاحظة"
+      flavor: "حقًا لديك الكثير من القصص"
+    _login3:
+      title: "مبتدأ I"
+    _noteFavorited1:
+      description: "فضًِل ملاحظتك الأولى"
+    _myNoteFavorited1:
+      title: "ساعٍ للنجوم"
+      description: "أعجب شخص آخر بإحدى ملاحظاتك"
+    _profileFilled:
+      title: "مستعد"
+      description: "أعدّ حسابك"
+    _markedAsCat:
+      title: "أنا قط"
 _role:
   new: "دور جديد"
   edit: "حرر الأدوار"
