@@ -4416,18 +4416,18 @@ export const endpoints = {
 	//#region flash
 	'flash/create': {
 		tags: ['flash'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:flash',
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 10,
 		},
-	
+
 		errors: {
 		},
 
@@ -4438,15 +4438,103 @@ export const endpoints = {
 					title: { type: 'string' },
 					summary: { type: 'string' },
 					script: { type: 'string' },
-					permissions: { type: 'array', items: {
-						type: 'string',
-					} },
+					permissions: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['title', 'summary', 'script', 'permissions'],
 			},
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/Flash',
 			},
+		}]
+	},
+	'flash/delete': {
+		tags: ['flashs'],
+
+		requireCredential: true,
+
+		kind: 'write:flash',
+
+		errors: {
+			noSuchFlash: {
+				message: 'No such flash.',
+				code: 'NO_SUCH_FLASH',
+				id: 'de1623ef-bbb3-4289-a71e-14cfa83d9740',
+			},
+
+			accessDenied: {
+				message: 'Access denied.',
+				code: 'ACCESS_DENIED',
+				id: '1036ad7b-9f92-4fff-89c3-0e50dc941704',
+			},
+		},
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					flashId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['flashId'],
+			},
+			res: undefined,
+		}],
+	},
+	'flash/featured': {
+		tags: ['flash'],
+
+		requireCredential: false,
+
+		defines: [{
+			req: undefined,
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Flash',
+				},
+			},
+		}],
+	},
+	'flash/like': {
+		tags: ['flash'],
+
+		requireCredential: true,
+
+		prohibitMoved: true,
+
+		kind: 'write:flash-likes',
+
+		errors: {
+			noSuchFlash: {
+				message: 'No such flash.',
+				code: 'NO_SUCH_FLASH',
+				id: 'c07c1491-9161-4c5c-9d75-01906f911f73',
+			},
+
+			yourFlash: {
+				message: 'You cannot like your flash.',
+				code: 'YOUR_FLASH',
+				id: '3fd8a0e7-5955-4ba9-85bb-bf3e0c30e13b',
+			},
+
+			alreadyLiked: {
+				message: 'The flash has already been liked.',
+				code: 'ALREADY_LIKED',
+				id: '010065cf-ad43-40df-8067-abff9f4686e3',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					flashId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['flashId'],
+			},
+			res: undefined,
 		}]
 	},
 	//#endregion
