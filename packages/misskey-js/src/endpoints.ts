@@ -4822,6 +4822,155 @@ export const endpoints = {
 			res: undefined,
 		}],
 	},
+	'following/create': {
+		tags: ['following', 'users'],
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 50,
+		},
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:following',
+	
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: 'fcd2eef9-a9b2-4c4f-8624-038099e90aa5',
+			},
+	
+			followeeIsYourself: {
+				message: 'Followee is yourself.',
+				code: 'FOLLOWEE_IS_YOURSELF',
+				id: '26fbe7bb-a331-4857-af17-205b426669a9',
+			},
+	
+			alreadyFollowing: {
+				message: 'You are already following that user.',
+				code: 'ALREADY_FOLLOWING',
+				id: '35387507-38c7-4cb9-9197-300b93783fa0',
+			},
+	
+			blocking: {
+				message: 'You are blocking that user.',
+				code: 'BLOCKING',
+				id: '4e2206ec-aa4f-4960-b865-6c23ac38e2d9',
+			},
+	
+			blocked: {
+				message: 'You are blocked by that user.',
+				code: 'BLOCKED',
+				id: 'c4ab57cc-4e41-45e9-bfd9-584f61e35ce0',
+			},
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+			},
+		}],
+	},
+	'following/delete': {
+		tags: ['following', 'users'],
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 100,
+		},
+	
+		requireCredential: true,
+	
+		kind: 'write:following',
+	
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '5b12c78d-2b28-4dca-99d2-f56139b42ff8',
+			},
+	
+			followeeIsYourself: {
+				message: 'Followee is yourself.',
+				code: 'FOLLOWEE_IS_YOURSELF',
+				id: 'd9e400b9-36b0-4808-b1d8-79e707f1296c',
+			},
+	
+			notFollowing: {
+				message: 'You are not following that user.',
+				code: 'NOT_FOLLOWING',
+				id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+			},
+		}],
+	},
+	'following/invalidate': {
+		tags: ['following', 'users'],
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 100,
+		},
+	
+		requireCredential: true,
+	
+		kind: 'write:following',
+	
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '5b12c78d-2b28-4dca-99d2-f56139b42ff8',
+			},
+	
+			followerIsYourself: {
+				message: 'Follower is yourself.',
+				code: 'FOLLOWER_IS_YOURSELF',
+				id: '07dc03b9-03da-422d-885b-438313707662',
+			},
+	
+			notFollowing: {
+				message: 'The other use is not following you.',
+				code: 'NOT_FOLLOWING',
+				id: '5dbf82f5-c92b-40b1-87d1-6c8c0741fd09',
+			},
+		},
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+			},
+		}],
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
