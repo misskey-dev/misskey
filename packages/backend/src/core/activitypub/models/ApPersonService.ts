@@ -416,7 +416,7 @@ export class ApPersonService implements OnModuleInit {
 		const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
 			if (img == null) return null;
 			return this.apImageService.resolveImage(exist, img).catch(() => null);
-		}));	
+		}));
 
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
