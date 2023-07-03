@@ -4244,7 +4244,7 @@ export const endpoints = {
 					$ref: 'https://misskey-hub.net/api/schemas/Following',
 				},
 			}
-		}]
+		}],
 	},
 	'federation/followings': {
 		tags: ['federation'],
@@ -4268,7 +4268,7 @@ export const endpoints = {
 					$ref: 'https://misskey-hub.net/api/schemas/Following',
 				},
 			}
-		}]
+		}],
 	},
 	'federation/instances': {
 		tags: ['federation'],
@@ -4449,7 +4449,7 @@ export const endpoints = {
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/Flash',
 			},
-		}]
+		}],
 	},
 	'flash/delete': {
 		tags: ['flashs'],
@@ -4535,13 +4535,13 @@ export const endpoints = {
 				required: ['flashId'],
 			},
 			res: undefined,
-		}]
+		}],
 	},
 	'flash/my-likes': {
 		tags: ['account', 'flash'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:flash-likes',
 
 		defines: [{
@@ -4573,11 +4573,11 @@ export const endpoints = {
 	},
 	'flash/my': {
 		tags: ['account', 'flash'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:flash',
-	
+
 		defines: [{
 			req: {
 				type: 'object',
@@ -4598,9 +4598,9 @@ export const endpoints = {
 	},
 	'flash/show': {
 		tags: ['flashs'],
-	
+
 		requireCredential: false,
-	
+
 		errors: {
 			noSuchFlash: {
 				message: 'No such flash.',
@@ -4620,24 +4620,24 @@ export const endpoints = {
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/Flash',
 			},
-		}]
+		}],
 	},
 	'flash/unlike': {
 		tags: ['flash'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:flash-likes',
-	
+
 		errors: {
 			noSuchFlash: {
 				message: 'No such flash.',
 				code: 'NO_SUCH_FLASH',
 				id: 'afe8424a-a69e-432d-a5f2-2f0740c62410',
 			},
-	
+
 			notLiked: {
 				message: 'You have not liked that flash.',
 				code: 'NOT_LIKED',
@@ -4654,29 +4654,29 @@ export const endpoints = {
 				required: ['flashId'],
 			},
 			res: undefined,
-		}]
+		}],
 	},
 	'flash/update': {
 		tags: ['flash'],
-	
+
 		requireCredential: true,
-	
+
 		prohibitMoved: true,
-	
+
 		kind: 'write:flash',
-	
+
 		limit: {
 			duration: ms('1hour'),
 			max: 300,
 		},
-	
+
 		errors: {
 			noSuchFlash: {
 				message: 'No such flash.',
 				code: 'NO_SUCH_FLASH',
 				id: '611e13d2-309e-419a-a5e4-e0422da39b02',
 			},
-	
+
 			accessDenied: {
 				message: 'Access denied.',
 				code: 'ACCESS_DENIED',
@@ -4692,25 +4692,27 @@ export const endpoints = {
 					title: { type: 'string' },
 					summary: { type: 'string' },
 					script: { type: 'string' },
-					permissions: { type: 'array', items: {
-						type: 'string',
-					} },
+					permissions: {
+						type: 'array', items: {
+							type: 'string',
+						}
+					},
 				},
 				required: ['flashId', 'title', 'summary', 'script', 'permissions'],
 			},
 			res: undefined,
-		}]
+		}],
 	},
 	//#endregion
 
 	//#region following
 	'following/requests/accept': {
 		tags: ['following', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:following',
-	
+
 		errors: {
 			noSuchUser: {
 				message: 'No such user.',
@@ -4733,22 +4735,22 @@ export const endpoints = {
 				required: ['userId'],
 			},
 			res: undefined,
-		}]
+		}],
 	},
 	'following/requests/cancel': {
 		tags: ['following', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:following',
-	
+
 		errors: {
 			noSuchUser: {
 				message: 'No such user.',
 				code: 'NO_SUCH_USER',
 				id: '4e68c551-fc4c-4e46-bb41-7d4a37bf9dab',
 			},
-	
+
 			followRequestNotFound: {
 				message: 'Follow request not found.',
 				code: 'FOLLOW_REQUEST_NOT_FOUND',
@@ -4766,14 +4768,14 @@ export const endpoints = {
 			},
 			res: {
 				$ref: 'https://misskey-hub.net/api/schemas/UserLite',
-			}
-		}]
+			},
+		}],
 	},
 	'following/requests/list': {
 		tags: ['following', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'read:following',
 
 		defines: [{
@@ -4791,16 +4793,16 @@ export const endpoints = {
 				items: {
 					$ref: 'https://misskey-hub.net/api/schemas/FollowRequest',
 				},
-			}
-		}]
+			},
+		}],
 	},
 	'following/requests/reject': {
 		tags: ['following', 'account'],
-	
+
 		requireCredential: true,
-	
+
 		kind: 'write:following',
-	
+
 		errors: {
 			noSuchUser: {
 				message: 'No such user.',
@@ -4818,7 +4820,7 @@ export const endpoints = {
 				required: ['userId'],
 			},
 			res: undefined,
-		}]
+		}],
 	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
