@@ -4,7 +4,6 @@
 	"description": "Misskey SDK for JavaScript",
 	"main": "./built/index.js",
 	"types": "./built/index.d.ts",
-	"type": "module",
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc -w",

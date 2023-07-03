@@ -627,7 +627,7 @@ importers:
         version: 29.5.0
       schema-type:
         specifier: github:misskey-dev/schema-type
-        version: github.com/misskey-dev/schema-type/82e703e9b263916e8a1a6453384f41e378a24e3e(typescript@5.1.3)
+        version: github.com/misskey-dev/schema-type/c6fabcd055d0ece07ce0c373344ef086a9cff0b0(typescript@5.1.3)
 
   packages/frontend:
     dependencies:
@@ -1024,7 +1024,7 @@ importers:
         version: 4.4.0
       schema-type:
         specifier: github:misskey-dev/schema-type
-        version: github.com/misskey-dev/schema-type/82e703e9b263916e8a1a6453384f41e378a24e3e(typescript@5.1.3)
+        version: github.com/misskey-dev/schema-type/c6fabcd055d0ece07ce0c373344ef086a9cff0b0(typescript@5.1.3)
       ts-essentials:
         specifier: ^9.3.2
         version: 9.3.2(typescript@5.1.3)
@@ -21237,9 +21237,9 @@ packages:
     version: 2.2.1-misskey.3
     dev: false
 
-  github.com/misskey-dev/schema-type/82e703e9b263916e8a1a6453384f41e378a24e3e(typescript@5.1.3):
-    resolution: {tarball: https://codeload.github.com/misskey-dev/schema-type/tar.gz/82e703e9b263916e8a1a6453384f41e378a24e3e}
-    id: github.com/misskey-dev/schema-type/82e703e9b263916e8a1a6453384f41e378a24e3e
+  github.com/misskey-dev/schema-type/c6fabcd055d0ece07ce0c373344ef086a9cff0b0(typescript@5.1.3):
+    resolution: {tarball: https://codeload.github.com/misskey-dev/schema-type/tar.gz/c6fabcd055d0ece07ce0c373344ef086a9cff0b0}
+    id: github.com/misskey-dev/schema-type/c6fabcd055d0ece07ce0c373344ef086a9cff0b0
     name: schema-type
     version: 1.0.0
     dependencies:
