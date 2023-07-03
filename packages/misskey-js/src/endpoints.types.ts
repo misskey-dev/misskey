@@ -1,6 +1,6 @@
 import type { JSONSchema7, SchemaType } from 'schema-type';
-import type { References } from './schemas';
-import type { endpoints } from './endpoints';
+import type { References } from './schemas.js';
+import type { endpoints } from './endpoints.js';
 import type { DeepOmit } from 'ts-essentials';
 
 export type RolePolicies = {

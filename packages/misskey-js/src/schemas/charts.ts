@@ -1,4 +1,4 @@
-import { ChartSchema } from "../schemas";
+import { ChartSchema } from "../schemas.js";
 
 export const chartsSchemas = {
     'activeUsers': {

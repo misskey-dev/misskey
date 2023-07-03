@@ -1,8 +1,8 @@
 import type { JSONSchema7 } from 'schema-type';
-import { IEndpointMeta } from './endpoints.types';
-import { localUsernameSchema, passwordSchema } from './schemas/user';
+import { IEndpointMeta } from './endpoints.types.js';
+import { localUsernameSchema, passwordSchema } from './schemas/user.js';
 import ms from 'ms';
-import { chartSchemaToJSONSchema } from './schemas';
+import { chartSchemaToJSONSchema } from './schemas.js';
 import { chartsSchemas } from './schemas/charts.js';
 
 export const endpoints = {

@@ -1,4 +1,4 @@
-import { Packed } from "./schemas";
+import { Packed } from "./schemas.js";
 
 export type ID = Packed<'Id'>;
 export type DateString = string;
@@ -175,3 +175,5 @@ export type UserSorting =
 	| '+updatedAt'
 	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
+
+export type MeSignup = TODO;

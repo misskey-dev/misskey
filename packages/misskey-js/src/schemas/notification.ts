@@ -1,5 +1,5 @@
 import type { JSONSchema7Definition } from 'schema-type';
-import { ACHIEVEMENT_TYPES, notificationTypes } from '../consts';
+import { ACHIEVEMENT_TYPES, notificationTypes } from '../consts.js';
 
 export const notificationTypeSchema = {
 	$id: 'https://misskey-hub.net/api/schemas/NotificationTypes',
