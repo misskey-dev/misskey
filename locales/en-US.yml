@@ -1063,6 +1063,7 @@ goToMisskey: "To Misskey"
 additionalEmojiDictionary: "Additional emoji dictionaries"
 installed: "Installed"
 branding: "Branding"
+enableIdenticonGeneration: "Enable generate of identicon of each user"
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."
