@@ -1063,6 +1063,7 @@ goToMisskey: "Misskeyへ"
 additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
 branding: "あ"
+enableServerMachineStats: "サーバーのマシン情報見せびらかすで"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
