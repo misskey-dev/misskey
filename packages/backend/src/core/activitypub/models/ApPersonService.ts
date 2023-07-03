@@ -653,7 +653,7 @@ export class ApPersonService implements OnModuleInit {
 			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
 			dst = await this.resolvePerson(src.movedToUri);
 		}
- 
+
 		if (dst.movedToUri === dst.uri) return; // skip: movedTo itself (dst) // ？？？
 		if (src.movedToUri !== dst.uri) return; // skip: missmatch uri // ？？？
 		if (dst.movedToUri === src.uri) return; // skip: dst.movedToUri === src.uri
