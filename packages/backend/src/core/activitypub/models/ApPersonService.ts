@@ -397,7 +397,7 @@ export class ApPersonService implements OnModuleInit {
 	 * @param movePreventUris ここに指定されたURIがPersonのmovedToに指定されていたり10回より多く回っている場合これ以上アカウント移行を行わない（無限ループ防止）
 	 */
 	@bindThis
-	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
+	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<void> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
@@ -536,17 +536,14 @@ export class ApPersonService implements OnModuleInit {
 			exist.movedAt.getTime() + 1000 * 60 * 60 * 24 * 14 < updated.movedAt.getTime()
 		)) {
 			this.logger.info(`Start to process Move of @${updated.username}@${updated.host} (${uri})`);
-			return this.processRemoteMove(updated, movePreventUris)
+			await this.processRemoteMove(updated, movePreventUris)
 				.then(result => {
 					this.logger.info(`Processing Move Finished [${result}] @${updated.username}@${updated.host} (${uri})`);
-					return result;
 				})
 				.catch(e => {
 					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${uri})`, { stack: e });
 				});
 		}
-
-		return 'skip';
 	}
 
 	/**
