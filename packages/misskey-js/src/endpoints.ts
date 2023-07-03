@@ -4537,6 +4537,170 @@ export const endpoints = {
 			res: undefined,
 		}]
 	},
+	'flash/my-likes': {
+		tags: ['account', 'flash'],
+	
+		requireCredential: true,
+	
+		kind: 'read:flash-likes',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						id: {
+							$ref: 'https://misskey-hub.net/api/schemas/Id',
+						},
+						flash: {
+							$ref: 'https://misskey-hub.net/api/schemas/Flash',
+						},
+					},
+					required: ['id', 'flash'],
+				},
+			},
+		}],
+	},
+	'flash/my': {
+		tags: ['account', 'flash'],
+	
+		requireCredential: true,
+	
+		kind: 'read:flash',
+	
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/Flash',
+				},
+			},
+		}],
+	},
+	'flash/show': {
+		tags: ['flashs'],
+	
+		requireCredential: false,
+	
+		errors: {
+			noSuchFlash: {
+				message: 'No such flash.',
+				code: 'NO_SUCH_FLASH',
+				id: 'f0d34a1a-d29a-401d-90ba-1982122b5630',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					flashId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['flashId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/Flash',
+			},
+		}]
+	},
+	'flash/unlike': {
+		tags: ['flash'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:flash-likes',
+	
+		errors: {
+			noSuchFlash: {
+				message: 'No such flash.',
+				code: 'NO_SUCH_FLASH',
+				id: 'afe8424a-a69e-432d-a5f2-2f0740c62410',
+			},
+	
+			notLiked: {
+				message: 'You have not liked that flash.',
+				code: 'NOT_LIKED',
+				id: '755f25a7-9871-4f65-9f34-51eaad9ae0ac',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					flashId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['flashId'],
+			},
+			res: undefined,
+		}]
+	},
+	'flash/update': {
+		tags: ['flash'],
+	
+		requireCredential: true,
+	
+		prohibitMoved: true,
+	
+		kind: 'write:flash',
+	
+		limit: {
+			duration: ms('1hour'),
+			max: 300,
+		},
+	
+		errors: {
+			noSuchFlash: {
+				message: 'No such flash.',
+				code: 'NO_SUCH_FLASH',
+				id: '611e13d2-309e-419a-a5e4-e0422da39b02',
+			},
+	
+			accessDenied: {
+				message: 'Access denied.',
+				code: 'ACCESS_DENIED',
+				id: '08e60c88-5948-478e-a132-02ec701d67b2',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					flashId: { type: 'string', format: 'misskey:id' },
+					title: { type: 'string' },
+					summary: { type: 'string' },
+					script: { type: 'string' },
+					permissions: { type: 'array', items: {
+						type: 'string',
+					} },
+				},
+				required: ['flashId', 'title', 'summary', 'script', 'permissions'],
+			},
+			res: undefined,
+		}]
+	},
 	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 

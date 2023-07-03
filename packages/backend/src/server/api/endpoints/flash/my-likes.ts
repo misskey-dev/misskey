@@ -5,47 +5,10 @@ import { QueryService } from '@/core/QueryService.js';
 import { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
 import { DI } from '@/di-symbols.js';
 
-export const meta = {
-	tags: ['account', 'flash'],
-
-	requireCredential: true,
-
-	kind: 'read:flash-likes',
-
-	res: {
-		type: 'array',
-		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			properties: {
-				id: {
-					type: 'string',
-					optional: false, nullable: false,
-					format: 'id',
-				},
-				flash: {
-					type: 'object',
-					optional: false, nullable: false,
-					ref: 'Flash',
-				},
-			},
-		},
-	},
-} as const;
-
-export const paramDef = {
-	type: 'object',
-	properties: {
-		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-	},
-	required: [],
-} as const;
-
 // eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<'flash/my-likes'> {
+	name = 'flash/my-likes' as const;
 	constructor(
 		@Inject(DI.flashLikesRepository)
 		private flashLikesRepository: FlashLikesRepository,
@@ -53,7 +16,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private flashLikeEntityService: FlashLikeEntityService,
 		private queryService: QueryService,
 	) {
-		super(meta, paramDef, async (ps, me) => {
+		super(async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.flashLikesRepository.createQueryBuilder('like'), ps.sinceId, ps.untilId)
 				.andWhere('like.userId = :meId', { meId: me.id })
 				.leftJoinAndSelect('like.flash', 'flash');
