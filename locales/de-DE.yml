@@ -1063,6 +1063,8 @@ goToMisskey: "Zu Misskey"
 additionalEmojiDictionary: "Zusätzliche Emoji-Wörterbücher"
 installed: "Installiert"
 branding: "Branding"
+enableServerMachineStats: "Hardwareinformationen des Servers veröffentlichen"
+enableIdenticonGeneration: "Generierung von Benutzer-Identicons aktivieren"
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
   letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
