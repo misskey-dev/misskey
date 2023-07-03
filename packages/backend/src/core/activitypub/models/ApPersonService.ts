@@ -422,7 +422,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
 			return [];
-		});	
+		});
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
