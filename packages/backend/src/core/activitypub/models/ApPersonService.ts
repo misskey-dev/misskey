@@ -268,16 +268,16 @@ export class ApPersonService implements OnModuleInit {
 					createdAt: new Date(),
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
-					isLocked: !!person.manuallyApprovesFollowers,
+					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
 					alsoKnownAs: person.alsoKnownAs,
-					isExplorable: !!person.discoverable,
+					isExplorable: person.discoverable,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
 					inbox: person.inbox,
-					sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
+					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
 					followersUri: person.followers ? getApId(person.followers) : undefined,
 					featured: person.featured ? getApId(person.featured) : undefined,
 					uri: person.id,
@@ -289,9 +289,9 @@ export class ApPersonService implements OnModuleInit {
 				await transactionalEntityManager.save(new UserProfile({
 					userId: user.id,
 					description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-					url: url,
+					url,
 					fields,
-					birthday: bday ? bday[0] : null,
+					birthday: bday?.[0] ?? null,
 					location: person['vcard:Address'] ?? null,
 					userHost: host,
 				}));
@@ -446,7 +446,7 @@ export class ApPersonService implements OnModuleInit {
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
+			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
 			followersUri: person.followers ? getApId(person.followers) : undefined,
 			featured: person.featured,
 			emojis: emojiNames,
@@ -454,10 +454,10 @@ export class ApPersonService implements OnModuleInit {
 			tags,
 			isBot: getApType(object) === 'Service',
 			isCat: (person as any).isCat === true,
-			isLocked: !!person.manuallyApprovesFollowers,
+			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
-			isExplorable: !!person.discoverable,
+			isExplorable: person.discoverable,
 		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
 		const moving = ((): boolean => {
