@@ -401,16 +401,11 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(`${this.config.url}/`)) {
-			return;
-		}
+		if (uri.startsWith(`${this.config.url}/`)) return;
 
 		//#region このサーバーに既に登録されているか
 		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser | null;
-
-		if (exist === null) {
-			return;
-		}
+		if (exist === null) return;
 		//#endregion
 
 		// eslint-disable-next-line no-param-reassign
