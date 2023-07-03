@@ -347,12 +347,12 @@ export class ApPersonService implements OnModuleInit {
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
 
-		const avatarId = avatar ? avatar.id : null;
-		const bannerId = banner ? banner.id : null;
+		const avatarId = avatar?.id ?? null;
+		const bannerId = banner?.id ?? null;
 		const avatarUrl = avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null;
 		const bannerUrl = banner ? this.driveFileEntityService.getPublicUrl(banner) : null;
-		const avatarBlurhash = avatar ? avatar.blurhash : null;
-		const bannerBlurhash = banner ? banner.blurhash : null;
+		const avatarBlurhash = avatar?.blurhash ?? null;
+		const bannerBlurhash = banner?.blurhash ?? null;
 
 		await this.usersRepository.update(user.id, {
 			avatarId,
