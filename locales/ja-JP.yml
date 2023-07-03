@@ -1063,6 +1063,8 @@ goToMisskey: "Misskeyへ"
 additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
 branding: "ブランディング"
+enableServerMachineStats: "サーバーのマシン情報を公開する"
+enableIdenticonGeneration: "ユーザーごとのIdenticon生成を有効にする"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
