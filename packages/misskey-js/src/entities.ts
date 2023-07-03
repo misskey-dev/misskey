@@ -122,11 +122,7 @@ export type Stats = {
 
 export type AuthSession = Packed<'AuthSession'>;
 
-export type FollowRequest = {
-	id: ID;
-	follower: User;
-	followee: User;
-};
+export type FollowRequest = Packed<'FollowRequest'>;
 
 export type FollowingFolloweePopulated = Following & {
 	followee: UserDetailed;

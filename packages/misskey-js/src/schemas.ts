@@ -18,7 +18,10 @@ import { packedUserListSchema } from './schemas/user-list.js';
 import { packedAppSchema } from './schemas/app.js';
 import { packedDriveFileSchema } from './schemas/drive-file.js';
 import { packedDriveFolderSchema } from './schemas/drive-folder.js';
-import { packedFollowingSchema } from './schemas/following.js';
+import {
+	packedFollowingSchema,
+	packedFollowRequestSchema,
+} from './schemas/following.js';
 import { packedMutingSchema } from './schemas/muting.js';
 import { packedRenoteMutingSchema } from './schemas/renote-muting.js';
 import { packedBlockingSchema } from './schemas/blocking.js';
@@ -82,6 +85,7 @@ export const refs = {
 	DriveFile: packedDriveFileSchema,
 	DriveFolder: packedDriveFolderSchema,
 	Following: packedFollowingSchema,
+	FollowRequest: packedFollowRequestSchema,
 	Muting: packedMutingSchema,
 	RenoteMuting: packedRenoteMutingSchema,
 	Blocking: packedBlockingSchema,

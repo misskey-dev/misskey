@@ -5,6 +5,7 @@ import type { User } from '@/models/entities/User.js';
 import type { FollowRequest } from '@/models/entities/FollowRequest.js';
 import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { Packed } from 'misskey-js';
 
 @Injectable()
 export class FollowRequestEntityService {
@@ -20,7 +21,7 @@ export class FollowRequestEntityService {
 	public async pack(
 		src: FollowRequest['id'] | FollowRequest,
 		me?: { id: User['id'] } | null | undefined,
-	) {
+	): Promise<Packed<'FollowRequest'>> {
 		const request = typeof src === 'object' ? src : await this.followRequestsRepository.findOneByOrFail({ id: src });
 
 		return {

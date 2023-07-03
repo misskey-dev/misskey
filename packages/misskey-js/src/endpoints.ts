@@ -4702,6 +4702,125 @@ export const endpoints = {
 		}]
 	},
 	//#endregion
+
+	//#region following
+	'following/requests/accept': {
+		tags: ['following', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'write:following',
+	
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '66ce1645-d66c-46bb-8b79-96739af885bd',
+			},
+			noFollowRequest: {
+				message: 'No follow request.',
+				code: 'NO_FOLLOW_REQUEST',
+				id: 'bcde4f8b-0913-4614-8881-614e522fb041',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}]
+	},
+	'following/requests/cancel': {
+		tags: ['following', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'write:following',
+	
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: '4e68c551-fc4c-4e46-bb41-7d4a37bf9dab',
+			},
+	
+			followRequestNotFound: {
+				message: 'Follow request not found.',
+				code: 'FOLLOW_REQUEST_NOT_FOUND',
+				id: '089b125b-d338-482a-9a09-e2622ac9f8d4',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: {
+				$ref: 'https://misskey-hub.net/api/schemas/UserLite',
+			}
+		}]
+	},
+	'following/requests/list': {
+		tags: ['following', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'read:following',
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					sinceId: { type: 'string', format: 'misskey:id' },
+					untilId: { type: 'string', format: 'misskey:id' },
+					limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				},
+				required: [],
+			},
+			res: {
+				type: 'array',
+				items: {
+					$ref: 'https://misskey-hub.net/api/schemas/FollowRequest',
+				},
+			}
+		}]
+	},
+	'following/requests/reject': {
+		tags: ['following', 'account'],
+	
+		requireCredential: true,
+	
+		kind: 'write:following',
+	
+		errors: {
+			noSuchUser: {
+				message: 'No such user.',
+				code: 'NO_SUCH_USER',
+				id: 'abc2ffa6-25b2-4380-ba99-321ff3a94555',
+			},
+		},
+
+		defines: [{
+			req: {
+				type: 'object',
+				properties: {
+					userId: { type: 'string', format: 'misskey:id' },
+				},
+				required: ['userId'],
+			},
+			res: undefined,
+		}]
+	},
+	//#endregion
 } as const satisfies { [x: string]: IEndpointMeta; };
 
 /**

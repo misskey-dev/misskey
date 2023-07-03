@@ -22,3 +22,19 @@ export const packedFollowingSchema = {
 		'followerId',
 	],
 } as const satisfies JSONSchema7Definition;
+
+export const packedFollowRequestSchema = {
+	$id: 'https://misskey-hub.net/api/schemas/FollowRequest',
+
+	type: 'object',
+	properties: {
+		id: { $ref: 'https://misskey-hub.net/api/schemas/Id' },
+		followee: { $ref: 'https://misskey-hub.net/api/schemas/UserLite' },
+		follower: { $ref: 'https://misskey-hub.net/api/schemas/UserLite' },
+	},
+	required: [
+		'id',
+		'followee',
+		'follower',
+	],
+} as const satisfies JSONSchema7Definition;
