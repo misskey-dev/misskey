@@ -12,7 +12,7 @@
 
 					<MkInput v-model="appleTouchIconUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.appleTouchIconUrl }}</template>
+						<template #label>苹果设备图标URL</template>
 					</MkInput>
 
 					<MkInput v-model="bannerUrl">
