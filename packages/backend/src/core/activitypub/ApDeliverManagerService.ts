@@ -7,6 +7,7 @@ import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { IActivity } from "@/core/activitypub/type.js";
 
 interface IRecipe {
 	type: string;
@@ -21,10 +22,10 @@ interface IDirectRecipe extends IRecipe {
 	to: RemoteUser;
 }
 
-const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
+const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 	recipe.type === 'Followers';
 
-const isDirect = (recipe: any): recipe is IDirectRecipe =>
+const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
 
 @Injectable()
@@ -50,7 +51,7 @@ export class ApDeliverManagerService {
 	 * @param from Followee
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: any) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -68,7 +69,7 @@ export class ApDeliverManagerService {
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: any, to: RemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -81,7 +82,7 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: any) {
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity) {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -95,7 +96,7 @@ export class ApDeliverManagerService {
 
 class DeliverManager {
 	private actor: { id: User['id']; host: null; };
-	private activity: any;
+	private activity: IActivity;
 	private recipes: IRecipe[] = [];
 
 	/**
@@ -109,7 +110,7 @@ class DeliverManager {
 		private queueService: QueueService,
 
 		actor: { id: User['id']; host: null; },
-		activity: any,
+		activity: IActivity,
 	) {
 		this.actor = actor;
 		this.activity = activity;
