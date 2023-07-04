@@ -77,7 +77,6 @@ export class ReportAbuseProcessorService {
 
 			if (isTargetUserPatternMatched && isReporterPatternMatched && isReportContentPatternMatched) {
 				if (resolver.forward && job.data.targetUserHost !== null) {
-					const targetUser = await this.usersRepository.findOneByOrFail({ id: job.data.targetUserId });
 					this.queueService.deliver(actor, this.apRendererService.addContext(this.apRendererService.renderFlag(actor, targetUser.uri!, job.data.comment)), targetUser.inbox, false);
 				}
 
