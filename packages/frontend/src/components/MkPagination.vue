@@ -21,14 +21,14 @@
 
 	<div v-else ref="rootEl">
 		<div v-show="pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAheadAppear : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMoreAhead : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMoreAhead">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
 		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
-			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAppear : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
+			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
 			</MkButton>
 			<MkLoading v-else class="loading"/>
@@ -50,6 +50,7 @@ import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;
+const APPEAR_MINIMUM_INTERVAL = 600;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
@@ -74,12 +75,12 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 
 type MisskeyEntityMap = Map<string, MisskeyEntity>;
 
-function arrayToMapEntities(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
+function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 	return entities.map(en => [en.id, en]);
 }
 
 function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
-	return new Map([...map, ...arrayToMapEntities(entities)]);
+	return new Map([...map, ...arrayToEntries(entities)]);
 }
 </script>
 <script lang="ts" setup>
@@ -125,8 +126,8 @@ const fetching = ref(true);
 
 const moreFetching = ref(false);
 const more = ref(false);
-const preventFetchMore = ref(false);
-const preventFetchMoreTimer = ref<number | null>(null);
+const preventAppearFetchMore = ref(false);
+const preventAppearFetchMoreTimer = ref<number | null>(null);
 const isBackTop = ref(false);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
@@ -314,23 +315,27 @@ const fetchMoreAhead = async (): Promise<void> => {
 	});
 };
 
+/**
+ * Appear（IntersectionObserver）によってfetchMoreが呼ばれる場合、
+ * APPEAR_MINIMUM_INTERVALミリ秒以内に2回fetchMoreが呼ばれるのを防ぐ
+ */
 const fetchMoreApperTimeoutFn = (): void => {
-	preventFetchMore.value = false;
-	preventFetchMoreTimer.value = null;
+	preventAppearFetchMore.value = false;
+	preventAppearFetchMoreTimer.value = null;
 };
 const fetchMoreAppearTimeout = (): void => {
-	preventFetchMore.value = true;
-	preventFetchMoreTimer.value = window.setTimeout(fetchMoreApperTimeoutFn, 600);
+	preventAppearFetchMore.value = true;
+	preventAppearFetchMoreTimer.value = window.setTimeout(fetchMoreApperTimeoutFn, APPEAR_MINIMUM_INTERVAL);
 };
 
-const fetchMoreAppear = async (): Promise<void> => {
-	if (preventFetchMore.value) return;
+const appearFetchMore = async (): Promise<void> => {
+	if (preventAppearFetchMore.value) return;
 	await fetchMore();
 	fetchMoreAppearTimeout();
 };
 
-const fetchMoreAheadAppear = async (): Promise<void> => {
-	if (preventFetchMore.value) return;
+const appearFetchMoreAhead = async (): Promise<void> => {
+	if (preventAppearFetchMore.value) return;
 	await fetchMoreAhead();
 	fetchMoreAppearTimeout();
 };
@@ -360,6 +365,7 @@ watch(visibility, () => {
 /**
  * 最新のものとして1つだけアイテムを追加する
  * ストリーミングから降ってきたアイテムはこれで追加する
+ * @param item アイテム
  */
 const prepend = (item: MisskeyEntity): void => {
 	if (items.value.size === 0) {
@@ -372,16 +378,24 @@ const prepend = (item: MisskeyEntity): void => {
 	else prependQueue(item);
 };
 
+/**
+ * 新着アイテムをitemsの先頭に追加し、displayLimitを適用する
+ * @param newItems 新しいアイテムの配列
+ */
 function unshiftItems(newItems: MisskeyEntity[]) {
 	const length = newItems.length + items.value.size;
-	items.value = new Map([...arrayToMapEntities(newItems), ...items.value].slice(0, props.displayLimit));
+	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, props.displayLimit));
 
 	if (length >= props.displayLimit) more.value = true;
 }
 
+/**
+ * 古いアイテムをitemsの末尾に追加し、displayLimitを適用する
+ * @param oldItems 古いアイテムの配列
+ */
 function concatItems(oldItems: MisskeyEntity[]) {
 	const length = oldItems.length + items.value.size;
-	items.value = new Map([...items.value, ...arrayToMapEntities(oldItems)].slice(0, props.displayLimit));
+	items.value = new Map([...items.value, ...arrayToEntries(oldItems)].slice(0, props.displayLimit));
 
 	if (length >= props.displayLimit) more.value = true;
 }
@@ -392,13 +406,12 @@ function executeQueue() {
 }
 
 function prependQueue(newItem: MisskeyEntity) {
-	queue.value = new Map([[newItem.id, newItem], ...queue.value]);
-	if (queue.value.size >= props.displayLimit) {
-		const key = Array.from(queue.value.keys())[queue.value.size - 1];
-		queue.value.delete(key);
-	}
+	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyEntity][]);
 }
 
+/*
+ * アイテムを末尾に追加する（使うの？）
+ */
 const appendItem = (item: MisskeyEntity): void => {
 	items.value.set(item.id, item);
 };
@@ -411,6 +424,7 @@ const removeItem = (id: string) => {
 const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
 	const item = items.value.get(id);
 	if (item) items.value.set(id, replacer(item));
+
 	const queueItem = queue.value.get(id);
 	if (queueItem) queue.value.set(id, replacer(queueItem));
 };
@@ -450,9 +464,9 @@ onBeforeUnmount(() => {
 		clearTimeout(timerForSetPause);
 		timerForSetPause = null;
 	}
-	if (preventFetchMoreTimer.value) {
-		clearTimeout(preventFetchMoreTimer.value);
-		preventFetchMoreTimer.value = null;
+	if (preventAppearFetchMoreTimer.value) {
+		clearTimeout(preventAppearFetchMoreTimer.value);
+		preventAppearFetchMoreTimer.value = null;
 	}
 	scrollObserver?.disconnect();
 });
