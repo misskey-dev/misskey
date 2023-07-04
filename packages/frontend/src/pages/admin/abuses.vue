@@ -142,7 +142,7 @@ const resolverPagination = {
 };
 
 function resolved(reportId) {
-	reports!.removeItem(item => item.id === reportId);
+	reports!.removeItem(reportId);
 }
 
 function edit(id: string) {
