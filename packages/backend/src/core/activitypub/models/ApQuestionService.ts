@@ -60,7 +60,7 @@ export class ApQuestionService {
 	@bindThis
 	public async updateQuestion(value: string | IObject, resolver?: Resolver): Promise<boolean> {
 		const uri = typeof value === 'string' ? value : value.id;
-		if (uri == null) throw new Error(''); // TODO
+		if (uri == null) throw new Error('uri is null');
 
 		// URIがこのサーバーを指しているならスキップ
 		if (uri.startsWith(this.config.url + '/')) throw new Error('uri points local');
@@ -82,14 +82,14 @@ export class ApQuestionService {
 		if (question.type !== 'Question') throw new Error('object is not a Question');
 
 		const apChoices = question.oneOf ?? question.anyOf;
-		if (apChoices == null) throw new Error(''); // TODO
+		if (apChoices == null) throw new Error('invalid apChoices: ' + apChoices);
 
 		let changed = false;
 
 		for (const choice of poll.choices) {
 			const oldCount = poll.votes[poll.choices.indexOf(choice)];
 			const newCount = apChoices.filter(ap => ap.name === choice).at(0)?.replies?.totalItems;
-			if (newCount == null) throw new Error(''); // TODO
+			if (newCount == null) throw new Error('invalid newCount: ' + newCount);
 
 			if (oldCount !== newCount) {
 				changed = true;

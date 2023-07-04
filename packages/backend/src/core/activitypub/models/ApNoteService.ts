@@ -357,7 +357,7 @@ export class ApNoteService {
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
-					if (emoji == null) throw new Error(''); // TODO
+					if (emoji == null) throw new Error('emoji update failed');
 					return emoji;
 				}
 

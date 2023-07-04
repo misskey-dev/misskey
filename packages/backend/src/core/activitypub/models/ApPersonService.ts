@@ -234,7 +234,7 @@ export class ApPersonService implements OnModuleInit {
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
-		if (object.id == null) throw new Error(''); // TODO
+		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
 
 		const person = this.validateActor(object, uri);
 
@@ -318,7 +318,7 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
-		if (user == null) throw new Error(''); // TODO
+		if (user == null) throw new Error('failed to create user: user is null');
 
 		// Register host
 		this.federatedInstanceService.fetch(host).then(async i => {
@@ -337,7 +337,7 @@ export class ApPersonService implements OnModuleInit {
 		//#region アバターとヘッダー画像をフェッチ
 		const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
 			if (img == null) return null;
-			if (user == null) throw new Error(''); // TODO
+			if (user == null) throw new Error('failed to create user: user is null');
 			return this.apImageService.resolveImage(user, img).catch(() => null);
 		}));
 
