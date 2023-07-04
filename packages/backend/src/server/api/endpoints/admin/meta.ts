@@ -77,6 +77,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			appleTouchIconUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableEmail: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -316,6 +320,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				notFoundImageUrl: instance.notFoundImageUrl,
 				infoImageUrl: instance.infoImageUrl,
 				iconUrl: instance.iconUrl,
+				appleTouchIconUrl: instance.appleTouchIconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
 				defaultLightTheme: instance.defaultLightTheme,
