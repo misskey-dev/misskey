@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Generate secret
-			const secret = secureRndstr(32, true);
+			const secret = secureRndstr(32);
 
 			// for backward compatibility
 			const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));
