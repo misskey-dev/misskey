@@ -71,9 +71,6 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 
 	pageEl?: HTMLElement;
 };
-</script>
-<script lang="ts" setup>
-import { infoImageUrl } from '@/instance';
 
 type MisskeyEntityMap = Map<string, MisskeyEntity>;
 
@@ -84,6 +81,9 @@ function arrayToMapEntities(entities: MisskeyEntity[]): [string, MisskeyEntity][
 function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
 	return new Map([...map, ...arrayToMapEntities(entities)]);
 }
+</script>
+<script lang="ts" setup>
+import { infoImageUrl } from '@/instance';
 
 const props = withDefaults(defineProps<{
 	pagination: Paging;
@@ -135,7 +135,7 @@ const {
 } = defaultStore.reactiveState;
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
-const scrollableElement = $computed(() => getScrollContainer(contentEl));
+const scrollableElement = $computed(() => contentEl ? getScrollContainer(contentEl) : document.body);
 
 const visibility = useDocumentVisibility();
 
@@ -160,9 +160,9 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 }, { immediate: true });
 
 watch($$(rootEl), () => {
-	scrollObserver.disconnect();
+	scrollObserver?.disconnect();
 	nextTick(() => {
-		if (rootEl) scrollObserver.observe(rootEl);
+		if (rootEl) scrollObserver?.observe(rootEl);
 	});
 });
 
@@ -335,7 +335,7 @@ const fetchMoreAheadAppear = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl, TOLERANCE);
+const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
@@ -426,7 +426,7 @@ onDeactivated(() => {
 });
 
 function toBottom() {
-	scrollToBottom(contentEl);
+	scrollToBottom(contentEl!);
 }
 
 onMounted(() => {
@@ -454,7 +454,7 @@ onBeforeUnmount(() => {
 		clearTimeout(preventFetchMoreTimer.value);
 		preventFetchMoreTimer.value = null;
 	}
-	scrollObserver.disconnect();
+	scrollObserver?.disconnect();
 });
 
 defineExpose({
