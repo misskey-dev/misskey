@@ -56,7 +56,7 @@ const props = defineProps<{
 		expiresAt: string;
 		forward: boolean;
 		expirationDate: string;
-		beforeExpiresAt?: string;
+		previousExpiresAt?: string;
 	}
 	editable: boolean;
 	data?: {
@@ -67,7 +67,7 @@ const props = defineProps<{
 		expirationDate: string | null;
 		expiresAt: string;
 		forward: boolean;
-		beforeExpiresAt?: string;
+		previousExpiresAt?: string;
 	}
 }>();
 let expirationDate: string | null = $ref(null);
@@ -88,7 +88,7 @@ const value = computed({
 			expirationDate: null,
 			expiresAt: 'indefinitely',
 			forward: false,
-			beforeExpiresAt: undefined,
+			previousExpiresAt: undefined,
 		};
 		for (const [key, _value] of Object.entries(data)) {
 			if (_value === null) {
@@ -123,7 +123,7 @@ watch(() => value.value.expirationDate, () => renderExpirationDate(), { immediat
 watch(() => value.value.expiresAt, () => renderExpirationDate(true));
 watch(() => props.editable, () => {
 	if (props.editable) {
-		value.value.beforeExpiresAt = value.value.expiresAt;
+		value.value.previousExpiresAt = value.value.expiresAt;
 	}
 });
 
