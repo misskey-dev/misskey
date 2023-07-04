@@ -107,6 +107,12 @@ export class Meta {
 		length: 1024,
 		nullable: true,
 	})
+	public appleTouchIconUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public serverErrorImageUrl: string | null;
 
 	@Column('varchar', {

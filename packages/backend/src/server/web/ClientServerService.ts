@@ -122,6 +122,7 @@ export class ClientServerService {
 		return {
 			instanceName: meta.name ?? 'Misskey',
 			icon: meta.iconUrl,
+			appleTouchIcon: meta.appleTouchIconUrl,
 			themeColor: meta.themeColor,
 			serverErrorImageUrl: meta.serverErrorImageUrl ?? 'https://xn--931a.moe/assets/error.jpg',
 			infoImageUrl: meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',

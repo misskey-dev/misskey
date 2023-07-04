@@ -10,6 +10,11 @@
 						<template #label>{{ i18n.ts.iconUrl }}</template>
 					</MkInput>
 
+					<MkInput v-model="appleTouchIconUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts.appleTouchIconUrl }}</template>
+					</MkInput>
+
 					<MkInput v-model="bannerUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.bannerUrl }}</template>
@@ -79,6 +84,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 
 let iconUrl: string | null = $ref(null);
+let appleTouchIconUrl: string | null = $ref(null);
 let bannerUrl: string | null = $ref(null);
 let backgroundImageUrl: string | null = $ref(null);
 let themeColor: any = $ref(null);
@@ -91,6 +97,7 @@ let notFoundImageUrl: string | null = $ref(null);
 async function init() {
 	const meta = await os.api('admin/meta');
 	iconUrl = meta.iconUrl;
+	appleTouchIconUrl = meta.appleTouchIconUrl;
 	bannerUrl = meta.bannerUrl;
 	backgroundImageUrl = meta.backgroundImageUrl;
 	themeColor = meta.themeColor;
@@ -104,6 +111,7 @@ async function init() {
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		iconUrl,
+		appleTouchIconUrl,
 		bannerUrl,
 		backgroundImageUrl,
 		themeColor: themeColor === '' ? null : themeColor,
