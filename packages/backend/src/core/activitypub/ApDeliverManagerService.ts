@@ -7,7 +7,7 @@ import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
-import type { IActivity } from "@/core/activitypub/type.js";
+import type { IActivity } from '@/core/activitypub/type.js';
 
 interface IRecipe {
 	type: string;
