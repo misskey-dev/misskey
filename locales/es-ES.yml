@@ -1316,7 +1316,7 @@ _role:
     canPublicNote: "Permitir la publicación"
     canInvite: "Puede crear códigos de invitación"
     canManageCustomEmojis: "Administrar emojis personalizados"
-    driveCapacity: "Capacidad de almacenamiento"
+    driveCapacity: "Capacidad del drive"
     pinMax: "Máximo de notas fijadas"
     antennaMax: "Máximo de antenas"
     wordMuteMax: "Máximo de caracteres en palabras silenciadas"
@@ -1913,8 +1913,8 @@ _disabledTimeline:
   title: "Línea de tiempo deshabilitada"
   description: "No puedes usar esta línea de tiempo con tus roles actuales."
 _drivecleaner:
-  orderBySizeDesc: "Más grandes"
-  orderByCreatedAtAsc: "Más antiguos"
+  orderBySizeDesc: "Tamaño descendiente"
+  orderByCreatedAtAsc: "Fecha ascendente"
 _webhookSettings:
   createWebhook: "Crear Webhook"
   name: "Nombre"
