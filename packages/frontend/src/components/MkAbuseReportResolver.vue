@@ -64,8 +64,10 @@ const props = defineProps<{
 		targetUserPattern: string | null;
 		reporterPattern: string | null;
 		reportContentPattern: string | null;
+		expirationDate: string | null;
 		expiresAt: string;
 		forward: boolean;
+		beforeExpiresAt?: string;
 	}
 }>();
 let expirationDate: string | null = $ref(null);
@@ -83,8 +85,10 @@ const value = computed({
 			targetUserPattern: '',
 			reporterPattern: '',
 			reportContentPattern: '',
+			expirationDate: null,
 			expiresAt: 'indefinitely',
 			forward: false,
+			beforeExpiresAt: null,
 		};
 		for (const [key, _value] of Object.entries(data)) {
 			if (_value === null) {
@@ -94,7 +98,7 @@ const value = computed({
 		if (props.modelValue && props.editable) {
 			emit('update:modelValue', data);
 		}
-		return data as unknown as Exclude<NonNullType<typeof props.modelValue>, undefined>;
+		return data as NonNullType<typeof data>;
 	},
 	set(updateValue) {
 		if (props.modelValue && props.editable) {
