@@ -139,6 +139,7 @@ export interface Locale {
     "suspendConfirm": string;
     "unsuspendConfirm": string;
     "selectList": string;
+    "editList": string;
     "selectChannel": string;
     "selectAntenna": string;
     "editAntenna": string;
