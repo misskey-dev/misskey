@@ -1714,14 +1714,14 @@ _visibility:
   homeDescription: "Visible sólo en la linea de tiempo de inicio"
   followers: "Seguidores"
   followersDescription: "Visible sólo para tus seguidores"
-  specified: "Mensaje directo"
+  specified: "Nota directa"
   specifiedDescription: "Visible sólo para los usuarios elegidos"
   disableFederation: "No federado"
   disableFederationDescription: "No enviar a otras instancias"
 _postForm:
   replyPlaceholder: "Responder a esta nota"
   quotePlaceholder: "Citar esta nota"
-  channelPlaceholder: "Postear en el canal"
+  channelPlaceholder: "Publicar en el canal"
   _placeholders:
     a: "¿Qué haces?"
     b: "¿Te pasó algo?"
@@ -1905,7 +1905,7 @@ _deck:
     list: "Listas"
     channel: "Canal"
     mentions: "Menciones"
-    direct: "Mensaje directo"
+    direct: "Notas directas"
 _dialog:
   charactersExceeded: "¡Has excedido el límite de caracteres! Actualmente {current} de {max}."
   charactersBelow: "¡Estás por debajo del límite de caracteres! Actualmente {current} de {min}."
