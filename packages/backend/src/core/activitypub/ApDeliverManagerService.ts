@@ -83,7 +83,7 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity) {
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null) {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -97,7 +97,7 @@ export class ApDeliverManagerService {
 
 class DeliverManager {
 	private actor: { id: User['id']; host: null; };
-	private activity: IActivity;
+	private activity: IActivity | null;
 	private recipes: IRecipe[] = [];
 
 	/**
@@ -114,7 +114,7 @@ class DeliverManager {
 		private queueService: QueueService,
 
 		actor: { id: User['id']; host: null; },
-		activity: IActivity,
+		activity: IActivity | null,
 	) {
 		this.actor = actor;
 		this.activity = activity;
