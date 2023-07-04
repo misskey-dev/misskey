@@ -62,7 +62,7 @@ export class DriveFileEntityService {
 	@bindThis
 	public getPublicProperties(file: DriveFile): DriveFile['properties'] {
 		if (file.properties.orientation != null) {
-			const properties = deepClone(file.properties);
+			const properties = structuredClone(file.properties);
 			if (file.properties.orientation >= 5) {
 				[properties.width, properties.height] = [properties.height, properties.width];
 			}
