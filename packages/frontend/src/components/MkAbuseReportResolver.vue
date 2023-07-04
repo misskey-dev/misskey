@@ -88,7 +88,7 @@ const value = computed({
 			expirationDate: null,
 			expiresAt: 'indefinitely',
 			forward: false,
-			beforeExpiresAt: null,
+			beforeExpiresAt: undefined,
 		};
 		for (const [key, _value] of Object.entries(data)) {
 			if (_value === null) {
