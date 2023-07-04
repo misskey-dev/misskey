@@ -47,8 +47,8 @@ export class ApDeliverManagerService {
 
 	/**
 	 * Deliver activity to followers
+	 * @param actor
 	 * @param activity Activity
-	 * @param from Followee
 	 */
 	@bindThis
 	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity) {
@@ -65,6 +65,7 @@ export class ApDeliverManagerService {
 
 	/**
 	 * Deliver activity to user
+	 * @param actor
 	 * @param activity Activity
 	 * @param to Target user
 	 */
@@ -101,6 +102,9 @@ class DeliverManager {
 
 	/**
 	 * Constructor
+	 * @param userEntityService
+	 * @param followingsRepository
+	 * @param queueService
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
