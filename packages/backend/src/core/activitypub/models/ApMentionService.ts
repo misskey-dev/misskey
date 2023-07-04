@@ -1,13 +1,14 @@
-import promiseLimit from 'promise-limit';
 import { Inject, Injectable } from '@nestjs/common';
-import type { User } from '@/models/index.js';
-import { toArray, unique } from '@/misc/prelude/array.js';
+import promiseLimit from 'promise-limit';
 import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
+import type { User } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import { isMention, type IApMention, type IObject } from '../type.js';
-import type { ApPersonService } from './ApPersonService.js';
-import type { ApResolverService, Resolver } from '../ApResolverService.js';
+import { toArray, unique } from '@/misc/prelude/array.js';
+import { bindThis } from '@/decorators.js';
+import { isMention } from '../type.js';
+import { ApResolverService, Resolver } from '../ApResolverService.js';
+import { ApPersonService } from './ApPersonService.js';
+import type { IObject, IApMention } from '../type.js';
 
 @Injectable()
 export class ApMentionService {
