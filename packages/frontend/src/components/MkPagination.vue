@@ -26,7 +26,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="itemsComputed" :fetching="fetching || moreFetching"></slot>
+		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? fetchMoreAppear : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -75,6 +75,16 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance';
 
+type MisskeyEntityMap = Map<string, MisskeyEntity>;
+
+function arrayToMapEntities(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
+	return entities.map(en => [en.id, en]);
+}
+
+function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
+	return new Map([...map, ...arrayToMapEntities(entities)]);
+}
+
 const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
@@ -98,13 +108,13 @@ let scrollRemove = $ref<(() => void) | null>(null);
  * 表示するアイテムのソース
  * 最新が0番目
  */
-const items = ref<MisskeyEntity[]>([]);
+const items = ref<MisskeyEntityMap>(new Map());
 
 /**
  * タブが非アクティブなどの場合に更新を貯めておく
  * 最新が0番目
  */
-const queue = ref<MisskeyEntity[]>([]);
+const queue = ref<MisskeyEntityMap>(new Map());
 
 const offset = ref(0);
 
@@ -118,7 +128,7 @@ const more = ref(false);
 const preventFetchMore = ref(false);
 const preventFetchMoreTimer = ref<number | null>(null);
 const isBackTop = ref(false);
-const empty = computed(() => items.value.length === 0);
+const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 const {
 	enableInfiniteScroll,
@@ -126,22 +136,6 @@ const {
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
 const scrollableElement = $computed(() => getScrollContainer(contentEl));
-
-/**
- * 実際にレンダリングするアイテム
- * fetchとprependが同時にやってくると重複するので、重複を排除する
- */
-const itemsComputed = computed(() => {
-	let _items = [...items.value];
-	const ids = new Set();
-	_items = _items.reduce((acc, item) => {
-		if (ids.has(item.id)) return acc;
-		ids.add(item.id);
-		acc.push(item);
-		return acc;
-	}, [] as MisskeyEntity[]);
-	return _items;
-});
 
 const visibility = useDocumentVisibility();
 
@@ -188,12 +182,12 @@ if (props.pagination.params && isRef(props.pagination.params)) {
 }
 
 watch(queue, (a, b) => {
-	if (a.length === 0 && b.length === 0) return;
-	emit('queue', queue.value.length);
+	if (a.size === 0 && b.size === 0) return;
+	emit('queue', queue.value.size);
 }, { deep: true });
 
 async function init(): Promise<void> {
-	queue.value = [];
+	queue.value = new Map();
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
 	await os.api(props.pagination.endpoint, {
@@ -224,12 +218,13 @@ async function init(): Promise<void> {
 }
 
 const reload = (): Promise<void> => {
-	items.value = [];
+	items.value = new Map();
+	queue.value = new Map();
 	return init();
 };
 
 const fetchMore = async (): Promise<void> => {
-	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
+	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
 	await os.api(props.pagination.endpoint, {
@@ -238,7 +233,7 @@ const fetchMore = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			untilId: items.value[items.value.length - 1].id,
+			untilId: Array.from(items.value.keys())[items.value.size - 1],
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
@@ -250,7 +245,7 @@ const fetchMore = async (): Promise<void> => {
 			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
-			items.value = items.value.concat(_res);
+			items.value = concatMapWithArray(items.value, _res);
 
 			return nextTick(() => {
 				if (scrollableElement) {
@@ -270,7 +265,7 @@ const fetchMore = async (): Promise<void> => {
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(res);
+				items.value = concatMapWithArray(items.value, res);
 				more.value = false;
 				moreFetching.value = false;
 			}
@@ -281,7 +276,7 @@ const fetchMore = async (): Promise<void> => {
 					moreFetching.value = false;
 				});
 			} else {
-				items.value = items.value.concat(res);
+				items.value = concatMapWithArray(items.value, res);
 				more.value = true;
 				moreFetching.value = false;
 			}
@@ -293,7 +288,7 @@ const fetchMore = async (): Promise<void> => {
 };
 
 const fetchMoreAhead = async (): Promise<void> => {
-	if (!more.value || fetching.value || moreFetching.value || items.value.length === 0) return;
+	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
 	moreFetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
 	await os.api(props.pagination.endpoint, {
@@ -302,14 +297,14 @@ const fetchMoreAhead = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			sinceId: items.value[items.value.length - 1].id,
+			sinceId: Array.from(items.value.keys())[items.value.size - 1],
 		}),
 	}).then(res => {
 		if (res.length === 0) {
-			items.value = items.value.concat(res);
+			items.value = concatMapWithArray(items.value, res);
 			more.value = false;
 		} else {
-			items.value = items.value.concat(res);
+			items.value = concatMapWithArray(items.value, res);
 			more.value = true;
 		}
 		offset.value += res.length;
@@ -367,8 +362,8 @@ watch(visibility, () => {
  * ストリーミングから降ってきたアイテムはこれで追加する
  */
 const prepend = (item: MisskeyEntity): void => {
-	if (items.value.length === 0) {
-		items.value.unshift(item);
+	if (items.value.size === 0) {
+		items.value.set(item.id, item);
 		fetching.value = false;
 		return;
 	}
@@ -378,43 +373,46 @@ const prepend = (item: MisskeyEntity): void => {
 };
 
 function unshiftItems(newItems: MisskeyEntity[]) {
-	const length = newItems.length + items.value.length;
-	items.value = [...newItems, ...items.value].slice(0, props.displayLimit);
+	const length = newItems.length + items.value.size;
+	items.value = new Map([...arrayToMapEntities(newItems), ...items.value].slice(0, props.displayLimit));
 
 	if (length >= props.displayLimit) more.value = true;
 }
 
 function concatItems(oldItems: MisskeyEntity[]) {
-	const length = oldItems.length + items.value.length;
-	items.value = [...items.value, ...oldItems].slice(0, props.displayLimit);
+	const length = oldItems.length + items.value.size;
+	items.value = new Map([...items.value, ...arrayToMapEntities(oldItems)].slice(0, props.displayLimit));
 
 	if (length >= props.displayLimit) more.value = true;
 }
 
 function executeQueue() {
-	unshiftItems(queue.value);
-	queue.value = [];
+	unshiftItems(Array.from(queue.value.values()));
+	queue.value = new Map();
 }
 
 function prependQueue(newItem: MisskeyEntity) {
-	queue.value.unshift(newItem);
-	if (queue.value.length >= props.displayLimit) {
-		queue.value.pop();
+	queue.value = new Map([[newItem.id, newItem], ...queue.value]);
+	if (queue.value.size >= props.displayLimit) {
+		const key = Array.from(queue.value.keys())[queue.value.size - 1];
+		queue.value.delete(key);
 	}
 }
 
 const appendItem = (item: MisskeyEntity): void => {
-	items.value.push(item);
+	items.value.set(item.id, item);
 };
 
-const removeItem = (finder: (item: MisskeyEntity) => boolean) => {
-	const i = items.value.findIndex(finder);
-	items.value.splice(i, 1);
+const removeItem = (id: string) => {
+	items.value.delete(id);
+	queue.value.delete(id);
 };
 
 const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => MisskeyEntity): void => {
-	const i = items.value.findIndex(item => item.id === id);
-	items.value[i] = replacer(items.value[i]);
+	const item = items.value.get(id);
+	if (item) items.value.set(id, replacer(item));
+	const queueItem = queue.value.get(id);
+	if (queueItem) queue.value.set(id, replacer(queueItem));
 };
 
 const inited = init();
