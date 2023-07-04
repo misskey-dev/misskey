@@ -141,6 +141,7 @@ export interface Locale {
     "selectList": string;
     "selectChannel": string;
     "selectAntenna": string;
+    "editAntenna": string;
     "selectWidget": string;
     "editWidgets": string;
     "editWidgetsExit": string;
