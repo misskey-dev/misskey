@@ -29,11 +29,12 @@ const invalid = Number.isNaN(_time);
 const absolute = !invalid ? dateTimeFormat.format(_time) : i18n.ts._ago.invalid;
 
 let now = $ref((props.origin ?? new Date()).getTime());
+const ago = $computed(() => (now - _time) / 1000/*ms*/);
+
 const relative = $computed<string>(() => {
 	if (props.mode === 'absolute') return ''; // absoluteではrelativeを使わないので計算しない
 	if (invalid) return i18n.ts._ago.invalid;
 
-	const ago = (now - _time) / 1000/*ms*/;
 	return (
 		ago >= 31536000 ? i18n.t('_ago.yearsAgo', { n: Math.round(ago / 31536000).toString() }) :
 		ago >= 2592000 ? i18n.t('_ago.monthsAgo', { n: Math.round(ago / 2592000).toString() }) :
@@ -47,22 +48,16 @@ const relative = $computed<string>(() => {
 });
 
 let tickId: number;
+let currentInterval: number;
 
 function tick() {
-	const _now = (new Date()).getTime();
-	const agoPrev = (now - _time) / 1000/*ms*/; // 現状のinterval
+	now = (new Date()).getTime();
+	const nextInterval = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
 
-	now = _now;
-
-	const ago = (now - _time) / 1000/*ms*/; // 次のinterval
-	const prev = agoPrev < 60 ? 10000 : agoPrev < 3600 ? 60000 : 180000;
-	const next = ago < 60 ? 10000 : ago < 3600 ? 60000 : 180000;
-
-	if (!tickId) {
-		tickId = window.setInterval(tick, next);
-	} else if (prev < next) {
-		window.clearInterval(tickId);
-		tickId = window.setInterval(tick, next);
+	if (currentInterval !== nextInterval) {
+		if (tickId) window.clearInterval(tickId);
+		currentInterval = nextInterval;
+		tickId = window.setInterval(tick, nextInterval);
 	}
 }
 
