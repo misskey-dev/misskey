@@ -29,7 +29,7 @@
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>GitHub</template>
 						</FormLink>
-						<FormLink to="https://github.com/Fairy-Phy/misskey.dream" external>
+						<FormLink to="https://github.com/Secineralyr/misskey.dream" external>
 							<template #icon><i class="ti ti-code"></i></template>
 							{{ i18n.ts._aboutMisskey.source }}(Misskey.Dream)
 							<template #suffix>GitHub</template>
