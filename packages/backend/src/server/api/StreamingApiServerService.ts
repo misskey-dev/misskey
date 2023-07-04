@@ -103,6 +103,13 @@ export class StreamingApiServerService {
 			});
 		});
 
+		const globalEv = new EventEmitter();
+
+		this.redisForSub.on('message', (_: string, data: string) => {
+			const parsed = JSON.parse(data);
+			globalEv.emit('message', parsed);
+		});
+
 		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {
 			stream: MainStreamConnection,
 			user: LocalUser | null;
@@ -112,12 +119,11 @@ export class StreamingApiServerService {
 
 			const ev = new EventEmitter();
 
-			async function onRedisMessage(_: string, data: string): Promise<void> {
-				const parsed = JSON.parse(data);
-				ev.emit(parsed.channel, parsed.message);
+			function onRedisMessage(data: any): void {
+				ev.emit(data.channel, data.message);
 			}
 
-			this.redisForSub.on('message', onRedisMessage);
+			globalEv.on('message', onRedisMessage);
 
 			await stream.listen(ev, connection);
 
@@ -137,7 +143,7 @@ export class StreamingApiServerService {
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				stream.dispose();
-				this.redisForSub.off('message', onRedisMessage);
+				globalEv.off('message', onRedisMessage);
 				this.#connections.delete(connection);
 				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
 			});
