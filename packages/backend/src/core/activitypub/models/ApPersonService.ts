@@ -34,7 +34,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
-import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
+import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isOrderedCollection, isOrderedCollectionPage, isPropertyValue } from '../type.js';
+import { ApInboxService } from '../ApInboxService.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { ApNoteService } from './ApNoteService.js';
@@ -62,6 +63,7 @@ export class ApPersonService implements OnModuleInit {
 	private apResolverService: ApResolverService;
 	private apNoteService: ApNoteService;
 	private apImageService: ApImageService;
+	private apInboxService: ApInboxService;
 	private apMfmService: ApMfmService;
 	private mfmService: MfmService;
 	private hashtagService: HashtagService;
@@ -128,6 +130,7 @@ export class ApPersonService implements OnModuleInit {
 		this.apResolverService = this.moduleRef.get('ApResolverService');
 		this.apNoteService = this.moduleRef.get('ApNoteService');
 		this.apImageService = this.moduleRef.get('ApImageService');
+		this.apInboxService = this.moduleRef.get('ApInboxService');
 		this.apMfmService = this.moduleRef.get('ApMfmService');
 		this.mfmService = this.moduleRef.get('MfmService');
 		this.hashtagService = this.moduleRef.get('HashtagService');
@@ -281,7 +284,7 @@ export class ApPersonService implements OnModuleInit {
 		// Create user
 		let user: RemoteUser;
 		try {
-		// Start transaction
+			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new User({
 					id: this.idService.genId(),
@@ -327,9 +330,9 @@ export class ApPersonService implements OnModuleInit {
 				}
 			});
 		} catch (e) {
-		// duplicate key error
+			// duplicate key error
 			if (isDuplicateKeyValueError(e)) {
-			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
+				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({
 					uri: person.id,
 				});
@@ -406,7 +409,10 @@ export class ApPersonService implements OnModuleInit {
 		});
 		//#endregion
 
-		await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
+		await Promise.all([
+			this.updateFeatured(user!.id, resolver),
+			this.updateOutboxFirstPage(user!, person.outbox, resolver),
+		]).catch(err => this.logger.error(err));
 
 		return user!;
 	}
@@ -415,7 +421,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Personの情報を更新します。
 	 * Misskeyに対象のPersonが登録されていなければ無視します。
 	 * もしアカウントの移行が確認された場合、アカウント移行処理を行います。
-	 * 
+	 *
 	 * @param uri URI of Person
 	 * @param resolver Resolver
 	 * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
@@ -498,7 +504,7 @@ export class ApPersonService implements OnModuleInit {
 			(!exist.movedToUri && updates.movedToUri) ||
 			// 移行先がある→別のもの
 			(exist.movedToUri !== updates.movedToUri && exist.movedToUri && updates.movedToUri);
-			// 移行先がある→ない、ない→ないは無視
+		// 移行先がある→ない、ない→ないは無視
 
 		if (moving) updates.movedAt = new Date();
 
@@ -598,9 +604,9 @@ export class ApPersonService implements OnModuleInit {
 	@bindThis
 	public analyzeAttachments(attachments: IObject | IObject[] | undefined) {
 		const fields: {
-		name: string,
-		value: string
-	}[] = [];
+			name: string,
+			value: string
+		}[] = [];
 		if (Array.isArray(attachments)) {
 			for (const attachment of attachments.filter(isPropertyValue)) {
 				fields.push({
@@ -613,8 +619,35 @@ export class ApPersonService implements OnModuleInit {
 		return { fields };
 	}
 
+	/**
+	 * Retrieve outbox from an actor object.
+	 *
+	 * This only retrieves the first page for now.
+	 */
+	public async updateOutboxFirstPage(user: RemoteUser, outbox: IActor['outbox'], resolver: Resolver): Promise<void> {
+		// https://www.w3.org/TR/activitypub/#actor-objects
+		// Outbox is a required property for all actors
+		if (!outbox) {
+			throw new Error('No outbox property');
+		}
+
+		this.logger.info(`Fetching the outbox for ${user.uri}: ${outbox}`);
+
+		const collection = await resolver.resolveCollection(outbox);
+		if (!isOrderedCollection(collection)) {
+			throw new Error('Outbox must be an ordered collection');
+		}
+
+		const firstPage = collection.first ?
+			await resolver.resolveOrderedCollectionPage(collection.first) :
+			collection;
+
+		// Perform activity but only the first 100 ones
+		await this.apInboxService.performActivity(user, firstPage, 100);
+	}
+
 	@bindThis
-	public async updateFeatured(userId: User['id'], resolver?: Resolver) {
+	public async updateFeatured(userId: User['id'], resolver?: Resolver): Promise<void> {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
@@ -631,7 +664,7 @@ export class ApPersonService implements OnModuleInit {
 		const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
 		const items = await Promise.all(toArray(unresolvedItems).map(x => _resolver.resolve(x)));
 
-		// Resolve and regist Notes
+		// Resolve and register Notes
 		const limit = promiseLimit<Note | null>(2);
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
@@ -688,7 +721,7 @@ export class ApPersonService implements OnModuleInit {
 			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
 			dst = await this.resolvePerson(src.movedToUri);
 		}
- 
+
 		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
 		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
 		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';

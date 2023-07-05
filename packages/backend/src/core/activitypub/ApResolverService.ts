@@ -10,11 +10,11 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
-import { isCollectionOrOrderedCollection } from './type.js';
+import { isCollectionOrOrderedCollection, isOrderedCollectionPage } from './type.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
-import type { IObject, ICollection, IOrderedCollection } from './type.js';
+import type { IObject, ICollection, IOrderedCollection, IOrderedCollectionPage } from './type.js';
 
 export class Resolver {
 	private history: Set<string>;
@@ -53,6 +53,18 @@ export class Resolver {
 			: value;
 
 		if (isCollectionOrOrderedCollection(collection)) {
+			return collection;
+		} else {
+			throw new Error(`unrecognized collection type: ${collection.type}`);
+		}
+	}
+
+	public async resolveOrderedCollectionPage(value: string | IObject): Promise<IOrderedCollectionPage> {
+		const collection = typeof value === 'string'
+			? await this.resolve(value)
+			: value;
+
+		if (isOrderedCollectionPage(collection)) {
 			return collection;
 		} else {
 			throw new Error(`unrecognized collection type: ${collection.type}`);
