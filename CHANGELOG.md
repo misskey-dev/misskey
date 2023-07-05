@@ -12,6 +12,15 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### General
+
+### Client
+- 画像を動画と同様に簡単に隠せるように
+
+### Server
+
 ## 13.13.2
 
 ### General
