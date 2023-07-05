@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -444,6 +444,7 @@ export type Endpoints = {
 	'invite/create': { req: NoParams; res: Invite; };
 	'invite/delete': { req: { inviteId: Invite['id']; }; res: null; };
 	'invite/list': { req: { limit?: number; sinceId?: Invite['id']; untilId?: Invite['id'] }; res: Invite[]; };
+	'invite/limit': { req: NoParams; res: InviteLimit; };
 
 	// messaging
 	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
