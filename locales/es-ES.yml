@@ -1020,6 +1020,7 @@ continue: "Continuar"
 channelArchiveConfirmTitle: "¿Seguro de archivar {name}?"
 youFollowing: "Siguiendo"
 options: "Opción"
+installed: "Instalado"
 enableServerMachineStats: "Publicar estadísticas de hardware del servidor"
 enableIdenticonGeneration: "Activar generación de identicon por usuario"
 _initialAccountSetting:
