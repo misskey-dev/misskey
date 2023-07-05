@@ -44,6 +44,7 @@ import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
+	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
 	selectMode?: boolean;
 }>(), {
@@ -65,12 +66,12 @@ function onClick(ev: MouseEvent) {
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
-		os.popupMenu(getDriveFileMenu(props.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+		os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	}
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu(getDriveFileMenu(props.file), ev);
+	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
 }
 
 function onDragstart(ev: DragEvent) {
