@@ -3,8 +3,8 @@ name: Check copyright year
 on:
   push:
     branches:
-      - master
-      - develop
+      - art/main
+      - art/dev
 
 jobs:
   check_copyright_year:
