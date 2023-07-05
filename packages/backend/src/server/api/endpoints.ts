@@ -232,6 +232,7 @@ import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
 import * as ep___invite_create from './endpoints/invite/create.js';
 import * as ep___invite_delete from './endpoints/invite/delete.js';
 import * as ep___invite_list from './endpoints/invite/list.js';
+import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___emoji from './endpoints/emoji.js';
@@ -572,6 +573,7 @@ const eps = [
 	['invite/create', ep___invite_create],
 	['invite/delete', ep___invite_delete],
 	['invite/list', ep___invite_list],
+	['invite/limit', ep___invite_limit],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
 	['emoji', ep___emoji],
