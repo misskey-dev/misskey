@@ -7,6 +7,7 @@ import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import { ThinUser } from '@/queue/types.js';
 
 interface IRecipe {
@@ -22,10 +23,10 @@ interface IDirectRecipe extends IRecipe {
 	to: RemoteUser;
 }
 
-const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
+const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 	recipe.type === 'Followers';
 
-const isDirect = (recipe: any): recipe is IDirectRecipe =>
+const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
 
 @Injectable()
@@ -47,11 +48,11 @@ export class ApDeliverManagerService {
 
 	/**
 	 * Deliver activity to followers
+	 * @param actor
 	 * @param activity Activity
-	 * @param from Followee
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: any) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -65,11 +66,12 @@ export class ApDeliverManagerService {
 
 	/**
 	 * Deliver activity to user
+	 * @param actor
 	 * @param activity Activity
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: any, to: RemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -82,7 +84,7 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: any) {
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null) {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -96,11 +98,14 @@ export class ApDeliverManagerService {
 
 class DeliverManager {
 	private actor: ThinUser;
-	private activity: any;
+	private activity: IActivity | null;
 	private recipes: IRecipe[] = [];
 
 	/**
 	 * Constructor
+	 * @param userEntityService
+	 * @param followingsRepository
+	 * @param queueService
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
@@ -110,7 +115,7 @@ class DeliverManager {
 		private queueService: QueueService,
 
 		actor: { id: User['id']; host: null; },
-		activity: any,
+		activity: IActivity | null,
 	) {
 		// 型で弾いてはいるが一応ローカルユーザーかチェック
 		if (actor.host != null) throw new Error('actor.host must be null');
