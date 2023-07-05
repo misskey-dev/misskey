@@ -8,6 +8,7 @@ import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { IActivity } from '@/core/activitypub/type.js';
+import { ThinUser } from '@/queue/types.js';
 
 interface IRecipe {
 	type: string;
@@ -96,7 +97,7 @@ export class ApDeliverManagerService {
 }
 
 class DeliverManager {
-	private actor: { id: User['id']; host: null; };
+	private actor: ThinUser;
 	private activity: IActivity | null;
 	private recipes: IRecipe[] = [];
 
@@ -116,7 +117,13 @@ class DeliverManager {
 		actor: { id: User['id']; host: null; },
 		activity: IActivity | null,
 	) {
-		this.actor = actor;
+		// 型で弾いてはいるが一応ローカルユーザーかチェック
+		if (actor.host != null) throw new Error('actor.host must be null');
+
+		// パフォーマンス向上のためキューに突っ込むのはidのみに絞る
+		this.actor = {
+			id: actor.id,
+		};
 		this.activity = activity;
 	}
 
@@ -160,9 +167,8 @@ class DeliverManager {
 	 */
 	@bindThis
 	public async execute() {
-		if (!this.userEntityService.isLocalUser(this.actor)) return;
-
 		// The value flags whether it is shared or not.
+		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
 
 		/*
@@ -206,9 +212,6 @@ class DeliverManager {
 			.forEach(recipe => inboxes.set(recipe.to.inbox!, false));
 
 		// deliver
-		for (const inbox of inboxes) {
-			// inbox[0]: inbox, inbox[1]: whether it is sharedInbox
-			this.queueService.deliver(this.actor, this.activity, inbox[0], inbox[1]);
-		}
+		this.queueService.deliverMany(this.actor, this.activity, inboxes);
 	}
 }
