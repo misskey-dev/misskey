@@ -60,7 +60,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		const uri = new URL(getApId(value));
 		if (uri.origin !== this.config.url) return { local: false, uri: uri.href };
 
-		const [type, id, ...rest] = uri.pathname.split(separator);
+		const [, type, id, ...rest] = uri.pathname.split(separator);
 		return {
 			local: true,
 			type,
