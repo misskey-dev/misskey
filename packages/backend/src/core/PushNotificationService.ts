@@ -31,7 +31,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 				...body.note,
 				// textをgetNoteSummaryしたものに置き換える
 				text: getNoteSummary(('type' in body && body.type === 'renote') ? body.note.renote as Packed<'Note'> : body.note),
-	
+
 				cw: undefined,
 				reply: undefined,
 				renote: undefined,
@@ -69,16 +69,16 @@ export class PushNotificationService implements OnApplicationShutdown {
 	@bindThis
 	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
 		const meta = await this.metaService.fetch();
-	
+
 		if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
-	
+
 		// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
 		push.setVapidDetails(this.config.url,
 			meta.swPublicKey,
 			meta.swPrivateKey);
-	
+
 		const subscriptions = await this.subscriptionsCache.fetch(userId);
-	
+
 		for (const subscription of subscriptions) {
 			if ([
 				'readAllNotifications',
@@ -103,7 +103,7 @@ export class PushNotificationService implements OnApplicationShutdown {
 				//swLogger.info(err.statusCode);
 				//swLogger.info(err.headers);
 				//swLogger.info(err.body);
-	
+
 				if (err.statusCode === 410) {
 					this.swSubscriptionsRepository.delete({
 						userId: userId,

@@ -45,7 +45,7 @@ export class NoteDeleteService {
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
 	) {}
-	
+
 	/**
 	 * 投稿を削除します。
 	 * @param user 投稿者

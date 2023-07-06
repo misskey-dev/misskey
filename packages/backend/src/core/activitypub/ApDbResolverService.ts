@@ -121,7 +121,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			const key = await this.userPublickeysRepository.findOneBy({
 				keyId,
 			});
-	
+
 			if (key == null) return null;
 
 			return key;
@@ -147,7 +147,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 		if (user == null) return null;
 
-		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null); 
+		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null);
 
 		return {
 			user,

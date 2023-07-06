@@ -31,16 +31,16 @@ export class AiService {
 				const cpuFlags = await this.getCpuFlags();
 				isSupportedCpu = REQUIRED_CPU_FLAGS.every(required => cpuFlags.includes(required));
 			}
-	
+
 			if (!isSupportedCpu) {
 				console.error('This CPU cannot use TensorFlow.');
 				return null;
 			}
-	
+
 			const tf = await import('@tensorflow/tfjs-node');
-	
+
 			if (this.model == null) this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
-	
+
 			const buffer = await fs.promises.readFile(path);
 			const image = await tf.node.decodeImage(buffer, 3) as any;
 			try {

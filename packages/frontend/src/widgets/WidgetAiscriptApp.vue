@@ -37,7 +37,7 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
 const props = defineProps<WidgetComponentProps<WidgetProps>>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
-	
+
 const { widgetProps, configure } = useWidgetPropsManager(name,
 	widgetPropsDef,
 	props,
