@@ -19,7 +19,7 @@ block og
 	meta(property='og:title'       content= title)
 	meta(property='og:description' content= summary)
 	meta(property='og:url'         content= url)
-	if videos
+	if videos.length
 		each video in videos
 			meta(property='og:video:url'        content= video.url)
 			meta(property='og:video:secure_url' content= video.url)
