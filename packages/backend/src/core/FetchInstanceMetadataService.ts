@@ -50,7 +50,7 @@ export class FetchInstanceMetadataService {
 	@bindThis
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 		const host = instance.host;
-		// Acauire mutex to ensure no parallel runs
+		// Acquire mutex to ensure no parallel runs
 		const mutex = this.redisClient.set("fetchInstanceMetadata:mutex:" + host, "1", "GET");
 		if (mutex == "1") { return; }
 		try {
