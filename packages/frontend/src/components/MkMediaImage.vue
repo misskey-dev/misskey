@@ -120,9 +120,9 @@ function showMenu(ev: MouseEvent) {
 	border-radius: 6px;
 	background-color: var(--fg);
 	color: var(--accentLighten);
-	font-size: 14px;
+	font-size: 12px;
 	opacity: .5;
-	padding: 3px 6px;
+	padding: 5px 8px;
 	text-align: center;
 	cursor: pointer;
 	top: 12px;
@@ -153,8 +153,8 @@ function showMenu(ev: MouseEvent) {
 	backdrop-filter: var(--blur, blur(15px));
 	color: #fff;
 	font-size: 0.8em;
-	width: 32px;
-	height: 32px;
+	width: 28px;
+	height: 28px;
 	text-align: center;
 	bottom: 10px;
 	right: 10px;
