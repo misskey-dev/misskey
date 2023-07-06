@@ -188,6 +188,7 @@ watch(queue, (a, b) => {
 }, { deep: true });
 
 async function init(): Promise<void> {
+	items.value = new Map();
 	queue.value = new Map();
 	fetching.value = true;
 	const params = props.pagination.params ? isRef(props.pagination.params) ? props.pagination.params.value : props.pagination.params : {};
@@ -219,8 +220,6 @@ async function init(): Promise<void> {
 }
 
 const reload = (): Promise<void> => {
-	items.value = new Map();
-	queue.value = new Map();
 	return init();
 };
 
