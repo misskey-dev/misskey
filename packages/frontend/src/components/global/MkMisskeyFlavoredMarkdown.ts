@@ -31,6 +31,7 @@ export default function(props: {
 	isNote?: boolean;
 	emojiUrls?: string[];
 	rootScale?: number;
+	disableLinkPreviewTooltip?: boolean;
 }) {
 	const isNote = props.isNote !== undefined ? props.isNote : true;
 
@@ -242,6 +243,7 @@ export default function(props: {
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
+					disablePreviewTooltip: props.disableLinkPreviewTooltip ?? false,
 				})];
 			}
 
@@ -250,6 +252,7 @@ export default function(props: {
 					key: Math.random(),
 					url: token.props.url,
 					rel: 'nofollow noopener',
+					disablePreviewTooltip: props.disableLinkPreviewTooltip ?? false,
 				}, genEl(token.children, scale))];
 			}
 

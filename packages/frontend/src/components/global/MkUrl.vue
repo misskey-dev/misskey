@@ -26,23 +26,29 @@ import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
 	url: string;
-	rel?: string;
-}>();
+	rel?: string | null;
+	disablePreviewTooltip?: boolean;
+}>(), {
+	rel: null,
+	disablePreviewTooltip: false,
+});
 
 const self = props.url.startsWith(local);
 const url = new URL(props.url);
 if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
 const el = ref();
 
-useTooltip(el, (showing) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-		showing,
-		url: props.url,
-		source: el.value,
-	}, {}, 'closed');
-});
+if (!props.disablePreviewTooltip) {
+	useTooltip(el, (showing) => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+			showing,
+			url: props.url,
+			source: el.value,
+		}, {}, 'closed');
+	});
+}
 
 const schema = url.protocol;
 const hostname = decodePunycode(url.hostname);

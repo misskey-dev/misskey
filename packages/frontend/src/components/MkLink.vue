@@ -17,7 +17,10 @@ import * as os from '@/os';
 const props = withDefaults(defineProps<{
 	url: string;
 	rel?: null | string;
+	disablePreviewTooltip?: boolean;
 }>(), {
+	rel: null,
+	disablePreviewTooltip: false,
 });
 
 const self = props.url.startsWith(local);
@@ -26,13 +29,15 @@ const target = self ? null : '_blank';
 
 const el = $ref();
 
-useTooltip($$(el), (showing) => {
-	os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
-		showing,
-		url: props.url,
-		source: el,
-	}, {}, 'closed');
-});
+if (!props.disablePreviewTooltip) {
+	useTooltip($$(el), (showing) => {
+		os.popup(defineAsyncComponent(() => import('@/components/MkUrlPreviewPopup.vue')), {
+			showing,
+			url: props.url,
+			source: el,
+		}, {}, 'closed');
+	});
+}
 </script>
 
 <style lang="scss" module>
