@@ -134,7 +134,7 @@ export class NoteDeleteService {
 
 			return [
 				replies,
-				...await Promise.all(replies.map(async reply => await recursive(reply.id))),
+				...await Promise.all(replies.map(reply => recursive(reply.id))),
 			].flat();
 		};
 
