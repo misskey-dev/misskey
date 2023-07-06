@@ -26,7 +26,7 @@ block og
 			meta(property='og:video:type'       content= video.type)
 			// FIXME: add width and height
 			// FIXME: add embed player for Twitter
-	if images
+	if images.length
 		meta(property='twitter:card' content='summary_large_image')
 		each image in images	
 			meta(property='og:image'     content= image.url)
