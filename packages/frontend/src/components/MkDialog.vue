@@ -20,8 +20,8 @@
 			<i v-else-if="type === 'question'" :class="$style.iconInner" class="ti ti-help-circle"></i>
 			<MkLoading v-else-if="type === 'waiting'" :class="$style.iconInner" :em="true"/>
 		</div>
-		<header v-if="title" :class="$style.title"><Mfm :text="title"/></header>
-		<div v-if="text" :class="$style.text"><Mfm :text="text"/></div>
+		<header v-if="title" :class="$style.title"><Mfm :disableLinkPreviewTooltip="true" :text="title"/></header>
+		<div v-if="text" :class="$style.text"><Mfm :disableLinkPreviewTooltip="true" :text="text"/></div>
 		<MkInput v-if="input" v-model="inputValue" autofocus :type="input.type || 'text'" :placeholder="input.placeholder || undefined" :autocomplete="input.autocomplete" @keydown="onInputKeydown">
 			<template v-if="input.type === 'password'" #prefix><i class="ti ti-lock"></i></template>
 			<template #caption>
@@ -234,7 +234,7 @@ onBeforeUnmount(() => {
 }
 
 .text {
-	margin: 16px 0 0 0;
+	margin: 16px 0 8px 0;
 }
 
 .buttons {

@@ -8,7 +8,9 @@ export async function lookup(router?: Router) {
 
 	const { canceled, result: query } = await os.inputText({
 		title: i18n.ts.lookup,
+		text: i18n.ts.lookupDescription + `\n?[${i18n.ts.learnMore}](https://misskey-hub.net/docs/features/lookup.html)`,
 	});
+
 	if (canceled) return;
 	
 	if (query.startsWith('@') && !query.includes(' ')) {

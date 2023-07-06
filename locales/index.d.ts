@@ -246,6 +246,7 @@ export interface Locale {
     "usernameOrUserId": string;
     "noSuchUser": string;
     "lookup": string;
+    "lookupDescription": string;
     "announcements": string;
     "imageUrl": string;
     "remove": string;
