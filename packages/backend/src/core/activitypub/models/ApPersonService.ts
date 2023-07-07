@@ -386,7 +386,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Personの情報を更新します。
 	 * Misskeyに対象のPersonが登録されていなければ無視します。
 	 * もしアカウントの移行が確認された場合、アカウント移行処理を行います。
-	 * 
+	 *
 	 * @param uri URI of Person
 	 * @param resolver Resolver
 	 * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
@@ -656,7 +656,7 @@ export class ApPersonService implements OnModuleInit {
 			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
 			dst = await this.resolvePerson(src.movedToUri);
 		}
- 
+
 		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
 		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
 		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';

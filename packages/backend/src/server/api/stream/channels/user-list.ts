@@ -20,7 +20,7 @@ class UserListChannel extends Channel {
 		private userListsRepository: UserListsRepository,
 		private userListJoiningsRepository: UserListJoiningsRepository,
 		private noteEntityService: NoteEntityService,
-		
+
 		id: string,
 		connection: Channel['connection'],
 	) {

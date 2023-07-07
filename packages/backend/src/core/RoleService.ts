@@ -392,7 +392,7 @@ export class RoleService implements OnApplicationShutdown {
 	@bindThis
 	public async unassign(userId: User['id'], roleId: Role['id']): Promise<void> {
 		const now = new Date();
-	
+
 		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
 		if (existing == null) {
 			throw new RoleService.NotAssignedError();

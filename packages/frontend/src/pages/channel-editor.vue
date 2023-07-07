@@ -25,11 +25,11 @@
 
 			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.pinnedNotes }}</template>
-				
+
 				<div class="_gaps">
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
-					<Sortable 
+					<Sortable
 						v-model="pinnedNotes"
 						itemKey="id"
 						:handle="'.' + $style.pinnedNoteHandle"
@@ -160,7 +160,7 @@ async function archive() {
 	});
 
 	if (canceled) return;
-	
+
 	os.api('channels/update', {
 		channelId: props.channelId,
 		isArchived: true,
