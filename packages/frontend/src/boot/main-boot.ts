@@ -87,7 +87,7 @@ export async function mainBoot() {
 		const now = new Date();
 		const m = now.getMonth() + 1;
 		const d = now.getDate();
-		
+
 		if ($i.birthday) {
 			const bm = parseInt($i.birthday.split('-')[1]);
 			const bd = parseInt($i.birthday.split('-')[2]);

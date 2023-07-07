@@ -23,7 +23,7 @@ export class IdService {
 	@bindThis
 	public genId(date?: Date): string {
 		if (!date || (date > new Date())) date = new Date();
-	
+
 		switch (this.method) {
 			case 'aid': return genAid(date);
 			case 'meid': return genMeid(date);

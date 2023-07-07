@@ -7,6 +7,8 @@ import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import type { IActivity } from '@/core/activitypub/type.js';
+import { ThinUser } from '@/queue/types.js';
 
 interface IRecipe {
 	type: string;
@@ -21,10 +23,10 @@ interface IDirectRecipe extends IRecipe {
 	to: RemoteUser;
 }
 
-const isFollowers = (recipe: any): recipe is IFollowersRecipe =>
+const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 	recipe.type === 'Followers';
 
-const isDirect = (recipe: any): recipe is IDirectRecipe =>
+const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
 
 @Injectable()
@@ -46,11 +48,11 @@ export class ApDeliverManagerService {
 
 	/**
 	 * Deliver activity to followers
+	 * @param actor
 	 * @param activity Activity
-	 * @param from Followee
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: any) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -64,11 +66,12 @@ export class ApDeliverManagerService {
 
 	/**
 	 * Deliver activity to user
+	 * @param actor
 	 * @param activity Activity
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: any, to: RemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser) {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -81,25 +84,28 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: any) {
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null) {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
 			this.queueService,
 
-			actor, 
+			actor,
 			activity,
 		);
 	}
 }
 
 class DeliverManager {
-	private actor: { id: User['id']; host: null; };
-	private activity: any;
+	private actor: ThinUser;
+	private activity: IActivity | null;
 	private recipes: IRecipe[] = [];
 
 	/**
 	 * Constructor
+	 * @param userEntityService
+	 * @param followingsRepository
+	 * @param queueService
 	 * @param actor Actor
 	 * @param activity Activity to deliver
 	 */
@@ -109,9 +115,15 @@ class DeliverManager {
 		private queueService: QueueService,
 
 		actor: { id: User['id']; host: null; },
-		activity: any,
+		activity: IActivity | null,
 	) {
-		this.actor = actor;
+		// 型で弾いてはいるが一応ローカルユーザーかチェック
+		if (actor.host != null) throw new Error('actor.host must be null');
+
+		// パフォーマンス向上のためキューに突っ込むのはidのみに絞る
+		this.actor = {
+			id: actor.id,
+		};
 		this.activity = activity;
 	}
 
@@ -155,9 +167,8 @@ class DeliverManager {
 	 */
 	@bindThis
 	public async execute() {
-		if (!this.userEntityService.isLocalUser(this.actor)) return;
-
 		// The value flags whether it is shared or not.
+		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
 
 		/*
@@ -201,9 +212,6 @@ class DeliverManager {
 			.forEach(recipe => inboxes.set(recipe.to.inbox!, false));
 
 		// deliver
-		for (const inbox of inboxes) {
-			// inbox[0]: inbox, inbox[1]: whether it is sharedInbox
-			this.queueService.deliver(this.actor, this.activity, inbox[0], inbox[1]);
-		}
+		this.queueService.deliverMany(this.actor, this.activity, inboxes);
 	}
 }

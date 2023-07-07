@@ -65,6 +65,7 @@
 					v-anim="i"
 					:class="$style.file"
 					:file="file"
+					:folder="folder"
 					:selectMode="select === 'file'"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
 					@chosen="chooseFile"
@@ -201,9 +202,9 @@ function onDragover(ev: DragEvent): any {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':

@@ -80,7 +80,7 @@ watch(sortModeSelect, () => {
 			sortMode.value = '+size';
 			fetchDriveInfo();
 			break;
-		
+
 		case 'createdAtAsc':
 			sortMode.value = '-createdAt';
 			fetchDriveInfo();
