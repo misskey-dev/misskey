@@ -13,10 +13,10 @@
 		</div>
 	</MKSpacer>
 	<MkSpacer v-else :contentMax="800">
-		<div class="_gaps_s" :class="$style.center">
-			<p v-if="resetCycle && instance.invite?.createLimit">{{ i18n.t('inviteLimitResetCycle', { time: resetCycle, limit: instance.invite.createLimit }) }}</p>
-			<MkButton inline primary rounded :disabled="inviteLimit !== null && inviteLimit <= 0" @click="create"><i class="ti ti-user-plus"></i> {{ i18n.ts.createInviteCode }}</MkButton>
-			<p v-if="inviteLimit !== null">{{ i18n.t('createLimitRemaining', { limit: inviteLimit }) }}</p>
+		<div class="_gaps_m" :class="$style.center">
+			<p v-if="resetCycle && inviteLimit">{{ i18n.t('inviteLimitResetCycle', { time: resetCycle, limit: inviteLimit }) }}</p>
+			<MkButton inline primary rounded :disabled="currentInviteLimit !== null && currentInviteLimit <= 0" @click="create"><i class="ti ti-user-plus"></i> {{ i18n.ts.createInviteCode }}</MkButton>
+			<p v-if="currentInviteLimit !== null">{{ i18n.t('createLimitRemaining', { limit: currentInviteLimit }) }}</p>
 
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
@@ -43,7 +43,9 @@ import { serverErrorImageUrl, instance } from '@/instance';
 import { $i } from '@/account';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
-const inviteLimit = ref<null | number>(null);
+const currentInviteLimit = ref<null | number>(null);
+const inviteLimit = (($i == null && instance.policies.inviteLimit) || ($i != null && $i.policies.inviteLimit)) as number;
+const inviteLimitCycle = (($i == null && instance.policies.inviteLimitCycle) || ($i != null && $i.policies.inviteLimitCycle)) as number;
 
 const pagination: Paging = {
 	endpoint: 'invite/list' as const,
@@ -51,9 +53,9 @@ const pagination: Paging = {
 };
 
 const resetCycle = computed<null | string>(() => {
-	if (!instance.invite?.resetCycle) return null;
+	if (!inviteLimitCycle) return null;
 
-	const minutes = Math.floor(instance.invite.resetCycle / 1000 / 60);
+	const minutes = inviteLimitCycle;
 	if (minutes < 60) return minutes + i18n.ts._time.minute;
 	const hours = Math.floor(minutes / 60);
 	if (hours < 24) return hours + i18n.ts._time.hour;
@@ -80,7 +82,7 @@ function deleted(id: string) {
 }
 
 async function update() {
-	inviteLimit.value = (await os.api('invite/limit')).remaining;
+	currentInviteLimit.value = (await os.api('invite/limit')).remaining;
 }
 
 update();
@@ -104,6 +106,10 @@ definePageMetadata({
 
 .center {
 	text-align: center;
+
+	p {
+		margin: 0;
+	}
 }
 
 .img {

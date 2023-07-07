@@ -5,7 +5,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { IdService } from '@/core/IdService.js';
-import { MetaService } from '@/core/MetaService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -51,21 +51,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private inviteCodeEntityService: InviteCodeEntityService,
 		private idService: IdService,
-		private metaService: MetaService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const instance = await this.metaService.fetch(true);
+			const policies = await this.roleService.getUserPolicies(me.id);
 
 			// 一人あたりが発行できるチケットの数を制限
-			if (instance.inviteCodeCreateLimit) {
+			if (policies.inviteLimit) {
 				const count = await this.registrationTicketsRepository.countBy({
-					createdAt: MoreThan(new Date(Date.now() - instance.inviteCodeCreateLimitResetCycle)),
+					createdAt: MoreThan(new Date(Date.now() - (policies.inviteLimitCycle * 1000 * 60))),
 					createdBy: {
 						id: me.id,
 					},
 				});
 
-				if (count >= instance.inviteCodeCreateLimit) {
+				if (count >= policies.inviteLimit) {
 					throw new ApiError(meta.errors.exceededCreateLimit);
 				}
 			}
@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				createdBy: me,
-				expiresAt: instance.inviteCodeExpirationTime ? new Date(Date.now() + instance.inviteCodeExpirationTime) : null,
+				expiresAt: policies.inviteExpirationTime ? new Date(Date.now() + (policies.inviteExpirationTime * 1000 * 60)) : null,
 				pendingUserId: null,
 				code,
 			}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0]));
