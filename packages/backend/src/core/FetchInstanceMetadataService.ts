@@ -36,7 +36,6 @@ export class FetchInstanceMetadataService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.instancesRepository)
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 		private federatedInstanceService: FederatedInstanceService,
@@ -53,7 +52,7 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	public unlock(): Promise<'OK'> {
+	public unlock(host: string): Promise<'OK'> {
 		return this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
 	}
 
@@ -61,7 +60,7 @@ export class FetchInstanceMetadataService {
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 		const host = instance.host;
 		// Acquire mutex to ensure no parallel runs
-		if (await this.tryLock(host)) return;
+		if (!await this.tryLock(host)) return;
 		try {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetch(host);
@@ -114,7 +113,7 @@ export class FetchInstanceMetadataService {
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
 		} finally {
-			await this.unlock();
+			await this.unlock(host);
 		}
 	}
 
