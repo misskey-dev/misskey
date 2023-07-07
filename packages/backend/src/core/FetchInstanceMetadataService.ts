@@ -47,21 +47,21 @@ export class FetchInstanceMetadataService {
 	}
 
 	@bindThis
-	public async try_lock(host: string): Promise<boolean> {
+	public async tryLock(host: string): Promise<boolean> {
 		const mutex = await this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
 		return mutex !== '1';
 	}
 
 	@bindThis
-	public async unlock(host: string): Promise<void> {
-		this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0', 'GET');
+	public unlock(): Promise<'OK'> {
+		return this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
 	}
 
 	@bindThis
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 		const host = instance.host;
 		// Acquire mutex to ensure no parallel runs
-		if (this.try_lock(host)) return;
+		if (await this.tryLock(host)) return;
 		try {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetch(host);
