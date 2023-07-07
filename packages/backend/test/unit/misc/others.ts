@@ -37,6 +37,6 @@ describe('misc:correct-filename', () => {
         expect(correctFilename('filename.tiff', 'tif')).toBe('filename.tiff');
     });
     test('null ext', () => {
-        expect(correctFilename('filename', null)).toBe('filename.unknown');
+        expect(correctFilename('filename', null)).toBe('filename');
     });
 });

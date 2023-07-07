@@ -189,7 +189,7 @@ export class FileServerService {
 			if (file.fileRole !== 'original') {
 				const filename = rename(file.filename, {
 					suffix: file.fileRole === 'thumbnail' ? '-thumb' : '-web',
-					extname: file.ext ? `.${file.ext}` : '.unknown',
+					extname: file.ext ? `.${file.ext}` : '',
 				}).toString();
 
 				reply.header('Content-Type', FILE_TYPE_BROWSERSAFE.includes(file.mime) ? file.mime : 'application/octet-stream');
