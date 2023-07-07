@@ -1451,6 +1451,7 @@ _ad:
   back: "戻る"
   reduceFrequencyOfThisAd: "この広告の表示頻度を下げる"
   hide: "表示しない"
+  timezoneinfo: "曜日はサーバーのタイムゾーンを元に指定されます。"
 
 _forgotPassword:
   enterEmail: "アカウントに登録したメールアドレスを入力してください。そのアドレス宛てに、パスワードリセット用のリンクが送信されます。"
