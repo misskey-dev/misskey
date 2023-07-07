@@ -1,7 +1,10 @@
-import { DriveFile } from '@/models/index.js';
-
 export type Obj = { [x: string]: unknown};
 export type ApObject = IObject | string | (IObject | string)[];
+export interface Icon {
+	type: string;
+	url: string;
+	mediaType: string;
+}
 
 export interface IObject {
 	'@context'?: string | string[] | Obj | Obj[];
@@ -19,8 +22,8 @@ export interface IObject {
 	content?: string | null;
 	startTime?: Date;
 	endTime?: Date;
-	icon?: DriveFile | undefined;
-	image?: DriveFile | undefined;
+	icon?: IIcon;
+	image?: string | undefined;
 	url?: ApObject | string;
 	href?: string;
 	tag?: IObject | IObject[];
@@ -247,6 +250,12 @@ export interface IApDocument extends IObject {
 	type: 'Document';
 	name: string | null;
 	mediaType: string;
+}
+
+export interface IIcon extends IObject {
+	type: 'Image';
+	mediaType: string;
+	url: string;
 }
 
 export interface IApImage extends IObject {
