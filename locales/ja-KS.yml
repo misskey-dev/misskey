@@ -1,7 +1,7 @@
 ---
 _lang_: "日本語 (関西弁)"
 headlineMisskey: "ノートでつながるネットワーク"
-introMisskey: "ようお越し！Misskeyは、オープンソースの分散型マイクロブログサービスやねん。\n「ノート」を作って、いま起こっとることを共有したり、あんたについて皆に発信しよう📡\n「ツッコミ」機能で、皆のノートに素早く反応を追加したりもできるで✌\nほな新しい世界を探検しよか🚀"
+introMisskey: "ようお越し！Misskeyは、オープンソースの分散型マイクロブログサービスやねん。\n「ノート」を作って、いま起こっとることを共有したり、あんたについて皆に発信しよう📡\n「ツッコミ」機能で、皆のノートに素早く反応を追加したりもできるで✌\nほな、新しい世界を探検しよか🚀"
 poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>のサーバーのひとつなんやで。"
 monthAndDay: "{month}月 {day}日"
 search: "探す"
@@ -1066,6 +1066,7 @@ additionalEmojiDictionary: "絵文字の追加辞書"
 installed: "インストール済み"
 branding: "あ"
 enableServerMachineStats: "サーバーのマシン情報見せびらかすで"
+enableIdenticonGeneration: "ユーザーごとのIdenticon生成を有効にする"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
