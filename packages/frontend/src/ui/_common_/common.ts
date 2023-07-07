@@ -53,21 +53,10 @@ export function openInstanceMenu(ev: MouseEvent) {
 			text: '🍪👈',
 			icon: 'ti ti-cookie',
 		}, ($i && ($i.isAdmin || $i.policies.canInvite) && instance.disableRegistration) ? {
+			type: 'link',
+			to: '/invite',
 			text: i18n.ts.invite,
 			icon: 'ti ti-user-plus',
-			action: () => {
-				os.api('invite').then(x => {
-					os.alert({
-						type: 'info',
-						text: x.code,
-					});
-				}).catch(err => {
-					os.alert({
-						type: 'error',
-						text: err,
-					});
-				});
-			},
 		} : undefined, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
 			type: 'link',
 			to: '/custom-emojis-manager',
