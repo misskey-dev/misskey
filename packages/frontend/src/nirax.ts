@@ -159,11 +159,11 @@ export class Router extends EventEmitter<{
 					if (route.hash != null && hash != null) {
 						props.set(route.hash, safeURIDecode(hash));
 					}
-	
+
 					if (route.query != null && queryString != null) {
 						const queryObject = [...new URLSearchParams(queryString).entries()]
 							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
-	
+
 						for (const q in route.query) {
 							const as = route.query[q];
 							if (queryObject[q]) {
@@ -171,7 +171,7 @@ export class Router extends EventEmitter<{
 							}
 						}
 					}
-	
+
 					return {
 						route,
 						props,

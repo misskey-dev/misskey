@@ -10,7 +10,7 @@ export async function lookup(router?: Router) {
 		title: i18n.ts.lookup,
 	});
 	if (canceled) return;
-	
+
 	if (query.startsWith('@') && !query.includes(' ')) {
 		_router.push(`/${query}`);
 		return;

@@ -70,7 +70,7 @@ export class Storage<T extends StateDef> {
 			this.state[k] = v.default;
 			this.reactiveState[k] = ref(v.default);
 		}
-	
+
 		this.ready = this.init();
 		this.loaded = this.ready.then(() => this.load());
 	}
@@ -81,7 +81,7 @@ export class Storage<T extends StateDef> {
 		const deviceState: State<T> = await get(this.deviceStateKeyName) || {};
 		const deviceAccountState = $i ? await get(this.deviceAccountStateKeyName) || {} : {};
 		const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
-	
+
 		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
 				this.reactiveState[k].value = this.state[k] = deviceState[k];
@@ -110,7 +110,7 @@ export class Storage<T extends StateDef> {
 				if (!scope || scope.length !== 2 || scope[0] !== 'client' || scope[1] !== this.key || this.state[key] === value) return;
 
 				this.reactiveState[key].value = this.state[key] = value;
-	
+
 				this.addIdbSetJob(async () => {
 					const cache = await get(this.registryCacheKeyName);
 					if (cache[key] !== value) {
@@ -142,7 +142,7 @@ export class Storage<T extends StateDef> {
 									}
 								}
 							}
-	
+
 							return set(this.registryCacheKeyName, cache);
 						})
 						.then(() => resolve());
@@ -252,7 +252,7 @@ export class Storage<T extends StateDef> {
 	// localStorage => indexedDBのマイグレーション
 	private async migrate() {
 		const deviceState = localStorage.getItem(this.deviceStateKeyName);
-		if (deviceState) { 
+		if (deviceState) {
 			await set(this.deviceStateKeyName, JSON.parse(deviceState));
 			localStorage.removeItem(this.deviceStateKeyName);
 		}

@@ -99,7 +99,7 @@ export class AntennaService implements OnApplicationShutdown {
 				'MAXLEN', '~', '200',
 				'*',
 				'note', note.id);
-			
+
 			this.globalEventService.publishAntennaStream(antenna.id, 'note', note);
 		}
 
@@ -112,16 +112,16 @@ export class AntennaService implements OnApplicationShutdown {
 	public async checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
-	
+
 		if (!antenna.withReplies && note.replyId != null) return false;
-	
+
 		if (antenna.src === 'home') {
 			// TODO
 		} else if (antenna.src === 'list') {
 			const listUsers = (await this.userListJoiningsRepository.findBy({
 				userListId: antenna.userListId!,
 			})).map(x => x.userId);
-	
+
 			if (!listUsers.includes(note.userId)) return false;
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
@@ -130,32 +130,32 @@ export class AntennaService implements OnApplicationShutdown {
 			});
 			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
 		}
-	
+
 		const keywords = antenna.keywords
 			// Clean up
 			.map(xs => xs.filter(x => x !== ''))
 			.filter(xs => xs.length > 0);
-	
+
 		if (keywords.length > 0) {
 			if (note.text == null && note.cw == null) return false;
 
 			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
-	
+
 			const matched = keywords.some(and =>
 				and.every(keyword =>
 					antenna.caseSensitive
 						? _text.includes(keyword)
 						: _text.toLowerCase().includes(keyword.toLowerCase()),
 				));
-	
+
 			if (!matched) return false;
 		}
-	
+
 		const excludeKeywords = antenna.excludeKeywords
 			// Clean up
 			.map(xs => xs.filter(x => x !== ''))
 			.filter(xs => xs.length > 0);
-	
+
 		if (excludeKeywords.length > 0) {
 			if (note.text == null && note.cw == null) return false;
 
@@ -167,16 +167,16 @@ export class AntennaService implements OnApplicationShutdown {
 						? _text.includes(keyword)
 						: _text.toLowerCase().includes(keyword.toLowerCase()),
 				));
-	
+
 			if (matched) return false;
 		}
-	
+
 		if (antenna.withFile) {
 			if (note.fileIds && note.fileIds.length === 0) return false;
 		}
-	
+
 		// TODO: eval expression
-	
+
 		return true;
 	}
 
@@ -188,7 +188,7 @@ export class AntennaService implements OnApplicationShutdown {
 			});
 			this.antennasFetched = true;
 		}
-	
+
 		return this.antennas;
 	}
 

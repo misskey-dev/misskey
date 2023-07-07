@@ -36,7 +36,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						await queue.promote();
 					}
 					break;
-				
+
 				case 'inbox':
 					delayedQueues = await this.queueService.inboxQueue.getDelayed();
 					for (let queueIndex = 0; queueIndex < delayedQueues.length; queueIndex++) {

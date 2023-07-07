@@ -1,6 +1,6 @@
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
-	<div v-if="!narrow || currentPage?.route.name == null" class="nav">	
+	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
 		<MkSpacer :contentMax="700" :marginMin="16">
 			<div class="lxpfedzu">
 				<div class="banner">

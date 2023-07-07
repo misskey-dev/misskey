@@ -78,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					.getMany();
 			} else {
 				const nameQuery = this.usersRepository.createQueryBuilder('user')
-					.where(new Brackets(qb => { 
+					.where(new Brackets(qb => {
 						qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 						// Also search username if it qualifies as username

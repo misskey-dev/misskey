@@ -32,7 +32,7 @@ export class ApImageService {
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
-	
+
 	/**
 	 * Imageを作成します。
 	 */
