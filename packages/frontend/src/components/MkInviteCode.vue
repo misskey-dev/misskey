@@ -41,7 +41,10 @@
 			<div :class="$style.label">{{ i18n.ts.createdAt }}</div>
 			<div><MkTime :time="invite.createdAt" mode="absolute"/></div>
 		</div>
-		<MkButton v-if="!invite.used || moderator" rounded danger @click="deleteCode()">{{ i18n.ts.delete }}</MkButton>
+		<div :class="$style.buttons">
+			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyToClipboard(invite.code)">{{ i18n.ts.copy }}</MkButton>
+			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()">{{ i18n.ts.delete }}</MkButton>
+		</div>
 	</div>
 </MkFolder>
 </template>
@@ -51,6 +54,7 @@ import { computed } from 'vue';
 import * as misskey from 'misskey-js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 
@@ -96,5 +100,10 @@ function deleteCode() {
 	--height: 24px;
 	width: var(--height);
 	height: var(--height);
+}
+
+.buttons {
+	display: flex;
+	gap: 8px;
 }
 </style>
