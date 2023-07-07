@@ -1,0 +1,100 @@
+<template>
+<MkFolder>
+	<template #label>{{ invite.code }}</template>
+	<template #suffix>
+		<span v-if="invite.used">{{ i18n.ts.used }}</span>
+		<span v-else-if="isExpired">{{ i18n.ts.expired }}</span>
+		<span v-else style="color: var(--success)">{{ i18n.ts.unused }}</span>
+	</template>
+	<div class="_gaps_s" :class="$style.root">
+		<div>
+			<div :class="$style.label">{{ i18n.ts.invitationCode }}</div>
+			<div>{{ invite.code }}</div>
+		</div>
+		<div v-if="moderator">
+			<div :class="$style.label">{{ i18n.ts.inviteCodeCreator }}</div>
+			<div v-if="invite.createdBy" :class="$style.user">
+				<MkAvatar :user="invite.createdBy" :class="$style.avatar" link preview/>
+				<MkUserName :user="invite.createdBy" :nowrap="false"/>
+				<div v-if="moderator">({{ invite.createdBy.id }})</div>
+			</div>
+			<div v-else>system</div>
+		</div>
+		<div v-if="invite.used">
+			<div :class="$style.label">{{ i18n.ts.registeredUserUsingInviteCode }}</div>
+			<div v-if="invite.usedBy" :class="$style.user">
+				<MkAvatar :user="invite.usedBy" :class="$style.avatar" link preview/>
+				<MkUserName :user="invite.usedBy" :nowrap="false"/>
+				<div v-if="moderator">({{ invite.usedBy.id }})</div>
+			</div>
+			<div v-else>{{ i18n.ts.unknown }}</div>
+		</div>
+		<div v-if="invite.expiresAt && !invite.used">
+			<div :class="$style.label">{{ i18n.ts.expirationDate }}</div>
+			<div><MkTime :time="invite.expiresAt" mode="absolute"/></div>
+		</div>
+		<div v-if="invite.usedAt">
+			<div :class="$style.label">{{ i18n.ts.inviteCodeUsedAt }}</div>
+			<div><MkTime :time="invite.usedAt" mode="absolute"/></div>
+		</div>
+		<div v-if="moderator">
+			<div :class="$style.label">{{ i18n.ts.createdAt }}</div>
+			<div><MkTime :time="invite.createdAt" mode="absolute"/></div>
+		</div>
+		<MkButton v-if="!invite.used || moderator" rounded danger @click="deleteCode()">{{ i18n.ts.delete }}</MkButton>
+	</div>
+</MkFolder>
+</template>
+
+<script lang="ts" setup>
+import { computed } from 'vue';
+import * as misskey from 'misskey-js';
+import MkFolder from '@/components/MkFolder.vue';
+import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n';
+import * as os from '@/os';
+
+const props = defineProps<{
+	invite: misskey.entities.Invite;
+	moderator?: boolean;
+}>();
+
+const emits = defineEmits<{
+	(event: 'deleted', value: string): void;
+}>();
+
+const isExpired = computed(() => {
+	return props.invite.expiresAt && new Date(props.invite.expiresAt) < new Date();
+});
+
+function deleteCode() {
+	os.apiWithDialog('invite/delete', {
+		inviteId: props.invite.id,
+	});
+	emits('deleted', props.invite.id);
+}
+</script>
+
+<style lang="scss" module>
+.root {
+	text-align: left;
+}
+
+.label {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
+}
+
+.user {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.avatar {
+	--height: 24px;
+	width: var(--height);
+	height: var(--height);
+}
+</style>

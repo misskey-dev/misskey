@@ -202,6 +202,10 @@ export const routes = [{
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
 }, {
+	path: '/invite',
+	name: 'invite',
+	component: page(() => import('./pages/invite.vue')),
+}, {
 	path: '/ads',
 	component: page(() => import('./pages/ads.vue')),
 }, {
