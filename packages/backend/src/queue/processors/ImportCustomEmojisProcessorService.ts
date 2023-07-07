@@ -114,7 +114,7 @@ export class ImportCustomEmojisProcessorService {
 			}
 
 			cleanup();
-	
+
 			this.logger.succ('Imported');
 			done();
 		});

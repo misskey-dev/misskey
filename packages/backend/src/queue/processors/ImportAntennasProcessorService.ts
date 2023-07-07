@@ -17,11 +17,11 @@ const validate = new Ajv().compile({
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		src: { type: 'string', enum: ['home', 'all', 'users', 'list'] },
-		userListAccts: { 
-			type: 'array', 
+		userListAccts: {
+			type: 'array',
 			items: {
 				type: 'string',
-			}, 
+			},
 			nullable: true,
 		},
 		keywords: { type: 'array', items: {

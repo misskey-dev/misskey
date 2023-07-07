@@ -90,7 +90,7 @@ export class ApDeliverManagerService {
 			this.followingsRepository,
 			this.queueService,
 
-			actor, 
+			actor,
 			activity,
 		);
 	}

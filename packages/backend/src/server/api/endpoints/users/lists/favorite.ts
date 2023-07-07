@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userList = await this.userListsRepository.findOneBy({ 
+			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				isPublic: true,
 			});

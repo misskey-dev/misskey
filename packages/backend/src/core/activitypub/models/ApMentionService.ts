@@ -29,10 +29,10 @@ export class ApMentionService {
 		const mentionedUsers = (await Promise.all(
 			hrefs.map(x => limit(() => this.apPersonService.resolvePerson(x, resolver).catch(() => null))),
 		)).filter((x): x is User => x != null);
-	
+
 		return mentionedUsers;
 	}
-	
+
 	@bindThis
 	public extractApMentionObjects(tags: IObject | IObject[] | null | undefined): IApMention[] {
 		if (tags == null) return [];
