@@ -1,4 +1,6 @@
-export type Obj = { [x: string]: any };
+import { DriveFile } from '@/models/index.js';
+
+export type Obj = { [x: string]: unknown};
 export type ApObject = IObject | string | (IObject | string)[];
 
 export interface IObject {
@@ -11,14 +13,14 @@ export interface IObject {
 	cc?: ApObject;
 	to?: ApObject;
 	attributedTo?: ApObject;
-	attachment?: any[];
-	inReplyTo?: any;
+	attachment?: IObject[];
+	inReplyTo?: string | IPost | undefined | null;
 	replies?: ICollection;
 	content?: string | null;
 	startTime?: Date;
 	endTime?: Date;
-	icon?: any;
-	image?: any;
+	icon?: DriveFile | undefined;
+	image?: DriveFile | undefined;
 	url?: ApObject | string;
 	href?: string;
 	tag?: IObject | IObject[];
@@ -138,6 +140,7 @@ interface IQuestionChoice {
 	replies?: ICollection;
 	_misskey_votes?: number;
 }
+
 export interface ITombstone extends IObject {
 	type: 'Tombstone';
 	formerType?: string;
@@ -225,8 +228,14 @@ export interface IApEmoji extends IObject {
 	updated: string;
 }
 
-export const isEmoji = (object: IObject): object is IApEmoji =>
-	getApType(object) === 'Emoji' && !Array.isArray(object.icon) && object.icon.url != null;
+export const isEmoji = (object: IObject): object is IApEmoji => {
+	const isTypeEmoji = getApType(object) === 'Emoji';
+	const hasIcon = 'icon' in object;
+	const iconIsNotArray = !Array.isArray(object.icon);
+	const iconHasUrl = object.icon?.url !== null;
+
+	return isTypeEmoji && hasIcon && iconIsNotArray && iconHasUrl;
+};
 
 export interface IKey extends IObject {
 	type: 'Key';
