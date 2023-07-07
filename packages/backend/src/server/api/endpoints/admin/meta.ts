@@ -274,18 +274,6 @@ export const meta = {
 				type: 'object',
 				optional: false, nullable: false,
 			},
-			inviteCodeExpirationTime: {
-				type: 'number',
-				optional: true, nullable: true,
-			},
-			inviteCodeCreateLimit: {
-				type: 'number',
-				optional: true, nullable: true,
-			},
-			inviteCodeCreateLimitResetCycle: {
-				type: 'number',
-				optional: true, nullable: true,
-			}
 		},
 	},
 } as const;
@@ -387,9 +375,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
-				inviteCodeExpirationTime: instance.inviteCodeExpirationTime,
-				inviteCodeCreateLimit: instance.inviteCodeCreateLimit,
-				inviteCodeCreateLimitResetCycle: instance.inviteCodeCreateLimitResetCycle,
 			};
 		});
 	}

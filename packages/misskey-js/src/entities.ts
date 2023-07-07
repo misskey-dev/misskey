@@ -332,10 +332,6 @@ export type LiteInstanceMetadata = {
 	}[];
 	translatorAvailable: boolean;
 	serverRules: string[];
-	invite: {
-		createLimit: number | null;
-		resetCycle: number;
-	} | null;
 };
 
 export type DetailedInstanceMetadata = LiteInstanceMetadata & {
