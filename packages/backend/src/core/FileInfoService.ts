@@ -304,11 +304,11 @@ export class FileInfoService {
 	@bindThis
 	public fixMime(mime: string | fileType.MimeType): string {
 		// see https://github.com/misskey-dev/misskey/pull/10686
-		if (mime === "audio/x-flac") {
-			return "audio/flac";
+		if (mime === 'audio/x-flac') {
+			return 'audio/flac';
 		}
-		if (mime === "audio/vnd.wave") {
-			return "audio/wav";
+		if (mime === 'audio/vnd.wave') {
+			return 'audio/wav';
 		}
 
 		return mime;
@@ -355,11 +355,12 @@ export class FileInfoService {
 	 * Check the file is SVG or not
 	 */
 	@bindThis
-	public async checkSvg(path: string) {
+	public async checkSvg(path: string): Promise<boolean> {
 		try {
 			const size = await this.getFileSize(path);
 			if (size > 1 * 1024 * 1024) return false;
-			return isSvg(fs.readFileSync(path));
+			const buffer = await fs.promises.readFile(path);
+			return isSvg(buffer.toString());
 		} catch {
 			return false;
 		}
