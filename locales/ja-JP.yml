@@ -1069,6 +1069,7 @@ installed: "インストール済み"
 branding: "ブランディング"
 enableServerMachineStats: "サーバーのマシン情報を公開する"
 enableIdenticonGeneration: "ユーザーごとのIdenticon生成を有効にする"
+turnOffToImprovePerformance: "オフにするとパフォーマンスが向上します。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

@@ -1072,6 +1072,7 @@ export interface Locale {
     "branding": string;
     "enableServerMachineStats": string;
     "enableIdenticonGeneration": string;
+    "turnOffToImprovePerformance": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
