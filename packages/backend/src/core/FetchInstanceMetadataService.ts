@@ -51,8 +51,8 @@ export class FetchInstanceMetadataService {
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 		const host = instance.host;
 		// Acquire mutex to ensure no parallel runs
-		const mutex = this.redisClient.set("fetchInstanceMetadata:mutex:" + host, "1", "GET");
-		if (mutex === "1") { return; }
+		const mutex = this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
+		if (mutex === '1') return;
 		try {
 			if (!force) {
 				const _instance = await this.instancesRepository.findOneBy({ host: instance.host });
@@ -105,7 +105,7 @@ export class FetchInstanceMetadataService {
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
 		} finally {
-			this.redisClient.set("fetchInstanceMetadata:mutex:" + host, "0", "GET");
+			this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0', 'GET');
 		}
 	}
 
