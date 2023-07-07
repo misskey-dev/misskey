@@ -3,9 +3,9 @@ import { isWebpSupported } from './isWebpSupported';
 import type { BrowserImageResizerConfig } from 'browser-image-resizer';
 
 const compressTypeMap = {
-	'image/jpeg': { quality: 0.85, mimeType: 'image/webp' },
+	'image/jpeg': { quality: 0.90, mimeType: 'image/webp' },
 	'image/png': { quality: 1, mimeType: 'image/webp' },
-	'image/webp': { quality: 0.85, mimeType: 'image/webp' },
+	'image/webp': { quality: 0.90, mimeType: 'image/webp' },
 	'image/svg+xml': { quality: 1, mimeType: 'image/webp' },
 } as const;
 
