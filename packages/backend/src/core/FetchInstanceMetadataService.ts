@@ -58,8 +58,6 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
-		try {
-
 		const host = instance.host;
 		// Acquire mutex to ensure no parallel runs
 		if (!await this.tryLock(host)) return;
