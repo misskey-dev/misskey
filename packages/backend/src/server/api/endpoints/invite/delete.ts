@@ -31,9 +31,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		codeId: { type: 'string', format: 'misskey:id' },
+		inviteId: { type: 'string', format: 'misskey:id' },
 	},
-	required: ['codeId'],
+	required: ['inviteId'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -45,7 +45,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const ticket = await this.registrationTicketsRepository.findOneBy({
-				id: ps.codeId,
+				id: ps.inviteId,
 				createdBy: {
 					id: me.id,
 				},
