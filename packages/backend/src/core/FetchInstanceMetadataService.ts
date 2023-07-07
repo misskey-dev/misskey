@@ -11,6 +11,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { DOMWindow } from 'jsdom';
+import * as Redis from 'ioredis';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -51,7 +52,7 @@ export class FetchInstanceMetadataService {
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
 		const host = instance.host;
 		// Acquire mutex to ensure no parallel runs
-		const mutex = this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
+		const mutex = await this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
 		if (mutex === '1') return;
 		try {
 			if (!force) {
