@@ -111,7 +111,6 @@
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart-plus"></i>
 					<i v-else class="ti ti-mood-plus"></i>
 				</button>
-
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
