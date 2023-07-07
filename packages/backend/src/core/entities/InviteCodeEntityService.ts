@@ -27,10 +27,7 @@ export class InviteCodeEntityService {
 			where: {
 				id: src,
 			},
-			relations: {
-				createdBy: true,
-				usedBy: true,
-			},
+			relations: ['createdBy', 'usedBy'],
 		});
 
 		return await awaitAll({

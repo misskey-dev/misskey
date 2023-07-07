@@ -44,7 +44,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.registrationTicketsRepository.createQueryBuilder('ticket'), ps.sinceId, ps.untilId)
-				.andWhere('ticket.createdBy.id = :meId', { meId: me.id });
+				.andWhere('ticket.createdBy.id = :meId', { meId: me.id })
+				.leftJoinAndSelect('ticket.createdBy', 'createdBy')
+				.leftJoinAndSelect('ticket.usedBy', 'usedBy');
 
 			const tickets = await query
 				.take(ps.limit)
