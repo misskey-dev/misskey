@@ -626,42 +626,46 @@ export class ApPersonService implements OnModuleInit {
 	 * @param movePreventUris ここに列挙されたURIにsrc.movedToUriが含まれる場合、移行処理はしない（無限ループ防止）
 	 */
 	@bindThis
-	private async processRemoteMove(src: RemoteUser, movePreventUris: string[] = []): Promise<void> {
-		if (src.movedToUri === null) return; // skip: no movedToUri
-		if (src.uri === src.movedToUri) return; // skip: movedTo itself (src) // ？？？
-		if (movePreventUris.length > 10) return; // skip: too many moves
+	private async processRemoteMove(src: RemoteUser, movePreventUris: string[] = []): Promise<string> {
+		if (!src.movedToUri) return 'skip: no movedToUri';
+		if (src.uri === src.movedToUri) return 'skip: movedTo itself (src)'; // ？？？
+		if (movePreventUris.length > 10) return 'skip: too many moves';
 
 		// まずサーバー内で検索して様子見
 		let dst = await this.fetchPerson(src.movedToUri);
 
-		if (dst) {
-			if (this.userEntityService.isLocalUser(dst)) {
-				// targetがローカルユーザーだった場合データベースから引っ張ってくる
-				dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as LocalUser;
-			} else {
-				if (movePreventUris.includes(src.movedToUri)) return; // skip: circular move
+		if (dst && this.userEntityService.isLocalUser(dst)) {
+			// targetがローカルユーザーだった場合データベースから引っ張ってくる
+			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as LocalUser;
+		} else if (dst) {
+			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
 
-				// targetを見つけたことがあるならtargetをupdatePersonする
-				await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
-				dst = await this.fetchPerson(src.movedToUri) ?? dst;
-			}
+			// targetを見つけたことがあるならtargetをupdatePersonする
+			await this.updatePerson(src.movedToUri, undefined, undefined, [...movePreventUris, src.uri]);
+			dst = await this.fetchPerson(src.movedToUri) ?? dst;
 		} else {
-			// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
-			// failed: movedTo is local but not found
-			if (src.movedToUri.startsWith(`${this.config.url}/`)) return;
+			if (src.movedToUri.startsWith(`${this.config.url}/`)) {
+				// ローカルユーザーっぽいのにfetchPersonで見つからないということはmovedToUriが間違っている
+				return 'failed: movedTo is local but not found';
+			}
 
 			// targetが知らない人だったらresolvePerson
 			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
 			dst = await this.resolvePerson(src.movedToUri);
 		}
-
-		if (dst.movedToUri === dst.uri) return; // skip: movedTo itself (dst) // ？？？
-		if (src.movedToUri !== dst.uri) return; // skip: missmatch uri // ？？？
-		if (dst.movedToUri === src.uri) return; // skip: dst.movedToUri === src.uri
-		if (dst.alsoKnownAs === null) return; // skip: dst.alsoKnownAs is null
-		if (dst.alsoKnownAs.length === 0) return; // skip: dst.alsoKnownAs is empty
-		if (!dst.alsoKnownAs.includes(src.uri)) return; // skip: alsoKnownAs does not include src.uri
+ 
+		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
+		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
+		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';
+		if (!dst.alsoKnownAs || dst.alsoKnownAs.length === 0) {
+			return 'skip: dst.alsoKnownAs is empty';
+		}
+		if (!dst.alsoKnownAs.includes(src.uri)) {
+			return 'skip: alsoKnownAs does not include from.uri';
+		}
 
 		await this.accountMoveService.postMoveProcess(src, dst);
+
+		return 'ok';
 	}
 }
