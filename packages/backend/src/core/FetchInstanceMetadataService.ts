@@ -104,7 +104,7 @@ export class FetchInstanceMetadataService {
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
 		} finally {
-			this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0', 'GET');
+			this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
 		}
 	}
 
