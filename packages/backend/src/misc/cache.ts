@@ -236,7 +236,7 @@ export class MemoryKVCache<T, V = T> {
 	/**
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
 	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
-	 * fetcherの引数にはcacheに保存されている値があったら渡されます
+	 * fetcherの引数はcacheに保存されている値があれば渡されます
 	 */
 	@bindThis
 	public async fetch(key: string, fetcher: (value: V | undefined) => Promise<T>, validator?: (cachedValue: T) => boolean): Promise<T> {
@@ -262,7 +262,7 @@ export class MemoryKVCache<T, V = T> {
 	/**
 	 * キャッシュがあればそれを返し、無ければfetcherを呼び出して結果をキャッシュ&返します
 	 * optional: キャッシュが存在してもvalidatorでfalseを返すとキャッシュ無効扱いにします
-	 * fetcherの引数にはcacheに保存されている値があったら渡されます
+	 * fetcherの引数はcacheに保存されている値があれば渡されます
 	 */
 	@bindThis
 	public async fetchMaybe(key: string, fetcher: (value: V | undefined) => Promise<T | undefined>, validator?: (cachedValue: T) => boolean): Promise<T | undefined> {

@@ -60,17 +60,34 @@ export class CacheService implements OnApplicationShutdown {
 
 		// ローカルユーザーならlocalUserByIdCacheにデータを追加し、こちらにはid(文字列)だけを追加する
 		const userByIdCache = new MemoryKVCache<User, User | string>(1000 * 60 * 60 * 6 /* 6h */, {
-			toMapConverter: user => user.host === null ? user.id : user,
+			toMapConverter: user => {
+				if (user.host === null) {
+					localUserByIdCache.set(user.id, user as LocalUser);
+					return user.id;
+				}
+
+				return user;
+			},
 			fromMapConverter: userOrId => typeof userOrId === 'string' ? localUserByIdCache.get(userOrId) : userOrId,
 		});
 		this.userByIdCache = userByIdCache;
 
 		this.localUserByNativeTokenCache = new MemoryKVCache<LocalUser | null, string | null>(Infinity, {
-			toMapConverter: user => user === null ? null : user.id,
+			toMapConverter: user => {
+				if (user === null) return null;
+
+				localUserByIdCache.set(user.id, user);
+				return user.id;
+			},
 			fromMapConverter: id => id === null ? null : localUserByIdCache.get(id),
 		});
 		this.uriPersonCache = new MemoryKVCache<User | null, string | null>(Infinity, {
-			toMapConverter: user => user === null ? null : user.id,
+			toMapConverter: user => {
+				if (user === null) return null;
+
+				userByIdCache.set(user.id, user);
+				return user.id;
+			},
 			fromMapConverter: id => id === null ? null : userByIdCache.get(id),
 		});
 
