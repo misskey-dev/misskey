@@ -359,16 +359,40 @@ function react(viaKeyboard = false): void {
 	} else {
 		blur();
 		reactionPicker.show(reactButton.value, reaction => {
-			os.api('notes/reactions/create', {
-				noteId: appearNote.id,
-				reaction: reaction,
-			});
-			if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
-				claimAchievement('reactWithoutRead');
-			}
+			toggleReaction(reaction);
 		}, () => {
 			focus();
 		});
+	}
+}
+
+async function toggleReaction(reaction) {
+	const oldReaction = note.myReaction;
+	if (oldReaction) {
+		const confirm = await os.confirm({
+			type: 'warning',
+			text: oldReaction !== reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
+		});
+		if (confirm.canceled) return;
+
+		os.api('notes/reactions/delete', {
+			noteId: note.id,
+		}).then(() => {
+			if (oldReaction !== reaction) {
+				os.api('notes/reactions/create', {
+					noteId: note.id,
+					reaction: reaction,
+				});
+			}
+		});
+	} else {
+		os.api('notes/reactions/create', {
+			noteId: appearNote.id,
+			reaction: reaction,
+		});
+	}
+	if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+		claimAchievement('reactWithoutRead');
 	}
 }
 
