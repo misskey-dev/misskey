@@ -42,7 +42,7 @@
 			<div><MkTime :time="invite.createdAt" mode="absolute"/></div>
 		</div>
 		<div :class="$style.buttons">
-			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyToClipboard(invite.code)">{{ i18n.ts.copy }}</MkButton>
+			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()">{{ i18n.ts.copy }}</MkButton>
 			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()">{{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
@@ -76,6 +76,11 @@ function deleteCode() {
 		inviteId: props.invite.id,
 	});
 	emits('deleted', props.invite.id);
+}
+
+function copyInviteCode() {
+	copyToClipboard(props.invite.code);
+	os.success();
 }
 </script>
 
