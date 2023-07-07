@@ -24,7 +24,7 @@ export const packedInviteCodeSchema = {
 		},
 		createdBy: {
 			type: 'object',
-			optional: false, nullable: false,
+			optional: false, nullable: true,
 			ref: 'UserLite',
 		},
 		usedBy: {
