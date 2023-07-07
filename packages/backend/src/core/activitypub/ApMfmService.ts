@@ -21,7 +21,7 @@ export class ApMfmService {
 	@bindThis
 	public htmlToMfm(html: string, tag?: IObject | IObject[]) {
 		const hashtagNames = extractApHashtagObjects(tag).map(x => x.name).filter((x): x is string => x != null);
-	
+
 		return this.mfmService.fromHtml(html, hashtagNames);
 	}
 
@@ -29,5 +29,5 @@ export class ApMfmService {
 	public getNoteHtml(note: Note) {
 		if (!note.text) return '';
 		return this.mfmService.toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers));
-	}	
+	}
 }

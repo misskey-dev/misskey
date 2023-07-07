@@ -161,20 +161,20 @@ export class FileInfoService {
 	private async detectSensitivity(source: string, mime: string, sensitiveThreshold: number, sensitiveThresholdForPorn: number, analyzeVideo: boolean): Promise<[sensitive: boolean, porn: boolean]> {
 		let sensitive = false;
 		let porn = false;
-	
+
 		function judgePrediction(result: readonly predictionType[]): [sensitive: boolean, porn: boolean] {
 			let sensitive = false;
 			let porn = false;
-	
+
 			if ((result.find(x => x.className === 'Sexy')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 			if ((result.find(x => x.className === 'Hentai')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
 			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThreshold) sensitive = true;
-	
+
 			if ((result.find(x => x.className === 'Porn')?.probability ?? 0) > sensitiveThresholdForPorn) porn = true;
-	
+
 			return [sensitive, porn];
 		}
-	
+
 		if ([
 			'image/jpeg',
 			'image/png',
@@ -253,10 +253,10 @@ export class FileInfoService {
 				disposeOutDir();
 			}
 		}
-	
+
 		return [sensitive, porn];
 	}
-	
+
 	private async *asyncIterateFrames(cwd: string, command: FFmpeg.FfmpegCommand): AsyncGenerator<string, void> {
 		const watcher = new FSWatcher({
 			cwd,
@@ -295,7 +295,7 @@ export class FileInfoService {
 			}
 		}
 	}
-	
+
 	@bindThis
 	private exists(path: string): Promise<boolean> {
 		return fs.promises.access(path).then(() => true, () => false);

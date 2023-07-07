@@ -21,7 +21,7 @@ export class VideoProcessingService {
 	@bindThis
 	public async generateVideoThumbnail(source: string): Promise<IImage> {
 		const [dir, cleanup] = await createTempDir();
-	
+
 		try {
 			await new Promise((res, rej) => {
 				FFmpeg({

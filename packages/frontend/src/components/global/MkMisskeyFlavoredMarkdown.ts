@@ -199,7 +199,7 @@ export default function(props: {
 						}
 						const x = Math.min(parseFloat(token.props.args.x ?? '1'), 5);
 						const y = Math.min(parseFloat(token.props.args.y ?? '1'), 5);
-						style = `transform: scale(${x}, ${y});`; 
+						style = `transform: scale(${x}, ${y});`;
 						scale = scale * Math.max(x, y);
 						break;
 					}
