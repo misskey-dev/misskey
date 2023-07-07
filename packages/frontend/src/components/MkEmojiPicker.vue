@@ -430,6 +430,41 @@ defineExpose({
 		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 	}
 
+	&.w6 {
+		width: calc((var(--eachSize) * 10) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w7 {
+		width: calc((var(--eachSize) * 11) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w8 {
+		width: calc((var(--eachSize) * 12) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w9 {
+		width: calc((var(--eachSize) * 13) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w10 {
+		width: calc((var(--eachSize) * 14) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w11 {
+		width: calc((var(--eachSize) * 15) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
+	&.w12 {
+		width: calc((var(--eachSize) * 16) + (#{$pad} * 2));
+		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	}
+
 	&.h1 {
 		height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
 	}
@@ -444,6 +479,18 @@ defineExpose({
 
 	&.h4 {
 		height: calc((var(--eachSize) * 10) + (#{$pad} * 2));
+	}
+
+	&.h5 {
+		height: calc((var(--eachSize) * 12) + (#{$pad} * 2));
+	}
+
+	&.h6 {
+		height: calc((var(--eachSize) * 14) + (#{$pad} * 2));
+	}
+
+	&.h7 {
+		height: calc((var(--eachSize) * 16) + (#{$pad} * 2));
 	}
 
 	&.asDrawer {

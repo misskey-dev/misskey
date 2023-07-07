@@ -31,6 +31,13 @@
 		<option :value="3">7</option>
 		<option :value="4">8</option>
 		<option :value="5">9</option>
+		<option :value="6">10</option>
+		<option :value="7">11</option>
+		<option :value="8">12</option>
+		<option :value="9">13</option>
+		<option :value="10">14</option>
+		<option :value="11">15</option>
+		<option :value="12">16</option>
 	</MkRadios>
 	<MkRadios v-model="reactionPickerHeight">
 		<template #label>{{ i18n.ts.height }}</template>
@@ -38,6 +45,9 @@
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
 		<option :value="4">{{ i18n.ts.large }}+</option>
+		<option :value="5">{{ i18n.ts.large }}++</option>
+		<option :value="6">{{ i18n.ts.large }}+++</option>
+		<option :value="7">{{ i18n.ts.large }}#</option>
 	</MkRadios>
 
 	<MkSwitch v-model="reactionPickerUseDrawerForMobile">
