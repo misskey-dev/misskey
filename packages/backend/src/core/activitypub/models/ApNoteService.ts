@@ -20,7 +20,6 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
 import { ApDbResolverService } from '../ApDbResolverService.js';
@@ -72,12 +71,8 @@ export class ApNoteService {
 	}
 
 	@bindThis
-	public validateNote(object: IObject, uri: string) {
+	public validateNote(object: IObject, uri: string): Error | null {
 		const expectHost = this.utilityService.extractDbHost(uri);
-
-		if (object == null) {
-			return new Error('invalid Note: object is null');
-		}
 
 		if (!validPost.includes(getApType(object))) {
 			return new Error(`invalid Note: invalid object type ${getApType(object)}`);
@@ -110,6 +105,7 @@ export class ApNoteService {
 	 */
 	@bindThis
 	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(value);
@@ -117,12 +113,10 @@ export class ApNoteService {
 		const entryUri = getApId(value);
 		const err = this.validateNote(object, entryUri);
 		if (err) {
-			this.logger.error(`${err.message}`, {
-				resolver: {
-					history: resolver.getHistory(),
-				},
-				value: value,
-				object: object,
+			this.logger.error(err.message, {
+				resolver: { history: resolver.getHistory() },
+				value,
+				object,
 			});
 			throw new Error('invalid note');
 		}
@@ -144,7 +138,11 @@ export class ApNoteService {
 		this.logger.info(`Creating the Note: ${note.id}`);
 
 		// 投稿者をフェッチ
-		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo!), resolver) as RemoteUser;
+		if (note.attributedTo == null) {
+			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
+		}
+
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as RemoteUser;
 
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
@@ -164,59 +162,49 @@ export class ApNoteService {
 		}
 
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
-		const apHashtags = await extractApHashtags(note.tag);
+		const apHashtags = extractApHashtags(note.tag);
 
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
-		// Noteがsensitiveなら添付もsensitiveにする
-		const limit = promiseLimit(2);
-
-		note.attachment = Array.isArray(note.attachment) ? note.attachment : note.attachment ? [note.attachment] : [];
-		const files = note.attachment
-			.map(attach => attach.sensitive = note.sensitive)
-			? (await Promise.all(note.attachment.map(x => limit(() => this.apImageService.resolveImage(actor, x)) as Promise<DriveFile>)))
-				.filter(image => image != null)
-			: [];
+		const limit = promiseLimit<DriveFile>(2);
+		const files = (await Promise.all(toArray(note.attachment).map(attach => (
+			limit(() => this.apImageService.resolveImage(actor, {
+				...attach,
+				sensitive: note.sensitive, // Noteがsensitiveなら添付もsensitiveにする
+			}))
+		))));
 
 		// リプライ
 		const reply: Note | null = note.inReplyTo
-			? await this.resolveNote(note.inReplyTo, resolver).then(x => {
-				if (x == null) {
-					this.logger.warn('Specified inReplyTo, but not found');
-					throw new Error('inReplyTo not found');
-				} else {
+			? await this.resolveNote(note.inReplyTo, resolver)
+				.then(x => {
+					if (x == null) {
+						this.logger.warn('Specified inReplyTo, but not found');
+						throw new Error('inReplyTo not found');
+					}
+
 					return x;
-				}
-			}).catch(async err => {
-				this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
-				throw err;
-			})
+				})
+				.catch(async err => {
+					this.logger.warn(`Error in inReplyTo ${note.inReplyTo} - ${err.statusCode ?? err}`);
+					throw err;
+				})
 			: null;
 
 		// 引用
-		let quote: Note | undefined | null;
+		let quote: Note | undefined | null = null;
 
 		if (note._misskey_quote || note.quoteUrl) {
-			const tryResolveNote = async (uri: string): Promise<{
-				status: 'ok';
-				res: Note | null;
-			} | {
-				status: 'permerror' | 'temperror';
-			}> => {
-				if (typeof uri !== 'string' || !uri.match(/^https?:/)) return { status: 'permerror' };
+			const tryResolveNote = async (uri: string): Promise<
+				| { status: 'ok'; res: Note }
+				| { status: 'permerror' | 'temperror' }
+			> => {
+				if (!uri.match(/^https?:/)) return { status: 'permerror' };
 				try {
 					const res = await this.resolveNote(uri);
-					if (res) {
-						return {
-							status: 'ok',
-							res,
-						};
-					} else {
-						return {
-							status: 'permerror',
-						};
-					}
+					if (res == null) return { status: 'permerror' };
+					return { status: 'ok', res };
 				} catch (e) {
 					return {
 						status: (e instanceof StatusError && e.isClientError) ? 'permerror' : 'temperror',
@@ -225,9 +213,9 @@ export class ApNoteService {
 			};
 
 			const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
-			const results = await Promise.all(uris.map(uri => tryResolveNote(uri)));
+			const results = await Promise.all(uris.map(tryResolveNote));
 
-			quote = results.filter((x): x is { status: 'ok', res: Note | null } => x.status === 'ok').map(x => x.res).find(x => x);
+			quote = results.filter((x): x is { status: 'ok', res: Note } => x.status === 'ok').map(x => x.res).at(0);
 			if (!quote) {
 				if (results.some(x => x.status === 'temperror')) {
 					throw new Error('quote resolve failed');
@@ -271,7 +259,7 @@ export class ApNoteService {
 
 		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
-			return [] as Emoji[];
+			return [];
 		});
 
 		const apEmojis = emojis.map(emoji => emoji.name);
@@ -309,19 +297,18 @@ export class ApNoteService {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('missing uri');
 
-		// ブロックしてたら中断
+		// ブロックしていたら中断
 		const meta = await this.metaService.fetch();
-		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) throw new StatusError('blocked host', 451);
+		if (this.utilityService.isBlockedHost(meta.blockedHosts, this.utilityService.extractDbHost(uri))) {
+			throw new StatusError('blocked host', 451);
+		}
 
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
 			//#region このサーバーに既に登録されていたらそれを返す
 			const exist = await this.fetchNote(uri);
-
-			if (exist) {
-				return exist;
-			}
+			if (exist) return exist;
 			//#endregion
 
 			if (uri.startsWith(this.config.url)) {
@@ -339,43 +326,41 @@ export class ApNoteService {
 
 	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<Emoji[]> {
+		// eslint-disable-next-line no-param-reassign
 		host = this.utilityService.toPuny(host);
-
-		if (!tags) return [];
 
 		const eomjiTags = toArray(tags).filter(isEmoji);
 
 		const existingEmojis = await this.emojisRepository.findBy({
 			host,
-			name: In(eomjiTags.map(tag => tag.name!.replaceAll(':', ''))),
+			name: In(eomjiTags.map(tag => tag.name.replaceAll(':', ''))),
 		});
 
 		return await Promise.all(eomjiTags.map(async tag => {
-			const name = tag.name!.replaceAll(':', '');
+			const name = tag.name.replaceAll(':', '');
 			tag.icon = toSingle(tag.icon);
 
 			const exists = existingEmojis.find(x => x.name === name);
 
 			if (exists) {
-				if ((tag.updated != null && exists.updatedAt == null)
+				if ((exists.updatedAt == null)
 					|| (tag.id != null && exists.uri == null)
-					|| (tag.updated != null && exists.updatedAt != null && new Date(tag.updated) > exists.updatedAt)
-					|| (tag.icon!.url !== exists.originalUrl)
+					|| (new Date(tag.updated) > exists.updatedAt)
+					|| (tag.icon.url !== exists.originalUrl)
 				) {
 					await this.emojisRepository.update({
 						host,
 						name,
 					}, {
 						uri: tag.id,
-						originalUrl: tag.icon!.url,
-						publicUrl: tag.icon!.url,
+						originalUrl: tag.icon.url,
+						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
 					});
 
-					return await this.emojisRepository.findOneBy({
-						host,
-						name,
-					}) as Emoji;
+					const emoji = await this.emojisRepository.findOneBy({ host, name });
+					if (emoji == null) throw new Error('emoji update failed');
+					return emoji;
 				}
 
 				return exists;
@@ -388,11 +373,11 @@ export class ApNoteService {
 				host,
 				name,
 				uri: tag.id,
-				originalUrl: tag.icon!.url,
-				publicUrl: tag.icon!.url,
+				originalUrl: tag.icon.url,
+				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
-			} as Partial<Emoji>).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
+			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 		}));
 	}
 }
