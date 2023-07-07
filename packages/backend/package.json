@@ -3,6 +3,9 @@
 	"main": "./index.js",
 	"private": true,
 	"type": "module",
+	"engines": {
+		"node": ">=18.16.0"
+	},
 	"scripts": {
 		"start": "node ./built/index.js",
 		"start:test": "NODE_ENV=test node ./built/index.js",
