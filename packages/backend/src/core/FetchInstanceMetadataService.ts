@@ -3,8 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
 import type { Instance } from '@/models/entities/Instance.js';
-import type { InstancesRepository } from '@/models/index.js';
-import { AppLockService } from '@/core/AppLockService.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
 import { LoggerService } from '@/core/LoggerService.js';
@@ -12,6 +10,7 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { DOMWindow } from 'jsdom';
+import * as Redis from 'ioredis';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -37,33 +36,45 @@ export class FetchInstanceMetadataService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
-
-		private appLockService: AppLockService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 		private federatedInstanceService: FederatedInstanceService,
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
 	) {
 		this.logger = this.loggerService.getLogger('metadata', 'cyan');
 	}
 
 	@bindThis
+	public async tryLock(host: string): Promise<boolean> {
+		const mutex = await this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '1', 'GET');
+		return mutex !== '1';
+	}
+
+	@bindThis
+	public unlock(host: string): Promise<'OK'> {
+		return this.redisClient.set(`fetchInstanceMetadata:mutex:${host}`, '0');
+	}
+
+	@bindThis
 	public async fetchInstanceMetadata(instance: Instance, force = false): Promise<void> {
-		const unlock = await this.appLockService.getFetchInstanceMetadataLock(instance.host);
-
-		if (!force) {
-			const _instance = await this.instancesRepository.findOneBy({ host: instance.host });
-			const now = Date.now();
-			if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
-				unlock();
-				return;
-			}
-		}
-
-		this.logger.info(`Fetching metadata of ${instance.host} ...`);
-
 		try {
+
+		const host = instance.host;
+		// Acquire mutex to ensure no parallel runs
+		if (!await this.tryLock(host)) return;
+		try {
+			if (!force) {
+				const _instance = await this.federatedInstanceService.fetch(host);
+				const now = Date.now();
+				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
+					// unlock at the finally caluse
+					return;
+				}
+			}
+	
+			this.logger.info(`Fetching metadata of ${instance.host} ...`);
+ 
 			const [info, dom, manifest] = await Promise.all([
 				this.fetchNodeinfo(instance).catch(() => null),
 				this.fetchDom(instance).catch(() => null),
@@ -104,7 +115,7 @@ export class FetchInstanceMetadataService {
 		} catch (e) {
 			this.logger.error(`Failed to update metadata of ${instance.host}: ${e}`);
 		} finally {
-			unlock();
+			await this.unlock(host);
 		}
 	}
 
