@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('ticket.usedBy', 'usedBy');
 
 			const tickets = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.inviteCodeEntityService.packMany(tickets, me);
