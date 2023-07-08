@@ -26,6 +26,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
 		offset: { type: 'integer', default: 0 },
 		type: { type: 'string', enum: ['unused', 'used', 'expired', 'all'], default: 'all' },
+		sort: { type: 'string', enum: ['+createdAt', '-createdAt', '+usedAt', '-usedAt'] },
 	},
 	required: [],
 } as const;
@@ -48,6 +49,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				case 'unused': query.andWhere('ticket.usedBy IS NULL'); break;
 				case 'used': query.andWhere('ticket.usedBy IS NOT NULL'); break;
 				case 'expired': query.andWhere('ticket.expiresAt < :now', { now: new Date() }); break;
+			}
+
+			switch (ps.sort) {
+				case '+createdAt': query.orderBy('ticket.createdAt', 'DESC'); break;
+				case '-createdAt': query.orderBy('ticket.createdAt', 'ASC'); break;
+				case '+usedAt': query.orderBy('ticket.usedAt', 'DESC', 'NULLS LAST'); break;
+				case '-usedAt': query.orderBy('ticket.usedAt', 'ASC', 'NULLS FIRST'); break;
+				default: query.orderBy('ticket.id', 'DESC'); break;
 			}
 
 			query.take(ps.limit);

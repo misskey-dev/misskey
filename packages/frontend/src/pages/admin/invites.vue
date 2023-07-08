@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<div class="_gaps_m" :class="$style.root">
+		<div class="_gaps_m">
 			<MkFoldableSection :expanded="false">
 				<template #header>{{ i18n.ts.createInviteCode }}</template>
 				<div class="_gaps_m">
@@ -18,13 +18,22 @@
 					<MkButton @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
 				</div>
 			</MkFoldableSection>
-			<MkSelect v-model="type">
-				<template #label>{{ i18n.ts.state }}</template>
-				<option value="all">{{ i18n.ts.all }}</option>
-				<option value="unused">{{ i18n.ts.unused }}</option>
-				<option value="used">{{ i18n.ts.used }}</option>
-				<option value="expired">{{ i18n.ts.expired }}</option>
-			</MkSelect>
+			<div :class="$style.inputs">
+				<MkSelect v-model="type">
+					<template #label>{{ i18n.ts.state }}</template>
+					<option value="all">{{ i18n.ts.all }}</option>
+					<option value="unused">{{ i18n.ts.unused }}</option>
+					<option value="used">{{ i18n.ts.used }}</option>
+					<option value="expired">{{ i18n.ts.expired }}</option>
+				</MkSelect>
+				<MkSelect v-model="sort">
+					<template #label>{{ i18n.ts.sort }}</template>
+					<option value="+createdAt">{{ i18n.ts.createdAt }} ({{ i18n.ts.ascendingOrder }})</option>
+					<option value="-createdAt">{{ i18n.ts.createdAt }} ({{ i18n.ts.descendingOrder }})</option>
+					<option value="+usedAt">{{ i18n.ts.usedAt }} ({{ i18n.ts.ascendingOrder }})</option>
+					<option value="-usedAt">{{ i18n.ts.usedAt }} ({{ i18n.ts.descendingOrder }})</option>
+				</MkSelect>
+			</div>
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
 					<div class="_gaps_s">
@@ -54,11 +63,14 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
 let type = ref('all');
+let sort = ref('+createdAt');
+
 const pagination: Paging = {
 	endpoint: 'admin/invite/list' as const,
 	limit: 10,
 	params: computed(() => ({
 		type: type.value,
+		sort: sort.value,
 	})),
 	offsetMode: true,
 };
@@ -99,11 +111,17 @@ definePageMetadata({
 </script>
 
 <style lang="scss" module>
-.root {
-	text-align: center;
+.inputs {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
 
-	p {
-		margin: 0;
+	> * {
+		flex: 1;
 	}
+}
+
+p {
+	margin: 0;
 }
 </style>
