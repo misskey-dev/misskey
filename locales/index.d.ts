@@ -316,7 +316,7 @@ export interface Locale {
     "rename": string;
     "avatar": string;
     "banner": string;
-    "nsfw": string;
+    "displayOfSensitiveMedia": string;
     "whenServerDisconnected": string;
     "disconnectedFromServer": string;
     "reload": string;
@@ -1531,6 +1531,7 @@ export interface Locale {
         "back": string;
         "reduceFrequencyOfThisAd": string;
         "hide": string;
+        "timezoneinfo": string;
     };
     "_forgotPassword": {
         "enterEmail": string;
@@ -1592,7 +1593,7 @@ export interface Locale {
         "morePatrons": string;
         "patrons": string;
     };
-    "_nsfw": {
+    "_displayOfSensitiveMedia": {
         "respect": string;
         "ignore": string;
         "force": string;
