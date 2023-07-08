@@ -1490,6 +1490,9 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にもぎょうさんの人からサポートしてもろてんねん。ほんまおおきに🥰"
   patrons: "支援者"
+_displayOfSensitiveMedia:
+  respect: "きわどいのは見とうない"
+  ignore: "きわどいのも見たい"
 _instanceTicker:
   none: "表示せん"
   remote: "リモートユーザーに表示"
