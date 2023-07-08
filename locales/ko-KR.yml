@@ -313,7 +313,6 @@ copyUrl: "URL 복사"
 rename: "이름 변경"
 avatar: "아바타"
 banner: "배너"
-nsfw: "열람주의"
 whenServerDisconnected: "서버와의 접속이 끊겼을 때"
 disconnectedFromServer: "서버와의 연결이 끊어졌습니다"
 reload: "새로고침"
@@ -1490,10 +1489,6 @@ _aboutMisskey:
   donate: "Misskey에 기부하기"
   morePatrons: "이 외에도 다른 많은 분들이 도움을 주시고 계십니다. 감사합니다🥰"
   patrons: "후원자"
-_nsfw:
-  respect: "열람주의로 설정된 미디어 숨기기"
-  ignore: "열람 주의 미디어 항상 표시"
-  force: "미디어 항상 숨기기"
 _instanceTicker:
   none: "보이지 않음"
   remote: "리모트 유저에게만 보이기"
