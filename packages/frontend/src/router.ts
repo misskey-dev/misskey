@@ -433,6 +433,10 @@ export const routes = [{
 		name: 'server-rules',
 		component: page(() => import('./pages/admin/server-rules.vue')),
 	}, {
+		path: '/invites',
+		name: 'invites',
+		component: page(() => import('./pages/admin/invites.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
 	}],

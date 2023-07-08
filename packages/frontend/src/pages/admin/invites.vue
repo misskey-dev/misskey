@@ -1,0 +1,109 @@
+<template>
+<MkStickyContainer>
+	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer :contentMax="800">
+		<div class="_gaps_m" :class="$style.root">
+			<MkFoldableSection :expanded="false">
+				<template #header>{{ i18n.ts.createInviteCode }}</template>
+				<div class="_gaps_m">
+					<MkInput v-model="expiredAt" type="datetime-local">
+						<template #label>{{ i18n.ts.expirationDate }}</template>
+					</MkInput>
+					<MkSwitch v-model="noExpirationDate">
+						<template #label>{{ i18n.ts.noExpirationDate }}</template>
+					</MkSwitch>
+					<MkInput v-model="createCount" type="number">
+						<template #label>{{ i18n.ts.createCount }}</template>
+					</MkInput>
+					<MkButton @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
+				</div>
+			</MkFoldableSection>
+			<MkSelect v-model="type">
+				<template #label>{{ i18n.ts.state }}</template>
+				<option value="all">{{ i18n.ts.all }}</option>
+				<option value="unused">{{ i18n.ts.unused }}</option>
+				<option value="used">{{ i18n.ts.used }}</option>
+				<option value="expired">{{ i18n.ts.expired }}</option>
+			</MkSelect>
+			<MkPagination ref="pagingComponent" :pagination="pagination">
+				<template #default="{ items }">
+					<div class="_gaps_s">
+						<MkInviteCode v-for="item in items" :key="item.id" :invite="(item as any)" :onDeleted="deleted" moderator/>
+					</div>
+				</template>
+			</MkPagination>
+		</div>
+	</MkSpacer>
+</MkStickyContainer>
+</template>
+
+<script lang="ts" setup>
+import { computed, ref, shallowRef } from 'vue';
+import XHeader from './_header_.vue';
+import { i18n } from '@/i18n';
+import * as os from '@/os';
+import MkButton from '@/components/MkButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkInviteCode from '@/components/MkInviteCode.vue';
+import { definePageMetadata } from '@/scripts/page-metadata';
+
+const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+
+let type = ref('all');
+const pagination: Paging = {
+	endpoint: 'admin/invite/list' as const,
+	limit: 10,
+	params: computed(() => ({
+		type: type.value,
+	})),
+	offsetMode: true,
+};
+
+const expiredAt = ref('');
+const noExpirationDate = ref(true);
+const createCount = ref(1);
+
+async function createWithOptions() {
+	const options = {
+		expiredAt: noExpirationDate.value ? null : expiredAt.value,
+		count: createCount.value,
+	};
+
+	const tickets = await os.api('admin/invite/create', options);
+	os.alert({
+		type: 'success',
+		title: i18n.ts.inviteCodeCreated,
+		text: tickets?.join('\n'),
+	});
+
+	tickets?.forEach(ticket => pagingComponent.value?.prepend(ticket));
+}
+
+function deleted(id: string) {
+	if (pagingComponent.value) {
+		pagingComponent.value.items = pagingComponent.value.items.filter(x => x.id !== id);
+	}
+}
+
+const headerActions = $computed(() => []);
+const headerTabs = $computed(() => []);
+
+definePageMetadata({
+	title: i18n.ts.invite,
+	icon: 'ti ti-user-plus',
+});
+</script>
+
+<style lang="scss" module>
+.root {
+	text-align: center;
+
+	p {
+		margin: 0;
+	}
+}
+</style>
