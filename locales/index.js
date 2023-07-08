@@ -51,7 +51,7 @@ const primaries = {
 // 何故か文字列にバックスペース文字が混入することがあり、YAMLが壊れるので取り除く
 const clean = (text) => text.replace(new RegExp(String.fromCodePoint(0x08), 'g'), '');
 
-const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(`${__dirname}/${c}.yml`, 'utf-8'))) || {}, a), {});
+const locales = languages.reduce((a, c) => (a[c] = yaml.load(clean(fs.readFileSync(new URL(`${c}.yml`, import.meta.url), 'utf-8'))) || {}, a), {});
 
 export default Object.entries(locales)
 	.reduce((a, [k ,v]) => (a[k] = (() => {
