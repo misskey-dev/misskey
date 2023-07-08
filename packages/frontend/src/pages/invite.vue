@@ -44,8 +44,8 @@ import { $i } from '@/account';
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
 const currentInviteLimit = ref<null | number>(null);
-const inviteLimit = (($i == null && instance.policies.inviteLimit) || ($i != null && $i.policies.inviteLimit)) as number;
-const inviteLimitCycle = (($i == null && instance.policies.inviteLimitCycle) || ($i != null && $i.policies.inviteLimitCycle)) as number;
+const inviteLimit = (($i != null && $i.policies.inviteLimit) || (($i == null && instance.policies.inviteLimit))) as number;
+const inviteLimitCycle = (($i != null && $i.policies.inviteLimitCycle) || ($i == null && instance.policies.inviteLimitCycle)) as number;
 
 const pagination: Paging = {
 	endpoint: 'invite/list' as const,
