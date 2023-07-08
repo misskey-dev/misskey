@@ -2,6 +2,7 @@ import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
+import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -24,9 +25,15 @@ export const meta = {
 		type: 'array',
 		optional: false, nullable: false,
 		items: {
-			type: 'string',
+			type: 'object',
 			optional: false, nullable: false,
-			example: 'GR6S02ERUA5VR',
+			properties: {
+				code: {
+					type: 'string',
+					optional: false, nullable: false,
+					example: 'GR6S02ERUA5VR',
+				},
+			},
 		},
 	},
 } as const;
@@ -47,6 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
+		private inviteCodeEntityService: InviteCodeEntityService,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -71,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const tickets = await Promise.all(ticketsPromises);
-			return tickets.map(x => x.code);
+			return await this.inviteCodeEntityService.packMany(tickets, me);
 		});
 	}
 }
