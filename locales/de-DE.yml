@@ -1067,6 +1067,7 @@ installed: "Installiert"
 branding: "Branding"
 enableServerMachineStats: "Hardwareinformationen des Servers veröffentlichen"
 enableIdenticonGeneration: "Generierung von Benutzer-Identicons aktivieren"
+turnOffToImprovePerformance: "Deaktivierung kann zu höherer Leistung führen."
 _initialAccountSetting:
   accountCreated: "Dein Konto wurde erfolgreich erstellt!"
   letsStartAccountSetup: "Lass uns nun dein Konto einrichten."
@@ -1439,6 +1440,7 @@ _ad:
   back: "Zurück"
   reduceFrequencyOfThisAd: "Diese Werbung weniger anzeigen"
   hide: "Ausblenden"
+  timezoneinfo: "Der Wochentag wird durch die Serverzeitzone bestimmt."
 _forgotPassword:
   enterEmail: "Gib die Email-Adresse ein, mit der du dich registriert hast. An diese wird ein Link gesendet, mit dem du dein Passwort zurücksetzen kannst."
   ifNoEmail: "Solltest du bei der Registrierung keine Email-Adresse angegeben haben, wende dich bitte an den Administrator."
