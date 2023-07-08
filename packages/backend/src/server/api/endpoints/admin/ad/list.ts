@@ -32,7 +32,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.adsRepository.createQueryBuilder('ad'), ps.sinceId, ps.untilId);
-			const ads = await query.take(ps.limit).getMany();
+			const ads = await query.limit(ps.limit).getMany();
 
 			return ads;
 		});
