@@ -196,7 +196,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 								default: 'indefinitely',
 							});
 							if (canceled) return;
-						
+
 							const expiresAt = period === 'indefinitely' ? null
 								: period === 'oneHour' ? Date.now() + (1000 * 60 * 60)
 								: period === 'oneDay' ? Date.now() + (1000 * 60 * 60 * 24)

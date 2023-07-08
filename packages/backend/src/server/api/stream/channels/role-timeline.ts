@@ -12,7 +12,7 @@ class RoleTimelineChannel extends Channel {
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private roleId: string;
-	
+
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,

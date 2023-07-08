@@ -47,7 +47,7 @@ export class NoteDeleteService {
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
 	) {}
-	
+
 	/**
 	 * 投稿を削除します。
 	 * @param user 投稿者
@@ -129,10 +129,8 @@ export class NoteDeleteService {
 	}
 
 	@bindThis
-	private async findCascadingNotes(note: Note) {
-		const cascadingNotes: Note[] = [];
-
-		const recursive = async (noteId: string) => {
+	private async findCascadingNotes(note: Note): Promise<Note[]> {
+		const recursive = async (noteId: string): Promise<Note[]> => {
 			const query = this.notesRepository.createQueryBuilder('note')
 				.where('note.replyId = :noteId', { noteId })
 				.orWhere(new Brackets(q => {
@@ -141,12 +139,14 @@ export class NoteDeleteService {
 				}))
 				.leftJoinAndSelect('note.user', 'user');
 			const replies = await query.getMany();
-			for (const reply of replies) {
-				cascadingNotes.push(reply);
-				await recursive(reply.id);
-			}
+
+			return [
+				replies,
+				...await Promise.all(replies.map(reply => recursive(reply.id))),
+			].flat();
 		};
-		await recursive(note.id);
+
+		const cascadingNotes: Note[] = await recursive(note.id);
 
 		return cascadingNotes;
 	}

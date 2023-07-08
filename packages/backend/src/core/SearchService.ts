@@ -183,7 +183,7 @@ export class SearchService {
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
-			return await query.take(pagination.limit).getMany();
+			return await query.limit(pagination.limit).getMany();
 		}
 	}
 }
