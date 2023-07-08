@@ -313,7 +313,6 @@ copyUrl: "複製URL"
 rename: "重新命名"
 avatar: "大頭貼"
 banner: "橫幅"
-nsfw: "敏感內容"
 whenServerDisconnected: "與伺服器的連接中斷時"
 disconnectedFromServer: "與伺服器中斷連線"
 reload: "重新整理"
@@ -1492,10 +1491,6 @@ _aboutMisskey:
   donate: "贊助Misskey"
   morePatrons: "還有許許多多幫助我們的其他人，非常感謝你們。 🥰"
   patrons: "贊助者"
-_nsfw:
-  respect: "隱藏敏感內容"
-  ignore: "不隱藏敏感內容"
-  force: "隱藏所有內容"
 _instanceTicker:
   none: "隱藏"
   remote: "向遠端使用者顯示"
