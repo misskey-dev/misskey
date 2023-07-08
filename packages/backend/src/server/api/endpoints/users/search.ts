@@ -73,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				users = await usernameQuery
 					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-					.take(ps.limit)
+					.limit(ps.limit)
 					.skip(ps.offset)
 					.getMany();
 			} else {
@@ -100,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				users = await nameQuery
 					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-					.take(ps.limit)
+					.limit(ps.limit)
 					.skip(ps.offset)
 					.getMany();
 
@@ -126,7 +126,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 					users = users.concat(await query
 						.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-						.take(ps.limit)
+						.limit(ps.limit)
 						.skip(ps.offset)
 						.getMany(),
 					);

@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('favorite.note', 'note');
 
 			const favorites = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.noteFavoriteEntityService.packMany(favorites, me);
