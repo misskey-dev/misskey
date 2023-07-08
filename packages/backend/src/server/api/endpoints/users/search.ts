@@ -6,6 +6,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { query } from '@/misc/prelude/url.js';
 
 export const meta = {
 	tags: ['users'],
@@ -52,6 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
+			ps.query = ps.query.trim();
 			const isUsername = ps.query.startsWith('@');
 
 			let users: User[] = [];
