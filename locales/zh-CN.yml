@@ -313,7 +313,6 @@ copyUrl: "复制链接"
 rename: "重命名"
 avatar: "头像"
 banner: "横幅"
-nsfw: "敏感内容"
 whenServerDisconnected: "与服务器连接中断时"
 disconnectedFromServer: "已和服务器断开连接"
 reload: "重新加载"
@@ -1490,10 +1489,6 @@ _aboutMisskey:
   donate: "赞助 Misskey"
   morePatrons: "还有很多其它的人也在支持我们，非常感谢🥰"
   patrons: "支持者"
-_nsfw:
-  respect: "隐藏敏感内容"
-  ignore: "不隐藏敏感内容"
-  force: "总是隐藏内容"
 _instanceTicker:
   none: "不显示"
   remote: "仅远程用户"
