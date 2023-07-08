@@ -56,7 +56,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const policies = await this.roleService.getUserPolicies(me.id);
 
-			// 一人あたりが発行できるチケットの数を制限
 			if (policies.inviteLimit) {
 				const count = await this.registrationTicketsRepository.countBy({
 					createdAt: MoreThan(new Date(Date.now() - (policies.inviteLimitCycle * 1000 * 60))),
@@ -80,7 +79,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				createdAt: new Date(),
 				createdBy: me,
 				expiresAt: policies.inviteExpirationTime ? new Date(Date.now() + (policies.inviteExpirationTime * 1000 * 60)) : null,
-				pendingUserId: null,
 				code,
 			}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0]));
 
