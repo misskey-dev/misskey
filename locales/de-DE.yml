@@ -922,7 +922,7 @@ cannotUploadBecauseInappropriate: "Diese Datei kann nicht hochgeladen werden, da
 cannotUploadBecauseNoFreeSpace: "Die Datei konnte nicht hochgeladen werden, da dein Drive-Speicherplatz aufgebraucht ist."
 cannotUploadBecauseExceedsFileSizeLimit: "Diese Datei kann wegen Überschreitung der Maximalgröße nicht hochgeladen werden."
 beta: "Beta"
-enableAutoSensitive: "Automarkierung sensibler Medin"
+enableAutoSensitive: "Automarkierung sensibler Medien"
 enableAutoSensitiveDescription: "Setzt soweit möglich durch Verwendung von Machine Learning automatisch Markierungen für sensible Medien. Auch wenn du diese Option deaktiviert hast, ist sie möglicherweise auf Instanzebene aktiviert."
 activeEmailValidationDescription: "Aktivert strengere Überprüfung von E-Mail-Adressen, d.h. Testen auf Wegwerfadressen und darauf, ob mit der Adresse tatsächlich kommuniziert werden kann. Ist dies deaktiviert, so wird nur das Format der E-Mail überprüft."
 navbar: "Navigationsleiste"
@@ -1408,7 +1408,7 @@ _role:
     or: "ODER-Bedingung"
     not: "NICHT-Bedingung"
 _sensitiveMediaDetection:
-  description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von NSFW-Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
+  description: "Ermöglicht eine Erleichterung der Servermoderation durch die automatische Erkennungen von sensiblen Medien unter Verwendung von Machine Learning. Hierdurch wird die Serverlast etwas erhöht."
   sensitivity: "Erkennungssensitivität"
   sensitivityDescription: "Durch das Senken der Sensitivität kann die Anzahl an Fehlerkennungen (sog. false positives) reduziert werden. Durch ein Erhöhen dieser kann die Anzahl an verpassten Erkennungen (sog. false negatives) reduziert werden."
   setSensitiveFlagAutomatically: "Als sensibel markieren"
