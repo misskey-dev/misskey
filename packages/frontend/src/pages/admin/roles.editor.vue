@@ -210,7 +210,7 @@
 					</MkRange>
 				</div>
 			</MkFolder>
-			
+
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.driveCapacity, 'driveCapacityMb'])">
 				<template #label>{{ i18n.ts._role._options.driveCapacity }}</template>
 				<template #suffix>

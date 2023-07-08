@@ -113,7 +113,7 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
-		
+
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
 

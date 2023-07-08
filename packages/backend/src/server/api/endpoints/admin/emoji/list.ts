@@ -90,7 +90,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
 
 				if (queryarry) {
-					emojis = emojis.filter(emoji => 
+					emojis = emojis.filter(emoji =>
 						queryarry.includes(`:${emoji.name}:`)
 					);
 				} else {
