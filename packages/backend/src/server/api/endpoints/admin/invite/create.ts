@@ -42,7 +42,7 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		count: { type: 'integer', minimum: 1, maximum: 100, default: 1 },
-		expiresAt: { type: 'string' },
+		expiresAt: { type: 'string', nullable: true },
 	},
 	required: [],
 } as const;
