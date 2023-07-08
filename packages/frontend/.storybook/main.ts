@@ -28,7 +28,8 @@ const config = {
 		}
 		return mergeConfig(config, {
 			plugins: [
-				turbosnap({
+				// XXX: https://github.com/IanVS/vite-plugin-turbosnap/issues/8
+				(turbosnap as any as typeof turbosnap['default'])({
 					rootDir: config.root ?? process.cwd(),
 				}),
 			],
