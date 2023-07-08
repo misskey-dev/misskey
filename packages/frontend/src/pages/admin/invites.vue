@@ -15,7 +15,7 @@
 					<MkInput v-model="createCount" type="number">
 						<template #label>{{ i18n.ts.createCount }}</template>
 					</MkInput>
-					<MkButton @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
+					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
 				</div>
 			</MkFoldableSection>
 			<div :class="$style.inputs">
