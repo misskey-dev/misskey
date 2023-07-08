@@ -1067,6 +1067,7 @@ installed: "Installed"
 branding: "Branding"
 enableServerMachineStats: "Publish server hardware stats"
 enableIdenticonGeneration: "Enable user identicon generation"
+turnOffToImprovePerformance: "Turning this off can increase performance."
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."
@@ -1439,6 +1440,7 @@ _ad:
   back: "Back"
   reduceFrequencyOfThisAd: "Show this ad less"
   hide: "Hide"
+  timezoneinfo: "The day of the week is determined from the server's timezone."
 _forgotPassword:
   enterEmail: "Enter the email address you used to register. A link with which you can reset your password will then be sent to it."
   ifNoEmail: "If you did not use an email during registration, please contact the instance administrator instead."
