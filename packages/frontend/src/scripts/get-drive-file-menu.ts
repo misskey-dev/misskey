@@ -4,6 +4,7 @@ import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import * as os from '@/os';
 import { MenuItem } from '@/types/menu';
+import { defaultStore } from '@/store';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -69,7 +70,8 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
 	const isImage = file.type.startsWith('image/');
-	return [{
+	let menu;
+	menu = [{
 		text: i18n.ts.rename,
 		icon: 'ti ti-forms',
 		action: () => rename(file),
@@ -111,4 +113,16 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		danger: true,
 		action: () => deleteFile(file),
 	}];
+
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFileId,
+			action: () => {
+				copyToClipboard(file.id);
+			},
+		}]);
+	}
+
+	return menu;
 }
