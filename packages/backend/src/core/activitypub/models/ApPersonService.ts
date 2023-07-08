@@ -642,8 +642,8 @@ export class ApPersonService implements OnModuleInit {
 			await resolver.resolveOrderedCollectionPage(collection.first) :
 			collection;
 
-		// Perform activity but only the first 15 ones
-		await this.apInboxService.performActivity(user, firstPage, 15);
+		// Perform activity but only the first 20 ones
+		await this.apInboxService.performActivity(user, firstPage, 20);
 	}
 
 	@bindThis

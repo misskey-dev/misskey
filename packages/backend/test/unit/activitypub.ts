@@ -91,7 +91,7 @@ describe('ActivityPub', () => {
 	let rendererService: ApRendererService;
 	let resolver: MockResolver;
 
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 		}).compile();
@@ -107,6 +107,10 @@ describe('ActivityPub', () => {
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
 		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);
 		jest.spyOn(federatedInstanceService, 'fetch').mockImplementation(() => new Promise(() => { }));
+	});
+
+	beforeEach(() => {
+		resolver.clear();
 	});
 
 	describe('Parse minimum object', () => {
@@ -227,8 +231,8 @@ describe('ActivityPub', () => {
 			await personService.createPerson(actor.id, resolver);
 
 			const items = outbox.orderedItems as ICreate[];
-			assert.ok(await noteService.fetchNote(items[99].object));
-			assert.ok(!await noteService.fetchNote(items[100].object));
+			assert.ok(await noteService.fetchNote(items[19].object));
+			assert.ok(!await noteService.fetchNote(items[20].object));
 		});
 	});
 });
