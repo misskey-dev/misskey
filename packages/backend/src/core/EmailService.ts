@@ -184,12 +184,19 @@ export class EmailService {
 			validated = { valid: true, reason: null };
 		}
 
-		const available = exist === 0 && validated.valid;
+		const emailDomain: string = emailAddress.split('@')[1];
+		let manualDisposable = false;
+		manualDisposable = meta.disposableEmailDomains.some(el => {
+			return (emailDomain.endsWith(el) || emailDomain === el);
+		});
+
+		const available = exist === 0 && validated.valid && !manualDisposable;
 
 		return {
 			available,
 			reason: available ? null :
 			exist !== 0 ? 'used' :
+			manualDisposable ? 'disposable' :
 			validated.reason === 'regex' ? 'format' :
 			validated.reason === 'disposable' ? 'disposable' :
 			validated.reason === 'mx' ? 'mx' :
