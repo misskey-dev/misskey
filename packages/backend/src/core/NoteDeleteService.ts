@@ -91,7 +91,7 @@ export class NoteDeleteService {
 			}
 
 			// also deliever delete activity to cascaded notes
-			const federatedLocalCascadingNotes = (cascadingNotes).filter(note => !note.localOnly && note.userHost === null); // filter out local-only notes
+			const federatedLocalCascadingNotes = (cascadingNotes).filter(note => !note.localOnly && note.userHost == null); // filter out local-only notes
 			for (const cascadingNote of federatedLocalCascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
@@ -118,9 +118,9 @@ export class NoteDeleteService {
 		}
 
 		for (const cascadingNote of cascadingNotes) {
-			await this.searchService.unindexNote(cascadingNote);
+			this.searchService.unindexNote(cascadingNote);
 		}
-		await this.searchService.unindexNote(note);
+		this.searchService.unindexNote(note);
 
 		await this.notesRepository.delete({
 			id: note.id,
