@@ -17,6 +17,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
+import { SearchService } from '@/core/SearchService.js';
 
 @Injectable()
 export class NoteDeleteService {
@@ -41,6 +42,7 @@ export class NoteDeleteService {
 		private apRendererService: ApRendererService,
 		private apDeliverManagerService: ApDeliverManagerService,
 		private metaService: MetaService,
+		private searchService: SearchService,
 		private notesChart: NotesChart,
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
@@ -53,6 +55,7 @@ export class NoteDeleteService {
 	 */
 	async delete(user: { id: User['id']; uri: User['uri']; host: User['host']; isBot: User['isBot']; }, note: Note, quiet = false) {
 		const deletedAt = new Date();
+		const cascadingNotes = await this.findCascadingNotes(note);
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
 		if (note.renoteId && (await this.noteEntityService.countSameRenotes(user.id, note.renoteId, note.id)) === 0) {
@@ -88,8 +91,8 @@ export class NoteDeleteService {
 			}
 
 			// also deliever delete activity to cascaded notes
-			const cascadingNotes = (await this.findCascadingNotes(note)).filter(note => !note.localOnly); // filter out local-only notes
-			for (const cascadingNote of cascadingNotes) {
+			const federatedLocalCascadingNotes = (cascadingNotes).filter(note => !note.localOnly && note.userHost == null); // filter out local-only notes
+			for (const cascadingNote of federatedLocalCascadingNotes) {
 				if (!cascadingNote.user) continue;
 				if (!this.userEntityService.isLocalUser(cascadingNote.user)) continue;
 				const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.apRendererService.renderTombstone(`${this.config.url}/notes/${cascadingNote.id}`), cascadingNote.user));
@@ -113,6 +116,11 @@ export class NoteDeleteService {
 				});
 			}
 		}
+
+		for (const cascadingNote of cascadingNotes) {
+			this.searchService.unindexNote(cascadingNote);
+		}
+		this.searchService.unindexNote(note);
 
 		await this.notesRepository.delete({
 			id: note.id,
@@ -140,7 +148,7 @@ export class NoteDeleteService {
 
 		const cascadingNotes: Note[] = await recursive(note.id);
 
-		return cascadingNotes.filter(note => note.userHost === null); // filter out non-local users
+		return cascadingNotes;
 	}
 
 	@bindThis
