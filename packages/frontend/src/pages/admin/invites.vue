@@ -6,7 +6,7 @@
 			<MkFoldableSection :expanded="false">
 				<template #header>{{ i18n.ts.createInviteCode }}</template>
 				<div class="_gaps_m">
-					<MkInput v-model="expiredAt" type="datetime-local">
+					<MkInput v-model="expiresAt" type="datetime-local">
 						<template #label>{{ i18n.ts.expirationDate }}</template>
 					</MkInput>
 					<MkSwitch v-model="noExpirationDate">
@@ -75,13 +75,13 @@ const pagination: Paging = {
 	offsetMode: true,
 };
 
-const expiredAt = ref('');
+const expiresAt = ref('');
 const noExpirationDate = ref(true);
 const createCount = ref(1);
 
 async function createWithOptions() {
 	const options = {
-		expiredAt: noExpirationDate.value ? null : expiredAt.value,
+		expiresAt: noExpirationDate.value ? null : expiresAt.value,
 		count: createCount.value,
 	};
 
