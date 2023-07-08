@@ -565,7 +565,6 @@ function fetchMoreFolders() {
 
 	const max = 30;
 
-	// ファイル一覧取得
 	os.api('drive/folders', {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
