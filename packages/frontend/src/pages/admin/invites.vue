@@ -6,12 +6,12 @@
 			<MkFoldableSection :expanded="false">
 				<template #header>{{ i18n.ts.createInviteCode }}</template>
 				<div class="_gaps_m">
-					<MkInput v-model="expiresAt" type="datetime-local">
-						<template #label>{{ i18n.ts.expirationDate }}</template>
-					</MkInput>
 					<MkSwitch v-model="noExpirationDate">
 						<template #label>{{ i18n.ts.noExpirationDate }}</template>
 					</MkSwitch>
+					<MkInput v-if="!noExpirationDate" v-model="expiresAt" type="datetime-local">
+						<template #label>{{ i18n.ts.expirationDate }}</template>
+					</MkInput>
 					<MkInput v-model="createCount" type="number">
 						<template #label>{{ i18n.ts.createCount }}</template>
 					</MkInput>
