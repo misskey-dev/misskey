@@ -6,7 +6,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
-import { query } from '@/misc/prelude/url.js';
 
 export const meta = {
 	tags: ['users'],
