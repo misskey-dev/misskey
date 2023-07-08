@@ -1,10 +1,10 @@
-import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
 import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
+import { generateInviteCode } from '@/misc/generate-invite-code.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
@@ -65,16 +65,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const ticketsPromises = [];
 
 			for (let i = 0; i < ps.count; i++) {
-				const code = rndstr({
-					length: 8,
-					chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
-				}) + (Math.floor(Date.now() / 1000 / 60)).toString(36).toUpperCase();
-
 				ticketsPromises.push(this.registrationTicketsRepository.insert({
 					id: this.idService.genId(),
 					createdAt: new Date(),
 					expiresAt: ps.expiresAt ? new Date(ps.expiresAt) : null,
-					code,
+					code: generateInviteCode(),
 				}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0])));
 			}
 

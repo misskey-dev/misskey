@@ -1,5 +1,4 @@
 import { MoreThan } from 'typeorm';
-import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
@@ -7,6 +6,7 @@ import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService
 import { IdService } from '@/core/IdService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
+import { generateInviteCode } from '@/misc/generate-invite-code.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -68,18 +68,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					throw new ApiError(meta.errors.exceededCreateLimit);
 				}
 			}
-			
-			const code = rndstr({
-				length: 8,
-				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
-			}) + (Math.floor(Date.now() / 1000 / 60)).toString(36).toUpperCase();
 
 			const ticket = await this.registrationTicketsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				createdBy: me,
 				expiresAt: policies.inviteExpirationTime ? new Date(Date.now() + (policies.inviteExpirationTime * 1000 * 60)) : null,
-				code,
+				code: generateInviteCode(),
 			}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.inviteCodeEntityService.pack(ticket, me);
