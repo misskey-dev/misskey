@@ -155,6 +155,12 @@ const patronsWithIcon = [{
 }, {
 	name: 'spinlock',
 	icon: 'https://misskey-hub.net/patrons/6a1cebc819d540a78bf20e9e3115baa8.jpg',
+}, {
+	name: 'じゅくま',
+	icon: 'https://misskey-hub.net/patrons/3e56bdac69dd42f7a06e0f12cf2fc895.jpg',
+}, {
+	name: '清遊あみ',
+	icon: 'https://misskey-hub.net/patrons/de25195b88e940a388388bea2e7637d8.jpg',
 }];
 
 const patrons = [

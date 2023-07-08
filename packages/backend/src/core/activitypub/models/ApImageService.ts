@@ -10,9 +10,10 @@ import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
 import { DriveService } from '@/core/DriveService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import { checkHttps } from '@/misc/check-https.js';
 import { ApResolverService } from '../ApResolverService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
-import { checkHttps } from '@/misc/check-https.js';
+import type { IObject } from '../type.js';
 
 @Injectable()
 export class ApImageService {
@@ -32,21 +33,25 @@ export class ApImageService {
 	) {
 		this.logger = this.apLoggerService.logger;
 	}
-	
+
 	/**
 	 * Imageを作成します。
 	 */
 	@bindThis
-	public async createImage(actor: RemoteUser, value: any): Promise<DriveFile> {
+	public async createImage(actor: RemoteUser, value: string | IObject): Promise<DriveFile> {
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
 			throw new Error('actor has been suspended');
 		}
 
-		const image = await this.apResolverService.createResolver().resolve(value) as any;
+		const image = await this.apResolverService.createResolver().resolve(value);
 
 		if (image.url == null) {
 			throw new Error('invalid image: url not privided');
+		}
+
+		if (typeof image.url !== 'string') {
+			throw new Error('invalid image: unexpected type of url: ' + JSON.stringify(image.url, null, 2));
 		}
 
 		if (!checkHttps(image.url)) {
@@ -57,29 +62,19 @@ export class ApImageService {
 
 		const instance = await this.metaService.fetch();
 
-		let file = await this.driveService.uploadFromUrl({
+		const file = await this.driveService.uploadFromUrl({
 			url: image.url,
 			user: actor,
 			uri: image.url,
 			sensitive: image.sensitive,
 			isLink: !instance.cacheRemoteFiles,
-			comment: truncate(image.name, DB_MAX_IMAGE_COMMENT_LENGTH),
+			comment: truncate(image.name ?? undefined, DB_MAX_IMAGE_COMMENT_LENGTH),
 		});
+		if (!file.isLink || file.url === image.url) return file;
 
-		if (file.isLink) {
-			// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、
-			// URLを更新する
-			if (file.url !== image.url) {
-				await this.driveFilesRepository.update({ id: file.id }, {
-					url: image.url,
-					uri: image.url,
-				});
-
-				file = await this.driveFilesRepository.findOneByOrFail({ id: file.id });
-			}
-		}
-
-		return file;
+		// URLが異なっている場合、同じ画像が以前に異なるURLで登録されていたということなので、URLを更新する
+		await this.driveFilesRepository.update({ id: file.id }, { url: image.url, uri: image.url });
+		return await this.driveFilesRepository.findOneByOrFail({ id: file.id });
 	}
 
 	/**
@@ -89,7 +84,7 @@ export class ApImageService {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolveImage(actor: RemoteUser, value: any): Promise<DriveFile> {
+	public async resolveImage(actor: RemoteUser, value: string | IObject): Promise<DriveFile> {
 		// TODO
 
 		// リモートサーバーからフェッチしてきて登録

@@ -60,8 +60,8 @@ export class QueryService {
 			q.orderBy(`${q.alias}.id`, 'DESC');
 		}
 		return q;
-	}	
-	
+	}
+
 	// ここでいうBlockedは被Blockedの意
 	@bindThis
 	public generateBlockedUserQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] }): void {
@@ -109,18 +109,18 @@ export class QueryService {
 			q.andWhere('note.channelId IS NULL');
 		} else {
 			q.leftJoinAndSelect('note.channel', 'channel');
-	
+
 			const channelFollowingQuery = this.channelFollowingsRepository.createQueryBuilder('channelFollowing')
 				.select('channelFollowing.followeeId')
 				.where('channelFollowing.followerId = :followerId', { followerId: me.id });
-	
+
 			q.andWhere(new Brackets(qb => { qb
 				// チャンネルのノートではない
 				.where('note.channelId IS NULL')
 				// または自分がフォローしているチャンネルのノート
 				.orWhere(`note.channelId IN (${ channelFollowingQuery.getQuery() })`);
 			}));
-	
+
 			q.setParameters(channelFollowingQuery.getParameters());
 		}
 	}
@@ -130,9 +130,9 @@ export class QueryService {
 		const mutedQuery = this.mutedNotesRepository.createQueryBuilder('muted')
 			.select('muted.noteId')
 			.where('muted.userId = :userId', { userId: me.id });
-	
+
 		q.andWhere(`note.id NOT IN (${ mutedQuery.getQuery() })`);
-	
+
 		q.setParameters(mutedQuery.getParameters());
 	}
 
@@ -141,13 +141,13 @@ export class QueryService {
 		const mutedQuery = this.noteThreadMutingsRepository.createQueryBuilder('threadMuted')
 			.select('threadMuted.threadId')
 			.where('threadMuted.userId = :userId', { userId: me.id });
-	
+
 		q.andWhere(`note.id NOT IN (${ mutedQuery.getQuery() })`);
 		q.andWhere(new Brackets(qb => { qb
 			.where('note.threadId IS NULL')
 			.orWhere(`note.threadId NOT IN (${ mutedQuery.getQuery() })`);
 		}));
-	
+
 		q.setParameters(mutedQuery.getParameters());
 	}
 
@@ -156,15 +156,15 @@ export class QueryService {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
-	
+
 		if (exclude) {
 			mutingQuery.andWhere('muting.muteeId != :excludeId', { excludeId: exclude.id });
 		}
-	
+
 		const mutingInstanceQuery = this.userProfilesRepository.createQueryBuilder('user_profile')
 			.select('user_profile.mutedInstances')
 			.where('user_profile.userId = :muterId', { muterId: me.id });
-	
+
 		// 投稿の作者をミュートしていない かつ
 		// 投稿の返信先の作者をミュートしていない かつ
 		// 投稿の引用元の作者をミュートしていない
@@ -191,7 +191,7 @@ export class QueryService {
 				.where('note.renoteUserHost IS NULL')
 				.orWhere(`NOT ((${ mutingInstanceQuery.getQuery() })::jsonb ? note.renoteUserHost)`);
 			}));
-	
+
 		q.setParameters(mutingQuery.getParameters());
 		q.setParameters(mutingInstanceQuery.getParameters());
 	}
@@ -201,9 +201,9 @@ export class QueryService {
 		const mutingQuery = this.mutingsRepository.createQueryBuilder('muting')
 			.select('muting.muteeId')
 			.where('muting.muterId = :muterId', { muterId: me.id });
-	
+
 		q.andWhere(`user.id NOT IN (${ mutingQuery.getQuery() })`);
-	
+
 		q.setParameters(mutingQuery.getParameters());
 	}
 
@@ -245,7 +245,7 @@ export class QueryService {
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
 				.select('following.followeeId')
 				.where('following.followerId = :meId');
-	
+
 			q.andWhere(new Brackets(qb => { qb
 				// 公開投稿である
 				.where(new Brackets(qb => { qb
@@ -268,7 +268,7 @@ export class QueryService {
 					}));
 				}));
 			}));
-	
+
 			q.setParameters({ meId: me.id });
 		}
 	}
@@ -278,10 +278,10 @@ export class QueryService {
 		const mutingQuery = this.renoteMutingsRepository.createQueryBuilder('renote_muting')
 			.select('renote_muting.muteeId')
 			.where('renote_muting.muterId = :muterId', { muterId: me.id });
-	
+
 		q.andWhere(new Brackets(qb => {
 			qb
-				.where(new Brackets(qb => { 
+				.where(new Brackets(qb => {
 					qb.where('note.renoteId IS NOT NULL');
 					qb.andWhere('note.text IS NULL');
 					qb.andWhere(`note.userId NOT IN (${ mutingQuery.getQuery() })`);
@@ -289,7 +289,7 @@ export class QueryService {
 				.orWhere('note.renoteId IS NULL')
 				.orWhere('note.text IS NOT NULL');
 		}));
-		
+
 		q.setParameters(mutingQuery.getParameters());
 	}
 }
