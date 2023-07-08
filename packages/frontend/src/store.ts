@@ -28,12 +28,17 @@ interface PageViewInterruptor {
 	handler: (page: Page) => unknown;
 }
 
+interface UserViewInterruptor {
+	handler: (user: UserDetailed) => unknown;
+}
+
 export const postFormActions: PostFormAction[] = [];
 export const userActions: UserAction[] = [];
 export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
+export const userViewInterruptors: UserViewInterruptor[] = [];
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない

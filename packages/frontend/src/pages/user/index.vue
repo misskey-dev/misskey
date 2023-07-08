@@ -28,6 +28,8 @@ import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { userViewInterruptors } from '@/store';
+import { deepClone } from '@/scripts/clone';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
@@ -53,8 +55,17 @@ let error = $ref(null);
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user = null;
-	os.api('users/show', Acct.parse(props.acct)).then(u => {
+	os.api('users/show', Acct.parse(props.acct)).then(async u => {
 		user = u;
+
+		//plugin
+		if (userViewInterruptors.length > 0) {
+			let result = deepClone(user);
+			for (const interruptor of userViewInterruptors) {
+				result = await interruptor.handler(result);
+			}
+			user = result;
+		}
 	}).catch(err => {
 		error = err;
 	});

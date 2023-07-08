@@ -1,7 +1,7 @@
 import { Interpreter, Parser, utils, values } from '@syuilo/aiscript';
 import { createAiScriptEnv } from '@/scripts/aiscript/api';
 import { inputText } from '@/os';
-import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors } from '@/store';
+import { Plugin, noteActions, notePostInterruptors, noteViewInterruptors, postFormActions, userActions, pageViewInterruptors, userViewInterruptors } from '@/store';
 
 const parser = new Parser();
 const pluginContexts = new Map<string, Interpreter>();
@@ -82,6 +82,9 @@ function createPluginEnv(opts: { plugin: Plugin; storageKey: string }): Record<s
 		}),
 		'Plugin:register_page_view_interruptor': values.FN_NATIVE(([handler]) => {
 			registerPageViewInterruptor({ pluginId: opts.plugin.id, handler });
+		}),
+		'Plugin:register_user_view_interruptor': values.FN_NATIVE(([handler]) => {
+			registerUserViewInterruptor({ pluginId: opts.plugin.id, handler });
 		}),
 		'Plugin:open_url': values.FN_NATIVE(([url]) => {
 			utils.assertString(url);
@@ -168,6 +171,18 @@ function registerPageViewInterruptor({ pluginId, handler }): void {
 				return;
 			}
 			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(page)]));
+		},
+	});
+}
+
+function registerUserViewInterruptor({ pluginId, handler }): void {
+	userViewInterruptors.push({
+		handler: async (user) => {
+			const pluginContext = pluginContexts.get(pluginId);
+			if (!pluginContext) {
+				return;
+			}
+			return utils.valToJs(await pluginContext.execFn(handler, [utils.jsToVal(user)]));
 		},
 	});
 }
