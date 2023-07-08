@@ -27,7 +27,7 @@
 				<MkUserName :user="invite.usedBy" :nowrap="false"/>
 				<div v-if="moderator">({{ invite.usedBy.id }})</div>
 			</div>
-			<div v-else>{{ i18n.ts.unknown }}</div>
+			<div v-else>{{ i18n.ts.unknown }} ({{ i18n.ts.waitingForMailAuth }})</div>
 		</div>
 		<div v-if="invite.expiresAt && !invite.used">
 			<div :class="$style.label">{{ i18n.ts.expirationDate }}</div>

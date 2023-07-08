@@ -1082,6 +1082,7 @@ export interface Locale {
     "noExpirationDate": string;
     "inviteCodeUsedAt": string;
     "registeredUserUsingInviteCode": string;
+    "waitingForMailAuth": string;
     "inviteCodeCreator": string;
     "usedAt": string;
     "unused": string;
