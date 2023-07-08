@@ -302,7 +302,6 @@ copyUrl: "Copier l’URL"
 rename: "Renommer"
 avatar: "Avatar"
 banner: "Bannière"
-nsfw: "Contenu sensible"
 whenServerDisconnected: "Lorsque la connexion au serveur est perdue"
 disconnectedFromServer: "Déconnecté·e du serveur"
 reload: "Rafraîchir"
@@ -1085,10 +1084,6 @@ _aboutMisskey:
   donate: "Soutenir Misskey"
   morePatrons: "Nous apprécions vraiment le soutien de nombreuses autres personnes non mentionnées ici. Merci à toutes et à tous ! 🥰"
   patrons: "Contributeurs"
-_nsfw:
-  respect: "Cacher les médias marqués comme contenu sensible"
-  ignore: "Afficher les médias sensibles"
-  force: "Cacher tous les médias"
 _instanceTicker:
   none: "Cacher "
   remote: "Montrer pour les utilisateur·ice·s distant·e·s"

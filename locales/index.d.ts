@@ -57,6 +57,8 @@ export interface Locale {
     "copyUsername": string;
     "copyUserId": string;
     "copyNoteId": string;
+    "copyFileId": string;
+    "copyFolderId": string;
     "searchUser": string;
     "reply": string;
     "loadMore": string;
@@ -316,7 +318,7 @@ export interface Locale {
     "rename": string;
     "avatar": string;
     "banner": string;
-    "nsfw": string;
+    "displayOfSensitiveMedia": string;
     "whenServerDisconnected": string;
     "disconnectedFromServer": string;
     "reload": string;
@@ -1070,6 +1072,7 @@ export interface Locale {
     "branding": string;
     "enableServerMachineStats": string;
     "enableIdenticonGeneration": string;
+    "turnOffToImprovePerformance": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -1530,6 +1533,7 @@ export interface Locale {
         "back": string;
         "reduceFrequencyOfThisAd": string;
         "hide": string;
+        "timezoneinfo": string;
     };
     "_forgotPassword": {
         "enterEmail": string;
@@ -1591,7 +1595,7 @@ export interface Locale {
         "morePatrons": string;
         "patrons": string;
     };
-    "_nsfw": {
+    "_displayOfSensitiveMedia": {
         "respect": string;
         "ignore": string;
         "force": string;

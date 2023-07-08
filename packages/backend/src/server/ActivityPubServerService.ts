@@ -369,7 +369,7 @@ export class ActivityPubServerService {
 				}))
 				.andWhere('note.localOnly = FALSE');
 
-			const notes = await query.take(limit).getMany();
+			const notes = await query.limit(limit).getMany();
 
 			if (sinceId) notes.reverse();
 

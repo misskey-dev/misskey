@@ -259,7 +259,7 @@ onMounted(async () => {
 		},
 		plugins: [chartVLine(vLineColor)],
 	});
-	
+
 	fetching = false;
 });
 </script>

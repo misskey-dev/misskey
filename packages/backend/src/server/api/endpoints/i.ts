@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
-			
+
 			return await this.userEntityService.pack<true, true>(userProfile.user!, userProfile.user!, {
 				detail: true,
 				includeSecrets: isSecure,

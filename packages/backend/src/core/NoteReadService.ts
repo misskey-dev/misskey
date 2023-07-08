@@ -99,7 +99,7 @@ export class NoteReadService implements OnApplicationShutdown {
 			});
 
 			// TODO: ↓まとめてクエリしたい
-	
+
 			this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isMentioned: true,
@@ -109,7 +109,7 @@ export class NoteReadService implements OnApplicationShutdown {
 					this.globalEventService.publishMainStream(userId, 'readAllUnreadMentions');
 				}
 			});
-	
+
 			this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isSpecified: true,
