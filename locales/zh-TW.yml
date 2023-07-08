@@ -1067,6 +1067,7 @@ installed: "已安裝"
 branding: "品牌宣傳"
 enableServerMachineStats: "公布伺服器的機器資訊"
 enableIdenticonGeneration: "啟用每個使用者的Identicon"
+turnOffToImprovePerformance: "關閉時會提高性能。"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
@@ -1439,6 +1440,7 @@ _ad:
   back: "返回"
   reduceFrequencyOfThisAd: "降低此廣告的頻率 "
   hide: "隱藏"
+  timezoneinfo: "星期幾是由伺服器的時區指定的。"
 _forgotPassword:
   enterEmail: "請輸入您的帳戶註冊的電子郵件地址。 密碼重置連結將被發送到該電子郵件地址。"
   ifNoEmail: "如果您還沒有註冊您的電子郵件地址，請聯繫管理員。 "
