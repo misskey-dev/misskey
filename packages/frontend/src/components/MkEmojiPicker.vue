@@ -1,94 +1,59 @@
 <template>
-<div class="omfetrab" :class="['s' + size, 'w' + width, 'h' + height, { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
-	<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
-	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
-	<div ref="emojisEl" class="emojis" tabindex="-1">
-		<section class="result">
-			<div v-if="searchResultCustom.length > 0" class="body">
-				<button
-					v-for="emoji in searchResultCustom"
-					:key="emoji.name"
-					class="_button item"
-					:title="emoji.name"
-					tabindex="0"
-					@click="chosen(emoji, $event)"
-				>
-					<MkCustomEmoji class="emoji" :name="emoji.name"/>
-				</button>
-			</div>
-			<div v-if="searchResultUnicode.length > 0" class="body">
-				<button
-					v-for="emoji in searchResultUnicode"
-					:key="emoji.name"
-					class="_button item"
-					:title="emoji.name"
-					tabindex="0"
-					@click="chosen(emoji, $event)"
-				>
-					<MkEmoji class="emoji" :emoji="emoji.char"/>
-				</button>
-			</div>
-		</section>
-
-		<div v-if="tab === 'index'" class="group index">
-			<section v-if="showPinned">
-				<div class="body">
-					<button
-						v-for="emoji in pinned"
-						:key="emoji"
-						:data-emoji="emoji"
-						class="_button item"
-						tabindex="0"
-						@pointerenter="computeButtonTitle"
-						@click="chosen(emoji, $event)"
-					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
+	<div class="omfetrab" :class="['s' + size, 'w' + ((dreamEmojiPickerWidth > dreamInnerWidth) ? (Math.floor((dreamInnerWidth - 16) / size)) : width), 'h' + ((height * size + 16 > dreamInnerHeight) ? (Math.floor((dreamInnerHeight - 16) / size)) : height), { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
+		<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
+		<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
+		<div ref="emojisEl" class="emojis" tabindex="-1">
+			<section class="result">
+				<div v-if="searchResultCustom.length > 0" class="body">
+					<button v-for="emoji in searchResultCustom" :key="emoji.name" class="_button item" :title="emoji.name" tabindex="0" @click="chosen(emoji, $event)">
+						<MkCustomEmoji class="emoji" :name="emoji.name" />
+					</button>
+				</div>
+				<div v-if="searchResultUnicode.length > 0" class="body">
+					<button v-for="emoji in searchResultUnicode" :key="emoji.name" class="_button item" :title="emoji.name" tabindex="0" @click="chosen(emoji, $event)">
+						<MkEmoji class="emoji" :emoji="emoji.char" />
 					</button>
 				</div>
 			</section>
 
-			<section>
-				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
-				<div class="body">
-					<button
-						v-for="emoji in recentlyUsedEmojis"
-						:key="emoji"
-						class="_button item"
-						:data-emoji="emoji"
-						@pointerenter="computeButtonTitle"
-						@click="chosen(emoji, $event)"
-					>
-						<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true"/>
-						<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true"/>
-					</button>
-				</div>
-			</section>
+			<div v-if="tab === 'index'" class="group index">
+				<section v-if="showPinned">
+					<div class="body">
+						<button v-for="emoji in pinned" :key="emoji" :data-emoji="emoji" class="_button item" tabindex="0" @pointerenter="computeButtonTitle" @click="chosen(emoji, $event)">
+							<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true" />
+							<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true" />
+						</button>
+					</div>
+				</section>
+
+				<section>
+					<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
+					<div class="body">
+						<button v-for="emoji in recentlyUsedEmojis" :key="emoji" class="_button item" :data-emoji="emoji" @pointerenter="computeButtonTitle" @click="chosen(emoji, $event)">
+							<MkCustomEmoji v-if="emoji[0] === ':'" class="emoji" :name="emoji" :normal="true" />
+							<MkEmoji v-else class="emoji" :emoji="emoji" :normal="true" />
+						</button>
+					</div>
+				</section>
+			</div>
+			<div v-once class="group">
+				<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
+				<XSection v-for="category in customEmojiCategories" :key="`custom:${category}`" :initialShown="false" :emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).filter(filterAvailable).map(e => `:${e.name}:`))" @chosen="chosen">
+					{{ category || i18n.ts.other }}
+				</XSection>
+			</div>
+			<div v-once class="group">
+				<header class="_acrylic">{{ i18n.ts.emoji }}</header>
+				<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" @chosen="chosen">{{ category }}</XSection>
+			</div>
 		</div>
-		<div v-once class="group">
-			<header class="_acrylic">{{ i18n.ts.customEmojis }}</header>
-			<XSection
-				v-for="category in customEmojiCategories"
-				:key="`custom:${category}`"
-				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).filter(filterAvailable).map(e => `:${e.name}:`))"
-				@chosen="chosen"
-			>
-				{{ category || i18n.ts.other }}
-			</XSection>
-		</div>
-		<div v-once class="group">
-			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" @chosen="chosen">{{ category }}</XSection>
+		<div class="tabs">
+			<button class="_button tab" :class="{ active: tab === 'index' }" @click="tab = 'index'"><i class="ti ti-asterisk ti-fw"></i></button>
+			<button class="_button tab" :class="{ active: tab === 'custom' }" @click="tab = 'custom'"><i class="ti ti-mood-happy ti-fw"></i></button>
+			<button class="_button tab" :class="{ active: tab === 'unicode' }" @click="tab = 'unicode'"><i class="ti ti-leaf ti-fw"></i></button>
+			<button class="_button tab" :class="{ active: tab === 'tags' }" @click="tab = 'tags'"><i class="ti ti-hash ti-fw"></i></button>
 		</div>
 	</div>
-	<div class="tabs">
-		<button class="_button tab" :class="{ active: tab === 'index' }" @click="tab = 'index'"><i class="ti ti-asterisk ti-fw"></i></button>
-		<button class="_button tab" :class="{ active: tab === 'custom' }" @click="tab = 'custom'"><i class="ti ti-mood-happy ti-fw"></i></button>
-		<button class="_button tab" :class="{ active: tab === 'unicode' }" @click="tab = 'unicode'"><i class="ti ti-leaf ti-fw"></i></button>
-		<button class="_button tab" :class="{ active: tab === 'tags' }" @click="tab = 'tags'"><i class="ti ti-hash ti-fw"></i></button>
-	</div>
-</div>
 </template>
 
 <script lang="ts" setup>
@@ -138,6 +103,29 @@ const q = ref<string>('');
 const searchResultCustom = ref<Misskey.entities.CustomEmoji[]>([]);
 const searchResultUnicode = ref<UnicodeEmojiDef[]>([]);
 const tab = ref<'index' | 'custom' | 'unicode' | 'tags'>('index');
+
+const dreamInnerWidth = ref(window.innerWidth);
+const dreamInnerHeight = ref(window.innerHeight);
+const dreamEmojiSize = ref(40);
+const dreamEmojiPickerWidth = ref(0);
+const dreamEmojiPickerHeight = ref(0);
+
+function dreamCalcSizeParameters() {
+	dreamInnerWidth.value = window.innerWidth;
+	dreamInnerHeight.value = window.innerHeight;
+	dreamEmojiSize.value = 40;
+	if (size.value === 2) {
+		dreamEmojiSize.value = 45;
+	}
+	else if (size.value === 3) {
+		dreamEmojiSize.value = 50;
+	}
+	dreamEmojiPickerWidth.value = dreamEmojiSize.value * (width.value + 4) + 16;
+	dreamEmojiPickerHeight.value = dreamEmojiSize.value * (height.value + 1);
+	console.log("window width check", width.value * size.value + 16, dreamInnerWidth.value, (width.value * size.value + 16 > dreamInnerWidth.value), ((width.value * size.value + 16 > dreamInnerWidth.value) ? (Math.floor((dreamInnerWidth.value - 16) / size.value)) : width.value));
+}
+
+dreamCalcSizeParameters();
 
 watch(q, () => {
 	if (emojisEl.value) emojisEl.value.scrollTop = 0;
@@ -378,6 +366,7 @@ function done(query?: string): boolean | void {
 
 onMounted(() => {
 	focus();
+	window.addEventListener("resize", dreamCalcSizeParameters);
 });
 
 defineExpose({
@@ -496,21 +485,21 @@ defineExpose({
 	&.asDrawer {
 		width: 100% !important;
 
-		> .emojis {
+		>.emojis {
 			::v-deep(section) {
-				> header {
+				>header {
 					height: 32px;
 					line-height: 32px;
 					padding: 0 12px;
 					font-size: 15px;
 				}
 
-				> .body {
+				>.body {
 					display: grid;
 					grid-template-columns: var(--columns);
 					font-size: 30px;
 
-					> .item {
+					>.item {
 						aspect-ratio: 1 / 1;
 						width: auto;
 						height: auto;
@@ -525,14 +514,14 @@ defineExpose({
 		width: 100% !important;
 		height: 100% !important;
 
-		> .emojis {
+		>.emojis {
 			::v-deep(section) {
-				> .body {
+				>.body {
 					display: grid;
 					grid-template-columns: var(--columns);
 					font-size: 30px;
 
-					> .item {
+					>.item {
 						aspect-ratio: 1 / 1;
 						width: auto;
 						height: auto;
@@ -543,7 +532,7 @@ defineExpose({
 		}
 	}
 
-	> .search {
+	>.search {
 		width: 100%;
 		padding: 12px;
 		box-sizing: border-box;
@@ -564,11 +553,11 @@ defineExpose({
 		}
 	}
 
-	> .tabs {
+	>.tabs {
 		display: flex;
 		display: none;
 
-		> .tab {
+		>.tab {
 			flex: 1;
 			height: 38px;
 			border-top: solid 0.5px var(--divider);
@@ -580,7 +569,7 @@ defineExpose({
 		}
 	}
 
-	> .emojis {
+	>.emojis {
 		height: 100%;
 		overflow-y: auto;
 		overflow-x: hidden;
@@ -591,13 +580,13 @@ defineExpose({
 			display: none;
 		}
 
-		> .group {
+		>.group {
 			&:not(.index) {
 				padding: 4px 0 8px 0;
 				border-top: solid 0.5px var(--divider);
 			}
 
-			> header {
+			>header {
 				/*position: sticky;
 				top: 0;
 				left: 0;*/
@@ -610,7 +599,7 @@ defineExpose({
 		}
 
 		::v-deep(section) {
-			> header {
+			>header {
 				position: sticky;
 				top: 0;
 				left: 0;
@@ -626,11 +615,11 @@ defineExpose({
 				}
 			}
 
-			> .body {
+			>.body {
 				position: relative;
 				padding: $pad;
 
-				> .item {
+				>.item {
 					position: relative;
 					padding: 0;
 					width: var(--eachSize);
@@ -653,7 +642,7 @@ defineExpose({
 						box-shadow: inset 0 0.15em 0.3em rgba(27, 31, 35, 0.15);
 					}
 
-					> .emoji {
+					>.emoji {
 						height: 1.25em;
 						vertical-align: -.25em;
 						pointer-events: none;

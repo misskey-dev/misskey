@@ -25,7 +25,7 @@
 		<option :value="3">{{ i18n.ts.large }}</option>
 	</MkRadios>
 	<MkRadios v-model="reactionPickerWidth">
-		<template #label>{{ i18n.ts.numberOfColumn }}</template>
+		<template #label>{{ i18n.ts.maximumNumberOfColumn }}</template>
 		<option :value="1">5</option>
 		<option :value="2">6</option>
 		<option :value="3">7</option>
@@ -40,7 +40,7 @@
 		<option :value="12">16</option>
 	</MkRadios>
 	<MkRadios v-model="reactionPickerHeight">
-		<template #label>{{ i18n.ts.height }}</template>
+		<template #label>{{ i18n.ts.maximumHeight }}</template>
 		<option :value="1">{{ i18n.ts.small }}</option>
 		<option :value="2">{{ i18n.ts.medium }}</option>
 		<option :value="3">{{ i18n.ts.large }}</option>
@@ -84,6 +84,8 @@ const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPick
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
+
+console.log("maximumHeight is " + i18n.ts.maximumHeight);
 
 function save() {
 	defaultStore.set('reactions', reactions);

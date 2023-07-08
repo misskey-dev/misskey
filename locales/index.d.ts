@@ -595,6 +595,7 @@ export interface Locale {
     "useFullReactionPicker": string;
     "width": string;
     "height": string;
+    "maximumHeight": string;
     "large": string;
     "medium": string;
     "small": string;
@@ -868,6 +869,7 @@ export interface Locale {
     "themeColor": string;
     "size": string;
     "numberOfColumn": string;
+    "maximumNumberOfColumn": string;
     "searchByGoogle": string;
     "instanceDefaultLightTheme": string;
     "instanceDefaultDarkTheme": string;
