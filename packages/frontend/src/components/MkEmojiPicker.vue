@@ -122,7 +122,6 @@ function dreamCalcSizeParameters() {
 	}
 	dreamEmojiPickerWidth.value = dreamEmojiSize.value * (width.value + 4) + 16;
 	dreamEmojiPickerHeight.value = dreamEmojiSize.value * (height.value + 1);
-	console.log("window width check", width.value * size.value + 16, dreamInnerWidth.value, (width.value * size.value + 16 > dreamInnerWidth.value), ((width.value * size.value + 16 > dreamInnerWidth.value) ? (Math.floor((dreamInnerWidth.value - 16) / size.value)) : width.value));
 }
 
 dreamCalcSizeParameters();

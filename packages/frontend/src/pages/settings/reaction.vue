@@ -85,8 +85,6 @@ const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPic
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
 
-console.log("maximumHeight is " + i18n.ts.maximumHeight);
-
 function save() {
 	defaultStore.set('reactions', reactions);
 }
