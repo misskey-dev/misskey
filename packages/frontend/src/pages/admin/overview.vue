@@ -30,7 +30,7 @@
 			<template #header>Federation</template>
 			<XFederation/>
 		</MkFoldableSection>
-		
+
 		<MkFoldableSection class="item">
 			<template #header>Instances</template>
 			<XInstances/>

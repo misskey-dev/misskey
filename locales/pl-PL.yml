@@ -299,7 +299,6 @@ copyUrl: "Skopiuj adres URL"
 rename: "Zmień nazwę"
 avatar: "Awatar"
 banner: "Baner"
-nsfw: "NSFW"
 whenServerDisconnected: "Po utracie połączenia z serwerem"
 disconnectedFromServer: "Utracono połączenie z serwerem."
 reload: "Odśwież"
@@ -955,10 +954,6 @@ _aboutMisskey:
   donate: "Przekaż darowiznę na Misskey"
   morePatrons: "Naprawdę doceniam wsparcie ze strony wielu niewymienionych tu osób. Dziękuję! 🥰"
   patrons: "Wspierający"
-_nsfw:
-  respect: "Ukrywaj media NSFW"
-  ignore: "Nie ukrywaj mediów NSFW"
-  force: "Ukrywaj wszystkie media"
 _instanceTicker:
   none: "Nigdy nie pokazuj"
   remote: "Pokaż dla zdalnych użytkowników"
