@@ -1,5 +1,5 @@
 <template>
-	<div class="omfetrab" :class="['s' + size, 'w' + ((dreamEmojiPickerWidth > dreamInnerWidth) ? (Math.floor((dreamInnerWidth - 16) / size)) : width), 'h' + ((height * size + 16 > dreamInnerHeight) ? (Math.floor((dreamInnerHeight - 16) / size)) : height), { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
+	<div class="omfetrab" :class="['s' + size, 'w' + ((dreamEmojiPickerWidth > dreamInnerWidth) ? (Math.floor((dreamInnerWidth - 16) / dreamEmojiSize)) : width), 'h' + ((height * size + 16 > dreamInnerHeight) ? (Math.floor((dreamInnerHeight - 16) / dreamEmojiSize)) : height), { asDrawer, asWindow }]" :style="{ maxHeight: maxHeight ? maxHeight + 'px' : undefined }">
 		<input ref="searchEl" :value="q" class="search" data-prevent-emoji-insert :class="{ filled: q != null && q != '' }" :placeholder="i18n.ts.search" type="search" @input="input()" @paste.stop="paste" @keydown.stop.prevent.enter="onEnter">
 		<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 		<div ref="emojisEl" class="emojis" tabindex="-1">
