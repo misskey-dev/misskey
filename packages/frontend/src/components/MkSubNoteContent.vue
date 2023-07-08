@@ -37,7 +37,9 @@ const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const collapsed = $ref(shouldCollapsed(props.note));
+const isLong = shouldCollapsed(props.note);
+
+const collapsed = $ref(isLong);
 </script>
 
 <style lang="scss" module>
