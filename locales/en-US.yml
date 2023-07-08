@@ -313,7 +313,6 @@ copyUrl: "Copy URL"
 rename: "Rename"
 avatar: "Avatar"
 banner: "Banner"
-nsfw: "NSFW"
 whenServerDisconnected: "When losing connection to the server"
 disconnectedFromServer: "Connection to server has been lost"
 reload: "Refresh"
@@ -1492,10 +1491,6 @@ _aboutMisskey:
   donate: "Donate to Misskey"
   morePatrons: "We also appreciate the support of many other helpers not listed here. Thank you! 🥰"
   patrons: "Patrons"
-_nsfw:
-  respect: "Hide NSFW media"
-  ignore: "Don't hide NSFW media"
-  force: "Hide all media"
 _instanceTicker:
   none: "Never show"
   remote: "Show for remote users"
