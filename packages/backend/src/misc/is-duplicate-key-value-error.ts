@@ -1,7 +1,5 @@
+import { QueryFailedError } from "typeorm";
+
 export function isDuplicateKeyValueError(e: unknown | Error): boolean {
-	return (
-		(e as any).message &&
-		((e as Error).message.startsWith("duplicate key value") ||
-			(e as Error).message.startsWith("重複したキー値"))
-	);
+	return e instanceof QueryFailedError && e.driverError.code === "23505";
 }
