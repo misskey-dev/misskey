@@ -311,7 +311,7 @@ export class ApPersonService implements OnModuleInit {
 		} catch (e) {
 			// duplicate key error
 			if (isDuplicateKeyValueError(e)) {
-			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
+				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
 				if (u == null) throw new Error('already registered');
 
