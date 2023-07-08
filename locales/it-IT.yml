@@ -311,7 +311,6 @@ copyUrl: "Copia URL"
 rename: "Modifica nome"
 avatar: "Foto del profilo"
 banner: "Intestazione"
-nsfw: "Contenuti sensibili"
 whenServerDisconnected: "Quando la connessione col server è persa"
 disconnectedFromServer: "Il server si è disconnesso"
 reload: "Ricarica"
@@ -1488,10 +1487,6 @@ _aboutMisskey:
   donate: "Sostieni Misskey"
   morePatrons: "Apprezziamo sinceramente il supporto di tante altre persone. Grazie mille! 🥰"
   patrons: "Sostenitori"
-_nsfw:
-  respect: "Nascondere i media segnati come sensibli"
-  ignore: "Visualizzare i media segnati come sensibili"
-  force: "Nascondere tutti i media"
 _instanceTicker:
   none: "Nascondi"
   remote: "Mostra solo per i profili remoti"
