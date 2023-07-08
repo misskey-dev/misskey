@@ -606,7 +606,7 @@ export class ApPersonService implements OnModuleInit {
 			.slice(0, 5)
 			.map(item => limit(() => this.apNoteService.resolveNote(item, {
 				resolver: _resolver,
-				valueFrom: new URL(user.uri),
+				sentFrom: new URL(user.uri),
 			}))));
 
 		await this.db.transaction(async transactionalEntityManager => {
