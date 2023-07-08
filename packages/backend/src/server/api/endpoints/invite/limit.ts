@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}) : null;
 
 			return {
-				remaining: count !== null ? policies.inviteLimit - count : null,
+				remaining: count !== null ? Math.max(0, policies.inviteLimit - count) : null,
 			};
 		});
 	}
