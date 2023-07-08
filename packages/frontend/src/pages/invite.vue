@@ -76,7 +76,7 @@ async function create() {
 
 function deleted(id: string) {
 	if (pagingComponent.value) {
-		pagingComponent.value.items = pagingComponent.value.items.filter(x => x.id !== id);
+		pagingComponent.value.items.delete(id);
 	}
 	update();
 }
