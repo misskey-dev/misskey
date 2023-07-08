@@ -188,12 +188,6 @@ describe('ActivityPub', () => {
 			resolver._register(actor.id, actor);
 			resolver._register(actor.outbox as string, outbox);
 
-			// XXX: This shouldn't be needed as the collection already has the full information
-			// But somehow the resolver currently doesn't use it at all and always fetches again
-			for (const item of outbox.orderedItems as IObject[]) {
-				resolver._register(item.id!, item);
-			}
-
 			await personService.createPerson(actor.id, resolver);
 
 			for (const item of outbox.orderedItems as ICreate[]) {
@@ -213,12 +207,6 @@ describe('ActivityPub', () => {
 			resolver._register(actor.outbox as string, outbox);
 			resolver._register(outbox.first as string, page);
 
-			// XXX: This shouldn't be needed as the collection already has the full information
-			// But somehow the resolver currently doesn't use it at all and always fetches again
-			for (const item of page.orderedItems as IObject[]) {
-				resolver._register(item.id!, item);
-			}
-
 			await personService.createPerson(actor.id, resolver);
 
 			for (const item of page.orderedItems as ICreate[]) {
@@ -235,12 +223,6 @@ describe('ActivityPub', () => {
 
 			resolver._register(actor.id, actor);
 			resolver._register(actor.outbox as string, outbox);
-
-			// XXX: This shouldn't be needed as the collection already has the full information
-			// But somehow the resolver currently doesn't use it at all and always fetches again
-			for (const item of outbox.orderedItems as IObject[]) {
-				resolver._register(item.id!, item);
-			}
 
 			await personService.createPerson(actor.id, resolver);
 
