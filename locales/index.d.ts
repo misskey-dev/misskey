@@ -57,6 +57,8 @@ export interface Locale {
     "copyUsername": string;
     "copyUserId": string;
     "copyNoteId": string;
+    "copyFileId": string;
+    "copyFolderId": string;
     "searchUser": string;
     "reply": string;
     "loadMore": string;
