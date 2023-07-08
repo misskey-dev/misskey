@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//	query.isBot = bot;
 			//}
 
-			const notes = await query.take(ps.limit).getMany();
+			const notes = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes);
 		});
