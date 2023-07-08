@@ -313,6 +313,7 @@ copyUrl: "複製URL"
 rename: "重新命名"
 avatar: "大頭貼"
 banner: "橫幅"
+displayOfSensitiveMedia: "敏感性媒體的顯示"
 whenServerDisconnected: "與伺服器的連接中斷時"
 disconnectedFromServer: "與伺服器中斷連線"
 reload: "重新整理"
@@ -1491,6 +1492,10 @@ _aboutMisskey:
   donate: "贊助Misskey"
   morePatrons: "還有許許多多幫助我們的其他人，非常感謝你們。 🥰"
   patrons: "贊助者"
+_displayOfSensitiveMedia:
+  respect: "隱藏設定為敏感的媒體"
+  ignore: "不隱藏設定為敏感的媒體"
+  force: "隱藏所有媒體"
 _instanceTicker:
   none: "隱藏"
   remote: "向遠端使用者顯示"
