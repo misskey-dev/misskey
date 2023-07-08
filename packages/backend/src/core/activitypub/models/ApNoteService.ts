@@ -177,7 +177,7 @@ export class ApNoteService {
 
 		// リプライ
 		const reply: Note | null = note.inReplyTo
-			? await this.resolveNote(note.inReplyTo, resolver)
+			? await this.resolveNote(note.inReplyTo, { resolver })
 				.then(x => {
 					if (x == null) {
 						this.logger.warn('Specified inReplyTo, but not found');
@@ -293,9 +293,8 @@ export class ApNoteService {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolveNote(value: string | IObject, resolver?: Resolver): Promise<Note | null> {
-		const uri = typeof value === 'string' ? value : value.id;
-		if (uri == null) throw new Error('missing uri');
+	public async resolveNote(value: string | IObject, options: { valueFrom?: URL, resolver?: Resolver } = {}): Promise<Note | null> {
+		const uri = getApId(value);
 
 		// ブロックしていたら中断
 		const meta = await this.metaService.fetch();
@@ -318,7 +317,8 @@ export class ApNoteService {
 			// リモートサーバーからフェッチしてきて登録
 			// ここでuriの代わりに添付されてきたNote Objectが指定されていると、サーバーフェッチを経ずにノートが生成されるが
 			// 添付されてきたNote Objectは偽装されている可能性があるため、常にuriを指定してサーバーフェッチを行う。
-			return await this.createNote(uri, resolver, true);
+			const createFrom = options.valueFrom?.origin === new URL(uri).origin ? value : uri;
+			return await this.createNote(createFrom, options.resolver, true);
 		} finally {
 			unlock();
 		}
