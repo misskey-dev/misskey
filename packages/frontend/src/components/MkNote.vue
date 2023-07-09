@@ -104,12 +104,12 @@
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button v-if="appearNote.myReaction == null" ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
-					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
-					<i v-else class="ti ti-plus"></i>
+				<button v-if="appearNote.reactionAcceptance === 'likeOnly' && appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
+					<i class="ti ti-heart-minus"></i>
 				</button>
-				<button v-if="appearNote.myReaction != null" ref="reactButton" :class="$style.footerButton" class="_button" @click="undoReact(appearNote)">
-					<i class="ti ti-minus"></i>
+				<button v-else ref="reactButton" :class="$style.footerButton" class="_button" @mousedown="react()">
+					<i v-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart-plus"></i>
+					<i v-else class="ti ti-mood-plus"></i>
 				</button>
 				<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown="clip()">
 					<i class="ti ti-paperclip"></i>
@@ -358,16 +358,40 @@ function react(viaKeyboard = false): void {
 	} else {
 		blur();
 		reactionPicker.show(reactButton.value, reaction => {
-			os.api('notes/reactions/create', {
-				noteId: appearNote.id,
-				reaction: reaction,
-			});
-			if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
-				claimAchievement('reactWithoutRead');
-			}
+			toggleReaction(reaction);
 		}, () => {
 			focus();
 		});
+	}
+}
+
+async function toggleReaction(reaction) {
+	const oldReaction = note.myReaction;
+	if (oldReaction) {
+		const confirm = await os.confirm({
+			type: 'warning',
+			text: oldReaction !== reaction ? i18n.ts.changeReactionConfirm : i18n.ts.cancelReactionConfirm,
+		});
+		if (confirm.canceled) return;
+
+		os.api('notes/reactions/delete', {
+			noteId: note.id,
+		}).then(() => {
+			if (oldReaction !== reaction) {
+				os.api('notes/reactions/create', {
+					noteId: note.id,
+					reaction: reaction,
+				});
+			}
+		});
+	} else {
+		os.api('notes/reactions/create', {
+			noteId: appearNote.id,
+			reaction: reaction,
+		});
+	}
+	if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
+		claimAchievement('reactWithoutRead');
 	}
 }
 
