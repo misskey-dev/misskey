@@ -6,40 +6,43 @@
 		<span v-else-if="isExpired">{{ i18n.ts.expired }}</span>
 		<span v-else style="color: var(--success)">{{ i18n.ts.unused }}</span>
 	</template>
+
 	<div class="_gaps_s" :class="$style.root">
-		<div>
-			<div :class="$style.label">{{ i18n.ts.invitationCode }}</div>
-			<div>{{ invite.code }}</div>
-		</div>
-		<div v-if="moderator">
-			<div :class="$style.label">{{ i18n.ts.inviteCodeCreator }}</div>
-			<div v-if="invite.createdBy" :class="$style.user">
-				<MkAvatar :user="invite.createdBy" :class="$style.avatar" link preview/>
-				<MkUserName :user="invite.createdBy" :nowrap="false"/>
-				<div v-if="moderator">({{ invite.createdBy.id }})</div>
+		<div :class="$style.items">
+			<div>
+				<div :class="$style.label">{{ i18n.ts.invitationCode }}</div>
+				<div>{{ invite.code }}</div>
 			</div>
-			<div v-else>system</div>
-		</div>
-		<div v-if="invite.used">
-			<div :class="$style.label">{{ i18n.ts.registeredUserUsingInviteCode }}</div>
-			<div v-if="invite.usedBy" :class="$style.user">
-				<MkAvatar :user="invite.usedBy" :class="$style.avatar" link preview/>
-				<MkUserName :user="invite.usedBy" :nowrap="false"/>
-				<div v-if="moderator">({{ invite.usedBy.id }})</div>
+			<div v-if="moderator">
+				<div :class="$style.label">{{ i18n.ts.inviteCodeCreator }}</div>
+				<div v-if="invite.createdBy" :class="$style.user">
+					<MkAvatar :user="invite.createdBy" :class="$style.avatar" link preview/>
+					<MkUserName :user="invite.createdBy" :nowrap="false"/>
+					<div v-if="moderator">({{ invite.createdBy.id }})</div>
+				</div>
+				<div v-else>system</div>
 			</div>
-			<div v-else>{{ i18n.ts.unknown }} ({{ i18n.ts.waitingForMailAuth }})</div>
-		</div>
-		<div v-if="invite.expiresAt && !invite.used">
-			<div :class="$style.label">{{ i18n.ts.expirationDate }}</div>
-			<div><MkTime :time="invite.expiresAt" mode="absolute"/></div>
-		</div>
-		<div v-if="invite.usedAt">
-			<div :class="$style.label">{{ i18n.ts.inviteCodeUsedAt }}</div>
-			<div><MkTime :time="invite.usedAt" mode="absolute"/></div>
-		</div>
-		<div v-if="moderator">
-			<div :class="$style.label">{{ i18n.ts.createdAt }}</div>
-			<div><MkTime :time="invite.createdAt" mode="absolute"/></div>
+			<div v-if="invite.used">
+				<div :class="$style.label">{{ i18n.ts.registeredUserUsingInviteCode }}</div>
+				<div v-if="invite.usedBy" :class="$style.user">
+					<MkAvatar :user="invite.usedBy" :class="$style.avatar" link preview/>
+					<MkUserName :user="invite.usedBy" :nowrap="false"/>
+					<div v-if="moderator">({{ invite.usedBy.id }})</div>
+				</div>
+				<div v-else>{{ i18n.ts.unknown }} ({{ i18n.ts.waitingForMailAuth }})</div>
+			</div>
+			<div v-if="invite.expiresAt && !invite.used">
+				<div :class="$style.label">{{ i18n.ts.expirationDate }}</div>
+				<div><MkTime :time="invite.expiresAt" mode="absolute"/></div>
+			</div>
+			<div v-if="invite.usedAt">
+				<div :class="$style.label">{{ i18n.ts.inviteCodeUsedAt }}</div>
+				<div><MkTime :time="invite.usedAt" mode="absolute"/></div>
+			</div>
+			<div v-if="moderator">
+				<div :class="$style.label">{{ i18n.ts.createdAt }}</div>
+				<div><MkTime :time="invite.createdAt" mode="absolute"/></div>
+			</div>
 		</div>
 		<div :class="$style.buttons">
 			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()">{{ i18n.ts.copy }}</MkButton>
@@ -87,6 +90,12 @@ function copyInviteCode() {
 <style lang="scss" module>
 .root {
 	text-align: left;
+}
+
+.items {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	grid-gap: 12px;
 }
 
 .label {

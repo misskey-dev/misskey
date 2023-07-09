@@ -3,8 +3,8 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div class="_gaps_m">
-			<MkFoldableSection :expanded="false">
-				<template #header>{{ i18n.ts.createInviteCode }}</template>
+			<MkFolder :expanded="false">
+				<template #label>{{ i18n.ts.createInviteCode }}</template>
 				<div class="_gaps_m">
 					<MkSwitch v-model="noExpirationDate">
 						<template #label>{{ i18n.ts.noExpirationDate }}</template>
@@ -17,7 +17,7 @@
 					</MkInput>
 					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
 				</div>
-			</MkFoldableSection>
+			</MkFolder>
 			<div :class="$style.inputs">
 				<MkSelect v-model="type" :class="$style.input">
 					<template #label>{{ i18n.ts.state }}</template>
@@ -52,7 +52,7 @@ import XHeader from './_header_.vue';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
