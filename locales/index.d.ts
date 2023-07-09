@@ -60,6 +60,7 @@ export interface Locale {
     "copyNoteId": string;
     "copyFileId": string;
     "copyFolderId": string;
+    "copyProfileUrl": string;
     "searchUser": string;
     "reply": string;
     "loadMore": string;
