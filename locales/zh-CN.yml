@@ -1153,53 +1153,53 @@ _achievements:
       flavor: "真的有那么多可以写的东西吗？"
     _login3:
       title: "初学者 I"
-      description: "连续登录 3 天"
+      description: "累计登录 3 天"
       flavor: "今天开始我就是 Misskist！"
     _login7:
       title: "初学者 II"
-      description: "连续登录 7 天"
+      description: "累计登录 7 天"
       flavor: "您开始习惯了吗？"
     _login15:
       title: "初学者 III"
-      description: "连续登录 15 天"
+      description: "累计登录 15 天"
     _login30:
       title: "Misskist Ⅰ"
-      description: "连续登录 30 天"
+      description: "累计登录 30 天"
     _login60:
       title: "Misskist Ⅱ"
-      description: "连续登录 60 天"
+      description: "累计登录 60 天"
     _login100:
       title: "Misskist Ⅲ"
-      description: "总登入 100 天"
+      description: "累计登入 100 天"
       flavor: "那个用户，是 Misskist 喔"
     _login200:
       title: "定期联系Ⅰ"
-      description: "总登录天数 200 天"
+      description: "累计登录 200 天"
     _login300:
       title: "定期联系Ⅱ"
-      description: "总登录天数 300 天"
+      description: "累计登录 300 天"
     _login400:
       title: "定期联系Ⅲ"
-      description: "总登录天数 400 天"
+      description: "累计登录 400 天"
     _login500:
       title: "老熟人Ⅰ"
-      description: "总登录天数 500 天"
+      description: "累计登录 500 天"
       flavor: "诸君，我喜欢贴文"
     _login600:
       title: "老熟人Ⅱ"
-      description: "总登录天数 600 天"
+      description: "累计登录 600 天"
     _login700:
       title: "老熟人Ⅲ"
-      description: "总登录天数 700 天"
+      description: "累计登录 700 天"
     _login800:
       title: "帖子大师 Ⅰ"
-      description: "总登录天数 800 天"
+      description: "累计登录 800 天"
     _login900:
       title: "帖子大师 Ⅱ"
-      description: "总登录天数 900 天"
+      description: "累计登录 900 天"
     _login1000:
       title: "帖子大师 Ⅲ"
-      description: "总登录天数 1000 天"
+      description: "累计登录 1000 天"
       flavor: "感谢您使用 Misskey！"
     _noteClipped1:
       title: "忍不住要收藏到便签"
