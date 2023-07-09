@@ -265,6 +265,7 @@ describe('ActivityPub', () => {
 			assert.strictEqual(note.text, 'test test foo');
 			assert.strictEqual(note.uri, actor2Note.id);
 		});
+	});
 
 	describe('Outbox', () => {
 		test('Fetch non-paged outbox from IActor', async () => {
@@ -315,6 +316,6 @@ describe('ActivityPub', () => {
 			const items = outbox.orderedItems as ICreate[];
 			assert.ok(await noteService.fetchNote(items[19].object));
 			assert.ok(!await noteService.fetchNote(items[20].object));
-    });
+		});
 	});
 });
