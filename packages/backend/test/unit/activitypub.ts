@@ -107,7 +107,7 @@ function createRandomPagedOutbox(actor: NonTransientIActor): IOrderedCollection 
 		id: actor.outbox as string,
 		totalItems: 10,
 		first: `${actor.outbox}?first`,
-  };
+	};
 }
 
 describe('ActivityPub', () => {
