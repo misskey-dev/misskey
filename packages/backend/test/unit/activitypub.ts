@@ -11,7 +11,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActor, ICreate, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
+import type { IActor, ICollection, ICreate, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
 import { Note } from '@/models/index.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { MockResolver } from '../misc/mock-resolver.js';
@@ -20,6 +20,9 @@ const host = 'https://host1.test';
 
 type NonTransientIActor = IActor & { id: string };
 type NonTransientIPost = IPost & { id: string };
+type NonTransientICollection = ICollection & { id: string };
+type NonTransientIOrderedCollection = IOrderedCollection & { id: string };
+type NonTransientIOrderedCollectionPage = IOrderedCollectionPage & { id: string };
 
 function createRandomActor({ actorHost = host } = {}): NonTransientIActor {
 	const preferredUsername = secureRndstr(8);
@@ -51,7 +54,7 @@ function createRandomNotes(actor: NonTransientIActor, length: number): NonTransi
 	return new Array(length).fill(null).map(() => createRandomNote(actor));
 }
 
-function createRandomFeaturedCollection(actor: NonTransientIActor, length: number): ICollection {
+function createRandomFeaturedCollection(actor: NonTransientIActor, length: number): NonTransientICollection {
 	const items = createRandomNotes(actor, length);
 
 	return {
@@ -65,7 +68,7 @@ function createRandomFeaturedCollection(actor: NonTransientIActor, length: numbe
 
 function createRandomCreateActivity(actor: NonTransientIActor, length: number): ICreate[] {
 	return new Array(length).fill(null).map((): ICreate => {
-		const note = reateRandomNote(actor);
+		const note = createRandomNote(actor);
 
 		return {
 			type: 'Create',
@@ -76,7 +79,7 @@ function createRandomCreateActivity(actor: NonTransientIActor, length: number): 
 	});
 }
 
-function createRandomNonPagedOutbox(actor: NonTransientIActor, length: number): IOrderedCollection {
+function createRandomNonPagedOutbox(actor: NonTransientIActor, length: number): NonTransientIOrderedCollection {
 	const orderedItems = createRandomCreateActivity(actor, length);
 
 	return {
@@ -88,7 +91,7 @@ function createRandomNonPagedOutbox(actor: NonTransientIActor, length: number): 
 	};
 }
 
-function createRandomOutboxPage(actor: NonTransientIActor, id: string, length: number): IOrderedCollectionPage {
+function createRandomOutboxPage(actor: NonTransientIActor, id: string, length: number): NonTransientIOrderedCollectionPage {
 	const orderedItems = createRandomCreateActivity(actor, length);
 
 	return {
@@ -100,7 +103,7 @@ function createRandomOutboxPage(actor: NonTransientIActor, id: string, length: n
 	};
 }
 
-function createRandomPagedOutbox(actor: NonTransientIActor): IOrderedCollection {
+function createRandomPagedOutbox(actor: NonTransientIActor): NonTransientIOrderedCollection {
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		type: 'OrderedCollection',
