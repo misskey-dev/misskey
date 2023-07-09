@@ -11,7 +11,7 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActor, ICollection, ICreate, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
+import type { IActivity, IActor, ICollection, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
 import { Note } from '@/models/index.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { MockResolver } from '../misc/mock-resolver.js';
@@ -23,6 +23,13 @@ type NonTransientIPost = IPost & { id: string };
 type NonTransientICollection = ICollection & { id: string };
 type NonTransientIOrderedCollection = IOrderedCollection & { id: string };
 type NonTransientIOrderedCollectionPage = IOrderedCollectionPage & { id: string };
+
+/**
+ * Use when the order of the array is not definitive
+ */
+function deepSortedEqual<T extends unknown[]>(array1: unknown[], array2: T): asserts array1 is T {
+	return assert.deepStrictEqual(array1.sort(), array2.sort());
+}
 
 function createRandomActor({ actorHost = host } = {}): NonTransientIActor {
 	const preferredUsername = secureRndstr(8);
@@ -66,12 +73,12 @@ function createRandomFeaturedCollection(actor: NonTransientIActor, length: numbe
 	};
 }
 
-function createRandomCreateActivity(actor: NonTransientIActor, length: number): ICreate[] {
-	return new Array(length).fill(null).map((): ICreate => {
+function createRandomActivities(actor: NonTransientIActor, type: string, length: number): IActivity[] {
+	return new Array(length).fill(null).map((): IActivity => {
 		const note = createRandomNote(actor);
 
 		return {
-			type: 'Create',
+			type,
 			id: `${note.id}/activity`,
 			actor,
 			object: note,
@@ -80,7 +87,7 @@ function createRandomCreateActivity(actor: NonTransientIActor, length: number): 
 }
 
 function createRandomNonPagedOutbox(actor: NonTransientIActor, length: number): NonTransientIOrderedCollection {
-	const orderedItems = createRandomCreateActivity(actor, length);
+	const orderedItems = createRandomActivities(actor, 'Create', length);
 
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -92,7 +99,7 @@ function createRandomNonPagedOutbox(actor: NonTransientIActor, length: number): 
 }
 
 function createRandomOutboxPage(actor: NonTransientIActor, id: string, length: number): NonTransientIOrderedCollectionPage {
-	const orderedItems = createRandomCreateActivity(actor, length);
+	const orderedItems = createRandomActivities(actor, 'Create', length);
 
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -225,7 +232,7 @@ describe('ActivityPub', () => {
 			await personService.createPerson(actor.id, resolver);
 
 			// All notes in `featured` are same-origin, no need to fetch notes again
-			assert.deepStrictEqual(resolver.remoteGetTrials(), [actor.id, actor.featured]);
+			deepSortedEqual(resolver.remoteGetTrials(), [actor.id, actor.featured, actor.outbox]);
 
 			// Created notes without resolving anything
 			for (const item of featured.items as IPost[]) {
@@ -256,9 +263,9 @@ describe('ActivityPub', () => {
 			await personService.createPerson(actor1.id, resolver);
 
 			// actor2Note is from a different server and needs to be fetched again
-			assert.deepStrictEqual(
+			deepSortedEqual(
 				resolver.remoteGetTrials(),
-				[actor1.id, actor1.featured, actor2Note.id, actor2.id],
+				[actor1.id, actor1.featured, actor1.outbox, actor2Note.id, actor2.id, actor2.outbox],
 			);
 
 			const note = await noteService.fetchNote(actor2Note.id);
@@ -280,7 +287,12 @@ describe('ActivityPub', () => {
 
 			await personService.createPerson(actor.id, resolver);
 
-			for (const item of outbox.orderedItems as ICreate[]) {
+			deepSortedEqual(
+				resolver.remoteGetTrials(),
+				[actor.id, actor.outbox],
+			);
+
+			for (const item of outbox.orderedItems as IActivity[]) {
 				const note = await noteService.fetchNote(item.object);
 				assert.ok(note);
 				assert.strictEqual(note.text, 'test test foo');
@@ -299,7 +311,12 @@ describe('ActivityPub', () => {
 
 			await personService.createPerson(actor.id, resolver);
 
-			for (const item of page.orderedItems as ICreate[]) {
+			deepSortedEqual(
+				resolver.remoteGetTrials(),
+				[actor.id, actor.outbox, outbox.first],
+			);
+
+			for (const item of page.orderedItems as IActivity[]) {
 				const note = await noteService.fetchNote(item.object);
 				assert.ok(note);
 				assert.strictEqual(note.text, 'test test foo');
@@ -316,9 +333,36 @@ describe('ActivityPub', () => {
 
 			await personService.createPerson(actor.id, resolver);
 
-			const items = outbox.orderedItems as ICreate[];
+			const items = outbox.orderedItems as IActivity[];
+
+			deepSortedEqual(
+				resolver.remoteGetTrials(),
+				[actor.id, actor.outbox],
+			);
+
 			assert.ok(await noteService.fetchNote(items[19].object));
 			assert.ok(!await noteService.fetchNote(items[20].object));
+		});
+
+		test('Perform only Create activities', async () => {
+			const actor = createRandomActor();
+			const outbox = createRandomNonPagedOutbox(actor, 0);
+			outbox.orderedItems = createRandomActivities(actor, 'Announce', 10);
+
+			resolver.register(actor.id, actor);
+			resolver.register(actor.outbox as string, outbox);
+
+			await personService.createPerson(actor.id, resolver);
+
+			deepSortedEqual(
+				resolver.remoteGetTrials(),
+				[actor.id, actor.outbox],
+			);
+
+			for (const item of outbox.orderedItems as IActivity[]) {
+				const note = await noteService.fetchNote(item.object);
+				assert.ok(!note);
+			}
 		});
 	});
 });

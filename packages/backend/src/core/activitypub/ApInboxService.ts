@@ -86,11 +86,19 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: RemoteUser, activity: IObject, limit = Infinity) {
+	public async performActivity(actor: RemoteUser, activity: IObject, {
+		limit = Infinity,
+		allow = null as (string[] | null) } = {},
+	): Promise<void> {
 		if (isCollectionOrOrderedCollection(activity) || isOrderedCollectionPage(activity)) {
 			const resolver = this.apResolverService.createResolver();
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems).slice(0, limit)) {
 				const act = await resolver.resolve(item);
+				const type = getApType(act);
+				if (allow && !allow.includes(type)) {
+					this.logger.info(`skipping activity type: ${type}`);
+					continue;
+				}
 				try {
 					await this.performOneActivity(actor, act);
 				} catch (err) {

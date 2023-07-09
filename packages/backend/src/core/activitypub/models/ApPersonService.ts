@@ -380,10 +380,10 @@ export class ApPersonService implements OnModuleInit {
 		await this.usersRepository.update(user.id, { emojis: emojiNames });
 		//#endregion
 
-		await Promise.all([
-			this.updateFeatured(user.id, resolver),
-			this.updateOutboxFirstPage(user, person.outbox, resolver),
-		]).catch(err => this.logger.error(err));
+		await Promise.allSettled([
+			this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err)),
+			this.updateOutboxFirstPage(user, person.outbox, resolver).catch(err => this.logger.error(err)),
+		]);
 
 		return user;
 	}
@@ -587,33 +587,6 @@ export class ApPersonService implements OnModuleInit {
 		return fields;
 	}
 
-	/**
-	 * Retrieve outbox from an actor object.
-	 *
-	 * This only retrieves the first page for now.
-	 */
-	public async updateOutboxFirstPage(user: RemoteUser, outbox: IActor['outbox'], resolver: Resolver): Promise<void> {
-		// https://www.w3.org/TR/activitypub/#actor-objects
-		// Outbox is a required property for all actors
-		if (!outbox) {
-			throw new Error('No outbox property');
-		}
-
-		this.logger.info(`Fetching the outbox for ${user.uri}: ${outbox}`);
-
-		const collection = await resolver.resolveCollection(outbox);
-		if (!isOrderedCollection(collection)) {
-			throw new Error('Outbox must be an ordered collection');
-		}
-
-		const firstPage = collection.first ?
-			await resolver.resolveOrderedCollectionPage(collection.first) :
-			collection;
-
-		// Perform activity but only the first 20 ones
-		await this.apInboxService.performActivity(user, firstPage, 20);
-	}
-
 	@bindThis
 	public async updateFeatured(userId: User['id'], resolver?: Resolver): Promise<void> {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
@@ -657,6 +630,33 @@ export class ApPersonService implements OnModuleInit {
 				});
 			}
 		});
+	}
+
+	/**
+	 * Retrieve outbox from an actor object.
+	 *
+	 * This only retrieves the first page for now.
+	 */
+	public async updateOutboxFirstPage(user: RemoteUser, outbox: IActor['outbox'], resolver: Resolver): Promise<void> {
+		// https://www.w3.org/TR/activitypub/#actor-objects
+		// Outbox is a required property for all actors
+		if (!outbox) {
+			throw new Error('No outbox property');
+		}
+
+		this.logger.info(`Fetching the outbox for ${user.uri}: ${outbox}`);
+
+		const collection = await resolver.resolveCollection(outbox);
+		if (!isOrderedCollection(collection)) {
+			throw new Error('Outbox must be an ordered collection');
+		}
+
+		const firstPage = collection.first ?
+			await resolver.resolveOrderedCollectionPage(collection.first) :
+			collection;
+
+		// Perform activity but only the first 20 ones with `type: Create`
+		await this.apInboxService.performActivity(user, firstPage, { limit: 20, allow: ['Create'] });
 	}
 
 	/**
