@@ -27,11 +27,25 @@ export class RegistrationTicket {
 	@JoinColumn()
 	public createdBy: User | null;
 
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public createdById: User['id'] | null;
+
 	@OneToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public usedBy: User | null;
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public usedById: User['id'] | null;
 
 	@Column('timestamp with time zone', {
 		nullable: true,
