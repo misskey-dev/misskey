@@ -637,7 +637,10 @@ export class ApPersonService implements OnModuleInit {
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
-			.map(item => limit(() => this.apNoteService.resolveNote(item, _resolver))));
+			.map(item => limit(() => this.apNoteService.resolveNote(item, {
+				resolver: _resolver,
+				sentFrom: new URL(user.uri),
+			}))));
 
 		await this.db.transaction(async transactionalEntityManager => {
 			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });

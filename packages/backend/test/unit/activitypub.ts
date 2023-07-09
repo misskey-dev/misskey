@@ -18,9 +18,12 @@ import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
 
-function createRandomActor(): IActor & { id: string } {
+type NonTransientIActor = IActor & { id: string };
+type NonTransientIPost = IPost & { id: string };
+
+function createRandomActor({ actorHost = host } = {}): NonTransientIActor {
 	const preferredUsername = secureRndstr(8);
-	const actorId = `${host}/users/${preferredUsername.toLowerCase()}`;
+	const actorId = `${actorHost}/users/${preferredUsername.toLowerCase()}`;
 
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -32,26 +35,48 @@ function createRandomActor(): IActor & { id: string } {
 	};
 }
 
-function createRandomCreateActivity(actor: IActor, length: number): ICreate[] {
+function createRandomNote(actor: NonTransientIActor): NonTransientIPost {
+	const id = secureRndstr(8);
+	const noteId = `${new URL(actor.id).origin}/notes/${id}`;
+
+	return {
+		id: noteId,
+		type: 'Note',
+		attributedTo: actor.id,
+		content: 'test test foo',
+	};
+}
+
+function createRandomNotes(actor: NonTransientIActor, length: number): NonTransientIPost[] {
+	return new Array(length).fill(null).map(() => createRandomNote(actor));
+}
+
+function createRandomFeaturedCollection(actor: NonTransientIActor, length: number): ICollection {
+	const items = createRandomNotes(actor, length);
+
+	return {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		type: 'Collection',
+		id: actor.outbox as string,
+		totalItems: items.length,
+		items,
+	};
+}
+
+function createRandomCreateActivity(actor: NonTransientIActor, length: number): ICreate[] {
 	return new Array(length).fill(null).map((): ICreate => {
-		const id = secureRndstr(8);
-		const noteId = `${host}/notes/${id}`;
+		const note = reateRandomNote(actor);
 
 		return {
 			type: 'Create',
-			id: `${noteId}/activity`,
+			id: `${note.id}/activity`,
 			actor,
-			object: {
-				id: noteId,
-				type: 'Note',
-				attributedTo: actor.id,
-				content: 'test test foo',
-			} satisfies IPost,
+			object: note,
 		};
 	});
 }
 
-function createRandomNonPagedOutbox(actor: IActor, length: number): IOrderedCollection {
+function createRandomNonPagedOutbox(actor: NonTransientIActor, length: number): IOrderedCollection {
 	const orderedItems = createRandomCreateActivity(actor, length);
 
 	return {
@@ -63,7 +88,7 @@ function createRandomNonPagedOutbox(actor: IActor, length: number): IOrderedColl
 	};
 }
 
-function createRandomOutboxPage(actor: IActor, id: string, length: number): IOrderedCollectionPage {
+function createRandomOutboxPage(actor: NonTransientIActor, id: string, length: number): IOrderedCollectionPage {
 	const orderedItems = createRandomCreateActivity(actor, length);
 
 	return {
@@ -75,14 +100,14 @@ function createRandomOutboxPage(actor: IActor, id: string, length: number): IOrd
 	};
 }
 
-function createRandomPagedOutbox(actor: IActor): IOrderedCollection {
+function createRandomPagedOutbox(actor: NonTransientIActor): IOrderedCollection {
 	return {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		type: 'OrderedCollection',
 		id: actor.outbox as string,
 		totalItems: 10,
 		first: `${actor.outbox}?first`,
-	};
+  };
 }
 
 describe('ActivityPub', () => {
@@ -126,7 +151,7 @@ describe('ActivityPub', () => {
 		};
 
 		test('Minimum Actor', async () => {
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -136,8 +161,8 @@ describe('ActivityPub', () => {
 		});
 
 		test('Minimum Note', async () => {
-			resolver._register(actor.id, actor);
-			resolver._register(post.id, post);
+			resolver.register(actor.id, actor);
+			resolver.register(post.id, post);
 
 			const note = await noteService.createNote(post.id, resolver, true);
 
@@ -154,7 +179,7 @@ describe('ActivityPub', () => {
 				name: secureRndstr(129),
 			};
 
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -167,7 +192,7 @@ describe('ActivityPub', () => {
 				name: '',
 			};
 
-			resolver._register(actor.id, actor);
+			resolver.register(actor.id, actor);
 
 			const user = await personService.createPerson(actor.id, resolver);
 
@@ -184,13 +209,70 @@ describe('ActivityPub', () => {
 		});
 	});
 
+	describe('Featured', () => {
+		test('Fetch featured notes from IActor', async () => {
+			const actor = createRandomActor();
+			actor.featured = `${actor.id}/collections/featured`;
+
+			const featured = createRandomFeaturedCollection(actor, 5);
+
+			resolver.register(actor.id, actor);
+			resolver.register(actor.featured, featured);
+
+			await personService.createPerson(actor.id, resolver);
+
+			// All notes in `featured` are same-origin, no need to fetch notes again
+			assert.deepStrictEqual(resolver.remoteGetTrials(), [actor.id, actor.featured]);
+
+			// Created notes without resolving anything
+			for (const item of featured.items as IPost[]) {
+				const note = await noteService.fetchNote(item);
+				assert.ok(note);
+				assert.strictEqual(note.text, 'test test foo');
+				assert.strictEqual(note.uri, item.id);
+			}
+		});
+
+		test('Fetch featured notes from IActor pointing to another remote server', async () => {
+			const actor1 = createRandomActor();
+			actor1.featured = `${actor1.id}/collections/featured`;
+			const actor2 = createRandomActor({ actorHost: 'https://host2.test' });
+
+			const actor2Note = createRandomNote(actor2);
+			const featured = createRandomFeaturedCollection(actor1, 0);
+			(featured.items as IPost[]).push({
+				...actor2Note,
+				content: 'test test bar', // fraud!
+			});
+
+			resolver.register(actor1.id, actor1);
+			resolver.register(actor1.featured, featured);
+			resolver.register(actor2.id, actor2);
+			resolver.register(actor2Note.id, actor2Note);
+
+			await personService.createPerson(actor1.id, resolver);
+
+			// actor2Note is from a different server and needs to be fetched again
+			assert.deepStrictEqual(
+				resolver.remoteGetTrials(),
+				[actor1.id, actor1.featured, actor2Note.id, actor2.id],
+			);
+
+			const note = await noteService.fetchNote(actor2Note.id);
+			assert.ok(note);
+
+			// Reflects the original content instead of the fraud
+			assert.strictEqual(note.text, 'test test foo');
+			assert.strictEqual(note.uri, actor2Note.id);
+		});
+
 	describe('Outbox', () => {
 		test('Fetch non-paged outbox from IActor', async () => {
 			const actor = createRandomActor();
 			const outbox = createRandomNonPagedOutbox(actor, 10);
 
-			resolver._register(actor.id, actor);
-			resolver._register(actor.outbox as string, outbox);
+			resolver.register(actor.id, actor);
+			resolver.register(actor.outbox as string, outbox);
 
 			await personService.createPerson(actor.id, resolver);
 
@@ -207,9 +289,9 @@ describe('ActivityPub', () => {
 			const outbox = createRandomPagedOutbox(actor);
 			const page = createRandomOutboxPage(actor, outbox.id!, 10);
 
-			resolver._register(actor.id, actor);
-			resolver._register(actor.outbox as string, outbox);
-			resolver._register(outbox.first as string, page);
+			resolver.register(actor.id, actor);
+			resolver.register(actor.outbox as string, outbox);
+			resolver.register(outbox.first as string, page);
 
 			await personService.createPerson(actor.id, resolver);
 
@@ -221,18 +303,18 @@ describe('ActivityPub', () => {
 			}
 		});
 
-		test('Fetch only the first 100 items', async () => {
+		test('Fetch only the first 20 items', async () => {
 			const actor = createRandomActor();
 			const outbox = createRandomNonPagedOutbox(actor, 200);
 
-			resolver._register(actor.id, actor);
-			resolver._register(actor.outbox as string, outbox);
+			resolver.register(actor.id, actor);
+			resolver.register(actor.outbox as string, outbox);
 
 			await personService.createPerson(actor.id, resolver);
 
 			const items = outbox.orderedItems as ICreate[];
 			assert.ok(await noteService.fetchNote(items[19].object));
 			assert.ok(!await noteService.fetchNote(items[20].object));
-		});
+    });
 	});
 });
