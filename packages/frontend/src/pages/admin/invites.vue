@@ -19,14 +19,14 @@
 				</div>
 			</MkFoldableSection>
 			<div :class="$style.inputs">
-				<MkSelect v-model="type">
+				<MkSelect v-model="type" :class="$style.input">
 					<template #label>{{ i18n.ts.state }}</template>
 					<option value="all">{{ i18n.ts.all }}</option>
 					<option value="unused">{{ i18n.ts.unused }}</option>
 					<option value="used">{{ i18n.ts.used }}</option>
 					<option value="expired">{{ i18n.ts.expired }}</option>
 				</MkSelect>
-				<MkSelect v-model="sort">
+				<MkSelect v-model="sort" :class="$style.input">
 					<template #label>{{ i18n.ts.sort }}</template>
 					<option value="+createdAt">{{ i18n.ts.createdAt }} ({{ i18n.ts.ascendingOrder }})</option>
 					<option value="-createdAt">{{ i18n.ts.createdAt }} ({{ i18n.ts.descendingOrder }})</option>
@@ -115,13 +115,9 @@ definePageMetadata({
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
-
-	> * {
-		flex: 1;
-	}
 }
 
-p {
-	margin: 0;
+.input {
+	flex: 1;
 }
 </style>
