@@ -97,6 +97,8 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
+		enableServerMachineStats: { type: 'boolean' },
+		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 	},
@@ -402,6 +404,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableChartsForFederatedInstances !== undefined) {
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
+			}
+
+			if (ps.enableServerMachineStats !== undefined) {
+				set.enableServerMachineStats = ps.enableServerMachineStats;
+			}
+
+			if (ps.enableIdenticonGeneration !== undefined) {
+				set.enableIdenticonGeneration = ps.enableIdenticonGeneration;
 			}
 
 			if (ps.serverRules !== undefined) {

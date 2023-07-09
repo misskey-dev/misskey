@@ -56,7 +56,7 @@
 				/>
 				<!-- SEE: https://stackoverflow.com/questions/18744164/flex-box-align-last-row-to-grid -->
 				<div v-for="(n, i) in 16" :key="i" :class="$style.padding"></div>
-				<MkButton v-if="moreFolders" ref="moreFolders">{{ i18n.ts.loadMore }}</MkButton>
+				<MkButton v-if="moreFolders" ref="moreFolders" @click="fetchMoreFolders">{{ i18n.ts.loadMore }}</MkButton>
 			</div>
 			<div v-show="files.length > 0" ref="filesContainer" :class="$style.files">
 				<XFile
@@ -65,6 +65,7 @@
 					v-anim="i"
 					:class="$style.file"
 					:file="file"
+					:folder="folder"
 					:selectMode="select === 'file'"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
 					@chosen="chooseFile"
@@ -201,9 +202,9 @@ function onDragover(ev: DragEvent): any {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -557,6 +558,28 @@ async function fetch() {
 	for (const x of fetchedFiles) appendFile(x);
 
 	fetching.value = false;
+}
+
+function fetchMoreFolders() {
+	fetching.value = true;
+
+	const max = 30;
+
+	os.api('drive/folders', {
+		folderId: folder.value ? folder.value.id : null,
+		type: props.type,
+		untilId: folders.value[folders.value.length - 1].id,
+		limit: max + 1,
+	}).then(folders => {
+		if (folders.length === max + 1) {
+			moreFolders.value = true;
+			folders.pop();
+		} else {
+			moreFolders.value = false;
+		}
+		for (const x of folders) appendFolder(x);
+		fetching.value = false;
+	});
 }
 
 function fetchMoreFiles() {

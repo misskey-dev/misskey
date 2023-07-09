@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
-		
+
 		private userEntityService: UserEntityService,
 		private queryService: QueryService,
 	) {
@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			query.setParameters(followingQuery.getParameters());
 
-			const users = await query.take(ps.limit).skip(ps.offset).getMany();
+			const users = await query.limit(ps.limit).skip(ps.offset).getMany();
 
 			return await this.userEntityService.packMany(users, me, { detail: true });
 		});

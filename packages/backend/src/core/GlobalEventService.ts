@@ -20,7 +20,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Role } from '@/models';
+import { Role } from '@/models/index.js';
 
 @Injectable()
 export class GlobalEventService {
