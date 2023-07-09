@@ -1,7 +1,10 @@
 import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import micromatch from 'micromatch';
 import main from './main.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 interface Stats {
 	readonly modules: readonly {
