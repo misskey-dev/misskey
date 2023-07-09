@@ -73,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				'tag.attachedRemoteUsersCount',
 			]);
 
-			const tags = await query.take(ps.limit).getMany();
+			const tags = await query.limit(ps.limit).getMany();
 
 			return this.hashtagEntityService.packMany(tags);
 		});

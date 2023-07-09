@@ -12,6 +12,7 @@ import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';
+import { SearchService } from "@/core/SearchService.js";
 
 @Injectable()
 export class DeleteAccountProcessorService {
@@ -36,6 +37,7 @@ export class DeleteAccountProcessorService {
 		private driveService: DriveService,
 		private emailService: EmailService,
 		private queueLoggerService: QueueLoggerService,
+		private searchService: SearchService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-account');
 	}
@@ -71,6 +73,10 @@ export class DeleteAccountProcessorService {
 				cursor = notes[notes.length - 1].id;
 
 				await this.notesRepository.delete(notes.map(note => note.id));
+
+				for (const note of notes) {
+					await this.searchService.unindexNote(note);
+				}
 			}
 
 			this.logger.succ('All of notes deleted');

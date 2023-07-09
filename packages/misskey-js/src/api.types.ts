@@ -262,7 +262,16 @@ export type Endpoints = {
 	'drive/files': { req: { folderId?: DriveFolder['id'] | null; type?: DriveFile['type'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFile[]; };
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
-	'drive/files/create': { req: TODO; res: TODO; };
+	'drive/files/create': {
+		req: {
+			folderId?: string,
+			name?: string,
+			comment?: string,
+			isSentisive?: boolean,
+			force?: boolean,
+		};
+		res: DriveFile;
+	};
 	'drive/files/delete': { req: { fileId: DriveFile['id']; }; res: null; };
 	'drive/files/find-by-hash': { req: TODO; res: TODO; };
 	'drive/files/find': { req: { name: string; folderId?: DriveFolder['id'] | null; }; res: DriveFile[]; };

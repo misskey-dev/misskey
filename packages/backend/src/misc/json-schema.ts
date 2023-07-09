@@ -131,7 +131,7 @@ type NullOrUndefined<p extends Schema, T> =
 	| T;
 
 // https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
-// Get intersection from union 
+// Get intersection from union
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
 

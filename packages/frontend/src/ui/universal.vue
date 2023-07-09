@@ -95,6 +95,7 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
 import { CURRENT_STICKY_BOTTOM } from '@/const';
+import { useScrollPositionManager } from '@/nirax';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
@@ -213,6 +214,8 @@ watch($$(navFooter), () => {
 }, {
 	immediate: true,
 });
+
+useScrollPositionManager(() => contents.value.rootEl, mainRouter);
 </script>
 
 <style>

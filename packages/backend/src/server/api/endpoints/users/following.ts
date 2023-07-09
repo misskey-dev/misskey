@@ -112,7 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.innerJoinAndSelect('following.followee', 'followee');
 
 			const followings = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.followingEntityService.packMany(followings, me, { populateFollowee: true });
