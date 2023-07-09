@@ -3,7 +3,7 @@
 	<template #label>{{ invite.code }}</template>
 	<template #suffix>
 		<span v-if="invite.used">{{ i18n.ts.used }}</span>
-		<span v-else-if="isExpired">{{ i18n.ts.expired }}</span>
+		<span v-else-if="isExpired" style="color: var(--error)">{{ i18n.ts.expired }}</span>
 		<span v-else style="color: var(--success)">{{ i18n.ts.unused }}</span>
 	</template>
 
