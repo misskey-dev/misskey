@@ -72,8 +72,7 @@ html {
 	}
 
 	&.useSystemFont {
-		// https://css-tricks.com/snippets/css/system-font-stack/#:~:text=/*%20System%20Fonts%20with%20system%2Dui%20*/
-		font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+		font-family: system-ui;
 	}
 }
 
