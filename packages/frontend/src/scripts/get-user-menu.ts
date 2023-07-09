@@ -142,7 +142,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
-			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
 	}, {
