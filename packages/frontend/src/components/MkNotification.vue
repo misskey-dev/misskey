@@ -49,7 +49,7 @@
 		<div>
 			<MkA v-if="notification.type === 'reaction'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
-				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+				<Mfm :text="getNoteSummary(notification.note)" :nowrap="true" :author="notification.note.user"/>
 				<i class="ti ti-quote" :class="$style.quote"></i>
 			</MkA>
 			<MkA v-else-if="notification.type === 'renote'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note.renote)">
