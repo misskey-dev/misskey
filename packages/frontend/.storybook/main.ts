@@ -1,7 +1,11 @@
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import { type Plugin, mergeConfig } from 'vite';
 import turbosnap from 'vite-plugin-turbosnap';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
 	addons: [
