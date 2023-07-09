@@ -197,6 +197,7 @@ export class SignupApiService {
 					await this.registrationTicketsRepository.update(ticket.id, {
 						usedAt: new Date(),
 						usedBy: account,
+						usedById: account.id,
 					});
 				}
 
@@ -240,6 +241,7 @@ export class SignupApiService {
 			if (ticket) {
 				await this.registrationTicketsRepository.update(ticket.id, {
 					usedBy: account,
+					usedById: account.id,
 					pendingUserId: null,
 				});
 			}

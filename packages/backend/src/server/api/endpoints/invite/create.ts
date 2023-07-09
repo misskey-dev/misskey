@@ -59,9 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (policies.inviteLimit) {
 				const count = await this.registrationTicketsRepository.countBy({
 					createdAt: MoreThan(new Date(Date.now() - (policies.inviteLimitCycle * 1000 * 60))),
-					createdBy: {
-						id: me.id,
-					},
+					createdById: me.id,
 				});
 
 				if (count >= policies.inviteLimit) {
@@ -73,6 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				createdBy: me,
+				createdById: me.id,
 				expiresAt: policies.inviteExpirationTime ? new Date(Date.now() + (policies.inviteExpirationTime * 1000 * 60)) : null,
 				code: generateInviteCode(),
 			}).then(x => this.registrationTicketsRepository.findOneByOrFail(x.identifiers[0]));

@@ -43,9 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const count = policies.inviteLimit ? await this.registrationTicketsRepository.countBy({
 				createdAt: MoreThan(new Date(Date.now() - (policies.inviteExpirationTime * 60 * 1000))),
-				createdBy: {
-					id: me.id,
-				},
+				createdById: me.id,
 			}) : null;
 
 			return {

@@ -50,19 +50,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const ticket = await this.registrationTicketsRepository.findOne({
-				where: {
-					id: ps.inviteId,
-				},
-				relations: ['createdBy'],
-			});
+			const ticket = await this.registrationTicketsRepository.findOneBy({ id: ps.inviteId });
 			const isModerator = await this.roleService.isModerator(me);
 
 			if (ticket == null) {
 				throw new ApiError(meta.errors.noSuchCode);
 			}
 
-			if (ticket.createdBy?.id !== me.id && !isModerator) {
+			if (ticket.createdById !== me.id && !isModerator) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
 

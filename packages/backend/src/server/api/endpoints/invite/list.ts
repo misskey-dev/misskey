@@ -38,13 +38,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
-		
+
 		private inviteCodeEntityService: InviteCodeEntityService,
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.registrationTicketsRepository.createQueryBuilder('ticket'), ps.sinceId, ps.untilId)
-				.andWhere('ticket.createdBy.id = :meId', { meId: me.id })
+				.andWhere('ticket.createdById = :meId', { meId: me.id })
 				.leftJoinAndSelect('ticket.createdBy', 'createdBy')
 				.leftJoinAndSelect('ticket.usedBy', 'usedBy');
 
