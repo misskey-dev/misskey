@@ -4,7 +4,9 @@
 	<MkSpacer :contentMax="800">
 		<div class="_gaps_m">
 			<MkFolder :expanded="false">
+				<template #icon><i class="ti ti-plus"></i></template>
 				<template #label>{{ i18n.ts.createInviteCode }}</template>
+
 				<div class="_gaps_m">
 					<MkSwitch v-model="noExpirationDate">
 						<template #label>{{ i18n.ts.noExpirationDate }}</template>
@@ -18,6 +20,7 @@
 					<MkButton primary rounded @click="createWithOptions">{{ i18n.ts.create }}</MkButton>
 				</div>
 			</MkFolder>
+
 			<div :class="$style.inputs">
 				<MkSelect v-model="type" :class="$style.input">
 					<template #label>{{ i18n.ts.state }}</template>
