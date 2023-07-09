@@ -288,7 +288,7 @@ describe('ActivityPub', () => {
 		test('Fetch paged outbox from IActor', async () => {
 			const actor = createRandomActor();
 			const outbox = createRandomPagedOutbox(actor);
-			const page = createRandomOutboxPage(actor, outbox.id!, 10);
+			const page = createRandomOutboxPage(actor, outbox.id, 10);
 
 			resolver.register(actor.id, actor);
 			resolver.register(actor.outbox as string, outbox);
