@@ -6,7 +6,7 @@ import meta from '../../package.json' assert { type: "json" };
 import { fileURLToPath } from 'node:url';
 const watch = process.argv[2]?.includes('watch');
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url))
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 console.log('Starting SW building...');
 
