@@ -4,7 +4,7 @@ import type { StorybookConfig } from '@storybook/vue3-vite';
 import { type Plugin, mergeConfig } from 'vite';
 import turbosnap from 'vite-plugin-turbosnap';
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const dirname = fileURLToPath(new URL('.', import.meta.url));
 
 const config = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -13,7 +13,7 @@ const config = {
 		'@storybook/addon-interactions',
 		'@storybook/addon-links',
 		'@storybook/addon-storysource',
-		resolve(__dirname, '../node_modules/storybook-addon-misskey-theme'),
+		resolve(dirname, '../node_modules/storybook-addon-misskey-theme'),
 	],
 	framework: {
 		name: '@storybook/vue3-vite',
