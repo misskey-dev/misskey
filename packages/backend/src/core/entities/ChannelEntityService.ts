@@ -47,21 +47,26 @@ export class ChannelEntityService {
 
 		const banner = channel.bannerId ? await this.driveFilesRepository.findOneBy({ id: channel.bannerId }) : null;
 
-		const hasUnreadNote = meId ? (await this.noteUnreadsRepository.exist({ where: { noteChannelId: channel.id, userId: meId } })) : undefined;
+		const hasUnreadNote = meId ? await this.noteUnreadsRepository.exist({
+			where: {
+				noteChannelId: channel.id,
+				userId: meId
+			},
+		}) : undefined;
 
-		const isFollowing = (meId ? await this.channelFollowingsRepository.exist({
+		const isFollowing = meId ? await this.channelFollowingsRepository.exist({
 			where: {
 				followerId: meId,
 				followeeId: channel.id,
 			},
-		}) : false);
+		}) : false;
 
-		const isFavorited = (meId ? await this.channelFavoritesRepository.exist({
+		const isFavorited = meId ? await this.channelFavoritesRepository.exist({
 			where: {
 				userId: meId,
 				channelId: channel.id,
 			},
-		}) : false);
+		}) : false;
 
 		const pinnedNotes = channel.pinnedNoteIds.length > 0 ? await this.notesRepository.find({
 			where: {
