@@ -166,11 +166,12 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 			return lists.map(list => ({
 				text: list.name,
-				action: () => {
-					os.apiWithDialog('users/lists/push', {
+				action: async () => {
+					await os.apiWithDialog('users/lists/push', {
 						listId: list.id,
 						userId: user.id,
 					});
+					userListsCache.delete();
 				},
 			}));
 		},
@@ -183,8 +184,8 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			return antennas.filter((a) => a.src === 'users').map(antenna => ({
 				text: antenna.name,
-				action: () => {
-					os.apiWithDialog('antennas/update', {
+				action: async () => {
+					await os.apiWithDialog('antennas/update', {
 						antennaId: antenna.id,
 						name: antenna.name,
 						keywords: antenna.keywords,
@@ -197,6 +198,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 						withFile: antenna.withFile,
 						notify: antenna.notify,
 					});
+					antennasCache.delete();
 				},
 			}));
 		},
