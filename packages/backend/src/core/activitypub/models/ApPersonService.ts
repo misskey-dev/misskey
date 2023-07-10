@@ -260,7 +260,7 @@ export class ApPersonService implements OnModuleInit {
 		// Create user
 		let user: RemoteUser | null = null;
 		try {
-		// Start transaction
+			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new User({
 					id: this.idService.genId(),
@@ -306,9 +306,9 @@ export class ApPersonService implements OnModuleInit {
 				}
 			});
 		} catch (e) {
-		// duplicate key error
+			// duplicate key error
 			if (isDuplicateKeyValueError(e)) {
-			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
+				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
 				if (u == null) throw new Error('already registered');
 
@@ -604,7 +604,10 @@ export class ApPersonService implements OnModuleInit {
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
-			.map(item => limit(() => this.apNoteService.resolveNote(item, _resolver))));
+			.map(item => limit(() => this.apNoteService.resolveNote(item, {
+				resolver: _resolver,
+				sentFrom: new URL(user.uri),
+			}))));
 
 		await this.db.transaction(async transactionalEntityManager => {
 			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
