@@ -113,7 +113,7 @@ onMounted(() => {
 			right: 0,
 		},
 		imageClickAction: 'close',
-		tapAction: 'toggle-controls',
+		tapAction: 'close',
 		bgOpacity: 1,
 		pswpModule: PhotoSwipe,
 	});
