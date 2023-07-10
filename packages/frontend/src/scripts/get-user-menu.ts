@@ -2,13 +2,14 @@ import { defineAsyncComponent } from 'vue';
 import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
-import { host } from '@/config';
+import { host, url } from '@/config';
 import * as os from '@/os';
 import { defaultStore, userActions } from '@/store';
 import { $i, iAmModerator } from '@/account';
 import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 import { rolesCache, userListsCache } from '@/cache';
+import { toUnicode } from 'punycode';
 
 export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -136,6 +137,13 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		text: i18n.ts.copyRSS,
 		action: () => {
 			copyToClipboard(`${user.host ?? host}/@${user.username}.atom`);
+		},
+	}, {
+		icon: 'ti ti-share',
+		text: i18n.ts.copyProfileUrl,
+		action: () => {
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
+			copyToClipboard(`${url}/${canonical}`);
 		},
 	}, {
 		icon: 'ti ti-mail',
