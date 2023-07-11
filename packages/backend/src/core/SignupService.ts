@@ -71,12 +71,12 @@ export class SignupService {
 		const secret = generateUserToken();
 
 		// Check username duplication
-		if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+		if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 			throw new Error('DUPLICATED_USERNAME');
 		}
 
 		// Check deleted username duplication
-		if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
+		if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
 			throw new Error('USED_USERNAME');
 		}
 
