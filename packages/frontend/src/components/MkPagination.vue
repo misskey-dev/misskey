@@ -54,7 +54,17 @@ const APPEAR_MINIMUM_INTERVAL = 600;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
+
+	/**
+	 * 一度にAPIへ取得する件数
+	 */
 	limit: number;
+
+	/**
+	 * タイムラインに表示する最大件数
+	 */
+	displayLimit?: number;
+
 	params?: misskey.Endpoints[E]['req'] | ComputedRef<misskey.Endpoints[E]['req']>;
 
 	/**
@@ -89,9 +99,7 @@ import { infoImageUrl } from '@/instance';
 const props = withDefaults(defineProps<{
 	pagination: Paging;
 	disableAutoLoad?: boolean;
-	displayLimit?: number;
 }>(), {
-	displayLimit: 20,
 });
 
 const emit = defineEmits<{
@@ -124,16 +132,22 @@ const offset = ref(0);
  */
 const fetching = ref(true);
 
+/**
+ * onActivatedでtrue, onDeactivatedでfalseになる
+ */
+const active = ref(false);
+
 const moreFetching = ref(false);
 const more = ref(false);
 const preventAppearFetchMore = ref(false);
 const preventAppearFetchMoreTimer = ref<number | null>(null);
-const isBackTop = ref(false);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 const {
 	enableInfiniteScroll,
 } = defaultStore.reactiveState;
+
+const displayLimit = computed(() => props.pagination.displayLimit ?? props.pagination.limit * 2);
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
 const scrollableElement = $computed(() => contentEl ? getScrollContainer(contentEl) : document.body);
@@ -339,9 +353,9 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl!, TOLERANCE);
+const isTop = (): boolean => (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl!, TOLERANCE);
 
-watch(visibility, () => {
+function visibilityChange() {
 	if (visibility.value === 'hidden') {
 		timerForSetPause = window.setTimeout(() => {
 			isPausingUpdate = true;
@@ -354,12 +368,23 @@ watch(visibility, () => {
 			timerForSetPause = null;
 		} else {
 			isPausingUpdate = false;
-			if (isTop()) {
+			if (isTop() && active.value) {
 				executeQueue();
 			}
 		}
 	}
+}
+
+onActivated(() => {
+	active.value = true;
+	visibilityChange();
 });
+
+onDeactivated(() => {
+	active.value = false;
+});
+
+watch(visibility, visibilityChange);
 
 /**
  * 最新のものとして1つだけアイテムを追加する
@@ -373,19 +398,28 @@ const prepend = (item: MisskeyEntity): void => {
 		return;
 	}
 
-	if (isTop() && !isPausingUpdate) unshiftItems([item]);
-	else prependQueue(item);
+	if (
+		isTop() && // 先頭に表示されていない時はキューに追加する
+		!isPausingUpdate && // タブがバックグラウンドの時はキューに追加する
+		active.value // keepAliveで隠されている間はキューに追加する
+	) {
+		if (!items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
+		unshiftItems([item]);
+	} else {
+		prependQueue(item);
+	}
 };
 
 /**
- * 新着アイテムをitemsの先頭に追加し、displayLimitを適用する
+ * 新着アイテムをitemsの先頭に追加し、limitを適用する
  * @param newItems 新しいアイテムの配列
+ * @param limit デフォルトはdisplayLimit
  */
-function unshiftItems(newItems: MisskeyEntity[]) {
+function unshiftItems(newItems: MisskeyEntity[], limit = displayLimit.value) {
 	const length = newItems.length + items.value.size;
-	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, props.displayLimit));
+	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, limit));
 
-	if (length >= props.displayLimit) more.value = true;
+	if (length >= displayLimit.value) more.value = true;
 }
 
 /**
@@ -394,18 +428,19 @@ function unshiftItems(newItems: MisskeyEntity[]) {
  */
 function concatItems(oldItems: MisskeyEntity[]) {
 	const length = oldItems.length + items.value.size;
-	items.value = new Map([...items.value, ...arrayToEntries(oldItems)].slice(0, props.displayLimit));
+	items.value = new Map([...items.value, ...arrayToEntries(oldItems)].slice(0, displayLimit.value));
 
-	if (length >= props.displayLimit) more.value = true;
+	if (length >= displayLimit.value) more.value = true;
 }
 
 function executeQueue() {
-	unshiftItems(Array.from(queue.value.values()));
-	queue.value = new Map();
+	const queueArr = Array.from(queue.value.entries());
+	unshiftItems(queueArr.slice(-1 * props.pagination.limit).map(v => v[1]));
+	queue.value = new Map(queueArr.slice(0, -1 * props.pagination.limit));
 }
 
 function prependQueue(newItem: MisskeyEntity) {
-	queue.value = new Map([[newItem.id, newItem], ...queue.value].slice(0, props.displayLimit) as [string, MisskeyEntity][]);
+	queue.value = new Map([[newItem.id, newItem], ...queue.value] as [string, MisskeyEntity][]);
 }
 
 /*
@@ -431,11 +466,11 @@ const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => M
 const inited = init();
 
 onActivated(() => {
-	isBackTop.value = false;
+	// nothing to do
 });
 
 onDeactivated(() => {
-	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+	// nothing to do
 });
 
 function toBottom() {
