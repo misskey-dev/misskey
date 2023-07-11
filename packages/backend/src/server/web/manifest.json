@@ -1,9 +1,9 @@
 {
 	"short_name": "Misskey",
-	"name": "Misskey",
+	"name": "Misskey.Dream",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#313a42",
+	"background_color": "#968DDF",
 	"theme_color": "#B8CFFF",
 	"icons": [
 		{
