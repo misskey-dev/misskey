@@ -223,8 +223,8 @@ export class ApRendererService {
 		return {
 			id: requestId ?? `${this.config.url}/follows/${follower.id}/${followee.id}`,
 			type: 'Follow',
-			actor: this.userEntityService.getUserUri(follower)!,
-			object: this.userEntityService.getUserUri(followee)!,
+			actor: this.userEntityService.getUserUri(follower),
+			object: this.userEntityService.getUserUri(followee),
 		};
 	}
 
@@ -287,7 +287,7 @@ export class ApRendererService {
 	public renderMention(mention: PartialLocalUser | PartialRemoteUser): IApMention {
 		return {
 			type: 'Mention',
-			href: this.userEntityService.getUserUri(mention)!,
+			href: this.userEntityService.getUserUri(mention),
 			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
 		};
 	}
@@ -297,8 +297,8 @@ export class ApRendererService {
 		src: PartialLocalUser | PartialRemoteUser,
 		dst: PartialLocalUser | PartialRemoteUser,
 	): IMove {
-		const actor = this.userEntityService.getUserUri(src)!;
-		const target = this.userEntityService.getUserUri(dst)!;
+		const actor = this.userEntityService.getUserUri(src);
+		const target = this.userEntityService.getUserUri(dst);
 		return {
 			id: `${this.config.url}/moves/${src.id}/${dst.id}`,
 			actor,

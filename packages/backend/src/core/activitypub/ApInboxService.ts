@@ -107,7 +107,7 @@ export class ApInboxService {
 		if (actor.uri) {
 			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				setImmediate(() => {
-					this.apPersonService.updatePerson(actor.uri!);
+					this.apPersonService.updatePerson(actor.uri);
 				});
 			}
 		}
@@ -733,7 +733,7 @@ export class ApInboxService {
 		});
 
 		if (isActor(object)) {
-			await this.apPersonService.updatePerson(actor.uri!, resolver, object);
+			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
 		} else if (getApType(object) === 'Question') {
 			await this.apQuestionService.updateQuestion(object, resolver).catch(err => console.error(err));
