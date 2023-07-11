@@ -37,7 +37,7 @@ export class HttpRequestService {
 		@Inject(DI.config)
 		private config: Config,
 	) {
-		const cache = new CacheableLookup({
+		const cache = new CacheableLookup.default({
 			maxTtl: 3600,	// 1hours
 			errorTtl: 30,	// 30secs
 			lookup: false,	// nativeのdns.lookupにfallbackしない

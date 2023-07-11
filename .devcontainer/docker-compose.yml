@@ -6,8 +6,16 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    ports:
+      - "3000:3000"
+
     volumes:
       - ../:/workspace:cached
+      - /workspace/node_modules
+      - /workspace/packages/frontend/node_modules
+      - /workspace/packages/backend/node_modules
+      - /workspace/packages/misskey-js/node_modules
+      - /workspace/packages/sw/node_modules
 
     command: sleep infinity
 
