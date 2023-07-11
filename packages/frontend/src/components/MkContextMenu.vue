@@ -6,8 +6,10 @@
 	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
 	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
-	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
-		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
+	<div ref="cover" :class="$style.fullscreen_cover" @mousedown="onMousedown">
+		<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
+			<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
+		</div>
 	</div>
 </Transition>
 </template>
@@ -30,6 +32,8 @@ const emit = defineEmits<{
 }>();
 
 let rootEl = $shallowRef<HTMLDivElement>();
+
+let cover = $shallowRef<HTMLDivElement>();
 
 let zIndex = $ref<number>(os.claimZIndex('high'));
 
@@ -60,16 +64,6 @@ onMounted(() => {
 
 	rootEl.style.top = `${top}px`;
 	rootEl.style.left = `${left}px`;
-
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
-	}
-});
-
-onBeforeUnmount(() => {
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
 });
 
 function onMousedown(evt: Event) {
@@ -91,5 +85,14 @@ function onMousedown(evt: Event) {
 
 .root {
 	position: absolute;
+}
+
+.fullscreen_cover {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0);
 }
 </style>
