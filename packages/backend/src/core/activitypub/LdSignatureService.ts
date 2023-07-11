@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { CONTEXTS } from './misc/contexts.js';
+import type { JsonLdDocument } from 'jsonld';
+import type { JsonLd, RemoteDocument } from 'jsonld/jsonld-spec.js';
 
 // RsaSignature2017 based from https://github.com/transmute-industries/RsaSignature2017
 
@@ -82,7 +84,7 @@ class LdSignature {
 	}
 
 	@bindThis
-	public async normalize(data: any): Promise<string> {
+	public async normalize(data: JsonLdDocument): Promise<string> {
 		const customLoader = this.getLoader();
 		// XXX: Importing jsonld dynamically since Jest frequently fails to import it statically
 		// https://github.com/misskey-dev/misskey/pull/9894#discussion_r1103753595
@@ -93,14 +95,14 @@ class LdSignature {
 
 	@bindThis
 	private getLoader() {
-		return async (url: string): Promise<any> => {
+		return async (url: string): Promise<RemoteDocument> => {
 			if (!/^https?:\/\//.test(url)) throw new Error(`Invalid URL ${url}`);
 
 			if (this.preLoad) {
 				if (url in CONTEXTS) {
 					if (this.debug) console.debug(`HIT: ${url}`);
 					return {
-						contextUrl: null,
+						contextUrl: undefined,
 						document: CONTEXTS[url],
 						documentUrl: url,
 					};
@@ -110,7 +112,7 @@ class LdSignature {
 			if (this.debug) console.debug(`MISS: ${url}`);
 			const document = await this.fetchDocument(url);
 			return {
-				contextUrl: null,
+				contextUrl: undefined,
 				document: document,
 				documentUrl: url,
 			};
@@ -118,7 +120,7 @@ class LdSignature {
 	}
 
 	@bindThis
-	private async fetchDocument(url: string): Promise<unknown> {
+	private async fetchDocument(url: string): Promise<JsonLd> {
 		const json = await this.httpRequestService.send(
 			url,
 			{
@@ -136,7 +138,7 @@ class LdSignature {
 			}
 		});
 
-		return json;
+		return json as JsonLd;
 	}
 
 	@bindThis
