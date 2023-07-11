@@ -503,7 +503,10 @@ export class ApInboxService {
 		// 対象ユーザーは一番最初のユーザー として あとはコメントとして格納する
 		const uris = getApIds(activity.object);
 
-		const userIds = uris.filter(uri => uri.startsWith(this.config.url + '/users/')).map(uri => uri.split('/').pop()!);
+		const userIds = uris
+			.filter(uri => uri.startsWith(this.config.url + '/users/'))
+			.map(uri => uri.split('/').at(-1))
+			.filter((userId): userId is string => userId !== undefined);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});
