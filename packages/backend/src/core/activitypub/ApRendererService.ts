@@ -133,13 +133,13 @@ export class ApRendererService {
 
 	@bindThis
 	public renderCreate(object: IObject, note: Note): ICreate {
-		const activity = {
+		const activity: ICreate = {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(note.userId),
 			type: 'Create',
 			published: note.createdAt.toISOString(),
 			object,
-		} as ICreate;
+		};
 
 		if (object.to) activity.to = object.to;
 		if (object.cc) activity.cc = object.cc;
@@ -264,14 +264,14 @@ export class ApRendererService {
 	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }): Promise<ILike> {
 		const reaction = noteReaction.reaction;
 
-		const object = {
+		const object: ILike = {
 			type: 'Like',
 			id: `${this.config.url}/likes/${noteReaction.id}`,
 			actor: `${this.config.url}/users/${noteReaction.userId}`,
 			object: note.uri ? note.uri : `${this.config.url}/notes/${noteReaction.noteId}`,
 			content: reaction,
 			_misskey_reaction: reaction,
-		} as ILike;
+		};
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
@@ -488,7 +488,7 @@ export class ApRendererService {
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const person = {
+		const person: any = {
 			type: isSystem ? 'Application' : user.isBot ? 'Service' : 'Person',
 			id,
 			inbox: `${id}/inbox`,
@@ -510,7 +510,7 @@ export class ApRendererService {
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
-		} as any;
+		};
 
 		if (user.movedToUri) {
 			person.movedTo = user.movedToUri;
@@ -681,13 +681,13 @@ export class ApRendererService {
 	 */
 	@bindThis
 	public renderOrderedCollectionPage(id: string, totalItems: any, orderedItems: any, partOf: string, prev?: string, next?: string) {
-		const page = {
+		const page: any = {
 			id,
 			partOf,
 			type: 'OrderedCollectionPage',
 			totalItems,
 			orderedItems,
-		} as any;
+		};
 
 		if (prev) page.prev = prev;
 		if (next) page.next = next;

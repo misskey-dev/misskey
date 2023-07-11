@@ -20,18 +20,18 @@ class LdSignature {
 
 	@bindThis
 	public async signRsaSignature2017(data: any, privateKey: string, creator: string, domain?: string, created?: Date): Promise<any> {
-		const options = {
-			type: 'RsaSignature2017',
-			creator,
-			domain,
-			nonce: crypto.randomBytes(16).toString('hex'),
-			created: (created ?? new Date()).toISOString(),
-		} as {
+		const options: {
 			type: string;
 			creator: string;
 			domain?: string;
 			nonce: string;
 			created: string;
+		} = {
+			type: 'RsaSignature2017',
+			creator,
+			domain,
+			nonce: crypto.randomBytes(16).toString('hex'),
+			created: (created ?? new Date()).toISOString(),
 		};
 
 		if (!domain) {

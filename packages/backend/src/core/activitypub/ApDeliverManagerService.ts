@@ -133,9 +133,9 @@ class DeliverManager {
 	 */
 	@bindThis
 	public addFollowersRecipe(): void {
-		const deliver = {
+		const deliver: IFollowersRecipe = {
 			type: 'Followers',
-		} as IFollowersRecipe;
+		};
 
 		this.addRecipe(deliver);
 	}
@@ -146,10 +146,10 @@ class DeliverManager {
 	 */
 	@bindThis
 	public addDirectRecipe(to: RemoteUser): void {
-		const recipe = {
+		const recipe: IDirectRecipe = {
 			type: 'Direct',
 			to,
-		} as IDirectRecipe;
+		};
 
 		this.addRecipe(recipe);
 	}
@@ -187,13 +187,11 @@ class DeliverManager {
 					followerSharedInbox: true,
 					followerInbox: true,
 				},
-			}) as {
-				followerSharedInbox: string | null;
-				followerInbox: string;
-			}[];
+			});
 
 			for (const following of followers) {
 				const inbox = following.followerSharedInbox ?? following.followerInbox;
+				if (inbox === null) throw new Error('inbox is null');
 				inboxes.set(inbox, following.followerSharedInbox != null);
 			}
 		}
