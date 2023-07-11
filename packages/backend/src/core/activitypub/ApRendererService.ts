@@ -323,9 +323,9 @@ export class ApRendererService {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
 
 			if (inReplyToNote != null) {
-				const inReplyToUser = await this.usersRepository.findOneBy({ id: inReplyToNote.userId });
+				const inReplyToUserExist = await this.usersRepository.exist({ where: { id: inReplyToNote.userId } });
 
-				if (inReplyToUser != null) {
+				if (inReplyToUserExist) {
 					if (inReplyToNote.uri) {
 						inReplyTo = inReplyToNote.uri;
 					} else {

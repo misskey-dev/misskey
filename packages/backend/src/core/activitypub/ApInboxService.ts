@@ -618,12 +618,14 @@ export class ApInboxService {
 			return 'skip: follower not found';
 		}
 
-		const following = await this.followingsRepository.findOneBy({
-			followerId: follower.id,
-			followeeId: actor.id,
+		const isFollowing = await this.followingsRepository.exist({
+			where: {
+				followerId: follower.id,
+				followeeId: actor.id,
+			},
 		});
 
-		if (following) {
+		if (isFollowing) {
 			await this.userFollowingService.unfollow(follower, actor);
 			return 'ok: unfollowed';
 		}
@@ -673,22 +675,26 @@ export class ApInboxService {
 			return 'skip: フォロー解除しようとしているユーザーはローカルユーザーではありません';
 		}
 
-		const req = await this.followRequestsRepository.findOneBy({
-			followerId: actor.id,
-			followeeId: followee.id,
+		const requestExist = await this.followRequestsRepository.exist({
+			where: {
+				followerId: actor.id,
+				followeeId: followee.id,
+			},
 		});
 
-		const following = await this.followingsRepository.findOneBy({
-			followerId: actor.id,
-			followeeId: followee.id,
+		const isFollowing = await this.followingsRepository.exist({
+			where: {
+				followerId: actor.id,
+				followeeId: followee.id,
+			},
 		});
 
-		if (req) {
+		if (requestExist) {
 			await this.userFollowingService.cancelFollowRequest(followee, actor);
 			return 'ok: follow request canceled';
 		}
 
-		if (following) {
+		if (isFollowing) {
 			await this.userFollowingService.unfollow(actor, followee);
 			return 'ok: unfollowed';
 		}

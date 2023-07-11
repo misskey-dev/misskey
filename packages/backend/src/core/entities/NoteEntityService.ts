@@ -106,16 +106,14 @@ export class NoteEntityService implements OnModuleInit {
 				hide = false;
 			} else {
 			// フォロワーかどうか
-				const following = await this.followingsRepository.findOneBy({
-					followeeId: packedNote.userId,
-					followerId: meId,
+				const isFollowing = await this.followingsRepository.exist({
+					where: {
+						followeeId: packedNote.userId,
+						followerId: meId,
+					},
 				});
 
-				if (following == null) {
-					hide = true;
-				} else {
-					hide = false;
-				}
+				hide = !isFollowing;
 			}
 		}
 
