@@ -34,6 +34,7 @@ export async function jobQueue() {
 	});
 	jobQueue.enableShutdownHooks();
 
+	jobQueue.get(QueueProcessorService).start();
 	jobQueue.get(ChartManagementService).start();
 
 	return jobQueue;
