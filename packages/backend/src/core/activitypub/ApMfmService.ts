@@ -19,14 +19,14 @@ export class ApMfmService {
 	}
 
 	@bindThis
-	public htmlToMfm(html: string, tag?: IObject | IObject[]) {
+	public htmlToMfm(html: string, tag?: IObject | IObject[]): string {
 		const hashtagNames = extractApHashtagObjects(tag).map(x => x.name).filter((x): x is string => x != null);
 
 		return this.mfmService.fromHtml(html, hashtagNames);
 	}
 
 	@bindThis
-	public getNoteHtml(note: Note) {
+	public getNoteHtml(note: Note): string | null {
 		if (!note.text) return '';
 		return this.mfmService.toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers));
 	}

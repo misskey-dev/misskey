@@ -62,7 +62,7 @@ class LdSignature {
 	}
 
 	@bindThis
-	public async createVerifyData(data: any, options: any) {
+	public async createVerifyData(data: any, options: any): Promise<string> {
 		const transformedOptions = {
 			...options,
 			'@context': 'https://w3id.org/identity/v1',
@@ -82,7 +82,7 @@ class LdSignature {
 	}
 
 	@bindThis
-	public async normalize(data: any) {
+	public async normalize(data: any): Promise<string> {
 		const customLoader = this.getLoader();
 		// XXX: Importing jsonld dynamically since Jest frequently fails to import it statically
 		// https://github.com/misskey-dev/misskey/pull/9894#discussion_r1103753595
@@ -118,7 +118,7 @@ class LdSignature {
 	}
 
 	@bindThis
-	private async fetchDocument(url: string) {
+	private async fetchDocument(url: string): Promise<unknown> {
 		const json = await this.httpRequestService.send(url, {
 			headers: {
 				Accept: 'application/ld+json, application/json',

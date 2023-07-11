@@ -86,7 +86,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: RemoteUser, activity: IObject) {
+	public async performActivity(actor: RemoteUser, activity: IObject): Promise<void> {
 		if (isCollectionOrOrderedCollection(activity)) {
 			const resolver = this.apResolverService.createResolver();
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {

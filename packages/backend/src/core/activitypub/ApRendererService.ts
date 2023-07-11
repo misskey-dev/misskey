@@ -209,7 +209,7 @@ export class ApRendererService {
 	 * @param id Follower|Followee ID
 	 */
 	@bindThis
-	public async renderFollowUser(id: User['id']) {
+	public async renderFollowUser(id: User['id']): Promise<string> {
 		const user = await this.usersRepository.findOneByOrFail({ id: id }) as PartialLocalUser | PartialRemoteUser;
 		return this.userEntityService.getUserUri(user);
 	}
@@ -310,7 +310,7 @@ export class ApRendererService {
 
 	@bindThis
 	public async renderNote(note: Note, dive = true): Promise<IPost> {
-		const getPromisedFiles = async (ids: string[]) => {
+		const getPromisedFiles = async (ids: string[]): Promise<DriveFile[]> => {
 			if (!ids || ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
 			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];

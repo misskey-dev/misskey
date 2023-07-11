@@ -52,7 +52,7 @@ export class ApDeliverManagerService {
 	 * @param activity Activity
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -71,7 +71,7 @@ export class ApDeliverManagerService {
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser): Promise<void> {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -84,7 +84,7 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null) {
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -131,7 +131,7 @@ class DeliverManager {
 	 * Add recipe for followers deliver
 	 */
 	@bindThis
-	public addFollowersRecipe() {
+	public addFollowersRecipe(): void {
 		const deliver = {
 			type: 'Followers',
 		} as IFollowersRecipe;
@@ -144,7 +144,7 @@ class DeliverManager {
 	 * @param to To
 	 */
 	@bindThis
-	public addDirectRecipe(to: RemoteUser) {
+	public addDirectRecipe(to: RemoteUser): void {
 		const recipe = {
 			type: 'Direct',
 			to,
@@ -158,7 +158,7 @@ class DeliverManager {
 	 * @param recipe Recipe
 	 */
 	@bindThis
-	public addRecipe(recipe: IRecipe) {
+	public addRecipe(recipe: IRecipe): void {
 		this.recipes.push(recipe);
 	}
 
@@ -166,7 +166,7 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute() {
+	public async execute(): Promise<void> {
 		// The value flags whether it is shared or not.
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();

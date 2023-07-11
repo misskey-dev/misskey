@@ -90,7 +90,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private isPublic(id: string) {
+	private isPublic(id: string): boolean {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
 			'as#Public',
@@ -99,7 +99,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private isFollowers(id: string, actor: RemoteUser) {
+	private isFollowers(id: string, actor: RemoteUser): boolean {
 		return (
 			id === (actor.followersUri ?? `${actor.uri}/followers`)
 		);
