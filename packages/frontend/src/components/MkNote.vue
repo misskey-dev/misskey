@@ -261,6 +261,7 @@ useTooltip(renoteButton, async (showing) => {
 
 type Visibility = 'public' | 'home' | 'followers' | 'specified';
 
+// defaultStore.state.visibilityがstringなためstringも受け付けている
 function smallerVisibility(a: Visibility | string, b: Visibility | string): Visibility {
 	if (a === 'specified' || b === 'specified') return 'specified';
 	if (a === 'followers' || b === 'followers') return 'followers';
