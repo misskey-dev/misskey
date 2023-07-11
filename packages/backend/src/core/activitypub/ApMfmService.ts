@@ -4,9 +4,9 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { MfmService } from '@/core/MfmService.js';
 import type { Note } from '@/models/entities/Note.js';
+import { bindThis } from '@/decorators.js';
 import { extractApHashtagObjects } from './models/tag.js';
 import type { IObject } from './type.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ApMfmService {
