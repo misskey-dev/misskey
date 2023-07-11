@@ -192,15 +192,11 @@ watch($$(rootEl), () => {
 /**
  * onScrollTop/onScrollBottomで細かく検出する
  */
-function onHead() {
-	console.log('onHead');
-	backed = false;
-	executeQueue();
-}
-
-function onBacked() {
-	backed = true;
-}
+watch($$(backed), () => {
+	if (!backed) {
+		executeQueue();
+	}
+});
 
 watch([$$(weakBacked), $$(contentEl)], () => {
 	if (weakBacked || !contentEl) {
@@ -217,9 +213,9 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 		const onScroll = () => {
 			if (!document.body.contains(el)) return;
 			if (checkFn(el, tolerance)) {
-				onHead();
+				backed = false;
 			} else {
-				onBacked();
+				backed = true;
 			}
 		};
 
@@ -444,7 +440,7 @@ const prepend = (item: MisskeyEntity): void => {
 		!isPausingUpdate && // タブがバックグラウンドの時はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
-		if (!items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
+		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 		unshiftItems([item]);
 	} else {
 		prependQueue(item);
