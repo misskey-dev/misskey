@@ -198,15 +198,15 @@ class DeliverManager {
 			}
 		}
 
-		this.recipes.filter((recipe): recipe is IDirectRecipe =>
-			// followers recipes have already been processed
-			isDirect(recipe)
+		for (const recipe of this.recipes.filter(isDirect)) {
 			// check that shared inbox has not been added yet
-			&& !(recipe.to.sharedInbox && inboxes.has(recipe.to.sharedInbox))
+			if (recipe.to.sharedInbox !== null && inboxes.has(recipe.to.sharedInbox)) continue;
+
 			// check that they actually have an inbox
-			&& recipe.to.inbox != null,
-		)
-			.forEach(recipe => inboxes.set(recipe.to.inbox!, false));
+			if (recipe.to.inbox === null) continue;
+
+			inboxes.set(recipe.to.inbox, false);
+		}
 
 		// deliver
 		this.queueService.deliverMany(this.actor, this.activity, inboxes);
