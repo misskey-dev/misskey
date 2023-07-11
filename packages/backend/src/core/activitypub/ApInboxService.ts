@@ -273,7 +273,7 @@ export class ApInboxService {
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
-		// 既に同じURIを持つものが登録されていないかチェック
+			// 既に同じURIを持つものが登録されていないかチェック
 			const exist = await this.apNoteService.fetchNote(uri);
 			if (exist) {
 				return;

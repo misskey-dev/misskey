@@ -100,8 +100,6 @@ export class ApAudienceService {
 
 	@bindThis
 	private isFollowers(id: string, actor: RemoteUser): boolean {
-		return (
-			id === (actor.followersUri ?? `${actor.uri}/followers`)
-		);
+		return id === (actor.followersUri ?? `${actor.uri}/followers`);
 	}
 }

@@ -21,7 +21,6 @@ export class ApMfmService {
 	@bindThis
 	public htmlToMfm(html: string, tag?: IObject | IObject[]): string {
 		const hashtagNames = extractApHashtagObjects(tag).map(x => x.name);
-
 		return this.mfmService.fromHtml(html, hashtagNames);
 	}
 

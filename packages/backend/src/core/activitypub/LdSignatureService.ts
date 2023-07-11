@@ -119,12 +119,16 @@ class LdSignature {
 
 	@bindThis
 	private async fetchDocument(url: string): Promise<unknown> {
-		const json = await this.httpRequestService.send(url, {
-			headers: {
-				Accept: 'application/ld+json, application/json',
+		const json = await this.httpRequestService.send(
+			url,
+			{
+				headers: {
+					Accept: 'application/ld+json, application/json',
+				},
+				timeout: this.loderTimeout,
 			},
-			timeout: this.loderTimeout,
-		}, { throwErrorWhenResponseNotOk: false }).then(res => {
+			{ throwErrorWhenResponseNotOk: false },
+		).then(res => {
 			if (!res.ok) {
 				throw new Error(`${res.status} ${res.statusText}`);
 			} else {

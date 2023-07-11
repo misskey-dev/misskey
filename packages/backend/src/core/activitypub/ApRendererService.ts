@@ -506,7 +506,7 @@ export class ApRendererService {
 			image: banner ? this.renderImage(banner) : null,
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
-			discoverable: !!user.isExplorable,
+			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
@@ -656,7 +656,7 @@ export class ApRendererService {
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
 			],
-		}, x as T & { id: string; });
+		}, x as T & { id: string });
 	}
 
 	@bindThis

@@ -172,12 +172,8 @@ class DeliverManager {
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
 
-		/*
-		build inbox list
-
-		Process follower recipes first to avoid duplication when processing
-		direct recipes later.
-		*/
+		// build inbox list
+		// Process follower recipes first to avoid duplication when processing direct recipes later.
 		if (this.recipes.some(r => isFollowers(r))) {
 			// followers deliver
 			// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
