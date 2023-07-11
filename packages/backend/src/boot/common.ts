@@ -22,7 +22,7 @@ export async function server() {
 		app.get(ChartManagementService).start();
 		app.get(JanitorService).start();
 		app.get(QueueStatsService).start();
-		app.get(ServerStatsService).start();
+		//app.get(ServerStatsService).start();
 	}
 
 	return app;
