@@ -420,7 +420,7 @@ export class ApInboxService {
 			// typeが不明だけど、どうせ消えてるのでremote resolveしない
 			formerType = undefined;
 		} else {
-			const object = activity.object as IObject;
+			const object = activity.object;
 			if (isTombstone(object)) {
 				formerType = toSingle(object.formerType);
 			} else {
