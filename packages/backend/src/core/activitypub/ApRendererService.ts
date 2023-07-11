@@ -313,7 +313,7 @@ export class ApRendererService {
 		const getPromisedFiles = async (ids: string[]): Promise<DriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
+			return ids.map(id => items.find(item => item.id === id)).filter((item): item is DriveFile => item != null);
 		};
 
 		let inReplyTo;
