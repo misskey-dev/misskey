@@ -118,6 +118,7 @@ class DeliverManager {
 		activity: IActivity | null,
 	) {
 		// 型で弾いてはいるが一応ローカルユーザーかチェック
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (actor.host != null) throw new Error('actor.host must be null');
 
 		// パフォーマンス向上のためキューに突っ込むのはidのみに絞る
