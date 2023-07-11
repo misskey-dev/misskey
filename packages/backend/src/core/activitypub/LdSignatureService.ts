@@ -94,7 +94,7 @@ class LdSignature {
 	@bindThis
 	private getLoader() {
 		return async (url: string): Promise<any> => {
-			if (!url.match('^https?\:\/\/')) throw new Error(`Invalid URL ${url}`);
+			if (!/^https?:\/\//.test(url)) throw new Error(`Invalid URL ${url}`);
 
 			if (this.preLoad) {
 				if (url in CONTEXTS) {

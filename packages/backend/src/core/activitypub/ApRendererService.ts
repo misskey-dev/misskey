@@ -451,7 +451,7 @@ export class ApRendererService {
 	@bindThis
 	public async renderPerson(user: LocalUser) {
 		const id = this.userEntityService.genLocalUserUri(user.id);
-		const isSystem = !!user.username.match(/\./);
+		const isSystem = user.username.includes('.');
 
 		const [avatar, banner, profile] = await Promise.all([
 			user.avatarId ? this.driveFilesRepository.findOneBy({ id: user.avatarId }) : undefined,
@@ -470,7 +470,7 @@ export class ApRendererService {
 			attachment.push({
 				type: 'PropertyValue',
 				name: field.name,
-				value: field.value.match(/^https?:/)
+				value: /^https?:/.test(field.value)
 					? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
 					: field.value,
 			});
