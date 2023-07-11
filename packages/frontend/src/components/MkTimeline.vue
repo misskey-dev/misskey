@@ -1,5 +1,5 @@
 <template>
-<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
+<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination"/>
 </template>
 
 <script lang="ts" setup>
@@ -21,7 +21,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'note'): void;
-	(ev: 'queue', count: number): void;
 }>();
 
 provide('inChannel', computed(() => props.src === 'channel'));
@@ -169,5 +168,8 @@ defineExpose({
 	reload: () => {
 		tlComponent.pagingComponent?.reload();
 	},
+	queueSize: computed(() => {
+		return tlComponent.pagingComponent?.queueSize ?? 0;
+	}),
 });
 </script>

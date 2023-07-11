@@ -3,14 +3,13 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl">
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
+			<div v-if="tlEl?.queueSize ?? 0 > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlEl" :key="listId"
 					src="list"
 					:list="listId"
 					:sound="true"
-					@queue="queueUpdated"
 				/>
 			</div>
 		</div>
@@ -21,7 +20,6 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
@@ -34,7 +32,6 @@ const props = defineProps<{
 }>();
 
 let list = $ref(null);
-let queue = $ref(0);
 let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
 let rootEl = $shallowRef<HTMLElement>();
 
@@ -43,10 +40,6 @@ watch(() => props.listId, async () => {
 		listId: props.listId,
 	});
 }, { immediate: true });
-
-function queueUpdated(q) {
-	queue = q;
-}
 
 function top() {
 	tlEl?.reload();

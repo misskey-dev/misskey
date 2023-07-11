@@ -3,14 +3,13 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl" v-hotkey.global="keymap">
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
+			<div v-if="tlEl?.queueSize ?? 0 > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlEl" :key="antennaId"
 					src="antenna"
 					:antenna="antennaId"
 					:sound="true"
-					@queue="queueUpdated"
 				/>
 			</div>
 		</div>
@@ -34,16 +33,11 @@ const props = defineProps<{
 }>();
 
 let antenna = $ref(null);
-let queue = $ref(0);
 let rootEl = $shallowRef<HTMLElement>();
 let tlEl = $shallowRef<InstanceType<typeof MkTimeline>>();
 const keymap = $computed(() => ({
 	't': focus,
 }));
-
-function queueUpdated(q) {
-	queue = q;
-}
 
 function top() {
 	tlEl?.reload();

@@ -6,14 +6,13 @@
 			<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
 			<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
+			<div v-if="tlComponent?.queueSize ?? 0 > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlComponent"
 					:key="src"
 					:src="src"
 					:sound="true"
-					@queue="queueUpdated"
 				/>
 			</div>
 		</div>
@@ -26,7 +25,6 @@ import { defineAsyncComponent, computed, watch, provide } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
-import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
@@ -47,15 +45,10 @@ const keymap = {
 const tlComponent = $shallowRef<InstanceType<typeof MkTimeline>>();
 const rootEl = $shallowRef<HTMLElement>();
 
-let queue = $ref(0);
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 
 watch ($$(src), () => queue = 0);
-
-function queueUpdated(q: number): void {
-	queue = q;
-}
 
 function top(): void {
 	tlComponent?.reload();

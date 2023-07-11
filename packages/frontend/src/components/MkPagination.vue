@@ -102,10 +102,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-const emit = defineEmits<{
-	(ev: 'queue', count: number): void;
-}>();
-
 let rootEl = $shallowRef<HTMLElement>();
 
 /**
@@ -128,6 +124,7 @@ const items = ref<MisskeyEntityMap>(new Map());
  * 最新が最後（パフォーマンス上の理由でitemsと逆にした）
  */
 const queue = ref<MisskeyEntityMap>(new Map());
+const queueSize = computed(() => queue.value.size);
 
 const offset = ref(0);
 
@@ -231,11 +228,6 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 });
 //#endregion
 
-watch(queue, (a, b) => {
-	if (a.size === 0 && b.size === 0) return;
-	emit('queue', queue.value.size);
-}, { deep: true });
-
 /**
  * 初期化
  * scrollAfterInitなどの後処理もあるので、reload関数を使うべき
@@ -283,7 +275,12 @@ function scrollAfterInit() {
 	if (props.pagination.reversed) {
 		nextTick(() => {
 			setTimeout(() => {
-				if (contentEl) scrollToBottom(contentEl);
+				if (contentEl) {
+					scrollToBottom(contentEl);
+					// scrollToしてもbacked周りがうまく動かないので手動で戻す必要がある
+					weakBacked = false;
+					backed = false;
+				}
 			}, 200);
 
 			// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
@@ -295,7 +292,11 @@ function scrollAfterInit() {
 	} else {
 		nextTick(() => {
 			setTimeout(() => {
-				if (contentEl) scrollToTop(contentEl);
+				scrollToTop(scrollableElement);
+				// scrollToしてもbacked周りがうまく動かないので手動で戻す必要がある
+				weakBacked = false;
+				backed = false;
+
 				moreFetching.value = false;
 			}, 200);
 		});
@@ -471,6 +472,7 @@ const prepend = (item: MisskeyEntity): void => {
 	}
 
 	if (
+		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		!backed && // 先頭に表示されていない時はキューに追加する
 		!isPausingUpdate && // タブがバックグラウンドの時はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
@@ -566,6 +568,7 @@ defineExpose({
 	queue,
 	more,
 	inited,
+	queueSize,
 	reload,
 	prepend,
 	append: appendItem,
