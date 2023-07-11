@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -61,16 +61,31 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		private customEmojiService: CustomEmojiService,
+		@Inject(DI.emojisRepository)
+		private emojisRepository: EmojisRepository,
+
+		private customEmojiService: CustomEmojiService
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let driveFile;
 
 			if (ps.fileId) {
-				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
+				driveFile = await this.driveFilesRepository.findOneBy({
+					id: ps.fileId,
+				});
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
-	
+
+			const existEmoji = await this.emojisRepository.exist({
+				where: {
+					name: ps.name,
+				},
+			});
+
+			if (existEmoji) {
+				throw new ApiError(meta.errors.sameNameEmojiExists);
+			}
+
 			await this.customEmojiService.update(ps.id, {
 				driveFile,
 				name: ps.name,
@@ -79,7 +94,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				license: ps.license ?? null,
 				isSensitive: ps.isSensitive,
 				localOnly: ps.localOnly,
-				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
+				roleIdsThatCanBeUsedThisEmojiAsReaction:
+					ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 			});
 		});
 	}

@@ -11,27 +11,34 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {
-	tags: ['admin'],
+	tags: ["admin"],
 
 	requireCredential: true,
-	requireRolePolicy: 'canManageCustomEmojis',
+	requireRolePolicy: "canManageCustomEmojis",
 
 	errors: {
 		noSuchEmoji: {
-			message: 'No such emoji.',
-			code: 'NO_SUCH_EMOJI',
-			id: 'e2785b66-dca3-4087-9cac-b93c541cc425',
+			message: "No such emoji.",
+			code: "NO_SUCH_EMOJI",
+			id: "e2785b66-dca3-4087-9cac-b93c541cc425",
+		},
+		sameNameEmojiExists: {
+			message: "Emoji that have same name already exists.",
+			code: "SAME_NAME_EMOJI_EXISTS",
+			id: "1987cfc2-e36c-8ab2-48bf-97cdc8caf118",
 		},
 	},
 
 	res: {
-		type: 'object',
-		optional: false, nullable: false,
+		type: "object",
+		optional: false,
+		nullable: false,
 		properties: {
 			id: {
-				type: 'string',
-				optional: false, nullable: false,
-				format: 'id',
+				type: "string",
+				optional: false,
+				nullable: false,
+				format: "id",
 			},
 		},
 	},
@@ -67,6 +74,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);
+			}
+
+			const existEmoji = await this.emojisRepository.exist({
+				where: {
+					name: emoji.name,
+				},
+			});
+
+			if (existEmoji) {
+				throw new ApiError(meta.errors.sameNameEmojiExists);
 			}
 
 			let driveFile: DriveFile;
