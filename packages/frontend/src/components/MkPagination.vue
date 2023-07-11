@@ -136,7 +136,7 @@ const fetching = ref(true);
 /**
  * onActivatedでtrue, onDeactivatedでfalseになる
  */
-const active = ref(false);
+const active = ref(true);
 
 const moreFetching = ref(false);
 const more = ref(false);
@@ -539,15 +539,8 @@ const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => M
 
 const inited = init();
 
-onActivated(() => {
-	// nothing to do
-});
-
-onDeactivated(() => {
-	// nothing to do
-});
-
 onMounted(() => {
+	active.value = true;
 	inited.then(scrollAfterInit);
 });
 
