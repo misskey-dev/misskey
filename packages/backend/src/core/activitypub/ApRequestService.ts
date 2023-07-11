@@ -140,7 +140,7 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: User['id'] }, url: string, object: any): Promise<void> {
+	public async signedPost(user: { id: User['id'] }, url: string, object: unknown): Promise<void> {
 		const body = JSON.stringify(object);
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);

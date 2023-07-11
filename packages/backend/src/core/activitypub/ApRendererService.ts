@@ -63,7 +63,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: any, user: { id: User['id']; host: null }): IAccept {
+	public renderAccept(object: string | IObject, user: { id: User['id']; host: null }): IAccept {
 		return {
 			type: 'Accept',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -72,7 +72,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: LocalUser, target: any, object: any): IAdd {
+	public renderAdd(user: LocalUser, target: string | IObject | undefined, object: string | IObject): IAdd {
 		return {
 			type: 'Add',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -82,7 +82,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAnnounce(object: any, note: Note): IAnnounce {
+	public renderAnnounce(object: string | IObject, note: Note): IAnnounce {
 		const attributedTo = this.userEntityService.genLocalUserUri(note.userId);
 
 		let to: string[] = [];
@@ -550,7 +550,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderReject(object: any, user: { id: User['id'] }): IReject {
+	public renderReject(object: string | IObject, user: { id: User['id'] }): IReject {
 		return {
 			type: 'Reject',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -559,7 +559,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderRemove(user: { id: User['id'] }, target: any, object: any): IRemove {
+	public renderRemove(user: { id: User['id'] }, target: string | IObject | undefined, object: string | IObject): IRemove {
 		return {
 			type: 'Remove',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -577,8 +577,8 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUndo(object: any, user: { id: User['id'] }): IUndo {
-		const id = typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
+	public renderUndo(object: string | IObject, user: { id: User['id'] }): IUndo {
+		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
 
 		return {
 			type: 'Undo',
@@ -590,7 +590,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUpdate(object: any, user: { id: User['id'] }): IUpdate {
+	public renderUpdate(object: string | IObject, user: { id: User['id'] }): IUpdate {
 		return {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
