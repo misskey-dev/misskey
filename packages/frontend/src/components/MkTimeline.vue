@@ -164,4 +164,10 @@ const timetravel = (date?: Date) => {
 	this.$refs.tl.reload();
 };
 */
+
+defineExpose({
+	reload: () => {
+		tlComponent.pagingComponent?.reload();
+	},
+});
 </script>

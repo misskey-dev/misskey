@@ -8,7 +8,7 @@
 >
 	<MkLoading v-if="fetching"/>
 
-	<MkError v-else-if="error" @retry="init()"/>
+	<MkError v-else-if="error" @retry="reload()"/>
 
 	<div v-else-if="empty" key="_empty_" class="empty">
 		<slot name="empty">
@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scroll } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scroll, scrollToTop } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -125,7 +125,7 @@ const items = ref<MisskeyEntityMap>(new Map());
 
 /**
  * タブが非アクティブなどの場合に更新を貯めておく
- * 最新が0番目
+ * 最新が最後（パフォーマンス上の理由でitemsと逆にした）
  */
 const queue = ref<MisskeyEntityMap>(new Map());
 
@@ -231,15 +231,17 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 });
 //#endregion
 
-if (props.pagination.params && isRef(props.pagination.params)) {
-	watch(props.pagination.params, init, { deep: true });
-}
-
 watch(queue, (a, b) => {
 	if (a.size === 0 && b.size === 0) return;
 	emit('queue', queue.value.size);
 }, { deep: true });
 
+/**
+ * 初期化
+ * scrollAfterInitなどの後処理もあるので、reload関数を使うべき
+ * 
+ * 注意: moreFetchingをtrueにするのでfalseにする必要がある
+ */
 async function init(): Promise<void> {
 	items.value = new Map();
 	queue.value = new Map();
@@ -258,7 +260,7 @@ async function init(): Promise<void> {
 			concatItems(res);
 			more.value = false;
 		} else {
-			if (props.pagination.reversed) moreFetching.value = true;
+			moreFetching.value = true;
 			concatItems(res);
 			more.value = true;
 		}
@@ -272,9 +274,42 @@ async function init(): Promise<void> {
 	});
 }
 
-const reload = (): Promise<void> => {
-	return init();
+/**
+ * initの後に呼ぶ
+ * コンポーネント作成直後でinitが呼ばれた時はonMountedで呼ばれる
+ * reloadでinitが呼ばれた時はreload内でinitの後に呼ばれる
+ */
+function scrollAfterInit() {
+	if (props.pagination.reversed) {
+		nextTick(() => {
+			setTimeout(() => {
+				if (contentEl) scrollToBottom(contentEl);
+			}, 200);
+
+			// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
+			// more = trueを遅らせる
+			setTimeout(() => {
+				moreFetching.value = false;
+			}, 2000);
+		});
+	} else {
+		nextTick(() => {
+			setTimeout(() => {
+				if (contentEl) scrollToTop(contentEl);
+				moreFetching.value = false;
+			}, 200);
+		});
+	}
+}
+
+const reload = async (): Promise<void> => {
+	await init();
+	scrollAfterInit();
 };
+
+if (props.pagination.params && isRef(props.pagination.params)) {
+	watch(props.pagination.params, reload, { deep: true });
+}
 
 const fetchMore = async (): Promise<void> => {
 	if (!more.value || fetching.value || moreFetching.value || items.value.size === 0) return;
@@ -472,12 +507,12 @@ function concatItems(oldItems: MisskeyEntity[]) {
 
 function executeQueue() {
 	const queueArr = Array.from(queue.value.entries());
-	unshiftItems(queueArr.slice(-1 * props.pagination.limit).map(v => v[1]));
-	queue.value = new Map(queueArr.slice(0, -1 * props.pagination.limit));
+	unshiftItems(queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse());
+	queue.value = new Map(queueArr.slice(props.pagination.limit));
 }
 
 function prependQueue(newItem: MisskeyEntity) {
-	queue.value = new Map([[newItem.id, newItem], ...queue.value] as [string, MisskeyEntity][]);
+	queue.value.set(newItem.id, newItem);
 }
 
 /*
@@ -510,24 +545,8 @@ onDeactivated(() => {
 	// nothing to do
 });
 
-function toBottom() {
-	scrollToBottom(contentEl!);
-}
-
 onMounted(() => {
-	inited.then(() => {
-		if (props.pagination.reversed) {
-			nextTick(() => {
-				setTimeout(toBottom, 800);
-
-				// scrollToBottomでmoreFetchingボタンが画面外まで出るまで
-				// more = trueを遅らせる
-				setTimeout(() => {
-					moreFetching.value = false;
-				}, 2000);
-			});
-		}
-	});
+	inited.then(scrollAfterInit);
 });
 
 onBeforeUnmount(() => {

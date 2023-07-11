@@ -6,7 +6,7 @@
 			<XTutorial v-if="$i && defaultStore.reactiveState.timelineTutorial.value != -1" class="_panel" style="margin-bottom: var(--margin);"/>
 			<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);"/>
 
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlComponent"
@@ -58,7 +58,7 @@ function queueUpdated(q: number): void {
 }
 
 function top(): void {
-	if (rootEl) scroll(rootEl, { top: 0 });
+	tlComponent?.reload();
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {

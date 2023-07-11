@@ -527,7 +527,7 @@ export interface Locale {
     "deleteAll": string;
     "showFixedPostForm": string;
     "showFixedPostFormInChannel": string;
-    "newNoteRecived": string;
+    "goToTheHeadOfTimeline": string;
     "sounds": string;
     "sound": string;
     "listen": string;

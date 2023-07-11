@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl">
-			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
+			<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
 			<div :class="$style.tl">
 				<MkTimeline
 					ref="tlEl" :key="listId"
@@ -49,7 +49,7 @@ function queueUpdated(q) {
 }
 
 function top() {
-	scroll(rootEl, { top: 0 });
+	tlEl?.reload();
 }
 
 function settings() {
