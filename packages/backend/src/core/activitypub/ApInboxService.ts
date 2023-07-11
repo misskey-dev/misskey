@@ -229,7 +229,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async add(actor: RemoteUser, activity: IAdd): Promise<void> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -409,7 +409,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async delete(actor: RemoteUser, activity: IDelete): Promise<string> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -566,7 +566,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async remove(actor: RemoteUser, activity: IRemove): Promise<void> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -586,7 +586,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async undo(actor: RemoteUser, activity: IUndo): Promise<string> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -719,7 +719,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async update(actor: RemoteUser, activity: IUpdate): Promise<string> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+		if (actor.uri !== activity.actor) {
 			return 'skip: invalid actor';
 		}
 
