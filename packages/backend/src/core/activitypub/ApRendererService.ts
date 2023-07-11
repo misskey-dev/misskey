@@ -1,6 +1,6 @@
 import { createPublicKey } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { In } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
