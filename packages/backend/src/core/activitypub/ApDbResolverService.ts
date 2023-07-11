@@ -145,8 +145,6 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 
-		if (user == null) return null;
-
 		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null);
 
 		return {

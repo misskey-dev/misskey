@@ -311,7 +311,7 @@ export class ApRendererService {
 	@bindThis
 	public async renderNote(note: Note, dive = true): Promise<IPost> {
 		const getPromisedFiles = async (ids: string[]): Promise<DriveFile[]> => {
-			if (!ids || ids.length === 0) return [];
+			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
 			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
 		};
@@ -375,7 +375,7 @@ export class ApRendererService {
 			id: In(note.mentions),
 		}) : [];
 
-		const hashtagTags = (note.tags ?? []).map(tag => this.renderHashtag(tag));
+		const hashtagTags = note.tags.map(tag => this.renderHashtag(tag));
 		const mentionTags = mentionedUsers.map(u => this.renderMention(u as LocalUser | RemoteUser));
 
 		const files = await getPromisedFiles(note.fileIds);
@@ -466,22 +466,20 @@ export class ApRendererService {
 			identifier?: IIdentifier,
 		}[] = [];
 
-		if (profile.fields) {
-			for (const field of profile.fields) {
-				attachment.push({
-					type: 'PropertyValue',
-					name: field.name,
-					value: (field.value != null && field.value.match(/^https?:/))
-						? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
-						: field.value,
-				});
-			}
+		for (const field of profile.fields) {
+			attachment.push({
+				type: 'PropertyValue',
+				name: field.name,
+				value: field.value.match(/^https?:/)
+					? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
+					: field.value,
+			});
 		}
 
 		const emojis = await this.getEmojis(user.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
-		const hashtagTags = (user.tags ?? []).map(tag => this.renderHashtag(tag));
+		const hashtagTags = user.tags.map(tag => this.renderHashtag(tag));
 
 		const tag = [
 			...apemojis,
@@ -722,7 +720,7 @@ export class ApRendererService {
 
 	@bindThis
 	private async getEmojis(names: string[]): Promise<Emoji[]> {
-		if (names == null || names.length === 0) return [];
+		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
 		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);

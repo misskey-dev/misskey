@@ -292,7 +292,7 @@ export class ApInboxService {
 						return;
 					}
 
-					this.logger.warn(`Error in announce target ${targetUri} - ${err.statusCode ?? err}`);
+					this.logger.warn(`Error in announce target ${targetUri} - ${err.statusCode}`);
 				}
 				throw err;
 			}
