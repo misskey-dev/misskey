@@ -49,7 +49,7 @@ import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
-const TOLERANCE = 64;
+const TOLERANCE = 128;
 const APPEAR_MINIMUM_INTERVAL = 600;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
