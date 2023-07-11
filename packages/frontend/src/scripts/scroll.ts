@@ -25,7 +25,7 @@ export function getScrollPosition(el: HTMLElement | null): number {
 
 export function onScrollTop(el: HTMLElement, cb: () => unknown, tolerance = 1, once = false) {
 	// とりあえず評価してみる
-	if (isTopVisible(el)) {
+	if (isTopVisible(el, tolerance)) {
 		cb();
 		if (once) return null;
 	}

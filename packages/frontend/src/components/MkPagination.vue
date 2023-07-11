@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { onScrollTop, isTopVisible, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll, isBottomVisible } from '@/scripts/scroll';
+import { onScrollTop, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scroll } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -49,7 +49,7 @@ import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
-const TOLERANCE = 16;
+const TOLERANCE = 64;
 const APPEAR_MINIMUM_INTERVAL = 600;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
@@ -108,7 +108,10 @@ const emit = defineEmits<{
 
 let rootEl = $shallowRef<HTMLElement>();
 
-// 遡り中かどうか
+/**
+ * スクロールが先頭にある場合はfalse
+ * スクロールが先頭にない場合にtrue
+ */
 let backed = $ref(false);
 
 let scrollRemove = $ref<(() => void) | null>(null);
@@ -158,8 +161,11 @@ let isPausingUpdate = false;
 let timerForSetPause: number | null = null;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
-// 先頭が表示されているかどうかを検出
-// https://qiita.com/mkataigi/items/0154aefd2223ce23398e
+//#region scrolling
+/**
+ * IntersectionObserverで大まかに検出
+ * https://qiita.com/mkataigi/items/0154aefd2223ce23398e
+ */
 let scrollObserver = $ref<IntersectionObserver>();
 
 watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
@@ -170,7 +176,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
-		threshold: 0.01,
+		threshold: 0.1, // 10%ぐらいになったらqueueを読む
 	});
 }, { immediate: true });
 
@@ -181,16 +187,20 @@ watch($$(rootEl), () => {
 	});
 });
 
+/**
+ * onScrollTop/onScrollBottomで細かく検出する
+ */
 watch([$$(backed), $$(contentEl)], () => {
-	if (!backed) {
-		if (!contentEl) return;
+	if (!contentEl) return;
 
+	if (!backed) {
 		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, TOLERANCE);
 	} else {
 		if (scrollRemove) scrollRemove();
 		scrollRemove = null;
 	}
 });
+//#endregion
 
 if (props.pagination.params && isRef(props.pagination.params)) {
 	watch(props.pagination.params, init, { deep: true });
@@ -353,8 +363,6 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isTop = (): boolean => (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl!, TOLERANCE);
-
 function visibilityChange() {
 	if (visibility.value === 'hidden') {
 		timerForSetPause = window.setTimeout(() => {
@@ -368,7 +376,7 @@ function visibilityChange() {
 			timerForSetPause = null;
 		} else {
 			isPausingUpdate = false;
-			if (isTop() && active.value) {
+			if (!backed && active.value) {
 				executeQueue();
 			}
 		}
@@ -399,7 +407,7 @@ const prepend = (item: MisskeyEntity): void => {
 	}
 
 	if (
-		isTop() && // 先頭に表示されていない時はキューに追加する
+		!backed && // 先頭に表示されていない時はキューに追加する
 		!isPausingUpdate && // タブがバックグラウンドの時はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
