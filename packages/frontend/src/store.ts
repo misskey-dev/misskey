@@ -342,6 +342,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
 	},
+	showPreviewByDefault: {
+		where: 'device',
+		default: false,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
