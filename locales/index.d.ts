@@ -1029,6 +1029,7 @@ export interface Locale {
     "accountMovedShort": string;
     "operationForbidden": string;
     "forceShowAds": string;
+    "showPreviewByDefault": string;
     "addMemo": string;
     "editMemo": string;
     "reactionsList": string;

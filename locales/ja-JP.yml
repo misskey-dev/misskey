@@ -1026,6 +1026,7 @@ accountMoved: "このユーザーは新しいアカウントに移行しまし�
 accountMovedShort: "このアカウントは移行されています"
 operationForbidden: "この操作はできません"
 forceShowAds: "常に広告を表示する"
+showPreviewByDefault: "投稿のプレビューをはじめから表示する"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
 reactionsList: "リアクション一覧"
