@@ -29,7 +29,7 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
-		name: { type: 'string', pattern: '^[a-zA-Z0-9_]+$' },
+		name: { type: 'string', pattern: '^[a-z0-9_]+$' },
 		fileId: { type: 'string', format: 'misskey:id' },
 		category: {
 			type: 'string',
