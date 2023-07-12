@@ -26,7 +26,6 @@ import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
-import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
 export class ApRendererService {
@@ -459,22 +458,13 @@ export class ApRendererService {
 			this.userProfilesRepository.findOneByOrFail({ userId: user.id }),
 		]);
 
-		const attachment: {
+		const attachment = profile.fields.map(field => ({
 			type: 'PropertyValue',
-			name: string,
-			value: string,
-			identifier?: IIdentifier,
-		}[] = [];
-
-		for (const field of profile.fields) {
-			attachment.push({
-				type: 'PropertyValue',
-				name: field.name,
-				value: /^https?:/.test(field.value)
-					? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
-					: field.value,
-			});
-		}
+			name: field.name,
+			value: /^https?:/.test(field.value)
+				? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
+				: field.value,
+		}));
 
 		const emojis = await this.getEmojis(user.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
