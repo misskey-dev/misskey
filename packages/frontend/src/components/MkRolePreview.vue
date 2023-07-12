@@ -56,9 +56,11 @@ const props = withDefaults(defineProps<{
 
 .name {
 	font-weight: bold;
+	min-width: 0;
 }
 
 .users {
+	white-space: nowrap;
 	margin-left: auto;
 	opacity: 0.7;
 }
