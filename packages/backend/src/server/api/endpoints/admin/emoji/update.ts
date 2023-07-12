@@ -76,14 +76,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
 
-			const existEmoji = await this.emojisRepository.exist({
-				where: {
-					name: ps.name,
-				},
+			const oldEmoji = await this.emojisRepository.findOneBy({
+				id: ps.id,
 			});
 
-			if (existEmoji) {
-				throw new ApiError(meta.errors.sameNameEmojiExists);
+			if (oldEmoji == null) throw new ApiError(meta.errors.noSuchEmoji);
+
+			if (oldEmoji.name !== ps.name) {
+				const existEmoji = await this.emojisRepository.exist({
+					where: {
+						name: ps.name,
+					},
+				});
+
+				if (existEmoji) {
+					throw new ApiError(meta.errors.sameNameEmojiExists);
+				}
 			}
 
 			await this.customEmojiService.update(ps.id, {
