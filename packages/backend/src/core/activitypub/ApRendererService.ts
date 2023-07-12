@@ -704,7 +704,7 @@ export class ApRendererService {
 	 * @param orderedItems attached objects (optional)
 	 */
 	@bindThis
-	public renderOrderedCollection(id: string | null, totalItems: any, first?: string, last?: string, orderedItems?: IObject[]) {
+	public renderOrderedCollection(id: string, totalItems: number, first?: string, last?: string, orderedItems?: IObject[]) {
 		const page: any = {
 			id,
 			type: 'OrderedCollection',
