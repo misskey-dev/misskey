@@ -99,12 +99,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already following
-			const exist = await this.followingsRepository.findOneBy({
-				followerId: follower.id,
-				followeeId: followee.id,
+			const exist = await this.followingsRepository.exist({
+				where: {
+					followerId: follower.id,
+					followeeId: followee.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyFollowing);
 			}
 

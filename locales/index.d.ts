@@ -52,6 +52,7 @@ export interface Locale {
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
     "addToList": string;
+    "addToAntenna": string;
     "sendMessage": string;
     "copyRSS": string;
     "copyUsername": string;
