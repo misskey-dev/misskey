@@ -29,13 +29,12 @@ class LdSignature {
 		} = {
 			type: 'RsaSignature2017',
 			creator,
-			domain,
 			nonce: crypto.randomBytes(16).toString('hex'),
 			created: (created ?? new Date()).toISOString(),
 		};
 
-		if (!domain) {
-			delete options.domain;
+		if (domain) {
+			options.domain = domain;
 		}
 
 		const toBeSigned = await this.createVerifyData(data, options);
