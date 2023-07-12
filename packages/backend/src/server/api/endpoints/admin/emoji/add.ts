@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { DriveFilesRepository, EmojisRepository } from "@/models/index.js";
 import { DI } from '@/di-symbols.js';
@@ -74,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const existEmoji = await this.emojisRepository.exist({
 				where: {
 					name: ps.name,
+					host: IsNull(),
 				},
 			});
 
