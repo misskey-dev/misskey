@@ -36,7 +36,8 @@ const common = {
 		const i = buttons[0];
 		await expect(i).toBeInTheDocument();
 		await userEvent.click(i);
-		await waitFor(() => expect(a).not.toBeInTheDocument());
+		await waitFor(() => expect(canvas).toHaveTextContent(i18n.ts._ad.back));
+		await expect(a).not.toBeInTheDocument();
 		await expect(i).not.toBeInTheDocument();
 		buttons = canvas.getAllByRole<HTMLButtonElement>('button');
 		await expect(buttons).toHaveLength(args.__hasReduce ? 2 : 1);
@@ -49,10 +50,11 @@ const common = {
 		await expect(back).toBeInTheDocument();
 		await expect(back).toHaveTextContent(i18n.ts._ad.back);
 		await userEvent.click(back);
-		await waitFor(() => expect(back).not.toBeInTheDocument());
+		await waitFor(() => expect(canvas.queryByRole('img')).toBeTruthy());
 		if (reduce) {
 			await expect(reduce).not.toBeInTheDocument();
 		}
+		await expect(back).not.toBeInTheDocument()
 		const aAgain = canvas.getByRole<HTMLAnchorElement>('link');
 		await expect(aAgain).toBeInTheDocument();
 		const imgAgain = within(aAgain).getByRole('img');
