@@ -985,6 +985,10 @@ _initialAccountSetting:
   profileSetting: "إعدادات الملف الشخصي"
   privacySetting: "إعدادات الخصوصية"
   theseSettingsCanEditLater: "يمكنك تغيير هذه الإعدادات لاحقًا."
+  skipAreYouSure: "أتريد تخطي إعداد الملف الشخصي؟"
+  laterAreYouSure: "أتريد إعداد الملف الشخصي لاحقًا؟"
+_serverRules:
+  description: "مجموعة من القواعد لعرضها عند التسجيل، من المستحسن كتابة ملخصٍ للشروط الخدمة."
 _accountMigration:
   moveFrom: "انقل حسابًا آخر لهذا الحساب"
   moveFromLabel: "الحساب الأصلي #{n}"
