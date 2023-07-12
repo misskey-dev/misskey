@@ -54,7 +54,7 @@ const common = {
 		if (reduce) {
 			await expect(reduce).not.toBeInTheDocument();
 		}
-		await expect(back).not.toBeInTheDocument()
+		await expect(back).not.toBeInTheDocument();
 		const aAgain = canvas.getByRole<HTMLAnchorElement>('link');
 		await expect(aAgain).toBeInTheDocument();
 		const imgAgain = within(aAgain).getByRole('img');
