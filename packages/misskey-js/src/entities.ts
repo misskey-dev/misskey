@@ -521,7 +521,7 @@ export type Invite = {
 	code: string;
 	expiresAt: DateString | null;
 	createdAt: DateString;
-	createdBy: UserLite;
+	createdBy: UserLite | null;
 	usedBy: UserLite | null;
 	usedAt: DateString | null;
 	used: boolean;
