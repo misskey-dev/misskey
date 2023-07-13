@@ -177,25 +177,27 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	if (scrollObserver) scrollObserver.disconnect();
 
 	scrollObserver = new IntersectionObserver(entries => {
+		console.log('scrollObserver', entries[0].isIntersecting);
 		weakBacked = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.1, // 10%ぐらいになったらqueueを読む
 	});
+	console.log('new scrollObserver', scrollObserver);
 }, { immediate: true });
 
 watch([$$(rootEl), $$(scrollObserver)], () => {
 	scrollObserver?.disconnect();
-	nextTick(() => {
-		if (rootEl) scrollObserver?.observe(rootEl);
-	});
+	if (rootEl) scrollObserver?.observe(rootEl);
+	console.log('scrollObserver observe', rootEl);
 });
 
 /**
  * onScrollTop/onScrollBottomで細かく検出する
  */
 watch($$(backed), () => {
+	console.log('backed changed', backed);
 	if (!backed) {
 		executeQueue();
 	}
@@ -206,13 +208,16 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	scrollRemove = null;
 
 	if (weakBacked || !contentEl) {
+		console.log('weakBacked watcher remove scrollRemove', weakBacked, contentEl);
 		if (weakBacked) backed = true;
 		return;
 	}
 
+	console.log('weakBacked watcher add scrollRemove', weakBacked, contentEl);
 	scrollRemove = (() => {
 		const checkBacked = () => {
 			backed = !checkTop();
+			console.log('checkBacked', backed);
 		};
 
 		// とりあえず評価してみる
@@ -235,20 +240,33 @@ function preventDefault(ev: Event) {
  * @param fn DOM操作(unshiftItemsなどで)
  */
 function adjustScroll(fn: () => void): Promise<void> {
+	console.log('adjustScroll');
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 	// スクロールをやめさせる
-	scrollableElementOrHtml.addEventListener('mousewheel', preventDefault, { passive: false });
-	scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
-	scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+	try {
+		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+		scrollableElementOrHtml.addEventListener('mousewheel', preventDefault, { passive: false });
+		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
+		// ついでにtryに入れてみる
+		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+	} catch (err) {
+		console.error(err, { scrollableElementOrHtml });
+	}
 
 	fn();
 
 	return nextTick(() => {
-		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
-		scroll(scrollableElement, { top, behavior: 'instant' });
-		scrollableElementOrHtml.removeEventListener('mousewheel', preventDefault);
-		scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
+		try {
+			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
+			scroll(scrollableElement, { top, behavior: 'instant' });
+
+			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+			scrollableElementOrHtml.removeEventListener('mousewheel', preventDefault);
+			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
+		} catch (err) {
+			console.error(err, { scrollableElementOrHtml });
+		}
 		return nextTick();
 	});
 }
@@ -261,6 +279,7 @@ function adjustScroll(fn: () => void): Promise<void> {
  * 注意: moreFetchingをtrueにするのでfalseにする必要がある
  */
 async function init(): Promise<void> {
+	console.log('init');
 	items.value = new Map();
 	queue.value = new Map();
 	fetching.value = true;
@@ -298,6 +317,7 @@ async function init(): Promise<void> {
  * reloadでinitが呼ばれた時はreload内でinitの後に呼ばれる
  */
 function scrollAfterInit() {
+	console.log('scrollAfterInit');
 	if (props.pagination.reversed) {
 		nextTick(() => {
 			setTimeout(async () => {
@@ -474,6 +494,8 @@ watch(visibility, visibilityChange);
  * @param item アイテム
  */
 const prepend = (item: MisskeyEntity): void => {
+	console.log('prepend', item, 'queueSize', queueSize.value, 'backed', backed, 'isPausingUpdate', isPausingUpdate, 'active', active.value);
+
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
@@ -517,19 +539,23 @@ function concatItems(oldItems: MisskeyEntity[]) {
 }
 
 async function executeQueue() {
+	console.log('executeQueue');
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
 	isPausingUpdate = true;
-	await adjustScroll(() => {
-		unshiftItems(
-			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
-			Infinity,
-		);
-	});
-	weakBacked = !checkTop();
-	items.value = new Map([...items.value].slice(0, displayLimit.value));
-	await nextTick();
-	isPausingUpdate = false;
+	try {
+		await adjustScroll(() => {
+			unshiftItems(
+				queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
+				Infinity,
+			);
+		});
+		weakBacked = !checkTop();
+		items.value = new Map([...items.value].slice(0, displayLimit.value));
+		await nextTick();
+	} finally {
+		isPausingUpdate = false;
+	}
 }
 
 function prependQueue(newItem: MisskeyEntity) {
@@ -573,6 +599,7 @@ onBeforeUnmount(() => {
 		preventAppearFetchMoreTimer.value = null;
 	}
 	scrollObserver?.disconnect();
+	if (scrollRemove) scrollRemove();
 });
 
 defineExpose({
