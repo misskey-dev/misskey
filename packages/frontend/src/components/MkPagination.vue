@@ -161,6 +161,12 @@ let timerForSetPause: number | null = null;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 //#region scrolling
+const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
+const checkTop = () => {
+	if (!contentEl) return;
+	if (!document.body.contains(contentEl)) return;
+	return checkFn(contentEl, TOLERANCE, scrollableElement);
+};
 /**
  * IntersectionObserverで大まかに検出
  * https://qiita.com/mkataigi/items/0154aefd2223ce23398e
@@ -172,15 +178,14 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 
 	scrollObserver = new IntersectionObserver(entries => {
 		weakBacked = entries[0].isIntersecting;
-		if (weakBacked) backed = true;
 	}, {
-		root: scrollableElementOrHtml,
+		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.1, // 10%ぐらいになったらqueueを読む
 	});
 }, { immediate: true });
 
-watch($$(rootEl), () => {
+watch([$$(rootEl), $$(scrollObserver)], () => {
 	scrollObserver?.disconnect();
 	nextTick(() => {
 		if (rootEl) scrollObserver?.observe(rootEl);
@@ -197,33 +202,26 @@ watch($$(backed), () => {
 });
 
 watch([$$(weakBacked), $$(contentEl)], () => {
+	if (scrollRemove) scrollRemove();
+	scrollRemove = null;
+
 	if (weakBacked || !contentEl) {
-		if (scrollRemove) scrollRemove();
-		scrollRemove = null;
+		if (weakBacked) backed = true;
 		return;
 	}
 
 	scrollRemove = (() => {
-		const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
-		const el = contentEl;
-		const tolerance = TOLERANCE;
-
-		const onScroll = () => {
-			if (!document.body.contains(el)) return;
-			if (checkFn(el, tolerance)) {
-				backed = false;
-			} else {
-				backed = true;
-			}
+		const checkBacked = () => {
+			backed = !checkTop();
 		};
 
 		// とりあえず評価してみる
-		onScroll();
+		checkBacked();
 
 		const container = scrollableElementOrHtml;
 
 		function removeListener() { container.removeEventListener('scroll', onScroll); }
-		container.addEventListener('scroll', onScroll, { passive: true });
+		container.addEventListener('scroll', checkBacked, { passive: true });
 		return removeListener;
 	})();
 });
@@ -240,10 +238,6 @@ function adjustScroll(fn: () => void): Promise<void> {
 	return nextTick(() => {
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
-		if (top > TOLERANCE) {
-			weakBacked = true;
-			backed = true;
-		}
 		return nextTick();
 	});
 }
@@ -295,12 +289,11 @@ async function init(): Promise<void> {
 function scrollAfterInit() {
 	if (props.pagination.reversed) {
 		nextTick(() => {
-			setTimeout(() => {
+			setTimeout(async () => {
 				if (contentEl) {
 					scrollToBottom(contentEl);
 					// scrollToしてもbacked周りがうまく動かないので手動で戻す必要がある
 					weakBacked = false;
-					backed = false;
 				}
 			}, 200);
 
@@ -316,7 +309,6 @@ function scrollAfterInit() {
 				scrollToTop(scrollableElement);
 				// scrollToしてもbacked周りがうまく動かないので手動で戻す必要がある
 				weakBacked = false;
-				backed = false;
 
 				moreFetching.value = false;
 			}, 200);
@@ -523,6 +515,7 @@ async function executeQueue() {
 			Infinity,
 		);
 	});
+	weakBacked = !checkTop();
 	items.value = new Map([...items.value].slice(0, displayLimit.value));
 	await nextTick();
 	isPausingUpdate = false;
