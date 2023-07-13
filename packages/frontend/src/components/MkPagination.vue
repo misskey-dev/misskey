@@ -220,7 +220,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 
 		const container = scrollableElementOrHtml;
 
-		function removeListener() { container.removeEventListener('scroll', onScroll); }
+		function removeListener() { container.removeEventListener('scroll', checkBacked); }
 		container.addEventListener('scroll', checkBacked, { passive: true });
 		return removeListener;
 	})();
