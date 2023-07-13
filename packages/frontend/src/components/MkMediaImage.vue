@@ -33,6 +33,7 @@
 			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
 		</div>
 		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
+		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
 	</template>
 </div>
 </template>
@@ -111,6 +112,21 @@ function showMenu(ev: MouseEvent) {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.hide {
+	display: block;
+	position: absolute;
+	border-radius: 6px;
+	background-color: var(--fg);
+	color: var(--accentLighten);
+	font-size: 14px;
+	opacity: .5;
+	padding: 3px 6px;
+	text-align: center;
+	cursor: pointer;
+	top: 12px;
+	right: 12px;
 }
 
 .hiddenTextWrapper {
