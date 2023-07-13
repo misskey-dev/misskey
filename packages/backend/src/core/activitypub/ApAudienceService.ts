@@ -16,6 +16,8 @@ type AudienceInfo = {
 	visibleUsers: User[],
 };
 
+type GroupedAudience = Record<'public' | 'followers' | 'other', string[]>;
+
 @Injectable()
 export class ApAudienceService {
 	constructor(
@@ -67,11 +69,11 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private groupingAudience(ids: string[], actor: RemoteUser) {
-		const groups = {
-			public: [] as string[],
-			followers: [] as string[],
-			other: [] as string[],
+	private groupingAudience(ids: string[], actor: RemoteUser): GroupedAudience {
+		const groups: GroupedAudience = {
+			public: [],
+			followers: [],
+			other: [],
 		};
 
 		for (const id of ids) {
@@ -90,7 +92,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private isPublic(id: string) {
+	private isPublic(id: string): boolean {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
 			'as#Public',
@@ -99,9 +101,7 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private isFollowers(id: string, actor: RemoteUser) {
-		return (
-			id === (actor.followersUri ?? `${actor.uri}/followers`)
-		);
+	private isFollowers(id: string, actor: RemoteUser): boolean {
+		return id === (actor.followersUri ?? `${actor.uri}/followers`);
 	}
 }
