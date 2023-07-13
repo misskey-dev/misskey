@@ -200,7 +200,7 @@ export class ApNoteService {
 				| { status: 'ok'; res: Note }
 				| { status: 'permerror' | 'temperror' }
 			> => {
-				if (!uri.match(/^https?:/)) return { status: 'permerror' };
+				if (!/^https?:/.test(uri)) return { status: 'permerror' };
 				try {
 					const res = await this.resolveNote(uri);
 					if (res == null) return { status: 'permerror' };
