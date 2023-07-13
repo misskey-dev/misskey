@@ -203,13 +203,6 @@ export const menuDef = {
 					unisonReload();
 				}
 			}, {
-				text: i18n.locale.classic,
-				active: ui === 'classic',
-				action: () => {
-					localStorage.setItem('ui', 'classic');
-					unisonReload();
-				}
-			}, {
 				text: 'Chat (β)',
 				active: ui === 'chat',
 				action: () => {

@@ -19,7 +19,6 @@ export async function mainBoot() {
 		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
 		defineAsyncComponent(() => import('@/ui/universal.vue')),
 	));
 
@@ -87,7 +86,7 @@ export async function mainBoot() {
 		const now = new Date();
 		const m = now.getMonth() + 1;
 		const d = now.getDate();
-		
+
 		if ($i.birthday) {
 			const bm = parseInt($i.birthday.split('-')[1]);
 			const bd = parseInt($i.birthday.split('-')[2]);
