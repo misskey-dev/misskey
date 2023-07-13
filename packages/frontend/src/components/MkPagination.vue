@@ -231,7 +231,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
  * @param fn DOM操作(unshiftItemsなどで)
  */
-function adjustScroll(fn: () => void) {
+function adjustScroll(fn: () => void): Promise<void> {
 	const oldHeight = scrollableElement.scrollHeight;
 	const oldScroll = scrollableElement.scrollTop;
 	fn();
@@ -493,7 +493,7 @@ const prepend = (item: MisskeyEntity): void => {
 	if (
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		!backed && // 先頭に表示されていない時はキューに追加する
-		!isPausingUpdate && // タブがバックグラウンドの時はキューに追加する
+		!isPausingUpdate && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
 		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
@@ -528,15 +528,17 @@ function concatItems(oldItems: MisskeyEntity[]) {
 
 async function executeQueue() {
 	const queueArr = Array.from(queue.value.entries());
-	adjustScroll(() => {
+	queue.value = new Map(queueArr.slice(props.pagination.limit));
+	isPausingUpdate = true;
+	await adjustScroll(() => {
 		unshiftItems(
 			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
 			Infinity,
 		);
-	}).then(() => {
-		items.value = new Map([...items.value].slice(0, displayLimit.value));
 	});
-	queue.value = new Map(queueArr.slice(props.pagination.limit));
+	items.value = new Map([...items.value].slice(0, displayLimit.value));
+	await nextTick();
+	isPausingUpdate = false;
 }
 
 function prependQueue(newItem: MisskeyEntity) {
