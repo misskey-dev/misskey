@@ -243,6 +243,7 @@ function adjustScroll(fn: () => void): Promise<void> {
 	scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
 
 	fn();
+
 	return nextTick(() => {
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
