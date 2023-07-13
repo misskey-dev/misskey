@@ -39,7 +39,7 @@ export class ClipEntityService {
 			description: clip.description,
 			isPublic: clip.isPublic,
 			favoritedCount: await this.clipFavoritesRepository.countBy({ clipId: clip.id }),
-			isFavorited: meId ? await this.clipFavoritesRepository.findOneBy({ clipId: clip.id, userId: meId }).then(x => x != null) : undefined,
+			isFavorited: meId ? await this.clipFavoritesRepository.exist({ where: { clipId: clip.id, userId: meId } }) : undefined,
 		});
 	}
 
