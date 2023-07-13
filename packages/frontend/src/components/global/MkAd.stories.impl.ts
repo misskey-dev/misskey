@@ -53,6 +53,7 @@ const common = {
 		await expect(back).toHaveTextContent(i18n.ts._ad.back);
 		await userEvent.click(back);
 		await waitFor(() => expect(canvas.queryByRole('img')).toBeTruthy());
+		await tick();
 		if (reduce) {
 			await expect(reduce).not.toBeInTheDocument();
 		}
