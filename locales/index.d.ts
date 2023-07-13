@@ -2178,4 +2178,4 @@ export interface Locale {
 declare const locales: {
     [lang: string]: Locale;
 };
-export = locales;
+export default locales;
