@@ -226,6 +226,25 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 		return removeListener;
 	})();
 });
+
+/**
+ * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
+ * @param fn DOM操作(unshiftItemsなどで)
+ */
+function adjustScroll(fn: () => void) {
+	const oldHeight = scrollableElement.scrollHeight;
+	const oldScroll = scrollableElement.scrollTop;
+	fn();
+	return nextTick(() => {
+		const top = oldScroll + (scrollableElement.scrollHeight - oldHeight);
+		scroll(scrollableElement, { top, behavior: 'instant' });
+		if (top > TOLERANCE) {
+			weakBacked = true;
+			backed = true;
+		}
+		return nextTick();
+	});
+}
 //#endregion
 
 /**
@@ -493,7 +512,7 @@ function unshiftItems(newItems: MisskeyEntity[], limit = displayLimit.value) {
 	const length = newItems.length + items.value.size;
 	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, limit));
 
-	if (length >= displayLimit.value) more.value = true;
+	if (length >= limit) more.value = true;
 }
 
 /**
@@ -507,9 +526,16 @@ function concatItems(oldItems: MisskeyEntity[]) {
 	if (length >= displayLimit.value) more.value = true;
 }
 
-function executeQueue() {
+async function executeQueue() {
 	const queueArr = Array.from(queue.value.entries());
-	unshiftItems(queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse());
+	adjustScroll(() => {
+		unshiftItems(
+			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
+			Infinity,
+		);
+	}).then(() => {
+		items.value = new Map([...items.value].slice(0, displayLimit.value));
+	});
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
 }
 
