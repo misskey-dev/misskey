@@ -87,7 +87,6 @@ const defaultRoutes = [
 	{ path: '/miauth/:session', component: page('miauth') },
 	{ path: '/authorize-follow', component: page('follow') },
 	{ path: '/share', component: page('share') },
-	{ path: '/mulukhiya', beforeEnter() {location.href = '/mulukhiya'} },
 	{ path: '/:catchAll(.*)', component: page('not-found') }
 ];
 
