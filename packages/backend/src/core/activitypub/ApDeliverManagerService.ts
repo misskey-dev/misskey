@@ -52,7 +52,7 @@ export class ApDeliverManagerService {
 	 * @param activity Activity
 	 */
 	@bindThis
-	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity) {
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -71,7 +71,7 @@ export class ApDeliverManagerService {
 	 * @param to Target user
 	 */
 	@bindThis
-	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser) {
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser): Promise<void> {
 		const manager = new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -84,7 +84,7 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null) {
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,
@@ -118,6 +118,7 @@ class DeliverManager {
 		activity: IActivity | null,
 	) {
 		// 型で弾いてはいるが一応ローカルユーザーかチェック
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (actor.host != null) throw new Error('actor.host must be null');
 
 		// パフォーマンス向上のためキューに突っ込むのはidのみに絞る
@@ -131,10 +132,10 @@ class DeliverManager {
 	 * Add recipe for followers deliver
 	 */
 	@bindThis
-	public addFollowersRecipe() {
-		const deliver = {
+	public addFollowersRecipe(): void {
+		const deliver: IFollowersRecipe = {
 			type: 'Followers',
-		} as IFollowersRecipe;
+		};
 
 		this.addRecipe(deliver);
 	}
@@ -144,11 +145,11 @@ class DeliverManager {
 	 * @param to To
 	 */
 	@bindThis
-	public addDirectRecipe(to: RemoteUser) {
-		const recipe = {
+	public addDirectRecipe(to: RemoteUser): void {
+		const recipe: IDirectRecipe = {
 			type: 'Direct',
 			to,
-		} as IDirectRecipe;
+		};
 
 		this.addRecipe(recipe);
 	}
@@ -158,7 +159,7 @@ class DeliverManager {
 	 * @param recipe Recipe
 	 */
 	@bindThis
-	public addRecipe(recipe: IRecipe) {
+	public addRecipe(recipe: IRecipe): void {
 		this.recipes.push(recipe);
 	}
 
@@ -166,17 +167,13 @@ class DeliverManager {
 	 * Execute delivers
 	 */
 	@bindThis
-	public async execute() {
+	public async execute(): Promise<void> {
 		// The value flags whether it is shared or not.
 		// key: inbox URL, value: whether it is sharedInbox
 		const inboxes = new Map<string, boolean>();
 
-		/*
-		build inbox list
-
-		Process follower recipes first to avoid duplication when processing
-		direct recipes later.
-		*/
+		// build inbox list
+		// Process follower recipes first to avoid duplication when processing direct recipes later.
 		if (this.recipes.some(r => isFollowers(r))) {
 			// followers deliver
 			// TODO: SELECT DISTINCT ON ("followerSharedInbox") "followerSharedInbox" みたいな問い合わせにすればよりパフォーマンス向上できそう
@@ -190,26 +187,24 @@ class DeliverManager {
 					followerSharedInbox: true,
 					followerInbox: true,
 				},
-			}) as {
-				followerSharedInbox: string | null;
-				followerInbox: string;
-			}[];
+			});
 
 			for (const following of followers) {
 				const inbox = following.followerSharedInbox ?? following.followerInbox;
+				if (inbox === null) throw new Error('inbox is null');
 				inboxes.set(inbox, following.followerSharedInbox != null);
 			}
 		}
 
-		this.recipes.filter((recipe): recipe is IDirectRecipe =>
-			// followers recipes have already been processed
-			isDirect(recipe)
+		for (const recipe of this.recipes.filter(isDirect)) {
 			// check that shared inbox has not been added yet
-			&& !(recipe.to.sharedInbox && inboxes.has(recipe.to.sharedInbox))
+			if (recipe.to.sharedInbox !== null && inboxes.has(recipe.to.sharedInbox)) continue;
+
 			// check that they actually have an inbox
-			&& recipe.to.inbox != null,
-		)
-			.forEach(recipe => inboxes.set(recipe.to.inbox!, false));
+			if (recipe.to.inbox === null) continue;
+
+			inboxes.set(recipe.to.inbox, false);
+		}
 
 		// deliver
 		this.queueService.deliverMany(this.actor, this.activity, inboxes);

@@ -52,6 +52,7 @@ export interface Locale {
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
     "addToList": string;
+    "addToAntenna": string;
     "sendMessage": string;
     "copyRSS": string;
     "copyUsername": string;
@@ -59,6 +60,7 @@ export interface Locale {
     "copyNoteId": string;
     "copyFileId": string;
     "copyFolderId": string;
+    "copyProfileUrl": string;
     "searchUser": string;
     "reply": string;
     "loadMore": string;
@@ -2156,4 +2158,4 @@ export interface Locale {
 declare const locales: {
     [lang: string]: Locale;
 };
-export = locales;
+export default locales;
