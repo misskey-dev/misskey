@@ -226,6 +226,10 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	})();
 });
 
+function preventDefault(ev: Event) {
+	ev.preventDefault();
+}
+
 /**
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
  * @param fn DOM操作(unshiftItemsなどで)
@@ -234,12 +238,16 @@ function adjustScroll(fn: () => void): Promise<void> {
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 	// スクロールをやめさせる
+	scrollableElementOrHtml.addEventListener('mousewheel', preventDefault, { passive: false });
+	scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
 	scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
 
 	fn();
 	return nextTick(() => {
 		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
+		scrollableElementOrHtml.removeEventListener('mousewheel', preventDefault);
+		scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
 		return nextTick();
 	});
 }
