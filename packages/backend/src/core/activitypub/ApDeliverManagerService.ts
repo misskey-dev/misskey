@@ -29,73 +29,6 @@ const isFollowers = (recipe: IRecipe): recipe is IFollowersRecipe =>
 const isDirect = (recipe: IRecipe): recipe is IDirectRecipe =>
 	recipe.type === 'Direct';
 
-@Injectable()
-export class ApDeliverManagerService {
-	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
-
-		private userEntityService: UserEntityService,
-		private queueService: QueueService,
-	) {
-	}
-
-	/**
-	 * Deliver activity to followers
-	 * @param actor
-	 * @param activity Activity
-	 */
-	@bindThis
-	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
-		const manager = new DeliverManager(
-			this.userEntityService,
-			this.followingsRepository,
-			this.queueService,
-			actor,
-			activity,
-		);
-		manager.addFollowersRecipe();
-		await manager.execute();
-	}
-
-	/**
-	 * Deliver activity to user
-	 * @param actor
-	 * @param activity Activity
-	 * @param to Target user
-	 */
-	@bindThis
-	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser): Promise<void> {
-		const manager = new DeliverManager(
-			this.userEntityService,
-			this.followingsRepository,
-			this.queueService,
-			actor,
-			activity,
-		);
-		manager.addDirectRecipe(to);
-		await manager.execute();
-	}
-
-	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null): DeliverManager {
-		return new DeliverManager(
-			this.userEntityService,
-			this.followingsRepository,
-			this.queueService,
-
-			actor,
-			activity,
-		);
-	}
-}
-
 class DeliverManager {
 	private actor: ThinUser;
 	private activity: IActivity | null;
@@ -208,5 +141,72 @@ class DeliverManager {
 
 		// deliver
 		this.queueService.deliverMany(this.actor, this.activity, inboxes);
+	}
+}
+
+@Injectable()
+export class ApDeliverManagerService {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
+		private userEntityService: UserEntityService,
+		private queueService: QueueService,
+	) {
+	}
+
+	/**
+	 * Deliver activity to followers
+	 * @param actor
+	 * @param activity Activity
+	 */
+	@bindThis
+	public async deliverToFollowers(actor: { id: LocalUser['id']; host: null; }, activity: IActivity): Promise<void> {
+		const manager = new DeliverManager(
+			this.userEntityService,
+			this.followingsRepository,
+			this.queueService,
+			actor,
+			activity,
+		);
+		manager.addFollowersRecipe();
+		await manager.execute();
+	}
+
+	/**
+	 * Deliver activity to user
+	 * @param actor
+	 * @param activity Activity
+	 * @param to Target user
+	 */
+	@bindThis
+	public async deliverToUser(actor: { id: LocalUser['id']; host: null; }, activity: IActivity, to: RemoteUser): Promise<void> {
+		const manager = new DeliverManager(
+			this.userEntityService,
+			this.followingsRepository,
+			this.queueService,
+			actor,
+			activity,
+		);
+		manager.addDirectRecipe(to);
+		await manager.execute();
+	}
+
+	@bindThis
+	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null): DeliverManager {
+		return new DeliverManager(
+			this.userEntityService,
+			this.followingsRepository,
+			this.queueService,
+
+			actor,
+			activity,
+		);
 	}
 }
