@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scroll, scrollToTop } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scrollToTop, scroll } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -151,7 +151,8 @@ const {
 const displayLimit = computed(() => props.pagination.displayLimit ?? props.pagination.limit * 2);
 
 const contentEl = $computed(() => props.pagination.pageEl ?? rootEl);
-const scrollableElement = $computed(() => contentEl ? getScrollContainer(contentEl) ?? document.body : document.body);
+const scrollableElement = $computed(() => contentEl ? getScrollContainer(contentEl) ?? null : null);
+const scrollableElementOrHtml = $computed(() => scrollableElement ?? document.getElementsByName('html')[0]);
 
 const visibility = useDocumentVisibility();
 
@@ -173,7 +174,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 		weakBacked = entries[0].isIntersecting;
 		if (weakBacked) backed = true;
 	}, {
-		root: scrollableElement,
+		root: scrollableElementOrHtml,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: 0.1, // 10%ぐらいになったらqueueを読む
 	});
@@ -219,7 +220,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 		// とりあえず評価してみる
 		onScroll();
 
-		const container = scrollableElement;
+		const container = scrollableElementOrHtml;
 
 		function removeListener() { container.removeEventListener('scroll', onScroll); }
 		container.addEventListener('scroll', onScroll, { passive: true });
@@ -232,11 +233,12 @@ watch([$$(weakBacked), $$(contentEl)], () => {
  * @param fn DOM操作(unshiftItemsなどで)
  */
 function adjustScroll(fn: () => void): Promise<void> {
-	const oldHeight = scrollableElement.scrollHeight;
-	const oldScroll = scrollableElement.scrollTop;
+	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
+	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
+
 	fn();
 	return nextTick(() => {
-		const top = oldScroll + (scrollableElement.scrollHeight - oldHeight);
+		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
 		if (top > TOLERANCE) {
 			weakBacked = true;
@@ -349,22 +351,7 @@ const fetchMore = async (): Promise<void> => {
 			if (i === 10) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = _res => {
-			const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
-			const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
-
-			items.value = concatMapWithArray(items.value, _res);
-
-			return nextTick(() => {
-				if (scrollableElement) {
-					scroll(scrollableElement, { top: oldScroll + (scrollableElement.scrollHeight - oldHeight), behavior: 'instant' });
-				} else {
-					window.scroll({ top: oldScroll + (getBodyScrollHeight() - oldHeight), behavior: 'instant' });
-				}
-
-				return nextTick();
-			});
-		};
+		const reverseConcat = (_res) => adjustScroll(() => concatMapWithArray(items.value, _res));
 
 		if (res.length === 0) {
 			if (props.pagination.reversed) {

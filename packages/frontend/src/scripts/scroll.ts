@@ -70,12 +70,16 @@ export function onScrollBottom(el: HTMLElement, cb: () => unknown, tolerance = 1
 	return removeListener;
 }
 
-export function scroll(el: HTMLElement, options: ScrollToOptions | undefined) {
-	const container = getScrollContainer(el);
-	if (container == null) {
+/**
+ * コンテナを指定してスクロールする
+ * @param el Container element
+ * @param options ScrollToOptions
+ */
+export function scroll(el: HTMLElement | null, options: ScrollToOptions | undefined) {
+	if (el == null) {
 		window.scroll(options);
 	} else {
-		container.scroll(options);
+		el.scroll(options);
 	}
 }
 
@@ -84,8 +88,8 @@ export function scroll(el: HTMLElement, options: ScrollToOptions | undefined) {
  * @param el Scroll container element
  * @param options Scroll options
  */
-export function scrollToTop(el: HTMLElement, options: { behavior?: ScrollBehavior; } = {}) {
-	scroll(el, { top: 0, ...options });
+export function scrollToTop(el: HTMLElement | null, options: { behavior?: ScrollBehavior; } = {}) {
+	scroll(getScrollContainer(el), { top: 0, ...options });
 }
 
 /**

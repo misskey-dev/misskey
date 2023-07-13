@@ -20,7 +20,6 @@
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { scroll } from '@/scripts/scroll';
 import * as os from '@/os';
 import { useRouter } from '@/router';
 import { definePageMetadata } from '@/scripts/page-metadata';
