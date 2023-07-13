@@ -1,17 +1,17 @@
 <template>
-<Transition
-	appear
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
->
-	<div ref="cover" :class="$style.fullscreen_cover" @mousedown="onMousedown">
-		<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
+<div ref="cover" :class="$style.fullscreen_cover" :style="{ zIndex }" @mousedown="onMousedown">
+	<Transition
+		appear
+		:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+		:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+		:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+		:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	>
+		<div ref="rootEl" :class="$style.root" @contextmenu.prevent.stop="() => {}">
 			<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
 		</div>
-	</div>
-</Transition>
+	</Transition>
+</div>
 </template>
 
 <script lang="ts" setup>
