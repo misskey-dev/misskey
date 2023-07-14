@@ -59,12 +59,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot show info of admin');
 			}
 
-			const signins = await this.signinsRepository.findBy({ userId: user.id });
+			// 個人情報のため
+			//const signins = await this.signinsRepository.findBy({ userId: user.id });
 
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
-				email: profile.email,
+				email: '<個人情報のため非公開>',
 				emailVerified: profile.emailVerified,
 				autoAcceptFollowed: profile.autoAcceptFollowed,
 				noCrawle: profile.noCrawle,
@@ -82,7 +83,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
 				moderationNote: profile.moderationNote ?? '',
-				signins,
+				signins: [],
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
 			};
