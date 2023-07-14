@@ -182,7 +182,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
-		threshold: 0.1, // 10%ぐらいになったらqueueを読む
+		threshold: [0.01, 0.05, 0.1], // ターゲットの可視範囲は10%以上（0.01を含めないと検出されないことがある）
 	});
 	console.log('new scrollObserver', scrollObserver);
 }, { immediate: true });
