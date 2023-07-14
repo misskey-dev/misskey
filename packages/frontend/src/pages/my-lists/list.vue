@@ -33,6 +33,7 @@
 					<MkButton v-if="!fetching && queueUserIds.length !== 0" v-appear="enableInfiniteScroll ? fetchMoreUsers : null" :class="$style.more" :style="{ cursor: 'pointer' }" primary rounded @click="fetchMoreUsers">
 						{{ i18n.ts.loadMore }}
 					</MkButton>
+					<MkLoading v-if="fetching" class="loading"/>
 				</div>
 			</MkFolder>
 		</div>
