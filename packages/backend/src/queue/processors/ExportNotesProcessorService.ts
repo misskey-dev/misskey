@@ -91,7 +91,7 @@ export class ExportNotesProcessorService {
 					break;
 				}
 
-				cursor = notes[notes.length - 1].id;
+				cursor = notes.at(-1)?.id ?? null;
 
 				for (const note of notes) {
 					let poll: Poll | undefined;

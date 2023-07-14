@@ -70,7 +70,7 @@ export class DeleteAccountProcessorService {
 					break;
 				}
 
-				cursor = notes[notes.length - 1].id;
+				cursor = notes.at(-1)?.id ?? null;
 
 				await this.notesRepository.delete(notes.map(note => note.id));
 
@@ -101,7 +101,7 @@ export class DeleteAccountProcessorService {
 					break;
 				}
 
-				cursor = files[files.length - 1].id;
+				cursor = files.at(-1)?.id ?? null;
 
 				for (const file of files) {
 					await this.driveService.deleteFileSync(file);
