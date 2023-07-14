@@ -469,6 +469,7 @@ function visibilityChange() {
 			clearTimeout(timerForSetPause);
 			timerForSetPause = null;
 		} else {
+			console.log('visibilityChange: executeQueue', 'backed', backed, 'active', active.value);
 			isPausingUpdate = false;
 			if (!backed && active.value) {
 				executeQueue();
