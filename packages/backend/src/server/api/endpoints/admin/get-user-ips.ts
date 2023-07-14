@@ -26,6 +26,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userIpsRepository: UserIpsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			return [];
+
+			/*
 			const ips = await this.userIpsRepository.find({
 				where: { userId: ps.userId },
 				order: { createdAt: 'DESC' },
@@ -35,7 +38,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			return ips.map(x => ({
 				ip: x.ip,
 				createdAt: x.createdAt.toISOString(),
-			}));
+			}));*/
 		});
 	}
 }
