@@ -44,12 +44,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw err;
 			});
 
-			const exist = await this.promoReadsRepository.findOneBy({
-				noteId: note.id,
-				userId: me.id,
+			const exist = await this.promoReadsRepository.exist({
+				where: {
+					noteId: note.id,
+					userId: me.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				return;
 			}
 
