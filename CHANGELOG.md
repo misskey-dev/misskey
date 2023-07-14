@@ -47,6 +47,7 @@
 - 連合の配送ジョブのパフォーマンスを向上（ロック機構の見直し、Redisキャッシュの活用）
 - 全体的なDBクエリのパフォーマンスを向上
 - featuredノートのsignedGet回数を減らしました
+- Add unix socket support
 
 ## 13.13.2
 
