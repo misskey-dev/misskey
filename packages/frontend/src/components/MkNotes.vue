@@ -7,7 +7,7 @@
 		</div>
 	</template>
 
-	<template #default="{ items: notes }">
+	<template #default="{ items: notes, denyMoveTransition }">
 		<div :class="[$style.root, { [$style.noGap]: noGap }]">
 			<MkDateSeparatedList
 				ref="notes"
@@ -17,7 +17,10 @@
 				:reversed="pagination.reversed"
 				:noGap="noGap"
 				:ad="true"
-				:class="$style.notes"
+				:class="{
+					[$style.notes]: true,
+					'deny-move-transition': denyMoveTransition,
+				}"
 			>
 				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>

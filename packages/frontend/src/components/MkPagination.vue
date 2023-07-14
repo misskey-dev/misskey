@@ -26,7 +26,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
+		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching" :denyMoveTransition="denyMoveTransition"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -144,6 +144,7 @@ const preventAppearFetchMore = ref(false);
 const preventAppearFetchMoreTimer = ref<number | null>(null);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
+const denyMoveTransition = ref(false);
 const {
 	enableInfiniteScroll,
 } = defaultStore.reactiveState;
@@ -156,8 +157,8 @@ const scrollableElementOrHtml = $computed(() => scrollableElement ?? document.ge
 
 const visibility = useDocumentVisibility();
 
-let isPausingUpdate = false;
-let timerForSetPause: number | null = null;
+const isPausingUpdate = ref(false);
+const timerForSetPause = ref<number | null>(null);
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 //#region scrolling
@@ -254,6 +255,8 @@ function adjustScroll(fn: () => void): Promise<void> {
 		console.error(err, { scrollableElementOrHtml });
 	}
 
+	denyMoveTransition.value = true;
+
 	fn();
 
 	return nextTick(() => {
@@ -267,6 +270,7 @@ function adjustScroll(fn: () => void): Promise<void> {
 		} catch (err) {
 			console.error(err, { scrollableElementOrHtml });
 		}
+		denyMoveTransition.value = false;
 		return nextTick();
 	});
 }
@@ -459,18 +463,18 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 
 function visibilityChange() {
 	if (visibility.value === 'hidden') {
-		timerForSetPause = window.setTimeout(() => {
-			isPausingUpdate = true;
-			timerForSetPause = null;
+		timerForSetPause.value = window.setTimeout(() => {
+			isPausingUpdate.value = true;
+			timerForSetPause.value = null;
 		},
 		BACKGROUND_PAUSE_WAIT_SEC * 1000);
 	} else { // 'visible'
-		if (timerForSetPause) {
-			clearTimeout(timerForSetPause);
-			timerForSetPause = null;
+		if (timerForSetPause.value) {
+			clearTimeout(timerForSetPause.value);
+			timerForSetPause.value = null;
 		} else {
 			console.log('visibilityChange: executeQueue', 'backed', backed, 'active', active.value);
-			isPausingUpdate = false;
+			isPausingUpdate.value = false;
 			if (!backed && active.value) {
 				executeQueue();
 			}
@@ -506,7 +510,7 @@ const prepend = (item: MisskeyEntity): void => {
 	if (
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		!backed && // 先頭に表示されていない時はキューに追加する
-		!isPausingUpdate && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
+		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
 		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
@@ -544,7 +548,7 @@ async function executeQueue() {
 	if (queue.value.size === 0) return;
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
-	isPausingUpdate = true;
+	isPausingUpdate.value = true;
 	try {
 		await adjustScroll(() => {
 			unshiftItems(
@@ -552,11 +556,17 @@ async function executeQueue() {
 				Infinity,
 			);
 		});
+
+		// 念の為backedを再チェック
 		weakBacked = !checkTop();
+
+		// adjustScrollが終わり次第タイムラインの下側を切り捨てる
+		denyMoveTransition.value = true;
 		items.value = new Map([...items.value].slice(0, displayLimit.value));
 		await nextTick();
 	} finally {
-		isPausingUpdate = false;
+		isPausingUpdate.value = false;
+		denyMoveTransition.value = false;
 	}
 }
 
@@ -592,9 +602,9 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	if (timerForSetPause) {
-		clearTimeout(timerForSetPause);
-		timerForSetPause = null;
+	if (timerForSetPause.value) {
+		clearTimeout(timerForSetPause.value);
+		timerForSetPause.value = null;
 	}
 	if (preventAppearFetchMoreTimer.value) {
 		clearTimeout(preventAppearFetchMoreTimer.value);
