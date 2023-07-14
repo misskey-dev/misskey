@@ -5,7 +5,6 @@
 		<div v-if="list" class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.settings }}</template>
-				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps">
 					<MkInput v-model="name">
@@ -21,6 +20,7 @@
 
 			<MkFolder defaultOpen>
 				<template #label>{{ i18n.ts.members }}</template>
+				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps_s">
 					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
