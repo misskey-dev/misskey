@@ -49,8 +49,10 @@ import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
-const TOLERANCE = 256;
+const BACK_TO_TOP_TOLERANCE = 256;
+const TOP_STATIC_TOLERANCE = 64;
 const APPEAR_MINIMUM_INTERVAL = 600;
+const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
@@ -159,14 +161,13 @@ const visibility = useDocumentVisibility();
 
 const isPausingUpdate = ref(false);
 const timerForSetPause = ref<number | null>(null);
-const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 //#region scrolling
 const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
-const checkTop = () => {
+const checkTop = (tolerance?: number) => {
 	if (!contentEl) return;
 	if (!document.body.contains(contentEl)) return;
-	return checkFn(contentEl, TOLERANCE, scrollableElement);
+	return checkFn(contentEl, tolerance, scrollableElement);
 };
 /**
  * IntersectionObserverで大まかに検出
@@ -217,7 +218,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	console.log('weakBacked watcher add scrollRemove', weakBacked, contentEl);
 	scrollRemove = (() => {
 		const checkBacked = () => {
-			backed = !checkTop();
+			backed = !checkTop(BACK_TO_TOP_TOLERANCE);
 			console.log('checkBacked', backed);
 		};
 
@@ -508,10 +509,10 @@ const prepend = (item: MisskeyEntity): void => {
 	}
 
 	if (
-		queueSize.value === 0 && // キューに残っている場合はキューに追加する
-		!backed && // 先頭に表示されていない時はキューに追加する
 		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
-		active.value // keepAliveで隠されている間はキューに追加する
+		queueSize.value === 0 && // キューに残っている場合はキューに追加する
+		active.value && // keepAliveで隠されている間はキューに追加する
+		checkTop(TOP_STATIC_TOLERANCE) // 先頭に表示されていない時はキューに追加する
 	) {
 		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 		unshiftItems([item]);
@@ -558,7 +559,7 @@ async function executeQueue() {
 		});
 
 		// 念の為backedを再チェック
-		weakBacked = !checkTop();
+		weakBacked = !checkTop(BACK_TO_TOP_TOLERANCE);
 
 		// adjustScrollが終わり次第タイムラインの下側を切り捨てる
 		denyMoveTransition.value = true;
