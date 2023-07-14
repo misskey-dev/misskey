@@ -95,7 +95,7 @@ function fetchMoreUsers() {
 	os.api('users/show', {
 		userIds: queueUserIds.slice(0, FETCH_USERS_LIMIT),
 	}).then(_users => {
-		users.concat(_users);
+		users = users.concat(_users);
 		queueUserIds = queueUserIds.slice(FETCH_USERS_LIMIT);
 	}).finally(() => {
 		fetching = false;
