@@ -5,6 +5,7 @@
 		<div v-if="list" class="_gaps">
 			<MkFolder>
 				<template #label>{{ i18n.ts.settings }}</template>
+				<template #caption?>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
 
 				<div class="_gaps">
 					<MkInput v-model="name">
@@ -49,13 +50,15 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache';
+import { UserList, UserLite } from 'misskey-js/built/entities';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	listId: string;
 }>();
 
-let list = $ref(null);
-let users = $ref([]);
+let list = $ref<UserList | null>(null);
+let users = $ref<UserLite[]>([]);
 const isPublic = ref(false);
 const name = ref('');
 
@@ -77,6 +80,7 @@ function fetchList() {
 
 function addUser() {
 	os.selectUser().then(user => {
+		if (!list) return;
 		os.apiWithDialog('users/lists/push', {
 			listId: list.id,
 			userId: user.id,
@@ -92,6 +96,7 @@ async function removeUser(user, ev) {
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
+			if (!list) return;
 			os.api('users/lists/pull', {
 				listId: list.id,
 				userId: user.id,
@@ -103,6 +108,7 @@ async function removeUser(user, ev) {
 }
 
 async function deleteList() {
+	if (!list) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.t('removeAreYouSure', { x: list.name }),
@@ -117,6 +123,7 @@ async function deleteList() {
 }
 
 async function updateSettings() {
+	if (!list) return;
 	await os.apiWithDialog('users/lists/update', {
 		listId: list.id,
 		name: name.value,
