@@ -165,8 +165,8 @@ const timerForSetPause = ref<number | null>(null);
 //#region scrolling
 const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
 const checkTop = (tolerance?: number) => {
-	if (!contentEl) return;
-	if (!document.body.contains(contentEl)) return;
+	if (!contentEl) return true;
+	if (!document.body.contains(contentEl)) return true;
 	return checkFn(contentEl, tolerance, scrollableElement);
 };
 /**
