@@ -1837,6 +1837,7 @@ export interface Locale {
         "homeTimeline": string;
         "users": string;
         "userList": string;
+        "userBlacklist": string;
     };
     "_weekday": {
         "sunday": string;
@@ -2158,4 +2159,4 @@ export interface Locale {
 declare const locales: {
     [lang: string]: Locale;
 };
-export default locales;
+export = locales;
