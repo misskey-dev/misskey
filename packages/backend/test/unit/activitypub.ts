@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
 
+import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -11,9 +12,12 @@ import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { IActivity, IActor, ICollection, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
-import { Note } from '@/models/index.js';
+import type { IActivity, IApDocument, IActor, ICollection, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
+import { Meta, Note } from '@/models/index.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { DownloadService } from '@/core/DownloadService.js';
+import { MetaService } from '@/core/MetaService.js';
+import type { RemoteUser } from '@/models/entities/User.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
@@ -120,16 +124,47 @@ function createRandomPagedOutbox(actor: NonTransientIActor): NonTransientIOrdere
 	};
 }
 
+async function createRandomRemoteUser(
+	resolver: MockResolver,
+	personService: ApPersonService,
+): Promise<RemoteUser> {
+	const actor = createRandomActor();
+	resolver.register(actor.id, actor);
+
+	return await personService.createPerson(actor.id, resolver);
+}
+
 describe('ActivityPub', () => {
+	let imageService: ApImageService;
 	let noteService: ApNoteService;
 	let personService: ApPersonService;
 	let rendererService: ApRendererService;
 	let resolver: MockResolver;
 
+	const metaInitial = {
+		cacheRemoteFiles: true,
+		cacheRemoteSensitiveFiles: true,
+		blockedHosts: [] as string[],
+		sensitiveWords: [] as string[],
+	} as Meta;
+	let meta = metaInitial;
+
 	beforeAll(async () => {
 		const app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
-		}).compile();
+		})
+			.overrideProvider(DownloadService).useValue({
+				async downloadUrl(): Promise<{ filename: string }> {
+					return {
+						filename: 'dummy.tmp',
+					};
+				},
+			})
+			.overrideProvider(MetaService).useValue({
+				async fetch(): Promise<Meta> {
+					return meta;
+				},
+			}).compile();
 
 		await app.init();
 		app.enableShutdownHooks();
@@ -137,6 +172,7 @@ describe('ActivityPub', () => {
 		noteService = app.get<ApNoteService>(ApNoteService);
 		personService = app.get<ApPersonService>(ApPersonService);
 		rendererService = app.get<ApRendererService>(ApRendererService);
+		imageService = app.get<ApImageService>(ApImageService);
 		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
@@ -363,6 +399,93 @@ describe('ActivityPub', () => {
 				const note = await noteService.fetchNote(item.object);
 				assert.ok(!note);
 			}
+		});
+	});
+
+	describe('Images', () => {
+		test('Create images', async () => {
+			const imageObject: IApDocument = {
+				type: 'Document',
+				mediaType: 'image/png',
+				url: 'http://host1.test/foo.png',
+				name: '',
+			};
+			const driveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				imageObject,
+			);
+			assert.ok(!driveFile.isLink);
+
+			const sensitiveImageObject: IApDocument = {
+				type: 'Document',
+				mediaType: 'image/png',
+				url: 'http://host1.test/bar.png',
+				name: '',
+				sensitive: true,
+			};
+			const sensitiveDriveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				sensitiveImageObject,
+			);
+			assert.ok(!sensitiveDriveFile.isLink);
+		});
+
+		test('cacheRemoteFiles=false disables caching', async () => {
+			meta = { ...metaInitial, cacheRemoteFiles: false };
+
+			const imageObject: IApDocument = {
+				type: 'Document',
+				mediaType: 'image/png',
+				url: 'http://host1.test/foo.png',
+				name: '',
+			};
+			const driveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				imageObject,
+			);
+			assert.ok(driveFile.isLink);
+
+			const sensitiveImageObject: IApDocument = {
+				type: 'Document',
+				mediaType: 'image/png',
+				url: 'http://host1.test/bar.png',
+				name: '',
+				sensitive: true,
+			};
+			const sensitiveDriveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				sensitiveImageObject,
+			);
+			assert.ok(sensitiveDriveFile.isLink);
+		});
+
+		test('cacheRemoteSensitiveFiles=false only affects sensitive files', async () => {
+			meta = { ...metaInitial, cacheRemoteSensitiveFiles: false };
+
+			const imageObject: IApDocument = {
+				type: 'Document',
+				mediaType: 'image/png',
+				url: 'http://host1.test/foo.png',
+				name: '',
+			};
+			const driveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				imageObject,
+			);
+			assert.ok(!driveFile.isLink);
+
+			const sensitiveImageObject: IApDocument = {
+				type: 'Document',
+				mediaType: 'image/png',
+				url: 'http://host1.test/bar.png',
+				name: '',
+				sensitive: true,
+			};
+			const sensitiveDriveFile = await imageService.createImage(
+				await createRandomRemoteUser(resolver, personService),
+				sensitiveImageObject,
+			);
+			assert.ok(sensitiveDriveFile.isLink);
 		});
 	});
 });
