@@ -80,7 +80,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAnnounce(object: string | IObject | null, note: Note): IAnnounce {
+	public renderAnnounce(object: string | IObject, note: Note): IAnnounce {
 		const attributedTo = this.userEntityService.genLocalUserUri(note.userId);
 
 		let to: string[] = [];

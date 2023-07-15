@@ -248,7 +248,7 @@ describe('ActivityPub', () => {
 
 	describe('Renderer', () => {
 		test('Render an announce with visibility: followers', () => {
-			rendererService.renderAnnounce(null, {
+			rendererService.renderAnnounce('hoge', {
 				createdAt: new Date(0),
 				visibility: 'followers',
 			} as Note);
