@@ -65,6 +65,7 @@ export type Source = {
 		apiKey: string;
 		ssl?: boolean;
 		index: string;
+		scope?: 'local' | 'global' | string[];
 	};
 
 	proxy?: string;

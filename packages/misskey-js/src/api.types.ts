@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -57,6 +57,8 @@ export type Endpoints = {
 	'admin/federation/refresh-remote-instance-metadata': { req: TODO; res: TODO; };
 	'admin/federation/remove-all-following': { req: TODO; res: TODO; };
 	'admin/federation/update-instance': { req: TODO; res: TODO; };
+	'admin/invite/create': { req: TODO; res: TODO; };
+	'admin/invite/list': { req: TODO; res: TODO; };
 	'admin/moderators/add': { req: TODO; res: TODO; };
 	'admin/moderators/remove': { req: TODO; res: TODO; };
 	'admin/promo/create': { req: TODO; res: TODO; };
@@ -439,6 +441,12 @@ export type Endpoints = {
 	'i/2fa/register': { req: TODO; res: TODO; };
 	'i/2fa/remove-key': { req: TODO; res: TODO; };
 	'i/2fa/unregister': { req: TODO; res: TODO; };
+
+	// invite
+	'invite/create': { req: NoParams; res: Invite; };
+	'invite/delete': { req: { inviteId: Invite['id']; }; res: null; };
+	'invite/list': { req: { limit?: number; sinceId?: Invite['id']; untilId?: Invite['id'] }; res: Invite[]; };
+	'invite/limit': { req: NoParams; res: InviteLimit; };
 
 	// messaging
 	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
