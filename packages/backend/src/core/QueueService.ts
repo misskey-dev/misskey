@@ -1,5 +1,5 @@
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import Bull from 'bull';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
@@ -382,7 +382,7 @@ export class QueueService {
 			to: webhook.url,
 			secret: webhook.secret,
 			createdAt: Date.now(),
-			eventId: uuid(),
+			eventId: randomUUID(),
 		};
 
 		return this.webhookDeliverQueue.add(data, {
