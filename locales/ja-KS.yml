@@ -1067,6 +1067,8 @@ branding: "あ"
 enableServerMachineStats: "サーバーのマシン情報見せびらかすで"
 enableIdenticonGeneration: "ユーザーごとのIdenticon生成を有効にする"
 turnOffToImprovePerformance: "オフにしたらえらい軽うなるで。"
+unused: "つこてへん"
+used: "もうつこてる"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
@@ -1493,6 +1495,7 @@ _aboutMisskey:
 _displayOfSensitiveMedia:
   respect: "きわどいのは見とうない"
   ignore: "きわどいのも見たい"
+  force: "常にメディアを隠すで"
 _instanceTicker:
   none: "表示せん"
   remote: "リモートユーザーに表示"
