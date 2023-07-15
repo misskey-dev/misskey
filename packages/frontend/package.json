@@ -118,7 +118,7 @@
 		"acorn": "8.10.0",
 		"chokidar-cli": "3.0.0",
 		"cross-env": "7.0.3",
-		"cypress": "12.17.2",
+		"cypress": "12.17.1",
 		"eslint": "8.45.0",
 		"eslint-plugin-import": "2.27.5",
 		"eslint-plugin-vue": "9.15.1",
