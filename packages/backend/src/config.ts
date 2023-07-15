@@ -96,6 +96,7 @@ export type Source = {
 	videoThumbnailGenerator?: string;
 
 	signToActivityPubGet?: boolean;
+	outboxNotesFetchLimit?: number;
 };
 
 /**

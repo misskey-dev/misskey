@@ -638,6 +638,8 @@ export class ApPersonService implements OnModuleInit {
 	 * This only retrieves the first page for now.
 	 */
 	public async updateOutboxFirstPage(user: RemoteUser, outbox: IActor['outbox'], resolver: Resolver): Promise<void> {
+		if (!this.config.outboxNotesFetchLimit) return;
+
 		// https://www.w3.org/TR/activitypub/#actor-objects
 		// Outbox is a required property for all actors
 		if (!outbox) {
@@ -655,8 +657,8 @@ export class ApPersonService implements OnModuleInit {
 			await resolver.resolveOrderedCollectionPage(collection.first) :
 			collection;
 
-		// Perform activity but only the first 20 ones with `type: Create`
-		await this.apInboxService.performActivity(user, firstPage, { limit: 20, allow: ['Create'] });
+		// Perform activity but only the first outboxNotesFetchLimit ones with `type: Create`
+		await this.apInboxService.performActivity(user, firstPage, { limit: this.config.outboxNotesFetchLimit, allow: ['Create'] });
 	}
 
 	/**
