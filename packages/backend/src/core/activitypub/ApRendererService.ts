@@ -1,7 +1,6 @@
-import { createPublicKey } from 'node:crypto';
+import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -613,7 +612,7 @@ export class ApRendererService {
 	@bindThis
 	public addContext<T extends IObject>(x: T): T & { '@context': any; id: string; } {
 		if (typeof x === 'object' && x.id == null) {
-			x.id = `${this.config.url}/${uuid()}`;
+			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
 		return Object.assign({
