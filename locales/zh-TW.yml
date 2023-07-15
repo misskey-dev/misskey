@@ -1072,6 +1072,7 @@ branding: "品牌宣傳"
 enableServerMachineStats: "公布伺服器的機器資訊"
 enableIdenticonGeneration: "啟用每個使用者的Identicon"
 turnOffToImprovePerformance: "關閉時會提高性能。"
+createInviteCode: "建立邀請碼"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
