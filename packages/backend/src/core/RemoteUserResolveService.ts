@@ -71,7 +71,7 @@ export class RemoteUserResolveService {
 			return await this.apPersonService.createPerson(self.href);
 		}
 
-		// ユーザー情報が古い場合は、WebFilgerからやりなおして返す
+		// ユーザー情報が古い場合は、WebFingerからやりなおして返す
 		if (user.lastFetchedAt == null || Date.now() - user.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 			// 繋がらないインスタンスに何回も試行するのを防ぐ, 後続の同様処理の連続試行を防ぐ ため 試行前にも更新する
 			await this.usersRepository.update(user.id, {

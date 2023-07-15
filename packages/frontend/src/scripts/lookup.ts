@@ -18,7 +18,7 @@ export async function lookup(router?: Router) {
 	}
 
 	if (query.startsWith('#')) {
-		_router.push(`/tags/${encodeURIComponent(query.substr(1))}`);
+		_router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
 		return;
 	}
 

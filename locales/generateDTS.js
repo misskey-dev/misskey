@@ -51,11 +51,7 @@ export default function generateDTS() {
 				ts.NodeFlags.Const | ts.NodeFlags.Ambient | ts.NodeFlags.ContextFlags,
 			),
 		),
-		ts.factory.createExportAssignment(
-			undefined,
-			true,
-			ts.factory.createIdentifier('locales'),
-		),
+		ts.factory.createExportDefault(ts.factory.createIdentifier('locales')),
 	];
 	const printed = ts.createPrinter({
 		newLine: ts.NewLineKind.LineFeed,
