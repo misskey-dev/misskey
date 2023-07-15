@@ -516,6 +516,21 @@ export type Signin = {
 	success: boolean;
 };
 
+export type Invite = {
+	id: ID;
+	code: string;
+	expiresAt: DateString | null;
+	createdAt: DateString;
+	createdBy: UserLite | null;
+	usedBy: UserLite | null;
+	usedAt: DateString | null;
+	used: boolean;
+}
+
+export type InviteLimit = {
+	remaining: number;
+}
+
 export type UserSorting =
 	| '+follower'
 	| '-follower'
