@@ -52,6 +52,7 @@
 - nsfwjs のモデルロードを排他することで、重複ロードによってメモリ使用量が増加しないように
 - 連合の配送ジョブのパフォーマンスを向上（ロック機構の見直し、Redisキャッシュの活用）
 - featuredノートのsignedGet回数を減らしました
+- リモートサーバーからのNSFW映像のキャッシュだけを無効化できるオプションを追加
 - MeilisearchにIndexするノートの範囲を設定できるように
 - Fix: Remove Meilisearch index when notes are deleted
 - Fix: 非英語環境でのPostgreSQLのエラーハンドリングを修正

@@ -1,8 +1,8 @@
+import { randomUUID } from 'node:crypto';
 import { pipeline } from 'node:stream';
 import * as fs from 'node:fs';
 import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
@@ -362,7 +362,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (err instanceof ApiError || err instanceof AuthenticationError) {
 				throw err;
 			} else {
-				const errId = uuid();
+				const errId = randomUUID();
 				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					ep: ep.name,
 					ps: data,
