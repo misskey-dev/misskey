@@ -35,7 +35,7 @@ export const fromThemeString = (str?: string) : ThemeValue => {
 	} else if (str.startsWith('"')) {
 		return {
 			type: 'css',
-			value: str.substr(1).trim(),
+			value: str.substring(1).trim(),
 		};
 	} else {
 		return str;
