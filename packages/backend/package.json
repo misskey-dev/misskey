@@ -100,7 +100,7 @@
 		"fluent-ffmpeg": "2.1.2",
 		"form-data": "4.0.0",
 		"got": "13.0.0",
-		"happy-dom": "10.3.2",
+		"happy-dom": "10.0.3",
 		"hpagent": "1.2.0",
 		"ioredis": "5.3.2",
 		"ip-cidr": "3.1.0",
