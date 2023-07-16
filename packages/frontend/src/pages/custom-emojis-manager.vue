@@ -18,7 +18,7 @@
 						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-						<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
+						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
@@ -221,7 +221,7 @@ const setCategoryBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-const setLisenceBulk = async () => {
+const setLicenseBulk = async () => {
 	const { canceled, result } = await os.inputText({
 		title: 'License',
 	});

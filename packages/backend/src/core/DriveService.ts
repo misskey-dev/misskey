@@ -1,6 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import sharp from 'sharp';
 import { sharpBmp } from 'sharp-read-bmp';
 import { IsNull } from 'typeorm';
@@ -162,7 +162,7 @@ export class DriveService {
 				?? `${ meta.objectStorageUseSSL ? 'https' : 'http' }://${ meta.objectStorageEndpoint }${ meta.objectStoragePort ? `:${meta.objectStoragePort}` : '' }/${ meta.objectStorageBucket }`;
 
 			// for original
-			const key = `${meta.objectStoragePrefix}/${uuid()}${ext}`;
+			const key = `${meta.objectStoragePrefix}/${randomUUID()}${ext}`;
 			const url = `${ baseUrl }/${ key }`;
 
 			// for alts
@@ -179,7 +179,7 @@ export class DriveService {
 			];
 
 			if (alts.webpublic) {
-				webpublicKey = `${meta.objectStoragePrefix}/webpublic-${uuid()}.${alts.webpublic.ext}`;
+				webpublicKey = `${meta.objectStoragePrefix}/webpublic-${randomUUID()}.${alts.webpublic.ext}`;
 				webpublicUrl = `${ baseUrl }/${ webpublicKey }`;
 
 				this.registerLogger.info(`uploading webpublic: ${webpublicKey}`);
@@ -187,7 +187,7 @@ export class DriveService {
 			}
 
 			if (alts.thumbnail) {
-				thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${uuid()}.${alts.thumbnail.ext}`;
+				thumbnailKey = `${meta.objectStoragePrefix}/thumbnail-${randomUUID()}.${alts.thumbnail.ext}`;
 				thumbnailUrl = `${ baseUrl }/${ thumbnailKey }`;
 
 				this.registerLogger.info(`uploading thumbnail: ${thumbnailKey}`);
@@ -212,9 +212,9 @@ export class DriveService {
 
 			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
 		} else { // use internal storage
-			const accessKey = uuid();
-			const thumbnailAccessKey = 'thumbnail-' + uuid();
-			const webpublicAccessKey = 'webpublic-' + uuid();
+			const accessKey = randomUUID();
+			const thumbnailAccessKey = 'thumbnail-' + randomUUID();
+			const webpublicAccessKey = 'webpublic-' + randomUUID();
 
 			const url = this.internalStorageService.saveFromPath(accessKey, path);
 
@@ -584,9 +584,9 @@ export class DriveService {
 			if (isLink) {
 				file.url = url;
 				// ローカルプロキシ用
-				file.accessKey = uuid();
-				file.thumbnailAccessKey = 'thumbnail-' + uuid();
-				file.webpublicAccessKey = 'webpublic-' + uuid();
+				file.accessKey = randomUUID();
+				file.thumbnailAccessKey = 'thumbnail-' + randomUUID();
+				file.webpublicAccessKey = 'webpublic-' + randomUUID();
 			}
 		}
 
@@ -713,9 +713,9 @@ export class DriveService {
 				webpublicUrl: null,
 				storedInternal: false,
 				// ローカルプロキシ用
-				accessKey: uuid(),
-				thumbnailAccessKey: 'thumbnail-' + uuid(),
-				webpublicAccessKey: 'webpublic-' + uuid(),
+				accessKey: randomUUID(),
+				thumbnailAccessKey: 'thumbnail-' + randomUUID(),
+				webpublicAccessKey: 'webpublic-' + randomUUID(),
 			});
 		} else {
 			this.driveFilesRepository.delete(file.id);

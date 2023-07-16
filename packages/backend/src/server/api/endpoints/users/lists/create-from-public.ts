@@ -84,11 +84,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const list = await this.userListsRepository.findOneBy({
-				id: ps.listId,
-				isPublic: true,
+			const listExist = await this.userListsRepository.exist({
+				where: {
+					id: ps.listId,
+					isPublic: true,
+				},
 			});
-			if (list === null) throw new ApiError(meta.errors.noSuchList);
+			if (!listExist) throw new ApiError(meta.errors.noSuchList);
 			const currentCount = await this.userListsRepository.countBy({
 				userId: me.id,
 			});
@@ -114,18 +116,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 
 				if (currentUser.id !== me.id) {
-					const block = await this.blockingsRepository.findOneBy({
-						blockerId: currentUser.id,
-						blockeeId: me.id,
+					const blockExist = await this.blockingsRepository.exist({
+						where: {
+							blockerId: currentUser.id,
+							blockeeId: me.id,
+						},
 					});
-					if (block) {
+					if (blockExist) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
 
-				const exist = await this.userListJoiningsRepository.findOneBy({
-					userListId: userList.id,
-					userId: currentUser.id,
+				const exist = await this.userListJoiningsRepository.exist({
+					where: {
+						userListId: userList.id,
+						userId: currentUser.id,
+					},
 				});
 
 				if (exist) {

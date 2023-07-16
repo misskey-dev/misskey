@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
 import { User } from './User.js';
-import type { Clip } from './Clip.js';
 
 @Entity()
 export class Meta {
@@ -131,6 +130,11 @@ export class Meta {
 		default: true,
 	})
 	public cacheRemoteFiles: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public cacheRemoteSensitiveFiles: boolean;
 
 	@Column({
 		...id(),
