@@ -11,11 +11,11 @@ import { createTemp } from '@/misc/create-temp.js';
 import type { Poll } from '@/models/entities/Poll.js';
 import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { Packed } from '@/misc/json-schema.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type Bull from 'bull';
 import type { DbJobDataWithUser } from '../types.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
 
 @Injectable()
 export class ExportNotesProcessorService {
@@ -133,7 +133,7 @@ export class ExportNotesProcessorService {
 	}
 }
 
-function serialize(note: Note, poll: Poll | null = null, files: Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'>>): Record<string, unknown> {
+function serialize(note: Note, poll: Poll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
 	return {
 		id: note.id,
 		text: note.text,
