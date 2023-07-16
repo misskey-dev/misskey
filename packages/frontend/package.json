@@ -5,7 +5,7 @@
 		"watch": "vite",
 		"build": "vite build",
 		"storybook-dev": "nodemon --verbose --watch src --ext \"mdx,ts,vue\" --ignore \"*.stories.ts\" --exec \"pnpm build-storybook-pre && pnpm exec storybook dev -p 6006 --ci\"",
-		"build-storybook-pre": "tsc -p .storybook && node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js && storybook build",
+		"build-storybook-pre": "tsc -p .storybook && node .storybook/generate.js && node .storybook/preload-locale.js && node .storybook/preload-theme.js",
 		"build-storybook": "pnpm build-storybook-pre && storybook build",
 		"chromatic": "chromatic",
 		"test": "vitest --run",
