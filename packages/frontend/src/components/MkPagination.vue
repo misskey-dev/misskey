@@ -199,7 +199,6 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
  * weakBackedがtrue→falseになったらexecuteQueue
  */
 watch($$(weakBacked), () => {
-	console.log('weakBacked', weakBacked);
 	if (!weakBacked) {
 		executeQueue();
 	}
