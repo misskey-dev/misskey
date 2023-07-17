@@ -272,6 +272,7 @@ function adjustScroll(fn: () => void): Promise<void> {
 
 	return nextTick(() => {
 		try {
+			// scrollByで移動すればいいように思うがうまくいかない、なぜ？？
 			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 			scroll(scrollableElement, { top, behavior: 'instant' });
 
