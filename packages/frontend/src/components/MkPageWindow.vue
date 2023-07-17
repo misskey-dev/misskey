@@ -18,7 +18,7 @@
 	</template>
 
 	<div ref="contents" :class="$style.root" style="container-type: inline-size;">
-		<RouterView :key="reloadCount" :router="router"/>
+		<RouterView :key="reloadCount" :router="router" :scrollContainer="contents"/>
 	</div>
 </MkWindow>
 </template>
@@ -32,12 +32,11 @@ import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
 import { mainRouter, routes, page } from '@/router';
 import { $i } from '@/account';
-import { Router, useScrollPositionManager } from '@/nirax';
+import { Router } from '@/nirax';
 import { i18n } from '@/i18n';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { openingWindowsCount } from '@/os';
 import { claimAchievement } from '@/scripts/achievements';
-import { getScrollContainer } from '@/scripts/scroll';
 
 const props = defineProps<{
 	initialPath: string;
@@ -140,8 +139,6 @@ function popout() {
 	_popout(router.getCurrentPath(), windowEl.$el);
 	windowEl.close();
 }
-
-useScrollPositionManager(() => getScrollContainer(contents.value), router);
 
 onMounted(() => {
 	openingWindowsCount.value++;

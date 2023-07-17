@@ -49,24 +49,30 @@ function parsePath(path: string): ParsedPath {
 	return res;
 }
 
+export type NiraxChangeEvent = {
+	beforePath: string;
+	path: string;
+	resolved: Resolved;
+	key: string;
+};
+
+export type NiraxExportEvent = {
+	path: string;
+	key: string;
+};
+
+export type NiraxPushEvent = {
+	beforePath: string;
+	path: string;
+	route: RouteDef | null;
+	props: Map<string, string> | null;
+	key: string;
+};
+
 export class Router extends EventEmitter<{
-	change: (ctx: {
-		beforePath: string;
-		path: string;
-		resolved: Resolved;
-		key: string;
-	}) => void;
-	replace: (ctx: {
-		path: string;
-		key: string;
-	}) => void;
-	push: (ctx: {
-		beforePath: string;
-		path: string;
-		route: RouteDef | null;
-		props: Map<string, string> | null;
-		key: string;
-	}) => void;
+	change: (ctx: NiraxChangeEvent) => void;
+	replace: (ctx: NiraxExportEvent) => void;
+	push: (ctx: NiraxExportEvent) => void;
 	same: () => void;
 }> {
 	private routes: RouteDef[];
@@ -270,30 +276,4 @@ export class Router extends EventEmitter<{
 	public replace(path: string, key?: string | null) {
 		this.navigate(path, key);
 	}
-}
-
-export function useScrollPositionManager(getScrollContainer: () => HTMLElement, router: Router) {
-	const scrollPosStore = new Map<string, number>();
-
-	onMounted(() => {
-		const scrollContainer = getScrollContainer();
-
-		scrollContainer.addEventListener('scroll', () => {
-			scrollPosStore.set(router.getCurrentKey(), scrollContainer.scrollTop);
-		}, { passive: true });
-
-		router.addListener('change', ctx => {
-			const scrollPos = scrollPosStore.get(ctx.key) ?? 0;
-			scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
-			if (scrollPos !== 0) {
-				window.setTimeout(() => { // 遷移直後はタイミングによってはコンポーネントが復元し切ってない可能性も考えられるため少し時間を空けて再度スクロール
-					scrollContainer.scroll({ top: scrollPos, behavior: 'instant' });
-				}, 100);
-			}
-		});
-
-		router.addListener('same', () => {
-			scrollContainer.scroll({ top: 0, behavior: 'smooth' });
-		});
-	});
 }

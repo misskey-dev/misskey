@@ -8,7 +8,7 @@
 	</template>
 
 	<div ref="contents">
-		<RouterView @contextmenu.stop="onContextmenu"/>
+		<RouterView :scrollContainer="contents" @contextmenu.stop="onContextmenu"/>
 	</div>
 </XColumn>
 </template>
@@ -21,8 +21,6 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
 import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
-import { useScrollPositionManager } from '@/nirax';
-import { getScrollContainer } from '@/scripts/scroll';
 
 defineProps<{
 	column: Column;
@@ -66,6 +64,4 @@ function onContextmenu(ev: MouseEvent) {
 		},
 	}], ev);
 }
-
-useScrollPositionManager(() => getScrollContainer(contents.value), mainRouter);
 </script>
