@@ -551,6 +551,7 @@ function concatItems(oldItems: MisskeyEntity[]) {
 
 async function executeQueue() {
 	if (queue.value.size === 0) return;
+	if (isPausingUpdate.value) return;
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
 	isPausingUpdate.value = true;
