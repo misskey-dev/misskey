@@ -490,8 +490,8 @@ function visibilityChange() {
 
 onActivated(() => {
 	console.log('activated');
-	active.value = true;
 	nextTick(() => {
+		active.value = true;
 		visibilityChange();
 	});
 });
