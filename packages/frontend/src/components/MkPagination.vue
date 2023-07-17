@@ -49,8 +49,7 @@ import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
-const BACK_TO_TOP_TOLERANCE = 256;
-const TOP_STATIC_TOLERANCE = 64;
+const TOLERANCE = 256;
 const APPEAR_MINIMUM_INTERVAL = 600;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
@@ -110,7 +109,9 @@ let rootEl = $shallowRef<HTMLElement>();
  * スクロールが先頭にある場合はfalse
  * スクロールが先頭にない場合にtrue
  */
+// 先頭にいるか（prependでキューに追加するかどうかの判定に使う）
 let backed = $ref(false);
+// true→falseの変更でexecuteQueueする
 let weakBacked = $ref(false);
 
 let scrollRemove = $ref<(() => void) | null>(null);
@@ -184,7 +185,8 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
-		threshold: [0.01, 0.05, 0.1], // ターゲットの可視範囲は10%以上（0.01を含めないと検出されないことがある）
+		// 12%以上先頭にいる場合はweakBackedをtrueにしたい
+		threshold: [0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12],
 	});
 	console.log('new scrollObserver', scrollObserver);
 }, { immediate: true });
@@ -196,15 +198,17 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
 });
 
 /**
- * onScrollTop/onScrollBottomで細かく検出する
+ * weakBackedがtrue→falseになったらexecuteQueue
  */
-watch($$(backed), () => {
-	console.log('backed changed', backed);
-	if (!backed) {
+watch($$(weakBacked), () => {
+	if (!weakBacked) {
 		executeQueue();
 	}
 });
 
+/**
+ * onScrollTop/onScrollBottomでbackedを厳密に検出する
+ */
 watch([$$(weakBacked), $$(contentEl)], () => {
 	if (scrollRemove) scrollRemove();
 	scrollRemove = null;
@@ -218,7 +222,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	console.log('weakBacked watcher add scrollRemove', weakBacked, contentEl);
 	scrollRemove = (() => {
 		const checkBacked = () => {
-			backed = !checkTop(BACK_TO_TOP_TOLERANCE);
+			backed = !checkTop(TOLERANCE);
 			console.log('checkBacked', backed);
 		};
 
@@ -512,7 +516,7 @@ const prepend = (item: MisskeyEntity): void => {
 		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value && // keepAliveで隠されている間はキューに追加する
-		checkTop(TOP_STATIC_TOLERANCE) // 先頭に表示されていない時はキューに追加する
+		!backed // 先頭に表示されていない時はキューに追加する
 	) {
 		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 		unshiftItems([item]);
@@ -559,7 +563,7 @@ async function executeQueue() {
 		});
 
 		// 念の為backedを再チェック
-		weakBacked = !checkTop(BACK_TO_TOP_TOLERANCE);
+		weakBacked = !checkTop(TOLERANCE);
 
 		// adjustScrollが終わり次第タイムラインの下側を切り捨てる
 		denyMoveTransition.value = true;
