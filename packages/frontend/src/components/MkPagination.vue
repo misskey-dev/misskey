@@ -239,15 +239,14 @@ watch([$$(weakBacked), $$(contentEl)], () => {
  */
 function adjustScroll(fn: () => void): Promise<void> {
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
+	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 
 	denyMoveTransition.value = true;
 
 	fn();
 
 	return nextTick(() => {
-		const diff = (scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight;
-		const newScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
-		const top = newScroll + diff;
+		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
 		scroll(scrollableElement, { top, behavior: 'instant' });
 
 		denyMoveTransition.value = false;
