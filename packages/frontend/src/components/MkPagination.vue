@@ -233,6 +233,10 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	})();
 });
 
+function preventDefault(ev: Event) {
+	ev.preventDefault();
+}
+
 /**
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
  * @param fn DOM操作(unshiftItemsなどで)
@@ -240,15 +244,32 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 function adjustScroll(fn: () => void): Promise<void> {
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
+	// スクロールをやめさせる
+	try {
+		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
+		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
+		// ついでにtryに入れてみる
+		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+	} catch (err) {
+		console.error(err, { scrollableElementOrHtml });
+	}
 
 	denyMoveTransition.value = true;
 
 	fn();
 
 	return nextTick(() => {
-		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
-		scroll(scrollableElement, { top, behavior: 'instant' });
+		try {
+			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
+			scroll(scrollableElement, { top, behavior: 'instant' });
 
+			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+			scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
+			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
+		} catch (err) {
+			console.error(err, { scrollableElementOrHtml });
+		}
 		denyMoveTransition.value = false;
 		return nextTick();
 	});
