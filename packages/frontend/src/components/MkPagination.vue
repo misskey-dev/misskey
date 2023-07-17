@@ -526,6 +526,7 @@ const prepend = (item: MisskeyEntity): void => {
 			executeQueue();
 			return;
 		}
+		// キューが5つより多い時はキューに追加するだけ
 		prependQueue(item);
 	} else {
 		prependQueue(item);
