@@ -49,7 +49,8 @@ import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
-const TOLERANCE = 256;
+const TOLERANCE = 6;
+const WEAK_TOLERAMCE = 256;
 const APPEAR_MINIMUM_INTERVAL = 600;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
@@ -181,20 +182,17 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 
 	scrollObserver = new IntersectionObserver(entries => {
 		if (!active.value) return; // activeでない時は触らない
-		console.log('scrollObserver', entries[0].isIntersecting);
 		weakBacked = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-130% 0px 130% 0px' : '130% 0px -130% 0px',
 		threshold: [0],
 	});
-	console.log('new scrollObserver', scrollObserver);
 }, { immediate: true });
 
 watch([$$(rootEl), $$(scrollObserver)], () => {
 	scrollObserver?.disconnect();
 	if (rootEl) scrollObserver?.observe(rootEl);
-	console.log('scrollObserver observe', rootEl);
 });
 
 /**
@@ -214,17 +212,14 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	scrollRemove = null;
 
 	if (weakBacked || !contentEl) {
-		console.log('weakBacked watcher remove scrollRemove', weakBacked, contentEl);
 		if (weakBacked) backed = true;
 		return;
 	}
 
-	console.log('weakBacked watcher add scrollRemove', weakBacked, contentEl);
 	scrollRemove = (() => {
 		const checkBacked = () => {
 			if (!active.value) return; // activeでない時は触らない
 			backed = !checkTop(TOLERANCE);
-			console.log('checkBacked', backed);
 		};
 
 		// とりあえず評価してみる
@@ -247,7 +242,6 @@ function preventDefault(ev: Event) {
  * @param fn DOM操作(unshiftItemsなどで)
  */
 function adjustScroll(fn: () => void): Promise<void> {
-	console.log('adjustScroll');
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 	// スクロールをやめさせる
@@ -289,7 +283,6 @@ function adjustScroll(fn: () => void): Promise<void> {
  * 注意: moreFetchingをtrueにするのでfalseにする必要がある
  */
 async function init(): Promise<void> {
-	console.log('init');
 	items.value = new Map();
 	queue.value = new Map();
 	fetching.value = true;
@@ -327,7 +320,6 @@ async function init(): Promise<void> {
  * reloadでinitが呼ばれた時はreload内でinitの後に呼ばれる
  */
 function scrollAfterInit() {
-	console.log('scrollAfterInit');
 	if (props.pagination.reversed) {
 		nextTick(() => {
 			setTimeout(async () => {
@@ -479,7 +471,6 @@ function visibilityChange() {
 			clearTimeout(timerForSetPause.value);
 			timerForSetPause.value = null;
 		} else {
-			console.log('visibilityChange: executeQueue', 'backed', backed, 'active', active.value);
 			isPausingUpdate.value = false;
 			if (!backed && active.value) {
 				executeQueue();
@@ -489,7 +480,6 @@ function visibilityChange() {
 }
 
 onActivated(() => {
-	console.log('activated');
 	nextTick(() => {
 		active.value = true;
 		visibilityChange();
@@ -497,7 +487,6 @@ onActivated(() => {
 });
 
 onDeactivated(() => {
-	console.log('deactivated');
 	active.value = false;
 });
 
@@ -509,8 +498,6 @@ watch(visibility, visibilityChange);
  * @param item アイテム
  */
 const prepend = (item: MisskeyEntity): void => {
-	console.log('prepend', item, 'queueSize', queueSize.value, 'backed', backed, 'isPausingUpdate', isPausingUpdate, 'active', active.value);
-
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
@@ -554,7 +541,6 @@ function concatItems(oldItems: MisskeyEntity[]) {
 }
 
 async function executeQueue() {
-	console.log('executeQueue');
 	if (queue.value.size === 0) return;
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
@@ -568,7 +554,7 @@ async function executeQueue() {
 		});
 
 		// 念の為backedを再チェック
-		weakBacked = !checkTop(TOLERANCE);
+		weakBacked = !checkTop(WEAK_TOLERAMCE);
 
 		// adjustScrollが終わり次第タイムラインの下側を切り捨てる
 		denyMoveTransition.value = true;
