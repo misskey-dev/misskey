@@ -205,6 +205,15 @@ watch($$(weakBacked), () => {
 });
 
 /**
+ * backedがtrue→falseになってもexecuteQueue
+ */
+watch($$(backed), () => {
+	if (!backed) {
+		executeQueue();
+	}
+});
+
+/**
  * onScrollTop/onScrollBottomでbackedを厳密に検出する
  */
 watch([$$(weakBacked), $$(contentEl)], () => {
