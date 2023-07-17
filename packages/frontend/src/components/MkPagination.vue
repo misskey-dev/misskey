@@ -182,11 +182,11 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 
 	scrollObserver = new IntersectionObserver(entries => {
 		if (!active.value) return; // activeでない時は触らない
-		weakBacked = entries[0].intersectionRatio > 0.02;
+		weakBacked = entries[0].intersectionRatio >= 0.1;
 	}, {
 		root: scrollableElement,
 		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
-		threshold: [0, 0.01, 0.02, 0.04, 0.08, 0.1, 0.12],
+		threshold: [0, 0.5, 0.1, 0.15, 0.2],
 	});
 }, { immediate: true });
 
