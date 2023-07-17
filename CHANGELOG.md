@@ -61,6 +61,7 @@
 - Fix: Remove Meilisearch index when notes are deleted
 - Fix: 非英語環境でのPostgreSQLのエラーハンドリングを修正
 - Fix: インスタンスのアイコンがbase64の場合の挙動を修正
+- Add unix socket support
 
 ## 13.13.2
 
