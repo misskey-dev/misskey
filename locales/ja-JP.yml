@@ -2050,6 +2050,7 @@ _deck:
   introduction: "カラムを組み合わせて自分だけのインターフェイスを作りましょう！"
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"
+  useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
 
   _columns:
     main: "メイン"
