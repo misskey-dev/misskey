@@ -45,8 +45,8 @@
 			</div>
 		</div>
 		<div :class="$style.buttons">
-			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()">{{ i18n.ts.copy }}</MkButton>
-			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()">{{ i18n.ts.delete }}</MkButton>
+			<MkButton v-if="!invite.used && !isExpired" primary rounded @click="copyInviteCode()"><i class="ti ti-copy"></i> {{ i18n.ts.copy }}</MkButton>
+			<MkButton v-if="!invite.used || moderator" danger rounded @click="deleteCode()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
 </MkFolder>
@@ -102,6 +102,7 @@ function copyInviteCode() {
 	font-size: 0.85em;
 	padding: 0 0 8px 0;
 	user-select: none;
+	opacity: 0.7;
 }
 
 .user {
