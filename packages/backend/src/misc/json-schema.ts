@@ -19,6 +19,7 @@ import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js'
 import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
+import { packedInviteCodeSchema } from '@/models/json-schema/invite-code.js';
 import { packedPageSchema } from '@/models/json-schema/page.js';
 import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js';
 import { packedChannelSchema } from '@/models/json-schema/channel.js';
@@ -52,6 +53,7 @@ export const refs = {
 	RenoteMuting: packedRenoteMutingSchema,
 	Blocking: packedBlockingSchema,
 	Hashtag: packedHashtagSchema,
+	InviteCode: packedInviteCodeSchema,
 	Page: packedPageSchema,
 	Channel: packedChannelSchema,
 	QueueCount: packedQueueCountSchema,

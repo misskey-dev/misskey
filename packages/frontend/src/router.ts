@@ -202,6 +202,10 @@ export const routes = [{
 	path: '/about-misskey',
 	component: page(() => import('./pages/about-misskey.vue')),
 }, {
+	path: '/invite',
+	name: 'invite',
+	component: page(() => import('./pages/invite.vue')),
+}, {
 	path: '/ads',
 	component: page(() => import('./pages/ads.vue')),
 }, {
@@ -428,6 +432,10 @@ export const routes = [{
 		path: '/server-rules',
 		name: 'server-rules',
 		component: page(() => import('./pages/admin/server-rules.vue')),
+	}, {
+		path: '/invites',
+		name: 'invites',
+		component: page(() => import('./pages/admin/invites.vue')),
 	}, {
 		path: '/',
 		component: page(() => import('./pages/_empty_.vue')),
