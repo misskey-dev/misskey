@@ -565,9 +565,6 @@ async function executeQueue() {
 			);
 		});
 
-		// 念の為backedを再チェック
-		weakBacked = !checkTop(WEAK_TOLERAMCE);
-
 		// adjustScrollが終わり次第タイムラインの下側を切り捨てる
 		denyMoveTransition.value = true;
 		items.value = new Map([...items.value].slice(0, displayLimit.value));
