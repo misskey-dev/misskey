@@ -180,6 +180,7 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 	if (scrollObserver) scrollObserver.disconnect();
 
 	scrollObserver = new IntersectionObserver(entries => {
+		if (!active.value) return; // activeでない時は触らない
 		console.log('scrollObserver', entries[0].isIntersecting);
 		weakBacked = entries[0].isIntersecting;
 	}, {
@@ -221,6 +222,7 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	console.log('weakBacked watcher add scrollRemove', weakBacked, contentEl);
 	scrollRemove = (() => {
 		const checkBacked = () => {
+			if (!active.value) return; // activeでない時は触らない
 			backed = !checkTop(TOLERANCE);
 			console.log('checkBacked', backed);
 		};
@@ -487,11 +489,15 @@ function visibilityChange() {
 }
 
 onActivated(() => {
+	console.log('activated');
 	active.value = true;
-	visibilityChange();
+	nextTick(() => {
+		visibilityChange();
+	});
 });
 
 onDeactivated(() => {
+	console.log('deactivated');
 	active.value = false;
 });
 
