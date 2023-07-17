@@ -184,9 +184,8 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 		weakBacked = entries[0].isIntersecting;
 	}, {
 		root: scrollableElement,
-		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
-		// 12%以上先頭にいる場合はweakBackedをtrueにしたい
-		threshold: [0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12],
+		rootMargin: props.pagination.reversed ? '-110% 0px 110% 0px' : '110% 0px -110% 0px',
+		threshold: [0],
 	});
 	console.log('new scrollObserver', scrollObserver);
 }, { immediate: true });
