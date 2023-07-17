@@ -248,6 +248,7 @@ function preventDefault(ev: Event) {
 
 /**
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
+ * ChromeやFirefoxはこれをいい感じにやってくれるが、Safariはやってくれないため自分で実装する必要がある
  * @param fn DOM操作(unshiftItemsなどで)
  */
 function adjustScroll(fn: () => void): Promise<void> {
