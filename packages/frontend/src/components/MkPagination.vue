@@ -182,10 +182,10 @@ watch([() => props.pagination.reversed, $$(scrollableElement)], () => {
 
 	scrollObserver = new IntersectionObserver(entries => {
 		if (!active.value) return; // activeでない時は触らない
-		weakBacked = entries[0].intersectionRatio > 0.1;
+		weakBacked = entries[0].intersectionRatio > 0.02;
 	}, {
 		root: scrollableElement,
-		rootMargin: props.pagination.reversed ? '-1000% 0px 100% 0px' : '100% 0px -1000% 0px',
+		rootMargin: props.pagination.reversed ? '-100% 0px 100% 0px' : '100% 0px -100% 0px',
 		threshold: [0, 0.01, 0.02, 0.04, 0.08, 0.1, 0.12],
 	});
 }, { immediate: true });
@@ -518,20 +518,11 @@ const prepend = (item: MisskeyEntity): void => {
 	if (
 		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
-		active.value // keepAliveで隠されている間はキューに追加する
+		active.value && // keepAliveで隠されている間はキューに追加する
+		!backed // 先頭に表示されていない時はキューに追加する
 	) {
-		if (!backed) {
-			// 先頭にいる場合は単に追加する
-			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
-			unshiftItems([item]);
-		} else if (!weakBacked) {
-			// ちょっと先頭にいる場合はスクロールを調整する
-			prependQueue(item);
-			executeQueue();
-		} else {
-			// 先頭にいない場合はキューに追加する
-			prependQueue(item);
-		}
+		if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
+		unshiftItems([item]);
 	} else {
 		prependQueue(item);
 	}
