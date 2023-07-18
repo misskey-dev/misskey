@@ -26,7 +26,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching" :denyMoveTransition="denyMoveTransition"></slot>
+		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -147,7 +147,6 @@ const preventAppearFetchMore = ref(false);
 const preventAppearFetchMoreTimer = ref<number | null>(null);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
-const denyMoveTransition = ref(false);
 const {
 	enableInfiniteScroll,
 } = defaultStore.reactiveState;
@@ -240,53 +239,6 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 		return removeListener;
 	})();
 });
-
-function preventDefault(ev: Event) {
-	ev.preventDefault();
-}
-
-/**
- * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
- * ChromeやFirefoxはこれをいい感じにやってくれるが、Safariはやってくれないため自分で実装する必要がある
- * @param fn DOM操作(unshiftItemsなどで)
- */
-async function adjustScroll(fn: () => void): Promise<void> {
-	denyMoveTransition.value = true;
-
-	await nextTick();
-
-	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
-	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
-	// スクロールをやめさせる
-	try {
-		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
-		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
-		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
-		// ついでにtryに入れてみる
-		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
-	} catch (err) {
-		console.error(err, { scrollableElementOrHtml });
-	}
-
-	fn();
-
-	return await nextTick(() => {
-		try {
-			// scrollByで移動すればいいように思うがうまくいかない、なぜ？？
-			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
-			scroll(scrollableElement, { top, behavior: 'instant' });
-
-			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
-			scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
-			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
-		} catch (err) {
-			console.error(err, { scrollableElementOrHtml });
-		}
-		denyMoveTransition.value = false;
-		return nextTick();
-	});
-}
-//#endregion
 
 /**
  * 初期化
@@ -388,7 +340,7 @@ const fetchMore = async (): Promise<void> => {
 			if (i === 10) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = (_res) => adjustScroll(() => concatMapWithArray(items.value, _res));
+		const reverseConcat = (_res) => concatMapWithArray(items.value, _res);
 
 		if (res.length === 0) {
 			if (props.pagination.reversed) {
@@ -568,20 +520,15 @@ async function executeQueue() {
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
 	isPausingUpdate.value = true;
 	try {
-		await adjustScroll(() => {
-			unshiftItems(
-				queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
-				Infinity,
-			);
-		});
+		unshiftItems(
+			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
+			Infinity,
+		);
 
-		// adjustScrollが終わり次第タイムラインの下側を切り捨てる
-		denyMoveTransition.value = true;
 		items.value = new Map([...items.value].slice(0, displayLimit.value));
 		await nextTick();
 	} finally {
 		isPausingUpdate.value = false;
-		denyMoveTransition.value = false;
 	}
 }
 
