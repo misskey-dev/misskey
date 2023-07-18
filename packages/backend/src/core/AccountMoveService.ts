@@ -295,7 +295,7 @@ export class AccountMoveService {
 	 * dstユーザーのalsoKnownAsをfetchPersonしていき、本当にmovedToUrlをdstに指定するユーザーが存在するのかを調べる
 	 *
 	 * @param dst movedToUrlを指定するユーザー
-	 * @param check 
+	 * @param check
 	 * @param instant checkがtrueであるユーザーが最初に見つかったら即座にreturnするかどうか
 	 * @returns Promise<LocalUser | RemoteUser | null>
 	 */

@@ -88,7 +88,7 @@ onMounted(() => {
 		user = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
-			Acct.parse(props.q.substr(1)) :
+			Acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
 		os.api('users/show', query).then(res => {
@@ -195,7 +195,7 @@ onMounted(() => {
 .mfm {
 	display: -webkit-box;
 	-webkit-line-clamp: 5;
-	-webkit-box-orient: vertical;  
+	-webkit-box-orient: vertical;
 	overflow: hidden;
 }
 

@@ -20,7 +20,7 @@ export class CaptchaService {
 			secret,
 			response,
 		});
-	
+
 		const res = await this.httpRequestService.send(url, {
 			method: 'POST',
 			body: params.toString(),
@@ -28,14 +28,14 @@ export class CaptchaService {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 		}, { throwErrorWhenResponseNotOk: false });
-	
+
 		if (!res.ok) {
 			throw new Error(`${res.status}`);
 		}
-	
+
 		return await res.json() as CaptchaResponse;
-	}	
-	
+	}
+
 	@bindThis
 	public async verifyRecaptcha(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
@@ -73,7 +73,7 @@ export class CaptchaService {
 		if (response == null) {
 			throw new Error('turnstile-failed: no response provided');
 		}
-	
+
 		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(err => {
 			throw new Error(`turnstile-request-failed: ${err}`);
 		});

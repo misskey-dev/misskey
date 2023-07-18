@@ -30,6 +30,10 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
+# You can also use UNIX domain socket. 
+# socket: /path/to/misskey.sock
+# chmodSocket: '777'
+
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 
@@ -104,6 +108,7 @@ redis:
 #  apiKey: ''
 #  ssl: true
 #  index: ''
+#  scope: local
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────

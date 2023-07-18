@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			let notes = await query
 				.orderBy('note.score', 'DESC')
-				.take(100)
+				.limit(100)
 				.getMany();
 
 			notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
