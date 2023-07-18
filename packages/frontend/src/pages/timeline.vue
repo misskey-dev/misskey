@@ -48,8 +48,6 @@ const rootEl = $shallowRef<HTMLElement>();
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 
-watch ($$(src), () => queue = 0);
-
 function top(): void {
 	tlComponent?.reload();
 }
