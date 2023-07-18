@@ -17,10 +17,8 @@
 				:reversed="pagination.reversed"
 				:noGap="noGap"
 				:ad="true"
-				:class="{
-					[$style.notes]: true,
-					'deny-move-transition': denyMoveTransition,
-				}"
+				:denyMoveTransition="denyMoveTransition"
+				:class="$style.notes"
 			>
 				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>

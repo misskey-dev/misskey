@@ -8,7 +8,7 @@
 	</template>
 
 	<template #default="{ items: notifications, denyMoveTransition }">
-		<MkDateSeparatedList v-slot="{ item: notification }" :class="{ [$style.list]: true, 'deny-move-transition': denyMoveTransition }" :items="notifications" :noGap="true">
+		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true" :denyMoveTransition="denyMoveTransition">
 			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="`showNotificationAsNote:${notification.id}`" :note="notification.note"/>
 			<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel notification"/>
 		</MkDateSeparatedList>

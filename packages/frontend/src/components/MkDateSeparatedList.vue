@@ -33,6 +33,11 @@ export default defineComponent({
 			required: false,
 			default: false,
 		},
+		denyMoveTransition: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 
 	setup(props, { slots, expose }) {
@@ -130,6 +135,7 @@ export default defineComponent({
 					[$style['reversed']]: props.reversed,
 					[$style['direction-down']]: props.direction === 'down',
 					[$style['direction-up']]: props.direction === 'up',
+					'deny-move-transition': props.denyMoveTransition,
 				},
 				...(defaultStore.state.animation ? {
 					name: 'list',
@@ -148,15 +154,11 @@ export default defineComponent({
 	container-type: inline-size;
 
 	&:global {
-	> .list-move {
+	&:not(.deny-move-transition) > .list-move {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
-	&.deny-move-transition > .list-move {
-		transition: none !important;
-	}
-
-	> .list-enter-active {
+	&:not(.deny-move-transition) > .list-enter-active {
 		transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 	}
 
