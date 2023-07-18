@@ -452,6 +452,7 @@ const prepend = (item: MisskeyEntity): void => {
 			if (visibility.value === 'hidden') {
 				// バックグラウンドかつスクロールの先頭にいる場合は
 				// prependQueueしつつちょっと特殊な処理を挟む…
+				// (Safariのスクロールの仕様が良くなればunshiftItemsにしたいところ)
 				prependQueue(item);
 				// スクロールを進めておくことで復帰時にスクロールを進めないでよくなる
 				scrollBy(scrollableElement, { top: 24, behavior: 'instant' });
