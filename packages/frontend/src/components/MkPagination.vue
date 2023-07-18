@@ -50,7 +50,6 @@ import { i18n } from '@/i18n';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 6;
-const WEAK_TOLERAMCE = 256;
 const APPEAR_MINIMUM_INTERVAL = 600;
 const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
