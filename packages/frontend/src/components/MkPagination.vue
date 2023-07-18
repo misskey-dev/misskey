@@ -147,7 +147,7 @@ const preventAppearFetchMore = ref(false);
 const preventAppearFetchMoreTimer = ref<number | null>(null);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
-const denyMoveTransition = ref(true);
+const denyMoveTransition = ref(false);
 const {
 	enableInfiniteScroll,
 } = defaultStore.reactiveState;
@@ -282,7 +282,7 @@ async function adjustScroll(fn: () => void): Promise<void> {
 		} catch (err) {
 			console.error(err, { scrollableElementOrHtml });
 		}
-		//denyMoveTransition.value = false;
+		denyMoveTransition.value = false;
 		return nextTick();
 	});
 }
@@ -581,7 +581,7 @@ async function executeQueue() {
 		await nextTick();
 	} finally {
 		isPausingUpdate.value = false;
-		//denyMoveTransition.value = false;
+		denyMoveTransition.value = false;
 	}
 }
 
