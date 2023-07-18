@@ -148,7 +148,7 @@ watch(q, () => {
 		return;
 	}
 
-	const newQ = q.value.replace(/:/g, '').toLowerCase();
+	const newQ = q.value.replace(/:/g, '');
 
 	const searchCustom = () => {
 		const max = 8;
@@ -159,51 +159,53 @@ watch(q, () => {
 		if (exactMatch) matches.add(exactMatch);
 
 		if (newQ.includes(' ')) { // AND検索
+			// 大文字小文字を区別する検索用キーワード一覧
 			const keywords = newQ.split(' ');
+			// 大文字小文字を区別しない検索用キーワード一覧
+			const lowerCaseKeywords = newQ.toLowerCase().split(' ');
 
-			// 名前にキーワードが含まれている
 			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			// 名前またはエイリアスにキーワードが含まれている
-			for (const emoji of emojis) {
-				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
+				const hit =
+					// 名前にキーワードが含まれている
+					keywords.every(keyword => emoji.name.includes(keyword))
+					// エイリアスにキーワードが含まれている
+					|| keywords.every(keyword => emoji.aliases.some(alias => alias.includes(keyword)))
+					// 名前(小文字)にキーワード(小文字)が含まれている
+					|| lowerCaseKeywords.every(keyword => emoji.name.toLowerCase().includes(keyword))
+					// エイリアス(小文字)にキーワード(小文字)が含まれている
+					|| lowerCaseKeywords.every(keyword => emoji.aliases.some(alias => alias.toLowerCase().includes(keyword)))
+					;
+				if (hit) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
 			}
 		} else {
-			for (const emoji of emojis) {
-				if (emoji.name.startsWith(newQ)) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
+			// 大文字小文字を区別する検索用キーワード
+			const keyword = newQ;
+			// 大文字小文字を区別しない検索用キーワード
+			const lowerCaseKeyword = keyword.toLowerCase();
 
 			for (const emoji of emojis) {
-				if (emoji.aliases.some(alias => alias.startsWith(newQ))) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.name.includes(newQ)) {
-					matches.add(emoji);
-					if (matches.size >= max) break;
-				}
-			}
-			if (matches.size >= max) return matches;
-
-			for (const emoji of emojis) {
-				if (emoji.aliases.some(alias => alias.includes(newQ))) {
+				const hit =
+					// 名前の先頭にキーワードが含まれている
+					emoji.name.startsWith(keyword)
+					// エイリアスの先頭にキーワードが含まれている
+					|| emoji.aliases.some(alias => alias.startsWith(keyword))
+					// 名前(小文字)の先頭にキーワード(小文字)が含まれている
+					|| emoji.name.toLowerCase().startsWith(lowerCaseKeyword)
+					// エイリアス(小文字)の先頭にキーワード(小文字)が含まれている
+					|| emoji.aliases.some(alias => alias.toLowerCase().startsWith(lowerCaseKeyword))
+					// 名前にキーワードが含まれている
+					|| emoji.name.includes(keyword)
+					// エイリアスにキーワードが含まれている
+					|| emoji.aliases.some(alias => alias.includes(keyword))
+					// 名前(小文字)にキーワード(小文字)が含まれている
+					|| emoji.name.toLowerCase().includes(lowerCaseKeyword)
+					// エイリアス(小文字)にキーワード(小文字)が含まれている
+					|| emoji.aliases.some(alias => alias.toLowerCase().includes(lowerCaseKeyword))
+					;
+				if (hit) {
 					matches.add(emoji);
 					if (matches.size >= max) break;
 				}
