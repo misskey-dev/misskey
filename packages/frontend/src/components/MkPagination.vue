@@ -429,7 +429,7 @@ function visibilityChange() {
 			isPausingUpdate.value = true;
 			timerForSetPause.value = null;
 			if (!backed) {
-				scrollBy(scrollableElement, { top: 16, behavior: 'instant' });
+				scrollBy(scrollableElement, { top: 32, behavior: 'instant' });
 				backed = true;
 			}
 		},
