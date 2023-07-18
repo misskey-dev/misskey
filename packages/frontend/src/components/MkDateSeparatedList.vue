@@ -42,6 +42,7 @@ export default defineComponent({
 
 	setup(props, { slots, expose }) {
 		watch(() => props.denyMoveTransition, () => console.log('denyMoveTransition changed', props.denyMoveTransition));
+		watch(() => props.items, () => console.log('items changed', props.items));
 
 		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
 		function getDateText(time: string) {
