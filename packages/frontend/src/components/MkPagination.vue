@@ -430,7 +430,7 @@ onDeactivated(() => {
 });
 
 watch(visibility, () => {
-	if (active.value && visibility.value === 'visible') {
+	if (!backed && active.value && visibility.value === 'visible') {
 		executeQueue();
 	}
 });
