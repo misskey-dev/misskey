@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
+import { defineComponent, h, PropType, TransitionGroup, useCssModule, watch } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
 import { i18n } from '@/i18n';
@@ -41,6 +41,8 @@ export default defineComponent({
 	},
 
 	setup(props, { slots, expose }) {
+		watch(() => props.denyMoveTransition, () => console.log('denyMoveTransition changed', props.denyMoveTransition));
+
 		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
 		function getDateText(time: string) {
 			const date = new Date(time).getDate();
