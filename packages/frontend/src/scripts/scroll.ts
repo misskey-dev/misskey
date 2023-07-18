@@ -84,6 +84,19 @@ export function scroll(el: HTMLElement | null, options: ScrollToOptions | undefi
 }
 
 /**
+ * コンテナを指定してscrollByする
+ * @param el Container element
+ * @param options ScrollToOptions
+ */
+export function scrollBy(el: HTMLElement | null, options: ScrollToOptions | undefined) {
+	if (el == null) {
+		window.scrollBy(options);
+	} else {
+		el.scrollBy(options);
+	}
+}
+
+/**
  * Scroll to Top
  * @param el Scroll container element
  * @param options Scroll options

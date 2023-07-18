@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getBodyScrollHeight, getScrollContainer, scrollToBottom, scrollToTop, scroll } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scrollBy } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -428,6 +428,10 @@ function visibilityChange() {
 		timerForSetPause.value = window.setTimeout(() => {
 			isPausingUpdate.value = true;
 			timerForSetPause.value = null;
+			if (!backed) {
+				scrollBy(scrollableElement, { top: 16, behavior: 'instant' });
+				backed = true;
+			}
 		},
 		BACKGROUND_PAUSE_WAIT_SEC * 1000);
 	} else { // 'visible'
