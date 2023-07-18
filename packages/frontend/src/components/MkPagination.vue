@@ -251,7 +251,11 @@ function preventDefault(ev: Event) {
  * ChromeやFirefoxはこれをいい感じにやってくれるが、Safariはやってくれないため自分で実装する必要がある
  * @param fn DOM操作(unshiftItemsなどで)
  */
-function adjustScroll(fn: () => void): Promise<void> {
+async function adjustScroll(fn: () => void): Promise<void> {
+	denyMoveTransition.value = true;
+
+	await nextTick();
+
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
 	// スクロールをやめさせる
@@ -265,11 +269,9 @@ function adjustScroll(fn: () => void): Promise<void> {
 		console.error(err, { scrollableElementOrHtml });
 	}
 
-	denyMoveTransition.value = true;
-
 	fn();
 
-	return nextTick(() => {
+	return await nextTick(() => {
 		try {
 			// scrollByで移動すればいいように思うがうまくいかない、なぜ？？
 			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
