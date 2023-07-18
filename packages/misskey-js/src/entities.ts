@@ -338,6 +338,7 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 	pinnedPages: string[];
 	pinnedClipId: string | null;
 	cacheRemoteFiles: boolean;
+	cacheRemoteSensitiveFiles: boolean;
 	requireSetup: boolean;
 	proxyAccountName: string | null;
 	features: Record<string, any>;
@@ -515,6 +516,21 @@ export type Signin = {
 	headers: Record<string, any>;
 	success: boolean;
 };
+
+export type Invite = {
+	id: ID;
+	code: string;
+	expiresAt: DateString | null;
+	createdAt: DateString;
+	createdBy: UserLite | null;
+	usedBy: UserLite | null;
+	usedAt: DateString | null;
+	used: boolean;
+}
+
+export type InviteLimit = {
+	remaining: number;
+}
 
 export type UserSorting =
 	| '+follower'

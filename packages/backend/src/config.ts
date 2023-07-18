@@ -14,7 +14,9 @@ export type Source = {
 	repository_url?: string;
 	feedback_url?: string;
 	url: string;
-	port: number;
+	port?: number;
+	socket?: string;
+	chmodSocket?: string;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -63,6 +65,7 @@ export type Source = {
 		apiKey: string;
 		ssl?: boolean;
 		index: string;
+		scope?: 'local' | 'global' | string[];
 	};
 
 	proxy?: string;

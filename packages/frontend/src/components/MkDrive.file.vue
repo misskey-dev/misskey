@@ -25,8 +25,8 @@
 		<MkDriveFileThumbnail :class="$style.thumbnail" :file="file" fit="contain"/>
 
 		<p :class="$style.name">
-			<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
-			<span v-if="file.name.lastIndexOf('.') != -1" style="opacity: 0.5;">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
+			<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substring(0, file.name.lastIndexOf('.')) : file.name }}</span>
+			<span v-if="file.name.lastIndexOf('.') != -1" style="opacity: 0.5;">{{ file.name.substring(file.name.lastIndexOf('.')) }}</span>
 		</p>
 	</div>
 </div>
