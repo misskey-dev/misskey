@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scrollBy } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -159,8 +159,10 @@ const scrollableElementOrHtml = $computed(() => scrollableElement ?? document.ge
 
 const visibility = useDocumentVisibility();
 
-const isPausingUpdate = ref(false);
+const isPausingUpdateByVisibility = ref(false);
 const timerForSetPause = ref<number | null>(null);
+
+const isPausingUpdateByExecutingQueue = ref(false);
 
 //#region scrolling
 const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
@@ -426,7 +428,7 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 function visibilityChange() {
 	if (visibility.value === 'hidden') {
 		timerForSetPause.value = window.setTimeout(() => {
-			isPausingUpdate.value = true;
+			isPausingUpdateByVisibility.value = true;
 			timerForSetPause.value = null;
 		},
 		BACKGROUND_PAUSE_WAIT_SEC * 1000);
@@ -435,7 +437,7 @@ function visibilityChange() {
 			clearTimeout(timerForSetPause.value);
 			timerForSetPause.value = null;
 		} else {
-			isPausingUpdate.value = false;
+			isPausingUpdateByVisibility.value = false;
 			if (!backed && active.value) {
 				executeQueue();
 			}
@@ -469,14 +471,24 @@ const prepend = (item: MisskeyEntity): void => {
 	}
 
 	if (
-		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
+		!isPausingUpdateByExecutingQueue.value && // スクロール調整中はキューに追加する
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
 		if (!backed) {
-			// 先頭にいる場合は単に追加する
+			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
-			unshiftItems([item]);
+			if (isPausingUpdateByVisibility.value) {
+				// バックグラウンドかつスクロールの先頭にいる場合は
+				// prependQueueしつつちょっと特殊な処理を挟む…
+				prependQueue(item);
+				// スクロールを進めておくことで復帰時にスクロールを進めないでよくなる
+				scrollBy(scrollableElement, { top: 24, behavior: 'instant' });
+				// 一応backedを強制的にtrueにする
+				backed = true;
+			} else {
+				unshiftItems([item]);
+			}
 		} else if (!weakBacked) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
@@ -515,21 +527,18 @@ function concatItems(oldItems: MisskeyEntity[]) {
 
 async function executeQueue() {
 	if (queue.value.size === 0) return;
-	if (isPausingUpdate.value) return;
+	if (isPausingUpdateByExecutingQueue.value) return;
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
-	isPausingUpdate.value = true;
-	try {
-		unshiftItems(
-			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
-			Infinity,
-		);
-
-		items.value = new Map([...items.value].slice(0, displayLimit.value));
-		await nextTick();
-	} finally {
-		isPausingUpdate.value = false;
-	}
+	isPausingUpdateByExecutingQueue.value = true;
+	unshiftItems(
+		queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
+		Infinity,
+	);
+	await nextTick();
+	items.value = new Map([...items.value].slice(0, displayLimit.value));
+	await nextTick();
+	isPausingUpdateByExecutingQueue.value = false;
 }
 
 function prependQueue(newItem: MisskeyEntity) {
