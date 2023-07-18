@@ -429,6 +429,12 @@ onDeactivated(() => {
 	active.value = false;
 });
 
+watch(visibility, () => {
+	if (active.value && visibility.value === 'visible') {
+		executeQueue();
+	}
+});
+
 /**
  * 最新のものとして1つだけアイテムを追加する
  * ストリーミングから降ってきたアイテムはこれで追加する
