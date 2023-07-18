@@ -426,7 +426,6 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 function visibilityChange() {
 	if (visibility.value === 'hidden') {
 		timerForSetPause.value = window.setTimeout(() => {
-			isPausingUpdate.value = true;
 			timerForSetPause.value = null;
 			if (!backed) {
 				scrollBy(scrollableElement, { top: 32, behavior: 'instant' });
@@ -439,8 +438,7 @@ function visibilityChange() {
 			clearTimeout(timerForSetPause.value);
 			timerForSetPause.value = null;
 		} else {
-			isPausingUpdate.value = false;
-			if (!backed && active.value) {
+			if (!weakBacked && active.value) {
 				executeQueue();
 			}
 		}
@@ -473,7 +471,7 @@ const prepend = (item: MisskeyEntity): void => {
 	}
 
 	if (
-		!isPausingUpdate.value && // タブがバックグラウンドの時/スクロール調整中はキューに追加する
+		!isPausingUpdate.value && // スクロール調整中はキューに追加する
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
