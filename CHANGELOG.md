@@ -59,6 +59,7 @@
 - MeilisearchにIndexするノートの範囲を設定できるように
 - Export notes with file detail
 - Add unix socket support
+- Fix: リモートサーバーに無意味なActivityPubの配信を行うことがあるのを修正
 - Fix: Remove Meilisearch index when notes are deleted
 - Fix: 非英語環境でのPostgreSQLのエラーハンドリングを修正
 - Fix: インスタンスのアイコンがbase64の場合の挙動を修正
