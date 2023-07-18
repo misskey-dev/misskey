@@ -443,24 +443,14 @@ const prepend = (item: MisskeyEntity): void => {
 
 	if (
 		!isPausingUpdateByExecutingQueue.value && // スクロール調整中はキューに追加する
+		visibility.value !== 'hidden' && // バックグラウンドの場合はキューに追加する
 		queueSize.value === 0 && // キューに残っている場合はキューに追加する
 		active.value // keepAliveで隠されている間はキューに追加する
 	) {
 		if (!backed) {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
-			if (visibility.value === 'hidden') {
-				// バックグラウンドかつスクロールの先頭にいる場合は
-				// prependQueueしつつちょっと特殊な処理を挟む…
-				// (Safariのスクロールの仕様が良くなればunshiftItemsにしたいところ)
-				prependQueue(item);
-				// スクロールを進めておくことで復帰時にスクロールを進めないでよくなる
-				scrollBy(scrollableElement, { top: 24, behavior: 'instant' });
-				// 一応backedを強制的にtrueにする
-				backed = true;
-			} else {
-				unshiftItems([item]);
-			}
+			unshiftItems([item]);
 		} else if (!weakBacked) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
@@ -503,6 +493,15 @@ async function executeQueue() {
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
 	isPausingUpdateByExecutingQueue.value = true;
+	if (!backed) {
+		// スクロールが先頭の場合
+		// スクロールを進めることでChromeやFirefoxはいい感じにスクロールを調整してくれる
+		scrollBy(scrollableElement, { top: 24, behavior: 'instant' });
+		// 一応backedを強制的にtrueにする
+		backed = true;
+
+		await nextTick();
+	}
 	unshiftItems(
 		queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
 		Infinity,
