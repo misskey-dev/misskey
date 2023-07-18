@@ -51,7 +51,6 @@ import { i18n } from '@/i18n';
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 6;
 const APPEAR_MINIMUM_INTERVAL = 600;
-const BACKGROUND_PAUSE_WAIT_SEC = 10;
 
 export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> = {
 	endpoint: E;
@@ -158,9 +157,6 @@ const scrollableElement = $computed(() => contentEl ? getScrollContainer(content
 const scrollableElementOrHtml = $computed(() => scrollableElement ?? document.getElementsByName('html')[0]);
 
 const visibility = useDocumentVisibility();
-
-const isPausingUpdateByVisibility = ref(false);
-const timerForSetPause = ref<number | null>(null);
 
 const isPausingUpdateByExecutingQueue = ref(false);
 
@@ -346,10 +342,9 @@ const fetchMore = async (): Promise<void> => {
 
 		if (res.length === 0) {
 			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					more.value = false;
-					moreFetching.value = false;
-				});
+				reverseConcat(res);
+				more.value = false;
+				moreFetching.value = false;
 			} else {
 				items.value = concatMapWithArray(items.value, res);
 				more.value = false;
@@ -357,10 +352,9 @@ const fetchMore = async (): Promise<void> => {
 			}
 		} else {
 			if (props.pagination.reversed) {
-				reverseConcat(res).then(() => {
-					more.value = true;
-					moreFetching.value = false;
-				});
+				reverseConcat(res);
+				more.value = true;
+				moreFetching.value = false;
 			} else {
 				items.value = concatMapWithArray(items.value, res);
 				more.value = true;
@@ -425,38 +419,15 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-function visibilityChange() {
-	if (visibility.value === 'hidden') {
-		timerForSetPause.value = window.setTimeout(() => {
-			isPausingUpdateByVisibility.value = true;
-			timerForSetPause.value = null;
-		},
-		BACKGROUND_PAUSE_WAIT_SEC * 1000);
-	} else { // 'visible'
-		if (timerForSetPause.value) {
-			clearTimeout(timerForSetPause.value);
-			timerForSetPause.value = null;
-		} else {
-			isPausingUpdateByVisibility.value = false;
-			if (!backed && active.value) {
-				executeQueue();
-			}
-		}
-	}
-}
-
 onActivated(() => {
 	nextTick(() => {
 		active.value = true;
-		visibilityChange();
 	});
 });
 
 onDeactivated(() => {
 	active.value = false;
 });
-
-watch(visibility, visibilityChange);
 
 /**
  * 最新のものとして1つだけアイテムを追加する
@@ -478,7 +449,7 @@ const prepend = (item: MisskeyEntity): void => {
 		if (!backed) {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
-			if (isPausingUpdateByVisibility.value) {
+			if (visibility.value === 'hidden') {
 				// バックグラウンドかつスクロールの先頭にいる場合は
 				// prependQueueしつつちょっと特殊な処理を挟む…
 				prependQueue(item);
@@ -573,10 +544,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	if (timerForSetPause.value) {
-		clearTimeout(timerForSetPause.value);
-		timerForSetPause.value = null;
-	}
 	if (preventAppearFetchMoreTimer.value) {
 		clearTimeout(preventAppearFetchMoreTimer.value);
 		preventAppearFetchMoreTimer.value = null;
