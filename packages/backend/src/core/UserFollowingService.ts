@@ -1,5 +1,6 @@
 import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { IsNull } from 'typeorm';
 import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -21,9 +22,8 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
-import Logger from '../logger.js';
-import { IsNull } from 'typeorm';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
+import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
 
@@ -322,7 +322,7 @@ export class UserFollowingService implements OnModuleInit {
 			where: {
 				followerId: follower.id,
 				followeeId: followee.id,
-			}
+			},
 		});
 
 		if (following === null || !following.follower || !following.followee) {
@@ -412,8 +412,8 @@ export class UserFollowingService implements OnModuleInit {
 						followerId: user.id,
 						followee: {
 							movedToUri: IsNull(),
-						}
-					}
+						},
+					},
 				});
 				const nonMovedFollowers = await this.followingsRepository.count({
 					relations: {
@@ -423,8 +423,8 @@ export class UserFollowingService implements OnModuleInit {
 						followeeId: user.id,
 						follower: {
 							movedToUri: IsNull(),
-						}
-					}
+						},
+					},
 				});
 				await this.usersRepository.update(
 					{ id: user.id },
@@ -646,7 +646,7 @@ export class UserFollowingService implements OnModuleInit {
 			where: {
 				followeeId: followee.id,
 				followerId: follower.id,
-			}
+			},
 		});
 
 		if (!following || !following.followee || !following.follower) return;
