@@ -574,7 +574,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						where: {
 							userId: data.reply.userId,
 							threadId: data.reply.threadId ?? data.reply.id,
-						}
+						},
 					});
 
 					if (!isThreadMuted) {
