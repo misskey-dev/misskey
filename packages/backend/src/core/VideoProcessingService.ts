@@ -52,7 +52,7 @@ export class VideoProcessingService {
 			query({
 				thumbnail: '1',
 				url,
-			})
+			}),
 		);
 	}
 }
