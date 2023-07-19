@@ -651,8 +651,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2(rollup@3.26.3)
       '@syuilo/aiscript':
-        specifier: 0.13.3
-        version: 0.13.3
+        specifier: 0.14.0
+        version: 0.14.0
       '@tabler/icons-webfont':
         specifier: 2.25.0
         version: 2.25.0
@@ -2168,6 +2168,10 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
+<<<<<<< HEAD
+=======
+      semver: 6.3.1
+>>>>>>> c50b952ff (update aiscript to 0.14.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -2238,9 +2242,13 @@ packages:
       '@nicolo-ribaudo/semver-v6': 6.3.3
       browserslist: 4.21.9
       lru-cache: 5.1.1
+<<<<<<< HEAD
 =======
       '@babel/types': 7.22.5
 >>>>>>> 54c0ed2ed (update deps)
+=======
+      semver: 6.3.1
+>>>>>>> c50b952ff (update aiscript to 0.14.0)
     dev: true
 
   /@babel/helper-compilation-targets@7.22.6(@babel/core@7.22.8):
@@ -9650,8 +9658,8 @@ packages:
     dev: false
     optional: true
 
-  /@syuilo/aiscript@0.13.3:
-    resolution: {integrity: sha512-0YFlWA+7YhyRRsp+9Nl72SoSUg5ghskthjCdLvj4qdGyLedeyanKZWJlH2A9d47Nes03UYY8CRDsMHHv64IWcg==}
+  /@syuilo/aiscript@0.14.0:
+    resolution: {integrity: sha512-Yl28dYykq2eNjrMCKfXybKFj0EZ/fzOGMO53NtJGSyyeCaLx9H1qkGfT21QVdQLyEkiKtSMZ1IyodjSaWS/BUA==}
     dependencies:
       autobind-decorator: 2.4.0
       seedrandom: 3.0.5
@@ -21567,7 +21575,11 @@ packages:
     resolution: {integrity: sha512-LJWA9kSvMolR51oDE6PN3kALBNaUdkxzAGcexw8gjMA8xr5zUqK0JiR3CgARSqanYF3Z1YHvsErb1KDgh+v7Rg==}
     engines: {node: '>=12'}
     dependencies:
+<<<<<<< HEAD
       semver: 7.5.3
+=======
+      semver: 6.3.1
+>>>>>>> c50b952ff (update aiscript to 0.14.0)
     dev: false
 
   /semver@5.7.2:
@@ -21577,11 +21589,11 @@ packages:
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
+    dev: true
 
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
-    dev: true
 
   /semver@7.0.0:
     resolution: {integrity: sha512-+GB6zVA9LWh6zovYQLALHwv5rb2PHGlJi3lfiqIHxR0uuwCgefcOJc59v9fv1w8GbStwxuuqqAjI9NMAOOgq1A==}
