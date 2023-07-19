@@ -291,6 +291,8 @@ export class ApPersonService implements OnModuleInit {
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new User({
 					id: this.idService.genId(),
+					avatarId: null,
+					bannerId: null,
 					createdAt: new Date(),
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
