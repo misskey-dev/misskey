@@ -66,6 +66,7 @@
 - Fix: Remove Meilisearch index when notes are deleted
 - Fix: 非英語環境でのPostgreSQLのエラーハンドリングを修正
 - Fix: インスタンスのアイコンがbase64の場合の挙動を修正
+- Fix: ローカルの `Person` を指す `acct` URI を解析するときのバグを修正しました
 
 ## 13.13.2
 
@@ -79,7 +80,6 @@
 
 ### Server
 - Fix: キャッシュが溜まり続けないように
-- Fix: ローカルの `Person` を指す `acct` URI を解析するときのバグを修正しました
 
 ## 13.13.1
 
