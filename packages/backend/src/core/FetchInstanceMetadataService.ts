@@ -2,6 +2,7 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
 import tinycolor from 'tinycolor2';
+import * as Redis from 'ioredis';
 import type { Instance } from '@/models/entities/Instance.js';
 import type Logger from '@/logger.js';
 import { DI } from '@/di-symbols.js';
@@ -10,7 +11,6 @@ import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { DOMWindow } from 'jsdom';
-import * as Redis from 'ioredis';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
