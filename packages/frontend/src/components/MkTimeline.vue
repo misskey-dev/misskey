@@ -225,5 +225,6 @@ defineExpose({
 
 .disabledDescription {
 	font-size: 90%;
+	margin: 16px;
 }
 </style>
