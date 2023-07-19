@@ -907,6 +907,7 @@ defineExpose({
 	display: flex;
 	flex-wrap: nowrap;
 	gap: 4px;
+	margin-bottom: -10px;
 }
 
 .headerLeft {
@@ -1024,7 +1025,7 @@ defineExpose({
 }
 
 .targetNote {
-	padding: 0 20px 16px 20px;
+	padding: 10px 20px 16px 20px;
 }
 
 .withQuote {
