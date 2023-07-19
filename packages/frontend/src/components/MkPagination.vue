@@ -47,6 +47,7 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
+import { UAParser } from 'ua-parser-js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 6;
@@ -92,6 +93,10 @@ function arrayToEntries(entities: MisskeyEntity[]): [string, MisskeyEntity][] {
 function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): MisskeyEntityMap {
 	return new Map([...map, ...arrayToEntries(entities)]);
 }
+
+const ua = new UAParser(navigator.userAgent);
+const isWebKit = ua.getEngine().name === 'WebKit';
+console.log('isWebKit', isWebKit);
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance';
@@ -457,7 +462,7 @@ const prepend = (item: MisskeyEntity): void => {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 			unshiftItems([item]);
-		} else if (!weakBacked) {
+		} else if (!isWebKit && !weakBacked) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
 			executeQueue();

@@ -787,6 +787,9 @@ importers:
       typescript:
         specifier: 5.1.6
         version: 5.1.6
+      ua-parser-js:
+        specifier: 2.0.0-alpha.2
+        version: 2.0.0-alpha.2
       uuid:
         specifier: 9.0.0
         version: 9.0.0
@@ -20333,6 +20336,10 @@ packages:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  /ua-parser-js@2.0.0-alpha.2:
+    resolution: {integrity: sha512-Vz+BJN/EFC1OaUv0eu5kPyX7HEZIO7Dv29jIK7rMuKjUB1qqq+Is/XIpu5iV5XDvoNl62dM7ay8DtzYjBDI0WA==}
+    dev: false
 
   /ufo@1.1.2:
     resolution: {integrity: sha512-TrY6DsjTQQgyS3E3dBaOXf0TpPD8u9FVrVYmKVegJuFw51n/YB9XPt+U6ydzFG5ZIN7+DIjPbNmXoBj9esYhgQ==}
