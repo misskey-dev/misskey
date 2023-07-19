@@ -352,6 +352,15 @@ export class ApPersonService implements OnModuleInit {
 		// Register to the cache
 		this.cacheService.uriPersonCache.set(user.uri, user);
 
+		// Register host
+		this.federatedInstanceService.fetch(host).then(async i => {
+			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
+			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
+			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
+				this.instanceChart.newUser(i.host);
+			}
+		});
+
 		//#region アバターとヘッダー画像をフェッチ
 		try {
 			const updates = await this.resolveAvatarAndBanner(user, person.icon, person.image);
@@ -364,15 +373,6 @@ export class ApPersonService implements OnModuleInit {
 			this.logger.error('error occured while fetching user avatar/banner', { stack: err });
 		}
 		//#endregion
-
-		// Register host
-		this.federatedInstanceService.fetch(host).then(async i => {
-			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
-			this.fetchInstanceMetadataService.fetchInstanceMetadata(i);
-			if ((await this.metaService.fetch()).enableChartsForFederatedInstances) {
-				this.instanceChart.newUser(i.host);
-			}
-		});
 
 		this.usersChart.update(user, true);
 
