@@ -78,7 +78,7 @@ async function change() {
 		});
 		return;
 	}
-	
+
 	os.apiWithDialog('i/change-password', {
 		currentPassword,
 		newPassword,

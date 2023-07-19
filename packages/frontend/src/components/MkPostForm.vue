@@ -66,7 +66,7 @@
 		<div v-if="maxTextLength - textLength < 100" :class="['_acrylic', $style.textCount, { [$style.textOver]: textLength > maxTextLength }]">{{ maxTextLength - textLength }}</div>
 	</div>
 	<input v-show="withHashtags" ref="hashtagsInputEl" v-model="hashtags" :class="$style.hashtags" :placeholder="i18n.ts.hashtags" list="hashtags">
-	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName"/>
+	<XPostFormAttaches v-model="files" @detach="detachFile" @changeSensitive="updateFileSensitive" @changeName="updateFileName" @replaceFile="replaceFile"/>
 	<MkPollEditor v-if="poll" v-model="poll" @destroyed="poll = null"/>
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
@@ -410,7 +410,11 @@ function updateFileName(file, name) {
 	files[files.findIndex(x => x.id === file.id)].name = name;
 }
 
-function upload(file: File, name?: string) {
+function replaceFile(file: misskey.entities.DriveFile, newFile: misskey.entities.DriveFile): void {
+	files[files.findIndex(x => x.id === file.id)] = newFile;
+}
+
+function upload(file: File, name?: string): void {
 	uploadFile(file, defaultStore.state.uploadFolder, name).then(res => {
 		files.push(res);
 	});
@@ -560,7 +564,7 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			quoteId = paste.substr(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
+			quoteId = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
 		});
 	}
 }
@@ -903,6 +907,7 @@ defineExpose({
 	display: flex;
 	flex-wrap: nowrap;
 	gap: 4px;
+	margin-bottom: -10px;
 }
 
 .headerLeft {
@@ -1015,10 +1020,12 @@ defineExpose({
 
 .preview {
 	padding: 16px 20px 0 20px;
+	max-height: 150px;
+	overflow: auto;
 }
 
 .targetNote {
-	padding: 0 20px 16px 20px;
+	padding: 10px 20px 16px 20px;
 }
 
 .withQuote {

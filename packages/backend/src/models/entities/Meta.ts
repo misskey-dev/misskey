@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
 import { User } from './User.js';
-import type { Clip } from './Clip.js';
 
 @Entity()
 export class Meta {
@@ -125,6 +124,11 @@ export class Meta {
 		default: true,
 	})
 	public cacheRemoteFiles: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public cacheRemoteSensitiveFiles: boolean;
 
 	@Column({
 		...id(),
@@ -412,6 +416,16 @@ export class Meta {
 		default: true,
 	})
 	public enableChartsForFederatedInstances: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public enableServerMachineStats: boolean;
+
+	@Column('boolean', {
+		default: true,
+	})
+	public enableIdenticonGeneration: boolean;
 
 	@Column('jsonb', {
 		default: { },

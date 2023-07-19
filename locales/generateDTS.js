@@ -1,6 +1,6 @@
-const fs = require('fs');
-const yaml = require('js-yaml');
-const ts = require('typescript');
+import * as fs from 'node:fs';
+import * as yaml from 'js-yaml';
+import * as ts from 'typescript';
 
 function createMembers(record) {
 	return Object.entries(record)
@@ -14,7 +14,7 @@ function createMembers(record) {
 		));
 }
 
-module.exports = function generateDTS() {
+export default function generateDTS() {
 	const locale = yaml.load(fs.readFileSync(`${__dirname}/ja-JP.yml`, 'utf-8'));
 	const members = createMembers(locale);
 	const elements = [
@@ -51,11 +51,7 @@ module.exports = function generateDTS() {
 				ts.NodeFlags.Const | ts.NodeFlags.Ambient | ts.NodeFlags.ContextFlags,
 			),
 		),
-		ts.factory.createExportAssignment(
-			undefined,
-			true,
-			ts.factory.createIdentifier('locales'),
-		),
+		ts.factory.createExportDefault(ts.factory.createIdentifier('locales')),
 	];
 	const printed = ts.createPrinter({
 		newLine: ts.NewLineKind.LineFeed,

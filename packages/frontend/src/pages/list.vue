@@ -112,7 +112,7 @@ definePageMetadata(computed(() => list ? {
 	flex: 1;
 	min-width: 0;
 	margin-right: 8px;
-	
+
 	&:hover {
 		text-decoration: none;
 	}

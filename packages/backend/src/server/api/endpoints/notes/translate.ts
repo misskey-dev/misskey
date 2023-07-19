@@ -44,7 +44,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-	
+
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 

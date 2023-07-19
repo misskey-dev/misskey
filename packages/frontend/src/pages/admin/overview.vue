@@ -30,7 +30,7 @@
 			<template #header>Federation</template>
 			<XFederation/>
 		</MkFoldableSection>
-		
+
 		<MkFoldableSection class="item">
 			<template #header>Instances</template>
 			<XInstances/>
@@ -156,7 +156,7 @@ onMounted(async () => {
 
 	nextTick(() => {
 		queueStatsConnection.send('requestLog', {
-			id: Math.random().toString().substr(2, 8),
+			id: Math.random().toString().substring(2, 10),
 			length: 100,
 		});
 	});

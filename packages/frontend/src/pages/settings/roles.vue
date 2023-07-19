@@ -37,7 +37,7 @@ import MkRolePreview from '@/components/MkRolePreview.vue';
 
 function save() {
 	os.apiWithDialog('i/update', {
-		
+
 	});
 }
 

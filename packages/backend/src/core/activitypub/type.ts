@@ -194,7 +194,6 @@ export interface IApPropertyValue extends IObject {
 }
 
 export const isPropertyValue = (object: IObject): object is IApPropertyValue =>
-	object &&
 	getApType(object) === 'PropertyValue' &&
 	typeof object.name === 'string' &&
 	'value' in object &&

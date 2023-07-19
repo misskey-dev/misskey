@@ -50,9 +50,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			const exist = await this.promoNotesRepository.findOneBy({ noteId: note.id });
+			const exist = await this.promoNotesRepository.exist({ where: { noteId: note.id } });
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyPromoted);
 			}
 
