@@ -35,9 +35,7 @@
 	</div>
 	<div v-if="instance.policies.ltlAvailable" :class="[$style.tl, $style.panel]">
 		<div :class="$style.tlHeader">{{ i18n.ts.letsLookAtTimeline }}</div>
-		<div :class="$style.tlBody">
-			<MkTimeline src="local"/>
-		</div>
+		<MkTimeline src="local" :class="$style.tlBody"/>
 	</div>
 	<div :class="$style.panel">
 		<XActiveUsersChart/>

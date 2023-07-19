@@ -1,5 +1,15 @@
 <template>
-<MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination"/>
+<div>
+	<div v-if="queueSize > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="reload()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
+	<div v-if="(((src === 'local' || src === 'social') && !isLocalTimelineAvailable) || (src === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
+		<p :class="$style.disabledTitle">
+			<i class="ti ti-circle-minus"></i>
+			{{ i18n.ts._disabledTimeline.title }}
+		</p>
+		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
+	</div>
+	<MkNotes v-else ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination"/>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -9,6 +19,8 @@ import { useStream } from '@/stream';
 import * as sound from '@/scripts/sound';
 import { $i } from '@/account';
 import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
+import { instance } from '@/instance';
 
 const props = defineProps<{
 	src: string;
@@ -21,14 +33,22 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'note'): void;
+	(ev: 'reload'): void;
 }>();
+
+const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
+const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
 
 provide('inChannel', computed(() => props.src === 'channel'));
 
-const tlComponent: InstanceType<typeof MkNotes> = $ref();
+let tlComponent: InstanceType<typeof MkNotes> | undefined = $ref();
+
+const queueSize = computed(() => {
+	return tlComponent?.pagingComponent?.queueSize ?? 0;
+});
 
 const prepend = note => {
-	tlComponent.pagingComponent?.prepend(note);
+	tlComponent?.pagingComponent?.prepend(note);
 
 	emit('note');
 
@@ -38,11 +58,11 @@ const prepend = note => {
 };
 
 const onUserAdded = () => {
-	tlComponent.pagingComponent?.reload();
+	tlComponent?.pagingComponent?.reload();
 };
 
 const onUserRemoved = () => {
-	tlComponent.pagingComponent?.reload();
+	tlComponent?.pagingComponent?.reload();
 };
 
 let endpoint;
@@ -164,12 +184,46 @@ const timetravel = (date?: Date) => {
 };
 */
 
+const reload = () => {
+	tlComponent?.pagingComponent?.reload();
+	emit('reload');
+};
+
 defineExpose({
-	reload: () => {
-		tlComponent.pagingComponent?.reload();
-	},
-	queueSize: computed(() => {
-		return tlComponent.pagingComponent?.queueSize ?? 0;
-	}),
+	reload,
+	queueSize,
 });
 </script>
+
+<style lang="scss" module>
+.new {
+	position: sticky;
+	top: calc(var(--stickyTop, 0px) + 16px);
+	z-index: 1000;
+	width: 100%;
+	margin: calc(-0.675em - 8px) 0;
+
+	&:first-child {
+		margin-top: calc(-0.675em - 8px - var(--margin));
+	}
+}
+
+.newButton {
+	display: block;
+	margin: var(--margin) auto 0 auto;
+	padding: 8px 16px;
+	border-radius: 32px;
+}
+
+.disabled {
+	text-align: center;
+}
+
+.disabledTitle {
+	margin: 16px;
+}
+
+.disabledDescription {
+	font-size: 90%;
+}
+</style>

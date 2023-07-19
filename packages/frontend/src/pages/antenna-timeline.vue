@@ -3,15 +3,13 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<div ref="rootEl" v-hotkey.global="keymap">
-			<div v-if="tlEl?.queueSize ?? 0 > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>
-			<div :class="$style.tl">
-				<MkTimeline
-					ref="tlEl" :key="antennaId"
-					src="antenna"
-					:antenna="antennaId"
-					:sound="true"
-				/>
-			</div>
+			<MkTimeline
+				ref="tlEl" :key="antennaId"
+				src="antenna"
+				:antenna="antennaId"
+				:sound="true"
+				:class="$style.tl"
+			/>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -84,25 +82,6 @@ definePageMetadata(computed(() => antenna ? {
 </script>
 
 <style lang="scss" module>
-.new {
-	position: sticky;
-	top: calc(var(--stickyTop, 0px) + 16px);
-	z-index: 1000;
-	width: 100%;
-	margin: calc(-0.675em - 8px) 0;
-
-	&:first-child {
-		margin-top: calc(-0.675em - 8px - var(--margin));
-	}
-}
-
-.newButton {
-	display: block;
-	margin: var(--margin) auto 0 auto;
-	padding: 8px 16px;
-	border-radius: 32px;
-}
-
 .tl {
 	background: var(--bg);
 	border-radius: var(--radius);

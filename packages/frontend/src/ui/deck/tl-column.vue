@@ -8,14 +8,7 @@
 		<span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<div v-if="(((column.tl === 'local' || column.tl === 'social') && !isLocalTimelineAvailable) || (column.tl === 'global' && !isGlobalTimelineAvailable))" :class="$style.disabled">
-		<p :class="$style.disabledTitle">
-			<i class="ti ti-circle-minus"></i>
-			{{ i18n.ts._disabledTimeline.title }}
-		</p>
-		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
-	</div>
-	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl"/>
+	<MkTimeline v-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl"/>
 </XColumn>
 </template>
 
@@ -25,27 +18,16 @@ import XColumn from './column.vue';
 import { removeColumn, updateColumn, Column } from './deck-store';
 import MkTimeline from '@/components/MkTimeline.vue';
 import * as os from '@/os';
-import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { instance } from '@/instance';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-let disabled = $ref(false);
-
-const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));
-const isGlobalTimelineAvailable = (($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable));
-
 onMounted(() => {
 	if (props.column.tl == null) {
 		setType();
-	} else if ($i) {
-		disabled = (
-			(!((instance.policies.ltlAvailable) || ($i.policies.ltlAvailable)) && ['local', 'social'].includes(props.column.tl)) ||
-			(!((instance.policies.gtlAvailable) || ($i.policies.gtlAvailable)) && ['global'].includes(props.column.tl)));
 	}
 });
 
@@ -79,17 +61,3 @@ const menu = [{
 	action: setType,
 }];
 </script>
-
-<style lang="scss" module>
-.disabled {
-	text-align: center;
-}
-
-.disabledTitle {
-	margin: 16px;
-}
-
-.disabledDescription {
-	font-size: 90%;
-}
-</style>
