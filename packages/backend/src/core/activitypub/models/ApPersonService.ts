@@ -270,8 +270,8 @@ export class ApPersonService implements OnModuleInit {
 			emojis: [],
 		};
 
+		//#region アバターとヘッダー画像をフェッチ
 		try {
-			//#region アバターとヘッダー画像をフェッチ
 			const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
 				if (img == null) return null;
 				if (user == null) throw new Error('failed to create user: user is null');
@@ -284,10 +284,10 @@ export class ApPersonService implements OnModuleInit {
 			userAdditionalInfo.bannerUrl = banner ? this.driveFileEntityService.getPublicUrl(banner) : null;
 			userAdditionalInfo.avatarBlurhash = avatar?.blurhash ?? null;
 			userAdditionalInfo.bannerBlurhash = banner?.blurhash ?? null;
-			//#endregion
 		} catch (err) {
 			this.logger.error('error occured while fetching user avatar/banner', { stack: err });
 		}
+		//#endregion
 
 		//#region カスタム絵文字取得
 		userAdditionalInfo.emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
