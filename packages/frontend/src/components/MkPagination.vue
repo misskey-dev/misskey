@@ -96,7 +96,6 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 
 const ua = new UAParser(navigator.userAgent);
 const isWebKit = ua.getEngine().name === 'WebKit';
-console.log('isWebKit', isWebKit);
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance';
@@ -200,7 +199,7 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
  * weakBackedがtrue→falseになったらexecuteQueue
  */
 watch($$(weakBacked), () => {
-	if (!weakBacked) {
+	if (!isWebKit && !weakBacked) {
 		executeQueue();
 	}
 });
