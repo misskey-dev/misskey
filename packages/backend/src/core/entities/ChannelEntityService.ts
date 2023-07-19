@@ -50,7 +50,7 @@ export class ChannelEntityService {
 		const hasUnreadNote = meId ? await this.noteUnreadsRepository.exist({
 			where: {
 				noteChannelId: channel.id,
-				userId: meId
+				userId: meId,
 			},
 		}) : undefined;
 

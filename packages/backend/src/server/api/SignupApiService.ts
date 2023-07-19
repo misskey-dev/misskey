@@ -13,9 +13,9 @@ import { EmailService } from '@/core/EmailService.js';
 import { LocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
+import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 
 @Injectable()
 export class SignupApiService {

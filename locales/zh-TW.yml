@@ -1996,6 +1996,7 @@ _deck:
   introduction: "組合欄位來製作屬於自己的介面吧！"
   introduction2: "您可以隨時透過按畫面右方的 + 來添加欄位。"
   widgetsIntroduction: "請從欄位的選單中，選擇「編輯小工具」來添加小工具"
+  useSimpleUiForNonRootPages: "用簡易UI顯示非根頁面"
   _columns:
     main: "主列"
     widgets: "小工具"

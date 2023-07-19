@@ -91,7 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				if (queryarry) {
 					emojis = emojis.filter(emoji =>
-						queryarry.includes(`:${emoji.name}:`)
+						queryarry.includes(`:${emoji.name}:`),
 					);
 				} else {
 					emojis = emojis.filter(emoji =>
