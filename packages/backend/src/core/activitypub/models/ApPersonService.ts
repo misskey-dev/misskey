@@ -361,6 +361,11 @@ export class ApPersonService implements OnModuleInit {
 			}
 		});
 
+		this.usersChart.update(user, true);
+
+		// ハッシュタグ更新
+		this.hashtagService.updateUsertags(user, tags);
+
 		//#region アバターとヘッダー画像をフェッチ
 		try {
 			const updates = await this.resolveAvatarAndBanner(user, person.icon, person.image);
@@ -373,11 +378,6 @@ export class ApPersonService implements OnModuleInit {
 			this.logger.error('error occured while fetching user avatar/banner', { stack: err });
 		}
 		//#endregion
-
-		this.usersChart.update(user, true);
-
-		// ハッシュタグ更新
-		this.hashtagService.updateUsertags(user, tags);
 
 		await this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err));
 
