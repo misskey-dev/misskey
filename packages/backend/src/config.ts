@@ -187,9 +187,10 @@ function tryCreateUrl(url: string) {
 	}
 }
 
-function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions {
+function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {
 	return {
 		...options,
+		prefix: options.prefix ?? host,
 		family: options.family == null ? 0 : options.family,
 		keyPrefix: `${options.prefix ?? host}:`,
 		db: options.db ?? 0,
