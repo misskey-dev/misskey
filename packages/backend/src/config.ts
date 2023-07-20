@@ -108,9 +108,9 @@ export type Mixin = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
-	redis: RedisOptions;
-	redisForPubsub: RedisOptions;
-	redisForJobQueue: RedisOptions;
+	redis: RedisOptions & RedisOptionsSource;
+	redisForPubsub: RedisOptions & RedisOptionsSource;
+	redisForJobQueue: RedisOptions & RedisOptionsSource;
 };
 
 export type Config = Source & Mixin;

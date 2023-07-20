@@ -14,7 +14,10 @@ export const QUEUE = {
 
 export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.QueueOptions {
 	return {
-		connection: config.redisForJobQueue,
+		connection: {
+			...config.redisForJobQueue,
+			keyPrefix: undefined
+		},
 		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};
 }
