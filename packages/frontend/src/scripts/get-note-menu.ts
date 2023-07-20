@@ -7,7 +7,7 @@ import { instance } from '@/instance';
 import * as os from '@/os';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { url } from '@/config';
-import { noteActions } from '@/store';
+import { defaultStore, noteActions } from '@/store';
 import { miLocalStorage } from '@/local-storage';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import { clipsCache } from '@/cache';
@@ -394,6 +394,16 @@ export function getNoteMenu(props: {
 				action.handler(appearNote);
 			},
 		}))]);
+	}
+
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyNoteId,
+			action: () => {
+				copyToClipboard(appearNote.id);
+			},
+		}]);
 	}
 
 	return menu;

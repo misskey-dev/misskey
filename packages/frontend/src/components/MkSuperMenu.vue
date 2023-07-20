@@ -23,22 +23,13 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { } from 'vue';
 
-export default defineComponent({
-	props: {
-		def: {
-			type: Array,
-			required: true,
-		},
-		grid: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-	},
-});
+defineProps<{
+	def: any[];
+	grid?: boolean;
+}>();
 </script>
 
 <style lang="scss" scoped>
@@ -55,7 +46,7 @@ export default defineComponent({
 			margin: 0 0 8px 0;
 			font-size: 0.9em;
 		}
-	
+
 		> .items {
 			> .item {
 				display: flex;

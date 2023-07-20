@@ -6,15 +6,18 @@ import { query as urlQuery } from '@/misc/prelude/url.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 
-type ILink = {
+export type ILink = {
 	href: string;
 	rel?: string;
 };
 
-type IWebFinger = {
+export type IWebFinger = {
 	links: ILink[];
 	subject: string;
 };
+
+const urlRegex = /^https?:\/\//;
+const mRegex = /^([^@]+)@(.*)/;
 
 @Injectable()
 export class WebfingerService {
@@ -35,12 +38,12 @@ export class WebfingerService {
 
 	@bindThis
 	private genUrl(query: string): string {
-		if (query.match(/^https?:\/\//)) {
+		if (query.match(urlRegex)) {
 			const u = new URL(query);
 			return `${u.protocol}//${u.hostname}/.well-known/webfinger?` + urlQuery({ resource: query });
 		}
 
-		const m = query.match(/^([^@]+)@(.*)/);
+		const m = query.match(mRegex);
 		if (m) {
 			const hostname = m[2];
 			const useHttp = process.env.MISSKEY_WEBFINGER_USE_HTTP && process.env.MISSKEY_WEBFINGER_USE_HTTP.toLowerCase() === 'true';

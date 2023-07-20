@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import { isAbsolute, basename } from 'node:path';
 import { inspect } from 'node:util';
-import WebSocket from 'ws';
+import WebSocket, { ClientOptions } from 'ws';
 import fetch, { Blob, File, RequestInit } from 'node-fetch';
 import { DataSource } from 'typeorm';
 import { JSDOM } from 'jsdom';
@@ -13,14 +13,19 @@ import type * as misskey from 'misskey-js';
 
 export { server as startServer } from '@/boot/common.js';
 
+interface UserToken {
+	token: string;
+	bearer?: boolean;
+}
+
 const config = loadConfig();
 export const port = config.port;
 
-export const cookie = (me: any): string => {
+export const cookie = (me: UserToken): string => {
 	return `token=${me.token};`;
 };
 
-export const api = async (endpoint: string, params: any, me?: any) => {
+export const api = async (endpoint: string, params: any, me?: UserToken) => {
 	const normalized = endpoint.replace(/^\//, '');
 	return await request(`api/${normalized}`, params, me);
 };
@@ -28,7 +33,7 @@ export const api = async (endpoint: string, params: any, me?: any) => {
 export type ApiRequest = {
 	endpoint: string,
 	parameters: object,
-	user: object | undefined,
+	user: UserToken | undefined,
 };
 
 export const successfulApiCall = async <T, >(request: ApiRequest, assertion: {
@@ -55,27 +60,33 @@ export const failedApiCall = async <T, >(request: ApiRequest, assertion: {
 	return res.body;
 };
 
-const request = async (path: string, params: any, me?: any): Promise<{ body: any, status: number }> => {
-	const auth = me ? {
-		i: me.token,
-	} : {};
+const request = async (path: string, params: any, me?: UserToken): Promise<{ status: number, headers: Headers, body: any }> => {
+	const bodyAuth: Record<string, string> = {};
+	const headers: Record<string, string> = {
+		'Content-Type': 'application/json',
+	};
+
+	if (me?.bearer) {
+		headers.Authorization = `Bearer ${me.token}`;
+	} else if (me) {
+		bodyAuth.i = me.token;
+	}
 
 	const res = await relativeFetch(path, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(Object.assign(auth, params)),
+		headers,
+		body: JSON.stringify(Object.assign(bodyAuth, params)),
 		redirect: 'manual',
 	});
 
-	const status = res.status;
 	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
 		? await res.json()
 		: null;
 
 	return {
-		body, status,
+		status: res.status,
+		headers: res.headers,
+		body,
 	};
 };
 
@@ -83,7 +94,7 @@ const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
-export const signup = async (params?: any): Promise<any> => {
+export const signup = async (params?: Partial<misskey.Endpoints['signup']['req']>): Promise<NonNullable<misskey.Endpoints['signup']['res']>> => {
 	const q = Object.assign({
 		username: 'test',
 		password: 'test',
@@ -94,7 +105,7 @@ export const signup = async (params?: any): Promise<any> => {
 	return res.body;
 };
 
-export const post = async (user: any, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
+export const post = async (user: UserToken, params?: misskey.Endpoints['notes/create']['req']): Promise<misskey.entities.Note> => {
 	const q = params;
 
 	const res = await api('notes/create', q, user);
@@ -117,14 +128,21 @@ export const hiddenNote = (note: any): any => {
 	return temp;
 };
 
-export const react = async (user: any, note: any, reaction: string): Promise<any> => {
+export const react = async (user: UserToken, note: any, reaction: string): Promise<any> => {
 	await api('notes/reactions/create', {
 		noteId: note.id,
 		reaction: reaction,
 	}, user);
 };
 
-export const page = async (user: any, page: any = {}): Promise<any> => {
+export const userList = async (user: UserToken, userList: any = {}): Promise<any> => {
+	const res = await api('users/lists/create', {
+		name: 'test',
+	}, user);
+	return res.body;
+};
+
+export const page = async (user: UserToken, page: any = {}): Promise<any> => {
 	const res = await api('pages/create', {
 		alignCenter: false,
 		content: [
@@ -147,7 +165,7 @@ export const page = async (user: any, page: any = {}): Promise<any> => {
 	return res.body;
 };
 
-export const play = async (user: any, play: any = {}): Promise<any> => {
+export const play = async (user: UserToken, play: any = {}): Promise<any> => {
 	const res = await api('flash/create', {
 		permissions: [],
 		script: 'test',
@@ -158,7 +176,7 @@ export const play = async (user: any, play: any = {}): Promise<any> => {
 	return res.body;
 };
 
-export const clip = async (user: any, clip: any = {}): Promise<any> => {
+export const clip = async (user: UserToken, clip: any = {}): Promise<any> => {
 	const res = await api('clips/create', {
 		description: null,
 		isPublic: true,
@@ -168,7 +186,7 @@ export const clip = async (user: any, clip: any = {}): Promise<any> => {
 	return res.body;
 };
 
-export const galleryPost = async (user: any, channel: any = {}): Promise<any> => {
+export const galleryPost = async (user: UserToken, channel: any = {}): Promise<any> => {
 	const res = await api('gallery/posts/create', {
 		description: null,
 		fileIds: [],
@@ -179,7 +197,7 @@ export const galleryPost = async (user: any, channel: any = {}): Promise<any> =>
 	return res.body;
 };
 
-export const channel = async (user: any, channel: any = {}): Promise<any> => {
+export const channel = async (user: UserToken, channel: any = {}): Promise<any> => {
 	const res = await api('channels/create', {
 		bannerId: null,
 		description: null,
@@ -189,7 +207,7 @@ export const channel = async (user: any, channel: any = {}): Promise<any> => {
 	return res.body;
 };
 
-export const role = async (user: any, role: any = {}, policies: any = {}): Promise<any> => {
+export const role = async (user: UserToken, role: any = {}, policies: any = {}): Promise<any> => {
 	const res = await api('admin/roles/create', {
 		asBadge: false,
 		canEditMembersByModerator: false,
@@ -206,8 +224,8 @@ export const role = async (user: any, role: any = {}, policies: any = {}): Promi
 		isPublic: false,
 		name: 'New Role',
 		target: 'manual',
-		policies: { 
-			...Object.entries(DEFAULT_POLICIES).map(([k, v]) => [k, { 
+		policies: {
+			...Object.entries(DEFAULT_POLICIES).map(([k, v]) => [k, {
 				priority: 0,
 				useDefault: true,
 				value: v,
@@ -232,7 +250,7 @@ interface UploadOptions {
  * Upload file
  * @param user User
  */
-export const uploadFile = async (user: any, { path, name, blob }: UploadOptions = {}): Promise<any> => {
+export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadOptions = {}): Promise<{ status: number, headers: Headers, body: misskey.Endpoints['drive/files/create']['res'] | null }> => {
 	const absPath = path == null
 		? new URL('resources/Lenna.jpg', import.meta.url)
 		: isAbsolute(path.toString())
@@ -240,7 +258,6 @@ export const uploadFile = async (user: any, { path, name, blob }: UploadOptions 
 			: new URL(path, new URL('resources/', import.meta.url));
 
 	const formData = new FormData();
-	formData.append('i', user.token);
 	formData.append('file', blob ??
 		new File([await readFile(absPath)], basename(absPath.toString())));
 	formData.append('force', 'true');
@@ -248,20 +265,29 @@ export const uploadFile = async (user: any, { path, name, blob }: UploadOptions 
 		formData.append('name', name);
 	}
 
+	const headers: Record<string, string> = {};
+	if (user?.bearer) {
+		headers.Authorization = `Bearer ${user.token}`;
+	} else if (user) {
+		formData.append('i', user.token);
+	}
+
 	const res = await relativeFetch('api/drive/files/create', {
 		method: 'POST',
 		body: formData,
+		headers,
 	});
 
-	const body = res.status !== 204 ? await res.json() : null;
+	const body = res.status !== 204 ? await res.json() as misskey.Endpoints['drive/files/create']['res'] : null;
 
 	return {
 		status: res.status,
+		headers: res.headers,
 		body,
 	};
 };
 
-export const uploadUrl = async (user: any, url: string) => {
+export const uploadUrl = async (user: UserToken, url: string) => {
 	let file: any;
 	const marker = Math.random().toString();
 
@@ -283,10 +309,18 @@ export const uploadUrl = async (user: any, url: string) => {
 	return file;
 };
 
-export function connectStream(user: any, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
+export function connectStream(user: UserToken, channel: string, listener: (message: Record<string, any>) => any, params?: any): Promise<WebSocket> {
 	return new Promise((res, rej) => {
-		const ws = new WebSocket(`ws://127.0.0.1:${port}/streaming?i=${user.token}`);
+		const url = new URL(`ws://127.0.0.1:${port}/streaming`);
+		const options: ClientOptions = {};
+		if (user.bearer) {
+			options.headers = { Authorization: `Bearer ${user.token}` };
+		} else {
+			url.searchParams.set('i', user.token);
+		}
+		const ws = new WebSocket(url, options);
 
+		ws.on('unexpected-response', (req, res) => rej(res));
 		ws.on('open', () => {
 			ws.on('message', data => {
 				const msg = JSON.parse(data.toString());
@@ -310,7 +344,7 @@ export function connectStream(user: any, channel: string, listener: (message: Re
 	});
 }
 
-export const waitFire = async (user: any, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
+export const waitFire = async (user: UserToken, channel: string, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: any) => {
 	return new Promise<boolean>(async (res, rej) => {
 		let timer: NodeJS.Timeout | null = null;
 
@@ -344,11 +378,11 @@ export const waitFire = async (user: any, channel: string, trgr: () => any, cond
 	});
 };
 
-export type SimpleGetResponse = { 
-	status: number, 
-	body: any | JSDOM | null, 
-	type: string | null, 
-	location: string | null 
+export type SimpleGetResponse = {
+	status: number,
+	body: any | JSDOM | null,
+	type: string | null,
+	location: string | null
 };
 export const simpleGet = async (path: string, accept = '*/*', cookie: any = undefined): Promise<SimpleGetResponse> => {
 	const res = await relativeFetch(path, {
@@ -367,9 +401,9 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 		'text/html; charset=utf-8',
 	];
 
-	const body = 
-		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() : 
-		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) : 
+	const body =
+		jsonTypes.includes(res.headers.get('content-type') ?? '')	? await res.json() :
+		htmlTypes.includes(res.headers.get('content-type') ?? '')	? new JSDOM(await res.text()) :
 		null;
 
 	return {
@@ -380,8 +414,98 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	};
 };
 
+/**
+ * あるAPIエンドポイントのPaginationが複数の条件で一貫した挙動であることをテストします。
+ * (sinceId, untilId, sinceDate, untilDate, offset, limit)
+ * @param expected 期待値となるEntityの並び（例：Note[]）昇順降順が一致している必要がある
+ * @param fetchEntities Entity[]を返却するテスト対象のAPIを呼び出す関数
+ * @param offsetBy 何をキーとしてPaginationするか。
+ * @param ordering 昇順・降順
+ */
+export async function testPaginationConsistency<Entity extends { id: string, createdAt?: string }>(
+	expected: Entity[],
+	fetchEntities: (paginationParam: {
+		limit?: number,
+		offset?: number,
+		sinceId?: string,
+		untilId?: string,
+		sinceDate?: number,
+		untilDate?: number,
+	}) => Promise<Entity[]>,
+	offsetBy: 'offset' | 'id' | 'createdAt' = 'id',
+	ordering: 'desc' | 'asc' = 'desc'): Promise<void> {
+	const rangeToParam = (p: { limit?: number, until?: Entity, since?: Entity }): object => {
+		if (offsetBy === 'id') {
+			return { limit: p.limit, sinceId: p.since?.id, untilId: p.until?.id };
+		} else {
+			const sinceDate = p.since?.createdAt !== undefined ? new Date(p.since.createdAt).getTime() : undefined;
+			const untilDate = p.until?.createdAt !== undefined ? new Date(p.until.createdAt).getTime() : undefined;
+			return { limit: p.limit, sinceDate, untilDate };
+		}
+	};
+
+	for (const limit of [1, 5, 10, 100, undefined]) {
+		// 1. sinceId/DateとuntilId/Dateで両端を指定して取得した結果が期待通りになっていること
+		if (ordering === 'desc') {
+			const end = expected.at(-1)!;
+			let last = await fetchEntities(rangeToParam({ limit, since: end }));
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities(rangeToParam({ limit, until: last.at(-1), since: end }));
+			}
+			actual.push(end);
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+
+		// 2. sinceId/Date指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
+		if (ordering === 'asc') {
+			// 昇順にしたときの先頭(一番古いもの)をもってくる（expected[1]を基準に降順にして0番目）
+			let last = await fetchEntities({ limit: 1, untilId: expected[1].id });
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities(rangeToParam({ limit, since: last.at(-1) }));
+			}
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+
+		// 3. untilId指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
+		if (ordering === 'desc') {
+			let last = await fetchEntities({ limit });
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities(rangeToParam({ limit, until: last.at(-1) }));
+			}
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+
+		// 4. offset指定+limitで取得してつなぎ合わせた結果が期待通りになっていること
+		if (offsetBy === 'offset') {
+			let last = await fetchEntities({ limit, offset: 0 });
+			let offset = limit ?? 10;
+			const actual: Entity[] = [];
+			while (last.length !== 0) {
+				actual.push(...last);
+				last = await fetchEntities({ limit, offset });
+				offset += limit ?? 10;
+			}
+			assert.deepStrictEqual(
+				actual.map(({ id, createdAt }) => id + ':' + createdAt),
+				expected.map(({ id, createdAt }) => id + ':' + createdAt));
+		}
+	}
+}
+
 export async function initTestDb(justBorrow = false, initEntities?: any[]) {
-	if (process.env.NODE_ENV !== 'test') throw 'NODE_ENV is not a test';
+	if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
 
 	const db = new DataSource({
 		type: 'postgres',

@@ -1,38 +1,46 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
-		<div class="qkcjvfiv">
-			<MkButton primary class="add" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createList }}</MkButton>
+	<MkSpacer :contentMax="700">
+		<div class="_gaps">
+			<div v-if="items.length === 0" class="empty">
+				<div class="_fullinfo">
+					<img :src="infoImageUrl" class="_ghost"/>
+					<div>{{ i18n.ts.nothing }}</div>
+				</div>
+			</div>
 
-			<MkPagination v-slot="{items}" ref="pagingComponent" :pagination="pagination" class="lists">
-				<MkA v-for="list in items" :key="list.id" class="list _panel" :to="`/my/lists/${ list.id }`">
-					<div class="name">{{ list.name }}</div>
-					<MkAvatars :user-ids="list.userIds"/>
+			<MkButton primary rounded style="margin: 0 auto;" @click="create"><i class="ti ti-plus"></i> {{ i18n.ts.createList }}</MkButton>
+
+			<div v-if="items.length > 0" class="_gaps">
+				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/my/lists/${ list.id }`">
+					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }})</span></div>
+					<MkAvatars :userIds="list.userIds" :limit="10"/>
 				</MkA>
-			</MkPagination>
+			</div>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import MkPagination from '@/components/MkPagination.vue';
+import { onActivated } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkAvatars from '@/components/MkAvatars.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { userListsCache } from '@/cache';
+import { infoImageUrl } from '@/instance';
+import { $i } from '@/account';
 
-const pagingComponent = $shallowRef<InstanceType<typeof MkPagination>>();
+const items = $computed(() => userListsCache.value.value ?? []);
 
-const pagination = {
-	endpoint: 'users/lists/list' as const,
-	noPaging: true,
-	limit: 10,
-};
+function fetch() {
+	userListsCache.fetch(() => os.api('users/lists/list'));
+}
+
+fetch();
 
 async function create() {
 	const { canceled, result: name } = await os.inputText({
@@ -41,45 +49,47 @@ async function create() {
 	if (canceled) return;
 	await os.apiWithDialog('users/lists/create', { name: name });
 	userListsCache.delete();
-	pagingComponent.reload();
+	fetch();
 }
 
-const headerActions = $computed(() => []);
+const headerActions = $computed(() => [{
+	asFullButton: true,
+	icon: 'ti ti-refresh',
+	text: i18n.ts.reload,
+	handler: () => {
+		userListsCache.delete();
+		fetch();
+	},
+}]);
 
 const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.manageLists,
 	icon: 'ti ti-list',
-	action: {
-		icon: 'ti ti-plus',
-		handler: create,
-	},
+});
+
+onActivated(() => {
+	fetch();
 });
 </script>
 
-<style lang="scss" scoped>
-.qkcjvfiv {
-	> .add {
-		margin: 0 auto var(--margin) auto;
+<style lang="scss" module>
+.list {
+	display: block;
+	padding: 16px;
+	border: solid 1px var(--divider);
+	border-radius: 6px;
+	margin-bottom: 8px;
+
+	&:hover {
+		border: solid 1px var(--accent);
+		text-decoration: none;
 	}
+}
 
-	> .lists {
-		> .list {
-			display: block;
-			padding: 16px;
-			border: solid 1px var(--divider);
-			border-radius: 6px;
-
-			&:hover {
-				border: solid 1px var(--accent);
-				text-decoration: none;
-			}
-
-			> .name {
-				margin-bottom: 4px;
-			}
-		}
-	}
+.nUsers {
+	font-size: .9em;
+	opacity: .7;
 }
 </style>

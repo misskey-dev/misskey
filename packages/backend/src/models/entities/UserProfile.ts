@@ -76,7 +76,7 @@ export class UserProfile {
 	public emailNotificationTypes: string[];
 
 	@Column('boolean', {
-		default: false,
+		default: true,
 	})
 	public publicReactions: boolean;
 
@@ -148,6 +148,11 @@ export class UserProfile {
 	public noCrawle: boolean;
 
 	@Column('boolean', {
+		default: true,
+	})
+	public preventAiLearning: boolean;
+
+	@Column('boolean', {
 		default: false,
 	})
 	public alwaysMarkNsfw: boolean;
@@ -202,7 +207,7 @@ export class UserProfile {
 	public mutedInstances: string[];
 
 	@Column('enum', {
-		enum: [ 
+		enum: [
 			...notificationTypes,
 			// マイグレーションで削除が困難なので古いenumは残しておく
 			...obsoleteNotificationTypes,

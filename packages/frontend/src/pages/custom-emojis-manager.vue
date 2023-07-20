@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="900">
+		<MkSpacer :contentMax="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
@@ -18,7 +18,7 @@
 						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-						<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
+						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
@@ -123,15 +123,14 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
-
-	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
-		fileId: file.id,
-	})));
-	promise.then(() => {
-		emojisPaginationComponent.value.reload();
-	});
-	os.promiseDialog(promise);
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	}, {
+		done: result => {
+			if (result.created) {
+				emojisPaginationComponent.value.prepend(result.created);
+			}
+		},
+	}, 'closed');
 };
 
 const edit = (emoji) => {
@@ -145,7 +144,7 @@ const edit = (emoji) => {
 					...result.updated,
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
+				emojisPaginationComponent.value.removeItem(emoji.id);
 			}
 		},
 	}, 'closed');
@@ -222,7 +221,7 @@ const setCategoryBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-const setLisenceBulk = async () => {
+const setLicenseBulk = async () => {
 	const { canceled, result } = await os.inputText({
 		title: 'License',
 	});
@@ -312,13 +311,13 @@ definePageMetadata(computed(() => ({
 		.empty {
 			margin: var(--margin);
 		}
-		
+
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
 			margin: var(--margin) 0;
-	
+
 			> .emoji {
 				display: flex;
 				align-items: center;

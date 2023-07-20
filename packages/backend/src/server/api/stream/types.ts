@@ -12,7 +12,7 @@ import type { Page } from '@/models/entities/Page.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { Webhook } from '@/models/entities/Webhook.js';
 import type { Meta } from '@/models/entities/Meta.js';
-import { Role, RoleAssignment } from '@/models';
+import { Role, RoleAssignment } from '@/models/index.js';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 
@@ -233,7 +233,7 @@ export type StreamMessages = {
 
 // API event definitions
 // ストリームごとのEmitterの辞書を用意
-type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['payload']) => void }> };
+type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter.default<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['payload']) => void }> };
 // 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 // Emitter辞書から共用体型を作り、UnionToIntersectionで交差型にする

@@ -19,6 +19,7 @@ import MkContextMenu from '@/components/MkContextMenu.vue';
 import { MenuItem } from '@/types/menu';
 import copyToClipboard from './scripts/copy-to-clipboard';
 import { showMovedDialog } from './scripts/show-moved-dialog';
+import { DriveFile } from 'misskey-js/built/entities';
 
 export const openingWindowsCount = ref(0);
 
@@ -167,12 +168,6 @@ export async function popup(component: Component, props: Record<string, any>, ev
 
 export function pageWindow(path: string) {
 	popup(MkPageWindow, {
-		initialPath: path,
-	}, {}, 'closed');
-}
-
-export function modalPageWindow(path: string) {
-	popup(defineAsyncComponent(() => import('@/components/MkModalPageWindow.vue')), {
 		initialPath: path,
 	}, {}, 'closed');
 }
@@ -420,7 +415,7 @@ export async function selectUser(opts: { includeSelf?: boolean } = {}) {
 	});
 }
 
-export async function selectDriveFile(multiple: boolean) {
+export async function selectDriveFile(multiple: boolean): Promise<DriveFile[]> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
 			type: 'file',
@@ -428,7 +423,7 @@ export async function selectDriveFile(multiple: boolean) {
 		}, {
 			done: files => {
 				if (files) {
-					resolve(multiple ? files : files[0]);
+					resolve(files);
 				}
 			},
 		}, 'closed');
@@ -465,11 +460,13 @@ export async function pickEmoji(src: HTMLElement | null, opts) {
 
 export async function cropImage(image: Misskey.entities.DriveFile, options: {
 	aspectRatio: number;
+	uploadFolder?: string | null;
 }): Promise<Misskey.entities.DriveFile> {
 	return new Promise((resolve, reject) => {
 		popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
 			file: image,
 			aspectRatio: options.aspectRatio,
+			uploadFolder: options.uploadFolder,
 		}, {
 			ok: x => {
 				resolve(x);

@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('following.followerHost = :host', { host: ps.host });
 
 			const followings = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.followingEntityService.packMany(followings, me, { populateFollowee: true });

@@ -15,8 +15,8 @@
 					{{ t.title }}
 				</div>
 				<Transition
-					v-else mode="in-out" @enter="enter" @after-enter="afterEnter" @leave="leave"
-					@after-leave="afterLeave"
+					v-else mode="in-out" @enter="enter" @afterEnter="afterEnter" @leave="leave"
+					@afterLeave="afterLeave"
 				>
 					<div v-show="t.key === tab" :class="[$style.tabTitle, $style.animate]">{{ t.title }}</div>
 				</Transition>

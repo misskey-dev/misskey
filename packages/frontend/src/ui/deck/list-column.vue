@@ -1,10 +1,10 @@
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked">
 	<template #header>
 		<i class="ti ti-list"></i><span style="margin-left: 8px;">{{ column.name }}</span>
 	</template>
 
-	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId" @after="() => emit('loaded')"/>
+	<MkTimeline v-if="column.listId" ref="timeline" src="list" :list="column.listId"/>
 </XColumn>
 </template>
 
@@ -19,11 +19,6 @@ import { i18n } from '@/i18n';
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let timeline = $shallowRef<InstanceType<typeof MkTimeline>>();
@@ -47,9 +42,20 @@ async function setList() {
 	});
 }
 
-const menu = [{
-	icon: 'ti ti-pencil',
-	text: i18n.ts.selectList,
-	action: setList,
-}];
+function editList() {
+	os.pageWindow('my/lists/' + props.column.listId);
+}
+
+const menu = [
+	{
+		icon: 'ti ti-pencil',
+		text: i18n.ts.selectList,
+		action: setList,
+	},
+	{
+		icon: 'ti ti-settings',
+		text: i18n.ts.editList,
+		action: editList,
+	},
+];
 </script>

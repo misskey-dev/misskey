@@ -61,6 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
+			const roleAssigns = await this.roleService.getUserAssigns(user.id);
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
@@ -68,6 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				emailVerified: profile.emailVerified,
 				autoAcceptFollowed: profile.autoAcceptFollowed,
 				noCrawle: profile.noCrawle,
+				preventAiLearning: profile.preventAiLearning,
 				alwaysMarkNsfw: profile.alwaysMarkNsfw,
 				autoSensitive: profile.autoSensitive,
 				carefulBot: profile.carefulBot,
@@ -80,10 +82,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSilenced: isSilenced,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
-				moderationNote: profile.moderationNote,
+				moderationNote: profile.moderationNote ?? '',
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
+				roleAssigns: roleAssigns.map(a => ({
+					createdAt: a.createdAt.toISOString(),
+					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
+					roleId: a.roleId,
+				})),
 			};
 		});
 	}

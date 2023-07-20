@@ -52,6 +52,7 @@ function compileQuery(q: Q): string {
 
 @Injectable()
 export class SearchService {
+	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
 
 	constructor(
@@ -68,7 +69,7 @@ export class SearchService {
 		private idService: IdService,
 	) {
 		if (meilisearch) {
-			this.meilisearchNoteIndex = meilisearch.index('notes');
+			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
 			this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
@@ -82,6 +83,7 @@ export class SearchService {
 					'userId',
 					'userHost',
 					'channelId',
+					'tags',
 				],
 				typoTolerance: {
 					enabled: false,
@@ -91,6 +93,10 @@ export class SearchService {
 				},
 			});
 		}
+
+		if (config.meilisearch?.scope) {
+			this.meilisearchIndexScope = config.meilisearch.scope;
+		}
 	}
 
 	@bindThis
@@ -99,7 +105,22 @@ export class SearchService {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
-			this.meilisearchNoteIndex!.addDocuments([{
+			switch (this.meilisearchIndexScope) {
+				case 'global':
+					break;
+
+				case 'local':
+					if (note.userHost == null) break;
+					return;
+
+				default: {
+					if (note.userHost == null) break;
+					if (this.meilisearchIndexScope.includes(note.userHost)) break;
+					return;
+				}
+			}
+
+			await this.meilisearchNoteIndex?.addDocuments([{
 				id: note.id,
 				createdAt: note.createdAt.getTime(),
 				userId: note.userId,
@@ -107,6 +128,7 @@ export class SearchService {
 				channelId: note.channelId,
 				cw: note.cw,
 				text: note.text,
+				tags: note.tags,
 			}], {
 				primaryKey: 'id',
 			});
@@ -114,9 +136,19 @@ export class SearchService {
 	}
 
 	@bindThis
+	public async unindexNote(note: Note): Promise<void> {
+		if (!['home', 'public'].includes(note.visibility)) return;
+
+		if (this.meilisearch) {
+			this.meilisearchNoteIndex!.deleteDocument(note.id);
+		}
+	}
+
+	@bindThis
 	public async searchNote(q: string, me: User | null, opts: {
 		userId?: Note['userId'] | null;
 		channelId?: Note['channelId'] | null;
+		host?: string | null;
 	}, pagination: {
 		untilId?: Note['id'];
 		sinceId?: Note['id'];
@@ -131,6 +163,13 @@ export class SearchService {
 			if (pagination.sinceId) filter.qs.push({ op: '>', k: 'createdAt', v: this.idService.parse(pagination.sinceId).date.getTime() });
 			if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
 			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
+			if (opts.host) {
+				if (opts.host === '.') {
+					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
+				} else {
+					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
+				}
+			}
 			const res = await this.meilisearchNoteIndex!.search(q, {
 				sort: ['createdAt:desc'],
 				matchingStrategy: 'all',
@@ -164,7 +203,7 @@ export class SearchService {
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
-			return await query.take(pagination.limit).getMany();
+			return await query.limit(pagination.limit).getMany();
 		}
 	}
 }

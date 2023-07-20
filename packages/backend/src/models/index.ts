@@ -63,6 +63,7 @@ import { Role } from '@/models/entities/Role.js';
 import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
 import { Flash } from '@/models/entities/Flash.js';
 import { FlashLike } from '@/models/entities/FlashLike.js';
+import { UserListFavorite } from './entities/UserListFavorite.js';
 import type { Repository } from 'typeorm';
 
 export {
@@ -117,6 +118,7 @@ export {
 	UserIp,
 	UserKeypair,
 	UserList,
+	UserListFavorite,
 	UserListJoining,
 	UserNotePining,
 	UserPending,
@@ -184,6 +186,7 @@ export type UsersRepository = Repository<User>;
 export type UserIpsRepository = Repository<UserIp>;
 export type UserKeypairsRepository = Repository<UserKeypair>;
 export type UserListsRepository = Repository<UserList>;
+export type UserListFavoritesRepository = Repository<UserListFavorite>;
 export type UserListJoiningsRepository = Repository<UserListJoining>;
 export type UserNotePiningsRepository = Repository<UserNotePining>;
 export type UserPendingsRepository = Repository<UserPending>;

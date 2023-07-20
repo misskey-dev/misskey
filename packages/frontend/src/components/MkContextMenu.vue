@@ -1,10 +1,10 @@
 <template>
 <Transition
 	appear
-	:enter-active-class="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_fade_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_fade_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_fade_leaveTo : ''"
 >
 	<div ref="rootEl" :class="$style.root" :style="{ zIndex }" @contextmenu.prevent.stop="() => {}">
 		<MkMenu :items="items" :align="'left'" @close="$emit('closed')"/>
@@ -61,15 +61,11 @@ onMounted(() => {
 	rootEl.style.top = `${top}px`;
 	rootEl.style.left = `${left}px`;
 
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
-	}
+	document.body.addEventListener('mousedown', onMousedown);
 });
 
 onBeforeUnmount(() => {
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
+	document.body.removeEventListener('mousedown', onMousedown);
 });
 
 function onMousedown(evt: Event) {

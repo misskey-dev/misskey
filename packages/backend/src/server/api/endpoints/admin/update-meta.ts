@@ -32,7 +32,9 @@ export const paramDef = {
 		themeColor: { type: 'string', nullable: true, pattern: '^#[0-9a-fA-F]{6}$' },
 		mascotImageUrl: { type: 'string', nullable: true },
 		bannerUrl: { type: 'string', nullable: true },
-		errorImageUrl: { type: 'string', nullable: true },
+		serverErrorImageUrl: { type: 'string', nullable: true },
+		infoImageUrl: { type: 'string', nullable: true },
+		notFoundImageUrl: { type: 'string', nullable: true },
 		iconUrl: { type: 'string', nullable: true },
 		backgroundImageUrl: { type: 'string', nullable: true },
 		logoImageUrl: { type: 'string', nullable: true },
@@ -41,6 +43,7 @@ export const paramDef = {
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
 		cacheRemoteFiles: { type: 'boolean' },
+		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
@@ -94,6 +97,8 @@ export const paramDef = {
 		enableActiveEmailValidation: { type: 'boolean' },
 		enableChartsForRemoteUser: { type: 'boolean' },
 		enableChartsForFederatedInstances: { type: 'boolean' },
+		enableServerMachineStats: { type: 'boolean' },
+		enableIdenticonGeneration: { type: 'boolean' },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 	},
@@ -132,7 +137,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (Array.isArray(ps.sensitiveWords)) {
 				set.sensitiveWords = ps.sensitiveWords.filter(Boolean);
 			}
-		
+
 			if (ps.themeColor !== undefined) {
 				set.themeColor = ps.themeColor;
 			}
@@ -147,6 +152,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.iconUrl !== undefined) {
 				set.iconUrl = ps.iconUrl;
+			}
+
+			if (ps.serverErrorImageUrl !== undefined) {
+				set.serverErrorImageUrl = ps.serverErrorImageUrl;
+			}
+
+			if (ps.infoImageUrl !== undefined) {
+				set.infoImageUrl = ps.infoImageUrl;
+			}
+
+			if (ps.notFoundImageUrl !== undefined) {
+				set.notFoundImageUrl = ps.notFoundImageUrl;
 			}
 
 			if (ps.backgroundImageUrl !== undefined) {
@@ -175,6 +192,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.cacheRemoteFiles !== undefined) {
 				set.cacheRemoteFiles = ps.cacheRemoteFiles;
+			}
+
+			if (ps.cacheRemoteSensitiveFiles !== undefined) {
+				set.cacheRemoteSensitiveFiles = ps.cacheRemoteSensitiveFiles;
 			}
 
 			if (ps.emailRequiredForSignup !== undefined) {
@@ -281,10 +302,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				set.smtpPass = ps.smtpPass;
 			}
 
-			if (ps.errorImageUrl !== undefined) {
-				set.errorImageUrl = ps.errorImageUrl;
-			}
-
 			if (ps.enableServiceWorker !== undefined) {
 				set.enableServiceWorker = ps.enableServiceWorker;
 			}
@@ -387,6 +404,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableChartsForFederatedInstances !== undefined) {
 				set.enableChartsForFederatedInstances = ps.enableChartsForFederatedInstances;
+			}
+
+			if (ps.enableServerMachineStats !== undefined) {
+				set.enableServerMachineStats = ps.enableServerMachineStats;
+			}
+
+			if (ps.enableIdenticonGeneration !== undefined) {
+				set.enableIdenticonGeneration = ps.enableIdenticonGeneration;
 			}
 
 			if (ps.serverRules !== undefined) {

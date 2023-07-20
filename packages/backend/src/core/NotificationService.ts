@@ -46,7 +46,7 @@ export class NotificationService implements OnApplicationShutdown {
 		force = false,
 	) {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
-		
+
 		const latestNotificationIdsRes = await this.redisClient.xrevrange(
 			`notificationTimeline:${userId}`,
 			'+',
@@ -152,7 +152,13 @@ export class NotificationService implements OnApplicationShutdown {
 		*/
 	}
 
-	onApplicationShutdown(signal?: string | undefined): void {
+	@bindThis
+	public dispose(): void {
 		this.#shutdownController.abort();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

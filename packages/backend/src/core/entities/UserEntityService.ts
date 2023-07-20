@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
 import * as Redis from 'ioredis';
-import Ajv from 'ajv';
+import _Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -31,6 +31,7 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 		Packed<'UserDetailed'> :
 	Packed<'UserLite'>;
 
+const Ajv = _Ajv.default;
 const ajv = new Ajv();
 
 function isLocalUser(user: User): user is LocalUser;
@@ -112,7 +113,7 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
-		
+
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
 
@@ -229,12 +230,14 @@ export class UserEntityService implements OnModuleInit {
 		/*
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
-		const unread = myAntennas.length > 0 ? await this.antennaNotesRepository.findOneBy({
-			antennaId: In(myAntennas.map(x => x.id)),
-			read: false,
-		}) : null;
+		const isUnread = (myAntennas.length > 0 ? await this.antennaNotesRepository.exist({
+			where: {
+				antennaId: In(myAntennas.map(x => x.id)),
+				read: false,
+			},
+		}) : false);
 
-		return unread != null;
+		return isUnread;
 		*/
 		return false; // TODO
 	}
@@ -305,6 +308,24 @@ export class UserEntityService implements OnModuleInit {
 		}, options);
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
+
+		// migration
+		if (user.avatarId != null && user.avatarUrl === null) {
+			const avatar = await this.driveFilesRepository.findOneByOrFail({ id: user.avatarId });
+			user.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
+			this.usersRepository.update(user.id, {
+				avatarUrl: user.avatarUrl,
+				avatarBlurhash: avatar.blurhash,
+			});
+		}
+		if (user.bannerId != null && user.bannerUrl === null) {
+			const banner = await this.driveFilesRepository.findOneByOrFail({ id: user.bannerId });
+			user.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
+			this.usersRepository.update(user.id, {
+				bannerUrl: user.bannerUrl,
+				bannerBlurhash: banner.blurhash,
+			});
+		}
 
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
@@ -412,7 +433,7 @@ export class UserEntityService implements OnModuleInit {
 					userId: meId,
 					targetUserId: user.id,
 				}).then(row => row?.memo ?? null),
-				moderationNote: iAmModerator ? profile!.moderationNote : null,
+				moderationNote: iAmModerator ? (profile!.moderationNote ?? '') : undefined,
 			} : {}),
 
 			...(opts.detail && isMe ? {
@@ -427,6 +448,7 @@ export class UserEntityService implements OnModuleInit {
 				carefulBot: profile!.carefulBot,
 				autoAcceptFollowed: profile!.autoAcceptFollowed,
 				noCrawle: profile!.noCrawle,
+				preventAiLearning: profile!.preventAiLearning,
 				isExplorable: user.isExplorable,
 				isDeleted: user.isDeleted,
 				hideOnlineStatus: user.hideOnlineStatus,
@@ -447,7 +469,6 @@ export class UserEntityService implements OnModuleInit {
 				mutedInstances: profile!.mutedInstances,
 				mutingNotificationTypes: profile!.mutingNotificationTypes,
 				emailNotificationTypes: profile!.emailNotificationTypes,
-				showTimelineReplies: user.showTimelineReplies ?? falsy,
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
 				policies: this.roleService.getUserPolicies(user.id),

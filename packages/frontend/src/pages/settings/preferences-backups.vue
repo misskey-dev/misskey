@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, useCssModule } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -40,15 +40,13 @@ import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { ColdDeviceStorage, defaultStore } from '@/store';
 import { unisonReload } from '@/scripts/unison-reload';
-import { stream } from '@/stream';
+import { useStream } from '@/stream';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { version, host } from '@/config';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
 const { t, ts } = i18n;
-
-useCssModule();
 
 const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'menu',
@@ -125,7 +123,7 @@ type Profile = {
 	};
 };
 
-const connection = $i && stream.useChannel('main');
+const connection = $i && useStream().useChannel('main');
 
 let profiles = $ref<Record<string, Profile> | null>(null);
 
@@ -146,7 +144,7 @@ function validate(profile: unknown): void {
 
 	if (!profile.name) throw new Error('Missing required prop: name');
 	if (!profile.misskeyVersion) throw new Error('Missing required prop: misskeyVersion');
-	
+
 	// Check if createdAt and updatedAt is Date
 	// https://zenn.dev/lollipop_onl/articles/eoz-judge-js-invalid-date
 	if (!profile.createdAt || Number.isNaN(new Date(profile.createdAt).getTime())) throw new Error('createdAt is falsy or not Date');
@@ -275,7 +273,7 @@ async function applyProfile(id: string): Promise<void> {
 			defaultStore.set(key, settings.hot[key]);
 		}
 	}
-	
+
 	// coldDeviceStorage
 	for (const key of coldDeviceStorageSaveKeys) {
 		if (settings.cold[key] !== undefined) {

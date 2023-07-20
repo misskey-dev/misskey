@@ -3,16 +3,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository } from '@/models/index.js';
+import type { UsersRepository, BlockingsRepository, Blocking } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
-import type { DbJobDataWithUser } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
+import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
 export class ExportBlockingProcessorService {
@@ -36,12 +36,11 @@ export class ExportBlockingProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
 		this.logger.info(`Exporting blocking of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -54,7 +53,7 @@ export class ExportBlockingProcessorService {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
 
 			let exportedCount = 0;
-			let cursor: any = null;
+			let cursor: Blocking['id'] | null = null;
 
 			while (true) {
 				const blockings = await this.blockingsRepository.find({
@@ -69,11 +68,11 @@ export class ExportBlockingProcessorService {
 				});
 
 				if (blockings.length === 0) {
-					job.progress(100);
+					job.updateProgress(100);
 					break;
 				}
 
-				cursor = blockings[blockings.length - 1].id;
+				cursor = blockings.at(-1)?.id ?? null;
 
 				for (const block of blockings) {
 					const u = await this.usersRepository.findOneBy({ id: block.blockeeId });
@@ -99,7 +98,7 @@ export class ExportBlockingProcessorService {
 					blockerId: user.id,
 				});
 
-				job.progress(exportedCount / total);
+				job.updateProgress(exportedCount / total);
 			}
 
 			stream.end();
@@ -112,7 +111,5 @@ export class ExportBlockingProcessorService {
 		} finally {
 			cleanup();
 		}
-
-		done();
 	}
 }

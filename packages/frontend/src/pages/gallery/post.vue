@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="1000" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="1000" :marginMin="16" :marginMax="32">
 		<div class="_root">
 			<Transition :name="defaultStore.state.animation ? 'fade' : ''" mode="out-in">
 				<div v-if="post" class="rkxwuolj">
@@ -236,6 +236,7 @@ definePageMetadata(computed(() => post ? {
 			border-top: solid 0.5px var(--divider);
 			display: flex;
 			align-items: center;
+			flex-wrap: wrap;
 
 			> .avatar {
 				width: 52px;

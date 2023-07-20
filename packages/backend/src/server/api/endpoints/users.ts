@@ -50,8 +50,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.usersRepository.createQueryBuilder('user');
-			query.where('user.isExplorable = TRUE');
+			const query = this.usersRepository.createQueryBuilder('user')
+				.where('user.isExplorable = TRUE')
+				.andWhere('user.isSuspended = FALSE');
 
 			switch (ps.state) {
 				case 'alive': query.andWhere('user.updatedAt > :date', { date: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5) }); break;
@@ -79,7 +80,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateMutedUserQueryForUsers(query, me);
 			if (me) this.queryService.generateBlockQueryForUsers(query, me);
 
-			query.take(ps.limit);
+			query.limit(ps.limit);
 			query.skip(ps.offset);
 
 			const users = await query.getMany();

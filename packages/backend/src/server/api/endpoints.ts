@@ -38,7 +38,8 @@ import * as ep___admin_federation_updateInstance from './endpoints/admin/federat
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
-import * as ep___invite from './endpoints/invite.js';
+import * as ep___admin_invite_create from './endpoints/admin/invite/create.js';
+import * as ep___admin_invite_list from './endpoints/admin/invite/list.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -230,6 +231,10 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
+import * as ep___invite_create from './endpoints/invite/create.js';
+import * as ep___invite_delete from './endpoints/invite/delete.js';
+import * as ep___invite_list from './endpoints/invite/list.js';
+import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___emoji from './endpoints/emoji.js';
@@ -320,6 +325,9 @@ import * as ep___users_lists_list from './endpoints/users/lists/list.js';
 import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
+import * as ep___users_lists_favorite from './endpoints/users/lists/favorite.js';
+import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite.js';
+import * as ep___users_lists_create_from_public from './endpoints/users/lists/create-from-public.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
@@ -330,7 +338,6 @@ import * as ep___users_reportAbuse from './endpoints/users/report-abuse.js';
 import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by-username-and-host.js';
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
-import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
@@ -374,7 +381,8 @@ const eps = [
 	['admin/get-index-stats', ep___admin_getIndexStats],
 	['admin/get-table-stats', ep___admin_getTableStats],
 	['admin/get-user-ips', ep___admin_getUserIps],
-	['invite', ep___invite],
+	['admin/invite/create', ep___admin_invite_create],
+	['admin/invite/list', ep___admin_invite_list],
 	['admin/promo/create', ep___admin_promo_create],
 	['admin/queue/clear', ep___admin_queue_clear],
 	['admin/queue/deliver-delayed', ep___admin_queue_deliverDelayed],
@@ -566,6 +574,10 @@ const eps = [
 	['i/webhooks/show', ep___i_webhooks_show],
 	['i/webhooks/update', ep___i_webhooks_update],
 	['i/webhooks/delete', ep___i_webhooks_delete],
+	['invite/create', ep___invite_create],
+	['invite/delete', ep___invite_delete],
+	['invite/list', ep___invite_list],
+	['invite/limit', ep___invite_limit],
 	['meta', ep___meta],
 	['emojis', ep___emojis],
 	['emoji', ep___emoji],
@@ -656,7 +668,10 @@ const eps = [
 	['users/lists/pull', ep___users_lists_pull],
 	['users/lists/push', ep___users_lists_push],
 	['users/lists/show', ep___users_lists_show],
+	['users/lists/favorite', ep___users_lists_favorite],
+	['users/lists/unfavorite', ep___users_lists_unfavorite],
 	['users/lists/update', ep___users_lists_update],
+	['users/lists/create-from-public', ep___users_lists_create_from_public],
 	['users/notes', ep___users_notes],
 	['users/pages', ep___users_pages],
 	['users/reactions', ep___users_reactions],
@@ -666,7 +681,6 @@ const eps = [
 	['users/search-by-username-and-host', ep___users_searchByUsernameAndHost],
 	['users/search', ep___users_search],
 	['users/show', ep___users_show],
-	['users/stats', ep___users_stats],
 	['users/achievements', ep___users_achievements],
 	['users/update-memo', ep___users_updateMemo],
 	['fetch-rss', ep___fetchRss],

@@ -2,7 +2,7 @@
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+		<MkSpacer :contentMax="700">
 			<div class="_gaps">
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
@@ -14,7 +14,7 @@
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.rateLimitFactor, 'rateLimitFactor'])">
 							<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
 							<template #suffix>{{ Math.floor(policies.rateLimitFactor * 100) }}%</template>
-							<MkRange :model-value="policies.rateLimitFactor * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => policies.rateLimitFactor = (v / 100)">
+							<MkRange :modelValue="policies.rateLimitFactor * 100" :min="30" :max="300" :step="10" :textConverter="(v) => `${v}%`" @update:modelValue="v => policies.rateLimitFactor = (v / 100)">
 								<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 							</MkRange>
 						</MkFolder>
@@ -49,6 +49,29 @@
 							<MkSwitch v-model="policies.canInvite">
 								<template #label>{{ i18n.ts.enable }}</template>
 							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimit, 'inviteLimit'])">
+							<template #label>{{ i18n.ts._role._options.inviteLimit }}</template>
+							<template #suffix>{{ policies.inviteLimit }}</template>
+							<MkInput v-model="policies.inviteLimit" type="number">
+							</MkInput>
+						</MkFolder>
+						
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimitCycle, 'inviteLimitCycle'])">
+							<template #label>{{ i18n.ts._role._options.inviteLimitCycle }}</template>
+							<template #suffix>{{ policies.inviteLimitCycle + i18n.ts._time.minute }}</template>
+							<MkInput v-model="policies.inviteLimitCycle" type="number">
+								<template #suffix>{{ i18n.ts._time.minute }}</template>
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteExpirationTime, 'inviteExpirationTime'])">
+							<template #label>{{ i18n.ts._role._options.inviteExpirationTime }}</template>
+							<template #suffix>{{ policies.inviteExpirationTime + i18n.ts._time.minute }}</template>
+							<MkInput v-model="policies.inviteExpirationTime" type="number">
+								<template #suffix>{{ i18n.ts._time.minute }}</template>
+							</MkInput>
 						</MkFolder>
 
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canManageCustomEmojis, 'canManageCustomEmojis'])">
@@ -156,13 +179,13 @@
 					<MkFoldableSection>
 						<template #header>Manual roles</template>
 						<div class="_gaps_s">
-							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :for-moderation="true"/>
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 					<MkFoldableSection>
 						<template #header>Conditional roles</template>
 						<div class="_gaps_s">
-							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :for-moderation="true"/>
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 				</div>

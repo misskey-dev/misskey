@@ -186,6 +186,14 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.stream.send(JSON.stringify(typeOrPayload));
 	}
 
+	public ping(): void {
+		this.stream.send('ping');
+	}
+
+	public heartbeat(): void {
+		this.stream.send('h');
+	}
+
 	/**
 	 * Close this connection
 	 */
@@ -210,7 +218,7 @@ class Pool {
 		this.dec = this.dec.bind(this);
 		this.connect = this.connect.bind(this);
 		this.disconnect = this.disconnect.bind(this);
-	
+
 		this.channel = channel;
 		this.stream = stream;
 		this.id = id;

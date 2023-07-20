@@ -44,12 +44,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder(), ps.sinceId, ps.untilId)
+			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder('channel'), ps.sinceId, ps.untilId)
 				.andWhere('channel.isArchived = FALSE')
 				.andWhere({ userId: me.id });
 
 			const channels = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await Promise.all(channels.map(x => this.channelEntityService.pack(x, me)));

@@ -1,10 +1,10 @@
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
-	appear @after-leave="emit('closed')"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
+	appear @afterLeave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
 		<div v-if="user != null">
@@ -22,7 +22,7 @@
 				<div :class="$style.username"><MkAcct :user="user"/></div>
 			</div>
 			<div :class="$style.description">
-				<Mfm v-if="user.description" :text="user.description" :author="user" :i="$i"/>
+				<Mfm v-if="user.description" :class="$style.mfm" :text="user.description" :author="user" :i="$i"/>
 				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
@@ -30,11 +30,11 @@
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<div :class="$style.statusItem">
+				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
 				</div>
-				<div :class="$style.statusItem">
+				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
 				</div>
@@ -61,6 +61,7 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
 
 const props = defineProps<{
 	showing: boolean;
@@ -88,7 +89,7 @@ onMounted(() => {
 		user = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
-			Acct.parse(props.q.substr(1)) :
+			Acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
 		os.api('users/show', query).then(res => {
@@ -190,6 +191,13 @@ onMounted(() => {
 	text-align: center;
 	border-top: solid 1px var(--divider);
 	border-bottom: solid 1px var(--divider);
+}
+
+.mfm {
+	display: -webkit-box;
+	-webkit-line-clamp: 5;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 
 .status {

@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div v-if="tab === 'overview'" class="_gaps_m">
 				<div class="aeakzknw">
@@ -88,7 +88,7 @@
 			</div>
 
 			<div v-else-if="tab === 'moderation'" class="_gaps_m">
-				<MkSwitch v-model="suspended" @update:model-value="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+				<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
 
 				<div>
 					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
@@ -112,9 +112,17 @@
 						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
 						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
-							<MkRolePreview :class="$style.role" :role="role" :for-moderation="true"/>
-							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
-							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+							<div :class="$style.roleItemMain">
+								<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
+								<button class="_button" :class="$style.roleToggle" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
+								<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+								<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+							</div>
+							<div v-if="expandedRoles.includes(role.id)" :class="$style.roleItemSub">
+								<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id).createdAt" mode="detail"/></div>
+								<div v-if="info.roleAssigns.find(a => a.roleId === role.id).expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id).expiresAt).toLocaleString() }}</div>
+								<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+							</div>
 						</div>
 					</div>
 				</MkFolder>
@@ -135,10 +143,10 @@
 				<MkFolder>
 					<template #icon><i class="ti ti-cloud"></i></template>
 					<template #label>{{ i18n.ts.files }}</template>
-					<MkFileListForAdmin :pagination="filesPagination" view-mode="grid"/>
+					<MkFileListForAdmin :pagination="filesPagination" viewMode="grid"/>
 				</MkFolder>
 
-				<MkTextarea v-model="moderationNote" manual-save>
+				<MkTextarea v-model="moderationNote" manualSave>
 					<template #label>Moderation note</template>
 				</MkTextarea>
 			</div>
@@ -220,6 +228,7 @@ const filesPagination = {
 		userId: props.userId,
 	})),
 };
+let expandedRoles = $ref([]);
 
 function createFetcher() {
 	if (iAmModerator) {
@@ -384,6 +393,14 @@ async function unassignRole(role, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
+function toggleRoleItem(role) {
+	if (expandedRoles.includes(role.id)) {
+		expandedRoles = expandedRoles.filter(x => x !== role.id);
+	} else {
+		expandedRoles.push(role.id);
+	}
+}
+
 watch(() => props.userId, () => {
 	init = createFetcher();
 }, {
@@ -523,11 +540,22 @@ definePageMetadata(computed(() => ({
 }
 
 .roleItem {
+}
+
+.roleItemMain {
 	display: flex;
 }
 
 .role {
 	flex: 1;
+	min-width: 0;
+	margin-right: 8px;
+}
+
+.roleItemSub {
+	padding: 6px 12px;
+	font-size: 85%;
+	color: var(--fgTransparentWeak);
 }
 
 .roleUnassign {

@@ -61,7 +61,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (key.userId !== me.id) {
 				throw new ApiError(meta.errors.accessDenied);
 			}
-	
+
 			await this.userSecurityKeysRepository.update(key.id, {
 				name: ps.name,
 			});

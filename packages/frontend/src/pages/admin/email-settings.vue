@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkSwitch v-model="enableEmail">
@@ -18,7 +18,7 @@
 						<template #label>{{ i18n.ts.smtpConfig }}</template>
 
 						<div class="_gaps_m">
-							<FormSplit :min-width="280">
+							<FormSplit :minWidth="280">
 								<MkInput v-model="smtpHost">
 									<template #label>{{ i18n.ts.smtpHost }}</template>
 								</MkInput>
@@ -26,7 +26,7 @@
 									<template #label>{{ i18n.ts.smtpPort }}</template>
 								</MkInput>
 							</FormSplit>
-							<FormSplit :min-width="280">
+							<FormSplit :minWidth="280">
 								<MkInput v-model="smtpUser">
 									<template #label>{{ i18n.ts.smtpUser }}</template>
 								</MkInput>
@@ -47,7 +47,7 @@
 	</MkSpacer>
 	<template #footer>
 		<div :class="$style.footer">
-			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
+			<MkSpacer :contentMax="700" :marginMin="16" :marginMax="16">
 				<div class="_buttons">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 					<MkButton rounded @click="testEmail"><i class="ti ti-send"></i> {{ i18n.ts.testEmail }}</MkButton>

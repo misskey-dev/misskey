@@ -1,7 +1,7 @@
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
+	<MkSpacer :contentMax="700">
 		<div v-if="channelId == null || channel != null" class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
@@ -23,15 +23,15 @@
 				</div>
 			</div>
 
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.pinnedNotes }}</template>
-				
+
 				<div class="_gaps">
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
-					<Sortable 
+					<Sortable
 						v-model="pinnedNotes"
-						item-key="id"
+						itemKey="id"
 						:handle="'.' + $style.pinnedNoteHandle"
 						:animation="150"
 					>
@@ -81,7 +81,7 @@ let name = $ref(null);
 let description = $ref(null);
 let bannerUrl = $ref<string | null>(null);
 let bannerId = $ref<string | null>(null);
-let color = $ref(null);
+let color = $ref('#000');
 const pinnedNotes = ref([]);
 
 watch(() => bannerId, async () => {
@@ -160,7 +160,7 @@ async function archive() {
 	});
 
 	if (canceled) return;
-	
+
 	os.api('channels/update', {
 		channelId: props.channelId,
 		isArchived: true,

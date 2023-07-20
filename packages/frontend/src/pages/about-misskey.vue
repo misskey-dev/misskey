@@ -2,7 +2,7 @@
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<div style="overflow: clip;">
-		<MkSpacer :content-max="600" :margin-min="20">
+		<MkSpacer :contentMax="600" :marginMin="20">
 			<div class="_gaps_m znqjceqz">
 				<div v-panel class="about">
 					<div ref="containerEl" class="container" :class="{ playing: easterEggEngine != null }">
@@ -10,8 +10,8 @@
 						<div class="misskey">Misskey</div>
 						<div class="version">v{{ version }}</div>
 						<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }">
-							<MkCustomEmoji v-if="emoji.emoji[0] === ':'" class="emoji" :name="emoji.emoji" :normal="true" :no-style="true"/>
-							<MkEmoji v-else class="emoji" :emoji="emoji.emoji" :normal="true" :no-style="true"/>
+							<MkCustomEmoji v-if="emoji.emoji[0] === ':'" class="emoji" :name="emoji.emoji" :normal="true" :noStyle="true"/>
+							<MkEmoji v-else class="emoji" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
 						</span>
 					</div>
 					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
@@ -86,8 +86,16 @@
 				</FormSection>
 				<FormSection>
 					<template #label>Special thanks</template>
-					<div style="text-align: center;">
-						<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="200" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
+					<div class="_gaps" style="text-align: center;">
+						<div>
+							<a style="display: inline-block;" class="masknetwork" title="Mask Network" href="https://mask.io/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/masknetwork.png" alt="Mask Network"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="skeb" title="Skeb" href="https://skeb.jp/" target="_blank"><img width="180" src="https://misskey-hub.net/sponsors/skeb.svg" alt="Skeb"></a>
+						</div>
+						<div>
+							<a style="display: inline-block;" class="dcadvirth" title="DC Advirth" href="https://www.dotchain.ltd/advirth" target="_blank"><img width="100" src="https://misskey-hub.net/sponsors/dcadvirth.png" alt="DC Advirth"></a>
+						</div>
 					</div>
 				</FormSection>
 			</div>
@@ -144,6 +152,36 @@ const patronsWithIcon = [{
 }, {
 	name: 'かみらえっと',
 	icon: 'https://misskey-hub.net/patrons/be1326bda7d940a482f3758ffd9ffaf6.jpg',
+}, {
+	name: 'へてて',
+	icon: 'https://misskey-hub.net/patrons/0431eacd7c6843d09de8ea9984307e86.jpg',
+}, {
+	name: 'spinlock',
+	icon: 'https://misskey-hub.net/patrons/6a1cebc819d540a78bf20e9e3115baa8.jpg',
+}, {
+	name: 'じゅくま',
+	icon: 'https://misskey-hub.net/patrons/3e56bdac69dd42f7a06e0f12cf2fc895.jpg',
+}, {
+	name: '清遊あみ',
+	icon: 'https://misskey-hub.net/patrons/de25195b88e940a388388bea2e7637d8.jpg',
+}, {
+	name: 'Nagi8410',
+	icon: 'https://misskey-hub.net/patrons/31b102ab4fc540ed806b0461575d38be.jpg',
+}, {
+	name: '山岡士郎',
+	icon: 'https://misskey-hub.net/patrons/84b9056341684266bb1eda3e680d094d.jpg',
+}, {
+	name: 'よもやまたろう',
+	icon: 'https://misskey-hub.net/patrons/4273c9cce50d445f8f7d0f16113d6d7f.jpg',
+}, {
+	name: '花咲ももか',
+	icon: 'https://misskey-hub.net/patrons/8c9b2b9128cb4fee99f04bb4f86f2efa.jpg',
+}, {
+	name: 'カガミ',
+	icon: 'https://misskey-hub.net/patrons/226ea3a4617749548580ec2d9a263e24.jpg',
+}, {
+	name: 'フランギ・シュウ',
+	icon: 'https://misskey-hub.net/patrons/3016d37e35f3430b90420176c912d304.jpg',
 }];
 
 const patrons = [
@@ -238,6 +276,10 @@ const patrons = [
 	'ずも',
 	'binvinyl',
 	'渡志郎',
+	'ぷーざ',
+	'越貝鯛丸',
+	'Nick / pprmint.',
+	'kino3277',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

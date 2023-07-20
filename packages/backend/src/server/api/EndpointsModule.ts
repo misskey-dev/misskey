@@ -38,7 +38,8 @@ import * as ep___admin_federation_updateInstance from './endpoints/admin/federat
 import * as ep___admin_getIndexStats from './endpoints/admin/get-index-stats.js';
 import * as ep___admin_getTableStats from './endpoints/admin/get-table-stats.js';
 import * as ep___admin_getUserIps from './endpoints/admin/get-user-ips.js';
-import * as ep___invite from './endpoints/invite.js';
+import * as ep___admin_invite_create from './endpoints/admin/invite/create.js';
+import * as ep___admin_invite_list from './endpoints/admin/invite/list.js';
 import * as ep___admin_promo_create from './endpoints/admin/promo/create.js';
 import * as ep___admin_queue_clear from './endpoints/admin/queue/clear.js';
 import * as ep___admin_queue_deliverDelayed from './endpoints/admin/queue/deliver-delayed.js';
@@ -230,6 +231,10 @@ import * as ep___i_webhooks_show from './endpoints/i/webhooks/show.js';
 import * as ep___i_webhooks_list from './endpoints/i/webhooks/list.js';
 import * as ep___i_webhooks_update from './endpoints/i/webhooks/update.js';
 import * as ep___i_webhooks_delete from './endpoints/i/webhooks/delete.js';
+import * as ep___invite_create from './endpoints/invite/create.js';
+import * as ep___invite_delete from './endpoints/invite/delete.js';
+import * as ep___invite_list from './endpoints/invite/list.js';
+import * as ep___invite_limit from './endpoints/invite/limit.js';
 import * as ep___meta from './endpoints/meta.js';
 import * as ep___emojis from './endpoints/emojis.js';
 import * as ep___emoji from './endpoints/emoji.js';
@@ -321,6 +326,9 @@ import * as ep___users_lists_pull from './endpoints/users/lists/pull.js';
 import * as ep___users_lists_push from './endpoints/users/lists/push.js';
 import * as ep___users_lists_show from './endpoints/users/lists/show.js';
 import * as ep___users_lists_update from './endpoints/users/lists/update.js';
+import * as ep___users_lists_favorite from './endpoints/users/lists/favorite.js';
+import * as ep___users_lists_unfavorite from './endpoints/users/lists/unfavorite.js';
+import * as ep___users_lists_create_from_public from './endpoints/users/lists/create-from-public.js';
 import * as ep___users_notes from './endpoints/users/notes.js';
 import * as ep___users_pages from './endpoints/users/pages.js';
 import * as ep___users_reactions from './endpoints/users/reactions.js';
@@ -330,7 +338,6 @@ import * as ep___users_reportAbuse from './endpoints/users/report-abuse.js';
 import * as ep___users_searchByUsernameAndHost from './endpoints/users/search-by-username-and-host.js';
 import * as ep___users_search from './endpoints/users/search.js';
 import * as ep___users_show from './endpoints/users/show.js';
-import * as ep___users_stats from './endpoints/users/stats.js';
 import * as ep___users_achievements from './endpoints/users/achievements.js';
 import * as ep___users_updateMemo from './endpoints/users/update-memo.js';
 import * as ep___fetchRss from './endpoints/fetch-rss.js';
@@ -376,7 +383,8 @@ const $admin_federation_updateInstance: Provider = { provide: 'ep:admin/federati
 const $admin_getIndexStats: Provider = { provide: 'ep:admin/get-index-stats', useClass: ep___admin_getIndexStats.default };
 const $admin_getTableStats: Provider = { provide: 'ep:admin/get-table-stats', useClass: ep___admin_getTableStats.default };
 const $admin_getUserIps: Provider = { provide: 'ep:admin/get-user-ips', useClass: ep___admin_getUserIps.default };
-const $invite: Provider = { provide: 'ep:invite', useClass: ep___invite.default };
+const $admin_invite_create: Provider = { provide: 'ep:admin/invite/create', useClass: ep___admin_invite_create.default };
+const $admin_invite_list: Provider = { provide: 'ep:admin/invite/list', useClass: ep___admin_invite_list.default };
 const $admin_promo_create: Provider = { provide: 'ep:admin/promo/create', useClass: ep___admin_promo_create.default };
 const $admin_queue_clear: Provider = { provide: 'ep:admin/queue/clear', useClass: ep___admin_queue_clear.default };
 const $admin_queue_deliverDelayed: Provider = { provide: 'ep:admin/queue/deliver-delayed', useClass: ep___admin_queue_deliverDelayed.default };
@@ -568,6 +576,10 @@ const $i_webhooks_list: Provider = { provide: 'ep:i/webhooks/list', useClass: ep
 const $i_webhooks_show: Provider = { provide: 'ep:i/webhooks/show', useClass: ep___i_webhooks_show.default };
 const $i_webhooks_update: Provider = { provide: 'ep:i/webhooks/update', useClass: ep___i_webhooks_update.default };
 const $i_webhooks_delete: Provider = { provide: 'ep:i/webhooks/delete', useClass: ep___i_webhooks_delete.default };
+const $invite_create: Provider = { provide: 'ep:invite/create', useClass: ep___invite_create.default };
+const $invite_delete: Provider = { provide: 'ep:invite/delete', useClass: ep___invite_delete.default };
+const $invite_list: Provider = { provide: 'ep:invite/list', useClass: ep___invite_list.default };
+const $invite_limit: Provider = { provide: 'ep:invite/limit', useClass: ep___invite_limit.default };
 const $meta: Provider = { provide: 'ep:meta', useClass: ep___meta.default };
 const $emojis: Provider = { provide: 'ep:emojis', useClass: ep___emojis.default };
 const $emoji: Provider = { provide: 'ep:emoji', useClass: ep___emoji.default };
@@ -659,6 +671,9 @@ const $users_lists_pull: Provider = { provide: 'ep:users/lists/pull', useClass: 
 const $users_lists_push: Provider = { provide: 'ep:users/lists/push', useClass: ep___users_lists_push.default };
 const $users_lists_show: Provider = { provide: 'ep:users/lists/show', useClass: ep___users_lists_show.default };
 const $users_lists_update: Provider = { provide: 'ep:users/lists/update', useClass: ep___users_lists_update.default };
+const $users_lists_favorite: Provider = { provide: 'ep:users/lists/favorite', useClass: ep___users_lists_favorite.default };
+const $users_lists_unfavorite: Provider = { provide: 'ep:users/lists/unfavorite', useClass: ep___users_lists_unfavorite.default };
+const $users_lists_create_from_public: Provider = { provide: 'ep:users/lists/create-from-public', useClass: ep___users_lists_create_from_public.default };
 const $users_notes: Provider = { provide: 'ep:users/notes', useClass: ep___users_notes.default };
 const $users_pages: Provider = { provide: 'ep:users/pages', useClass: ep___users_pages.default };
 const $users_reactions: Provider = { provide: 'ep:users/reactions', useClass: ep___users_reactions.default };
@@ -668,7 +683,6 @@ const $users_reportAbuse: Provider = { provide: 'ep:users/report-abuse', useClas
 const $users_searchByUsernameAndHost: Provider = { provide: 'ep:users/search-by-username-and-host', useClass: ep___users_searchByUsernameAndHost.default };
 const $users_search: Provider = { provide: 'ep:users/search', useClass: ep___users_search.default };
 const $users_show: Provider = { provide: 'ep:users/show', useClass: ep___users_show.default };
-const $users_stats: Provider = { provide: 'ep:users/stats', useClass: ep___users_stats.default };
 const $users_achievements: Provider = { provide: 'ep:users/achievements', useClass: ep___users_achievements.default };
 const $users_updateMemo: Provider = { provide: 'ep:users/update-memo', useClass: ep___users_updateMemo.default };
 const $fetchRss: Provider = { provide: 'ep:fetch-rss', useClass: ep___fetchRss.default };
@@ -718,7 +732,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_getIndexStats,
 		$admin_getTableStats,
 		$admin_getUserIps,
-		$invite,
+		$admin_invite_create,
+		$admin_invite_list,
 		$admin_promo_create,
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
@@ -910,6 +925,10 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
+		$invite_create,
+		$invite_delete,
+		$invite_list,
+		$invite_limit,
 		$meta,
 		$emojis,
 		$emoji,
@@ -1001,6 +1020,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_push,
 		$users_lists_show,
 		$users_lists_update,
+		$users_lists_favorite,
+		$users_lists_unfavorite,
+		$users_lists_create_from_public,
 		$users_notes,
 		$users_pages,
 		$users_reactions,
@@ -1010,7 +1032,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_searchByUsernameAndHost,
 		$users_search,
 		$users_show,
-		$users_stats,
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
@@ -1054,7 +1075,8 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_getIndexStats,
 		$admin_getTableStats,
 		$admin_getUserIps,
-		$invite,
+		$admin_invite_create,
+		$admin_invite_list,
 		$admin_promo_create,
 		$admin_queue_clear,
 		$admin_queue_deliverDelayed,
@@ -1246,6 +1268,10 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$i_webhooks_show,
 		$i_webhooks_update,
 		$i_webhooks_delete,
+		$invite_create,
+		$invite_delete,
+		$invite_list,
+		$invite_limit,
 		$meta,
 		$emojis,
 		$emoji,
@@ -1335,6 +1361,9 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_lists_push,
 		$users_lists_show,
 		$users_lists_update,
+		$users_lists_favorite,
+		$users_lists_unfavorite,
+		$users_lists_create_from_public,
 		$users_notes,
 		$users_pages,
 		$users_reactions,
@@ -1344,7 +1373,6 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$users_searchByUsernameAndHost,
 		$users_search,
 		$users_show,
-		$users_stats,
 		$users_achievements,
 		$users_updateMemo,
 		$fetchRss,
