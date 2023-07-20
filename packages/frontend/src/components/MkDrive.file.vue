@@ -19,7 +19,7 @@
 		</div>
 		<div v-if="file.isSensitive" :class="[$style.label, $style.red]">
 			<img :class="$style.labelImg" src="/client-assets/label-red.svg"/>
-			<p :class="$style.labelText">NSFW</p>
+			<p :class="$style.labelText">{{ i18n.ts.sensitive }}</p>
 		</div>
 
 		<MkDriveFileThumbnail :class="$style.thumbnail" :file="file" fit="contain"/>
