@@ -48,6 +48,7 @@ const $redis: Provider = {
 			password: config.redis.pass,
 			keyPrefix: `${config.redis.prefix}:`,
 			db: config.redis.db ?? 0,
+			...(config.redis.extra ?? {}),
 		});
 	},
 	inject: [DI.config],
@@ -63,6 +64,7 @@ const $redisForPub: Provider = {
 			password: config.redisForPubsub.pass,
 			keyPrefix: `${config.redisForPubsub.prefix}:`,
 			db: config.redisForPubsub.db ?? 0,
+			...(config.redisForPubsub.extra ?? {}),
 		});
 		return redis;
 	},
@@ -79,6 +81,7 @@ const $redisForSub: Provider = {
 			password: config.redisForPubsub.pass,
 			keyPrefix: `${config.redisForPubsub.prefix}:`,
 			db: config.redisForPubsub.db ?? 0,
+			...(config.redisForPubsub.extra ?? {}),
 		});
 		redis.subscribe(config.host);
 		return redis;

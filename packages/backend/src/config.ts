@@ -6,6 +6,7 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
+import type { RedisOptions } from 'ioredis';
 
 /**
  * ユーザーが設定する必要のある情報
@@ -42,6 +43,7 @@ export type Source = {
 		pass: string;
 		db?: number;
 		prefix?: string;
+		extra?: RedisOptions;
 	};
 	redisForPubsub?: {
 		host: string;
@@ -50,6 +52,7 @@ export type Source = {
 		pass: string;
 		db?: number;
 		prefix?: string;
+		extra?: RedisOptions;
 	};
 	redisForJobQueue?: {
 		host: string;
@@ -58,6 +61,7 @@ export type Source = {
 		pass: string;
 		db?: number;
 		prefix?: string;
+		extra?: RedisOptions;
 	};
 	meilisearch?: {
 		host: string;

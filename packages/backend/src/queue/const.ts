@@ -20,6 +20,7 @@ export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof t
 			family: config.redisForJobQueue.family == null ? 0 : config.redisForJobQueue.family,
 			password: config.redisForJobQueue.pass,
 			db: config.redisForJobQueue.db ?? 0,
+			...(config.redisForJobQueue.extra ?? {}),
 		},
 		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};

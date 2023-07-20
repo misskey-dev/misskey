@@ -9,6 +9,7 @@ const redis = new Redis({
 	password: config.redis.pass,
 	keyPrefix: `${config.redis.prefix}:`,
 	db: config.redis.db ?? 0,
+	...(config.redis.extra ?? {}),
 });
 
 redis.on('connect', () => redis.disconnect());

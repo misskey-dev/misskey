@@ -82,6 +82,9 @@ redis:
   #pass: example-pass
   #prefix: example-prefix
   #db: 1
+  # Extra ioredis options
+  #extra:
+  # username: example-username
 
 #redisForPubsub:
 #  host: localhost
@@ -90,6 +93,9 @@ redis:
 #  #pass: example-pass
 #  #prefix: example-prefix
 #  #db: 1
+#  # Extra ioredis options
+#  #extra:
+#  # username: example-username
 
 #redisForJobQueue:
 #  host: localhost
@@ -98,6 +104,9 @@ redis:
 #  #pass: example-pass
 #  #prefix: example-prefix
 #  #db: 1
+#  # Extra ioredis options
+#  #extra:
+#  # username: example-username
 
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
