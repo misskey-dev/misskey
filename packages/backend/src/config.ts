@@ -190,6 +190,7 @@ function tryCreateUrl(url: string) {
 function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {
 	return {
 		...options,
+		password: options.pass,
 		prefix: options.prefix ?? host,
 		family: options.family == null ? 0 : options.family,
 		keyPrefix: `${options.prefix ?? host}:`,
