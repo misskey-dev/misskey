@@ -14,14 +14,7 @@ export const QUEUE = {
 
 export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof typeof QUEUE]): Bull.QueueOptions {
 	return {
-		connection: {
-			port: config.redisForJobQueue.port,
-			host: config.redisForJobQueue.host,
-			family: config.redisForJobQueue.family == null ? 0 : config.redisForJobQueue.family,
-			password: config.redisForJobQueue.pass,
-			db: config.redisForJobQueue.db ?? 0,
-			...(config.redisForJobQueue.extra ?? {}),
-		},
+		connection: config.redisForJobQueue,
 		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};
 }
