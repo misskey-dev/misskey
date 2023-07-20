@@ -220,6 +220,23 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
+	private async resolveAvatarAndBanner(user: RemoteUser, icon: any, image: any): Promise<Pick<RemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>> {
+		const [avatar, banner] = await Promise.all([icon, image].map(img => {
+			if (img == null) return null;
+			if (user == null) throw new Error('failed to create user: user is null');
+			return this.apImageService.resolveImage(user, img).catch(() => null);
+		}));
+
+		return {
+			avatarId: avatar?.id ?? null,
+			bannerId: banner?.id ?? null,
+			avatarUrl: avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
+			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
+			avatarBlurhash: avatar?.blurhash ?? null,
+			bannerBlurhash: banner?.blurhash ?? null,
+		};
+	}
+
 	/**
 	 * Personを作成します。
 	 */
@@ -259,6 +276,16 @@ export class ApPersonService implements OnModuleInit {
 
 		// Create user
 		let user: RemoteUser | null = null;
+
+		//#region カスタム絵文字取得
+		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
+			.then(_emojis => _emojis.map(emoji => emoji.name))
+			.catch(err => {
+				this.logger.error(`error occured while fetching user emojis`, { stack: err });
+				return [];
+			});
+		//#endregion
+
 		try {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
@@ -285,6 +312,7 @@ export class ApPersonService implements OnModuleInit {
 					tags,
 					isBot,
 					isCat: (person as any).isCat === true,
+					emojis,
 				})) as RemoteUser;
 
 				await transactionalEntityManager.save(new UserProfile({
@@ -321,6 +349,9 @@ export class ApPersonService implements OnModuleInit {
 
 		if (user == null) throw new Error('failed to create user: user is null');
 
+		// Register to the cache
+		this.cacheService.uriPersonCache.set(user.uri, user);
+
 		// Register host
 		this.federatedInstanceService.fetch(host).then(async i => {
 			this.instancesRepository.increment({ id: i.id }, 'usersCount', 1);
@@ -336,45 +367,16 @@ export class ApPersonService implements OnModuleInit {
 		this.hashtagService.updateUsertags(user, tags);
 
 		//#region アバターとヘッダー画像をフェッチ
-		const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
-			if (img == null) return null;
-			if (user == null) throw new Error('failed to create user: user is null');
-			return this.apImageService.resolveImage(user, img).catch(() => null);
-		}));
+		try {
+			const updates = await this.resolveAvatarAndBanner(user, person.icon, person.image);
+			await this.usersRepository.update(user.id, updates);
+			user = { ...user, ...updates };
 
-		const avatarId = avatar?.id ?? null;
-		const bannerId = banner?.id ?? null;
-		const avatarUrl = avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null;
-		const bannerUrl = banner ? this.driveFileEntityService.getPublicUrl(banner) : null;
-		const avatarBlurhash = avatar?.blurhash ?? null;
-		const bannerBlurhash = banner?.blurhash ?? null;
-
-		await this.usersRepository.update(user.id, {
-			avatarId,
-			bannerId,
-			avatarUrl,
-			bannerUrl,
-			avatarBlurhash,
-			bannerBlurhash,
-		});
-
-		user.avatarId = avatarId;
-		user.bannerId = bannerId;
-		user.avatarUrl = avatarUrl;
-		user.bannerUrl = bannerUrl;
-		user.avatarBlurhash = avatarBlurhash;
-		user.bannerBlurhash = bannerBlurhash;
-		//#endregion
-
-		//#region カスタム絵文字取得
-		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
-			this.logger.info(`extractEmojis: ${err}`);
-			return [];
-		});
-
-		const emojiNames = emojis.map(emoji => emoji.name);
-
-		await this.usersRepository.update(user.id, { emojis: emojiNames });
+			// Register to the cache
+			this.cacheService.uriPersonCache.set(user.uri, user);
+		} catch (err) {
+			this.logger.error('error occured while fetching user avatar/banner', { stack: err });
+		}
 		//#endregion
 
 		await this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err));
@@ -400,7 +402,7 @@ export class ApPersonService implements OnModuleInit {
 		if (uri.startsWith(`${this.config.url}/`)) return;
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser | null;
+		const exist = await this.fetchPerson(uri) as RemoteUser | null;
 		if (exist === null) return;
 		//#endregion
 
@@ -412,12 +414,6 @@ export class ApPersonService implements OnModuleInit {
 		const person = this.validateActor(object, uri);
 
 		this.logger.info(`Updating the Person: ${person.id}`);
-
-		// アバターとヘッダー画像をフェッチ
-		const [avatar, banner] = await Promise.all([person.icon, person.image].map(img => {
-			if (img == null) return null;
-			return this.apImageService.resolveImage(exist, img).catch(() => null);
-		}));
 
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
@@ -454,6 +450,7 @@ export class ApPersonService implements OnModuleInit {
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
+			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
 		const moving = ((): boolean => {
@@ -475,18 +472,6 @@ export class ApPersonService implements OnModuleInit {
 		})();
 
 		if (moving) updates.movedAt = new Date();
-
-		if (avatar) {
-			updates.avatarId = avatar.id;
-			updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
-			updates.avatarBlurhash = avatar.blurhash;
-		}
-
-		if (banner) {
-			updates.bannerId = banner.id;
-			updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
-			updates.bannerBlurhash = banner.blurhash;
-		}
 
 		// Update user
 		await this.usersRepository.update(exist.id, updates);
