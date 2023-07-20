@@ -63,6 +63,7 @@
 - MeilisearchにIndexするノートの範囲を設定できるように
 - Export notes with file detail
 - Add unix socket support
+- 設定ファイルでioredisの全てのオプションを指定可能に
 - Fix: エクスポートしたカスタム絵文字のzipが大きいと読み込めない問題を修正
 - Fix: リモートサーバーに無意味なActivityPubの配信を行うことがあるのを修正
 - Fix: Remove Meilisearch index when notes are deleted
@@ -124,7 +125,6 @@
 ### Server
 - bullをbull-mqにアップグレードし、ジョブキューのパフォーマンスを改善
 - ストリーミングのパフォーマンスを改善
-- 設定ファイルでioredisの全てのオプションを指定可能に
 - Fix: 無効化されたアンテナにアクセスがあった際に再度有効化するように
 - Fix: お知らせの画像URLを空にできない問題を修正
 - Fix: i/notificationsのsinceIdが機能しない問題を修正
