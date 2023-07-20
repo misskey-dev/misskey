@@ -179,6 +179,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'カガミ',
 	icon: 'https://misskey-hub.net/patrons/226ea3a4617749548580ec2d9a263e24.jpg',
+}, {
+	name: 'フランギ・シュウ',
+	icon: 'https://misskey-hub.net/patrons/3016d37e35f3430b90420176c912d304.jpg',
 }];
 
 const patrons = [
@@ -276,6 +279,7 @@ const patrons = [
 	'ぷーざ',
 	'越貝鯛丸',
 	'Nick / pprmint.',
+	'kino3277',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));
