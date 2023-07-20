@@ -108,9 +108,9 @@ export type Mixin = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
-	redis: RedisOptions & RedisOptionsSource;
-	redisForPubsub: RedisOptions & RedisOptionsSource;
-	redisForJobQueue: RedisOptions & RedisOptionsSource;
+	redis: RedisOptions;
+	redisForPubsub: RedisOptions;
+	redisForJobQueue: RedisOptions;
 };
 
 export type Config = Source & Mixin;
@@ -188,10 +188,12 @@ function tryCreateUrl(url: string) {
 }
 
 function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions {
-	return {
+	const result = {
 		...options,
 		family: options.family == null ? 0 : options.family,
 		keyPrefix: `${options.prefix ?? host}:`,
 		db: options.db ?? 0,
 	};
+	delete result.prefix;
+	return result;
 }

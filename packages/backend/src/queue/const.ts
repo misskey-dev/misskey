@@ -18,6 +18,6 @@ export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof t
 			...config.redisForJobQueue,
 			keyPrefix: undefined
 		},
-		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
+		prefix: config.redisForJobQueue.keyPrefix ? `${config.redisForJobQueue.keyPrefix}queue:${queueName}` : `queue:${queueName}`,
 	};
 }
