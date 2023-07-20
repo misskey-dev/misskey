@@ -112,9 +112,17 @@
 						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
 						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
-							<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
-							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
-							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+							<div :class="$style.roleItemMain">
+								<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
+								<button class="_button" :class="$style.roleToggle" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
+								<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+								<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+							</div>
+							<div v-if="expandedRoles.includes(role.id)" :class="$style.roleItemSub">
+								<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id).createdAt" mode="detail"/></div>
+								<div v-if="info.roleAssigns.find(a => a.roleId === role.id).expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id).expiresAt).toLocaleString() }}</div>
+								<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+							</div>
 						</div>
 					</div>
 				</MkFolder>
@@ -220,6 +228,7 @@ const filesPagination = {
 		userId: props.userId,
 	})),
 };
+let expandedRoles = $ref([]);
 
 function createFetcher() {
 	if (iAmModerator) {
@@ -384,6 +393,14 @@ async function unassignRole(role, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
+function toggleRoleItem(role) {
+	if (expandedRoles.includes(role.id)) {
+		expandedRoles = expandedRoles.filter(x => x !== role.id);
+	} else {
+		expandedRoles.push(role.id);
+	}
+}
+
 watch(() => props.userId, () => {
 	init = createFetcher();
 }, {
@@ -523,11 +540,22 @@ definePageMetadata(computed(() => ({
 }
 
 .roleItem {
+}
+
+.roleItemMain {
 	display: flex;
 }
 
 .role {
 	flex: 1;
+	min-width: 0;
+	margin-right: 8px;
+}
+
+.roleItemSub {
+	padding: 6px 12px;
+	font-size: 85%;
+	color: var(--fgTransparentWeak);
 }
 
 .roleUnassign {

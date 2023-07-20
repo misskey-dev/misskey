@@ -62,6 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// 個人情報のため
 			//const signins = await this.signinsRepository.findBy({ userId: user.id });
 
+			const roleAssigns = await this.roleService.getUserAssigns(user.id);
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
@@ -86,6 +87,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				signins: [],
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
+				roleAssigns: roleAssigns.map(a => ({
+					createdAt: a.createdAt.toISOString(),
+					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
+					roleId: a.roleId,
+				})),
 			};
 		});
 	}
