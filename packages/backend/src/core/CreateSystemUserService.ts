@@ -1,6 +1,6 @@
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { v4 as uuid } from 'uuid';
 import { IsNull, DataSource } from 'typeorm';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 import { User } from '@/models/entities/User.js';
@@ -24,7 +24,7 @@ export class CreateSystemUserService {
 
 	@bindThis
 	public async createSystemUser(username: string): Promise<User> {
-		const password = uuid();
+		const password = randomUUID();
 
 		// Generate hash of password
 		const salt = await bcrypt.genSalt(8);
@@ -33,7 +33,7 @@ export class CreateSystemUserService {
 		// Generate secret
 		const secret = generateNativeUserToken();
 
-		const keyPair = await genRsaKeyPair(4096);
+		const keyPair = await genRsaKeyPair();
 
 		let account!: User;
 

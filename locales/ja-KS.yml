@@ -1066,6 +1066,12 @@ installed: "インストール済み"
 branding: "あ"
 enableServerMachineStats: "サーバーのマシン情報見せびらかすで"
 enableIdenticonGeneration: "ユーザーごとのIdenticon生成を有効にする"
+turnOffToImprovePerformance: "オフにしたらえらい軽うなるで。"
+inviteCodeCreated: "招待コード作ったで"
+inviteLimitExceeded: "招待コード作りすぎやで。"
+createLimitRemaining: "作成できる招待コード: 残り {limit} 個やで"
+unused: "つこてへん"
+used: "もうつこてる"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
@@ -1489,6 +1495,10 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にもぎょうさんの人からサポートしてもろてんねん。ほんまおおきに🥰"
   patrons: "支援者"
+_displayOfSensitiveMedia:
+  respect: "きわどいのは見とうない"
+  ignore: "きわどいのも見たい"
+  force: "常にメディアを隠すで"
 _instanceTicker:
   none: "表示せん"
   remote: "リモートユーザーに表示"
