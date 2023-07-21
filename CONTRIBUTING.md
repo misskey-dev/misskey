@@ -214,30 +214,13 @@ Misskey uses [Storybook](https://storybook.js.org/) for UI development.
 
 ### Setup & Run
 
-#### Universal
-
-##### Setup
-
-```bash
-pnpm --filter misskey-js build
-pnpm --filter frontend tsc -p .storybook && (node packages/frontend/.storybook/preload-locale.js & node packages/frontend/.storybook/preload-theme.js)
-```
-
-##### Run
-
-```bash
-node packages/frontend/.storybook/generate.js && pnpm --filter frontend storybook dev
-```
-
-#### macOS & Linux
-
-##### Setup
+#### Setup
 
 ```bash
 pnpm --filter misskey-js build
 ```
 
-##### Run
+#### Run
 
 ```bash
 pnpm --filter frontend storybook-dev

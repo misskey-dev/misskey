@@ -33,7 +33,7 @@ export class CreateSystemUserService {
 		// Generate secret
 		const secret = generateNativeUserToken();
 
-		const keyPair = await genRsaKeyPair(4096);
+		const keyPair = await genRsaKeyPair();
 
 		let account!: User;
 
