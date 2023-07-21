@@ -92,7 +92,7 @@ export class SignupService {
 
 		const keyPair = await new Promise<string[]>((res, rej) =>
 			generateKeyPair('rsa', {
-				modulusLength: 4096,
+				modulusLength: 2048,
 				publicKeyEncoding: {
 					type: 'spki',
 					format: 'pem',
