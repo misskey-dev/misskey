@@ -31,16 +31,13 @@ import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { shouldCollapsed } from '@/scripts/collapsed';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
 }>();
 
-const isLong =
-	props.note.cw == null && props.note.text != null && (
-		(props.note.text.split('\n').length > 9) ||
-		(props.note.text.length > 500)
-	);
+const isLong = shouldCollapsed(props.note);
 
 const collapsed = $ref(isLong);
 </script>
