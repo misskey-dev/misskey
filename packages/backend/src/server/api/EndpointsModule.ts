@@ -344,6 +344,7 @@ import * as ep___fetchRss from './endpoints/fetch-rss.js';
 import * as ep___retention from './endpoints/retention.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
+import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import type { Provider } from '@nestjs/common';
 
 const $admin_meta: Provider = { provide: 'ep:admin/meta', useClass: ep___admin_meta.default };
@@ -695,6 +696,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 	providers: [
 		GetterService,
 		ApiLoggerService,
+		ServerStatsService,
 		$admin_meta,
 		$admin_abuseUserReports,
 		$admin_accounts_create,
