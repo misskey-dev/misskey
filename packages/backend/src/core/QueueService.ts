@@ -1,5 +1,5 @@
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
@@ -97,6 +97,8 @@ export class QueueService {
 	 */
 	@bindThis
 	public async deliverMany(user: ThinUser, content: IActivity | null, inboxes: Map<string, boolean>) {
+		if (content == null) return null;
+
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
 			backoff: {
@@ -414,7 +416,7 @@ export class QueueService {
 			to: webhook.url,
 			secret: webhook.secret,
 			createdAt: Date.now(),
-			eventId: uuid(),
+			eventId: randomUUID(),
 		};
 
 		return this.webhookDeliverQueue.add(webhook.id, data, {

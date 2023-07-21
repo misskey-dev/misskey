@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const query = this.queryService.makePaginationQuery(this.galleryPostsRepository.createQueryBuilder('post'), ps.sinceId, ps.untilId)
 				.innerJoinAndSelect('post.user', 'user');
 
-			const posts = await query.take(ps.limit).getMany();
+			const posts = await query.limit(ps.limit).getMany();
 
 			return await this.galleryPostEntityService.packMany(posts, me);
 		});

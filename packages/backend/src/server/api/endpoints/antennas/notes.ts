@@ -76,6 +76,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
+			this.antennasRepository.update(antenna.id, {
+				isActive: true,
+				lastUsedAt: new Date(),
+			});
+
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			const noteIdsRes = await this.redisClient.xrevrange(
 				`antennaTimeline:${antenna.id}`,
@@ -111,11 +116,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (notes.length > 0) {
 				this.noteReadService.read(me.id, notes);
 			}
-
-			this.antennasRepository.update(antenna.id, {
-				isActive: true,
-				lastUsedAt: new Date(),
-			});
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

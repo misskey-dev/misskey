@@ -49,7 +49,7 @@
 					<template #value><MkTime v-if="instance.latestRequestReceivedAt" :time="instance.latestRequestReceivedAt"/><span v-else>N/A</span></template>
 				</MkKeyValue>
 			</FormSection>
-	
+
 			<FormSection>
 				<MkKeyValue oneline style="margin: 1em 0;">
 					<template #key>Following (Pub)</template>
