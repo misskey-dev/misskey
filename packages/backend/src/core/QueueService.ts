@@ -108,7 +108,7 @@ export class QueueService {
 			removeOnFail: true,
 		};
 
-		await this.deliverQueue.addBulk(Array.from(inboxes.entries()).map(d => ({
+		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
 			name: d[0],
 			data: {
 				user,
