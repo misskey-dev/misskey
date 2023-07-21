@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: misskey/misskey
+          images: taichanne30/nadesuki
           tags: |
             type=edge
             type=ref,event=pr
