@@ -33,6 +33,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { claimAchievement } from '@/scripts/achievements';
+import copyToClipboard from '@/scripts/copy-to-clipboard';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;
@@ -93,9 +94,9 @@ function onDragover(ev: DragEvent) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy': 
-			case 'copyLink': 
-			case 'copyMove': 
+			case 'copy':
+			case 'copyLink':
+			case 'copyMove':
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -244,7 +245,8 @@ function setAsUploadFolder() {
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu([{
+	let menu;
+	menu = [{
 		text: i18n.ts.openInWindow,
 		icon: 'ti ti-app-window',
 		action: () => {
@@ -262,7 +264,17 @@ function onContextmenu(ev: MouseEvent) {
 		icon: 'ti ti-trash',
 		danger: true,
 		action: deleteFolder,
-	}], ev);
+	}];
+	if (defaultStore.state.devMode) {
+		menu = menu.concat([null, {
+			icon: 'ti ti-id',
+			text: i18n.ts.copyFolderId,
+			action: () => {
+				copyToClipboard(props.folder.id);
+			},
+		}]);
+	}
+	os.contextMenu(menu, ev);
 }
 </script>
 

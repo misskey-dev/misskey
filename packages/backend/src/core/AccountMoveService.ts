@@ -4,10 +4,9 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import type { BlockingsRepository, FollowingsRepository, InstancesRepository, Muting, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
-import type { User } from '@/models/entities/User.js';
 
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -295,7 +294,7 @@ export class AccountMoveService {
 	 * dstユーザーのalsoKnownAsをfetchPersonしていき、本当にmovedToUrlをdstに指定するユーザーが存在するのかを調べる
 	 *
 	 * @param dst movedToUrlを指定するユーザー
-	 * @param check 
+	 * @param check
 	 * @param instant checkがtrueであるユーザーが最初に見つかったら即座にreturnするかどうか
 	 * @returns Promise<LocalUser | RemoteUser | null>
 	 */

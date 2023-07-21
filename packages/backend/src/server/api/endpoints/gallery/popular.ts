@@ -40,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('post.likedCount > 0')
 				.orderBy('post.likedCount', 'DESC');
 
-			const posts = await query.take(10).getMany();
+			const posts = await query.limit(10).getMany();
 
 			return await this.galleryPostEntityService.packMany(posts, me);
 		});

@@ -218,7 +218,7 @@ class Pool {
 		this.dec = this.dec.bind(this);
 		this.connect = this.connect.bind(this);
 		this.disconnect = this.disconnect.bind(this);
-	
+
 		this.channel = channel;
 		this.stream = stream;
 		this.id = id;
