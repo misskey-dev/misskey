@@ -34,12 +34,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveFilesRepository: DriveFilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const file = await this.driveFilesRepository.findOneBy({
-				md5: ps.md5,
-				userId: me.id,
+			const exist = await this.driveFilesRepository.exist({
+				where: {
+					md5: ps.md5,
+					userId: me.id,
+				},
 			});
 
-			return file != null;
+			return exist;
 		});
 	}
 }

@@ -1,5 +1,6 @@
 import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { IsNull } from 'typeorm';
 import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
@@ -21,9 +22,8 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
-import Logger from '../logger.js';
-import { IsNull } from 'typeorm';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
+import Logger from '../logger.js';
 
 const logger = new Logger('following/create');
 
@@ -122,22 +122,26 @@ export class UserFollowingService implements OnModuleInit {
 			let autoAccept = false;
 
 			// 鍵アカウントであっても、既にフォローされていた場合はスルー
-			const following = await this.followingsRepository.findOneBy({
-				followerId: follower.id,
-				followeeId: followee.id,
+			const isFollowing = await this.followingsRepository.exist({
+				where: {
+					followerId: follower.id,
+					followeeId: followee.id,
+				},
 			});
-			if (following) {
+			if (isFollowing) {
 				autoAccept = true;
 			}
 
 			// フォローしているユーザーは自動承認オプション
 			if (!autoAccept && (this.userEntityService.isLocalUser(followee) && followeeProfile.autoAcceptFollowed)) {
-				const followed = await this.followingsRepository.findOneBy({
-					followerId: followee.id,
-					followeeId: follower.id,
+				const isFollowed = await this.followingsRepository.exist({
+					where: {
+						followerId: followee.id,
+						followeeId: follower.id,
+					},
 				});
 
-				if (followed) autoAccept = true;
+				if (isFollowed) autoAccept = true;
 			}
 
 			// Automatically accept if the follower is an account who has moved and the locked followee had accepted the old account.
@@ -206,12 +210,14 @@ export class UserFollowingService implements OnModuleInit {
 
 		this.cacheService.userFollowingsCache.refresh(follower.id);
 
-		const req = await this.followRequestsRepository.findOneBy({
-			followeeId: followee.id,
-			followerId: follower.id,
+		const requestExist = await this.followRequestsRepository.exist({
+			where: {
+				followeeId: followee.id,
+				followerId: follower.id,
+			},
 		});
 
-		if (req) {
+		if (requestExist) {
 			await this.followRequestsRepository.delete({
 				followeeId: followee.id,
 				followerId: follower.id,
@@ -316,7 +322,7 @@ export class UserFollowingService implements OnModuleInit {
 			where: {
 				followerId: follower.id,
 				followeeId: followee.id,
-			}
+			},
 		});
 
 		if (following === null || !following.follower || !following.followee) {
@@ -406,8 +412,8 @@ export class UserFollowingService implements OnModuleInit {
 						followerId: user.id,
 						followee: {
 							movedToUri: IsNull(),
-						}
-					}
+						},
+					},
 				});
 				const nonMovedFollowers = await this.followingsRepository.count({
 					relations: {
@@ -417,8 +423,8 @@ export class UserFollowingService implements OnModuleInit {
 						followeeId: user.id,
 						follower: {
 							movedToUri: IsNull(),
-						}
-					}
+						},
+					},
 				});
 				await this.usersRepository.update(
 					{ id: user.id },
@@ -505,12 +511,14 @@ export class UserFollowingService implements OnModuleInit {
 			}
 		}
 
-		const request = await this.followRequestsRepository.findOneBy({
-			followeeId: followee.id,
-			followerId: follower.id,
+		const requestExist = await this.followRequestsRepository.exist({
+			where: {
+				followeeId: followee.id,
+				followerId: follower.id,
+			},
 		});
 
-		if (request == null) {
+		if (!requestExist) {
 			throw new IdentifiableError('17447091-ce07-46dd-b331-c1fd4f15b1e7', 'request not found');
 		}
 
@@ -638,7 +646,7 @@ export class UserFollowingService implements OnModuleInit {
 			where: {
 				followeeId: followee.id,
 				followerId: follower.id,
-			}
+			},
 		});
 
 		if (!following || !following.followee || !following.follower) return;
