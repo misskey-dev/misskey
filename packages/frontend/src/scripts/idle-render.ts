@@ -1,4 +1,4 @@
-const requestIdleCallback: typeof globalThis.requestIdleCallback = globalThis.requestIdleCallback ?? (callback) => {
+const requestIdleCallback: typeof globalThis.requestIdleCallback = globalThis.requestIdleCallback ?? ((callback) => {
 	const start = performance.now();
 	const timeoutId = setTimeout(() => {
 		callback({
@@ -10,10 +10,10 @@ const requestIdleCallback: typeof globalThis.requestIdleCallback = globalThis.re
 		});
 	});
 	return timeoutId;
-};
-const cancelIdleCallback: typeof globalThis.cancelIdleCallback = globalThis.cancelIdleCallback ?? (timeoutId) => {
+});
+const cancelIdleCallback: typeof globalThis.cancelIdleCallback = globalThis.cancelIdleCallback ?? ((timeoutId) => {
 	clearTimeout(timeoutId);
-};
+});
 
 class IdlingRenderScheduler {
 	#renderers: Set<FrameRequestCallback>;
