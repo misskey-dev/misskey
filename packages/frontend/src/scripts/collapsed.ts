@@ -12,8 +12,8 @@ export function shouldCollapsed(note: misskey.entities.Note): boolean {
 		(note.text.split('\n').length > 9) ||
 		(note.text.length > 500) ||
 		(note.files.length >= 5) ||
-		(urls && urls.length >= 4)
+		(!!urls && urls.length >= 4)
 	);
 
-	return Boolean(collapsed);
+	return collapsed;
 }
