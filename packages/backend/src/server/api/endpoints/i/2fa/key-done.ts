@@ -103,7 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const procedures = this.twoFactorAuthenticationService.getProcedures();
 
 			if (!(procedures as any)[attestation.fmt]) {
-				throw new Error('unsupported fmt');
+				throw new Error(`unsupported fmt: ${attestation.fmt}. Supported ones: ${Object.keys(procedures)}`);
 			}
 
 			const verificationData = (procedures as any)[attestation.fmt].verify({

@@ -4,8 +4,8 @@ import type { AuthSessionsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { AuthSession } from '@/models/entities/AuthSession.js';
 import type { User } from '@/models/entities/User.js';
-import { AppEntityService } from './AppEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { AppEntityService } from './AppEntityService.js';
 
 @Injectable()
 export class AuthSessionEntityService {

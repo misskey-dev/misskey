@@ -19,14 +19,14 @@
 		</div>
 		<div v-if="file.isSensitive" :class="[$style.label, $style.red]">
 			<img :class="$style.labelImg" src="/client-assets/label-red.svg"/>
-			<p :class="$style.labelText">{{ i18n.ts.nsfw }}</p>
+			<p :class="$style.labelText">{{ i18n.ts.sensitive }}</p>
 		</div>
 
 		<MkDriveFileThumbnail :class="$style.thumbnail" :file="file" fit="contain"/>
 
 		<p :class="$style.name">
-			<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substr(0, file.name.lastIndexOf('.')) : file.name }}</span>
-			<span v-if="file.name.lastIndexOf('.') != -1" style="opacity: 0.5;">{{ file.name.substr(file.name.lastIndexOf('.')) }}</span>
+			<span>{{ file.name.lastIndexOf('.') != -1 ? file.name.substring(0, file.name.lastIndexOf('.')) : file.name }}</span>
+			<span v-if="file.name.lastIndexOf('.') != -1" style="opacity: 0.5;">{{ file.name.substring(file.name.lastIndexOf('.')) }}</span>
 		</p>
 	</div>
 </div>
@@ -44,6 +44,7 @@ import { getDriveFileMenu } from '@/scripts/get-drive-file-menu';
 
 const props = withDefaults(defineProps<{
 	file: Misskey.entities.DriveFile;
+	folder: Misskey.entities.DriveFolder | null;
 	isSelected?: boolean;
 	selectMode?: boolean;
 }>(), {
@@ -65,12 +66,12 @@ function onClick(ev: MouseEvent) {
 	if (props.selectMode) {
 		emit('chosen', props.file);
 	} else {
-		os.popupMenu(getDriveFileMenu(props.file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+		os.popupMenu(getDriveFileMenu(props.file, props.folder), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 	}
 }
 
 function onContextmenu(ev: MouseEvent) {
-	os.contextMenu(getDriveFileMenu(props.file), ev);
+	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
 }
 
 function onDragstart(ev: DragEvent) {
