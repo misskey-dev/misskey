@@ -47,6 +47,7 @@
 		"idb-keyval": "6.2.1",
 		"insert-text-at-cursor": "0.3.0",
 		"is-file-animated": "1.0.2",
+		"jdenticon": "^3.2.0",
 		"json5": "2.2.3",
 		"matter-js": "0.19.0",
 		"mfm-js": "0.23.3",

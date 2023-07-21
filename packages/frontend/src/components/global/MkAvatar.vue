@@ -1,6 +1,7 @@
 <template>
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
-	<MkImgWithBlurhash :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<MkImgWithBlurhash v-if="url != null" :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<Jdenticon v-else :class="$style.inner" :acct="userAcct" />
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
 		<div :class="$style.earLeft">
@@ -24,12 +25,15 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as misskey from 'misskey-js';
+import { toUnicode } from 'punycode/';
+import Jdenticon from './Jdenticon.vue';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import { extractAvgColorFromBlurhash } from '@/scripts/extract-avg-color-from-blurhash';
 import { acct, userPage } from '@/filters/user';
 import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
+import { host as hostRaw } from '@/config';
 import { defaultStore } from '@/store';
 
 const animation = $ref(defaultStore.state.animation);
@@ -60,6 +64,9 @@ const bound = $computed(() => props.link
 const url = $computed(() => defaultStore.state.disableShowingAnimatedImages
 	? getStaticImageUrl(props.user.avatarUrl)
 	: props.user.avatarUrl);
+
+const host = toUnicode(hostRaw);
+const userAcct = $computed(() => `${props.user.username}@${props.user.host || host}`);
 
 function onClick(ev: MouseEvent): void {
 	if (props.link) return;
