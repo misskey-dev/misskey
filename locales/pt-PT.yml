@@ -758,6 +758,8 @@ _role:
     canManageCustomEmojis: "Permitir gerenciar emojis personalizados"
     driveCapacity: "Capacidade do drive"
     alwaysMarkNsfw: "Sempre marcar arquivos como NSFW"
+    pinMax: "Número máximo de notas fixadas"
+    antennaMax: "Número máximo de antenas"
   _condition:
     followersLessThanOrEq: "Possui X ou menos seguidores"
     followersMoreThanOrEq: "Possui X ou mais seguidores"
