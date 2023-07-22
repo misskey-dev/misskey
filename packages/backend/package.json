@@ -192,6 +192,7 @@
 		"@types/nodemailer": "6.4.8",
 		"@types/oauth": "0.9.1",
 		"@types/oauth2orize": "1.11.0",
+		"@types/oauth2orize-pkce": "^0.1.0",
 		"@types/pg": "8.10.2",
 		"@types/pug": "2.0.6",
 		"@types/punycode": "2.1.0",
