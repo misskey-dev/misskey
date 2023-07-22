@@ -1,8 +1,8 @@
 <template>
 <form :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="_gaps_m">
-		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user?.avatarUrl ? `url('${ user.avatarUrl }')` : `url('/static-assets/user-unknown.png')`, marginBottom: message ? '1.5em' : null }">
-			<Jdenticon v-if="user?.username && !user?.avatarUrl" :acct="`${user?.username ?? ''}@${user?.host || host}`" />
+		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user?.avatarBlurhash ? `url('${ user.avatarUrl }')` : `url('/static-assets/user-unknown.png')`, marginBottom: message ? '1.5em' : null }">
+			<Jdenticon v-if="user?.username && !user?.avatarBlurhash" :acct="`${user?.username ?? ''}@${user?.host || host}`" />
 		</div>
 
 		<MkInfo v-if="message">

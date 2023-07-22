@@ -359,7 +359,7 @@ export class UserEntityService implements OnModuleInit {
 			name: user.name,
 			username: user.username,
 			host: user.host,
-			avatarUrl: user.avatarUrl,
+			avatarUrl: user.avatarUrl ?? this.getIdenticonUrl(user),
 			avatarBlurhash: user.avatarBlurhash,
 			isBot: user.isBot ?? falsy,
 			isCat: user.isCat ?? falsy,

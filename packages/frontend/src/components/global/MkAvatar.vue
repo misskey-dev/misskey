@@ -1,6 +1,6 @@
 <template>
 <component :is="link ? MkA : 'span'" v-user-preview="preview ? user.id : undefined" v-bind="bound" class="_noSelect" :class="[$style.root, { [$style.animation]: animation, [$style.cat]: user.isCat, [$style.square]: squareAvatars }]" :style="{ color }" :title="acct(user)" @click="onClick">
-	<MkImgWithBlurhash v-if="url != null" :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
+	<MkImgWithBlurhash v-if="url != null && user?.avatarBlurhash" :class="$style.inner" :src="url" :hash="user?.avatarBlurhash" :cover="true" :onlyAvgColor="true"/>
 	<Jdenticon v-else :class="$style.inner" :acct="userAcct" />
 	<MkUserOnlineIndicator v-if="indicator" :class="$style.indicator" :user="user"/>
 	<div v-if="user.isCat" :class="[$style.ears]">
