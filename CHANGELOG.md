@@ -12,6 +12,15 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### General
+
+### Client
+- プレビューの表示状態を記憶するように
+
+### Server
+
 ## 13.14.1
 
 ### General
