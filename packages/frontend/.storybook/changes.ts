@@ -1,7 +1,10 @@
 import fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import micromatch from 'micromatch';
-import main from './main';
+import main from './main.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 interface Stats {
 	readonly modules: readonly {
@@ -13,8 +16,8 @@ interface Stats {
 	}[];
 }
 
-fs.readFile(
-	path.resolve(__dirname, '../storybook-static/preview-stats.json')
+await fs.readFile(
+	new URL('../storybook-static/preview-stats.json', import.meta.url)
 ).then((buffer) => {
 	const stats: Stats = JSON.parse(buffer.toString());
 	const keys = new Set(stats.modules.map((stat) => stat.id));

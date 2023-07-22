@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				query.setParameters(followingQuery.getParameters());
 			}
 
-			const mentions = await query.take(ps.limit).getMany();
+			const mentions = await query.limit(ps.limit).getMany();
 
 			this.noteReadService.read(me.id, mentions);
 
