@@ -498,7 +498,6 @@ export class ApRendererService {
 			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
-			isSheep: user.isSheep,
 			attachment: attachment.length ? attachment : undefined,
 		};
 
@@ -642,7 +641,6 @@ export class ApRendererService {
 					'_misskey_reaction': 'misskey:_misskey_reaction',
 					'_misskey_votes': 'misskey:_misskey_votes',
 					'isCat': 'misskey:isCat',
-					'isSheep': 'misskey:isSheep',
 					// vcard
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
