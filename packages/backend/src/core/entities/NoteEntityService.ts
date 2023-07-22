@@ -5,6 +5,7 @@ import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { nyaize } from '@/misc/nyaize.js';
+import { myaize } from '@/misc/myaize.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
@@ -379,19 +380,19 @@ export class NoteEntityService implements OnModuleInit {
 
 		if (packed.user.isSheep && packed.text) {
 			const tokens = packed.text ? mfm.parse(packed.text) : [];
-			function nyaizeNode(node: mfm.MfmNode) {
+			function myaizeNode(node: mfm.MfmNode) {
 				if (node.type === 'quote') return;
 				if (node.type === 'text') {
-					node.props.text = nyaize(node.props.text);
+					node.props.text = myaize(node.props.text);
 				}
 				if (node.children) {
 					for (const child of node.children) {
-						nyaizeNode(child);
+						myaizeNode(child);
 					}
 				}
 			}
 			for (const node of tokens) {
-				nyaizeNode(node);
+				myaizeNode(node);
 			}
 			packed.text = mfm.toString(tokens);
 		}
