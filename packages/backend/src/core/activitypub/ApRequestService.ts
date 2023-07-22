@@ -187,6 +187,6 @@ export class ApRequestService {
 			headers: req.request.headers,
 		});
 
-		return await res.json();
+		return await res.json().catch(() => { });
 	}
 }
