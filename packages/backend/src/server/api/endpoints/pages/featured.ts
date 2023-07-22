@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('page.likedCount > 0')
 				.orderBy('page.likedCount', 'DESC');
 
-			const pages = await query.take(10).getMany();
+			const pages = await query.limit(10).getMany();
 
 			return await this.pageEntityService.packMany(pages, me);
 		});

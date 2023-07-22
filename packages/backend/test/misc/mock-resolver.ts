@@ -18,7 +18,8 @@ type MockResponse = {
 };
 
 export class MockResolver extends Resolver {
-	private _rs = new Map<string, MockResponse>();
+	#responseMap = new Map<string, MockResponse>();
+	#remoteGetTrials: string[] = [];
 
 	constructor(loggerService: LoggerService) {
 		super(
@@ -38,18 +39,28 @@ export class MockResolver extends Resolver {
 		);
 	}
 
-	public async _register(uri: string, content: string | Record<string, any>, type = 'application/activity+json') {
-		this._rs.set(uri, {
+	public register(uri: string, content: string | Record<string, any>, type = 'application/activity+json'): void {
+		this.#responseMap.set(uri, {
 			type,
 			content: typeof content === 'string' ? content : JSON.stringify(content),
 		});
+	}
+
+	public clear(): void {
+		this.#responseMap.clear();
+		this.#remoteGetTrials.length = 0;
+	}
+
+	public remoteGetTrials(): string[] {
+		return this.#remoteGetTrials;
 	}
 
 	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
 		if (typeof value !== 'string') return value;
 
-		const r = this._rs.get(value);
+		this.#remoteGetTrials.push(value);
+		const r = this.#responseMap.get(value);
 
 		if (!r) {
 			throw new Error('Not registed for mock');

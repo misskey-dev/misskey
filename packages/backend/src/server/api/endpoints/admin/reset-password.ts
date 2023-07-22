@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import rndstr from 'rndstr';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('cannot reset password of root');
 			}
 
-			const passwd = rndstr('a-zA-Z0-9', 8);
+			const passwd = secureRndstr(8);
 
 			// Generate hash of password
 			const hash = bcrypt.hashSync(passwd);

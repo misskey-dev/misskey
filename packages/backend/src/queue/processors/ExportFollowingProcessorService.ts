@@ -79,7 +79,7 @@ export class ExportFollowingProcessorService {
 					break;
 				}
 
-				cursor = followings[followings.length - 1].id;
+				cursor = followings.at(-1)?.id ?? null;
 
 				for (const following of followings) {
 					const u = await this.usersRepository.findOneBy({ id: following.followeeId });

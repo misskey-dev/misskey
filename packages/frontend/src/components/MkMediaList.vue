@@ -113,8 +113,10 @@ onMounted(() => {
 			right: 0,
 		},
 		imageClickAction: 'close',
-		tapAction: 'toggle-controls',
+		tapAction: 'close',
 		bgOpacity: 1,
+		showAnimationDuration: 100,
+		hideAnimationDuration: 100,
 		pswpModule: PhotoSwipe,
 	});
 

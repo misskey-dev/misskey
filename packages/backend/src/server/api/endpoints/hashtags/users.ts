@@ -39,7 +39,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-		
+
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				case '-updatedAt': query.orderBy('user.updatedAt', 'ASC'); break;
 			}
 
-			const users = await query.take(ps.limit).getMany();
+			const users = await query.limit(ps.limit).getMany();
 
 			return await this.userEntityService.packMany(users, me, { detail: true });
 		});

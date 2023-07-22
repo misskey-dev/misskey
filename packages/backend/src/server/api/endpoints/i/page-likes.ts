@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('like.page', 'page');
 
 			const likes = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return this.pageLikeEntityService.packMany(likes, me);
