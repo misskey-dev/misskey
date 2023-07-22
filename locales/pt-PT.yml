@@ -760,6 +760,11 @@ _role:
     alwaysMarkNsfw: "Sempre marcar arquivos como NSFW"
     pinMax: "Número máximo de notas fixadas"
     antennaMax: "Número máximo de antenas"
+    wordMuteMax: "Número máximo de caracteres nas palavras mutadas"
+    webhookMax: "Número máximo de webhooks"
+    clipMax: "Número máximo de clipes"
+    noteEachClipsMax: "Número máximo de notas em um clipe"
+    userListMax: "Número máximo de listas"
   _condition:
     followersLessThanOrEq: "Possui X ou menos seguidores"
     followersMoreThanOrEq: "Possui X ou mais seguidores"
