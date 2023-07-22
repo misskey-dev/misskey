@@ -1,7 +1,10 @@
 <template>
 <form :class="{ signing, totpLogin }" @submit.prevent="onSubmit">
 	<div class="_gaps_m">
-		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user ? `url('${ user.avatarUrl }')` : null, marginBottom: message ? '1.5em' : null }"></div>
+		<div v-show="withAvatar" :class="$style.avatar" :style="{ backgroundImage: user?.avatarUrl ? `url('${ user.avatarUrl }')` : `url('/static-assets/user-unknown.png')`, marginBottom: message ? '1.5em' : null }">
+			<Jdenticon v-if="user?.username && !user?.avatarUrl" :acct="`${user?.username ?? ''}@${user?.host || host}`" />
+		</div>
+
 		<MkInfo v-if="message">
 			{{ message }}
 		</MkInfo>
@@ -45,6 +48,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
+import Jdenticon from './global/Jdenticon.vue';
 import { toUnicode } from 'punycode/';
 import { showSuspendedDialog } from '../scripts/show-suspended-dialog';
 import MkButton from '@/components/MkButton.vue';
@@ -245,5 +249,7 @@ function resetPassword() {
 	background-position: center;
 	background-size: cover;
 	border-radius: 100%;
+	overflow: clip;
+	object-fit: cover;
 }
 </style>

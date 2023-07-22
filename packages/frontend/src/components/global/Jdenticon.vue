@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, shallowRef, watch } from 'vue';
 import * as jdenticon from 'jdenticon';
 
 const config = {
@@ -33,6 +33,12 @@ onMounted(() => {
 	if (!ctx) return;
 
 	jdenticon.drawIcon(ctx, props.acct, 128, config);
+});
+
+watch(() => props.acct, () => {
+	jdenticon.updateCanvas(canvas.value, props.acct, config);
+}, {
+	immediate: true,
 });
 
 </script>
