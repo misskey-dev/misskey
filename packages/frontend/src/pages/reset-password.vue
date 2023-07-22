@@ -7,7 +7,7 @@
 				<template #prefix><i class="ti ti-lock"></i></template>
 				<template #label>{{ i18n.ts.newPassword }}</template>
 			</MkInput>
-		
+
 			<MkButton primary @click="save">{{ i18n.ts.save }}</MkButton>
 		</div>
 	</MkSpacer>

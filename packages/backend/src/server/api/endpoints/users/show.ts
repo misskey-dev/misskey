@@ -91,6 +91,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			let user;
 
 			const isModerator = await this.roleService.isModerator(me);
+			ps.username = ps.username?.trim();
 
 			if (ps.userIds) {
 				if (ps.userIds.length === 0) {

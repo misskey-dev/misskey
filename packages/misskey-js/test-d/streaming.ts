@@ -16,7 +16,7 @@ describe('Streaming', () => {
 		// {
 		//   otherparty?: User['id'] | null;
 		//   group?: UserGroup['id'] | null;
-		// } 
+		// }
 		// になっている」というテストを行いたいけどtsdでの書き方がわからない
 		const messagingChannel = stream.useChannel('messaging', { otherparty: 'aaa' });
 		messagingChannel.on('message', message => {

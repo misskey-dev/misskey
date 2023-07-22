@@ -40,15 +40,15 @@ export class AuthenticateService implements OnApplicationShutdown {
 		if (token == null) {
 			return [null, null];
 		}
-	
+
 		if (isNativeToken(token)) {
 			const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
 				() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
-	
+
 			if (user == null) {
 				throw new AuthenticationError('user not found');
 			}
-	
+
 			return [user, null];
 		} else {
 			const accessToken = await this.accessTokensRepository.findOne({
@@ -58,24 +58,24 @@ export class AuthenticateService implements OnApplicationShutdown {
 					token: token, // miauth
 				}],
 			});
-	
+
 			if (accessToken == null) {
 				throw new AuthenticationError('invalid signature');
 			}
-	
+
 			this.accessTokensRepository.update(accessToken.id, {
 				lastUsedAt: new Date(),
 			});
-	
+
 			const user = await this.cacheService.localUserByIdCache.fetch(accessToken.userId,
 				() => this.usersRepository.findOneBy({
 					id: accessToken.userId,
 				}) as Promise<LocalUser>);
-	
+
 			if (accessToken.appId) {
 				const app = await this.appCache.fetch(accessToken.appId,
 					() => this.appsRepository.findOneByOrFail({ id: accessToken.appId! }));
-	
+
 				return [user, {
 					id: accessToken.id,
 					permission: app.permission,

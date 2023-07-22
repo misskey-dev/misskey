@@ -40,7 +40,7 @@
 										</div>
 										<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
 											<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
-											<div v-if="item.expiresAt">Period: {{ item.expiresAt.toLocaleString() }}</div>
+											<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
 											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 										</div>
 									</div>

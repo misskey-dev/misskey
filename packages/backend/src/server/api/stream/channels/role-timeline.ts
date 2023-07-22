@@ -3,16 +3,16 @@ import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
 import { StreamMessages } from '../types.js';
-import { RoleService } from '@/core/RoleService.js';
 
 class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false;
 	private roleId: string;
-	
+
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,

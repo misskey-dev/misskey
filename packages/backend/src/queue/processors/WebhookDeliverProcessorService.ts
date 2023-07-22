@@ -31,7 +31,7 @@ export class WebhookDeliverProcessorService {
 	public async process(job: Bull.Job<WebhookDeliverJobData>): Promise<string> {
 		try {
 			this.logger.debug(`delivering ${job.data.webhookId}`);
-	
+
 			const res = await this.httpRequestService.send(job.data.to, {
 				method: 'POST',
 				headers: {
@@ -50,25 +50,25 @@ export class WebhookDeliverProcessorService {
 					body: job.data.content,
 				}),
 			});
-	
+
 			this.webhooksRepository.update({ id: job.data.webhookId }, {
 				latestSentAt: new Date(),
 				latestStatus: res.status,
 			});
-	
+
 			return 'Success';
 		} catch (res) {
 			this.webhooksRepository.update({ id: job.data.webhookId }, {
 				latestSentAt: new Date(),
 				latestStatus: res instanceof StatusError ? res.statusCode : 1,
 			});
-	
+
 			if (res instanceof StatusError) {
 				// 4xx
 				if (res.isClientError) {
 					throw new Bull.UnrecoverableError(`${res.statusCode} ${res.statusMessage}`);
 				}
-	
+
 				// 5xx etc.
 				throw new Error(`${res.statusCode} ${res.statusMessage}`);
 			} else {
