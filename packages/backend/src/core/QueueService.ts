@@ -66,8 +66,9 @@ export class QueueService {
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
+			timeout: 5 * 60 * 1000, // 5min
 			backoff: {
-				type: 'custom',
+				type: "apBackoff",
 			},
 			removeOnComplete: true,
 			removeOnFail: true,
