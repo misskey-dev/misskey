@@ -553,6 +553,9 @@ importers:
       '@types/oauth2orize':
         specifier: 1.11.0
         version: 1.11.0
+      '@types/oauth2orize-pkce':
+        specifier: 0.1.0
+        version: 0.1.0
       '@types/pg':
         specifier: 8.10.2
         version: 8.10.2
@@ -8280,6 +8283,12 @@ packages:
 
   /@types/npmlog@4.1.4:
     resolution: {integrity: sha512-WKG4gTr8przEZBiJ5r3s8ZIAoMXNbOgQ+j/d5O4X3x6kZJRLNvyUJuUK/KoG3+8BaOHPhp2m7WC6JKKeovDSzQ==}
+    dev: true
+
+  /@types/oauth2orize-pkce@0.1.0:
+    resolution: {integrity: sha512-k3FH+QtfjV/zAWFdJwzPOCISpYYXbGIwejtEbUWWGhUJ+gk/DyPesSKh3tblBkFBabN4RBRBRnYutWFwtVEZzw==}
+    dependencies:
+      '@types/oauth2orize': 1.11.0
     dev: true
 
   /@types/oauth2orize@1.11.0:
