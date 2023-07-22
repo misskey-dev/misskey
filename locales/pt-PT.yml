@@ -84,7 +84,7 @@ note: "Post"
 notes: "Posts"
 following: "Seguindo"
 followers: "Seguidores"
-followsYou: "Segue-lhe"
+followsYou: "Te seguem"
 createList: "Criar lista"
 manageLists: "Gerenciar listas"
 error: "Erro"
@@ -488,7 +488,7 @@ regenerate: "Gerar novamente"
 fontSize: "Tamanho do texto"
 mediaListWithOneImageAppearance: "Altura da lista de mídias com apenas uma imagem"
 limitTo: "Até {x}"
-noFollowRequests: "Não há aplicação de acompanhamento"
+noFollowRequests: "Não há pedidos de seguidor pendentes"
 openImageInNewTab: "Abrir a imagem numa nova aba"
 dashboard: "Painel de controle"
 local: "Local"
@@ -621,9 +621,12 @@ smtpUser: "Nome de usuário"
 smtpPass: "Senha"
 testEmail: "Testar envio de e-mail"
 editTheseSettingsMayBreakAccount: "Editar essas configurações pode resultar em danos à conta.\""
+followingCount: "Número de contas seguidas"
+followersCount: "Número de seguidores"
 driveFilesCount: "Número de arquivos no drive"
 driveUsage: "Capacidade do drive"
 verificationEmailSent: "Um e-mail de confirmação foi enviado. Siga o link no e-mail para concluir a verificação."
+emailVerified: "O endereço de e-mail foi confirmado"
 clearCache: "Limpar memória transitória"
 sendErrorReportsDescription: "Ao ativar essa opção, informações detalhadas de erro serão compartilhadas com o Misskey em caso de problemas, o que pode ajudar a melhorar a qualidade do software. As informações de erro podem incluir a versão do sistema operacional, o tipo de navegador e o sua atividade no Misskey."
 deleteConfirm: "Confirma a exclusão?"
@@ -634,19 +637,28 @@ administration: "Administrar"
 middle: "Médio"
 emailNotConfiguredWarning: "Endereço de e-mail não configurado. "
 usernameInfo: "O nome para identificar exclusivamente a sua conta no servidor. Pode conter letras (az, AZ), números (0~9) e sublinhados (_). O nome de usuário não pode ser alterado posteriormente."
+breakFollow: "Remover seguidor"
+breakFollowConfirm: "Deseja realmente deixar de seguir?"
+emailRequiredForSignup: "Tornar o endereço de e-mail obrigatório durante o cadastro"
 deleteAccountConfirm: "Deseja realmente excluir a conta?"
 useDrawerReactionPickerForMobile: "Mostrar em formato de gaveta"
+clickToFinishEmailVerification: "Clique em [{ok}] para completar a validação do endereço de e-mail."
 searchByGoogle: "Buscar"
 file: "Ficheiros"
+noEmailServerWarning: "Servidor de e-mail não configurado."
 driveCapOverrideLabel: "Altere a capacidade do drive para este usuário"
 driveCapOverrideCaption: "Altere a capacidade para o valor padrão informando o valor 0 ou inferior."
 deleteAccount: "Excluir conta"
 activeEmailValidationDescription: "A validação do endereço de e-mail do usuário será realizada de forma mais rigorosa, considerando se é um endereço descartável ou se é possível realizar comunicação efetiva. Se desativado, apenas a validade do formato do endereço será verificada como uma sequência de caracteres."
 pleaseDonate: "O Misskey é um software gratuito utilizado por {host}. Para que possamos continuar o desenvolvimento, pedimos que considerem fazer doações. A sua contribuição é muito importante!"
+emailNotSupported: "O envio de e-mails não é suportado nesta instância"
 drivecleaner: "Limpeza do drive"
 preservedUsernamesDescription: "Liste os nomes de usuário que deseja reservar, separando-os por quebras de linha. Os nomes de usuário especificados aqui não poderão ser utilizados durante a criação de contas. No entanto, esta restrição não se aplica quando a conta é criada por um administrador. Além disso, as contas que já existem não serão afetadas."
+youFollowing: "Seguindo"
 preventAiLearningDescription: "Solicita-se que o conteúdo de notas e imagens enviadas não seja usado como objeto de aprendizado por sistemas externos de geração de texto ou imagens. Isso é alcançado incluindo a flag 'noai' na resposta HTML. No entanto, o cumprimento dessa solicitação depende do próprio sistema de IA, portanto, não é garantia total de prevenção de aprendizado."
 waitingForMailAuth: "Verificação de e-mail pendente "
+_initialAccountSetting:
+  followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _accountMigration:
   moveFromDescription: "Se você deseja migrar de outra conta para esta, é necessário criar um alias aqui. Por favor, insira a conta de origem da migração no seguinte formato: @username@server.example.com. Para excluir o alias, deixe o campo em branco e clique em salvar (não recomendado)."
   moveAccountDescription: "Você está migrando para uma nova conta.\n　・Seus seguidores irão automaticamente seguir a nova conta.\n　・Todas as suas conexões de seguidores nesta conta serão removidas.\n　・Você não poderá mais criar novas notas nesta conta.\n\nA migração dos seguidores é automática, mas a migração das pessoas que você segue deve ser feita manualmente. Antes de migrar, exporte quem você está seguindo nesta conta e, assim que migrar, importe essa lista na nova conta.\nO mesmo se aplica para listas, silenciamentos e bloqueios, que também devem ser migrados manualmente.\n\n(Esta descrição se refere ao comportamento do servidor Misskey v13.12.0 ou posterior. Outros softwares ActivityPub, como Mastodon, podem ter comportamentos diferentes.)"
@@ -654,6 +666,42 @@ _accountMigration:
   postMigrationNote: "A remoção dos seguidores desta conta será realizada 24 horas após a operação de migração. O número de seguidores e seguidos desta conta se tornará zero. Os seguidores não serão removidos, portanto, eles continuarão a ver as postagens destinadas aos seguidores desta conta."
 _achievements:
   _types:
+    _following1:
+      title: "Primeira vez seguindo alguém"
+      description: "Seguiu um usuário pela primeira vez"
+    _following10:
+      title: "Circulando, circulando"
+      description: "Seguiu 10 usuários"
+    _following50:
+      title: "Muitos amigos"
+      description: "Seguiu 50 usuários"
+    _following100:
+      title: "100 amigos"
+      description: "Seguiu 100 usuários"
+    _following300:
+      title: "Sobrecarga de amigos"
+      description: "Seguiu 300 usuários"
+    _followers1:
+      title: "Primeiro seguidor"
+      description: "Ganhou o seu primeiro seguidor"
+    _followers10:
+      title: "Sigam-me os bons!"
+      description: "Ganhou 10 seguidores"
+    _followers50:
+      title: "Aos montes"
+      description: "Ganhou 50 seguidores"
+    _followers100:
+      title: "Popular"
+      description: "Ganhou 100 seguidores"
+    _followers300:
+      title: "Em fila única, por favor"
+      description: "Ganhou 300 seguidores"
+    _followers500:
+      title: "Torre de celular"
+      description: "Ganhou 500 seguidores"
+    _followers1000:
+      title: "Influencer"
+      description: "Ganhou 1000 seguidores"
     _noteDeletedWithin1min:
       title: "Deixa pra lá"
       description: "Excluí a postagem dentro de 1 minuto após ter publicado"
@@ -664,12 +712,21 @@ _role:
     middle: "Médio"
   _options:
     driveCapacity: "Capacidade do drive"
+  _condition:
+    followersLessThanOrEq: "Possui X ou menos seguidores"
+    followersMoreThanOrEq: "Possui X ou mais seguidores"
+    followingLessThanOrEq: "Segue X ou menos contas"
+    followingMoreThanOrEq: "Segue X ou mais contas"
 _emailUnavailable:
   used: "O endereço de e-mail informado já está sendo utilizado"
   format: "Formado de e-mail inválido"
-  disposable: "Endereços de e-mail temporários não devem ser utilizados"
+  disposable: "Endereços de e-mail descartáveis não devem ser utilizados"
   mx: "O servidor de informado é inválido"
+  smtp: "O servidor de e-mail não está respondendo"
+_ffVisibility:
+  followers: "Visível apenas para seguidores"
 _signup:
+  emailAddressInfo: "Por favor, insira o seu endereço de e-mail. Ele não será divulgado."
   emailSent: "Um e-mail de confirmação foi enviado para o endereço de e-mail fornecido ({email}). Acesse o link fornecido no e-mail para concluir a criação de sua conta."
 _accountDelete:
   accountDelete: "Remover Conta"
@@ -678,11 +735,18 @@ _accountDelete:
   requestAccountDelete: "Solicitar exclusão de conta"
   started: "O processo de exclusão foi iniciado."
   inProgress: "A exclusão está em andamento"
+_forgotPassword:
+  enterEmail: "Por favor, insira o endereço de e-mail usado no cadastro de sua conta. Um link para redefinição de senha será enviado para esse endereço."
+  ifNoEmail: "Caso você não tenha registrado um endereço de e-mail, por favor, entre em contato com o administrador."
 _email:
   _follow:
     title: "Você tem um novo seguidor"
+  _receiveFollowRequest:
+    title: "Você recebeu um pedido de seguidor"
 _preferencesBackups:
   deleteConfirm: "Deseja excluir {name}?"
+_channel:
+  following: "Seguindo"
 _theme:
   description: "Descrição"
   deleteConstantConfirm: "Confirma a exclusão da constante {const}?"
@@ -702,6 +766,8 @@ _2fa:
 _permissions:
   "read:drive": "Acesse seus arquivos e pastas do drive"
   "write:drive": "Edite ou exclua seus arquivos e pastas do drive"
+  "read:following": "Ver informações de quem você segue"
+  "write:following": "Seguir ou deixar de seguir outras contas"
 _widgets:
   profile: "Perfil"
   instanceInfo: "Informações da instância"
@@ -717,6 +783,7 @@ _cw:
 _visibility:
   home: "casa"
   followers: "Seguidores"
+  followersDescription: "Tornar visível apenas para os meus seguidores"
 _profile:
   name: "Nome"
   username: "Nome de usuário"
@@ -747,8 +814,8 @@ _notification:
   youGotReply: "{name} te respondeu"
   youGotQuote: "{name} te citou"
   youWereFollowed: "Você tem um novo seguidor"
-  youReceivedFollowRequest: "Você recebeu um pedido de seguimento"
-  yourFollowRequestAccepted: "Seu pedido de seguimento foi aceito"
+  youReceivedFollowRequest: "Você recebeu um pedido de seguidor"
+  yourFollowRequestAccepted: "Seu pedido de seguidor foi aceito"
   pollEnded: "Os resultados da enquete agora estão disponíveis"
   emptyPushNotificationMessage: "As notificações de alerta foram atualizadas"
   _types:
@@ -760,8 +827,8 @@ _notification:
     quote: "Citar"
     reaction: "Reações"
     pollEnded: "Enquetes terminando"
-    receiveFollowRequest: "Recebeu pedidos de seguimento"
-    followRequestAccepted: "Aceitou pedidos de seguimento"
+    receiveFollowRequest: "Recebeu pedidos de seguidor"
+    followRequestAccepted: "Aceitou pedidos de seguidor"
     app: "Notificações de aplicativos conectados"
   _actions:
     followBack: "te seguiu de volta"
@@ -792,3 +859,6 @@ _drivecleaner:
   orderByCreatedAtAsc: "Data ascendente"
 _webhookSettings:
   name: "Nome"
+  _events:
+    follow: "Quando seguindo um usuário"
+    followed: "Quando sendo seguido"
