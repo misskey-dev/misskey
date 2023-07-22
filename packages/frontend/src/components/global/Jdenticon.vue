@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<canvas :class="$style.icon" ref="canvas" width="128" height="128" />
+		<canvas ref="canvas" :class="$style.icon" width="128" height="128" />
 	</div>
 </template>
 
@@ -29,14 +29,23 @@ const props = withDefaults(defineProps<{
 const canvas = shallowRef<HTMLCanvasElement>();
 
 onMounted(() => {
-	const ctx = canvas.value.getContext('2d');
-	if (!ctx) return;
+	if (import.meta.env.MODE === 'test') {
+		canvas.value = document.createElement('canvas');
+		canvas.value.width = 128;
+		canvas.value.height = 128;
+		return;
+	}
 
-	jdenticon.drawIcon(ctx, props.acct, 128, config);
+	if (canvas.value instanceof HTMLCanvasElement) {
+		const ctx = canvas.value.getContext('2d');
+		if (!ctx) return;
+
+		jdenticon.drawIcon(ctx, props.acct, 128, config);
+	}
 });
 
 watch(() => props.acct, () => {
-	jdenticon.updateCanvas(canvas.value, props.acct, config);
+	if (typeof canvas.value !== 'undefined') jdenticon.updateCanvas(canvas.value, props.acct, config);
 }, {
 	immediate: true,
 });
