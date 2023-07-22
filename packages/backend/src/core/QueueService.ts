@@ -1,5 +1,5 @@
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
@@ -101,15 +101,14 @@ export class QueueService {
 
 		const opts = {
 			attempts: this.config.deliverJobMaxAttempts ?? 12,
-			timeout: 1 * 60 * 1000,	// 1min
 			backoff: {
-				type: 'apBackoff',
+				type: 'custom',
 			},
 			removeOnComplete: true,
 			removeOnFail: true,
 		};
 
-		await this.deliverQueue.addBulk(Array.from(inboxes.entries()).map(d => ({
+		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
 			name: d[0],
 			data: {
 				user,
@@ -417,7 +416,7 @@ export class QueueService {
 			to: webhook.url,
 			secret: webhook.secret,
 			createdAt: Date.now(),
-			eventId: uuid(),
+			eventId: randomUUID(),
 		};
 
 		return this.webhookDeliverQueue.add(webhook.id, data, {
@@ -435,11 +434,11 @@ export class QueueService {
 		this.deliverQueue.once('cleaned', (jobs, status) => {
 			//deliverLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
-		this.deliverQueue.clean(0, Infinity, 'delayed');
+		this.deliverQueue.clean(0, 0, 'delayed');
 
 		this.inboxQueue.once('cleaned', (jobs, status) => {
 			//inboxLogger.succ(`Cleaned ${jobs.length} ${status} jobs`);
 		});
-		this.inboxQueue.clean(0, Infinity, 'delayed');
+		this.inboxQueue.clean(0, 0, 'delayed');
 	}
 }

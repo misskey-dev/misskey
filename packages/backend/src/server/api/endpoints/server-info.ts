@@ -2,6 +2,7 @@ import * as os from 'node:os';
 import si from 'systeminformation';
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	requireCredential: false,
@@ -21,8 +22,24 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async () => {
+			if (!(await this.metaService.fetch()).enableServerMachineStats) return {
+				machine: '?',
+				cpu: {
+					model: '?',
+					cores: 0,
+				},
+				mem: {
+					total: 0,
+				},
+				fs: {
+					total: 0,
+					used: 0,
+				},
+			};
+
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();
 

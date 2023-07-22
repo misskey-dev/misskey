@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Generate token
-			const token = uuid();
+			const token = randomUUID();
 
 			// Create session token document
 			const doc = await this.authSessionsRepository.insert({

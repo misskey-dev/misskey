@@ -54,9 +54,10 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
 		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
-	
+
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
 		cy.get('[data-cy-signup-username] input').type('alice');
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
@@ -78,6 +79,7 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
 		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
 
