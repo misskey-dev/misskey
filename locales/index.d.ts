@@ -165,6 +165,8 @@ export interface Locale {
     "flagAsBotDescription": string;
     "flagAsCat": string;
     "flagAsCatDescription": string;
+    "flagAsSheep": string;
+    "flagAsSheepDescription": string;
     "flagShowTimelineReplies": string;
     "flagShowTimelineRepliesDescription": string;
     "autoAcceptFollowed": string;
