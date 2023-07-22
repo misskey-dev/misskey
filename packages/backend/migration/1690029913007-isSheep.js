@@ -1,6 +1,4 @@
-const { MigrationInterface, QueryRunner } = require("typeorm");
-
-module.exports = class IsSheep1690029913007 {
+export class IsSheep1690029913007 {
     name = 'IsSheep1690029913007'
 
     async up(queryRunner) {
