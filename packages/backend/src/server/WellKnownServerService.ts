@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import vary from 'vary';
+import fastifyAccepts from '@fastify/accepts';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
 import type { User } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
-import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { FindOptionsWhere } from 'typeorm';
 import { bindThis } from '@/decorators.js';
+import { NodeinfoServerService } from './NodeinfoServerService.js';
+import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import fastifyAccepts from '@fastify/accepts';
 
 @Injectable()
 export class WellKnownServerService {
