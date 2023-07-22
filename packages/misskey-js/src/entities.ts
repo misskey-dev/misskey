@@ -47,6 +47,7 @@ export type UserDetailed = UserLite & {
 	isBlocking: boolean;
 	isBot: boolean;
 	isCat: boolean;
+	isSheep: boolean;
 	isFollowed: boolean;
 	isFollowing: boolean;
 	isLocked: boolean;

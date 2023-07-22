@@ -377,6 +377,25 @@ export class NoteEntityService implements OnModuleInit {
 			packed.text = mfm.toString(tokens);
 		}
 
+		if (packed.user.isSheep && packed.text) {
+			const tokens = packed.text ? mfm.parse(packed.text) : [];
+			function nyaizeNode(node: mfm.MfmNode) {
+				if (node.type === 'quote') return;
+				if (node.type === 'text') {
+					node.props.text = nyaize(node.props.text);
+				}
+				if (node.children) {
+					for (const child of node.children) {
+						nyaizeNode(child);
+					}
+				}
+			}
+			for (const node of tokens) {
+				nyaizeNode(node);
+			}
+			packed.text = mfm.toString(tokens);
+		}
+
 		if (!opts.skipHide) {
 			await this.hideNote(packed, meId);
 		}

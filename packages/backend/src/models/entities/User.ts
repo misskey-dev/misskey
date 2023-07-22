@@ -171,6 +171,12 @@ export class User {
 
 	@Column('boolean', {
 		default: false,
+		comment: 'Whether the User is a sheep.',
+	})
+	public isSheep: boolean;
+
+	@Column('boolean', {
+		default: false,
 		comment: 'Whether the User is the root.',
 	})
 	public isRoot: boolean;

@@ -426,6 +426,7 @@ export type Endpoints = {
 		noCrawle?: boolean;
 		isBot?: boolean;
 		isCat?: boolean;
+		isSheep?: boolean;
 		injectFeaturedNote?: boolean;
 		receiveAnnouncementEmail?: boolean;
 		alwaysMarkNsfw?: boolean;
