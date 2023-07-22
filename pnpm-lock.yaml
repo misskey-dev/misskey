@@ -569,7 +569,7 @@ importers:
         specifier: 1.11.0
         version: 1.11.0
       '@types/oauth2orize-pkce':
-        specifier: ^0.1.0
+        specifier: 0.1.0
         version: 0.1.0
       '@types/pg':
         specifier: 8.10.2
