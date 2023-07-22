@@ -105,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 				//#endregion
 
-				timeline = await query.take(ps.limit).getMany();
+				timeline = await query.limit(ps.limit).getMany();
 			} else {
 				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
 

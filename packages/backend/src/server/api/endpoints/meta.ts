@@ -83,6 +83,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			cacheRemoteSensitiveFiles: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			emailRequiredForSignup: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -263,7 +267,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
-			const ads = await this.adsRepository.createQueryBuilder("ads")
+			const ads = await this.adsRepository.createQueryBuilder('ads')
 				.where('ads.expiresAt > :now', { now: new Date() })
 				.andWhere('ads.startsAt <= :now', { now: new Date() })
 				.andWhere(new Brackets(qb => {
@@ -272,7 +276,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 						.orWhere('ads.dayOfWeek = 0');
 				}))
 				.getMany();
-		
+
 			const response: any = {
 				maintainerName: instance.maintainerName,
 				maintainerEmail: instance.maintainerEmail,
@@ -329,6 +333,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				...(ps.detail ? {
 					cacheRemoteFiles: instance.cacheRemoteFiles,
+					cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
 					requireSetup: (await this.usersRepository.countBy({
 						host: IsNull(),
 					})) === 0,

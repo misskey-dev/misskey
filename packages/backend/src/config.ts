@@ -6,6 +6,16 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import * as yaml from 'js-yaml';
+import type { RedisOptions } from 'ioredis';
+
+type RedisOptionsSource = Partial<RedisOptions> & {
+	host: string;
+	port: number;
+	family?: number;
+	pass: string;
+	db?: number;
+	prefix?: string;
+};
 
 /**
  * ユーザーが設定する必要のある情報
@@ -14,7 +24,9 @@ export type Source = {
 	repository_url?: string;
 	feedback_url?: string;
 	url: string;
-	port: number;
+	port?: number;
+	socket?: string;
+	chmodSocket?: string;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -33,36 +45,16 @@ export type Source = {
 		user: string;
 		pass: string;
 	}[];
-	redis: {
-		host: string;
-		port: number;
-		family?: number;
-		pass: string;
-		db?: number;
-		prefix?: string;
-	};
-	redisForPubsub?: {
-		host: string;
-		port: number;
-		family?: number;
-		pass: string;
-		db?: number;
-		prefix?: string;
-	};
-	redisForJobQueue?: {
-		host: string;
-		port: number;
-		family?: number;
-		pass: string;
-		db?: number;
-		prefix?: string;
-	};
+	redis: RedisOptionsSource;
+	redisForPubsub?: RedisOptionsSource;
+	redisForJobQueue?: RedisOptionsSource;
 	meilisearch?: {
 		host: string;
 		port: string;
 		apiKey: string;
 		ssl?: boolean;
 		index: string;
+		scope?: 'local' | 'global' | string[];
 	};
 
 	proxy?: string;
@@ -116,8 +108,9 @@ export type Mixin = {
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
 	videoThumbnailGenerator: string | null;
-	redisForPubsub: NonNullable<Source['redisForPubsub']>;
-	redisForJobQueue: NonNullable<Source['redisForJobQueue']>;
+	redis: RedisOptions & RedisOptionsSource;
+	redisForPubsub: RedisOptions & RedisOptionsSource;
+	redisForJobQueue: RedisOptions & RedisOptionsSource;
 };
 
 export type Config = Source & Mixin;
@@ -179,9 +172,9 @@ export function loadConfig() {
 		config.videoThumbnailGenerator.endsWith('/') ? config.videoThumbnailGenerator.substring(0, config.videoThumbnailGenerator.length - 1) : config.videoThumbnailGenerator
 		: null;
 
-	if (!config.redis.prefix) config.redis.prefix = mixin.host;
-	if (config.redisForPubsub == null) config.redisForPubsub = config.redis;
-	if (config.redisForJobQueue == null) config.redisForJobQueue = config.redis;
+	mixin.redis = convertRedisOptions(config.redis, mixin.host);
+	mixin.redisForPubsub = config.redisForPubsub ? convertRedisOptions(config.redisForPubsub, mixin.host) : mixin.redis;
+	mixin.redisForJobQueue = config.redisForJobQueue ? convertRedisOptions(config.redisForJobQueue, mixin.host) : mixin.redis;
 
 	return Object.assign(config, mixin);
 }
@@ -192,4 +185,15 @@ function tryCreateUrl(url: string) {
 	} catch (e) {
 		throw new Error(`url="${url}" is not a valid URL.`);
 	}
+}
+
+function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOptions & RedisOptionsSource {
+	return {
+		...options,
+		password: options.pass,
+		prefix: options.prefix ?? host,
+		family: options.family == null ? 0 : options.family,
+		keyPrefix: `${options.prefix ?? host}:`,
+		db: options.db ?? 0,
+	};
 }
