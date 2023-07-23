@@ -14,6 +14,7 @@ class HybridTimelineChannel extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = true;
 	private withReplies: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -33,6 +34,7 @@ class HybridTimelineChannel extends Channel {
 		if (!policies.ltlAvailable) return;
 
 		this.withReplies = params.withReplies as boolean;
+		this.withFiles = params.withFiles as boolean;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -50,6 +52,9 @@ class HybridTimelineChannel extends Channel {
 			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
 			(note.channelId != null && this.followingChannels.has(note.channelId))
 		)) return;
+
+		// ファイルを含まない投稿は除外
+		if (this.withFiles && (note.files === undefined || note.files.length === 0)) return;
 
 		if (['followers', 'specified'].includes(note.visibility)) {
 			note = await this.noteEntityService.pack(note.id, this.user!, {

@@ -129,6 +129,11 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-planet',
 	iconOnly: true,
 }, {
+	key: 'media',
+	title: i18n.ts._timelines.media,
+	icon: 'ti ti-photo',
+	iconOnly: true,
+}, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
 	icon: 'ti ti-rocket',
