@@ -1,8 +1,8 @@
+import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import { createBullBoard } from '@bull-board/api';
 import { BullAdapter } from '@bull-board/api/bullAdapter.js';
 import { FastifyAdapter } from '@bull-board/fastify';
@@ -690,7 +690,7 @@ export class ClientServerService {
 		});
 
 		fastify.setErrorHandler(async (error, request, reply) => {
-			const errId = uuid();
+			const errId = randomUUID();
 			this.clientLoggerService.logger.error(`Internal error occured in ${request.routerPath}: ${error.message}`, {
 				path: request.routerPath,
 				params: request.params,

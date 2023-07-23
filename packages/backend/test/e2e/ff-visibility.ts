@@ -3,12 +3,13 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { signup, api, startServer, simpleGet } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
 
 describe('FF visibility', () => {
 	let app: INestApplicationContext;
 
-	let alice: any;
-	let bob: any;
+	let alice: misskey.entities.MeSignup;
+	let bob: misskey.entities.MeSignup;
 
 	beforeAll(async () => {
 		app = await startServer();

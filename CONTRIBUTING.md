@@ -106,7 +106,7 @@ If your language is not listed in Crowdin, please open an issue.
 ![Crowdin](https://d322cqt584bo4o.cloudfront.net/misskey/localized.svg)
 
 ## Development
-During development, it is useful to use the 
+During development, it is useful to use the
 
 ```
 pnpm dev
@@ -150,7 +150,7 @@ Prepare DB/Redis for testing.
 ```
 docker compose -f packages/backend/test/docker-compose.yml up
 ```
-Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`. 
+Alternatively, prepare an empty (data can be erased) DB and edit `.config/test.yml`.
 
 Run all test.
 ```
@@ -214,30 +214,13 @@ Misskey uses [Storybook](https://storybook.js.org/) for UI development.
 
 ### Setup & Run
 
-#### Universal
-
-##### Setup
-
-```bash
-pnpm --filter misskey-js build
-pnpm --filter frontend tsc -p .storybook && (node packages/frontend/.storybook/preload-locale.js & node packages/frontend/.storybook/preload-theme.js)
-```
-
-##### Run
-
-```bash
-node packages/frontend/.storybook/generate.js && pnpm --filter frontend storybook dev
-```
-
-#### macOS & Linux
-
-##### Setup
+#### Setup
 
 ```bash
 pnpm --filter misskey-js build
 ```
 
-##### Run
+#### Run
 
 ```bash
 pnpm --filter frontend storybook-dev
