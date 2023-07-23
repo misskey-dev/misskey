@@ -120,13 +120,6 @@ export const navbarItemDef = reactive({
 					miLocalStorage.setItem('ui', 'deck');
 					unisonReload();
 				},
-			}, {
-				text: i18n.ts.classic,
-				active: ui === 'classic',
-				action: () => {
-					miLocalStorage.setItem('ui', 'classic');
-					unisonReload();
-				},
 			}], ev.currentTarget ?? ev.target);
 		},
 	},

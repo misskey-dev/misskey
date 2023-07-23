@@ -20,7 +20,6 @@ export async function mainBoot() {
 		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
-		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :
 		defineAsyncComponent(() => import('@/ui/universal.vue')),
 	));
 
