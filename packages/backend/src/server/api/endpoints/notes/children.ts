@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.queryService.generateBlockedUserQuery(query, me);
 			}
 
-			const notes = await query.take(ps.limit).getMany();
+			const notes = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

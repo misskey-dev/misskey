@@ -28,11 +28,11 @@ export class DeleteAccountService {
 
 		// 物理削除する前にDelete activityを送信する
 		await this.userSuspendService.doPostSuspend(user).catch(e => {});
-	
+
 		this.queueService.createDeleteAccountJob(user, {
 			soft: false,
 		});
-	
+
 		await this.usersRepository.update(user.id, {
 			isDeleted: true,
 		});
