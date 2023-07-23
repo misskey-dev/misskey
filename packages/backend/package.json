@@ -54,9 +54,9 @@
 		"utf-8-validate": "^6.0.3"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "3.367.0",
-		"@aws-sdk/lib-storage": "3.367.0",
-		"@aws-sdk/node-http-handler": "3.360.0",
+		"@aws-sdk/client-s3": "3.374.0",
+		"@aws-sdk/lib-storage": "3.374.0",
+		"@aws-sdk/node-http-handler": "3.374.0",
 		"@bull-board/api": "5.6.1",
 		"@bull-board/fastify": "5.6.1",
 		"@bull-board/ui": "5.6.1",
