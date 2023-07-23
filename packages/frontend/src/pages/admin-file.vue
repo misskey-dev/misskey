@@ -32,7 +32,7 @@
 				<MkUserCardMini :user="file.user"/>
 			</MkA>
 			<div>
-				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">NSFW</MkSwitch>
+				<MkSwitch v-model="isSensitive" @update:modelValue="toggleIsSensitive">{{ i18n.ts.sensitive }}</MkSwitch>
 			</div>
 
 			<div>
