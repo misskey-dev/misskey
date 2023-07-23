@@ -717,6 +717,7 @@ duplicate: "Duplicar"
 left: "Esquerda"
 wide: "Largo"
 narrow: "Estreito"
+showTitlebar: "Exibir barra de título"
 clearCache: "Limpar o cache"
 sendErrorReportsDescription: "Ao ativar essa opção, informações detalhadas de erro serão compartilhadas com o Misskey em caso de problemas, o que pode ajudar a melhorar a qualidade do software. As informações de erro podem incluir a versão do sistema operacional, o tipo de navegador e o sua atividade no Misskey."
 backgroundColor: "Cor de fundo"
@@ -776,7 +777,9 @@ nonSensitiveOnlyForLocalLikeOnlyForRemote: "Apenas não sensíveis (somente curt
 rolesAssignedToMe: "Cargos atribuídos a mim"
 unfavoriteConfirm: "Deseja realmente remover dos favoritos?"
 drivecleaner: "Limpeza do drive"
+retryAllQueuesConfirmTitle: "Gostaria de tentar novamente agora?"
 preservedUsernamesDescription: "Liste os nomes de usuário que deseja reservar, separando-os por quebras de linha. Os nomes de usuário especificados aqui não poderão ser utilizados durante a criação de contas. No entanto, esta restrição não se aplica quando a conta é criada por um administrador. Além disso, as contas que já existem não serão afetadas."
+channelArchiveConfirmTitle: "Deseja realmente arquivar {name}?"
 youFollowing: "Seguindo"
 preventAiLearningDescription: "Solicita-se que o conteúdo de notas e imagens enviadas não seja usado como objeto de aprendizado por sistemas externos de geração de texto ou imagens. Isso é alcançado incluindo a flag 'noai' na resposta HTML. No entanto, o cumprimento dessa solicitação depende do próprio sistema de IA, portanto, não é garantia total de prevenção de aprendizado."
 options: "Opções"
@@ -844,12 +847,73 @@ _achievements:
     _notes100000:
       title: "ALL YOUR NOTE ARE BELONG TO US"
       description: "Postou 100000 notas"
+      flavor: "Você realmente tem muita coisa para escrever"
+    _login3:
+      title: "Iniciante I"
+      description: "Fez login por um total de 3 dias"
+      flavor: "De hoje em diante, me chame apenas de Misskist"
+    _login7:
+      title: "Iniciante II"
+      description: "Fez login por um total de 7 dias"
+      flavor: "Pegando o jeito da coisa?"
+    _login15:
+      title: "Iniciante III"
+      description: "Fez login por um total de 15 dias"
+    _login30:
+      title: "Misskist I"
+      description: "Fez login por um total de 30 dias"
+    _login60:
+      title: "Misskist II"
+      description: "Fez login por um total de 60 dias"
+    _login100:
+      title: "Misskist III"
+      description: "Fez login por um total de 100 dias"
+      flavor: "Misskist violento"
+    _login200:
+      title: "Freguês I"
+      description: "Fez login por um total de 200 dias"
+    _login300:
+      title: "Freguês II"
+      description: "Fez login por um total de 300 dias"
+    _login400:
+      title: "Freguês III"
+      description: "Fez login por um total de 400 dias"
+    _login500:
+      title: "Veterano I"
+      description: "Fez login por um total de 500 dias"
+      flavor: "Cavalheiros, tudo o que peço são notas"
+    _login600:
+      title: "Veterano II"
+      description: "Fez login por um total de 600 dias"
+    _login700:
+      title: "Veterano III"
+      description: "Fez login por um total de 700 dias"
+    _login800:
+      title: "Mestre das notas I"
+      description: "Fez login por um total de 800 dias"
+    _login900:
+      title: "Mestre das notas II"
+      description: "Fez login por um total de 900 dias"
+    _login1000:
+      title: "Mestre das notas III"
+      description: "Fez login por um total de 1000 dias"
+      flavor: "Obrigado por utilizar o Misskey!"
+    _noteClipped1:
+      title: "Não posso deixar de adicionar ao clipe"
+      description: "Adicionou a um clipe a sua primeira nota"
     _noteFavorited1:
       title: "Astrônomo amador"
       description: "Adicionou uma nota aos favoritos pela primeira vez"
     _myNoteFavorited1:
       title: "Cabeça nas estrelas"
       description: "Teve uma das suas notas adicionada aos favoritos de alguém"
+    _profileFilled:
+      title: "Tudo pronto"
+      description: "Configurou o seu perfil"
+    _markedAsCat:
+      title: "Eu Sou Um Gato"
+      description: "Marcou a sua conta como um gato"
+      flavor: "Ainda não tenho um nome."
     _following1:
       title: "Primeira vez seguindo alguém"
       description: "Seguiu um usuário pela primeira vez"
