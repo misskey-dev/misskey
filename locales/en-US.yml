@@ -1933,6 +1933,7 @@ _instanceCharts:
 _timelines:
   home: "Home"
   local: "Local"
+  media: "Media"
   social: "Social"
   global: "Global"
 _play:

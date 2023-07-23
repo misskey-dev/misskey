@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="src" :actions="headerActions" :tabs="$i ? headerTabs : headerTabsWhenNotLogin" :displayMyAvatar="true"/></template>
@@ -38,8 +33,6 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
-import { antennasCache, userListsCache } from '@/cache';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -47,7 +40,6 @@ const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
-const isAdmin = ($i != null && $i.isAdmin);
 const keymap = {
 	't': focus,
 };
@@ -70,7 +62,7 @@ function top(): void {
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await userListsCache.fetch();
+	const lists = await os.api('users/lists/list');
 	const items = lists.map(list => ({
 		type: 'link' as const,
 		text: list.name,
@@ -80,7 +72,7 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
-	const antennas = await antennasCache.fetch();
+	const antennas = await os.api('antennas/list');
 	const items = antennas.map(antenna => ({
 		type: 'link' as const,
 		text: antenna.name,
@@ -103,7 +95,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'all'): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
 	defaultStore.set('tl', {
 		...defaultStore.state.tl,
 		src: newSrc,
@@ -137,10 +129,10 @@ const headerTabs = $computed(() => [{
 	icon: 'ti ti-planet',
 	iconOnly: true,
 }, {
-  key: 'media',
-  title: i18n.ts._timelines.media,
-  icon: 'ti ti-photo',
-  iconOnly: true,
+	key: 'media',
+	title: i18n.ts._timelines.media,
+	icon: 'ti ti-photo',
+	iconOnly: true,
 }, {
 	key: 'social',
 	title: i18n.ts._timelines.social,
@@ -149,11 +141,6 @@ const headerTabs = $computed(() => [{
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
-	icon: 'ti ti-whirl',
-	iconOnly: true,
-}] : []), ...(isAdmin ? [{
-	key: 'all',
-	title: 'all',
 	icon: 'ti ti-whirl',
 	iconOnly: true,
 }] : []), {
