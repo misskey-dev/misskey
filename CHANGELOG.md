@@ -12,6 +12,17 @@
 
 -->
 
+## 13.x.x (unreleased)
+
+### General
+-
+
+### Client
+- `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
+
+### Server
+-
+
 ## 13.14.1
 
 ### General
