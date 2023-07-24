@@ -409,6 +409,8 @@ export type Announcement = {
 	title: string;
 	imageUrl: string | null;
 	isRead?: boolean;
+	isPrivate: boolean;
+	closeDuration: number; 
 };
 
 export type Antenna = {

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -26,8 +26,10 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 0 },
+		userId: { type: 'string', nullable: true, format: 'misskey:id' },
+		closeDuration: { type: 'number', nullable: false },
 	},
-	required: ['id', 'title', 'text', 'imageUrl'],
+	required: ['id', 'title', 'text', 'imageUrl', 'closeDuration'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -36,11 +38,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
+
+		@Inject(DI.announcementReadsRepository)
+		private announcementsReadsRepository: AnnouncementReadsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
+
+			if (announcement.userId && announcement.userId !== ps.userId) {
+				await this.announcementsReadsRepository.delete({ id: announcement.id, userId: announcement.userId });
+			}
 
 			await this.announcementsRepository.update(announcement.id, {
 				updatedAt: new Date(),
@@ -48,6 +57,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				text: ps.text,
 				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
 				imageUrl: ps.imageUrl || null,
+				userId: ps.userId ?? null,
+				closeDuration: ps.closeDuration,
 			});
 		});
 	}

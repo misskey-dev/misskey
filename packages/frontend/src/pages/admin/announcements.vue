@@ -3,10 +3,26 @@
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
+			<MkFolder>
+				<template #label>{{ i18n.ts.options }}</template>
+
+				<MkFolder>
+					<template #label>{{ i18n.ts.specifyUser }}</template>
+					<template v-if="user" #suffix>@{{ user.username }}</template>
+
+					<div style="text-align: center;" class="_gaps">
+						<div v-if="user">@{{ user.username }}</div>
+						<div>
+							<MkButton v-if="user == null" primary rounded inline @click="selectUserFilter">{{ i18n.ts.selectUser }}</MkButton>
+							<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
+						</div>
+					</div>
+				</MkFolder>
+			</MkFolder>
 			<section v-for="announcement in announcements" class="">
 				<div class="_panel _gaps_m" style="padding: 24px;">
-					<MkInput v-model="announcement.title">
-						<template #label>{{ i18n.ts.title }}</template>
+					<MkInput ref="announceTitleEl" v-model="announcement.title" :large="false">
+						<template #label>{{ i18n.ts.title }}&nbsp;<button v-tooltip="i18n.ts.emoji" :class="['_button']" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button></template>
 					</MkInput>
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
@@ -14,7 +30,13 @@
 					<MkInput v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkInput v-model="announcement.closeDuration" type="number">
+						<template #label>{{ i18n.ts.dialogCloseDuration }}</template>
+						<template #suffix>{{ i18n.ts._time.second }}</template>
+					</MkInput>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
+					<MkUserCardMini v-if="announcement.userId" :user="announcement.user" @click="editUser(announcement)"></MkUserCardMini>
+					<MkButton v-else class="button" inline primary @click="editUser(announcement)">{{ i18n.ts.specifyUser }}</MkButton>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 						<MkButton class="button" inline danger @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
@@ -27,16 +49,39 @@
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, watch } from 'vue';
+import { UserLite } from 'misskey-js/built/entities';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
 let announcements: any[] = $ref([]);
+
+const user = ref<UserLite>(null);
+const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+
+function selectUserFilter() {
+	os.selectUser().then(_user => {
+		user.value = _user;
+	});
+}
+
+function editUser(an) {
+	os.selectUser().then(_user => {
+		an.userId = _user.id;
+		an.user = _user;
+	});
+}
+
+async function insertEmoji(ev: MouseEvent) {
+	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, announceTitleEl);
+}
 
 os.api('admin/announcements/list').then(announcementResponse => {
 	announcements = announcementResponse;
@@ -48,6 +93,9 @@ function add() {
 		title: '',
 		text: '',
 		imageUrl: null,
+		userId: null,
+		user: null,
+		closeDuration: 10,
 	});
 }
 
@@ -92,10 +140,12 @@ function save(announcement) {
 }
 
 function refresh() {
-	os.api('admin/announcements/list').then(announcementResponse => {
+	os.api('admin/announcements/list', { userId: user.value?.id }).then(announcementResponse => {
 		announcements = announcementResponse;
 	});
 }
+
+watch(user, refresh);
 
 refresh();
 

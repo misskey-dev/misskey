@@ -73,7 +73,7 @@ export type Endpoints = {
 	'admin/relays/remove': { req: TODO; res: TODO; };
 
 	// announcements
-	'announcements': { req: { limit?: number; withUnreads?: boolean; sinceId?: Announcement['id']; untilId?: Announcement['id']; }; res: Announcement[]; };
+	'announcements': { req: { limit?: number; withUnreads?: boolean; sinceId?: Announcement['id']; untilId?: Announcement['id']; privateOnly?: boolean; }; res: Announcement[]; };
 
 	// antennas
 	'antennas/create': { req: TODO; res: Antenna; };

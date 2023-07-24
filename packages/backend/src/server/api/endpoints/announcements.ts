@@ -48,6 +48,14 @@ export const meta = {
 					type: 'boolean',
 					optional: true, nullable: false,
 				},
+				isPrivate: {
+					type: 'boolean',
+					optional: false, nullable: true,
+				},
+				closeDuration: {
+					type: 'number',
+					optional: false, nullable: false,
+				},
 			},
 		},
 	},
@@ -60,6 +68,7 @@ export const paramDef = {
 		withUnreads: { type: 'boolean', default: false },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		privateOnly: { type: 'boolean', default: false },
 	},
 	required: [],
 } as const;
@@ -77,8 +86,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
+			const builder = this.announcementsRepository.createQueryBuilder('announcement');
+			if (me) {
+				if (ps.privateOnly) {
+					builder.where('"userId" = :userId', { userId: me.id });
+				} else {
+					builder.where('"userId" IS NULL');
+					builder.orWhere('"userId" = :userId', { userId: me.id });
+				}
+			} else {
+				builder.where('"userId" IS NULL');
+			}
 
+			const query = this.queryService.makePaginationQuery(builder, ps.sinceId, ps.untilId);
 			const announcements = await query.limit(ps.limit).getMany();
 
 			if (me) {
@@ -95,6 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				...a,
 				createdAt: a.createdAt.toISOString(),
 				updatedAt: a.updatedAt?.toISOString() ?? null,
+				isPrivate: !!a.userId,
 			}));
 		});
 	}

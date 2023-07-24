@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { In, Not } from 'typeorm';
+import { In, IsNull, Not } from 'typeorm';
 import * as Redis from 'ioredis';
 import _Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
@@ -218,9 +218,11 @@ export class UserEntityService implements OnModuleInit {
 			userId: userId,
 		});
 
-		const count = await this.announcementsRepository.countBy(reads.length > 0 ? {
-			id: Not(In(reads.map(read => read.announcementId))),
-		} : {});
+		const id = reads.length > 0 ? Not(In(reads.map(read => read.announcementId))) : undefined;
+		const count = await this.announcementsRepository.countBy([
+			{ id, userId: IsNull() },
+			{ id, userId: userId },
+		]);
 
 		return count > 0;
 	}

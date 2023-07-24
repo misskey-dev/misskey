@@ -3,8 +3,8 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<MkPagination v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
-			<section v-for="(announcement, i) in items" :key="announcement.id" class="announcement _panel">
-				<div class="header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+			<section v-for="(announcement, i) in items" :key="announcement.id" :class="{ announcement: true, _panel: true, private: announcement.isPrivate }">
+				<div class="header"><span v-if="$i && !announcement.isRead"><span class="ti ti-speakerphone"></span></span><Mfm :text="announcement.title"/></div>
 				<div class="content">
 					<Mfm :text="announcement.text"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
@@ -53,6 +53,11 @@ definePageMetadata({
 
 <style lang="scss" scoped>
 .ruryvtyk {
+
+	> .private {
+		border-left: 4px solid olivedrab;
+	}
+
 	> .announcement {
 		padding: 16px;
 
@@ -72,6 +77,18 @@ definePageMetadata({
 		> .footer {
 			margin-top: 16px;
 		}
+	}
+}
+
+@keyframes fade {
+	0% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
 	}
 }
 </style>
