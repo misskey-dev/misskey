@@ -34,6 +34,56 @@ defineProps<{
 	note: misskey.entities.Note;
 	pinned?: boolean;
 }>();
+
+// 以下 dream での追加
+const headerWrapStyles = {
+	flexWrap: "wrap"
+};
+
+const headerOneLineStyles = {
+	display: "flex",
+};
+
+const headerRoleViewStyles = {
+	overflowX: "auto"
+};
+
+const headerContentStyles = {
+	flexShrink: "4",
+	textOverflow: "clip"
+};
+
+const roleScrollStyles = {
+	overflowX: "scroll"
+};
+
+const roleDisableStyles = {
+	display: "none"
+}
+
+const noteHeaderViewProp = computed(() => {
+	const style: string = defaultStore.state.noteHeaderViewStyle;
+	if (style === "wrap") {
+		return headerWrapStyles;
+	}
+});
+
+const noteHeaderRoleProp = computed(() => {
+	const style: string = defaultStore.state.noteHeaderRoleView;
+	if (style === "scrollable") {
+		return roleScrollStyles;
+	}
+	if (style === "disable") {
+		return roleDisableStyles;
+	}
+});
+
+const noteHeaderContentProp = computed(() => {
+	const style: string = defaultStore.state.noteHeaderViewStyle;
+	if (style === "oneLine") {
+		return headerContentStyles;
+	}
+});
 </script>
 
 <style lang="scss" module>
