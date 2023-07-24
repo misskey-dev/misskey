@@ -568,6 +568,7 @@ defineExpose({
 	more,
 	inited,
 	queueSize,
+	backed: $$(backed),
 	reload,
 	prepend,
 	append: appendItem,

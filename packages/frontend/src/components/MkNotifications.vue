@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, shallowRef } from 'vue';
+import { onUnmounted, onMounted, computed, shallowRef, watch } from 'vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import XNotification from '@/components/MkNotification.vue';
 import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
@@ -50,9 +50,15 @@ const onNotification = (notification) => {
 	}
 
 	if (!isMuted) {
-		pagingComponent.value.prepend(notification);
+		pagingComponent.value?.prepend(notification);
 	}
 };
+
+watch(() => pagingComponent.value?.backed, (backed) => {
+	if (backed === false) {
+		useStream().send('readNotification');
+	}
+});
 
 let connection;
 
