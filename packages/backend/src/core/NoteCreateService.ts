@@ -243,7 +243,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (this.isSensitive(data, sensitiveWords)) {
 				data.visibility = 'home';
 			} else if ((await this.roleService.getUserPolicies(user.id)).canPublicNote === false) {
-				data.visibility = 'home';
+				// User are banned from creating public notes
+				data.visibility = 'followers';
 			}
 		}
 
