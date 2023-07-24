@@ -1,26 +1,28 @@
 <template>
-<header :class="$style.root">
-	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-		<MkUserName :user="note.user"/>
-	</MkA>
-	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
-	<div :class="$style.username"><MkAcct :user="note.user"/></div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl"/>
-	</div>
-	<div :class="$style.info">
-		<MkA :to="notePage(note)">
-			<MkTime :time="note.createdAt"/>
+	<header :class="$style.root" :style="noteHeaderViewProp">
+		<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)" :style="noteHeaderContentProp">
+			<MkUserName :user="note.user" />
 		</MkA>
-		<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
-			<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
-			<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
-			<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
-		</span>
-		<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
-		<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
-	</div>
-</header>
+		<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+		<div :class="$style.username" :style="noteHeaderContentProp">
+			<MkAcct :user="note.user" />
+		</div>
+		<div v-if="note.user.badgeRoles" :class="$style.badgeRoles" :style="[noteHeaderRoleProp, noteHeaderContentProp]">
+			<img v-for="role in note.user.badgeRoles" :key="role.id" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl" />
+		</div>
+		<div :class="$style.info">
+			<MkA :to="notePage(note)">
+				<MkTime :time="note.createdAt" />
+			</MkA>
+			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
+				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
+				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
+				<i v-else-if="note.visibility === 'specified'" ref="specified" class="ti ti-mail"></i>
+			</span>
+			<span v-if="note.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
+			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
+		</div>
+	</header>
 </template>
 
 <script lang="ts" setup>
@@ -29,6 +31,7 @@ import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
+import { defaultStore } from '@/store'
 
 defineProps<{
 	note: misskey.entities.Note;
