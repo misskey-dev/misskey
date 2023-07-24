@@ -128,7 +128,7 @@ const moreFetching = ref(false);
 const more = ref(false);
 const preventAppearFetchMore = ref(false);
 const preventAppearFetchMoreTimer = ref<number | null>(null);
-const isBackTop = ref(false);
+const isActive = ref(false);
 const empty = computed(() => items.value.size === 0);
 const error = ref(false);
 const {
@@ -167,8 +167,8 @@ watch($$(rootEl), () => {
 	});
 });
 
-watch([$$(backed), $$(contentEl)], () => {
-	if (!backed) {
+watch([$$(backed), $$(contentEl)], (n, o) => {
+	if (!backed && isActive.value) {
 		if (!contentEl) return;
 
 		scrollRemove = (props.pagination.reversed ? onScrollBottom : onScrollTop)(contentEl, executeQueue, TOLERANCE);
@@ -339,7 +339,7 @@ const appearFetchMoreAhead = async (): Promise<void> => {
 	fetchMoreAppearTimeout();
 };
 
-const isTop = (): boolean => isBackTop.value || (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl!, TOLERANCE);
+const isTop = (): boolean => isActive.value && (props.pagination.reversed ? isBottomVisible : isTopVisible)(contentEl!, TOLERANCE);
 
 watch(visibility, () => {
 	if (visibility.value === 'hidden') {
@@ -431,11 +431,11 @@ const updateItem = (id: MisskeyEntity['id'], replacer: (old: MisskeyEntity) => M
 const inited = init();
 
 onActivated(() => {
-	isBackTop.value = false;
+	isActive.value = true;
 });
 
 onDeactivated(() => {
-	isBackTop.value = props.pagination.reversed ? window.scrollY >= (rootEl ? rootEl.scrollHeight - window.innerHeight : 0) : window.scrollY === 0;
+	isActive.value = false;
 });
 
 function toBottom() {
