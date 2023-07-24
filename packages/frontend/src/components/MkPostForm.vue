@@ -321,6 +321,7 @@ if (props.reply && ['home', 'followers', 'specified'].includes(props.reply.visib
 
 if (props.specified) {
 	visibility = 'specified';
+	localOnly = false;
 	pushVisibleUser(props.specified);
 }
 
