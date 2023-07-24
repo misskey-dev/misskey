@@ -1099,6 +1099,14 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "badgeNameOfDream": string;
+    "methodOfNoteHeaderView": string;
+    "oneLineView": string;
+    "returnMultiLineView": string;
+    "methodOfRollViewInNoteHeader": string;
+    "defaultRollViewInNoteHeader": string;
+    "scrollableRollInNoteHeader": string;
+    "hideRollInNoteHeader": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
