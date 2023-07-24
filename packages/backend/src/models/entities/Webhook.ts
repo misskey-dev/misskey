@@ -3,6 +3,7 @@ import { id } from '../id.js';
 import { User } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
+export type WebhookEventType = (typeof webhookEventTypes)[number] | `note@${string}`;
 
 @Entity()
 export class Webhook {
@@ -37,7 +38,7 @@ export class Webhook {
 	@Column('varchar', {
 		length: 128, array: true, default: '{}',
 	})
-	public on: (typeof webhookEventTypes)[number][];
+	public on: WebhookEventType[];
 
 	@Column('varchar', {
 		length: 1024,

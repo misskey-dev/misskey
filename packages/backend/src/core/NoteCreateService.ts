@@ -554,7 +554,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.roleService.addNoteToRoleTimeline(noteObj);
 
 			this.webhookService.getActiveWebhooks().then(webhooks => {
-				webhooks = webhooks.filter(x => x.userId === user.id && x.on.includes('note'));
+				const userNoteEvent = `note@${user.username}` as const;
+				webhooks = webhooks.filter(x => (x.userId === user.id && x.on.includes('note')) || x.on.includes(userNoteEvent));
 				for (const webhook of webhooks) {
 					this.queueService.webhookDeliver(webhook, 'note', {
 						note: noteObj,
