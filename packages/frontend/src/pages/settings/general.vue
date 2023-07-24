@@ -243,6 +243,10 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
 
+// 以下 dream
+const noteHeaderViewStyle = computed(defaultStore.makeGetterSetter('noteHeaderViewStyle'));
+const noteHeaderRoleView = computed(defaultStore.makeGetterSetter('noteHeaderRoleView'));
+
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
 	miLocalStorage.removeItem('locale');
@@ -274,6 +278,8 @@ watch([
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
 	overridedDeviceKind,
+	noteHeaderViewStyle,
+	noteHeaderRoleView
 ], async () => {
 	await reloadAsk();
 });
