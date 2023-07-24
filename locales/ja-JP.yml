@@ -2059,3 +2059,5 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+    usersLabel: "以下のユーザがnoteしたとき"
+    usersCaption: "このサーバーのユーザの@に挟まれた部分を改行で区切って指定します"

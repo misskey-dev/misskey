@@ -2144,6 +2144,8 @@ export interface Locale {
             "renote": string;
             "reaction": string;
             "mention": string;
+            "usersLabel": string;
+            "usersCaption": string;
         };
     };
 }
