@@ -120,7 +120,7 @@ const contextmenu = $computed(() => ([{
 
 function back() {
 	history.pop();
-	router.replace(history.at(-1)!.path, history.at(-1)!.key);
+	router.replace(history[history.length - 1].path, history[history.length - 1].key);
 }
 
 function reload() {

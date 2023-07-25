@@ -76,7 +76,7 @@ export class ExportMutingProcessorService {
 					break;
 				}
 
-				cursor = mutes.at(-1)?.id ?? null;
+				cursor = mutes[mutes.length - 1].id;
 
 				for (const mute of mutes) {
 					const u = await this.usersRepository.findOneBy({ id: mute.muteeId });

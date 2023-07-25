@@ -181,7 +181,7 @@ export class ActivityPubServerService {
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
-					cursor: followings.at(-1)!.id,
+					cursor: followings[followings.length - 1].id,
 				})}` : undefined,
 			);
 
@@ -273,7 +273,7 @@ export class ActivityPubServerService {
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
-					cursor: followings.at(-1)!.id,
+					cursor: followings[followings.length - 1].id,
 				})}` : undefined,
 			);
 
@@ -398,7 +398,7 @@ export class ActivityPubServerService {
 				})}` : undefined,
 				notes.length ? `${partOf}?${url.query({
 					page: 'true',
-					until_id: notes.at(-1)!.id,
+					until_id: notes[notes.length - 1].id,
 				})}` : undefined,
 			);
 

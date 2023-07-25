@@ -59,7 +59,7 @@ export class DeleteDriveFilesProcessorService {
 				break;
 			}
 
-			cursor = files.at(-1)?.id ?? null;
+			cursor = files[files.length - 1].id;
 
 			for (const file of files) {
 				await this.driveService.deleteFileSync(file);

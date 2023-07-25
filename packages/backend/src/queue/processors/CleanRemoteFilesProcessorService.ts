@@ -51,7 +51,7 @@ export class CleanRemoteFilesProcessorService {
 				break;
 			}
 
-			cursor = files.at(-1)?.id ?? null;
+			cursor = files[files.length - 1].id;
 
 			await Promise.all(files.map(file => this.driveService.deleteFileSync(file, true)));
 

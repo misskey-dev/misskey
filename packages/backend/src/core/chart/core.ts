@@ -627,7 +627,7 @@ export default abstract class Chart<T extends Schema> {
 			}
 
 		// 要求された範囲の最も古い箇所に位置するログが存在しなかったら
-		} else if (!isTimeSame(new Date(logs.at(-1)!.date * 1000), gt)) {
+		} else if (!isTimeSame(new Date(logs[logs.length - 1].date * 1000), gt)) {
 			// 要求された範囲の最も古い箇所時点での最も新しいログを持ってきて末尾に追加する
 			// (隙間埋めできないため)
 			const outdatedLog = await repository.findOne({
