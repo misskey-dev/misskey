@@ -248,19 +248,10 @@ function preventDefault(ev: Event) {
 
 /**
  * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
+ * Safariでは使わない方がいいかも？
  * @param fn DOM操作(unshiftItemsなど)
  */
 async function adjustScroll(fn: () => void): Promise<void> {
-	if (isWebKit) {
-		// Safariでは描画が微妙になるので一定程度スクロールするだけ
-		scrollBy(scrollableElement, { top: TOLERANCE + 4, behavior: 'instant' });
-		// backedを強制的にtrueにする
-		backed = true;
-		await nextTick();
-		fn();
-		return await nextTick();
-	}
-
 	await nextTick();
 	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
 	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
@@ -550,13 +541,21 @@ async function executeQueue() {
 	if (isPausingUpdateByExecutingQueue.value) return;
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
+	const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
 	isPausingUpdateByExecutingQueue.value = true;
-	await adjustScroll(() => {
-		unshiftItems(
-			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
-			Infinity,
-		);
-	});
+
+	if (isWebKit) {
+		// Safariでは描画が微妙になるので一定程度スクロールするだけ
+		scrollBy(scrollableElement, { top: TOLERANCE + 4, behavior: 'instant' });
+		backed = true;
+		await nextTick();
+		unshiftItems(newItems, Infinity);
+		await nextTick();
+	} else {
+		await adjustScroll(() => unshiftItems(newItems, Infinity));
+		backed = true;
+	}
+
 	items.value = new Map([...items.value].slice(0, displayLimit.value));
 	await nextTick();
 	isPausingUpdateByExecutingQueue.value = false;
