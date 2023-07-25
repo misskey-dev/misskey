@@ -41,7 +41,7 @@
 import { computed, ComputedRef, isRef, nextTick, onActivated, onBeforeUnmount, onDeactivated, onMounted, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import * as os from '@/os';
-import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scrollBy } from '@/scripts/scroll';
+import { isBottomVisible, isTopVisible, getScrollContainer, scrollToBottom, scrollToTop, scrollBy, scroll, getBodyScrollHeight } from '@/scripts/scroll';
 import { useDocumentVisibility } from '@/scripts/use-document-visibility';
 import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
@@ -242,6 +242,54 @@ watch([$$(weakBacked), $$(contentEl)], () => {
 	})();
 });
 
+function preventDefault(ev: Event) {
+	ev.preventDefault();
+}
+
+/**
+ * アイテムを上に追加した場合に追加分だけスクロールを下にずらす
+ * @param fn DOM操作(unshiftItemsなど)
+ */
+async function adjustScroll(fn: () => void): Promise<void> {
+	if (isWebKit) {
+		// Safariでは描画が微妙になるので一定程度スクロールするだけ
+		scrollBy(scrollableElement, { top: TOLERANCE + 4, behavior: 'instant' });
+		// backedを強制的にtrueにする
+		backed = true;
+		await nextTick();
+		fn();
+		return await nextTick();
+	}
+
+	await nextTick();
+	const oldHeight = scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight();
+	const oldScroll = scrollableElement ? scrollableElement.scrollTop : window.scrollY;
+	// スクロールをやめさせる
+	try {
+		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+		scrollableElementOrHtml.addEventListener('wheel', preventDefault, { passive: false });
+		scrollableElementOrHtml.addEventListener('touchmove', preventDefault, { passive: false });
+		// スクロールを強制的に停止
+		scroll(scrollableElement, { top: oldScroll, behavior: 'instant' });
+	} catch (err) {
+		console.error(err, { scrollableElementOrHtml });
+	}
+	fn();
+	return await nextTick(() => {
+		try {
+			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
+			scroll(scrollableElement, { top, behavior: 'instant' });
+			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+			scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
+			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
+		} catch (err) {
+			console.error(err, { scrollableElementOrHtml });
+		}
+		return nextTick();
+	});
+}
+//#endregion
+
 /**
  * 初期化
  * scrollAfterInitなどの後処理もあるので、reload関数を使うべき
@@ -342,7 +390,7 @@ const fetchMore = async (): Promise<void> => {
 			if (i === 10) item._shouldInsertAd_ = true;
 		}
 
-		const reverseConcat = (_res) => concatMapWithArray(items.value, _res);
+		const reverseConcat = (_res) => adjustScroll(() => concatMapWithArray(items.value, _res));
 
 		if (res.length === 0) {
 			if (props.pagination.reversed) {
@@ -503,20 +551,12 @@ async function executeQueue() {
 	const queueArr = Array.from(queue.value.entries());
 	queue.value = new Map(queueArr.slice(props.pagination.limit));
 	isPausingUpdateByExecutingQueue.value = true;
-	if (!backed) {
-		// スクロールが先頭の場合
-		// スクロールを進めることでChromeやFirefoxはいい感じにスクロールを調整してくれる
-		scrollBy(scrollableElement, { top: 24, behavior: 'instant' });
-		// 一応backedを強制的にtrueにする
-		backed = true;
-
-		await nextTick();
-	}
-	unshiftItems(
-		queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
-		Infinity,
-	);
-	await nextTick();
+	await adjustScroll(() => {
+		unshiftItems(
+			queueArr.slice(0, props.pagination.limit).map(v => v[1]).reverse(),
+			Infinity,
+		);
+	});
 	items.value = new Map([...items.value].slice(0, displayLimit.value));
 	await nextTick();
 	isPausingUpdateByExecutingQueue.value = false;
