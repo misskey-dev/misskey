@@ -1091,7 +1091,7 @@ usedAt: "ใช้แล้วที่"
 unused: "ไม่ใช้แล้ว"
 used: "ใช้แล้ว"
 expired: "หมดอายุแล้ว"
-doYouAgree: "ยอมรับ?"
+doYouAgree: "ยอมรับมั้ย?"
 beSureToReadThisAsItIsImportant: "กรุณาอ่านข้อมูลที่สำคัญอันนี้"
 iHaveReadXCarefullyAndAgree: "ฉันได้อ่านข้อความ \"{x}\" และยินยอม"
 _initialAccountSetting:
