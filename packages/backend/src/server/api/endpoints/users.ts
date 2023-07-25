@@ -81,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateBlockQueryForUsers(query, me);
 
 			query.limit(ps.limit);
-			query.skip(ps.offset);
+			query.offset(ps.offset);
 
 			const users = await query.getMany();
 
