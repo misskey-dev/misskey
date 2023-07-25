@@ -31,7 +31,7 @@ import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
-import { defaultStore } from '@/store'
+import { defaultStore } from '@/store';
 
 defineProps<{
 	note: misskey.entities.Note;
@@ -62,7 +62,7 @@ const roleScrollStyles = {
 
 const roleDisableStyles = {
 	display: "none"
-}
+};
 
 const noteHeaderViewProp = computed(() => {
 	const style: string = defaultStore.state.noteHeaderViewStyle;
