@@ -207,9 +207,11 @@ watch($$(navFooter), () => {
 	if (navFooter) {
 		navFooterHeight = navFooter.offsetHeight;
 		document.body.style.setProperty('--stickyBottom', `${navFooterHeight}px`);
+		document.body.style.setProperty('--minBottomSpacing', 'var(--minBottomSpacingMobile)');
 	} else {
 		navFooterHeight = 0;
 		document.body.style.setProperty('--stickyBottom', '0px');
+		document.body.style.setProperty('--minBottomSpacing', '0px');
 	}
 }, {
 	immediate: true,
