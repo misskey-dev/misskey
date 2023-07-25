@@ -510,6 +510,7 @@ objectStorageBaseUrlDesc: "URL použitá jako reference. Upřesněte URL vlastn�
 objectStorageBucket: "Bucket"
 objectStorageBucketDesc: "Prosím upřesněte název bucketu používaný poskytovatelem."
 objectStoragePrefix: "Předpona"
+objectStoragePrefixDesc: "Soubory budou ukládány pod složkama s tímhle prefixem."
 objectStorageEndpoint: "Endpoint"
 objectStorageRegion: "Región"
 objectStorageUseSSL: "Použít SSL"
