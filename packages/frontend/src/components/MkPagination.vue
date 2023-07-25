@@ -26,7 +26,7 @@
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching"></slot>
+		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching" :denyMoveTransition="denyMoveTransition"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -163,6 +163,7 @@ const scrollableElementOrHtml = $computed(() => scrollableElement ?? document.ge
 const visibility = useDocumentVisibility();
 
 const isPausingUpdateByExecutingQueue = ref(false);
+const denyMoveTransition = ref(false);
 
 //#region scrolling
 const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
@@ -265,6 +266,7 @@ async function adjustScroll(fn: () => void): Promise<void> {
 	} catch (err) {
 		console.error(err, { scrollableElementOrHtml });
 	}
+	denyMoveTransition.value = true;
 	fn();
 	return await nextTick(() => {
 		try {
@@ -276,7 +278,8 @@ async function adjustScroll(fn: () => void): Promise<void> {
 		} catch (err) {
 			console.error(err, { scrollableElementOrHtml });
 		}
-		return nextTick();
+	}).then(() => nextTick()).finally(() => {
+		denyMoveTransition.value = false;
 	});
 }
 //#endregion
@@ -548,17 +551,20 @@ async function executeQueue() {
 		// Safariでは描画が微妙になるので一定程度スクロールするだけ
 		scrollBy(scrollableElement, { top: TOLERANCE + 4, behavior: 'instant' });
 		backed = true;
+		denyMoveTransition.value = true;
 		await nextTick();
 		unshiftItems(newItems, Infinity);
 		await nextTick();
 	} else {
 		await adjustScroll(() => unshiftItems(newItems, Infinity));
 		backed = true;
+		denyMoveTransition.value = true;
 	}
 
 	items.value = new Map([...items.value].slice(0, displayLimit.value));
 	await nextTick();
 	isPausingUpdateByExecutingQueue.value = false;
+	denyMoveTransition.value = false;
 }
 
 function prependQueue(newItem: MisskeyEntity) {
