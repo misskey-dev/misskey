@@ -23,6 +23,11 @@
 ### Server
 - Fix: APIのオフセットが壊れていたせいで「もっと見る」でもっと見れない問題を修正
 
+## 13.x.x (unreleased)
+
+### General
+- プレイにAPI Tokenを要求できる関数を追加
+
 ## 13.14.1
 
 ### General

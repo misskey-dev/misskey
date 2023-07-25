@@ -8,6 +8,7 @@ import type { App } from '@/models/entities/App.js';
 import { CacheService } from '@/core/CacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 import { bindThis } from '@/decorators.js';
+import type { FlashToken } from '@/misc/flash-token.js';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {
@@ -36,9 +37,9 @@ export class AuthenticateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, AccessToken | null]> {
+	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, AccessToken | null, FlashToken | null]> {
 		if (token == null) {
-			return [null, null];
+			return [null, null, null];
 		}
 
 		if (isNativeToken(token)) {
@@ -49,7 +50,7 @@ export class AuthenticateService implements OnApplicationShutdown {
 				throw new AuthenticationError('user not found');
 			}
 
-			return [user, null];
+			return [user, null, null];
 		} else {
 			const accessToken = await this.accessTokensRepository.findOne({
 				where: [{
@@ -60,7 +61,12 @@ export class AuthenticateService implements OnApplicationShutdown {
 			});
 
 			if (accessToken == null) {
-				throw new AuthenticationError('invalid signature');
+				const flashToken = await this.cacheService.flashAccessTokensCache.get(token);
+				if (flashToken !== null && typeof flashToken !== 'undefined') {
+					return [flashToken.user, null, flashToken];
+				} else {
+					throw new AuthenticationError('invalid signature');
+				}
 			}
 
 			this.accessTokensRepository.update(accessToken.id, {
@@ -79,9 +85,9 @@ export class AuthenticateService implements OnApplicationShutdown {
 				return [user, {
 					id: accessToken.id,
 					permission: app.permission,
-				} as AccessToken];
+				} as AccessToken, null];
 			} else {
-				return [user, accessToken];
+				return [user, accessToken, null];
 			}
 		}
 	}

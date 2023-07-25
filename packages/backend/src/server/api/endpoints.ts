@@ -289,6 +289,7 @@ import * as ep___pages_update from './endpoints/pages/update.js';
 import * as ep___flash_create from './endpoints/flash/create.js';
 import * as ep___flash_delete from './endpoints/flash/delete.js';
 import * as ep___flash_featured from './endpoints/flash/featured.js';
+import * as ep___flash_genToken from './endpoints/flash/gen-token.js';
 import * as ep___flash_like from './endpoints/flash/like.js';
 import * as ep___flash_show from './endpoints/flash/show.js';
 import * as ep___flash_unlike from './endpoints/flash/unlike.js';
@@ -632,6 +633,7 @@ const eps = [
 	['flash/create', ep___flash_create],
 	['flash/delete', ep___flash_delete],
 	['flash/featured', ep___flash_featured],
+	['flash/gen-token', ep___flash_genToken],
 	['flash/like', ep___flash_like],
 	['flash/show', ep___flash_show],
 	['flash/unlike', ep___flash_unlike],

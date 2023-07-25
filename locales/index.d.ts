@@ -1074,6 +1074,9 @@ export interface Locale {
     "additionalEmojiDictionary": string;
     "installed": string;
     "branding": string;
+    "additionalPermissionsForFlash": string;
+    "thisFlashRequiresTheFollowingPermissions": string;
+    "doYouWantToAllowThisPlayToAccessYourAccount": string;
     "enableServerMachineStats": string;
     "enableIdenticonGeneration": string;
     "turnOffToImprovePerformance": string;

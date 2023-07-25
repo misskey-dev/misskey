@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private driveService: DriveService,
 		private globalEventService: GlobalEventService,
 	) {
-		super(meta, paramDef, async (ps, user, _1, _2, _3, ip, headers) => {
+		super(meta, paramDef, async (ps, user, _1, _2, _3, _4, ip, headers) => {
 			this.driveService.uploadFromUrl({ url: ps.url, user, folderId: ps.folderId, sensitive: ps.isSensitive, force: ps.force, comment: ps.comment, requestIp: ip, requestHeaders: headers }).then(file => {
 				this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
 					this.globalEventService.publishMainStream(user.id, 'urlUploadFinished', {

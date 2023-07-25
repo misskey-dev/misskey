@@ -87,7 +87,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private perUserPvChart: PerUserPvChart,
 		private apiLoggerService: ApiLoggerService,
 	) {
-		super(meta, paramDef, async (ps, me, _1, _2, _3, ip) => {
+		super(meta, paramDef, async (ps, me, _1, _2, _3, _4, ip) => {
 			let user;
 
 			const isModerator = await this.roleService.isModerator(me);

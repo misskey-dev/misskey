@@ -443,6 +443,9 @@ export type Endpoints = {
 	'i/2fa/remove-key': { req: TODO; res: TODO; };
 	'i/2fa/unregister': { req: TODO; res: TODO; };
 
+	// flash
+	'flash/gen-token': { req: TODO; res: TODO; };
+
 	// invite
 	'invite/create': { req: NoParams; res: Invite; };
 	'invite/delete': { req: { inviteId: Invite['id']; }; res: null; };
