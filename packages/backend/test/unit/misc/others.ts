@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: syuilo and other misskey contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { describe, test, expect } from '@jest/globals';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { correctFilename } from '@/misc/correct-filename.js';

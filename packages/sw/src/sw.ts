@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: syuilo and other misskey contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { get } from 'idb-keyval';
 import * as Acct from 'misskey-js/built/acct';
 import type { PushNotificationDataMap } from '@/types';

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: syuilo and other misskey contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { aidRegExp, genAid, parseAid } from '@/misc/id/aid.js';
 import { genMeid, meidRegExp, parseMeid } from '@/misc/id/meid.js';
 import { genMeidg, meidgRegExp, parseMeidg } from '@/misc/id/meidg.js';

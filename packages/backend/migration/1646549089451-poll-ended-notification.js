@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: syuilo and other misskey contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-only
 
 export class pollEndedNotification1646549089451 {
     name = 'pollEndedNotification1646549089451'
