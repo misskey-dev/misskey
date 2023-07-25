@@ -42,7 +42,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.orderBy('tag.count', 'DESC')
 				.groupBy('tag.id')
 				.limit(ps.limit)
-				.skip(ps.offset)
+				.offset(ps.offset)
 				.getMany();
 
 			return hashtags.map(tag => tag.name);
