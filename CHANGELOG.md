@@ -19,6 +19,7 @@
 - Fix: モバイル表示のときページ下部がナビゲーションバーに隠れる問題を修正
 - Fix: 一部モーダルダイアログでスクロールできない問題を修正
 - Fix: Selecting all emojis in Custom emoji is impossible
+- Fix: PhotoSwipeによるメモリリークの修正
 
 ### Server
 - Fix: APIのオフセットが壊れていたせいで「もっと見る」でもっと見れない問題を修正
