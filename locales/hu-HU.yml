@@ -43,13 +43,43 @@ copyContent: "Tartalom másolása"
 copyLink: "Hivatkozás Másolása"
 delete: "Törlés"
 deleteAndEdit: "Törlés és szerkesztés"
+deleteAndEditConfirm: "Biztosan törlöd ezt a jegyzetet és újrafogalmazza? Így eveszíted az összes reakciót, renote-ot és választ."
+addToList: "Hozzáadás a listákhoz"
+privacy: "Adatvédelem"
+makeFollowManuallyApprove: "Csak jóváhagyással követhetnek"
+defaultNoteVisibility: "Alapértelmezett láthatóság"
+follow: "Követés"
+followRequest: "Követés kérése"
+followRequests: "Követési kérések"
+unfollow: "Követés visszavonása"
+followRequestPending: "Függőben levő követési kérés"
+enterEmoji: "Írj egy emoji-t"
+renote: "Renote"
+unrenote: "Renote visszavonása"
+renoted: "Renotolva"
+cantRenote: "Nem lehet Renotolni"
+cantReRenote: "A Renote nem renotálható"
+quote: "Idézet"
+inChannelRenote: "Csak csatornán bellüli Renote"
+inChannelQuote: "Csak csatornán bellüli idézet"
+pinnedNote: "Csatolt jegyzet"
 pinned: "Rögzítés"
+you: "Te"
+clickToShow: "Kattints ide"
+sensitive: "Érzékeny"
+add: "Hozzáad"
+reaction: "Reakciók"
+reactions: "Reakciók"
 instances: "Szerver"
 remove: "Törlés"
+pinnedNotes: "Csatolt jegyzet"
 smtpUser: "Felhasználónév"
 smtpPass: "Jelszó"
 user: "Felhasználók"
 searchByGoogle: "Keresés"
+_theme:
+  keys:
+    renote: "Renote"
 _sfx:
   notification: "Értesítések"
 _2fa:
@@ -60,6 +90,13 @@ _widgets:
   timeline: "Idővonal"
 _profile:
   username: "Felhasználónév"
+_notification:
+  _types:
+    renote: "Renote"
+    quote: "Idézet"
+    reaction: "Reakciók"
+  _actions:
+    renote: "Renote"
 _deck:
   _columns:
     notifications: "Értesítések"
