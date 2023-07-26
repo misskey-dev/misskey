@@ -74,7 +74,7 @@ function calcAspectRatio() {
 	}
 
 	if (!container.value) container.value = getScrollContainer(root.value);
-	const width = container.value ? getClientWidthWithCache(container.value, root.value) : root.value.clientWidth;
+	const width = container.value ? getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
 
 	const heightMin = (ratio: number) => {
 		const imgResizeRatio = width / img.properties.width;
