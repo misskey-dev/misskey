@@ -268,16 +268,12 @@ async function adjustScroll(fn: () => void): Promise<void> {
 	}
 	denyMoveTransition.value = true;
 	fn();
-	return await nextTick(() => {
-		try {
-			const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
-			scroll(scrollableElement, { top, behavior: 'instant' });
-			// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
-			scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
-			scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
-		} catch (err) {
-			console.error(err, { scrollableElementOrHtml });
-		}
+	return await nextTick().then(() => {
+		const top = oldScroll + ((scrollableElement ? scrollableElement.scrollHeight : getBodyScrollHeight()) - oldHeight);
+		scroll(scrollableElement, { top, behavior: 'instant' });
+		// なぜかscrollableElementOrHtmlがundefinedであるというエラーが出る
+		scrollableElementOrHtml.removeEventListener('wheel', preventDefault);
+		scrollableElementOrHtml.removeEventListener('touchmove', preventDefault);
 	}).then(() => nextTick()).finally(() => {
 		denyMoveTransition.value = false;
 	});
@@ -523,7 +519,7 @@ const prepend = (item: MisskeyEntity): void => {
  */
 function unshiftItems(newItems: MisskeyEntity[], limit = displayLimit.value) {
 	const length = newItems.length + items.value.size;
-	items.value = new Map([...arrayToEntries(newItems), ...items.value].slice(0, limit));
+	items.value = new Map([...arrayToEntries(newItems), ...(newItems.length >= limit ? [] : items.value)].slice(0, limit));
 
 	if (length >= limit) more.value = true;
 }
@@ -542,29 +538,26 @@ function concatItems(oldItems: MisskeyEntity[]) {
 async function executeQueue() {
 	if (queue.value.size === 0) return;
 	if (isPausingUpdateByExecutingQueue.value) return;
-	const queueArr = Array.from(queue.value.entries());
-	queue.value = new Map(queueArr.slice(props.pagination.limit));
-	const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
-	isPausingUpdateByExecutingQueue.value = true;
-
 	if (isWebKit) {
-		// Safariでは描画が微妙になるので一定程度スクロールするだけ
-		scrollBy(scrollableElement, { top: TOLERANCE + 4, behavior: 'instant' });
-		backed = true;
-		denyMoveTransition.value = true;
-		await nextTick();
-		unshiftItems(newItems, Infinity);
-		await nextTick();
+		// Safariは最新のアイテムにするだけ
+		const newItems = Array.from(queue.value.values()).slice(-1 * props.pagination.limit);
+		unshiftItems(newItems);
+		queue.value = new Map();
 	} else {
+		const queueArr = Array.from(queue.value.entries());
+		queue.value = new Map(queueArr.slice(props.pagination.limit));
+		const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
+		isPausingUpdateByExecutingQueue.value = true;
+
 		await adjustScroll(() => unshiftItems(newItems, Infinity));
 		backed = true;
-		denyMoveTransition.value = true;
-	}
 
-	items.value = new Map([...items.value].slice(0, displayLimit.value));
-	await nextTick();
-	isPausingUpdateByExecutingQueue.value = false;
-	denyMoveTransition.value = false;
+		denyMoveTransition.value = true;
+		items.value = new Map([...items.value].slice(0, displayLimit.value));
+		await nextTick();
+		isPausingUpdateByExecutingQueue.value = false;
+		denyMoveTransition.value = false;
+	}
 }
 
 function prependQueue(newItem: MisskeyEntity) {
