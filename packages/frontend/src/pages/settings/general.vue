@@ -28,7 +28,7 @@
 				<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 			</div>
 
-			<MkSelect v-model="timelineBackTopBehavior" :disabled="isWebKit()">
+			<MkSelect v-model="timelineBackTopBehavior" :disabled="isWebKit()" :readonly="isWebKit()">
 				<template #label>{{ i18n.ts.timelineBackTopBehavior }}</template>
 				<option value="newest">{{ i18n.ts._timelineBackTopBehavior.newest }}</option>
 				<option value="next">{{ i18n.ts._timelineBackTopBehavior.next }}</option>
