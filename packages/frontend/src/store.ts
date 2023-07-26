@@ -1,5 +1,6 @@
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
+import { isWebKit } from './scripts/useragent';
 
 interface PostFormAction {
 	title: string,
@@ -341,6 +342,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	additionalUnicodeEmojiIndexes: {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
+	},
+	timelineBackTopBehavior: {
+		where: 'device',
+		default: (isWebKit() ? 'newest' : 'next') as 'newest' | 'next',
 	},
 }));
 

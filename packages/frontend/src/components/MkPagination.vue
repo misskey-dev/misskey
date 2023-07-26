@@ -47,7 +47,7 @@ import MkButton from '@/components/MkButton.vue';
 import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 import { i18n } from '@/i18n';
-import { UAParser } from 'ua-parser-js';
+import { isWebKit } from '@/scripts/useragent';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 6;
@@ -94,8 +94,7 @@ function concatMapWithArray(map: MisskeyEntityMap, entities: MisskeyEntity[]): M
 	return new Map([...map, ...arrayToEntries(entities)]);
 }
 
-const ua = new UAParser(navigator.userAgent);
-const isWebKit = ua.getEngine().name === 'WebKit';
+const timelineBackTopBehavior = computed(() => isWebKit() ? 'newest' : defaultStore.reactiveState.timelineBackTopBehavior.value);
 </script>
 <script lang="ts" setup>
 import { infoImageUrl } from '@/instance';
@@ -200,7 +199,7 @@ watch([$$(rootEl), $$(scrollObserver)], () => {
  * weakBackedがtrue→falseになったらexecuteQueue
  */
 watch($$(weakBacked), () => {
-	if (!isWebKit && !weakBacked) {
+	if (timelineBackTopBehavior.value === 'next' && !weakBacked) {
 		executeQueue();
 	}
 });
@@ -499,7 +498,7 @@ const prepend = (item: MisskeyEntity): void => {
 			// かなりスクロールの先頭にいる場合
 			if (items.value.has(item.id)) return; // 既にタイムラインにある場合は何もしない
 			unshiftItems([item]);
-		} else if (!isWebKit && !weakBacked) {
+		} else if (timelineBackTopBehavior.value === 'next' && !weakBacked) {
 			// ちょっと先頭にいる場合はスクロールを調整する
 			prependQueue(item);
 			executeQueue();
@@ -538,7 +537,7 @@ function concatItems(oldItems: MisskeyEntity[]) {
 async function executeQueue() {
 	if (queue.value.size === 0) return;
 	if (isPausingUpdateByExecutingQueue.value) return;
-	if (isWebKit) {
+	if (timelineBackTopBehavior === 'newest') {
 		// Safariは最新のアイテムにするだけ
 		const newItems = Array.from(queue.value.values()).slice(-1 * props.pagination.limit);
 		unshiftItems(newItems);

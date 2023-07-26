@@ -21,10 +21,18 @@
 	</MkRadios>
 
 	<FormSection>
-		<div class="_gaps_s">
-			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
-			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
-			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
+		<div class="_gaps_m">
+			<div class="_gaps_s">
+				<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
+				<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
+				<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
+			</div>
+
+			<MkSelect v-model="timelineBackTopBehavior" :disabled="isWebKit()">
+				<template #label>{{ i18n.ts.timelineBackTopBehavior }}</template>
+				<option value="newest">{{ i18n.ts._timelineBackTopBehavior.newest }}</option>
+				<option value="next">{{ i18n.ts._timelineBackTopBehavior.next }}</option>
+			</MkSelect>
 		</div>
 	</FormSection>
 
@@ -180,6 +188,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
+import { isWebKit } from '@/scripts/useragent';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -226,6 +235,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
+const timelineBackTopBehavior = computed(defaultStore.makeGetterSetter('timelineBackTopBehavior'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

@@ -87,6 +87,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'numberOfPageCache',
 	'aiChanMode',
 	'mediaListWithOneImageAppearance',
+	'timelineBackTopBehavior',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',

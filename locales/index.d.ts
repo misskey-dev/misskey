@@ -1097,6 +1097,7 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "timelineBackTopBehavior": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -1636,6 +1637,10 @@ export interface Locale {
         "reload": string;
         "dialog": string;
         "quiet": string;
+    };
+    "_timelineBackTopBehavior": {
+        "newest": string;
+        "next": string;
     };
     "_channel": {
         "create": string;

@@ -1094,6 +1094,7 @@ expired: "期限切れ"
 doYouAgree: "同意しますか？"
 beSureToReadThisAsItIsImportant: "重要ですので必ずお読みください。"
 iHaveReadXCarefullyAndAgree: "「{x}」の内容をよく読み、同意します。"
+timelineBackTopBehavior: "タイムラインのスクロールが先頭に戻った時の挙動"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"
@@ -1554,6 +1555,10 @@ _serverDisconnectedBehavior:
   reload: "自動でリロード"
   dialog: "ダイアログで警告"
   quiet: "控えめに警告"
+
+_timelineBackTopBehavior:
+  newest: "最新の投稿を表示"
+  next: "次の投稿を遡る"
 
 _channel:
   create: "チャンネルを作成"
