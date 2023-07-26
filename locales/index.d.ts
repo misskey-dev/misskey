@@ -1946,6 +1946,8 @@ export interface Locale {
         "specifiedDescription": string;
         "disableFederation": string;
         "disableFederationDescription": string;
+        "circle": string;
+        "circleDescription": string;
     };
     "_postForm": {
         "replyPlaceholder": string;

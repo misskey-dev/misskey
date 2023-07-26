@@ -1863,6 +1863,8 @@ _visibility:
   specifiedDescription: "指定したユーザーのみに公開"
   disableFederation: "連合なし"
   disableFederationDescription: "他サーバーへの配信を行いません"
+  circle: "サークル"
+  circleDescription: "フォロワーのみかつ連合なしにします"
 
 _postForm:
   replyPlaceholder: "このノートに返信..."
