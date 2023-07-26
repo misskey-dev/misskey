@@ -31,10 +31,10 @@
 					<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 					<span v-else><i class="ti ti-rocket-off"></i></span>
 				</button>
-				<button v-click-anime v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="channel != null || visibility === 'specified'" @click="toggleCircle">
-						<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
-						<span v-else><i class="ti ti-rocket-off"></i></span>
-					</button>
+				<button v-click-anime v-tooltip="i18n.ts._visibility.circle" class="_button" :class="[$style.headerRightItem, { [$style.circle]: localOnly && visibility === 'followers'}]" :disabled="channel != null || visibility === 'specified'" @click="toggleCircle">
+						<span v-if="visibility === 'followers' && localOnly === true"><i class="ti ti-heart-handshake"></i></span>
+						<span v-else><i class="ti ti-planet"></i></span>
+				</button>
 				<button v-click-anime v-tooltip="i18n.ts.reactionAcceptance" class="_button" :class="[$style.headerRightItem, { [$style.danger]: reactionAcceptance === 'likeOnly' }]" @click="toggleReactionAcceptance">
 					<span v-if="reactionAcceptance === 'likeOnly'"><i class="ti ti-heart"></i></span>
 					<span v-else-if="reactionAcceptance === 'likeOnlyForRemote'"><i class="ti ti-heart-plus"></i></span>
@@ -493,7 +493,7 @@
 			localOnly = true; // TODO: チャンネルが連合するようになった折には消す
 			return;
 		}
-		else if (visibility = 'followers' && localOnly == true){
+		else if (visibility == 'followers' && localOnly == true){
 			visibility = 'public';
 			localOnly = false;
 			return;
@@ -1018,6 +1018,9 @@
 	
 		&.danger {
 			color: #ff2a2a;
+		}
+		&.circle {
+			color: #53b781;
 		}
 	}
 	
