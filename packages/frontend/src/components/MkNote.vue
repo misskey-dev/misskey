@@ -341,6 +341,7 @@ function reply(viaKeyboard = false): void {
 	pleaseLogin();
 	os.post({
 		reply: appearNote,
+		channel: appearNote.channel,
 		animation: !viaKeyboard,
 	}, () => {
 		focus();
