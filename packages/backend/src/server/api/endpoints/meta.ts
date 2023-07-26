@@ -1,4 +1,4 @@
-import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
+import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
 import type { AdsRepository, UsersRepository } from '@/models/index.js';
@@ -83,6 +83,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			cacheRemoteSensitiveFiles: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			emailRequiredForSignup: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -124,10 +128,17 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
-			errorImageUrl: {
+			serverErrorImageUrl: {
 				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://xn--931a.moe/aiart/yubitun.png',
+				optional: false, nullable: true,
+			},
+			infoImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			notFoundImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			iconUrl: {
 				type: 'string',
@@ -243,7 +254,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-	
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -256,12 +267,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
-			const ads = await this.adsRepository.find({
-				where: {
-					expiresAt: MoreThan(new Date()),
-					startsAt: LessThanOrEqual(new Date()),
-				},
-			});
+			const ads = await this.adsRepository.createQueryBuilder('ads')
+				.where('ads.expiresAt > :now', { now: new Date() })
+				.andWhere('ads.startsAt <= :now', { now: new Date() })
+				.andWhere(new Brackets(qb => {
+					// 曜日のビットフラグを確認する
+					qb.where('ads.dayOfWeek & :dayOfWeek > 0', { dayOfWeek: 1 << new Date().getDay() })
+						.orWhere('ads.dayOfWeek = 0');
+				}))
+				.getMany();
 
 			const response: any = {
 				maintainerName: instance.maintainerName,
@@ -288,7 +302,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
 				bannerUrl: instance.bannerUrl,
-				errorImageUrl: instance.errorImageUrl,
+				infoImageUrl: instance.infoImageUrl,
+				serverErrorImageUrl: instance.serverErrorImageUrl,
+				notFoundImageUrl: instance.notFoundImageUrl,
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
@@ -302,6 +318,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					place: ad.place,
 					ratio: ad.ratio,
 					imageUrl: ad.imageUrl,
+					dayOfWeek: ad.dayOfWeek,
 				})),
 				enableEmail: instance.enableEmail,
 				enableServiceWorker: instance.enableServiceWorker,
@@ -316,6 +333,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				...(ps.detail ? {
 					cacheRemoteFiles: instance.cacheRemoteFiles,
+					cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
 					requireSetup: (await this.usersRepository.countBy({
 						host: IsNull(),
 					})) === 0,

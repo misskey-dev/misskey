@@ -3,7 +3,7 @@
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MKSpacer v-if="!(typeof error === 'undefined')" :contentMax="1200">
 		<div :class="$style.root">
-			<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+			<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
 			<p :class="$style.text">
 				<i class="ti ti-alert-triangle"></i>
 				{{ i18n.ts.nothing }}
@@ -36,6 +36,7 @@ import { i18n } from '@/i18n';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkButton from '@/components/MkButton.vue';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { serverErrorImageUrl } from '@/instance';
 
 const props = defineProps<{
 	listId: string;
@@ -111,7 +112,7 @@ definePageMetadata(computed(() => list ? {
 	flex: 1;
 	min-width: 0;
 	margin-right: 8px;
-	
+
 	&:hover {
 		text-decoration: none;
 	}

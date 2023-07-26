@@ -46,13 +46,15 @@ Please include errors from the developer console and/or server log files if you 
   <!-- Example: Chrome 113.0.5672.126 -->
 * Server URL:
   <!-- Example: misskey.io -->
+* Misskey:
+  13.x.x
 
-### 🛰 Backend (for instance admin)
+### 🛰 Backend (for server admin)
 <!-- If you are using a managed service, put that after the version. -->
 
 * Installation Method or Hosting Service: <!-- Example: docker compose, k8s/docker, systemd, "Misskey install shell script", development environment -->
 * Misskey: 13.x.x
-* Node: 18.x.x
+* Node: 20.x.x
 * PostgreSQL: 15.x.x
 * Redis: 7.x.x
 * OS and Architecture: <!-- Example: Ubuntu 22.04.2 LTS aarch64 -->

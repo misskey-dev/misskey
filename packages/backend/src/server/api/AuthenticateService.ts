@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
 import type { LocalUser } from '@/models/entities/User.js';
@@ -17,7 +17,7 @@ export class AuthenticationError extends Error {
 }
 
 @Injectable()
-export class AuthenticateService {
+export class AuthenticateService implements OnApplicationShutdown {
 	private appCache: MemoryKVCache<App>;
 
 	constructor(
@@ -40,15 +40,15 @@ export class AuthenticateService {
 		if (token == null) {
 			return [null, null];
 		}
-	
+
 		if (isNativeToken(token)) {
 			const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
 				() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
-	
+
 			if (user == null) {
 				throw new AuthenticationError('user not found');
 			}
-	
+
 			return [user, null];
 		} else {
 			const accessToken = await this.accessTokensRepository.findOne({
@@ -58,24 +58,24 @@ export class AuthenticateService {
 					token: token, // miauth
 				}],
 			});
-	
+
 			if (accessToken == null) {
 				throw new AuthenticationError('invalid signature');
 			}
-	
+
 			this.accessTokensRepository.update(accessToken.id, {
 				lastUsedAt: new Date(),
 			});
-	
+
 			const user = await this.cacheService.localUserByIdCache.fetch(accessToken.userId,
 				() => this.usersRepository.findOneBy({
 					id: accessToken.userId,
 				}) as Promise<LocalUser>);
-	
+
 			if (accessToken.appId) {
 				const app = await this.appCache.fetch(accessToken.appId,
 					() => this.appsRepository.findOneByOrFail({ id: accessToken.appId! }));
-	
+
 				return [user, {
 					id: accessToken.id,
 					permission: app.permission,
@@ -84,5 +84,15 @@ export class AuthenticateService {
 				return [user, accessToken];
 			}
 		}
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.appCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

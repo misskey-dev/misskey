@@ -30,41 +30,6 @@
 					</MkTextarea>
 
 					<FormSection>
-						<template #label>{{ i18n.ts.theme }}</template>
-
-						<div class="_gaps_m">
-							<MkInput v-model="iconUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.iconUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="bannerUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.bannerUrl }}</template>
-							</MkInput>
-
-							<MkInput v-model="backgroundImageUrl">
-								<template #prefix><i class="ti ti-link"></i></template>
-								<template #label>{{ i18n.ts.backgroundImageUrl }}</template>
-							</MkInput>
-
-							<MkColorInput v-model="themeColor">
-								<template #label>{{ i18n.ts.themeColor }}</template>
-							</MkColorInput>
-
-							<MkTextarea v-model="defaultLightTheme">
-								<template #label>{{ i18n.ts.instanceDefaultLightTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-
-							<MkTextarea v-model="defaultDarkTheme">
-								<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
-								<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
-							</MkTextarea>
-						</div>
-					</FormSection>
-
-					<FormSection>
 						<template #label>{{ i18n.ts.files }}</template>
 
 						<div class="_gaps_m">
@@ -72,6 +37,13 @@
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
 								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
 							</MkSwitch>
+
+							<template v-if="cacheRemoteFiles">
+								<MkSwitch v-model="cacheRemoteSensitiveFiles">
+									<template #label>{{ i18n.ts.cacheRemoteSensitiveFiles }}</template>
+									<template #caption>{{ i18n.ts.cacheRemoteSensitiveFilesDescription }}</template>
+								</MkSwitch>
+							</template>
 						</div>
 					</FormSection>
 
@@ -139,40 +111,29 @@ import { fetchInstance } from '@/instance';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkButton from '@/components/MkButton.vue';
-import MkColorInput from '@/components/MkColorInput.vue';
 
 let name: string | null = $ref(null);
 let description: string | null = $ref(null);
 let maintainerName: string | null = $ref(null);
 let maintainerEmail: string | null = $ref(null);
-let iconUrl: string | null = $ref(null);
-let bannerUrl: string | null = $ref(null);
-let backgroundImageUrl: string | null = $ref(null);
-let themeColor: any = $ref(null);
-let defaultLightTheme: any = $ref(null);
-let defaultDarkTheme: any = $ref(null);
 let pinnedUsers: string = $ref('');
 let cacheRemoteFiles: boolean = $ref(false);
+let cacheRemoteSensitiveFiles: boolean = $ref(false);
 let enableServiceWorker: boolean = $ref(false);
 let swPublicKey: any = $ref(null);
 let swPrivateKey: any = $ref(null);
 let deeplAuthKey: string = $ref('');
 let deeplIsPro: boolean = $ref(false);
 
-async function init() {
+async function init(): Promise<void> {
 	const meta = await os.api('admin/meta');
 	name = meta.name;
 	description = meta.description;
-	iconUrl = meta.iconUrl;
-	bannerUrl = meta.bannerUrl;
-	backgroundImageUrl = meta.backgroundImageUrl;
-	themeColor = meta.themeColor;
-	defaultLightTheme = meta.defaultLightTheme;
-	defaultDarkTheme = meta.defaultDarkTheme;
 	maintainerName = meta.maintainerName;
 	maintainerEmail = meta.maintainerEmail;
 	pinnedUsers = meta.pinnedUsers.join('\n');
 	cacheRemoteFiles = meta.cacheRemoteFiles;
+	cacheRemoteSensitiveFiles = meta.cacheRemoteSensitiveFiles;
 	enableServiceWorker = meta.enableServiceWorker;
 	swPublicKey = meta.swPublickey;
 	swPrivateKey = meta.swPrivateKey;
@@ -180,20 +141,15 @@ async function init() {
 	deeplIsPro = meta.deeplIsPro;
 }
 
-function save() {
+function save(): void {
 	os.apiWithDialog('admin/update-meta', {
 		name,
 		description,
-		iconUrl,
-		bannerUrl,
-		backgroundImageUrl,
-		themeColor: themeColor === '' ? null : themeColor,
-		defaultLightTheme: defaultLightTheme === '' ? null : defaultLightTheme,
-		defaultDarkTheme: defaultDarkTheme === '' ? null : defaultDarkTheme,
 		maintainerName,
 		maintainerEmail,
 		pinnedUsers: pinnedUsers.split('\n'),
 		cacheRemoteFiles,
+		cacheRemoteSensitiveFiles,
 		enableServiceWorker,
 		swPublicKey,
 		swPrivateKey,

@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -20,6 +20,7 @@ export type Endpoints = {
 	'admin/get-table-stats': { req: TODO; res: TODO; };
 	'admin/invite': { req: TODO; res: TODO; };
 	'admin/logs': { req: TODO; res: TODO; };
+	'admin/meta': { req: TODO; res: TODO; };
 	'admin/reset-password': { req: TODO; res: TODO; };
 	'admin/resolve-abuse-user-report': { req: TODO; res: TODO; };
 	'admin/resync-chart': { req: TODO; res: TODO; };
@@ -57,6 +58,8 @@ export type Endpoints = {
 	'admin/federation/refresh-remote-instance-metadata': { req: TODO; res: TODO; };
 	'admin/federation/remove-all-following': { req: TODO; res: TODO; };
 	'admin/federation/update-instance': { req: TODO; res: TODO; };
+	'admin/invite/create': { req: TODO; res: TODO; };
+	'admin/invite/list': { req: TODO; res: TODO; };
 	'admin/moderators/add': { req: TODO; res: TODO; };
 	'admin/moderators/remove': { req: TODO; res: TODO; };
 	'admin/promo/create': { req: TODO; res: TODO; };
@@ -262,7 +265,16 @@ export type Endpoints = {
 	'drive/files': { req: { folderId?: DriveFolder['id'] | null; type?: DriveFile['type'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFile[]; };
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
-	'drive/files/create': { req: TODO; res: TODO; };
+	'drive/files/create': {
+		req: {
+			folderId?: string,
+			name?: string,
+			comment?: string,
+			isSentisive?: boolean,
+			force?: boolean,
+		};
+		res: DriveFile;
+	};
 	'drive/files/delete': { req: { fileId: DriveFile['id']; }; res: null; };
 	'drive/files/find-by-hash': { req: TODO; res: TODO; };
 	'drive/files/find': { req: { name: string; folderId?: DriveFolder['id'] | null; }; res: DriveFile[]; };
@@ -431,6 +443,12 @@ export type Endpoints = {
 	'i/2fa/remove-key': { req: TODO; res: TODO; };
 	'i/2fa/unregister': { req: TODO; res: TODO; };
 
+	// invite
+	'invite/create': { req: NoParams; res: Invite; };
+	'invite/delete': { req: { inviteId: Invite['id']; }; res: null; };
+	'invite/list': { req: { limit?: number; sinceId?: Invite['id']; untilId?: Invite['id'] }; res: Invite[]; };
+	'invite/limit': { req: NoParams; res: InviteLimit; };
+
 	// messaging
 	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
 	'messaging/messages': { req: { userId?: User['id']; groupId?: UserGroup['id']; limit?: number; sinceId?: MessagingMessage['id']; untilId?: MessagingMessage['id']; markAsRead?: boolean; }; res: MessagingMessage[]; };
@@ -549,6 +567,21 @@ export type Endpoints = {
 	'room/show': { req: TODO; res: TODO; };
 	'room/update': { req: TODO; res: TODO; };
 
+	// signup
+	'signup': {
+		req: {
+			username: string;
+			password: string;
+			host?: string;
+			invitationCode?: string;
+			emailAddress?: string;
+			'hcaptcha-response'?: string;
+			'g-recaptcha-response'?: string;
+			'turnstile-response'?: string;
+		};
+		res: MeSignup | null;
+	};
+
 	// stats
 	'stats': { req: NoParams; res: Stats; };
 
@@ -602,5 +635,4 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
-	'users/stats': { req: TODO; res: TODO; };
 };

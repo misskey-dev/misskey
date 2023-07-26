@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import push from 'web-push';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/json-schema';
+import type { Packed } from '@/misc/json-schema.js';
 import { getNoteSummary } from '@/misc/get-note-summary.js';
 import type { SwSubscription, SwSubscriptionsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -31,7 +31,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 				...body.note,
 				// textをgetNoteSummaryしたものに置き換える
 				text: getNoteSummary(('type' in body && body.type === 'renote') ? body.note.renote as Packed<'Note'> : body.note),
-	
+
 				cw: undefined,
 				reply: undefined,
 				renote: undefined,
@@ -42,7 +42,7 @@ function truncateBody<T extends keyof PushNotificationsTypes>(type: T, body: Pus
 }
 
 @Injectable()
-export class PushNotificationService {
+export class PushNotificationService implements OnApplicationShutdown {
 	private subscriptionsCache: RedisKVCache<SwSubscription[]>;
 
 	constructor(
@@ -69,16 +69,16 @@ export class PushNotificationService {
 	@bindThis
 	public async pushNotification<T extends keyof PushNotificationsTypes>(userId: string, type: T, body: PushNotificationsTypes[T]) {
 		const meta = await this.metaService.fetch();
-	
+
 		if (!meta.enableServiceWorker || meta.swPublicKey == null || meta.swPrivateKey == null) return;
-	
+
 		// アプリケーションの連絡先と、サーバーサイドの鍵ペアの情報を登録
 		push.setVapidDetails(this.config.url,
 			meta.swPublicKey,
 			meta.swPrivateKey);
-	
+
 		const subscriptions = await this.subscriptionsCache.fetch(userId);
-	
+
 		for (const subscription of subscriptions) {
 			if ([
 				'readAllNotifications',
@@ -103,7 +103,7 @@ export class PushNotificationService {
 				//swLogger.info(err.statusCode);
 				//swLogger.info(err.headers);
 				//swLogger.info(err.body);
-	
+
 				if (err.statusCode === 410) {
 					this.swSubscriptionsRepository.delete({
 						userId: userId,
@@ -114,5 +114,15 @@ export class PushNotificationService {
 				}
 			});
 		}
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.subscriptionsCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

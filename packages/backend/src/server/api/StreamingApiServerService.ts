@@ -10,7 +10,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { LocalUser } from '@/models/entities/User';
+import { LocalUser } from '@/models/entities/User.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import MainStreamConnection from './stream/index.js';
 import { ChannelsService } from './stream/ChannelsService.js';
@@ -58,11 +58,21 @@ export class StreamingApiServerService {
 			let user: LocalUser | null = null;
 			let app: AccessToken | null = null;
 
+			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1
+			// Note that the standard WHATWG WebSocket API does not support setting any headers,
+			// but non-browser apps may still be able to set it.
+			const token = request.headers.authorization?.startsWith('Bearer ')
+				? request.headers.authorization.slice(7)
+				: q.get('i');
+
 			try {
-				[user, app] = await this.authenticateService.authenticate(q.get('i'));
+				[user, app] = await this.authenticateService.authenticate(token);
 			} catch (e) {
 				if (e instanceof AuthenticationError) {
-					socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+					socket.write([
+						'HTTP/1.1 401 Unauthorized',
+						'WWW-Authenticate: Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"',
+					].join('\r\n') + '\r\n\r\n');
 				} else {
 					socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n');
 				}
@@ -93,6 +103,13 @@ export class StreamingApiServerService {
 			});
 		});
 
+		const globalEv = new EventEmitter();
+
+		this.redisForSub.on('message', (_: string, data: string) => {
+			const parsed = JSON.parse(data);
+			globalEv.emit('message', parsed);
+		});
+
 		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {
 			stream: MainStreamConnection,
 			user: LocalUser | null;
@@ -102,12 +119,11 @@ export class StreamingApiServerService {
 
 			const ev = new EventEmitter();
 
-			async function onRedisMessage(_: string, data: string): Promise<void> {
-				const parsed = JSON.parse(data);
-				ev.emit(parsed.channel, parsed.message);
+			function onRedisMessage(data: any): void {
+				ev.emit(data.channel, data.message);
 			}
 
-			this.redisForSub.on('message', onRedisMessage);
+			globalEv.on('message', onRedisMessage);
 
 			await stream.listen(ev, connection);
 
@@ -127,27 +143,28 @@ export class StreamingApiServerService {
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				stream.dispose();
-				this.redisForSub.off('message', onRedisMessage);
+				globalEv.off('message', onRedisMessage);
+				this.#connections.delete(connection);
 				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
 			});
 
-			connection.on('message', async (data) => {
+			connection.on('pong', () => {
 				this.#connections.set(connection, Date.now());
-				if (data.toString() === 'ping') {
-					connection.send('pong');
-				}
 			});
 		});
 
+		// 一定期間通信が無いコネクションは実際には切断されている可能性があるため定期的にterminateする
 		this.#cleanConnectionsIntervalId = setInterval(() => {
 			const now = Date.now();
 			for (const [connection, lastActive] of this.#connections.entries()) {
-				if (now - lastActive > 1000 * 60 * 5) {
+				if (now - lastActive > 1000 * 60 * 2) {
 					connection.terminate();
 					this.#connections.delete(connection);
+				} else {
+					connection.ping();
 				}
 			}
-		}, 1000 * 60 * 5);
+		}, 1000 * 60);
 	}
 
 	@bindThis

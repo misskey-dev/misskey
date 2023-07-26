@@ -303,7 +303,6 @@ copyUrl: "Sao chép URL"
 rename: "Đổi tên"
 avatar: "Ảnh đại diện"
 banner: "Ảnh bìa"
-nsfw: "Nhạy cảm"
 whenServerDisconnected: "Khi mất kết nối tới máy chủ"
 disconnectedFromServer: "Mất kết nối tới máy chủ"
 reload: "Tải lại"
@@ -1212,10 +1211,6 @@ _aboutMisskey:
   donate: "Ủng hộ Misskey"
   morePatrons: "Chúng tôi cũng trân trọng sự hỗ trợ của nhiều người đóng góp khác không được liệt kê ở đây. Cảm ơn! 🥰"
   patrons: "Người ủng hộ"
-_nsfw:
-  respect: "Ẩn nội dung NSFW"
-  ignore: "Hiện nội dung NSFW"
-  force: "Ẩn mọi media"
 _instanceTicker:
   none: "Không hiển thị"
   remote: "Hiện cho người dùng từ máy chủ khác"

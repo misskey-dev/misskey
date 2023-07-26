@@ -52,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const activeThreshold = new Date(Date.now() - (1000 * 60 * 60 * 24 * 30)); // 30日
 
+			ps.query = ps.query.trim();
 			const isUsername = ps.query.startsWith('@');
 
 			let users: User[] = [];
@@ -73,12 +74,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				users = await usernameQuery
 					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-					.take(ps.limit)
+					.limit(ps.limit)
 					.skip(ps.offset)
 					.getMany();
 			} else {
 				const nameQuery = this.usersRepository.createQueryBuilder('user')
-					.where(new Brackets(qb => { 
+					.where(new Brackets(qb => {
 						qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(ps.query) + '%' });
 
 						// Also search username if it qualifies as username
@@ -100,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				users = await nameQuery
 					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-					.take(ps.limit)
+					.limit(ps.limit)
 					.skip(ps.offset)
 					.getMany();
 
@@ -126,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 					users = users.concat(await query
 						.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
-						.take(ps.limit)
+						.limit(ps.limit)
 						.skip(ps.offset)
 						.getMany(),
 					);

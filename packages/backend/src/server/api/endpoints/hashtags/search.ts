@@ -41,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.where('tag.name like :q', { q: sqlLikeEscape(ps.query.toLowerCase()) + '%' })
 				.orderBy('tag.count', 'DESC')
 				.groupBy('tag.id')
-				.take(ps.limit)
+				.limit(ps.limit)
 				.skip(ps.offset)
 				.getMany();
 

@@ -87,12 +87,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			const exist = await this.clipNotesRepository.findOneBy({
-				noteId: note.id,
-				clipId: clip.id,
+			const exist = await this.clipNotesRepository.exist({
+				where: {
+					noteId: note.id,
+					clipId: clip.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyClipped);
 			}
 

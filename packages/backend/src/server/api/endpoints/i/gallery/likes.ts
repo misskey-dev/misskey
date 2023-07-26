@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('like.post', 'post');
 
 			const likes = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.galleryLikeEntityService.packMany(likes, me);

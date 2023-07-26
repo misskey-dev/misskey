@@ -4,12 +4,13 @@
 
 	<div :class="$style.main">
 		<XStatusBars/>
-		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu">
+		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
 			<section
 				v-for="ids in layout"
 				:class="$style.section"
 				:style="columns.filter(c => ids.includes(c.id)).some(c => c.flexible) ? { flex: 1, minWidth: '350px' } : { width: Math.max(...columns.filter(c => ids.includes(c.id)).map(c => c.width)) + 'px' }"
+				@wheel.self="onWheel"
 			>
 				<component
 					:is="columnComponents[columns.find(c => c.id === id)!.type] ?? XTlColumn"
@@ -19,6 +20,7 @@
 					:class="$style.column"
 					:column="columns.find(c => c.id === id)"
 					:isStacked="ids.length > 1"
+					@headerWheel="onWheel"
 				/>
 			</section>
 			<div v-if="layout.length === 0" class="_panel" :class="$style.onboarding">
@@ -196,15 +198,14 @@ const onContextmenu = (ev) => {
 	}], ev);
 };
 
-document.documentElement.style.overflowY = 'hidden';
-document.documentElement.style.scrollBehavior = 'auto';
-window.addEventListener('wheel', (ev) => {
-	if (ev.target === columnsEl && ev.deltaX === 0) {
-		columnsEl.scrollLeft += ev.deltaY;
-	} else if (getScrollContainer(ev.target as HTMLElement) == null && ev.deltaX === 0) {
+function onWheel(ev: WheelEvent) {
+	if (ev.deltaX === 0) {
 		columnsEl.scrollLeft += ev.deltaY;
 	}
-});
+}
+
+document.documentElement.style.overflowY = 'hidden';
+document.documentElement.style.scrollBehavior = 'auto';
 
 loadDeck();
 
@@ -253,6 +254,28 @@ async function deleteProfile() {
 	unisonReload();
 }
 </script>
+
+<style>
+html,
+body {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overscroll-behavior: none;
+}
+
+#misskey_app {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+</style>
 
 <style lang="scss" module>
 .transition_menuDrawerBg_enterActive,

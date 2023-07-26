@@ -95,6 +95,7 @@ import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 import { deviceKind } from '@/scripts/device-kind';
 import { miLocalStorage } from '@/local-storage';
 import { CURRENT_STICKY_BOTTOM } from '@/const';
+import { useScrollPositionManager } from '@/nirax';
 
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
@@ -213,7 +214,31 @@ watch($$(navFooter), () => {
 }, {
 	immediate: true,
 });
+
+useScrollPositionManager(() => contents.value.rootEl, mainRouter);
 </script>
+
+<style>
+html,
+body {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: fixed;
+	top: 0;
+	left: 0;
+	overscroll-behavior: none;
+}
+
+#misskey_app {
+	width: 100%;
+	height: 100%;
+	overflow: clip;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+</style>
 
 <style lang="scss" module>
 $ui-font-size: 1em; // TODO: どこかに集約したい

@@ -23,7 +23,7 @@
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+									<img :src="infoImageUrl" class="_ghost"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -40,7 +40,7 @@
 										</div>
 										<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
 											<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
-											<div v-if="item.expiresAt">Period: {{ item.expiresAt.toLocaleString() }}</div>
+											<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
 											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 										</div>
 									</div>
@@ -69,6 +69,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { infoImageUrl } from '@/instance';
 
 const router = useRouter();
 

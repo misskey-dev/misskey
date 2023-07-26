@@ -1,5 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
-import escapeRegexp from 'escape-regexp';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -30,7 +29,7 @@ export type UriParseResult = {
 };
 
 @Injectable()
-export class ApDbResolverService {
+export class ApDbResolverService implements OnApplicationShutdown {
 	private publicKeyCache: MemoryKVCache<UserPublickey | null>;
 	private publicKeyByUserIdCache: MemoryKVCache<UserPublickey | null>;
 
@@ -56,25 +55,18 @@ export class ApDbResolverService {
 
 	@bindThis
 	public parseUri(value: string | IObject): UriParseResult {
-		const uri = getApId(value);
-	
-		// the host part of a URL is case insensitive, so use the 'i' flag.
-		const localRegex = new RegExp('^' + escapeRegexp(this.config.url) + '/(\\w+)/(\\w+)(?:\/(.+))?', 'i');
-		const matchLocal = uri.match(localRegex);
-	
-		if (matchLocal) {
-			return {
-				local: true,
-				type: matchLocal[1],
-				id: matchLocal[2],
-				rest: matchLocal[3],
-			};
-		} else {
-			return {
-				local: false,
-				uri,
-			};
-		}
+		const separator = '/';
+
+		const uri = new URL(getApId(value));
+		if (uri.origin !== this.config.url) return { local: false, uri: uri.href };
+
+		const [, type, id, ...rest] = uri.pathname.split(separator);
+		return {
+			local: true,
+			type,
+			id,
+			rest: rest.length === 0 ? undefined : rest.join(separator),
+		};
 	}
 
 	/**
@@ -107,13 +99,15 @@ export class ApDbResolverService {
 		if (parsed.local) {
 			if (parsed.type !== 'users') return null;
 
-			return await this.cacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
-				id: parsed.id,
-			}).then(x => x ?? undefined)) as LocalUser | undefined ?? null;
+			return await this.cacheService.userByIdCache.fetchMaybe(
+				parsed.id,
+				() => this.usersRepository.findOneBy({ id: parsed.id }).then(x => x ?? undefined),
+			) as LocalUser | undefined ?? null;
 		} else {
-			return await this.cacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
-				uri: parsed.uri,
-			})) as RemoteUser | null;
+			return await this.cacheService.uriPersonCache.fetch(
+				parsed.uri,
+				() => this.usersRepository.findOneBy({ uri: parsed.uri }),
+			) as RemoteUser | null;
 		}
 	}
 
@@ -129,7 +123,7 @@ export class ApDbResolverService {
 			const key = await this.userPublickeysRepository.findOneBy({
 				keyId,
 			});
-	
+
 			if (key == null) return null;
 
 			return key;
@@ -153,13 +147,26 @@ export class ApDbResolverService {
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 
-		if (user == null) return null;
-
-		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null); 
+		const key = await this.publicKeyByUserIdCache.fetch(
+			user.id,
+			() => this.userPublickeysRepository.findOneBy({ userId: user.id }),
+			v => v != null,
+		);
 
 		return {
 			user,
 			key,
 		};
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.publicKeyCache.dispose();
+		this.publicKeyByUserIdCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

@@ -293,7 +293,7 @@ function renote(viaKeyboard = false) {
 				const y = rect.top + (el.offsetHeight / 2);
 				os.popup(MkRippleEffect, { x, y }, {}, 'end');
 			}
-				
+
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {

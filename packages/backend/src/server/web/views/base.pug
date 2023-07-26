@@ -31,11 +31,11 @@ html
 		link(rel='apple-touch-icon' href= icon || '/apple-touch-icon.png')
 		link(rel='manifest' href='/manifest.json')
 		link(rel='search' type='application/opensearchdescription+xml' title=(title || "Misskey") href=`${url}/opensearch.xml`)
-		link(rel='prefetch' href='https://xn--931a.moe/assets/info.jpg')
-		link(rel='prefetch' href='https://xn--931a.moe/assets/not-found.jpg')
-		link(rel='prefetch' href='https://xn--931a.moe/assets/error.jpg')
+		link(rel='prefetch' href=serverErrorImageUrl)
+		link(rel='prefetch' href=infoImageUrl)
+		link(rel='prefetch' href=notFoundImageUrl)
 		//- https://github.com/misskey-dev/misskey/issues/9842
-		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.21.0')
+		link(rel='stylesheet' href='/assets/tabler-icons/tabler-icons.min.css?v2.25.0')
 		link(rel='modulepreload' href=`/vite/${clientEntry.file}`)
 
 		if !config.clientManifestExists
@@ -55,8 +55,8 @@ html
 		block meta
 
 		block og
-			meta(property='og:title'       content= title || 'Misskey') 
-			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨') 
+			meta(property='og:title'       content= title || 'Misskey')
+			meta(property='og:description' content= desc || '✨🌎✨ A interplanetary communication platform ✨🚀✨')
 			meta(property='og:image'       content= img)
 			meta(property='twitter:card'   content='summary')
 
