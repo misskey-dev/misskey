@@ -39,10 +39,18 @@ const ro = new ResizeObserver(entries => {
 	}
 });
 
-function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement) {
+async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
+	if (_DEV_) console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
 	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
 
 	const width = targetEl.clientWidth;
+
+	if (count <= 10 && width < 64) {
+		// widthが64未満はおかしいのでリトライする
+		await new Promise(resolve => setTimeout(resolve, 50));
+		return getClientWidthWithCache(targetEl, containerEl, count + 1);
+	}
+
 	widthCache.set(containerEl, width);
 	ro.observe(containerEl);
 	return width;
@@ -79,7 +87,7 @@ const count = $computed(() => props.mediaList.filter(media => previewable(media)
  * アスペクト比をmediaListWithOneImageAppearanceに基づいていい感じに調整する
  * aspect-ratioではなくheightを使う
  */
-function calcAspectRatio() {
+ async function calcAspectRatio() {
 	if (!gallery.value || !root.value) return;
 
 	let img = props.mediaList[0];
@@ -90,7 +98,7 @@ function calcAspectRatio() {
 	}
 
 	if (!container.value) container.value = getScrollContainer(root.value);
-	const width = container.value ? getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
+	const width = container.value ? await getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
 
 	const heightMin = (ratio: number) => {
 		const imgResizeRatio = width / img.properties.width;
