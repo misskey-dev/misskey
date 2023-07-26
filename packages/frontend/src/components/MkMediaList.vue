@@ -22,6 +22,41 @@
 </div>
 </template>
 
+<script lang="ts">
+/**
+ * アスペクト比算出のためにHTMLElement.clientWidthを使うが、
+ * 大変重たいのでコンテナ要素とメディアリスト幅のペアをキャッシュする
+ * （タイムラインごとにスクロールコンテナが存在する前提だが……）
+ */
+const widthCache = new Map<Element, number>();
+
+/**
+ * コンテナ要素がリサイズされたらキャッシュを削除する
+ */
+const ro = new ResizeObserver(entries => {
+	for (const entry of entries) {
+		widthCache.delete(entry.target);
+	}
+});
+
+async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement, count = 0) {
+	if (_DEV_) console.log('getClientWidthWithCache', { targetEl, containerEl, count, cache: widthCache.get(containerEl) });
+	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
+
+	const width = targetEl.clientWidth;
+
+	if (count <= 10 && width < 64) {
+		// widthが64未満はおかしいのでリトライする
+		await new Promise(resolve => setTimeout(resolve, 50));
+		return getClientWidthWithCache(targetEl, containerEl, count + 1);
+	}
+
+	widthCache.set(containerEl, width);
+	ro.observe(containerEl);
+	return width;
+}
+</script>
+
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
@@ -52,7 +87,7 @@ const count = $computed(() => props.mediaList.filter(media => previewable(media)
  * アスペクト比をmediaListWithOneImageAppearanceに基づいていい感じに調整する
  * aspect-ratioではなくheightを使う
  */
-function calcAspectRatio() {
+ async function calcAspectRatio() {
 	if (!gallery.value || !root.value) return;
 
 	let img = props.mediaList[0];
@@ -62,7 +97,8 @@ function calcAspectRatio() {
 		return;
 	}
 
-	const width = gallery.value.clientWidth;
+	if (!container.value) container.value = getScrollContainer(root.value);
+	const width = container.value ? await getClientWidthWithCache(root.value, container.value) : root.value.clientWidth;
 
 	const heightMin = (ratio: number) => {
 		const imgResizeRatio = width / img.properties.width;
@@ -84,7 +120,6 @@ function calcAspectRatio() {
 			gallery.value.style.height = heightMin(3 / 2);
 			break;
 		default: {
-			if (!container.value) container.value = getScrollContainer(root.value);
 			const maxHeight = Math.max(64, (container.value ? container.value.clientHeight : getBodyScrollHeight()) * 0.5 || 360);
 			if (width === 0 || !maxHeight) return;
 			const imgResizeRatio = width / img.properties.width;
