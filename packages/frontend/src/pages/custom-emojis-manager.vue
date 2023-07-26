@@ -110,7 +110,7 @@ const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
 	} else {
-		selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values()).map(item => item.id);
+		selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values(), item => item.id);
 	}
 };
 
