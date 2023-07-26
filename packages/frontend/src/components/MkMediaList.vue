@@ -22,6 +22,17 @@
 </div>
 </template>
 
+<script lang="ts">
+const widthCache = new Map<HTMLElement, number>();
+
+function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLElement) {
+	if (widthCache.has(containerEl)) return widthCache.get(containerEl)!;
+	const width = targetEl.clientWidth;
+	widthCache.set(containerEl, width);
+	return width;
+}
+</script>
+
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
@@ -62,7 +73,8 @@ function calcAspectRatio() {
 		return;
 	}
 
-	const width = gallery.value.clientWidth;
+	if (!container.value) container.value = getScrollContainer(root.value);
+	const width = container.value ? getClientWidthWithCache(container.value, root.value) : root.value.clientWidth;
 
 	const heightMin = (ratio: number) => {
 		const imgResizeRatio = width / img.properties.width;
@@ -84,7 +96,6 @@ function calcAspectRatio() {
 			gallery.value.style.height = heightMin(3 / 2);
 			break;
 		default: {
-			if (!container.value) container.value = getScrollContainer(root.value);
 			const maxHeight = Math.max(64, (container.value ? container.value.clientHeight : getBodyScrollHeight()) * 0.5 || 360);
 			if (width === 0 || !maxHeight) return;
 			const imgResizeRatio = width / img.properties.width;
