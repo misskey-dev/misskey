@@ -537,7 +537,7 @@ function concatItems(oldItems: MisskeyEntity[]) {
 async function executeQueue() {
 	if (queue.value.size === 0) return;
 	if (isPausingUpdateByExecutingQueue.value) return;
-	if (timelineBackTopBehavior === 'newest') {
+	if (timelineBackTopBehavior.value === 'newest') {
 		// Safariは最新のアイテムにするだけ
 		const newItems = Array.from(queue.value.values()).slice(-1 * props.pagination.limit);
 		unshiftItems(newItems);
