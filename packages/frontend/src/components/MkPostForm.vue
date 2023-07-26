@@ -540,7 +540,7 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
-	for (const { item, i } of Array.from(ev.clipboardData.items).map((item, i) => ({ item, i }))) {
+	for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
 			const lio = file.name.lastIndexOf('.');
