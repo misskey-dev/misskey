@@ -4,8 +4,8 @@ import type { FollowRequestsRepository } from '@/models/index.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { FollowRequest } from '@/models/entities/FollowRequest.js';
-import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class FollowRequestEntityService {

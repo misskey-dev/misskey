@@ -73,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				case '-size': query.orderBy('file.size', 'ASC'); break;
 			}
 
-			const files = await query.take(ps.limit).getMany();
+			const files = await query.limit(ps.limit).getMany();
 
 			return await this.driveFileEntityService.packMany(files, { detail: false, self: true });
 		});

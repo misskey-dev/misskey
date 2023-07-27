@@ -7,10 +7,11 @@ import * as OTPAuth from 'otpauth';
 import { loadConfig } from '../../src/config.js';
 import { signup, api, post, react, startServer, waitFire } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
 
 describe('2要素認証', () => {
 	let app: INestApplicationContext;
-	let alice: unknown;
+	let alice: misskey.entities.MeSignup;
 
 	const config = loadConfig();
 	const password = 'test';
@@ -68,7 +69,7 @@ describe('2要素認証', () => {
 		]));
 
 		// AuthenticatorAssertionResponse.authenticatorData
-		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData 
+		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData
 		const credentialIdLength = Buffer.allocUnsafe(2);
 		credentialIdLength.writeUInt16BE(param.credentialId.length);
 		const authData = Buffer.concat([
@@ -80,7 +81,7 @@ describe('2要素認証', () => {
 			param.credentialId,
 			credentialPublicKey,
 		]);
-		
+
 		return {
 			attestationObject: cbor.encode({
 				fmt: 'none',
@@ -98,7 +99,7 @@ describe('2要素認証', () => {
 			name: param.keyName,
 		};
 	};
-	
+
 	const signinParam = (): {
 		username: string,
 		password: string,
@@ -130,7 +131,7 @@ describe('2要素認証', () => {
 		'hcaptcha-response'?: string | null,
 	} => {
 		// AuthenticatorAssertionResponse.authenticatorData
-		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData 
+		// https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAssertionResponse/authenticatorData
 		const authenticatorData = Buffer.concat([
 			rpIdHash(),
 			Buffer.from([0x05]), // flags(1)
@@ -146,7 +147,7 @@ describe('2要素認証', () => {
 			.update(clientDataJSONBuffer)
 			.digest();
 		const privateKey = crypto.createPrivateKey(pemToSign);
-		const signature = crypto.createSign('SHA256') 
+		const signature = crypto.createSign('SHA256')
 			.update(Buffer.concat([authenticatorData, hashedclientDataJSON]))
 			.sign(privateKey);
 		return {
@@ -186,14 +187,14 @@ describe('2要素認証', () => {
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
 		assert.strictEqual(doneResponse.status, 204);
-		
+
 		const usersShowResponse = await api('/users/show', {
 			username,
 		}, alice);
 		assert.strictEqual(usersShowResponse.status, 200);
 		assert.strictEqual(usersShowResponse.body.twoFactorEnabled, true);
-		
-		const signinResponse = await api('/signin', { 
+
+		const signinResponse = await api('/signin', {
 			...signinParam(),
 			token: otpToken(registerResponse.body.secret),
 		});
@@ -211,7 +212,7 @@ describe('2要素認証', () => {
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
 		assert.strictEqual(doneResponse.status, 204);
-		
+
 		const registerKeyResponse = await api('/i/2fa/register-key', {
 			password,
 		}, alice);
@@ -230,7 +231,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(keyDoneResponse.status, 200);
 		assert.strictEqual(keyDoneResponse.body.id, credentialId.toString('hex'));
 		assert.strictEqual(keyDoneResponse.body.name, keyName);
-		
+
 		const usersShowResponse = await api('/users/show', {
 			username,
 		});
@@ -267,7 +268,7 @@ describe('2要素認証', () => {
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
 		assert.strictEqual(doneResponse.status, 204);
-		
+
 		const registerKeyResponse = await api('/i/2fa/register-key', {
 			password,
 		}, alice);
@@ -282,7 +283,7 @@ describe('2要素認証', () => {
 			credentialId,
 		}), alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
-		
+
 		const passwordLessResponse = await api('/i/2fa/password-less', {
 			value: true,
 		}, alice);
@@ -301,7 +302,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(signinResponse.status, 200);
 		assert.strictEqual(signinResponse.body.i, undefined);
 
-		const signinResponse2 = await api('/signin', { 
+		const signinResponse2 = await api('/signin', {
 			...signinWithSecurityKeyParam({
 				keyName,
 				challengeId: signinResponse.body.challengeId,
@@ -324,7 +325,7 @@ describe('2要素認証', () => {
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
 		assert.strictEqual(doneResponse.status, 204);
-		
+
 		const registerKeyResponse = await api('/i/2fa/register-key', {
 			password,
 		}, alice);
@@ -339,14 +340,14 @@ describe('2要素認証', () => {
 			credentialId,
 		}), alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
-		
+
 		const renamedKey = 'other-key';
 		const updateKeyResponse = await api('/i/2fa/update-key', {
 			name: renamedKey,
 			credentialId: credentialId.toString('hex'),
 		}, alice);
 		assert.strictEqual(updateKeyResponse.status, 200);
-				
+
 		const iResponse = await api('/i', {
 		}, alice);
 		assert.strictEqual(iResponse.status, 200);
@@ -366,7 +367,7 @@ describe('2要素認証', () => {
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
 		assert.strictEqual(doneResponse.status, 204);
-		
+
 		const registerKeyResponse = await api('/i/2fa/register-key', {
 			password,
 		}, alice);
@@ -381,7 +382,7 @@ describe('2要素認証', () => {
 			credentialId,
 		}), alice);
 		assert.strictEqual(keyDoneResponse.status, 200);
-		
+
 		// テストの実行順によっては複数残ってるので全部消す
 		const iResponse = await api('/i', {
 		}, alice);
@@ -400,14 +401,14 @@ describe('2要素認証', () => {
 		assert.strictEqual(usersShowResponse.status, 200);
 		assert.strictEqual(usersShowResponse.body.securityKeys, false);
 
-		const signinResponse = await api('/signin', { 
+		const signinResponse = await api('/signin', {
 			...signinParam(),
 			token: otpToken(registerResponse.body.secret),
 		});
 		assert.strictEqual(signinResponse.status, 200);
 		assert.notEqual(signinResponse.body.i, undefined);
 	});
-	
+
 	test('が設定でき、設定解除できる。（パスワードのみでログインできる。）', async () => {
 		const registerResponse = await api('/i/2fa/register', {
 			password,
@@ -418,7 +419,7 @@ describe('2要素認証', () => {
 			token: otpToken(registerResponse.body.secret),
 		}, alice);
 		assert.strictEqual(doneResponse.status, 204);
-		
+
 		const usersShowResponse = await api('/users/show', {
 			username,
 		});

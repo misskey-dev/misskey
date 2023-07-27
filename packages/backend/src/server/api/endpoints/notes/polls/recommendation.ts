@@ -82,8 +82,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const polls = await query
 				.orderBy('poll.noteId', 'DESC')
-				.take(ps.limit)
-				.skip(ps.offset)
+				.limit(ps.limit)
+				.offset(ps.offset)
 				.getMany();
 
 			if (polls.length === 0) return [];

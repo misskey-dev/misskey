@@ -130,6 +130,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: false,
 	},
+	showPreview: {
+		where: 'deviceAccount',
+		default: false,
+	},
 	statusbars: {
 		where: 'deviceAccount',
 		default: [] as {

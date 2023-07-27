@@ -293,7 +293,7 @@ function renote(viaKeyboard = false) {
 				const y = rect.top + (el.offsetHeight / 2);
 				os.popup(MkRippleEffect, { x, y }, {}, 'end');
 			}
-				
+
 			os.api('notes/create', {
 				renoteId: appearNote.id,
 			}).then(() => {
@@ -320,6 +320,7 @@ function reply(viaKeyboard = false): void {
 	showMovedDialog();
 	os.post({
 		reply: appearNote,
+		channel: appearNote.channel,
 		animation: !viaKeyboard,
 	}, () => {
 		focus();
@@ -595,6 +596,7 @@ if (appearNote.replyId) {
 	padding: 16px;
 	border: dashed 1px var(--renote);
 	border-radius: 8px;
+	overflow: clip;
 }
 
 .channel {
