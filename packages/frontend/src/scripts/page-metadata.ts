@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as misskey from 'misskey-js';
 import { ComputedRef, inject, isRef, onActivated, onMounted, provide, ref, Ref } from 'vue';
 

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" class="mkw-clicker">
 	<template #icon><i class="ti ti-cookie"></i></template>

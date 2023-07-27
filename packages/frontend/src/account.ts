@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';

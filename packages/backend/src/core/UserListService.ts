@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';

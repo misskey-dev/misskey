@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
