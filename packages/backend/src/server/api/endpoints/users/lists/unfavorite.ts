@@ -39,12 +39,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListFavoritesRepository: UserListFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userList = await this.userListsRepository.findOneBy({
-				id: ps.listId,
-				isPublic: true,
+			const userListExist = await this.userListsRepository.exist({
+				where: {
+					id: ps.listId,
+					isPublic: true,
+				},
 			});
 
-			if (userList === null) {
+			if (!userListExist) {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 

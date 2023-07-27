@@ -9,7 +9,10 @@
 				<MkInfo warn>{{ i18n.ts.invitationRequiredToRegister }}</MkInfo>
 			</div>
 
-			<div style="text-align: center;">{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
+			<div style="text-align: center;">
+				<div>{{ i18n.ts.pleaseConfirmBelowBeforeSignup }}</div>
+				<div style="font-weight: bold; margin-top: 0.5em;">{{ i18n.ts.beSureToReadThisAsItIsImportant }}</div>
+			</div>
 
 			<MkFolder v-if="availableServerRules" :defaultOpen="true">
 				<template #label>{{ i18n.ts.serverRules }}</template>
@@ -19,7 +22,7 @@
 					<li v-for="item in instance.serverRules" :class="$style.rule"><div :class="$style.ruleText" v-html="item"></div></li>
 				</ol>
 
-				<MkSwitch v-model="agreeServerRules" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch :modelValue="agreeServerRules" style="margin-top: 16px;" @update:modelValue="updateAgreeServerRules">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
 			<MkFolder v-if="availableTos" :defaultOpen="true">
@@ -28,7 +31,7 @@
 
 				<a :href="instance.tosUrl" class="_link" target="_blank">{{ i18n.ts.termsOfService }} <i class="ti ti-external-link"></i></a>
 
-				<MkSwitch v-model="agreeTos" style="margin-top: 16px;">{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch :modelValue="agreeTos" style="margin-top: 16px;" @update:modelValue="updateAgreeTos">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
 			<MkFolder :defaultOpen="true">
@@ -37,7 +40,7 @@
 
 				<a href="https://misskey-hub.net/docs/notes.html" class="_link" target="_blank">{{ i18n.ts.basicNotesBeforeCreateAccount }} <i class="ti ti-external-link"></i></a>
 
-				<MkSwitch v-model="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree>{{ i18n.ts.agree }}</MkSwitch>
+				<MkSwitch :modelValue="agreeNote" style="margin-top: 16px;" data-cy-signup-rules-notes-agree @update:modelValue="updateAgreeNote">{{ i18n.ts.agree }}</MkSwitch>
 			</MkFolder>
 
 			<div v-if="!agreed" style="text-align: center;">{{ i18n.ts.pleaseAgreeAllToContinue }}</div>
@@ -52,13 +55,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { instance } from '@/instance';
 import { i18n } from '@/i18n';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import * as os from '@/os';
 
 const availableServerRules = instance.serverRules.length > 0;
 const availableTos = instance.tosUrl != null;
@@ -75,6 +79,48 @@ const emit = defineEmits<{
 	(ev: 'cancel'): void;
 	(ev: 'done'): void;
 }>();
+
+async function updateAgreeServerRules(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.serverRules }),
+		});
+		if (confirm.canceled) return;
+		agreeServerRules.value = true;
+	} else {
+		agreeServerRules.value = false;
+	}
+}
+
+async function updateAgreeTos(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.termsOfService }),
+		});
+		if (confirm.canceled) return;
+		agreeTos.value = true;
+	} else {
+		agreeTos.value = false;
+	}
+}
+
+async function updateAgreeNote(v: boolean) {
+	if (v) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts.doYouAgree,
+			text: i18n.t('iHaveReadXCarefullyAndAgree', { x: i18n.ts.basicNotesBeforeCreateAccount }),
+		});
+		if (confirm.canceled) return;
+		agreeNote.value = true;
+	} else {
+		agreeNote.value = false;
+	}
+}
 </script>
 
 <style lang="scss" module>

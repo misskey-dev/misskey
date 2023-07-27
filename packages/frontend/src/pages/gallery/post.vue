@@ -236,6 +236,7 @@ definePageMetadata(computed(() => post ? {
 			border-top: solid 0.5px var(--divider);
 			display: flex;
 			align-items: center;
+			flex-wrap: wrap;
 
 			> .avatar {
 				width: 52px;

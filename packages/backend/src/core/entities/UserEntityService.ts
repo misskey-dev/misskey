@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, Not } from 'typeorm';
 import * as Redis from 'ioredis';
-import Ajv from 'ajv';
+import _Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -31,6 +31,7 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 		Packed<'UserDetailed'> :
 	Packed<'UserLite'>;
 
+const Ajv = _Ajv.default;
 const ajv = new Ajv();
 
 function isLocalUser(user: User): user is LocalUser;
@@ -112,7 +113,7 @@ export class UserEntityService implements OnModuleInit {
 
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
-		
+
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,
 
@@ -229,12 +230,14 @@ export class UserEntityService implements OnModuleInit {
 		/*
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
-		const unread = myAntennas.length > 0 ? await this.antennaNotesRepository.findOneBy({
-			antennaId: In(myAntennas.map(x => x.id)),
-			read: false,
-		}) : null;
+		const isUnread = (myAntennas.length > 0 ? await this.antennaNotesRepository.exist({
+			where: {
+				antennaId: In(myAntennas.map(x => x.id)),
+				read: false,
+			},
+		}) : false);
 
-		return unread != null;
+		return isUnread;
 		*/
 		return false; // TODO
 	}

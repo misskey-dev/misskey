@@ -20,7 +20,7 @@
 	<template v-if="hide">
 		<div :class="$style.hiddenText">
 			<div :class="$style.hiddenTextWrapper">
-				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
+				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
 				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
 				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</div>
@@ -30,7 +30,7 @@
 		<div :class="$style.indicators">
 			<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
-			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);">NSFW</div>
+			<div v-if="image.isSensitive" :class="$style.indicator" style="color: var(--warn);" :title="i18n.ts.sensitive"><i class="ti ti-eye-exclamation"></i></div>
 		</div>
 		<button :class="$style.menu" class="_button" @click.stop="showMenu"><i class="ti ti-dots" style="vertical-align: middle;"></i></button>
 		<i class="ti ti-eye-off" :class="$style.hide" @click.stop="hide = true"></i>
@@ -120,9 +120,9 @@ function showMenu(ev: MouseEvent) {
 	border-radius: 6px;
 	background-color: var(--fg);
 	color: var(--accentLighten);
-	font-size: 14px;
+	font-size: 12px;
 	opacity: .5;
-	padding: 3px 6px;
+	padding: 5px 8px;
 	text-align: center;
 	cursor: pointer;
 	top: 12px;
@@ -153,8 +153,8 @@ function showMenu(ev: MouseEvent) {
 	backdrop-filter: var(--blur, blur(15px));
 	color: #fff;
 	font-size: 0.8em;
-	width: 32px;
-	height: 32px;
+	width: 28px;
+	height: 28px;
 	text-align: center;
 	bottom: 10px;
 	right: 10px;

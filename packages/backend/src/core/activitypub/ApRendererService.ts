@@ -1,7 +1,6 @@
-import { createPublicKey } from 'node:crypto';
+import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -26,7 +25,6 @@ import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
-import type { IIdentifier } from './models/identifier.js';
 
 @Injectable()
 export class ApRendererService {
@@ -63,7 +61,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: any, user: { id: User['id']; host: null }): IAccept {
+	public renderAccept(object: string | IObject, user: { id: User['id']; host: null }): IAccept {
 		return {
 			type: 'Accept',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -72,7 +70,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: LocalUser, target: any, object: any): IAdd {
+	public renderAdd(user: LocalUser, target: string | IObject | undefined, object: string | IObject): IAdd {
 		return {
 			type: 'Add',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -82,7 +80,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAnnounce(object: any, note: Note): IAnnounce {
+	public renderAnnounce(object: string | IObject, note: Note): IAnnounce {
 		const attributedTo = this.userEntityService.genLocalUserUri(note.userId);
 
 		let to: string[] = [];
@@ -133,13 +131,13 @@ export class ApRendererService {
 
 	@bindThis
 	public renderCreate(object: IObject, note: Note): ICreate {
-		const activity = {
+		const activity: ICreate = {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(note.userId),
 			type: 'Create',
 			published: note.createdAt.toISOString(),
 			object,
-		} as ICreate;
+		};
 
 		if (object.to) activity.to = object.to;
 		if (object.cc) activity.cc = object.cc;
@@ -209,7 +207,7 @@ export class ApRendererService {
 	 * @param id Follower|Followee ID
 	 */
 	@bindThis
-	public async renderFollowUser(id: User['id']) {
+	public async renderFollowUser(id: User['id']): Promise<string> {
 		const user = await this.usersRepository.findOneByOrFail({ id: id }) as PartialLocalUser | PartialRemoteUser;
 		return this.userEntityService.getUserUri(user);
 	}
@@ -223,8 +221,8 @@ export class ApRendererService {
 		return {
 			id: requestId ?? `${this.config.url}/follows/${follower.id}/${followee.id}`,
 			type: 'Follow',
-			actor: this.userEntityService.getUserUri(follower)!,
-			object: this.userEntityService.getUserUri(followee)!,
+			actor: this.userEntityService.getUserUri(follower),
+			object: this.userEntityService.getUserUri(followee),
 		};
 	}
 
@@ -264,14 +262,14 @@ export class ApRendererService {
 	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }): Promise<ILike> {
 		const reaction = noteReaction.reaction;
 
-		const object = {
+		const object: ILike = {
 			type: 'Like',
 			id: `${this.config.url}/likes/${noteReaction.id}`,
 			actor: `${this.config.url}/users/${noteReaction.userId}`,
 			object: note.uri ? note.uri : `${this.config.url}/notes/${noteReaction.noteId}`,
 			content: reaction,
 			_misskey_reaction: reaction,
-		} as ILike;
+		};
 
 		if (reaction.startsWith(':')) {
 			const name = reaction.replaceAll(':', '');
@@ -287,7 +285,7 @@ export class ApRendererService {
 	public renderMention(mention: PartialLocalUser | PartialRemoteUser): IApMention {
 		return {
 			type: 'Mention',
-			href: this.userEntityService.getUserUri(mention)!,
+			href: this.userEntityService.getUserUri(mention),
 			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
 		};
 	}
@@ -297,8 +295,8 @@ export class ApRendererService {
 		src: PartialLocalUser | PartialRemoteUser,
 		dst: PartialLocalUser | PartialRemoteUser,
 	): IMove {
-		const actor = this.userEntityService.getUserUri(src)!;
-		const target = this.userEntityService.getUserUri(dst)!;
+		const actor = this.userEntityService.getUserUri(src);
+		const target = this.userEntityService.getUserUri(dst);
 		return {
 			id: `${this.config.url}/moves/${src.id}/${dst.id}`,
 			actor,
@@ -310,10 +308,10 @@ export class ApRendererService {
 
 	@bindThis
 	public async renderNote(note: Note, dive = true): Promise<IPost> {
-		const getPromisedFiles = async (ids: string[]) => {
-			if (!ids || ids.length === 0) return [];
+		const getPromisedFiles = async (ids: string[]): Promise<DriveFile[]> => {
+			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter(item => item != null) as DriveFile[];
+			return ids.map(id => items.find(item => item.id === id)).filter((item): item is DriveFile => item != null);
 		};
 
 		let inReplyTo;
@@ -323,9 +321,9 @@ export class ApRendererService {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
 
 			if (inReplyToNote != null) {
-				const inReplyToUser = await this.usersRepository.findOneBy({ id: inReplyToNote.userId });
+				const inReplyToUserExist = await this.usersRepository.exist({ where: { id: inReplyToNote.userId } });
 
-				if (inReplyToUser != null) {
+				if (inReplyToUserExist) {
 					if (inReplyToNote.uri) {
 						inReplyTo = inReplyToNote.uri;
 					} else {
@@ -375,7 +373,7 @@ export class ApRendererService {
 			id: In(note.mentions),
 		}) : [];
 
-		const hashtagTags = (note.tags ?? []).map(tag => this.renderHashtag(tag));
+		const hashtagTags = note.tags.map(tag => this.renderHashtag(tag));
 		const mentionTags = mentionedUsers.map(u => this.renderMention(u as LocalUser | RemoteUser));
 
 		const files = await getPromisedFiles(note.fileIds);
@@ -451,37 +449,26 @@ export class ApRendererService {
 	@bindThis
 	public async renderPerson(user: LocalUser) {
 		const id = this.userEntityService.genLocalUserUri(user.id);
-		const isSystem = !!user.username.match(/\./);
+		const isSystem = user.username.includes('.');
 
 		const [avatar, banner, profile] = await Promise.all([
-			user.avatarId ? this.driveFilesRepository.findOneBy({ id: user.avatarId }) : Promise.resolve(undefined),
-			user.bannerId ? this.driveFilesRepository.findOneBy({ id: user.bannerId }) : Promise.resolve(undefined),
+			user.avatarId ? this.driveFilesRepository.findOneBy({ id: user.avatarId }) : undefined,
+			user.bannerId ? this.driveFilesRepository.findOneBy({ id: user.bannerId }) : undefined,
 			this.userProfilesRepository.findOneByOrFail({ userId: user.id }),
 		]);
 
-		const attachment: {
+		const attachment = profile.fields.map(field => ({
 			type: 'PropertyValue',
-			name: string,
-			value: string,
-			identifier?: IIdentifier,
-		}[] = [];
-
-		if (profile.fields) {
-			for (const field of profile.fields) {
-				attachment.push({
-					type: 'PropertyValue',
-					name: field.name,
-					value: (field.value != null && field.value.match(/^https?:/))
-						? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
-						: field.value,
-				});
-			}
-		}
+			name: field.name,
+			value: /^https?:/.test(field.value)
+				? `<a href="${new URL(field.value).href}" rel="me nofollow noopener" target="_blank">${new URL(field.value).href}</a>`
+				: field.value,
+		}));
 
 		const emojis = await this.getEmojis(user.emojis);
 		const apemojis = emojis.filter(emoji => !emoji.localOnly).map(emoji => this.renderEmoji(emoji));
 
-		const hashtagTags = (user.tags ?? []).map(tag => this.renderHashtag(tag));
+		const hashtagTags = user.tags.map(tag => this.renderHashtag(tag));
 
 		const tag = [
 			...apemojis,
@@ -490,7 +477,7 @@ export class ApRendererService {
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
-		const person = {
+		const person: any = {
 			type: isSystem ? 'Application' : user.isBot ? 'Service' : 'Person',
 			id,
 			inbox: `${id}/inbox`,
@@ -508,11 +495,11 @@ export class ApRendererService {
 			image: banner ? this.renderImage(banner) : null,
 			tag,
 			manuallyApprovesFollowers: user.isLocked,
-			discoverable: !!user.isExplorable,
+			discoverable: user.isExplorable,
 			publicKey: this.renderKey(user, keypair, '#main-key'),
 			isCat: user.isCat,
 			attachment: attachment.length ? attachment : undefined,
-		} as any;
+		};
 
 		if (user.movedToUri) {
 			person.movedTo = user.movedToUri;
@@ -552,7 +539,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderReject(object: any, user: { id: User['id'] }): IReject {
+	public renderReject(object: string | IObject, user: { id: User['id'] }): IReject {
 		return {
 			type: 'Reject',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -561,7 +548,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderRemove(user: { id: User['id'] }, target: any, object: any): IRemove {
+	public renderRemove(user: { id: User['id'] }, target: string | IObject | undefined, object: string | IObject): IRemove {
 		return {
 			type: 'Remove',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -579,8 +566,8 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUndo(object: any, user: { id: User['id'] }): IUndo {
-		const id = typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
+	public renderUndo(object: string | IObject, user: { id: User['id'] }): IUndo {
+		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
 
 		return {
 			type: 'Undo',
@@ -592,7 +579,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUpdate(object: any, user: { id: User['id'] }): IUpdate {
+	public renderUpdate(object: string | IObject, user: { id: User['id'] }): IUpdate {
 		return {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -625,7 +612,7 @@ export class ApRendererService {
 	@bindThis
 	public addContext<T extends IObject>(x: T): T & { '@context': any; id: string; } {
 		if (typeof x === 'object' && x.id == null) {
-			x.id = `${this.config.url}/${uuid()}`;
+			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
 		return Object.assign({
@@ -658,7 +645,7 @@ export class ApRendererService {
 					vcard: 'http://www.w3.org/2006/vcard/ns#',
 				},
 			],
-		}, x as T & { id: string; });
+		}, x as T & { id: string });
 	}
 
 	@bindThis
@@ -683,13 +670,13 @@ export class ApRendererService {
 	 */
 	@bindThis
 	public renderOrderedCollectionPage(id: string, totalItems: any, orderedItems: any, partOf: string, prev?: string, next?: string) {
-		const page = {
+		const page: any = {
 			id,
 			partOf,
 			type: 'OrderedCollectionPage',
 			totalItems,
 			orderedItems,
-		} as any;
+		};
 
 		if (prev) page.prev = prev;
 		if (next) page.next = next;
@@ -706,7 +693,7 @@ export class ApRendererService {
 	 * @param orderedItems attached objects (optional)
 	 */
 	@bindThis
-	public renderOrderedCollection(id: string | null, totalItems: any, first?: string, last?: string, orderedItems?: IObject[]) {
+	public renderOrderedCollection(id: string, totalItems: number, first?: string, last?: string, orderedItems?: IObject[]) {
 		const page: any = {
 			id,
 			type: 'OrderedCollection',
@@ -722,7 +709,7 @@ export class ApRendererService {
 
 	@bindThis
 	private async getEmojis(names: string[]): Promise<Emoji[]> {
-		if (names == null || names.length === 0) return [];
+		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();
 		const emojis = names.map(name => allEmojis.get(name)).filter(isNotNull);
