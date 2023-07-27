@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
+import type { Webhook, WebhookEventType } from '@/models/entities/Webhook.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -407,7 +407,7 @@ export class QueueService {
 	}
 
 	@bindThis
-	public webhookDeliver(webhook: Webhook, type: typeof webhookEventTypes[number], content: unknown) {
+	public webhookDeliver(webhook: Webhook, type: WebhookEventType, content: unknown) {
 		const data = {
 			type,
 			content,

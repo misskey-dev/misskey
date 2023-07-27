@@ -24,6 +24,11 @@
 			<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
 			<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
 			<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
+
+			<MkTextarea v-if="$i?.isAdmin" v-model="users">
+				<template #label>{{ i18n.ts._webhookSettings._events.usersLabel }}</template>
+				<template #caption>{{ i18n.ts._webhookSettings._events.usersCaption }}</template>
+			</MkTextarea>
 		</div>
 	</FormSection>
 
@@ -42,6 +47,8 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { $i } from '@/account';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 let name = $ref('');
 let url = $ref('');
@@ -54,9 +61,10 @@ let event_reply = $ref(true);
 let event_renote = $ref(true);
 let event_reaction = $ref(true);
 let event_mention = $ref(true);
+let users = $ref('');
 
 async function create(): Promise<void> {
-	const events = [];
+	const events: string[] = [];
 	if (event_follow) events.push('follow');
 	if (event_followed) events.push('followed');
 	if (event_note) events.push('note');
@@ -64,6 +72,7 @@ async function create(): Promise<void> {
 	if (event_renote) events.push('renote');
 	if (event_reaction) events.push('reaction');
 	if (event_mention) events.push('mention');
+	if (users !== '') events.push(...users.split('\n').filter(x => x).map(x => `note@${x}`));
 
 	os.apiWithDialog('i/webhooks/create', {
 		name,

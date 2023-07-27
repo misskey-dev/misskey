@@ -24,6 +24,11 @@
 			<MkSwitch v-model="event_renote">{{ i18n.ts._webhookSettings._events.renote }}</MkSwitch>
 			<MkSwitch v-model="event_reaction">{{ i18n.ts._webhookSettings._events.reaction }}</MkSwitch>
 			<MkSwitch v-model="event_mention">{{ i18n.ts._webhookSettings._events.mention }}</MkSwitch>
+
+			<MkTextarea v-if="$i?.isAdmin" v-model="users">
+				<template #label>{{ i18n.ts._webhookSettings._events.usersLabel }}</template>
+				<template #caption>{{ i18n.ts._webhookSettings._events.usersCaption }}</template>
+			</MkTextarea>
 		</div>
 	</FormSection>
 
@@ -46,6 +51,8 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { useRouter } from '@/router';
+import { $i } from '@/account';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();
 
@@ -69,9 +76,10 @@ let event_reply = $ref(webhook.on.includes('reply'));
 let event_renote = $ref(webhook.on.includes('renote'));
 let event_reaction = $ref(webhook.on.includes('reaction'));
 let event_mention = $ref(webhook.on.includes('mention'));
+let users = $ref((webhook.on as string[]).filter(x => x.startsWith('note@')).map(x => x.substring('note@'.length)).join('\n'));
 
 async function save(): Promise<void> {
-	const events = [];
+	const events: string[] = [];
 	if (event_follow) events.push('follow');
 	if (event_followed) events.push('followed');
 	if (event_note) events.push('note');
@@ -79,6 +87,7 @@ async function save(): Promise<void> {
 	if (event_renote) events.push('renote');
 	if (event_reaction) events.push('reaction');
 	if (event_mention) events.push('mention');
+	if (users !== '') events.push(...users.split('\n').filter(x => x).map(x => `note@${x}`));
 
 	os.apiWithDialog('i/webhooks/update', {
 		name,
@@ -112,3 +121,11 @@ definePageMetadata({
 	icon: 'ti ti-webhook',
 });
 </script>
+
+<style lang="scss" module>
+
+.userItem {
+  display: flex;
+}
+
+</style>
