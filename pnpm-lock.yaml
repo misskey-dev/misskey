@@ -341,9 +341,6 @@ importers:
       sanitize-html:
         specifier: 2.11.0
         version: 2.11.0
-      semver:
-        specifier: 7.5.4
-        version: 7.5.4
       sharp:
         specifier: 0.32.3
         version: 0.32.3
