@@ -46,7 +46,7 @@ export class NotificationService implements OnApplicationShutdown {
 		force = false,
 	) {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
-		
+
 		const latestNotificationIdsRes = await this.redisClient.xrevrange(
 			`notificationTimeline:${userId}`,
 			'+',

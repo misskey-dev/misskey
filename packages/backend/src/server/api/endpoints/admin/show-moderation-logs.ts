@@ -74,7 +74,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.moderationLogsRepository.createQueryBuilder('report'), ps.sinceId, ps.untilId);
 
-			const reports = await query.take(ps.limit).getMany();
+			const reports = await query.limit(ps.limit).getMany();
 
 			return await this.moderationLogEntityService.packMany(reports);
 		});

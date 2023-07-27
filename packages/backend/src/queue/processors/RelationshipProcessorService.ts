@@ -1,16 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type * as Bull from 'bullmq';
 
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import { RelationshipJobData } from '../types.js';
 import type { UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import { RelationshipJobData } from '../types.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
 
 @Injectable()
 export class RelationshipProcessorService {

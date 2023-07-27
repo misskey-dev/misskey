@@ -69,8 +69,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps) => {
-			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
-			if (role == null) {
+			const roleExist = await this.rolesRepository.exist({ where: { id: ps.roleId } });
+			if (!roleExist) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
