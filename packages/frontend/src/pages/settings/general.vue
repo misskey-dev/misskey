@@ -264,6 +264,7 @@ watch([
 	showGapBetweenNotesInTimeline,
 	instanceTicker,
 	overridedDeviceKind,
+	mediaListWithOneImageAppearance,
 ], async () => {
 	await reloadAsk();
 });

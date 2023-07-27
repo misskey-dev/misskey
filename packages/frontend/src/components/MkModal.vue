@@ -437,6 +437,7 @@ defineExpose({
 			margin: auto;
 			padding: 32px;
 			display: flex;
+			overflow: auto;
 
 			@media (max-width: 500px) {
 				padding: 16px;

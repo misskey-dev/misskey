@@ -114,8 +114,7 @@ function waitForDecode() {
 			.then(() => {
 				loaded = true;
 			}, error => {
-				console.error('Error occurred during decoding image', img.value, error);
-				throw Error(error);
+				console.log('Error occurred during decoding image', img.value, error);
 			});
 	} else {
 		loaded = false;

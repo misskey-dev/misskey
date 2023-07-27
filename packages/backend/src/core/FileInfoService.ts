@@ -5,8 +5,7 @@
 import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
 import { join } from 'node:path';
-import * as stream from 'node:stream';
-import * as util from 'node:util';
+import * as stream from 'node:stream/promises';
 import { Injectable } from '@nestjs/common';
 import { FSWatcher } from 'chokidar';
 import * as fileType from 'file-type';
@@ -19,8 +18,6 @@ import { encode } from 'blurhash';
 import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { bindThis } from '@/decorators.js';
-
-const pipeline = util.promisify(stream.pipeline);
 
 export type FileInfo = {
 	size: number;
@@ -375,8 +372,7 @@ export class FileInfoService {
 	 */
 	@bindThis
 	public async getFileSize(path: string): Promise<number> {
-		const getStat = util.promisify(fs.stat);
-		return (await getStat(path)).size;
+		return (await fs.promises.stat(path)).size;
 	}
 
 	/**
@@ -385,7 +381,7 @@ export class FileInfoService {
 	@bindThis
 	private async calcHash(path: string): Promise<string> {
 		const hash = crypto.createHash('md5').setEncoding('hex');
-		await pipeline(fs.createReadStream(path), hash);
+		await stream.pipeline(fs.createReadStream(path), hash);
 		return hash.read();
 	}
 

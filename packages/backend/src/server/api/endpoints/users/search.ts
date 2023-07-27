@@ -79,7 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				users = await usernameQuery
 					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 					.limit(ps.limit)
-					.skip(ps.offset)
+					.offset(ps.offset)
 					.getMany();
 			} else {
 				const nameQuery = this.usersRepository.createQueryBuilder('user')
@@ -106,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				users = await nameQuery
 					.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 					.limit(ps.limit)
-					.skip(ps.offset)
+					.offset(ps.offset)
 					.getMany();
 
 				if (users.length < ps.limit) {
@@ -132,7 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					users = users.concat(await query
 						.orderBy('user.updatedAt', 'DESC', 'NULLS LAST')
 						.limit(ps.limit)
-						.skip(ps.offset)
+						.offset(ps.offset)
 						.getMany(),
 					);
 				}

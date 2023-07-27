@@ -43,7 +43,6 @@ const showContent = $ref(false);
 	display: flex;
 	margin: 0;
 	padding: 0;
-	overflow: clip;
 	font-size: 0.95em;
 }
 
