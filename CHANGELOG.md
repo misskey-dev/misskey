@@ -12,7 +12,7 @@
 
 -->
 
-## 13.14.2-kinel.1
+## 13.14.2-kinel.1 (unreleased)
 
 ### General
 - 招待機能を改善しました
