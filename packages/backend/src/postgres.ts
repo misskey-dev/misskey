@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';

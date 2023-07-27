@@ -1,9 +1,10 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-import * as config from '@/config';
 import { appendQuery } from './url';
+import * as config from '@/config';
 
 export function popout(path: string, w?: HTMLElement) {
 	let url = path.startsWith('http://') || path.startsWith('https://') ? path : config.url + path;

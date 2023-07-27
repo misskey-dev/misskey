@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class PublicReactionsDefaultTrue1683683083083 {
     name = 'PublicReactionsDefaultTrue1683683083083'

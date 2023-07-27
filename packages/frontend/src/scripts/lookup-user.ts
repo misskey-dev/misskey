@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 import * as Acct from 'misskey-js/built/acct';
 import { i18n } from '@/i18n';

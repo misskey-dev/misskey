@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
@@ -74,9 +75,9 @@ export class FetchInstanceMetadataService {
 					return;
 				}
 			}
-	
+
 			this.logger.info(`Fetching metadata of ${instance.host} ...`);
- 
+
 			const [info, dom, manifest] = await Promise.all([
 				this.fetchNodeinfo(instance).catch(() => null),
 				this.fetchDom(instance).catch(() => null),

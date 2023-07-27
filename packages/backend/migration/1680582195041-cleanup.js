@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class cleanup1680582195041 {
     name = 'cleanup1680582195041'
@@ -10,6 +11,6 @@ export class cleanup1680582195041 {
     }
 
     async down(queryRunner) {
-        
+
     }
 }

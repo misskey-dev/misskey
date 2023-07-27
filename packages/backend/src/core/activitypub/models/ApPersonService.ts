@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: syuilo and other misskey contributors
-//
-// SPDX-License-Identifier: AGPL-3.0-only
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
@@ -285,7 +286,7 @@ export class ApPersonService implements OnModuleInit {
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
 			.then(_emojis => _emojis.map(emoji => emoji.name))
 			.catch(err => {
-				this.logger.error(`error occured while fetching user emojis`, { stack: err });
+				this.logger.error('error occured while fetching user emojis', { stack: err });
 				return [];
 			});
 		//#endregion
