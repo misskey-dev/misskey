@@ -610,6 +610,17 @@ myTheme: "Mening rang sxemam"
 backgroundColor: "Fon"
 accentColor: "Urg'u"
 textColor: "Matn"
+currentVersion: "joriy versiya"
+latestVersion: "so'ngi versiya"
+newVersionOfClientAvailable: "Mijozning yangi versiyasi mavjud."
+capacity: "sig'im"
+inUse: "allaqachon band"
+editCode: "kodni tahrirlash"
+apply: "Ilova"
+receiveAnnouncementFromInstance: "Serverdan bildirishnomalarni oling"
+emailNotification: "E-mail xabarlari"
+publish: "Chiqarish"
+inChannelSearch: "Kanal qidirish"
 info: "Haqida"
 user: "Foydalanuvchilar"
 administration: "Administratsiya"
@@ -628,6 +639,8 @@ _achievements:
   _types:
     _viewInstanceChart:
       title: "Tahlilchi"
+_ffVisibility:
+  public: "Chiqarish"
 _ad:
   hide: "Boshqa ko'rsatilmasin"
 _email:
