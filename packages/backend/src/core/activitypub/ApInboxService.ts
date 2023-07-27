@@ -512,7 +512,7 @@ export class ApInboxService {
 		});
 		if (users.length < 1) return 'skip';
 
-		await this.abuseUserReportsRepository.insert({
+		const report = await this.abuseUserReportsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			targetUserId: users[0].id,
@@ -520,7 +520,9 @@ export class ApInboxService {
 			reporterId: actor.id,
 			reporterHost: actor.host,
 			comment: `${activity.content}\n${JSON.stringify(uris, null, 2)}`,
-		});
+		}).then(x => this.abuseUserReportsRepository.findOneByOrFail(x.identifiers[0]));
+
+		this.queueService.createReportAbuseJob(report);
 
 		return 'ok';
 	}

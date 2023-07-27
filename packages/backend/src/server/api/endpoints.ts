@@ -13,6 +13,10 @@ import * as ep___admin_announcements_create from './endpoints/admin/announcement
 import * as ep___admin_announcements_delete from './endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from './endpoints/admin/announcements/update.js';
+import * as ep___admin_abuseReportResolver_create from './endpoints/admin/abuse-report-resolver/create.js';
+import * as ep___admin_abuseReportResolver_update from './endpoints/admin/abuse-report-resolver/update.js';
+import * as ep___admin_abuseReportResolver_delete from './endpoints/admin/abuse-report-resolver/delete.js';
+import * as ep___admin_abuseReportResolver_list from './endpoints/admin/abuse-report-resolver/list.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
@@ -356,6 +360,10 @@ const eps = [
 	['admin/announcements/delete', ep___admin_announcements_delete],
 	['admin/announcements/list', ep___admin_announcements_list],
 	['admin/announcements/update', ep___admin_announcements_update],
+	['admin/abuse-report-resolver/create', ep___admin_abuseReportResolver_create],
+	['admin/abuse-report-resolver/list', ep___admin_abuseReportResolver_list],
+	['admin/abuse-report-resolver/delete', ep___admin_abuseReportResolver_delete],
+	['admin/abuse-report-resolver/update', ep___admin_abuseReportResolver_update],
 	['admin/delete-all-files-of-a-user', ep___admin_deleteAllFilesOfAUser],
 	['admin/drive/clean-remote-files', ep___admin_drive_cleanRemoteFiles],
 	['admin/drive/cleanup', ep___admin_drive_cleanup],

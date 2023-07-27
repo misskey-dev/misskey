@@ -13,6 +13,10 @@ import * as ep___admin_announcements_create from './endpoints/admin/announcement
 import * as ep___admin_announcements_delete from './endpoints/admin/announcements/delete.js';
 import * as ep___admin_announcements_list from './endpoints/admin/announcements/list.js';
 import * as ep___admin_announcements_update from './endpoints/admin/announcements/update.js';
+import * as ep___admin_abuseReportResolver_create from './endpoints/admin/abuse-report-resolver/create.js';
+import * as ep___admin_abuseReportResolver_update from './endpoints/admin/abuse-report-resolver/update.js';
+import * as ep___admin_abuseReportResolver_delete from './endpoints/admin/abuse-report-resolver/delete.js';
+import * as ep___admin_abuseReportResolver_list from './endpoints/admin/abuse-report-resolver/list.js';
 import * as ep___admin_deleteAllFilesOfAUser from './endpoints/admin/delete-all-files-of-a-user.js';
 import * as ep___admin_drive_cleanRemoteFiles from './endpoints/admin/drive/clean-remote-files.js';
 import * as ep___admin_drive_cleanup from './endpoints/admin/drive/cleanup.js';
@@ -358,6 +362,10 @@ const $admin_announcements_create: Provider = { provide: 'ep:admin/announcements
 const $admin_announcements_delete: Provider = { provide: 'ep:admin/announcements/delete', useClass: ep___admin_announcements_delete.default };
 const $admin_announcements_list: Provider = { provide: 'ep:admin/announcements/list', useClass: ep___admin_announcements_list.default };
 const $admin_announcements_update: Provider = { provide: 'ep:admin/announcements/update', useClass: ep___admin_announcements_update.default };
+const $admin_abuseReportResolver_create: Provider = { provide: 'ep:admin/abuse-report-resolver/create', useClass: ep___admin_abuseReportResolver_create.default };
+const $admin_abuseReportResolver_update: Provider = { provide: 'ep:admin/abuse-report-resolver/update', useClass: ep___admin_abuseReportResolver_update.default };
+const $admin_abuseReportResolver_list: Provider = { provide: 'ep:admin/abuse-report-resolver/list', useClass: ep___admin_abuseReportResolver_list.default };
+const $admin_abuseReportResolver_delete: Provider = { provide: 'ep:admin/abuse-report-resolver/delete', useClass: ep___admin_abuseReportResolver_delete.default };
 const $admin_deleteAllFilesOfAUser: Provider = { provide: 'ep:admin/delete-all-files-of-a-user', useClass: ep___admin_deleteAllFilesOfAUser.default };
 const $admin_drive_cleanRemoteFiles: Provider = { provide: 'ep:admin/drive/clean-remote-files', useClass: ep___admin_drive_cleanRemoteFiles.default };
 const $admin_drive_cleanup: Provider = { provide: 'ep:admin/drive/cleanup', useClass: ep___admin_drive_cleanup.default };
@@ -707,6 +715,10 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_announcements_delete,
 		$admin_announcements_list,
 		$admin_announcements_update,
+		$admin_abuseReportResolver_create,
+		$admin_abuseReportResolver_delete,
+		$admin_abuseReportResolver_list,
+		$admin_abuseReportResolver_update,
 		$admin_deleteAllFilesOfAUser,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
@@ -1050,6 +1062,10 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$admin_announcements_delete,
 		$admin_announcements_list,
 		$admin_announcements_update,
+		$admin_abuseReportResolver_create,
+		$admin_abuseReportResolver_delete,
+		$admin_abuseReportResolver_list,
+		$admin_abuseReportResolver_update,
 		$admin_deleteAllFilesOfAUser,
 		$admin_drive_cleanRemoteFiles,
 		$admin_drive_cleanup,
