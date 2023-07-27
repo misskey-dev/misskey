@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['reactions', 'notes'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

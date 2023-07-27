@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['gallery'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

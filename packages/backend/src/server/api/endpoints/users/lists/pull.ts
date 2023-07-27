@@ -11,6 +11,7 @@ export const meta = {
 	tags: ['lists', 'users'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

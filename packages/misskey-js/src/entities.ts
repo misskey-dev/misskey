@@ -53,6 +53,7 @@ export type UserDetailed = UserLite & {
 	isModerator: boolean;
 	isMuted: boolean;
 	isSilenced: boolean;
+	isLimited: boolean;
 	isSuspended: boolean;
 	lang: string | null;
 	lastFetchedAt?: DateString;
@@ -410,7 +411,7 @@ export type Announcement = {
 	imageUrl: string | null;
 	isRead?: boolean;
 	isPrivate: boolean;
-	closeDuration: number; 
+	closeDuration: number;
 };
 
 export type Antenna = {

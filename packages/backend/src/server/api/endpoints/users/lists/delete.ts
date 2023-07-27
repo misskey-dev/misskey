@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['lists'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canDeleteContent',
 
 	kind: 'write:account',
 

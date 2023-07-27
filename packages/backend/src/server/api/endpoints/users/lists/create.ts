@@ -12,6 +12,7 @@ export const meta = {
 	tags: ['lists'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canCreateContent',
 
 	prohibitMoved: true,
 

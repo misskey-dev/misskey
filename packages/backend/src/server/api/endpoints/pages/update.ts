@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

@@ -17,6 +17,7 @@ export const meta = {
 	},
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	kind: 'write:blocks',
 

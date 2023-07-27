@@ -43,6 +43,30 @@
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canCreateContent, 'canCreateContent'])">
+							<template #label>{{ i18n.ts._role._options.canCreateContent }}</template>
+							<template #suffix>{{ policies.canCreateContent ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canCreateContent">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canUpdateContent, 'canUpdateContent'])">
+							<template #label>{{ i18n.ts._role._options.canUpdateContent }}</template>
+							<template #suffix>{{ policies.canUpdateContent ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canUpdateContent">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.canDeleteContent, 'canDeleteContent'])">
+							<template #label>{{ i18n.ts._role._options.canDeleteContent }}</template>
+							<template #suffix>{{ policies.canDeleteContent ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.canDeleteContent">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
 							<template #label>{{ i18n.ts._role._options.canInvite }}</template>
 							<template #suffix>{{ policies.canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -57,7 +81,7 @@
 							<MkInput v-model="policies.inviteLimit" type="number">
 							</MkInput>
 						</MkFolder>
-						
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimitCycle, 'inviteLimitCycle'])">
 							<template #label>{{ i18n.ts._role._options.inviteLimitCycle }}</template>
 							<template #suffix>{{ policies.inviteLimitCycle + i18n.ts._time.minute }}</template>

@@ -351,8 +351,9 @@ export class UserEntityService implements OnModuleInit {
 			(profile.ffVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
+		const isModerator = isMe && opts.detail ? await this.roleService.isModerator(user) : null;
+		const isAdmin = isMe && opts.detail ? await this.roleService.isAdministrator(user) : null;
+		const policies = opts.detail ? await this.roleService.getUserPolicies(user.id) : null;
 
 		const falsy = opts.detail ? false : undefined;
 
@@ -396,7 +397,8 @@ export class UserEntityService implements OnModuleInit {
 				bannerUrl: user.bannerUrl,
 				bannerBlurhash: user.bannerBlurhash,
 				isLocked: user.isLocked,
-				isSilenced: this.roleService.getUserPolicies(user.id).then(r => !r.canPublicNote),
+				isSilenced: !policies?.canPublicNote,
+				isLimited: !(policies?.canCreateContent && policies.canUpdateContent && policies.canDeleteContent),
 				isSuspended: user.isSuspended ?? falsy,
 				description: profile!.description,
 				location: profile!.location,
@@ -473,7 +475,7 @@ export class UserEntityService implements OnModuleInit {
 				emailNotificationTypes: profile!.emailNotificationTypes,
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
-				policies: this.roleService.getUserPolicies(user.id),
+				policies: policies,
 			} : {}),
 
 			...(opts.includeSecrets ? {

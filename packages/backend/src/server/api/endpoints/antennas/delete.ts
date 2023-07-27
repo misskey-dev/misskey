@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['antennas'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canDeleteContent',
 
 	kind: 'write:account',
 

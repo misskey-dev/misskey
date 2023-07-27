@@ -99,6 +99,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		isModerator: false,
 		isMuted: false,
 		isSilenced: false,
+		isLimited: false,
 		isSuspended: false,
 		lang: 'en',
 		location: 'Fediverse',

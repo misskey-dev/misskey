@@ -12,6 +12,7 @@ export const meta = {
 	tags: ['pages'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canCreateContent',
 
 	prohibitMoved: true,
 

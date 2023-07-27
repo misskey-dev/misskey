@@ -2770,6 +2770,7 @@ type UserDetailed = UserLite & {
     isModerator: boolean;
     isMuted: boolean;
     isSilenced: boolean;
+    isLimited: boolean;
     isSuspended: boolean;
     lang: string | null;
     lastFetchedAt?: DateString;

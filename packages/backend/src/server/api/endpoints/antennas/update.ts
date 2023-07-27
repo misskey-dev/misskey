@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['antennas'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

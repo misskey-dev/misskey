@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

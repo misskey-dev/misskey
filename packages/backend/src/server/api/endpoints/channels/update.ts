@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['channels'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	kind: 'write:channels',
 

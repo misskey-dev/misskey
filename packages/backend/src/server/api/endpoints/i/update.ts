@@ -30,6 +30,7 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	kind: 'write:account',
 

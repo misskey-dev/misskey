@@ -13,6 +13,8 @@ export const meta = {
 	tags: ['account'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
+
 	prohibitMoved: true,
 
 	kind: 'write:mutes',

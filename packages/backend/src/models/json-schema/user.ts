@@ -121,6 +121,10 @@ export const packedUserDetailedNotMeOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		isLimited: {
+			type: 'boolean',
+			nullable: false, optional: false,
+		},
 		isSuspended: {
 			type: 'boolean',
 			nullable: false, optional: false,

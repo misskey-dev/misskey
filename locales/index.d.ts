@@ -1490,6 +1490,9 @@ export interface Locale {
             "gtlAvailable": string;
             "ltlAvailable": string;
             "canPublicNote": string;
+            "canCreateContent": string;
+            "canUpdateContent": string;
+            "canDeleteContent": string;
             "canInvite": string;
             "inviteLimit": string;
             "inviteLimitCycle": string;

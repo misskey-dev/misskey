@@ -12,9 +12,10 @@ import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
-	requireCredential: true,
-
 	secure: true,
+
+	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	limit: {
 		duration: ms('1hour'),

@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['notes', 'favorites'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	kind: 'write:favorites',
 

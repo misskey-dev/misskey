@@ -10,6 +10,7 @@ export const meta = {
 	tags: ['flash'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canCreateContent',
 
 	prohibitMoved: true,
 

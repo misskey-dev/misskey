@@ -12,7 +12,10 @@ import { UserListService } from '@/core/UserListService.js';
 
 export const meta = {
 	requireCredential: true,
+	requireRolePolicy: 'canCreateContent',
+
 	prohibitMoved: true,
+
 	res: {
 		type: 'object',
 		optional: false, nullable: false,

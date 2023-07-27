@@ -18,6 +18,7 @@ export const meta = {
 	description: 'Request the server to download a new drive file from the specified URL.',
 
 	requireCredential: true,
+	requireRolePolicy: 'canCreateContent',
 
 	prohibitMoved: true,
 

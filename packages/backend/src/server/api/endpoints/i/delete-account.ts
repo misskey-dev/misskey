@@ -7,6 +7,7 @@ import { DI } from '@/di-symbols.js';
 
 export const meta = {
 	requireCredential: true,
+	requireRolePolicy: 'canDeleteContent',
 
 	secure: true,
 } as const;

@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['account', 'notes'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	kind: 'write:account',
 

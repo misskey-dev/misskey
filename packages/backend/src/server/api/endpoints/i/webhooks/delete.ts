@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['webhooks'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canDeleteContent',
 
 	kind: 'write:account',
 

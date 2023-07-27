@@ -11,6 +11,7 @@
 						<span class="sub"><span class="acct _monospace">@{{ acct(user) }}</span></span>
 						<span class="state">
 							<span v-if="suspended" class="suspended">Suspended</span>
+							<span v-if="limited" class="limited">Limited</span>
 							<span v-if="silenced" class="silenced">Silenced</span>
 							<span v-if="moderator" class="moderator">Moderator</span>
 						</span>
@@ -219,6 +220,7 @@ let ips = $ref(null);
 let ap = $ref(null);
 let moderator = $ref(false);
 let silenced = $ref(false);
+let limited = $ref(false);
 let suspended = $ref(false);
 let moderationNote = $ref('');
 const filesPagination = {
@@ -244,6 +246,7 @@ function createFetcher() {
 			ips = _ips;
 			moderator = info.isModerator;
 			silenced = info.isSilenced;
+			limited = info.isLimited;
 			suspended = info.isSuspended;
 			moderationNote = info.moderationNote;
 
@@ -485,7 +488,7 @@ definePageMetadata(computed(() => ({
 				display: none;
 			}
 
-			> .suspended, > .silenced, > .moderator {
+			> .suspended, > .limited, > .silenced, > .moderator {
 				display: inline-block;
 				border: solid 1px;
 				border-radius: 6px;
@@ -494,6 +497,11 @@ definePageMetadata(computed(() => ({
 			}
 
 			> .suspended {
+				color: var(--error);
+				border-color: var(--error);
+			}
+
+			> .limited {
 				color: var(--error);
 				border-color: var(--error);
 			}

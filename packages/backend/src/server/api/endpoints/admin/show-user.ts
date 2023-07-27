@@ -51,8 +51,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('user not found');
 			}
 
+			const policies = await this.roleService.getUserPolicies(user.id);
 			const isModerator = await this.roleService.isModerator(user);
-			const isSilenced = !(await this.roleService.getUserPolicies(user.id)).canPublicNote;
+			const isLimited = !(policies.canCreateContent && policies.canUpdateContent && policies.canDeleteContent);
+			const isSilenced = !policies.canPublicNote;
 
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
 			if (!await this.roleService.isAdministrator(_me) && await this.roleService.isAdministrator(user)) {
@@ -80,6 +82,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				mutingNotificationTypes: profile.mutingNotificationTypes,
 				isModerator: isModerator,
 				isSilenced: isSilenced,
+				isLimited: isLimited,
 				isSuspended: user.isSuspended,
 				lastActiveDate: user.lastActiveDate,
 				moderationNote: profile.moderationNote ?? '',

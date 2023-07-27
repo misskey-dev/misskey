@@ -8,6 +8,7 @@ export const meta = {
 	tags: ['clip'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	prohibitMoved: true,
 

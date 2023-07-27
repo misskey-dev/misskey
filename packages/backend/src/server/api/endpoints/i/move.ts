@@ -23,7 +23,10 @@ export const meta = {
 
 	secure: true,
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
+
 	prohibitMoved: true,
+
 	limit: {
 		duration: ms('1day'),
 		max: 5,

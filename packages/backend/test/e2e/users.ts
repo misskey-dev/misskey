@@ -91,6 +91,7 @@ describe('ユーザー', () => {
 			bannerBlurhash: user.bannerBlurhash,
 			isLocked: user.isLocked,
 			isSilenced: user.isSilenced,
+			isLimited: user.isLimited,
 			isSuspended: user.isSuspended,
 			description: user.description,
 			location: user.location,
@@ -356,6 +357,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.bannerBlurhash, null);
 		assert.strictEqual(response.isLocked, false);
 		assert.strictEqual(response.isSilenced, false);
+		assert.strictEqual(response.isLimited, false);
 		assert.strictEqual(response.isSuspended, false);
 		assert.strictEqual(response.description, null);
 		assert.strictEqual(response.location, null);

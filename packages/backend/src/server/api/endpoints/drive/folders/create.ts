@@ -12,6 +12,7 @@ export const meta = {
 	tags: ['drive'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canCreateContent',
 
 	kind: 'write:drive',
 

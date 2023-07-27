@@ -9,6 +9,7 @@ export const meta = {
 	tags: ['lists'],
 
 	requireCredential: true,
+	requireRolePolicy: 'canUpdateContent',
 
 	kind: 'write:account',
 
