@@ -1,11 +1,6 @@
 name: Storybook
 
-on:
-  push:
-    branches:
-      - master
-      - develop
-  pull_request_target:
+on: {}
 
 jobs:
   build:
