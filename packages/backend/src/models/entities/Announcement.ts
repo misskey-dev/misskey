@@ -33,6 +33,13 @@ export class Announcement {
 	})
 	public imageUrl: string | null;
 
+	// UIに表示する際の並び順用(大きいほど先頭)
+	@Index()
+	@Column('integer', {
+		default: 0,
+	})
+	public displayOrder: number;
+
 	@Index()
 	@Column('varchar', {
 		...id(),

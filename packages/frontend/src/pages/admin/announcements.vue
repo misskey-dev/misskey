@@ -19,7 +19,7 @@
 					</div>
 				</MkFolder>
 			</MkFolder>
-			<section v-for="announcement in announcements" class="">
+			<section v-for="announcement in announcements" :key="announcement.id">
 				<div class="_panel _gaps_m" style="padding: 24px;">
 					<MkInput ref="announceTitleEl" v-model="announcement.title" :large="false">
 						<template #label>{{ i18n.ts.title }}&nbsp;<button v-tooltip="i18n.ts.emoji" :class="['_button']" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button></template>
@@ -29,6 +29,9 @@
 					</MkTextarea>
 					<MkInput v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
+					</MkInput>
+					<MkInput v-model="announcement.displayOrder" type="number">
+						<template #label>{{ i18n.ts.displayOrder }}</template>
 					</MkInput>
 					<MkInput v-model="announcement.closeDuration" type="number">
 						<template #label>{{ i18n.ts.dialogCloseDuration }}</template>
@@ -43,6 +46,7 @@
 					</div>
 				</div>
 			</section>
+			<MkButton v-if="hasMore" :class="$style.more" :disabled="!hasMore" primary rounded @click="fetch()">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -61,33 +65,31 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 
+const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+const user = ref<UserLite | null>(null);
+const offset = ref(0);
+const hasMore = ref(false);
+
 let announcements: any[] = $ref([]);
 
-const user = ref<UserLite>(null);
-const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+function insertEmoji(ev: MouseEvent): void {
+	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, announceTitleEl);
+}
 
-function selectUserFilter() {
+function selectUserFilter(): void {
 	os.selectUser().then(_user => {
 		user.value = _user;
 	});
 }
 
-function editUser(an) {
+function editUser(announcement): void {
 	os.selectUser().then(_user => {
-		an.userId = _user.id;
-		an.user = _user;
+		announcement.userId = _user.id;
+		announcement.user = _user;
 	});
 }
 
-async function insertEmoji(ev: MouseEvent) {
-	os.openEmojiPicker(ev.currentTarget ?? ev.target, {}, announceTitleEl);
-}
-
-os.api('admin/announcements/list').then(announcementResponse => {
-	announcements = announcementResponse;
-});
-
-function add() {
+function add(): void {
 	announcements.unshift({
 		id: null,
 		title: '',
@@ -95,11 +97,12 @@ function add() {
 		imageUrl: null,
 		userId: null,
 		user: null,
+		displayOrder: 0,
 		closeDuration: 10,
 	});
 }
 
-function remove(announcement) {
+function remove(announcement): void {
 	os.confirm({
 		type: 'warning',
 		text: i18n.t('removeAreYouSure', { x: announcement.title }),
@@ -110,14 +113,14 @@ function remove(announcement) {
 	});
 }
 
-function save(announcement) {
+function save(announcement): void {
 	if (announcement.id == null) {
 		os.api('admin/announcements/create', announcement).then(() => {
 			os.alert({
 				type: 'success',
 				text: i18n.ts.saved,
 			});
-			refresh();
+			fetch(true);
 		}).catch(err => {
 			os.alert({
 				type: 'error',
@@ -139,15 +142,26 @@ function save(announcement) {
 	}
 }
 
-function refresh() {
-	os.api('admin/announcements/list', { userId: user.value?.id }).then(announcementResponse => {
-		announcements = announcementResponse;
+function fetch(resetOffset = false): void {
+	if (resetOffset) {
+		announcements = [];
+		offset.value = 0;
+	}
+
+	os.api('admin/announcements/list', {
+		offsetMode: true,
+		offset: offset.value,
+		limit: 10,
+		userId: user.value?.id,
+	}).then(announcementResponse => {
+		announcements = announcements.concat(announcementResponse);
+		hasMore.value = announcementResponse?.length === 10;
+		offset.value += announcements.length;
 	});
 }
 
-watch(user, refresh);
-
-refresh();
+watch(user, () => fetch(true));
+fetch();
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
@@ -163,3 +177,10 @@ definePageMetadata({
 	icon: 'ti ti-speakerphone',
 });
 </script>
+
+<style lang="scss" module>
+.more {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

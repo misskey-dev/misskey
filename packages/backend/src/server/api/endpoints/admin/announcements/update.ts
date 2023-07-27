@@ -26,6 +26,7 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 0 },
+		displayOrder: { type: 'number' },
 		userId: { type: 'string', nullable: true, format: 'misskey:id' },
 		closeDuration: { type: 'number', nullable: false },
 	},
@@ -57,6 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				text: ps.text,
 				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
 				imageUrl: ps.imageUrl || null,
+				displayOrder: ps.displayOrder,
 				userId: ps.userId ?? null,
 				closeDuration: ps.closeDuration,
 			});
