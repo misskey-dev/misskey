@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Brackets } from 'typeorm';
 import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -59,6 +60,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
 			if (ps.channelId) query.andWhere('note.channelId = :channelId', { channelId: ps.channelId });
+
+			if (!ps.channelId) {
+				// featured for welcome page. filter some notes
+				query.andWhere('note.channelId IS NULL', { channelId: ps.channelId });
+				query.andWhere(
+					new Brackets(qb => {
+						qb.where('note.text NOT LIKE \'%おはよう%\'')
+							.andWhere('note.text NOT LIKE \'%:ohayo_nirila_misskey:%\'')
+							.orWhere('note.fileIds != \'{}\'');
+					}),
+				);
+			}
 
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
