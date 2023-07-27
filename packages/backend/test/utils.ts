@@ -95,7 +95,7 @@ const request = async (path: string, params: any, me?: UserToken): Promise<{ sta
 	};
 };
 
-const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
+export const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
