@@ -166,7 +166,8 @@ let poll = $ref<{
 	expiredAfter: string | null;
 } | null>(null);
 let useCw = $ref(false);
-let showPreview = $ref(false);
+let showPreview = $ref(defaultStore.state.showPreview);
+watch($$(showPreview), () => defaultStore.set('showPreview', showPreview));
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
 let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
@@ -540,7 +541,7 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
-	for (const { item, i } of Array.from(ev.clipboardData.items).map((item, i) => ({ item, i }))) {
+	for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
 			const lio = file.name.lastIndexOf('.');
@@ -907,7 +908,6 @@ defineExpose({
 	display: flex;
 	flex-wrap: nowrap;
 	gap: 4px;
-	margin-bottom: -10px;
 }
 
 .headerLeft {
@@ -1025,7 +1025,7 @@ defineExpose({
 }
 
 .targetNote {
-	padding: 10px 20px 16px 20px;
+	padding: 0 20px 16px 20px;
 }
 
 .withQuote {
