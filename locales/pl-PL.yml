@@ -1122,6 +1122,9 @@ _permissions:
 _auth:
   shareAccess: "Czy chcesz autoryzować „{name}” do dostępu do tego konta?"
   permissionAsk: "Ta aplikacja wymaga następujących uprawnień:"
+_antennaSources:
+  users: "Wpisy określonych użytkowników"
+  userList: "Wpisy z określonej listy użytkowników"
 _weekday:
   sunday: "Niedziela"
   monday: "Poniedziałek"
@@ -1154,8 +1157,10 @@ _widgets:
   serverMetric: "Metryka serwera"
   aiscript: "Konsola AiScript"
   aichan: "Ai"
+  userList: "Lista użytkowników"
   _userList:
     chooseList: "Wybierz listę"
+  clicker: "Clicker"
 _cw:
   hide: "Ukryj"
   show: "Załaduj więcej"
@@ -1187,10 +1192,16 @@ _visibility:
   public: "Publiczny"
   publicDescription: "Twój wpis pojawi się w publicznych osiach czasu"
   home: "Strona główna"
+  homeDescription: "Publikuj tylko na głównej osi czasu"
   followers: "Obserwujący"
+  followersDescription: "Widoczne tylko dla obserwujących"
   specified: "Bezpośredni"
   specifiedDescription: "Napisz tylko określonym użytkownikom"
+  disableFederationDescription: "Nie przesyłaj do innych instancji"
 _postForm:
+  replyPlaceholder: "Odpowiedz na ten wpis..."
+  quotePlaceholder: "Zacytuj ten wpis…"
+  channelPlaceholder: "Publikuj na kanale..."
   _placeholders:
     a: "Co się dzieje?"
     b: "Co się wydarzyło?"
