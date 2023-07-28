@@ -1130,8 +1130,8 @@ _achievements:
   earnedAt: "ได้รับเมื่อ"
   _types:
     _notes1:
-      title: "เพียงแค่ตั้งค่า msky ของฉัน"
-      description: "โพสต์โน้ตครั้งแรกของคุณ"
+      title: "just setting up my msky"
+      description: "โพสต์โน้ตแรกของคุณ"
       flavor: "ขอให้มีช่วงเวลาที่ดีกับ Misskey นะคะ!"
     _notes10:
       title: "โน้ตบางอย่าง"
