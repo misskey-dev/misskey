@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { In, MoreThan, Not } from 'typeorm';
@@ -79,7 +84,7 @@ export class ExportFollowingProcessorService {
 					break;
 				}
 
-				cursor = followings[followings.length - 1].id;
+				cursor = followings.at(-1)?.id ?? null;
 
 				for (const following of followings) {
 					const u = await this.usersRepository.findOneBy({ id: following.followeeId });

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AccessTokensRepository } from '@/models/index.js';
@@ -28,9 +33,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const token = await this.accessTokensRepository.findOneBy({ id: ps.tokenId });
+			const tokenExist = await this.accessTokensRepository.exist({ where: { id: ps.tokenId } });
 
-			if (token) {
+			if (tokenExist) {
 				await this.accessTokensRepository.delete({
 					id: ps.tokenId,
 					userId: me.id,

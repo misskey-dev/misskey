@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="el" class="hiyeyicy" :class="{ wide: !narrow }">
 	<div v-if="!narrow || currentPage?.route.name == null" class="nav">
@@ -80,7 +85,7 @@ const menuDef = $computed(() => [{
 	}, ...(instance.disableRegistration ? [{
 		type: 'button',
 		icon: 'ti ti-user-plus',
-		text: i18n.ts.invite,
+		text: i18n.ts.createInviteCode,
 		action: invite,
 	}] : [])],
 }, {
@@ -95,6 +100,11 @@ const menuDef = $computed(() => [{
 		text: i18n.ts.users,
 		to: '/admin/users',
 		active: currentPage?.route.name === 'users',
+	}, {
+		icon: 'ti ti-user-plus',
+		text: i18n.ts.invite,
+		to: '/admin/invites',
+		active: currentPage?.route.name === 'invites',
 	}, {
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,
@@ -240,10 +250,10 @@ provideMetadataReceiver((info) => {
 });
 
 const invite = () => {
-	os.api('invite').then(x => {
+	os.api('admin/invite/create').then(x => {
 		os.alert({
 			type: 'info',
-			text: x.code,
+			text: x?.[0].code,
 		});
 	}).catch(err => {
 		os.alert({

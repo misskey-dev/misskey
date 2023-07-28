@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { Meta } from '@/models/entities/Meta.js';
@@ -43,6 +48,7 @@ export const paramDef = {
 		defaultLightTheme: { type: 'string', nullable: true },
 		defaultDarkTheme: { type: 'string', nullable: true },
 		cacheRemoteFiles: { type: 'boolean' },
+		cacheRemoteSensitiveFiles: { type: 'boolean' },
 		emailRequiredForSignup: { type: 'boolean' },
 		enableHcaptcha: { type: 'boolean' },
 		hcaptchaSiteKey: { type: 'string', nullable: true },
@@ -191,6 +197,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.cacheRemoteFiles !== undefined) {
 				set.cacheRemoteFiles = ps.cacheRemoteFiles;
+			}
+
+			if (ps.cacheRemoteSensitiveFiles !== undefined) {
+				set.cacheRemoteSensitiveFiles = ps.cacheRemoteSensitiveFiles;
 			}
 
 			if (ps.emailRequiredForSignup !== undefined) {

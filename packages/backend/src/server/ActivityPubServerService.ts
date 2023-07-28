@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IncomingMessage } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import fastifyAccepts from '@fastify/accepts';
@@ -181,7 +186,7 @@ export class ActivityPubServerService {
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
-					cursor: followings[followings.length - 1].id,
+					cursor: followings.at(-1)!.id,
 				})}` : undefined,
 			);
 
@@ -189,7 +194,11 @@ export class ActivityPubServerService {
 			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
-			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followersCount, `${partOf}?page=true`);
+			const rendered = this.apRendererService.renderOrderedCollection(
+				partOf,
+				user.followersCount,
+				`${partOf}?page=true`,
+			);
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
 			return (this.apRendererService.addContext(rendered));
@@ -269,7 +278,7 @@ export class ActivityPubServerService {
 				undefined,
 				inStock ? `${partOf}?${url.query({
 					page: 'true',
-					cursor: followings[followings.length - 1].id,
+					cursor: followings.at(-1)!.id,
 				})}` : undefined,
 			);
 
@@ -277,7 +286,11 @@ export class ActivityPubServerService {
 			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
-			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.followingCount, `${partOf}?page=true`);
+			const rendered = this.apRendererService.renderOrderedCollection(
+				partOf,
+				user.followingCount,
+				`${partOf}?page=true`,
+			);
 			reply.header('Cache-Control', 'public, max-age=180');
 			this.setResponseType(request, reply);
 			return (this.apRendererService.addContext(rendered));
@@ -310,7 +323,10 @@ export class ActivityPubServerService {
 
 		const rendered = this.apRendererService.renderOrderedCollection(
 			`${this.config.url}/users/${userId}/collections/featured`,
-			renderedNotes.length, undefined, undefined, renderedNotes,
+			renderedNotes.length,
+			undefined,
+			undefined,
+			renderedNotes,
 		);
 
 		reply.header('Cache-Control', 'public, max-age=180');
@@ -387,7 +403,7 @@ export class ActivityPubServerService {
 				})}` : undefined,
 				notes.length ? `${partOf}?${url.query({
 					page: 'true',
-					until_id: notes[notes.length - 1].id,
+					until_id: notes.at(-1)!.id,
 				})}` : undefined,
 			);
 
@@ -395,7 +411,9 @@ export class ActivityPubServerService {
 			return (this.apRendererService.addContext(rendered));
 		} else {
 			// index page
-			const rendered = this.apRendererService.renderOrderedCollection(partOf, user.notesCount,
+			const rendered = this.apRendererService.renderOrderedCollection(
+				partOf,
+				user.notesCount,
 				`${partOf}?page=true`,
 				`${partOf}?page=true&since_id=000000000000000000000000`,
 			);

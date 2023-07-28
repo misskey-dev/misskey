@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
@@ -227,11 +232,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Check blocking
 				if (renote.userId !== me.id) {
-					const block = await this.blockingsRepository.findOneBy({
-						blockerId: renote.userId,
-						blockeeId: me.id,
+					const blockExist = await this.blockingsRepository.exist({
+						where: {
+							blockerId: renote.userId,
+							blockeeId: me.id,
+						},
 					});
-					if (block) {
+					if (blockExist) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}
@@ -250,11 +257,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				// Check blocking
 				if (reply.userId !== me.id) {
-					const block = await this.blockingsRepository.findOneBy({
-						blockerId: reply.userId,
-						blockeeId: me.id,
+					const blockExist = await this.blockingsRepository.exist({
+						where: {
+							blockerId: reply.userId,
+							blockeeId: me.id,
+						},
 					});
-					if (block) {
+					if (blockExist) {
 						throw new ApiError(meta.errors.youHaveBeenBlocked);
 					}
 				}

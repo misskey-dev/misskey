@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
 	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
@@ -5,7 +10,7 @@
 			<div :class="$style.file" @click="showFileMenu(element, $event)" @contextmenu.prevent="showFileMenu(element, $event)">
 				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
 				<div v-if="element.isSensitive" :class="$style.sensitive">
-					<i class="ti ti-alert-triangle" style="margin: auto;"></i>
+					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
 		</template>

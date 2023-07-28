@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="1000">
 	<div ref="rootEl" :class="$style.root">
@@ -156,7 +161,7 @@ onMounted(async () => {
 
 	nextTick(() => {
 		queueStatsConnection.send('requestLog', {
-			id: Math.random().toString().substr(2, 8),
+			id: Math.random().toString().substring(2, 10),
 			length: 100,
 		});
 	});

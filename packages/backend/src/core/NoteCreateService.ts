@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
@@ -590,12 +595,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (data.reply) {
 				// 通知
 				if (data.reply.userHost === null) {
-					const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
-						userId: data.reply.userId,
-						threadId: data.reply.threadId ?? data.reply.id,
+					const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+						where: {
+							userId: data.reply.userId,
+							threadId: data.reply.threadId ?? data.reply.id,
+						},
 					});
 
-					if (!threadMuted) {
+					if (!isThreadMuted) {
 						nm.push(data.reply.userId, 'reply');
 						this.globalEventService.publishMainStream(data.reply.userId, 'reply', noteObj);
 
@@ -732,12 +739,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 	@bindThis
 	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
-			const threadMuted = await this.noteThreadMutingsRepository.findOneBy({
-				userId: u.id,
-				threadId: note.threadId ?? note.id,
+			const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+				where: {
+					userId: u.id,
+					threadId: note.threadId ?? note.id,
+				},
 			});
 
-			if (threadMuted) {
+			if (isThreadMuted) {
 				continue;
 			}
 

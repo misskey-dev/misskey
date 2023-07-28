@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -5,8 +10,8 @@ import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['following', 'users'],
@@ -84,12 +89,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check not following
-			const exist = await this.followingsRepository.findOneBy({
-				followerId: follower.id,
-				followeeId: followee.id,
+			const exist = await this.followingsRepository.exist({
+				where: {
+					followerId: follower.id,
+					followeeId: followee.id,
+				},
 			});
 
-			if (exist == null) {
+			if (!exist) {
 				throw new ApiError(meta.errors.notFollowing);
 			}
 

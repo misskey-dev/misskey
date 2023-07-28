@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository } from '@/models/index.js';
+import type { UsersRepository, BlockingsRepository, Blocking } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -53,7 +58,7 @@ export class ExportBlockingProcessorService {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
 
 			let exportedCount = 0;
-			let cursor: any = null;
+			let cursor: Blocking['id'] | null = null;
 
 			while (true) {
 				const blockings = await this.blockingsRepository.find({
@@ -72,7 +77,7 @@ export class ExportBlockingProcessorService {
 					break;
 				}
 
-				cursor = blockings[blockings.length - 1].id;
+				cursor = blockings.at(-1)?.id ?? null;
 
 				for (const block of blockings) {
 					const u = await this.usersRepository.findOneBy({ id: block.blockeeId });

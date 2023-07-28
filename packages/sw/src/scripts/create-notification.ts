@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
  * Notification manager for SW
  */
 import type { BadgeNames, PushNotificationDataMap } from '@/types';
@@ -197,6 +202,13 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						badge: iconUrl('medal'),
 						data,
 						tag: `achievement:${data.body.achievement}`,
+					}];
+
+				case 'pollEnded':
+					return [t('_notification.pollEnded'), {
+						body: data.body.note.text ?? '',
+						badge: iconUrl('chart-arrows'),
+						data,
 					}];
 
 				case 'app':

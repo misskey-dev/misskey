@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { In } from 'typeorm';
@@ -21,6 +26,9 @@ export type RolePolicies = {
 	ltlAvailable: boolean;
 	canPublicNote: boolean;
 	canInvite: boolean;
+	inviteLimit: number;
+	inviteLimitCycle: number;
+	inviteExpirationTime: number;
 	canManageCustomEmojis: boolean;
 	canSearchNotes: boolean;
 	canHideAds: boolean;
@@ -42,6 +50,9 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	ltlAvailable: true,
 	canPublicNote: true,
 	canInvite: false,
+	inviteLimit: 0,
+	inviteLimitCycle: 60 * 24 * 7,
+	inviteExpirationTime: 0,
 	canManageCustomEmojis: false,
 	canSearchNotes: false,
 	canHideAds: false,
@@ -214,14 +225,19 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async getUserRoles(userId: User['id']) {
+	public async getUserAssigns(userId: User['id']) {
 		const now = Date.now();
 		let assigns = await this.roleAssignmentByUserIdCache.fetch(userId, () => this.roleAssignmentsRepository.findBy({ userId }));
 		// 期限切れのロールを除外
 		assigns = assigns.filter(a => a.expiresAt == null || (a.expiresAt.getTime() > now));
-		const assignedRoleIds = assigns.map(x => x.roleId);
+		return assigns;
+	}
+
+	@bindThis
+	public async getUserRoles(userId: User['id']) {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const assignedRoles = roles.filter(r => assignedRoleIds.includes(r.id));
+		const assigns = await this.getUserAssigns(userId);
+		const assignedRoles = roles.filter(r => assigns.map(x => x.roleId).includes(r.id));
 		const user = roles.some(r => r.target === 'conditional') ? await this.cacheService.findUserById(userId) : null;
 		const matchedCondRoles = roles.filter(r => r.target === 'conditional' && this.evalCond(user!, r.condFormula));
 		return [...assignedRoles, ...matchedCondRoles];
@@ -277,6 +293,9 @@ export class RoleService implements OnApplicationShutdown {
 			ltlAvailable: calc('ltlAvailable', vs => vs.some(v => v === true)),
 			canPublicNote: calc('canPublicNote', vs => vs.some(v => v === true)),
 			canInvite: calc('canInvite', vs => vs.some(v => v === true)),
+			inviteLimit: calc('inviteLimit', vs => Math.max(...vs)),
+			inviteLimitCycle: calc('inviteLimitCycle', vs => Math.max(...vs)),
+			inviteExpirationTime: calc('inviteExpirationTime', vs => Math.max(...vs)),
 			canManageCustomEmojis: calc('canManageCustomEmojis', vs => vs.some(v => v === true)),
 			canSearchNotes: calc('canSearchNotes', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),

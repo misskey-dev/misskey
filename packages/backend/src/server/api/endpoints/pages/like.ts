@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import type { PagesRepository, PageLikesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
@@ -66,12 +71,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// if already liked
-			const exist = await this.pageLikesRepository.findOneBy({
-				pageId: page.id,
-				userId: me.id,
+			const exist = await this.pageLikesRepository.exist({
+				where: {
+					pageId: page.id,
+					userId: me.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyLiked);
 			}
 

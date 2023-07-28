@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
@@ -99,13 +104,15 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		if (parsed.local) {
 			if (parsed.type !== 'users') return null;
 
-			return await this.cacheService.userByIdCache.fetchMaybe(parsed.id, () => this.usersRepository.findOneBy({
-				id: parsed.id,
-			}).then(x => x ?? undefined)) as LocalUser | undefined ?? null;
+			return await this.cacheService.userByIdCache.fetchMaybe(
+				parsed.id,
+				() => this.usersRepository.findOneBy({ id: parsed.id }).then(x => x ?? undefined),
+			) as LocalUser | undefined ?? null;
 		} else {
-			return await this.cacheService.uriPersonCache.fetch(parsed.uri, () => this.usersRepository.findOneBy({
-				uri: parsed.uri,
-			})) as RemoteUser | null;
+			return await this.cacheService.uriPersonCache.fetch(
+				parsed.uri,
+				() => this.usersRepository.findOneBy({ uri: parsed.uri }),
+			) as RemoteUser | null;
 		}
 	}
 
@@ -145,9 +152,11 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 
-		if (user == null) return null;
-
-		const key = await this.publicKeyByUserIdCache.fetch(user.id, () => this.userPublickeysRepository.findOneBy({ userId: user.id }), v => v != null);
+		const key = await this.publicKeyByUserIdCache.fetch(
+			user.id,
+			() => this.userPublickeysRepository.findOneBy({ userId: user.id }),
+			v => v != null,
+		);
 
 		return {
 			user,

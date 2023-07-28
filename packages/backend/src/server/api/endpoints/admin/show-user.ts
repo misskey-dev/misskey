@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, SigninsRepository, UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -61,6 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });
 
+			const roleAssigns = await this.roleService.getUserAssigns(user.id);
 			const roles = await this.roleService.getUserRoles(user.id);
 
 			return {
@@ -85,6 +91,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				signins,
 				policies: await this.roleService.getUserPolicies(user.id),
 				roles: await this.roleEntityService.packMany(roles, me),
+				roleAssigns: roleAssigns.map(a => ({
+					createdAt: a.createdAt.toISOString(),
+					expiresAt: a.expiresAt ? a.expiresAt.toISOString() : null,
+					roleId: a.roleId,
+				})),
 			};
 		});
 	}

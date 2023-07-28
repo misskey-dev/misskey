@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ClipFavoritesRepository, ClipsRepository, User } from '@/models/index.js';
@@ -39,7 +44,7 @@ export class ClipEntityService {
 			description: clip.description,
 			isPublic: clip.isPublic,
 			favoritedCount: await this.clipFavoritesRepository.countBy({ clipId: clip.id }),
-			isFavorited: meId ? await this.clipFavoritesRepository.findOneBy({ clipId: clip.id, userId: meId }).then(x => x != null) : undefined,
+			isFavorited: meId ? await this.clipFavoritesRepository.exist({ where: { clipId: clip.id, userId: meId } }) : undefined,
 		});
 	}
 

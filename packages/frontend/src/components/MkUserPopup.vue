@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
@@ -30,11 +35,11 @@
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<div :class="$style.statusItem">
+				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
 				</div>
-				<div :class="$style.statusItem">
+				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
 				</div>
@@ -61,6 +66,7 @@ import number from '@/filters/number';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
 import { $i } from '@/account';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
 
 const props = defineProps<{
 	showing: boolean;
@@ -88,7 +94,7 @@ onMounted(() => {
 		user = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
-			Acct.parse(props.q.substr(1)) :
+			Acct.parse(props.q.substring(1)) :
 			{ userId: props.q };
 
 		os.api('users/show', query).then(res => {

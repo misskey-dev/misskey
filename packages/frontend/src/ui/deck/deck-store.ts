@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
@@ -49,6 +54,10 @@ export const deckStore = markRaw(new Storage('deck', {
 		default: true,
 	},
 	navWindow: {
+		where: 'deviceAccount',
+		default: true,
+	},
+	useSimpleUiForNonRootPages: {
 		where: 'deviceAccount',
 		default: true,
 	},

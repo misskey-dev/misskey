@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Not, In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { maximum } from '@/misc/prelude/array.js';
@@ -5,8 +10,8 @@ import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users'],

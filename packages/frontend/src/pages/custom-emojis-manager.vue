@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -18,7 +23,7 @@
 						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-						<MkButton inline @click="setLisenceBulk">Set Lisence</MkButton>
+						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
@@ -110,7 +115,7 @@ const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
 	} else {
-		selectedEmojis.value = emojisPaginationComponent.value.items.map(item => item.id);
+		selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values(), item => item.id);
 	}
 };
 
@@ -221,7 +226,7 @@ const setCategoryBulk = async () => {
 	emojisPaginationComponent.value.reload();
 };
 
-const setLisenceBulk = async () => {
+const setLicenseBulk = async () => {
 	const { canceled, result } = await os.inputText({
 		title: 'License',
 	});

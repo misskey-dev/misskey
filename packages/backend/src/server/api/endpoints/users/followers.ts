@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/index.js';
@@ -97,11 +102,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (me == null) {
 					throw new ApiError(meta.errors.forbidden);
 				} else if (me.id !== user.id) {
-					const following = await this.followingsRepository.findOneBy({
-						followeeId: user.id,
-						followerId: me.id,
+					const isFollowing = await this.followingsRepository.exist({
+						where: {
+							followeeId: user.id,
+							followerId: me.id,
+						},
 					});
-					if (following == null) {
+					if (!isFollowing) {
 						throw new ApiError(meta.errors.forbidden);
 					}
 				}

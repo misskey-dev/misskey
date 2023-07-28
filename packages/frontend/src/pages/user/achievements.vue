@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="1200">
 	<MkAchievements :user="user" :withLocked="false" :withDescription="$i != null && (props.user.id === $i.id)"/>

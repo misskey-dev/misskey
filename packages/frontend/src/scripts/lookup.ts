@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { mainRouter } from '@/router';
@@ -18,7 +23,7 @@ export async function lookup(router?: Router) {
 	}
 
 	if (query.startsWith('#')) {
-		_router.push(`/tags/${encodeURIComponent(query.substr(1))}`);
+		_router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
 		return;
 	}
 

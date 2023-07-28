@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
@@ -29,11 +34,11 @@ export const Default = {
 		const canvas = within(canvasElement);
 		const a = canvas.getByRole<HTMLAnchorElement>('link');
 		await expect(a.href).toMatch(/^https?:\/\/.*#test$/);
-		await userEvent.click(a, { button: 2 });
+		await userEvent.pointer({ keys: '[MouseRight]', target: a });
 		await tick();
 		const menu = canvas.getByRole('menu');
 		await expect(menu).toBeInTheDocument();
-		await userEvent.click(a, { button: 0 });
+		await userEvent.click(a);
 		a.blur();
 		await tick();
 		await expect(menu).not.toBeInTheDocument();

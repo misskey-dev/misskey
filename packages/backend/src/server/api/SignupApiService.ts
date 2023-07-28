@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, RegistrationTicket } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
@@ -13,9 +18,9 @@ import { EmailService } from '@/core/EmailService.js';
 import { LocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
+import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 
 @Injectable()
 export class SignupApiService {
@@ -109,13 +114,15 @@ export class SignupApiService {
 			}
 		}
 
+		let ticket: RegistrationTicket | null = null;
+
 		if (instance.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
 				reply.code(400);
 				return;
 			}
 
-			const ticket = await this.registrationTicketsRepository.findOneBy({
+			ticket = await this.registrationTicketsRepository.findOneBy({
 				code: invitationCode,
 			});
 
@@ -124,16 +131,24 @@ export class SignupApiService {
 				return;
 			}
 
-			this.registrationTicketsRepository.delete(ticket.id);
+			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
+				reply.code(400);
+				return;
+			}
+
+			if (ticket.usedAt) {
+				reply.code(400);
+				return;
+			}
 		}
 
 		if (instance.emailRequiredForSignup) {
-			if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+			if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
-			if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
+			if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
@@ -148,20 +163,27 @@ export class SignupApiService {
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
 
-			await this.userPendingsRepository.insert({
+			const pendingUser = await this.userPendingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				code,
 				email: emailAddress!,
 				username: username,
 				password: hash,
-			});
+			}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
 
 			const link = `${this.config.url}/signup-complete/${code}`;
 
 			this.emailService.sendEmail(emailAddress!, 'Signup',
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
+
+			if (ticket) {
+				await this.registrationTicketsRepository.update(ticket.id, {
+					usedAt: new Date(),
+					pendingUserId: pendingUser.id,
+				});
+			}
 
 			reply.code(204);
 			return;
@@ -175,6 +197,14 @@ export class SignupApiService {
 					detail: true,
 					includeSecrets: true,
 				});
+
+				if (ticket) {
+					await this.registrationTicketsRepository.update(ticket.id, {
+						usedAt: new Date(),
+						usedBy: account,
+						usedById: account.id,
+					});
+				}
 
 				return {
 					...res,
@@ -211,6 +241,15 @@ export class SignupApiService {
 				emailVerified: true,
 				emailVerifyCode: null,
 			});
+
+			const ticket = await this.registrationTicketsRepository.findOneBy({ pendingUserId: pendingUser.id });
+			if (ticket) {
+				await this.registrationTicketsRepository.update(ticket.id, {
+					usedBy: account,
+					usedById: account.id,
+					pendingUserId: null,
+				});
+			}
 
 			return this.signinService.signin(request, reply, account as LocalUser);
 		} catch (err) {

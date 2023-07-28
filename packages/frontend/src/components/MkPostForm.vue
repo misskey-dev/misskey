@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
@@ -564,7 +569,7 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
-	for (const { item, i } of Array.from(ev.clipboardData.items).map((item, i) => ({ item, i }))) {
+	for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
 			const lio = file.name.lastIndexOf('.');
@@ -588,7 +593,7 @@ async function onPaste(ev: ClipboardEvent) {
 				return;
 			}
 
-			quoteId = paste.substr(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
+			quoteId = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)[1];
 		});
 	}
 }

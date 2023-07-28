@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
@@ -46,7 +51,7 @@ export class GalleryPostEntityService {
 			tags: post.tags.length > 0 ? post.tags : undefined,
 			isSensitive: post.isSensitive,
 			likedCount: post.likedCount,
-			isLiked: meId ? await this.galleryLikesRepository.findOneBy({ postId: post.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await this.galleryLikesRepository.exist({ where: { postId: post.id, userId: meId } }) : undefined,
 		});
 	}
 

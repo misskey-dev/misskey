@@ -1,8 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
-	<FormInfo warn>
-		{{ i18n.ts.thisIsExperimentalFeature }}
-	</FormInfo>
 	<MkFolder :defaultOpen="true">
 		<template #icon><i class="ti ti-plane-arrival"></i></template>
 		<template #label>{{ i18n.ts._accountMigration.moveFrom }}</template>

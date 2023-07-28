@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import type { RemoteUser, User } from '@/models/entities/User.js';
@@ -15,6 +20,8 @@ type AudienceInfo = {
 	mentionedUsers: User[],
 	visibleUsers: User[],
 };
+
+type GroupedAudience = Record<'public' | 'followers' | 'other', string[]>;
 
 @Injectable()
 export class ApAudienceService {
@@ -67,11 +74,11 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private groupingAudience(ids: string[], actor: RemoteUser) {
-		const groups = {
-			public: [] as string[],
-			followers: [] as string[],
-			other: [] as string[],
+	private groupingAudience(ids: string[], actor: RemoteUser): GroupedAudience {
+		const groups: GroupedAudience = {
+			public: [],
+			followers: [],
+			other: [],
 		};
 
 		for (const id of ids) {
@@ -90,18 +97,16 @@ export class ApAudienceService {
 	}
 
 	@bindThis
-	private isPublic(id: string) {
+	private isPublic(id: string): boolean {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
-			'as#Public',
+			'as:Public',
 			'Public',
 		].includes(id);
 	}
 
 	@bindThis
-	private isFollowers(id: string, actor: RemoteUser) {
-		return (
-			id === (actor.followersUri ?? `${actor.uri}/followers`)
-		);
+	private isFollowers(id: string, actor: RemoteUser): boolean {
+		return id === (actor.followersUri ?? `${actor.uri}/followers`);
 	}
 }

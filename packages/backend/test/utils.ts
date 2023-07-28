@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as assert from 'node:assert';
 import { readFile } from 'node:fs/promises';
 import { isAbsolute, basename } from 'node:path';
@@ -90,7 +95,7 @@ const request = async (path: string, params: any, me?: UserToken): Promise<{ sta
 	};
 };
 
-const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
+export const relativeFetch = async (path: string, init?: RequestInit | undefined) => {
 	return await fetch(new URL(path, `http://127.0.0.1:${port}/`).toString(), init);
 };
 
@@ -447,12 +452,12 @@ export async function testPaginationConsistency<Entity extends { id: string, cre
 	for (const limit of [1, 5, 10, 100, undefined]) {
 		// 1. sinceId/DateとuntilId/Dateで両端を指定して取得した結果が期待通りになっていること
 		if (ordering === 'desc') {
-			const end = expected[expected.length - 1];
+			const end = expected.at(-1)!;
 			let last = await fetchEntities(rangeToParam({ limit, since: end }));
 			const actual: Entity[] = [];
 			while (last.length !== 0) {
 				actual.push(...last);
-				last = await fetchEntities(rangeToParam({ limit, until: last[last.length - 1], since: end }));
+				last = await fetchEntities(rangeToParam({ limit, until: last.at(-1), since: end }));
 			}
 			actual.push(end);
 			assert.deepStrictEqual(
@@ -467,7 +472,7 @@ export async function testPaginationConsistency<Entity extends { id: string, cre
 			const actual: Entity[] = [];
 			while (last.length !== 0) {
 				actual.push(...last);
-				last = await fetchEntities(rangeToParam({ limit, since: last[last.length - 1] }));
+				last = await fetchEntities(rangeToParam({ limit, since: last.at(-1) }));
 			}
 			assert.deepStrictEqual(
 				actual.map(({ id, createdAt }) => id + ':' + createdAt),
@@ -480,7 +485,7 @@ export async function testPaginationConsistency<Entity extends { id: string, cre
 			const actual: Entity[] = [];
 			while (last.length !== 0) {
 				actual.push(...last);
-				last = await fetchEntities(rangeToParam({ limit, until: last[last.length - 1] }));
+				last = await fetchEntities(rangeToParam({ limit, until: last.at(-1) }));
 			}
 			assert.deepStrictEqual(
 				actual.map(({ id, createdAt }) => id + ':' + createdAt),

@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Webhook, webhookEventTypes } from '@/models/entities/Webhook.js';
@@ -108,7 +113,7 @@ export class QueueService {
 			removeOnFail: true,
 		};
 
-		await this.deliverQueue.addBulk(Array.from(inboxes.entries()).map(d => ({
+		await this.deliverQueue.addBulk(Array.from(inboxes.entries(), d => ({
 			name: d[0],
 			data: {
 				user,
@@ -416,7 +421,7 @@ export class QueueService {
 			to: webhook.url,
 			secret: webhook.secret,
 			createdAt: Date.now(),
-			eventId: uuid(),
+			eventId: randomUUID(),
 		};
 
 		return this.webhookDeliverQueue.add(webhook.id, data, {

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -66,8 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private downloadService: DownloadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const users = await this.usersRepository.findOneBy({ id: me.id });
-			if (users === null) throw new ApiError(meta.errors.noSuchUser);
+			const userExist = await this.usersRepository.exist({ where: { id: me.id } });
+			if (!userExist) throw new ApiError(meta.errors.noSuchUser);
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			if (file === null) throw new ApiError(meta.errors.noSuchFile);
 			if (file.size === 0) throw new ApiError(meta.errors.emptyFile);

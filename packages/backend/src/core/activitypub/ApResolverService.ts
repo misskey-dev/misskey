@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
@@ -61,10 +66,6 @@ export class Resolver {
 
 	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
-		if (value == null) {
-			throw new Error('resolvee is null (or undefined)');
-		}
-
 		if (typeof value !== 'string') {
 			return value;
 		}
@@ -104,11 +105,11 @@ export class Resolver {
 			? await this.apRequestService.signedGet(value, this.user) as IObject
 			: await this.httpRequestService.getJson(value, 'application/activity+json, application/ld+json')) as IObject;
 
-		if (object == null || (
+		if (
 			Array.isArray(object['@context']) ?
 				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
-		)) {
+		) {
 			throw new Error('invalid response');
 		}
 

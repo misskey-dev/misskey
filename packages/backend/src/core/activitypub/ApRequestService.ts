@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
@@ -140,7 +145,7 @@ export class ApRequestService {
 	}
 
 	@bindThis
-	public async signedPost(user: { id: User['id'] }, url: string, object: any) {
+	public async signedPost(user: { id: User['id'] }, url: string, object: unknown): Promise<void> {
 		const body = JSON.stringify(object);
 
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
@@ -169,7 +174,7 @@ export class ApRequestService {
 	 * @param url URL to fetch
 	 */
 	@bindThis
-	public async signedGet(url: string, user: { id: User['id'] }) {
+	public async signedGet(url: string, user: { id: User['id'] }): Promise<unknown> {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const req = ApRequestCreator.createSignedGet({

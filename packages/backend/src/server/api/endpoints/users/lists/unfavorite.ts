@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserListFavoritesRepository, UserListsRepository } from '@/models/index.js';
@@ -39,12 +44,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListFavoritesRepository: UserListFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const userList = await this.userListsRepository.findOneBy({
-				id: ps.listId,
-				isPublic: true,
+			const userListExist = await this.userListsRepository.exist({
+				where: {
+					id: ps.listId,
+					isPublic: true,
+				},
 			});
 
-			if (userList === null) {
+			if (!userListExist) {
 				throw new ApiError(meta.errors.noSuchList);
 			}
 

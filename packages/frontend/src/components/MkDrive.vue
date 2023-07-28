@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<nav :class="$style.nav">
@@ -568,7 +573,7 @@ function fetchMoreFolders() {
 	os.api('drive/folders', {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		untilId: folders.value[folders.value.length - 1].id,
+		untilId: folders.value.at(-1)?.id,
 		limit: max + 1,
 	}).then(folders => {
 		if (folders.length === max + 1) {
@@ -591,7 +596,7 @@ function fetchMoreFiles() {
 	os.api('drive/files', {
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		untilId: files.value[files.value.length - 1].id,
+		untilId: files.value.at(-1)?.id,
 		limit: max + 1,
 	}).then(files => {
 		if (files.length === max + 1) {

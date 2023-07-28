@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { utils, values } from '@syuilo/aiscript';
 import * as os from '@/os';
 import { $i } from '@/account';
@@ -46,6 +51,9 @@ export function createAiScriptEnv(opts) {
 		'Mk:load': values.FN_NATIVE(([key]) => {
 			utils.assertString(key);
 			return utils.jsToVal(JSON.parse(miLocalStorage.getItem(`aiscript:${opts.storageKey}:${key.value}`)));
+		}),
+		'Mk:url': values.FN_NATIVE(() => {
+			return values.STR(window.location.href);
 		}),
 	};
 }

@@ -1,3 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import type { JsonLd } from 'jsonld/jsonld-spec.js';
+
 /* eslint:disable:quotemark indent */
 const id_v1 = {
 	'@context': {
@@ -86,7 +93,7 @@ const id_v1 = {
 		'accessControl': { '@id': 'perm:accessControl', '@type': '@id' },
 		'writePermission': { '@id': 'perm:writePermission', '@type': '@id' },
 	},
-};
+} satisfies JsonLd;
 
 const security_v1 = {
 	'@context': {
@@ -137,7 +144,7 @@ const security_v1 = {
 		'signatureAlgorithm': 'sec:signingAlgorithm',
 		'signatureValue': 'sec:signatureValue',
 	},
-};
+} satisfies JsonLd;
 
 const activitystreams = {
 	'@context': {
@@ -517,9 +524,9 @@ const activitystreams = {
 			'@type': '@id',
 		},
 	},
-};
+} satisfies JsonLd;
 
-export const CONTEXTS: Record<string, unknown> = {
+export const CONTEXTS: Record<string, JsonLd> = {
 	'https://w3id.org/identity/v1': id_v1,
 	'https://w3id.org/security/v1': security_v1,
 	'https://www.w3.org/ns/activitystreams': activitystreams,

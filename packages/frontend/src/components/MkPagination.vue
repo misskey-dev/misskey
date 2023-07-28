@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	:enterActiveClass="defaultStore.state.animation ? $style.transition_fade_enterActive : ''"
@@ -233,7 +238,7 @@ const fetchMore = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			untilId: Array.from(items.value.keys())[items.value.size - 1],
+			untilId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
 		for (let i = 0; i < res.length; i++) {
@@ -297,7 +302,7 @@ const fetchMoreAhead = async (): Promise<void> => {
 		...(props.pagination.offsetMode ? {
 			offset: offset.value,
 		} : {
-			sinceId: Array.from(items.value.keys())[items.value.size - 1],
+			sinceId: Array.from(items.value.keys()).at(-1),
 		}),
 	}).then(res => {
 		if (res.length === 0) {

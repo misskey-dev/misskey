@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<div class="_table status">
@@ -85,7 +90,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 		length: 100,
 	});
 });

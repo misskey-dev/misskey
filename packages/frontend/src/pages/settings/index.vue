@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -166,7 +171,7 @@ const menuDef = computed(() => [{
 		active: currentPage?.route.name === 'import-export',
 	}, {
 		icon: 'ti ti-plane',
-		text: `${i18n.ts.accountMigration} (${i18n.ts.experimental})`,
+		text: `${i18n.ts.accountMigration}`,
 		to: '/settings/migration',
 		active: currentPage?.route.name === 'migration',
 	}, {

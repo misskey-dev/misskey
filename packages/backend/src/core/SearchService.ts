@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -52,6 +57,7 @@ function compileQuery(q: Q): string {
 
 @Injectable()
 export class SearchService {
+	private readonly meilisearchIndexScope: 'local' | 'global' | string[] = 'local';
 	private meilisearchNoteIndex: Index | null = null;
 
 	constructor(
@@ -92,6 +98,10 @@ export class SearchService {
 				},
 			});
 		}
+
+		if (config.meilisearch?.scope) {
+			this.meilisearchIndexScope = config.meilisearch.scope;
+		}
 	}
 
 	@bindThis
@@ -100,7 +110,22 @@ export class SearchService {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
-			this.meilisearchNoteIndex!.addDocuments([{
+			switch (this.meilisearchIndexScope) {
+				case 'global':
+					break;
+
+				case 'local':
+					if (note.userHost == null) break;
+					return;
+
+				default: {
+					if (note.userHost == null) break;
+					if (this.meilisearchIndexScope.includes(note.userHost)) break;
+					return;
+				}
+			}
+
+			await this.meilisearchNoteIndex?.addDocuments([{
 				id: note.id,
 				createdAt: note.createdAt.getTime(),
 				userId: note.userId,

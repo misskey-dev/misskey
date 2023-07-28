@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { PageLikesRepository } from '@/models/index.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { PageLike } from '@/models/entities/PageLike.js';
-import { PageEntityService } from './PageEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { PageEntityService } from './PageEntityService.js';
 
 @Injectable()
 export class PageLikeEntityService {

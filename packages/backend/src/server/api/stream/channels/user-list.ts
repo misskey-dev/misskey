@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
@@ -34,11 +39,13 @@ class UserListChannel extends Channel {
 		this.listId = params.listId as string;
 
 		// Check existence and owner
-		const list = await this.userListsRepository.findOneBy({
-			id: this.listId,
-			userId: this.user!.id,
+		const listExist = await this.userListsRepository.exist({
+			where: {
+				id: this.listId,
+				userId: this.user!.id,
+			},
 		});
-		if (!list) return;
+		if (!listExist) return;
 
 		// Subscribe stream
 		this.subscriber.on(`userListStream:${this.listId}`, this.send);

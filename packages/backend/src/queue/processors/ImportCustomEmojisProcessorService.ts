@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
+import { ZipReader } from 'slacc';
 import { DataSource } from 'typeorm';
-import unzipper from 'unzipper';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -72,9 +77,9 @@ export class ImportCustomEmojisProcessorService {
 		}
 
 		const outputPath = path + '/emojis';
-		const unzipStream = fs.createReadStream(destPath);
-		const extractor = unzipper.Extract({ path: outputPath });
-		extractor.on('close', async () => {
+		try {
+			this.logger.succ(`Unzipping to ${outputPath}`);
+			ZipReader.withDestinationPath(outputPath).viaBuffer(await fs.promises.readFile(destPath));
 			const metaRaw = fs.readFileSync(outputPath + '/meta.json', 'utf-8');
 			const meta = JSON.parse(metaRaw);
 
@@ -115,8 +120,12 @@ export class ImportCustomEmojisProcessorService {
 			cleanup();
 
 			this.logger.succ('Imported');
-		});
-		unzipStream.pipe(extractor);
-		this.logger.succ(`Unzipping to ${outputPath}`);
+		} catch (e) {
+			if (e instanceof Error || typeof e === 'string') {
+				this.logger.error(e);
+			}
+			cleanup();
+			throw e;
+		}
 	}
 }

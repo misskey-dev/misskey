@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkWindow
 	ref="windowEl"
@@ -120,7 +125,7 @@ const contextmenu = $computed(() => ([{
 
 function back() {
 	history.pop();
-	router.replace(history[history.length - 1].path, history[history.length - 1].key);
+	router.replace(history.at(-1)!.path, history.at(-1)!.key);
 }
 
 function reload() {

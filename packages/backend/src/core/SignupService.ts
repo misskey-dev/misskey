@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
@@ -71,12 +76,12 @@ export class SignupService {
 		const secret = generateUserToken();
 
 		// Check username duplication
-		if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+		if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 			throw new Error('DUPLICATED_USERNAME');
 		}
 
 		// Check deleted username duplication
-		if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
+		if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
 			throw new Error('USED_USERNAME');
 		}
 
@@ -92,7 +97,7 @@ export class SignupService {
 
 		const keyPair = await new Promise<string[]>((res, rej) =>
 			generateKeyPair('rsa', {
-				modulusLength: 4096,
+				modulusLength: 2048,
 				publicKeyEncoding: {
 					type: 'spki',
 					format: 'pem',

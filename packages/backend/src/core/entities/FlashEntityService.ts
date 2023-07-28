@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
@@ -40,7 +45,7 @@ export class FlashEntityService {
 			summary: flash.summary,
 			script: flash.script,
 			likedCount: flash.likedCount,
-			isLiked: meId ? await this.flashLikesRepository.findOneBy({ flashId: flash.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await this.flashLikesRepository.exist({ where: { flashId: flash.id, userId: meId } }) : undefined,
 		});
 	}
 

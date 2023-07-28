@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
@@ -6,12 +11,12 @@ import { query as urlQuery } from '@/misc/prelude/url.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 
-type ILink = {
+export type ILink = {
 	href: string;
 	rel?: string;
 };
 
-type IWebFinger = {
+export type IWebFinger = {
 	links: ILink[];
 	subject: string;
 };

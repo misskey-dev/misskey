@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -79,12 +84,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already muting
-			const exist = await this.mutingsRepository.findOneBy({
-				muterId: muter.id,
-				muteeId: mutee.id,
+			const exist = await this.mutingsRepository.exist({
+				where: {
+					muterId: muter.id,
+					muteeId: mutee.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 
