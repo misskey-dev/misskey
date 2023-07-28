@@ -87,6 +87,11 @@ export type Paging<E extends keyof misskey.Endpoints = keyof misskey.Endpoints> 
 	offsetMode?: boolean;
 
 	pageEl?: HTMLElement;
+
+	/**
+	 * 変換関数
+	 */
+	transform?: (source: Omit<MisskeyEntity, '_shouldInsertAd_'>[]) => MisskeyEntity[];
 };
 
 type MisskeyEntityMap = Map<string, MisskeyEntity>;
@@ -168,6 +173,11 @@ const visibility = useDocumentVisibility();
 
 const isPausingUpdateByExecutingQueue = ref(false);
 const denyMoveTransition = ref(false);
+
+/**
+ * 変換関数
+ */
+const transform = computed(() => props.pagination.transform ?? ((source: MisskeyEntity[]) => source));
 
 //#region scrolling
 const checkFn = props.pagination.reversed ? isBottomVisible : isTopVisible;
@@ -298,7 +308,9 @@ async function init(): Promise<void> {
 	await os.api(props.pagination.endpoint, {
 		...params,
 		limit: props.pagination.limit ?? 10,
-	}).then(res => {
+	}).then(_res => {
+		const res = transform.value(_res);
+
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 3) item._shouldInsertAd_ = true;
@@ -378,7 +390,9 @@ const fetchMore = async (): Promise<void> => {
 		} : {
 			untilId: Array.from(items.value.keys()).at(-1),
 		}),
-	}).then(res => {
+	}).then(_res => {
+		const res = transform.value(_res);
+
 		for (let i = 0; i < res.length; i++) {
 			const item = res[i];
 			if (i === 10) item._shouldInsertAd_ = true;
@@ -425,15 +439,15 @@ const fetchMoreAhead = async (): Promise<void> => {
 		} : {
 			sinceId: Array.from(items.value.keys()).at(-1),
 		}),
-	}).then(res => {
-		if (res.length === 0) {
-			items.value = concatMapWithArray(items.value, res);
+	}).then(_res => {
+		if (_res.length === 0) {
 			more.value = false;
 		} else {
+			const res = transform.value(_res);
 			items.value = concatMapWithArray(items.value, res);
 			more.value = true;
 		}
-		offset.value += res.length;
+		offset.value += _res.length;
 		moreFetching.value = false;
 	}, err => {
 		moreFetching.value = false;
@@ -484,9 +498,12 @@ watch([active, visibility], () => {
 /**
  * 最新のものとして1つだけアイテムを追加する
  * ストリーミングから降ってきたアイテムはこれで追加する
- * @param item アイテム
+ * @param item アイテム（transform前）
  */
-const prepend = (item: MisskeyEntity): void => {
+const prepend = (_item: MisskeyEntity): void => {
+	const item = transform.value([_item])[0];
+	if (!item) return;
+
 	if (items.value.size === 0) {
 		items.value.set(item.id, item);
 		fetching.value = false;
@@ -570,8 +587,12 @@ function prependQueue(newItem: MisskeyEntity) {
 
 /*
  * アイテムを末尾に追加する（使うの？）
+ * @param item アイテム（transform前）
  */
-const appendItem = (item: MisskeyEntity): void => {
+const appendItem = (_item: MisskeyEntity): void => {
+	const item = transform.value([_item])[0];
+	if (!item) return;
+
 	items.value.set(item.id, item);
 };
 

@@ -53,8 +53,9 @@ export class NoteManager {
     private notesSource: Map<Note['id'], CachedNoteSource>;
 
     /**
-     * ソースからuser, renote, replyを取得したComputedRef
+     * ソースからuser, renote, replyを取得したComputedRefのキャッシュを保持しておく
      * nullは削除済みであることを表す
+     * キャプチャが0になったら削除される
      */
     private notesComputed: Map<Note['id'], CachedNote>;
     private updatedAt: Map<Note['id'], number>;
@@ -81,7 +82,7 @@ export class NoteManager {
         });
     }
 
-    public set(_note: Note): CachedNote {
+    public set(_note: Note): void {
         const note: Note = { ..._note };
         userLiteManager.set(note.user);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -98,7 +99,6 @@ export class NoteManager {
             this.notesSource.set(note.id, ref(note));
         }
         this.updatedAt.set(note.id, Date.now());
-        return this.get(note.id)!;
     }
 
     public get(id: string): CachedNote {
@@ -139,7 +139,10 @@ export class NoteManager {
             }
         }
         return api('notes/show', { noteId: id })
-            .then(fetchedNote => this.set(fetchedNote))
+            .then(fetchedNote => {
+                this.set(fetchedNote);
+                return this.get(id)!;
+            })
             .catch(() => {
                 // エラーが発生した場合はとりあえず削除されたものとして扱う
                 const cached = this.notesSource.get(id);
@@ -161,6 +164,8 @@ export class NoteManager {
 		if (!note || !note.value) {
             this.connection?.send('un', { id });
             this.captureing.delete(id);
+            this.notesComputed.delete(id);
+            this.updatedAt.delete(id);
             return;
         }
 
@@ -219,6 +224,8 @@ export class NoteManager {
 				break;
 			}
 		}
+
+        this.updatedAt.set(id, Date.now());
 	}
 
     private capture(id: string, markRead = true): void {
@@ -252,6 +259,9 @@ export class NoteManager {
         }
 
         this.captureing.delete(id);
+
+        // キャプチャが終わったらcomputedキャッシュも消してしまう
+        this.notesComputed.delete(id);
 	}
 
     /**
