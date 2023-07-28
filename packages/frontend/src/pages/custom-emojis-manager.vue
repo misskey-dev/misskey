@@ -144,7 +144,7 @@ const edit = (emoji) => {
 					...result.updated,
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem(emoji.id);
+				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
 			}
 		},
 	}, 'closed');
