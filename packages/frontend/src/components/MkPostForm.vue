@@ -751,8 +751,9 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('notes1');
 			}
 
-			const text = postData.text?.toLowerCase() ?? '';
-			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
+			const text = postData.text ?? '';
+			const lowerCase = text.toLowerCase();
+			if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
 			if ([
@@ -767,7 +768,7 @@ async function post(ev?: MouseEvent) {
         'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB?si=b45a46c0b622462c',
 				'https://open.spotify.com/track/7anfcaNPQWlWCwyCHmZqNy?si=1705919f63c64bfb',
 				'https://open.spotify.com/track/5Odr16TvEN4my22K9nbH7l?si=2eb7e7bed887409c',
-			].some(url => text.includes(url.toLowerCase())) {
+			].some(url => text.includes(url)) {
 				claimAchievement('brainDiver');
 			}
 
