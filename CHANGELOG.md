@@ -1,5 +1,5 @@
 <!--
-## 13.x.x (unreleased)
+## 2023.x.x (unreleased)
 
 ### General
 -
@@ -11,6 +11,17 @@
 -
 
 -->
+
+## 2023.8.0 (unreleased)
+
+### General
+- OAuth 2.0のサポート
+
+### Client
+-
+
+### Server
+-
 
 ## 13.14.2
 
