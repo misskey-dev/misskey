@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Note, UserLite } from "misskey-js/built/entities";
+import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
 import { Ref, ref, ComputedRef, computed } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
@@ -13,7 +13,9 @@ import { $i } from "@/account";
 export class EntitiyManager<T extends { id: string }> {
     private entities: Map<T['id'], Ref<T>>;
 
-    constructor() {
+    constructor(
+        public key: string,
+    ) {
         this.entities = new Map();
     }
 
@@ -32,7 +34,8 @@ export class EntitiyManager<T extends { id: string }> {
     }
 }
 
-export const userLiteManager = new EntitiyManager<UserLite>();
+export const userLiteManager = new EntitiyManager<UserLite>('userLite');
+export const driveFileManager = new EntitiyManager<DriveFile>('driveFile');
 
 type OmittedNote = Omit<Note, 'user' | 'renote' | 'reply'>;
 type CachedNoteSource = Ref<OmittedNote | null>;
@@ -68,7 +71,7 @@ export class NoteManager {
         this.updatedAt = new Map();
         this.captureing = new Map();
         this.connection = $i ? useStream() : null;
-        this.connection?.on('noteUpdated', this.onStreamNoteUpdated);
+        this.connection?.on('noteUpdated', noteData => this.onStreamNoteUpdated(noteData));
         this.connection?.on('_connected_', () => {
             // 再接続時に再キャプチャ
             for (const [id, captureingNumber] of Array.from(this.captureing)) {
@@ -84,14 +87,27 @@ export class NoteManager {
 
     public set(_note: Note): void {
         const note: Note = { ..._note };
+
         userLiteManager.set(note.user);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         delete note.user;
+
+        if (note.fileIds.length > 0) {
+            for (const file of note.files) {
+                driveFileManager.set(file);
+            }
+        }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        delete note.files;
+
         if (note.renote) this.set(note.renote);
         delete note.renote;
+
         if (note.reply) this.set(note.reply);
         delete note.reply;
+
         const cached = this.notesSource.get(note.id);
         if (cached) {
             cached.value = note;
@@ -117,11 +133,14 @@ export class NoteManager {
                 const reply = note.value.replyId ? this.get(note.value.replyId) : undefined;
                 if (reply && !reply.value) return null;
 
+                const files = note.value.fileIds.map(id => driveFileManager.get(id)?.value);
+
                 return {
                     ...note.value,
                     user: user.value,
                     renote: renote?.value ?? undefined,
                     reply: reply?.value ?? undefined,
+                    files: files.filter(file => file) as DriveFile[],
                 };
             }));
         }
@@ -298,3 +317,11 @@ export class NoteManager {
 }
 
 export const noteManager = new NoteManager();
+
+if (_DEV_) {
+    console.log('entity manager initialized', {
+        noteManager,
+        userLiteManager,
+        driveFileManager,
+    });
+}
