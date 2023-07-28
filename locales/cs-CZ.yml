@@ -660,6 +660,7 @@ reporter: "Nahlásil"
 reporteeOrigin: "Původ nahlášení"
 reporterOrigin: "Původ nahlasovače"
 forwardReport: "Přeposlat nahlášení do vzdálené instance"
+forwardReportIsAnonymous: "Místo vašeho účtu se ve vzdálené instanci zobrazí anonymní systémový účet jako nahlašovač."
 send: "Odeslat"
 abuseMarkAsResolved: "Označit nahlášení jako vyřešené"
 openInNewTab: "Otevřít v nové kartě"
@@ -939,8 +940,57 @@ subscribePushNotification: "Povolit push oznamení"
 unsubscribePushNotification: "Vypnout push oznámení"
 pushNotificationAlreadySubscribed: "Push oznámení jsou už zapnuté"
 pushNotificationNotSupported: "Tenhle prohlížeč nepodporuje push oznámení"
+sendPushNotificationReadMessage: "Odstraněnit oznámení push po jejich přečtení"
+sendPushNotificationReadMessageCaption: "Tohle může zvýšit spotřebu energie vašeho zařízení."
+windowMaximize: "Maximalizovat"
+windowMinimize: "Minimalizovat"
+windowRestore: "Obnovit"
+caption: "Titulek"
+loggedInAsBot: "Právě jste přihlášen jako bot"
+tools: "Nástroje"
+cannotLoad: "Načtení se nezdařilo"
+numberOfProfileView: "Počet zobrazení profilu"
+like: "To se mi líbí"
+unlike: "Už se mi to nelíbí"
+numberOfLikes: "Počet \"To se mi líbí\""
 show: "Zobrazit"
+neverShow: "Znovu nezobrazovat"
+remindMeLater: "Možná později"
+didYouLikeMisskey: "Oblíbili jste si Misskey?"
+pleaseDonate: "{host} používá bezplatný software Misskey. Velmi bychom ocenili vaše dary, aby mohl vývoj Misskey pokračovat!"
+roles: "Role"
+role: "Role"
+noRole: "Role nenalezena"
+normalUser: "Normální uživatel"
+undefined: "Neurčeno"
+assign: "Přiřadit"
+unassign: "Zrušit přirazení"
 color: "Barva"
+manageCustomEmojis: "Spravovat vlastní emoji"
+youCannotCreateAnymore: "Narazili jste na limit pro vytváření."
+cannotPerformTemporary: "Dočasně nedostupné"
+cannotPerformTemporaryDescription: "Tuto akci nelze dočasně provést z důvodu překročení limitu provedení. Chvíli počkejte a zkuste to znovu."
+invalidParamError: "Neplatné parametry"
+invalidParamErrorDescription: "Parametry požadavku jsou neplatné. Obvykle je to způsobeno chybou, ale může to být také způsobeno překročením limitů velikosti vstupů nebo podobně."
+permissionDeniedError: "Operace zamítnuta"
+permissionDeniedErrorDescription: "Tento účet nemá oprávnění k provedení této akce."
+preset: "Předvolba"
+selectFromPresets: "Vybrat z předvoleb"
+achievements: "Úspěchy"
+gotInvalidResponseError: "Neplatná odpověď serveru"
+gotInvalidResponseErrorDescription: "Server může být nedostupný nebo na něm probíhá údržba. Zkuste to prosím později."
+thisPostMayBeAnnoying: "Tato poznámka může ostatní obtěžovat."
+thisPostMayBeAnnoyingHome: "Zveřejnit na domovskou časovou osu"
+thisPostMayBeAnnoyingCancel: "Zrušit"
+thisPostMayBeAnnoyingIgnore: "I přesto zveřejnit"
+collapseRenotes: "Sbalit poznámky, které jste již viděli"
+internalServerError: "Interní chyba serveru"
+internalServerErrorDescription: "Server narazil na neočekávanou chybu."
+copyErrorInfo: "Zkopírovat detaily erroru"
+joinThisServer: "Zaregistrovat se v této instanci"
+exploreOtherServers: "Podívat se na ostatní instance"
+letsLookAtTimeline: "Podívejte se na časovou osu"
+disableFederationConfirm: "Chcete opravdu vypnout federace?"
 disableFederationOk: "Vypnout"
 invitationRequiredToRegister: "Tahle instance je pouze na pozvánku. Musíte zadat validní kód pozvánky."
 emailNotSupported: "Tahle instance nepodporuje zasílání emailů"
@@ -1058,12 +1108,178 @@ _achievements:
     _notes40000:
       title: "Továrna na poznámky"
       description: "Zveřejněte 40 000 poznámek"
+    _notes50000:
+      title: "Planeta poznámek"
+      description: "Zveřejněte 50 000 poznámek"
+    _notes60000:
+      title: "Poznámkový kvasar"
+      description: "Zveřejněte 60 000 poznámek"
+    _notes70000:
+      title: "Černá díra poznámek"
+      description: "Zveřejněte 70 000 poznámek"
+    _notes80000:
+      title: "Galaxie poznámek"
+      description: "Zveřejněte 80 000 poznámek"
+    _notes90000:
+      title: "Vesmír poznámek"
+      description: "Zveřejněte 90 000 poznámek"
+    _notes100000:
+      title: "ALL YOUR NOTE ARE BELONG TO US"
+      description: "Zveřejněte 100 000 poznámek"
+      flavor: "Máte toho hodně co říct."
+    _login3:
+      title: "Začátečník I"
+      description: "Přihlaste se celkově za 3 dny"
+      flavor: "Ode dneška mi říkejte Misskista."
+    _login7:
+      title: "Začátečník II"
+      description: "Přihlaste se celkově za 7 dní"
+      flavor: "Máte pocit, že už jste se v tom vyznali?"
+    _login15:
+      title: "Začátečník III"
+      description: "Přihlaste se celkově za 15 dní"
+    _login30:
+      title: "Misskista I"
+      description: "Přihlaste se celkově za 30 dní"
+    _login60:
+      title: "Misskista II"
+      description: "Přihlaste se celkově za 60 dní"
+    _login100:
+      title: "Misskista III"
+      description: "Přihlaste se celkově za 100 dní"
+      flavor: "Violent Misskista"
+    _login200:
+      title: "Stálý zákazník I"
+      description: "Přihlaste se celkově za 200 dní"
+    _login300:
+      title: "Stálý zákazník II"
+      description: "Přihlaste se celkově za 300 dní"
+    _login400:
+      title: "Stálý zákazník III"
+      description: "Přihlaste se celkově za 400 dní"
+    _login500:
+      title: "Expert I"
+      description: "Přihlaste se celkově za 500 dní"
+      flavor: "Moji přátelé, často se říká, že mám rád poznámky."
+    _login600:
+      title: "Expert II"
+      description: "Přihlaste se celkově za 600 dní"
+    _login700:
+      title: "Expert III"
+      description: "Přihlaste se celkově za 700 dní"
+    _login800:
+      title: "Mistr poznámek I"
+      description: "Přihlaste se celkově za 800 dní"
+    _login900:
+      title: "Mistr poznámek II"
+      description: "Přihlaste se celkově za 900 dní"
+    _login1000:
+      title: "Mistr poznámek III"
+      description: "Přihlaste se celkově za 1000 dní"
+      flavor: "Děkujeme, že používáte Misskey!"
+    _noteClipped1:
+      title: "Musím... připnout..."
+      description: "Připněte si první poznámku"
+    _noteFavorited1:
+      title: "Hvězdář"
+      description: "Oblíbena první poznámka"
+    _myNoteFavorited1:
+      title: "Hledání hvězd"
+      description: "Někdo si oblíbil jednu z vašich poznámek"
+    _profileFilled:
+      title: "Dobře připravený"
+      description: "Nastavte si profil"
+    _markedAsCat:
+      title: "Já jsem kočka"
+      description: "Označte váš účet \"jako kočka\""
+      flavor: "Jméno ti dám později."
+    _following1:
+      title: "Sledujte prvního uživatele"
+    _following300:
+      title: "Přetížení přátel"
+      description: "Sledujte 300 účtů"
+    _followers1:
+      title: "První sledující"
+      description: "Získejte 1 sledujícího"
+    _followers10:
+      title: "Sledujte mě!"
+      description: "Získejte 10 sledujících"
+    _followers50:
+      title: "Přicházejí davy"
+      description: "Získejte 50 sledujících"
+    _followers100:
+      title: "Populární"
+      description: "Získejte 100 sledujících"
+    _followers300:
+      title: "Prosíme srovnejte se do jedné řady!"
+      description: "Získejte 300 sledujících"
+    _followers500:
+      title: "Rádiová věž"
+      description: "Získejte 500 sledujících"
+    _followers1000:
+      title: "Influencer"
+      description: "Získejte 1000 sledujících"
+    _collectAchievements30:
+      title: "Sběratel úspěchů"
+      description: "Získejte 30 úspěchů"
+    _viewAchievements3min:
+      title: "Máš rád úspěchy"
+      description: "Koukejte na váš seznam úspěchů alespoň po dobu 3 minut"
+    _iLoveMisskey:
+      title: "Miluju Misskey"
+      description: "Zveřejněte \" I ❤ #Misskey\""
+      flavor: "Vývojový tým Misskey si velmi váží vaší podpory!"
+    _foundTreasure:
+      title: "Hon za pokladem"
+      description: "Našli jste schovaný poklad!"
+    _client30min:
+      title: "Krátká pauza"
+      description: "Mějte otevřený Misskey alespoň po dobu 30 minut"
+    _client60min:
+      title: "Žádný \"Miss\" v Misskey"
+      description: "Mějte otevřený Misskey alespoň po dobu 60 minut"
+    _noteDeletedWithin1min:
+      title: "Ups, nevadí"
+      description: "Vymažte poznámku během minuty co ji zveřejníte"
+    _postedAtLateNight:
+      title: "Noční typ"
+      description: "Zveřejněte poznámku pozdě v noci"
+      flavor: "Je nejvyšší čas jít spát."
+    _postedAt0min0sec:
+      title: "Mluvící hodiny"
+      description: "Zveřejněte poznámku přesně v 00:00"
+      flavor: "Klik Klik Klik Bum"
+    _selfQuote:
+      title: "Sebereference"
+      description: "Citujte vlastní poznámku"
+    _htl20npm:
+      title: "Plynoucí časová osa"
+      description: "Mějte rychlost vaší domovské časové osy vyšší než 20 pzm (poznámek za minutu)."
+    _viewInstanceChart:
+      title: "Analytik"
+      description: "Zobrazte graf instance"
+    _outputHelloWorldOnScratchpad:
+      title: "Hello, world!"
+      description: "Dostaňte výpis \"hello world\" do Scratchpadu"
+    _open3windows:
+      title: "Splitscreen"
+      description: "Mějte otevřená alespoň 3 okna zároveň"
+    _driveFolderCircularReference:
+      title: "Okružní reference"
+      description: "Pokuste se o vytvoření rekurzivně vnořené složky v disku"
+    _reactWithoutRead:
+      title: "Opravdu jste to četl/a?"
 _role:
+  assignTarget: "Přiřadit"
+  canEditMembersByModerator: "Umožnit moderátorům upravovat seznam členů pro tuto roli"
+  descriptionOfCanEditMembersByModerator: "Po zapnutí této role budou moci moderátoři i administrátoři přiřazovat a odebírat uživatele do této role. Pokud je tato funkce vypnutá, budou moci uživatele přiřazovat pouze správci."
   priority: "Priorita"
   _priority:
     low: "Nízká"
     middle: "Střední"
     high: "Vysoká"
+  _options:
+    canManageCustomEmojis: "Spravovat vlastní emoji"
 _ffVisibility:
   public: "Zveřejnit"
 _ad:
