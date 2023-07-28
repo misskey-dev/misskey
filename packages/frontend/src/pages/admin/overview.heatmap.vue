@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_panel" :class="$style.root">
 	<MkSelect v-model="src" style="margin: 0 0 12px 0;" small>

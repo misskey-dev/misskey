@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { AsyncComponentLoader, defineAsyncComponent, inject } from 'vue';
 import { Router } from '@/nirax';
 import { $i, iAmModerator } from '@/account';
@@ -258,6 +263,9 @@ export const routes = [{
 		icon: 'icon',
 		permission: 'permission',
 	},
+}, {
+	path: '/oauth/authorize',
+	component: page(() => import('./pages/oauth.vue')),
 }, {
 	path: '/tags/:tag',
 	component: page(() => import('./pages/tag.vue')),
