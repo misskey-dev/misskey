@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * Basic OAuth tests to make sure the library is correctly integrated to Misskey
  * and not regressed by version updates or potential migration to another library.
