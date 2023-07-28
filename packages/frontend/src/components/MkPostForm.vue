@@ -765,7 +765,7 @@ async function post(ev?: MouseEvent) {
 				'https://www.youtube.com/watch?v=XVCwzwxdHuA',
 				'https://m.youtube.com/watch?v=XVCwzwxdHuA',
 
-        'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB',
+				'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB',
 				'https://open.spotify.com/track/7anfcaNPQWlWCwyCHmZqNy',
 				'https://open.spotify.com/track/5Odr16TvEN4my22K9nbH7l',
 				'https://open.spotify.com/album/5bOlxyl4igOrp2DwVQxBco',
