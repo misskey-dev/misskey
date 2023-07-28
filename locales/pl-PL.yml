@@ -1347,5 +1347,16 @@ _deck:
     mentions: "Wspomnienia"
     direct: "Bezpośredni"
 _webhookSettings:
+  createWebhook: "Stwórz Webhook"
   name: "Nazwa"
+  secret: "Sekret"
+  events: "Uruchomienie Webhooka"
   active: "Właczono"
+  _events:
+    follow: "Po zaobserwowaniu użytkownika"
+    followed: "Po zostaniu zaobserwowanym"
+    note: "Po opublikowaniu wpisu"
+    reply: "Po otrzymaniu odpowiedzi"
+    renote: "Po udostępnieniu wpisu"
+    reaction: "Po otrzymaniu reakcji"
+    mention: "Po zostaniu wspomnianym"
