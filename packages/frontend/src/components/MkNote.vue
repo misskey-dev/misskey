@@ -4,8 +4,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<div v-if="muted && appearNote" :class="$style.muted" @click="muted = false">
+	<I18n :src="i18n.ts.userSaysSomething" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+	</I18n>
+</div>
 <div
-	v-if="!muted"
+	v-else-if="note && appearNote"
 	v-show="!isDeleted"
 	ref="el"
 	v-hotkey="keymap"
@@ -126,19 +135,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</article>
 </div>
-<div v-else :class="$style.muted" @click="muted = false">
-	<I18n :src="i18n.ts.userSaysSomething" tag="small">
-		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
-		</template>
-	</I18n>
-</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
+import { computed, inject, onUnmounted, ref, shallowRef, Ref, defineAsyncComponent, watch, onActivated, onDeactivated } from 'vue';
 import * as mfm from 'mfm-js';
 import * as misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
@@ -162,7 +162,7 @@ import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
 import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
-import { useNoteCapture } from '@/scripts/use-note-capture';
+import { noteManager } from '@/scripts/entity-manager';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
@@ -173,32 +173,51 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog';
 import { shouldCollapsed } from '@/scripts/collapsed';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: { id: string };
 	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
 
-let note = $ref(deepClone(props.note));
-
+const cachedNote = noteManager.get(props.note.id);
+const overridingNote = shallowRef<Partial<misskey.entities.Note>>({});
 // plugin
-if (noteViewInterruptors.length > 0) {
-	onMounted(async () => {
-		let result = deepClone(note);
-		for (const interruptor of noteViewInterruptors) {
-			result = await interruptor.handler(result);
-		}
-		note = result;
-	});
-}
+watch(cachedNote, async () => {
+	if (cachedNote.value == null) {
+		isDeleted.value = true;
+		overridingNote.value = {};
+		return;
+	}
+	if (noteViewInterruptors.length > 0) {
+		overridingNote.value = {};
+		return;
+	}
 
-const isRenote = (
+	let result = deepClone(cachedNote.value);
+	for (const interruptor of noteViewInterruptors) {
+		result = await interruptor.handler(result) as misskey.entities.Note;
+	}
+	overridingNote.value = result;
+});
+const note = $computed<misskey.entities.Note | null>(() => {
+	if (cachedNote.value == null) {
+		return null;
+	}
+
+	return {
+		...cachedNote.value,
+		...overridingNote.value
+	};
+});
+
+const isRenote = computed(() => (
+	note != null &&
 	note.renote != null &&
 	note.text == null &&
-	note.fileIds.length === 0 &&
+	note.fileIds?.length === 0 &&
 	note.poll == null
-);
+));
 
 const el = shallowRef<HTMLElement>();
 const menuButton = shallowRef<HTMLElement>();
@@ -206,19 +225,19 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
-const isMyRenote = $i && ($i.id === note.userId);
+let appearNote = $computed(() => isRenote.value ? note?.renote as misskey.entities.Note : note);
+const isMyRenote = $i && ($i.id === note?.userId);
 const showContent = ref(false);
-const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const isLong = shouldCollapsed(appearNote);
-const collapsed = ref(appearNote.cw == null && isLong);
-const isDeleted = ref(false);
-const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
+const urls = appearNote?.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
+const isLong = appearNote ? shouldCollapsed(appearNote) : false;
+const collapsed = ref(appearNote?.cw == null && isLong);
+const isDeleted = ref(note === null);
+const muted = ref(appearNote ? checkWordMute(appearNote, $i, defaultStore.state.mutedWords) : false);
 const translation = ref<any>(null);
 const translating = ref(false);
-const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id);
-let renoteCollapsed = $ref(defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
+const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && !!appearNote?.user.instance);
+const canRenote = computed(() => (!!appearNote && !!$i) && (['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id));
+let renoteCollapsed = $ref(note && appearNote && defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
 
 const keymap = {
 	'r': () => reply(true),
@@ -231,13 +250,9 @@ const keymap = {
 	's': () => showContent.value !== showContent.value,
 };
 
-useNoteCapture({
-	rootEl: el,
-	note: $$(appearNote),
-	isDeletedRef: isDeleted,
-});
-
 useTooltip(renoteButton, async (showing) => {
+	if (!appearNote) return;
+
 	const renotes = await os.api('notes/renotes', {
 		noteId: appearNote.id,
 		limit: 11,
@@ -267,6 +282,8 @@ function smallerVisibility(a: Visibility | string, b: Visibility | string): Visi
 }
 
 function renote(viaKeyboard = false) {
+	if (!appearNote || !canRenote.value) return;
+
 	pleaseLogin();
 	showMovedDialog();
 
@@ -277,6 +294,8 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelRenote,
 			icon: 'ti ti-repeat',
 			action: () => {
+				if (!appearNote) return;
+
 				const el = renoteButton.value as HTMLElement | null | undefined;
 				if (el) {
 					const rect = el.getBoundingClientRect();
@@ -296,6 +315,7 @@ function renote(viaKeyboard = false) {
 			text: i18n.ts.inChannelQuote,
 			icon: 'ti ti-quote',
 			action: () => {
+				if (!appearNote) return;
 				os.post({
 					renote: appearNote,
 					channel: appearNote.channel,
@@ -308,6 +328,8 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.renote,
 		icon: 'ti ti-repeat',
 		action: () => {
+			if (!appearNote) return;
+
 			const el = renoteButton.value as HTMLElement | null | undefined;
 			if (el) {
 				const rect = el.getBoundingClientRect();
@@ -331,6 +353,7 @@ function renote(viaKeyboard = false) {
 		text: i18n.ts.quote,
 		icon: 'ti ti-quote',
 		action: () => {
+			if (!appearNote) return;
 			os.post({
 				renote: appearNote,
 			});
@@ -342,18 +365,19 @@ function renote(viaKeyboard = false) {
 	});
 }
 
-function reply(viaKeyboard = false): void {
+async function reply(viaKeyboard = false): void {
+	if (!appearNote) return;
 	pleaseLogin();
-	os.post({
+	await os.post({
 		reply: appearNote,
 		channel: appearNote.channel,
 		animation: !viaKeyboard,
-	}, () => {
-		focus();
 	});
+	focus();
 }
 
 function react(viaKeyboard = false): void {
+	if (!appearNote) return;
 	pleaseLogin();
 	showMovedDialog();
 	if (appearNote.reactionAcceptance === 'likeOnly') {
@@ -369,8 +393,10 @@ function react(viaKeyboard = false): void {
 			os.popup(MkRippleEffect, { x, y }, {}, 'end');
 		}
 	} else {
+		if (!reactButton.value) return;
 		blur();
 		reactionPicker.show(reactButton.value, reaction => {
+			if (!appearNote) return;
 			os.api('notes/reactions/create', {
 				noteId: appearNote.id,
 				reaction: reaction,
@@ -408,17 +434,20 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), ev).then(focus);
+		if (!note) return;
+		os.contextMenu(getNoteMenu({ note: note, translating, translation, isDeleted, currentClip: currentClip?.value }), ev).then(focus);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), menuButton.value, {
+	if (!note) return;
+	os.popupMenu(getNoteMenu({ note: note, translating, translation, isDeleted, currentClip: currentClip?.value }), menuButton.value, {
 		viaKeyboard,
 	}).then(focus);
 }
 
 async function clip() {
+	if (!note) return;
 	os.popupMenu(await getNoteClipMenu({ note: note, isDeleted, currentClip: currentClip?.value }), clipButton.value).then(focus);
 }
 
@@ -441,22 +470,23 @@ function showRenoteMenu(viaKeyboard = false): void {
 }
 
 function focus() {
-	el.value.focus();
+	el.value?.focus();
 }
 
 function blur() {
-	el.value.blur();
+	el.value?.blur();
 }
 
 function focusBefore() {
-	focusPrev(el.value);
+	focusPrev(el.value!);
 }
 
 function focusAfter() {
-	focusNext(el.value);
+	focusNext(el.value!);
 }
 
 function readPromo() {
+	if (!appearNote) return;
 	os.api('promo/read', {
 		noteId: appearNote.id,
 	});
@@ -464,10 +494,35 @@ function readPromo() {
 }
 
 function showReactions(): void {
+	if (!appearNote) return;
 	os.popup(defineAsyncComponent(() => import('@/components/MkReactedUsersDialog.vue')), {
 		noteId: appearNote.id,
 	}, {}, 'closed');
 }
+
+const unuse = ref<() => void>();
+unuse.value = noteManager.useNote(props.note.id, true).unuse;
+
+onUnmounted(() => {
+	if (unuse.value) {
+		unuse.value();
+		unuse.value = undefined;
+	}
+});
+
+onActivated(() => {
+	if (!unuse.value) {
+		unuse.value = noteManager.useNote(props.note.id, true).unuse;
+	}
+});
+
+onDeactivated(() => {
+	if (unuse.value) {
+		unuse.value();
+		unuse.value = undefined;
+	}
+});
+
 </script>
 
 <style lang="scss" module>

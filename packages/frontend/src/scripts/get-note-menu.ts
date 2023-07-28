@@ -93,7 +93,6 @@ export async function getNoteClipMenu(props: {
 
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
-	menuButton: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
