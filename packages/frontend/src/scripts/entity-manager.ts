@@ -131,7 +131,8 @@ export class NoteManager {
     public async fetch(id: string, force = false): Promise<CachedNote> {
         if (!force) {
             const updatedAt = this.updatedAt.get(id);
-            if (updatedAt && Date.now() - updatedAt < 1000 * 30) {
+            // 2分以上経過していない場合はキャッシュを返す
+            if (updatedAt && Date.now() - updatedAt < 1000 * 120) {
                 const cachedNote = this.get(id);
                 if (cachedNote) {
                     return cachedNote;

@@ -238,7 +238,16 @@ const translation = ref<any>(null);
 const translating = ref(false);
 const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && !!appearNote?.user.instance);
 const canRenote = computed(() => (!!appearNote && !!$i) && (['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i.id));
-let renoteCollapsed = $ref(note && appearNote && defaultStore.state.collapseRenotes && isRenote && (($i && ($i.id === note.userId || $i.id === appearNote.userId)) || (appearNote.myReaction != null)));
+let renoteCollapsed = $ref(
+	note &&
+	appearNote &&
+	defaultStore.state.collapseRenotes &&
+	isRenote.value &&
+	(
+		($i && ($i.id === note.userId || $i.id === appearNote.userId)) ||
+		(appearNote.myReaction != null)
+	)
+);
 
 const keymap = {
 	'r': () => reply(true),
@@ -518,12 +527,14 @@ onActivated(() => {
 });
 
 onDeactivated(() => {
-	if (unuse.value) {
-		unuse.value();
-		unuse.value = undefined;
-	}
+	// 不要なキャッシュ消去や通信を防止するため遅延させる
+	setTimeout(() => {
+		if (unuse.value) {
+			unuse.value();
+			unuse.value = undefined;
+		}
+	}, 1000);
 });
-
 </script>
 
 <style lang="scss" module>
