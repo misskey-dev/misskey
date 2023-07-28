@@ -755,14 +755,19 @@ async function post(ev?: MouseEvent) {
 			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
-			if (
-				text.includes('https://youtu.be/Efrlqw8ytg4'.toLowerCase()) ||
-				text.includes('https://www.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
-				text.includes('https://m.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
-				text.includes('https://youtu.be/XVCwzwxdHuA'.toLowerCase()) ||
-				text.includes('https://www.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase()) ||
-				text.includes('https://m.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase())
-			) {
+			if ([
+				'https://youtu.be/Efrlqw8ytg4',
+				'https://www.youtube.com/watch?v=Efrlqw8ytg4',
+				'https://m.youtube.com/watch?v=Efrlqw8ytg4',
+			
+				'https://youtu.be/XVCwzwxdHuA',
+				'https://www.youtube.com/watch?v=XVCwzwxdHuA',
+				'https://m.youtube.com/watch?v=XVCwzwxdHuA',
+
+        'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB?si=b45a46c0b622462c',
+				'https://open.spotify.com/track/7anfcaNPQWlWCwyCHmZqNy?si=1705919f63c64bfb',
+				'https://open.spotify.com/track/5Odr16TvEN4my22K9nbH7l?si=2eb7e7bed887409c',
+			].some(url => text.includes(url.toLowerCase())) {
 				claimAchievement('brainDiver');
 			}
 
