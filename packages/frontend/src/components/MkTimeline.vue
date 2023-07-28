@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div v-if="queueSize > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="reload()">{{ i18n.ts.goToTheHeadOfTimeline }}</button></div>

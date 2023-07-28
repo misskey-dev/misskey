@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <svg :class="$style.root" viewBox="0 0 10 10" preserveAspectRatio="none">
 	<template v-if="props.graduations === 'dots'">

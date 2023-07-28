@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -57,7 +62,7 @@
 							<MkInput v-model="policies.inviteLimit" type="number">
 							</MkInput>
 						</MkFolder>
-						
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimitCycle, 'inviteLimitCycle'])">
 							<template #label>{{ i18n.ts._role._options.inviteLimitCycle }}</template>
 							<template #suffix>{{ policies.inviteLimitCycle + i18n.ts._time.minute }}</template>
