@@ -4,6 +4,7 @@
 
 import * as fs from 'node:fs';
 import gulp from 'gulp';
+import rename from 'gulp-rename';
 import replace from 'gulp-replace';
 import terser from 'gulp-terser';
 import cssnano from 'gulp-cssnano';
@@ -47,6 +48,7 @@ gulp.task('build:backend:script', () => {
 		.pipe(terser({
 			toplevel: true
 		}))
+		.pipe(rename({ suffix: `.${meta.version}` }))
 		.pipe(gulp.dest('./built/_frontend_dist_/'));
 });
 
