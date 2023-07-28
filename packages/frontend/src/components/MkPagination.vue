@@ -535,7 +535,10 @@ function concatItems(oldItems: MisskeyEntity[]) {
 }
 
 async function executeQueue() {
-	if (queue.value.size === 0) return;
+	// キューが空の場合でも古いアイテムをタイムライン表示数を制限する必要がある
+	// ため続行する！
+	// if (queue.value.size === 0) return;
+
 	if (isPausingUpdateByExecutingQueue.value) return;
 	if (timelineBackTopBehavior.value === 'newest') {
 		// Safariは最新のアイテムにするだけ
