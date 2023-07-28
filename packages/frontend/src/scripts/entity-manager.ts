@@ -103,10 +103,10 @@ export class NoteManager {
 
     public get(id: string): CachedNote {
         if (!this.notesComputed.has(id)) {
-            const note = this.notesSource.get(id);
+            const note = this.notesSource.get(id) ?? this.notesSource.set(id, ref(null)).get(id)!;
 
             this.notesComputed.set(id, computed<Note | null>(() => {
-                if (!note || !note.value) return null;
+                if (!note.value) return null;
 
                 const user = userLiteManager.get(note.value.userId)!;
 

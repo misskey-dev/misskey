@@ -189,6 +189,7 @@ watch(cachedNote, async () => {
 		overridingNote.value = {};
 		return;
 	}
+	isDeleted.value = false;
 	if (noteViewInterruptors.length > 0) {
 		overridingNote.value = {};
 		return;
