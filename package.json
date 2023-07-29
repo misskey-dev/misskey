@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "13.14.2-io.2",
+	"version": "13.14.2-io.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
