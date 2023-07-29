@@ -71,14 +71,14 @@ export class ReportAbuseProcessorService {
 			const isReportContentPatternMatched = resolver.reportContentPattern ? new RE2(resolver.reportContentPattern).test(job.data.comment) : true;
 
 			if (isTargetUserPatternMatched && isReporterPatternMatched && isReportContentPatternMatched) {
-				if (resolver.forward && job.data.targetUserHost !== null) {
+				if (resolver.forward && job.data.targetUserHost !== null && job.data.reporterHost === null) {
 					this.queueService.deliver(actor, this.apRendererService.addContext(this.apRendererService.renderFlag(actor, targetUser.uri!, job.data.comment)), targetUser.inbox, false);
 				}
 
 				await this.abuseUserReportsRepository.update(job.data.id, {
 					resolved: true,
 					assigneeId: actor.id,
-					forwarded: resolver.forward && job.data.targetUserHost !== null,
+					forwarded: resolver.forward && job.data.targetUserHost !== null && job.data.reporterHost === null,
 				});
 
 				return;
