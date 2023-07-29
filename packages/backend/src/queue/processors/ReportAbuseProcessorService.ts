@@ -1,12 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { MoreThan, IsNull } from 'typeorm';
 import RE2 from 're2';
-import sanitizeHtml from 'sanitize-html';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 import { RoleService } from '@/core/RoleService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { EmailService } from '@/core/EmailService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import type { AbuseReportResolversRepository, AbuseUserReportsRepository, UsersRepository } from '@/models/index.js';
@@ -36,8 +33,6 @@ export class ReportAbuseProcessorService {
 		private instanceActorService: InstanceActorService,
 		private apRendererService: ApRendererService,
 		private roleService: RoleService,
-		private metaService: MetaService,
-		private emailService: EmailService,
 		private queueService: QueueService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('report-abuse');
@@ -85,7 +80,7 @@ export class ReportAbuseProcessorService {
 					assigneeId: actor.id,
 					forwarded: resolver.forward && job.data.targetUserHost !== null,
 				});
-				
+
 				return;
 			}
 		}
@@ -101,13 +96,6 @@ export class ReportAbuseProcessorService {
 					reporterId: job.data.reporterId,
 					comment: job.data.comment,
 				});
-			}
-
-			const meta = await this.metaService.fetch();
-			if (meta.email) {
-				this.emailService.sendEmail(meta.email, 'New abuse report',
-					sanitizeHtml(job.data.comment),
-					sanitizeHtml(job.data.comment));
 			}
 		});
 	}
