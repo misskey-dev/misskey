@@ -1255,7 +1255,7 @@ _2fa:
   step1: "أولًا ثبّت تطبيق استيثاق على جهازك (مثل {a} و{b})."
   step2: "امسح رمز الاستجابة السريعة الموجد على الشاشة."
   step3: "أدخل الرمز الموجود في تطبيقك لإكمال التثبيت."
-  step4: "من هذه اللحظة أثناء ولوجك سيُطلب منك الرمز."
+  step4: "من هذه اللحظة أثناء ولوجك سيُطلب منك الرمز.\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   renewTOTPCancel: "ليس اﻵن"
 _permissions:
   "read:account": "اعرض معلومات حسابك"

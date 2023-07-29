@@ -1087,7 +1087,7 @@ _2fa:
   step1: "Najpierw, zainstaluj aplikację uwierzytelniającą (taką jak {a} lub {b}) na swoim urządzeniu."
   step2: "Następnie, zeskanuje kod QR z ekranu."
   step3: "Wprowadź token podany w aplikacji, aby ukończyć konfigurację."
-  step4: "Od teraz, przy każdej próbie logowania otrzymasz prośbę o token logowania."
+  step4: "Od teraz, przy każdej próbie logowania otrzymasz prośbę o token logowania.\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   removeKeyConfirm: "Usunąć kopię zapasową {name}?"
   renewTOTPCancel: "Nie teraz"
 _permissions:

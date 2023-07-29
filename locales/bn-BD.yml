@@ -1042,7 +1042,7 @@ _2fa:
   step2: "এরপরে, অ্যাপের সাহায্যে প্রদর্শিত QR কোডটি স্ক্যান করুন।"
   step2Url: "ডেস্কটপ অ্যাপে, নিম্নলিখিত URL লিখুন:"
   step3: "অ্যাপে প্রদর্শিত টোকেনটি লিখুন এবং আপনার কাজ শেষ।"
-  step4: "আপনাকে এখন থেকে লগ ইন করার সময়, এইভাবে টোকেন লিখতে হবে।"
+  step4: "আপনাকে এখন থেকে লগ ইন করার সময়, এইভাবে টোকেন লিখতে হবে।\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   securityKeyInfo: "আপনি একটি হার্ডওয়্যার সিকিউরিটি কী ব্যবহার করে লগ ইন করতে পারেন যা FIDO2 বা ডিভাইসের ফিঙ্গারপ্রিন্ট সেন্সর বা পিন সমর্থন করে৷"
 _permissions:
   "read:account": "অ্যাকাউন্টের তথ্য দেখুন"

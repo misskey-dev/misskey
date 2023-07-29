@@ -92,6 +92,11 @@ export class UserProfile {
 	public twoFactorTempSecret: string | null;
 
 	@Column('varchar', {
+		nullable: true, array: true,
+	})
+	public twoFactorBackupSecret: string[] | null;
+
+	@Column('varchar', {
 		length: 128, nullable: true,
 	})
 	public twoFactorSecret: string | null;

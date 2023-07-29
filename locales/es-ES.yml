@@ -1682,7 +1682,7 @@ _2fa:
   step2Url: "En una aplicación de escritorio se puede ingresar la siguiente URL:"
   step3Title: "Ingresa un código de autenticación"
   step3: "Para terminar, ingrese el token mostrado en la aplicación."
-  step4: "Ahora cuando inicie sesión, ingrese el mismo token"
+  step4: "Ahora cuando inicie sesión, ingrese el mismo token\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   securityKeyNotSupported: "Tu navegador no soporta claves de autenticación."
   registerTOTPBeforeKey: "Please set up an authenticator app to register a security or pass key.\npor favor. configura una aplicación de autenticación para registrar una llave de seguridad."
   securityKeyInfo: "Se puede configurar el inicio de sesión usando una clave de seguridad de hardware que soporte FIDO2 o con un certificado de huella digital o con un PIN"

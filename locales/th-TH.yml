@@ -1682,7 +1682,7 @@ _2fa:
   step2Url: "คุณยังสามารถป้อนบน URL นี้หากคุณใช้โปรแกรมเดสก์ท็อป:"
   step3Title: "ป้อนรหัสยืนยัน"
   step3: "ป้อนโทเค็นที่แอปของคุณให้มาเพื่อเสร็จสิ้นการตั้งค่า"
-  step4: "นับจากนี้เป็นต้นไปการพยายามเข้าสู่ระบบในอนาคตนั้น อาจจะต้องขอโทเค็นในการเข้าสู่ระบบดังกล่าว"
+  step4: "นับจากนี้เป็นต้นไปการพยายามเข้าสู่ระบบในอนาคตนั้น อาจจะต้องขอโทเค็นในการเข้าสู่ระบบดังกล่าว\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   securityKeyNotSupported: "เบราว์เซอร์ของคุณไม่รองรับคีย์ความปลอดภัยนะ"
   registerTOTPBeforeKey: "กรุณาตั้งค่าแอปยืนยันตัวตนเพื่อลงทะเบียนรหัสความปลอดภัยหรือรหัสผ่าน"
   securityKeyInfo: "นอกจากนี้การตรวจสอบความถูกต้องด้วยลายนิ้วมือหรือ PIN แล้ว คุณยังสามารถตั้งค่าการตรวจสอบสิทธิ์ผ่านคีย์ความปลอดภัยของฮาร์ดแวร์ที่รองรับ FIDO2 เพื่อเพิ่มความปลอดภัยให้กับบัญชีของคุณ"

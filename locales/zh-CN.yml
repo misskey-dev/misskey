@@ -1682,7 +1682,7 @@ _2fa:
   step2Url: "在桌面应用程序中输入以下 URL："
   step3Title: "输入验证码"
   step3: "输入您的应用提供的动态口令以完成设置。"
-  step4: "从现在开始，任何登录操作都将要求您提供动态口令。"
+  step4: "从现在开始，任何登录操作都将要求您提供动态口令。\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   securityKeyNotSupported: "您的浏览器不支持安全密钥。"
   registerTOTPBeforeKey: "要注册安全密钥或 Passkey，请先设置验证器应用程序。"
   securityKeyInfo: "注册兼容 WebAuthn 的密钥，例如支持 FIDO2 的硬件安全密钥、设备上的生物识别功能、PIN 码以及 Passkey 等。"

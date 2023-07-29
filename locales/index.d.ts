@@ -1804,6 +1804,8 @@ export interface Locale {
         "step3Title": string;
         "step3": string;
         "step4": string;
+        "twoFactorBackupSecretWarning": string;
+        "twoFactorBackupSecretExhausted": string;
         "securityKeyNotSupported": string;
         "registerTOTPBeforeKey": string;
         "securityKeyInfo": string;

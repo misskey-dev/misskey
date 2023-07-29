@@ -1682,7 +1682,7 @@ _2fa:
   step2Url: "請在桌面版應用程式中輸入以下的 URL："
   step3Title: "輸入驗證碼"
   step3: "輸入應用程式所提供的權杖以完成設定。"
-  step4: "從現在開始，任何登入操作都將要求您提供權杖。"
+  step4: "從現在開始，任何登入操作都將要求您提供權杖。\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   securityKeyNotSupported: "您的瀏覽器不支援安全金鑰。"
   registerTOTPBeforeKey: "如要註冊安全金鑰或 Passkey，請先設定驗證應用程式。"
   securityKeyInfo: "您可以設定使用支援 FIDO2 的硬體安全鎖、終端設備的指紋認證，或者 PIN 碼來登入。"

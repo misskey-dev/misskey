@@ -1572,7 +1572,7 @@ _2fa:
   step2Url: "Если пользуетесь приложением на компьютере, можете ввести в него эту строку (URL):"
   step3Title: "Введите проверочный код"
   step3: "И наконец, введите код, который покажет приложение."
-  step4: "Теперь при каждом входе на сайт вам нужно будет вводить код из приложения аналогичным образом."
+  step4: "Теперь при каждом входе на сайт вам нужно будет вводить код из приложения аналогичным образом.\n\nWe've generated backup codes for emergency access to your account in case your authentication app becomes unavailable.\nPlease ensure these are stored in a safe place to prevent loss.\nEach of these codes can only be used once.\nIf you exhaust all the codes, you will not be able to access your account anymore, so please reconfigure your authentication app as soon as possible.\n\nBackup Codes:\n\n{codes}"
   securityKeyNotSupported: "Ваш браузер не поддерживает ключи безопасности."
   registerTOTPBeforeKey: "Чтобы зарегистрировать ключ безопасности и пароль, сначала настройте приложение аутентификации."
   securityKeyInfo: "Вы можете настроить вход с помощью аппаратного ключа безопасности, поддерживающего FIDO2, или отпечатка пальца или PIN-кода на устройстве."

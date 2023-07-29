@@ -3,6 +3,13 @@
 	<template #label>{{ i18n.ts['2fa'] }}</template>
 
 	<div v-if="$i" class="_gaps_s">
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodes === 'partial'" warn class="info">
+			{{ i18n.ts._2fa.twoFactorBackupSecretWarning }}
+		</MkInfo>
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodes === 'none'" warn class="info">
+			{{ i18n.ts._2fa.twoFactorBackupSecretExhausted }}
+		</MkInfo>
+
 		<MkFolder>
 			<template #icon><i class="ti ti-shield-lock"></i></template>
 			<template #label>{{ i18n.ts.totp }}</template>
@@ -114,13 +121,13 @@ async function registerTOTP() {
 	});
 	if (token.canceled) return;
 
-	await os.apiWithDialog('i/2fa/done', {
+	const { backupCodes } = await os.apiWithDialog('i/2fa/done', {
 		token: token.result.toString(),
 	});
 
 	await os.alert({
 		type: 'success',
-		text: i18n.ts._2fa.step4,
+		text: i18n.t('_2fa.step4', { codes: backupCodes.join('\n') }),
 	});
 }
 

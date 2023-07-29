@@ -111,6 +111,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		publicReactions: false,
 		securityKeys: false,
 		twoFactorEnabled: false,
+		twoFactorBackupCodes: 'none',
 		updatedAt: null,
 		uri: null,
 		url: null,

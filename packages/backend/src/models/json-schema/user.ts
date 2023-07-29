@@ -320,6 +320,11 @@ export const packedMeDetailedOnlySchema = {
 			type: 'boolean',
 			nullable: false, optional: false,
 		},
+		twoFactorBackupCodes: {
+			type: 'string',
+			enum: ['full', 'partial', 'none'],
+			nullable: false, optional: false,
+		},
 		hideOnlineStatus: {
 			type: 'boolean',
 			nullable: false, optional: false,
