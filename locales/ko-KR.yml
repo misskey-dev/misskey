@@ -1091,6 +1091,7 @@ usedAt: "사용 시각"
 unused: "사용되지 않음"
 used: "사용됨"
 expired: "만료됨"
+doYouAgree: "동의하십니까?"
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."
