@@ -1053,9 +1053,15 @@ options: "Настройки ролей"
 specifyUser: "Указанный пользователь"
 failedToPreviewUrl: "Предварительный просмотр недоступен"
 update: "Обновить"
+later: "Позже"
 goToMisskey: "К Misskey"
 additionalEmojiDictionary: "Дополнительные словари эмодзи"
 installed: "Установлено"
+expired: "Срок действия приглашения истёк"
+_initialAccountSetting:
+  profileSetting: "Настройки профиля"
+  privacySetting: "Настройки конфиденциальности"
+  skipAreYouSure: "Пропустить настройку?"
 _achievements:
   earnedAt: "Разблокировано в"
   _types:
@@ -1922,6 +1928,7 @@ _deck:
     channel: "Каналы"
     mentions: "Упоминания"
     direct: "Личное"
+    roleTimeline: "История Ролей"
 _dialog:
   charactersExceeded: "Превышено максимальное количество символов! У вас {current} / из   {max}"
   charactersBelow: "Это ниже минимального количества символов! У вас {current} / из {min}"
@@ -1929,5 +1936,6 @@ _disabledTimeline:
   title: "Лента отключена"
   description: "Ваша текущая роль не позволяет пользоваться этой лентой."
 _webhookSettings:
+  createWebhook: "Создать вебхук"
   name: "Название"
   active: "Вкл."
