@@ -43,8 +43,7 @@ export const userLiteManager = new EntitiyManager<UserLite>('userLite');
 export const driveFileManager = new EntitiyManager<DriveFile>('driveFile');
 
 type OmittedNote = Omit<Note, 'user' | 'renote' | 'reply'>;
-type CachedNoteSource = Ref<OmittedNote | null>;
-type CachedNote = ComputedRef<Note | null>;
+type CachedNote = Ref<Note | null>;
 type InterruptedCachedNote = Ref<Note | null>;
 
 export function isRenote(note: Note | OmittedNote | null): boolean {
@@ -64,25 +63,16 @@ export function isRenote(note: Note | OmittedNote | null): boolean {
 export class NoteManager {
     /**
      * ノートのソースとなるRef
-     * user, renote, replyを持たない
      * nullは削除済みであることを表す
      */
-    private notesSource: Map<Note['id'], CachedNoteSource>;
-
-    /**
-     * ソースからuser, renote, replyを取得したComputedRefのキャッシュを保持しておく
-     * nullは削除済みであることを表す
-     * キャプチャが0になったら削除される
-     */
-    private notesComputed: Map<Note['id'], CachedNote>;
+    private notes: Map<Note['id'], CachedNote>;
 
     private updatedAt: Map<Note['id'], number>;
     private captureing: Map<Note['id'], number>;
     private connection: Stream | null;
 
     constructor() {
-        this.notesSource = new Map();
-        this.notesComputed = new Map();
+        this.notes = new Map();
         this.updatedAt = new Map();
         this.captureing = new Map();
         this.connection = $i ? useStream() : null;
@@ -104,62 +94,39 @@ export class NoteManager {
         const note: Note = { ..._note };
 
         userLiteManager.set(note.user);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        delete note.user;
+        note.user = userLiteManager.get(note.userId)!.value!;
 
         if (note.fileIds.length > 0) {
             for (const file of note.files) {
                 driveFileManager.set(file);
             }
         }
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        delete note.files;
+        note.files = note.fileIds.map(id => driveFileManager.get(id)!.value!);
 
-        if (note.renote) this.set(note.renote);
-        delete note.renote;
+        if (note.renote) {
+            this.set(note.renote);
+            note.renote = this.get(note.renoteId)!.value!;
+        }
 
-        if (note.reply) this.set(note.reply);
-        delete note.reply;
+        if (note.reply) {
+            this.set(note.reply);
+            note.reply = this.get(note.replyId)!.value!;
+        }
 
-        const cached = this.notesSource.get(note.id);
+        const cached = this.notes.get(note.id);
         if (cached) {
             cached.value = note;
         } else {
-            this.notesSource.set(note.id, ref(note));
+            this.notes.set(note.id, ref(note));
         }
         this.updatedAt.set(note.id, Date.now());
     }
 
     public get(id: string): CachedNote {
-        if (!this.notesComputed.has(id)) {
-            const note = this.notesSource.get(id) ?? this.notesSource.set(id, ref(null)).get(id)!;
-
-            this.notesComputed.set(id, computed<Note | null>(() => {
-                if (!note.value) return null;
-
-                const user = userLiteManager.get(note.value.userId)!;
-
-                const renote = note.value.renoteId ? this.get(note.value.renoteId) : undefined;
-                // renoteが削除されている場合はCASCADE削除されるためnullを返す
-                if (renote && !renote.value) return null;
-
-                const reply = note.value.replyId ? this.get(note.value.replyId) : undefined;
-                if (reply && !reply.value) return null;
-
-                const files = note.value.fileIds.map(id => driveFileManager.get(id)?.value);
-
-                return {
-                    ...note.value,
-                    user: user.value,
-                    renote: renote?.value ?? undefined,
-                    reply: reply?.value ?? undefined,
-                    files: files.filter(file => file) as DriveFile[],
-                };
-            }));
+        if (!this.notes.has(id)) {
+            this.notes.set(id, ref(null));
         }
-        return this.notesComputed.get(id)!;
+        return this.notes.get(id)!;
     }
 
     /**
@@ -244,12 +211,11 @@ export class NoteManager {
 	private onStreamNoteUpdated(noteData: any): void {
 		const { type, id, body } = noteData;
 
-        const note = this.notesSource.get(id);
+        const note = this.notes.get(id);
 
 		if (!note || !note.value) {
             this.connection?.send('un', { id });
             this.captureing.delete(id);
-            this.notesComputed.delete(id);
             this.updatedAt.delete(id);
             return;
         }
@@ -314,7 +280,7 @@ export class NoteManager {
 	}
 
     private capture(id: string, markRead = true): void {
-        if (!this.notesSource.has(id)) return;
+        if (!this.notes.has(id)) return;
 
         const captureingNumber = this.captureing.get(id);
         if (typeof captureingNumber === 'number' && captureingNumber > 0) {
@@ -331,7 +297,7 @@ export class NoteManager {
 	}
 
     private decapture(id: string): void {
-        if (!this.notesSource.has(id)) return;
+        if (!this.notes.has(id)) return;
 
         const captureingNumber = this.captureing.get(id);
         if (typeof captureingNumber === 'number' && captureingNumber > 1) {
@@ -344,9 +310,6 @@ export class NoteManager {
         }
 
         this.captureing.delete(id);
-
-        // キャプチャが終わったらcomputedキャッシュも消してしまう
-        this.notesComputed.delete(id);
 	}
 
     /**
@@ -357,7 +320,7 @@ export class NoteManager {
      */
     public useNote(id: string, shoudFetch: true): { note: Promise<CachedNote>, unuse: () => void };
     public useNote(id: string, shoudFetch = false) {
-        const note = (!this.notesSource.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
+        const note = (!this.notes.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
         let using = false;
         const CapturePromise = Promise.resolve(note)
             .then(() => {
