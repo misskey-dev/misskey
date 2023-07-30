@@ -431,7 +431,7 @@ onMounted(async () => {
 				conversation.value = res;
 			});
 		}
-	};
+	}
 });
 
 onUnmounted(() => {
