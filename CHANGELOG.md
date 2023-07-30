@@ -18,7 +18,7 @@
 - OAuth 2.0のサポート
 
 ### Client
--
+- Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
 
 ### Server
 -
