@@ -76,7 +76,10 @@ function onclick() {
 }
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
-watch(() => props.image, () => {
+watch(() => props.image, (newImage, oldImage) => {
+	// 内容に変更がない限りhideを変えない
+	// （noteManager.set由来の変更でもこれが呼ばれてしまうことの対策）
+	if (JSON.stringify(newImage) === JSON.stringify(oldImage)) return;
 	hide = (defaultStore.state.nsfw === 'force' || defaultStore.state.enableDataSaverMode) ? true : (props.image.isSensitive && defaultStore.state.nsfw !== 'ignore');
 }, {
 	deep: true,
