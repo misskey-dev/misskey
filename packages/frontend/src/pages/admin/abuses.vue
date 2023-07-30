@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkAbuseReportResolver v-model="editingResolver" :data="(resolver as any)" :editable="editableResolver === resolver.id">
 							<template #button>
 								<div v-if="editableResolver !== resolver.id">
-									<MkButton primary inline :class="$style['button-margin']" @click="edit(resolver.id)"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
+									<MkButton primary inline :class="$style.buttonMargin" @click="edit(resolver.id)"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
 									<MkButton danger inline @click="deleteResolver(resolver.id)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 								</div>
 								<div v-else>
@@ -219,13 +219,13 @@ definePageMetadata({
 	flex: 1;
 }
 
-.button-margin {
+.buttonMargin {
 	margin-right: 6px;
 }
 
 .state {
 	@extend .input-base;
-	@extend .button-margin;
+	@extend .buttonMargin;
 }
 .reporterOrigin {
 	@extend .input-base;
@@ -233,7 +233,7 @@ definePageMetadata({
 
 .targetUserOrigin {
 	@extend .input-base;
-	@extend .button-margin;
+	@extend .buttonMargin;
 }
 
 .margin {
