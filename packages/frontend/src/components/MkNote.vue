@@ -196,7 +196,7 @@ const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
 const showContent = ref(false);
-const collapsed = ref(appearNote.value?.cw == null && isLong);
+const collapsed = ref(appearNote.value?.cw == null && isLong.value);
 const isDeleted = ref(note === null);
 const muted = ref(appearNote.value ? checkWordMute(appearNote.value, $i, defaultStore.state.mutedWords) : false);
 const translation = ref<any>(null);
