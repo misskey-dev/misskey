@@ -164,15 +164,16 @@ export class NoteManager {
         executeInterruptor: () => Promise<void>,
     } {
         const note = this.get(id);
-        const interruptedNote = ref<Note | null>(unref(note));
+        const interruptedNote = ref<Note | null>(note.value);
+
         async function executeInterruptor() {
             if (note.value == null) {
                 interruptedNote.value = null;
                 return;
             }
 
-            if (noteViewInterruptors.length > 0) {
-                interruptedNote.value = unref(note);
+            if (noteViewInterruptors.length === 0) {
+                interruptedNote.value = note.value;
                 return;
             }
 
@@ -196,6 +197,7 @@ export class NoteManager {
      */
     public getNoteViewBase(id: string) {
         const { interruptedNote: note, interruptorUnwatch, executeInterruptor } = this.getInterrupted(id);
+        //const note = this.get(id);
         const isRenote = computed(() => (
             note.value != null &&
             note.value.renote != null &&
