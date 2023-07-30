@@ -568,13 +568,15 @@ async function executeQueue() {
 		unshiftItems(newItems);
 		queue.value = new Map();
 	} else {
-		const queueArr = Array.from(queue.value.entries());
-		queue.value = new Map(queueArr.slice(props.pagination.limit));
-		const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
-		isPausingUpdateByExecutingQueue.value = true;
+		if (queue.value.size > 0) {
+			const queueArr = Array.from(queue.value.entries());
+			queue.value = new Map(queueArr.slice(props.pagination.limit));
+			const newItems = Array.from({ length: Math.min(queueArr.length, props.pagination.limit) }, (_, i) => queueArr[i][1]).reverse();
+			isPausingUpdateByExecutingQueue.value = true;
 
-		await adjustScroll(() => unshiftItems(newItems, Infinity));
-		backed = true;
+			await adjustScroll(() => unshiftItems(newItems, Infinity));
+			backed = true;
+		}
 
 		denyMoveTransition.value = true;
 		items.value = new Map([...items.value].slice(0, displayLimit.value));
