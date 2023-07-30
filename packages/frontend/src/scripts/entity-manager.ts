@@ -47,6 +47,14 @@ type CachedNoteSource = Ref<OmittedNote | null>;
 type CachedNote = ComputedRef<Note | null>;
 type InterruptedCachedNote = Ref<Note | null>;
 
+export function isRenote(note: Note | OmittedNote): boolean {
+    return note != null &&
+        note.renoteId != null &&
+        note.text == null &&
+        note.fileIds?.length === 0 &&
+        note.poll == null;
+}
+
 /**
  * ノートのキャッシュを管理する
  * 基本的な使い方:
@@ -197,14 +205,7 @@ export class NoteManager {
      */
     public getNoteViewBase(id: string) {
         const { interruptedNote: note, interruptorUnwatch, executeInterruptor } = this.getInterrupted(id);
-        //const note = this.get(id);
-        const isRenote = computed(() => (
-            note.value != null &&
-            note.value.renote != null &&
-            note.value.text == null &&
-            note.value.fileIds?.length === 0 &&
-            note.value.poll == null
-        ));
+        const isRenote = computed(() => isRenote(note.value));
         const isMyRenote = computed(() => $i && ($i.id === note.value?.userId));
         const appearNote = computed(() => (isRenote.value ? note.value?.renote : note.value) ?? null);
 

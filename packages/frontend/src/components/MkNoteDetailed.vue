@@ -407,7 +407,7 @@ function blur() {
 	el.value?.blur();
 }
 
-const { note: fetching, unuse } = noteManager.useNote(props.note.id, true);
+const { note: fetching, unuse } = noteManager.useNote(appearNote.value?.id ?? props.note.id, true);
 
 onMounted(async () => {
 	await fetching;

@@ -473,7 +473,8 @@ function showReactions(): void {
 }
 
 const unuse = ref<() => void>();
-unuse.value = noteManager.useNote(props.note.id, true).unuse;
+
+unuse.value = noteManager.useNote(appearNote.value?.id ?? props.note.id, true).unuse;
 
 onMounted(() => {
 	executeInterruptor();
@@ -488,19 +489,20 @@ onUnmounted(() => {
 });
 
 onActivated(() => {
-	if (!unuse.value) {
-		unuse.value = noteManager.useNote(props.note.id, true).unuse;
+	if (!unuse.value && appearNote.value) {
+		unuse.value = noteManager.useNote(appearNote.value?.id ?? props.note.id, true).unuse;
 	}
 });
 
 onDeactivated(() => {
+	const _unuse = unuse.value;
+	unuse.value = undefined;
 	// 不要なキャッシュ消去や通信を防止するため遅延させる
-	setTimeout(() => {
-		if (unuse.value) {
-			unuse.value();
-			unuse.value = undefined;
-		}
-	}, 1000);
+	if (_unuse) {
+		setTimeout(() => {
+			_unuse();
+		}, 1000);
+	}
 });
 </script>
 
