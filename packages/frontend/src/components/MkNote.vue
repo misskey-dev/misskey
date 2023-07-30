@@ -184,7 +184,7 @@ if (props.setNote) {
 const {
 	note, interruptorUnwatch, executeInterruptor,
 	isRenote, isMyRenote, appearNote,
-	urls, isLong, canRenote,
+	urls, isLong, canRenote, showTicker,
 } = noteManager.getNoteViewBase(props.note.id);
 
 const el = shallowRef<HTMLElement>();
