@@ -1092,6 +1092,8 @@ unused: "사용되지 않음"
 used: "사용됨"
 expired: "만료됨"
 doYouAgree: "동의하십니까?"
+beSureToReadThisAsItIsImportant: "중요하므로 반드시 읽어주십시오."
+iHaveReadXCarefullyAndAgree: "\"{x}\"의 내용을 읽고 동의합니다."
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."
