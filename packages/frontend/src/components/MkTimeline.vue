@@ -26,9 +26,6 @@ import { $i } from '@/account';
 import { defaultStore } from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
-import { noteManager } from '@/scripts/entity-manager';
-import { Note } from 'misskey-js/built/entities';
-import { MisskeyEntity } from '@/types/date-separated-list';
 
 const props = defineProps<{
 	src: string;
@@ -63,16 +60,6 @@ const prepend = note => {
 	if (props.sound) {
 		sound.play($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 	}
-};
-
-const transform = (notes: Note[]): MisskeyEntity[] => {
-	return notes.map(note => {
-		noteManager.set(note);
-		return {
-			id: note.id,
-			createdAt: note.createdAt,
-		};
-	});
 };
 
 let endpoint;
@@ -178,7 +165,6 @@ const pagination = {
 	endpoint: endpoint,
 	limit: 10,
 	params: query,
-	transform: transform,
 };
 
 onUnmounted(() => {

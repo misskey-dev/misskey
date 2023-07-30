@@ -33,12 +33,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { shallowRef } from 'vue';
+import { computed, shallowRef } from 'vue';
 import MkNote from '@/components/MkNote.vue';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
+import MkDateSeparatedList, { MisskeyEntity } from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 import { infoImageUrl } from '@/instance';
+import { noteManager } from '@/scripts/entity-manager';
+import { Note } from 'misskey-js/built/entities';
 
 const props = defineProps<{
 	pagination: Paging;
@@ -46,6 +48,23 @@ const props = defineProps<{
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();
+
+const transform = (notes: Note[]): MisskeyEntity[] => {
+	return notes.map(note => {
+		noteManager.set(note);
+		return {
+			id: note.id,
+			createdAt: note.createdAt,
+		};
+	});
+};
+
+const pagination = computed(() => {
+	return {
+		transform,
+		...props.pagination,
+	};
+});
 
 defineExpose({
 	pagingComponent,
