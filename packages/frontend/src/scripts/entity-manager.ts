@@ -235,14 +235,7 @@ export class NoteManager {
                 return this.get(id)!;
             })
             .catch(() => {
-                // エラーが発生した場合はとりあえず削除されたものとして扱う
-                const cached = this.notesSource.get(id);
-                if (cached) {
-                    cached.value = null;
-                } else {
-                    this.notesSource.set(id, ref(null));
-                }
-                // updateAtはしない
+                // エラーが発生した場合は何もしない
                 return this.get(id)!;
             });
     }
@@ -370,7 +363,11 @@ export class NoteManager {
                 this.capture(id);
                 using = true;
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err);
+                this.capture(id);
+                using = true;
+            });
 
         const unuse = () => {
             CapturePromise.then(() => {
