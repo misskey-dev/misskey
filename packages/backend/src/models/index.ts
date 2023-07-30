@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { AccessToken } from '@/models/entities/AccessToken.js';
 import { Ad } from '@/models/entities/Ad.js';
