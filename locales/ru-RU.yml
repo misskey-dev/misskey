@@ -1060,8 +1060,10 @@ installed: "Установлено"
 expired: "Срок действия приглашения истёк"
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
+  letsStartAccountSetup: "Давайте настроим вашу учётную запись."
   profileSetting: "Настройки профиля"
   privacySetting: "Настройки конфиденциальности"
+  initialAccountSettingCompleted: "Первоначальная настройка успешно завершена!"
   skipAreYouSure: "Пропустить настройку?"
 _achievements:
   earnedAt: "Разблокировано в"
