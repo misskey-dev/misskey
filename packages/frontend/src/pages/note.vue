@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkButton v-if="!showNext && hasNext" :class="$style.loadNext" @click="showNext = true"><i class="ti ti-chevron-up"></i></MkButton>
 						<div class="_margin _gaps_s">
 							<MkRemoteCaution v-if="note.user.host != null" :href="note.url ?? note.uri"/>
-							<MkNoteDetailed :key="note.id" v-model:note="note" :class="$style.note"/>
+							<MkNoteDetailed :key="note.id" v-model:note="note" :setNote="true" :class="$style.note"/>
 						</div>
 						<div v-if="clips && clips.length > 0" class="_margin">
 							<div style="font-weight: bold; padding: 12px;">{{ i18n.ts.clip }}</div>
@@ -56,6 +56,7 @@ import { i18n } from '@/i18n';
 import { dateString } from '@/filters/date';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store';
+import { noteManager } from '@/scripts/entity-manager';
 
 const props = defineProps<{
 	noteId: string;
@@ -115,7 +116,13 @@ function fetchNote() {
 		]).then(([_clips, prev, next]) => {
 			clips = _clips;
 			hasPrev = prev.length !== 0;
+			prev.map(n => {
+				noteManager.set(n);
+			});
 			hasNext = next.length !== 0;
+			next.map(n => {
+				noteManager.set(n);
+			});
 		});
 	}).catch(err => {
 		error = err;

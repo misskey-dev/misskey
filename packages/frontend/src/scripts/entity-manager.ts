@@ -4,11 +4,16 @@
  */
 
 import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
-import { Ref, ref, ComputedRef, computed } from "vue";
+import { Ref, ref, ComputedRef, computed, watch, unref } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
 import { Stream } from "misskey-js";
 import { $i } from "@/account";
+import { defaultStore, noteViewInterruptors } from '@/store';
+import { deepClone } from "./clone";
+import { shouldCollapsed } from "./collapsed";
+import { extractUrlFromMfm } from "./extract-url-from-mfm";
+import * as mfm from 'mfm-js';
 
 export class EntitiyManager<T extends { id: string }> {
     private entities: Map<T['id'], Ref<T>>;
@@ -40,6 +45,7 @@ export const driveFileManager = new EntitiyManager<DriveFile>('driveFile');
 type OmittedNote = Omit<Note, 'user' | 'renote' | 'reply'>;
 type CachedNoteSource = Ref<OmittedNote | null>;
 type CachedNote = ComputedRef<Note | null>;
+type InterruptedCachedNote = Ref<Note | null>;
 
 /**
  * ノートのキャッシュを管理する
@@ -61,6 +67,7 @@ export class NoteManager {
      * キャプチャが0になったら削除される
      */
     private notesComputed: Map<Note['id'], CachedNote>;
+
     private updatedAt: Map<Note['id'], number>;
     private captureing: Map<Note['id'], number>;
     private connection: Stream | null;
@@ -145,6 +152,68 @@ export class NoteManager {
             }));
         }
         return this.notesComputed.get(id)!;
+    }
+
+    /**
+     * Interruptorを適用する
+     * 管理が面倒なのでキャッシュはしない
+     */
+    public getInterrupted(id: string): {
+        interruptedNote: InterruptedCachedNote,
+        interruptorUnwatch: () => void,
+        executeInterruptor: () => Promise<void>,
+    } {
+        const note = this.get(id);
+        const interruptedNote = ref<Note | null>(unref(note));
+        async function executeInterruptor() {
+            if (note.value == null) {
+                interruptedNote.value = null;
+                return;
+            }
+
+            if (noteViewInterruptors.length > 0) {
+                interruptedNote.value = unref(note);
+                return;
+            }
+
+            let result = deepClone(note.value);
+            for (const interruptor of noteViewInterruptors) {
+                result = await interruptor.handler(result) as Note;
+            }
+            interruptedNote.value = result;
+        }
+        const interruptorUnwatch = watch(note, executeInterruptor);
+
+        return {
+            interruptedNote,
+            interruptorUnwatch,
+            executeInterruptor,
+        };
+    }
+
+    /**
+     * ノートの表示に必要なデータをお膳立てする
+     */
+    public getNoteViewBase(id: string) {
+        const { interruptedNote: note, interruptorUnwatch, executeInterruptor } = this.getInterrupted(id);
+        const isRenote = computed(() => (
+            note.value != null &&
+            note.value.renote != null &&
+            note.value.text == null &&
+            note.value.fileIds?.length === 0 &&
+            note.value.poll == null
+        ));
+        const isMyRenote = computed(() => $i && ($i.id === note.value?.userId));
+        const appearNote = computed(() => (isRenote.value ? note.value?.renote : note.value) ?? null);
+
+        return {
+            note, interruptorUnwatch, executeInterruptor,
+            isRenote, isMyRenote, appearNote,
+            urls: computed(() => appearNote.value?.text ? extractUrlFromMfm(mfm.parse(appearNote.value.text)) : null),
+            isLong: computed(() => appearNote.value ? shouldCollapsed(appearNote.value) : false),
+            canRenote: computed(() => (!!appearNote.value && !!$i) && (['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i.id)),
+            showTicker: computed(() => !!appearNote.value && ((defaultStore.state.instanceTicker === 'always') || (defaultStore.state.instanceTicker === 'remote' && appearNote.value.user.instance))),
+        };
     }
 
     public async fetch(id: string, force = false): Promise<CachedNote> {

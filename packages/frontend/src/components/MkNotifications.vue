@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<template #default="{ items: notifications, denyMoveTransition }">
 		<MkDateSeparatedList v-slot="{ item: notification }" :class="$style.list" :items="notifications" :noGap="true" :denyMoveTransition="denyMoveTransition">
-			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="`showNotificationAsNote:${notification.id}`" :note="notification.note"/>
+			<MkNote v-if="['reply', 'quote', 'mention'].includes(notification.type)" :key="`showNotificationAsNote:${notification.id}`" :note="notification.note" :setNote="true"/>
 			<XNotification v-else :key="notification.id" :notification="notification" :withTime="true" :full="true" class="_panel notification"/>
 		</MkDateSeparatedList>
 	</template>

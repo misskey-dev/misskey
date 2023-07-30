@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<template v-if="depth < 5">
-		<MkNoteSub v-for="reply in replies" :key="reply.id" :note="reply" :class="$style.reply" :detail="true" :depth="depth + 1"/>
+		<MkNoteSub v-for="reply in replies" :key="reply.id" :note="reply" :class="$style.reply" :detail="true" :depth="depth + 1" :setNote="true"/>
 	</template>
 	<div v-else :class="$style.more">
 		<MkA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
@@ -32,7 +32,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -40,10 +39,12 @@ import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { noteManager } from '@/scripts/entity-manager';
 
 const props = withDefaults(defineProps<{
-	note: misskey.entities.Note;
+	note: { id: string };
 	detail?: boolean;
+	setNote?: boolean;
 
 	// how many notes are in between this one and the note being viewed in detail
 	depth?: number;
@@ -51,8 +52,14 @@ const props = withDefaults(defineProps<{
 	depth: 1,
 });
 
+if (props.setNote) {
+	noteManager.set(props.note as any);
+}
+
+const note = noteManager.get(props.note.id);
+
 let showContent = $ref(false);
-let replies: misskey.entities.Note[] = $ref([]);
+let replies: { id: string }[] = $ref([]);
 
 if (props.detail) {
 	os.api('notes/children', {

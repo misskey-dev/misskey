@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 		<MkSwitch v-model="props.modelValue.detailed"><span>{{ i18n.ts._pages.blocks._note.detailed }}</span></MkSwitch>
 
-		<MkNote v-if="note && !props.modelValue.detailed" :key="note.id + ':normal'" v-model:note="note" style="margin-bottom: 16px;"/>
-		<MkNoteDetailed v-if="note && props.modelValue.detailed" :key="note.id + ':detail'" v-model:note="note" style="margin-bottom: 16px;"/>
+		<MkNote v-if="note && !props.modelValue.detailed" :key="note.id + ':normal'" v-model:note="note" :setNote="true" style="margin-bottom: 16px;"/>
+		<MkNoteDetailed v-if="note && props.modelValue.detailed" :key="note.id + ':detail'" v-model:note="note" :setNote="true" style="margin-bottom: 16px;"/>
 	</section>
 </XContainer>
 </template>
