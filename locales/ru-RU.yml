@@ -1059,6 +1059,7 @@ additionalEmojiDictionary: "Дополнительные словари эмод
 installed: "Установлено"
 expired: "Срок действия приглашения истёк"
 _initialAccountSetting:
+  accountCreated: "Аккаунт успешно создан!"
   profileSetting: "Настройки профиля"
   privacySetting: "Настройки конфиденциальности"
   skipAreYouSure: "Пропустить настройку?"
