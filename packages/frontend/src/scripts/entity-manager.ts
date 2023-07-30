@@ -47,7 +47,7 @@ type CachedNoteSource = Ref<OmittedNote | null>;
 type CachedNote = ComputedRef<Note | null>;
 type InterruptedCachedNote = Ref<Note | null>;
 
-export function isRenote(note: Note | OmittedNote): boolean {
+export function isRenote(note: Note | OmittedNote | null): boolean {
     return note != null &&
         note.renoteId != null &&
         note.text == null &&
@@ -205,13 +205,13 @@ export class NoteManager {
      */
     public getNoteViewBase(id: string) {
         const { interruptedNote: note, interruptorUnwatch, executeInterruptor } = this.getInterrupted(id);
-        const isRenote = computed(() => isRenote(note.value));
-        const isMyRenote = computed(() => $i && ($i.id === note.value?.userId));
-        const appearNote = computed(() => (isRenote.value ? note.value?.renote : note.value) ?? null);
+        const noteIsRenote = computed(() => isRenote(note.value));
+        const isMyRenote = computed(() => noteIsRenote.value && $i && ($i.id === note.value?.userId));
+        const appearNote = computed(() => (noteIsRenote.value ? note.value?.renote : note.value) ?? null);
 
         return {
             note, interruptorUnwatch, executeInterruptor,
-            isRenote, isMyRenote, appearNote,
+            isRenote: noteIsRenote, isMyRenote, appearNote,
             urls: computed(() => appearNote.value?.text ? extractUrlFromMfm(mfm.parse(appearNote.value.text)) : null),
             isLong: computed(() => appearNote.value ? shouldCollapsed(appearNote.value) : false),
             canRenote: computed(() => (!!appearNote.value && !!$i) && (['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i.id)),
