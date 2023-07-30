@@ -1405,6 +1405,7 @@ _role:
     canPublicNote: "Dapat mengirim catatan publik"
     canInvite: "Dapat membuat kode undangan instansi"
     inviteLimit: "Batas jumlah undangan"
+    inviteLimitCycle: "Interval Penerbitan Kode Undangan"
     canManageCustomEmojis: "Dapat mengelola Emoji kustom"
     driveCapacity: "Kapasitas Drive"
     alwaysMarkNsfw: "Selalu tandai berkas sebagai NSFW"
