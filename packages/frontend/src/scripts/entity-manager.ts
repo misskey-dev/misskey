@@ -188,10 +188,13 @@ export class NoteManager {
 
     public async fetch(id: string, force = false): Promise<CachedNote> {
         if (!force) {
-            const updatedAt = this.updatedAt.get(id);
+            const cachedNote = this.get(id);
+            // Renoteの場合はRenote元の更新日時も考慮する
+            const updatedAt = isRenote(cachedNote.value) ?
+                this.updatedAt.get(id) :
+                Math.max(this.updatedAt.get(id) ?? 0, this.updatedAt.get(cachedNote.value!.renoteId!) ?? 0);
             // 2分以上経過していない場合はキャッシュを返す
             if (updatedAt && Date.now() - updatedAt < 1000 * 120) {
-                const cachedNote = this.get(id);
                 if (cachedNote) {
                     return cachedNote;
                 }
