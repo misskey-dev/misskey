@@ -117,14 +117,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
-				name: ps.name === undefined ? page.name : ps.name,
+				name: ps.name ?? page.name,
 				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,
 				script: ps.script,
-				alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
-				hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
-				font: ps.font === undefined ? page.font : ps.font,
+				alignCenter: ps.alignCenter ?? page.alignCenter,
+				hideTitleWhenPinned: ps.hideTitleWhenPinned ?? page.hideTitleWhenPinned,
+				font: ps.font ?? page.font,
 				eyeCatchingImageId: ps.eyeCatchingImageId === null
 					? null
 					: ps.eyeCatchingImageId === undefined

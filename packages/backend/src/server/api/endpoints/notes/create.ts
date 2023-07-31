@@ -193,7 +193,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			let files: DriveFile[] = [];
-			const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
+			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
 			if (fileIds != null) {
 				files = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
