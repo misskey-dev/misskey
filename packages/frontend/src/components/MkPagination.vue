@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkButton>
 			<MkLoading v-else class="loading"/>
 		</div>
-		<slot :items="Array.from(items.values())" :fetching="fetching || moreFetching" :denyMoveTransition="denyMoveTransition"></slot>
+		<slot :items="prividingItems" :fetching="fetching || moreFetching" :denyMoveTransition="denyMoveTransition"></slot>
 		<div v-show="!pagination.reversed && more" key="_more_" class="_margin">
 			<MkButton v-if="!moreFetching" v-appear="(enableInfiniteScroll && !props.disableAutoLoad) ? appearFetchMore : null" :class="$style.more" :disabled="moreFetching" :style="{ cursor: moreFetching ? 'wait' : 'pointer' }" primary rounded @click="fetchMore">
 				{{ i18n.ts.loadMore }}
@@ -133,6 +133,7 @@ let scrollRemove = $ref<(() => void) | null>(null);
  * 最新が0番目
  */
 const items = ref<MisskeyEntityMap>(new Map());
+const prividingItems = computed(() => Array.from(items.value.values()));
 
 /**
  * タブが非アクティブなどの場合に更新を貯めておく
