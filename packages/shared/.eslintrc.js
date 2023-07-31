@@ -65,6 +65,7 @@ module.exports = {
 		'space-infix-ops': ['error'],
 		'space-before-blocks': ['error', 'always'],
 		'@typescript-eslint/no-explicit-any': ['warn'],
+		'@typescript-eslint/no-unused-vars': ['warn'],
 		'@typescript-eslint/no-unnecessary-condition': ['warn'],
 		'@typescript-eslint/no-var-requires': ['warn'],
 		'@typescript-eslint/no-inferrable-types': ['warn'],
