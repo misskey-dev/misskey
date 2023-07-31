@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_panel _shadow" :class="$style.root">
 	<!-- TODO: インスタンス運営者が任意のテキストとリンクを設定できるようにする -->

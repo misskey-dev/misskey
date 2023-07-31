@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Module } from '@nestjs/common';
 import { EndpointsModule } from '@/server/api/EndpointsModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
@@ -36,6 +41,7 @@ import { UserListChannelService } from './api/stream/channels/user-list.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { ClientLoggerService } from './web/ClientLoggerService.js';
 import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.js';
+import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 
 @Module({
 	imports: [
@@ -78,6 +84,7 @@ import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.
 		ServerStatsChannelService,
 		UserListChannelService,
 		OpenApiServerService,
+		OAuth2ProviderService,
 	],
 	exports: [
 		ServerService,

@@ -1,5 +1,9 @@
-import RE2 from 're2';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
+import RE2 from 're2';
 
 export class convertHardMutes1644010796173 {
     name = 'convertHardMutes1644010796173'

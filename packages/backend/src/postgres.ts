@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
 pg.types.setTypeParser(20, Number);
@@ -227,7 +232,7 @@ export function createPostgresDataSource(config: Config) {
 			options: {
 				host: config.redis.host,
 				port: config.redis.port,
-				family: config.redis.family == null ? 0 : config.redis.family,
+				family: config.redis.family ?? 0,
 				password: config.redis.pass,
 				keyPrefix: `${config.redis.prefix}:query:`,
 				db: config.redis.db ?? 0,

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as http from 'node:http';
 import * as https from 'node:https';
 import * as net from 'node:net';
@@ -88,7 +93,7 @@ export class HttpRequestService {
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
-		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
+		if (bypassProxy || (this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
 			return url.protocol === 'http:' ? this.http : this.https;
 		} else {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
