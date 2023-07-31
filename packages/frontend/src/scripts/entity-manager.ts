@@ -66,6 +66,8 @@ export class NoteManager {
      * ノートのソースとなるRef
      * user, renote, replyを持たない
      * nullは削除済みであることを表す
+     * 
+     * 削除する機構はないので溜まる一方だが、メモリ使用量はそこまで気にしなくて良さそう
      */
     private notesSource: Map<Note['id'], CachedNoteSource>;
 
