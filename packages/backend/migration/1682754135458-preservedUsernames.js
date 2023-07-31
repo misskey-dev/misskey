@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class PreservedUsernames1682754135458 {
     name = 'PreservedUsernames1682754135458'
 

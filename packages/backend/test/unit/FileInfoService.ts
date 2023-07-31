@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -5,12 +10,12 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
+import { describe, beforeAll, afterAll, test } from '@jest/globals';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
 //import { DI } from '@/di-symbols.js';
 import { AiService } from '@/core/AiService.js';
 import type { TestingModule } from '@nestjs/testing';
-import { describe, beforeAll, afterAll, test } from '@jest/globals';
 import type { MockFunctionMetadata } from 'jest-mock';
 
 const _filename = fileURLToPath(import.meta.url);

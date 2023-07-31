@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
  * Notification manager for SW
  */
 import type { BadgeNames, PushNotificationDataMap } from '@/types';

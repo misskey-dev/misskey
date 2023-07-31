@@ -1,8 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
+import { Redis } from 'ioredis';
 import { GlobalModule } from '@/GlobalModule.js';
 import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -13,15 +19,14 @@ import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
-import { Redis } from 'ioredis'
 
 function mockRedis() {
 	const hash = {};
 	const set = jest.fn((key, value) => {
-			const ret = hash[key];
-			hash[key] = value;
-			return ret;
-		});
+		const ret = hash[key];
+		hash[key] = value;
+		return ret;
+	});
 	return set;
 }
 
@@ -47,7 +52,7 @@ describe('FetchInstanceMetadataService', () => {
 			})
 			.useMocker((token) => {
 				if (token === HttpRequestService) {
-					return { getJson: jest.fn(), getHtml: jest.fn(), send: jest.fn(), };
+					return { getJson: jest.fn(), getHtml: jest.fn(), send: jest.fn() };
 				} else if (token === FederatedInstanceService) {
 					return { fetch: jest.fn() };
 				} else if (token === DI.redis) {
@@ -74,20 +79,20 @@ describe('FetchInstanceMetadataService', () => {
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: "example.com" });
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' });
 		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(1);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(1);
 		expect(httpRequestService.getJson).toHaveBeenCalled();
 	});
-	test("Lock and don't update", async () => {
+	test('Lock and don\'t update', async () => {
 		redisClient.set = mockRedis();
 		const now = Date.now();
 		federatedInstanceService.fetch.mockReturnValue({ infoUpdatedAt: { getTime: () => now } });
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: "example.com" });
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' });
 		expect(tryLockSpy).toHaveBeenCalledTimes(1);
 		expect(unlockSpy).toHaveBeenCalledTimes(1);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(1);
@@ -99,8 +104,8 @@ describe('FetchInstanceMetadataService', () => {
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
 		const tryLockSpy = jest.spyOn(fetchInstanceMetadataService, 'tryLock');
 		const unlockSpy = jest.spyOn(fetchInstanceMetadataService, 'unlock');
-		await fetchInstanceMetadataService.tryLock("example.com");
-		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: "example.com" });
+		await fetchInstanceMetadataService.tryLock('example.com');
+		await fetchInstanceMetadataService.fetchInstanceMetadata({ host: 'example.com' });
 		expect(tryLockSpy).toHaveBeenCalledTimes(2);
 		expect(unlockSpy).toHaveBeenCalledTimes(0);
 		expect(federatedInstanceService.fetch).toHaveBeenCalledTimes(0);

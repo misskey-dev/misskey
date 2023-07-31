@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { toArray } from '@/misc/prelude/array.js';
 import { isHashtag } from '../type.js';
 import type { IObject, IApHashtag } from '../type.js';
