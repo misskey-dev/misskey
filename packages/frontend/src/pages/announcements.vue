@@ -7,15 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<MkPagination v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
-			<section v-for="(announcement, i) in items" :key="announcement.id" class="announcement _panel">
+		<MkPagination ref="paginationEl" v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
+			<section v-for="announcement in items" :key="announcement.id" class="announcement _panel">
 				<div class="header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 				<div class="content">
 					<Mfm :text="announcement.text"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 				</div>
 				<div v-if="$i && !announcement.isRead" class="footer">
-					<MkButton primary @click="read(items, announcement, i)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+					<MkButton primary @click="read(announcement.id)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 				</div>
 			</section>
 		</MkPagination>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
@@ -37,13 +37,15 @@ const pagination = {
 	limit: 10,
 };
 
-// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
-function read(items, announcement, i) {
-	items[i] = {
-		...announcement,
-		isRead: true,
-	};
-	os.api('i/read-announcement', { announcementId: announcement.id });
+const paginationEl = ref<InstanceType<typeof MkPagination>>();
+
+function read(id: string) {
+	if (!paginationEl.value) return;
+	paginationEl.value.updateItem(id, announcement => {
+		announcement.isRead = true;
+		return announcement;
+	});
+	os.api('i/read-announcement', { announcementId: id });
 }
 
 const headerActions = $computed(() => []);
