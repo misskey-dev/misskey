@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { v4 as uuid } from 'uuid';
 
 import { themeProps, Theme } from './theme';
@@ -76,6 +81,6 @@ export const convertToViewModel = (theme: Theme): ThemeViewModel => {
 		.filter(k => k.startsWith('$'))
 		.map(k => [k, fromThemeString(theme.props[k])] as [ string, ThemeValue ]);
 
-		vm.push(...consts);
+	vm.push(...consts);
 	return vm;
 };
