@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
 			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitchButton :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" :class="$style.switchButton" />
+				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
 			<button v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
-import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch } from '@/types/menu';
+import { MenuItem, InnerMenuItem, OuterMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -146,17 +146,17 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-let childrenCache = new WeakMap();
-async function showChildren(item: MenuItem, ev: MouseEvent) {
-	const children = ref([]);
+let childrenCache = new WeakMap<MenuParent, OuterMenuItem[]>();
+async function showChildren(item: MenuParent, ev: MouseEvent) {
+	const children = ref<OuterMenuItem[]>([]);
 	if (childrenCache.has(item)) {
-		children.value = childrenCache.get(item);
+		children.value = childrenCache.get(item)!;
 	} else {
 		if (typeof item.children === 'function') {
 			children.value = [{
 				type: 'pending',
 			}];
-			item.children().then(x => {
+			Promise.resolve(item.children()).then(x => {
 				children.value = x;
 				childrenCache.set(item, x);
 			});
@@ -192,7 +192,7 @@ function focusDown() {
 	focusNext(document.activeElement);
 }
 
-function switchItem(item: any) {
+function switchItem(item: MenuSwitch & { ref: any }) {
 	if (item.disabled) return;
 	item.ref = !item.ref;
 }
