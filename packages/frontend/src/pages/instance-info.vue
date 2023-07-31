@@ -34,8 +34,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<FormSection v-if="iAmModerator">
 				<template #label>Moderation</template>
 				<div class="_gaps_s">
-					<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
-					<MkSwitch v-model="isBlocked" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
+					<MkSwitch v-model="suspended" :disabled="!instance" @update:modelValue="toggleSuspend">{{ i18n.ts.stopActivityDelivery }}</MkSwitch>
+					<MkSwitch v-model="isBlocked" :disabled="!meta || !instance" @update:modelValue="toggleBlock">{{ i18n.ts.blockThisInstance }}</MkSwitch>
 					<MkButton @click="refreshMetadata"><i class="ti ti-refresh"></i> Refresh metadata</MkButton>
 				</div>
 			</FormSection>
@@ -129,7 +129,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import * as os from '@/os';
 import number from '@/filters/number';
-import { iAmModerator } from '@/account';
+import { iAmModerator, iAmAdmin } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -143,11 +143,11 @@ const props = defineProps<{
 
 let tab = $ref('overview');
 let chartSrc = $ref('instance-requests');
-let meta = $ref<misskey.entities.DetailedInstanceMetadata | null>(null);
+let meta = $ref<misskey.entities.AdminInstanceMetadata | null>(null);
 let instance = $ref<misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
-let faviconUrl = $ref(null);
+let faviconUrl = $ref<string | null>(null);
 
 const usersPagination = {
 	endpoint: iAmModerator ? 'admin/show-users' : 'users' as const,
@@ -160,7 +160,10 @@ const usersPagination = {
 	offsetMode: true,
 };
 
-async function fetch() {
+async function fetch(): Promise<void> {
+	if (iAmAdmin) {
+		meta = await os.api('admin/meta');
+	}
 	instance = await os.api('federation/show-instance', {
 		host: props.host,
 	});
@@ -169,21 +172,25 @@ async function fetch() {
 	faviconUrl = getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.iconUrl, 'preview');
 }
 
-async function toggleBlock(ev) {
-	if (meta == null) return;
+async function toggleBlock(): Promise<void> {
+	if (!meta) throw new Error('No meta?');
+	if (!instance) throw new Error('No instance?');
+	const { host } = instance;
 	await os.api('admin/update-meta', {
-		blockedHosts: isBlocked ? meta.blockedHosts.concat([instance.host]) : meta.blockedHosts.filter(x => x !== instance.host),
+		blockedHosts: isBlocked ? meta.blockedHosts.concat([host]) : meta.blockedHosts.filter(x => x !== host),
 	});
 }
 
-async function toggleSuspend(v) {
+async function toggleSuspend(): Promise<void> {
+	if (!instance) throw new Error('No instance?');
 	await os.api('admin/federation/update-instance', {
 		host: instance.host,
 		isSuspended: suspended,
 	});
 }
 
-function refreshMetadata() {
+function refreshMetadata(): void {
+	if (!instance) throw new Error('No instance?');
 	os.api('admin/federation/refresh-remote-instance-metadata', {
 		host: instance.host,
 	});
