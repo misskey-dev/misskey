@@ -365,12 +365,10 @@ export class NoteManager {
         const note = (!this.notesSource.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
         let using = false;
         const CapturePromise = Promise.resolve(note)
-            .then(() => {
-                this.capture(id);
-                using = true;
-            })
             .catch(err => {
                 console.error(err);
+            })
+            .finally(() => {
                 this.capture(id);
                 using = true;
             });
