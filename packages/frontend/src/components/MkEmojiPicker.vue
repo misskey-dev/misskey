@@ -138,7 +138,6 @@ watch(q, () => {
 	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
 	const searchCustom = () => {
-		const max = 8;
 		const emojis = customEmojis.value;
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
@@ -152,47 +151,37 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			// 名前またはエイリアスにキーワードが含まれている
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword) || emoji.aliases.some(alias => alias.includes(keyword)))) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
 		} else {
 			for (const emoji of emojis) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
 				if (emoji.aliases.some(alias => alias.startsWith(newQ))) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			for (const emoji of emojis) {
 				if (emoji.aliases.some(alias => alias.includes(newQ))) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
 		}
