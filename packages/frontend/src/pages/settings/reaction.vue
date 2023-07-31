@@ -55,6 +55,10 @@
 		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 	</MkSwitch>
 
+	<MkSwitch v-model="reactionPickerDisplaySensitiveEmoji">
+		{{ i18n.ts.displaySensitiveEmoji }}
+	</MkSwitch>
+
 	<FormSection>
 		<div class="_buttons">
 			<MkButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
@@ -84,6 +88,7 @@ const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPick
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
+const reactionPickerDisplaySensitiveEmoji = $computed(defaultStore.makeGetterSetter('displaySensitiveEmoji'));
 
 function save() {
 	defaultStore.set('reactions', reactions);
