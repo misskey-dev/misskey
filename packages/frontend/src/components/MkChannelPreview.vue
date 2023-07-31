@@ -3,6 +3,7 @@
 	<div class="banner" :style="bannerStyle">
 		<div class="fade"></div>
 		<div class="name"><i class="ti ti-device-tv"></i> {{ channel.name }}</div>
+		<div v-if="channel.isSensitive" class="sensitiveIndicator">{{ i18n.ts.sensitive }}</div>
 		<div class="status">
 			<div>
 				<i class="ti ti-users ti-fw"></i>
@@ -96,6 +97,19 @@ const bannerStyle = computed(() => {
 			background: rgba(0, 0, 0, 0.7);
 			border-radius: 6px;
 			color: #fff;
+		}
+
+		> .sensitiveIndicator {
+			position: absolute;
+			z-index: 1;
+			bottom: 16px;
+			left: 16px;
+			background: rgba(0, 0, 0, 0.7);
+			color: var(--warn);
+			border-radius: 6px;
+			font-weight: bold;
+			font-size: 1em;
+			padding: 4px 7px;
 		}
 	}
 
