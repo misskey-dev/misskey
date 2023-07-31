@@ -346,6 +346,11 @@ export type DetailedInstanceMetadata = LiteInstanceMetadata & {
 
 export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 
+export type AdminInstanceMetadata = DetailedInstanceMetadata & {
+	// TODO: There are more fields.
+	blockedHosts: string[];
+};
+
 export type ServerInfo = {
 	machine: string;
 	cpu: {
@@ -482,7 +487,7 @@ export type Blocking = {
 
 export type Instance = {
 	id: ID;
-	caughtAt: DateString;
+	firstRetrievedAt: DateString;
 	host: string;
 	usersCount: number;
 	notesCount: number;
@@ -496,6 +501,7 @@ export type Instance = {
 	lastCommunicatedAt: DateString;
 	isNotResponding: boolean;
 	isSuspended: boolean;
+	isBlocked: boolean;
 	softwareName: string | null;
 	softwareVersion: string | null;
 	openRegistrations: boolean | null;
