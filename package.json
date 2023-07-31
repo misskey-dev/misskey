@@ -10,7 +10,8 @@
 	"workspaces": [
 		"packages/frontend",
 		"packages/backend",
-		"packages/sw"
+		"packages/sw",
+		"packages/misskey-js"
 	],
 	"private": true,
 	"scripts": {
