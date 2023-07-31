@@ -1,5 +1,5 @@
 <!--
-## 13.x.x (unreleased)
+## 2023.x.x (unreleased)
 
 ### General
 -
@@ -11,6 +11,33 @@
 -
 
 -->
+
+## 2023.8.0 (unreleased)
+
+### General
+- OAuth 2.0のサポート
+
+### Client
+- Enhance: 自分が押したリアクションのデザインを改善
+- Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
+- Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
+
+### Server
+-
+
+## 13.14.2
+
+### Client
+- リストTLで、ユーザーが追加・削除されてもTLを初期化しないように
+- URL取得変数を関数に変更　CURRENT_URL -> Mk:url()
+- Fix: モバイル表示のときページ下部がナビゲーションバーに隠れる問題を修正
+- Fix: 一部モーダルダイアログでスクロールできない問題を修正
+- Fix: Selecting all emojis in Custom emoji is impossible
+- Fix: PhotoSwipeによるメモリリークの修正
+
+### Server
+- Fix: APIのオフセットが壊れていたせいで「もっと見る」でもっと見れない問題を修正
+- Fix: 外部サーバーの投稿がタイムラインに表示されないことがある問題を修正
 
 ## 13.14.1
 

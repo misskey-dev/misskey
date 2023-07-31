@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="root" :class="['chromatic-ignore', $style.root, { [$style.cover]: cover }]" :title="title ?? ''">
 	<TransitionGroup
@@ -108,8 +113,7 @@ function waitForDecode() {
 			.then(() => {
 				loaded = true;
 			}, error => {
-				console.error('Error occurred during decoding image', img.value, error);
-				throw Error(error);
+				console.log('Error occurred during decoding image', img.value, error);
 			});
 	} else {
 		loaded = false;

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { setImmediate } from 'node:timers/promises';
 import * as mfm from 'mfm-js';
 import { In, DataSource } from 'typeorm';
@@ -362,7 +367,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			name: data.name,
 			text: data.text,
 			hasPoll: data.poll != null,
-			cw: data.cw == null ? null : data.cw,
+			cw: data.cw ?? null,
 			tags: tags.map(tag => normalizeForSearch(tag)),
 			emojis,
 			userId: user.id,
@@ -397,7 +402,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				const url = profile != null ? profile.url : null;
 				return {
 					uri: u.uri,
-					url: url == null ? undefined : url,
+					url: url ?? undefined,
 					username: u.username,
 					host: u.host,
 				} as IMentionedRemoteUsers[0];
