@@ -200,7 +200,7 @@ export class ApNoteService {
 		// 引用
 		let quote: Note | undefined | null = null;
 
-		if (note._misskey_quote || note.quoteUrl) {
+		if (note._misskey_quote ?? note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<
 				| { status: 'ok'; res: Note }
 				| { status: 'permerror' | 'temperror' }
