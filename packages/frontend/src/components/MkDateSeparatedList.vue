@@ -170,10 +170,10 @@ export default defineComponent({
 	> *:empty {
 		display: none;
 	}
-
-	> *:not(:last-child) {
-		margin-bottom: var(--margin);
 	}
+
+	&:not(.date-separated-list-nogap) > *:not(:last-child) {
+		margin-bottom: var(--margin);
 	}
 }
 

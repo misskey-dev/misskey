@@ -1,5 +1,5 @@
 <!--
-## 13.x.x (unreleased)
+## 2023.x.x (unreleased)
 
 ### General
 -
@@ -11,6 +11,18 @@
 -
 
 -->
+
+## 2023.8.0 (unreleased)
+
+### General
+- OAuth 2.0のサポート
+
+### Client
+- Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
+- Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
+
+### Server
+-
 
 ## 13.14.2
 
