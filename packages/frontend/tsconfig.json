@@ -11,7 +11,7 @@
 		"sourceMap": false,
 		"target": "ES2022",
 		"module": "esnext",
-		"moduleResolution": "node16",
+		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -31,7 +31,6 @@
 			"@types"
 		],
 		"types": [
-			"vite/client",
 			"reactivity-transform/macros-global"
 		],
 		"lib": [
