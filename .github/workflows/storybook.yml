@@ -7,6 +7,11 @@ on:
       - develop
   pull_request_target:
 
+permissions:
+  contents: read
+  issues: write
+  statuses: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
