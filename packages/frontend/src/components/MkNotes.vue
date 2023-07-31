@@ -35,12 +35,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, shallowRef } from 'vue';
 import MkNote from '@/components/MkNote.vue';
-import MkDateSeparatedList, { MisskeyEntity } from '@/components/MkDateSeparatedList.vue';
+import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import { i18n } from '@/i18n';
 import { infoImageUrl } from '@/instance';
 import { noteManager } from '@/scripts/entity-manager';
 import { Note } from 'misskey-js/built/entities';
+import { MisskeyEntity } from '@/types/date-separated-list';
 
 const props = defineProps<{
 	pagination: Paging;

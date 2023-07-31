@@ -16,10 +16,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkNotes from '@/components/MkNotes.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { noteManager } from '@/scripts/entity-manager';
+import { MisskeyEntity } from '@/types/date-separated-list';
+
+const transform = (noteFavorites: any[]): MisskeyEntity[] => {
+	return noteFavorites.map(noteFavorite => {
+		const note = noteFavorite.note;
+		noteManager.set(note);
+		return {
+			id: note.id,
+			createdAt: note.createdAt,
+		};
+	});
+};
 
 const pagination = {
 	endpoint: 'i/favorites' as const,
 	limit: 10,
+	transform,
 };
 
 definePageMetadata({
