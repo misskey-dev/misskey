@@ -8,7 +8,9 @@ on:
   pull_request_target:
 
 permissions:
-  actions: write
+  contents: read
+  issues: write
+  statuses: write
 
 jobs:
   build:
