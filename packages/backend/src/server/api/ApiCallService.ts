@@ -268,7 +268,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if (ep.meta.requireCredential || ep.meta.requireModerator || ep.meta.requireAdmin) {
 			if (user == null) {
 				throw new ApiError({
@@ -298,7 +297,6 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
@@ -341,7 +339,6 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// Cast non JSON input
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
 				const param = ep.params.properties![k];

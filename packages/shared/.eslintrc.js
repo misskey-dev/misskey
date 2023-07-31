@@ -77,7 +77,7 @@ module.exports = {
 		}],
 		'@typescript-eslint/consistent-type-imports': 'off',
 		'@typescript-eslint/prefer-nullish-coalescing': [
-			'error',
+			'warn',
 		],
 		'@typescript-eslint/naming-convention': [
 			'error',
