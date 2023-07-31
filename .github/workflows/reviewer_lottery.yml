@@ -3,6 +3,9 @@ on:
   pull_request_target:
     types: [opened, ready_for_review, reopened]
 
+permissions:
+  actions: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
