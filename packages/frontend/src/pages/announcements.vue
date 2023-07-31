@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
 				</div>
 				<div v-if="$i && !announcement.isRead" class="footer">
-					<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+					<MkButton primary @click="read(announcement.id)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 				</div>
 			</section>
 		</MkPagination>
@@ -39,13 +39,13 @@ const pagination = {
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
 
-function read(announcement) {
+function read(id: string) {
 	if (!paginationEl.value) return;
-	paginationEl.value.updateItem(announcement.id, announcement => {
+	paginationEl.value.updateItem(id, announcement => {
 		announcement.isRead = true;
 		return announcement;
 	});
-	os.api('i/read-announcement', { announcementId: announcement.id });
+	os.api('i/read-announcement', { announcementId: id });
 }
 
 const headerActions = $computed(() => []);
