@@ -117,14 +117,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			await this.pagesRepository.update(page.id, {
 				updatedAt: new Date(),
 				title: ps.title,
-				name: ps.name ?? page.name,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				name: ps.name === undefined ? page.name : ps.name,
 				summary: ps.summary === undefined ? page.summary : ps.summary,
 				content: ps.content,
 				variables: ps.variables,
 				script: ps.script,
-				alignCenter: ps.alignCenter ?? page.alignCenter,
-				hideTitleWhenPinned: ps.hideTitleWhenPinned ?? page.hideTitleWhenPinned,
-				font: ps.font ?? page.font,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				alignCenter: ps.alignCenter === undefined ? page.alignCenter : ps.alignCenter,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				hideTitleWhenPinned: ps.hideTitleWhenPinned === undefined ? page.hideTitleWhenPinned : ps.hideTitleWhenPinned,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+				font: ps.font === undefined ? page.font : ps.font,
 				eyeCatchingImageId: ps.eyeCatchingImageId === null
 					? null
 					: ps.eyeCatchingImageId === undefined
