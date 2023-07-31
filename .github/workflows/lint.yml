@@ -79,4 +79,5 @@ jobs:
         cache: 'pnpm'
     - run: corepack enable
     - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter misskey-js build # needed for typecheck
     - run: pnpm --filter ${{ matrix.workspace }} run typecheck
