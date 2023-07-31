@@ -39,7 +39,6 @@ const pagination = {
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
 
-// TODO: これは実質的に親コンポーネントから子コンポーネントのプロパティを変更してるのでなんとかしたい
 function read(announcement) {
 	if (!paginationEl.value) return;
 	paginationEl.value.updateItem(announcement.id, announcement => {
