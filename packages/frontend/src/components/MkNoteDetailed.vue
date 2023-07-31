@@ -365,14 +365,14 @@ function onContextmenu(ev: MouseEvent): void {
 		react();
 	} else {
 		if (!note.value) return;
-		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, menuButton, isDeleted });
+		const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted });
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function menu(viaKeyboard = false): void {
 	if (!note.value) return;
-	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, menuButton, isDeleted });
+	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted });
 	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
 	}).then(focus).finally(cleanup);

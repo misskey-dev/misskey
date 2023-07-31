@@ -415,7 +415,7 @@ function onContextmenu(ev: MouseEvent): void {
 
 function menu(viaKeyboard = false): void {
 	if (!note.value) return;
-	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+	const { menu, cleanup } = getNoteMenu({ note: note.value, translating, translation, isDeleted, currentClip: currentClip?.value });
 	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
 	}).then(focus).finally(cleanup);
