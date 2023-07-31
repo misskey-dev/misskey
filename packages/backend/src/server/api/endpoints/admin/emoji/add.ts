@@ -96,6 +96,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+				userId: me.id,
 			});
 
 			this.moderationLogService.insertModerationLog(me, "addEmoji", {

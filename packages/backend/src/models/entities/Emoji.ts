@@ -1,8 +1,9 @@
-import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
+import { PrimaryColumn, Entity, Index, Column, JoinColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
+import { User } from './User.js';
 
 @Entity()
-@Index(['name', 'host'], { unique: true })
+@Index(['userId', 'name', 'host'], { unique: true })
 export class Emoji {
 	@PrimaryColumn(id())
 	public id: string;
@@ -76,4 +77,18 @@ export class Emoji {
 		array: true, length: 128, default: '{}',
 	})
 	public roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+		comment: 'The owner ID.',
+	})
+	public userId: User['id'] | null; // nullはリモートからや後方互換性のため
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn()
+	public user: User | null;
 }

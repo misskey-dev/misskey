@@ -377,6 +377,7 @@ export class ApNoteService {
 				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
+				userId: null,
 			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 		}));
 	}
