@@ -138,7 +138,7 @@ watch(q, () => {
 	const newQ = q.value.replace(/:/g, '').toLowerCase();
 
 	const searchCustom = () => {
-		const emojis = customEmojis.value;
+		const emojis = defaultStore.state.displaySensitiveEmoji ? customEmojis.value : customEmojis.value.filter(v => !v.isSensitive);
 		const matches = new Set<Misskey.entities.CustomEmoji>();
 
 		const exactMatch = emojis.find(emoji => emoji.name === newQ);
@@ -190,7 +190,6 @@ watch(q, () => {
 	};
 
 	const searchUnicode = () => {
-		const max = 8;
 		const emojis = emojilist;
 		const matches = new Set<UnicodeEmojiDef>();
 
@@ -203,16 +202,13 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (keywords.every(keyword => emoji.name.includes(keyword))) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
 					if (keywords.every(keyword => index[emoji.char].some(k => k.includes(keyword)))) {
 						matches.add(emoji);
-						if (matches.size >= max) break;
 					}
 				}
 			}
@@ -220,16 +216,13 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (emoji.name.startsWith(newQ)) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
 					if (index[emoji.char].some(k => k.startsWith(newQ))) {
 						matches.add(emoji);
-						if (matches.size >= max) break;
 					}
 				}
 			}
@@ -237,16 +230,13 @@ watch(q, () => {
 			for (const emoji of emojis) {
 				if (emoji.name.includes(newQ)) {
 					matches.add(emoji);
-					if (matches.size >= max) break;
 				}
 			}
-			if (matches.size >= max) return matches;
 
 			for (const index of Object.values(defaultStore.state.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
 					if (index[emoji.char].some(k => k.includes(newQ))) {
 						matches.add(emoji);
-						if (matches.size >= max) break;
 					}
 				}
 			}

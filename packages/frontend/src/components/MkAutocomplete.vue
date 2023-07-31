@@ -91,6 +91,8 @@ const emojiDb = computed(() => {
 	const customEmojiDB: EmojiDef[] = [];
 
 	for (const x of customEmojis.value) {
+		if (!defaultStore.state.displaySensitiveEmoji && x.isSensitive) continue;
+
 		customEmojiDB.push({
 			name: x.name,
 			emoji: `:${x.name}:`,
