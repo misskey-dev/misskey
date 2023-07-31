@@ -279,7 +279,7 @@ export type CustomEmoji = {
 	url: string;
 	category: string;
 	aliases: string[];
-	isSensitive: bool
+	isSensitive: boolean;
 };
 
 export type LiteInstanceMetadata = {
