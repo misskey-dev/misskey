@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
 		<MkPagination ref="paginationEl" v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
-			<section v-for="(announcement, i) in items" :key="announcement.id" class="announcement _panel">
+			<section v-for="announcement in items" :key="announcement.id" class="announcement _panel">
 				<div class="header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
 				<div class="content">
 					<Mfm :text="announcement.text"/>
