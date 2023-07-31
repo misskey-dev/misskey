@@ -12,7 +12,8 @@
 		"test-and-coverage": "vitest --run --coverage",
 		"typecheck": "vue-tsc --noEmit",
 		"eslint": "eslint --quiet \"src/**/*.{ts,vue}\"",
-		"lint": "pnpm typecheck && pnpm eslint"
+		"lint-full": "pnpm typecheck && pnpm eslint",
+		"lint": "pnpm typecheck && pnpm eslint -c .eslintrc-tsnocheck.cjs"
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "14.1.2",

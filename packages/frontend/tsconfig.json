@@ -19,7 +19,6 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
-		"isolatedModules": true,
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
@@ -37,7 +36,8 @@
 			"esnext",
 			"dom"
 		],
-		"jsx": "preserve"
+		"jsx": "preserve",
+		"skipLibCheck": true
 	},
 	"compileOnSave": false,
 	"include": [
@@ -46,6 +46,8 @@
 		"./**/*.vue"
 	],
 	"exclude": [
-		".storybook/**/*"
+		".storybook/**/*",
+		"lib/**/*",
+		"test/**/*"
 	]
 }
