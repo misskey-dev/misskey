@@ -408,14 +408,16 @@ function onContextmenu(ev: MouseEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		os.contextMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), ev).then(focus);
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
 
 function menu(viaKeyboard = false): void {
-	os.popupMenu(getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value }), menuButton.value, {
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, menuButton, isDeleted, currentClip: currentClip?.value });
+	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
-	}).then(focus);
+	}).then(focus).finally(cleanup);
 }
 
 async function clip() {
