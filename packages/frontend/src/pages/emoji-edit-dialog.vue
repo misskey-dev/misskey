@@ -36,9 +36,9 @@
 					<template #label>{{ i18n.ts.tags }}</template>
 					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
 				</MkInput>
-				<MkInput v-model="license">
+				<MkTextarea v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
-				</MkInput>
+				</MkTextarea>
 				<MkFolder>
 					<template #label>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReaction }}</template>
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
@@ -74,6 +74,7 @@ import * as misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os';
