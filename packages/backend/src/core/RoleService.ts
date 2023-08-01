@@ -210,6 +210,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'notesMoreThanOrEq': {
 					return user.notesCount >= value.value;
 				}
+				case 'emojiCountLessThanOrEq': {
+					return user.emojiCount <= value.value;
+				}
+				case 'emojiCountMoreThanOrEq': {
+					return user.emojiCount >= value.value;
+				}
 				default:
 					return false;
 			}

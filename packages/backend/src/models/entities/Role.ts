@@ -64,6 +64,16 @@ type CondFormulaValueNotesMoreThanOrEq = {
 	value: number;
 };
 
+type CondFormulaValueEmojiCountLessThanOrEq = {
+	type: 'emojiCountLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueEmojiCountMoreThanOrEq = {
+	type: 'emojiCountMoreThanOrEq';
+	value: number;
+};
+
 export type RoleCondFormulaValue =
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
@@ -77,7 +87,9 @@ export type RoleCondFormulaValue =
 	CondFormulaValueFollowingLessThanOrEq |
 	CondFormulaValueFollowingMoreThanOrEq |
 	CondFormulaValueNotesLessThanOrEq |
-	CondFormulaValueNotesMoreThanOrEq;
+	CondFormulaValueNotesMoreThanOrEq |
+	CondFormulaValueEmojiCountLessThanOrEq |
+	CondFormulaValueEmojiCountMoreThanOrEq;
 
 export type RolePermissionGroupValue = 'Admin' | 'MainModerator' | 'EmojiModerator' | 'Normal';
 
