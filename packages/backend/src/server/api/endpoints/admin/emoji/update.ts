@@ -5,6 +5,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import type { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,6 +28,11 @@ export const meta = {
 			message: 'Emoji that have same name already exists.',
 			code: 'SAME_NAME_EMOJI_EXISTS',
 			id: '7180fe9d-1ee3-bff9-647d-fe9896d2ffb8',
+		},
+		notOwnerOrpermissionDenied: {
+			message: 'You are not this emoji owner or not assigned to a required role.',
+			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
+			id: ''
 		},
 	},
 } as const;
@@ -65,6 +71,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		private roleService: RoleService,
+
 		private customEmojiService: CustomEmojiService
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -83,6 +91,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (oldEmoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
+			const isEmojiModerator = await this.roleService.isEmojiModerator(me);
+
 			if (oldEmoji.name !== ps.name) {
 				const existEmoji = await this.emojisRepository.exist({
 					where: {
@@ -94,6 +104,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (existEmoji) {
 					throw new ApiError(meta.errors.sameNameEmojiExists);
 				}
+			}
+
+			if ((
+				ps.fileId ||
+				oldEmoji.name !== ps.name ||
+				oldEmoji.category !== ps.category ||
+				oldEmoji.license !== ps.license ||
+				oldEmoji.isSensitive !== ps.isSensitive ||
+				oldEmoji.localOnly !== ps.localOnly) &&
+				!isEmojiModerator &&
+				oldEmoji.userId !== me.id
+			) {
+				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
 			}
 
 			await this.customEmojiService.update(ps.id, {
