@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="close" @close="emit('closing')" @closed="emit('closed')">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="close" @hide="manualShowing = false"/>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="emit('closing')" @closed="emit('closed')">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="_close" @hide="manualShowing = false"/>
 </MkModal>
 </template>
 
@@ -30,6 +30,16 @@ const emit = defineEmits<{
 
 let modal = $shallowRef<InstanceType<typeof MkModal>>();
 const manualShowing = ref(true);
+
+function click() {
+	console.log('popup menu click');
+	close();
+}
+
+function _close() {
+	console.log('popup menu close event');
+	close();
+}
 
 function close() {
 	if (!modal) return;

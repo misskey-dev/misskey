@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
-			<button v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
+			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter.stop="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -170,10 +170,9 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 	}
 
 	if (props.asDrawer) {
-		os.popupMenu(children as Ref<MenuItem[]>, ev.currentTarget ?? ev.target, {
-			onClosing: () => {
-				close();
-			}
+		os.popupMenu(children as Ref<MenuItem[]>, ev.currentTarget ?? ev.target).finally(() => {
+			console.log('child drawer close');
+			emit('close');
 		});
 		emit('hide');
 	} else {
@@ -356,6 +355,7 @@ onBeforeUnmount(() => {
 	}
 
 	&.parent {
+		pointer-events: auto;
 		display: flex;
 		align-items: center;
 		cursor: default;
