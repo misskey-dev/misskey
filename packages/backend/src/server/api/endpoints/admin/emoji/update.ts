@@ -6,6 +6,8 @@ import type { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 import { RoleService } from '@/core/RoleService.js';
+import { LogInfoValue } from '@/models/entities/EmojiModerationLog.js';
+import { EmojiModerationLogService } from '@/core/EmojiModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -73,7 +75,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private roleService: RoleService,
 
-		private customEmojiService: CustomEmojiService
+		private customEmojiService: CustomEmojiService,
+
+		private emojiModerationLogService: EmojiModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let driveFile;
@@ -107,7 +111,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if ((
-				ps.fileId ||
+				driveFile ||
 				oldEmoji.name !== ps.name ||
 				oldEmoji.category !== ps.category ||
 				oldEmoji.license !== ps.license ||
@@ -130,6 +134,75 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 			});
+
+			const changes: LogInfoValue[] = [];
+			if (driveFile) {
+				changes.push({
+					type: 'originalUrl',
+					changeInfo: {
+						before: oldEmoji.originalUrl,
+						after: driveFile.url,
+					},
+				});
+			}
+			if (oldEmoji.name !== ps.name) {
+				changes.push({
+					type: 'name',
+					changeInfo: {
+						before: oldEmoji.name,
+						after: ps.name,
+					},
+				});
+			}
+			if (oldEmoji.category !== ps.category) {
+				changes.push({
+					type: 'category',
+					changeInfo: {
+						before: oldEmoji.category,
+						after: ps.category,
+					},
+				});
+			}
+			if (oldEmoji.license !== ps.license) {
+				changes.push({
+					type: 'license',
+					changeInfo: {
+						before: oldEmoji.license,
+						after: ps.license,
+					},
+				});
+			}
+			if (oldEmoji.isSensitive !== ps.isSensitive) {
+				changes.push({
+					type: 'isSensitive',
+					changeInfo: {
+						before: oldEmoji.isSensitive,
+						after: ps.isSensitive,
+					},
+				});
+			}
+			if (oldEmoji.localOnly !== ps.localOnly) {
+				changes.push({
+					type: 'localOnly',
+					changeInfo: {
+						before: oldEmoji.localOnly,
+						after: ps.localOnly,
+					},
+				});
+			}
+
+			//エイリアスはbeforeに削除されたもの、afterに追加されたものを書く
+			if (oldEmoji.aliases.length !== ps.aliases.length || !oldEmoji.aliases.every(v => ps.aliases.includes(v))) {
+				changes.push({
+					type: 'aliases',
+					changeInfo: {
+						before: oldEmoji.aliases.filter(v => !ps.aliases.includes(v)),
+						after: ps.aliases.filter(v => !oldEmoji.aliases.includes(v)),
+					},
+				});
+			}
+
+			await this.emojiModerationLogService.insertEmojiModerationLog(me, { id: ps.id }, 'Update', changes);
 		});
 	}
 }
