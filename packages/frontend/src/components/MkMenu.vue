@@ -170,7 +170,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 	}
 
 	if (props.asDrawer) {
-		os.popupMenu(children.value as MenuItem[], ev.currentTarget ?? ev.target, {
+		os.popupMenu(children as Ref<MenuItem[]>, ev.currentTarget ?? ev.target, {
 			onClosing: () => {
 				close();
 			}
@@ -178,7 +178,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 		emit('hide');
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
-		childMenu = children;
+		childMenu = children as Ref<MenuItem[]>;
 		childShowingItem = item;
 	}
 }
