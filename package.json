@@ -15,7 +15,8 @@
 	"private": true,
 	"scripts": {
 		"build-pre": "node ./scripts/build-pre.js",
-		"build": "pnpm build-pre && pnpm -r build && pnpm gulp",
+		"build-assets": "node ./scripts/build-assets.mjs",
+		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
 		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/index.js",
 		"start:test": "cd packages/backend && cross-env NODE_ENV=test node ./built/boot/index.js",
@@ -23,7 +24,6 @@
 		"migrate": "cd packages/backend && pnpm migrate",
 		"check:connect": "cd packages/backend && pnpm check:connect",
 		"migrateandstart": "pnpm migrate && pnpm start",
-		"gulp": "pnpm exec gulp build",
 		"watch": "pnpm dev",
 		"dev": "node ./scripts/dev.mjs",
 		"lint": "pnpm -r lint",
@@ -34,7 +34,6 @@
 		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
 		"test": "pnpm -r test",
 		"test-and-coverage": "pnpm -r test-and-coverage",
-		"format": "pnpm exec gulp format",
 		"clean": "node ./scripts/clean.js",
 		"clean-all": "node ./scripts/clean-all.js",
 		"cleanall": "pnpm clean-all"
