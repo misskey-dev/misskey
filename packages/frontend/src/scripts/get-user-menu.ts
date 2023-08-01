@@ -168,6 +168,7 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		type: 'parent',
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
+		noCache: true,
 		children: async () => {
 			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
 			return lists.map(list => {
