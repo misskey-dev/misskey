@@ -709,14 +709,19 @@ export interface IEndpointMeta {
 	readonly requireCredential?: boolean;
 
 	/**
-	 * isModeratorなロールを必要とするか
+	 * Main Moderator権限を必要とするか
 	 */
 	readonly requireModerator?: boolean;
 
 	/**
-	 * isAdministratorなロールを必要とするか
+	 * Administrator権限を必要とするか
 	 */
 	readonly requireAdmin?: boolean;
+
+	/**
+	 * Emoji Moderator権限を必要とするか
+	 */
+	readonly requireEmojiModerator?: boolean;
 
 	readonly requireRolePolicy?: keyof RolePolicies;
 

@@ -79,6 +79,8 @@ export type RoleCondFormulaValue =
 	CondFormulaValueNotesLessThanOrEq |
 	CondFormulaValueNotesMoreThanOrEq;
 
+export type RolePermissionGroupValue = 'Admin' | 'MainModerator' | 'EmojiModerator' | 'Normal';
+
 @Entity()
 export class Role {
 	@PrimaryColumn(id())
@@ -144,12 +146,18 @@ export class Role {
 	@Column('boolean', {
 		default: false,
 	})
-	public isModerator: boolean;
+	public isModerator: boolean; // 後方互換
 
 	@Column('boolean', {
 		default: false,
 	})
-	public isAdministrator: boolean;
+	public isAdministrator: boolean; // 後方互換
+
+	@Column('enum', {
+		enum: ['Admin', 'MainModerator', 'EmojiModerator', 'Normal'],
+		default: 'Normal',
+	})
+	public permissionGroup: RolePermissionGroupValue;
 
 	@Column('boolean', {
 		default: false,
