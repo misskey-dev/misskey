@@ -33,9 +33,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSelect v-model="rolePermission" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
-		<option value="normal">{{ i18n.ts.normalUser }}</option>
-		<option value="moderator">{{ i18n.ts.moderator }}</option>
-		<option value="administrator">{{ i18n.ts.administrator }}</option>
+		<option value="Normal">{{ i18n.ts.normalUser }}</option>
+		<option value="MainModerator">{{ i18n.ts.moderator }}</option>
+		<option value="Admin">{{ i18n.ts.administrator }}</option>
+		<option value="Community">{{ i18n.ts.community }}</option>
 	</MkSelect>
 
 	<MkSelect v-model="role.target" :readonly="readonly">
@@ -997,6 +998,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkRange>
 				</div>
 			</MkFolder>
+
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.canAddRoles, 'canAddRoles'])">
+				<template #label>{{ i18n.ts._role._options.canAddRoles }}</template>
+				<template #suffix>
+					<span v-if="role.policies.canAddRoles.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.canAddRoles.value ? i18n.ts.yes : i18n.ts.no }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.canAddRoles)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.canAddRoles.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkSwitch v-model="role.policies.canAddRoles.value" :disabled="role.policies.canAddRoles.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts.enable }}</template>
+					</MkSwitch>
+					<MkRange v-model="role.policies.canAddRoles.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
 		</div>
 	</FormSlot>
 </div>
@@ -1048,10 +1069,9 @@ function updateAvatarDecorationLimit(value: string | number) {
 }
 
 const rolePermission = computed({
-	get: () => role.value.isAdministrator ? 'administrator' : role.value.isModerator ? 'moderator' : 'normal',
+	get: () => role.value.permissionGroup,
 	set: (val) => {
-		role.value.isAdministrator = val === 'administrator';
-		role.value.isModerator = val === 'moderator';
+		role.value.permissionGroup = val;
 	},
 });
 
@@ -1077,8 +1097,7 @@ const save = throttle(100, () => {
 		displayOrder: role.value.displayOrder,
 		target: role.value.target,
 		condFormula: role.value.condFormula,
-		isAdministrator: role.value.isAdministrator,
-		isModerator: role.value.isModerator,
+		permissionGroup: role.value.permissionGroup,
 		isPublic: role.value.isPublic,
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,

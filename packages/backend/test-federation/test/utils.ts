@@ -122,7 +122,7 @@ export async function createModerator(host: Host): Promise<LoginUser> {
 	const user = await createAccount(host);
 	const role = await createRole(host, {
 		name: 'Moderator',
-		isModerator: true,
+		permissionGroup: 'MainModerator',
 	});
 	const admin = await fetchAdmin(host);
 	await admin.client.request('admin/roles/assign', { roleId: role.id, userId: user.id });
@@ -141,6 +141,7 @@ export async function createRole(
 		iconUrl: null,
 		target: 'conditional',
 		condFormula: {},
+		permissionGroup: 'Normal',
 		isPublic: true,
 		isModerator: false,
 		isAdministrator: false,

@@ -30,12 +30,12 @@ interface IEndpointMetaBase {
 	readonly requireCredential?: boolean;
 
 	/**
-	 * isModeratorなロールを必要とするか
+	 * Main Moderator権限を必要とするか
 	 */
 	readonly requireModerator?: boolean;
 
 	/**
-	 * isAdministratorなロールを必要とするか
+	 * Administrator権限を必要とするか
 	 */
 	readonly requireAdmin?: boolean;
 

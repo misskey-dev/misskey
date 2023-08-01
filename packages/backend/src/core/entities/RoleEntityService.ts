@@ -64,6 +64,7 @@ export class RoleEntityService {
 			target: role.target,
 			condFormula: role.condFormula,
 			isPublic: role.isPublic,
+			permissionGroup: role.permissionGroup,
 			isAdministrator: role.isAdministrator,
 			isModerator: role.isModerator,
 			isExplorable: role.isExplorable,
@@ -73,6 +74,7 @@ export class RoleEntityService {
 			displayOrder: role.displayOrder,
 			policies: policies,
 			usersCount: assignedCount,
+			isOwner: role.userId != null ? role.userId === me?.id : false,
 		});
 	}
 

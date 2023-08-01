@@ -54,14 +54,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div><MkSparkle><Mfm :plain="true" :text="user.followedMessage" :author="user" class="_selectable"/></MkSparkle></div>
 						</MkFukidashi>
 					</div>
-					<div v-if="user.roles.length > 0" class="roles">
-						<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
-							<MkA v-adaptive-bg :to="`/roles/${role.id}`">
-								<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
-								{{ role.name }}
-							</MkA>
-						</span>
-					</div>
+					<MkFoldableSection v-if="user.roles.length > 0" class="role-folder" :expanded="user.roles.length < 5">
+						<template #header>{{ i18n.ts.roles }}</template>
+						<div class="roles">
+							<span v-for="role in user.roles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
+									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+									{{ role.name }}
+								</MkA>
+							</span>
+						</div>
+					</MkFoldableSection>
+					<MkFoldableSection v-if="user.communityRoles.length > 0" class="role-folder" :expanded="user.communityRoles.length < 5">
+						<template #header>{{ i18n.ts.community + " " + i18n.ts.roles }}</template>
+						<div class="roles">
+							<span v-for="role in user.communityRoles" :key="role.id" v-tooltip="role.description" class="role" :style="{ '--color': role.color }">
+								<MkA v-adaptive-bg :to="`/roles/${role.id}`">
+									<img v-if="role.iconUrl" style="height: 1.3em; vertical-align: -22%;" :src="role.iconUrl"/>
+									{{ role.name }}
+								</MkA>
+							</span>
+						</div>
+					</MkFoldableSection>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
 							<template #label>{{ i18n.ts.moderationNote }}</template>
@@ -180,6 +194,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkOmit from '@/components/MkOmit.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { getUserMenu } from '@/utility/get-user-menu.js';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
@@ -518,6 +533,23 @@ onUnmounted(() => {
 					}
 				}
 
+				> .role-folder {
+						padding: 12px 12px 0 154px;
+						.roles {
+								padding: 10px 0px 0 8px;
+								font-size: 0.95em;
+								display: flex;
+								flex-wrap: wrap;
+								gap: 8px;
+								> .role {
+										border: solid 1px var(--color, var(--divider));
+										border-radius: 999px;
+										margin-right: 4px;
+										padding: 3px 8px;
+								}
+						}
+				}
+
 				> .roles {
 					padding: 24px 24px 0 154px;
 					font-size: 0.95em;
@@ -704,9 +736,12 @@ onUnmounted(() => {
 					padding: 16px 16px 0 16px;
 				}
 
-				> .roles {
-					padding: 16px 16px 0 16px;
-					justify-content: center;
+				> .role-folder {
+					padding: 8px 16px 0 16px;
+					.roles {
+						padding: 8px 8px 0 8px;
+						justify-content: center;
+					}
 				}
 
 				> .moderationNote {

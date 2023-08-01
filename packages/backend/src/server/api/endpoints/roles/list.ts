@@ -8,6 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RolesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 
 export const meta = {
 	tags: ['role'],
@@ -29,6 +30,18 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		communityOnly: {
+			type: 'boolean',
+		},
+		communityPublicOnly: {
+			type: 'boolean',
+		},
+		ownerOnly: {
+			type: 'boolean',
+		},
+		assignedOnly: {
+			type: 'boolean',
+		},
 	},
 	required: [
 	],
@@ -41,12 +54,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private rolesRepository: RolesRepository,
 
 		private roleEntityService: RoleEntityService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const roles = await this.rolesRepository.findBy({
-				isPublic: true,
-				isExplorable: true,
-			});
+			const roles = ps.assignedOnly
+				? await this.roleService.getUserRoles(me.id).then(roles => roles.filter(role => role.permissionGroup === 'Community'))
+				: await this.rolesRepository.findBy({
+					...(ps.communityOnly || ps.communityPublicOnly ? {
+						permissionGroup: 'Community',
+						...(ps.communityPublicOnly ? {
+							isPublic: true,
+						} : {}),
+					} : {
+						isExplorable: true,
+						isPublic: true,
+					}),
+				});
 			return await this.roleEntityService.packMany(roles, me);
 		});
 	}

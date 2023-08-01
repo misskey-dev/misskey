@@ -113,6 +113,8 @@ export const ROLE_POLICIES = [
 	'noteEachClipsLimit',
 	'userListLimit',
 	'userEachUserListsLimit',
+	'mutualLinkLimit',
+	'mutualLinkSectionLimit',
 	'rateLimitFactor',
 	'avatarDecorationLimit',
 	'canFollow',
@@ -128,6 +130,7 @@ export const ROLE_POLICIES = [
 	'canUseBlockedNotification',
 	'canUseUnBlockedNotification',
 	'canViewCharts',
+	'canAddRoles',
 ] as const;
 
 export const MFM_TAGS = ['tada', 'jelly', 'twitch', 'shake', 'spin', 'jump', 'bounce', 'flip', 'x2', 'x3', 'x4', 'scale', 'position', 'fg', 'bg', 'border', 'font', 'blur', 'rainbow', 'sparkle', 'rotate', 'ruby', 'unixtime'];

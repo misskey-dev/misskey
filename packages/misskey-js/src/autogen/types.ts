@@ -9989,8 +9989,8 @@ export type operations = {
           target: 'manual' | 'conditional';
           condFormula: Record<string, never>;
           isPublic: boolean;
-          isModerator: boolean;
-          isAdministrator: boolean;
+          /** @enum {string} */
+          permissionGroup: 'Admin' | 'MainModerator' | 'Normal' | 'Community';
           /** @default false */
           isExplorable?: boolean;
           asBadge: boolean;
@@ -10266,8 +10266,8 @@ export type operations = {
           target?: 'manual' | 'conditional';
           condFormula?: Record<string, never>;
           isPublic?: boolean;
-          isModerator?: boolean;
-          isAdministrator?: boolean;
+          /** @enum {string} */
+          permissionGroup?: 'Admin' | 'MainModerator' | 'Normal' | 'Community';
           isExplorable?: boolean;
           asBadge?: boolean;
           preserveAssignmentOnMoveAccount?: boolean;
@@ -28425,6 +28425,16 @@ export type operations = {
    * **Credential required**: *Yes* / **Permission**: *read:account*
    */
   roles___list: {
+    requestBody: {
+      content: {
+        'application/json': {
+          communityOnly?: boolean;
+          communityPublicOnly?: boolean;
+          ownerOnly?: boolean;
+          assignedOnly?: boolean;
+        };
+      };
+    };
     responses: {
       /** @description OK (with results) */
       200: {

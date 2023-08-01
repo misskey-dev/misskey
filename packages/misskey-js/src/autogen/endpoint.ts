@@ -564,6 +564,7 @@ import type {
 	ReversiSurrenderRequest,
 	ReversiVerifyRequest,
 	ReversiVerifyResponse,
+	RolesListRequest,
 	RolesListResponse,
 	RolesNotesRequest,
 	RolesNotesResponse,
@@ -1022,7 +1023,7 @@ export type Endpoints = {
 	'reversi/show-game': { req: ReversiShowGameRequest; res: ReversiShowGameResponse };
 	'reversi/surrender': { req: ReversiSurrenderRequest; res: EmptyResponse };
 	'reversi/verify': { req: ReversiVerifyRequest; res: ReversiVerifyResponse };
-	'roles/list': { req: EmptyRequest; res: RolesListResponse };
+	'roles/list': { req: RolesListRequest; res: RolesListResponse };
 	'roles/notes': { req: RolesNotesRequest; res: RolesNotesResponse };
 	'roles/show': { req: RolesShowRequest; res: RolesShowResponse };
 	'roles/users': { req: RolesUsersRequest; res: RolesUsersResponse };

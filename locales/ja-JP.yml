@@ -2051,6 +2051,7 @@ _role:
     scheduleNoteMax: "予約投稿の最大数"
     chatAvailability: "チャットを許可"
     canViewCharts: 'インスタンス統計を閲覧'
+    canAddRoles: "コミュニティーロールの追加"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
@@ -2470,6 +2471,11 @@ _permissions:
   "write:notes-schedule": "予約投稿を作成・削除する"
   "write:chat": "チャットを操作する"
   "read:chat": "チャットを閲覧する"
+  "read:achievements": "実績を見る"
+  "read:announcements": "お知らせを見る"
+  "read:stats": "統計情報を見る"
+  "read:clip": "クリップを見る"
+  "write:community-role": "コミュニティーロールを操作する"
 
 _auth:
   shareAccessTitle: "アプリへのアクセス許可"

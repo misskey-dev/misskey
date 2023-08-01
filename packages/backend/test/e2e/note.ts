@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Repository } from "typeorm";
+import type { Repository } from 'typeorm';
 
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import type * as misskey from 'misskey-js';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
-import type * as misskey from 'misskey-js';
 
 describe('Note', () => {
 	let Notes: Repository<MiNote>;
@@ -477,7 +477,7 @@ describe('Note', () => {
 				displayOrder: 0,
 				target: 'manual',
 				condFormula: {},
-				isAdministrator: false,
+				permissionGroup: 'Normal',
 				isModerator: false,
 				isPublic: false,
 				isExplorable: false,
@@ -789,7 +789,7 @@ describe('Note', () => {
 				displayOrder: 0,
 				target: 'manual',
 				condFormula: {},
-				isAdministrator: false,
+				permissionGroup: 'Normal',
 				isModerator: false,
 				isPublic: false,
 				isExplorable: false,
@@ -843,7 +843,7 @@ describe('Note', () => {
 				displayOrder: 0,
 				target: 'manual',
 				condFormula: {},
-				isAdministrator: false,
+				permissionGroup: 'Normal',
 				isModerator: false,
 				isPublic: false,
 				isExplorable: false,
@@ -899,7 +899,7 @@ describe('Note', () => {
 				displayOrder: 0,
 				target: 'manual',
 				condFormula: {},
-				isAdministrator: false,
+				permissionGroup: 'Normal',
 				isModerator: false,
 				isPublic: false,
 				isExplorable: false,

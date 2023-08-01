@@ -283,7 +283,7 @@ describe('API', () => {
 			description: '',
 			displayOrder: 0,
 			iconUrl: '',
-			isAdministrator: false,
+			isAdministrator: false,permissionGroup: 'MainModerator',
 			isExplorable: false,
 			isModerator: false,
 			isPublic: false,

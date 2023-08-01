@@ -273,6 +273,7 @@ export const role = async (user: UserToken, role: Partial<misskey.entities.Role>
 		description: '',
 		displayOrder: 0,
 		iconUrl: null,
+		permissionGroup: 'Normal',
 		isAdministrator: false,
 		isModerator: false,
 		isPublic: false,
@@ -495,8 +496,8 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
-			htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
-				await bodyExtractor(res);
+		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
+		await bodyExtractor(res);
 
 	return {
 		status: res.status,
