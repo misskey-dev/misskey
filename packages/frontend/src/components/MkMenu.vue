@@ -82,6 +82,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'close', actioned?: boolean): void;
+	(ev: 'hide'): void;
 }>();
 
 let itemsEl = $shallowRef<HTMLDivElement>();
@@ -166,8 +167,12 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 	}
 
 	if (props.asDrawer) {
-		os.popupMenu(children, ev.currentTarget ?? ev.target);
-		close();
+		os.popupMenu(children, ev.currentTarget ?? ev.target, {
+			onClosing: () => {
+				close();
+			}
+		});
+		emit('hide');
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
 		childMenu = children;
