@@ -4,7 +4,7 @@
  */
 
 import { toUnicode } from 'punycode';
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
@@ -18,6 +18,8 @@ import { antennasCache, rolesCache, userListsCache } from '@/cache';
 
 export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
+
+	const cleanups = [] as (() => void)[];
 
 	async function toggleMute() {
 		if (user.isMuted) {
@@ -168,17 +170,32 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		text: i18n.ts.addToList,
 		children: async () => {
 			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
+			return lists.map(list => {
+				const isListed = ref(list.userIds.includes(user.id));
+				cleanups.push(watch(isListed, () => {
+					if (isListed.value) {
+						os.apiWithDialog('users/lists/push', {
+							listId: list.id,
+							userId: user.id,
+						}).then(() => {
+							list.userIds.push(user.id);
+						});
+					} else {
+						os.apiWithDialog('users/lists/pull', {
+							listId: list.id,
+							userId: user.id,
+						}).then(() => {
+							list.userIds.splice(list.userIds.indexOf(user.id), 1);
+						});
+					}
+				}));
 
-			return lists.map(list => ({
-				text: list.name,
-				action: async () => {
-					await os.apiWithDialog('users/lists/push', {
-						listId: list.id,
-						userId: user.id,
-					});
-					userListsCache.delete();
-				},
-			}));
+				return {
+					type: 'switch',
+					text: list.name,
+					ref: isListed,
+				};
+			});
 		},
 	}, {
 		type: 'parent',
@@ -311,5 +328,13 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		}))]);
 	}
 
-	return menu;
+	const cleanup = () => {
+		if (_DEV_) console.log('user menu cleanup', cleanups);
+		cleanups.forEach(cleanup => cleanup());
+	};
+
+	return {
+		menu,
+		cleanup,
+	};
 }

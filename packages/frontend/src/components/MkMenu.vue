@@ -35,9 +35,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkAvatar :user="item.user" :class="$style.avatar"/><MkUserName :user="item.user"/>
 				<span v-if="item.indicate" :class="$style.indicator"><i class="_indicatorCircle"></i></span>
 			</button>
-			<span v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" :class="$style.item" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
-				<MkSwitch v-model="item.ref" :disabled="item.disabled" class="form-switch">{{ item.text }}</MkSwitch>
-			</span>
+			<button v-else-if="item.type === 'switch'" role="menuitemcheckbox" :tabindex="i" class="_button" :class="[$style.item, $style.switch, { [$style.switchDisabled]: item.disabled } ]" @click="switchItem(item)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
+				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
+				<span :class="$style.switchText">{{ item.text }}</span>
+			</button>
 			<button v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" class="_button" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
@@ -63,8 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { focusPrev, focusNext } from '@/scripts/focus';
-import MkSwitch from '@/components/MkSwitch.vue';
-import { MenuItem, InnerMenuItem, MenuPending, MenuAction } from '@/types/menu';
+import MkSwitchButton from '@/components/MkSwitch.button.vue';
+import { MenuItem, InnerMenuItem, OuterMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 
@@ -145,17 +146,17 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-let childrenCache = new WeakMap();
-async function showChildren(item: MenuItem, ev: MouseEvent) {
-	const children = ref([]);
+let childrenCache = new WeakMap<MenuParent, OuterMenuItem[]>();
+async function showChildren(item: MenuParent, ev: MouseEvent) {
+	const children = ref<OuterMenuItem[]>([]);
 	if (childrenCache.has(item)) {
-		children.value = childrenCache.get(item);
+		children.value = childrenCache.get(item)!;
 	} else {
 		if (typeof item.children === 'function') {
 			children.value = [{
 				type: 'pending',
 			}];
-			item.children().then(x => {
+			Promise.resolve(item.children()).then(x => {
 				children.value = x;
 				childrenCache.set(item, x);
 			});
@@ -189,6 +190,11 @@ function focusUp() {
 
 function focusDown() {
 	focusNext(document.activeElement);
+}
+
+function switchItem(item: MenuSwitch & { ref: any }) {
+	if (item.disabled) return;
+	item.ref = !item.ref;
 }
 
 onMounted(() => {
@@ -355,6 +361,37 @@ onBeforeUnmount(() => {
 			}
 		}
 	}
+}
+
+.switch {
+	position: relative;
+	display: flex;
+	transition: all 0.2s ease;
+	user-select: none;
+	cursor: pointer;
+}
+
+.switchDisabled {
+	cursor: not-allowed;
+}
+
+.switchButton {
+	margin-left: -2px;
+}
+
+.switchText {
+	margin-left: 8px;
+	margin-top: 2px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.switchInput {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	margin: 0;
 }
 
 .icon {
