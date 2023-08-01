@@ -7,7 +7,7 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, Role, User } from '@/models/index.js';
+import type { EmojisRepository, Role, User, UsersRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -34,6 +34,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -93,6 +96,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
+
+			await this.usersRepository.increment({ id: data.userId }, 'emojiCount', 1);
 		}
 
 		return emoji;
@@ -237,10 +242,12 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async delete(id: Emoji['id']) {
+	public async delete(id: Emoji['id'], userId: User['id']) {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 
 		await this.emojisRepository.delete(emoji.id);
+
+		await this.usersRepository.decrement({ id: userId }, 'emojiCount', 1);
 
 		this.localEmojisCache.refresh();
 
