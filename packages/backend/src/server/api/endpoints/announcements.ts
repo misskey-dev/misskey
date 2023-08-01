@@ -94,6 +94,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					query.orWhere('announcement."userId" = :userId', { userId: me.id });
 				}
 			} else {
+				query.select([
+					'announcement.*',
+					'FALSE as "isRead"',
+				]);
 				query.where('announcement."userId" IS NULL');
 			}
 
