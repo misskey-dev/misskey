@@ -51,6 +51,7 @@ export type UserDetailed = UserLite & {
 	isFollowing: boolean;
 	isLocked: boolean;
 	isModerator: boolean;
+	isEmojiModerator: boolean;
 	isMuted: boolean;
 	isSilenced: boolean;
 	isSuspended: boolean;
@@ -279,6 +280,8 @@ export type CustomEmoji = {
 	url: string;
 	category: string;
 	aliases: string[];
+	userId: UserLite['id'];
+	user: UserLite;
 };
 
 export type LiteInstanceMetadata = {
