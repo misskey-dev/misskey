@@ -5,10 +5,15 @@
 	@close="dialog.close()"
 	@closed="$emit('closed')"
 >
-	<template v-if="emoji" #header>:{{ emoji.name }}:</template>
+	<template v-if="emoji" #header>
+		<div :class="$style.header">
+			<span>:{{ emoji.name.length > 30 ? emoji.name.slice(0, 27) + "..." : emoji.name }}:</span>
+			<XTabs :class="$style.tabs" :rootEl="dialog" :tab="tab" @update:tab="key => tab = key" :tabs="headerTabs"/>
+		</div>
+	</template>
 	<template v-else #header>New emoji</template>
 
-	<div>
+	<div v-if="tab === 'overview'">
 		<MkSpacer :marginMin="20" :marginMax="28">
 			<div class="_gaps_m">
 				<div v-if="imgUrl != null" :class="$style.imgs">
@@ -32,10 +37,40 @@
 				<MkInput v-model="category" :datalist="customEmojiCategories">
 					<template #label>{{ i18n.ts.category }}</template>
 				</MkInput>
-				<MkInput v-model="aliases">
+				<MkFolder>
+					<template #icon><i class="ti ti-list"></i></template>
 					<template #label>{{ i18n.ts.tags }}</template>
-					<template #caption>{{ i18n.ts.setMultipleBySeparatingWithSpace }}</template>
-				</MkInput>
+
+					<div :class="$style.metadataRoot">
+						<div :class="$style.metadataMargin">
+							<MkButton :disabled="aliases.length >= 16" inline style="margin-right: 8px;" @click="addAliase"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+							<MkButton v-if="!aliaseEditMode" :disabled="aliases.length <= 1" inline danger style="margin-right: 8px;" @click="aliaseEditMode = !aliaseEditMode"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
+							<MkButton v-else inline style="margin-right: 8px;" @click="aliaseEditMode = !aliaseEditMode"><i class="ti ti-arrows-sort"></i> {{ i18n.ts.rearrange }}</MkButton>
+						</div>
+
+						<Sortable
+							v-model="aliases"
+							class="_gaps_s"
+							itemKey="id"
+							:animation="150"
+							:handle="'.' + $style.dragItemHandle"
+							@start="e => e.item.classList.add('active')"
+							@end="e => e.item.classList.remove('active')"
+						>
+							<template #item="{element, index}">
+								<div :class="$style.aliaseDragItem">
+									<button v-if="!aliaseEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+									<button v-if="aliaseEditMode" :disabled="aliases.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteAliase(index)"><i class="ti ti-x"></i></button>
+									<div :class="$style.dragItemForm">
+										<FormSplit :minWidth="200">
+											<MkInput v-model="element.value" small></MkInput>
+										</FormSplit>
+									</div>
+								</div>
+							</template>
+						</Sortable>
+					</div>
+				</MkFolder>
 				<MkInput v-model="license">
 					<template #label>{{ i18n.ts.license }}</template>
 				</MkInput>
@@ -56,7 +91,7 @@
 						<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
 					</div>
 				</MkFolder>
-				<MkSwitch v-model="isSensitive">isSensitive</MkSwitch>
+				<MkSwitch v-model="isSensitive">{{ i18n.ts.markAsSensitive }}</MkSwitch>
 				<MkSwitch v-model="localOnly">{{ i18n.ts.localOnly }}</MkSwitch>
 				<MkButton danger @click="del()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
@@ -65,11 +100,25 @@
 			<MkButton primary rounded style="margin: 0 auto;" @click="done"><i class="ti ti-check"></i> {{ props.emoji ? i18n.ts.update : i18n.ts.create }}</MkButton>
 		</div>
 	</div>
+
+	<div v-else-if="tab === 'log'">
+		<MkSpacer :marginMin="20" :marginMax="28">
+			<div class="_gaps_m">
+				<MkPagination :pagination="pagination">
+					<template #default="{ items }">
+						<div class="_gaps_s">
+							<MkEmojiLog v-for="item in items" :key="item.id" :emojiLog="item" />
+						</div>
+					</template>
+				</MkPagination>
+			</div>
+		</MkSpacer>
+	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, defineAsyncComponent, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -82,6 +131,11 @@ import { customEmojiCategories } from '@/custom-emojis';
 import MkSwitch from '@/components/MkSwitch.vue';
 import { selectFile, selectFiles } from '@/scripts/select-file';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import XTabs from '@/components/global/MkPageHeader.tabs.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import MkEmojiLog from '@/components/MkEmojiLog.vue';
+
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	emoji?: any,
@@ -90,13 +144,48 @@ const props = defineProps<{
 let dialog = $ref(null);
 let name: string = $ref(props.emoji ? props.emoji.name : '');
 let category: string = $ref(props.emoji ? props.emoji.category : '');
-let aliases: string = $ref(props.emoji ? props.emoji.aliases.join(' ') : '');
+let aliases: { id: string, value: string }[] = $ref(props.emoji ? props.emoji.aliases.map(x => ({
+	id: Math.random().toString(),
+	value: x,
+})) : []);
 let license: string = $ref(props.emoji ? (props.emoji.license ?? '') : '');
 let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
 let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
 let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<misskey.entities.DriveFile>();
+
+const pagination: Paging = {
+	endpoint: 'admin/emoji/get-emoji-log' as const,
+	limit: 10,
+	params: computed(() => ({
+		id: props.emoji.id
+	})),
+	offsetMode: true,
+	noPaging: true,
+};
+
+const tab = $ref('overview');
+const headerTabs = $computed(() => [{
+	key: 'overview',
+	title: i18n.ts.overview,
+}, {
+	key: 'log',
+	title: i18n.ts.logs,
+}]);
+
+const aliaseEditMode = $ref(false);
+
+function addAliase() {
+	aliases.push({
+		id: Math.random().toString(),
+		value: '',
+	});
+}
+
+function deleteAliase(index: number) {
+	aliases.splice(index, 1);
+}
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
@@ -137,7 +226,7 @@ async function done() {
 	const params = {
 		name,
 		category: category === '' ? null : category,
-		aliases: aliases.split(' ').filter(x => x !== ''),
+		aliases: aliases.filter(x => x.value.trim() !== '').map(x => x.value),
 		license: license === '' ? null : license,
 		isSensitive,
 		localOnly,
@@ -180,7 +269,7 @@ async function del() {
 	});
 	if (canceled) return;
 
-	os.api('admin/emoji/delete', {
+	os.apiWithDialog('admin/emoji/delete', {
 		id: props.emoji.id,
 	}).then(() => {
 		emit('done', {
@@ -192,6 +281,12 @@ async function del() {
 </script>
 
 <style lang="scss" module>
+
+.header {
+	display: flex;
+	gap: 10px;
+}
+
 .imgs {
 	display: flex;
 	gap: 8px;
@@ -234,5 +329,71 @@ async function del() {
 	border-top: solid 0.5px var(--divider);
 	-webkit-backdrop-filter: var(--blur, blur(15px));
 	backdrop-filter: var(--blur, blur(15px));
+}
+
+// profile.vueからの流用
+.metadataRoot {
+	container-type: inline-size;
+}
+
+.metadataMargin {
+	margin-bottom: 1.5em;
+}
+
+.aliaseDragItem {
+	display: flex;
+	padding-bottom: .75em;
+	align-items: flex-end;
+	border-bottom: solid 0.5px var(--divider);
+
+	&:last-child {
+		border-bottom: 0;
+	}
+
+	/* (drag button) 32px + (drag button margin) 8px + (input width) 200px * 2 + (input gap) 12px = 452px */
+	@container (max-width: 452px) {
+		align-items: center;
+	}
+}
+
+.dragItemHandle {
+	cursor: grab;
+	width: 32px;
+	height: 32px;
+	margin: 0 8px 0 0;
+	opacity: 0.5;
+	flex-shrink: 0;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.dragItemRemove {
+	@extend .dragItemHandle;
+
+	color: #ff2a2a;
+	opacity: 1;
+	cursor: pointer;
+
+	&:hover, &:focus {
+		opacity: .7;
+	}
+	&:active {
+		cursor: pointer;
+	}
+}
+
+.dragItemForm {
+	flex-grow: 1;
+}
+
+.tabs:first-child {
+	margin-left: auto;
+	padding: 0 12px;
+}
+.tabs {
+	pointer-events: auto;
+	margin-right: auto;
 }
 </style>

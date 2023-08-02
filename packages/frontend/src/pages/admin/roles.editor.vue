@@ -28,9 +28,10 @@
 	<MkSelect v-model="rolePermission" :readonly="readonly">
 		<template #label><i class="ti ti-shield-lock"></i> {{ i18n.ts._role.permission }}</template>
 		<template #caption><div v-html="i18n.ts._role.descriptionOfPermission.replaceAll('\n', '<br>')"></div></template>
-		<option value="normal">{{ i18n.ts.normalUser }}</option>
-		<option value="moderator">{{ i18n.ts.moderator }}</option>
-		<option value="administrator">{{ i18n.ts.administrator }}</option>
+		<option value="Normal">{{ i18n.ts.normalUser }}</option>
+		<option value="EmojiModerator">{{ i18n.ts.emojiModerator }}</option>
+		<option value="MainModerator">{{ i18n.ts.moderator }}</option>
+		<option value="Admin">{{ i18n.ts.administrator }}</option>
 	</MkSelect>
 
 	<MkSelect v-model="role.target" :readonly="readonly">
@@ -531,10 +532,9 @@ for (const ROLE_POLICY of ROLE_POLICIES) {
 }
 
 let rolePermission = $computed({
-	get: () => role.isAdministrator ? 'administrator' : role.isModerator ? 'moderator' : 'normal',
+	get: () => role.permissionGroup,
 	set: (val) => {
-		role.isAdministrator = val === 'administrator';
-		role.isModerator = val === 'moderator';
+		role.permissionGroup = val;
 	},
 });
 
@@ -560,8 +560,7 @@ const save = throttle(100, () => {
 		displayOrder: role.displayOrder,
 		target: role.target,
 		condFormula: role.condFormula,
-		isAdministrator: role.isAdministrator,
-		isModerator: role.isModerator,
+		permissionGroup: role.permissionGroup,
 		isPublic: role.isPublic,
 		isExplorable: role.isExplorable,
 		asBadge: role.asBadge,

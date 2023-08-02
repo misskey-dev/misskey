@@ -47,8 +47,7 @@ if (props.id) {
 	data = {
 		name: 'New Role',
 		description: '',
-		isAdministrator: false,
-		isModerator: false,
+		permissionGroup: 'Normal',
 		color: null,
 		iconUrl: null,
 		target: 'manual',
