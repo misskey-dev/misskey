@@ -90,7 +90,7 @@ export type Source = {
 
 	nirila?: {
 		abuseDiscordHook: string;
-		disableAbuseRepository: string;
+		disableAbuseRepository?: boolean;
 	}
 };
 
