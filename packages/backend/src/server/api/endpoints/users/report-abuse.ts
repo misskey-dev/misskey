@@ -10,6 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { AbuseDiscordHookService } from '@/core/AbuseDiscordHookService.js';
+import type { Config } from '@/config.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -58,6 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		@Inject(DI.abuseUserReportsRepository)
 		private abuseUserReportsRepository: AbuseUserReportsRepository,
+		@Inject(DI.config)
+		private config: Config,
 
 		private idService: IdService,
 		private metaService: MetaService,
@@ -106,7 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 
 				const meta = await this.metaService.fetch();
-				if (meta.email) {
+				if (meta.email && !config.nirila?.disableAbuseRepository) {
 					this.emailService.sendEmail(meta.email, 'New abuse report',
 						sanitizeHtml(ps.comment),
 						sanitizeHtml(ps.comment));
