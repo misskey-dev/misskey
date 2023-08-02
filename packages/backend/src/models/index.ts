@@ -86,7 +86,7 @@ export {
 	DriveFile,
 	DriveFolder,
 	Emoji,
-	EmojiModerationLog
+	EmojiModerationLog,
 	Following,
 	FollowRequest,
 	GalleryLike,
