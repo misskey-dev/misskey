@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit, AdminInstanceMetadata,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -20,7 +20,7 @@ export type Endpoints = {
 	'admin/get-table-stats': { req: TODO; res: TODO; };
 	'admin/invite': { req: TODO; res: TODO; };
 	'admin/logs': { req: TODO; res: TODO; };
-	'admin/meta': { req: TODO; res: TODO; };
+	'admin/meta': { req: NoParams; res: AdminInstanceMetadata; };
 	'admin/reset-password': { req: TODO; res: TODO; };
 	'admin/resolve-abuse-user-report': { req: TODO; res: TODO; };
 	'admin/resync-chart': { req: TODO; res: TODO; };

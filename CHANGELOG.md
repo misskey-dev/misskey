@@ -1,5 +1,5 @@
 <!--
-## 13.x.x (unreleased)
+## 2023.x.x (unreleased)
 
 ### General
 -
@@ -12,10 +12,19 @@
 
 -->
 
-## 13.x.x (unreleased)
+### General
+=======
+## 2023.8.0 (unreleased)
 
 ### General
+- OAuth 2.0のサポート
 - 通報の即時解決機能を追加
+
+### Client
+- Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
+
+### Server
+-
 
 ## 13.14.2
 
