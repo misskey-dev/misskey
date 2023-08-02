@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { EmojiModerationLog, EmojiModerationLogsRepository } from "@/models/index.js";
 import { DI } from '@/di-symbols.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -12,15 +13,9 @@ export const meta = {
 	cacheSec: 3600,
 
 	res: {
-		type: 'object',
+		type: 'array',
 		optional: false, nullable: false,
-		properties: {
-			changes: {
-				type: 'array',
-				optional: false, nullable: false,
-				ref: 'EmojiChangeLogs',
-			},
-		},
+		ref: 'EmojiChangeLogs',
 	},
 } as const;
 
@@ -38,9 +33,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.emojiModerationLogsRepository)
 		private emojiModerationLogsRepository: EmojiModerationLogsRepository,
+
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const logs: EmojiModerationLog[] = await this.emojiModerationLogsRepository.find({
+			const logs = await this.emojiModerationLogsRepository.find({
 				where: {
 					emojiId: ps.id,
 				},
@@ -49,13 +46,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				},
 			});
 
-			return {
-				changes: logs.map(v => ({
-					createDate: v.createdAt.toISOString(),
-					type: v.type,
-					changesProperties: v.info
-				})),
-			};
+			return await Promise.all(logs.map(async v => ({
+				id: v.id,
+				createDate: v.createdAt.toISOString(),
+				userId: v.userId,
+				user: await this.userEntityService.pack(v.user ?? v.userId),
+				type: v.type,
+				changesProperties: v.info
+			})));
 		});
 	}
 }

@@ -302,7 +302,7 @@ export class ApiCallService implements OnApplicationShutdown {
 					message: 'You are not assigned to a emoji moderator role.',
 					code: 'ROLE_PERMISSION_DENIED',
 					kind: 'permission',
-					id: '',
+					id: '43049d5b-e1c4-4b90-9c16-0e46cf06f18b',
 				});
 			}
 			if (ep.meta.requireModerator && !myRoles.some(r => r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin')) {

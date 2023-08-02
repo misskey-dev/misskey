@@ -44,7 +44,7 @@ export class EmojiModerationLog {
 
 	// もっと他にいい方法がないかなぁ...
 	@Column('jsonb', {
-		array: true, default: '{}',
+		default: {},
 	})
 	public info: LogInfoValue[];
 }

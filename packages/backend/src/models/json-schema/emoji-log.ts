@@ -30,10 +30,26 @@ export const packedEmojiChangesPropertySchema = {
 export const packedEmojiChangeLogSchema = {
 	type: 'object',
 	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+		},
 		createDate: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'date-time',
+		},
+		userId: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		user: {
+			type: 'object',
+			optional: true, nullable: true,
+			ref: 'UserLite',
 		},
 		type: {
 			type: 'string',

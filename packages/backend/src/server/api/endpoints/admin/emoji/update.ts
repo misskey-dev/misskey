@@ -34,7 +34,7 @@ export const meta = {
 		notOwnerOrpermissionDenied: {
 			message: 'You are not this emoji owner or not assigned to a required role.',
 			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
-			id: ''
+			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
 		},
 	},
 } as const;

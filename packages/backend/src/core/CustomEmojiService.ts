@@ -264,6 +264,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		for (const emoji of emojis) {
 			await this.emojisRepository.delete(emoji.id);
+
+			if (emoji.userId)
+				await this.usersRepository.decrement({ id: emoji.userId }, 'emojiCount', 1);
 		}
 
 		this.localEmojisCache.refresh();
