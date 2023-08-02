@@ -1,9 +1,11 @@
+import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFoldersRepository, DriveFilesRepository } from '@/models/index.js';
+import type { DriveFoldersRepository, DriveFilesRepository, DriveFile, User, DriveFolder } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
+import { DriveService } from '@/core/DriveService.js';
 
 export const meta = {
 	tags: ['drive'],
@@ -23,6 +25,11 @@ export const meta = {
 			message: 'This folder has child files or folders.',
 			code: 'HAS_CHILD_FILES_OR_FOLDERS',
 			id: 'b0fc8a17-963c-405d-bfbc-859a487295e1',
+		},
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: '5eb8d909-2540-4970-90b8-dd6f86088121',
 		},
 	},
 } as const;
@@ -45,6 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.driveFoldersRepository)
 		private driveFoldersRepository: DriveFoldersRepository,
 
+		private driveService: DriveService,
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -63,14 +71,53 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.driveFilesRepository.countBy({ folderId: folder.id }),
 			]);
 
-			if (childFoldersCount !== 0 || childFilesCount !== 0) {
-				throw new ApiError(meta.errors.hasChildFilesOrFolders);
+			if (!await this.roleService.isModerator(me) && (folder.userId !== me.id)) {
+				throw new ApiError(meta.errors.accessDenied);
 			}
 
-			await this.driveFoldersRepository.delete(folder.id);
+			// TODO: 再帰的に消す
+			if (childFoldersCount !== 0 || childFilesCount !== 0) {
+				const innerFolders: DriveFolder[] = [];
 
-			// Publish folderCreated event
-			this.globalEventService.publishDriveStream(me.id, 'folderDeleted', folder.id);
+				let NonInnerFolderFlag = true;
+				let unCheckedInnerFolders: DriveFolder[] = [folder];
+				do {
+					const newInnerFolders: DriveFolder[] = await this.driveFoldersRepository.findBy({
+						parentId: In(unCheckedInnerFolders.map(v => v.id))
+					});
+
+					innerFolders.push(...unCheckedInnerFolders);
+					unCheckedInnerFolders = newInnerFolders;
+
+					NonInnerFolderFlag = newInnerFolders.length === 0;
+				} while (!NonInnerFolderFlag);
+
+				const files: DriveFile[] = await this.driveFilesRepository.findBy({
+					folderId: In(innerFolders.map(v => v.id))
+				});
+
+				for (const file of files) {
+					// ここはfile deleteのものを持ってきてる
+					// Delete
+					await this.driveService.deleteFile(file);
+
+					// Publish fileDeleted event
+					this.globalEventService.publishDriveStream(me.id, "fileDeleted", file.id);
+				}
+
+				await this.driveFoldersRepository.delete({ id: In(innerFolders.map(v => v.id)) });
+
+				// Publish folderCreated event
+				for (const folder of innerFolders) {
+					this.globalEventService.publishDriveStream(me.id, 'folderDeleted', folder.id);
+				}
+			}
+			else {
+				await this.driveFoldersRepository.delete(folder.id);
+
+				// Publish folderCreated event
+				this.globalEventService.publishDriveStream(me.id, 'folderDeleted', folder.id);
+			}
 		});
 	}
 }
