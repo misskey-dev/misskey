@@ -349,12 +349,16 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	noteHeaderViewStyle: {
 		where: 'device',
-		default: 'default' as 'default' | 'oneLine' | 'wrap'
+		default: 'default' as 'default' | 'oneLine' | 'wrap',
 	},
 	noteHeaderRoleView: {
 		where: 'device',
-		default: 'default' as 'default' | 'scrollable' | 'disable'
-	}
+		default: 'default' as 'default' | 'scrollable' | 'disable',
+	},
+	displaySensitiveEmoji: {
+		where: 'device',
+		default: true,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期

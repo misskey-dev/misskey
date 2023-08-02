@@ -282,6 +282,7 @@ export type CustomEmoji = {
 	aliases: string[];
 	userId: UserLite['id'];
 	user: UserLite;
+	isSensitive: boolean;
 };
 
 export type LiteInstanceMetadata = {

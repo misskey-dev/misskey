@@ -874,6 +874,7 @@ export interface Locale {
     "voteConfirm": string;
     "hide": string;
     "useDrawerReactionPickerForMobile": string;
+    "displaySensitiveEmoji": string;
     "welcomeBackWithName": string;
     "clickToFinishEmailVerification": string;
     "overridedDeviceKind": string;
