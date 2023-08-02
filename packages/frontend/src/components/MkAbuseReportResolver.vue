@@ -16,7 +16,7 @@
 		<PrismEditor v-model="value.reportContentPattern" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :readonly="!props.editable"/>
 	</div>
 	<MkSelect v-model="value.expiresAt" :disabled="!props.editable">
-		<template #label>{{ i18n.ts._abuse._resolver.expiresAt }}<span v-if="expirationDate" style="float: right;">{{ expirationDate }}</span></template>
+		<template #label>{{ i18n.ts._abuse._resolver.expiresAt }}<span v-if="expirationDate" style="float: right;"><MkDate :time="expirationDate" mode="absolute">{{ expirationDate }}</MkDate></span></template>
 		<option value="1hour">{{ i18n.ts._abuse._resolver['1hour'] }}</option>
 		<option value="12hours">{{ i18n.ts._abuse._resolver['12hours'] }}</option>
 		<option value="1day">{{ i18n.ts._abuse._resolver['1day'] }}</option>
@@ -70,7 +70,7 @@ const props = defineProps<{
 		previousExpiresAt?: string;
 	}
 }>();
-let expirationDate: string | null = $ref(null);
+let expirationDate: Date | null = $ref(null);
 
 type NonNullType<T> = {
 	[P in keyof T]: NonNullable<T[P]>
@@ -113,7 +113,7 @@ function highlighter(code) {
 
 function renderExpirationDate(empty = false) {
 	if (value.value.expirationDate && !empty) {
-		expirationDate = new Date(value.value.expirationDate).toLocaleString();
+		expirationDate = new Date(value.value.expirationDate);
 	} else {
 		expirationDate = null;
 	}
