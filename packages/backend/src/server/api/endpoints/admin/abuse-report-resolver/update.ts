@@ -95,14 +95,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (ps.forward) properties.forward = ps.forward;
 			if (ps.expiresAt) {
 				let expirationDate: Date | null = new Date();
+				const previousMonth = expirationDate.getUTCMonth();
 				(ps.expiresAt === '1hour' ? function () { expirationDate!.setTime(expirationDate!.getTime() + ms('1 hour')); } :
 					ps.expiresAt === '12hours' ? function () { expirationDate!.setTime(expirationDate!.getTime() + ms('12 hours')); } :
 					ps.expiresAt === '1day' ? function () { expirationDate!.setTime(expirationDate!.getTime() + ms('1 day')); } :
 					ps.expiresAt === '1week' ? function () { expirationDate!.setTime(expirationDate!.getTime() + ms('1 week')); } :
-					ps.expiresAt === '1month' ? function () { expirationDate!.setUTCMonth((expirationDate!.getUTCMonth() + 1 + 1) % 12 - 1); expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + (Math.floor((expirationDate!.getUTCMonth() + 1 + 1) / 12))); } :
-					ps.expiresAt === '3months' ? function () {expirationDate!.setUTCMonth((expirationDate!.getUTCMonth() + 3 + 1) % 12 - 1); expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + (Math.floor((expirationDate!.getUTCMonth() + 3 + 1) / 12))); } :
-					ps.expiresAt === '6months' ? function () { expirationDate!.setUTCMonth((expirationDate!.getUTCMonth() + 6 + 1) % 12 - 1); expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + (Math.floor((expirationDate!.getUTCMonth() + 6 + 1) / 12))); } :
-					ps.expiresAt === '1year' ? function () { expirationDate!.setTime(expirationDate!.getTime() + ms('1 year')); } : function () { expirationDate = null; })();
+					ps.expiresAt === '1month' ? function () { expirationDate!.setUTCMonth((expirationDate!.getUTCMonth() + 1 + 1) % 12 - 1); expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + (Math.floor((previousMonth + 1 + 1) / 12))); } :
+					ps.expiresAt === '3months' ? function () {expirationDate!.setUTCMonth((expirationDate!.getUTCMonth() + 3 + 1) % 12 - 1); expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + (Math.floor((previousMonth + 3 + 1) / 12))); } :
+					ps.expiresAt === '6months' ? function () { expirationDate!.setUTCMonth((expirationDate!.getUTCMonth() + 6 + 1) % 12 - 1); expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + (Math.floor((previousMonth + 6 + 1) / 12))); } :
+					ps.expiresAt === '1year' ? function () { expirationDate!.setUTCFullYear(expirationDate!.getUTCFullYear() + 1); } : function () { expirationDate = null; })();
 
 				properties.expiresAt = ps.expiresAt;
 				properties.expirationDate = expirationDate;
