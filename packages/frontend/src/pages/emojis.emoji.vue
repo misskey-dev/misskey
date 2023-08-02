@@ -41,7 +41,7 @@ function menu(ev) {
 			os.apiGet('emoji', { name: props.emoji.name }).then(res => {
 				os.alert({
 					type: 'info',
-					text: `License: ${res.license}`,
+					text: `License: ${res.license}\nCreator: ${res.user.name} (@${res.user.username})`,
 				});
 			});
 		},
