@@ -106,6 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				publicUrl: driveFile.webpublicUrl ?? driveFile.url,
 				type: driveFile.webpublicType ?? driveFile.type,
 				license: emoji.license,
+				userId: me.id,
 			}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 			this.globalEventService.publishBroadcastStream('emojiAdded', {

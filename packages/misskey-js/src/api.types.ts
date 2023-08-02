@@ -54,6 +54,7 @@ export type Endpoints = {
 	'admin/emoji/list': { req: TODO; res: TODO; };
 	'admin/emoji/remove': { req: TODO; res: TODO; };
 	'admin/emoji/update': { req: TODO; res: TODO; };
+	'admin/emoji/get-emoji-log': { req: TODO; res: TODO; };
 	'admin/federation/delete-all-files': { req: { host: string; }; res: null; };
 	'admin/federation/refresh-remote-instance-metadata': { req: TODO; res: TODO; };
 	'admin/federation/remove-all-following': { req: TODO; res: TODO; };

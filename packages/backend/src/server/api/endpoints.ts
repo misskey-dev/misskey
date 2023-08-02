@@ -31,6 +31,7 @@ import * as ep___admin_emoji_setAliasesBulk from './endpoints/admin/emoji/set-al
 import * as ep___admin_emoji_setCategoryBulk from './endpoints/admin/emoji/set-category-bulk.js';
 import * as ep___admin_emoji_setLicenseBulk from './endpoints/admin/emoji/set-license-bulk.js';
 import * as ep___admin_emoji_update from './endpoints/admin/emoji/update.js';
+import * as ep___admin_emoji_getEmojiLog from './endpoints/admin/emoji/get-emoji-log.js';
 import * as ep___admin_federation_deleteAllFiles from './endpoints/admin/federation/delete-all-files.js';
 import * as ep___admin_federation_refreshRemoteInstanceMetadata from './endpoints/admin/federation/refresh-remote-instance-metadata.js';
 import * as ep___admin_federation_removeAllFollowing from './endpoints/admin/federation/remove-all-following.js';
@@ -374,6 +375,7 @@ const eps = [
 	['admin/emoji/set-category-bulk', ep___admin_emoji_setCategoryBulk],
 	['admin/emoji/set-license-bulk', ep___admin_emoji_setLicenseBulk],
 	['admin/emoji/update', ep___admin_emoji_update],
+	['admin/emoji/get-emoji-log', ep___admin_emoji_getEmojiLog],
 	['admin/federation/delete-all-files', ep___admin_federation_deleteAllFiles],
 	['admin/federation/refresh-remote-instance-metadata', ep___admin_federation_refreshRemoteInstanceMetadata],
 	['admin/federation/remove-all-following', ep___admin_federation_removeAllFollowing],
@@ -709,14 +711,19 @@ export interface IEndpointMeta {
 	readonly requireCredential?: boolean;
 
 	/**
-	 * isModeratorなロールを必要とするか
+	 * Main Moderator権限を必要とするか
 	 */
 	readonly requireModerator?: boolean;
 
 	/**
-	 * isAdministratorなロールを必要とするか
+	 * Administrator権限を必要とするか
 	 */
 	readonly requireAdmin?: boolean;
+
+	/**
+	 * Emoji Moderator権限を必要とするか
+	 */
+	readonly requireEmojiModerator?: boolean;
 
 	readonly requireRolePolicy?: keyof RolePolicies;
 

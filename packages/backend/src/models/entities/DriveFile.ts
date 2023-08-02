@@ -24,7 +24,7 @@ export class DriveFile {
 	public userId: User['id'] | null;
 
 	@ManyToOne(type => User, {
-		onDelete: 'SET NULL',
+		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
 	public user: User | null;

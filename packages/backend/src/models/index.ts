@@ -64,6 +64,7 @@ import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
 import { Flash } from '@/models/entities/Flash.js';
 import { FlashLike } from '@/models/entities/FlashLike.js';
 import { UserListFavorite } from './entities/UserListFavorite.js';
+import { EmojiModerationLog } from './entities/EmojiModerationLog.js';
 import type { Repository } from 'typeorm';
 
 export {
@@ -85,6 +86,7 @@ export {
 	DriveFile,
 	DriveFolder,
 	Emoji,
+	EmojiModerationLog,
 	Following,
 	FollowRequest,
 	GalleryLike,
@@ -153,6 +155,7 @@ export type ClipFavoritesRepository = Repository<ClipFavorite>;
 export type DriveFilesRepository = Repository<DriveFile>;
 export type DriveFoldersRepository = Repository<DriveFolder>;
 export type EmojisRepository = Repository<Emoji>;
+export type EmojiModerationLogsRepository = Repository<EmojiModerationLog>;
 export type FollowingsRepository = Repository<Following>;
 export type FollowRequestsRepository = Repository<FollowRequest>;
 export type GalleryLikesRepository = Repository<GalleryLike>;

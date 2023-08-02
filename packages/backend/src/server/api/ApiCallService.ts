@@ -295,17 +295,25 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin || ep.meta.requireEmojiModerator) && !user!.isRoot) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
-			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
+			if (ep.meta.requireModerator && !myRoles.some(r => r.permissionGroup === 'EmojiModerator' || r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin')) {
 				throw new ApiError({
-					message: 'You are not assigned to a moderator role.',
+					message: 'You are not assigned to a emoji moderator role.',
+					code: 'ROLE_PERMISSION_DENIED',
+					kind: 'permission',
+					id: '43049d5b-e1c4-4b90-9c16-0e46cf06f18b',
+				});
+			}
+			if (ep.meta.requireModerator && !myRoles.some(r => r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin')) {
+				throw new ApiError({
+					message: 'You are not assigned to a main moderator role.',
 					code: 'ROLE_PERMISSION_DENIED',
 					kind: 'permission',
 					id: 'd33d5333-db36-423d-a8f9-1a2b9549da41',
 				});
 			}
-			if (ep.meta.requireAdmin && !myRoles.some(r => r.isAdministrator)) {
+			if (ep.meta.requireAdmin && !myRoles.some(r => r.permissionGroup === 'Admin')) {
 				throw new ApiError({
 					message: 'You are not assigned to an administrator role.',
 					code: 'ROLE_PERMISSION_DENIED',

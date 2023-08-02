@@ -5,12 +5,15 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
 import { bindThis } from '@/decorators.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class EmojiEntityService {
 	constructor(
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		private userEntityService: UserEntityService,
 	) {
 	}
 
@@ -56,6 +59,8 @@ export class EmojiEntityService {
 			isSensitive: emoji.isSensitive,
 			localOnly: emoji.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: emoji.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			userId: emoji.userId,
+			user: emoji.userId ? await this.userEntityService.pack(emoji.userId) : null,
 		};
 	}
 

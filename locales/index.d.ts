@@ -156,6 +156,8 @@ export interface Locale {
     "emojiName": string;
     "emojiUrl": string;
     "addEmoji": string;
+    "removedAliases": string;
+    "addedAliases": string;
     "settingGuide": string;
     "cacheRemoteFiles": string;
     "cacheRemoteFilesDescription": string;
@@ -416,6 +418,7 @@ export interface Locale {
     "totp": string;
     "totpDescription": string;
     "moderator": string;
+    "emojiModerator": string;
     "moderation": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
@@ -499,6 +502,8 @@ export interface Locale {
     "total": string;
     "weekOverWeekChanges": string;
     "dayOverDayChanges": string;
+    "changes": string;
+    "changeTo": string;
     "appearance": string;
     "clientSettings": string;
     "accountSettings": string;
@@ -748,6 +753,7 @@ export interface Locale {
     "value": string;
     "createdAt": string;
     "updatedAt": string;
+    "loggingDate": string;
     "saveConfirm": string;
     "deleteConfirm": string;
     "invalidValue": string;
@@ -1522,6 +1528,8 @@ export interface Locale {
             "isRemote": string;
             "createdLessThan": string;
             "createdMoreThan": string;
+            "emojiCountLessThanOrEq": string;
+            "emojiCountMoreThanOrEq": string;
             "followersLessThanOrEq": string;
             "followersMoreThanOrEq": string;
             "followingLessThanOrEq": string;

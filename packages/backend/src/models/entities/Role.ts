@@ -64,6 +64,16 @@ type CondFormulaValueNotesMoreThanOrEq = {
 	value: number;
 };
 
+type CondFormulaValueEmojiCountLessThanOrEq = {
+	type: 'emojiCountLessThanOrEq';
+	value: number;
+};
+
+type CondFormulaValueEmojiCountMoreThanOrEq = {
+	type: 'emojiCountMoreThanOrEq';
+	value: number;
+};
+
 export type RoleCondFormulaValue =
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
@@ -77,7 +87,11 @@ export type RoleCondFormulaValue =
 	CondFormulaValueFollowingLessThanOrEq |
 	CondFormulaValueFollowingMoreThanOrEq |
 	CondFormulaValueNotesLessThanOrEq |
-	CondFormulaValueNotesMoreThanOrEq;
+	CondFormulaValueNotesMoreThanOrEq |
+	CondFormulaValueEmojiCountLessThanOrEq |
+	CondFormulaValueEmojiCountMoreThanOrEq;
+
+export type RolePermissionGroupValue = 'Admin' | 'MainModerator' | 'EmojiModerator' | 'Normal';
 
 @Entity()
 export class Role {
@@ -144,12 +158,18 @@ export class Role {
 	@Column('boolean', {
 		default: false,
 	})
-	public isModerator: boolean;
+	public isModerator: boolean; // 後方互換
 
 	@Column('boolean', {
 		default: false,
 	})
-	public isAdministrator: boolean;
+	public isAdministrator: boolean; // 後方互換
+
+	@Column('enum', {
+		enum: ['Admin', 'MainModerator', 'EmojiModerator', 'Normal'],
+		default: 'Normal',
+	})
+	public permissionGroup: RolePermissionGroupValue;
 
 	@Column('boolean', {
 		default: false,

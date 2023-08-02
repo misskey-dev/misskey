@@ -350,6 +350,7 @@ export class UserEntityService implements OnModuleInit {
 			null;
 
 		const isModerator = isMe && opts.detail ? this.roleService.isModerator(user) : null;
+		const isEmojiModerator = isMe && opts.detail ? this.roleService.isEmojiModerator(user) : null;
 		const isAdmin = isMe && opts.detail ? this.roleService.isAdministrator(user) : null;
 
 		const falsy = opts.detail ? false : undefined;
@@ -425,8 +426,7 @@ export class UserEntityService implements OnModuleInit {
 					color: role.color,
 					iconUrl: role.iconUrl,
 					description: role.description,
-					isModerator: role.isModerator,
-					isAdministrator: role.isAdministrator,
+					permissionGroup: role.permissionGroup,
 					displayOrder: role.displayOrder,
 				}))),
 				memo: meId == null ? null : await this.userMemosRepository.findOneBy({
@@ -440,6 +440,7 @@ export class UserEntityService implements OnModuleInit {
 				avatarId: user.avatarId,
 				bannerId: user.bannerId,
 				isModerator: isModerator,
+				isEmojiModerator: isEmojiModerator,
 				isAdmin: isAdmin,
 				injectFeaturedNote: profile!.injectFeaturedNote,
 				receiveAnnouncementEmail: profile!.receiveAnnouncementEmail,

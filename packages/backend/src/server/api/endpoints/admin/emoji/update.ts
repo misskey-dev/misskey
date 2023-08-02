@@ -5,6 +5,9 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import type { DriveFilesRepository, EmojisRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
+import { RoleService } from '@/core/RoleService.js';
+import { LogInfoValue } from '@/models/entities/EmojiModerationLog.js';
+import { EmojiModerationLogService } from '@/core/EmojiModerationLogService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -27,6 +30,11 @@ export const meta = {
 			message: 'Emoji that have same name already exists.',
 			code: 'SAME_NAME_EMOJI_EXISTS',
 			id: '7180fe9d-1ee3-bff9-647d-fe9896d2ffb8',
+		},
+		notOwnerOrpermissionDenied: {
+			message: 'You are not this emoji owner or not assigned to a required role.',
+			code: 'NOT_OWNER_OR_PERMISSION_DENIED',
+			id: '73952b00-d3e3-4038-b2c6-f4b4532e3906'
 		},
 	},
 } as const;
@@ -65,7 +73,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
-		private customEmojiService: CustomEmojiService
+		private roleService: RoleService,
+
+		private customEmojiService: CustomEmojiService,
+
+		private emojiModerationLogService: EmojiModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let driveFile;
@@ -83,6 +95,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (oldEmoji == null) throw new ApiError(meta.errors.noSuchEmoji);
 
+			const isEmojiModerator = await this.roleService.isEmojiModerator(me);
+
 			if (oldEmoji.name !== ps.name) {
 				const existEmoji = await this.emojisRepository.exist({
 					where: {
@@ -96,6 +110,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 			}
 
+			if ((
+				driveFile ||
+				oldEmoji.name !== ps.name ||
+				oldEmoji.category !== ps.category ||
+				oldEmoji.license !== ps.license ||
+				oldEmoji.isSensitive !== ps.isSensitive ||
+				oldEmoji.localOnly !== ps.localOnly) &&
+				!isEmojiModerator &&
+				oldEmoji.userId !== me.id
+			) {
+				throw new ApiError(meta.errors.notOwnerOrpermissionDenied);
+			}
+
 			await this.customEmojiService.update(ps.id, {
 				driveFile,
 				name: ps.name,
@@ -107,6 +134,75 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction,
 			});
+
+			const changes: LogInfoValue[] = [];
+			if (driveFile) {
+				changes.push({
+					type: 'originalUrl',
+					changeInfo: {
+						before: oldEmoji.originalUrl,
+						after: driveFile.url,
+					},
+				});
+			}
+			if (oldEmoji.name !== ps.name) {
+				changes.push({
+					type: 'name',
+					changeInfo: {
+						before: oldEmoji.name,
+						after: ps.name,
+					},
+				});
+			}
+			if (oldEmoji.category !== ps.category) {
+				changes.push({
+					type: 'category',
+					changeInfo: {
+						before: oldEmoji.category,
+						after: ps.category,
+					},
+				});
+			}
+			if (oldEmoji.license !== ps.license) {
+				changes.push({
+					type: 'license',
+					changeInfo: {
+						before: oldEmoji.license,
+						after: ps.license,
+					},
+				});
+			}
+			if (oldEmoji.isSensitive !== ps.isSensitive) {
+				changes.push({
+					type: 'isSensitive',
+					changeInfo: {
+						before: oldEmoji.isSensitive,
+						after: ps.isSensitive,
+					},
+				});
+			}
+			if (oldEmoji.localOnly !== ps.localOnly) {
+				changes.push({
+					type: 'localOnly',
+					changeInfo: {
+						before: oldEmoji.localOnly,
+						after: ps.localOnly,
+					},
+				});
+			}
+
+			//エイリアスはbeforeに削除されたもの、afterに追加されたものを書く
+			if (oldEmoji.aliases.length !== ps.aliases.length || !oldEmoji.aliases.every(v => ps.aliases.includes(v))) {
+				changes.push({
+					type: 'aliases',
+					changeInfo: {
+						before: oldEmoji.aliases.filter(v => !ps.aliases.includes(v)),
+						after: ps.aliases.filter(v => !oldEmoji.aliases.includes(v)),
+					},
+				});
+			}
+
+			await this.emojiModerationLogService.insertEmojiModerationLog(me, { id: ps.id }, 'Update', changes);
 		});
 	}
 }

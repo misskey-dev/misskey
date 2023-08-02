@@ -93,5 +93,16 @@ export const packedEmojiDetailedSchema = {
 				format: 'id',
 			},
 		},
+		userId: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		user: {
+			type: 'object',
+			optional: true, nullable: true,
+			ref: 'UserLite',
+		},
 	},
 } as const;

@@ -51,6 +51,7 @@ export type UserDetailed = UserLite & {
 	isFollowing: boolean;
 	isLocked: boolean;
 	isModerator: boolean;
+	isEmojiModerator: boolean;
 	isMuted: boolean;
 	isSilenced: boolean;
 	isSuspended: boolean;
@@ -279,6 +280,8 @@ export type CustomEmoji = {
 	url: string;
 	category: string;
 	aliases: string[];
+	userId: UserLite['id'];
+	user: UserLite;
 	isSensitive: boolean;
 };
 
@@ -541,3 +544,14 @@ export type UserSorting =
 	| '+updatedAt'
 	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
+
+export type EmojiLog = {
+	id: ID;
+	createDate: string;
+	userId: string | null;
+	user?: UserLite;
+	type: 'Add' | 'Update' | 'Other';
+	changesProperties: { type: keyof CustomEmoji, changeInfo: { [K in 'before' | 'after']: any } }[];
+}
+
+export type EmojiLogs = EmojiLog[];

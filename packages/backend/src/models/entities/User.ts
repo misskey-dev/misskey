@@ -68,6 +68,12 @@ export class User {
 	})
 	public followingCount: number;
 
+	@Column('integer', {
+		default: 0,
+		comment: 'The count of create emojis.',
+	})
+	public emojiCount: number;
+
 	@Column('varchar', {
 		length: 512,
 		nullable: true,

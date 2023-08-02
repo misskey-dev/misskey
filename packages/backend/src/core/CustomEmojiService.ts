@@ -7,7 +7,7 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import type { Emoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, Role } from '@/models/index.js';
+import type { EmojisRepository, Role, User, UsersRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -34,6 +34,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,
@@ -68,6 +71,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		isSensitive: boolean;
 		localOnly: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction: Role['id'][];
+		userId: User['id'];
 	}): Promise<Emoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: this.idService.genId(),
@@ -83,6 +87,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			isSensitive: data.isSensitive,
 			localOnly: data.localOnly,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction,
+			userId: data.host == null ? data.userId : null, // リモートはそもそも絵文字所有者の概念がない
 		}).then(x => this.emojisRepository.findOneByOrFail(x.identifiers[0]));
 
 		if (data.host == null) {
@@ -91,6 +96,8 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			this.globalEventService.publishBroadcastStream('emojiAdded', {
 				emoji: await this.emojiEntityService.packDetailed(emoji.id),
 			});
+
+			await this.usersRepository.increment({ id: data.userId }, 'emojiCount', 1);
 		}
 
 		return emoji;
@@ -106,6 +113,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		isSensitive?: boolean;
 		localOnly?: boolean;
 		roleIdsThatCanBeUsedThisEmojiAsReaction?: Role['id'][];
+		userId?: User['id'];
 	}): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
@@ -123,6 +131,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 			publicUrl: data.driveFile != null ? (data.driveFile.webpublicUrl ?? data.driveFile.url) : undefined,
 			type: data.driveFile != null ? (data.driveFile.webpublicType ?? data.driveFile.type) : undefined,
 			roleIdsThatCanBeUsedThisEmojiAsReaction: data.roleIdsThatCanBeUsedThisEmojiAsReaction ?? undefined,
+			userId: data.userId ?? undefined,
 		});
 
 		this.localEmojisCache.refresh();
@@ -233,10 +242,12 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async delete(id: Emoji['id']) {
+	public async delete(id: Emoji['id'], userId: User['id']) {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 
 		await this.emojisRepository.delete(emoji.id);
+
+		await this.usersRepository.decrement({ id: userId }, 'emojiCount', 1);
 
 		this.localEmojisCache.refresh();
 
@@ -253,6 +264,9 @@ export class CustomEmojiService implements OnApplicationShutdown {
 
 		for (const emoji of emojis) {
 			await this.emojisRepository.delete(emoji.id);
+
+			if (emoji.userId)
+				await this.usersRepository.decrement({ id: emoji.userId }, 'emojiCount', 1);
 		}
 
 		this.localEmojisCache.refresh();

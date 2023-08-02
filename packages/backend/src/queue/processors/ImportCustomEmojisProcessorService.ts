@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ZipReader } from 'slacc';
-import { DataSource } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
@@ -86,8 +86,17 @@ export class ImportCustomEmojisProcessorService {
 					continue;
 				}
 				const emojiInfo = record.emoji;
-				if (!/^[a-zA-Z0-9_]+$/.test(emojiInfo.name)) {
+				if (!/^[a-z0-9_]+$/.test(emojiInfo.name)) {
 					this.logger.error(`invalid emojiname: ${emojiInfo.name}`);
+					continue;
+				}
+				if (await this.emojisRepository.exist({
+					where: {
+						name: emojiInfo.name,
+						host: IsNull(),
+					},
+				})) {
+					this.logger.error(`already added emojiname: ${emojiInfo.name}`);
 					continue;
 				}
 				const emojiPath = outputPath + '/' + record.fileName;
@@ -110,6 +119,7 @@ export class ImportCustomEmojisProcessorService {
 					isSensitive: emojiInfo.isSensitive,
 					localOnly: emojiInfo.localOnly,
 					roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+					userId: job.data.user.id,
 				});
 			}
 

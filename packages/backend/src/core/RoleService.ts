@@ -210,6 +210,12 @@ export class RoleService implements OnApplicationShutdown {
 				case 'notesMoreThanOrEq': {
 					return user.notesCount >= value.value;
 				}
+				case 'emojiCountLessThanOrEq': {
+					return user.emojiCount <= value.value;
+				}
+				case 'emojiCountMoreThanOrEq': {
+					return user.emojiCount >= value.value;
+				}
 				default:
 					return false;
 			}
@@ -311,13 +317,19 @@ export class RoleService implements OnApplicationShutdown {
 	@bindThis
 	public async isModerator(user: { id: User['id']; isRoot: User['isRoot'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isModerator || r.isAdministrator);
+		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin');
+	}
+
+	@bindThis
+	public async isEmojiModerator(user: { id: User['id']; isRoot: User['isRoot'] } | null): Promise<boolean> {
+		if (user == null) return false;
+		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.permissionGroup === 'EmojiModerator' || r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin');
 	}
 
 	@bindThis
 	public async isAdministrator(user: { id: User['id']; isRoot: User['isRoot'] } | null): Promise<boolean> {
 		if (user == null) return false;
-		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.isAdministrator);
+		return user.isRoot || (await this.getUserRoles(user.id)).some(r => r.permissionGroup === 'Admin');
 	}
 
 	@bindThis
@@ -331,7 +343,7 @@ export class RoleService implements OnApplicationShutdown {
 	@bindThis
 	public async getModeratorIds(includeAdmins = true): Promise<User['id'][]> {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const moderatorRoles = includeAdmins ? roles.filter(r => r.isModerator || r.isAdministrator) : roles.filter(r => r.isModerator);
+		const moderatorRoles = includeAdmins ? roles.filter(r => r.permissionGroup === 'MainModerator' || r.permissionGroup === 'Admin') : roles.filter(r => r.permissionGroup === 'MainModerator');
 		const assigns = moderatorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
 			roleId: In(moderatorRoles.map(r => r.id)),
 		}) : [];
@@ -351,7 +363,7 @@ export class RoleService implements OnApplicationShutdown {
 	@bindThis
 	public async getAdministratorIds(): Promise<User['id'][]> {
 		const roles = await this.rolesCache.fetch(() => this.rolesRepository.findBy({}));
-		const administratorRoles = roles.filter(r => r.isAdministrator);
+		const administratorRoles = roles.filter(r => r.permissionGroup === 'Admin');
 		const assigns = administratorRoles.length > 0 ? await this.roleAssignmentsRepository.findBy({
 			roleId: In(administratorRoles.map(r => r.id)),
 		}) : [];

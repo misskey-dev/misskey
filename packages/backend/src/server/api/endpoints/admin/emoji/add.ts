@@ -7,6 +7,7 @@ import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
+import { EmojiModerationLogService } from '@/core/EmojiModerationLogService.js';
 
 export const meta = {
 	tags: ["admin"],
@@ -67,6 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private emojiEntityService: EmojiEntityService,
 		private moderationLogService: ModerationLogService,
+		private emojiModerationLogService: EmojiModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const driveFile = await this.driveFilesRepository.findOneBy({
@@ -96,11 +98,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction:
 					ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+				userId: me.id,
 			});
 
 			this.moderationLogService.insertModerationLog(me, "addEmoji", {
 				emojiId: emoji.id,
 			});
+
+			await this.emojiModerationLogService.insertEmojiModerationLog(me, emoji, 'Add');
 
 			return this.emojiEntityService.packDetailed(emoji);
 		});
