@@ -39,11 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
-			<button v-else-if="item.type === 'parent'" class="_button" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter.stop="showChildren(item, $event)">
+			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mousedown.stop="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
-			</button>
+			</div>
 			<button v-else :tabindex="i" class="_button" role="menuitem" :class="[$style.item, { [$style.danger]: item.danger, [$style.active]: item.active }]" :disabled="item.active" @click="clicked(item.action, $event)" @mouseenter.passive="onItemMouseEnter(item)" @mouseleave.passive="onItemMouseLeave(item)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<MkAvatar v-if="item.avatar" :user="item.avatar" :class="$style.avatar"/>
@@ -136,6 +136,7 @@ function childActioned() {
 }
 
 function onGlobalMousedown(event: MouseEvent) {
+	console.log('globalmousedown')
 	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
 	if (child && child.checkHit(event)) return;
 	closeChild();
@@ -152,6 +153,8 @@ function onItemMouseLeave(item) {
 }
 
 async function showChildren(item: MenuParent, ev: MouseEvent) {
+	console.log(ev);
+	if (props.asDrawer && childrenCache.has(item)) return;
 	const children: Ref<(MenuItem | MenuPending)[]> = ref([]);
 	if (!item.noCache && childrenCache.has(item)) {
 		children.value = childrenCache.get(item)!;
@@ -171,6 +174,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 
 	if (props.asDrawer) {
 		os.popupMenu(children as Ref<MenuItem[]>, ev.currentTarget ?? ev.target).finally(() => {
+			childrenCache.delete(item);
 			console.log('child drawer close');
 			emit('close');
 		});
@@ -180,6 +184,10 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 		childMenu = children as Ref<MenuItem[]>;
 		childShowingItem = item;
 	}
+}
+
+function onmousedown(ev: MouseEvent) {
+	ev.stopImmediatePropagation();
 }
 
 function clicked(fn: MenuAction, ev: MouseEvent) {

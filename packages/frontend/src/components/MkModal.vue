@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:duration="transitionDuration" appear @afterLeave="afterLeave" @enter="emit('opening')" @afterEnter="onOpened"
 >
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown.self="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
@@ -161,7 +161,7 @@ function afterLeave() {
 }
 
 function onBgClick(e) {
-	console.log(e);
+	console.log(e, contentClicking);
 	if (contentClicking) return;
 	emit('click');
 }
@@ -296,14 +296,17 @@ const onOpened = () => {
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content!.children[0];
 	el.addEventListener('mousedown', ev => {
+		ev.stopPropagation();
+		console.log('mousedown');
 		contentClicking = true;
 		window.addEventListener('mouseup', ev => {
+			console.log('mouseup');
 			// click イベントより先に mouseup イベントが発生するかもしれないのでちょっと待つ
 			window.setTimeout(() => {
 				contentClicking = false;
 			}, 100);
 		}, { passive: true, once: true });
-	}, { passive: true });
+	}, { passive: true, capture: true });
 };
 
 const alignObserver = new ResizeObserver((entries, observer) => {
