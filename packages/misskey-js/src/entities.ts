@@ -543,3 +543,14 @@ export type UserSorting =
 	| '+updatedAt'
 	| '-updatedAt';
 export type OriginType = 'combined' | 'local' | 'remote';
+
+export type EmojiLog = {
+	id: ID;
+	createDate: string;
+	userId: string | null;
+	user?: UserLite;
+	type: 'Add' | 'Update' | 'Other';
+	changesProperties: { type: keyof CustomEmoji, changeInfo: { [K in 'before' | 'after']: any } }[];
+}
+
+export type EmojiLogs = EmojiLog[];
