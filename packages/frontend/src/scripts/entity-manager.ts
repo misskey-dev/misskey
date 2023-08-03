@@ -335,7 +335,7 @@ export class NoteManager {
         this.captureing.set(id, 1);
 	}
 
-    private decapture(id: string): void {
+    private decapture(id: string, noDeletion = false): void {
         if (!this.notesSource.has(id)) return;
 
         const captureingNumber = this.captureing.get(id);
@@ -351,7 +351,7 @@ export class NoteManager {
         this.captureing.delete(id);
 
         // キャプチャが終わったらcomputedキャッシュも消してしまう
-        this.notesComputed.delete(id);
+        if (!noDeletion) this.notesComputed.delete(id);
 	}
 
     /**
@@ -373,10 +373,10 @@ export class NoteManager {
                 using = true;
             });
 
-        const unuse = () => {
+        const unuse = (noDeletion = false) => {
             CapturePromise.then(() => {
                 if (!using) return;
-                this.decapture(id);
+                this.decapture(id, noDeletion);
                 using = false;
             });
         };

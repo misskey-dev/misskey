@@ -476,7 +476,7 @@ function showReactions(): void {
 	}, {}, 'closed');
 }
 
-const unuse = ref<() => void>();
+const unuse = ref<(x?: boolean) => void>();
 
 unuse.value = noteManager.useNote(appearNote.value?.id ?? props.note.id, true).unuse;
 
@@ -504,7 +504,7 @@ onDeactivated(() => {
 	// 不要なキャッシュ消去や通信を防止するため遅延させる
 	if (_unuse) {
 		setTimeout(() => {
-			_unuse();
+			_unuse(true);
 		}, 1000);
 	}
 });
