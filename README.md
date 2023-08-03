@@ -53,6 +53,9 @@ With Misskey's built in drive, you get cloud storage right in your social media,
 
 Misskey Documentation can be found at [Misskey Hub](https://misskey-hub.net/), some of the links and graphics above also lead to specific portions of it.
 
+## Diff of this fork
+[Changelog of this fork](CHANGELOG_NADE)
+
 ## Sponsors
 
 <div align="center">
