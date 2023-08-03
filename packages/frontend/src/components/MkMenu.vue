@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
-			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mousedown.stop="showChildren(item, $event)">
+			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)" @click.stop="showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -135,8 +135,12 @@ function childActioned() {
 	close(true);
 }
 
-function onGlobalMousedown(event: MouseEvent) {
-	console.log('globalmousedown')
+const onGlobalMousedown = (event: MouseEvent) => {
+	console.log('globalmousedown', itemsEl);
+	if (!itemsEl || !document.body.contains(itemsEl)) {
+		document.removeEventListener('mousedown', onGlobalMousedown);
+		return;
+	}
 	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
 	if (child && child.checkHit(event)) return;
 	closeChild();
@@ -184,10 +188,6 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 		childMenu = children as Ref<MenuItem[]>;
 		childShowingItem = item;
 	}
-}
-
-function onmousedown(ev: MouseEvent) {
-	ev.stopImmediatePropagation();
 }
 
 function clicked(fn: MenuAction, ev: MouseEvent) {

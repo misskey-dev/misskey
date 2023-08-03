@@ -296,7 +296,6 @@ const onOpened = () => {
 	// モーダルコンテンツにマウスボタンが押され、コンテンツ外でマウスボタンが離されたときにモーダルバックグラウンドクリックと判定させないためにマウスイベントを監視しフラグ管理する
 	const el = content!.children[0];
 	el.addEventListener('mousedown', ev => {
-		ev.stopPropagation();
 		console.log('mousedown');
 		contentClicking = true;
 		window.addEventListener('mouseup', ev => {
@@ -306,7 +305,7 @@ const onOpened = () => {
 				contentClicking = false;
 			}, 100);
 		}, { passive: true, once: true });
-	}, { passive: true, capture: true });
+	}, { passive: true });
 };
 
 const alignObserver = new ResizeObserver((entries, observer) => {
