@@ -169,8 +169,7 @@ export class SearchService {
 			if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });
 			if (opts.host) {
 				if (opts.host === '.') {
-					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
-					filter.qs.push({op: 'is null', k: 'userHost'})
+					filter.qs.push({ op: 'is null', k: 'userHost' });
 				} else {
 					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
 				}
