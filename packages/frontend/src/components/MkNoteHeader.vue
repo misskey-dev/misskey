@@ -43,21 +43,13 @@ const headerWrapStyles = {
 	flexWrap: "wrap"
 };
 
-const headerOneLineStyles = {
-	display: "flex",
-};
-
-const headerRoleViewStyles = {
-	overflowX: "auto"
-};
-
 const headerContentStyles = {
 	flexShrink: "4",
 	textOverflow: "clip"
 };
 
 const roleScrollStyles = {
-	overflowX: "scroll"
+	overflowX: "auto"
 };
 
 const roleDisableStyles = {
