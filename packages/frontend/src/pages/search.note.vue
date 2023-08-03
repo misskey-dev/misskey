@@ -99,7 +99,7 @@ async function search() {
 		},
 	};
 
-	if (isLocalOnly) notePagination.params.host = '.'
+	if (isLocalOnly) notePagination.params.host = '.';
 
 	key++;
 }
