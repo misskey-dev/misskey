@@ -1,10 +1,10 @@
 {
-	"name": "misskey",
-	"version": "13.14.2",
+	"name": "nadesuki(misskey)",
+	"version": "13.14.2+nade1.1.0",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/nadesuki/nadesuki.git"
 	},
 	"packageManager": "pnpm@8.6.10",
 	"workspaces": [
