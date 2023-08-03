@@ -550,7 +550,6 @@ export function popupMenu(items: MenuItem[] | Ref<MenuItem[]>, src?: HTMLElement
 			viaKeyboard: options?.viaKeyboard,
 		}, {
 			closed: () => {
-				console.log('closed detected');
 				resolve();
 				dispose();
 			},

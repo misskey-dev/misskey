@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
-			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="showChildren(item, $event)" @click.stop="showChildren(item, $event)">
+			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="isTouchUsing ? null : showChildren(item, $event)" @click="!isTouchUsing ? null : showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -68,8 +68,9 @@ import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
+import { isTouchUsing } from '@/scripts/touch';
 
-const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
+const childrenCache = new WeakMap<MenuParent, Ref<(MenuItem | MenuPending)[]>>();
 </script>
 
 <script lang="ts" setup>
@@ -136,11 +137,6 @@ function childActioned() {
 }
 
 const onGlobalMousedown = (event: MouseEvent) => {
-	console.log('globalmousedown', itemsEl);
-	if (!itemsEl || !document.body.contains(itemsEl)) {
-		document.removeEventListener('mousedown', onGlobalMousedown);
-		return;
-	}
 	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
 	if (child && child.checkHit(event)) return;
 	closeChild();
@@ -156,30 +152,29 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-async function showChildren(item: MenuParent, ev: MouseEvent) {
-	console.log(ev);
+function showChildren(item: MenuParent, ev: MouseEvent) {
 	if (props.asDrawer && childrenCache.has(item)) return;
-	const children: Ref<(MenuItem | MenuPending)[]> = ref([]);
-	if (!item.noCache && childrenCache.has(item)) {
-		children.value = childrenCache.get(item)!;
-	} else {
-		if (typeof item.children === 'function') {
-			children.value = [{
-				type: 'pending',
-			}];
-			Promise.resolve(item.children()).then(x => {
-				children.value = x;
-				childrenCache.set(item, x);
-			});
+
+	const children = (() => {
+		if (!item.noCache && childrenCache.has(item)) {
+			return childrenCache.get(item)!;
 		} else {
-			children.value = item.children;
+			if (typeof item.children === 'function') {
+				const result: Ref<(MenuItem | MenuPending)[]> = ref([{ type: 'pending' }]);
+				childrenCache.set(item, result);
+				Promise.resolve(item.children()).then(x => {
+					result.value = x;
+				});
+				return result;
+			} else {
+				return ref(item.children) as Ref<(MenuItem | MenuPending)[]>;
+			}
 		}
-	}
+	})();
 
 	if (props.asDrawer) {
 		os.popupMenu(children as Ref<MenuItem[]>, ev.currentTarget ?? ev.target).finally(() => {
 			childrenCache.delete(item);
-			console.log('child drawer close');
 			emit('close');
 		});
 		emit('hide');

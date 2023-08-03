@@ -28,35 +28,27 @@ const emit = defineEmits<{
 	(ev: 'closing'): void;
 }>();
 
-console.log('popup menu modal setup', props.items);
-
 let modal = $shallowRef<InstanceType<typeof MkModal>>();
 const manualShowing = ref(true);
 
 function click() {
-	console.log('popup menu modal click', props.items);
 	close();
 }
 
 function onModalClose() {
-	console.log('popup menu modal close', props.items);
 	emit('closing');
 }
 
 function onMenuClose() {
-	console.log('popup menu menu click', props.items);
 	close();
 }
 
 function closed() {
-	console.log('popup menu modal closed', props.items);
 	emit('closed');
 }
 
 function close() {
-	console.log('popup menu close', props.items);
 	if (!modal) return;
-	manualShowing.value = false;
 	modal.close();
 }
 </script>
