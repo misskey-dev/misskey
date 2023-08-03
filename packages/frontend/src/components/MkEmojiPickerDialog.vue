@@ -52,7 +52,7 @@ const emit = defineEmits<{
 	(ev: 'done', v: any): void;
 	(ev: 'close'): void;
 	(ev: 'closed'): void;
-	(ev: 'click'): void;
+	(ev: 'bgclick'): void;
 	(ev: 'hide'): void;
 }>();
 
@@ -75,7 +75,7 @@ function opening() {
 }
 
 function click() {
-	emit('click');
+	emit('bgclick');
 	if (props.manualShowing === null) modal.value?.close();
 }
 </script>

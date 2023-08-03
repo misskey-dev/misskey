@@ -33,7 +33,7 @@ class ReactionPicker {
 				this.src.value = null;
 				this.onClosed!();
 			},
-			click: () => {
+			bgclick: () => {
 				this.manualShowing.value = false;
 			}
 		});
