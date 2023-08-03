@@ -20,6 +20,8 @@ type Q =
 	{ op: '<', k: K, v: number } |
 	{ op: '>=', k: K, v: number } |
 	{ op: '<=', k: K, v: number } |
+	{ op: 'is null', k: K} |
+	{ op: 'is not null', k: K} |
 	{ op: 'and', qs: Q[] } |
 	{ op: 'or', qs: Q[] } |
 	{ op: 'not', q: Q };
@@ -45,6 +47,8 @@ function compileQuery(q: Q): string {
 		case '<=': return `(${q.k} <= ${compileValue(q.v)})`;
 		case 'and': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
 		case 'or': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
+		case 'is null': return `(${q.k} IS NULL)`;
+		case 'is not null': return `(${q.k} IS NOT NULL)`;
 		case 'not': return `(NOT ${compileQuery(q.q)})`;
 		default: throw new Error('unrecognized query operator');
 	}
@@ -166,6 +170,7 @@ export class SearchService {
 			if (opts.host) {
 				if (opts.host === '.') {
 					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
+					filter.qs.push({op: 'is null', k: 'userHost'})
 				} else {
 					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
 				}
@@ -198,6 +203,14 @@ export class SearchService {
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
+
+			if (opts.host) {
+				if (opts.host === '.') {
+					query.andWhere('user.host IS NULL ')
+				} else {
+					query.andWhere('user.host = :host', { host: opts.host })
+				}
+			}
 
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
