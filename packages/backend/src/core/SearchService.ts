@@ -170,7 +170,7 @@ export class SearchService {
 			if (opts.host) {
 				if (opts.host === '.') {
 					// TODO: Meilisearchが2023/05/07現在値がNULLかどうかのクエリが書けない
-					filter.qs.push({op: 'is null', k: 'userHost'})
+					filter.qs.push({ op: 'is null', k: 'userHost' });
 				} else {
 					filter.qs.push({ op: '=', k: 'userHost', v: opts.host });
 				}
@@ -206,9 +206,9 @@ export class SearchService {
 
 			if (opts.host) {
 				if (opts.host === '.') {
-					query.andWhere('user.host IS NULL ')
+					query.andWhere('user.host IS NULL ');
 				} else {
-					query.andWhere('user.host = :host', { host: opts.host })
+					query.andWhere('user.host = :host', { host: opts.host });
 				}
 			}
 
