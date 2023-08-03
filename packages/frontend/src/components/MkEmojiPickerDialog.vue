@@ -12,10 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:transparentBg="true"
 	:manualShowing="manualShowing"
 	:src="src"
-	@click="modal?.close()"
+	@click="click"
 	@opening="opening"
 	@close="emit('close')"
 	@closed="emit('closed')"
+	@hide="emit('hide')"
 >
 	<MkEmojiPicker
 		ref="picker"
@@ -36,7 +37,7 @@ import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
 import { defaultStore } from '@/store';
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	src?: HTMLElement;
 	showPinned?: boolean;
@@ -51,6 +52,8 @@ const emit = defineEmits<{
 	(ev: 'done', v: any): void;
 	(ev: 'close'): void;
 	(ev: 'closed'): void;
+	(ev: 'click'): void;
+	(ev: 'hide'): void;
 }>();
 
 const modal = shallowRef<InstanceType<typeof MkModal>>();
@@ -58,7 +61,7 @@ const picker = shallowRef<InstanceType<typeof MkEmojiPicker>>();
 
 function chosen(emoji: any) {
 	emit('done', emoji);
-	modal.value?.close();
+	if (props.manualShowing === null) modal.value?.close();
 }
 
 function opening() {
@@ -69,6 +72,11 @@ function opening() {
 	setTimeout(() => {
 		picker.value?.focus();
 	}, 10);
+}
+
+function click() {
+	emit('click');
+	if (props.manualShowing === null) modal.value?.close();
 }
 </script>
 

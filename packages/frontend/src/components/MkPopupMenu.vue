@@ -15,7 +15,7 @@ import MkModal from './MkModal.vue';
 import MkMenu from './MkMenu.vue';
 import { MenuItem } from '@/types/menu';
 
-const props = defineProps<{
+defineProps<{
 	items: MenuItem[];
 	align?: 'center' | string;
 	width?: number;
