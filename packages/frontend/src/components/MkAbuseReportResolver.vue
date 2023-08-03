@@ -5,15 +5,15 @@
 	</MkInput>
 	<div>
 		<div :class="$style.label">{{ i18n.ts._abuse._resolver.targetUserPattern }}</div>
-		<PrismEditor v-model="value.targetUserPattern" :placeholder="^(LocalUser|RemoteUser@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
+		<PrismEditor v-model="value.targetUserPattern" placeholder="^(LocalUser|RemoteUser@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
 	</div>
 	<div>
 		<div :class="$style.label">{{ i18n.ts._abuse._resolver.reporterPattern }}</div>
-		<PrismEditor v-model="value.reporterPattern" :placeholder="^(LocalUser|.*@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
+		<PrismEditor v-model="value.reporterPattern" placeholder="^(LocalUser|.*@RemoteHost)$" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
 	</div>
 	<div>
 		<div :class="$style.label">{{ i18n.ts._abuse._resolver.reportContentPattern }}</div>
-		<PrismEditor v-model="value.reportContentPattern" :placeholder=".*" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
+		<PrismEditor v-model="value.reportContentPattern" placeholder=".*" class="_code code" :class="$style.highlight" :highlight="highlighter" :lineNumbers="false" :ignoreTabKey="true" :readonly="!props.editable"/>
 	</div>
 	<MkSelect v-model="value.expiresAt" :disabled="!props.editable">
 		<template #label>{{ i18n.ts._abuse._resolver.expiresAt }}<span v-if="expirationDate" style="float: right;"><MkDate :time="expirationDate" mode="absolute">{{ expirationDate }}</MkDate></span></template>
