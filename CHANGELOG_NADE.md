@@ -1,3 +1,5 @@
+オリジナルのMisskeyの変更履歴は(CHANGELOG)[CHANGELOG.md]をご覧ください。
+
 <!--
 ## Unlereased
 ### General

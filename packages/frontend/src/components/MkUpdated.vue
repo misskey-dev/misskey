@@ -3,6 +3,7 @@
 	<div :class="$style.root">
 		<div :class="$style.title"><MkSparkle>{{ i18n.ts.misskeyUpdated }}</MkSparkle></div>
 		<div :class="$style.version">✨{{ version }}🚀</div>
+		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}(Misskey)</MkButton>
 		<MkButton full @click="whatIsNew">{{ i18n.ts.whatIsNew }}</MkButton>
 		<MkButton :class="$style.gotIt" primary full @click="$refs.modal.close()">{{ i18n.ts.gotIt }}</MkButton>
 	</div>
@@ -23,6 +24,11 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 const whatIsNew = () => {
 	modal.value.close();
 	window.open(`https://misskey-hub.net/docs/releases.html#_${version.replace(/\./g, '-')}`, '_blank');
+};
+
+const whatIsNewNadesskey = () => {
+	modal.value.close();
+	window.open('https://github.com/nadesuki/nadesuki/blob/master/CHANGELOG_NADE.md', '_blank');
 };
 
 onMounted(() => {
