@@ -30,10 +30,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		[$style.transition_modal_leaveTo]: transitionName === 'modal',
 		[$style.transition_send_leaveTo]: transitionName === 'send',
 	})"
-	:duration="transitionDuration" appear @afterLeave="afterLeave" @enter="emit('opening')" @afterEnter="onOpened"
+	:duration="transitionDuration" appear @afterLeave="emit('closed')" @enter="emit('opening')" @afterEnter="onOpened"
 >
-	<div v-show="manualShowing != null ? (manuallyClosed ? false : manualShowing) : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
-		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown.self="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
+	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
+		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
 		<div ref="content" :class="[$style.content, { [$style.fixed]: fixed }]" :style="{ zIndex }" @click.self="onBgClick">
 			<slot :max-height="maxHeight" :type="type"></slot>
 		</div>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, onBeforeUnmount, provide, watch } from 'vue';
+import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch } from 'vue';
 import * as os from '@/os';
 import { isTouchUsing } from '@/scripts/touch';
 import { defaultStore } from '@/store';
@@ -61,12 +61,7 @@ function getFixedContainer(el: Element | null): Element | null {
 type ModalTypes = 'popup' | 'dialog' | 'drawer';
 
 const props = withDefaults(defineProps<{
-	/**
-	 * 手動で表示/非表示を切り替える
-	 * falseに切り替えてもclosedは発火されないため、closeを呼ぶ必要がある
-	 */
 	manualShowing?: boolean | null;
-
 	anchor?: { x: string; y: string; };
 	src?: HTMLElement | null;
 	preferType?: ModalTypes | 'auto';
@@ -90,7 +85,6 @@ const emit = defineEmits<{
 	(ev: 'esc'): void;
 	(ev: 'close'): void;
 	(ev: 'closed'): void;
-	(ev: 'hide'): void; // afterLeaveで必ず発火する
 }>();
 
 provide('modal', true);
@@ -99,7 +93,6 @@ let maxHeight = $ref<number>();
 let fixed = $ref(false);
 let transformOrigin = $ref('center');
 let showing = $ref(true);
-let manuallyClosed = $ref(false);
 let content = $shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex(props.zPriority);
 let useSendAnime = $ref(false);
@@ -148,21 +141,10 @@ function close(opts: { useSendAnimation?: boolean } = {}) {
 	// eslint-disable-next-line vue/no-mutating-props
 	if (props.src) props.src.style.pointerEvents = 'auto';
 	showing = false;
-	manuallyClosed = true;
 	emit('close');
-	if (props.manualShowing === false) {
-		afterLeave();
-	}
 }
 
-function afterLeave() {
-	emit('hide');
-	if (props.manualShowing === null || manuallyClosed) {
-		emit('closed');
-	}
-}
-
-function onBgClick(e) {
+function onBgClick() {
 	if (contentClicking) return;
 	emit('click');
 }
