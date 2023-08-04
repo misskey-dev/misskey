@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitchButton :class="$style.switchButton" :checked="item.ref" :disabled="item.disabled" @toggle="switchItem(item)" />
 				<span :class="$style.switchText">{{ item.text }}</span>
 			</button>
-			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="isTouchUsing ? null : showChildren(item, $event)" @click="!isTouchUsing ? null : showChildren(item, $event)">
+			<div v-else-if="item.type === 'parent'" role="menuitem" :tabindex="i" :class="[$style.item, $style.parent, { [$style.childShowing]: childShowingItem === item }]" @mouseenter="preferClick ? null : showChildren(item, $event)" @click="!preferClick ? null : showChildren(item, $event)">
 				<i v-if="item.icon" class="ti-fw" :class="[$style.icon, item.icon]"></i>
 				<span>{{ item.text }}</span>
 				<span :class="$style.caret"><i class="ti ti-chevron-right ti-fw"></i></span>
@@ -103,6 +103,8 @@ let keymap = $computed(() => ({
 }));
 
 let childShowingItem = $ref<MenuItem | null>();
+
+let preferClick = isTouchUsing || props.asDrawer;
 
 watch(() => props.items, () => {
 	const items: (MenuItem | MenuPending)[] = [...props.items].filter(item => item !== undefined);
