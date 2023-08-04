@@ -224,6 +224,10 @@ export class NoteManager {
     public async fetch(id: string, force = false): Promise<CachedNote> {
         if (!force) {
             const cachedNote = this.get(id);
+            if (cachedNote.value === null) {
+                // 削除されている場合はnullを返す
+                return cachedNote;
+            }
             // Renoteの場合はRenote元の更新日時も考慮する
             const updatedAt = isRenote(cachedNote.value) ?
                 this.updatedAt.get(id) :
@@ -311,6 +315,10 @@ export class NoteManager {
 
 			case 'deleted': {
 				note.value = null;
+                this.connection?.send('un', { id });
+                this.captureing.delete(id);
+                this.notesComputed.delete(id);
+                this.updatedAt.delete(id);
 				break;
 			}
 		}
