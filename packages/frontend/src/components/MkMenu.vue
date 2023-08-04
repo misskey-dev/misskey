@@ -56,7 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</span>
 	</div>
 	<div v-if="childMenu">
-		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned"/>
+		<XChild ref="child" :items="childMenu" :targetElement="childTarget" :rootElement="itemsEl" showing @actioned="childActioned" @close="close(false)"/>
 	</div>
 </div>
 </template>
