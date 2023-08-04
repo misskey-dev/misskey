@@ -58,6 +58,8 @@ export class RoleEntityService {
 			condFormula: role.condFormula,
 			isPublic: role.isPublic,
 			permissionGroup: role.permissionGroup,
+			isAdministrator: false, // 互換性維持
+			isModerator: false, // 互換性維持
 			isExplorable: role.isExplorable,
 			asBadge: role.asBadge,
 			canEditMembersByModerator: role.canEditMembersByModerator,
