@@ -1094,6 +1094,9 @@ expired: "期限切れ"
 doYouAgree: "同意しますか？"
 beSureToReadThisAsItIsImportant: "重要ですので必ずお読みください。"
 iHaveReadXCarefullyAndAgree: "「{x}」の内容をよく読み、同意します。"
+doNotSendNotificationEmailsForAbuseReport: "通報の通知メールを発送しないようにする"
+emailToReceiveAbuseReport: "通報通知を受け取るためのメールアドレス"
+emailToReceiveAbuseReportCaption: "通報通知を受け取るためのメールアドレスを指定します。ここの入力欄を空にするとメールサーバーのメールアドレスが使用されます。"
 
 _initialAccountSetting:
   accountCreated: "アカウントの作成が完了しました！"

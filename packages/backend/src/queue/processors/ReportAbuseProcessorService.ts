@@ -104,8 +104,8 @@ export class ReportAbuseProcessorService {
 			}
 
 			const meta = await this.metaService.fetch();
-			if (meta.email) {
-				this.emailService.sendEmail(meta.email, 'New abuse report',
+			if ((meta.emailToReceiveAbuseReport || meta.email) && !meta.doNotSendNotificationEmailsForAbuseReport) {
+				this.emailService.sendEmail(meta.emailToReceiveAbuseReport ?? meta.email!, 'New abuse report',
 					sanitizeHtml(job.data.comment),
 					sanitizeHtml(job.data.comment));
 			}

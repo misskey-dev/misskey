@@ -104,6 +104,8 @@ export const paramDef = {
 		enableChartsForFederatedInstances: { type: 'boolean' },
 		enableServerMachineStats: { type: 'boolean' },
 		enableIdenticonGeneration: { type: 'boolean' },
+		doNotSendNotificationEmailsForAbuseReport: { type: 'boolean' },
+		emailToReceiveAbuseReport: { type: 'string', nullable: true },
 		serverRules: { type: 'array', items: { type: 'string' } },
 		preservedUsernames: { type: 'array', items: { type: 'string' } },
 	},
@@ -417,6 +419,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (ps.enableIdenticonGeneration !== undefined) {
 				set.enableIdenticonGeneration = ps.enableIdenticonGeneration;
+			}
+
+			if (ps.doNotSendNotificationEmailsForAbuseReport !== undefined) {
+				set.doNotSendNotificationEmailsForAbuseReport = ps.doNotSendNotificationEmailsForAbuseReport;
+			}
+
+			if (ps.emailToReceiveAbuseReport !== undefined) {
+				set.emailToReceiveAbuseReport = ps.emailToReceiveAbuseReport;
 			}
 
 			if (ps.serverRules !== undefined) {

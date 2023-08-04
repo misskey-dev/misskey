@@ -1097,6 +1097,9 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "doNotSendNotificationEmailsForAbuseReport": string;
+    "emailToReceiveAbuseReport": string;
+    "emailToReceiveAbuseReportCaption": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;

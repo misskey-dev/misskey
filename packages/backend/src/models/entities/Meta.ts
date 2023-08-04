@@ -41,6 +41,11 @@ export class Meta {
 	})
 	public maintainerEmail: string | null;
 
+	@Column('varchar', {
+		length: 1024, nullable: true,
+	})
+	public emailToReceiveAbuseReport: string | null;
+
 	@Column('boolean', {
 		default: false,
 	})
@@ -431,6 +436,11 @@ export class Meta {
 		default: true,
 	})
 	public enableIdenticonGeneration: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public doNotSendNotificationEmailsForAbuseReport: boolean;
 
 	@Column('jsonb', {
 		default: { },
