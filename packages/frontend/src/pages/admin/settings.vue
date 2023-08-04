@@ -29,12 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkInput>
 					</FormSplit>
 
-					<MkInput v-model="emailToReceiveAbuseReport" type="email">
-						<template #prefix><i class="ti ti-mail"></i></template>
-						<template #label>{{ i18n.ts.emailToReceiveAbuseReport }}</template>
-						<template #caption>{{ i18n.ts.emailToReceiveAbuseReportCaption }}</template>
-					</MkInput>
-
 					<MkTextarea v-model="pinnedUsers">
 						<template #label>{{ i18n.ts.pinnedUsers }}</template>
 						<template #caption>{{ i18n.ts.pinnedUsersDescription }}</template>
@@ -92,6 +86,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkSwitch v-model="deeplIsPro">
 								<template #label>Pro account</template>
 							</MkSwitch>
+						</div>
+					</FormSection>
+
+					<FormSection>
+						<template #label>{{ i18n.ts.abuseReports }}</template>
+
+						<div class="_gaps_m">
+							<MkInput v-model="emailToReceiveAbuseReport" type="email">
+								<template #prefix><i class="ti ti-mail"></i></template>
+								<template #label>{{ i18n.ts.emailToReceiveAbuseReport }}</template>
+								<template #caption>{{ i18n.ts.emailToReceiveAbuseReportCaption }}</template>
+							</MkInput>
 						</div>
 					</FormSection>
 				</div>
