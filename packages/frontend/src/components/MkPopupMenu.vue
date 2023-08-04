@@ -42,11 +42,15 @@ function onModalClose() {
 
 function onMenuClose() {
 	close();
+	if (hiding.value) {
+		// hidingであればclosedを発火
+		emit('closed');
+	}
 }
 
 function onModalClosed() {
 	if (!hiding.value) {
-		// hideが来ていない場合のみclosedを発火
+		// hidingでなければclosedを発火
 		emit('closed');
 	}
 }
