@@ -58,10 +58,16 @@ function onModalClosed() {
 function hide() {
 	manualShowing.value = false;
 	hiding.value = true;
+
+	// closeは呼ぶ必要がある
+	modal?.close();
 }
 
 function close() {
 	manualShowing.value = false;
+
+	// closeは呼ぶ必要がある
+	modal?.close();
 }
 </script>
 

@@ -418,7 +418,9 @@ export function getNoteMenu(props: {
 
 	const cleanup = () => {
 		if (_DEV_) console.log('note menu cleanup', cleanups);
-		cleanups.forEach(cleanup => cleanup());
+		for (const cl of cleanups) {
+			cl();
+		}
 	};
 
 	return {
