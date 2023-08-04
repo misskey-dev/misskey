@@ -125,7 +125,7 @@ watch(() => props.items, () => {
 	immediate: true,
 });
 
-let childMenu = ref<MenuItem[] | null>();
+const childMenu = ref<MenuItem[] | null>();
 let childTarget = $shallowRef<HTMLElement | null>();
 
 function closeChild() {
@@ -142,7 +142,7 @@ const onGlobalMousedown = (event: MouseEvent) => {
 	if (childTarget && (event.target === childTarget || childTarget.contains(event.target))) return;
 	if (child && child.checkHit(event)) return;
 	closeChild();
-}
+};
 
 let childCloseTimer: null | number = null;
 function onItemMouseEnter(item) {
@@ -182,7 +182,8 @@ function showChildren(item: MenuParent, ev: MouseEvent) {
 		emit('hide');
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
-		childMenu = children as Ref<MenuItem[]>;
+		// これでもリアクティビティは保たれる
+		childMenu.value = children.value as MenuItem[];
 		childShowingItem = item;
 	}
 }
@@ -212,7 +213,7 @@ function switchItem(item: MenuSwitch & { ref: any }) {
 onMounted(() => {
 	if (props.viaKeyboard) {
 		nextTick(() => {
-			focusNext(itemsEl.children[0], true, false);
+			if (itemsEl) focusNext(itemsEl.children[0], true, false);
 		});
 	}
 
