@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="onModalClose" @closed="closed">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="manualShowing = false"/>
+<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :src="src" :transparentBg="true" @click="click" @close="onModalClose" @closed="onModalClosed">
+	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
 </MkModal>
 </template>
 
@@ -30,6 +30,7 @@ const emit = defineEmits<{
 
 let modal = $shallowRef<InstanceType<typeof MkModal>>();
 const manualShowing = ref(true);
+const hiding = ref(false);
 
 function click() {
 	close();
@@ -41,22 +42,22 @@ function onModalClose() {
 
 function onMenuClose() {
 	close();
-	if (manualShowing.value === false) {
-		// 先にhideが来ていたらclosedを発火
-		emit('closed');
-	}
 }
 
-function closed() {
-	if (manualShowing.value === true) {
+function onModalClosed() {
+	if (!hiding.value) {
 		// hideが来ていない場合のみclosedを発火
 		emit('closed');
 	}
 }
 
+function hide() {
+	manualShowing.value = false;
+	hiding.value = true;
+}
+
 function close() {
-	if (!modal) return;
-	modal.close();
+	manualShowing.value = false;
 }
 </script>
 
