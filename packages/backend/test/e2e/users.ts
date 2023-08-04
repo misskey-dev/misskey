@@ -73,6 +73,7 @@ describe('ユーザー', () => {
 			// BUG isAdmin/isModeratorはUserLiteではなくMeDetailedOnlyに含まれる。
 			isAdmin: undefined,
 			isModerator: undefined,
+			isEmojiModerator: undefined,
 		});
 	};
 
@@ -137,6 +138,7 @@ describe('ユーザー', () => {
 			bannerId: user.bannerId,
 			isModerator: user.isModerator,
 			isAdmin: user.isAdmin,
+			isEmojiModerator: user.isEmojiModerator,
 			injectFeaturedNote: user.injectFeaturedNote,
 			receiveAnnouncementEmail: user.receiveAnnouncementEmail,
 			alwaysMarkNsfw: user.alwaysMarkNsfw,
@@ -251,10 +253,10 @@ describe('ユーザー', () => {
 		await post(userLocking, { text: 'test' });
 		await api('i/update', { isLocked: true }, userLocking);
 		userAdmin = await signup({ username: 'userAdmin' });
-		roleAdmin = await role(root, { isAdministrator: true, name: 'Admin Role' });
+		roleAdmin = await role(root, { permissionGroup: 'Admin', name: "Admin Role" });
 		await api('admin/roles/assign', { userId: userAdmin.id, roleId: roleAdmin.id }, root);
 		userModerator = await signup({ username: 'userModerator' });
-		roleModerator = await role(root, { isModerator: true, name: 'Moderator Role' });
+		roleModerator = await role(root, { permissionGroup: 'MainModerator', name: 'Moderator Role' });
 		await api('admin/roles/assign', { userId: userModerator.id, roleId: roleModerator.id }, root);
 		userRolePublic = await signup({ username: 'userRolePublic' });
 		rolePublic = await role(root, { isPublic: true, name: 'Public Role' });
@@ -660,8 +662,7 @@ describe('ユーザー', () => {
 			color: rolePublic.color,
 			iconUrl: rolePublic.iconUrl,
 			description: rolePublic.description,
-			isModerator: rolePublic.isModerator,
-			isAdministrator: rolePublic.isAdministrator,
+			permissionGroup: rolePublic.permissionGroup,
 			displayOrder: rolePublic.displayOrder,
 		}]);
 	});

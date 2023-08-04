@@ -367,6 +367,7 @@ describe('Note', () => {
 				condFormula: {},
 				isAdministrator: false,
 				isModerator: false,
+				permissionGroup: 'Normal',
 				isPublic: false,
 				isExplorable: false,
 				asBadge: false,

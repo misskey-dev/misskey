@@ -221,6 +221,7 @@ export const role = async (user: UserToken, role: any = {}, policies: any = {}):
 		iconUrl: null,
 		isAdministrator: false,
 		isModerator: false,
+		permissionGroup: 'Normal',
 		isPublic: false,
 		name: 'New Role',
 		target: 'manual',
