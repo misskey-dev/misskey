@@ -268,13 +268,20 @@ export class NoteManager {
 				const reaction = body.reaction;
 
 				if (body.emoji && !(body.emoji.name in note.value.reactionEmojis)) {
-					note.value.reactionEmojis[body.emoji.name] = body.emoji.url;
-				}
+                    note.value.reactionEmojis = {
+                        ...note.value.reactionEmojis,
+                        [body.emoji.name]: body.emoji.url,
+                    };
+                }
 
-				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (note.value.reactions || {})[reaction] || 0;
-
-				note.value.reactions[reaction] = currentCount + 1;
+                if (reaction in note.value.reactions) {
+                    note.value.reactions[reaction]++;
+                } else {
+                    note.value.reactions = {
+                        ...note.value.reactions,
+                        [reaction]: 1,
+                    };
+                }
 
 				if ($i && (body.userId === $i.id)) {
 					note.value.myReaction = reaction;
