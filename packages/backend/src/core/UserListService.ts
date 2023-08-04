@@ -23,15 +23,11 @@ export class UserListService {
 	public static TooManyUsersError = class extends Error {};
 
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private userFollowingService: UserFollowingService,
 		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
 		private proxyAccountService: ProxyAccountService,

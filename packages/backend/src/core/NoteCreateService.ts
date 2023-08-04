@@ -182,9 +182,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 

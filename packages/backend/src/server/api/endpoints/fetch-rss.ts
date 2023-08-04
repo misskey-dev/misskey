@@ -32,9 +32,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private httpRequestService: HttpRequestService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

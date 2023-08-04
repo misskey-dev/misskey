@@ -98,26 +98,17 @@ export class UserEntityService implements OnModuleInit {
 		@Inject(DI.noteUnreadsRepository)
 		private noteUnreadsRepository: NoteUnreadsRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
-
 		@Inject(DI.userNotePiningsRepository)
 		private userNotePiningsRepository: UserNotePiningsRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
-		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
-
 		@Inject(DI.announcementReadsRepository)
 		private announcementReadsRepository: AnnouncementReadsRepository,
 
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
-
-		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
 
 		@Inject(DI.userMemosRepository)
 		private userMemosRepository: UserMemoRepository,

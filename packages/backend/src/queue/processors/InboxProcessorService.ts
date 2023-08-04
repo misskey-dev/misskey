@@ -35,16 +35,12 @@ export class InboxProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private utilityService: UtilityService,
 		private metaService: MetaService,
 		private apInboxService: ApInboxService,
 		private federatedInstanceService: FederatedInstanceService,
 		private fetchInstanceMetadataService: FetchInstanceMetadataService,
 		private ldSignatureService: LdSignatureService,
-		private apRequestService: ApRequestService,
 		private apPersonService: ApPersonService,
 		private apDbResolverService: ApDbResolverService,
 		private instanceChart: InstanceChart,

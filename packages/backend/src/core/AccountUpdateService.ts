@@ -17,9 +17,6 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class AccountUpdateService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 

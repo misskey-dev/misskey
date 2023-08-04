@@ -18,10 +18,6 @@ import type { IObject, IApMention } from '../type.js';
 @Injectable()
 export class ApMentionService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		private apResolverService: ApResolverService,
 		private apPersonService: ApPersonService,
 	) {
 	}

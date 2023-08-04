@@ -19,7 +19,6 @@ export class DeleteAccountService {
 
 		private userSuspendService: UserSuspendService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
 	) {
 	}
 

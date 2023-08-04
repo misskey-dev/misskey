@@ -22,8 +22,6 @@ export class RoleEntityService {
 
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 

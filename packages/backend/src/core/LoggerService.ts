@@ -13,8 +13,6 @@ import type { KEYWORD } from 'color-convert/conversions.js';
 @Injectable()
 export class LoggerService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
 	) {
 	}
 

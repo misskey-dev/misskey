@@ -20,8 +20,6 @@ export class UserListEntityService {
 
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 

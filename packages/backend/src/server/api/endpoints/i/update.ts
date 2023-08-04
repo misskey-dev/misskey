@@ -192,7 +192,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 		private userFollowingService: UserFollowingService,
 		private accountUpdateService: AccountUpdateService,
-		private accountMoveService: AccountMoveService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private hashtagService: HashtagService,

@@ -83,8 +83,6 @@ export class ApInboxService {
 		private apNoteService: ApNoteService,
 		private apPersonService: ApPersonService,
 		private apQuestionService: ApQuestionService,
-		private accountMoveService: AccountMoveService,
-		private cacheService: CacheService,
 		private queueService: QueueService,
 	) {
 		this.logger = this.apLoggerService.logger;

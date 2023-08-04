@@ -20,9 +20,6 @@ import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/c
 @Injectable()
 export class S3Service {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private httpRequestService: HttpRequestService,
 	) {
 	}

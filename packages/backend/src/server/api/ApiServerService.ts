@@ -27,9 +27,6 @@ export class ApiServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 

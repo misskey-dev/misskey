@@ -90,9 +90,6 @@ export const ACHIEVEMENT_TYPES = [
 @Injectable()
 export class AchievementService {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 

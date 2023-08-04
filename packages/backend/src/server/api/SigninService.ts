@@ -17,9 +17,6 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 @Injectable()
 export class SigninService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 

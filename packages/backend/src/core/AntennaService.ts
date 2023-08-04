@@ -35,12 +35,6 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -48,11 +42,7 @@ export class AntennaService implements OnApplicationShutdown {
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private utilityService: UtilityService,
-		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private pushNotificationService: PushNotificationService,
-		private noteEntityService: NoteEntityService,
-		private antennaEntityService: AntennaEntityService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];

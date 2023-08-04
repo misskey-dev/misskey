@@ -50,8 +50,6 @@ import { Readable } from 'node:stream';
 @Injectable()
 export class ImageProcessingService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
 	) {
 	}
 

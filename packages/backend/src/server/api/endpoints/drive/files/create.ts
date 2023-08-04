@@ -76,9 +76,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
-
 		private driveFileEntityService: DriveFileEntityService,
 		private metaService: MetaService,
 		private driveService: DriveService,

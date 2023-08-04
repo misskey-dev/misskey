@@ -115,9 +115,6 @@ export class TwoFactorAuthenticationService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 	) {
 	}
 

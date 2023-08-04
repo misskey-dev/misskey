@@ -37,9 +37,6 @@ export class NotificationEntityService implements OnModuleInit {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
-
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
 

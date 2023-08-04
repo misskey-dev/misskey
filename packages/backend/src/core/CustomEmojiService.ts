@@ -31,12 +31,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 

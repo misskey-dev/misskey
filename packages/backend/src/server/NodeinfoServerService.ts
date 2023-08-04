@@ -26,12 +26,6 @@ export class NodeinfoServerService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,
 		private notesChart: NotesChart,

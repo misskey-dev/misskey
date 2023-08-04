@@ -43,7 +43,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private channelFavoritesRepository: ChannelFavoritesRepository,
 
 		private channelEntityService: ChannelEntityService,
-		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.channelFavoritesRepository.createQueryBuilder('favorite')

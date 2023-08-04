@@ -26,15 +26,6 @@ export class ImportCustomEmojisProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 

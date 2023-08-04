@@ -28,9 +28,6 @@ export class TickChartsProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private federationChart: FederationChart,
 		private notesChart: NotesChart,
 		private usersChart: UsersChart,

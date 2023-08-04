@@ -16,9 +16,6 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class HashtagService {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
 

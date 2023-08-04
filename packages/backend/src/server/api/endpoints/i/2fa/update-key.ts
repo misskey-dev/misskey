@@ -48,9 +48,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.userSecurityKeysRepository)
 		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 	) {

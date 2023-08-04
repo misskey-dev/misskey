@@ -19,9 +19,6 @@ export class CleanProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.userIpsRepository)
 		private userIpsRepository: UserIpsRepository,
 

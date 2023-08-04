@@ -30,14 +30,7 @@ export class NotificationService implements OnApplicationShutdown {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
 		private notificationEntityService: NotificationEntityService,
-		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private pushNotificationService: PushNotificationService,

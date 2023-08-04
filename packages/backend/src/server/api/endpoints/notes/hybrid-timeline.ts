@@ -69,7 +69,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 		private idService: IdService,

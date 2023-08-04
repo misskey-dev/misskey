@@ -21,9 +21,6 @@ export class AggregateRetentionProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 

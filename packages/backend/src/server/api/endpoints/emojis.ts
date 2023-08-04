@@ -46,9 +46,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 

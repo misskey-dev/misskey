@@ -28,9 +28,6 @@ export class StreamingApiServerService {
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 

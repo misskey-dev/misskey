@@ -54,7 +54,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
-		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

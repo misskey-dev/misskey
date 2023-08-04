@@ -31,9 +31,6 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 @Injectable()
 export class AccountMoveService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 

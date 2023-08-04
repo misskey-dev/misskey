@@ -18,9 +18,6 @@ export class DeleteFileProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,
 	) {

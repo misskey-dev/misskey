@@ -61,9 +61,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private noteEntityService: NoteEntityService,
 		private searchService: SearchService,
 		private roleService: RoleService,

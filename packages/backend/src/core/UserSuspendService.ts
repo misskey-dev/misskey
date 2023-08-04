@@ -18,12 +18,6 @@ import { bindThis } from '@/decorators.js';
 @Injectable()
 export class UserSuspendService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 

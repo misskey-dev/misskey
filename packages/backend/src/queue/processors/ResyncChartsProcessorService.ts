@@ -27,21 +27,9 @@ export class ResyncChartsProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		private federationChart: FederationChart,
 		private notesChart: NotesChart,
 		private usersChart: UsersChart,
-		private activeUsersChart: ActiveUsersChart,
-		private instanceChart: InstanceChart,
-		private perUserNotesChart: PerUserNotesChart,
 		private driveChart: DriveChart,
-		private perUserReactionsChart: PerUserReactionsChart,
-		private perUserFollowingChart: PerUserFollowingChart,
-		private perUserDriveChart: PerUserDriveChart,
-		private apRequestChart: ApRequestChart,
-
 		private queueLoggerService: QueueLoggerService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('resync-charts');

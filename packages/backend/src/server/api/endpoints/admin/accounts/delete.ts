@@ -36,7 +36,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private userEntityService: UserEntityService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
 		private userSuspendService: UserSuspendService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

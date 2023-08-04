@@ -59,9 +59,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.flashsRepository)
 		private flashsRepository: FlashsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const flash = await this.flashsRepository.findOneBy({ id: ps.flashId });

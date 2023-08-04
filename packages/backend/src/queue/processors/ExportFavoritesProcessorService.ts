@@ -25,17 +25,11 @@ export class ExportFavoritesProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
 
 		@Inject(DI.noteFavoritesRepository)
 		private noteFavoritesRepository: NoteFavoritesRepository,

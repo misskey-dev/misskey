@@ -152,12 +152,6 @@ class DeliverManager {
 @Injectable()
 export class ApDeliverManagerService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 

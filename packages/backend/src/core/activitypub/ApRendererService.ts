@@ -49,9 +49,6 @@ export class ApRendererService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 

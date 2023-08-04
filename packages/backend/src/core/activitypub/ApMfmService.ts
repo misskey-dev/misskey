@@ -16,9 +16,6 @@ import type { IObject } from './type.js';
 @Injectable()
 export class ApMfmService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private mfmService: MfmService,
 	) {
 	}

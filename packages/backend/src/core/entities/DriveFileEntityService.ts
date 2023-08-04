@@ -34,12 +34,6 @@ export class DriveFileEntityService {
 		@Inject(DI.config)
 		private config: Config,
 
-		@Inject(DI.db)
-		private db: DataSource,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 

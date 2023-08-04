@@ -19,9 +19,6 @@ export class EndedPollNotificationProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 

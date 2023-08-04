@@ -65,22 +65,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
 		private idService: IdService,
 		private notificationEntityService: NotificationEntityService,
 		private notificationService: NotificationService,
-		private queryService: QueryService,
 		private noteReadService: NoteReadService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

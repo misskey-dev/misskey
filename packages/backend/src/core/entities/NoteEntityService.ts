@@ -33,9 +33,6 @@ export class NoteEntityService implements OnModuleInit {
 	constructor(
 		private moduleRef: ModuleRef,
 
-		@Inject(DI.db)
-		private db: DataSource,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -56,9 +53,6 @@ export class NoteEntityService implements OnModuleInit {
 
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,

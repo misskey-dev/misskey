@@ -131,9 +131,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

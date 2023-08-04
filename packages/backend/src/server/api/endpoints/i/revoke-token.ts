@@ -29,8 +29,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
-
-		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const tokenExist = await this.accessTokensRepository.exist({ where: { id: ps.tokenId } });

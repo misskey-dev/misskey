@@ -19,9 +19,6 @@ export class CheckExpiredMutingsProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 

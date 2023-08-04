@@ -31,14 +31,8 @@ export class DeliverProcessorService {
 	private latest: string | null;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 
 		private metaService: MetaService,
 		private utilityService: UtilityService,

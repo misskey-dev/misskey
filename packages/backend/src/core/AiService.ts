@@ -26,8 +26,6 @@ export class AiService {
 	private modelLoadMutex: Mutex = new Mutex();
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
 	) {
 	}
 
