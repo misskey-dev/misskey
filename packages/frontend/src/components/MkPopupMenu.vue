@@ -41,10 +41,17 @@ function onModalClose() {
 
 function onMenuClose() {
 	close();
+	if (manualShowing.value === false) {
+		// 先にhideが来ていたらclosedを発火
+		emit('closed');
+	}
 }
 
 function closed() {
-	emit('closed');
+	if (manualShowing.value === true) {
+		// hideが来ていない場合のみclosedを発火
+		emit('closed');
+	}
 }
 
 function close() {
