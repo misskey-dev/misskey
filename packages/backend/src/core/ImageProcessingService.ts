@@ -3,10 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import sharp from 'sharp';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
 
 export type IImage = {
 	data: Buffer;

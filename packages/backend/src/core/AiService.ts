@@ -6,12 +6,10 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as nsfw from 'nsfwjs';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 const _filename = fileURLToPath(import.meta.url);
