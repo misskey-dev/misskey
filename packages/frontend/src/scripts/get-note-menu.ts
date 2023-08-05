@@ -92,6 +92,20 @@ export async function getNoteClipMenu(props: {
 	}];
 }
 
+export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): MenuItem {
+	return {
+		icon: 'ti ti-exclamation-circle',
+		text,
+		action: (): void => {
+			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
+			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+				user: note.user,
+				initialComment: `Note: ${u}\n-----\n`,
+			}, {}, 'closed');
+		},
+	};
+}
+
 export function getNoteMenu(props: {
 	note: misskey.entities.Note;
 	menuButton: Ref<HTMLElement>;
@@ -342,19 +356,11 @@ export function getNoteMenu(props: {
 			}]
 			: []
 		),*/
-			...(appearNote.userId !== $i.id ? [
+			...(appearNote.userId !== $i.id || (isRenote && props.note.userId !== $i.id) ? [
 				null,
-				{
-					icon: 'ti ti-exclamation-circle',
-					text: i18n.ts.reportAbuse,
-					action: () => {
-						const u = appearNote.url ?? appearNote.uri ?? `${url}/notes/${appearNote.id}`;
-						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
-							user: appearNote.user,
-							initialComment: `Note: ${u}\n-----\n`,
-						}, {}, 'closed');
-					},
-				}]
+				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
+				isRenote && props.note.userId !== $i.id ? getAbuseNoteMenu(props.note, i18n.ts.reportAbuseRenote) : undefined,
+			]
 			: []
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
