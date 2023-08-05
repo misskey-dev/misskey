@@ -70,7 +70,7 @@ import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { isTouchUsing } from '@/scripts/touch';
 
-const childrenCache = new WeakMap<MenuParent, Ref<(MenuItem | MenuPending)[]>>();
+const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>
 
 <script lang="ts" setup>
@@ -154,36 +154,32 @@ function onItemMouseLeave(item) {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-function showChildren(item: MenuParent, ev: MouseEvent) {
-	if (props.asDrawer && childrenCache.has(item)) return;
-
-	const children = (() => {
-		if (!item.noCache && childrenCache.has(item)) {
+async function showChildren(item: MenuParent, ev: MouseEvent) {
+	const children = await (async () => {
+		if (childrenCache.has(item)) {
 			return childrenCache.get(item)!;
 		} else {
 			if (typeof item.children === 'function') {
-				const result: Ref<(MenuItem | MenuPending)[]> = ref([{ type: 'pending' }]);
-				childrenCache.set(item, result);
-				Promise.resolve(item.children()).then(x => {
-					result.value = x;
-				});
-				return result;
+				return Promise.resolve(item.children());
 			} else {
-				return ref(item.children) as Ref<(MenuItem | MenuPending)[]>;
+				return item.children;
 			}
 		}
 	})();
 
+	if (!item.noCache) {
+		childrenCache.set(item, children);
+	}
+
 	if (props.asDrawer) {
-		os.popupMenu(children as Ref<MenuItem[]>, ev.currentTarget ?? ev.target).finally(() => {
-			childrenCache.delete(item);
+		os.popupMenu(children, ev.currentTarget ?? ev.target).finally(() => {
 			emit('close');
 		});
 		emit('hide');
 	} else {
 		childTarget = ev.currentTarget ?? ev.target;
 		// これでもリアクティビティは保たれる
-		childMenu.value = children.value as MenuItem[];
+		childMenu.value = children;
 		childShowingItem = item;
 	}
 }
