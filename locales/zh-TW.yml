@@ -1243,7 +1243,7 @@ _achievements:
       title: "有備而來"
       description: "設定了個人檔案"
     _markedAsCat:
-      title: "吾輩乃貓是也"
+      title: "我是貓"
       description: "已將帳戶設定為貓"
       flavor: "還沒有名字。"
     _following1:
@@ -1265,7 +1265,7 @@ _achievements:
       title: "第一個追隨者"
       description: "第一次被追隨"
     _followers10:
-      title: "Follow me!"
+      title: "追隨我吧！"
       description: "追隨者超過10人了"
     _followers50:
       title: "成群結隊"
@@ -1274,20 +1274,20 @@ _achievements:
       title: "熱門人物"
       description: "追隨者超過100人了"
     _followers300:
-      title: "請排成一排"
+      title: "請排隊"
       description: "追隨者超過300人了"
     _followers500:
       title: "基地臺"
       description: "超過五百名追隨者了"
     _followers1000:
-      title: "影響者"
+      title: "星光熠熠"
       description: "超過一千名追隨者了"
     _collectAchievements30:
       title: "成就收藏家"
       description: "獲得三十個以上的成就"
     _viewAchievements3min:
-      title: "喜愛成就"
-      description: "看成就列表要花三分鐘以上"
+      title: "成就發燒友"
+      description: "看著成就列表超過三分鐘"
     _iLoveMisskey:
       title: "I Love Misskey"
       description: "發佈「I ❤ #Misskey」"
@@ -1302,31 +1302,31 @@ _achievements:
       title: "Misskey 看太多"
       description: "客戶端啟動已超過60分鐘"
     _noteDeletedWithin1min:
-      title: "現在沒有了"
-      description: "發文後1分鐘內刪文"
+      title: "欲言又止"
+      description: "發文後一分鐘內刪文"
     _postedAtLateNight:
-      title: "夜行性"
+      title: "夜貓子"
       description: "在深夜發佈貼文"
       flavor: "該去睡覺了。"
     _postedAt0min0sec:
       title: "報時"
-      description: "在0分0秒發佈貼文"
-      flavor: "啵．啵．啵．嗶ー"
+      description: "在零分零秒發佈貼文"
+      flavor: "啵、啵、啵、嗶ーー"
     _selfQuote:
       title: "自我引用"
       description: "引用了自己的貼文"
     _htl20npm:
-      title: "流動的TL"
-      description: "在首頁時間軸的流速超過20npm"
+      title: "源源不絕"
+      description: "首頁時間軸在一分鐘內出現超過二十篇貼文"
     _viewInstanceChart:
       title: "分析師"
       description: "顯示了實例的圖表"
     _outputHelloWorldOnScratchpad:
-      title: "Hello world!"
-      description: "在暫存記憶體輸出了 hello world"
+      title: "Hello, world!"
+      description: "在 AiScript 控制臺輸出了「hello world」"
     _open3windows:
       title: "多重視窗"
-      description: "開啟了3個以上的視窗"
+      description: "開啟過三個以上的視窗"
     _driveFolderCircularReference:
       title: "循環引用"
       description: "試圖遞迴套入雲端硬碟資料夾"
@@ -1338,33 +1338,33 @@ _achievements:
       description: "已點擊這裡了"
     _justPlainLucky:
       title: "只是運氣好"
-      description: "每10秒有0.01%的機率獲得"
+      description: "每十秒有二萬分之一（0.005%）的機率獲得"
     _setNameToSyuilo:
-      title: "神的情結"
+      title: "神與您同在"
       description: "將名稱設定為 syuilo"
     _passedSinceAccountCreated1:
-      title: "一周年"
-      description: "自建立帳戶開始過了1年"
+      title: "一週年"
+      description: "帳戶加入時間已超過一年"
     _passedSinceAccountCreated2:
-      title: "二周年"
-      description: "自建立帳戶開始過了2年"
+      title: "二週年"
+      description: "帳戶加入時間已超過兩年"
     _passedSinceAccountCreated3:
-      title: "三周年"
-      description: "自建立帳戶開始過了3年"
+      title: "三週年"
+      description: "帳戶加入時間已超過三年"
     _loggedInOnBirthday:
       title: "生日快樂"
       description: "在生日當天登入了"
     _loggedInOnNewYearsDay:
       title: "新年快樂"
       description: "在元旦當天登入了"
-      flavor: "今年也請對敝實例多多指教"
+      flavor: "今年也請您多多指教！"
     _cookieClicked:
       title: "點擊餅乾的遊戲"
       description: "點擊了餅乾"
       flavor: "是不是軟體有問題？"
     _brainDiver:
       title: "Brain Driver"
-      description: "發佈了Brain Driver的連結"
+      description: "發佈一篇含歌曲《Brain Driver》連結的貼文"
       flavor: "Misskey-Misskey La-Tu-Ma"
 _role:
   new: "建立角色"
@@ -1426,8 +1426,8 @@ _role:
   _condition:
     isLocal: "本地使用者"
     isRemote: "遠端使用者"
-    createdLessThan: "自建立帳戶開始～以內"
-    createdMoreThan: "自建立帳戶開始～經過"
+    createdLessThan: "帳戶加入時間不超過"
+    createdMoreThan: "帳戶加入時間已超過"
     followersLessThanOrEq: "追隨者人數在～以下"
     followersMoreThanOrEq: "追隨者人數在～以上"
     followingLessThanOrEq: "追隨人數在～以下"
