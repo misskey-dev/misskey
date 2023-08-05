@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div
 	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
@@ -540,7 +545,7 @@ function onCompositionEnd(ev: CompositionEvent) {
 }
 
 async function onPaste(ev: ClipboardEvent) {
-	for (const { item, i } of Array.from(ev.clipboardData.items).map((item, i) => ({ item, i }))) {
+	for (const { item, i } of Array.from(ev.clipboardData.items, (item, i) => ({ item, i }))) {
 		if (item.kind === 'file') {
 			const file = item.getAsFile();
 			const lio = file.name.lastIndexOf('.');
@@ -746,18 +751,25 @@ async function post(ev?: MouseEvent) {
 				claimAchievement('notes1');
 			}
 
-			const text = postData.text?.toLowerCase() ?? '';
-			if ((text.includes('love') || text.includes('❤')) && text.includes('misskey')) {
+			const text = postData.text ?? '';
+			const lowerCase = text.toLowerCase();
+			if ((lowerCase.includes('love') || lowerCase.includes('❤')) && lowerCase.includes('misskey')) {
 				claimAchievement('iLoveMisskey');
 			}
-			if (
-				text.includes('https://youtu.be/Efrlqw8ytg4'.toLowerCase()) ||
-				text.includes('https://www.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
-				text.includes('https://m.youtube.com/watch?v=Efrlqw8ytg4'.toLowerCase()) ||
-				text.includes('https://youtu.be/XVCwzwxdHuA'.toLowerCase()) ||
-				text.includes('https://www.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase()) ||
-				text.includes('https://m.youtube.com/watch?v=XVCwzwxdHuA'.toLowerCase())
-			) {
+			if ([
+				'https://youtu.be/Efrlqw8ytg4',
+				'https://www.youtube.com/watch?v=Efrlqw8ytg4',
+				'https://m.youtube.com/watch?v=Efrlqw8ytg4',
+			
+				'https://youtu.be/XVCwzwxdHuA',
+				'https://www.youtube.com/watch?v=XVCwzwxdHuA',
+				'https://m.youtube.com/watch?v=XVCwzwxdHuA',
+
+				'https://open.spotify.com/track/3Cuj0mZrlLoXx9nydNi7RB',
+				'https://open.spotify.com/track/7anfcaNPQWlWCwyCHmZqNy',
+				'https://open.spotify.com/track/5Odr16TvEN4my22K9nbH7l',
+				'https://open.spotify.com/album/5bOlxyl4igOrp2DwVQxBco',
+			].some(url => text.includes(url))) {
 				claimAchievement('brainDiver');
 			}
 
@@ -907,7 +919,6 @@ defineExpose({
 	display: flex;
 	flex-wrap: nowrap;
 	gap: 4px;
-	margin-bottom: -10px;
 }
 
 .headerLeft {
@@ -1025,7 +1036,7 @@ defineExpose({
 }
 
 .targetNote {
-	padding: 10px 20px 16px 20px;
+	padding: 0 20px 16px 20px;
 }
 
 .withQuote {

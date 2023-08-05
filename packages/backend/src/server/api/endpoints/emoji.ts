@@ -1,9 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { EmojisRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -34,9 +38,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 

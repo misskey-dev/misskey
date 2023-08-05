@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
@@ -188,7 +193,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			let files: DriveFile[] = [];
-			const fileIds = ps.fileIds != null ? ps.fileIds : ps.mediaIds != null ? ps.mediaIds : null;
+			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
 			if (fileIds != null) {
 				files = await this.driveFilesRepository.createQueryBuilder('file')
 					.where('file.userId = :userId AND file.id IN (:...fileIds)', {

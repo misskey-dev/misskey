@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -35,7 +40,7 @@
 						<div class="_gaps_m">
 							<MkSwitch v-model="cacheRemoteFiles">
 								<template #label>{{ i18n.ts.cacheRemoteFiles }}</template>
-								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}</template>
+								<template #caption>{{ i18n.ts.cacheRemoteFilesDescription }}{{ i18n.ts.youCanCleanRemoteFilesCache }}</template>
 							</MkSwitch>
 
 							<template v-if="cacheRemoteFiles">

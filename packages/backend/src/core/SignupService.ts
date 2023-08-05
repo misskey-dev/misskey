@@ -1,10 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { generateKeyPair } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { DataSource, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { UsedUsernamesRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
 import { User } from '@/models/entities/User.js';
 import { UserProfile } from '@/models/entities/UserProfile.js';
 import { IdService } from '@/core/IdService.js';
@@ -22,9 +26,6 @@ export class SignupService {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
-
-		@Inject(DI.config)
-		private config: Config,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,

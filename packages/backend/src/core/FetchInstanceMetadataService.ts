@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import { JSDOM } from 'jsdom';
@@ -70,9 +75,9 @@ export class FetchInstanceMetadataService {
 					return;
 				}
 			}
-	
+
 			this.logger.info(`Fetching metadata of ${instance.host} ...`);
- 
+
 			const [info, dom, manifest] = await Promise.all([
 				this.fetchNodeinfo(instance).catch(() => null),
 				this.fetchDom(instance).catch(() => null),
@@ -103,7 +108,7 @@ export class FetchInstanceMetadataService {
 
 			if (name) updates.name = name;
 			if (description) updates.description = description;
-			if (icon || favicon) updates.iconUrl = (icon && !icon.includes('data:image/png;base64')) ? icon : favicon;
+			if (icon ?? favicon) updates.iconUrl = (icon && !icon.includes('data:image/png;base64')) ? icon : favicon;
 			if (favicon) updates.faviconUrl = favicon;
 			if (themeColor) updates.themeColor = themeColor;
 

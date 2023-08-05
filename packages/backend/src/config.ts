@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * Config loader
  */
@@ -192,7 +197,7 @@ function convertRedisOptions(options: RedisOptionsSource, host: string): RedisOp
 		...options,
 		password: options.pass,
 		prefix: options.prefix ?? host,
-		family: options.family == null ? 0 : options.family,
+		family: options.family ?? 0,
 		keyPrefix: `${options.prefix ?? host}:`,
 		db: options.db ?? 0,
 	};

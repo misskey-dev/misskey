@@ -1,6 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { InstancesRepository } from '@/models/index.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { Instance } from '@/models/entities/Instance.js';
@@ -11,9 +14,6 @@ import { UtilityService } from '../UtilityService.js';
 @Injectable()
 export class InstanceEntityService {
 	constructor(
-		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
-
 		private metaService: MetaService,
 
 		private utilityService: UtilityService,
