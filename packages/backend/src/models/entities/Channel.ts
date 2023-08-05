@@ -89,4 +89,9 @@ export class Channel {
 		comment: 'The count of users.',
 	})
 	public usersCount: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isSensitive: boolean;
 }
