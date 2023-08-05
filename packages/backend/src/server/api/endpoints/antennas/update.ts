@@ -83,6 +83,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			if (ps.keywords.flat().every(x => x === '') && ps.excludeKeywords.flat().every(x => x === '')) {
+				throw new Error('either keywords or excludeKeywords is required.');
+			}
 			// Fetch the antenna
 			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
