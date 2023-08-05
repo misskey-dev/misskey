@@ -12,6 +12,16 @@
 
 -->
 
+## 13.14.2-kinel.2 (unreleased)
+
+### General
+- ハイライトからのおはnoteの除外でCWを見忘れていたのを修正
+
+### Client
+
+### Server
+- 通報のメール通知を無効化するオプションを追加
+
 ## 13.14.2-kinel.1
 
 ### General
