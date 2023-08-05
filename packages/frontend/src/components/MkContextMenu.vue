@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	appear
@@ -61,15 +66,11 @@ onMounted(() => {
 	rootEl.style.top = `${top}px`;
 	rootEl.style.left = `${left}px`;
 
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.addEventListener('mousedown', onMousedown);
-	}
+	document.body.addEventListener('mousedown', onMousedown);
 });
 
 onBeforeUnmount(() => {
-	for (const el of Array.from(document.querySelectorAll('body *'))) {
-		el.removeEventListener('mousedown', onMousedown);
-	}
+	document.body.removeEventListener('mousedown', onMousedown);
 });
 
 function onMousedown(evt: Event) {

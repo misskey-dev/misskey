@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { HashtagsRepository } from '@/models/index.js';
@@ -42,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.orderBy('tag.count', 'DESC')
 				.groupBy('tag.id')
 				.limit(ps.limit)
-				.skip(ps.offset)
+				.offset(ps.offset)
 				.getMany();
 
 			return hashtags.map(tag => tag.name);

@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AbuseUserReportsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
-import { UserEntityService } from './UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class AbuseUserReportEntityService {

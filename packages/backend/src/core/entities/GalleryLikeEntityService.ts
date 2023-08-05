@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository } from '@/models/index.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { GalleryLike } from '@/models/entities/GalleryLike.js';
-import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 
 @Injectable()
 export class GalleryLikeEntityService {

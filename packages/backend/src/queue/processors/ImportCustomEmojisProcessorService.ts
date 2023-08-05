@@ -1,10 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import unzipper from 'unzipper';
+import { ZipReader } from 'slacc';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, DriveFilesRepository, UsersRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { EmojisRepository, DriveFilesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { createTempDir } from '@/misc/create-temp.js';
@@ -21,15 +24,6 @@ export class ImportCustomEmojisProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
@@ -72,9 +66,9 @@ export class ImportCustomEmojisProcessorService {
 		}
 
 		const outputPath = path + '/emojis';
-		const unzipStream = fs.createReadStream(destPath);
-		const extractor = unzipper.Extract({ path: outputPath });
-		extractor.on('close', async () => {
+		try {
+			this.logger.succ(`Unzipping to ${outputPath}`);
+			ZipReader.withDestinationPath(outputPath).viaBuffer(await fs.promises.readFile(destPath));
 			const metaRaw = fs.readFileSync(outputPath + '/meta.json', 'utf-8');
 			const meta = JSON.parse(metaRaw);
 
@@ -115,8 +109,12 @@ export class ImportCustomEmojisProcessorService {
 			cleanup();
 
 			this.logger.succ('Imported');
-		});
-		unzipStream.pipe(extractor);
-		this.logger.succ(`Unzipping to ${outputPath}`);
+		} catch (e) {
+			if (e instanceof Error || typeof e === 'string') {
+				this.logger.error(e);
+			}
+			cleanup();
+			throw e;
+		}
 	}
 }

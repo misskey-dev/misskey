@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import { common } from './common';
 import { version, ui, lang, updateLocale } from '@/config';
@@ -13,10 +18,11 @@ import { miLocalStorage } from '@/local-storage';
 import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
 import { mainRouter } from '@/router';
 import { initializeSw } from '@/scripts/initialize-sw';
+import { deckStore } from '@/ui/deck/deck-store';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(
-		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
+		new URLSearchParams(window.location.search).has('zen') || (ui === 'deck' && deckStore.state.useSimpleUiForNonRootPages && location.pathname !== '/') ? defineAsyncComponent(() => import('@/ui/zen.vue')) :
 		!$i ? defineAsyncComponent(() => import('@/ui/visitor.vue')) :
 		ui === 'deck' ? defineAsyncComponent(() => import('@/ui/deck.vue')) :
 		ui === 'classic' ? defineAsyncComponent(() => import('@/ui/classic.vue')) :

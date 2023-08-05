@@ -1,12 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository, AccessToken } from '@/models/index.js';
-import type { Config } from '@/config.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -23,9 +26,6 @@ export class StreamingApiServerService {
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 

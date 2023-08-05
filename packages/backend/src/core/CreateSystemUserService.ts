@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
@@ -33,7 +38,7 @@ export class CreateSystemUserService {
 		// Generate secret
 		const secret = generateNativeUserToken();
 
-		const keyPair = await genRsaKeyPair(4096);
+		const keyPair = await genRsaKeyPair();
 
 		let account!: User;
 

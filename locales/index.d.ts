@@ -159,6 +159,7 @@ export interface Locale {
     "settingGuide": string;
     "cacheRemoteFiles": string;
     "cacheRemoteFilesDescription": string;
+    "youCanCleanRemoteFilesCache": string;
     "cacheRemoteSensitiveFiles": string;
     "cacheRemoteSensitiveFilesDescription": string;
     "flagAsBot": string;
@@ -1094,6 +1095,9 @@ export interface Locale {
     "unused": string;
     "used": string;
     "expired": string;
+    "doYouAgree": string;
+    "beSureToReadThisAsItIsImportant": string;
+    "iHaveReadXCarefullyAndAgree": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -2135,6 +2139,7 @@ export interface Locale {
         "introduction": string;
         "introduction2": string;
         "widgetsIntroduction": string;
+        "useSimpleUiForNonRootPages": string;
         "_columns": {
             "main": string;
             "widgets": string;

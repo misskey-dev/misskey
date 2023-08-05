@@ -1,8 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UsersRepository } from '@/models/index.js';
 import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserSuspendService } from '@/core/UserSuspendService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -31,7 +35,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private userEntityService: UserEntityService,
 		private queueService: QueueService,
-		private globalEventService: GlobalEventService,
 		private userSuspendService: UserSuspendService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

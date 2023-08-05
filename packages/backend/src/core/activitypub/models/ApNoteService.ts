@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
@@ -195,7 +200,7 @@ export class ApNoteService {
 		// 引用
 		let quote: Note | undefined | null = null;
 
-		if (note._misskey_quote || note.quoteUrl) {
+		if (note._misskey_quote ?? note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<
 				| { status: 'ok'; res: Note }
 				| { status: 'permerror' | 'temperror' }

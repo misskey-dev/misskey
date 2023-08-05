@@ -1,8 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as crypto from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import * as jsrsasign from 'jsrsasign';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 
@@ -110,9 +114,6 @@ export class TwoFactorAuthenticationService {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
 	) {
 	}
 

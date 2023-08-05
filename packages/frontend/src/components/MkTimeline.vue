@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkNotes ref="tlComponent" :noGap="!defaultStore.state.showGapBetweenNotesInTimeline" :pagination="pagination" @queue="emit('queue', $event)"/>
 </template>
@@ -36,14 +41,6 @@ const prepend = note => {
 	if (props.sound) {
 		sound.play($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 	}
-};
-
-const onUserAdded = () => {
-	tlComponent.pagingComponent?.reload();
-};
-
-const onUserRemoved = () => {
-	tlComponent.pagingComponent?.reload();
 };
 
 let endpoint;
@@ -125,8 +122,6 @@ if (props.src === 'antenna') {
 		listId: props.list,
 	});
 	connection.on('note', prepend);
-	connection.on('userAdded', onUserAdded);
-	connection.on('userRemoved', onUserRemoved);
 } else if (props.src === 'channel') {
 	endpoint = 'channels/timeline';
 	query = {

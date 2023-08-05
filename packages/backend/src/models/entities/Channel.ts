@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { User } from './User.js';
@@ -89,4 +94,9 @@ export class Channel {
 		comment: 'The count of users.',
 	})
 	public usersCount: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isSensitive: boolean;
 }

@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -85,9 +90,6 @@ export const ACHIEVEMENT_TYPES = [
 @Injectable()
 export class AchievementService {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 

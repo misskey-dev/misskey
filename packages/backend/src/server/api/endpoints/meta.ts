@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
@@ -267,7 +272,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
-			const ads = await this.adsRepository.createQueryBuilder("ads")
+			const ads = await this.adsRepository.createQueryBuilder('ads')
 				.where('ads.expiresAt > :now', { now: new Date() })
 				.andWhere('ads.startsAt <= :now', { now: new Date() })
 				.andWhere(new Brackets(qb => {

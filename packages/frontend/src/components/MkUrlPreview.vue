@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <template v-if="player.url && playerEnabled">
 	<div
@@ -52,19 +57,21 @@
 			</footer>
 		</article>
 	</component>
-	<div v-if="tweetId" :class="$style.action">
-		<MkButton :small="true" inline @click="tweetExpanded = true">
-			<i class="ti ti-brand-twitter"></i> {{ i18n.ts.expandTweet }}
-		</MkButton>
-	</div>
-	<div v-if="!playerEnabled && player.url" :class="$style.action">
-		<MkButton :small="true" inline @click="playerEnabled = true">
-			<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
-		</MkButton>
-		<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
-			<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
-		</MkButton>
-	</div>
+	<template v-if="showActions">
+		<div v-if="tweetId" :class="$style.action">
+			<MkButton :small="true" inline @click="tweetExpanded = true">
+				<i class="ti ti-brand-x"></i> {{ i18n.ts.expandTweet }}
+			</MkButton>
+		</div>
+		<div v-if="!playerEnabled && player.url" :class="$style.action">
+			<MkButton :small="true" inline @click="playerEnabled = true">
+				<i class="ti ti-player-play"></i> {{ i18n.ts.enablePlayer }}
+			</MkButton>
+			<MkButton v-if="!isMobile" :small="true" inline @click="openPlayer()">
+				<i class="ti ti-picture-in-picture"></i> {{ i18n.ts.openInWindow }}
+			</MkButton>
+		</div>
+	</template>
 </div>
 </template>
 
@@ -85,9 +92,11 @@ const props = withDefaults(defineProps<{
 	url: string;
 	detail?: boolean;
 	compact?: boolean;
+	showActions?: boolean;
 }>(), {
 	detail: false,
 	compact: false,
+	showActions: true,
 });
 
 const MOBILE_THRESHOLD = 500;
