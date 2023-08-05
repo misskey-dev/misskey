@@ -23,10 +23,14 @@
 			</template>
 		</I18n>
 		<div :class="$style.renoteInfo">
-			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="ti ti-dots" :class="$style.renoteMenu"></i>
-				<MkTime :time="note.createdAt"/>
-			</button>
+			<span :class="$style.renoteTime">
+				<button v-if="isMyRenote" ref="renoteTime" class="_button">
+					<i class="ti ti-dots" :class="$style.renoteMenu" @click="showRenoteMenu()"></i>
+				</button>
+				<MkA :to="notePage(note)">
+					<MkTime :time="note.createdAt"/>
+				</MkA>
+			</span>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
 				<i v-if="note.visibility === 'home'" class="ti ti-home"></i>
 				<i v-else-if="note.visibility === 'followers'" class="ti ti-lock"></i>
@@ -166,6 +170,7 @@ import { MenuItem } from '@/types/menu';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { showMovedDialog } from '@/scripts/show-moved-dialog';
 import { shouldCollapsed } from '@/scripts/collapsed';
+import { notePage } from '@/filters/note';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
