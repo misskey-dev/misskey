@@ -92,6 +92,7 @@ export class ChannelEntityService {
 			isArchived: channel.isArchived,
 			usersCount: channel.usersCount,
 			notesCount: channel.notesCount,
+			isSensitive: channel.isSensitive,
 
 			...(me ? {
 				isFollowing,

@@ -682,7 +682,7 @@ export class ClientServerService {
 
 		fastify.setErrorHandler(async (error, request, reply) => {
 			const errId = randomUUID();
-			this.clientLoggerService.logger.error(`Internal error occured in ${request.routerPath}: ${error.message}`, {
+			this.clientLoggerService.logger.error(`Internal error occurred in ${request.routerPath}: ${error.message}`, {
 				path: request.routerPath,
 				params: request.params,
 				query: request.query,

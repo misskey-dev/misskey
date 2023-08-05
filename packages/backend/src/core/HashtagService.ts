@@ -9,16 +9,13 @@ import type { User } from '@/models/entities/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/core/IdService.js';
 import type { Hashtag } from '@/models/entities/Hashtag.js';
-import type { HashtagsRepository, UsersRepository } from '@/models/index.js';
+import type { HashtagsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class HashtagService {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
 
