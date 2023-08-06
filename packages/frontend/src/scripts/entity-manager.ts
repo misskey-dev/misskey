@@ -333,14 +333,14 @@ export class NoteManager {
         if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated', noteData);
 
 		if (!note || !note.value) {
-            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', note, note?.value);
+            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', id, note?.value);
             this.connection?.send('un', { id });
             this.captureing.delete(id);
             this.deleteComputed(id);
             this.updatedAt.delete(id);
             return;
         } else {
-            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', note.value);
+            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', id, note.value, { type, id, body });
         }
 
 		switch (type) {
