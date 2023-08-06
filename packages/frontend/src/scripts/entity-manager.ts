@@ -256,7 +256,7 @@ export class NoteManager {
         const interruptorUnwatch = watch(note, executeInterruptor);
 
         if (this.isDebuggerEnabled) {
-            console.log('NoteManager: get interrupted note (new)', id, interruptedNote);
+            console.log('NoteManager: get interrupted note (new)', id, { note, interruptedNote });
         }
 
         return {
