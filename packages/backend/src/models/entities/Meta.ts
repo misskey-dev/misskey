@@ -126,7 +126,7 @@ export class Meta {
 	public infoImageUrl: string | null;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public cacheRemoteFiles: boolean;
 
