@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, test, assert, afterEach } from 'vitest';
+import { describe, test, assert, afterEach, beforeAll, vi } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
 import type { summaly } from 'summaly';
+import type * as misskey from 'misskey-js';
 import { components } from '@/components/index.js';
 import { directives } from '@/directives/index.js';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
@@ -47,13 +48,18 @@ describe('MkUrlPreview', () => {
 		return result;
 	};
 
-	const renderAndOpenPreview = async (summary: Partial<SummalyResult>): Promise<HTMLIFrameElement | null> => {
+	const renderAndOpenPreview = async (summary: Partial<SummalyResult>): Promise<RenderResult> => {
 		const mkUrlPreview = await renderPreviewBy(summary);
 		const buttons = mkUrlPreview.getAllByRole('button');
 		buttons[0].click();
 		// Wait for the click event to be fired
 		await Promise.resolve();
 
+		return mkUrlPreview;
+	};
+
+	const renderAndOpenPreviewInIFrame = async (summary: Partial<SummalyResult>): Promise<HTMLIFrameElement | null> => {
+		const mkUrlPreview = await renderAndOpenPreview(summary);
 		return mkUrlPreview.container.querySelector('iframe');
 	};
 
@@ -85,7 +91,7 @@ describe('MkUrlPreview', () => {
 	});
 
 	test('Having a player should setup the iframe', async () => {
-		const iframe = await renderAndOpenPreview({
+		const iframe = await renderAndOpenPreviewInIFrame({
 			url: 'https://example.local',
 			player: {
 				url: 'https://example.local/player',
@@ -103,7 +109,7 @@ describe('MkUrlPreview', () => {
 	});
 
 	test('Having a player with `allow` field should set permissions', async () => {
-		const iframe = await renderAndOpenPreview({
+		const iframe = await renderAndOpenPreviewInIFrame({
 			url: 'https://example.local',
 			player: {
 				url: 'https://example.local/player',
@@ -117,7 +123,7 @@ describe('MkUrlPreview', () => {
 	});
 
 	test('Having a player width should keep the fixed aspect ratio', async () => {
-		const iframe = await renderAndOpenPreview({
+		const iframe = await renderAndOpenPreviewInIFrame({
 			url: 'https://example.local',
 			player: {
 				url: 'https://example.local/player',
@@ -131,7 +137,7 @@ describe('MkUrlPreview', () => {
 	});
 
 	test('Having a player width should keep the fixed height', async () => {
-		const iframe = await renderAndOpenPreview({
+		const iframe = await renderAndOpenPreviewInIFrame({
 			url: 'https://example.local',
 			player: {
 				url: 'https://example.local/player',
@@ -145,7 +151,7 @@ describe('MkUrlPreview', () => {
 	});
 
 	test('Loading a tweet in iframe', async () => {
-		const iframe = await renderAndOpenPreview({
+		const iframe = await renderAndOpenPreviewInIFrame({
 			url: 'https://twitter.com/i/web/status/1685072521782325249',
 		});
 		assert.exists(iframe, 'iframe should exist');
@@ -154,11 +160,48 @@ describe('MkUrlPreview', () => {
 	});
 
 	test('Loading a post in iframe', async () => {
-		const iframe = await renderAndOpenPreview({
+		const iframe = await renderAndOpenPreviewInIFrame({
 			url: 'https://x.com/i/web/status/1685072521782325249',
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
 		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-popups-to-escape-sandbox allow-scripts allow-same-origin');
+	});
+
+	describe('ActivityPub notes', () => {
+		afterEach(() => {
+			vi.clearAllMocks();
+		});
+
+		test('Preview a note', async () => {
+			vi.mock('@/os', () => {
+				return {
+					api(endpoint: string): unknown {
+						if (endpoint === 'ap/show') {
+							return {
+								type: 'Note',
+								object: {
+									text: 'Mizuki',
+									createdAt: new Date().toISOString(),
+									user: {},
+									files: [] as misskey.entities.DriveFile[],
+								} as misskey.entities.Note,
+							};
+						}
+						throw new Error(`Unexpected api call ${endpoint}`);
+					},
+				};
+			});
+
+			const url = 'https://example.local';
+			const renderResult = await renderAndOpenPreview({
+				url,
+				description: 'Misskey',
+				activityPub: url,
+			});
+
+			assert.notExists(renderResult.queryByText('Misskey'), 'Original description should disappear');
+			assert.exists(renderResult.queryByText('Mizuki'), 'ActivityPub fetch result should appear');
+		});
 	});
 });

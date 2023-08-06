@@ -609,6 +609,7 @@ export interface Locale {
     "enablePlayer": string;
     "disablePlayer": string;
     "expandTweet": string;
+    "expandNote": string;
     "themeEditor": string;
     "description": string;
     "describeFile": string;
