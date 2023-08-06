@@ -4,7 +4,7 @@
  */
 
 import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
-import { Ref, ref, ComputedRef, computed, watch, unref } from "vue";
+import { Ref, ref, ComputedRef, computed, watch } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
 import { Stream } from "misskey-js";
