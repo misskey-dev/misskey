@@ -279,8 +279,10 @@ export class NoteManager {
                 this.set(fetchedNote);
                 return this.get(id)!;
             })
-            .catch(() => {
-                if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (error)', id);
+            .catch(err => {
+                if (this.isDebuggerEnabled) {
+                    console.error('NoteManager: fetch note (error)', id, err);
+                }
                 // エラーが発生した場合は何もしない
                 return this.get(id)!;
             });
