@@ -21,6 +21,7 @@
 
 ### Client
 - センシティブチャンネルのNoteのReNoteはデフォルトでHome TLに流れるようになりました
+- Enhance: Renote自体を通報できるように
 
 ### Server
 - 通報のメール通知を無効化するオプションを追加
