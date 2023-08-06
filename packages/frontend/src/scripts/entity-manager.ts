@@ -431,14 +431,14 @@ export class NoteManager {
                 console.error(err);
             })
             .finally(() => {
-                console.log('NoteManager: useNote: CapturePromise.finally 1', id);
+                if (this.isDebuggerEnabled) console.log('NoteManager: useNote: CapturePromise.finally 1', id);
                 this.capture(id);
                 using = true;
             });
 
         const unuse = (noDeletion = false) => {
             CapturePromise.finally(() => {
-                console.log('NoteManager: useNote: unuse', id, { using, noDeletion });
+                if (this.isDebuggerEnabled) console.log('NoteManager: useNote: unuse', id, { using, noDeletion });
                 if (!using) return;
                 this.decapture(id, noDeletion);
                 using = false;
