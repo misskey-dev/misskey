@@ -167,9 +167,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent) {
 		}
 	})();
 
-	if (!item.noCache) {
-		childrenCache.set(item, children);
-	}
+	childrenCache.set(item, children);
 
 	if (props.asDrawer) {
 		os.popupMenu(children, ev.currentTarget ?? ev.target).finally(() => {
