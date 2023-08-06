@@ -155,16 +155,26 @@ export class NoteManager {
             this.notesComputed.set(id, computed<Note | null>(() => {
                 if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note.value);
 
-                if (!note.value) return null;
+                if (!note.value) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is null', id);
+                    return null;
+                }
 
                 const user = userLiteManager.get(note.value.userId)!;
 
                 const renote = note.value.renoteId ? this.get(note.value.renoteId) : undefined;
                 // renoteが削除されている場合はCASCADE削除されるためnullを返す
-                if (renote && !renote.value) return null;
+                if (renote && !renote.value) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.value.renoteId);
+                    return null;
+                }
 
                 const reply = note.value.replyId ? this.get(note.value.replyId) : undefined;
-                if (reply && !reply.value) return null;
+                // replyが削除されている場合はCASCADE削除されるためnullを返す
+                if (reply && !reply.value) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.value.replyId);
+                    return null;
+                }
 
                 const files = note.value.fileIds.map(id => driveFileManager.get(id)?.value);
 
@@ -176,7 +186,7 @@ export class NoteManager {
                     files: files.filter(file => file) as DriveFile[],
                 };
 
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note (not null)', id, result);
+                if (this.isDebuggerEnabled) console.log('NoteManager: compute note: not null', id, result);
 
                 return result;
             }));
