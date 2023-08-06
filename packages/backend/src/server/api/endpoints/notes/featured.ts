@@ -63,7 +63,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (!ps.channelId) {
 				// featured for welcome page. filter some notes
-				query.andWhere('note.channelId IS NULL', { channelId: ps.channelId });
 				query.andWhere(
 					new Brackets(qb => {
 						qb.where('note.text NOT LIKE \'%おはよう%\'')
@@ -73,6 +72,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 							.orWhere('note.fileIds != \'{}\'');
 					}),
 				);
+				query.leftJoinAndSelect('note.channel', 'channel')
+					.andWhere(new Brackets(qb => {
+						qb.where('channel.isSensitive IS NULL')
+							.orWhere('channel.isSensitive = FALSE');
+					}));
 			}
 
 			if (me) this.queryService.generateMutedUserQuery(query, me);
