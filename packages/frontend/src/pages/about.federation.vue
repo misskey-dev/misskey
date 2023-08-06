@@ -64,6 +64,7 @@ let sort = $ref('+pubSub');
 const pagination = {
 	endpoint: 'federation/instances' as const,
 	limit: 10,
+	displatLimit: 50,
 	offsetMode: true,
 	params: computed(() => ({
 		sort: sort,
