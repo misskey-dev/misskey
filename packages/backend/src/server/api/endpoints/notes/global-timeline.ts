@@ -8,7 +8,6 @@ import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -59,7 +58,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private activeUsersChart: ActiveUsersChart,
 	) {

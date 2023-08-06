@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { DataSource, In, IsNull } from 'typeorm';
+import { In, IsNull } from 'typeorm';
 import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
@@ -16,7 +16,6 @@ import type { EmojisRepository, Role } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import type { Config } from '@/config.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/server/api/stream/types.js';
 
@@ -30,12 +29,6 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
-
-		@Inject(DI.config)
-		private config: Config,
-
-		@Inject(DI.db)
-		private db: DataSource,
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,

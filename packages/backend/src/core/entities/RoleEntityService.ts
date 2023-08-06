@@ -12,7 +12,6 @@ import type { User } from '@/models/entities/User.js';
 import type { Role } from '@/models/entities/Role.js';
 import { bindThis } from '@/decorators.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class RoleEntityService {
@@ -22,8 +21,6 @@ export class RoleEntityService {
 
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 
