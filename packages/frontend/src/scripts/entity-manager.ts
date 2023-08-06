@@ -306,6 +306,10 @@ export class NoteManager {
             if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', id, note.value, { type, id, body });
         }
 
+        /**
+         * note.valueを直接いじるとcomputedが更新されない場合があるため、
+         * diffで上書きする形で更新する
+         */
         const diff: Partial<OmittedNote> = {};
 
 		switch (type) {
