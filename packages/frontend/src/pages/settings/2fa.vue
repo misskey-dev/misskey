@@ -127,7 +127,7 @@ async function registerTOTP() {
 
 	await os.alert({
 		type: 'success',
-		text: i18n.t('_2fa.step4', { codes: backupCodes.join('\n') }),
+		text: i18n.t('_2fa.step4', { codes: backupCodes.map((code, index) => `${String(index + 1).padStart(2, '0')}. ${code}`).join('\n') }),
 	});
 }
 
