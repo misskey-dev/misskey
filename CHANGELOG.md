@@ -28,6 +28,7 @@
 
 ### Server
 - cacheRemoteFilesの初期値はfalseになりました
+- 一部のfeatured noteを照会できない問題を修正
 
 ## 13.14.2
 
