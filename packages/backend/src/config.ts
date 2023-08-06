@@ -91,6 +91,7 @@ export type Source = {
 	nirila?: {
 		abuseDiscordHook: string;
 		disableAbuseRepository?: boolean;
+		notificationLimit?: number;
 	}
 };
 

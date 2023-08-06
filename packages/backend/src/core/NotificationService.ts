@@ -13,6 +13,7 @@ import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -30,6 +31,9 @@ export class NotificationService implements OnApplicationShutdown {
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
+
+		@Inject(DI.config)
+		private config: Config,
 
 		private notificationEntityService: NotificationEntityService,
 		private userEntityService: UserEntityService,
@@ -90,6 +94,9 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 		}
 
+		let notificationLimit = this.config.nirila?.notificationLimit;
+		if (!Number.isInteger(notificationLimit)) notificationLimit = 300;
+
 		const notification = {
 			id: this.idService.genId(),
 			createdAt: new Date(),
@@ -99,7 +106,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', '300',
+			'MAXLEN', '~', `${notificationLimit}`,
 			'*',
 			'data', JSON.stringify(notification));
 
