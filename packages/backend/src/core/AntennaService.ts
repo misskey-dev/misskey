@@ -8,16 +8,11 @@ import * as Redis from 'ioredis';
 import type { Antenna } from '@/models/entities/Antenna.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { User } from '@/models/entities/User.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
-import { IdService } from '@/core/IdService.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { PushNotificationService } from '@/core/PushNotificationService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, NotesRepository, AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -35,12 +30,6 @@ export class AntennaService implements OnApplicationShutdown {
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
@@ -48,11 +37,7 @@ export class AntennaService implements OnApplicationShutdown {
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private utilityService: UtilityService,
-		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private pushNotificationService: PushNotificationService,
-		private noteEntityService: NoteEntityService,
-		private antennaEntityService: AntennaEntityService,
 	) {
 		this.antennasFetched = false;
 		this.antennas = [];

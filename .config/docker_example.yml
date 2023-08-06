@@ -165,8 +165,8 @@ proxyBypassHosts:
 # Media Proxy
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: false)
-#proxyRemoteFiles: true
+# Proxy remote files (default: true)
+proxyRemoteFiles: true
 
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
