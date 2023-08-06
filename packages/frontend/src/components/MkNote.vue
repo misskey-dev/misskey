@@ -493,7 +493,7 @@ onUnmounted(() => {
 });
 
 onActivated(() => {
-	if (!unuse.value && appearNote.value) {
+	if (!unuse.value) {
 		unuse.value = noteManager.useNote(appearNote.value?.id ?? props.note.id, true).unuse;
 	}
 });

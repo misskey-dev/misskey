@@ -373,9 +373,9 @@ export class NoteManager {
      * ノートを取得・監視
      * キャプチャが要らなくなったら必ずunuseすること
      * @param id note id
-     * @returns { note, unuse } note: CachedNote | Promise<CachedNote>, unuse: () => void
+     * @returns { note, unuse } note: CachedNote | Promise<CachedNote>, unuse: (noDeletion?: boolean) => void
      */
-    public useNote(id: string, shoudFetch: true): { note: Promise<CachedNote>, unuse: () => void };
+    public useNote(id: string, shoudFetch: true): { note: Promise<CachedNote>, unuse: (noDeletion?: boolean) => void };
     public useNote(id: string, shoudFetch = false) {
         const note = (!this.notesSource.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
         let using = false;
@@ -389,7 +389,7 @@ export class NoteManager {
             });
 
         const unuse = (noDeletion = false) => {
-            CapturePromise.then(() => {
+            CapturePromise.finally(() => {
                 if (!using) return;
                 this.decapture(id, noDeletion);
                 using = false;
