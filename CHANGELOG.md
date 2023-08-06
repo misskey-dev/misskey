@@ -20,6 +20,7 @@
 - ハイライトから除外するチャンネルをsensitiveチャンネルのみにしました
 
 ### Client
+- センシティブチャンネルのNoteのReNoteはデフォルトでHome TLに流れるようになりました
 - Enhance: Renote自体を通報できるように
 
 ### Server
