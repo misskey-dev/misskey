@@ -14,6 +14,7 @@ import { deepClone } from "./clone";
 import { shouldCollapsed } from "./collapsed";
 import { extractUrlFromMfm } from "./extract-url-from-mfm";
 import * as mfm from 'mfm-js';
+import { isDebuggerEnabled } from "@/debug";
 
 export class EntitiyManager<T extends { id: string }> {
     private entities: Map<T['id'], Ref<T>>;
@@ -81,6 +82,7 @@ export class NoteManager {
     private updatedAt: Map<Note['id'], number>;
     private captureing: Map<Note['id'], number>;
     private connection: Stream | null;
+    private isDebuggerEnabled: boolean;
 
     constructor() {
         this.notesSource = new Map();
@@ -100,12 +102,15 @@ export class NoteManager {
                 this.connection?.send('s', { id });
             }
         });
+
+        this.isDebuggerEnabled = isDebuggerEnabled(6865);
     }
 
     public set(_note: Note): void {
         const note: Note = { ..._note };
 
         userLiteManager.set(note.user);
+        if (this.isDebuggerEnabled) console.log('NoteManager: set user', note.userId, userLiteManager.get(note.userId));
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         delete note.user;
@@ -113,23 +118,32 @@ export class NoteManager {
         if (note.fileIds.length > 0) {
             for (const file of note.files) {
                 driveFileManager.set(file);
+                if (this.isDebuggerEnabled) console.log('NoteManager: set file', file.id, driveFileManager.get(file.id));
             }
         }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         delete note.files;
 
-        if (note.renote) this.set(note.renote);
+        if (note.renote) {
+            this.set(note.renote);
+            if (this.isDebuggerEnabled) console.log('NoteManager: set renote', note.renoteId);
+        }
         delete note.renote;
 
-        if (note.reply) this.set(note.reply);
+        if (note.reply) {
+            this.set(note.reply);
+            if (this.isDebuggerEnabled) console.log('NoteManager: set reply', note.replyId);
+        }
         delete note.reply;
 
         const cached = this.notesSource.get(note.id);
         if (cached) {
             cached.value = note;
+            if (this.isDebuggerEnabled) console.log('NoteManager: set note (update)', note.id, cached, note);
         } else {
             this.notesSource.set(note.id, ref(note));
+            if (this.isDebuggerEnabled) console.log('NoteManager: set note (new)', note.id, this.notesSource.get(note.id), note);
         }
         this.updatedAt.set(note.id, Date.now());
     }
@@ -139,6 +153,8 @@ export class NoteManager {
             const note = this.notesSource.get(id) ?? this.notesSource.set(id, ref(null)).get(id)!;
 
             this.notesComputed.set(id, computed<Note | null>(() => {
+                if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note.value);
+
                 if (!note.value) return null;
 
                 const user = userLiteManager.get(note.value.userId)!;
@@ -152,14 +168,21 @@ export class NoteManager {
 
                 const files = note.value.fileIds.map(id => driveFileManager.get(id)?.value);
 
-                return {
+                const result = {
                     ...note.value,
                     user: user.value,
                     renote: renote?.value ?? undefined,
                     reply: reply?.value ?? undefined,
                     files: files.filter(file => file) as DriveFile[],
                 };
+
+                if (this.isDebuggerEnabled) console.log('NoteManager: compute note (not null)', id, result);
+
+                return result;
             }));
+            if (this.isDebuggerEnabled) console.log('NoteManager: get note (new)', id, this.notesComputed.get(id));
+        } else {
+            if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.get(id)?.value);
         }
         return this.notesComputed.get(id)!;
     }
@@ -195,6 +218,10 @@ export class NoteManager {
         }
         const interruptorUnwatch = watch(note, executeInterruptor);
 
+        if (this.isDebuggerEnabled) {
+            console.log('NoteManager: get interrupted note (new)', id, interruptedNote);
+        }
+
         return {
             interruptedNote,
             interruptorUnwatch,
@@ -211,6 +238,10 @@ export class NoteManager {
         const isMyRenote = computed(() => noteIsRenote.value && $i && ($i.id === note.value?.userId));
         const appearNote = computed(() => (noteIsRenote.value ? note.value?.renote : note.value) ?? null);
 
+        if (this.isDebuggerEnabled) {
+            console.log('NoteManager: get note view base (new)', id, { note, noteIsRenote, isMyRenote, appearNote });
+        }
+
         return {
             note, interruptorUnwatch, executeInterruptor,
             isRenote: noteIsRenote, isMyRenote, appearNote,
@@ -222,10 +253,13 @@ export class NoteManager {
     }
 
     public async fetch(id: string, force = false): Promise<CachedNote> {
+        if (this.isDebuggerEnabled) console.log('NoteManager: fetch note', id, { force });
+
         if (!force) {
             const cachedNote = this.get(id);
             if (cachedNote.value === null) {
                 // 削除されている場合はnullを返す
+                if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (deleted)', id, cachedNote.value);
                 return cachedNote;
             }
             // Renoteの場合はRenote元の更新日時も考慮する
@@ -233,18 +267,20 @@ export class NoteManager {
                 this.updatedAt.get(id) :
                 Math.max(this.updatedAt.get(id) ?? 0, this.updatedAt.get(cachedNote.value!.renoteId!) ?? 0);
             // 2分以上経過していない場合はキャッシュを返す
-            if (updatedAt && Date.now() - updatedAt < 1000 * 120) {
-                if (cachedNote) {
-                    return cachedNote;
-                }
+            if (cachedNote && updatedAt && Date.now() - updatedAt < 1000 * 120) {
+                if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (use cache)', id, { cachedNote, updatedAt });
+                return cachedNote;
             }
         }
+        if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (fetch)', id);
         return api('notes/show', { noteId: id })
             .then(fetchedNote => {
+                if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (success)', id, fetchedNote);
                 this.set(fetchedNote);
                 return this.get(id)!;
             })
             .catch(() => {
+                if (this.isDebuggerEnabled) console.log('NoteManager: fetch note (error)', id);
                 // エラーが発生した場合は何もしない
                 return this.get(id)!;
             });
@@ -255,12 +291,17 @@ export class NoteManager {
 
         const note = this.notesSource.get(id);
 
+        if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated', noteData);
+
 		if (!note || !note.value) {
+            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', note, note?.value);
             this.connection?.send('un', { id });
             this.captureing.delete(id);
             this.notesComputed.delete(id);
             this.updatedAt.delete(id);
             return;
+        } else {
+            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', note.value);
         }
 
 		switch (type) {
@@ -334,11 +375,13 @@ export class NoteManager {
 	}
 
     private capture(id: string, markRead = true): void {
+        if (this.isDebuggerEnabled) console.log('NoteManager: capture', id, { has: this.notesSource.has(id), markRead, count: this.captureing.get(id) });
+
         if (!this.notesSource.has(id)) return;
 
-        const captureingNumber = this.captureing.get(id);
-        if (typeof captureingNumber === 'number' && captureingNumber > 0) {
-            this.captureing.set(id, captureingNumber + 1);
+        const captureingCount = this.captureing.get(id);
+        if (typeof captureingCount === 'number' && captureingCount > 0) {
+            this.captureing.set(id, captureingCount + 1);
             return;
         }
 
@@ -351,11 +394,13 @@ export class NoteManager {
 	}
 
     private decapture(id: string, noDeletion = false): void {
+        if (this.isDebuggerEnabled) console.log('NoteManager: decapture', id, { has: this.notesSource.has(id), noDeletion, count: this.captureing.get(id) });
+
         if (!this.notesSource.has(id)) return;
 
-        const captureingNumber = this.captureing.get(id);
-        if (typeof captureingNumber === 'number' && captureingNumber > 1) {
-            this.captureing.set(id, captureingNumber - 1);
+        const captureingCount = this.captureing.get(id);
+        if (typeof captureingCount === 'number' && captureingCount > 1) {
+            this.captureing.set(id, captureingCount - 1);
             return;
         }
 
@@ -377,6 +422,8 @@ export class NoteManager {
      */
     public useNote(id: string, shoudFetch: true): { note: Promise<CachedNote>, unuse: (noDeletion?: boolean) => void };
     public useNote(id: string, shoudFetch = false) {
+        if (this.isDebuggerEnabled) console.log('NoteManager: useNote', id, { has: this.notesSource.has(id), shoudFetch });
+
         const note = (!this.notesSource.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
         let using = false;
         const CapturePromise = Promise.resolve(note)
@@ -384,12 +431,14 @@ export class NoteManager {
                 console.error(err);
             })
             .finally(() => {
+                console.log('NoteManager: useNote: CapturePromise.finally 1', id);
                 this.capture(id);
                 using = true;
             });
 
         const unuse = (noDeletion = false) => {
             CapturePromise.finally(() => {
+                console.log('NoteManager: useNote: unuse', id, { using, noDeletion });
                 if (!using) return;
                 this.decapture(id, noDeletion);
                 using = false;
@@ -406,7 +455,7 @@ export class NoteManager {
 export const noteManager = new NoteManager();
 
 if (_DEV_) {
-    console.log('entity manager initialized', {
+    console.log('NoteManager: entity manager initialized', {
         noteManager,
         userLiteManager,
         driveFileManager,
