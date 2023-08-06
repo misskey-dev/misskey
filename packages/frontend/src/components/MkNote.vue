@@ -175,6 +175,7 @@ import { notePage } from '@/filters/note';
 const props = defineProps<{
 	note: misskey.entities.Note;
 	pinned?: boolean;
+  collapseSensitiveChannel?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
@@ -210,7 +211,7 @@ let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const isLong = shouldCollapsed(appearNote);
+const isLong = shouldCollapsed(appearNote, props.collapseSensitiveChannel ?? false);
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));
