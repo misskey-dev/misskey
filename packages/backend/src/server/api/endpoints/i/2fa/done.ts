@@ -1,10 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as OTPAuth from 'otpauth';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -25,9 +29,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 

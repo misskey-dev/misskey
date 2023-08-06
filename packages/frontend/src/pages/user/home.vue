@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkSpacer :contentMax="narrow ? 800 : 1100">
 	<div ref="rootEl" class="ftskorzw" :class="{ wide: !narrow }" style="container-type: inline-size;">
@@ -100,15 +105,15 @@
 						</dl>
 					</div>
 					<div class="status">
-						<MkA v-click-anime :to="userPage(user)">
+						<MkA :to="userPage(user)">
 							<b>{{ number(user.notesCount) }}</b>
 							<span>{{ i18n.ts.notes }}</span>
 						</MkA>
-						<MkA v-click-anime :to="userPage(user, 'following')">
+						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'following')">
 							<b>{{ number(user.followingCount) }}</b>
 							<span>{{ i18n.ts.following }}</span>
 						</MkA>
-						<MkA v-click-anime :to="userPage(user, 'followers')">
+						<MkA v-if="isFfVisibleForMe(user)" :to="userPage(user, 'followers')">
 							<b>{{ number(user.followersCount) }}</b>
 							<span>{{ i18n.ts.followers }}</span>
 						</MkA>
@@ -160,6 +165,7 @@ import { dateString } from '@/filters/date';
 import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -208,7 +214,8 @@ const age = $computed(() => {
 });
 
 function menu(ev) {
-	os.popupMenu(getUserMenu(props.user, router), ev.currentTarget ?? ev.target);
+	const { menu, cleanup } = getUserMenu(props.user, router);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 function parallaxLoop() {

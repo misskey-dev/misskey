@@ -1,42 +1,47 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { markRaw } from 'vue';
 import { Storage } from '@/pizzax';
 
 export const soundConfigStore = markRaw(new Storage('sound', {
 	mediaVolume: {
 		where: 'device',
-		default: 0.5
+		default: 0.5,
 	},
 	sound_masterVolume: {
 		where: 'device',
-		default: 0.3
+		default: 0.3,
 	},
 	sound_note: {
 		where: 'account',
-		default: { type: 'syuilo/n-aec', volume: 1 }
+		default: { type: 'syuilo/n-aec', volume: 1 },
 	},
 	sound_noteMy: {
 		where: 'account',
-		default: { type: 'syuilo/n-cea-4va', volume: 1 }
+		default: { type: 'syuilo/n-cea-4va', volume: 1 },
 	},
 	sound_notification: {
 		where: 'account',
-		default: { type: 'syuilo/n-ea', volume: 1 }
+		default: { type: 'syuilo/n-ea', volume: 1 },
 	},
 	sound_chat: {
 		where: 'account',
-		default: { type: 'syuilo/pope1', volume: 1 }
+		default: { type: 'syuilo/pope1', volume: 1 },
 	},
 	sound_chatBg: {
 		where: 'account',
-		default: { type: 'syuilo/waon', volume: 1 }
+		default: { type: 'syuilo/waon', volume: 1 },
 	},
 	sound_antenna: {
 		where: 'account',
-		default: { type: 'syuilo/triple', volume: 1 }
+		default: { type: 'syuilo/triple', volume: 1 },
 	},
 	sound_channel: {
 		where: 'account',
-		default: { type: 'syuilo/square-pico', volume: 1 }
+		default: { type: 'syuilo/square-pico', volume: 1 },
 	},
 }));
 
@@ -132,9 +137,7 @@ export function play(type: 'noteMy' | 'note' | 'antenna' | 'channel' | 'notifica
 }
 
 export function playFile(file: string, volume: number) {
-	const masterVolume = soundConfigStore.state.sound_masterVolume;
-	if (masterVolume === 0) return;
-
 	const audio = setVolume(getAudio(file), volume);
+	if (audio.volume === 0) return;
 	audio.play();
 }

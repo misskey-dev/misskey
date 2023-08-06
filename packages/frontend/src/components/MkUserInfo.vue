@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_panel" :class="$style.root">
 	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${user.bannerUrl})` : ''"></div>
@@ -15,13 +20,13 @@
 	</div>
 	<div :class="$style.status">
 		<div :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ user.notesCount }}</span>
+			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
 		</div>
-		<div :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ user.followingCount }}</span>
+		<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
 		</div>
-		<div :class="$style.statusItem">
-			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ user.followersCount }}</span>
+		<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
 		</div>
 	</div>
 	<MkFollowButton v-if="$i && user.id != $i.id" :class="$style.follow" :user="user" mini/>
@@ -31,9 +36,11 @@
 <script lang="ts" setup>
 import * as misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
+import number from '@/filters/number';
 import { userPage } from '@/filters/user';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
 
 defineProps<{
 	user: misskey.entities.UserDetailed;

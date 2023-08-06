@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export function byteify(string: string, encoding: 'ascii' | 'base64' | 'hex') {
 	switch (encoding) {
 		case 'ascii':

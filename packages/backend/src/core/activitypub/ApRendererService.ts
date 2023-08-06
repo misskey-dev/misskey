@@ -1,7 +1,11 @@
-import { createPublicKey } from 'node:crypto';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -19,7 +23,7 @@ import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { UserKeypair } from '@/models/entities/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
@@ -44,9 +48,6 @@ export class ApRendererService {
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
 
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
@@ -613,7 +614,7 @@ export class ApRendererService {
 	@bindThis
 	public addContext<T extends IObject>(x: T): T & { '@context': any; id: string; } {
 		if (typeof x === 'object' && x.id == null) {
-			x.id = `${this.config.url}/${uuid()}`;
+			x.id = `${this.config.url}/${randomUUID()}`;
 		}
 
 		return Object.assign({

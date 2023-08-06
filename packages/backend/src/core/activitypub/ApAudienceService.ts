@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import type { RemoteUser, User } from '@/models/entities/User.js';
@@ -95,7 +100,7 @@ export class ApAudienceService {
 	private isPublic(id: string): boolean {
 		return [
 			'https://www.w3.org/ns/activitystreams#Public',
-			'as#Public',
+			'as:Public',
 			'Public',
 		].includes(id);
 	}

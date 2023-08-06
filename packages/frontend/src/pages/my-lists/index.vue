@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -14,7 +19,7 @@
 
 			<div v-if="items.length > 0" class="_gaps">
 				<MkA v-for="list in items" :key="list.id" class="_panel" :class="$style.list" :to="`/my/lists/${ list.id }`">
-					<div style="margin-bottom: 4px;">{{ list.name }}</div>
+					<div style="margin-bottom: 4px;">{{ list.name }} <span :class="$style.nUsers">({{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }})</span></div>
 					<MkAvatars :userIds="list.userIds" :limit="10"/>
 				</MkA>
 			</div>
@@ -32,6 +37,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { userListsCache } from '@/cache';
 import { infoImageUrl } from '@/instance';
+import { $i } from '@/account';
 
 const items = $computed(() => userListsCache.value.value ?? []);
 
@@ -66,10 +72,6 @@ const headerTabs = $computed(() => []);
 definePageMetadata({
 	title: i18n.ts.manageLists,
 	icon: 'ti ti-list',
-	action: {
-		icon: 'ti ti-plus',
-		handler: create,
-	},
 });
 
 onActivated(() => {
@@ -89,5 +91,10 @@ onActivated(() => {
 		border: solid 1px var(--accent);
 		text-decoration: none;
 	}
+}
+
+.nUsers {
+	font-size: .9em;
+	opacity: .7;
 }
 </style>

@@ -1,7 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import * as mfm from 'mfm-js';
-import { DI } from '@/di-symbols.js';
-import type { Config } from '@/config.js';
 import { MfmService } from '@/core/MfmService.js';
 import type { Note } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
@@ -11,9 +14,6 @@ import type { IObject } from './type.js';
 @Injectable()
 export class ApMfmService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private mfmService: MfmService,
 	) {
 	}

@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -23,7 +28,7 @@ export const meta = {
 			id: 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a',
 			kind: 'permission',
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
@@ -36,9 +41,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 

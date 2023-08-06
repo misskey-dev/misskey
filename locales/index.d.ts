@@ -159,6 +159,9 @@ export interface Locale {
     "settingGuide": string;
     "cacheRemoteFiles": string;
     "cacheRemoteFilesDescription": string;
+    "youCanCleanRemoteFilesCache": string;
+    "cacheRemoteSensitiveFiles": string;
+    "cacheRemoteSensitiveFilesDescription": string;
     "flagAsBot": string;
     "flagAsBotDescription": string;
     "flagAsCat": string;
@@ -1075,6 +1078,26 @@ export interface Locale {
     "enableServerMachineStats": string;
     "enableIdenticonGeneration": string;
     "turnOffToImprovePerformance": string;
+    "createInviteCode": string;
+    "createWithOptions": string;
+    "createCount": string;
+    "inviteCodeCreated": string;
+    "inviteLimitExceeded": string;
+    "createLimitRemaining": string;
+    "inviteLimitResetCycle": string;
+    "expirationDate": string;
+    "noExpirationDate": string;
+    "inviteCodeUsedAt": string;
+    "registeredUserUsingInviteCode": string;
+    "waitingForMailAuth": string;
+    "inviteCodeCreator": string;
+    "usedAt": string;
+    "unused": string;
+    "used": string;
+    "expired": string;
+    "doYouAgree": string;
+    "beSureToReadThisAsItIsImportant": string;
+    "iHaveReadXCarefullyAndAgree": string;
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -1465,6 +1488,9 @@ export interface Locale {
             "ltlAvailable": string;
             "canPublicNote": string;
             "canInvite": string;
+            "inviteLimit": string;
+            "inviteLimitCycle": string;
+            "inviteExpirationTime": string;
             "canManageCustomEmojis": string;
             "driveCapacity": string;
             "alwaysMarkNsfw": string;
@@ -2114,6 +2140,7 @@ export interface Locale {
         "introduction": string;
         "introduction2": string;
         "widgetsIntroduction": string;
+        "useSimpleUiForNonRootPages": string;
         "_columns": {
             "main": string;
             "widgets": string;

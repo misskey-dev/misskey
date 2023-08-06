@@ -1,8 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
-import ms from 'ms';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
+import { Injectable } from '@nestjs/common';
+import ms from 'ms';
 
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
@@ -76,9 +78,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
 		private accountMoveService: AccountMoveService,

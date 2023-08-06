@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -167,6 +172,21 @@ const patronsWithIcon = [{
 }, {
 	name: 'Nagi8410',
 	icon: 'https://misskey-hub.net/patrons/31b102ab4fc540ed806b0461575d38be.jpg',
+}, {
+	name: '山岡士郎',
+	icon: 'https://misskey-hub.net/patrons/84b9056341684266bb1eda3e680d094d.jpg',
+}, {
+	name: 'よもやまたろう',
+	icon: 'https://misskey-hub.net/patrons/4273c9cce50d445f8f7d0f16113d6d7f.jpg',
+}, {
+	name: '花咲ももか',
+	icon: 'https://misskey-hub.net/patrons/8c9b2b9128cb4fee99f04bb4f86f2efa.jpg',
+}, {
+	name: 'カガミ',
+	icon: 'https://misskey-hub.net/patrons/226ea3a4617749548580ec2d9a263e24.jpg',
+}, {
+	name: 'フランギ・シュウ',
+	icon: 'https://misskey-hub.net/patrons/3016d37e35f3430b90420176c912d304.jpg',
 }];
 
 const patrons = [
@@ -263,6 +283,8 @@ const patrons = [
 	'渡志郎',
 	'ぷーざ',
 	'越貝鯛丸',
+	'Nick / pprmint.',
+	'kino3277',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

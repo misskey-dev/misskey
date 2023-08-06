@@ -1,8 +1,12 @@
-import { pipeline } from 'node:stream';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
-import { promisify } from 'node:util';
+import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
@@ -20,8 +24,6 @@ import { AuthenticateService, AuthenticationError } from './AuthenticateService.
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
-
-const pump = promisify(pipeline);
 
 const accessDenied = {
 	message: 'Access denied.',
@@ -138,7 +140,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		const [path] = await createTemp();
-		await pump(multipartData.file, fs.createWriteStream(path));
+		await stream.pipeline(multipartData.file, fs.createWriteStream(path));
 
 		const fields = {} as Record<string, unknown>;
 		for (const [k, v] of Object.entries(multipartData.fields)) {
@@ -362,7 +364,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			if (err instanceof ApiError || err instanceof AuthenticationError) {
 				throw err;
 			} else {
-				const errId = uuid();
+				const errId = randomUUID();
 				this.logger.error(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					ep: ep.name,
 					ps: data,

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { NestFactory } from '@nestjs/core';
 import { ChartManagementService } from '@/core/chart/ChartManagementService.js';
 import { QueueProcessorService } from '@/queue/QueueProcessorService.js';

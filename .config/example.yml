@@ -30,6 +30,10 @@ url: https://example.tld/
 # The port that your Misskey server should listen on.
 port: 3000
 
+# You can also use UNIX domain socket. 
+# socket: /path/to/misskey.sock
+# chmodSocket: '777'
+
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 
@@ -78,6 +82,8 @@ redis:
   #pass: example-pass
   #prefix: example-prefix
   #db: 1
+  # You can specify more ioredis options...
+  #username: example-username
 
 #redisForPubsub:
 #  host: localhost
@@ -86,6 +92,8 @@ redis:
 #  #pass: example-pass
 #  #prefix: example-prefix
 #  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
 #redisForJobQueue:
 #  host: localhost
@@ -94,6 +102,8 @@ redis:
 #  #pass: example-pass
 #  #prefix: example-prefix
 #  #db: 1
+#  # You can specify more ioredis options...
+#  #username: example-username
 
 #   ┌───────────────────────────┐
 #───┘ MeiliSearch configuration └─────────────────────────────
@@ -104,6 +114,7 @@ redis:
 #  apiKey: ''
 #  ssl: true
 #  index: ''
+#  scope: local
 
 #   ┌───────────────┐
 #───┘ ID generation └───────────────────────────────────────────
@@ -172,9 +183,9 @@ proxyBypassHosts:
 # * Perform image compression (on a different server resource than the main process)
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: false)
+# Proxy remote files (default: true)
 # Proxy remote files by this instance or mediaProxy to prevent remote files from running in remote domains.
-#proxyRemoteFiles: true
+proxyRemoteFiles: true
 
 # Movie Thumbnail Generation URL
 # There is no reference implementation.
