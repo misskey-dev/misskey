@@ -12,7 +12,7 @@
 
 -->
 
-## 13.14.2-kinel.2 (unreleased)
+## 13.14.2-kinel.2
 
 ### General
 - ハイライトからのおはnoteの除外でCWを見忘れていたのを修正
