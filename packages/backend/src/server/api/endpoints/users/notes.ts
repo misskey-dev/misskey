@@ -48,6 +48,7 @@ export const paramDef = {
 			type: 'string',
 		} },
 		excludeNsfw: { type: 'boolean', default: false },
+		includeSensitiveChannel: { type: 'boolean', default: true },
 	},
 	required: ['userId'],
 } as const;
@@ -78,6 +79,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
+
+			if (!ps.includeSensitiveChannel) {
+				query.leftJoinAndSelect('note.channel', 'channel')
+					.andWhere(new Brackets((qb) => {
+						qb.where('channel.isSensitive IS NULL')
+							.orWhere('channel.isSensitive = FALSE');
+					}));
+			}
 
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) {
