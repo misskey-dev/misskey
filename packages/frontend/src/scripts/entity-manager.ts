@@ -330,7 +330,7 @@ export class NoteManager {
 
         const note = this.notesSource.get(id);
 
-        if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated', noteData);
+        if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (recieved)', noteData);
 
 		if (!note || !note.value) {
             if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', id, note?.value);
@@ -343,28 +343,24 @@ export class NoteManager {
             if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', id, note.value, { type, id, body });
         }
 
+        const diff: Partial<OmittedNote> = {};
+
 		switch (type) {
 			case 'reacted': {
 				const reaction = body.reaction;
 
 				if (body.emoji && !(body.emoji.name in note.value.reactionEmojis)) {
-                    note.value.reactionEmojis = {
+                    diff.reactionEmojis = {
                         ...note.value.reactionEmojis,
                         [body.emoji.name]: body.emoji.url,
                     };
                 }
 
-                if (reaction in note.value.reactions) {
-                    note.value.reactions[reaction]++;
-                } else {
-                    note.value.reactions = {
-                        ...note.value.reactions,
-                        [reaction]: 1,
-                    };
-                }
+                diff.reactions = { ...note.value.reactions };
+                diff.reactions[reaction] = (note.value.reactions[reaction] ?? 0) + 1;
 
 				if ($i && (body.userId === $i.id)) {
-					note.value.myReaction = reaction;
+					diff.myReaction = reaction;
 				}
 				break;
 			}
@@ -372,14 +368,16 @@ export class NoteManager {
 			case 'unreacted': {
 				const reaction = body.reaction;
 
-				// TODO: reactionsプロパティがない場合ってあったっけ？ なければ || {} は消せる
-				const currentCount = (note.value.reactions || {})[reaction] || 0;
-
-				note.value.reactions[reaction] = Math.max(0, currentCount - 1);
-				if (note.value.reactions[reaction] === 0) delete note.value.reactions[reaction];
+                diff.reactions = { ...note.value.reactions };
+				const count = Math.max(0, (note.value.reactions[reaction] ?? 0) - 1);
+				if (count === 0) {
+                    delete diff.reactions[reaction];
+                } else {
+                    diff.reactions[reaction] = count;
+                }
 
 				if ($i && (body.userId === $i.id)) {
-					note.value.myReaction = undefined;
+					diff.myReaction = undefined;
 				}
 				break;
 			}
@@ -396,7 +394,7 @@ export class NoteManager {
 					} : {}),
 				};
 
-				note.value.poll!.choices = choices;
+                diff.poll = { ...note.value.poll!, choices };
 				break;
 			}
 
@@ -410,6 +408,11 @@ export class NoteManager {
 			}
 		}
 
+        if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (update)', id, type, diff);
+        if (type !== 'deleted') {
+            if (!note.value) throw new Error('NoteManager: onStreamNoteUpdated (update) note.value is null');
+            note.value = { ...note.value, ...diff };
+        }
         this.updatedAt.set(id, Date.now());
 	}
 
