@@ -125,7 +125,7 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination"/>
+				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination" :collapseSensitiveChannel="true"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -194,6 +194,7 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		userId: props.user.id,
+		includeSensitiveChannel: $i != null,
 	})),
 };
 

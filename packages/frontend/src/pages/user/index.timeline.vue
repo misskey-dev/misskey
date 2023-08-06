@@ -8,7 +8,7 @@
 				<option value="files">{{ i18n.ts.withFiles }}</option>
 			</MkTab>
 		</template>
-		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl"/>
+		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl" :collapseSensitiveChannel="true"/>
 	</MkStickyContainer>
 </MkSpacer>
 </template>
@@ -19,6 +19,7 @@ import * as misskey from 'misskey-js';
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	user: misskey.entities.UserDetailed;
@@ -33,6 +34,7 @@ const pagination = {
 		userId: props.user.id,
 		includeReplies: include.value === 'replies' || include.value === 'files',
 		withFiles: include.value === 'files',
+		includeSensitiveChannel: $i != null,
 	})),
 };
 </script>
