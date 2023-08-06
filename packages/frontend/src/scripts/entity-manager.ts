@@ -45,7 +45,7 @@ export const driveFileManager = new EntitiyManager<DriveFile>('driveFile');
 
 type OmittedNote = Omit<Note, 'user' | 'renote' | 'reply'>;
 type CachedNoteSource = Ref<OmittedNote | null>;
-type CachedNote = ComputedRef<Note | null>;
+type CachedNote = Ref<Note | null>;
 type InterruptedCachedNote = Ref<Note | null>;
 
 export function isRenote(note: Note | OmittedNote | null): boolean {
@@ -78,6 +78,7 @@ export class NoteManager {
      * キャプチャが0になったら削除される
      */
     private notesComputed: Map<Note['id'], CachedNote>;
+    private notesComputedUnwatch: Map<Note['id'], () => void>;
 
     private updatedAt: Map<Note['id'], number>;
     private captureing: Map<Note['id'], number>;
@@ -87,6 +88,7 @@ export class NoteManager {
     constructor() {
         this.notesSource = new Map();
         this.notesComputed = new Map();
+        this.notesComputedUnwatch = new Map();
         this.updatedAt = new Map();
         this.captureing = new Map();
         this.connection = $i ? useStream() : null;
@@ -150,41 +152,76 @@ export class NoteManager {
 
     public get(id: string): CachedNote {
         if (!this.notesComputed.has(id)) {
-            const note = this.notesSource.get(id) ?? this.notesSource.set(id, ref(null)).get(id)!;
+            const note = this.notesSource.get(id);
 
-            this.notesComputed.set(id, computed<Note | null>(() => {
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note.value);
+            if (this.isDebuggerEnabled) console.log('NoteManager: get note (new) start', id, note);
 
-                if (!note.value) return null;
+            if (!note) {
+                throw new Error(`NoteManager: get note (new): ${id} is not found`);
+            }
 
-                const user = userLiteManager.get(note.value.userId)!;
+            if (!note.value) {
+                if (this.isDebuggerEnabled) console.log('NoteManager: get note (new): deleted', id);
+                return ref(null);
+            }
 
-                const renote = note.value.renoteId ? this.get(note.value.renoteId) : undefined;
-                // renoteが削除されている場合はCASCADE削除されるためnullを返す
+            const user = userLiteManager.get(note.value.userId)!;
+            const renote = note.value.renoteId ? this.get(note.value.renoteId) : undefined;
+            const reply = note.value.replyId ? this.get(note.value.replyId) : undefined;
+            const files = note.value.fileIds.map(id => driveFileManager.get(id));
+
+            const buildNote = (): Note | null => {
+                if (this.isDebuggerEnabled) console.log('NoteManager: get note (watch): build note', id);
+
+                if (note.value == null) return null;
                 if (renote && !renote.value) return null;
-
-                const reply = note.value.replyId ? this.get(note.value.replyId) : undefined;
                 if (reply && !reply.value) return null;
-
-                const files = note.value.fileIds.map(id => driveFileManager.get(id)?.value);
 
                 const result = {
                     ...note.value,
                     user: user.value,
                     renote: renote?.value ?? undefined,
                     reply: reply?.value ?? undefined,
-                    files: files.filter(file => file) as DriveFile[],
+                    files: files.filter(file => file).map(file => (file as Ref<DriveFile>).value),
                 };
 
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note (not null)', id, result);
+                if (this.isDebuggerEnabled) console.log('NoteManager: get note (watch): built note (not null)', id, result);
 
                 return result;
+            };
+
+            this.notesComputed.set(id, ref(buildNote()));
+            this.notesComputedUnwatch.set(id, watch([note, user, renote, reply, ...files], () => {
+                if (this.isDebuggerEnabled) console.log('NoteManager: note updated', id);
+                const cached = this.notesComputed.get(id);
+
+                if (cached) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: note computed watcher dispatch (cached)', id);
+                    cached.value = buildNote();
+                } else {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: note computed watcher dispatch (not cached)', id);
+                    this.deleteComputed(id);
+                }
             }));
-            if (this.isDebuggerEnabled) console.log('NoteManager: get note (new)', id, this.notesComputed.get(id));
+
+            if (this.isDebuggerEnabled) console.log('NoteManager: get note (new) result', id, this.notesComputed.get(id), this.notesComputedUnwatch.get(id));
         } else {
             if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.get(id)?.value);
         }
         return this.notesComputed.get(id)!;
+    }
+
+    public deleteComputed(id: string): void {
+        const unwatch = this.notesComputedUnwatch.get(id);
+        if (this.isDebuggerEnabled) {
+            const cached = this.notesComputed.get(id);
+            console.log('NoteManager: deleteComputed', id, { cached, unwatch });
+        }
+        this.notesComputed.delete(id);
+        if (unwatch) {
+            unwatch();
+            this.notesComputedUnwatch.delete(id);
+        }
     }
 
     /**
@@ -299,7 +336,7 @@ export class NoteManager {
             if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', note, note?.value);
             this.connection?.send('un', { id });
             this.captureing.delete(id);
-            this.notesComputed.delete(id);
+            this.deleteComputed(id);
             this.updatedAt.delete(id);
             return;
         } else {
@@ -367,7 +404,7 @@ export class NoteManager {
 				note.value = null;
                 this.connection?.send('un', { id });
                 this.captureing.delete(id);
-                this.notesComputed.delete(id);
+                this.deleteComputed(id);
                 this.updatedAt.delete(id);
 				break;
 			}
@@ -413,7 +450,9 @@ export class NoteManager {
         this.captureing.delete(id);
 
         // キャプチャが終わったらcomputedキャッシュも消してしまう
-        if (!noDeletion) this.notesComputed.delete(id);
+        if (!noDeletion) {
+            this.deleteComputed(id);
+        }
 	}
 
     /**
