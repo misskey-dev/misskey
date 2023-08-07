@@ -16,6 +16,7 @@ import { defaultStore, noteActions } from '@/store';
 import { miLocalStorage } from '@/local-storage';
 import { getUserMenu } from '@/scripts/get-user-menu';
 import { clipsCache } from '@/cache';
+import { MenuItem } from '@/types/menu';
 
 export async function getNoteClipMenu(props: {
 	note: misskey.entities.Note;
@@ -107,6 +108,8 @@ export function getNoteMenu(props: {
 	);
 
 	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+
+	const cleanups = [] as (() => void)[];
 
 	function del(): void {
 		os.confirm({
@@ -233,7 +236,7 @@ export function getNoteMenu(props: {
 		props.translation.value = res;
 	}
 
-	let menu;
+	let menu: MenuItem[];
 	if ($i) {
 		const statePromise = os.api('notes/state', {
 			noteId: appearNote.id,
@@ -295,7 +298,7 @@ export function getNoteMenu(props: {
 				action: () => toggleFavorite(true),
 			}),
 			{
-				type: 'parent',
+				type: 'parent' as const,
 				icon: 'ti ti-paperclip',
 				text: i18n.ts.clip,
 				children: () => getNoteClipMenu(props),
@@ -318,15 +321,17 @@ export function getNoteMenu(props: {
 				text: i18n.ts.pin,
 				action: () => togglePin(true),
 			} : undefined,
-			appearNote.userId !== $i.id ? {
-				type: 'parent',
+			{
+				type: 'parent' as const,
 				icon: 'ti ti-user',
 				text: i18n.ts.user,
 				children: async () => {
-					const user = await os.api('users/show', { userId: appearNote.userId });
-					return getUserMenu(user);
+					const user = appearNote.userId === $i?.id ? $i : await os.api('users/show', { userId: appearNote.userId });
+					const { menu, cleanup } = getUserMenu(user);
+					cleanups.push(cleanup);
+					return menu;
 				},
-			} : undefined,
+			},
 			/*
 		...($i.isModerator || $i.isAdmin ? [
 			null,
@@ -411,5 +416,13 @@ export function getNoteMenu(props: {
 		}]);
 	}
 
-	return menu;
+	const cleanup = () => {
+		if (_DEV_) console.log('note menu cleanup', cleanups);
+		cleanups.forEach(cleanup => cleanup());
+	};
+
+	return {
+		menu,
+		cleanup,
+	};
 }

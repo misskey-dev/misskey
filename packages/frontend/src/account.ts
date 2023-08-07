@@ -117,13 +117,13 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 			.then(async res => {
 				if (res.error) {
 					if (res.error.id === 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370') {
-					// SUSPENDED
+						// SUSPENDED
 						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
 							await showSuspendedDialog();
 						}
 					} else if (res.error.id === 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a') {
-					// USER_IS_DELETED
-					// アカウントが削除されている
+						// USER_IS_DELETED
+						// アカウントが削除されている
 						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
 							await alert({
 								type: 'error',
@@ -132,8 +132,8 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 							});
 						}
 					} else if (res.error.id === 'b0a7f5f8-dc2f-4171-b91f-de88ad238e14') {
-					// AUTHENTICATION_FAILED
-					// トークンが無効化されていたりアカウントが削除されたりしている
+						// AUTHENTICATION_FAILED
+						// トークンが無効化されていたりアカウントが削除されたりしている
 						if (forceShowDialog || $i && (token === $i.token || id === $i.id)) {
 							await alert({
 								type: 'error',
