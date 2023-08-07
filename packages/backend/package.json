@@ -154,6 +154,7 @@
 		"stringz": "2.1.0",
 		"summaly": "github:misskey-dev/summaly",
 		"systeminformation": "5.18.9",
+		"text-extensions": "^2.4.0",
 		"tinycolor2": "1.6.0",
 		"tmp": "0.2.1",
 		"tsc-alias": "1.8.7",
