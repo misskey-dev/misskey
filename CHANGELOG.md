@@ -17,6 +17,7 @@
 ### General
 
 ### Client
+- センシティブチャンネルのNoteがたたまれる方法がCWになりました
 
 ### Server
 

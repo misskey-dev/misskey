@@ -51,11 +51,11 @@
 			<MkNoteHeader :note="appearNote" :mini="true"/>
 			<MkInstanceTicker v-if="showTicker" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
-				<p v-if="appearNote.cw != null" :class="$style.cw">
-					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw" :author="appearNote.user" :i="$i"/>
+				<p v-if="cwExists" :class="$style.cw">
+					<Mfm v-if="appearNote.cw != ''" style="margin-right: 8px;" :text="appearNote.cw ?? '<small>' + i18n.ts.sensitiveChannelAutoCW + '</small>'" :author="appearNote.user" :i="$i"/>
 					<MkCwButton v-model="showContent" :note="appearNote"/>
 				</p>
-				<div v-show="appearNote.cw == null || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
+				<div v-show="!cwExists || showContent" :class="[{ [$style.contentCollapsed]: collapsed }]">
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
@@ -175,9 +175,9 @@ import { notePage } from '@/filters/note';
 const props = defineProps<{
 	note: misskey.entities.Note;
 	pinned?: boolean;
-  collapseSensitiveChannel?: boolean;
 }>();
 
+const collapseSensitiveChannel = inject('collapseSensitiveChannel', false);
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
 
@@ -208,10 +208,12 @@ const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
 let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+const sensitiveChannelCW = collapseSensitiveChannel && appearNote.cw == null && note.channel?.isSensitive;
+const cwExists = sensitiveChannelCW || appearNote.cw != null;
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
-const isLong = shouldCollapsed(appearNote, props.collapseSensitiveChannel ?? false);
+const isLong = shouldCollapsed(appearNote) && !cwExists;
 const collapsed = ref(appearNote.cw == null && isLong);
 const isDeleted = ref(false);
 const muted = ref(checkWordMute(appearNote, $i, defaultStore.state.mutedWords));

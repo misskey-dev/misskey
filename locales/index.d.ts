@@ -767,6 +767,7 @@ export interface Locale {
     "publish": string;
     "inChannelSearch": string;
     "useReactionPickerForContextMenu": string;
+    "collapseSensitiveChannel": string;
     "typingUsers": string;
     "jumpToSpecifiedDate": string;
     "showingPastTimeline": string;
