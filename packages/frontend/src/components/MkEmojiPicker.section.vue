@@ -4,7 +4,7 @@
 	<header class="_acrylic" @click="shown = !shown">
 		<i class="toggle ti-fw" :class="shown ? 'ti ti-chevron-down' : 'ti ti-chevron-up'"></i> <slot></slot> ({{ emojis.length }})
 	</header>
-	<div v-if="shown" class="body">
+	<div v-if="shown" :class="['body', { reactionPickerExpandWide }]">
 		<button
 			v-for="emoji in emojis"
 			:key="emoji"
@@ -27,6 +27,7 @@ import { getEmojiName } from '@/scripts/emojilist';
 const props = defineProps<{
 	emojis: string[] | Ref<string[]>;
 	initialShown?: boolean;
+	reactionPickerExpandWide?: boolean;
 }>();
 
 const emit = defineEmits<{

@@ -4,7 +4,7 @@
 	<!-- FirefoxのTabフォーカスが想定外の挙動となるためtabindex="-1"を追加 https://github.com/misskey-dev/misskey/issues/10744 -->
 	<div ref="emojisEl" class="emojis" tabindex="-1">
 		<section class="result">
-			<div v-if="searchResultCustom.length > 0" class="body">
+			<div v-if="searchResultCustom.length > 0" :class="['body', { reactionPickerExpandWide }]">
 				<button
 					v-for="emoji in searchResultCustom"
 					:key="emoji.name"
@@ -16,7 +16,7 @@
 					<MkCustomEmoji class="emoji" :name="emoji.name"/>
 				</button>
 			</div>
-			<div v-if="searchResultUnicode.length > 0" class="body">
+			<div v-if="searchResultUnicode.length > 0" :class="['body', { reactionPickerExpandWide }]">
 				<button
 					v-for="emoji in searchResultUnicode"
 					:key="emoji.name"
@@ -32,7 +32,7 @@
 
 		<div v-if="tab === 'index'" class="group index">
 			<section v-if="showPinned">
-				<div class="body">
+				<div :class="['body', { reactionPickerExpandWide }]">
 					<button
 						v-for="emoji in pinned"
 						:key="emoji"
@@ -50,7 +50,7 @@
 
 			<section>
 				<header class="_acrylic"><i class="ti ti-clock ti-fw"></i> {{ i18n.ts.recentUsed }}</header>
-				<div class="body">
+				<div :class="['body', { reactionPickerExpandWide }]">
 					<button
 						v-for="emoji in recentlyUsedEmojis"
 						:key="emoji"
@@ -71,6 +71,7 @@
 				v-for="category in customEmojiCategories"
 				:key="`custom:${category}`"
 				:initialShown="false"
+				:reactionPickerExpandWide="reactionPickerExpandWide"
 				:emojis="computed(() => customEmojis.filter(e => category === null ? (e.category === 'null' || !e.category) : e.category === category).filter(filterAvailable).map(e => `:${e.name}:`))"
 				@chosen="chosen"
 			>
@@ -127,6 +128,7 @@ const {
 	reactionPickerSize,
 	reactionPickerWidth,
 	reactionPickerHeight,
+	reactionPickerExpandWide,
 	disableShowingAnimatedImages,
 	recentlyUsedEmojis,
 } = defaultStore.reactiveState;
@@ -470,6 +472,15 @@ defineExpose({
 						min-width: 0;
 					}
 				}
+
+				> .body.reactionPickerExpandWide {
+					display: flex;
+					flex-wrap: wrap;
+
+					> .item {
+						aspect-ratio: unset;
+					}
+				}
 			}
 		}
 	}
@@ -490,6 +501,15 @@ defineExpose({
 						width: auto;
 						height: auto;
 						min-width: 0;
+					}
+				}
+
+				> .body.reactionPickerExpandWide {
+					display: flex;
+					flex-wrap: wrap;
+
+					> .item {
+						aspect-ratio: unset;
 					}
 				}
 			}
@@ -611,6 +631,14 @@ defineExpose({
 						vertical-align: -.25em;
 						pointer-events: none;
 					}
+				}
+			}
+
+			> .body.reactionPickerExpandWide {
+				> .item {
+					width: auto;
+					contain: unset;
+					margin: 2px 8px;
 				}
 			}
 

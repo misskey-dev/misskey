@@ -45,6 +45,10 @@
 		<template #caption>{{ i18n.ts.needReloadToApply }}</template>
 	</MkSwitch>
 
+	<MkSwitch v-model="reactionPickerExpandWide">
+		{{ i18n.ts.reactionExpandWide }}
+	</MkSwitch>
+
 	<FormSection>
 		<div class="_buttons">
 			<MkButton inline @click="preview"><i class="ti ti-eye"></i> {{ i18n.ts.preview }}</MkButton>
@@ -74,6 +78,7 @@ const reactionPickerSize = $computed(defaultStore.makeGetterSetter('reactionPick
 const reactionPickerWidth = $computed(defaultStore.makeGetterSetter('reactionPickerWidth'));
 const reactionPickerHeight = $computed(defaultStore.makeGetterSetter('reactionPickerHeight'));
 const reactionPickerUseDrawerForMobile = $computed(defaultStore.makeGetterSetter('reactionPickerUseDrawerForMobile'));
+const reactionPickerExpandWide = $computed(defaultStore.makeGetterSetter('reactionPickerExpandWide'));
 
 function save() {
 	defaultStore.set('reactions', reactions);
