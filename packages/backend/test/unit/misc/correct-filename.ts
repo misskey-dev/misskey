@@ -24,6 +24,9 @@ describe(correctFilename, () => {
     it('jpg to jpg', () => {
         expect(correctFilename('test.jpg', 'jpg')).toBe('test.jpg');
     });
+    it('JPG to jpg', () => {
+        expect(correctFilename('test.JPG', 'jpg')).toBe('test.JPG');
+    });
     it('tiff to tif', () => {
         expect(correctFilename('test.tiff', 'tif')).toBe('test.tiff');
     });
