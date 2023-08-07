@@ -15,6 +15,9 @@ describe(correctFilename, () => {
     it('jpg to webp', () => {
         expect(correctFilename('test.jpg', 'webp')).toBe('test.jpg.webp');
     });
+    it('jpg to .webp', () => {
+        expect(correctFilename('test.jpg', '.webp')).toBe('test.jpg.webp');
+    });
     it('jpeg to jpg', () => {
         expect(correctFilename('test.jpeg', 'jpg')).toBe('test.jpeg');
     });
