@@ -40,6 +40,11 @@ export const paramDef = {
 		localOnly: { type: 'boolean' },
 		roleIdsThatCanBeUsedThisEmojiAsReaction: { type: 'array', items: {
 			type: 'string',
+			format: 'misskey:id',
+		} },
+		roleIdsThatCanNotBeUsedThisEmojiAsReaction: { type: 'array', items: {
+			type: 'string',
+			format: 'misskey:id',
 		} },
 	},
 	required: ['name', 'fileId'],
@@ -73,6 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSensitive: ps.isSensitive ?? false,
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
+				roleIdsThatCanNotBeUsedThisEmojiAsReaction: ps.roleIdsThatCanNotBeUsedThisEmojiAsReaction ?? [],
 			});
 
 			this.moderationLogService.insertModerationLog(me, 'addEmoji', {

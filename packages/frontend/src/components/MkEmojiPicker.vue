@@ -284,7 +284,8 @@ watch(q, () => {
 });
 
 function filterAvailable(emoji: Misskey.entities.CustomEmoji): boolean {
-	return (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction == null || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)));
+	return ((emoji.roleIdsThatCanBeUsedThisEmojiAsReaction === undefined || emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0) || ($i && $i.roles.some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id)))) &&
+		((emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction === undefined || emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.length === 0) || ($i && !$i.roles.some(r => emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.includes(r.id))));
 }
 
 function focus() {

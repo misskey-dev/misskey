@@ -281,6 +281,9 @@ export type CustomEmoji = {
 	url: string;
 	category: string;
 	aliases: string[];
+	isSensitive?: boolean;
+	roleIdsThatCanBeUsedThisEmojiAsReaction?: string[];
+	roleIdsThatCanNotBeUsedThisEmojiAsReaction?: string[];
 };
 
 export type LiteInstanceMetadata = {

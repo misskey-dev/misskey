@@ -1068,6 +1068,7 @@ export interface Locale {
     "rolesThatCanBeUsedThisEmojiAsReaction": string;
     "rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription": string;
     "rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn": string;
+    "rolesThatCanNotBeUsedThisEmojiAsReaction": string;
     "cancelReactionConfirm": string;
     "changeReactionConfirm": string;
     "later": string;

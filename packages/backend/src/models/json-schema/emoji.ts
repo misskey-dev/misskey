@@ -35,6 +35,15 @@ export const packedEmojiSimpleSchema = {
 				format: 'id',
 			},
 		},
+		roleIdsThatCanNotBeUsedThisEmojiAsReaction: {
+			type: 'array',
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
 	},
 } as const;
 
@@ -86,7 +95,16 @@ export const packedEmojiDetailedSchema = {
 		},
 		roleIdsThatCanBeUsedThisEmojiAsReaction: {
 			type: 'array',
-			optional: false, nullable: false,
+			optional: true, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
+		roleIdsThatCanNotBeUsedThisEmojiAsReaction: {
+			type: 'array',
+			optional: true, nullable: false,
 			items: {
 				type: 'string',
 				optional: false, nullable: false,

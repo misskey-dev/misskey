@@ -44,11 +44,28 @@
 					<template #suffix>{{ rolesThatCanBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.all : rolesThatCanBeUsedThisEmojiAsReaction.length }}</template>
 
 					<div class="_gaps">
-						<MkButton rounded @click="addRole"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+						<MkButton rounded @click="addRole(true)"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
 						<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
 							<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
-							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(role, $event)"><i class="ti ti-x"></i></button>
+							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(true, role, $event)"><i class="ti ti-x"></i></button>
+							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+						</div>
+
+						<MkInfo>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription }}</MkInfo>
+						<MkInfo warn>{{ i18n.ts.rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn }}</MkInfo>
+					</div>
+				</MkFolder>
+				<MkFolder>
+					<template #label>{{ i18n.ts.rolesThatCanNotBeUsedThisEmojiAsReaction }}</template>
+					<template #suffix>{{ rolesThatCanNotBeUsedThisEmojiAsReaction.length === 0 ? i18n.ts.none : rolesThatCanNotBeUsedThisEmojiAsReaction.length }}</template>
+
+					<div class="_gaps">
+						<MkButton rounded @click="addRole(false)"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+
+						<div v-for="role in rolesThatCanNotBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
+							<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
+							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(false, role, $event)"><i class="ti ti-x"></i></button>
 							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>
 
@@ -97,10 +114,16 @@ let isSensitive = $ref(props.emoji ? props.emoji.isSensitive : false);
 let localOnly = $ref(props.emoji ? props.emoji.localOnly : false);
 let roleIdsThatCanBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanBeUsedThisEmojiAsReaction : []);
 let rolesThatCanBeUsedThisEmojiAsReaction = $ref([]);
+let roleIdsThatCanNotBeUsedThisEmojiAsReaction = $ref(props.emoji ? props.emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction : []);
+let rolesThatCanNotBeUsedThisEmojiAsReaction = $ref([]);
 let file = $ref<misskey.entities.DriveFile>();
 
 watch($$(roleIdsThatCanBeUsedThisEmojiAsReaction), async () => {
 	rolesThatCanBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
+}, { immediate: true });
+
+watch($$(roleIdsThatCanNotBeUsedThisEmojiAsReaction), async () => {
+	rolesThatCanNotBeUsedThisEmojiAsReaction = (await Promise.all(roleIdsThatCanNotBeUsedThisEmojiAsReaction.map((id) => os.api('admin/roles/show', { roleId: id }).catch(() => null)))).filter(x => x != null);
 }, { immediate: true });
 
 const imgUrl = computed(() => file ? file.url : props.emoji ? `/emoji/${props.emoji.name}.webp` : null);
@@ -118,20 +141,22 @@ async function changeImage(ev) {
 	}
 }
 
-async function addRole() {
+async function addRole(type: boolean) {
 	const roles = await os.api('admin/roles/list');
-	const currentRoleIds = rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id);
+	const currentRoleIds = type ? rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id) : rolesThatCanNotBeUsedThisEmojiAsReaction.map(x => x.id);
 
 	const { canceled, result: role } = await os.select({
 		items: roles.filter(r => r.isPublic).filter(r => !currentRoleIds.includes(r.id)).map(r => ({ text: r.name, value: r })),
 	});
 	if (canceled) return;
 
-	rolesThatCanBeUsedThisEmojiAsReaction.push(role);
+	if (type) rolesThatCanBeUsedThisEmojiAsReaction.push(role);
+	else rolesThatCanNotBeUsedThisEmojiAsReaction.push(role);
 }
 
-async function removeRole(role, ev) {
-	rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
+async function removeRole(type: boolean, role, ev) {
+	if (type) rolesThatCanBeUsedThisEmojiAsReaction = rolesThatCanBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
+	else rolesThatCanNotBeUsedThisEmojiAsReaction = rolesThatCanNotBeUsedThisEmojiAsReaction.filter(x => x.id !== role.id);
 }
 
 async function done() {
@@ -143,6 +168,7 @@ async function done() {
 		isSensitive,
 		localOnly,
 		roleIdsThatCanBeUsedThisEmojiAsReaction: rolesThatCanBeUsedThisEmojiAsReaction.map(x => x.id),
+		roleIdsThatCanNotBeUsedThisEmojiAsReaction: rolesThatCanNotBeUsedThisEmojiAsReaction.map(x => x.id),
 	};
 
 	if (file) {

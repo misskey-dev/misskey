@@ -76,4 +76,9 @@ export class Emoji {
 		array: true, length: 128, default: '{}',
 	})
 	public roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
+
+	@Column('varchar', {
+		array: true, length: 128, default: '{}',
+	})
+	public roleIdsThatCanNotBeUsedThisEmojiAsReaction: string[];
 }

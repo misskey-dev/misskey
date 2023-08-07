@@ -122,7 +122,10 @@ export class ReactionService {
 					});
 
 				if (emoji) {
-					if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) {
+					if (
+						(emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length === 0 || (await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) &&
+						(emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.length === 0 || !(await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanNotBeUsedThisEmojiAsReaction.includes(r.id)))
+					) {
 						reaction = reacterHost ? `:${name}@${reacterHost}:` : `:${name}:`;
 
 						// センシティブ
