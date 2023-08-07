@@ -36,4 +36,7 @@ describe(correctFilename, () => {
     it('skip text file', () => {
         expect(correctFilename('test.txt', null)).toBe('test.txt');
     });
+    it('unknown', () => {
+        expect(correctFilename('test.hoge', null)).toBe('test.hoge');
+    });
 });
