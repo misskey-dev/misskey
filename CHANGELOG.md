@@ -12,6 +12,15 @@
 
 -->
 
+## 13.14.2-kinel.3 (unreleased)
+
+### General
+
+### Client
+- 長いnoteなどがたたまれない問題を修正しました
+
+### Server
+
 ## 13.14.2-kinel.2
 
 ### General
