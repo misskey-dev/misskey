@@ -24,6 +24,7 @@
 - deck UIのカラムのメニューからアンテナとリストの編集画面を開けるように
 - ドライブファイルのメニューで画像をクロップできるように
 - 画像を動画と同様に簡単に隠せるように
+- Feat: Add option to expand wide emojis in emoji picker
 
 ### Server
 - JSON.parse の回数を削減することで、ストリーミングのパフォーマンスを向上しました
