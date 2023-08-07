@@ -207,16 +207,20 @@ export class NoteManager {
         executeInterruptor: () => Promise<void>,
     } {
         const note = this.get(id);
+        if (noteViewInterruptors.length === 0) {
+            // noteViewInterruptorがない場合はcomputed noteを直接渡す
+            return {
+                interruptedNote: note as InterruptedCachedNote,
+                interruptorUnwatch: () => { },
+                executeInterruptor: () => Promise.resolve(),
+            };
+        }
+
         const interruptedNote = ref<Note | null>(note.value);
 
         async function executeInterruptor() {
             if (note.value == null) {
                 interruptedNote.value = null;
-                return;
-            }
-
-            if (noteViewInterruptors.length === 0) {
-                interruptedNote.value = note.value;
                 return;
             }
 
