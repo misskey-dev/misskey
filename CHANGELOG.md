@@ -15,6 +15,7 @@
 ## 13.14.2-kinel.3 (unreleased)
 
 ### General
+- 更新後初回に表示される`更新情報を見る`ボタンのリンク先を[にりらみすきー部のCHANGELOG.md](https://github.com/niri-la/misskey.niri.la/blob/develop/CHANGELOG.md)に変更しました
 
 ### Client
 - 長いnoteなどがたたまれない問題を修正しました
