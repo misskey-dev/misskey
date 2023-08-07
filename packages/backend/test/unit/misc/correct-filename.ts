@@ -39,4 +39,7 @@ describe(correctFilename, () => {
     it('unknown', () => {
         expect(correctFilename('test.hoge', null)).toBe('test.hoge');
     });
+	test('non ascii with space', () => {
+		expect(correctFilename('ファイル 名前', 'jpg')).toBe('ファイル 名前.jpg');
+	});
 });
