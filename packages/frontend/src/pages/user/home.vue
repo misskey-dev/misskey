@@ -125,7 +125,7 @@
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination" :collapseSensitiveChannel="true"/>
+				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination" :collapseSensitiveChannel="collapseSensitiveChannel"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -161,6 +161,7 @@ import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os';
 import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
+import { defaultStore } from '@/store';
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));
@@ -184,6 +185,7 @@ let memoDraft = $ref(props.user.memo);
 let isEditingMemo = $ref(false);
 let moderationNote = $ref(props.user.moderationNote);
 let editModerationNote = $ref(false);
+let collapseSensitiveChannel = $ref(defaultStore.state.collapseSensitiveChannel);
 
 watch($$(moderationNote), async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });

@@ -8,7 +8,7 @@
 				<option value="files">{{ i18n.ts.withFiles }}</option>
 			</MkTab>
 		</template>
-		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl" :collapseSensitiveChannel="true"/>
+		<MkNotes :noGap="true" :pagination="pagination" :class="$style.tl" :collapseSensitiveChannel="collapseSensitiveChannel"/>
 	</MkStickyContainer>
 </MkSpacer>
 </template>
@@ -20,12 +20,14 @@ import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	user: misskey.entities.UserDetailed;
 }>();
 
 const include = ref<string | null>(null);
+let collapseSensitiveChannel = $ref(defaultStore.state.collapseSensitiveChannel);
 
 const pagination = {
 	endpoint: 'users/notes' as const,
