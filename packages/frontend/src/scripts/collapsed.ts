@@ -13,7 +13,7 @@ export function shouldCollapsed(note: misskey.entities.Note, collapseSensitiveCh
 		(note.text.length > 500) ||
 		(note.files.length >= 5) ||
 		(!!urls && urls.length >= 4) ||
-		collapseSensitiveChannel ? note.channel?.isSensitive : false
+		(collapseSensitiveChannel ? note.channel?.isSensitive : false)
 	);
 
 	return collapsed;
