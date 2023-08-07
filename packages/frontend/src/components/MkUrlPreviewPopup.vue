@@ -27,12 +27,16 @@ let top = $ref(0);
 let left = $ref(0);
 
 onMounted(() => {
-	const rect = props.source.getBoundingClientRect();
-	const x = Math.max((rect.left + (props.source.offsetWidth / 2)) - (300 / 2), 6) + window.pageXOffset;
-	const y = rect.top + props.source.offsetHeight + window.pageYOffset;
+	try {
+		const rect = props.source.getBoundingClientRect();
+		const x = Math.max((rect.left + (props.source.offsetWidth / 2)) - (300 / 2), 6) + window.pageXOffset;
+		const y = rect.top + props.source.offsetHeight + window.pageYOffset;
 
-	top = y;
-	left = x;
+		top = y;
+		left = x;
+	} catch (err) {
+		console.error(err);
+	}
 });
 </script>
 

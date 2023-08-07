@@ -142,8 +142,8 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 
 		return res.json();
 	})
-	.then((info: SummalyResult) => {
-		if (info.url == null) {
+	.then((info?: SummalyResult) => {
+		if (!info?.url) {
 			fetching = false;
 			unknownUrl = true;
 			return;
