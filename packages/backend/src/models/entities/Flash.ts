@@ -61,4 +61,11 @@ export class Flash {
 		default: 0,
 	})
 	public likedCount: number;
+
+	/**
+	 * public ... 公開
+	 * private ... プロフィールには表示しない
+	 */
+	@Column('enum', { enum: ['public', 'private'] })
+	public visibility: 'public' | 'private';
 }
