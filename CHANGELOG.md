@@ -29,6 +29,7 @@
 
 ### Server
 - cacheRemoteFilesの初期値はfalseになりました
+- 一部のfeatured noteを照会できない問題を修正
 - ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
 - fix: muteがapiからのuser list timeline取得で機能しない問題を修正
 
