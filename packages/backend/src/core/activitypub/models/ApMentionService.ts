@@ -3,25 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
-import { DI } from '@/di-symbols.js';
 import type { User } from '@/models/index.js';
-import type { Config } from '@/config.js';
 import { toArray, unique } from '@/misc/prelude/array.js';
 import { bindThis } from '@/decorators.js';
 import { isMention } from '../type.js';
-import { ApResolverService, Resolver } from '../ApResolverService.js';
+import { Resolver } from '../ApResolverService.js';
 import { ApPersonService } from './ApPersonService.js';
 import type { IObject, IApMention } from '../type.js';
 
 @Injectable()
 export class ApMentionService {
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
-		private apResolverService: ApResolverService,
 		private apPersonService: ApPersonService,
 	) {
 	}

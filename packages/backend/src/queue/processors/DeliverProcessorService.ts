@@ -6,8 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, InstancesRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { InstancesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { MetaService } from '@/core/MetaService.js';
 import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
@@ -31,14 +30,8 @@ export class DeliverProcessorService {
 	private latest: string | null;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 
 		private metaService: MetaService,
 		private utilityService: UtilityService,

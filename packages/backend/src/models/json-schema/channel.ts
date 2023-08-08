@@ -72,5 +72,9 @@ export const packedChannelSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
+		isSensitive: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;

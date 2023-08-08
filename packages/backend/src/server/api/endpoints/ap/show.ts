@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, NotesRepository } from '@/models/index.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { LocalUser, User } from '@/models/entities/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
@@ -19,7 +18,6 @@ import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '../../error.js';
 
@@ -90,12 +88,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
@@ -14,7 +14,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, DriveFilesRepository } from '@/models/index.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -32,9 +32,6 @@ export class NoteEntityService implements OnModuleInit {
 
 	constructor(
 		private moduleRef: ModuleRef,
-
-		@Inject(DI.db)
-		private db: DataSource,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -56,9 +53,6 @@ export class NoteEntityService implements OnModuleInit {
 
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
 
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
@@ -339,6 +333,7 @@ export class NoteEntityService implements OnModuleInit {
 				id: channel.id,
 				name: channel.name,
 				color: channel.color,
+				isSensitive: channel.isSensitive,
 			} : undefined,
 			mentions: note.mentions.length > 0 ? note.mentions : undefined,
 			uri: note.uri ?? undefined,
