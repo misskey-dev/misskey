@@ -19,6 +19,7 @@
 ### Client
 
 ### Server
+- ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
 
 ## 13.14.2-kinel.3
 
