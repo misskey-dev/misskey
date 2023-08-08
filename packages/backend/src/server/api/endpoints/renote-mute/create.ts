@@ -9,7 +9,6 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { RenoteMutingsRepository } from '@/models/index.js';
 import type { RenoteMuting } from '@/models/entities/RenoteMuting.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -63,7 +62,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,
 
-		private globalEventService: GlobalEventService,
 		private getterService: GetterService,
 		private idService: IdService,
 	) {

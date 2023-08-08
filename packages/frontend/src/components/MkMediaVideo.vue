@@ -24,7 +24,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<source
 			:src="video.url"
-			:type="video.type"
 		>
 	</video>
 	<i class="ti ti-eye-off" :class="$style.hide" @click="hide = true"></i>

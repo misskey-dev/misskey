@@ -4,12 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository } from '@/models/index.js';
 import type { User } from '@/models/entities/User.js';
 import type { UserList } from '@/models/entities/UserList.js';
 import type { UserListJoining } from '@/models/entities/UserListJoining.js';
 import { IdService } from '@/core/IdService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -23,15 +22,11 @@ export class UserListService {
 	public static TooManyUsersError = class extends Error {};
 
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,
-		private userFollowingService: UserFollowingService,
 		private roleService: RoleService,
 		private globalEventService: GlobalEventService,
 		private proxyAccountService: ProxyAccountService,
