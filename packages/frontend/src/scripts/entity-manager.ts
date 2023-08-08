@@ -139,7 +139,8 @@ export class NoteManager {
 
         const cached = this.notesSource.get(note.id);
         if (cached) {
-            cached.value = note;
+            // 情報が欠損している場合があるのでマージで対応
+            cached.value = { ...cached.value, ...note };
             if (this.isDebuggerEnabled) console.log('NoteManager: set note (update)', note.id, cached, note);
         } else {
             this.notesSource.set(note.id, ref(note));
