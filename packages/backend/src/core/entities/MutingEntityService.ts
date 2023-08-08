@@ -3,7 +3,6 @@ import { DI } from '@/di-symbols.js';
 import type { MutingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Muting } from '@/models/entities/Muting.js';
 import { bindThis } from '@/decorators.js';
@@ -22,7 +21,7 @@ export class MutingEntityService {
 	@bindThis
 	public async pack(
 		src: Muting['id'] | Muting,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Muting'>> {
 		const muting = typeof src === 'object' ? src : await this.mutingsRepository.findOneByOrFail({ id: src });
 
@@ -38,11 +37,12 @@ export class MutingEntityService {
 	}
 
 	@bindThis
-	public packMany(
-		mutings: any[],
-		me: { id: User['id'] },
-	) {
-		return Promise.all(mutings.map(x => this.pack(x, me)));
+	public async packMany(
+		mutings: (Muting['id'] | Muting)[],
+		me: { id: User['id'] } | null | undefined,
+	) : Promise<Packed<'Muting'>[]> {
+		return (await Promise.allSettled(mutings.map(x => this.pack(x, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'Muting'>>).value);
 	}
 }
-

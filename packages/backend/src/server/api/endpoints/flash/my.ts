@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.limit(ps.limit)
 				.getMany();
 
-			return await this.flashEntityService.packMany(flashs);
+			return await this.flashEntityService.packMany(flashs, me);
 		});
 	}
 }

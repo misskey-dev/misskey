@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				userId: me.id,
 			});
 
-			return await this.driveFileEntityService.packMany(files, { self: true });
+			return await this.driveFileEntityService.packMany(files, me, { self: true });
 		});
 	}
 }

@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
 import type { Instance } from '@/models/entities/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
@@ -51,10 +50,11 @@ export class InstanceEntityService {
 	}
 
 	@bindThis
-	public packMany(
+	public async packMany(
 		instances: Instance[],
-	) {
-		return Promise.all(instances.map(x => this.pack(x)));
+	) : Promise<Packed<'FederationInstance'>[]> {
+		return (await Promise.allSettled(instances.map(x => this.pack(x))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'FederationInstance'>>).value);
 	}
 }
-

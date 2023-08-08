@@ -3,7 +3,6 @@ import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { GalleryPost } from '@/models/entities/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
@@ -27,7 +26,7 @@ export class GalleryPostEntityService {
 	@bindThis
 	public async pack(
 		src: GalleryPost['id'] | GalleryPost,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
@@ -42,7 +41,7 @@ export class GalleryPostEntityService {
 			description: post.description,
 			fileIds: post.fileIds,
 			// TODO: packMany causes N+1 queries
-			files: this.driveFileEntityService.packManyByIds(post.fileIds),
+			files: this.driveFileEntityService.packManyByIds(post.fileIds, me),
 			tags: post.tags.length > 0 ? post.tags : undefined,
 			isSensitive: post.isSensitive,
 			likedCount: post.likedCount,
@@ -51,11 +50,12 @@ export class GalleryPostEntityService {
 	}
 
 	@bindThis
-	public packMany(
-		posts: GalleryPost[],
-		me?: { id: User['id'] } | null | undefined,
-	) {
-		return Promise.all(posts.map(x => this.pack(x, me)));
+	public async packMany(
+		posts: (GalleryPost['id'] | GalleryPost)[],
+		me: { id: User['id'] } | null | undefined,
+	) : Promise<Packed<'GalleryPost'>[]> {
+		return (await Promise.allSettled(posts.map(x => this.pack(x, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'GalleryPost'>>).value);
 	}
 }
-

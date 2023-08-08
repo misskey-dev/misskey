@@ -624,7 +624,7 @@ export class DriveService {
 		this.registerLogger.succ(`drive file has been created ${file.id}`);
 
 		if (user) {
-			this.driveFileEntityService.pack(file, { self: true }).then(packedFile => {
+			this.driveFileEntityService.pack(file, user, { self: true }).then(packedFile => {
 				// Publish driveFileCreated event
 				this.globalEventService.publishMainStream(user.id, 'driveFileCreated', packedFile);
 				this.globalEventService.publishDriveStream(user.id, 'fileCreated', packedFile);

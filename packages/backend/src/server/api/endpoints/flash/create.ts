@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				permissions: ps.permissions,
 			}).then(x => this.flashsRepository.findOneByOrFail(x.identifiers[0]));
 
-			return await this.flashEntityService.pack(flash);
+			return await this.flashEntityService.pack(flash, me);
 		});
 	}
 }

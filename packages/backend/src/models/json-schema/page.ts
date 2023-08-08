@@ -49,3 +49,20 @@ export const packedPageSchema = {
 		},
 	},
 } as const;
+
+export const packedPageLikeSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		page: {
+			type: 'object',
+			ref: 'Page',
+			optional: false, nullable: false,
+		},
+	},
+} as const;

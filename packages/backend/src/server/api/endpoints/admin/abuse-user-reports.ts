@@ -117,7 +117,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const reports = await query.limit(ps.limit).getMany();
 
-			return await this.abuseUserReportEntityService.packMany(reports);
+			return await this.abuseUserReportEntityService.packMany(reports, me);
 		});
 	}
 }

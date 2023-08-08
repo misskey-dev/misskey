@@ -12,6 +12,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from './error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
@@ -356,7 +357,7 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		// API invoking
 		return await ep.exec(data, user, token, file, request.ip, request.headers).catch((err: Error) => {
-			if (err instanceof ApiError || err instanceof AuthenticationError) {
+			if (err instanceof ApiError || err instanceof IdentifiableError || err instanceof AuthenticationError) {
 				throw err;
 			} else {
 				const errId = randomUUID();

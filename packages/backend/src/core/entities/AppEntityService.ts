@@ -20,7 +20,7 @@ export class AppEntityService {
 	@bindThis
 	public async pack(
 		src: App['id'] | App,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 		options?: {
 			detail?: boolean,
 			includeSecret?: boolean,

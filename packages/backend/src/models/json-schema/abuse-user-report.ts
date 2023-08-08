@@ -1,4 +1,4 @@
-export const packedFlashSchema = {
+export const packedAbuseUserReportSchema = {
 	type: 'object',
 	properties: {
 		id: {
@@ -12,56 +12,46 @@ export const packedFlashSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		updatedAt: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'date-time',
-		},
-		title: {
+		comment: {
 			type: 'string',
 			optional: false, nullable: false,
 		},
-		summary: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		script: {
-			type: 'string',
-			optional: false, nullable: false,
-		},
-		userId: {
-			type: 'string',
-			optional: false, nullable: false,
-			format: 'id',
-		},
-		user: {
-			type: 'object',
-			ref: 'UserLite',
-			optional: false, nullable: false,
-		},
-		likedCount: {
-			type: 'number',
-			optional: false, nullable: true,
-		},
-		isLiked: {
+		resolved: {
 			type: 'boolean',
-			optional: true, nullable: false,
+			optional: false, nullable: false,
 		},
-	},
-} as const;
-
-export const packedFlashLikeSchema = {
-	type: 'object',
-	properties: {
-		id: {
+		reporterId: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'id',
-			example: 'xxxxxxxxxx',
 		},
-		flash: {
+		reporter: {
 			type: 'object',
-			ref: 'Flash',
+			ref: 'UserDetailed',
+			optional: false, nullable: false,
+		},
+		targetUserId: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+		},
+		targetUser: {
+			type: 'object',
+			ref: 'UserDetailed',
+			optional: false, nullable: false,
+		},
+		assigneeId: {
+			type: 'string',
+			optional: false, nullable: true,
+			format: 'id',
+		},
+		assignee: {
+			type: 'object',
+			ref: 'UserDetailed',
+			optional: true, nullable: true,
+		},
+		forwarded: {
+			type: 'boolean',
 			optional: false, nullable: false,
 		},
 	},

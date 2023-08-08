@@ -101,7 +101,7 @@ export class ExportNotesProcessorService {
 					if (note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 					}
-					const files = await this.driveFileEntityService.packManyByIds(note.fileIds);
+					const files = await this.driveFileEntityService.packManyByIds(note.fileIds, user);
 					const content = JSON.stringify(serialize(note, poll, files));
 					const isFirst = exportedNotesCount === 0;
 					await write(isFirst ? content : ',\n' + content);

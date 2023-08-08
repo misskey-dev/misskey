@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, PagesRepository, PageLikesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, PageLikesRepository, PagesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Page } from '@/models/entities/Page.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
@@ -31,7 +30,7 @@ export class PageEntityService {
 	@bindThis
 	public async pack(
 		src: Page['id'] | Page,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Page'>> {
 		const meId = me ? me.id : null;
 		const page = typeof src === 'object' ? src : await this.pagesRepository.findOneByOrFail({ id: src });
@@ -94,19 +93,20 @@ export class PageEntityService {
 			font: page.font,
 			script: page.script,
 			eyeCatchingImageId: page.eyeCatchingImageId,
-			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId) : null,
-			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
+			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId, me) : null,
+			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null), me),
 			likedCount: page.likedCount,
 			isLiked: meId ? await this.pageLikesRepository.exist({ where: { pageId: page.id, userId: meId } }) : undefined,
 		});
 	}
 
 	@bindThis
-	public packMany(
-		pages: Page[],
-		me?: { id: User['id'] } | null | undefined,
-	) {
-		return Promise.all(pages.map(x => this.pack(x, me)));
+	public async packMany(
+		pages: (Page['id'] | Page)[],
+		me: { id: User['id'] } | null | undefined,
+	) : Promise<Packed<'Page'>[]> {
+		return (await Promise.allSettled(pages.map(x => this.pack(x, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'Page'>>).value);
 	}
 }
-

@@ -50,7 +50,7 @@ export class UserListService {
 			userListId: list.id,
 		} as UserListJoining);
 
-		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target));
+		this.globalEventService.publishUserListStream(list.id, 'userAdded', await this.userEntityService.pack(target, me));
 
 		// このインスタンス内にこのリモートユーザーをフォローしているユーザーがいなくても投稿を受け取るためにダミーのユーザーがフォローしたということにする
 		if (this.userEntityService.isRemoteUser(target)) {

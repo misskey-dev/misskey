@@ -21,7 +21,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public async pack(
 		src: RegistrationTicket['id'] | RegistrationTicket,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'InviteCode'>> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
 			where: {
@@ -43,10 +43,12 @@ export class InviteCodeEntityService {
 	}
 
 	@bindThis
-	public packMany(
-		targets: any[],
-		me: { id: User['id'] },
-	) {
-		return Promise.all(targets.map(x => this.pack(x, me)));
+	public async packMany(
+		targets: (RegistrationTicket['id'] | RegistrationTicket)[],
+		me: { id: User['id'] } | null | undefined,
+	) : Promise<Packed<'InviteCode'>[]> {
+		return (await Promise.allSettled(targets.map(x => this.pack(x, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'InviteCode'>>).value);
 	}
 }

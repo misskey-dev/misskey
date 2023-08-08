@@ -1,4 +1,4 @@
-export const packedFollowingSchema = {
+export const packedModerationLogSchema = {
 	type: 'object',
 	properties: {
 		id: {
@@ -12,47 +12,30 @@ export const packedFollowingSchema = {
 			optional: false, nullable: false,
 			format: 'date-time',
 		},
-		followeeId: {
+		type: {
 			type: 'string',
 			optional: false, nullable: false,
-			format: 'id',
 		},
-		followee: {
+		info: {
 			type: 'object',
-			optional: true, nullable: false,
-			ref: 'UserDetailed',
-		},
-		followerId: {
-			type: 'string',
 			optional: false, nullable: false,
-			format: 'id',
+			patternProperties: {
+				'^': {
+					type: 'object',
+					nullable: false, optional: false,
+				},
+			},
 		},
-		follower: {
-			type: 'object',
-			optional: true, nullable: false,
-			ref: 'UserDetailed',
-		},
-	},
-} as const;
-
-export const packedFollowRequestSchema = {
-	type: 'object',
-	properties: {
-		id: {
+		userId: {
 			type: 'string',
 			optional: false, nullable: false,
 			format: 'id',
 			example: 'xxxxxxxxxx',
 		},
-		follower: {
+		user: {
 			type: 'object',
+			ref: 'UserDetailed',
 			optional: false, nullable: false,
-			ref: 'UserLite',
-		},
-		followee: {
-			type: 'object',
-			optional: false, nullable: false,
-			ref: 'UserLite',
 		},
 	},
 } as const;

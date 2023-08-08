@@ -67,3 +67,20 @@ export const packedGalleryPostSchema = {
 		},
 	},
 } as const;
+
+export const packedGalleryLikeSchema = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+			example: 'xxxxxxxxxx',
+		},
+		post: {
+			type: 'object',
+			ref: 'GalleryPost',
+			optional: false, nullable: false,
+		},
+	},
+} as const;

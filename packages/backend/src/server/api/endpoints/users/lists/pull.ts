@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			// Pull the user
 			await this.userListJoiningsRepository.delete({ userListId: userList.id, userId: user.id });
 
-			this.globalEventService.publishUserListStream(userList.id, 'userRemoved', await this.userEntityService.pack(user));
+			this.globalEventService.publishUserListStream(userList.id, 'userRemoved', await this.userEntityService.pack(user, me));
 		});
 	}
 }

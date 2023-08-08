@@ -50,7 +50,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				folderId: ps.folderId ?? IsNull(),
 			});
 
-			return await Promise.all(files.map(file => this.driveFileEntityService.pack(file, { self: true })));
+			return await Promise.all(files.map(file => this.driveFileEntityService.pack(file, me, { self: true })));
 		});
 	}
 }

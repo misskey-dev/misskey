@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const reports = await query.limit(ps.limit).getMany();
 
-			return await this.moderationLogEntityService.packMany(reports);
+			return await this.moderationLogEntityService.packMany(reports, me);
 		});
 	}
 }

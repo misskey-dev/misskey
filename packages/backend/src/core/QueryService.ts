@@ -104,7 +104,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateChannelQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null): void {
+	public generateChannelQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] } | null): void {
 		if (me == null) {
 			q.andWhere('note.channelId IS NULL');
 		} else {
@@ -208,7 +208,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me?: Pick<User, 'id'> | null): void {
+	public generateRepliesQuery(q: SelectQueryBuilder<any>, withReplies: boolean, me: Pick<User, 'id'> | null): void {
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb
 				.where('note.replyId IS NULL') // 返信ではない
@@ -234,7 +234,7 @@ export class QueryService {
 	}
 
 	@bindThis
-	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me?: { id: User['id'] } | null): void {
+	public generateVisibilityQuery(q: SelectQueryBuilder<any>, me: { id: User['id'] } | null): void {
 		// This code must always be synchronized with the checks in Notes.isVisibleForMe.
 		if (me == null) {
 			q.andWhere(new Brackets(qb => { qb

@@ -3,7 +3,6 @@ import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
 import type { User } from '@/models/entities/User.js';
 import type { Following } from '@/models/entities/Following.js';
 import { bindThis } from '@/decorators.js';
@@ -66,7 +65,7 @@ export class FollowingEntityService {
 	@bindThis
 	public async pack(
 		src: Following['id'] | Following,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
@@ -91,15 +90,16 @@ export class FollowingEntityService {
 	}
 
 	@bindThis
-	public packMany(
-		followings: any[],
-		me?: { id: User['id'] } | null | undefined,
+	public async packMany(
+		followings: (Following['id'] | Following)[],
+		me: { id: User['id'] } | null | undefined,
 		opts?: {
 			populateFollowee?: boolean;
 			populateFollower?: boolean;
 		},
-	) {
-		return Promise.all(followings.map(x => this.pack(x, me, opts)));
+	) : Promise<Packed<'Following'>[]> {
+		return (await Promise.allSettled(followings.map(x => this.pack(x, me, opts))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'Following'>>).value);
 	}
 }
-

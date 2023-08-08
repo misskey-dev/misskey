@@ -108,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					requestIp: instance.enableIpLogging ? ip : null,
 					requestHeaders: instance.enableIpLogging ? headers : null,
 				});
-				return await this.driveFileEntityService.pack(driveFile, { self: true });
+				return await this.driveFileEntityService.pack(driveFile, me, { self: true });
 			} catch (err) {
 				if (err instanceof Error || typeof err === 'string') {
 					console.error(err);

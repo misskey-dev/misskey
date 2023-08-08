@@ -129,7 +129,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isSensitive: file.isSensitive,
 			});
 
-			const fileObj = await this.driveFileEntityService.pack(file, { self: true });
+			const fileObj = await this.driveFileEntityService.pack(file, me, { self: true });
 
 			// Publish fileUpdated event
 			this.globalEventService.publishDriveStream(me.id, 'fileUpdated', fileObj);

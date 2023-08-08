@@ -7,29 +7,32 @@ import {
 	packedUserDetailedSchema,
 	packedUserSchema,
 } from '@/models/json-schema/user.js';
-import { packedNoteSchema } from '@/models/json-schema/note.js';
-import { packedUserListSchema } from '@/models/json-schema/user-list.js';
+import { packedAbuseUserReportSchema } from '@/models/json-schema/abuse-user-report.js';
+import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
 import { packedAppSchema } from '@/models/json-schema/app.js';
-import { packedNotificationSchema } from '@/models/json-schema/notification.js';
+import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
+import { packedChannelSchema } from '@/models/json-schema/channel.js';
+import { packedClipSchema } from '@/models/json-schema/clip.js';
 import { packedDriveFileSchema } from '@/models/json-schema/drive-file.js';
 import { packedDriveFolderSchema } from '@/models/json-schema/drive-folder.js';
-import { packedFollowingSchema } from '@/models/json-schema/following.js';
-import { packedMutingSchema } from '@/models/json-schema/muting.js';
-import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
-import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
-import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
+import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
+import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
+import { packedFlashLikeSchema, packedFlashSchema } from '@/models/json-schema/flash.js';
+import { packedFollowRequestSchema, packedFollowingSchema } from '@/models/json-schema/following.js';
+import { packedGalleryLikeSchema, packedGalleryPostSchema } from '@/models/json-schema/gallery.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
 import { packedInviteCodeSchema } from '@/models/json-schema/invite-code.js';
-import { packedPageSchema } from '@/models/json-schema/page.js';
+import { packedModerationLogSchema } from '@/models/json-schema/moderation-log.js';
+import { packedMutingSchema } from '@/models/json-schema/muting.js';
 import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js';
-import { packedChannelSchema } from '@/models/json-schema/channel.js';
-import { packedAntennaSchema } from '@/models/json-schema/antenna.js';
-import { packedClipSchema } from '@/models/json-schema/clip.js';
-import { packedFederationInstanceSchema } from '@/models/json-schema/federation-instance.js';
+import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
+import { packedNoteSchema } from '@/models/json-schema/note.js';
+import { packedNotificationSchema } from '@/models/json-schema/notification.js';
+import { packedPageLikeSchema, packedPageSchema } from '@/models/json-schema/page.js';
 import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
-import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
-import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
-import { packedFlashSchema } from '@/models/json-schema/flash.js';
+import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
+import { packedRoleSchema } from '@/models/json-schema/role.js';
+import { packedUserListSchema } from '@/models/json-schema/user-list.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -49,21 +52,29 @@ export const refs = {
 	DriveFile: packedDriveFileSchema,
 	DriveFolder: packedDriveFolderSchema,
 	Following: packedFollowingSchema,
+	FollowRequest: packedFollowRequestSchema,
 	Muting: packedMutingSchema,
 	RenoteMuting: packedRenoteMutingSchema,
 	Blocking: packedBlockingSchema,
 	Hashtag: packedHashtagSchema,
 	InviteCode: packedInviteCodeSchema,
 	Page: packedPageSchema,
+	PageLike: packedPageLikeSchema,
 	Channel: packedChannelSchema,
 	QueueCount: packedQueueCountSchema,
 	Antenna: packedAntennaSchema,
 	Clip: packedClipSchema,
 	FederationInstance: packedFederationInstanceSchema,
 	GalleryPost: packedGalleryPostSchema,
+	GalleryLike: packedGalleryLikeSchema,
 	EmojiSimple: packedEmojiSimpleSchema,
 	EmojiDetailed: packedEmojiDetailedSchema,
 	Flash: packedFlashSchema,
+	FlashLike: packedFlashLikeSchema,
+
+	Role: packedRoleSchema,
+	AbuseUserReport: packedAbuseUserReportSchema,
+	ModerationLog: packedModerationLogSchema,
 };
 
 export type Packed<x extends keyof typeof refs> = SchemaType<typeof refs[x]>;

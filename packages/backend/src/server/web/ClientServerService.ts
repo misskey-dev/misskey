@@ -1,7 +1,6 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomBytes } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js';
@@ -33,6 +32,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import manifest from './manifest.json' assert { type: 'json' };
 import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
@@ -201,7 +201,7 @@ export class ClientServerService {
 			const csp = this.config.contentSecurityPolicy
 				?? 'script-src \'self\' ' +
 				'https://challenges.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/ https://www.recaptcha.net/recaptcha/ {scriptNonce}; ' +
-				'worker-src blob: \'self\'; ' + 
+				'worker-src blob: \'self\'; ' +
 				'base-uri \'self\'; object-src \'self\'; report-uri /csp-error';
 			reply.header('Content-Security-Policy-Report-Only', csp.replace('{scriptNonce}', `'nonce-${scriptNonce}'`));
 			done();
@@ -489,22 +489,29 @@ export class ClientServerService {
 			});
 
 			if (note) {
-				const _note = await this.noteEntityService.pack(note);
-				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
-				const meta = await this.metaService.fetch();
-				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLearning) {
-					reply.header('X-Robots-Tag', 'noimageai');
-					reply.header('X-Robots-Tag', 'noai');
+				try {
+					const _note = await this.noteEntityService.pack(note, null);
+					const profile = await this.userProfilesRepository.findOneByOrFail({ userId: note.userId });
+					const meta = await this.metaService.fetch();
+					reply.header('Cache-Control', 'public, max-age=15');
+					if (profile.preventAiLearning) {
+						reply.header('X-Robots-Tag', 'noimageai');
+						reply.header('X-Robots-Tag', 'noai');
+					}
+					return await reply.view('note', {
+						note: _note,
+						profile,
+						avatarUrl: _note.user.avatarUrl,
+						// TODO: Let locale changeable by instance setting
+						summary: getNoteSummary(_note),
+						...this.generateCommonPugData(meta),
+					});
+				} catch (err) {
+					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+						return await renderBase(reply);
+					}
+					throw err;
 				}
-				return await reply.view('note', {
-					note: _note,
-					profile,
-					avatarUrl: _note.user.avatarUrl,
-					// TODO: Let locale changeable by instance setting
-					summary: getNoteSummary(_note),
-					...this.generateCommonPugData(meta),
-				});
 			} else {
 				return await renderBase(reply);
 			}
@@ -526,24 +533,31 @@ export class ClientServerService {
 			});
 
 			if (page) {
-				const _page = await this.pageEntityService.pack(page);
-				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: page.userId });
-				const meta = await this.metaService.fetch();
-				if (['public'].includes(page.visibility)) {
-					reply.header('Cache-Control', 'public, max-age=15');
-				} else {
-					reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
+				try {
+					const _page = await this.pageEntityService.pack(page, null);
+					const profile = await this.userProfilesRepository.findOneByOrFail({ userId: page.userId });
+					const meta = await this.metaService.fetch();
+					if (['public'].includes(page.visibility)) {
+						reply.header('Cache-Control', 'public, max-age=15');
+					} else {
+						reply.header('Cache-Control', 'private, max-age=0, must-revalidate');
+					}
+					if (profile.preventAiLearning) {
+						reply.header('X-Robots-Tag', 'noimageai');
+						reply.header('X-Robots-Tag', 'noai');
+					}
+					return await reply.view('page', {
+						page: _page,
+						profile,
+						avatarUrl: _page.user.avatarUrl,
+						...this.generateCommonPugData(meta),
+					});
+				} catch (err) {
+					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+						return await renderBase(reply);
+					}
+					throw err;
 				}
-				if (profile.preventAiLearning) {
-					reply.header('X-Robots-Tag', 'noimageai');
-					reply.header('X-Robots-Tag', 'noai');
-				}
-				return await reply.view('page', {
-					page: _page,
-					profile,
-					avatarUrl: _page.user.avatarUrl,
-					...this.generateCommonPugData(meta),
-				});
 			} else {
 				return await renderBase(reply);
 			}
@@ -556,20 +570,27 @@ export class ClientServerService {
 			});
 
 			if (flash) {
-				const _flash = await this.flashEntityService.pack(flash);
-				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: flash.userId });
-				const meta = await this.metaService.fetch();
-				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLearning) {
-					reply.header('X-Robots-Tag', 'noimageai');
-					reply.header('X-Robots-Tag', 'noai');
+				try {
+					const _flash = await this.flashEntityService.pack(flash, null);
+					const profile = await this.userProfilesRepository.findOneByOrFail({ userId: flash.userId });
+					const meta = await this.metaService.fetch();
+					reply.header('Cache-Control', 'public, max-age=15');
+					if (profile.preventAiLearning) {
+						reply.header('X-Robots-Tag', 'noimageai');
+						reply.header('X-Robots-Tag', 'noai');
+					}
+					return await reply.view('flash', {
+						flash: _flash,
+						profile,
+						avatarUrl: _flash.user.avatarUrl,
+						...this.generateCommonPugData(meta),
+					});
+				} catch (err) {
+					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+						return await renderBase(reply);
+					}
+					throw err;
 				}
-				return await reply.view('flash', {
-					flash: _flash,
-					profile,
-					avatarUrl: _flash.user.avatarUrl,
-					...this.generateCommonPugData(meta),
-				});
 			} else {
 				return await renderBase(reply);
 			}
@@ -582,20 +603,27 @@ export class ClientServerService {
 			});
 
 			if (clip && clip.isPublic) {
-				const _clip = await this.clipEntityService.pack(clip);
-				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
-				const meta = await this.metaService.fetch();
-				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLearning) {
-					reply.header('X-Robots-Tag', 'noimageai');
-					reply.header('X-Robots-Tag', 'noai');
+				try {
+					const _clip = await this.clipEntityService.pack(clip, null);
+					const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
+					const meta = await this.metaService.fetch();
+					reply.header('Cache-Control', 'public, max-age=15');
+					if (profile.preventAiLearning) {
+						reply.header('X-Robots-Tag', 'noimageai');
+						reply.header('X-Robots-Tag', 'noai');
+					}
+					return await reply.view('clip', {
+						clip: _clip,
+						profile,
+						avatarUrl: _clip.user.avatarUrl,
+						...this.generateCommonPugData(meta),
+					});
+				} catch (err) {
+					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+						return await renderBase(reply);
+					}
+					throw err;
 				}
-				return await reply.view('clip', {
-					clip: _clip,
-					profile,
-					avatarUrl: _clip.user.avatarUrl,
-					...this.generateCommonPugData(meta),
-				});
 			} else {
 				return await renderBase(reply);
 			}
@@ -606,20 +634,27 @@ export class ClientServerService {
 			const post = await this.galleryPostsRepository.findOneBy({ id: request.params.post });
 
 			if (post) {
-				const _post = await this.galleryPostEntityService.pack(post);
-				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: post.userId });
-				const meta = await this.metaService.fetch();
-				reply.header('Cache-Control', 'public, max-age=15');
-				if (profile.preventAiLearning) {
-					reply.header('X-Robots-Tag', 'noimageai');
-					reply.header('X-Robots-Tag', 'noai');
+				try {
+					const _post = await this.galleryPostEntityService.pack(post, null);
+					const profile = await this.userProfilesRepository.findOneByOrFail({ userId: post.userId });
+					const meta = await this.metaService.fetch();
+					reply.header('Cache-Control', 'public, max-age=15');
+					if (profile.preventAiLearning) {
+						reply.header('X-Robots-Tag', 'noimageai');
+						reply.header('X-Robots-Tag', 'noai');
+					}
+					return await reply.view('gallery-post', {
+						post: _post,
+						profile,
+						avatarUrl: _post.user.avatarUrl,
+						...this.generateCommonPugData(meta),
+					});
+				} catch (err) {
+					if ((err as IdentifiableError).id === '8ca4f428-b32e-4f83-ac43-406ed7cd0452') {
+						return await renderBase(reply);
+					}
+					throw err;
 				}
-				return await reply.view('gallery-post', {
-					post: _post,
-					profile,
-					avatarUrl: _post.user.avatarUrl,
-					...this.generateCommonPugData(meta),
-				});
 			} else {
 				return await renderBase(reply);
 			}
@@ -632,7 +667,7 @@ export class ClientServerService {
 			});
 
 			if (channel) {
-				const _channel = await this.channelEntityService.pack(channel);
+				const _channel = await this.channelEntityService.pack(channel, null);
 				const meta = await this.metaService.fetch();
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await reply.view('channel', {

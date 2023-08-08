@@ -75,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const files = await query.limit(ps.limit).getMany();
 
-			return await this.driveFileEntityService.packMany(files, { detail: false, self: true });
+			return await this.driveFileEntityService.packMany(files, me, { detail: false, self: true });
 		});
 	}
 }

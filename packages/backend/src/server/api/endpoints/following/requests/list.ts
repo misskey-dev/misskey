@@ -67,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.limit(ps.limit)
 				.getMany();
 
-			return await Promise.all(requests.map(req => this.followRequestEntityService.pack(req)));
+			return await this.followRequestEntityService.packMany(requests, me);
 		});
 	}
 }

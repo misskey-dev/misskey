@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { DataSource, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, DriveFilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, NotesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -9,6 +9,9 @@ import type { User } from '@/models/entities/User.js';
 import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -19,9 +22,6 @@ type PackOptions = {
 	self?: boolean,
 	withUser?: boolean,
 };
-import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 
 @Injectable()
 export class DriveFileEntityService {
@@ -186,6 +186,7 @@ export class DriveFileEntityService {
 	@bindThis
 	public async pack(
 		src: DriveFile['id'] | DriveFile,
+		me: { id: User['id'] } | null | undefined,
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>> {
 		const opts = Object.assign({
@@ -213,13 +214,14 @@ export class DriveFileEntityService {
 				detail: true,
 			}) : null,
 			userId: opts.withUser ? file.userId : null,
-			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
+			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId, me) : null,
 		});
 	}
 
 	@bindThis
 	public async packNullable(
 		src: DriveFile['id'] | DriveFile,
+		me: { id: User['id'] } | null | undefined,
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({
@@ -248,27 +250,30 @@ export class DriveFileEntityService {
 				detail: true,
 			}) : null,
 			userId: opts.withUser ? file.userId : null,
-			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId) : null,
+			user: (opts.withUser && file.userId) ? this.userEntityService.pack(file.userId, me) : null,
 		});
 	}
 
 	@bindThis
 	public async packMany(
 		files: DriveFile[],
+		me: { id: User['id'] } | null | undefined,
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
-		const items = await Promise.all(files.map(f => this.packNullable(f, options)));
-		return items.filter((x): x is Packed<'DriveFile'> => x != null);
+		return (await Promise.allSettled(files.map(f => this.packNullable(f, me, options))))
+			.filter(result => result.status === 'fulfilled' && result.value != null)
+			.map(result => (result as PromiseFulfilledResult<Packed<'DriveFile'>>).value);
 	}
 
 	@bindThis
 	public async packManyByIdsMap(
 		fileIds: DriveFile['id'][],
+		me: { id: User['id'] } | null | undefined,
 		options?: PackOptions,
 	): Promise<Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>> {
 		if (fileIds.length === 0) return new Map();
 		const files = await this.driveFilesRepository.findBy({ id: In(fileIds) });
-		const packedFiles = await this.packMany(files, options);
+		const packedFiles = await this.packMany(files, me, options);
 		const map = new Map<Packed<'DriveFile'>['id'], Packed<'DriveFile'> | null>(packedFiles.map(f => [f.id, f]));
 		for (const id of fileIds) {
 			if (!map.has(id)) map.set(id, null);
@@ -279,10 +284,11 @@ export class DriveFileEntityService {
 	@bindThis
 	public async packManyByIds(
 		fileIds: DriveFile['id'][],
+		me: { id: User['id'] } | null | undefined,
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
 		if (fileIds.length === 0) return [];
-		const filesMap = await this.packManyByIdsMap(fileIds, options);
+		const filesMap = await this.packManyByIdsMap(fileIds, me, options);
 		return fileIds.map(id => filesMap.get(id)).filter(isNotNull);
 	}
 }

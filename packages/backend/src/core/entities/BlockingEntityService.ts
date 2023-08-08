@@ -21,7 +21,7 @@ export class BlockingEntityService {
 	@bindThis
 	public async pack(
 		src: Blocking['id'] | Blocking,
-		me?: { id: User['id'] } | null | undefined,
+		me: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Blocking'>> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
 
@@ -36,10 +36,12 @@ export class BlockingEntityService {
 	}
 
 	@bindThis
-	public packMany(
-		blockings: any[],
-		me: { id: User['id'] },
-	) {
-		return Promise.all(blockings.map(x => this.pack(x, me)));
+	public async packMany(
+		blockings: (Blocking['id'] | Blocking)[],
+		me: { id: User['id'] } | null | undefined,
+	) : Promise<Packed<'Blocking'>[]> {
+		return (await Promise.allSettled(blockings.map(x => this.pack(x, me))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'Blocking'>>).value);
 	}
 }

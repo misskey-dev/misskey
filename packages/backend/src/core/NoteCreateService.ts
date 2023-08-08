@@ -54,7 +54,7 @@ const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; m
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
 class NotificationManager {
-	private notifier: { id: User['id']; };
+	private notifier: { id: User['id'] };
 	private note: Note;
 	private queue: {
 		target: LocalUser['id'];
@@ -64,7 +64,7 @@ class NotificationManager {
 	constructor(
 		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
-		notifier: { id: User['id']; },
+		notifier: { id: User['id'] },
 		note: Note,
 	) {
 		this.notifier = notifier;
@@ -547,7 +547,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			}
 
 			// Pack the note
-			const noteObj = await this.noteEntityService.pack(note);
+			const noteObj = await this.noteEntityService.pack(note, user);
 
 			this.globalEventService.publishNotesStream(noteObj);
 
@@ -767,7 +767,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private incNotesCountOfUser(user: { id: User['id']; }) {
+	private incNotesCountOfUser(user: { id: User['id'] }) {
 		this.usersRepository.createQueryBuilder().update()
 			.set({
 				updatedAt: new Date(),
