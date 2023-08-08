@@ -40,6 +40,7 @@ html {
 	line-height: 1.35;
 	text-size-adjust: 100%;
 	tab-size: 2;
+	-webkit-text-size-adjust: 100%;
 
 	&, * {
 		scrollbar-color: var(--scrollbarHandle) transparent;
