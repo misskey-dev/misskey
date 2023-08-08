@@ -25,10 +25,14 @@
 - Enhance: 自分が押したリアクションのデザインを改善
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
 - Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
+- Fix: iOSで画面を回転させるとテキストサイズが変わる問題を修正
 - `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
 
 ### Server
 - cacheRemoteFilesの初期値はfalseになりました
+- 一部のfeatured noteを照会できない問題を修正
+- ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
+- fix: muteがapiからのuser list timeline取得で機能しない問題を修正
 
 ## 13.14.2
 
