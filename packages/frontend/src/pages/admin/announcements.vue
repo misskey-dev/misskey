@@ -19,9 +19,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkSwitch v-model="announcement.forExistingUsers">
+						{{ i18n.ts._announcement.forExistingUsers }}
+						<template #caption>{{ i18n.ts._announcement.forExistingUsersDescription }}</template>
+					</MkSwitch>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+						<MkButton class="button" inline @click="deactivate(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts._announcement.deactivate }}</MkButton>
 						<MkButton class="button" inline danger @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</div>
 				</div>
@@ -67,32 +72,20 @@ function remove(announcement) {
 	});
 }
 
-function save(announcement) {
+async function deactivate(announcement) {
+	await os.apiWithDialog('admin/announcements/update', {
+		...announcement,
+		isActive: false,
+	});
+	refresh();
+}
+
+async function save(announcement) {
 	if (announcement.id == null) {
-		os.api('admin/announcements/create', announcement).then(() => {
-			os.alert({
-				type: 'success',
-				text: i18n.ts.saved,
-			});
-			refresh();
-		}).catch(err => {
-			os.alert({
-				type: 'error',
-				text: err,
-			});
-		});
+		await os.apiWithDialog('admin/announcements/create', announcement);
+		refresh();
 	} else {
-		os.api('admin/announcements/update', announcement).then(() => {
-			os.alert({
-				type: 'success',
-				text: i18n.ts.saved,
-			});
-		}).catch(err => {
-			os.alert({
-				type: 'error',
-				text: err,
-			});
-		});
+		os.apiWithDialog('admin/announcements/update', announcement);
 	}
 }
 

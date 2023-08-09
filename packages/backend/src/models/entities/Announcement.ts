@@ -55,6 +55,12 @@ export class Announcement {
 	public isActive: boolean;
 
 	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public forExistingUsers: boolean;
+
+	@Index()
 	@Column({
 		...id(),
 		nullable: true,

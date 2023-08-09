@@ -31,8 +31,11 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 0 },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
+		forExistingUsers: { type: 'boolean' },
+		isActive: { type: 'boolean' },
 	},
-	required: ['id', 'title', 'text', 'imageUrl'],
+	required: ['id', 'title', 'text', 'imageUrl', 'display', 'forExistingUsers', 'isActive'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -53,6 +56,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				text: ps.text,
 				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
 				imageUrl: ps.imageUrl || null,
+				display: ps.display,
+				forExistingUsers: ps.forExistingUsers,
+				isActive: ps.isActive,
 			});
 		});
 	}

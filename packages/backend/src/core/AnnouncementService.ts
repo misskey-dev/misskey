@@ -46,7 +46,10 @@ export class AnnouncementService {
 				qb.orWhere('announcement.userId = :userId', { userId: user.id });
 				qb.orWhere('announcement.userId IS NULL');
 			}))
-			.andWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt })
+			.andWhere(new Brackets(qb => {
+				qb.orWhere('announcement.forExistingUsers = false');
+				qb.orWhere('announcement.createdAt > :createdAt', { createdAt: user.createdAt });
+			}))
 			.andWhere(`announcement.id NOT IN (${ readsQuery.getQuery() })`);
 
 		q.setParameters(readsQuery.getParameters());
