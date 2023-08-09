@@ -330,7 +330,9 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 	const cleanup = () => {
 		if (_DEV_) console.log('user menu cleanup', cleanups);
-		cleanups.forEach(cleanup => cleanup());
+		for (const cl of cleanups) {
+			cl();
+		}
 	};
 
 	return {
