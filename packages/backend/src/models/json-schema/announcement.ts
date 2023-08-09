@@ -42,5 +42,9 @@ export const packedAnnouncementSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		needConfirmationToRead: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 	},
 } as const;

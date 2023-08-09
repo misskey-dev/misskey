@@ -92,6 +92,7 @@ export class AnnouncementService {
 			title: announcement.title,
 			imageUrl: announcement.imageUrl,
 			display: announcement.display,
+			needConfirmationToRead: announcement.needConfirmationToRead,
 			isRead: reads.some(read => read.announcementId === announcement.id),
 		}));
 	}

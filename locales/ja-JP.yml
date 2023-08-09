@@ -1099,6 +1099,8 @@ iHaveReadXCarefullyAndAgree: "「{x}」の内容をよく読み、同意しま�
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点で存在するユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
+  needConfirmationToRead: "既読にするのに確認が必要"
+  needConfirmationToReadDescription: "有効にすると、このお知らせを既読にする際に確認ダイアログが表示されます。また、一括既読操作の対象になりません。"
   deactivate: "お知らせを終了"
 
 _initialAccountSetting:

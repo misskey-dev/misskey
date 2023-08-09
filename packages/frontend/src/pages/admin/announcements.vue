@@ -23,6 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						{{ i18n.ts._announcement.forExistingUsers }}
 						<template #caption>{{ i18n.ts._announcement.forExistingUsersDescription }}</template>
 					</MkSwitch>
+					<MkSwitch v-model="announcement.needConfirmationToRead">
+						{{ i18n.ts._announcement.needConfirmationToRead }}
+						<template #caption>{{ i18n.ts._announcement.needConfirmationToReadDescription }}</template>
+					</MkSwitch>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -58,6 +62,9 @@ function add() {
 		title: '',
 		text: '',
 		imageUrl: null,
+		display: 'normal',
+		forExistingUsers: false,
+		needConfirmationToRead: false,
 	});
 }
 

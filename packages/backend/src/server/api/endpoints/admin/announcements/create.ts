@@ -59,6 +59,7 @@ export const paramDef = {
 		imageUrl: { type: 'string', nullable: true, minLength: 1 },
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
 		forExistingUsers: { type: 'boolean', default: false },
+		needConfirmationToRead: { type: 'boolean', default: false },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
@@ -83,6 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				imageUrl: ps.imageUrl,
 				display: ps.display,
 				forExistingUsers: ps.forExistingUsers,
+				needConfirmationToRead: ps.needConfirmationToRead,
 				userId: ps.userId,
 			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
 

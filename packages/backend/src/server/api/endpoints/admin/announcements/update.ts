@@ -33,9 +33,10 @@ export const paramDef = {
 		imageUrl: { type: 'string', nullable: true, minLength: 0 },
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
 		forExistingUsers: { type: 'boolean' },
+		needConfirmationToRead: { type: 'boolean' },
 		isActive: { type: 'boolean' },
 	},
-	required: ['id', 'title', 'text', 'imageUrl', 'display', 'forExistingUsers', 'isActive'],
+	required: ['id', 'title', 'text', 'imageUrl', 'display', 'forExistingUsers', 'needConfirmationToRead', 'isActive'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -58,6 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				imageUrl: ps.imageUrl || null,
 				display: ps.display,
 				forExistingUsers: ps.forExistingUsers,
+				needConfirmationToRead: ps.needConfirmationToRead,
 				isActive: ps.isActive,
 			});
 		});

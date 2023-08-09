@@ -48,6 +48,11 @@ export class Announcement {
 	})
 	public display: string;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public needConfirmationToRead: boolean;
+
 	@Index()
 	@Column('boolean', {
 		default: true,
