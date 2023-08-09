@@ -195,7 +195,7 @@ export class NoteManager {
         } else {
             if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.get(id)?.value);
         }
-        return this.notesComputed.get(id)!;
+        return computed(() => this.notesComputed.get(id)!.value);
     }
 
     /**
