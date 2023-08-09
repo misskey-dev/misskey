@@ -1695,7 +1695,7 @@ _2fa:
   removeKeyConfirm: "{name}を消すん？"
   whyTOTPOnlyRenew: "セキュリティキーが登録されとったら、認証アプリの設定は解除できへんで。"
   renewTOTP: "認証アプリをもっかい設定"
-  renewTOTPConfirm: "今までの人称アプリの確認コードは使えんくなるけどええか？"
+  renewTOTPConfirm: "今までの認証アプリの確認コードは使えんくなるけどええか？"
   renewTOTPOk: "もっかい設定する"
   renewTOTPCancel: "やめとく"
 _permissions:
