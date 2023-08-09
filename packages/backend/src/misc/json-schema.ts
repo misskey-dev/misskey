@@ -46,6 +46,7 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
