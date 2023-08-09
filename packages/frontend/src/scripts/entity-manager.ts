@@ -195,7 +195,7 @@ export class NoteManager {
         } else {
             if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.get(id)?.value);
         }
-        return computed(() => this.notesComputed.get(id)?.value ?? null);
+        return this.notesComputed.get(id)!;
     }
 
     /**
@@ -314,7 +314,6 @@ export class NoteManager {
             if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', id, note?.value);
             this.connection?.send('un', { id });
             this.captureing.delete(id);
-            this.notesComputed.delete(id);
             this.updatedAt.delete(id);
             return;
         } else {
@@ -384,7 +383,6 @@ export class NoteManager {
 				note.value = null;
                 this.connection?.send('un', { id });
                 this.captureing.delete(id);
-                this.notesComputed.delete(id);
                 this.updatedAt.delete(id);
 				break;
 			}
