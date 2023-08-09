@@ -4,7 +4,7 @@
  */
 
 import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
-import { Ref, ref, ComputedRef, computed, watch, triggerRef } from "vue";
+import { Ref, ref, ComputedRef, computed, watch } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
 import { Stream } from "misskey-js";
@@ -44,7 +44,7 @@ export const userLiteManager = new EntitiyManager<UserLite>('userLite');
 export const driveFileManager = new EntitiyManager<DriveFile>('driveFile');
 
 type OmittedNote = Omit<Note, 'user' | 'renote' | 'reply'>;
-type CachedNoteSource = Ref<OmittedNote | null>;
+type CachedNoteSource = OmittedNote | null;
 type CachedNote = ComputedRef<Note | null>;
 type InterruptedCachedNote = Ref<Note | null>;
 
@@ -70,7 +70,7 @@ export class NoteManager {
      * 
      * 削除する機構はないので溜まる一方だが、メモリ使用量はそこまで気にしなくて良さそう
      */
-    private notesSource: Map<Note['id'], CachedNoteSource>;
+    private notesSource: Ref<Map<Note['id'], CachedNoteSource>>;
 
     /**
      * ソースからuser, renote, replyを取得したComputedRefのキャッシュを保持しておく
@@ -85,7 +85,7 @@ export class NoteManager {
     private isDebuggerEnabled: boolean;
 
     constructor() {
-        this.notesSource = new Map();
+        this.notesSource = ref(new Map());
         this.notesComputed = new Map();
         this.updatedAt = new Map();
         this.captureing = new Map();
@@ -137,50 +137,50 @@ export class NoteManager {
         }
         delete note.reply;
 
-        const cached = this.notesSource.get(note.id);
+        const cached = this.notesSource.value.get(note.id);
         if (cached) {
             // 情報が欠損している場合があるのでマージで対応
-            cached.value = { ...cached.value, ...note };
+            this.notesSource.value.set(note.id, { ...cached, ...note });
             if (this.isDebuggerEnabled) console.log('NoteManager: set note (update)', note.id, cached, note);
         } else {
-            this.notesSource.set(note.id, ref(note));
-            if (this.isDebuggerEnabled) console.log('NoteManager: set note (new)', note.id, this.notesSource.get(note.id), note);
+            this.notesSource.value.set(note.id, note);
+            if (this.isDebuggerEnabled) console.log('NoteManager: set note (new)', note.id, this.notesSource.value.get(note.id), note);
         }
         this.updatedAt.set(note.id, Date.now());
     }
 
     public get(id: string): CachedNote {
         if (!this.notesComputed.has(id)) {
-            const note = this.notesSource.get(id) ?? this.notesSource.set(id, ref(null)).get(id)!;
-
             this.notesComputed.set(id, computed<Note | null>(() => {
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note.value);
+                const note = this.notesSource.value.get(id);
 
-                if (!note.value) {
+                if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note);
+
+                if (!note) {
                     if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is null', id);
                     return null;
                 }
 
-                const user = userLiteManager.get(note.value.userId)!;
+                const user = userLiteManager.get(note.userId)!;
 
-                const renote = note.value.renoteId ? this.get(note.value.renoteId) : undefined;
+                const renote = note.renoteId ? this.get(note.renoteId) : undefined;
                 // renoteが削除されている場合はCASCADE削除されるためnullを返す
                 if (renote && !renote.value) {
-                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.value.renoteId);
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.renoteId);
                     return null;
                 }
 
-                const reply = note.value.replyId ? this.get(note.value.replyId) : undefined;
+                const reply = note.replyId ? this.get(note.replyId) : undefined;
                 // replyが削除されている場合はCASCADE削除されるためnullを返す
                 if (reply && !reply.value) {
-                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.value.replyId);
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.replyId);
                     return null;
                 }
 
-                const files = note.value.fileIds.map(id => driveFileManager.get(id)?.value);
+                const files = note.fileIds.map(id => driveFileManager.get(id)?.value);
 
                 const result = {
-                    ...note.value,
+                    ...note,
                     user: user.value,
                     renote: renote?.value ?? undefined,
                     reply: reply?.value ?? undefined,
@@ -193,7 +193,7 @@ export class NoteManager {
             }));
             if (this.isDebuggerEnabled) console.log('NoteManager: get note (new)', id, this.notesComputed.get(id));
         } else {
-            if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.get(id)?.value);
+            if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.value.get(id));
         }
         return this.notesComputed.get(id)!;
     }
@@ -201,6 +201,7 @@ export class NoteManager {
     /**
      * Interruptorを適用する
      * 管理が面倒なのでキャッシュはしない
+     * executeInterruptorは初回には実行されないため、手動で実行する必要がある
      */
     public getInterrupted(id: string): {
         interruptedNote: InterruptedCachedNote,
@@ -217,7 +218,7 @@ export class NoteManager {
             };
         }
 
-        const interruptedNote = ref<Note | null>(note.value);
+        const interruptedNote = ref<Note | null>(deepClone(note.value));
 
         async function executeInterruptor() {
             if (note.value == null) {
@@ -306,18 +307,18 @@ export class NoteManager {
 	private onStreamNoteUpdated(noteData: any): void {
 		const { type, id, body } = noteData;
 
-        const note = this.notesSource.get(id);
+        const note = this.notesSource.value.get(id);
 
         if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (recieved)', noteData);
 
-		if (!note || !note.value) {
-            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', id, note?.value);
+		if (!note) {
+            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (not found)', id, note);
             this.connection?.send('un', { id });
             this.captureing.delete(id);
             this.updatedAt.delete(id);
             return;
         } else {
-            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', id, note.value, { type, id, body });
+            if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (found)', id, note, { type, id, body });
         }
 
         /**
@@ -330,15 +331,15 @@ export class NoteManager {
 			case 'reacted': {
 				const reaction = body.reaction;
 
-				if (body.emoji && !(body.emoji.name in note.value.reactionEmojis)) {
+				if (body.emoji && !(body.emoji.name in note.reactionEmojis)) {
                     diff.reactionEmojis = {
-                        ...note.value.reactionEmojis,
+                        ...note.reactionEmojis,
                         [body.emoji.name]: body.emoji.url,
                     };
                 }
 
-                diff.reactions = { ...note.value.reactions };
-                diff.reactions[reaction] = (note.value.reactions[reaction] ?? 0) + 1;
+                diff.reactions = { ...note.reactions };
+                diff.reactions[reaction] = (note.reactions[reaction] ?? 0) + 1;
 
 				if ($i && (body.userId === $i.id)) {
 					diff.myReaction = reaction;
@@ -349,8 +350,8 @@ export class NoteManager {
 			case 'unreacted': {
 				const reaction = body.reaction;
 
-                diff.reactions = { ...note.value.reactions };
-				const count = Math.max(0, (note.value.reactions[reaction] ?? 0) - 1);
+                diff.reactions = { ...note.reactions };
+				const count = Math.max(0, (note.reactions[reaction] ?? 0) - 1);
 				if (count === 0) {
                     delete diff.reactions[reaction];
                 } else {
@@ -366,7 +367,7 @@ export class NoteManager {
 			case 'pollVoted': {
 				const choice = body.choice;
 
-				const choices = [...note.value.poll!.choices];
+				const choices = [...note.poll!.choices];
 				choices[choice] = {
 					...choices[choice],
 					votes: choices[choice].votes + 1,
@@ -375,12 +376,12 @@ export class NoteManager {
 					} : {}),
 				};
 
-                diff.poll = { ...note.value.poll!, choices };
+                diff.poll = { ...note.poll!, choices };
 				break;
 			}
 
 			case 'deleted': {
-				note.value = null;
+				this.notesSource.value.set(id, null);
                 this.connection?.send('un', { id });
                 this.captureing.delete(id);
                 this.updatedAt.delete(id);
@@ -390,17 +391,16 @@ export class NoteManager {
 
         if (this.isDebuggerEnabled) console.log('NoteManager: onStreamNoteUpdated (update)', id, type, diff);
         if (type !== 'deleted') {
-            if (!note.value) throw new Error('NoteManager: onStreamNoteUpdated (update) note.value is null');
-            note.value = { ...note.value, ...diff };
-            triggerRef(note);
+            if (!note) throw new Error('NoteManager: onStreamNoteUpdated (update) note.value is null');
+            this.notesSource.value.set(id, { ...note, ...diff });
         }
         this.updatedAt.set(id, Date.now());
 	}
 
     private capture(id: string, markRead = true): void {
-        if (this.isDebuggerEnabled) console.log('NoteManager: capture', id, { has: this.notesSource.has(id), markRead, count: this.captureing.get(id) });
+        if (this.isDebuggerEnabled) console.log('NoteManager: capture', id, { has: this.notesSource.value.has(id), markRead, count: this.captureing.get(id) });
 
-        if (!this.notesSource.has(id)) return;
+        if (!this.notesSource.value.has(id)) return;
 
         const captureingCount = this.captureing.get(id);
         if (typeof captureingCount === 'number' && captureingCount > 0) {
@@ -417,9 +417,9 @@ export class NoteManager {
 	}
 
     private decapture(id: string, noDeletion = false): void {
-        if (this.isDebuggerEnabled) console.log('NoteManager: decapture', id, { has: this.notesSource.has(id), noDeletion, count: this.captureing.get(id) });
+        if (this.isDebuggerEnabled) console.log('NoteManager: decapture', id, { has: this.notesSource.value.has(id), noDeletion, count: this.captureing.get(id) });
 
-        if (!this.notesSource.has(id)) return;
+        if (!this.notesSource.value.has(id)) return;
 
         const captureingCount = this.captureing.get(id);
         if (typeof captureingCount === 'number' && captureingCount > 1) {
@@ -445,9 +445,9 @@ export class NoteManager {
      */
     public useNote(id: string, shoudFetch: true): { note: Promise<CachedNote>, unuse: (noDeletion?: boolean) => void };
     public useNote(id: string, shoudFetch = false) {
-        if (this.isDebuggerEnabled) console.log('NoteManager: useNote', id, { has: this.notesSource.has(id), shoudFetch });
+        if (this.isDebuggerEnabled) console.log('NoteManager: useNote', id, { has: this.notesSource.value.has(id), shoudFetch });
 
-        const note = (!this.notesSource.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
+        const note = (!this.notesSource.value.has(id) || shoudFetch) ? this.fetch(id) : this.get(id)!;
         let using = false;
         const CapturePromise = Promise.resolve(note)
             .catch(err => {
