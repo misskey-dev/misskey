@@ -83,6 +83,14 @@ export async function mainBoot() {
 			}
 		});
 
+		for (const announcement of $i.announcements.filter(x => x.display === 'dialog')) {
+			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				announcement,
+			}, {}, 'closed');
+		}
+
+		// TODO: announcementCreatedイベント監視
+
 		if ($i.isDeleted) {
 			alert({
 				type: 'warning',
