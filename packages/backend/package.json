@@ -64,7 +64,7 @@
 		"@bull-board/ui": "5.7.1",
 		"@discordapp/twemoji": "14.1.2",
 		"@fastify/accepts": "4.2.0",
-		"@fastify/cookie": "8.3.0",
+		"@fastify/cookie": "9.0.4",
 		"@fastify/cors": "8.3.0",
 		"@fastify/express": "2.3.0",
 		"@fastify/http-proxy": "9.2.1",
