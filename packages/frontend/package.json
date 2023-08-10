@@ -118,7 +118,7 @@
 		"@vue/runtime-core": "3.3.4",
 		"acorn": "8.10.0",
 		"cross-env": "7.0.3",
-		"cypress": "12.17.2",
+		"cypress": "12.17.3",
 		"eslint": "8.46.0",
 		"eslint-plugin-import": "2.28.0",
 		"eslint-plugin-vue": "9.16.1",
