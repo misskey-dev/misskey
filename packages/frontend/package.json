@@ -28,7 +28,7 @@
 		"astring": "1.8.6",
 		"autosize": "6.0.1",
 		"broadcast-channel": "5.1.0",
-		"browser-image-resizer": "github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3",
+		"browser-image-resizer": "github:misskey-dev/browser-image-resizer#v2.2.1",
 		"buraha": "0.0.1",
 		"canvas-confetti": "1.6.0",
 		"chart.js": "4.3.2",
