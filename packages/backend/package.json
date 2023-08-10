@@ -141,7 +141,7 @@
 		"random-seed": "0.3.0",
 		"ratelimiter": "3.4.1",
 		"re2": "1.20.1",
-		"redis-lock": "0.1.4",
+		"redis-lock": "1.0.0",
 		"reflect-metadata": "0.1.13",
 		"rename": "1.0.4",
 		"rss-parser": "3.13.0",
