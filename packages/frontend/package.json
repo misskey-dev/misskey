@@ -82,7 +82,7 @@
 		"@storybook/addon-interactions": "7.0.27",
 		"@storybook/addon-links": "7.0.27",
 		"@storybook/addon-storysource": "7.0.27",
-		"@storybook/addons": "7.0.27",
+		"@storybook/addons": "7.2.2",
 		"@storybook/blocks": "7.0.27",
 		"@storybook/core-events": "7.0.27",
 		"@storybook/jest": "0.1.0",
