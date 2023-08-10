@@ -346,7 +346,7 @@ importers:
         version: 0.32.4
       sharp-read-bmp:
         specifier: github:misskey-dev/sharp-read-bmp
-        version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
+        version: git@github.com+misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
       slacc:
         specifier: 0.0.10
         version: 0.0.10
@@ -358,7 +358,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
+        version: git@github.com+misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
       systeminformation:
         specifier: 5.18.9
         version: 5.18.9
@@ -684,7 +684,7 @@ importers:
         version: 5.1.0
       browser-image-resizer:
         specifier: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
-        version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
+        version: git@github.com+misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
       buraha:
         specifier: 0.0.1
         version: 0.0.1
@@ -773,8 +773,8 @@ importers:
         specifier: 2.11.0
         version: 2.11.0
       sass:
-        specifier: 1.64.1
-        version: 1.64.1
+        specifier: 1.65.1
+        version: 1.65.1
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -813,7 +813,7 @@ importers:
         version: 1.8.0
       vite:
         specifier: 4.4.7
-        version: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+        version: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
       vue:
         specifier: 3.3.4
         version: 3.3.4
@@ -994,16 +994,16 @@ importers:
         version: 7.0.27
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
-        version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0)
+        version: git@github.com+misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
+        version: git@github.com+misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
       vite-plugin-turbosnap:
         specifier: 1.0.2
         version: 1.0.2
       vitest:
         specifier: 0.33.0
-        version: 0.33.0(happy-dom@10.0.3)(sass@1.64.1)
+        version: 0.33.0(happy-dom@10.0.3)(sass@1.65.1)
       vitest-fetch-mock:
         specifier: 0.2.2
         version: 0.2.2(vitest@0.33.0)
@@ -5277,7 +5277,7 @@ packages:
       magic-string: 0.27.0
       react-docgen-typescript: 2.2.2(typescript@5.1.6)
       typescript: 5.1.6
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
     dev: true
 
   /@jridgewell/gen-mapping@0.3.2:
@@ -6639,7 +6639,7 @@ packages:
       remark-slug: 6.1.0
       rollup: 3.27.0
       typescript: 5.1.6
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -7124,7 +7124,7 @@ packages:
       react: 18.2.0
       react-docgen: 6.0.0-alpha.3
       react-dom: 18.2.0(react@18.2.0)
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
     transitivePeerDependencies:
       - '@preact/preset-vite'
       - encoding
@@ -7296,7 +7296,7 @@ packages:
       magic-string: 0.27.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
       vue-docgen-api: 4.64.1(vue@3.3.4)
     transitivePeerDependencies:
       - '@preact/preset-vite'
@@ -8741,7 +8741,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.19.6(@babel/core@7.22.1)
       magic-string: 0.27.0
       react-refresh: 0.14.0
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8753,7 +8753,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
       vue: 3.3.4
 
   /@vitest/coverage-v8@0.33.0(vitest@0.33.0):
@@ -8772,7 +8772,7 @@ packages:
       std-env: 3.3.3
       test-exclude: 6.0.0
       v8-to-istanbul: 9.1.0
-      vitest: 0.33.0(happy-dom@10.0.3)(sass@1.64.1)
+      vitest: 0.33.0(happy-dom@10.0.3)(sass@1.65.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -19266,8 +19266,8 @@ packages:
       postcss: 8.4.23
     dev: false
 
-  /sass@1.64.1:
-    resolution: {integrity: sha512-16rRACSOFEE8VN7SCgBu1MpYCyN7urj9At898tyzdXFhC+a+yOX5dXwAR7L8/IdPJ1NB8OYoXmD55DM30B2kEQ==}
+  /sass@1.65.1:
+    resolution: {integrity: sha512-9DINwtHmA41SEd36eVPQ9BJKpn7eKDQmUHmpI0y5Zv2Rcorrh0zS+cFrt050hdNbmmCNKTW3hV5mWfuegNRsEA==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
@@ -21363,7 +21363,7 @@ packages:
       replace-ext: 1.0.1
     dev: false
 
-  /vite-node@0.33.0(@types/node@20.4.5)(sass@1.64.1):
+  /vite-node@0.33.0(@types/node@20.4.5)(sass@1.65.1):
     resolution: {integrity: sha512-19FpHYbwWWxDr73ruNahC+vtEdza52kA90Qb3La98yZ0xULqV8A5JLNPUff0f5zID4984tW7l3DH2przTJUZSw==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -21373,7 +21373,7 @@ packages:
       mlly: 1.4.0
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -21389,7 +21389,7 @@ packages:
     resolution: {integrity: sha512-irjKcKXRn7v5bPAg4mAbsS6DgibpP1VUFL9tlgxU6lloK6V9yw9qCZkS+s2PtbkZpWNzr3TN3zVJAc6J7gJZmA==}
     dev: true
 
-  /vite@4.4.7(@types/node@20.4.5)(sass@1.64.1):
+  /vite@4.4.7(@types/node@20.4.5)(sass@1.65.1):
     resolution: {integrity: sha512-6pYf9QJ1mHylfVh39HpuSfMPojPSKVxZvnclX1K1FyZ1PXDOcLBibdq5t1qxJSnL63ca8Wf4zts6mD8u8oc9Fw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -21421,7 +21421,7 @@ packages:
       esbuild: 0.18.17
       postcss: 8.4.27
       rollup: 3.27.0
-      sass: 1.64.1
+      sass: 1.65.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -21432,12 +21432,12 @@ packages:
       vitest: '>=0.16.0'
     dependencies:
       cross-fetch: 3.1.5
-      vitest: 0.33.0(happy-dom@10.0.3)(sass@1.64.1)
+      vitest: 0.33.0(happy-dom@10.0.3)(sass@1.65.1)
     transitivePeerDependencies:
       - encoding
     dev: true
 
-  /vitest@0.33.0(happy-dom@10.0.3)(sass@1.64.1):
+  /vitest@0.33.0(happy-dom@10.0.3)(sass@1.65.1):
     resolution: {integrity: sha512-1CxaugJ50xskkQ0e969R/hW47za4YXDUfWJDxip1hwbnhUjYolpfUn2AMOulqG/Dtd9WYAtkHmM/m3yKVrEejQ==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -21490,8 +21490,8 @@ packages:
       strip-literal: 1.0.1
       tinybench: 2.5.0
       tinypool: 0.6.0
-      vite: 4.4.7(@types/node@20.4.5)(sass@1.64.1)
-      vite-node: 0.33.0(@types/node@20.4.5)(sass@1.64.1)
+      vite: 4.4.7(@types/node@20.4.5)(sass@1.65.1)
+      vite-node: 0.33.0(@types/node@20.4.5)(sass@1.65.1)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
@@ -22074,14 +22074,14 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0227e860621e55cbed0aabe6dc601096a7748c4a}
+  git@github.com+misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
+    resolution: {commit: 0227e860621e55cbed0aabe6dc601096a7748c4a, repo: git@github.com:misskey-dev/browser-image-resizer.git, type: git}
     name: browser-image-resizer
     version: 2.2.1-misskey.3
     dev: false
 
-  github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/sharp-read-bmp/tar.gz/02d9dc189fa7df0c4bea09330be26741772dac01}
+  git@github.com+misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
+    resolution: {commit: 02d9dc189fa7df0c4bea09330be26741772dac01, repo: git@github.com:misskey-dev/sharp-read-bmp.git, type: git}
     name: sharp-read-bmp
     version: 1.0.0
     dependencies:
@@ -22090,9 +22090,9 @@ packages:
       sharp: 0.31.3
     dev: false
 
-  github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
-    id: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
+  git@github.com+misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {commit: cf583db098365b2ccc81a82f63ca9c93bc32b640, repo: git@github.com:misskey-dev/storybook-addon-misskey-theme.git, type: git}
+    id: git@github.com+misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
     name: storybook-addon-misskey-theme
     version: 0.0.0
     peerDependencies:
@@ -22122,8 +22122,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/d2d8db49943ccb201c1b1b283e9d0a630519fac7}
+  git@github.com+misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7:
+    resolution: {commit: d2d8db49943ccb201c1b1b283e9d0a630519fac7, repo: git@github.com:misskey-dev/summaly.git, type: git}
     name: summaly
     version: 4.0.2
     dependencies:
