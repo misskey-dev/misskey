@@ -94,7 +94,7 @@ jobs:
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic detects changes
-      uses: actions/github-script@v6.4.0
+      uses: actions/github-script@v6.4.1
       if: github.event_name != 'pull_request_target' && steps.chromatic_push.outputs.success == 'false'
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
