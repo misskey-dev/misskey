@@ -415,6 +415,7 @@ export type Announcement = {
 	title: string;
 	imageUrl: string | null;
 	display: 'normal' | 'banner' | 'dialog';
+	icon: 'info' | 'warning' | 'error' | 'success';
 	needConfirmationToRead: boolean;
 	forYou: boolean;
 	isRead?: boolean;

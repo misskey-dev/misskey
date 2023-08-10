@@ -89,7 +89,14 @@ export async function mainBoot() {
 			}, {}, 'closed');
 		}
 
-		// TODO: announcementCreatedイベント監視
+		stream.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
+			}
+		});
 
 		if ($i.isDeleted) {
 			alert({

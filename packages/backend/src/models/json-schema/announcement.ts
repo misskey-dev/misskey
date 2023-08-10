@@ -34,6 +34,10 @@ export const packedAnnouncementSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		icon: {
+			type: 'string',
+			optional: false, nullable: false,
+		},
 		display: {
 			type: 'string',
 			optional: false, nullable: false,

@@ -1098,6 +1098,8 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "dialog": string;
+    "icon": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

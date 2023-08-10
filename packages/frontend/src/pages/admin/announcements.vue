@@ -69,6 +69,7 @@ function add() {
 		title: '',
 		text: '',
 		imageUrl: null,
+		icon: 'info',
 		display: 'normal',
 		forExistingUsers: false,
 		needConfirmationToRead: false,

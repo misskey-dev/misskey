@@ -108,6 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				title: announcement.title,
 				text: announcement.text,
 				imageUrl: announcement.imageUrl,
+				icon: announcement.icon,
 				display: announcement.display,
 				isActive: announcement.isActive,
 				forExistingUsers: announcement.forExistingUsers,

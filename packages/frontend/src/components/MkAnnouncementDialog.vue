@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
 import * as misskey from 'misskey-js';
+import * as os from '@/os';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
@@ -29,6 +30,7 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 function ok() {
 	modal.value.close();
+	os.api('i/read-announcement', { announcementId: props.announcement.id });
 }
 
 onMounted(() => {
