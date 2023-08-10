@@ -59,7 +59,7 @@
 		"@aws-sdk/client-s3": "3.367.0",
 		"@aws-sdk/lib-storage": "3.367.0",
 		"@aws-sdk/node-http-handler": "3.360.0",
-		"@bull-board/api": "5.7.1",
+		"@bull-board/api": "5.8.0",
 		"@bull-board/fastify": "5.7.1",
 		"@bull-board/ui": "5.7.1",
 		"@discordapp/twemoji": "14.1.2",
