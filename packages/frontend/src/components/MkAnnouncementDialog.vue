@@ -6,8 +6,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')">
 	<div :class="$style.root">
-		<div :class="$style.title">{{ announcement.title }}</div>
-		<div :class="$style.text">{{ announcement.text }}</div>
+		<div :class="$style.header">
+			<span :class="$style.icon">
+				<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+				<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
+				<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
+				<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+			</span>
+			<span :class="$style.title">{{ announcement.title }}</span>
+		</div>
+		<div :class="$style.text"><Mfm :text="announcement.text"/></div>
 		<MkButton primary full @click="ok">{{ i18n.ts.ok }}</MkButton>
 	</div>
 </MkModal>
@@ -45,9 +53,16 @@ onMounted(() => {
 	min-width: 320px;
 	max-width: 480px;
 	box-sizing: border-box;
-	text-align: center;
 	background: var(--panel);
 	border-radius: var(--radius);
+}
+
+.header {
+	font-size: 120%;
+}
+
+.icon {
+	margin-right: 0.5em;
 }
 
 .title {

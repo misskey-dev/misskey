@@ -19,7 +19,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkRadios v-model="announcement.icon">
+						<template #label>{{ i18n.ts.icon }}</template>
+						<option value="info"><i class="ti ti-info-circle"></i></option>
+						<option value="warning"><i class="ti ti-alert-triangle" style="color: var(--warn);"></i></option>
+						<option value="error"><i class="ti ti-circle-x" style="color: var(--error);"></i></option>
+						<option value="success"><i class="ti ti-check" style="color: var(--success);"></i></option>
+					</MkRadios>
 					<MkRadios v-model="announcement.display">
+						<template #label>{{ i18n.ts.display }}</template>
 						<option value="normal">{{ i18n.ts.normal }}</option>
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
@@ -35,8 +43,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons _buttons">
 						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-						<MkButton class="button" inline @click="deactivate(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts._announcement.deactivate }}</MkButton>
-						<MkButton class="button" inline danger @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+						<MkButton v-if="announcement.id != null" class="button" inline @click="deactivate(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts._announcement.deactivate }}</MkButton>
+						<MkButton v-if="announcement.id != null" class="button" inline danger @click="remove(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
 					</div>
 				</div>
 			</section>
