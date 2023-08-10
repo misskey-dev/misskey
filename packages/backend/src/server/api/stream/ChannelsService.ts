@@ -19,6 +19,7 @@ import { AntennaChannelService } from './channels/antenna.js';
 import { DriveChannelService } from './channels/drive.js';
 import { HashtagChannelService } from './channels/hashtag.js';
 import { RoleTimelineChannelService } from './channels/role-timeline.js';
+import { ErrorHandling } from '@/error.js';
 
 @Injectable()
 export class ChannelsService {
@@ -59,7 +60,7 @@ export class ChannelsService {
 			case 'admin': return this.adminChannelService;
 
 			default:
-				throw new Error(`no such channel: ${name}`);
+				throw ErrorHandling(`no such channel: ${name}`);
 		}
 	}
 }

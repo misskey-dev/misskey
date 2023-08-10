@@ -42,6 +42,7 @@ import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import { ErrorHandling } from '@/error.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -147,17 +148,17 @@ export class ClientServerService {
 				const token = request.cookies.token;
 				if (token == null) {
 					reply.code(401);
-					throw new Error('login required');
+					throw ErrorHandling('login required');
 				}
 				const user = await this.usersRepository.findOneBy({ token });
 				if (user == null) {
 					reply.code(403);
-					throw new Error('no such user');
+					throw ErrorHandling('no such user');
 				}
 				const isAdministrator = await this.roleService.isAdministrator(user);
 				if (!isAdministrator) {
 					reply.code(403);
-					throw new Error('access denied');
+					throw ErrorHandling('access denied');
 				}
 			}
 		});

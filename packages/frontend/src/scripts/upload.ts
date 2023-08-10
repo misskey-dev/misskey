@@ -12,6 +12,7 @@ import { apiUrl } from '@/config';
 import { $i } from '@/account';
 import { alert } from '@/os';
 import { i18n } from '@/i18n';
+import { ErrorHandling } from '@/error';
 
 type Uploading = {
 	id: string;
@@ -34,7 +35,7 @@ export function uploadFile(
 	name?: string,
 	keepOriginal: boolean = defaultStore.state.keepOriginalUploading,
 ): Promise<Misskey.entities.DriveFile> {
-	if ($i == null) throw new Error('Not logged in');
+	if ($i == null) console.log('Not logged in');
 
 	if (folder && typeof folder === 'object') folder = folder.id;
 

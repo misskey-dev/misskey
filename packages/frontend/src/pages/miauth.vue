@@ -50,6 +50,7 @@ import * as os from '@/os';
 import { $i, login } from '@/account';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { ErrorHandling } from '@/error';
 
 const props = defineProps<{
 	session: string;
@@ -75,7 +76,7 @@ async function accept(): Promise<void> {
 	state = 'accepted';
 	if (props.callback) {
 		const cbUrl = new URL(props.callback);
-		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(cbUrl.protocol)) throw new Error('invalid url');
+		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(cbUrl.protocol)) throw ErrorHandling('invalid url');
 		cbUrl.searchParams.set('session', props.session);
 		location.href = cbUrl.href;
 	}

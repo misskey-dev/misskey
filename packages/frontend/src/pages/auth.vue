@@ -50,6 +50,7 @@ import * as os from '@/os';
 import { $i, login } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
+import { ErrorHandling } from '@/error';
 
 const props = defineProps<{
 	token: string;
@@ -62,7 +63,7 @@ function accepted() {
 	state = 'accepted';
 	if (session && session.app.callbackUrl) {
 		const url = new URL(session.app.callbackUrl);
-		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(url.protocol)) throw new Error('invalid url');
+		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:'].includes(url.protocol)) throw ErrorHandling('invalid url');
 		location.href = `${session.app.callbackUrl}?token=${session.token}`;
 	}
 }

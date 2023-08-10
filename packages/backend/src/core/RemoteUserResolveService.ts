@@ -18,6 +18,7 @@ import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { bindThis } from '@/decorators.js';
+import { ErrorHandling } from '@/error.js';
 
 @Injectable()
 export class RemoteUserResolveService {
@@ -47,7 +48,7 @@ export class RemoteUserResolveService {
 			this.logger.info(`return local user: ${usernameLower}`);
 			return await this.usersRepository.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 				if (u == null) {
-					throw new Error('user not found');
+					throw ErrorHandling('user not found');
 				} else {
 					return u;
 				}
@@ -60,7 +61,7 @@ export class RemoteUserResolveService {
 			this.logger.info(`return local user: ${usernameLower}`);
 			return await this.usersRepository.findOneBy({ usernameLower, host: IsNull() }).then(u => {
 				if (u == null) {
-					throw new Error('user not found');
+					throw ErrorHandling('user not found');
 				} else {
 					return u;
 				}
@@ -82,7 +83,7 @@ export class RemoteUserResolveService {
 						.getUserFromApId(self.href)
 						.then((u) => {
 							if (u == null) {
-								throw new Error('local user not found');
+								throw ErrorHandling('local user not found');
 							} else {
 								return u;
 							}
@@ -112,7 +113,7 @@ export class RemoteUserResolveService {
 				// validate uri
 				const uri = new URL(self.href);
 				if (uri.hostname !== host) {
-					throw new Error('Invalid uri');
+					throw ErrorHandling('Invalid uri');
 				}
 
 				await this.usersRepository.update({
@@ -130,7 +131,7 @@ export class RemoteUserResolveService {
 			this.logger.info(`return resynced remote user: ${acctLower}`);
 			return await this.usersRepository.findOneBy({ uri: self.href }).then(u => {
 				if (u == null) {
-					throw new Error('user not found');
+					throw ErrorHandling('user not found');
 				} else {
 					return u as LocalUser | RemoteUser;
 				}
@@ -146,12 +147,12 @@ export class RemoteUserResolveService {
 		this.logger.info(`WebFinger for ${chalk.yellow(acctLower)}`);
 		const finger = await this.webfingerService.webfinger(acctLower).catch(err => {
 			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: ${ err.statusCode ?? err.message }`);
-			throw new Error(`Failed to WebFinger for ${acctLower}: ${ err.statusCode ?? err.message }`);
+			throw ErrorHandling(`Failed to WebFinger for ${acctLower}: ${ err.statusCode ?? err.message }`);
 		});
 		const self = finger.links.find(link => link.rel != null && link.rel.toLowerCase() === 'self');
 		if (!self) {
 			this.logger.error(`Failed to WebFinger for ${chalk.yellow(acctLower)}: self link not found`);
-			throw new Error('self link not found');
+			throw ErrorHandling('self link not found');
 		}
 		return self;
 	}

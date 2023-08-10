@@ -136,6 +136,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
 import { dateString } from '@/filters/date';
+import { ErrorHandling } from '@/error';
 
 const props = defineProps<{
 	host: string;
@@ -173,8 +174,8 @@ async function fetch(): Promise<void> {
 }
 
 async function toggleBlock(): Promise<void> {
-	if (!meta) throw new Error('No meta?');
-	if (!instance) throw new Error('No instance?');
+	if (!meta) throw ErrorHandling('No meta?');
+	if (!instance) throw ErrorHandling('No instance?');
 	const { host } = instance;
 	await os.api('admin/update-meta', {
 		blockedHosts: isBlocked ? meta.blockedHosts.concat([host]) : meta.blockedHosts.filter(x => x !== host),
@@ -182,7 +183,7 @@ async function toggleBlock(): Promise<void> {
 }
 
 async function toggleSuspend(): Promise<void> {
-	if (!instance) throw new Error('No instance?');
+	if (!instance) throw ErrorHandling('No instance?');
 	await os.api('admin/federation/update-instance', {
 		host: instance.host,
 		isSuspended: suspended,
@@ -190,7 +191,7 @@ async function toggleSuspend(): Promise<void> {
 }
 
 function refreshMetadata(): void {
-	if (!instance) throw new Error('No instance?');
+	if (!instance) throw ErrorHandling('No instance?');
 	os.api('admin/federation/refresh-remote-instance-metadata', {
 		host: instance.host,
 	});

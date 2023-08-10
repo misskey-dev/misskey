@@ -9,6 +9,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { ErrorHandling } from '@/error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -53,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			]);
 
 			if (user == null || profile == null) {
-				throw new Error('user not found');
+				throw ErrorHandling('user not found');
 			}
 
 			const isModerator = await this.roleService.isModerator(user);
@@ -61,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const _me = await this.usersRepository.findOneByOrFail({ id: me.id });
 			if (!await this.roleService.isAdministrator(_me) && await this.roleService.isAdministrator(user)) {
-				throw new Error('cannot show info of admin');
+				throw ErrorHandling('cannot show info of admin');
 			}
 
 			const signins = await this.signinsRepository.findBy({ userId: user.id });

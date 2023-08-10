@@ -185,6 +185,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
+import { ErrorHandling } from '@/error';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -276,7 +277,7 @@ function downloadEmojiIndex(lang: string) {
 		function download() {
 			switch (lang) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
-				default: throw new Error('unrecognized lang: ' + lang);
+				default: throw ErrorHandling('unrecognized lang: ' + lang);
 			}
 		}
 		currentIndexes[lang] = await download();

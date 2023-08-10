@@ -9,6 +9,7 @@ import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { resetDb } from '@/misc/reset-db.js';
+import { ErrorHandling } from '@/error.js';
 
 export const meta = {
 	tags: ['non-productive'],
@@ -39,7 +40,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private redisClient: Redis.Redis,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (process.env.NODE_ENV !== 'test') throw new Error('NODE_ENV is not a test');
+			if (process.env.NODE_ENV !== 'test') throw ErrorHandling('NODE_ENV is not a test');
 
 			await redisClient.flushdb();
 			await resetDb(this.db);

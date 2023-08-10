@@ -33,6 +33,7 @@ import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
+import { ErrorHandling } from '@/error.js';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
@@ -370,7 +371,7 @@ export class OAuth2ProviderService {
 		fastify.get('/oauth/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as MiddlewareRequest).oauth2;
 			if (!oauth2) {
-				throw new Error('Unexpected lack of authorization information');
+				throw ErrorHandling('Unexpected lack of authorization information');
 			}
 
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);

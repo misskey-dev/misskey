@@ -85,6 +85,7 @@ import { deviceKind } from '@/scripts/device-kind';
 import MkButton from '@/components/MkButton.vue';
 import { versatileLang } from '@/scripts/intl-const';
 import { defaultStore } from '@/store';
+import { ErrorHandling } from '@/error';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
@@ -124,7 +125,7 @@ let tweetHeight = $ref(150);
 let unknownUrl = $ref(false);
 
 const requestUrl = new URL(props.url);
-if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
+if (!['http:', 'https:'].includes(requestUrl.protocol)) throw ErrorHandling('invalid url');
 
 if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com') {
 	const m = requestUrl.pathname.match(/^\/.+\/status(?:es)?\/(\d+)/);

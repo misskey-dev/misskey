@@ -30,6 +30,7 @@ import { url as local } from '@/config';
 import * as os from '@/os';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { safeURIDecode } from '@/scripts/safe-uri-decode';
+import { ErrorHandling } from '@/error';
 
 const props = defineProps<{
 	url: string;
@@ -38,7 +39,7 @@ const props = defineProps<{
 
 const self = props.url.startsWith(local);
 const url = new URL(props.url);
-if (!['http:', 'https:'].includes(url.protocol)) throw new Error('invalid url');
+if (!['http:', 'https:'].includes(url.protocol)) throw ErrorHandling('invalid url');
 const el = ref();
 
 useTooltip(el, (showing) => {

@@ -30,6 +30,7 @@ import { isNotNull } from '@/misc/is-not-null.js';
 import { LdSignatureService } from './LdSignatureService.js';
 import { ApMfmService } from './ApMfmService.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
+import { ErrorHandling } from '@/error.js';
 
 @Injectable()
 export class ApRendererService {
@@ -98,7 +99,7 @@ export class ApRendererService {
 			to = [`${attributedTo}/followers`];
 			cc = [];
 		} else {
-			throw new Error('renderAnnounce: cannot render non-public note');
+			throw ErrorHandling('renderAnnounce: cannot render non-public note');
 		}
 
 		return {
@@ -120,7 +121,7 @@ export class ApRendererService {
 	@bindThis
 	public renderBlock(block: Blocking): IBlock {
 		if (block.blockee?.uri == null) {
-			throw new Error('renderBlock: missing blockee uri');
+			throw ErrorHandling('renderBlock: missing blockee uri');
 		}
 
 		return {

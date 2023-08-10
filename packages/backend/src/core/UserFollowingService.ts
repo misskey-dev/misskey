@@ -29,6 +29,7 @@ import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import Logger from '../logger.js';
+import { ErrorHandling } from '@/error.js';
 
 const logger = new Logger('following/create');
 
@@ -459,8 +460,8 @@ export class UserFollowingService implements OnModuleInit {
 			this.userBlockingService.checkBlocked(followee.id, follower.id),
 		]);
 
-		if (blocking) throw new Error('blocking');
-		if (blocked) throw new Error('blocked');
+		if (blocking) throw ErrorHandling('blocking');
+		if (blocked) throw ErrorHandling('blocked');
 
 		const followRequest = await this.followRequestsRepository.insert({
 			id: this.idService.genId(),

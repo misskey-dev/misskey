@@ -11,6 +11,7 @@ import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
 import type { Note } from '@/models/entities/Note.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { ErrorHandling } from '@/error.js';
 
 @Injectable()
 export class GetterService {
@@ -61,7 +62,7 @@ export class GetterService {
 		const user = await this.getUser(userId);
 
 		if (!this.userEntityService.isRemoteUser(user)) {
-			throw new Error('user is not a remote user');
+			throw ErrorHandling('user is not a remote user');
 		}
 
 		return user;
@@ -75,7 +76,7 @@ export class GetterService {
 		const user = await this.getUser(userId);
 
 		if (!this.userEntityService.isLocalUser(user)) {
-			throw new Error('user is not a local user');
+			throw ErrorHandling('user is not a local user');
 		}
 
 		return user;
