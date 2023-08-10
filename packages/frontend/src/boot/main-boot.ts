@@ -83,7 +83,7 @@ export async function mainBoot() {
 			}
 		});
 
-		for (const announcement of $i.announcements.filter(x => x.display === 'dialog')) {
+		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
 			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
 				announcement,
 			}, {}, 'closed');

@@ -111,6 +111,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				display: announcement.display,
 				isActive: announcement.isActive,
 				forExistingUsers: announcement.forExistingUsers,
+				needConfirmationToRead: announcement.needConfirmationToRead,
+				userId: announcement.userId,
 				reads: reads.get(announcement)!,
 			}));
 		});

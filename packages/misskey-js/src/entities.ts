@@ -104,7 +104,7 @@ export type MeDetailed = UserDetailed & {
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
-	announcements: Announcement[];
+	unreadAnnouncements: Announcement[];
 	[other: string]: any;
 };
 

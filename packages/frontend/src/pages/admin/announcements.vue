@@ -19,6 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="announcement.imageUrl">
 						<template #label>{{ i18n.ts.imageUrl }}</template>
 					</MkInput>
+					<MkRadios v-model="announcement.display">
+						<option value="normal">{{ i18n.ts.normal }}</option>
+						<option value="banner">{{ i18n.ts.banner }}</option>
+						<option value="dialog">{{ i18n.ts.dialog }}</option>
+					</MkRadios>
 					<MkSwitch v-model="announcement.forExistingUsers">
 						{{ i18n.ts._announcement.forExistingUsers }}
 						<template #caption>{{ i18n.ts._announcement.forExistingUsersDescription }}</template>
@@ -46,6 +51,8 @@ import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkRadios from '@/components/MkRadios.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
