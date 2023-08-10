@@ -291,8 +291,8 @@ importers:
         specifier: 7.1.2
         version: 7.1.2
       pg:
-        specifier: 8.11.1
-        version: 8.11.1
+        specifier: 8.11.2
+        version: 8.11.2
       pkce-challenge:
         specifier: 4.0.1
         version: 4.0.1
@@ -346,7 +346,7 @@ importers:
         version: 0.32.4
       sharp-read-bmp:
         specifier: github:misskey-dev/sharp-read-bmp
-        version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
+        version: git@github.com+misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
       slacc:
         specifier: 0.0.10
         version: 0.0.10
@@ -358,7 +358,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
+        version: git@github.com+misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
       systeminformation:
         specifier: 5.18.9
         version: 5.18.9
@@ -379,7 +379,7 @@ importers:
         version: 14.0.0
       typeorm:
         specifier: 0.3.17
-        version: 0.3.17(ioredis@5.3.2)(pg@8.11.1)
+        version: 0.3.17(ioredis@5.3.2)(pg@8.11.2)
       typescript:
         specifier: 5.1.6
         version: 5.1.6
@@ -684,7 +684,7 @@ importers:
         version: 5.1.0
       browser-image-resizer:
         specifier: github:misskey-dev/browser-image-resizer#v2.2.1-misskey.3
-        version: github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
+        version: git@github.com+misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a
       buraha:
         specifier: 0.0.1
         version: 0.0.1
@@ -994,10 +994,10 @@ importers:
         version: 7.0.27
       storybook-addon-misskey-theme:
         specifier: github:misskey-dev/storybook-addon-misskey-theme
-        version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0)
+        version: git@github.com+misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
+        version: git@github.com+misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
       vite-plugin-turbosnap:
         specifier: 1.0.2
         version: 1.0.2
@@ -17540,8 +17540,8 @@ packages:
     dev: false
     optional: true
 
-  /pg-connection-string@2.6.1:
-    resolution: {integrity: sha512-w6ZzNu6oMmIzEAYVw+RLK0+nqHPt8K3ZnknKi+g48Ak2pr3dtljJW3o+D/n2zzCG07Zoe9VOX3aiKpj+BN0pjg==}
+  /pg-connection-string@2.6.2:
+    resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
     dev: false
 
   /pg-int8@1.0.1:
@@ -17553,12 +17553,12 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /pg-pool@3.6.1(pg@8.11.1):
+  /pg-pool@3.6.1(pg@8.11.2):
     resolution: {integrity: sha512-jizsIzhkIitxCGfPRzJn1ZdcosIt3pz9Sh3V01fm1vZnbnCMgmGl5wvGGdNN2EL9Rmb0EcFoCkixH4Pu+sP9Og==}
     peerDependencies:
       pg: '>=8.0'
     dependencies:
-      pg: 8.11.1
+      pg: 8.11.2
     dev: false
 
   /pg-protocol@1.6.0:
@@ -17588,8 +17588,8 @@ packages:
       postgres-range: 1.1.3
     dev: true
 
-  /pg@8.11.1:
-    resolution: {integrity: sha512-utdq2obft07MxaDg0zBJI+l/M3mBRfIpEN3iSemsz0G5F2/VXx+XzqF4oxrbIZXQxt2AZzIUzyVg/YM6xOP/WQ==}
+  /pg@8.11.2:
+    resolution: {integrity: sha512-l4rmVeV8qTIrrPrIR3kZQqBgSN93331s9i6wiUiLOSk0Q7PmUxZD/m1rQI622l3NfqBby9Ar5PABfS/SulfieQ==}
     engines: {node: '>= 8.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -17599,8 +17599,8 @@ packages:
     dependencies:
       buffer-writer: 2.0.0
       packet-reader: 1.0.0
-      pg-connection-string: 2.6.1
-      pg-pool: 3.6.1(pg@8.11.1)
+      pg-connection-string: 2.6.2
+      pg-pool: 3.6.1(pg@8.11.2)
       pg-protocol: 1.6.0
       pg-types: 2.2.0
       pgpass: 1.0.5
@@ -20864,7 +20864,7 @@ packages:
   /typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  /typeorm@0.3.17(ioredis@5.3.2)(pg@8.11.1):
+  /typeorm@0.3.17(ioredis@5.3.2)(pg@8.11.2):
     resolution: {integrity: sha512-UDjUEwIQalO9tWw9O2A4GU+sT3oyoUXheHJy4ft+RFdnRdQctdQ34L9SqE2p7LdwzafHx1maxT+bqXON+Qnmig==}
     engines: {node: '>= 12.9.0'}
     hasBin: true
@@ -20933,7 +20933,7 @@ packages:
       glob: 8.1.0
       ioredis: 5.3.2
       mkdirp: 2.1.6
-      pg: 8.11.1
+      pg: 8.11.2
       reflect-metadata: 0.1.13
       sha.js: 2.4.11
       tslib: 2.5.3
@@ -22074,14 +22074,14 @@ packages:
       readable-stream: 3.6.0
     dev: false
 
-  github.com/misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/browser-image-resizer/tar.gz/0227e860621e55cbed0aabe6dc601096a7748c4a}
+  git@github.com+misskey-dev/browser-image-resizer/0227e860621e55cbed0aabe6dc601096a7748c4a:
+    resolution: {commit: 0227e860621e55cbed0aabe6dc601096a7748c4a, repo: git@github.com:misskey-dev/browser-image-resizer.git, type: git}
     name: browser-image-resizer
     version: 2.2.1-misskey.3
     dev: false
 
-  github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/sharp-read-bmp/tar.gz/02d9dc189fa7df0c4bea09330be26741772dac01}
+  git@github.com+misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01:
+    resolution: {commit: 02d9dc189fa7df0c4bea09330be26741772dac01, repo: git@github.com:misskey-dev/sharp-read-bmp.git, type: git}
     name: sharp-read-bmp
     version: 1.0.0
     dependencies:
@@ -22090,9 +22090,9 @@ packages:
       sharp: 0.31.3
     dev: false
 
-  github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
-    id: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
+  git@github.com+misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {commit: cf583db098365b2ccc81a82f63ca9c93bc32b640, repo: git@github.com:misskey-dev/storybook-addon-misskey-theme.git, type: git}
+    id: git@github.com+misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640
     name: storybook-addon-misskey-theme
     version: 0.0.0
     peerDependencies:
@@ -22122,8 +22122,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/d2d8db49943ccb201c1b1b283e9d0a630519fac7}
+  git@github.com+misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7:
+    resolution: {commit: d2d8db49943ccb201c1b1b283e9d0a630519fac7, repo: git@github.com:misskey-dev/summaly.git, type: git}
     name: summaly
     version: 4.0.2
     dependencies:

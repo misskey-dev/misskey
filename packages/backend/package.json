@@ -130,7 +130,7 @@
 		"os-utils": "0.0.14",
 		"otpauth": "9.1.4",
 		"parse5": "7.1.2",
-		"pg": "8.11.1",
+		"pg": "8.11.2",
 		"pkce-challenge": "4.0.1",
 		"probe-image-size": "7.2.3",
 		"promise-limit": "2.7.0",
