@@ -1098,6 +1098,13 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "_announcement": {
+        "forExistingUsers": string;
+        "forExistingUsersDescription": string;
+        "needConfirmationToRead": string;
+        "needConfirmationToReadDescription": string;
+        "deactivate": string;
+    };
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
