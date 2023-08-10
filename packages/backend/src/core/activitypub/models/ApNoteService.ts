@@ -83,26 +83,26 @@ export class ApNoteService {
 		if (!validPost.includes(getApType(object))) {
 			const error = new Error(`invalid Note: invalid object type ${getApType(object)}`);
 			if (process.env.NODE_ENV === 'production') {
-				Object.defineProperty(error, 'stack', { value: ''});
+				Object.defineProperty(error, 'stack', { value: '' });
 			}
-			return error
+			return error;
 		}
 
 		if (object.id && this.utilityService.extractDbHost(object.id) !== expectHost) {
 			const error = new Error(`invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
 			if (process.env.NODE_ENV === 'production') {
-				Object.defineProperty(error, 'stack', { value: ''});
+				Object.defineProperty(error, 'stack', { value: '' });
 			}
-			return error
+			return error;
 		}
 
 		const actualHost = object.attributedTo && this.utilityService.extractDbHost(getOneApId(object.attributedTo));
 		if (object.attributedTo && actualHost !== expectHost) {
 			const error = new Error(`invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
 			if (process.env.NODE_ENV === 'production') {
-				Object.defineProperty(error, 'stack', { value: ''});
+				Object.defineProperty(error, 'stack', { value: '' });
 			}
-			return error
+			return error;
 		}
 
 		return null;
