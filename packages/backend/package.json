@@ -114,7 +114,7 @@
 		"json5": "2.2.3",
 		"jsonld": "8.2.0",
 		"jsrsasign": "10.8.6",
-		"meilisearch": "0.33.0",
+		"meilisearch": "0.34.1",
 		"mfm-js": "0.23.3",
 		"microformats-parser": "1.4.1",
 		"mime-types": "2.1.35",
