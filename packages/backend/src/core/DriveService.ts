@@ -752,12 +752,12 @@ export class DriveService {
 				return;
 			} else {
 				const error = new Error(`Failed to delete the file from the object storage with the given key: ${key}`);
-  			if (process.env.NODE_ENV === 'production') {
-    			Object.defineProperty(error, 'stack', { value: '' });
+			if (process.env.NODE_ENV === 'production') {
+					Object.defineProperty(error, 'stack', { value: '' });
 					Object.defineProperty(err, 'stack', { value: '' });
-  			}
-  			error['cause'] = err;
-  			throw error;
+			}
+				error['cause'] = err;
+				throw error;
 			}
 		}
 	}
