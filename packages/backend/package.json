@@ -71,7 +71,7 @@
 		"@fastify/multipart": "7.7.3",
 		"@fastify/static": "6.10.2",
 		"@fastify/view": "8.0.0",
-		"@nestjs/common": "10.1.2",
+		"@nestjs/common": "10.1.3",
 		"@nestjs/core": "10.1.2",
 		"@nestjs/testing": "10.1.2",
 		"@peertube/http-signature": "1.7.0",
