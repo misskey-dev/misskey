@@ -58,6 +58,33 @@ export class AnnouncementService {
 	}
 
 	@bindThis
+	public async create(values: Partial<Announcement>): Promise<{ raw: Announcement; packed: Packed<'Announcement'> }> {
+		const announcement = await this.announcementsRepository.insert({
+			id: this.idService.genId(),
+			createdAt: new Date(),
+			updatedAt: null,
+			title: values.title,
+			text: values.text,
+			imageUrl: values.imageUrl,
+			display: values.display,
+			forExistingUsers: values.forExistingUsers,
+			needConfirmationToRead: values.needConfirmationToRead,
+			userId: values.userId,
+		}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
+
+		const packed = (await this.packMany([announcement]))[0];
+
+		this.globalEventService.publishBroadcastStream('announcementCreated', {
+			announcement: packed,
+		});
+
+		return {
+			raw: announcement,
+			packed: packed,
+		};
+	}
+
+	@bindThis
 	public async read(user: User, announcementId: Announcement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
@@ -87,12 +114,13 @@ export class AnnouncementService {
 		return announcements.map(announcement => ({
 			id: announcement.id,
 			createdAt: announcement.createdAt.toISOString(),
-			updatedAt: announcement.updatedAt?.toISOString(),
+			updatedAt: announcement.updatedAt?.toISOString() ?? null,
 			text: announcement.text,
 			title: announcement.title,
 			imageUrl: announcement.imageUrl,
 			display: announcement.display,
 			needConfirmationToRead: announcement.needConfirmationToRead,
+			forYou: announcement.userId === me?.id,
 			isRead: reads.some(read => read.announcementId === announcement.id),
 		}));
 	}

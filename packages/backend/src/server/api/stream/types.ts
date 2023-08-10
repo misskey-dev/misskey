@@ -64,6 +64,9 @@ export interface BroadcastTypes {
 			[other: string]: any;
 		}[];
 	};
+	announcementCreated: {
+		announcement: Packed<'Announcement'>;
+	};
 }
 
 export interface MainStreamTypes {

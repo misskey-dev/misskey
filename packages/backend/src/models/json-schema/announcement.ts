@@ -38,13 +38,17 @@ export const packedAnnouncementSchema = {
 			type: 'string',
 			optional: false, nullable: false,
 		},
-		isRead: {
+		forYou: {
 			type: 'boolean',
-			optional: true, nullable: false,
+			optional: false, nullable: false,
 		},
 		needConfirmationToRead: {
 			type: 'boolean',
 			optional: false, nullable: false,
+		},
+		isRead: {
+			type: 'boolean',
+			optional: true, nullable: false,
 		},
 	},
 } as const;
