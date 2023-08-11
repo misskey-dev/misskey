@@ -9,7 +9,7 @@ import type { UsersRepository, UserProfilesRepository } from '@/models/index.js'
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 import { DI } from '@/di-symbols.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 export const meta = {
 	requireCredential: true,
