@@ -93,12 +93,12 @@ export function useNoteCapture(props: {
 	function onStreamConnected() {
 		capture(false);
 	}
-	
+
 	capture(true);
 	if (connection) {
 		connection.on('_connected_', onStreamConnected);
 	}
-	
+
 	onUnmounted(() => {
 		decapture(true);
 		if (connection) {

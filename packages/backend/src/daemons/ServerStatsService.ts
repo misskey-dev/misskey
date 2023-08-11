@@ -3,6 +3,7 @@ import si from 'systeminformation';
 import Xev from 'xev';
 import * as osUtils from 'os-utils';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
@@ -14,9 +15,10 @@ const round = (num: number) => Math.round(num * 10) / 10;
 
 @Injectable()
 export class ServerStatsService implements OnApplicationShutdown {
-	private intervalId: NodeJS.Timer;
+	private intervalId: NodeJS.Timer | null = null;
 
 	constructor(
+		private metaService: MetaService,
 	) {
 	}
 
@@ -24,7 +26,9 @@ export class ServerStatsService implements OnApplicationShutdown {
 	 * Report server stats regularly
 	 */
 	@bindThis
-	public start(): void {
+	public async start(): Promise<void> {
+		if (!(await this.metaService.fetch(true)).enableServerMachineStats) return;
+
 		const log = [] as any[];
 
 		ev.on('requestServerStatsLog', x => {
@@ -64,7 +68,9 @@ export class ServerStatsService implements OnApplicationShutdown {
 
 	@bindThis
 	public dispose(): void {
-		clearInterval(this.intervalId);
+		if (this.intervalId) {
+			clearInterval(this.intervalId);
+		}
 	}
 
 	@bindThis

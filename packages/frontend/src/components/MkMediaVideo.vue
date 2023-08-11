@@ -17,8 +17,8 @@
 		controls
 		@contextmenu.stop
 	>
-		<source 
-			:src="video.url" 
+		<source
+			:src="video.url"
 			:type="video.type"
 		>
 	</video>

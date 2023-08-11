@@ -1,3 +1,4 @@
+type EnumItem = string | {label: string; value: string;};
 export type FormItem = {
 	label?: string;
 	type: 'string';
@@ -20,7 +21,7 @@ export type FormItem = {
 	type: 'enum';
 	default: string | null;
 	hidden?: boolean;
-	enum: string[];
+	enum: EnumItem[];
 } | {
 	label?: string;
 	type: 'radio';

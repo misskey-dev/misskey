@@ -69,10 +69,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					userListId: ps.listId,
 				});
 				if (me !== null) {
-					additionalProperties.isLiked = (await this.userListFavoritesRepository.findOneBy({
-						userId: me.id,
-						userListId: ps.listId,
-					}) !== null);
+					additionalProperties.isLiked = await this.userListFavoritesRepository.exist({
+						where: {
+							userId: me.id,
+							userListId: ps.listId,
+						},
+					});
 				} else {
 					additionalProperties.isLiked = false;
 				}

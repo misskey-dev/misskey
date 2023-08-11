@@ -20,7 +20,7 @@
 			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji"/>
 		</div>
 	</MkFoldableSection>
-	
+
 	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
 		<template #header>{{ category || i18n.ts.other }}</template>
 		<div :class="$style.emojis">
@@ -56,7 +56,7 @@ function search() {
 		const queryarry = q.match(/\:([a-z0-9_]*)\:/g);
 
 		if (queryarry) {
-			searchEmojis = customEmojis.value.filter(emoji => 
+			searchEmojis = customEmojis.value.filter(emoji =>
 				queryarry.includes(`:${emoji.name}:`),
 			);
 		} else {

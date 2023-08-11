@@ -20,7 +20,7 @@ class UserListChannel extends Channel {
 		private userListsRepository: UserListsRepository,
 		private userListJoiningsRepository: UserListJoiningsRepository,
 		private noteEntityService: NoteEntityService,
-		
+
 		id: string,
 		connection: Channel['connection'],
 	) {
@@ -34,11 +34,13 @@ class UserListChannel extends Channel {
 		this.listId = params.listId as string;
 
 		// Check existence and owner
-		const list = await this.userListsRepository.findOneBy({
-			id: this.listId,
-			userId: this.user!.id,
+		const listExist = await this.userListsRepository.exist({
+			where: {
+				id: this.listId,
+				userId: this.user!.id,
+			},
 		});
-		if (!list) return;
+		if (!listExist) return;
 
 		// Subscribe stream
 		this.subscriber.on(`userListStream:${this.listId}`, this.send);

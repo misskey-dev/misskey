@@ -5,7 +5,7 @@
 	author: 'ThinaticSystem',
 
   base: 'light',
-	
+
 	props: {
 		accent: '#77b58c',
 		bg: 'e2deda',

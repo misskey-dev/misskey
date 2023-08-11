@@ -46,7 +46,7 @@ defineProps<{
 			margin: 0 0 8px 0;
 			font-size: 0.9em;
 		}
-	
+
 		> .items {
 			> .item {
 				display: flex;

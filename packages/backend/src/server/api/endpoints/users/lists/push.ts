@@ -100,18 +100,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Check blocking
 			if (user.id !== me.id) {
-				const block = await this.blockingsRepository.findOneBy({
-					blockerId: user.id,
-					blockeeId: me.id,
+				const blockExist = await this.blockingsRepository.exist({
+					where: {
+						blockerId: user.id,
+						blockeeId: me.id,
+					},
 				});
-				if (block) {
+				if (blockExist) {
 					throw new ApiError(meta.errors.youHaveBeenBlocked);
 				}
 			}
 
-			const exist = await this.userListJoiningsRepository.findOneBy({
-				userListId: userList.id,
-				userId: user.id,
+			const exist = await this.userListJoiningsRepository.exist({
+				where: {
+					userListId: userList.id,
+					userId: user.id,
+				},
 			});
 
 			if (exist) {

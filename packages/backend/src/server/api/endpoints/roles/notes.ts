@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
-			if (!role.isExplorable) { 
+			if (!role.isExplorable) {
 				return [];
 			}
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1

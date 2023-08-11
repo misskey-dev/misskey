@@ -33,11 +33,6 @@ export class AppLockService {
 	}
 
 	@bindThis
-	public getFetchInstanceMetadataLock(host: string, timeout = 30 * 1000): Promise<() => void> {
-		return this.lock(`instance:${host}`, timeout);
-	}
-
-	@bindThis
 	public getChartInsertLock(lockKey: string, timeout = 30 * 1000): Promise<() => void> {
 		return this.lock(`chart-insert:${lockKey}`, timeout);
 	}

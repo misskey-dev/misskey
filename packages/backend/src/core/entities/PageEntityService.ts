@@ -97,7 +97,7 @@ export class PageEntityService {
 			eyeCatchingImage: page.eyeCatchingImageId ? await this.driveFileEntityService.pack(page.eyeCatchingImageId) : null,
 			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter((x): x is DriveFile => x != null)),
 			likedCount: page.likedCount,
-			isLiked: meId ? await this.pageLikesRepository.findOneBy({ pageId: page.id, userId: meId }).then(x => x != null) : undefined,
+			isLiked: meId ? await this.pageLikesRepository.exist({ where: { pageId: page.id, userId: meId } }) : undefined,
 		});
 	}
 

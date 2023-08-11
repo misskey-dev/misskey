@@ -31,7 +31,7 @@ export class WebhookService implements OnApplicationShutdown {
 			});
 			this.webhooksFetched = true;
 		}
-	
+
 		return this.webhooks;
 	}
 

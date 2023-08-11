@@ -1,5 +1,6 @@
 import * as http from 'node:http';
 import * as https from 'node:https';
+import * as net from 'node:net';
 import CacheableLookup from 'cacheable-lookup';
 import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
@@ -42,21 +43,21 @@ export class HttpRequestService {
 			errorTtl: 30,	// 30secs
 			lookup: false,	// nativeのdns.lookupにfallbackしない
 		});
-		
+
 		this.http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
-			lookup: cache.lookup,
-		} as http.AgentOptions);
-		
+			lookup: cache.lookup as unknown as net.LookupFunction,
+		});
+
 		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
-			lookup: cache.lookup,
-		} as https.AgentOptions);
-		
+			lookup: cache.lookup as unknown as net.LookupFunction,
+		});
+
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
-		
+
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
 				keepAlive: true,
@@ -144,7 +145,7 @@ export class HttpRequestService {
 			method: args.method ?? 'GET',
 			headers: {
 				'User-Agent': this.config.userAgent,
-				...(args.headers ?? {})
+				...(args.headers ?? {}),
 			},
 			body: args.body,
 			size: args.size ?? 10 * 1024 * 1024,

@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];
-			
+
 			if (!ps.sinceId && !ps.sinceDate) {
 				noteIdsRes = await this.redisClient.xrevrange(
 					`channelTimeline:${channel.id}`,
@@ -105,7 +105,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				}
 				//#endregion
 
-				timeline = await query.take(ps.limit).getMany();
+				timeline = await query.limit(ps.limit).getMany();
 			} else {
 				const noteIds = noteIdsRes.map(x => x[1][1]).filter(x => x !== ps.untilId);
 

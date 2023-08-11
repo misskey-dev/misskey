@@ -115,7 +115,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				case 'remote': query.andWhere('report.targetUserHost IS NOT NULL'); break;
 			}
 
-			const reports = await query.take(ps.limit).getMany();
+			const reports = await query.limit(ps.limit).getMany();
 
 			return await this.abuseUserReportEntityService.packMany(reports);
 		});

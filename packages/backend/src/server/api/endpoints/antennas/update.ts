@@ -112,6 +112,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
 				notify: ps.notify,
+				isActive: true,
+				lastUsedAt: new Date(),
 			});
 
 			this.globalEventService.publishInternalEvent('antennaUpdated', await this.antennasRepository.findOneByOrFail({ id: antenna.id }));

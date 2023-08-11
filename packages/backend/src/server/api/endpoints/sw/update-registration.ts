@@ -35,7 +35,7 @@ export const meta = {
 			code: 'NO_SUCH_REGISTRATION',
 			id: ' b09d8066-8064-5613-efb6-0e963b21d012',
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {

@@ -54,7 +54,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				query.andWhere('folder.parentId IS NULL');
 			}
 
-			const folders = await query.take(ps.limit).getMany();
+			const folders = await query.limit(ps.limit).getMany();
 
 			return await Promise.all(folders.map(folder => this.driveFolderEntityService.pack(folder)));
 		});

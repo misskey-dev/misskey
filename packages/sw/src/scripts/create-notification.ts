@@ -199,6 +199,13 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						tag: `achievement:${data.body.achievement}`,
 					}];
 
+				case 'pollEnded':
+					return [t('_notification.pollEnded'), {
+						body: data.body.note.text ?? '',
+						badge: iconUrl('chart-arrows'),
+						data,
+					}];
+
 				case 'app':
 					return [data.body.header ?? data.body.body, {
 						body: data.body.header ? data.body.body : '',
