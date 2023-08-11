@@ -1,4 +1,9 @@
 <div align="center">
+	<img src="https://github.com/Misskey-art/misskey/assets/56180684/852c4783-eb4d-413d-b0ce-b184e9525ec8" alt="Misskey art logo" height=200/>
+	<h2>Fork of Misskey by Misskey.art</h2>
+</div>
+
+<div align="center">
 <a href="https://misskey-hub.net">
 	<img src="./assets/title_float.svg" alt="Misskey logo" style="border-radius:50%" width="400"/>
 </a>
