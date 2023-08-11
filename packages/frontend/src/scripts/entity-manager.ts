@@ -144,7 +144,13 @@ export class NoteManager {
             if (this.isDebuggerEnabled) console.log('NoteManager: set note (update)', note.id, cached, note);
         } else {
             this.notesSource.value.set(note.id, note);
-            if (this.isDebuggerEnabled) console.log('NoteManager: set note (new)', note.id, this.notesSource.value.get(note.id), note);
+
+            if (this.isDebuggerEnabled) {
+                console.log('NoteManager: set note (new)', note.id, { src: note, ref: this.notesSource.value.get(note.id) });
+                watch(this.notesSource.value.get(note.id)!, newVal => {
+                    console.log('NoteManager: note source updated', newVal.id, newVal);
+                });
+            }
         }
         this.updatedAt.set(note.id, Date.now());
     }
