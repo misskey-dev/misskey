@@ -20,7 +20,7 @@ import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 export class Resolver {
 	private history: Set<string>;

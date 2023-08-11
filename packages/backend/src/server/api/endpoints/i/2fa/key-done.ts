@@ -14,7 +14,7 @@ import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import type { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 

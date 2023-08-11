@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 type CaptchaResponse = {
 	success: boolean;

@@ -9,7 +9,7 @@ import * as jsrsasign from 'jsrsasign';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);

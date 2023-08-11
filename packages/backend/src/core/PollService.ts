@@ -15,7 +15,7 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class PollService {

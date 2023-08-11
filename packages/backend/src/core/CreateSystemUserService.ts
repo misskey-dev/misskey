@@ -16,7 +16,7 @@ import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { DI } from '@/di-symbols.js';
 import generateNativeUserToken from '@/misc/generate-native-user-token.js';
 import { bindThis } from '@/decorators.js';
-import { ErrorHandling } from '@/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class CreateSystemUserService {
