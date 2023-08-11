@@ -70,7 +70,6 @@ definePageMetadata({
 .forYou {
 	display: flex;
 	align-items: center;
-	padding: 16px 32px 8px 32px;
 	line-height: 24px;
 	font-size: 90%;
 	white-space: pre;
