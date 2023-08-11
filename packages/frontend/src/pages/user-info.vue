@@ -132,6 +132,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFolder>
 
+				<MkFolder v-if="user.host == null && iAmModerator">
+					<template #icon><i class="ti ti-speakerphone"></i></template>
+					<template #label>{{ i18n.ts.announcements }}</template>
+					<div class="_gaps">
+						<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
+
+						<div v-for="announcement in info.announcements" :key="announcement.id" :class="$style.announcementItem">
+							{{ announcement.title }}
+						</div>
+					</div>
+				</MkFolder>
+
 				<MkFolder>
 					<template #icon><i class="ti ti-password"></i></template>
 					<template #label>IP</template>
@@ -185,7 +197,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, defineAsyncComponent, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
@@ -404,6 +416,12 @@ function toggleRoleItem(role) {
 	} else {
 		expandedRoles.push(role.id);
 	}
+}
+
+function createAnnouncement() {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+		user,
+	}, {}, 'closed');
 }
 
 watch(() => props.userId, () => {

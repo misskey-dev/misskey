@@ -75,9 +75,15 @@ export class AnnouncementService {
 
 		const packed = (await this.packMany([announcement]))[0];
 
-		this.globalEventService.publishBroadcastStream('announcementCreated', {
-			announcement: packed,
-		});
+		if (values.userId) {
+			this.globalEventService.publishMainStream(values.userId, 'announcementCreated', {
+				announcement: packed,
+			});
+		} else {
+			this.globalEventService.publishBroadcastStream('announcementCreated', {
+				announcement: packed,
+			});
+		}
 
 		return {
 			raw: announcement,

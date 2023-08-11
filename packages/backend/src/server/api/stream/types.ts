@@ -108,6 +108,9 @@ export interface MainStreamTypes {
 	driveFileCreated: Packed<'DriveFile'>;
 	readAntenna: Antenna;
 	receiveFollowRequest: Packed<'User'>;
+	announcementCreated: {
+		announcement: Packed<'Announcement'>;
+	};
 }
 
 export interface DriveStreamTypes {
