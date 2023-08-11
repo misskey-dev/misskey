@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps_m">
-			<section v-for="announcement in announcements" class="">
+			<section v-for="announcement in announcements" :key="announcement.id ?? announcement._id" class="">
 				<div class="_panel _gaps_m" style="padding: 24px;">
 					<MkInput v-model="announcement.title">
 						<template #label>{{ i18n.ts.title }}</template>
@@ -73,6 +73,7 @@ os.api('admin/announcements/list').then(announcementResponse => {
 
 function add() {
 	announcements.unshift({
+		_id: Math.random().toString(36),
 		id: null,
 		title: '',
 		text: '',
