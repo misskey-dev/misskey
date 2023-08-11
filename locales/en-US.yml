@@ -1482,6 +1482,8 @@ _aboutMisskey:
   contributors: "Main contributors"
   allContributors: "All contributors"
   source: "Source code"
+  originalSource: "Original source code"
+  ioSource: "Misskey.io's source code"
   translation: "Translate Misskey"
   donate: "Donate to Misskey"
   morePatrons: "We also appreciate the support of many other helpers not listed here. Thank you! 🥰"
@@ -1847,6 +1849,7 @@ _instanceCharts:
 _timelines:
   home: "Home"
   local: "Local"
+  media: "Media"
   social: "Social"
   global: "Global"
 _play:

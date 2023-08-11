@@ -1501,6 +1501,8 @@ _aboutMisskey:
   contributors: "主なコントリビューター"
   allContributors: "全てのコントリビューター"
   source: "ソースコード"
+  originalSource: "本家のソースコード"
+  ioSource: "Misskey.ioのソースコード"
   translation: "Misskeyを翻訳"
   donate: "Misskeyに寄付"
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
@@ -1894,6 +1896,7 @@ _instanceCharts:
 _timelines:
   home: "ホーム"
   local: "ローカル"
+  media: "メディア"
   social: "ソーシャル"
   global: "グローバル"
 

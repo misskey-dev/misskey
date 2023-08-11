@@ -14,6 +14,7 @@ class GlobalTimelineChannel extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = false;
 	private withReplies: boolean;
+	private withFiles: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -33,6 +34,7 @@ class GlobalTimelineChannel extends Channel {
 		if (!policies.gtlAvailable) return;
 
 		this.withReplies = params.withReplies as boolean;
+		this.withFiles = params.withFiles as boolean;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -42,6 +44,9 @@ class GlobalTimelineChannel extends Channel {
 	private async onNote(note: Packed<'Note'>) {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
+
+		// ファイルを含まない投稿は除外
+		if (this.withFiles && (note.files === undefined || note.files.length === 0)) return;
 
 		// リプライなら再pack
 		if (note.replyId != null) {
