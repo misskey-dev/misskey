@@ -988,6 +988,7 @@ export interface Locale {
     "disableFederationConfirm": string;
     "disableFederationConfirmWarn": string;
     "disableFederationOk": string;
+    "contentWarningCheckRule": string;
     "invitationRequiredToRegister": string;
     "emailNotSupported": string;
     "postToTheChannel": string;

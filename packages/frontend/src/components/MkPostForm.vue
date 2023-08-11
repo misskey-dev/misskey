@@ -59,6 +59,7 @@
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
+	<MkInfo v-if="useCw" warn :class="$style.contentWarningCheckRule">{{ i18n.ts.contentWarningCheckRule }}</MkInfo>
 	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<input v-show="useCw" ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown">
 	<div :class="[$style.textOuter, { [$style.withCw]: useCw }]">
@@ -1044,6 +1045,10 @@ defineExpose({
 	padding: 8px 0 8px 8px;
 	border-radius: 8px;
 	background: var(--X4);
+}
+
+.contentWarningCheckRule {
+	margin: 0 20px 16px 20px;
 }
 
 .hasNotSpecifiedMentions {
