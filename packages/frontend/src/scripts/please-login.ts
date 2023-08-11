@@ -22,5 +22,5 @@ export function pleaseLogin(path?: string) {
 		},
 	}, 'closed');
 
-	console.log('signin required');
+	throw new Error('signin required');
 }

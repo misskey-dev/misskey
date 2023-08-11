@@ -14,7 +14,6 @@ import * as Acct from 'misskey-js/built/acct';
 import * as os from '@/os';
 import { mainRouter } from '@/router';
 import { i18n } from '@/i18n';
-import { ErrorHandling } from '@/error';
 
 async function follow(user): Promise<void> {
 	const { canceled } = await os.confirm({
@@ -34,7 +33,7 @@ async function follow(user): Promise<void> {
 
 const acct = new URL(location.href).searchParams.get('acct');
 if (acct == null) {
-	throw ErrorHandling('acct required');
+	throw new Error('acct required');
 }
 
 let promise;

@@ -27,14 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkWindow from '@/components/MkWindow.vue';
 import { versatileLang } from '@/scripts/intl-const';
 import { defaultStore } from '@/store';
-import { ErrorHandling } from '@/error';
 
 const props = defineProps<{
 	url: string;
 }>();
 
 const requestUrl = new URL(props.url);
-if (!['http:', 'https:'].includes(requestUrl.protocol)) throw ErrorHandling('invalid url');
+if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 let fetching = $ref(true);
 let title = $ref<string | null>(null);
