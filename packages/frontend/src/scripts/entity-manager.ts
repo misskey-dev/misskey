@@ -107,6 +107,14 @@ export class NoteManager {
     }
 
     public set(_note: Note): void {
+        if (this.updatedAt.has(_note.id)) {
+            if (this.updatedAt.get(_note.id)! + 100 > Date.now()) {
+                if (this.isDebuggerEnabled) console.log('NoteManager: set ignore', _note.id);
+                // 100ms以内に更新されたノートは無視（computedが壊れるので）
+                return;
+            }
+        }
+
         const note: Note = { ..._note };
 
         userLiteManager.set(note.user);
@@ -435,11 +443,10 @@ export class NoteManager {
         this.captureing.delete(id);
 
         // キャプチャが終わったらcomputedキャッシュも消してしまう
-        //if (!noDeletion) {
-        //    this.notesComputed.delete(id);
-        //    if (this.isDebuggerEnabled) console.log('NoteManager: decapture (delete computed)', id);
-        //}
-        // と思ったが、computedキャッシュを消すと壊れるのでやめる
+        if (!noDeletion) {
+            this.notesComputed.delete(id);
+            if (this.isDebuggerEnabled) console.log('NoteManager: decapture (delete computed)', id);
+        }
 	}
 
     /**
