@@ -28,7 +28,7 @@ export class EntitiyManager<T extends { id: string }> {
     public set(item: T): Ref<T> {
         const cached = this.entities.get(item.id);
         if (cached) {
-            cached.value = item;
+            cached.value = { ...cached.value, ...item };
         } else {
             this.entities.set(item.id, ref(item) as Ref<T>);
         }
