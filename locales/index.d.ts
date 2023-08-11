@@ -824,6 +824,7 @@ export interface Locale {
     "high": string;
     "middle": string;
     "low": string;
+    "list": string;
     "emailNotConfiguredWarning": string;
     "ratio": string;
     "previewNoteText": string;

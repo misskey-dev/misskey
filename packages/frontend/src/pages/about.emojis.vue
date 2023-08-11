@@ -4,51 +4,88 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div class="_gaps">
-	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
-	<MkButton v-if="$i && (!$i.isModerator && !$i.policies.canManageCustomEmojis && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
+<MkStickyContainer>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
+	<MkSpacer v-if="tab === 'emojis'" :contentMax="1000" :marginMin="20">
+		<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
+		<MkButton v-if="$i && (!$i.isModerator && !$i.policies.canManageCustomEmojis && $i.policies.canRequestCustomEmojis)" primary @click="edit">{{ i18n.ts.requestCustomEmojis }}</MkButton>
 
-	<div class="query">
-		<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
-			<template #prefix><i class="ti ti-search"></i></template>
-		</MkInput>
+		<div class="query" style="margin-top: 10px;">
+			<MkInput v-model="q" class="" :placeholder="i18n.ts.search">
+				<template #prefix><i class="ti ti-search"></i></template>
+			</MkInput>
 
-		<!-- たくさんあると邪魔
-		<div class="tags">
-			<span class="tag _button" v-for="tag in customEmojiTags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
+			<!-- たくさんあると邪魔
+			<div class="tags">
+				<span class="tag _button" v-for="tag in customEmojiTags" :class="{ active: selectedTags.has(tag) }" @click="toggleTag(tag)">{{ tag }}</span>
+			</div>
+			-->
 		</div>
-		-->
-	</div>
 
-	<MkFoldableSection v-if="searchEmojis">
-		<template #header>{{ i18n.ts.searchResult }}</template>
+		<MkFoldableSection v-if="searchEmojis">
+			<template #header>{{ i18n.ts.searchResult }}</template>
+			<div :class="$style.emojis">
+				<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+			</div>
+		</MkFoldableSection>
+
+		<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
+			<template #header>{{ category || i18n.ts.other }}</template>
+			<div :class="$style.emojis">
+				<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category && !e.draft)" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+			</div>
+		</MkFoldableSection>
+	</MkSpacer>
+	<MkSpacer v-if="tab === 'new'" :contentMax="1000" :marginMin="20">
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+			<XEmoji v-for="emoji in newEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 		</div>
-	</MkFoldableSection>
-
-	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category">
-		<template #header>{{ category || i18n.ts.other }}</template>
+	</MkSpacer>
+	<MkSpacer v-if="tab === 'draft'" :contentMax="1000" :marginMin="20">
 		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
+            <XEmoji v-for="emoji in draftEmojis" :key="emoji.name" :emoji="emoji" :draft="emoji.draft"/>
 		</div>
-	</MkFoldableSection>
-</div>
+	</MkSpacer>
+</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { watch, defineAsyncComponent } from 'vue';
+import { watch, defineAsyncComponent, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories, getCustomEmojiTags } from '@/custom-emojis.js';
+import { customEmojis, customEmojiCategories } from '@/custom-emojis.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os';
 import { $i } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-const customEmojiTags = getCustomEmojiTags();
+let tab = $ref('emojis');
+const headerActions = $computed(() => []);
+
+const headerTabs = $computed(() => [{
+	key: 'emojis',
+	title: i18n.ts.list,
+}, {
+	key: 'new',
+	title: i18n.ts.newEmojis,
+}, {
+	key: 'draft',
+	title: i18n.ts.draftEmojis,
+}]);
+
+definePageMetadata(ref({}));
+
+const pagination = {
+	endpoint: 'admin/emoji/list' as const,
+	limit: 30,
+	params: computed(() => ({
+		query: (query.value && query.value !== '') ? query.value : null,
+	})),
+};
+
 let q = $ref('');
 let searchEmojis = $ref<Misskey.entities.CustomEmoji[]>(null);
 let selectedTags = $ref(new Set());
