@@ -147,7 +147,7 @@ export class NoteManager {
 
             if (this.isDebuggerEnabled) {
                 console.log('NoteManager: set note (new)', note.id, { src: note, ref: this.notesSource.value.get(note.id) });
-                watch(this.notesSource.value.get(note.id)!, newVal => {
+                watch(() => this.notesSource.value.get(note.id)!, newVal => {
                     console.log('NoteManager: note source updated', newVal.id, newVal);
                 });
             }
