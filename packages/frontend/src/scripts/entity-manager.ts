@@ -107,6 +107,14 @@ export class NoteManager {
     }
 
     public set(_note: Note): void {
+        if (this.updatedAt.has(_note.id)) {
+            if (this.updatedAt.get(_note.id)! + 100 > Date.now()) {
+                if (this.isDebuggerEnabled) console.log('NoteManager: set ignore', _note.id);
+                // 100ms以内に更新されたノートは無視（computedが壊れるので）
+                return;
+            }
+        }
+
         const note: Note = { ..._note };
 
         userLiteManager.set(note.user);
@@ -149,50 +157,48 @@ export class NoteManager {
         this.updatedAt.set(note.id, Date.now());
     }
 
-    public getRaw(id: string): Note | null {
-        const note = this.notesSource.value.get(id);
-
-        if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note);
-
-        if (!note) {
-            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is null', id);
-            return null;
-        }
-
-        const user = userLiteManager.get(note.userId)!;
-
-        const renote = note.renoteId ? this.getRaw(note.renoteId) : undefined;
-        // renoteが削除されている場合はCASCADE削除されるためnullを返す
-        if (!renote) {
-            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.renoteId);
-            return null;
-        }
-
-        const reply = note.replyId ? this.getRaw(note.replyId) : undefined;
-        // replyが削除されている場合はCASCADE削除されるためnullを返す
-        if (!reply) {
-            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.replyId);
-            return null;
-        }
-
-        const files = note.fileIds.map(id => driveFileManager.get(id)?.value);
-
-        const result = {
-            ...note,
-            user: user.value,
-            renote: renote ?? undefined,
-            reply: reply ?? undefined,
-            files: files.filter(file => file) as DriveFile[],
-        };
-
-        if (this.isDebuggerEnabled) console.log('NoteManager: compute note: not null', id, result);
-
-        return result;
-    }
-
     public get(id: string): CachedNote {
         if (!this.notesComputed.has(id)) {
-            this.notesComputed.set(id, computed<Note | null>(() => this.getRaw(id)));
+            this.notesComputed.set(id, computed<Note | null>(() => {
+                const note = this.notesSource.value.get(id);
+
+                if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note);
+
+                if (!note) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is null', id);
+                    return null;
+                }
+
+                const user = userLiteManager.get(note.userId)!;
+
+                const renote = note.renoteId ? this.get(note.renoteId) : undefined;
+                // renoteが削除されている場合はCASCADE削除されるためnullを返す
+                if (renote && !renote.value) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.renoteId);
+                    return null;
+                }
+
+                const reply = note.replyId ? this.get(note.replyId) : undefined;
+                // replyが削除されている場合はCASCADE削除されるためnullを返す
+                if (reply && !reply.value) {
+                    if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.replyId);
+                    return null;
+                }
+
+                const files = note.fileIds.map(id => driveFileManager.get(id)?.value);
+
+                const result = {
+                    ...note,
+                    user: user.value,
+                    renote: renote?.value ?? undefined,
+                    reply: reply?.value ?? undefined,
+                    files: files.filter(file => file) as DriveFile[],
+                };
+
+                if (this.isDebuggerEnabled) console.log('NoteManager: compute note: not null', id, result);
+
+                return result;
+            }));
             if (this.isDebuggerEnabled) console.log('NoteManager: get note (new)', id, this.notesComputed.get(id));
         } else {
             if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.value.get(id));
