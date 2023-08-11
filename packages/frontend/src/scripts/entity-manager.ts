@@ -4,7 +4,7 @@
  */
 
 import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
-import { Ref, ref, ComputedRef, computed, watch } from "vue";
+import { Ref, ref, ComputedRef, computed, watch, triggerRef } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
 import { Stream } from "misskey-js";
@@ -393,6 +393,7 @@ export class NoteManager {
         if (type !== 'deleted') {
             if (!note) throw new Error('NoteManager: onStreamNoteUpdated (update) note.value is null');
             this.notesSource.value.set(id, { ...note, ...diff });
+            if (this.notesComputed.has(id)) triggerRef(this.notesComputed.get(id)!);
         }
         this.updatedAt.set(id, Date.now());
 	}
