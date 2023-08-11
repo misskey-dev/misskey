@@ -1100,6 +1100,7 @@ export interface Locale {
     "iHaveReadXCarefullyAndAgree": string;
     "dialog": string;
     "icon": string;
+    "forYou": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

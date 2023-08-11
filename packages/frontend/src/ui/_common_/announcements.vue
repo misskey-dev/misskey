@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div
-		v-for="announcement in $i.unreadAnnouncements" :key="announcement.id" :class="$style.item"
+		v-for="announcement in $i.unreadAnnouncements.filter(x => x.display === 'banner')" :key="announcement.id" :class="$style.item"
 	>
 		<span :class="$style.icon">
 			<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
@@ -43,6 +43,10 @@ import { $i } from '@/account';
 	contain: strict;
 	background: var(--accent);
 	color: var(--fgOnAccent);
+}
+
+.icon {
+	margin-left: 10px;
 }
 
 .title {

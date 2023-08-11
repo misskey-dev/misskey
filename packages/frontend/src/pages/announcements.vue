@@ -7,14 +7,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<MkPagination ref="paginationEl" v-slot="{items}" :pagination="pagination" class="ruryvtyk _gaps_m">
-			<section v-for="announcement in items" :key="announcement.id" class="announcement _panel">
-				<div class="header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
-				<div class="content">
+		<MkPagination ref="paginationEl" v-slot="{items}" :pagination="pagination" class="_gaps_m">
+			<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
+				<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
+				<div :class="$style.header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+				<div :class="$style.content">
 					<Mfm :text="announcement.text"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
+					<div style="opacity: 0.7; font-size: 85%;">
+						<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
+					</div>
 				</div>
-				<div v-if="$i && !announcement.isRead" class="footer">
+				<div v-if="$i && !announcement.isRead" :class="$style.footer">
 					<MkButton primary @click="read(announcement.id)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 				</div>
 			</section>
@@ -58,27 +62,35 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.ruryvtyk {
-	> .announcement {
-		padding: 16px;
+<style lang="scss" module>
+.announcement {
+	padding: 16px;
+}
 
-		> .header {
-			margin-bottom: 16px;
-			font-weight: bold;
-		}
+.forYou {
+	display: flex;
+	align-items: center;
+	padding: 16px 32px 8px 32px;
+	line-height: 24px;
+	font-size: 90%;
+	white-space: pre;
+	color: #d28a3f;
+}
 
-		> .content {
-			> img {
-				display: block;
-				max-height: 300px;
-				max-width: 100%;
-			}
-		}
+.header {
+	margin-bottom: 16px;
+	font-weight: bold;
+}
 
-		> .footer {
-			margin-top: 16px;
-		}
+.content {
+	> img {
+		display: block;
+		max-height: 300px;
+		max-width: 100%;
 	}
+}
+
+.footer {
+	margin-top: 16px;
 }
 </style>

@@ -4,8 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')">
-	<div :class="$style.root">
+<MkModal ref="modal" :zPriority="'middle'" @closed="$emit('closed')" @click="onBgClick">
+	<div ref="rootEl" :class="$style.root">
 		<div :class="$style.header">
 			<span :class="$style.icon">
 				<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
@@ -34,11 +34,27 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
+const rootEl = shallowRef<HTMLDivElement>();
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
 function ok() {
 	modal.value.close();
 	os.api('i/read-announcement', { announcementId: props.announcement.id });
+}
+
+function onBgClick() {
+	rootEl.value.animate([{
+		offset: 0,
+		transform: 'scale(1)',
+	}, {
+		offset: 0.5,
+		transform: 'scale(1.1)',
+	}, {
+		offset: 1,
+		transform: 'scale(1)',
+	}], {
+		duration: 100,
+	});
 }
 
 onMounted(() => {
