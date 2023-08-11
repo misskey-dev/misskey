@@ -107,6 +107,14 @@ export class NoteManager {
     }
 
     public set(_note: Note): void {
+        if (this.updatedAt.has(_note.id) && this.notesSource.value.has(_note.id)) {
+            if (this.updatedAt.get(_note.id)! + 100 > Date.now()) {
+                if (this.isDebuggerEnabled) console.log('NoteManager: set ignore', _note.id);
+                // 100ms以内に更新されたノートは無視
+                return;
+            }
+        }
+
         const note: Note = { ..._note };
 
         userLiteManager.set(note.user);
