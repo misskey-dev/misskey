@@ -9,24 +9,29 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
 - package-ecosystem: npm
   directory: "/"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
 - package-ecosystem: npm
   directory: "/packages/backend"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
 - package-ecosystem: npm
   directory: "/packages/frontend"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
 - package-ecosystem: npm
   directory: "/packages/sw"
   schedule:
     interval: daily
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 100
+- package-ecosystem: npm
+  directory: "/packages/misskey-js"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 100
