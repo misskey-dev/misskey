@@ -1,0 +1,35 @@
+extends ./base
+
+block vars
+	- const user = clip.user;
+	- const title = clip.name;
+	- const url = `${config.url}/clips/${clip.id}`;
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content= clip.description)
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content= clip.description)
+	meta(property='og:url'         content= url)
+	meta(property='og:image'       content= avatarUrl)
+	meta(property='twitter:card'   content='summary')
+
+block meta
+	if profile.noCrawle
+		meta(name='robots' content='noindex')
+	if profile.preventAiLearning
+		meta(name='robots' content='noimageai')
+		meta(name='robots' content='noai')
+
+	meta(name='misskey:user-username' content=user.username)
+	meta(name='misskey:user-id' content=user.id)
+	meta(name='misskey:clip-id' content=clip.id)
+
+	// todo
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)

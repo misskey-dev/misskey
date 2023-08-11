@@ -1,0 +1,21 @@
+'packages/backend':
+- packages/backend/**/*
+
+'packages/backend:test':
+- packages/backend/test/**/*
+
+'packages/frontend':
+- packages/frontend/**/*
+
+'packages/frontend:test':
+- cypress/**/*
+
+'packages/sw':
+- packages/sw/**/*
+
+'packages/misskey-js':
+- packages/misskey-js/**/*
+
+'packages/misskey-js:test':
+- packages/misskey-js/test/**/*
+- packages/misskey-js/test-d/**/*

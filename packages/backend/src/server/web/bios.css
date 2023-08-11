@@ -1,0 +1,40 @@
+* {
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+}
+
+html {
+	background: #ffb4e1;
+}
+
+main {
+	background: #dedede;
+}
+main > .tabs {
+	padding: 16px;
+	border-bottom: solid 4px #c3c3c3;
+}
+
+#lsEditor > .adder {
+	margin: 16px;
+	padding: 16px;
+	border: solid 2px #c3c3c3;
+}
+#lsEditor > .adder > textarea {
+	display: block;
+	width: 100%;
+	min-height: 5em;
+	box-sizing: border-box;
+}
+#lsEditor > .record {
+	padding: 16px;
+	border-bottom: solid 1px #c3c3c3;
+}
+#lsEditor > .record > header {
+	font-weight: bold;
+}
+#lsEditor > .record > textarea {
+	display: block;
+	width: 100%;
+	min-height: 5em;
+	box-sizing: border-box;
+}

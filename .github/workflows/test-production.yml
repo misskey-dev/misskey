@@ -1,0 +1,42 @@
+name: Test (production install and build)
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+env:
+  NODE_ENV: production
+
+jobs:
+  production:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: true
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3.6.0
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .github/misskey/test.yml .config/default.yml
+    - name: Build
+      run: pnpm build

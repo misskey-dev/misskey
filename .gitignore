@@ -1,0 +1,66 @@
+# Visual Studio Code
+/.vscode
+!/.vscode/extensions.json
+
+# Intelij-IDEA
+/.idea
+
+# Node.js
+node_modules
+report.*.json
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+packages/frontend/.yarn/cache
+packages/backend/.yarn/cache
+packages/sw/.yarn/cache
+
+# pnpm
+.pnpm-store
+
+# Cypress
+cypress/screenshots
+cypress/videos
+
+# Coverage
+coverage
+
+# config
+/.config/*
+!/.config/example.yml
+!/.config/docker_example.yml
+!/.config/docker_example.env
+docker-compose.yml
+!/.devcontainer/docker-compose.yml
+
+# misskey
+/build
+built
+/data
+/.cache-loader
+/db
+/meili_data
+npm-debug.log
+*.pem
+run.bat
+api-docs.json
+*.log
+/redis
+*.code-workspace
+.DS_Store
+/files
+ormconfig.json
+temp
+/packages/frontend/src/**/*.stories.ts
+
+# blender backups
+*.blend1
+*.blend2
+*.blend3
+*.blend4
+*.blend5

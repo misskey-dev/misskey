@@ -1,0 +1,59 @@
+extends ./base
+
+block vars
+	- const user = note.user;
+	- const title = user.name ? `${user.name} (@${user.username})` : `@${user.username}`;
+	- const url = `${config.url}/notes/${note.id}`;
+	- const isRenote = note.renote && note.text == null && note.fileIds.length == 0 && note.poll == null;
+	- const image = (note.files || []).find(file => file.type.startsWith('image/') && !file.isSensitive)
+	- const video = (note.files || []).find(file => file.type.startsWith('video/') && !file.isSensitive)
+
+block title
+	= `${title} | ${instanceName}`
+
+block desc
+	meta(name='description' content= summary)
+
+block og
+	meta(property='og:type'        content='article')
+	meta(property='og:title'       content= title)
+	meta(property='og:description' content= summary)
+	meta(property='og:url'         content= url)
+	if video
+		meta(property='og:video:url'        content= video.url)
+		meta(property='og:video:secure_url' content= video.url)
+		meta(property='og:video:type'       content= video.type)
+		// FIXME: add width and height
+		// FIXME: add embed player for Twitter
+	if image
+		meta(property='twitter:card' content='summary_large_image')
+		meta(property='og:image'     content= image.url)
+	else
+		meta(property='twitter:card' content='summary')
+		meta(property='og:image'     content= avatarUrl)
+
+
+block meta
+	if user.host || isRenote || profile.noCrawle
+		meta(name='robots' content='noindex')
+	if profile.preventAiLearning
+		meta(name='robots' content='noimageai')
+		meta(name='robots' content='noai')
+
+	meta(name='misskey:user-username' content=user.username)
+	meta(name='misskey:user-id' content=user.id)
+	meta(name='misskey:note-id' content=note.id)
+	
+	// todo
+	if user.twitter
+		meta(name='twitter:creator' content=`@${user.twitter.screenName}`)
+
+	if note.prev
+		link(rel='prev' href=`${config.url}/notes/${note.prev}`)
+	if note.next
+		link(rel='next' href=`${config.url}/notes/${note.next}`)
+
+	if !user.host
+		link(rel='alternate' href=url type='application/activity+json')
+	if note.uri
+		link(rel='alternate' href=note.uri type='application/activity+json')

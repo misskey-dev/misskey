@@ -1,0 +1,21 @@
+doctype html
+
+html
+
+	head
+		meta(charset='utf-8')
+		meta(name='application-name' content='Misskey')
+		title Misskey Cli
+		style
+			include ../cli.css
+		script
+			include ../cli.js
+
+	body
+		header
+			h1 Misskey Cli #{version}
+		main
+			div#form
+				textarea#text
+				button#submit submit
+			div#tl

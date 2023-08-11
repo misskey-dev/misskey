@@ -1,0 +1,4 @@
+files:
+  - source: /locales/ja-JP.yml
+    translation: /locales/%locale%.yml
+    update_option: update_as_unapproved

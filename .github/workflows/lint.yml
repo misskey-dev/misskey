@@ -1,0 +1,81 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  pnpm_install:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        run_install: false
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+
+  lint:
+    needs: [pnpm_install]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        workspace:
+        - backend
+        - frontend
+        - sw
+        - misskey-js
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter ${{ matrix.workspace }} run eslint
+
+  typecheck:
+    needs: [pnpm_install]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        workspace:
+        - backend
+        - misskey-js
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        fetch-depth: 0
+        submodules: true
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 7
+        run_install: false
+    - uses: actions/setup-node@v3.6.0
+      with:
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: corepack enable
+    - run: pnpm i --frozen-lockfile
+    - run: pnpm --filter ${{ matrix.workspace }} run typecheck

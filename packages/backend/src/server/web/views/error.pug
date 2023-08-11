@@ -1,0 +1,65 @@
+doctype html
+
+//
+	-
+	  _____ _         _           
+	 |     |_|___ ___| |_ ___ _ _ 
+	 | | | | |_ -|_ -| '_| -_| | |
+	 |_|_|_|_|___|___|_,_|___|_  |
+							 |___|
+	 Thank you for using Misskey!
+	 If you are reading this message... how about joining the development?
+	 https://github.com/misskey-dev/misskey
+	 
+
+html
+
+	head
+		meta(charset='utf-8')
+		meta(name='viewport' content='width=device-width, initial-scale=1')
+		meta(name='application-name' content='Misskey')
+		meta(name='referrer' content='origin')
+
+		title
+			block title
+				= 'An error has occurred... | Misskey'
+
+		style
+			include ../error.css
+
+body
+	svg.icon-warning(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24", stroke-width="2", stroke="currentColor", fill="none", stroke-linecap="round", stroke-linejoin="round")
+		path(stroke="none", d="M0 0h24v24H0z", fill="none")
+		path(d="M12 9v2m0 4v.01")
+		path(d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75")
+	
+	h1 An error has occurred!
+
+	button.button-big(onclick="location.reload();")
+		span.button-label-big Refresh
+	
+	p.dont-worry Don't worry, it's (probably) not your fault.
+
+	p If reloading after a period of time does not resolve the problem, contact the server administrator with the following ERROR ID.
+
+	div#errors
+		code.
+			ERROR CODE: #{code}
+			ERROR ID: #{id}
+
+	p You may also try the following options:
+
+	p Update your os and browser.
+	p Disable an adblocker.
+
+	a(href="/flush")
+		button.button-small
+			span.button-label-small Clear preferences and cache
+	br
+	a(href="/cli")
+		button.button-small
+			span.button-label-small Start the simple client
+	br
+	a(href="/bios")
+		button.button-small
+			span.button-label-small Start the repair tool

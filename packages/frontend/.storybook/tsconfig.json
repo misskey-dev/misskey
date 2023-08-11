@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"jsx": "react",
+		"jsxFactory": "h"
+	},
+	"files": [
+		"./changes.ts",
+		"./generate.tsx",
+		"./preload-locale.ts",
+		"./preload-theme.ts"
+	]
+}

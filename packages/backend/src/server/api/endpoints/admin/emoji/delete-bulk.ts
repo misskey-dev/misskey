@@ -1,0 +1,32 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+
+export const meta = {
+	tags: ['admin'],
+
+	requireCredential: true,
+	requireRolePolicy: 'canManageCustomEmojis',
+} as const;
+
+export const paramDef = {
+	type: 'object',
+	properties: {
+		ids: { type: 'array', items: {
+			type: 'string', format: 'misskey:id',
+		} },
+	},
+	required: ['ids'],
+} as const;
+
+// eslint-disable-next-line import/no-default-export
+@Injectable()
+export default class extends Endpoint<typeof meta, typeof paramDef> {
+	constructor(
+		private customEmojiService: CustomEmojiService,
+	) {
+		super(meta, paramDef, async (ps, me) => {
+			await this.customEmojiService.deleteBulk(ps.ids);
+		});
+	}
+}

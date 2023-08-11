@@ -1,0 +1,30 @@
+---
+name: Dockle
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  dockle:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_CONTENT_TRUST: 1
+    steps:
+      - uses: actions/checkout@v3.2.0
+      - run: |
+          curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v0.4.10/dockle_0.4.10_Linux-64bit.deb"
+          sudo dpkg -i dockle.deb
+      - run: |
+          cp .config/docker_example.env .config/docker.env
+          cp ./docker-compose.yml.example ./docker-compose.yml
+      - run: |
+          docker compose up -d web
+          docker tag "$(docker compose images web | awk 'OFS=":" {print $4}' | tail -n +2)" misskey-web:latest
+      - run: |
+          cmd="dockle --exit-code 1 misskey-web:latest ${image_name}"
+          echo "> ${cmd}"
+          eval "${cmd}"

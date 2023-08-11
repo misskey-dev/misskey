@@ -1,0 +1,19 @@
+* {
+	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+}
+
+html {
+	background: #ffb4e1;
+}
+
+main {
+	background: #dedede;
+}
+
+#tl > div {
+	padding: 16px;
+	border-bottom: solid 1px #c3c3c3;
+}
+#tl > div > header {
+	font-weight: bold;
+}

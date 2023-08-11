@@ -1,0 +1,50 @@
+doctype html
+
+html
+
+	head
+		meta(charset='utf-8')
+		meta(name='application-name' content='Misskey')
+		title= meta.name || host
+		style.
+			html, body {
+				margin: 0;
+				padding: 0;
+				min-height: 100vh;
+				background: #fff;
+			}
+
+			#a {
+				display: block;
+			}
+
+			#banner {
+				background-size: cover;
+				background-position: center center;
+			}
+
+			#title {
+				display: inline-block;
+				margin: 24px;
+				padding: 0.5em 0.8em;
+				color: #fff;
+				background: rgba(0, 0, 0, 0.5);
+				font-weight: bold;
+				font-size: 1.3em;
+			}
+
+			#content {
+				overflow: auto;
+				color: #353c3e;
+			}
+
+			#description {
+				margin: 24px;
+			}
+
+	body
+		a#a(href=`https://${host}` target="_blank")
+			header#banner(style=`background-image: url(${meta.bannerUrl})`)
+				div#title= meta.name || host
+		div#content
+			div#description= meta.description

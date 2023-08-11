@@ -1,0 +1,10 @@
+{
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"path-intellisense.mappings": {
+		"@": "${workspaceRoot}/packages/backend/src/"
+	},
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
+	}
+}
