@@ -233,10 +233,11 @@ export class NoteManager {
             interruptedNote.value = result;
         };
 
-        const interruptorUnwatch = (() => {
+        const unwatch = watch(firstNote, executeInterruptor);
+        const interruptorUnwatch = () => {
             if (this.isDebuggerEnabled) console.log('NoteManager: interruptorUnwatch', id, interruptedNote);
-            return watch(firstNote, executeInterruptor);
-        })();
+            unwatch;
+        };
 
         if (this.isDebuggerEnabled) {
             console.log('NoteManager: get interrupted note (new)', id, { note: firstNote, interruptedNote });
