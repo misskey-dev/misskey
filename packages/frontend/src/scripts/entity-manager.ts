@@ -163,14 +163,14 @@ export class NoteManager {
 
         const renote = note.renoteId ? this.getRaw(note.renoteId) : undefined;
         // renoteが削除されている場合はCASCADE削除されるためnullを返す
-        if (!renote) {
+        if (note.renoteId && !renote) {
             if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.renoteId);
             return null;
         }
 
         const reply = note.replyId ? this.getRaw(note.replyId) : undefined;
         // replyが削除されている場合はCASCADE削除されるためnullを返す
-        if (!reply) {
+        if (note.replyId && !reply) {
             if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.replyId);
             return null;
         }
