@@ -216,38 +216,34 @@ export class NoteManager {
         interruptorUnwatch: () => void,
         executeInterruptor: () => Promise<void>,
     } {
-        const firstNote = this.get(id);
-        const interruptedNote = ref<Note | null>(firstNote.value);
+        const note = this.get(id);
+        if (noteViewInterruptors.length === 0) {
+            // noteViewInterruptorがない場合はcomputed noteを直接渡す
+            return {
+                interruptedNote: note as InterruptedCachedNote,
+                interruptorUnwatch: () => { },
+                executeInterruptor: () => Promise.resolve(),
+            };
+        }
 
-        const executeInterruptor = async () => {
-            const note = this.get(id);
+        const interruptedNote = ref<Note | null>(deepClone(note.value));
 
-            if (this.isDebuggerEnabled) console.log('NoteManager: executeInterruptor', id, { note: note.value, interruptedNote, noteViewInterruptors });
-
+        async function executeInterruptor() {
             if (note.value == null) {
                 interruptedNote.value = null;
                 return;
             }
 
-            if (noteViewInterruptors.length === 0) {
-                interruptedNote.value = note.value;
-                return;
-            }
-
-            let result = deepClone(firstNote.value);
+            let result = deepClone(note.value);
             for (const interruptor of noteViewInterruptors) {
                 result = await interruptor.handler(result) as Note;
             }
             interruptedNote.value = result;
-        };
-
-        const interruptorUnwatch = () => {
-            if (this.isDebuggerEnabled) console.log('NoteManager: interruptorUnwatch', id, interruptedNote);
-            return watch(firstNote, executeInterruptor);
-        };
+        }
+        const interruptorUnwatch = watch(note, executeInterruptor);
 
         if (this.isDebuggerEnabled) {
-            console.log('NoteManager: get interrupted note (new)', id, { note: firstNote, interruptedNote });
+            console.log('NoteManager: get interrupted note (new)', id, { note, interruptedNote });
         }
 
         return {
