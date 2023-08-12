@@ -138,9 +138,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps">
 						<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
 
-						<div v-for="announcement in info.announcements" :key="announcement.id" :class="$style.announcementItem">
-							{{ announcement.title }}
-						</div>
+						<MkPagination :pagination="announcementsPagination">
+							<template #default="{ items }">
+								<div class="_gaps_s">
+									<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
+										<span style="margin-right: 0.5em;">
+											<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+											<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
+											<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
+											<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+										</span>
+										<span>{{ announcement.title }}</span>
+										<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
+									</div>
+								</div>
+							</template>
+						</MkPagination>
 					</div>
 				</MkFolder>
 
@@ -219,6 +232,7 @@ import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator, $i } from '@/account';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
 	userId: string;
@@ -240,6 +254,13 @@ let suspended = $ref(false);
 let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.userId,
+	})),
+};
+const announcementsPagination = {
+	endpoint: 'admin/announcements/list' as const,
 	limit: 10,
 	params: computed(() => ({
 		userId: props.userId,
@@ -424,6 +445,13 @@ function createAnnouncement() {
 	}, {}, 'closed');
 }
 
+function editAnnouncement(announcement) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+		user,
+		announcement,
+	}, {}, 'closed');
+}
+
 watch(() => props.userId, () => {
 	init = createFetcher();
 }, {
@@ -586,5 +614,12 @@ definePageMetadata(computed(() => ({
 	height: 32px;
 	margin-left: 8px;
 	align-self: center;
+}
+
+.announcementItem {
+	display: flex;
+	padding: 8px 12px;
+	border-radius: 6px;
+	cursor: pointer;
 }
 </style>

@@ -37,7 +37,7 @@ export const paramDef = {
 		needConfirmationToRead: { type: 'boolean' },
 		isActive: { type: 'boolean' },
 	},
-	required: ['id', 'title', 'text', 'imageUrl', 'icon', 'display', 'forExistingUsers', 'needConfirmationToRead', 'isActive'],
+	required: ['id'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
