@@ -89,7 +89,7 @@
 		"@storybook/manager-api": "7.0.27",
 		"@storybook/preview-api": "7.0.27",
 		"@storybook/react": "7.0.27",
-		"@storybook/react-vite": "7.0.27",
+		"@storybook/react-vite": "7.2.3",
 		"@storybook/testing-library": "0.2.0",
 		"@storybook/theming": "7.0.27",
 		"@storybook/types": "7.0.27",
