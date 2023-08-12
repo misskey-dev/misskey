@@ -80,7 +80,7 @@
 		"@storybook/addon-actions": "7.0.27",
 		"@storybook/addon-essentials": "7.0.27",
 		"@storybook/addon-interactions": "7.0.27",
-		"@storybook/addon-links": "7.0.27",
+		"@storybook/addon-links": "7.2.3",
 		"@storybook/addon-storysource": "7.0.27",
 		"@storybook/addons": "7.0.27",
 		"@storybook/blocks": "7.0.27",
