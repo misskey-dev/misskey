@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue';
+import { ref } from 'vue';
 import * as misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
@@ -49,9 +49,9 @@ import { notePage } from '@/filters/note';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { $i } from '@/account';
-import {userPage} from "@/filters/user";
-import {checkWordMute} from "@/scripts/check-word-mute";
-import {defaultStore} from "@/store";
+import { userPage } from "@/filters/user";
+import { checkWordMute } from "@/scripts/check-word-mute";
+import { defaultStore } from "@/store";
 
 const props = withDefaults(defineProps<{
 	note: misskey.entities.Note;
