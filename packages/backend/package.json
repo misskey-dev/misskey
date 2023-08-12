@@ -186,7 +186,7 @@
 		"@types/jsrsasign": "10.5.8",
 		"@types/mime-types": "2.1.1",
 		"@types/ms": "0.7.31",
-		"@types/node": "20.4.5",
+		"@types/node": "20.4.10",
 		"@types/node-fetch": "3.0.3",
 		"@types/nodemailer": "6.4.9",
 		"@types/oauth": "0.9.1",
