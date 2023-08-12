@@ -22,3 +22,7 @@ updates:
     swc:
       patterns:
         - "@swc/*"
+    storybook:
+      patterns:
+        - "storybook*"
+        - "@storybook/*"
