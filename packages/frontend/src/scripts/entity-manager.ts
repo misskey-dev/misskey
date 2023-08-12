@@ -185,13 +185,12 @@ export class NoteManager {
 
                 const files = note.fileIds.map(id => driveFileManager.get(id)?.value);
 
-                const result = {
-                    ...note,
+                const result = Object.assign({}, note, {
                     user: user.value,
                     renote: renote?.value ?? undefined,
                     reply: reply?.value ?? undefined,
                     files: files.filter(file => file) as DriveFile[],
-                };
+                });
 
                 if (this.isDebuggerEnabled) console.log('NoteManager: compute note: not null', id, result);
 
