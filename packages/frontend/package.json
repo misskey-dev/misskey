@@ -84,7 +84,7 @@
 		"@storybook/addon-storysource": "7.0.27",
 		"@storybook/addons": "7.0.27",
 		"@storybook/blocks": "7.0.27",
-		"@storybook/core-events": "7.0.27",
+		"@storybook/core-events": "7.2.3",
 		"@storybook/jest": "0.1.0",
 		"@storybook/manager-api": "7.0.27",
 		"@storybook/preview-api": "7.0.27",
