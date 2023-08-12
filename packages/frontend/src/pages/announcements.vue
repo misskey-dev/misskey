@@ -10,7 +10,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination ref="paginationEl" v-slot="{items}" :pagination="pagination" class="_gaps_m">
 			<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
 				<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
-				<div :class="$style.header"><span v-if="$i && !announcement.isRead">🆕 </span>{{ announcement.title }}</div>
+				<div :class="$style.header">
+					<span v-if="$i && !announcement.isRead" style="margin-right: 0.5em;">🆕</span>
+					<span style="margin-right: 0.5em;">
+						<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+						<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
+						<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
+						<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+					</span>
+					<span>{{ announcement.title }}</span>
+				</div>
 				<div :class="$style.content">
 					<Mfm :text="announcement.text"/>
 					<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
