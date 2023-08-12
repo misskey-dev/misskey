@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3.5.3
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2.3.0
+        uses: docker/setup-buildx-action@v2.9.1
         with:
           platforms: linux/amd64,linux/arm64
       - name: Docker meta
