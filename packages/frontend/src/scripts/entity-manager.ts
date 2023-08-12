@@ -197,9 +197,15 @@ export class NoteManager {
 
                 return result;
             }));
-            if (this.isDebuggerEnabled) console.log('NoteManager: get note (new)', id, this.notesComputed.get(id));
+            if (this.isDebuggerEnabled) {
+                console.log('NoteManager: get note (new)', id, this.notesComputed.get(id));
+                console.trace();
+            }
         } else {
-            if (this.isDebuggerEnabled) console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.value.get(id));
+            if (this.isDebuggerEnabled) {
+                console.log('NoteManager: get note (cached)', id, this.notesComputed.get(id), this.notesSource.value.get(id));
+                console.trace();
+            }
         }
         return this.notesComputed.get(id)!;
     }
