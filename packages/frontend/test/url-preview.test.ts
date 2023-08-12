@@ -150,6 +150,6 @@ describe('MkUrlPreview', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
-		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-storage-access-by-user-activation allow-same-origin');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
 	});
 });
