@@ -34,7 +34,7 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import { $i } from '@/account';
+import { $i, updateAccount } from '@/account';
 
 const pagination = {
 	endpoint: 'announcements' as const,
@@ -50,6 +50,9 @@ function read(id: string) {
 		return announcement;
 	});
 	os.api('i/read-announcement', { announcementId: id });
+	updateAccount({
+		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== id),
+	});
 }
 
 const headerActions = $computed(() => []);

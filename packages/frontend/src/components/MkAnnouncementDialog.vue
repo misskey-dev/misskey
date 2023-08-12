@@ -28,6 +28,7 @@ import * as os from '@/os';
 import MkModal from '@/components/MkModal.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
+import { $i, updateAccount } from '@/account';
 
 const props = withDefaults(defineProps<{
 	announcement: misskey.entities.Announcement;
@@ -40,6 +41,9 @@ const modal = shallowRef<InstanceType<typeof MkModal>>();
 function ok() {
 	modal.value.close();
 	os.api('i/read-announcement', { announcementId: props.announcement.id });
+	updateAccount({
+		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== props.announcement.id),
+	});
 }
 
 function onBgClick() {

@@ -96,7 +96,6 @@ export async function removeAccount(idOrToken: Account['id']) {
 
 function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Promise<Account> {
 	return new Promise((done, fail) => {
-		// Fetch user
 		window.fetch(`${apiUrl}/i`, {
 			method: 'POST',
 			body: JSON.stringify({
