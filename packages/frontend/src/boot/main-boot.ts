@@ -83,6 +83,21 @@ export async function mainBoot() {
 			}
 		});
 
+		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
+			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				announcement,
+			}, {}, 'closed');
+		}
+
+		stream.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
+			}
+		});
+
 		if ($i.isDeleted) {
 			alert({
 				type: 'warning',

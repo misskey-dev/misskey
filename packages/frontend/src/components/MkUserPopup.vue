@@ -86,7 +86,8 @@ let top = $ref(0);
 let left = $ref(0);
 
 function showMenu(ev: MouseEvent) {
-	os.popupMenu(getUserMenu(user), ev.currentTarget ?? ev.target);
+	const { menu, cleanup } = getUserMenu(user);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
 
 onMounted(() => {
