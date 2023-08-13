@@ -14,7 +14,7 @@ export async function lookupUser() {
 	if (canceled) return;
 
 	const show = (user) => {
-		os.pageWindow(`/user-info/${user.id}`);
+		os.pageWindow(`/admin/user/${user.id}`);
 	};
 
 	const usernamePromise = os.api('users/show', Acct.parse(result));
