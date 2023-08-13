@@ -1098,6 +1098,8 @@ iHaveReadXCarefullyAndAgree: "「{x}」の内容をよく読み、同意しま�
 dialog: "ダイアログ"
 icon: "アイコン"
 forYou: "あなたへ"
+currentAnnouncements: "現在のお知らせ"
+pastAnnouncements: "過去のお知らせ"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

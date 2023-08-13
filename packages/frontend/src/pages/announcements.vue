@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
+	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="800">
-		<MkPagination ref="paginationEl" v-slot="{items}" :pagination="pagination" class="_gaps_m">
+		<MkPagination ref="paginationEl" :key="tab" v-slot="{items}" :pagination="tab === 'current' ? paginationCurrent : paginationPast" class="_gaps_m">
 			<section v-for="announcement in items" :key="announcement.id" class="_panel" :class="$style.announcement">
 				<div v-if="announcement.forYou" :class="$style.forYou"><i class="ti ti-pin"></i> {{ i18n.ts.forYou }}</div>
 				<div :class="$style.header">
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
 					</div>
 				</div>
-				<div v-if="$i && !announcement.isRead" :class="$style.footer">
+				<div v-if="tab !== 'past' && $i && !announcement.isRead" :class="$style.footer">
 					<MkButton primary @click="read(announcement.id)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 				</div>
 			</section>
@@ -45,12 +45,25 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i, updateAccount } from '@/account';
 
-const pagination = {
+const paginationCurrent = {
 	endpoint: 'announcements' as const,
 	limit: 10,
+	params: {
+		isActive: true,
+	},
+};
+
+const paginationPast = {
+	endpoint: 'announcements' as const,
+	limit: 10,
+	params: {
+		isActive: false,
+	},
 };
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
+
+const tab = ref('current');
 
 function read(id: string) {
 	if (!paginationEl.value) return;
@@ -66,7 +79,15 @@ function read(id: string) {
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => []);
+const headerTabs = $computed(() => [{
+	key: 'current',
+	title: i18n.ts.currentAnnouncements,
+	icon: 'ti ti-flare',
+}, {
+	key: 'past',
+	title: i18n.ts.pastAnnouncements,
+	icon: 'ti ti-point',
+}]);
 
 definePageMetadata({
 	title: i18n.ts.announcements,

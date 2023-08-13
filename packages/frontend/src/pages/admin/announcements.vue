@@ -32,13 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<option value="banner">{{ i18n.ts.banner }}</option>
 						<option value="dialog">{{ i18n.ts.dialog }}</option>
 					</MkRadios>
-					<MkSwitch v-model="announcement.forExistingUsers">
+					<MkSwitch v-model="announcement.forExistingUsers" :helpText="i18n.ts._announcement.forExistingUsersDescription">
 						{{ i18n.ts._announcement.forExistingUsers }}
-						<template #caption>{{ i18n.ts._announcement.forExistingUsersDescription }}</template>
 					</MkSwitch>
-					<MkSwitch v-model="announcement.needConfirmationToRead">
+					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
-						<template #caption>{{ i18n.ts._announcement.needConfirmationToReadDescription }}</template>
 					</MkSwitch>
 					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
 					<div class="buttons _buttons">

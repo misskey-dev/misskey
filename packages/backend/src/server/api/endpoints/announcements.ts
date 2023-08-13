@@ -33,6 +33,7 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		isActive: { type: 'boolean', default: true },
 	},
 	required: [],
 } as const;
@@ -52,7 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId)
-				.where('announcement.isActive = true')
+				.where('announcement.isActive = :isActive', { isActive: ps.isActive })
 				.andWhere(new Brackets(qb => {
 					if (me) qb.orWhere('announcement.userId = :meId', { meId: me.id });
 					qb.orWhere('announcement.userId IS NULL');

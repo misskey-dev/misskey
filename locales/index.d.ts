@@ -1101,6 +1101,8 @@ export interface Locale {
     "dialog": string;
     "icon": string;
     "forYou": string;
+    "currentAnnouncements": string;
+    "pastAnnouncements": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
