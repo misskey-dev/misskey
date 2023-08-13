@@ -1095,6 +1095,7 @@ expired: "過期"
 doYouAgree: "你同意嗎？"
 beSureToReadThisAsItIsImportant: "重要，請務必閱讀。"
 iHaveReadXCarefullyAndAgree: "我已仔細閱讀並同意「{x}」的内容。"
+icon: "大頭貼"
 _initialAccountSetting:
   accountCreated: "帳戶已建立完成！"
   letsStartAccountSetup: "來進行帳戶的初始設定吧。"
