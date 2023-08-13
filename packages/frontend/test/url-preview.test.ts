@@ -13,7 +13,7 @@ import MkUrlPreview from '@/components/MkUrlPreview.vue';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 
-describe('MkMediaImage', () => {
+describe('MkUrlPreview', () => {
 	const renderPreviewBy = async (summary: Partial<SummalyResult>): Promise<RenderResult> => {
 		if (!summary.player) {
 			summary.player = {
@@ -142,5 +142,14 @@ describe('MkMediaImage', () => {
 		});
 		assert.exists(iframe, 'iframe should exist');
 		assert.strictEqual(iframe?.parentElement?.style.paddingTop, '200px');
+	});
+
+	test('Loading a tweet in iframe', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://twitter.com/i/web/status/1685072521782325249',
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
 	});
 });
