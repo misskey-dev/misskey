@@ -918,6 +918,7 @@ pleaseDonate: "Misskey je bezplatný softvér, ktorý používa {host}. Prosím,
 color: "Farba"
 horizontal: "Strana"
 youFollowing: "Sledované"
+icon: "Avatar"
 _role:
   priority: "Priorita"
   _priority:
