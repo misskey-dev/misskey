@@ -837,6 +837,7 @@ show: "প্রদর্শন"
 color: "রং"
 horizontal: "পাশে"
 youFollowing: "অনুসরণ করা হচ্ছে"
+icon: "প্রোফাইল ছবি"
 _role:
   priority: "অগ্রাধিকার"
   _priority:
