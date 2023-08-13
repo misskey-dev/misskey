@@ -729,7 +729,7 @@ export interface IEndpointMeta {
 	 * 引っ越し済みのユーザーによるリクエストを禁止するか
 	 * 省略した場合は false として解釈されます。
 	 */
-	readonly prohibitMoved?: boolean;
+	readonly prohibitDeactivated?: boolean;
 
 	/**
 	 * エンドポイントのリミテーションに関するやつ
