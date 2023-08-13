@@ -1109,7 +1109,8 @@ export interface Locale {
         "forExistingUsersDescription": string;
         "needConfirmationToRead": string;
         "needConfirmationToReadDescription": string;
-        "deactivate": string;
+        "end": string;
+        "tooManyActiveAnnouncementDescription": string;
     };
     "_initialAccountSetting": {
         "accountCreated": string;
