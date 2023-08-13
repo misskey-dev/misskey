@@ -986,6 +986,7 @@ later: "لاحقاً"
 goToMisskey: "لميسكي"
 additionalEmojiDictionary: "قواميس إيموجي إضافية"
 installed: "مُثبت"
+icon: "الصورة الرمزية"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
   letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."
