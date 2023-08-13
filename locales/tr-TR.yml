@@ -370,6 +370,7 @@ pushNotificationNotSupported: "Push bildirimleri sunucu veya tarayıcı tarafın
 noRole: "Rol bulunamadı"
 color: "Renk"
 addMemo: "Kısa not ekle"
+icon: "Avatar"
 _accountDelete:
   started: "Silme işlemi başlatıldı"
 _email:
