@@ -990,6 +990,7 @@ exploreOtherServers: "Tìm chủ máy khác"
 letsLookAtTimeline: "Thử xem Timeline"
 horizontal: "Thanh bên"
 youFollowing: "Đang theo dõi"
+icon: "Ảnh đại diện"
 _achievements:
   earnedAt: "Ngày thu nhận"
   _types:
