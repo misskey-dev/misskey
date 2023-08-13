@@ -169,7 +169,6 @@ import { Note } from 'misskey-js/built/entities';
 
 const props = defineProps<{
 	note: { id: string };
-	pinned?: boolean;
 	setNote?: boolean;
 }>();
 
