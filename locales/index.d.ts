@@ -1111,6 +1111,8 @@ export interface Locale {
         "needConfirmationToReadDescription": string;
         "end": string;
         "tooManyActiveAnnouncementDescription": string;
+        "readConfirmTitle": string;
+        "readConfirmText": string;
     };
     "_initialAccountSetting": {
         "accountCreated": string;

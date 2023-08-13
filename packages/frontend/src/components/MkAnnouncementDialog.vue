@@ -38,7 +38,16 @@ const props = withDefaults(defineProps<{
 const rootEl = shallowRef<HTMLDivElement>();
 const modal = shallowRef<InstanceType<typeof MkModal>>();
 
-function ok() {
+async function ok() {
+	if (props.announcement.needConfirmationToRead) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts._announcement.readConfirmTitle,
+			text: i18n.t('_announcement.readConfirmText', { title: props.announcement.title }),
+		});
+		if (confirm.canceled) return;
+	}
+
 	modal.value.close();
 	os.api('i/read-announcement', { announcementId: props.announcement.id });
 	updateAccount({

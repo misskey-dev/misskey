@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 					<div v-if="tab !== 'past' && $i && !announcement.isRead" :class="$style.footer">
-						<MkButton primary @click="read(announcement.id)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+						<MkButton primary @click="read(announcement)"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
 					</div>
 				</section>
 			</MkPagination>
@@ -69,15 +69,24 @@ const paginationEl = ref<InstanceType<typeof MkPagination>>();
 
 const tab = ref('current');
 
-function read(id: string) {
+async function read(announcement) {
+	if (announcement.needConfirmationToRead) {
+		const confirm = await os.confirm({
+			type: 'question',
+			title: i18n.ts._announcement.readConfirmTitle,
+			text: i18n.t('_announcement.readConfirmText', { title: announcement.title }),
+		});
+		if (confirm.canceled) return;
+	}
+
 	if (!paginationEl.value) return;
-	paginationEl.value.updateItem(id, announcement => {
-		announcement.isRead = true;
-		return announcement;
+	paginationEl.value.updateItem(announcement.id, a => {
+		a.isRead = true;
+		return a;
 	});
-	os.api('i/read-announcement', { announcementId: id });
+	os.api('i/read-announcement', { announcementId: announcement.id });
 	updateAccount({
-		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== id),
+		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== announcement.id),
 	});
 }
 
