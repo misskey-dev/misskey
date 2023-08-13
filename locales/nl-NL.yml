@@ -426,6 +426,7 @@ pushNotificationAlreadySubscribed: "Pushberichtrn al ingeschakeld"
 windowMaximize: "Maximaliseren"
 windowRestore: "Herstellen"
 loggedInAsBot: "Momenteel als bot ingelogd"
+icon: "Avatar"
 _email:
   _follow:
     title: "volgde jou"
