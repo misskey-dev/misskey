@@ -958,6 +958,7 @@ vertical: "Vertical"
 horizontal: "Latéral"
 serverRules: "Règles du serveur"
 youFollowing: "Abonné·e"
+icon: "Avatar"
 _achievements:
   _types:
     _notes1:
