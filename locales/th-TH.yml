@@ -1095,6 +1095,7 @@ expired: "หมดอายุแล้ว"
 doYouAgree: "ยอมรับมั้ย?"
 beSureToReadThisAsItIsImportant: "กรุณาอ่านข้อมูลที่สำคัญอันนี้"
 iHaveReadXCarefullyAndAgree: "ฉันได้อ่านข้อความ \"{x}\" และยินยอม"
+icon: "ไอคอน"
 _initialAccountSetting:
   accountCreated: "คุณได้สร้างบัญชีของคุณสำเร็จเรียบร้อยแล้ว!"
   letsStartAccountSetup: "สำหรับผู้เริ่มต้นมาตั้งค่าโปรไฟล์ของคุณกันเถอะ"
