@@ -37,7 +37,6 @@ import { userPage } from '@/filters/user';
 
 defineProps<{
 	note: misskey.entities.Note;
-	pinned?: boolean;
 }>();
 </script>
 
