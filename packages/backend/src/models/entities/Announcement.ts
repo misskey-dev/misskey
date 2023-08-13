@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Index, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
+import { User } from './User.js';
 
 @Entity()
 export class Announcement {
@@ -37,6 +38,52 @@ export class Announcement {
 		length: 1024, nullable: true,
 	})
 	public imageUrl: string | null;
+
+	// info, warning, error, success
+	@Column('varchar', {
+		length: 256, nullable: false,
+		default: 'info',
+	})
+	public icon: string;
+
+	// normal ... お知らせページ掲載
+	// banner ... お知らせページ掲載 + バナー表示
+	// dialog ... お知らせページ掲載 + ダイアログ表示
+	@Column('varchar', {
+		length: 256, nullable: false,
+		default: 'normal',
+	})
+	public display: string;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public needConfirmationToRead: boolean;
+
+	@Index()
+	@Column('boolean', {
+		default: true,
+	})
+	public isActive: boolean;
+
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public forExistingUsers: boolean;
+
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public userId: User['id'] | null;
+
+	@ManyToOne(type => User, {
+		onDelete: 'CASCADE',
+	})
+	@JoinColumn()
+	public user: User | null;
 
 	constructor(data: Partial<Announcement>) {
 		if (data == null) return;

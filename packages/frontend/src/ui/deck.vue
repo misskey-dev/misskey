@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<XSidebar v-if="!isMobile"/>
 
 	<div :class="$style.main">
+		<XAnnouncements v-if="$i" :class="$style.announcements"/>
 		<XStatusBars/>
 		<div ref="columnsEl" :class="[$style.sections, { [$style.center]: deckStore.reactiveState.columnAlign.value === 'center', [$style.snapScroll]: snapScroll }]" @contextmenu.self.prevent="onContextmenu" @wheel.self="onWheel">
 			<!-- sectionを利用しているのは、deck.vue側でcolumnに対してfirst-of-typeを効かせるため -->
@@ -113,6 +114,7 @@ import XMentionsColumn from '@/ui/deck/mentions-column.vue';
 import XDirectColumn from '@/ui/deck/direct-column.vue';
 import XRoleTimelineColumn from '@/ui/deck/role-timeline-column.vue';
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
+const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
 const columnComponents = {
 	main: XMainColumn,
