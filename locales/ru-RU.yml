@@ -1058,6 +1058,7 @@ goToMisskey: "К Misskey"
 additionalEmojiDictionary: "Дополнительные словари эмодзи"
 installed: "Установлено"
 expired: "Срок действия приглашения истёк"
+icon: "Аватар"
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
   letsStartAccountSetup: "Давайте настроим вашу учётную запись."
