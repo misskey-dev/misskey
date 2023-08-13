@@ -5,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div
-		v-for="announcement in $i.unreadAnnouncements.filter(x => x.display === 'banner')" :key="announcement.id" :class="$style.item"
+	<MkA
+		v-for="announcement in $i.unreadAnnouncements.filter(x => x.display === 'banner')" :key="announcement.id" :class="$style.item" to="/announcements"
 	>
 		<span :class="$style.icon">
 			<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</span>
 		<span :class="$style.title">{{ announcement.title }}</span>
 		<span :class="$style.body">{{ announcement.text }}</span>
-	</div>
+	</MkA>
 </div>
 </template>
 
@@ -43,6 +43,15 @@ import { $i } from '@/account';
 	contain: strict;
 	background: var(--accent);
 	color: var(--fgOnAccent);
+
+	@container (max-width: 1000px) {
+		display: block;
+		text-align: center;
+
+		> .body {
+			display: none;
+		}
+	}
 }
 
 .icon {
@@ -61,5 +70,8 @@ import { $i } from '@/account';
 .body {
 	min-width: 0;
 	flex: 1;
+	overflow: clip;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 </style>
