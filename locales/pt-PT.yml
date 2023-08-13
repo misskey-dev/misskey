@@ -953,6 +953,7 @@ rolesThatCanBeUsedThisEmojiAsReaction: "Cargos que podem utilizar este emoji com
 rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "Se nenhum cargo for especificado, qualquer pessoa pode usar este emoji como reação."
 rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "Estes cargos devem ser públicos."
 waitingForMailAuth: "Verificação de e-mail pendente "
+icon: "Avatar"
 _initialAccountSetting:
   followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _accountMigration:
