@@ -1095,6 +1095,7 @@ expired: "期限切れ"
 doYouAgree: "同意するんか？"
 beSureToReadThisAsItIsImportant: "重要やから絶対読んでや。"
 iHaveReadXCarefullyAndAgree: "「{x}」の内容をよう読んで、同意するで。"
+icon: "アイコン"
 _initialAccountSetting:
   accountCreated: "アカウント作り終わったで。"
   letsStartAccountSetup: "アカウントの初期設定をしよか。"
