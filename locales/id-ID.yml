@@ -1094,6 +1094,7 @@ expired: "Kedaluwarsa"
 doYouAgree: "Apa kamu setuju?"
 beSureToReadThisAsItIsImportant: "Mohon baca informasi penting berikut."
 iHaveReadXCarefullyAndAgree: "Saya telah membaca \"{x}\" dan menyetujui."
+icon: "Avatar"
 _initialAccountSetting:
   accountCreated: "Akun kamu telah sukses dibuat!"
   letsStartAccountSetup: "Untuk pemula, ayo atur profilmu dulu."
