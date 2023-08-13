@@ -1095,6 +1095,7 @@ expired: "Expired"
 doYouAgree: "Agree?"
 beSureToReadThisAsItIsImportant: "Please read this important information."
 iHaveReadXCarefullyAndAgree: "I have read the text \"{x}\" and agree."
+icon: "Avatar"
 _initialAccountSetting:
   accountCreated: "Your account was successfully created!"
   letsStartAccountSetup: "For starters, let's set up your profile."
