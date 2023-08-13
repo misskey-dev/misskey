@@ -15,12 +15,12 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=7168"
 
     steps:
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v3.5.3
       if: github.event_name != 'pull_request_target'
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v3.5.3
       if: github.event_name == 'pull_request_target'
       with:
         fetch-depth: 0
@@ -38,7 +38,7 @@ jobs:
         version: 8
         run_install: false
     - name: Use Node.js 20.x
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v3.7.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
