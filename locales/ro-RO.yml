@@ -630,6 +630,7 @@ sent: "Trimite"
 searchByGoogle: "Caută"
 file: "Fișiere"
 show: "Arată"
+icon: "Avatar"
 _role:
   _priority:
     middle: "Mediu"
