@@ -1103,6 +1103,7 @@ export interface Locale {
     "forYou": string;
     "currentAnnouncements": string;
     "pastAnnouncements": string;
+    "youHaveUnreadAnnouncements": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
