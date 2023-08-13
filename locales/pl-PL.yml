@@ -870,6 +870,7 @@ like: "Polub"
 show: "Wyświetlanie"
 color: "Kolor"
 youFollowing: "Śledzeni"
+icon: "Awatar"
 _role:
   priority: "Priorytet"
   _priority:
