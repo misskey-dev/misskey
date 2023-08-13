@@ -1095,6 +1095,7 @@ expired: "Scaduto"
 doYouAgree: "Sei d'accordo?"
 beSureToReadThisAsItIsImportant: "Si prega di leggere attentamente perché è importante."
 iHaveReadXCarefullyAndAgree: "Ho letto accuratamente \"{x}\" e sono d'accordo."
+icon: "Foto del profilo"
 _initialAccountSetting:
   accountCreated: "Il tuo profilo è stato creato!"
   letsStartAccountSetup: "Per iniziare, impostiamo il tuo profilo."
