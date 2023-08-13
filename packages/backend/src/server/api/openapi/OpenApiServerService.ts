@@ -8,6 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import { ErrorHandler } from '@/misc/error.js';
 import { genOpenapiSpec } from './gen-spec.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
@@ -23,6 +24,7 @@ export class OpenApiServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, _options: FastifyPluginOptions, done: (err?: Error) => void) {
+		fastify.setErrorHandler(ErrorHandler);
 		fastify.get('/api-doc', async (_request, reply) => {
 			reply.header('Cache-Control', 'public, max-age=86400');
 			return await reply.sendFile('/redoc.html', staticAssets);

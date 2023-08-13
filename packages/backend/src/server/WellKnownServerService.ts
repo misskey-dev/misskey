@@ -15,6 +15,7 @@ import type { User } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { ErrorHandler } from '@/misc/error.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import type { FindOptionsWhere } from 'typeorm';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
@@ -50,6 +51,8 @@ export class WellKnownServerService {
 		const xrd = 'application/xrd+xml';
 
 		fastify.register(fastifyAccepts);
+
+		fastify.setErrorHandler(ErrorHandler);
 
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Access-Control-Allow-Headers', 'Accept');

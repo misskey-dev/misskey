@@ -42,7 +42,6 @@ import { FeedService } from './FeedService.js';
 import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
 import type { FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
-import { ErrorHandling } from '@/misc/error.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -147,18 +146,18 @@ export class ClientServerService {
 			if (request.url === bullBoardPath || request.url.startsWith(bullBoardPath + '/')) {
 				const token = request.cookies.token;
 				if (token == null) {
-					reply.code(401);
-					throw ErrorHandling('login required');
+					reply.code(401).send('Login required');
+					return;
 				}
 				const user = await this.usersRepository.findOneBy({ token });
 				if (user == null) {
-					reply.code(403);
-					throw ErrorHandling('no such user');
+					reply.code(403).send('No such user');
+					return;
 				}
 				const isAdministrator = await this.roleService.isAdministrator(user);
 				if (!isAdministrator) {
-					reply.code(403);
-					throw ErrorHandling('access denied');
+					reply.code(403).send('Access denied');
+					return;
 				}
 			}
 		});
@@ -683,12 +682,13 @@ export class ClientServerService {
 
 		fastify.setErrorHandler(async (error, request, reply) => {
 			const errId = randomUUID();
+			const stack = (process.env.NODE_ENV === 'production') ? '' : error.stack;
 			this.clientLoggerService.logger.error(`Internal error occurred in ${request.routerPath}: ${error.message}`, {
 				path: request.routerPath,
 				params: request.params,
 				query: request.query,
 				code: error.name,
-				stack: error.stack,
+				stack,
 				id: errId,
 			});
 			reply.code(500);

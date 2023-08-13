@@ -13,6 +13,7 @@ import type { InstancesRepository, AccessTokensRepository } from '@/models/index
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { ErrorHandler } from '@/misc/error.js';
 import endpoints from './endpoints.js';
 import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
@@ -55,6 +56,8 @@ export class ApiServerService {
 		});
 
 		fastify.register(fastifyCookie, {});
+
+		fastify.setErrorHandler(ErrorHandler);
 
 		// Prevent cache
 		fastify.addHook('onRequest', (request, reply, done) => {
