@@ -26,7 +26,6 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
-import { ErrorHandler } from '@/misc/error.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
 
@@ -462,8 +461,6 @@ export class ActivityPubServerService {
 		fastify.register(fastifyAccepts);
 		fastify.addContentTypeParser('application/activity+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
 		fastify.addContentTypeParser('application/ld+json', { parseAs: 'string' }, fastify.getDefaultJsonParser('ignore', 'ignore'));
-
-		fastify.setErrorHandler(ErrorHandler);
 
 		fastify.addHook('onRequest', (request, reply, done) => {
 			reply.header('Access-Control-Allow-Headers', 'Accept');

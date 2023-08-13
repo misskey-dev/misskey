@@ -31,7 +31,7 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
-import { ErrorHandler, ErrorHandling } from '@/misc/error.js';
+import { ErrorHandling } from '@/misc/error.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -354,8 +354,6 @@ export class OAuth2ProviderService {
 	public async createServer(fastify: FastifyInstance): Promise<void> {
 		// https://datatracker.ietf.org/doc/html/rfc8414.html
 		// https://indieauth.spec.indieweb.org/#indieauth-server-metadata
-
-		fastify.setErrorHandler(ErrorHandler);
 
 		fastify.get('/.well-known/oauth-authorization-server', async (_request, reply) => {
 			reply.send({
