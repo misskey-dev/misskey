@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="[$style.root, { [$style.rootMin]: forceSpacerMin }]">
 	<div :class="$style.content">

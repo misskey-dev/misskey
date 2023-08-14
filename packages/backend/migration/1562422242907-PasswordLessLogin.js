@@ -1,4 +1,7 @@
-
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 export class PasswordLessLogin1562422242907 {
     async up(queryRunner) {

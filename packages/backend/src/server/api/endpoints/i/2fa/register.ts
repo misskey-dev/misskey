@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import * as QRCode from 'qrcode';

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Theme } from './scripts/theme';
 import { miLocalStorage } from './local-storage';
 import { api } from '@/os';

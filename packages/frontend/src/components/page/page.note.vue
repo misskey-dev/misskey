@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div style="margin: 1em 0;">
 	<MkNote v-if="note && !block.detailed" :key="note.id + ':normal'" v-model:note="note"/>

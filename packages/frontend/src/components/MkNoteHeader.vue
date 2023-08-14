@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <header :class="$style.root">
 	<MkA v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">

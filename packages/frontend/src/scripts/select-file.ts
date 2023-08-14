@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { ref } from 'vue';
 import { DriveFile } from 'misskey-js/built/entities';
 import * as os from '@/os';

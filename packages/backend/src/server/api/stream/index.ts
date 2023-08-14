@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as WebSocket from 'ws';
 import type { User } from '@/models/entities/User.js';
 import type { AccessToken } from '@/models/entities/AccessToken.js';
