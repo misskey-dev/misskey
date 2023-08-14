@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import type { MutingsRepository, Muting } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -24,7 +24,7 @@ export class UserMutingService {
 	}
 
 	@bindThis
-	public async mute(user: User, target: User, expiresAt: Date | null = null): Promise<void> {
+	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
 		await this.mutingsRepository.insert({
 			id: this.idService.genId(),
 			createdAt: new Date(),

@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository } from '@/models/index.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, MiUser } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -51,7 +51,7 @@ class DeliverManager {
 		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
 
-		actor: { id: User['id']; host: null; },
+		actor: { id: MiUser['id']; host: null; },
 		activity: IActivity | null,
 	) {
 		// 型で弾いてはいるが一応ローカルユーザーかチェック
@@ -197,7 +197,7 @@ export class ApDeliverManagerService {
 	}
 
 	@bindThis
-	public createDeliverManager(actor: { id: User['id']; host: null; }, activity: IActivity | null): DeliverManager {
+	public createDeliverManager(actor: { id: MiUser['id']; host: null; }, activity: IActivity | null): DeliverManager {
 		return new DeliverManager(
 			this.userEntityService,
 			this.followingsRepository,

@@ -9,8 +9,8 @@ import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
-import type { AccessToken } from '@/models/entities/AccessToken.js';
+import type { LocalUser, MiUser } from '@/models/entities/User.js';
+import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -34,7 +34,7 @@ const accessDenied = {
 @Injectable()
 export class ApiCallService implements OnApplicationShutdown {
 	private logger: Logger;
-	private userIpHistories: Map<User['id'], Set<string>>;
+	private userIpHistories: Map<MiUser['id'], Set<string>>;
 	private userIpHistoriesClearIntervalId: NodeJS.Timer;
 
 	constructor(
@@ -48,7 +48,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		private apiLoggerService: ApiLoggerService,
 	) {
 		this.logger = this.apiLoggerService.logger;
-		this.userIpHistories = new Map<User['id'], Set<string>>();
+		this.userIpHistories = new Map<MiUser['id'], Set<string>>();
 
 		this.userIpHistoriesClearIntervalId = setInterval(() => {
 			this.userIpHistories.clear();
@@ -223,7 +223,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	private async call(
 		ep: IEndpoint & { exec: any },
 		user: LocalUser | null | undefined,
-		token: AccessToken | null | undefined,
+		token: MiAccessToken | null | undefined,
 		data: any,
 		file: {
 			name: string;

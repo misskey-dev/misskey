@@ -8,9 +8,9 @@ import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import type { UserPublickey } from '@/models/entities/UserPublickey.js';
+import type { MiUserPublickey } from '@/models/entities/UserPublickey.js';
 import { CacheService } from '@/core/CacheService.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { getApId } from './type.js';
@@ -35,8 +35,8 @@ export type UriParseResult = {
 
 @Injectable()
 export class ApDbResolverService implements OnApplicationShutdown {
-	private publicKeyCache: MemoryKVCache<UserPublickey | null>;
-	private publicKeyByUserIdCache: MemoryKVCache<UserPublickey | null>;
+	private publicKeyCache: MemoryKVCache<MiUserPublickey | null>;
+	private publicKeyByUserIdCache: MemoryKVCache<MiUserPublickey | null>;
 
 	constructor(
 		@Inject(DI.config)
@@ -54,8 +54,8 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,
 	) {
-		this.publicKeyCache = new MemoryKVCache<UserPublickey | null>(Infinity);
-		this.publicKeyByUserIdCache = new MemoryKVCache<UserPublickey | null>(Infinity);
+		this.publicKeyCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
+		this.publicKeyByUserIdCache = new MemoryKVCache<MiUserPublickey | null>(Infinity);
 	}
 
 	@bindThis
@@ -78,7 +78,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Note => Misskey Note in DB
 	 */
 	@bindThis
-	public async getNoteFromApId(value: string | IObject): Promise<Note | null> {
+	public async getNoteFromApId(value: string | IObject): Promise<MiNote | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
@@ -122,7 +122,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	@bindThis
 	public async getAuthUserFromKeyId(keyId: string): Promise<{
 		user: RemoteUser;
-		key: UserPublickey;
+		key: MiUserPublickey;
 	} | null> {
 		const key = await this.publicKeyCache.fetch(keyId, async () => {
 			const key = await this.userPublickeysRepository.findOneBy({
@@ -148,7 +148,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
 		user: RemoteUser;
-		key: UserPublickey | null;
+		key: MiUserPublickey | null;
 	} | null> {
 		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
 

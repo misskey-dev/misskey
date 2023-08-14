@@ -6,8 +6,8 @@
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { Note } from '@/models/entities/Note.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/entities/Note.js';
+import type { LocalUser, MiUser } from '@/models/entities/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import type { SchemaType } from '@/misc/json-schema.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
@@ -144,7 +144,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	}
 
 	@bindThis
-	private async mergePack(me: LocalUser | null | undefined, user: User | null | undefined, note: Note | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
+	private async mergePack(me: LocalUser | null | undefined, user: MiUser | null | undefined, note: MiNote | null | undefined): Promise<SchemaType<typeof meta.res> | null> {
 		if (user != null) {
 			return {
 				type: 'User',

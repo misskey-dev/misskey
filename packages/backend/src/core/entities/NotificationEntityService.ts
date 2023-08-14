@@ -9,8 +9,8 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, FollowRequestsRepository, NotesRepository, User, UsersRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Notification } from '@/models/entities/Notification.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNotification } from '@/models/entities/Notification.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
@@ -57,14 +57,14 @@ export class NotificationEntityService implements OnModuleInit {
 
 	@bindThis
 	public async pack(
-		src: Notification,
+		src: MiNotification,
 		meId: User['id'],
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
 
 		},
 		hint?: {
-			packedNotes: Map<Note['id'], Packed<'Note'>>;
+			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
 			packedUsers: Map<User['id'], Packed<'User'>>;
 		},
 	): Promise<Packed<'Notification'>> {
@@ -108,7 +108,7 @@ export class NotificationEntityService implements OnModuleInit {
 
 	@bindThis
 	public async packMany(
-		notifications: Notification[],
+		notifications: MiNotification[],
 		meId: User['id'],
 	) {
 		if (notifications.length === 0) return [];

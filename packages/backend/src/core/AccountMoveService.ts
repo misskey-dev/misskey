@@ -8,7 +8,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { LocalUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, RemoteUser, MiUser } from '@/models/entities/User.js';
 import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
@@ -114,7 +114,7 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	public async postMoveProcess(src: User, dst: User): Promise<void> {
+	public async postMoveProcess(src: MiUser, dst: MiUser): Promise<void> {
 		// Copy blockings and mutings, and update lists
 		try {
 			await Promise.all([
@@ -213,7 +213,7 @@ export class AccountMoveService {
 	 * @returns Promise<void>
 	 */
 	@bindThis
-	public async updateLists(src: ThinUser, dst: User): Promise<void> {
+	public async updateLists(src: ThinUser, dst: MiUser): Promise<void> {
 		// Return if there is no list to be updated.
 		const oldJoinings = await this.userListJoiningsRepository.find({
 			where: {
@@ -260,7 +260,7 @@ export class AccountMoveService {
 	}
 
 	@bindThis
-	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: User): Promise<void> {
+	private async adjustFollowingCounts(localFollowerIds: string[], oldAccount: MiUser): Promise<void> {
 		if (localFollowerIds.length === 0) return;
 
 		// Set the old account's following and followers counts to 0.

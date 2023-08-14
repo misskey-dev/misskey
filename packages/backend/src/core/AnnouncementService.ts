@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import type { AnnouncementReadsRepository, AnnouncementsRepository, Announcement, AnnouncementRead } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
@@ -28,14 +28,14 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async getReads(userId: User['id']): Promise<AnnouncementRead[]> {
+	public async getReads(userId: MiUser['id']): Promise<AnnouncementRead[]> {
 		return this.announcementReadsRepository.findBy({
 			userId: userId,
 		});
 	}
 
 	@bindThis
-	public async getUnreadAnnouncements(user: User): Promise<Announcement[]> {
+	public async getUnreadAnnouncements(user: MiUser): Promise<Announcement[]> {
 		const readsQuery = this.announcementReadsRepository.createQueryBuilder('read')
 			.select('read.announcementId')
 			.where('read.userId = :userId', { userId: user.id });
@@ -92,7 +92,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async read(user: User, announcementId: Announcement['id']): Promise<void> {
+	public async read(user: MiUser, announcementId: Announcement['id']): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({
 				id: this.idService.genId(),
@@ -112,7 +112,7 @@ export class AnnouncementService {
 	@bindThis
 	public async packMany(
 		announcements: Announcement[],
-		me?: { id: User['id'] } | null | undefined,
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			reads?: AnnouncementRead[];
 		},

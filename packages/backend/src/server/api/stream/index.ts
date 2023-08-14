@@ -4,8 +4,8 @@
  */
 
 import * as WebSocket from 'ws';
-import type { User } from '@/models/entities/User.js';
-import type { AccessToken } from '@/models/entities/AccessToken.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
@@ -21,8 +21,8 @@ import type { StreamEventEmitter, StreamMessages } from './types.js';
  * Main stream connection
  */
 export default class Connection {
-	public user?: User;
-	public token?: AccessToken;
+	public user?: MiUser;
+	public token?: MiAccessToken;
 	private wsConnection: WebSocket.WebSocket;
 	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
@@ -42,8 +42,8 @@ export default class Connection {
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 
-		user: User | null | undefined,
-		token: AccessToken | null | undefined,
+		user: MiUser | null | undefined,
+		token: MiAccessToken | null | undefined,
 	) {
 		if (user) this.user = user;
 		if (token) this.token = token;

@@ -6,8 +6,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { DriveFilesRepository, FollowingsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -98,7 +98,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async updateNote(host: string, note: Note, isAdditional: boolean): Promise<void> {
+	public async updateNote(host: string, note: MiNote, isAdditional: boolean): Promise<void> {
 		await this.commit({
 			'notes.total': isAdditional ? 1 : -1,
 			'notes.inc': isAdditional ? 1 : 0,
@@ -129,7 +129,7 @@ export default class InstanceChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async updateDrive(file: DriveFile, isAdditional: boolean): Promise<void> {
+	public async updateDrive(file: MiDriveFile, isAdditional: boolean): Promise<void> {
 		const fileSizeKb = file.size / 1000;
 		await this.commit({
 			'drive.totalFiles': isAdditional ? 1 : -1,

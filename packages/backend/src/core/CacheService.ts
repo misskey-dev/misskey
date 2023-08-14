@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, UserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
+import type { LocalUser, MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -16,10 +16,10 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class CacheService implements OnApplicationShutdown {
-	public userByIdCache: MemoryKVCache<User, User | string>;
+	public userByIdCache: MemoryKVCache<MiUser, MiUser | string>;
 	public localUserByNativeTokenCache: MemoryKVCache<LocalUser | null, string | null>;
 	public localUserByIdCache: MemoryKVCache<LocalUser>;
-	public uriPersonCache: MemoryKVCache<User | null, string | null>;
+	public uriPersonCache: MemoryKVCache<MiUser | null, string | null>;
 	public userProfileCache: RedisKVCache<UserProfile>;
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
@@ -64,7 +64,7 @@ export class CacheService implements OnApplicationShutdown {
 		this.localUserByIdCache	= localUserByIdCache;
 
 		// ローカルユーザーならlocalUserByIdCacheにデータを追加し、こちらにはid(文字列)だけを追加する
-		const userByIdCache = new MemoryKVCache<User, User | string>(1000 * 60 * 60 * 6 /* 6h */, {
+		const userByIdCache = new MemoryKVCache<MiUser, MiUser | string>(1000 * 60 * 60 * 6 /* 6h */, {
 			toMapConverter: user => {
 				if (user.host === null) {
 					localUserByIdCache.set(user.id, user as LocalUser);
@@ -86,7 +86,7 @@ export class CacheService implements OnApplicationShutdown {
 			},
 			fromMapConverter: id => id === null ? null : localUserByIdCache.get(id),
 		});
-		this.uriPersonCache = new MemoryKVCache<User | null, string | null>(Infinity, {
+		this.uriPersonCache = new MemoryKVCache<MiUser | null, string | null>(Infinity, {
 			toMapConverter: user => {
 				if (user === null) return null;
 
@@ -197,7 +197,7 @@ export class CacheService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public findUserById(userId: User['id']) {
+	public findUserById(userId: MiUser['id']) {
 		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
 	}
 

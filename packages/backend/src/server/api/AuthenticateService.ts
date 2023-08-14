@@ -7,9 +7,9 @@ import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
 import type { LocalUser } from '@/models/entities/User.js';
-import type { AccessToken } from '@/models/entities/AccessToken.js';
+import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import { MemoryKVCache } from '@/misc/cache.js';
-import type { App } from '@/models/entities/App.js';
+import type { MiApp } from '@/models/entities/App.js';
 import { CacheService } from '@/core/CacheService.js';
 import isNativeToken from '@/misc/is-native-token.js';
 import { bindThis } from '@/decorators.js';
@@ -23,7 +23,7 @@ export class AuthenticationError extends Error {
 
 @Injectable()
 export class AuthenticateService implements OnApplicationShutdown {
-	private appCache: MemoryKVCache<App>;
+	private appCache: MemoryKVCache<MiApp>;
 
 	constructor(
 		@Inject(DI.usersRepository)
@@ -37,11 +37,11 @@ export class AuthenticateService implements OnApplicationShutdown {
 
 		private cacheService: CacheService,
 	) {
-		this.appCache = new MemoryKVCache<App>(Infinity);
+		this.appCache = new MemoryKVCache<MiApp>(Infinity);
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, AccessToken | null]> {
+	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, MiAccessToken | null]> {
 		if (token == null) {
 			return [null, null];
 		}
@@ -84,7 +84,7 @@ export class AuthenticateService implements OnApplicationShutdown {
 				return [user, {
 					id: accessToken.id,
 					permission: app.permission,
-				} as AccessToken];
+				} as MiAccessToken];
 			} else {
 				return [user, accessToken];
 			}

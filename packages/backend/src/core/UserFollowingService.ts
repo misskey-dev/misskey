@@ -6,7 +6,7 @@
 import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IsNull } from 'typeorm';
-import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, MiUser } from '@/models/entities/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueueService } from '@/core/QueueService.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
@@ -91,7 +91,7 @@ export class UserFollowingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async follow(_follower: { id: User['id'] }, _followee: { id: User['id'] }, requestId?: string, silent = false): Promise<void> {
+	public async follow(_follower: { id: MiUser['id'] }, _followee: { id: MiUser['id'] }, requestId?: string, silent = false): Promise<void> {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: _follower.id }),
 			this.usersRepository.findOneByOrFail({ id: _followee.id }),
@@ -180,10 +180,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	private async insertFollowingDoc(
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox']
 		},
 		silent = false,
 	): Promise<void> {
@@ -312,10 +312,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async unfollow(
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		silent = false,
 	): Promise<void> {
@@ -371,8 +371,8 @@ export class UserFollowingService implements OnModuleInit {
 
 	@bindThis
 	private async decrementFollowing(
-		follower: User,
-		followee: User,
+		follower: MiUser,
+		followee: MiUser,
 	): Promise<void> {
 		this.globalEventService.publishInternalEvent('unfollow', { followerId: follower.id, followeeId: followee.id });
 
@@ -444,10 +444,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async createFollowRequest(
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		requestId?: string,
 	): Promise<void> {
@@ -502,10 +502,10 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async cancelFollowRequest(
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']
 		},
 		follower: {
-			id: User['id']; host: User['host']; uri: User['host']
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']
 		},
 	): Promise<void> {
 		if (this.userEntityService.isRemoteUser(followee)) {
@@ -540,9 +540,9 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async acceptFollowRequest(
 		followee: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
-		follower: User,
+		follower: MiUser,
 	): Promise<void> {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
@@ -568,7 +568,7 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public async acceptAllFollowRequests(
 		user: {
-			id: User['id']; host: User['host']; uri: User['host']; inbox: User['inbox']; sharedInbox: User['sharedInbox'];
+			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 	): Promise<void> {
 		const requests = await this.followRequestsRepository.findBy({

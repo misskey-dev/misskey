@@ -7,7 +7,7 @@ import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id.js';
 
 @Entity()
-export class Instance {
+export class MiInstance {
 	@PrimaryColumn(id())
 	public id: string;
 

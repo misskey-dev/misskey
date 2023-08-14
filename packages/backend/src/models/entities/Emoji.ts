@@ -8,7 +8,7 @@ import { id } from '../id.js';
 
 @Entity()
 @Index(['name', 'host'], { unique: true })
-export class Emoji {
+export class MiEmoji {
 	@PrimaryColumn(id())
 	public id: string;
 

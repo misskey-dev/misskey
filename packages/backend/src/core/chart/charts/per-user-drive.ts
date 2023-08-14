@@ -6,7 +6,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import type { DriveFilesRepository } from '@/models/index.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
@@ -53,7 +53,7 @@ export default class PerUserDriveChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
+	public async update(file: MiDriveFile, isAdditional: boolean): Promise<void> {
 		const fileSizeKb = file.size / 1000;
 		await this.commit({
 			'totalCount': isAdditional ? 1 : -1,

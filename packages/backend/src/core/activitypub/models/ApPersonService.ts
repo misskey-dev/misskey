@@ -11,25 +11,25 @@ import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
-import { User } from '@/models/entities/User.js';
+import { MiUser } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type Logger from '@/logger.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MfmService } from '@/core/MfmService.js';
 import { toArray } from '@/misc/prelude/array.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { UserProfile } from '@/models/entities/UserProfile.js';
-import { UserPublickey } from '@/models/entities/UserPublickey.js';
+import { MiUserProfile } from '@/models/entities/UserProfile.js';
+import { MiUserPublickey } from '@/models/entities/UserPublickey.js';
 import type UsersChart from '@/core/chart/charts/users.js';
 import type InstanceChart from '@/core/chart/charts/instance.js';
 import type { HashtagService } from '@/core/HashtagService.js';
-import { UserNotePining } from '@/models/entities/UserNotePining.js';
+import { MiUserNotePining } from '@/models/entities/UserNotePining.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import type { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -294,7 +294,7 @@ export class ApPersonService implements OnModuleInit {
 		try {
 			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
-				user = await transactionalEntityManager.save(new User({
+				user = await transactionalEntityManager.save(new MiUser({
 					id: this.idService.genId(),
 					avatarId: null,
 					bannerId: null,
@@ -320,7 +320,7 @@ export class ApPersonService implements OnModuleInit {
 					emojis,
 				})) as RemoteUser;
 
-				await transactionalEntityManager.save(new UserProfile({
+				await transactionalEntityManager.save(new MiUserProfile({
 					userId: user.id,
 					description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
 					url,
@@ -331,7 +331,7 @@ export class ApPersonService implements OnModuleInit {
 				}));
 
 				if (person.publicKey) {
-					await transactionalEntityManager.save(new UserPublickey({
+					await transactionalEntityManager.save(new MiUserPublickey({
 						userId: user.id,
 						keyId: person.publicKey.id,
 						keyPem: person.publicKey.publicKeyPem,
@@ -572,7 +572,7 @@ export class ApPersonService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async updateFeatured(userId: User['id'], resolver?: Resolver): Promise<void> {
+	public async updateFeatured(userId: MiUser['id'], resolver?: Resolver): Promise<void> {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
@@ -590,7 +590,7 @@ export class ApPersonService implements OnModuleInit {
 		const items = await Promise.all(toArray(unresolvedItems).map(x => _resolver.resolve(x)));
 
 		// Resolve and regist Notes
-		const limit = promiseLimit<Note | null>(2);
+		const limit = promiseLimit<MiNote | null>(2);
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
@@ -600,13 +600,13 @@ export class ApPersonService implements OnModuleInit {
 			}))));
 
 		await this.db.transaction(async transactionalEntityManager => {
-			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
+			await transactionalEntityManager.delete(MiUserNotePining, { userId: user.id });
 
 			// とりあえずidを別の時間で生成して順番を維持
 			let td = 0;
-			for (const note of featuredNotes.filter((note): note is Note => note != null)) {
+			for (const note of featuredNotes.filter((note): note is MiNote => note != null)) {
 				td -= 1000;
-				transactionalEntityManager.insert(UserNotePining, {
+				transactionalEntityManager.insert(MiUserNotePining, {
 					id: this.idService.genId(new Date(Date.now() + td)),
 					createdAt: new Date(),
 					userId: user.id,

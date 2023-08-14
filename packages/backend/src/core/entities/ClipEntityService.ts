@@ -9,7 +9,7 @@ import type { ClipFavoritesRepository, ClipsRepository, User } from '@/models/in
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { Clip } from '@/models/entities/Clip.js';
+import type { MiClip } from '@/models/entities/Clip.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -28,7 +28,7 @@ export class ClipEntityService {
 
 	@bindThis
 	public async pack(
-		src: Clip['id'] | Clip,
+		src: MiClip['id'] | MiClip,
 		me?: { id: User['id'] } | null | undefined,
 	): Promise<Packed<'Clip'>> {
 		const meId = me ? me.id : null;
@@ -50,7 +50,7 @@ export class ClipEntityService {
 
 	@bindThis
 	public packMany(
-		clips: Clip[],
+		clips: MiClip[],
 		me?: { id: User['id'] } | null | undefined,
 	) {
 		return Promise.all(clips.map(x => this.pack(x, me)));
