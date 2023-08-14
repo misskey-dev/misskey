@@ -4,7 +4,7 @@
  */
 
 import { Note, UserLite, DriveFile } from "misskey-js/built/entities";
-import { Ref, ref, ComputedRef, computed, watch, triggerRef } from "vue";
+import { Ref, ref, ComputedRef, computed, watch } from "vue";
 import { api } from "./api";
 import { useStream } from '@/stream';
 import { Stream } from "misskey-js";
@@ -45,7 +45,7 @@ export const driveFileManager = new EntitiyManager<DriveFile>('driveFile');
 
 type OmittedNote = Omit<Note, 'user' | 'renote' | 'reply'>;
 type CachedNoteSource = OmittedNote | null;
-type CachedNote = ComputedRef<Note | null>;
+type ComputedNote = ComputedRef<Note | null>;
 type InterruptedCachedNote = Ref<Note | null>;
 
 export function isRenote(note: Note | OmittedNote | null): boolean {
@@ -147,49 +147,55 @@ export class NoteManager {
         this.updatedAt.set(note.id, Date.now());
     }
 
-    public get(id: string): CachedNote {
+    private getRaw(id: string): Note | null | undefined {
+        const note = this.notesSource.value.get(id);
+
+        if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note);
+
+        if (note === null) {
+            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is null', id);
+            return null;
+        }
+        if (note === undefined) {
+            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is undefined', id);
+            return undefined;
+        }
+
+        const user = userLiteManager.get(note.userId)!;
+
+        const renote = note.renoteId ? this.getRaw(note.renoteId) : undefined;
+        if (renote === null) {
+            // renoteがnullの場合はCASCADE削除とみなす
+            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.renoteId);
+            return null;
+        }
+
+        const reply = note.replyId ? this.getRaw(note.replyId) : undefined;
+        if (reply === null) {
+            // replyがnullの場合はCASCADE削除とみなす
+            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.replyId);
+            return null;
+        }
+
+        const files = note.fileIds.map(id => driveFileManager.get(id)?.value);
+
+        const result = {
+            ...note,
+            user: user.value,
+            renote: renote ?? undefined,
+            reply: reply ?? undefined,
+            files: files.filter(file => file) as DriveFile[],
+        };
+
+        if (this.isDebuggerEnabled) console.log('NoteManager: compute note: not null', id, result);
+
+        return result;
+    }
+
+    public get(id: string): ComputedNote {
         // computedをキャッシュしたいけどバグるのでgetごとにcomputedを作成する
 
-        const result = computed<Note | null>(() => {
-            const note = this.notesSource.value.get(id);
-
-            if (this.isDebuggerEnabled) console.log('NoteManager: compute note', id, note);
-
-            if (!note) {
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note: source is null', id);
-                return null;
-            }
-
-            const user = userLiteManager.get(note.userId)!;
-
-            const renote = note.renoteId ? this.get(note.renoteId) : undefined;
-            // renoteが削除されている場合はCASCADE削除されるためnullを返す
-            if (renote && !renote.value) {
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note: renote is null', id, note.renoteId);
-                return null;
-            }
-
-            const reply = note.replyId ? this.get(note.replyId) : undefined;
-            // replyが削除されている場合はCASCADE削除されるためnullを返す
-            if (reply && !reply.value) {
-                if (this.isDebuggerEnabled) console.log('NoteManager: compute note: reply is null', id, note.replyId);
-                return null;
-            }
-
-            const files = note.fileIds.map(id => driveFileManager.get(id)?.value);
-
-            const result = {
-                ...note,
-                user: user.value,
-                renote: renote?.value ?? undefined,
-                reply: reply?.value ?? undefined,
-                files: files.filter(file => file) as DriveFile[],
-            };
-
-            if (this.isDebuggerEnabled) console.log('NoteManager: compute note: not null', id, result);
-
-            return result;
-        });
+        const result = computed<Note | null>(() => this.getRaw(id) ?? null);
         if (this.isDebuggerEnabled) {
             console.log('NoteManager: get note (new)', id, result);
             console.trace();
@@ -267,7 +273,7 @@ export class NoteManager {
         };
     }
 
-    public async fetch(id: string, force = false): Promise<CachedNote> {
+    public async fetch(id: string, force = false): Promise<ComputedNote> {
         if (this.isDebuggerEnabled) console.log('NoteManager: fetch note', id, { force });
 
         const note = this.get(id);
@@ -440,7 +446,7 @@ export class NoteManager {
      * @param id note id
      * @returns { note, unuse } note: CachedNote | Promise<CachedNote>, unuse: (noDeletion?: boolean) => void
      */
-    public useNote(id: string, shoudFetch: true): { note: Promise<CachedNote>, unuse: (noDeletion?: boolean) => void };
+    public useNote(id: string, shoudFetch: true): { note: Promise<ComputedNote>, unuse: (noDeletion?: boolean) => void };
     public useNote(id: string, shoudFetch = false) {
         if (this.isDebuggerEnabled) console.log('NoteManager: useNote', id, { has: this.notesSource.value.has(id), shoudFetch });
 
