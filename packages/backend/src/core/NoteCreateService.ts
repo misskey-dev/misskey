@@ -436,9 +436,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (isDuplicateKeyValueError(e)) {
 				const err = new Error('Duplicated note');
 				err.name = 'duplicated';
-				if (process.env.NODE_ENV === 'production') {
-					Object.defineProperty(err, 'stack', { value: '' });
-				}
 				throw err;
 			}
 
