@@ -18,7 +18,6 @@ import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { query } from '@/misc/prelude/url.js';
 import type { Serialized } from '@/server/api/stream/types.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 const parseEmojiStrRegexp = /^(\w+)(?:@([\w.-]+))?$/;
 
@@ -108,7 +107,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 	}): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });
-		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw ErrorHandling('name already exists');
+		if (sameNameEmoji != null && sameNameEmoji.id !== id) throw new Error('name already exists');
 
 		await this.emojisRepository.update(emoji.id, {
 			updatedAt: new Date(),

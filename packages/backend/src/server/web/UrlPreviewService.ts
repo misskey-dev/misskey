@@ -15,7 +15,6 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class UrlPreviewService {
@@ -85,11 +84,11 @@ export class UrlPreviewService {
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
 
 			if (!(summary.url.startsWith('http://') || summary.url.startsWith('https://'))) {
-				throw ErrorHandling('unsupported schema included');
+				throw new Error('unsupported schema included');
 			}
 
 			if (summary.player.url && !(summary.player.url.startsWith('http://') || summary.player.url.startsWith('https://'))) {
-				throw ErrorHandling('unsupported schema included');
+				throw new Error('unsupported schema included');
 			}
 
 			summary.icon = this.wrap(summary.icon);

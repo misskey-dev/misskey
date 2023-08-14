@@ -6,7 +6,6 @@
 import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 type CaptchaResponse = {
 	success: boolean;
@@ -36,7 +35,7 @@ export class CaptchaService {
 		}, { throwErrorWhenResponseNotOk: false });
 
 		if (!res.ok) {
-			throw ErrorHandling(`${res.status}`);
+			throw new Error(`${res.status}`);
 		}
 
 		return await res.json() as CaptchaResponse;
@@ -45,48 +44,48 @@ export class CaptchaService {
 	@bindThis
 	public async verifyRecaptcha(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
-			throw ErrorHandling('recaptcha-failed: no response provided');
+			throw new Error('recaptcha-failed: no response provided');
 		}
 
 		const result = await this.getCaptchaResponse('https://www.recaptcha.net/recaptcha/api/siteverify', secret, response).catch(err => {
-			throw ErrorHandling(`recaptcha-request-failed: ${err}`);
+			throw new Error(`recaptcha-request-failed: ${err}`);
 		});
 
 		if (result.success !== true) {
 			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
-			throw ErrorHandling(`recaptcha-failed: ${errorCodes}`);
+			throw new Error(`recaptcha-failed: ${errorCodes}`);
 		}
 	}
 
 	@bindThis
 	public async verifyHcaptcha(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
-			throw ErrorHandling('hcaptcha-failed: no response provided');
+			throw new Error('hcaptcha-failed: no response provided');
 		}
 
 		const result = await this.getCaptchaResponse('https://hcaptcha.com/siteverify', secret, response).catch(err => {
-			throw ErrorHandling(`hcaptcha-request-failed: ${err}`);
+			throw new Error(`hcaptcha-request-failed: ${err}`);
 		});
 
 		if (result.success !== true) {
 			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
-			throw ErrorHandling(`hcaptcha-failed: ${errorCodes}`);
+			throw new Error(`hcaptcha-failed: ${errorCodes}`);
 		}
 	}
 
 	@bindThis
 	public async verifyTurnstile(secret: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
-			throw ErrorHandling('turnstile-failed: no response provided');
+			throw new Error('turnstile-failed: no response provided');
 		}
 
 		const result = await this.getCaptchaResponse('https://challenges.cloudflare.com/turnstile/v0/siteverify', secret, response).catch(err => {
-			throw ErrorHandling(`turnstile-request-failed: ${err}`);
+			throw new Error(`turnstile-request-failed: ${err}`);
 		});
 
 		if (result.success !== true) {
 			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
-			throw ErrorHandling(`turnstile-failed: ${errorCodes}`);
+			throw new Error(`turnstile-failed: ${errorCodes}`);
 		}
 	}
 }

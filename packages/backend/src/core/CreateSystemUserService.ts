@@ -16,7 +16,6 @@ import { UsedUsername } from '@/models/entities/UsedUsername.js';
 import { DI } from '@/di-symbols.js';
 import generateNativeUserToken from '@/misc/generate-native-user-token.js';
 import { bindThis } from '@/decorators.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class CreateSystemUserService {
@@ -50,7 +49,7 @@ export class CreateSystemUserService {
 				host: IsNull(),
 			});
 
-			if (exist) throw ErrorHandling('the user is already exists');
+			if (exist) throw new Error('the user is already exists');
 
 			account = await transactionalEntityManager.insert(User, {
 				id: this.idService.genId(),

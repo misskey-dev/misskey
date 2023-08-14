@@ -31,7 +31,6 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
-import { ErrorHandling } from '@/misc/error.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -372,7 +371,7 @@ export class OAuth2ProviderService {
 		fastify.get('/oauth/authorize', async (request, reply) => {
 			const oauth2 = (request.raw as MiddlewareRequest).oauth2;
 			if (!oauth2) {
-				throw ErrorHandling('Unexpected lack of authorization information');
+				throw new Error('Unexpected lack of authorization information');
 			}
 
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);

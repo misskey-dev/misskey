@@ -11,7 +11,6 @@ import type { UserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 export const meta = {
 	requireCredential: true,
@@ -44,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const same = await bcrypt.compare(ps.password, profile.password!);
 
 			if (!same) {
-				throw ErrorHandling('incorrect password');
+				throw new Error('incorrect password');
 			}
 
 			// Generate user's secret key

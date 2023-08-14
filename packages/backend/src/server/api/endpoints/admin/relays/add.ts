@@ -8,7 +8,6 @@ import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { RelayService } from '@/core/RelayService.js';
 import { ApiError } from '../../../error.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -68,7 +67,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			try {
-				if (new URL(ps.inbox).protocol !== 'https:') throw ErrorHandling('https only');
+				if (new URL(ps.inbox).protocol !== 'https:') throw new Error('https only');
 			} catch {
 				throw new ApiError(meta.errors.invalidUrl);
 			}

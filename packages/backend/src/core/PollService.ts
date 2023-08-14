@@ -15,7 +15,6 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { bindThis } from '@/decorators.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class PollService {
@@ -46,16 +45,16 @@ export class PollService {
 	public async vote(user: User, note: Note, choice: number) {
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 
-		if (poll == null) throw ErrorHandling('poll not found');
+		if (poll == null) throw new Error('poll not found');
 
 		// Check whether is valid choice
-		if (poll.choices[choice] == null) throw ErrorHandling('invalid choice param');
+		if (poll.choices[choice] == null) throw new Error('invalid choice param');
 
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
 			if (blocked) {
-				throw ErrorHandling('blocked');
+				throw new Error('blocked');
 			}
 		}
 
@@ -67,10 +66,10 @@ export class PollService {
 
 		if (poll.multiple) {
 			if (exist.some(x => x.choice === choice)) {
-				throw ErrorHandling('already voted');
+				throw new Error('already voted');
 			}
 		} else if (exist.length !== 0) {
-			throw ErrorHandling('already voted');
+			throw new Error('already voted');
 		}
 
 		// Create vote
@@ -95,10 +94,10 @@ export class PollService {
 	@bindThis
 	public async deliverQuestionUpdate(noteId: Note['id']) {
 		const note = await this.notesRepository.findOneBy({ id: noteId });
-		if (note == null) throw ErrorHandling('note not found');
+		if (note == null) throw new Error('note not found');
 
 		const user = await this.usersRepository.findOneBy({ id: note.userId });
-		if (user == null) throw ErrorHandling('note not found');
+		if (user == null) throw new Error('note not found');
 
 		if (this.userEntityService.isLocalUser(user)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderUpdate(await this.apRendererService.renderNote(note, false), user));

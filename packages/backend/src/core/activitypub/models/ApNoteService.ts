@@ -37,7 +37,6 @@ import { ApQuestionService } from './ApQuestionService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class ApNoteService {
@@ -136,7 +135,7 @@ export class ApNoteService {
 				value,
 				object,
 			});
-			throw ErrorHandling('invalid note');
+			throw new Error('invalid note');
 		}
 
 		const note = object as IPost;
@@ -144,27 +143,27 @@ export class ApNoteService {
 		this.logger.debug(`Note fetched: ${JSON.stringify(note, null, 2)}`);
 
 		if (note.id && !checkHttps(note.id)) {
-			throw ErrorHandling('unexpected schema of note.id: ' + note.id);
+			throw new Error('unexpected schema of note.id: ' + note.id);
 		}
 
 		const url = getOneApHrefNullable(note.url);
 
 		if (url && !checkHttps(url)) {
-			throw ErrorHandling('unexpected schema of note url: ' + url);
+			throw new Error('unexpected schema of note url: ' + url);
 		}
 
 		this.logger.info(`Creating the Note: ${note.id}`);
 
 		// 投稿者をフェッチ
 		if (note.attributedTo == null) {
-			throw ErrorHandling('invalid note.attributedTo: ' + note.attributedTo);
+			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
 		}
 
 		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as RemoteUser;
 
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
-			throw ErrorHandling('actor has been suspended');
+			throw new Error('actor has been suspended');
 		}
 
 		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
@@ -199,7 +198,7 @@ export class ApNoteService {
 				.then(x => {
 					if (x == null) {
 						this.logger.warn('Specified inReplyTo, but not found');
-						throw ErrorHandling('inReplyTo not found');
+						throw new Error('inReplyTo not found');
 					}
 
 					return x;
@@ -236,7 +235,7 @@ export class ApNoteService {
 			quote = results.filter((x): x is { status: 'ok', res: Note } => x.status === 'ok').map(x => x.res).at(0);
 			if (!quote) {
 				if (results.some(x => x.status === 'temperror')) {
-					throw ErrorHandling('quote resolve failed');
+					throw new Error('quote resolve failed');
 				}
 			}
 		}
@@ -310,7 +309,7 @@ export class ApNoteService {
 			this.logger.info('The note is already inserted while creating itself, reading again');
 			const duplicate = await this.fetchNote(value);
 			if (!duplicate) {
-				throw ErrorHandling('The note creation failed with duplication error even when there is no duplication');
+				throw new Error('The note creation failed with duplication error even when there is no duplication');
 			}
 			return duplicate;
 		}
@@ -389,7 +388,7 @@ export class ApNoteService {
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
-					if (emoji == null) throw ErrorHandling('emoji update failed');
+					if (emoji == null) throw new Error('emoji update failed');
 					return emoji;
 				}
 

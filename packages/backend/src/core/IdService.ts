@@ -13,7 +13,6 @@ import { genMeidg, parseMeidg } from '@/misc/id/meidg.js';
 import { genObjectId, parseObjectId } from '@/misc/id/object-id.js';
 import { bindThis } from '@/decorators.js';
 import { parseUlid } from '@/misc/id/ulid.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 @Injectable()
 export class IdService {
@@ -36,7 +35,7 @@ export class IdService {
 			case 'meidg': return genMeidg(date);
 			case 'ulid': return ulid(date.getTime());
 			case 'objectid': return genObjectId(date);
-			default: throw ErrorHandling('unrecognized id generation method');
+			default: throw new Error('unrecognized id generation method');
 		}
 	}
 
@@ -48,7 +47,7 @@ export class IdService {
 			case 'meid': return parseMeid(id);
 			case 'meidg': return parseMeidg(id);
 			case 'ulid': return parseUlid(id);
-			default: throw ErrorHandling('unrecognized id generation method');
+			default: throw new Error('unrecognized id generation method');
 		}
 	}
 }

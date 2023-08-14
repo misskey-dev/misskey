@@ -42,7 +42,6 @@ import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -536,7 +535,7 @@ export class DriveService {
 				userId: user ? user.id : IsNull(),
 			});
 
-			if (driveFolder == null) throw ErrorHandling('folder-not-found');
+			if (driveFolder == null) throw new Error('folder-not-found');
 
 			return driveFolder;
 		};
@@ -751,13 +750,9 @@ export class DriveService {
 				this.deleteLogger.warn(`The object storage had no such key to delete: ${key}. Skipping this.`, err as Error);
 				return;
 			} else {
-				const error = new Error(`Failed to delete the file from the object storage with the given key: ${key}`);
-			if (process.env.NODE_ENV === 'production') {
-					Object.defineProperty(error, 'stack', { value: '' });
-					Object.defineProperty(err, 'stack', { value: '' });
-			}
-				error['cause'] = err;
-				throw error;
+				throw new Error(`Failed to delete the file from the object storage with the given key: ${key}`, {
+					cause: err,
+				});
 			}
 		}
 	}

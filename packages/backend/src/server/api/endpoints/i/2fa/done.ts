@@ -10,7 +10,6 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 export const meta = {
 	requireCredential: true,
@@ -42,7 +41,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			if (profile.twoFactorTempSecret == null) {
-				throw ErrorHandling('二段階認証の設定が開始されていません');
+				throw new Error('二段階認証の設定が開始されていません');
 			}
 
 			const delta = OTPAuth.TOTP.validate({
@@ -53,7 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			if (delta === null) {
-				throw ErrorHandling('not verified');
+				throw new Error('not verified');
 			}
 
 			await this.userProfilesRepository.update(me.id, {

@@ -10,7 +10,6 @@ import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/model
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 export const meta = {
 	requireCredential: true,
@@ -47,7 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const same = await bcrypt.compare(ps.password, profile.password!);
 
 			if (!same) {
-				throw ErrorHandling('incorrect password');
+				throw new Error('incorrect password');
 			}
 
 			// Make sure we only delete the user's own creds

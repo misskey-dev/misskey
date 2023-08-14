@@ -20,7 +20,6 @@ import { ApDbResolverService } from './ApDbResolverService.js';
 import { ApRendererService } from './ApRendererService.js';
 import { ApRequestService } from './ApRequestService.js';
 import type { IObject, ICollection, IOrderedCollection } from './type.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 export class Resolver {
 	private history: Set<string>;
@@ -61,7 +60,7 @@ export class Resolver {
 		if (isCollectionOrOrderedCollection(collection)) {
 			return collection;
 		} else {
-			throw ErrorHandling(`unrecognized collection type: ${collection.type}`);
+			throw new Error(`unrecognized collection type: ${collection.type}`);
 		}
 	}
 
@@ -75,15 +74,15 @@ export class Resolver {
 			// URLs with fragment parts cannot be resolved correctly because
 			// the fragment part does not get transmitted over HTTP(S).
 			// Avoid strange behaviour by not trying to resolve these at all.
-			throw ErrorHandling(`cannot resolve URL with fragment: ${value}`);
+			throw new Error(`cannot resolve URL with fragment: ${value}`);
 		}
 
 		if (this.history.has(value)) {
-			throw ErrorHandling('cannot resolve already resolved one');
+			throw new Error('cannot resolve already resolved one');
 		}
 
 		if (this.history.size > this.recursionLimit) {
-			throw ErrorHandling(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
+			throw new Error(`hit recursion limit: ${this.utilityService.extractDbHost(value)}`);
 		}
 
 		this.history.add(value);
@@ -95,7 +94,7 @@ export class Resolver {
 
 		const meta = await this.metaService.fetch();
 		if (this.utilityService.isBlockedHost(meta.blockedHosts, host)) {
-			throw ErrorHandling('Instance is blocked');
+			throw new Error('Instance is blocked');
 		}
 
 		if (this.config.signToActivityPubGet && !this.user) {
@@ -111,7 +110,7 @@ export class Resolver {
 				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
 		) {
-			throw ErrorHandling('invalid response');
+			throw new Error('invalid response');
 		}
 
 		return object;
@@ -120,7 +119,7 @@ export class Resolver {
 	@bindThis
 	private resolveLocal(url: string): Promise<IObject> {
 		const parsed = this.apDbResolverService.parseUri(url);
-		if (!parsed.local) throw ErrorHandling('resolveLocal: not local');
+		if (!parsed.local) throw new Error('resolveLocal: not local');
 
 		switch (parsed.type) {
 			case 'notes':
@@ -148,14 +147,14 @@ export class Resolver {
 					this.apRendererService.addContext(await this.apRendererService.renderLike(reaction, { uri: null })));
 			case 'follows':
 				// rest should be <followee id>
-				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw ErrorHandling('resolveLocal: invalid follow URI');
+				if (parsed.rest == null || !/^\w+$/.test(parsed.rest)) throw new Error('resolveLocal: invalid follow URI');
 
 				return Promise.all(
 					[parsed.id, parsed.rest].map(id => this.usersRepository.findOneByOrFail({ id })),
 				)
 					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower as LocalUser | RemoteUser, followee as LocalUser | RemoteUser, url)));
 			default:
-				throw ErrorHandling(`resolveLocal: type ${parsed.type} unhandled`);
+				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}
 	}
 }

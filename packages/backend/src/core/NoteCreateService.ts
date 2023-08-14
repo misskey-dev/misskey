@@ -53,7 +53,6 @@ import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
@@ -252,7 +251,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		// Renote対象が「ホームまたは全体」以外の公開範囲ならreject
 		if (data.renote && data.renote.visibility !== 'public' && data.renote.visibility !== 'home' && data.renote.userId !== user.id) {
-			throw ErrorHandling('Renote target is not public or home');
+			throw new Error('Renote target is not public or home');
 		}
 
 		// Renote対象がpublicではないならhomeにする
@@ -317,7 +316,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		if (data.visibility === 'specified') {
-			if (data.visibleUsers == null) throw ErrorHandling('invalid param');
+			if (data.visibleUsers == null) throw new Error('invalid param');
 
 			for (const u of data.visibleUsers) {
 				if (!mentionedUsers.some(x => x.id === u.id)) {
@@ -529,7 +528,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			// 未読通知を作成
 			if (data.visibility === 'specified') {
-				if (data.visibleUsers == null) throw ErrorHandling('invalid param');
+				if (data.visibleUsers == null) throw new Error('invalid param');
 
 				for (const u of data.visibleUsers) {
 					// ローカルユーザーのみ

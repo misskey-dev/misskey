@@ -9,7 +9,6 @@ import * as jsrsasign from 'jsrsasign';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 const ECC_PRELUDE = Buffer.from([0x04]);
 const NULL_BYTE = Buffer.from([0]);
@@ -73,7 +72,7 @@ function verifyCertificateChain(certificates: string[]) {
 		const CACert = i + 1 >= certificates.length ? Cert : certificates[i + 1];
 
 		const certStruct = jsrsasign.ASN1HEX.getTLVbyList(certificate.hex!, 0, [0]);
-		if (certStruct == null) throw ErrorHandling('certStruct is null');
+		if (certStruct == null) throw new Error('certStruct is null');
 
 		const algorithm = certificate.getSignatureAlgorithmField();
 		const signatureHex = certificate.getSignatureValueHex();
@@ -143,14 +142,14 @@ export class TwoFactorAuthenticationService {
 		challenge: string
 	}) {
 		if (clientData.type !== 'webauthn.get') {
-			throw ErrorHandling('type is not webauthn.get');
+			throw new Error('type is not webauthn.get');
 		}
 
 		if (this.hash(clientData.challenge).toString('hex') !== challenge) {
-			throw ErrorHandling('challenge mismatch');
+			throw new Error('challenge mismatch');
 		}
 		if (clientData.origin !== this.config.scheme + '://' + this.config.host) {
-			throw ErrorHandling('origin mismatch');
+			throw new Error('origin mismatch');
 		}
 
 		const verificationData = Buffer.concat(
@@ -172,11 +171,11 @@ export class TwoFactorAuthenticationService {
 					const negTwo = publicKey.get(-2);
 
 					if (!negTwo || negTwo.length !== 32) {
-						throw ErrorHandling('invalid or no -2 key given');
+						throw new Error('invalid or no -2 key given');
 					}
 					const negThree = publicKey.get(-3);
 					if (!negThree || negThree.length !== 32) {
-						throw ErrorHandling('invalid or no -3 key given');
+						throw new Error('invalid or no -3 key given');
 					}
 
 					const publicKeyU2F = Buffer.concat(
@@ -207,7 +206,7 @@ export class TwoFactorAuthenticationService {
 					credentialId: Buffer,
 				}) {
 					if (attStmt.alg !== -7) {
-						throw ErrorHandling('alg mismatch');
+						throw new Error('alg mismatch');
 					}
 
 					const verificationData = Buffer.concat([
@@ -220,11 +219,11 @@ export class TwoFactorAuthenticationService {
 					const negTwo = publicKey.get(-2);
 
 					if (!negTwo || negTwo.length !== 32) {
-						throw ErrorHandling('invalid or no -2 key given');
+						throw new Error('invalid or no -2 key given');
 					}
 					const negThree = publicKey.get(-3);
 					if (!negThree || negThree.length !== 32) {
-						throw ErrorHandling('invalid or no -3 key given');
+						throw new Error('invalid or no -3 key given');
 					}
 
 					const publicKeyData = Buffer.concat(
@@ -233,7 +232,7 @@ export class TwoFactorAuthenticationService {
 					);
 
 					if (!attCert.equals(publicKeyData)) {
-						throw ErrorHandling('public key mismatch');
+						throw new Error('public key mismatch');
 					}
 
 					const isValid = crypto
@@ -279,7 +278,7 @@ export class TwoFactorAuthenticationService {
 					const signature = jwsParts[2];
 
 					if (!verificationData.equals(Buffer.from(response.nonce, 'base64'))) {
-						throw ErrorHandling('invalid nonce');
+						throw new Error('invalid nonce');
 					}
 
 					const certificateChain = header.x5c
@@ -287,11 +286,11 @@ export class TwoFactorAuthenticationService {
 						.concat([GSR2]);
 
 					if (getCertSubject(certificateChain[0]).CN !== 'attest.android.com') {
-						throw ErrorHandling('invalid common name');
+						throw new Error('invalid common name');
 					}
 
 					if (!verifyCertificateChain(certificateChain)) {
-						throw ErrorHandling('Invalid certificate chain!');
+						throw new Error('Invalid certificate chain!');
 					}
 
 					const signatureBase = Buffer.from(
@@ -307,11 +306,11 @@ export class TwoFactorAuthenticationService {
 					const negTwo = publicKey.get(-2);
 
 					if (!negTwo || negTwo.length !== 32) {
-						throw ErrorHandling('invalid or no -2 key given');
+						throw new Error('invalid or no -2 key given');
 					}
 					const negThree = publicKey.get(-3);
 					if (!negThree || negThree.length !== 32) {
-						throw ErrorHandling('invalid or no -3 key given');
+						throw new Error('invalid or no -3 key given');
 					}
 
 					const publicKeyData = Buffer.concat(
@@ -356,11 +355,11 @@ export class TwoFactorAuthenticationService {
 						const negTwo = publicKey.get(-2);
 
 						if (!negTwo || negTwo.length !== 32) {
-							throw ErrorHandling('invalid or no -2 key given');
+							throw new Error('invalid or no -2 key given');
 						}
 						const negThree = publicKey.get(-3);
 						if (!negThree || negThree.length !== 32) {
-							throw ErrorHandling('invalid or no -3 key given');
+							throw new Error('invalid or no -3 key given');
 						}
 
 						const publicKeyData = Buffer.concat(
@@ -374,11 +373,11 @@ export class TwoFactorAuthenticationService {
 						};
 					} else if (attStmt.ecdaaKeyId) {
 						// https://fidoalliance.org/specs/fido-v2.0-id-20180227/fido-ecdaa-algorithm-v2.0-id-20180227.html#ecdaa-verify-operation
-						throw ErrorHandling('ECDAA-Verify is not supported');
+						throw new Error('ECDAA-Verify is not supported');
 					} else {
-						if (attStmt.alg !== -7) throw ErrorHandling('alg mismatch');
+						if (attStmt.alg !== -7) throw new Error('alg mismatch');
 
-						throw ErrorHandling('self attestation is not supported');
+						throw new Error('self attestation is not supported');
 					}
 				},
 			},
@@ -401,7 +400,7 @@ export class TwoFactorAuthenticationService {
 				}) {
 					const x5c: Buffer[] = attStmt.x5c;
 					if (x5c.length !== 1) {
-						throw ErrorHandling('x5c length does not match expectation');
+						throw new Error('x5c length does not match expectation');
 					}
 
 					const attCert = x5c[0];
@@ -411,11 +410,11 @@ export class TwoFactorAuthenticationService {
 					const negTwo: Buffer = publicKey.get(-2);
 
 					if (!negTwo || negTwo.length !== 32) {
-						throw ErrorHandling('invalid or no -2 key given');
+						throw new Error('invalid or no -2 key given');
 					}
 					const negThree: Buffer = publicKey.get(-3);
 					if (!negThree || negThree.length !== 32) {
-						throw ErrorHandling('invalid or no -3 key given');
+						throw new Error('invalid or no -3 key given');
 					}
 
 					const publicKeyU2F = Buffer.concat(

@@ -14,7 +14,6 @@ import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
 import type { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
-import { ErrorHandling } from '@/misc/error.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 
@@ -65,20 +64,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const same = await bcrypt.compare(ps.password, profile.password!);
 
 			if (!same) {
-				throw ErrorHandling('incorrect password');
+				throw new Error('incorrect password');
 			}
 
 			if (!profile.twoFactorEnabled) {
-				throw ErrorHandling('2fa not enabled');
+				throw new Error('2fa not enabled');
 			}
 
 			const clientData = JSON.parse(ps.clientDataJSON);
 
 			if (clientData.type !== 'webauthn.create') {
-				throw ErrorHandling('not a creation attestation');
+				throw new Error('not a creation attestation');
 			}
 			if (clientData.origin !== this.config.scheme + '://' + this.config.host) {
-				throw ErrorHandling('origin mismatch');
+				throw new Error('origin mismatch');
 			}
 
 			const clientDataJSONHash = this.twoFactorAuthenticationService.hash(Buffer.from(ps.clientDataJSON, 'utf-8'));
@@ -87,14 +86,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const rpIdHash = attestation.authData.slice(0, 32);
 			if (!rpIdHashReal.equals(rpIdHash)) {
-				throw ErrorHandling('rpIdHash mismatch');
+				throw new Error('rpIdHash mismatch');
 			}
 
 			const flags = attestation.authData[32];
 
 			// eslint:disable-next-line:no-bitwise
 			if (!(flags & 1)) {
-				throw ErrorHandling('user not present');
+				throw new Error('user not present');
 			}
 
 			const authData = Buffer.from(attestation.authData);
@@ -103,13 +102,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const publicKeyData = authData.slice(55 + credentialIdLength);
 			const publicKey: Map<number, any> = await cborDecodeFirst(publicKeyData);
 			if (publicKey.get(3) !== -7) {
-				throw ErrorHandling('alg mismatch');
+				throw new Error('alg mismatch');
 			}
 
 			const procedures = this.twoFactorAuthenticationService.getProcedures();
 
 			if (!(procedures as any)[attestation.fmt]) {
-				throw ErrorHandling(`unsupported fmt: ${attestation.fmt}. Supported ones: ${Object.keys(procedures)}`);
+				throw new Error(`unsupported fmt: ${attestation.fmt}. Supported ones: ${Object.keys(procedures)}`);
 			}
 
 			const verificationData = (procedures as any)[attestation.fmt].verify({
@@ -120,7 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				publicKey,
 				rpIdHash,
 			});
-			if (!verificationData.valid) throw ErrorHandling('signature invalid');
+			if (!verificationData.valid) throw new Error('signature invalid');
 
 			const attestationChallenge = await this.attestationChallengesRepository.findOneBy({
 				userId: me.id,
@@ -130,7 +129,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			if (!attestationChallenge) {
-				throw ErrorHandling('non-existent challenge');
+				throw new Error('non-existent challenge');
 			}
 
 			await this.attestationChallengesRepository.delete({
@@ -143,7 +142,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				new Date().getTime() - attestationChallenge.createdAt.getTime() >=
 		5 * 60 * 1000
 			) {
-				throw ErrorHandling('expired challenge');
+				throw new Error('expired challenge');
 			}
 
 			const credentialIdString = credentialId.toString('hex');

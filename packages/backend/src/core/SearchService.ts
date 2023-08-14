@@ -15,7 +15,6 @@ import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import type { Index, MeiliSearch } from 'meilisearch';
-import { ErrorHandling } from '@/misc/error.js';
 
 type K = string;
 type V = string | number | boolean;
@@ -38,7 +37,7 @@ function compileValue(value: V): string {
 	} else if (typeof value === 'boolean') {
 		return value.toString();
 	}
-	throw ErrorHandling('unrecognized value');
+	throw new Error('unrecognized value');
 }
 
 function compileQuery(q: Q): string {
@@ -52,7 +51,7 @@ function compileQuery(q: Q): string {
 		case 'and': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' AND ') })`;
 		case 'or': return q.qs.length === 0 ? '' : `(${ q.qs.map(_q => compileQuery(_q)).join(' OR ') })`;
 		case 'not': return `(NOT ${compileQuery(q.q)})`;
-		default: throw ErrorHandling('unrecognized query operator');
+		default: throw new Error('unrecognized query operator');
 	}
 }
 
