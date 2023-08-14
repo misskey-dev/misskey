@@ -353,7 +353,6 @@ export class OAuth2ProviderService {
 	public async createServer(fastify: FastifyInstance): Promise<void> {
 		// https://datatracker.ietf.org/doc/html/rfc8414.html
 		// https://indieauth.spec.indieweb.org/#indieauth-server-metadata
-
 		fastify.get('/.well-known/oauth-authorization-server', async (_request, reply) => {
 			reply.send({
 				issuer: this.config.url,

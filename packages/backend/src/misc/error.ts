@@ -4,17 +4,10 @@
  */
 import { FastifyReply, FastifyRequest } from 'fastify';
 
-export function ErrorHandling(message: string, reply?: FastifyReply, statusCode?: number): Error {
-	const error = new Error(message);
+export async function ErrorHandler(error: Error, request: FastifyRequest, reply: FastifyReply): Promise<void> {
 	if (process.env.NODE_ENV === 'production') {
 		error.stack = undefined;
 	}
-	if (reply) {
-		reply.code(statusCode ?? 500);
-	}
-	return error;
-}
-
-export function ErrorHandler(error: Error, request: FastifyRequest, reply: FastifyReply): void {
-	throw ErrorHandling(error.message, reply);
+	reply.send(error);
+	throw error;
 }
