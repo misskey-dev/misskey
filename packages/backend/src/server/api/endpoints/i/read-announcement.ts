@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/index.js';
@@ -53,18 +52,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Check if announcement exists
-			const announcementExist = await this.announcementsRepository.exist({
-				where: [
-					{
-						id: ps.announcementId,
-						userId: IsNull(),
-					},
-					{
-						id: ps.announcementId,
-						userId: me.id,
-					}
-				]
-			});
+			const announcementExist = await this.announcementsRepository.exist({ where: { id: ps.announcementId } });
 
 			if (!announcementExist) {
 				throw new ApiError(meta.errors.noSuchAnnouncement);

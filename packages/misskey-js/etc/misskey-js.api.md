@@ -31,8 +31,6 @@ type Announcement = {
     title: string;
     imageUrl: string | null;
     isRead?: boolean;
-    isPrivate: boolean;
-    closeDuration: number;
 };
 
 // @public (undocumented)
@@ -570,7 +568,6 @@ export type Endpoints = {
             withUnreads?: boolean;
             sinceId?: Announcement['id'];
             untilId?: Announcement['id'];
-            privateOnly?: boolean;
         };
         res: Announcement[];
     };
