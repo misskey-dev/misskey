@@ -14,6 +14,9 @@ import type { MiUser } from '@/models/entities/User.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import { appendQuery, query } from '@/misc/prelude/url.js';
 import { deepClone } from '@/misc/clone.js';
+import { bindThis } from '@/decorators.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import { isNotNull } from '@/misc/is-not-null.js';
 import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -24,9 +27,6 @@ type PackOptions = {
 	self?: boolean,
 	withUser?: boolean,
 };
-import { bindThis } from '@/decorators.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
-import { isNotNull } from '@/misc/is-not-null.js';
 
 @Injectable()
 export class DriveFileEntityService {

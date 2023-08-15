@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { MutingsRepository, Muting } from '@/models/index.js';
+import type { MutingsRepository, MiMuting } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
@@ -37,7 +37,7 @@ export class UserMutingService {
 	}
 
 	@bindThis
-	public async unmute(mutings: Muting[]): Promise<void> {
+	public async unmute(mutings: MiMuting[]): Promise<void> {
 		if (mutings.length === 0) return;
 
 		await this.mutingsRepository.delete({

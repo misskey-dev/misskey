@@ -12,7 +12,7 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiEmoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, Role } from '@/models/index.js';
+import type { EmojisRepository, MiRole } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -65,7 +65,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license: string | null;
 		isSensitive: boolean;
 		localOnly: boolean;
-		roleIdsThatCanBeUsedThisEmojiAsReaction: Role['id'][];
+		roleIdsThatCanBeUsedThisEmojiAsReaction: MiRole['id'][];
 	}): Promise<MiEmoji> {
 		const emoji = await this.emojisRepository.insert({
 			id: this.idService.genId(),
@@ -103,7 +103,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		license?: string | null;
 		isSensitive?: boolean;
 		localOnly?: boolean;
-		roleIdsThatCanBeUsedThisEmojiAsReaction?: Role['id'][];
+		roleIdsThatCanBeUsedThisEmojiAsReaction?: MiRole['id'][];
 	}): Promise<void> {
 		const emoji = await this.emojisRepository.findOneByOrFail({ id: id });
 		const sameNameEmoji = await this.emojisRepository.findOneBy({ name: data.name, host: IsNull() });

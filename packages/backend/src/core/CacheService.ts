@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, UserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
@@ -20,7 +20,7 @@ export class CacheService implements OnApplicationShutdown {
 	public localUserByNativeTokenCache: MemoryKVCache<MiLocalUser | null, string | null>;
 	public localUserByIdCache: MemoryKVCache<MiLocalUser>;
 	public uriPersonCache: MemoryKVCache<MiUser | null, string | null>;
-	public userProfileCache: RedisKVCache<UserProfile>;
+	public userProfileCache: RedisKVCache<MiUserProfile>;
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
 	public userBlockedCache: RedisKVCache<Set<string>>; // NOTE: 「被」Blockキャッシュ
@@ -96,7 +96,7 @@ export class CacheService implements OnApplicationShutdown {
 			fromMapConverter: id => id === null ? null : userByIdCache.get(id),
 		});
 
-		this.userProfileCache = new RedisKVCache<UserProfile>(this.redisClient, 'userProfile', {
+		this.userProfileCache = new RedisKVCache<MiUserProfile>(this.redisClient, 'userProfile', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
 			fetcher: (key) => this.userProfilesRepository.findOneByOrFail({ userId: key }),

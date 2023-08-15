@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import type { Role, RoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
+import type { MiRole, MiRoleAssignment, RoleAssignmentsRepository, RolesRepository, UsersRepository } from '@/models/index.js';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
@@ -71,8 +71,8 @@ export const DEFAULT_POLICIES: RolePolicies = {
 
 @Injectable()
 export class RoleService implements OnApplicationShutdown {
-	private rolesCache: MemorySingleCache<Role[]>;
-	private roleAssignmentByUserIdCache: MemoryKVCache<RoleAssignment[]>;
+	private rolesCache: MemorySingleCache<MiRole[]>;
+	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
 
 	public static AlreadyAssignedError = class extends Error {};
 	public static NotAssignedError = class extends Error {};
@@ -101,8 +101,8 @@ export class RoleService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.rolesCache = new MemorySingleCache<Role[]>(1000 * 60 * 60 * 1);
-		this.roleAssignmentByUserIdCache = new MemoryKVCache<RoleAssignment[]>(1000 * 60 * 60 * 1);
+		this.rolesCache = new MemorySingleCache<MiRole[]>(1000 * 60 * 60 * 1);
+		this.roleAssignmentByUserIdCache = new MemoryKVCache<MiRoleAssignment[]>(1000 * 60 * 60 * 1);
 
 		this.redisForSub.on('message', this.onMessage);
 	}
@@ -326,7 +326,7 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async isExplorable(role: { id: Role['id']} | null): Promise<boolean> {
+	public async isExplorable(role: { id: MiRole['id']} | null): Promise<boolean> {
 		if (role == null) return false;
 		const check = await this.rolesRepository.findOneBy({ id: role.id });
 		if (check == null) return false;
@@ -374,7 +374,7 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async assign(userId: MiUser['id'], roleId: Role['id'], expiresAt: Date | null = null): Promise<void> {
+	public async assign(userId: MiUser['id'], roleId: MiRole['id'], expiresAt: Date | null = null): Promise<void> {
 		const now = new Date();
 
 		const existing = await this.roleAssignmentsRepository.findOneBy({
@@ -409,7 +409,7 @@ export class RoleService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async unassign(userId: MiUser['id'], roleId: Role['id']): Promise<void> {
+	public async unassign(userId: MiUser['id'], roleId: MiRole['id']): Promise<void> {
 		const now = new Date();
 
 		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, User } from '@/models/index.js';
+import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, MiUser } from '@/models/index.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import { IdService } from '@/core/IdService.js';
@@ -42,7 +42,7 @@ export class PollService {
 	}
 
 	@bindThis
-	public async vote(user: User, note: MiNote, choice: number) {
+	public async vote(user: MiUser, note: MiNote, choice: number) {
 		const poll = await this.pollsRepository.findOneBy({ noteId: note.id });
 
 		if (poll == null) throw new Error('poll not found');

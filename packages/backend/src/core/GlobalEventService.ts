@@ -25,7 +25,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Role } from '@/models/index.js';
+import { MiRole } from '@/models/index.js';
 
 @Injectable()
 export class GlobalEventService {
@@ -89,7 +89,7 @@ export class GlobalEventService {
 	}
 
 	@bindThis
-	public publishRoleTimelineStream<K extends keyof RoleTimelineStreamTypes>(roleId: Role['id'], type: K, value?: RoleTimelineStreamTypes[K]): void {
+	public publishRoleTimelineStream<K extends keyof RoleTimelineStreamTypes>(roleId: MiRole['id'], type: K, value?: RoleTimelineStreamTypes[K]): void {
 		this.publish(`roleTimelineStream:${roleId}`, type, typeof value === 'undefined' ? null : value);
 	}
 

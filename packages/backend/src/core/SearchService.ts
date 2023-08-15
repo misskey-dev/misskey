@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { MiNote } from '@/models/entities/Note.js';
-import { User } from '@/models/index.js';
+import { MiUser } from '@/models/index.js';
 import type { NotesRepository } from '@/models/index.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -150,7 +150,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: User | null, opts: {
+	public async searchNote(q: string, me: MiUser | null, opts: {
 		userId?: MiNote['userId'] | null;
 		channelId?: MiNote['channelId'] | null;
 		host?: string | null;
