@@ -17,7 +17,7 @@ import type { MiPage } from '@/models/entities/Page.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiWebhook } from '@/models/entities/Webhook.js';
 import type { MiMeta } from '@/models/entities/Meta.js';
-import { Role, RoleAssignment } from '@/models/index.js';
+import { MiRole, MiRoleAssignment } from '@/models/index.js';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 
@@ -30,12 +30,12 @@ export interface InternalStreamTypes {
 	unfollow: { followerId: MiUser['id']; followeeId: MiUser['id']; };
 	blockingCreated: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
 	blockingDeleted: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
-	policiesUpdated: Role['policies'];
-	roleCreated: Role;
-	roleDeleted: Role;
-	roleUpdated: Role;
-	userRoleAssigned: RoleAssignment;
-	userRoleUnassigned: RoleAssignment;
+	policiesUpdated: MiRole['policies'];
+	roleCreated: MiRole;
+	roleDeleted: MiRole;
+	roleUpdated: MiRole;
+	userRoleAssigned: MiRoleAssignment;
+	userRoleUnassigned: MiRoleAssignment;
 	webhookCreated: MiWebhook;
 	webhookDeleted: MiWebhook;
 	webhookUpdated: MiWebhook;
@@ -225,7 +225,7 @@ export type StreamMessages = {
 		payload: EventUnionFromDictionary<SerializedAll<UserListStreamTypes>>;
 	};
 	roleTimeline: {
-		name: `roleTimelineStream:${Role['id']}`;
+		name: `roleTimelineStream:${MiRole['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<RoleTimelineStreamTypes>>;
 	};
 	antenna: {

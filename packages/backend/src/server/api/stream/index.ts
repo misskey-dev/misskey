@@ -11,7 +11,7 @@ import type { NoteReadService } from '@/core/NoteReadService.js';
 import type { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { UserProfile } from '@/models/index.js';
+import { MiUserProfile } from '@/models/index.js';
 import type { ChannelsService } from './ChannelsService.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
@@ -28,7 +28,7 @@ export default class Connection {
 	private channels: Channel[] = [];
 	private subscribingNotes: any = {};
 	private cachedNotes: Packed<'Note'>[] = [];
-	public userProfile: UserProfile | null = null;
+	public userProfile: MiUserProfile | null = null;
 	public following: Set<string> = new Set();
 	public followingChannels: Set<string> = new Set();
 	public userIdsWhoMeMuting: Set<string> = new Set();

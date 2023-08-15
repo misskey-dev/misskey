@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, FollowRequestsRepository, NotesRepository, User, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, FollowRequestsRepository, NotesRepository, MiUser, UsersRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiNotification } from '@/models/entities/Notification.js';
 import type { MiNote } from '@/models/entities/Note.js';
@@ -58,14 +58,14 @@ export class NotificationEntityService implements OnModuleInit {
 	@bindThis
 	public async pack(
 		src: MiNotification,
-		meId: User['id'],
+		meId: MiUser['id'],
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
 
 		},
 		hint?: {
 			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
-			packedUsers: Map<User['id'], Packed<'User'>>;
+			packedUsers: Map<MiUser['id'], Packed<'User'>>;
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = src;
@@ -109,7 +109,7 @@ export class NotificationEntityService implements OnModuleInit {
 	@bindThis
 	public async packMany(
 		notifications: MiNotification[],
-		meId: User['id'],
+		meId: MiUser['id'],
 	) {
 		if (notifications.length === 0) return [];
 
