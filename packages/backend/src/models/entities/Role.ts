@@ -84,7 +84,7 @@ export type RoleCondFormulaValue =
 	CondFormulaValueNotesLessThanOrEq |
 	CondFormulaValueNotesMoreThanOrEq;
 
-@Entity()
+@Entity('role')
 export class MiRole {
 	@PrimaryColumn(id())
 	public id: string;

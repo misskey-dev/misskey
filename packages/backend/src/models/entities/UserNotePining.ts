@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiNote } from './Note.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('user_note_pining')
 @Index(['userId', 'noteId'], { unique: true })
 export class MiUserNotePining {
 	@PrimaryColumn(id())

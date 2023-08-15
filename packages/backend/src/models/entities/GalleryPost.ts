@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import type { MiDriveFile } from './DriveFile.js';
 
-@Entity()
+@Entity('gallery_post')
 export class MiGalleryPost {
 	@PrimaryColumn(id())
 	public id: string;

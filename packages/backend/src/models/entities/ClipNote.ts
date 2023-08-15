@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiNote } from './Note.js';
 import { MiClip } from './Clip.js';
 
-@Entity()
+@Entity('clip_note')
 @Index(['noteId', 'clipId'], { unique: true })
 export class MiClipNote {
 	@PrimaryColumn(id())

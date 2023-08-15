@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiFlash } from './Flash.js';
 
-@Entity()
+@Entity('flash_like')
 @Index(['userId', 'flashId'], { unique: true })
 export class MiFlashLike {
 	@PrimaryColumn(id())

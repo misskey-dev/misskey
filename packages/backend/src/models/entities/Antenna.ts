@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
 
-@Entity()
+@Entity('antenna')
 export class MiAntenna {
 	@PrimaryColumn(id())
 	public id: string;

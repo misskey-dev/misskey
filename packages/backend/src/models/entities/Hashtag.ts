@@ -7,7 +7,7 @@ import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id.js';
 import type { MiUser } from './User.js';
 
-@Entity()
+@Entity('hashtag')
 export class MiHashtag {
 	@PrimaryColumn(id())
 	public id: string;

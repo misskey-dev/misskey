@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiPage } from './Page.js';
 
-@Entity()
+@Entity('page_like')
 @Index(['userId', 'pageId'], { unique: true })
 export class MiPageLike {
 	@PrimaryColumn(id())

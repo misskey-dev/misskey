@@ -7,7 +7,7 @@ import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('meta')
 export class MiMeta {
 	@PrimaryColumn({
 		type: 'varchar',

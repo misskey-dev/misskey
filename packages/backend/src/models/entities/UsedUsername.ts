@@ -5,7 +5,7 @@
 
 import { PrimaryColumn, Entity, Column } from 'typeorm';
 
-@Entity()
+@Entity('used_username')
 export class MiUsedUsername {
 	@PrimaryColumn('varchar', {
 		length: 128,

@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('muting')
 @Index(['muterId', 'muteeId'], { unique: true })
 export class MiMuting {
 	@PrimaryColumn(id())

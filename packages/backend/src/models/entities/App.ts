@@ -7,7 +7,7 @@ import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('app')
 export class MiApp {
 	@PrimaryColumn(id())
 	public id: string;

@@ -9,7 +9,7 @@ import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 import type { MiChannel } from './Channel.js';
 
-@Entity()
+@Entity('note_unread')
 @Index(['userId', 'noteId'], { unique: true })
 export class MiNoteUnread {
 	@PrimaryColumn(id())

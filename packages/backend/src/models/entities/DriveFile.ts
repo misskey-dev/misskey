@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiDriveFolder } from './DriveFolder.js';
 
-@Entity()
+@Entity('drive_file')
 @Index(['userId', 'folderId', 'id'])
 export class MiDriveFile {
 	@PrimaryColumn(id())

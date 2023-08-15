@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, Index, Column, ManyToOne, JoinColumn } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('password_reset_request')
 export class MiPasswordResetRequest {
 	@PrimaryColumn(id())
 	public id: string;

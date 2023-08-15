@@ -7,7 +7,7 @@ import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'type
 import { id } from '../id.js';
 import { MiDriveFile } from './DriveFile.js';
 
-@Entity()
+@Entity('user')
 @Index(['usernameLower', 'host'], { unique: true })
 export class MiUser {
 	@PrimaryColumn(id())

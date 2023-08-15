@@ -9,7 +9,7 @@ import { MiUser } from './User.js';
 
 export const webhookEventTypes = ['mention', 'unfollow', 'follow', 'followed', 'note', 'reply', 'renote', 'reaction'] as const;
 
-@Entity()
+@Entity('webhook')
 export class MiWebhook {
 	@PrimaryColumn(id())
 	public id: string;

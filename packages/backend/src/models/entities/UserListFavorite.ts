@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiUserList } from './UserList.js';
 
-@Entity()
+@Entity('user_list_favorite')
 @Index(['userId', 'userListId'], { unique: true })
 export class MiUserListFavorite {
 	@PrimaryColumn(id())

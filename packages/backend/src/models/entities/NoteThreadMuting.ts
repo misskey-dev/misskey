@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('note_thread_muting')
 @Index(['userId', 'threadId'], { unique: true })
 export class MiNoteThreadMuting {
 	@PrimaryColumn(id())

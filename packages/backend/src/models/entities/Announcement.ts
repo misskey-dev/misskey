@@ -7,7 +7,7 @@ import { Entity, Index, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('announcement')
 export class MiAnnouncement {
 	@PrimaryColumn(id())
 	public id: string;

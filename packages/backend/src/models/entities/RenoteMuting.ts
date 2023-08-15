@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('renote_muting')
 @Index(['muterId', 'muteeId'], { unique: true })
 export class MiRenoteMuting {
 	@PrimaryColumn(id())

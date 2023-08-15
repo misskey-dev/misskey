@@ -9,7 +9,7 @@ import { mutedNoteReasons } from '../../types.js';
 import { MiNote } from './Note.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('muted_note')
 @Index(['noteId', 'userId'], { unique: true })
 export class MiMutedNote {
 	@PrimaryColumn(id())

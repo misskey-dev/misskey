@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne, Index } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('user_security_key')
 export class MiUserSecurityKey {
 	@PrimaryColumn('varchar', {
 		comment: 'Variable-length id given to navigator.credentials.get()',

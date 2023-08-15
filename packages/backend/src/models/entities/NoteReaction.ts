@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 
-@Entity()
+@Entity('note_reaction')
 @Index(['userId', 'noteId'], { unique: true })
 export class MiNoteReaction {
 	@PrimaryColumn(id())

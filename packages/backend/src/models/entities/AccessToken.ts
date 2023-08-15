@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiApp } from './App.js';
 
-@Entity()
+@Entity('access_token')
 export class MiAccessToken {
 	@PrimaryColumn(id())
 	public id: string;

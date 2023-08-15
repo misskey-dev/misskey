@@ -11,7 +11,7 @@ import { MiPage } from './Page.js';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン
-@Entity()
+@Entity('user_profile')
 export class MiUserProfile {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];

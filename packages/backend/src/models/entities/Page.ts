@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiDriveFile } from './DriveFile.js';
 
-@Entity()
+@Entity('page')
 @Index(['userId', 'name'], { unique: true })
 export class MiPage {
 	@PrimaryColumn(id())

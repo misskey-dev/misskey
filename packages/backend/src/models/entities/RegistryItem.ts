@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 
 // TODO: 同じdomain、同じscope、同じkeyのレコードは二つ以上存在しないように制約付けたい
-@Entity()
+@Entity('registry_item')
 export class MiRegistryItem {
 	@PrimaryColumn(id())
 	public id: string;

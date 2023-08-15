@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiNote } from './Note.js';
 import type { MiUser } from './User.js';
 
-@Entity()
+@Entity('promo_note')
 export class MiPromoNote {
 	@PrimaryColumn(id())
 	public noteId: MiNote['id'];

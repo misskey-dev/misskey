@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiNote } from './Note.js';
 
-@Entity()
+@Entity('poll_vote')
 @Index(['userId', 'noteId', 'choice'], { unique: true })
 export class MiPollVote {
 	@PrimaryColumn(id())

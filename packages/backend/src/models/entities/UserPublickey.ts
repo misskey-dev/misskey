@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'type
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('user_publickey')
 export class MiUserPublickey {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];

@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
 
-@Entity()
+@Entity('channel_favorite')
 @Index(['userId', 'channelId'], { unique: true })
 export class MiChannelFavorite {
 	@PrimaryColumn(id())

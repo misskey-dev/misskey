@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiApp } from './App.js';
 
-@Entity()
+@Entity('auth_session')
 export class MiAuthSession {
 	@PrimaryColumn(id())
 	public id: string;

@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('user_keypair')
 export class MiUserKeypair {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];

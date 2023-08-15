@@ -7,7 +7,7 @@ import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('following')
 @Index(['followerId', 'followeeId'], { unique: true })
 export class MiFollowing {
 	@PrimaryColumn(id())

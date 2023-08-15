@@ -7,7 +7,7 @@ import { Entity, Index, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { id } from '../id.js';
 import type { MiUser } from './User.js';
 
-@Entity()
+@Entity('user_ip')
 @Index(['userId', 'ip'], { unique: true })
 export class MiUserIp {
 	@PrimaryGeneratedColumn()

@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiRole } from './Role.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('role_assignment')
 @Index(['userId', 'roleId'], { unique: true })
 export class MiRoleAssignment {
 	@PrimaryColumn(id())

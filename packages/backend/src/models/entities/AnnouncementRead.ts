@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiAnnouncement } from './Announcement.js';
 
-@Entity()
+@Entity('announcement_read')
 @Index(['userId', 'announcementId'], { unique: true })
 export class MiAnnouncementRead {
 	@PrimaryColumn(id())

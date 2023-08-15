@@ -7,7 +7,7 @@ import { JoinColumn, ManyToOne, Entity, PrimaryColumn, Index, Column } from 'typ
 import { id } from '../id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('drive_folder')
 export class MiDriveFolder {
 	@PrimaryColumn(id())
 	public id: string;

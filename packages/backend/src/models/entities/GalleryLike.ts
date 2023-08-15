@@ -8,7 +8,7 @@ import { id } from '../id.js';
 import { MiUser } from './User.js';
 import { MiGalleryPost } from './GalleryPost.js';
 
-@Entity()
+@Entity('gallery_like')
 @Index(['userId', 'postId'], { unique: true })
 export class MiGalleryLike {
 	@PrimaryColumn(id())
