@@ -11,7 +11,10 @@
 			</div>
 			<div v-else-if="state == 'accepted'" class="accepted">
 				<p v-if="callback">{{ i18n.ts._auth.callback }}<MkEllipsis/></p>
-				<p v-else>{{ i18n.ts._auth.pleaseGoBack }}</p>
+				<p v-else>
+					{{ i18n.ts._auth.pleaseGoBack }}<br>
+					{{ session.token }}
+				</p>
 			</div>
 			<div v-else>
 				<div v-if="_permissions.length > 0">

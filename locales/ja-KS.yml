@@ -1736,7 +1736,7 @@ _auth:
   shareAccessAsk: "アカウントのアクセスを許可してもええか？"
   permission: "{name}に次の権限つけたってやって"
   permissionAsk: "このアプリは次の権限を要求しとるで"
-  pleaseGoBack: "アプリケーションに戻ってええよ"
+  pleaseGoBack: "以下の認証コードをコピーしてこのウィンドウを閉じ、アプリケーション（モロヘイヤ等）に戻って貼り付けてや。"
   callback: "アプリケーションに戻っとるで"
   denied: "アクセスを拒否ったで"
   pleaseLogin: "アプリにアクセスさせるんやったら、ログインしてや。"
