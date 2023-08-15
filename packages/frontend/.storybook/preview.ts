@@ -13,7 +13,7 @@ const appInitialized = Symbol();
 
 let lastStory = null;
 let moduleInitialized = false;
-let unobserve = () => {};
+let unobserve = () => { };
 let misskeyOS = null;
 
 function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme']) {
@@ -22,7 +22,7 @@ function loadTheme(applyTheme: typeof import('../src/scripts/theme')['applyTheme
 	if (theme) {
 		applyTheme(themes[document.documentElement.dataset.misskeyTheme]);
 	} else {
-		applyTheme(themes['l-light']);
+		applyTheme(themes['estampie-light']);
 	}
 	const observer = new MutationObserver((entries) => {
 		for (const entry of entries) {
@@ -94,15 +94,15 @@ const preview = {
 				const channel = addons.getChannel();
 				const resetIndexedDBPromise = globalThis.indexedDB?.databases
 					? indexedDB.databases().then((r) => {
-							for (var i = 0; i < r.length; i++) {
-								indexedDB.deleteDatabase(r[i].name!);
-							}
-						}).catch(() => {})
+						for (var i = 0; i < r.length; i++) {
+							indexedDB.deleteDatabase(r[i].name!);
+						}
+					}).catch(() => { })
 					: Promise.resolve();
 				const resetDefaultStorePromise = import('../src/store').then(({ defaultStore }) => {
 					// @ts-expect-error
 					defaultStore.init();
-				}).catch(() => {});
+				}).catch(() => { });
 				Promise.all([resetIndexedDBPromise, resetDefaultStorePromise]).then(() => {
 					initLocalStorage();
 					channel.emit(FORCE_REMOUNT, { storyId: context.id });

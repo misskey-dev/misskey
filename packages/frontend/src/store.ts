@@ -369,8 +369,8 @@ interface Watcher {
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
 import { miLocalStorage } from './local-storage';
-import lightTheme from '@/themes/l-light.json5';
-import darkTheme from '@/themes/d-green-lime.json5';
+import lightTheme from '@/themes/estampie-light.json5';
+import darkTheme from '@/themes/estampie-dark.json5';
 import { Note, UserDetailed, Page } from 'misskey-js/built/entities';
 
 export class ColdDeviceStorage {
