@@ -12,7 +12,7 @@ import type { MiUserPublickey } from '@/models/entities/UserPublickey.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
-import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import { getApId } from './type.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
@@ -98,7 +98,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject): Promise<LocalUser | RemoteUser | null> {
+	public async getUserFromApId(value: string | IObject): Promise<MiLocalUser | MiRemoteUser | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
@@ -107,12 +107,12 @@ export class ApDbResolverService implements OnApplicationShutdown {
 			return await this.cacheService.userByIdCache.fetchMaybe(
 				parsed.id,
 				() => this.usersRepository.findOneBy({ id: parsed.id }).then(x => x ?? undefined),
-			) as LocalUser | undefined ?? null;
+			) as MiLocalUser | undefined ?? null;
 		} else {
 			return await this.cacheService.uriPersonCache.fetch(
 				parsed.uri,
 				() => this.usersRepository.findOneBy({ uri: parsed.uri }),
-			) as RemoteUser | null;
+			) as MiRemoteUser | null;
 		}
 	}
 
@@ -121,7 +121,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async getAuthUserFromKeyId(keyId: string): Promise<{
-		user: RemoteUser;
+		user: MiRemoteUser;
 		key: MiUserPublickey;
 	} | null> {
 		const key = await this.publicKeyCache.fetch(keyId, async () => {
@@ -137,7 +137,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		if (key == null) return null;
 
 		return {
-			user: await this.cacheService.findUserById(key.userId) as RemoteUser,
+			user: await this.cacheService.findUserById(key.userId) as MiRemoteUser,
 			key,
 		};
 	}
@@ -147,10 +147,10 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 */
 	@bindThis
 	public async getAuthUserFromApId(uri: string): Promise<{
-		user: RemoteUser;
+		user: MiRemoteUser;
 		key: MiUserPublickey | null;
 	} | null> {
-		const user = await this.apPersonService.resolvePerson(uri) as RemoteUser;
+		const user = await this.apPersonService.resolvePerson(uri) as MiRemoteUser;
 
 		const key = await this.publicKeyByUserIdCache.fetch(
 			user.id,

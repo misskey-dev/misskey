@@ -10,7 +10,7 @@ import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import { MiUser } from '@/models/entities/User.js';
 import { truncate } from '@/misc/truncate.js';
 import type { CacheService } from '@/core/CacheService.js';
@@ -201,20 +201,20 @@ export class ApPersonService implements OnModuleInit {
 	 * Misskeyに対象のPersonが登録されていればそれを返し、登録がなければnullを返します。
 	 */
 	@bindThis
-	public async fetchPerson(uri: string): Promise<LocalUser | RemoteUser | null> {
-		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null | undefined;
+	public async fetchPerson(uri: string): Promise<MiLocalUser | MiRemoteUser | null> {
+		const cached = this.cacheService.uriPersonCache.get(uri) as MiLocalUser | MiRemoteUser | null | undefined;
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
-			const u = await this.usersRepository.findOneBy({ id }) as LocalUser | null;
+			const u = await this.usersRepository.findOneBy({ id }) as MiLocalUser | null;
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser | null;
+		const exist = await this.usersRepository.findOneBy({ uri }) as MiLocalUser | MiRemoteUser | null;
 
 		if (exist) {
 			this.cacheService.uriPersonCache.set(uri, exist);
@@ -225,7 +225,7 @@ export class ApPersonService implements OnModuleInit {
 		return null;
 	}
 
-	private async resolveAvatarAndBanner(user: RemoteUser, icon: any, image: any): Promise<Pick<RemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>> {
+	private async resolveAvatarAndBanner(user: MiRemoteUser, icon: any, image: any): Promise<Pick<MiRemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>> {
 		const [avatar, banner] = await Promise.all([icon, image].map(img => {
 			if (img == null) return null;
 			if (user == null) throw new Error('failed to create user: user is null');
@@ -246,7 +246,7 @@ export class ApPersonService implements OnModuleInit {
 	 * Personを作成します。
 	 */
 	@bindThis
-	public async createPerson(uri: string, resolver?: Resolver): Promise<RemoteUser> {
+	public async createPerson(uri: string, resolver?: Resolver): Promise<MiRemoteUser> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		if (uri.startsWith(this.config.url)) {
@@ -280,7 +280,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Create user
-		let user: RemoteUser | null = null;
+		let user: MiRemoteUser | null = null;
 
 		//#region カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
@@ -318,7 +318,7 @@ export class ApPersonService implements OnModuleInit {
 					isBot,
 					isCat: (person as any).isCat === true,
 					emojis,
-				})) as RemoteUser;
+				})) as MiRemoteUser;
 
 				await transactionalEntityManager.save(new MiUserProfile({
 					userId: user.id,
@@ -345,7 +345,7 @@ export class ApPersonService implements OnModuleInit {
 				const u = await this.usersRepository.findOneBy({ uri: person.id });
 				if (u == null) throw new Error('already registered');
 
-				user = u as RemoteUser;
+				user = u as MiRemoteUser;
 			} else {
 				this.logger.error(e instanceof Error ? e : new Error(e as string));
 				throw e;
@@ -407,7 +407,7 @@ export class ApPersonService implements OnModuleInit {
 		if (uri.startsWith(`${this.config.url}/`)) return;
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.fetchPerson(uri) as RemoteUser | null;
+		const exist = await this.fetchPerson(uri) as MiRemoteUser | null;
 		if (exist === null) return;
 		//#endregion
 
@@ -456,7 +456,7 @@ export class ApPersonService implements OnModuleInit {
 			alsoKnownAs: person.alsoKnownAs ?? null,
 			isExplorable: person.discoverable,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
-		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
+		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
 		const moving = ((): boolean => {
 			// 移行先がない→ある
@@ -542,7 +542,7 @@ export class ApPersonService implements OnModuleInit {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolvePerson(uri: string, resolver?: Resolver): Promise<LocalUser | RemoteUser> {
+	public async resolvePerson(uri: string, resolver?: Resolver): Promise<MiLocalUser | MiRemoteUser> {
 		//#region このサーバーに既に登録されていたらそれを返す
 		const exist = await this.fetchPerson(uri);
 		if (exist) return exist;
@@ -622,7 +622,7 @@ export class ApPersonService implements OnModuleInit {
 	 * @param movePreventUris ここに列挙されたURIにsrc.movedToUriが含まれる場合、移行処理はしない（無限ループ防止）
 	 */
 	@bindThis
-	private async processRemoteMove(src: RemoteUser, movePreventUris: string[] = []): Promise<string> {
+	private async processRemoteMove(src: MiRemoteUser, movePreventUris: string[] = []): Promise<string> {
 		if (!src.movedToUri) return 'skip: no movedToUri';
 		if (src.uri === src.movedToUri) return 'skip: movedTo itself (src)'; // ？？？
 		if (movePreventUris.length > 10) return 'skip: too many moves';
@@ -632,7 +632,7 @@ export class ApPersonService implements OnModuleInit {
 
 		if (dst && this.userEntityService.isLocalUser(dst)) {
 			// targetがローカルユーザーだった場合データベースから引っ張ってくる
-			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as LocalUser;
+			dst = await this.usersRepository.findOneByOrFail({ uri: src.movedToUri }) as MiLocalUser;
 		} else if (dst) {
 			if (movePreventUris.includes(src.movedToUri)) return 'skip: circular move';
 

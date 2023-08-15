@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { RemoteUser, MiUser } from '@/models/entities/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
@@ -231,7 +231,7 @@ export class ReactionService {
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
-				dm.addDirectRecipe(reactee as RemoteUser);
+				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 
 			if (['public', 'home', 'followers'].includes(note.visibility)) {
@@ -239,7 +239,7 @@ export class ReactionService {
 			} else if (note.visibility === 'specified') {
 				const visibleUsers = await Promise.all(note.visibleUserIds.map(id => this.usersRepository.findOneBy({ id })));
 				for (const u of visibleUsers.filter(u => u && this.userEntityService.isRemoteUser(u))) {
-					dm.addDirectRecipe(u as RemoteUser);
+					dm.addDirectRecipe(u as MiRemoteUser);
 				}
 			}
 
@@ -289,7 +289,7 @@ export class ReactionService {
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
-				dm.addDirectRecipe(reactee as RemoteUser);
+				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 			dm.addFollowersRecipe();
 			dm.execute();

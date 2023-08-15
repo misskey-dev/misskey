@@ -6,7 +6,7 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/entities/User.js';
 import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiApp } from '@/models/entities/App.js';
@@ -41,14 +41,14 @@ export class AuthenticateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async authenticate(token: string | null | undefined): Promise<[LocalUser | null, MiAccessToken | null]> {
+	public async authenticate(token: string | null | undefined): Promise<[MiLocalUser | null, MiAccessToken | null]> {
 		if (token == null) {
 			return [null, null];
 		}
 
 		if (isNativeToken(token)) {
 			const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
-				() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
+				() => this.usersRepository.findOneBy({ token }) as Promise<MiLocalUser | null>);
 
 			if (user == null) {
 				throw new AuthenticationError('user not found');
@@ -75,7 +75,7 @@ export class AuthenticateService implements OnApplicationShutdown {
 			const user = await this.cacheService.localUserByIdCache.fetch(accessToken.userId,
 				() => this.usersRepository.findOneBy({
 					id: accessToken.userId,
-				}) as Promise<LocalUser>);
+				}) as Promise<MiLocalUser>);
 
 			if (accessToken.appId) {
 				const app = await this.appCache.fetch(accessToken.appId,

@@ -15,7 +15,7 @@ import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
 import { getApId } from '@/core/activitypub/type.js';
-import type { RemoteUser } from '@/models/entities/User.js';
+import type { MiRemoteUser } from '@/models/entities/User.js';
 import type { MiUserPublickey } from '@/models/entities/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -74,7 +74,7 @@ export class InboxProcessorService {
 
 		// HTTP-Signature keyIdを元にDBから取得
 		let authUser: {
-			user: RemoteUser;
+			user: MiRemoteUser;
 			key: MiUserPublickey | null;
 		} | null = await this.apDbResolverService.getAuthUserFromKeyId(signature.keyId);
 

@@ -5,7 +5,7 @@
 
 import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
-import type { MiUser, LocalUser, RemoteUser } from '@/models/entities/User.js';
+import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import type { MiNote, IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/index.js';
 import { RelayService } from '@/core/RelayService.js';
@@ -179,11 +179,11 @@ export class NoteDeleteService {
 
 		return await this.usersRepository.find({
 			where,
-		}) as RemoteUser[];
+		}) as MiRemoteUser[];
 	}
 
 	@bindThis
-	private async deliverToConcerned(user: { id: LocalUser['id']; host: null; }, note: MiNote, content: any) {
+	private async deliverToConcerned(user: { id: MiLocalUser['id']; host: null; }, note: MiNote, content: any) {
 		this.apDeliverManagerService.deliverToFollowers(user, content);
 		this.relayService.deliverToRelays(user, content);
 		const remoteUsers = await this.getMentionedRemoteUsers(note);

@@ -9,7 +9,7 @@ import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { PartialLocalUser, LocalUser, PartialRemoteUser, RemoteUser, MiUser } from '@/models/entities/User.js';
+import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import type { IMentionedRemoteUsers, MiNote } from '@/models/entities/Note.js';
 import type { MiBlocking } from '@/models/entities/Blocking.js';
 import type { MiRelay } from '@/models/entities/Relay.js';
@@ -72,7 +72,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: LocalUser, target: string | IObject | undefined, object: string | IObject): IAdd {
+	public renderAdd(user: MiLocalUser, target: string | IObject | undefined, object: string | IObject): IAdd {
 		return {
 			type: 'Add',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -185,7 +185,7 @@ export class ApRendererService {
 
 	// to anonymise reporters, the reporting actor must be a system user
 	@bindThis
-	public renderFlag(user: LocalUser, object: IObject | string, content: string): IFlag {
+	public renderFlag(user: MiLocalUser, object: IObject | string, content: string): IFlag {
 		return {
 			type: 'Flag',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -195,7 +195,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderFollowRelay(relay: MiRelay, relayActor: LocalUser): IFollow {
+	public renderFollowRelay(relay: MiRelay, relayActor: MiLocalUser): IFollow {
 		return {
 			id: `${this.config.url}/activities/follow-relay/${relay.id}`,
 			type: 'Follow',
@@ -210,14 +210,14 @@ export class ApRendererService {
 	 */
 	@bindThis
 	public async renderFollowUser(id: MiUser['id']): Promise<string> {
-		const user = await this.usersRepository.findOneByOrFail({ id: id }) as PartialLocalUser | PartialRemoteUser;
+		const user = await this.usersRepository.findOneByOrFail({ id: id }) as MiPartialLocalUser | MiPartialRemoteUser;
 		return this.userEntityService.getUserUri(user);
 	}
 
 	@bindThis
 	public renderFollow(
-		follower: PartialLocalUser | PartialRemoteUser,
-		followee: PartialLocalUser | PartialRemoteUser,
+		follower: MiPartialLocalUser | MiPartialRemoteUser,
+		followee: MiPartialLocalUser | MiPartialRemoteUser,
 		requestId?: string,
 	): IFollow {
 		return {
@@ -248,7 +248,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: LocalUser, key: MiUserKeypair, postfix?: string): IKey {
+	public renderKey(user: MiLocalUser, key: MiUserKeypair, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
@@ -284,18 +284,18 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderMention(mention: PartialLocalUser | PartialRemoteUser): IApMention {
+	public renderMention(mention: MiPartialLocalUser | MiPartialRemoteUser): IApMention {
 		return {
 			type: 'Mention',
 			href: this.userEntityService.getUserUri(mention),
-			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
+			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as MiLocalUser).username}`,
 		};
 	}
 
 	@bindThis
 	public renderMove(
-		src: PartialLocalUser | PartialRemoteUser,
-		dst: PartialLocalUser | PartialRemoteUser,
+		src: MiPartialLocalUser | MiPartialRemoteUser,
+		dst: MiPartialLocalUser | MiPartialRemoteUser,
 	): IMove {
 		const actor = this.userEntityService.getUserUri(src);
 		const target = this.userEntityService.getUserUri(dst);
@@ -376,7 +376,7 @@ export class ApRendererService {
 		}) : [];
 
 		const hashtagTags = note.tags.map(tag => this.renderHashtag(tag));
-		const mentionTags = mentionedUsers.map(u => this.renderMention(u as LocalUser | RemoteUser));
+		const mentionTags = mentionedUsers.map(u => this.renderMention(u as MiLocalUser | MiRemoteUser));
 
 		const files = await getPromisedFiles(note.fileIds);
 
@@ -449,7 +449,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderPerson(user: LocalUser) {
+	public async renderPerson(user: MiLocalUser) {
 		const id = this.userEntityService.genLocalUserUri(user.id);
 		const isSystem = user.username.includes('.');
 
@@ -593,7 +593,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderVote(user: { id: MiUser['id'] }, vote: MiPollVote, note: MiNote, poll: MiPoll, pollOwner: RemoteUser): ICreate {
+	public renderVote(user: { id: MiUser['id'] }, vote: MiPollVote, note: MiNote, poll: MiPoll, pollOwner: MiRemoteUser): ICreate {
 		return {
 			id: `${this.config.url}/users/${user.id}#votes/${vote.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(user.id),

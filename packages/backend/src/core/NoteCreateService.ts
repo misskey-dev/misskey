@@ -19,7 +19,7 @@ import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiApp } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiUser, LocalUser, RemoteUser } from '@/models/entities/User.js';
+import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import { MiPoll } from '@/models/entities/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -62,7 +62,7 @@ class NotificationManager {
 	private notifier: { id: MiUser['id']; };
 	private note: MiNote;
 	private queue: {
-		target: LocalUser['id'];
+		target: MiLocalUser['id'];
 		reason: NotificationType;
 	}[];
 
@@ -78,7 +78,7 @@ class NotificationManager {
 	}
 
 	@bindThis
-	public push(notifiee: LocalUser['id'], reason: NotificationType) {
+	public push(notifiee: MiLocalUser['id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
 
@@ -625,7 +625,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 					// メンションされたリモートユーザーに配送
 					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {
-						dm.addDirectRecipe(u as RemoteUser);
+						dm.addDirectRecipe(u as MiRemoteUser);
 					}
 
 					// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送

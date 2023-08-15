@@ -253,23 +253,23 @@ export class MiUser {
 	}
 }
 
-export type LocalUser = MiUser & {
+export type MiLocalUser = MiUser & {
 	host: null;
 	uri: null;
 }
 
-export type PartialLocalUser = Partial<MiUser> & {
+export type MiPartialLocalUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: null;
 	uri: null;
 }
 
-export type RemoteUser = MiUser & {
+export type MiRemoteUser = MiUser & {
 	host: string;
 	uri: string;
 }
 
-export type PartialRemoteUser = Partial<MiUser> & {
+export type MiPartialRemoteUser = Partial<MiUser> & {
 	id: MiUser['id'];
 	host: string;
 	uri: string;

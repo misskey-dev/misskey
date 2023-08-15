@@ -9,7 +9,7 @@ import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { LocalUser, MiUser } from '@/models/entities/User.js';
+import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
 import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import type Logger from '@/logger.js';
 import type { UserIpsRepository } from '@/models/index.js';
@@ -196,7 +196,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async logIp(request: FastifyRequest, user: LocalUser) {
+	private async logIp(request: FastifyRequest, user: MiLocalUser) {
 		const meta = await this.metaService.fetch();
 		if (!meta.enableIpLogging) return;
 		const ip = request.ip;
@@ -222,7 +222,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	@bindThis
 	private async call(
 		ep: IEndpoint & { exec: any },
-		user: LocalUser | null | undefined,
+		user: MiLocalUser | null | undefined,
 		token: MiAccessToken | null | undefined,
 		data: any,
 		file: {
