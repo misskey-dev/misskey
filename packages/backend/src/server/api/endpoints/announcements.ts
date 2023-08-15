@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
-import { Announcement, AnnouncementRead } from '@/models/index.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/index.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -70,8 +70,9 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
 		withUnreads: { type: 'boolean', default: false },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
 		privateOnly: { type: 'boolean', default: false },
 	},
 	required: [],
@@ -83,37 +84,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
+
+		@Inject(DI.announcementReadsRepository)
+		private announcementReadsRepository: AnnouncementReadsRepository,
+
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.announcementsRepository.createQueryBuilder('announcement');
+			const builder = this.announcementsRepository.createQueryBuilder('announcement');
 			if (me) {
-				query.leftJoinAndSelect(AnnouncementRead, 'reads', 'reads."announcementId" = announcement.id AND reads."userId" = :userId', { userId: me.id });
-				query.select([
-					'announcement.*',
-					'CASE WHEN reads.id IS NULL THEN FALSE ELSE TRUE END as "isRead"',
-				]);
 				if (ps.privateOnly) {
-					query.where('announcement."userId" = :userId', { userId: me.id });
+					builder.where('"userId" = :userId', { userId: me.id });
 				} else {
-					query.where('announcement."userId" IS NULL');
-					query.orWhere('announcement."userId" = :userId', { userId: me.id });
+					builder.where('"userId" IS NULL');
+					builder.orWhere('"userId" = :userId', { userId: me.id });
 				}
 			} else {
-				query.where('announcement."userId" IS NULL');
+				builder.where('"userId" IS NULL');
 			}
 
-			query.orderBy({
-				'"isRead"': 'ASC',
-				'announcement."displayOrder"': 'DESC',
-				'announcement."createdAt"': 'DESC',
-			});
+			const query = this.queryService.makePaginationQuery(builder, ps.sinceId, ps.untilId);
+			const announcements = await query.limit(ps.limit).getMany();
 
-			const announcements = await query
-				.offset(ps.offset)
-				.limit(ps.limit)
-				.getRawMany<Announcement & { isRead: boolean }>();
+			if (me) {
+				const reads = (await this.announcementReadsRepository.findBy({
+					userId: me.id,
+				})).map(x => x.announcementId);
 
-			return (ps.withUnreads ? announcements.filter(i => !i.isRead) : announcements).map((a) => ({
+				for (const announcement of announcements) {
+					(announcement as any).isRead = reads.includes(announcement.id);
+				}
+			}
+
+			return (ps.withUnreads ? announcements.filter((a: any) => !a.isRead) : announcements).map((a) => ({
 				...a,
 				createdAt: a.createdAt.toISOString(),
 				updatedAt: a.updatedAt?.toISOString() ?? null,

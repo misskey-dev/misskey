@@ -254,7 +254,6 @@ export interface Locale {
     "lookup": string;
     "announcements": string;
     "imageUrl": string;
-    "displayOrder": string;
     "remove": string;
     "removed": string;
     "removeAreYouSure": string;

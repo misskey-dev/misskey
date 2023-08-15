@@ -47,10 +47,6 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-			displayOrder: {
-				type: 'number',
-				optional: false, nullable: false,
-			},
 			userId: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -69,7 +65,6 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 1 },
-		displayOrder: { type: 'number' },
 		userId: { type: 'string', nullable: true, format: 'misskey:id' },
 		closeDuration: { type: 'number', nullable: false },
 	},
@@ -93,7 +88,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				title: ps.title,
 				text: ps.text,
 				imageUrl: ps.imageUrl,
-				displayOrder: ps.displayOrder,
 				userId: ps.userId ?? null,
 				closeDuration: ps.closeDuration,
 			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));

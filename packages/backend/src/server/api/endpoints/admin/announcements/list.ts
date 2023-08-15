@@ -53,10 +53,6 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: true,
 				},
-				displayOrder: {
-					type: 'number',
-					optional: false, nullable: false,
-				},
 				userId: {
 					type: 'string',
 					optional: false, nullable: true,
@@ -83,7 +79,8 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-		offset: { type: 'integer', default: 0 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
 		userId: { type: 'string', format: 'misskey:id' },
 	},
 	required: [],
@@ -102,25 +99,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		private queryService: QueryService,
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.announcementsRepository.createQueryBuilder('announcement');
+			const builder = this.announcementsRepository.createQueryBuilder('announcement');
 			if (ps.userId) {
-				query.where('"userId" = :userId', { userId: ps.userId });
+				builder.where('"userId" = :userId', { userId: ps.userId });
 			} else {
-				query.where('"userId" IS NULL');
+				builder.where('"userId" IS NULL');
 			}
 
-			query.orderBy({
-				'announcement."displayOrder"': 'DESC',
-				'announcement."createdAt"': 'DESC',
-			});
+			const query = this.queryService.makePaginationQuery(builder, ps.sinceId, ps.untilId);
 
-			const announcements = await query
-				.offset(ps.offset)
-				.limit(ps.limit)
-				.getMany();
+			const announcements = await query.limit(ps.limit).getMany();
 
 			const reads = new Map<Announcement, number>();
 
@@ -144,7 +136,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				title: announcement.title,
 				text: announcement.text,
 				imageUrl: announcement.imageUrl,
-				displayOrder: announcement.displayOrder,
 				userId: announcement.userId,
 				user: packedUsers.find(user => user.id === announcement.userId),
 				reads: reads.get(announcement)!,
