@@ -45,6 +45,14 @@ function installPlugin({ id, meta, src, token }) {
 	}));
 }
 
+function isSupportedAiScriptVersion(version: string): boolean {
+	try {
+		return (compareVersions(version, '0.12.0') >= 0);
+	} catch (err) {
+		return false;
+	}
+}
+
 async function install() {
 	if (code.value == null) return;
 
@@ -55,7 +63,7 @@ async function install() {
 			text: 'No language version annotation found :(',
 		});
 		return;
-	} else if (compareVersions(lv, '0.12.0') < 0) {
+	} else if (!isSupportedAiScriptVersion(lv)) {
 		os.alert({
 			type: 'error',
 			text: `aiscript version '${lv}' is not supported :(`,
