@@ -2097,3 +2097,11 @@ _webhookSettings:
     mention: "メンションされたとき"
     usersLabel: "以下のユーザがnoteしたとき"
     usersCaption: "このサーバーのユーザの@に挟まれた部分を改行で区切って指定します"
+
+_imageCompressionMode:
+  title: "画像の圧縮形式"
+  description: "ブラウザでの公開用画像の圧縮形式を選択できます。縮小する場合2048x2048より小さく縮小されます。通常の圧縮では元画像に応じて非可逆圧縮か可逆圧縮が選択されます。"
+  resizeCompress: "縮小して再圧縮する"
+  noResizeCompress: "縮小せず再圧縮する"
+  resizeCompressLossy: "縮小して非可逆圧縮する"
+  noResizeCompressLossy: "縮小せず非可逆圧縮する"
