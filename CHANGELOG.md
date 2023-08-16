@@ -16,6 +16,10 @@
 
 ### General
 - OAuth 2.0のサポート
+- お知らせ機能の強化
+	- ユーザー個別のお知らせを作成可能に
+	- お知らせのバナー表示やダイアログ表示が可能に
+	- お知らせのアイコンを設定可能に
 - チャンネルをセンシティブ指定できるようになりました
 
 ### Client
@@ -26,12 +30,14 @@
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
 - Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
 - Fix: iOSで画面を回転させるとテキストサイズが変わる問題を修正
+- Fix: word mute for sub note is not applied
+- Fix: タイムラインを下にスクロールしてノート画面に移動して再び戻ったら以前のスクロール位置を失う問題を修正
 
 ### Server
 - cacheRemoteFilesの初期値はfalseになりました
-- 一部のfeatured noteを照会できない問題を修正
 - ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
-- fix: muteがapiからのuser list timeline取得で機能しない問題を修正
+- Fix: 一部のfeatured noteを照会できない問題を修正
+- Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
 
 ## 13.14.2
 
