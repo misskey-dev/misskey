@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';

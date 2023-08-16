@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { isUserRelated } from '@/misc/is-user-related.js';

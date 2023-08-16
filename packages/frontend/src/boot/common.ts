@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent, App } from 'vue';
 import { compareVersions } from 'compare-versions';
 import widgets from '@/widgets';

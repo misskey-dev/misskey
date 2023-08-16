@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class muteExpiresAt1646387162108 {
     name = 'muteExpiresAt1646387162108'
 

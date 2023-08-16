@@ -1,9 +1,19 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<XSidebar v-if="!isMobile" :class="$style.sidebar"/>
 
 	<MkStickyContainer ref="contents" :class="$style.contents" style="container-type: inline-size;" @contextmenu.stop="onContextmenu">
-		<template #header><XStatusBars :class="$style.statusbars"/></template>
+		<template #header>
+			<div>
+				<XAnnouncements v-if="$i" :class="$style.announcements"/>
+				<XStatusBars :class="$style.statusbars"/>
+			</div>
+		</template>
 		<RouterView/>
 		<div :class="$style.spacer"></div>
 	</MkStickyContainer>
@@ -100,6 +110,7 @@ import { useScrollPositionManager } from '@/nirax';
 const XWidgets = defineAsyncComponent(() => import('./universal.widgets.vue'));
 const XSidebar = defineAsyncComponent(() => import('@/ui/_common_/navbar.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
+const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
 
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
