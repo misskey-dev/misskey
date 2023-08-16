@@ -1096,6 +1096,12 @@ doYouAgree: "동의하십니까?"
 beSureToReadThisAsItIsImportant: "중요하므로 반드시 읽어주십시오."
 iHaveReadXCarefullyAndAgree: "\"{x}\"의 내용을 읽고 동의합니다."
 icon: "아바타"
+_announcement:
+  needConfirmationToRead: "읽음으로 표시하기 전에 확인하기"
+  needConfirmationToReadDescription: "활성화하면 이 공지사항을 읽음으로 표시하기 전에 확인 알림창을 띄웁니다. '모두 읽음'의 대상에서도 제외됩니다."
+  end: "공지에서 내리기"
+  readConfirmTitle: "읽음으로 표시합니까?"
+  readConfirmText: "\"{title}\"을(를) 읽음으로 표시합니다."
 _initialAccountSetting:
   accountCreated: "계정 생성이 완료되었습니다!"
   letsStartAccountSetup: "계정의 초기 설정을 진행합니다."
