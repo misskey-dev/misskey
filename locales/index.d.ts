@@ -2200,6 +2200,14 @@ export interface Locale {
             "usersCaption": string;
         };
     };
+    "_imageCompressionMode": {
+        "title": string;
+        "description": string;
+        "resizeCompress": string;
+        "noResizeCompress": string;
+        "resizeCompressLossy": string;
+        "noResizeCompressLossy": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
