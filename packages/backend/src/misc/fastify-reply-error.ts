@@ -12,9 +12,5 @@ export class FastifyReplyError extends Error {
 		super(message);
 		this.message = message;
 		this.statusCode = statusCode;
-
-		if (process.env.NODE_ENV === 'production') {
-			Object.defineProperty(this, 'stack', { value: undefined });
-		}
 	}
 }

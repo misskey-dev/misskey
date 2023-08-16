@@ -22,7 +22,6 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { MetaService } from '@/core/MetaService.js';
-import { ErrorHandler } from '@/misc/error.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -77,7 +76,6 @@ export class ServerService implements OnApplicationShutdown {
 			logger: !['production', 'test'].includes(process.env.NODE_ENV ?? ''),
 		});
 		this.#fastify = fastify;
-		fastify.setErrorHandler(ErrorHandler);
 
 		// HSTS
 		// 6months (15552000sec)
