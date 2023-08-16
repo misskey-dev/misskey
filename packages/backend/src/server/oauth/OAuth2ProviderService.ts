@@ -26,7 +26,7 @@ import { bindThis } from '@/decorators.js';
 import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/entities/User.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
@@ -271,7 +271,7 @@ export class OAuth2ProviderService {
 					throw new AuthorizationError('No user', 'invalid_request');
 				}
 				const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
-					() => this.usersRepository.findOneBy({ token }) as Promise<LocalUser | null>);
+					() => this.usersRepository.findOneBy({ token }) as Promise<MiLocalUser | null>);
 				if (!user) {
 					throw new AuthorizationError('No such user', 'invalid_request');
 				}

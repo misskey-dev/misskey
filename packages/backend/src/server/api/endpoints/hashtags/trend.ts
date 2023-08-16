@@ -7,7 +7,7 @@ import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository } from '@/models/index.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -101,7 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const tags: {
 		name: string;
-		users: Note['userId'][];
+		users: MiNote['userId'][];
 	}[] = [];
 
 			for (const note of tagNotes) {

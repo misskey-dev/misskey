@@ -5,10 +5,10 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class Clip {
+@Entity('clip')
+export class MiClip {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -28,13 +28,13 @@ export class Clip {
 		...id(),
 		comment: 'The owner ID.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('varchar', {
 		length: 128,

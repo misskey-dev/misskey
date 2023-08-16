@@ -8,8 +8,8 @@ import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { User } from '@/models/entities/User.js';
-import type { RegistrationTicket } from '@/models/entities/RegistrationTicket.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiRegistrationTicket } from '@/models/entities/RegistrationTicket.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -25,8 +25,8 @@ export class InviteCodeEntityService {
 
 	@bindThis
 	public async pack(
-		src: RegistrationTicket['id'] | RegistrationTicket,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiRegistrationTicket['id'] | MiRegistrationTicket,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'InviteCode'>> {
 		const target = typeof src === 'object' ? src : await this.registrationTicketsRepository.findOneOrFail({
 			where: {
@@ -50,7 +50,7 @@ export class InviteCodeEntityService {
 	@bindThis
 	public packMany(
 		targets: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(targets.map(x => this.pack(x, me)));
 	}

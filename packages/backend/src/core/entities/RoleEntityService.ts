@@ -8,8 +8,8 @@ import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { User } from '@/models/entities/User.js';
-import type { Role } from '@/models/entities/Role.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiRole } from '@/models/entities/Role.js';
 import { bindThis } from '@/decorators.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
@@ -26,8 +26,8 @@ export class RoleEntityService {
 
 	@bindThis
 	public async pack(
-		src: Role['id'] | Role,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiRole['id'] | MiRole,
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		const role = typeof src === 'object' ? src : await this.rolesRepository.findOneByOrFail({ id: src });
 
@@ -73,7 +73,7 @@ export class RoleEntityService {
 	@bindThis
 	public packMany(
 		roles: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(roles.map(x => this.pack(x, me)));
 	}

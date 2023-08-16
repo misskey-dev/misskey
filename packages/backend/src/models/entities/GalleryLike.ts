@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { GalleryPost } from './GalleryPost.js';
+import { MiUser } from './User.js';
+import { MiGalleryPost } from './GalleryPost.js';
 
-@Entity()
+@Entity('gallery_like')
 @Index(['userId', 'postId'], { unique: true })
-export class GalleryLike {
+export class MiGalleryLike {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,20 +19,20 @@ export class GalleryLike {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column(id())
-	public postId: GalleryPost['id'];
+	public postId: MiGalleryPost['id'];
 
-	@ManyToOne(type => GalleryPost, {
+	@ManyToOne(type => MiGalleryPost, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public post: GalleryPost | null;
+	public post: MiGalleryPost | null;
 }
