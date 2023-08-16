@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiAccessTokensRepository, MiAppsRepository } from '@/models/index.js';
+import type { AccessTokensRepository, AppsRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiApp } from '@/models/entities/App.js';
 import type { MiUser } from '@/models/entities/User.js';
@@ -15,10 +15,10 @@ import { bindThis } from '@/decorators.js';
 export class AppEntityService {
 	constructor(
 		@Inject(DI.appsRepository)
-		private appsRepository: MiAppsRepository,
+		private appsRepository: AppsRepository,
 
 		@Inject(DI.accessTokensRepository)
-		private accessTokensRepository: MiAccessTokensRepository,
+		private accessTokensRepository: AccessTokensRepository,
 	) {
 	}
 

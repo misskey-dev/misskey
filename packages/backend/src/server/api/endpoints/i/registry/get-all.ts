@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiRegistryItemsRepository } from '@/models/index.js';
+import type { RegistryItemsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -29,7 +29,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.registryItemsRepository)
-		private registryItemsRepository: MiRegistryItemsRepository,
+		private registryItemsRepository: RegistryItemsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.registryItemsRepository.createQueryBuilder('item')

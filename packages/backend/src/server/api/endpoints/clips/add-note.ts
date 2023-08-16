@@ -8,7 +8,7 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import type { MiClipNotesRepository, MiClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
@@ -68,10 +68,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.clipsRepository)
-		private clipsRepository: MiClipsRepository,
+		private clipsRepository: ClipsRepository,
 
 		@Inject(DI.clipNotesRepository)
-		private clipNotesRepository: MiClipNotesRepository,
+		private clipNotesRepository: ClipNotesRepository,
 
 		private idService: IdService,
 		private roleService: RoleService,

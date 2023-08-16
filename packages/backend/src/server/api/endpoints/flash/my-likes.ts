@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiFlashLikesRepository } from '@/models/index.js';
+import type { FlashLikesRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -53,7 +53,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.flashLikesRepository)
-		private flashLikesRepository: MiFlashLikesRepository,
+		private flashLikesRepository: FlashLikesRepository,
 
 		private flashLikeEntityService: FlashLikeEntityService,
 		private queryService: QueryService,

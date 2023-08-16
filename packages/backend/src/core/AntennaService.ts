@@ -12,7 +12,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
-import type { MiAntennasRepository, MiUserListJoiningsRepository } from '@/models/index.js';
+import type { AntennasRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
@@ -31,10 +31,10 @@ export class AntennaService implements OnApplicationShutdown {
 		private redisForSub: Redis.Redis,
 
 		@Inject(DI.antennasRepository)
-		private antennasRepository: MiAntennasRepository,
+		private antennasRepository: AntennasRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private utilityService: UtilityService,
 		private globalEventService: GlobalEventService,

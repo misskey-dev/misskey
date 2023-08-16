@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiNoteReactionsRepository } from '@/models/index.js';
+import type { NoteReactionsRepository } from '@/models/index.js';
 import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
@@ -56,7 +56,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: MiNoteReactionsRepository,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		private noteReactionEntityService: NoteReactionEntityService,
 	) {

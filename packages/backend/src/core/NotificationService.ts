@@ -8,7 +8,7 @@ import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiUsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiNotification } from '@/models/entities/Notification.js';
 import { bindThis } from '@/decorators.js';
@@ -27,7 +27,7 @@ export class NotificationService implements OnApplicationShutdown {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		private notificationEntityService: NotificationEntityService,
 		private idService: IdService,

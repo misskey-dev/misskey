@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiUsersRepository, MiDriveFilesRepository, MiDriveFile } from '@/models/index.js';
+import type { UsersRepository, DriveFilesRepository, MiDriveFile } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -20,10 +20,10 @@ export class DeleteDriveFilesProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: MiDriveFilesRepository,
+		private driveFilesRepository: DriveFilesRepository,
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,

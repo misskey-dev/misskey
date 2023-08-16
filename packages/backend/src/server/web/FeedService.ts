@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { In, IsNull } from 'typeorm';
 import { Feed } from 'feed';
 import { DI } from '@/di-symbols.js';
-import type { MiDriveFilesRepository, MiNotesRepository, MiUserProfilesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -21,13 +21,13 @@ export class FeedService {
 		private config: Config,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: MiUserProfilesRepository,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: MiDriveFilesRepository,
+		private driveFilesRepository: DriveFilesRepository,
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,

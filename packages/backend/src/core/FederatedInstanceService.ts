@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiInstancesRepository } from '@/models/index.js';
+import type { InstancesRepository } from '@/models/index.js';
 import type { MiInstance } from '@/models/entities/Instance.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import { IdService } from '@/core/IdService.js';
@@ -22,7 +22,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: MiInstancesRepository,
+		private instancesRepository: InstancesRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,

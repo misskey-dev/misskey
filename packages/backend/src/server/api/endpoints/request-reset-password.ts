@@ -6,7 +6,7 @@
 import ms from 'ms';
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiPasswordResetRequestsRepository, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
+import type { PasswordResetRequestsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
@@ -48,13 +48,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: MiUserProfilesRepository,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.passwordResetRequestsRepository)
-		private passwordResetRequestsRepository: MiPasswordResetRequestsRepository,
+		private passwordResetRequestsRepository: PasswordResetRequestsRepository,
 
 		private idService: IdService,
 		private emailService: EmailService,

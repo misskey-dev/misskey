@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiFollowingsRepository } from '@/models/index.js';
+import type { FollowingsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -42,7 +42,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.followingsRepository)
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 
 		private followingEntityService: FollowingEntityService,
 		private queryService: QueryService,

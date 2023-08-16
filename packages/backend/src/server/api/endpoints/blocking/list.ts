@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiBlockingsRepository } from '@/models/index.js';
+import type { BlockingsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { BlockingEntityService } from '@/core/entities/BlockingEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -43,7 +43,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: MiBlockingsRepository,
+		private blockingsRepository: BlockingsRepository,
 
 		private blockingEntityService: BlockingEntityService,
 		private queryService: QueryService,

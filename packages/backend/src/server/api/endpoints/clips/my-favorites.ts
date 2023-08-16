@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiClipFavoritesRepository } from '@/models/index.js';
+import type { ClipFavoritesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 
@@ -39,7 +39,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.clipFavoritesRepository)
-		private clipFavoritesRepository: MiClipFavoritesRepository,
+		private clipFavoritesRepository: ClipFavoritesRepository,
 
 		private clipEntityService: ClipEntityService,
 	) {

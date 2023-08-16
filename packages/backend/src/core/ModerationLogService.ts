@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiModerationLogsRepository } from '@/models/index.js';
+import type { ModerationLogsRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
@@ -14,7 +14,7 @@ import { bindThis } from '@/decorators.js';
 export class ModerationLogService {
 	constructor(
 		@Inject(DI.moderationLogsRepository)
-		private moderationLogsRepository: MiModerationLogsRepository,
+		private moderationLogsRepository: ModerationLogsRepository,
 
 		private idService: IdService,
 	) {

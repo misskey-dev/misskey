@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiRenoteMutingsRepository } from '@/models/index.js';
+import type { RenoteMutingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -18,7 +18,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class RenoteMutingEntityService {
 	constructor(
 		@Inject(DI.renoteMutingsRepository)
-		private renoteMutingsRepository: MiRenoteMutingsRepository,
+		private renoteMutingsRepository: RenoteMutingsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

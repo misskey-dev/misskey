@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiFollowingsRepository } from '@/models/index.js';
+import type { FollowingsRepository } from '@/models/index.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -48,7 +48,7 @@ class DeliverManager {
 	 */
 	constructor(
 		private userEntityService: UserEntityService,
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 		private queueService: QueueService,
 
 		actor: { id: MiUser['id']; host: null; },
@@ -152,7 +152,7 @@ class DeliverManager {
 export class ApDeliverManagerService {
 	constructor(
 		@Inject(DI.followingsRepository)
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 
 		private userEntityService: UserEntityService,
 		private queueService: QueueService,

@@ -5,7 +5,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { MiDriveFilesRepository, MiFollowingsRepository, MiUsersRepository, MiNotesRepository } from '@/models/index.js';
+import type { DriveFilesRepository, FollowingsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
@@ -28,16 +28,16 @@ export default class InstanceChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: MiDriveFilesRepository,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 
 		private utilityService: UtilityService,
 		private appLockService: AppLockService,

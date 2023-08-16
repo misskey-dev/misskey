@@ -6,7 +6,7 @@
 import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import JSON5 from 'json5';
-import type { MiAdsRepository, MiUsersRepository } from '@/models/index.js';
+import type { AdsRepository, UsersRepository } from '@/models/index.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -261,10 +261,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.adsRepository)
-		private adsRepository: MiAdsRepository,
+		private adsRepository: AdsRepository,
 
 		private userEntityService: UserEntityService,
 		private metaService: MetaService,

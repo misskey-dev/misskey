@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/entities/User.js';
-import type { MiAnnouncementReadsRepository, MiAnnouncementsRepository, MiAnnouncement, MiAnnouncementRead } from '@/models/index.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository, MiAnnouncement, MiAnnouncementRead } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
@@ -17,10 +17,10 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 export class AnnouncementService {
 	constructor(
 		@Inject(DI.announcementsRepository)
-		private announcementsRepository: MiAnnouncementsRepository,
+		private announcementsRepository: AnnouncementsRepository,
 
 		@Inject(DI.announcementReadsRepository)
-		private announcementReadsRepository: MiAnnouncementReadsRepository,
+		private announcementReadsRepository: AnnouncementReadsRepository,
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,

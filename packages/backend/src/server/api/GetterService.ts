@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiNotesRepository, MiUsersRepository } from '@/models/index.js';
+import type { NotesRepository, UsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import type { MiNote } from '@/models/entities/Note.js';
@@ -16,10 +16,10 @@ import { bindThis } from '@/decorators.js';
 export class GetterService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		private userEntityService: UserEntityService,
 	) {

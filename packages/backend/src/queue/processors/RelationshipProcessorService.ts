@@ -10,7 +10,7 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 
-import type { MiUsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import { RelationshipJobData } from '../types.js';
@@ -23,7 +23,7 @@ export class RelationshipProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		private queueLoggerService: QueueLoggerService,
 		private userFollowingService: UserFollowingService,

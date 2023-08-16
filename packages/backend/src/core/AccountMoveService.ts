@@ -9,7 +9,7 @@ import { IsNull, In, MoreThan, Not } from 'typeorm';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
-import type { MiBlockingsRepository, MiFollowingsRepository, MiInstancesRepository, MiMutingsRepository, MiUserListJoiningsRepository, MiUsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MutingsRepository, UserListJoiningsRepository, UsersRepository } from '@/models/index.js';
 import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 import { IdService } from '@/core/IdService.js';
@@ -31,22 +31,22 @@ import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 export class AccountMoveService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: MiBlockingsRepository,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MiMutingsRepository,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: MiInstancesRepository,
+		private instancesRepository: InstancesRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

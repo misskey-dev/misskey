@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, ObjectLiteral } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/entities/User.js';
-import type { MiUserProfilesRepository, MiFollowingsRepository, MiChannelFollowingsRepository, MiMutedNotesRepository, MiBlockingsRepository, MiNoteThreadMutingsRepository, MiMutingsRepository, MiRenoteMutingsRepository } from '@/models/index.js';
+import type { UserProfilesRepository, FollowingsRepository, ChannelFollowingsRepository, MutedNotesRepository, BlockingsRepository, NoteThreadMutingsRepository, MutingsRepository, RenoteMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import type { SelectQueryBuilder } from 'typeorm';
 
@@ -15,28 +15,28 @@ import type { SelectQueryBuilder } from 'typeorm';
 export class QueryService {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: MiUserProfilesRepository,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: MiChannelFollowingsRepository,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MiMutedNotesRepository,
+		private mutedNotesRepository: MutedNotesRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: MiBlockingsRepository,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: MiNoteThreadMutingsRepository,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MiMutingsRepository,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.renoteMutingsRepository)
-		private renoteMutingsRepository: MiRenoteMutingsRepository,
+		private renoteMutingsRepository: RenoteMutingsRepository,
 	) {
 	}
 

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { MiNotesRepository, MiNoteThreadMutingsRepository } from '@/models/index.js';
+import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -47,10 +47,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: MiNoteThreadMutingsRepository,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		private getterService: GetterService,
 		private noteReadService: NoteReadService,

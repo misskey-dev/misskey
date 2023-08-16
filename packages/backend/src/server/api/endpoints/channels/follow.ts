@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiChannelFollowingsRepository, MiChannelsRepository } from '@/models/index.js';
+import type { ChannelFollowingsRepository, ChannelsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -41,10 +41,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.channelsRepository)
-		private channelsRepository: MiChannelsRepository,
+		private channelsRepository: ChannelsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: MiChannelFollowingsRepository,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		private idService: IdService,
 	) {

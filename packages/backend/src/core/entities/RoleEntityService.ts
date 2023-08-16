@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiRoleAssignmentsRepository, MiRolesRepository } from '@/models/index.js';
+import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiRole } from '@/models/entities/Role.js';
@@ -17,10 +17,10 @@ import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 export class RoleEntityService {
 	constructor(
 		@Inject(DI.rolesRepository)
-		private rolesRepository: MiRolesRepository,
+		private rolesRepository: RolesRepository,
 
 		@Inject(DI.roleAssignmentsRepository)
-		private roleAssignmentsRepository: MiRoleAssignmentsRepository,
+		private roleAssignmentsRepository: RoleAssignmentsRepository,
 	) {
 	}
 

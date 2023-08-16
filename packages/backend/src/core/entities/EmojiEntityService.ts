@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiEmojisRepository } from '@/models/index.js';
+import type { EmojisRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiEmoji } from '@/models/entities/Emoji.js';
@@ -15,7 +15,7 @@ import { bindThis } from '@/decorators.js';
 export class EmojiEntityService {
 	constructor(
 		@Inject(DI.emojisRepository)
-		private emojisRepository: MiEmojisRepository,
+		private emojisRepository: EmojisRepository,
 	) {
 	}
 

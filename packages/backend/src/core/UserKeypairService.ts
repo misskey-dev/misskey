@@ -6,7 +6,7 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { MiUser } from '@/models/entities/User.js';
-import type { MiUserKeypairsRepository } from '@/models/index.js';
+import type { UserKeypairsRepository } from '@/models/index.js';
 import { RedisKVCache } from '@/misc/cache.js';
 import type { MiUserKeypair } from '@/models/entities/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
@@ -21,7 +21,7 @@ export class UserKeypairService implements OnApplicationShutdown {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.userKeypairsRepository)
-		private userKeypairsRepository: MiUserKeypairsRepository,
+		private userKeypairsRepository: UserKeypairsRepository,
 	) {
 		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h

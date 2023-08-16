@@ -14,7 +14,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
 import { MiNote } from '@/models/entities/Note.js';
-import type { MiChannelsRepository, MiInstancesRepository, MiMutedNotesRepository, MiMutingsRepository, MiNotesRepository, MiNoteThreadMutingsRepository, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiApp } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -67,7 +67,7 @@ class NotificationManager {
 	}[];
 
 	constructor(
-		private mutingsRepository: MiMutingsRepository,
+		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
 		notifier: { id: MiUser['id']; },
 		note: MiNote,
@@ -162,28 +162,28 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MiMutingsRepository,
+		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: MiInstancesRepository,
+		private instancesRepository: InstancesRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: MiUserProfilesRepository,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MiMutedNotesRepository,
+		private mutedNotesRepository: MutedNotesRepository,
 
 		@Inject(DI.channelsRepository)
-		private channelsRepository: MiChannelsRepository,
+		private channelsRepository: ChannelsRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: MiNoteThreadMutingsRepository,
+		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,

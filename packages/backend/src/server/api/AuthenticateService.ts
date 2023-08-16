@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiAccessTokensRepository, MiAppsRepository, MiUsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
 import type { MiLocalUser } from '@/models/entities/User.js';
 import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import { MemoryKVCache } from '@/misc/cache.js';
@@ -27,13 +27,13 @@ export class AuthenticateService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.accessTokensRepository)
-		private accessTokensRepository: MiAccessTokensRepository,
+		private accessTokensRepository: AccessTokensRepository,
 
 		@Inject(DI.appsRepository)
-		private appsRepository: MiAppsRepository,
+		private appsRepository: AppsRepository,
 
 		private cacheService: CacheService,
 	) {

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUserListJoiningsRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiUserList } from '@/models/entities/UserList.js';
 import type { MiUserListJoining } from '@/models/entities/UserListJoining.js';
@@ -23,7 +23,7 @@ export class UserListService {
 
 	constructor(
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

@@ -5,7 +5,7 @@
 
 import sanitizeHtml from 'sanitize-html';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiAbuseUserReportsRepository } from '@/models/index.js';
+import type { AbuseUserReportsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -58,7 +58,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: MiAbuseUserReportsRepository,
+		private abuseUserReportsRepository: AbuseUserReportsRepository,
 
 		private idService: IdService,
 		private metaService: MetaService,

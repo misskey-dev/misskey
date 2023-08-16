@@ -10,7 +10,7 @@ import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { MiNote } from '@/models/entities/Note.js';
 import { MiUser } from '@/models/index.js';
-import type { MiNotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
@@ -68,7 +68,7 @@ export class SearchService {
 		private meilisearch: MeiliSearch | null,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		private queryService: QueryService,
 		private idService: IdService,

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiAttestationChallengesRepository } from '@/models/index.js';
+import type { AttestationChallengesRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
@@ -18,7 +18,7 @@ export class JanitorService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.attestationChallengesRepository)
-		private attestationChallengesRepository: MiAttestationChallengesRepository,
+		private attestationChallengesRepository: AttestationChallengesRepository,
 	) {
 	}
 

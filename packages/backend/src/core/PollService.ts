@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiNotesRepository, MiUsersRepository, MiPollsRepository, MiPollVotesRepository, MiUser } from '@/models/index.js';
+import type { NotesRepository, UsersRepository, PollsRepository, PollVotesRepository, MiUser } from '@/models/index.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { RelayService } from '@/core/RelayService.js';
 import { IdService } from '@/core/IdService.js';
@@ -20,16 +20,16 @@ import { UserBlockingService } from '@/core/UserBlockingService.js';
 export class PollService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: MiPollsRepository,
+		private pollsRepository: PollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: MiPollVotesRepository,
+		private pollVotesRepository: PollVotesRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

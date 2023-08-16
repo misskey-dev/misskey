@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUserListJoiningsRepository, MiUserListsRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -22,8 +22,8 @@ class UserListChannel extends Channel {
 	private listUsersClock: NodeJS.Timer;
 
 	constructor(
-		private userListsRepository: MiUserListsRepository,
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListsRepository: UserListsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 		private noteEntityService: NoteEntityService,
 
 		id: string,
@@ -122,10 +122,10 @@ export class UserListChannelService {
 
 	constructor(
 		@Inject(DI.userListsRepository)
-		private userListsRepository: MiUserListsRepository,
+		private userListsRepository: UserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiUsersRepository, MiDriveFilesRepository, MiUserListJoiningsRepository, MiUserListsRepository } from '@/models/index.js';
+import type { UsersRepository, DriveFilesRepository, UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -25,16 +25,16 @@ export class ImportUserListsProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: MiDriveFilesRepository,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.userListsRepository)
-		private userListsRepository: MiUserListsRepository,
+		private userListsRepository: UserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,

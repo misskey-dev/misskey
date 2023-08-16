@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiUserListJoiningsRepository, MiUserListsRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiUserList } from '@/models/entities/UserList.js';
@@ -15,10 +15,10 @@ import { bindThis } from '@/decorators.js';
 export class UserListEntityService {
 	constructor(
 		@Inject(DI.userListsRepository)
-		private userListsRepository: MiUserListsRepository,
+		private userListsRepository: UserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 	) {
 	}
 

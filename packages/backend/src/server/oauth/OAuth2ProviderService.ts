@@ -23,7 +23,7 @@ import { kinds } from '@/misc/api-permissions.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
-import type { MiAccessTokensRepository, MiUsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, UsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
 import type { MiLocalUser } from '@/models/entities/User.js';
@@ -236,10 +236,10 @@ export class OAuth2ProviderService {
 		private config: Config,
 		private httpRequestService: HttpRequestService,
 		@Inject(DI.accessTokensRepository)
-		accessTokensRepository: MiAccessTokensRepository,
+		accessTokensRepository: AccessTokensRepository,
 		idService: IdService,
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 		loggerService: LoggerService,
 	) {

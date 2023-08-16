@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUserListsRepository, MiUserListFavoritesRepository } from '@/models/index.js';
+import type { UserListsRepository, UserListFavoritesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -47,10 +47,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userListsRepository)
-		private userListsRepository: MiUserListsRepository,
+		private userListsRepository: UserListsRepository,
 
 		@Inject(DI.userListFavoritesRepository)
-		private userListFavoritesRepository: MiUserListFavoritesRepository,
+		private userListFavoritesRepository: UserListFavoritesRepository,
 
 		private userListEntityService: UserListEntityService,
 	) {

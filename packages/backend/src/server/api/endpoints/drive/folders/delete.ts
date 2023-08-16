@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiDriveFoldersRepository, MiDriveFilesRepository } from '@/models/index.js';
+import type { DriveFoldersRepository, DriveFilesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -45,10 +45,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: MiDriveFilesRepository,
+		private driveFilesRepository: DriveFilesRepository,
 
 		@Inject(DI.driveFoldersRepository)
-		private driveFoldersRepository: MiDriveFoldersRepository,
+		private driveFoldersRepository: DriveFoldersRepository,
 
 		private globalEventService: GlobalEventService,
 	) {

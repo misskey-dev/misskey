@@ -11,7 +11,7 @@ import type { MiBlocking } from '@/models/entities/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { MiFollowRequestsRepository, MiBlockingsRepository, MiUserListsRepository, MiUserListJoiningsRepository } from '@/models/index.js';
+import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -30,16 +30,16 @@ export class UserBlockingService implements OnModuleInit {
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: MiFollowRequestsRepository,
+		private followRequestsRepository: FollowRequestsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: MiBlockingsRepository,
+		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.userListsRepository)
-		private userListsRepository: MiUserListsRepository,
+		private userListsRepository: UserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: MiUserListJoiningsRepository,
+		private userListJoiningsRepository: UserListJoiningsRepository,
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,

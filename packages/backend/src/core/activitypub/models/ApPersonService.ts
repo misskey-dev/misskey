@@ -8,7 +8,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { MiFollowingsRepository, MiInstancesRepository, MiUserProfilesRepository, MiUserPublickeysRepository, MiUsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import { MiUser } from '@/models/entities/User.js';
@@ -87,19 +87,19 @@ export class ApPersonService implements OnModuleInit {
 		private db: DataSource,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: MiUserProfilesRepository,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.userPublickeysRepository)
-		private userPublickeysRepository: MiUserPublickeysRepository,
+		private userPublickeysRepository: UserPublickeysRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: MiInstancesRepository,
+		private instancesRepository: InstancesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: MiFollowingsRepository,
+		private followingsRepository: FollowingsRepository,
 	) {
 	}
 

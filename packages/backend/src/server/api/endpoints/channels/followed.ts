@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiChannelFollowingsRepository } from '@/models/index.js';
+import type { ChannelFollowingsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -43,7 +43,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: MiChannelFollowingsRepository,
+		private channelFollowingsRepository: ChannelFollowingsRepository,
 
 		private channelEntityService: ChannelEntityService,
 		private queryService: QueryService,

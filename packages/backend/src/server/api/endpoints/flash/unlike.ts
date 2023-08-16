@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiFlashsRepository, MiFlashLikesRepository } from '@/models/index.js';
+import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -46,10 +46,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.flashsRepository)
-		private flashsRepository: MiFlashsRepository,
+		private flashsRepository: FlashsRepository,
 
 		@Inject(DI.flashLikesRepository)
-		private flashLikesRepository: MiFlashLikesRepository,
+		private flashLikesRepository: FlashLikesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const flash = await this.flashsRepository.findOneBy({ id: ps.flashId });

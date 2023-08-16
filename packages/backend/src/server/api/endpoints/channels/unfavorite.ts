@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiChannelFavoritesRepository, MiChannelsRepository } from '@/models/index.js';
+import type { ChannelFavoritesRepository, ChannelsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -40,10 +40,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.channelsRepository)
-		private channelsRepository: MiChannelsRepository,
+		private channelsRepository: ChannelsRepository,
 
 		@Inject(DI.channelFavoritesRepository)
-		private channelFavoritesRepository: MiChannelFavoritesRepository,
+		private channelFavoritesRepository: ChannelFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const channel = await this.channelsRepository.findOneBy({

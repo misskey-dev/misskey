@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { MiUserProfilesRepository, MiUserSecurityKeysRepository } from '@/models/index.js';
+import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -38,10 +38,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: MiUserProfilesRepository,
+		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: MiUserSecurityKeysRepository,
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,

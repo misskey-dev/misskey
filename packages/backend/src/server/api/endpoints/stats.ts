@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiInstancesRepository, MiNoteReactionsRepository } from '@/models/index.js';
+import type { InstancesRepository, NoteReactionsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import NotesChart from '@/core/chart/charts/notes.js';
@@ -62,10 +62,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.instancesRepository)
-		private instancesRepository: MiInstancesRepository,
+		private instancesRepository: InstancesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: MiNoteReactionsRepository,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		private notesChart: NotesChart,
 		private usersChart: UsersChart,

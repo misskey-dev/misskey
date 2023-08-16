@@ -9,7 +9,7 @@ import type { MiUser } from '@/models/entities/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiHashtag } from '@/models/entities/Hashtag.js';
-import type { MiHashtagsRepository } from '@/models/index.js';
+import type { HashtagsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 
@@ -17,7 +17,7 @@ import { bindThis } from '@/decorators.js';
 export class HashtagService {
 	constructor(
 		@Inject(DI.hashtagsRepository)
-		private hashtagsRepository: MiHashtagsRepository,
+		private hashtagsRepository: HashtagsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

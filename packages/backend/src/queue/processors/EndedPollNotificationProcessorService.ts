@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiPollVotesRepository, MiNotesRepository } from '@/models/index.js';
+import type { PollVotesRepository, NotesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
@@ -19,10 +19,10 @@ export class EndedPollNotificationProcessorService {
 
 	constructor(
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: MiPollVotesRepository,
+		private pollVotesRepository: PollVotesRepository,
 
 		private notificationService: NotificationService,
 		private queueLoggerService: QueueLoggerService,

@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { MiNoteFavorite, MiNoteFavoritesRepository, MiPollsRepository, MiUser, MiUsersRepository } from '@/models/index.js';
+import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
@@ -25,13 +25,13 @@ export class ExportFavoritesProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: MiPollsRepository,
+		private pollsRepository: PollsRepository,
 
 		@Inject(DI.noteFavoritesRepository)
-		private noteFavoritesRepository: MiNoteFavoritesRepository,
+		private noteFavoritesRepository: NoteFavoritesRepository,
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,

@@ -12,7 +12,7 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiEmoji } from '@/models/entities/Emoji.js';
-import type { MiEmojisRepository, MiRole } from '@/models/index.js';
+import type { EmojisRepository, MiRole } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';
@@ -31,7 +31,7 @@ export class CustomEmojiService implements OnApplicationShutdown {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: MiEmojisRepository,
+		private emojisRepository: EmojisRepository,
 
 		private utilityService: UtilityService,
 		private idService: IdService,

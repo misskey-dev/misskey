@@ -8,7 +8,7 @@ import { IsNull, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { MiRetentionAggregationsRepository, MiUsersRepository } from '@/models/index.js';
+import type { RetentionAggregationsRepository, UsersRepository } from '@/models/index.js';
 import { deepClone } from '@/misc/clone.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
@@ -21,10 +21,10 @@ export class AggregateRetentionProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.retentionAggregationsRepository)
-		private retentionAggregationsRepository: MiRetentionAggregationsRepository,
+		private retentionAggregationsRepository: RetentionAggregationsRepository,
 
 		private idService: IdService,
 		private queueLoggerService: QueueLoggerService,

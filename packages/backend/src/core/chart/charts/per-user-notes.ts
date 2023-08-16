@@ -9,7 +9,7 @@ import type { MiUser } from '@/models/entities/User.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
-import type { MiNotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
@@ -27,7 +27,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		private appLockService: AppLockService,
 		private chartLoggerService: ChartLoggerService,

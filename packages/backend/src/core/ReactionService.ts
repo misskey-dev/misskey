@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { MiEmojisRepository, MiNoteReactionsRepository, MiUsersRepository, MiNotesRepository } from '@/models/index.js';
+import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import type { MiNote } from '@/models/entities/Note.js';
@@ -67,16 +67,16 @@ const decodeCustomEmojiRegexp = /^:([\w+-]+)(?:@([\w.-]+))?:$/;
 export class ReactionService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: MiUsersRepository,
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: MiNotesRepository,
+		private notesRepository: NotesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: MiNoteReactionsRepository,
+		private noteReactionsRepository: NoteReactionsRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: MiEmojisRepository,
+		private emojisRepository: EmojisRepository,
 
 		private utilityService: UtilityService,
 		private metaService: MetaService,

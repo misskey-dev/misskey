@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiMutingsRepository } from '@/models/index.js';
+import type { MutingsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { MutingEntityService } from '@/core/entities/MutingEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -43,7 +43,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MiMutingsRepository,
+		private mutingsRepository: MutingsRepository,
 
 		private mutingEntityService: MutingEntityService,
 		private queryService: QueryService,
