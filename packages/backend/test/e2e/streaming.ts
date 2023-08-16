@@ -6,7 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { Following } from '@/models/entities/Following.js';
+import { MiFollowing } from '@/models/entities/Following.js';
 import { connectStream, signup, api, post, startServer, initTestDb, waitFire } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
@@ -46,7 +46,7 @@ describe('Streaming', () => {
 		beforeAll(async () => {
 			app = await startServer();
 			const connection = await initTestDb(true);
-			Followings = connection.getRepository(Following);
+			Followings = connection.getRepository(MiFollowing);
 
 			ayano = await signup({ username: 'ayano' });
 			kyoko = await signup({ username: 'kyoko' });

@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Meta } from '@/models/entities/Meta.js';
+import type { MiMeta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -116,7 +116,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private moderationLogService: ModerationLogService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const set = {} as Partial<Meta>;
+			const set = {} as Partial<MiMeta>;
 
 			if (typeof ps.disableRegistration === 'boolean') {
 				set.disableRegistration = ps.disableRegistration;

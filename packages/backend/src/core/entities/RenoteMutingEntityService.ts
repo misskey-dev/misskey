@@ -9,8 +9,8 @@ import type { RenoteMutingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { RenoteMuting } from '@/models/entities/RenoteMuting.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiRenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -26,8 +26,8 @@ export class RenoteMutingEntityService {
 
 	@bindThis
 	public async pack(
-		src: RenoteMuting['id'] | RenoteMuting,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiRenoteMuting['id'] | MiRenoteMuting,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'RenoteMuting'>> {
 		const muting = typeof src === 'object' ? src : await this.renoteMutingsRepository.findOneByOrFail({ id: src });
 
@@ -44,7 +44,7 @@ export class RenoteMutingEntityService {
 	@bindThis
 	public packMany(
 		mutings: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(mutings.map(x => this.pack(x, me)));
 	}
