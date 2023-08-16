@@ -2,10 +2,11 @@
 	"recommendations": [
 		"editorconfig.editorconfig",
 		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"mrmlnc.vscode-json5",
+		"Orta.vscode-jest",
 		"Vue.volar",
 		"Vue.vscode-typescript-vue-plugin",
-		"Orta.vscode-jest",
-		"dbaeumer.vscode-eslint",
-		"mrmlnc.vscode-json5"
+		"SonarSource.sonarlint-vscode"
 	]
 }

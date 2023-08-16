@@ -1,11 +1,27 @@
 {
-	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"typescript.tsdk": "node_modules/typescript/lib",
 	"path-intellisense.mappings": {
 		"@": "${workspaceRoot}/packages/frontend/src/"
 	},
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.organizeImports": true
+	},
+	"search.exclude": {
+		"**/node_modules": true
+	},
 	"eslint.validate": [
-		"javascript",
-		"javascriptreact",
-		"vue"
+		{ "language": "typescript", "autoFix": true },
+		{ "language": "typescriptreact", "autoFix": true },
+		{ "language": "javascript", "autoFix": true },
+		{ "language": "javascriptreact", "autoFix": true },
+		{ "language": "vue", "autoFix": true },
+		{ "language": "html", "autoFix": true },
+		{ "language": "css", "autoFix": true },
+		{ "language": "scss", "autoFix": true },
+		{ "language": "less", "autoFix": true },
+		{ "language": "json", "autoFix": true },
+		{ "language": "markdown", "autoFix": true }
 	]
 }

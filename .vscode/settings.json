@@ -1,11 +1,28 @@
 {
-    "search.exclude": {
-        "**/node_modules": true
-    },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "files.associations": {
-        "*.test.ts": "typescript"
-    },
-    "jest.jestCommandLine": "pnpm run jest",
-    "jest.autoRun": "off"
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.organizeImports": true
+	},
+	"search.exclude": {
+		"**/node_modules": true
+	},
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"files.associations": {
+		"*.test.ts": "typescript"
+	},
+	"jest.jestCommandLine": "pnpm run jest",
+	"jest.autoRun": "off",
+	"eslint.validate": [
+		{ "language": "typescript", "autoFix": true },
+		{ "language": "typescriptreact", "autoFix": true },
+		{ "language": "javascript", "autoFix": true },
+		{ "language": "javascriptreact", "autoFix": true },
+		{ "language": "html", "autoFix": true },
+		{ "language": "css", "autoFix": true },
+		{ "language": "scss", "autoFix": true },
+		{ "language": "less", "autoFix": true },
+		{ "language": "json", "autoFix": true },
+		{ "language": "markdown", "autoFix": true }
+	]
 }
