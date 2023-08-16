@@ -20,8 +20,8 @@ const inputCompressKindMap = {
 	'image/svg+xml': 'lossless',
 } as const;
 
-const reiszeSizeConfig = { maxWidth: 2048, maxHeight: 2048 } as const;
-const noRseizeSizeConfig = { maxWidth: Number.MAX_SAFE_INTEGER, maxHeight: Number.MAX_SAFE_INTEGER } as const;
+const resizeSizeConfig = { maxWidth: 2048, maxHeight: 2048 } as const;
+const noRssizeSizeConfig = { maxWidth: Number.MAX_SAFE_INTEGER, maxHeight: Number.MAX_SAFE_INTEGER } as const;
 
 async function isLosslessWebp(file: Blob): Promise<boolean> {
 	// file header
@@ -44,8 +44,8 @@ async function isLosslessWebp(file: Blob): Promise<boolean> {
 
 async function inputImageKind(file: File): Promise<'lossy' | 'lossless' | undefined> {
 	let compressKind: 'lossy' | 'lossless' | undefined = inputCompressKindMap[file.type];
-	if (!compressKind) return; // unknown image format
-	if (await isAnimated(file)) return; // animated image format
+	if (!compressKind) return undefined; // unknown image format
+	if (await isAnimated(file)) return undefined; // animated image format
 	// WEBPs can be lossless
 	if (await isLosslessWebp(file)) compressKind = 'lossless';
 	return compressKind;
@@ -82,7 +82,7 @@ export async function getCompressionConfig(file: File): Promise<BrowserImageResi
 	const webpSupported = isWebpSupported();
 
 	const imgFormatConfig = (webpSupported ? compressTypeMap : compressTypeMapFallback)[compressKind];
-	const sizeConfig = resize ? reiszeSizeConfig : noRseizeSizeConfig;
+	const sizeConfig = resize ? resizeSizeConfig : noRssizeSizeConfig;
 
 	if (!resize) {
 		// we don't resize images so we may omit recompression
