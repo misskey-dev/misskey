@@ -26,7 +26,7 @@ const inputCompressKindMap = {
 } as const;
 
 const resizeSizeConfig = { maxWidth: 2048, maxHeight: 2048 } as const;
-const noRssizeSizeConfig = { maxWidth: Number.MAX_SAFE_INTEGER, maxHeight: Number.MAX_SAFE_INTEGER } as const;
+const noResizeSizeConfig = { maxWidth: Number.MAX_SAFE_INTEGER, maxHeight: Number.MAX_SAFE_INTEGER } as const;
 
 async function isLosslessWebp(file: Blob): Promise<boolean> {
 	// file header
@@ -87,7 +87,7 @@ export async function getCompressionConfig(file: File): Promise<BrowserImageResi
 	const webpSupported = isWebpSupported();
 
 	const imgFormatConfig = (webpSupported ? compressTypeMap : compressTypeMapFallback)[compressKind];
-	const sizeConfig = resize ? resizeSizeConfig : noRssizeSizeConfig;
+	const sizeConfig = resize ? resizeSizeConfig : noResizeSizeConfig;
 
 	if (!resize) {
 		// we don't resize images so we may omit recompression
