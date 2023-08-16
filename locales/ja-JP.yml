@@ -1558,6 +1558,9 @@ _aboutMisskey:
   donate: "Misskeyに寄付"
   morePatrons: "他にも多くの方が支援してくれています。ありがとうございます🥰"
   patrons: "支援者"
+  forkContributors: "このサーバーで使用しているforkの主要な開発者"
+  allForkContributors: "このサーバーで使用しているforkの全てのコントリビューター"
+  forkSource: "このサーバーで使用しているforkのソースコード"
 
 _displayOfSensitiveMedia:
   respect: "センシティブ設定されたメディアを隠す"

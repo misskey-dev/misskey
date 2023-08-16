@@ -1639,6 +1639,9 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "forkContributors": string;
+        "allForkContributors": string;
+        "forkSource": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;
