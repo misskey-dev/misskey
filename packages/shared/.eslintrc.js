@@ -1,15 +1,17 @@
 module.exports = {
 	root: true,
-	parser: '@typescript-eslint/parser',
-	plugins: [
-		'@typescript-eslint',
-		'import'
-	],
 	extends: [
 		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/recommended-type-checked',
+		'plugin:@typescript-eslint/stylistic-type-checked',
 		'plugin:import/recommended',
-		'plugin:import/typescript'
+		'plugin:import/typescript',
+		'plugin:prettier/recommended',
+	],
+	plugins: [
+		'@typescript-eslint',
+		'import',
+		"prettier",
 	],
 	rules: {
 		'indent': ['warn', 'tab', {
@@ -92,6 +94,7 @@ module.exports = {
 		'import/no-default-export': ['warn'],
 		'import/order': ['warn', {
 			'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
-		}]
+		}],
+		'prettier/prettier': 'warn',
 	},
 };

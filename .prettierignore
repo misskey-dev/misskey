@@ -1,0 +1,9 @@
+node_modules/
+packages/*/node_modules
+.pnpm-store
+
+build/
+built/
+
+misskey-assets/
+fluent-emojis/
