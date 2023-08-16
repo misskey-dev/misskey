@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { defineAsyncComponent, reactive, ref } from 'vue';
 import * as misskey from 'misskey-js';
 import { showSuspendedDialog } from './scripts/show-suspended-dialog';
@@ -91,7 +96,6 @@ export async function removeAccount(idOrToken: Account['id']) {
 
 function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Promise<Account> {
 	return new Promise((done, fail) => {
-		// Fetch user
 		window.fetch(`${apiUrl}/i`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -103,8 +107,8 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 		})
 			.then(res => new Promise<Account | { error: Record<string, any> }>((done2, fail2) => {
 				if (res.status >= 500 && res.status < 600) {
-				// サーバーエラー(5xx)の場合をrejectとする
-				// （認証エラーなど4xxはresolve）
+					// サーバーエラー(5xx)の場合をrejectとする
+					// （認証エラーなど4xxはresolve）
 					return fail2(res);
 				}
 				res.json().then(done2, fail2);

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { get } from 'idb-keyval';
 import * as Acct from 'misskey-js/built/acct';
 import type { PushNotificationDataMap } from '@/types';
@@ -22,7 +27,7 @@ globalThis.addEventListener('activate', ev => {
 });
 
 function offlineContentHTML(): string {
-	return `<!doctype html>Offline. Service Worker @${_VERSION_} <button onclick="location.reload()">reload</button>`
+	return `<!doctype html>Offline. Service Worker @${_VERSION_} <button onclick="location.reload()">reload</button>`;
 }
 
 globalThis.addEventListener('fetch', ev => {
