@@ -19,6 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, nextTick, ref } from 'vue';
+import { compareVersions } from 'compare-versions';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { v4 as uuid } from 'uuid';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -54,7 +55,7 @@ async function install() {
 			text: 'No language version annotation found :(',
 		});
 		return;
-	} else if (!(lv.startsWith('0.12.') || lv.startsWith('0.13.'))) {
+	} else if (compareVersions(lv, '0.12.0') < 0) {
 		os.alert({
 			type: 'error',
 			text: `aiscript version '${lv}' is not supported :(`,
