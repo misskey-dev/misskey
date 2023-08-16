@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div v-for="user in users.slice(0, limit)" :key="user.id" style="display:inline-block;width:32px;height:32px;margin-right:8px;">

@@ -1,9 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Injectable } from '@nestjs/common';
 import type { Meta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
@@ -109,9 +112,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.db)
-		private db: DataSource,
-
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {

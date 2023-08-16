@@ -1,4 +1,9 @@
 /*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
  * Language manager for SW
  */
 import { get, set } from 'idb-keyval';

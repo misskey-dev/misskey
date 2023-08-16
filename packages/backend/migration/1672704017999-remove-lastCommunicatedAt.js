@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class removeLastCommunicatedAt1672704017999 {
     name = 'removeLastCommunicatedAt1672704017999'
 

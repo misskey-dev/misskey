@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
 	<template #icon><i class="ti ti-camera"></i></template>
