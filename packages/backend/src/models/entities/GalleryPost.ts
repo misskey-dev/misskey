@@ -5,11 +5,11 @@
 
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import type { DriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import type { MiDriveFile } from './DriveFile.js';
 
-@Entity()
-export class GalleryPost {
+@Entity('gallery_post')
+export class MiGalleryPost {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -40,20 +40,20 @@ export class GalleryPost {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}',
 	})
-	public fileIds: DriveFile['id'][];
+	public fileIds: MiDriveFile['id'][];
 
 	@Index()
 	@Column('boolean', {
@@ -74,7 +74,7 @@ export class GalleryPost {
 	})
 	public tags: string[];
 
-	constructor(data: Partial<GalleryPost>) {
+	constructor(data: Partial<MiGalleryPost>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

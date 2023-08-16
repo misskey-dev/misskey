@@ -8,7 +8,7 @@ import { DI } from '@/di-symbols.js';
 import type { EmojisRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
+import type { MiEmoji } from '@/models/entities/Emoji.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class EmojiEntityService {
 
 	@bindThis
 	public async packSimple(
-		src: Emoji['id'] | Emoji,
+		src: MiEmoji['id'] | MiEmoji,
 	): Promise<Packed<'EmojiSimple'>> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 
@@ -45,7 +45,7 @@ export class EmojiEntityService {
 
 	@bindThis
 	public async packDetailed(
-		src: Emoji['id'] | Emoji,
+		src: MiEmoji['id'] | MiEmoji,
 	): Promise<Packed<'EmojiDetailed'>> {
 		const emoji = typeof src === 'object' ? src : await this.emojisRepository.findOneByOrFail({ id: src });
 

@@ -13,21 +13,21 @@ import { extractMentions } from '@/misc/extract-mentions.js';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/entities/Note.js';
-import { Note } from '@/models/entities/Note.js';
+import { MiNote } from '@/models/entities/Note.js';
 import type { ChannelsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { App } from '@/models/entities/App.js';
+import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { MiApp } from '@/models/entities/App.js';
 import { concat } from '@/misc/prelude/array.js';
 import { IdService } from '@/core/IdService.js';
-import type { User, LocalUser, RemoteUser } from '@/models/entities/User.js';
+import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 import type { IPoll } from '@/models/entities/Poll.js';
-import { Poll } from '@/models/entities/Poll.js';
+import { MiPoll } from '@/models/entities/Poll.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { checkWordMute } from '@/misc/check-word-mute.js';
-import type { Channel } from '@/models/entities/Channel.js';
+import type { MiChannel } from '@/models/entities/Channel.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { MemorySingleCache } from '@/misc/cache.js';
-import type { UserProfile } from '@/models/entities/UserProfile.js';
+import type { MiUserProfile } from '@/models/entities/UserProfile.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -54,23 +54,23 @@ import { RoleService } from '@/core/RoleService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { SearchService } from '@/core/SearchService.js';
 
-const mutedWordsCache = new MemorySingleCache<{ userId: UserProfile['userId']; mutedWords: UserProfile['mutedWords']; }[]>(1000 * 60 * 5);
+const mutedWordsCache = new MemorySingleCache<{ userId: MiUserProfile['userId']; mutedWords: MiUserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
 class NotificationManager {
-	private notifier: { id: User['id']; };
-	private note: Note;
+	private notifier: { id: MiUser['id']; };
+	private note: MiNote;
 	private queue: {
-		target: LocalUser['id'];
+		target: MiLocalUser['id'];
 		reason: NotificationType;
 	}[];
 
 	constructor(
 		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
-		notifier: { id: User['id']; },
-		note: Note,
+		notifier: { id: MiUser['id']; },
+		note: MiNote,
 	) {
 		this.notifier = notifier;
 		this.note = note;
@@ -78,7 +78,7 @@ class NotificationManager {
 	}
 
 	@bindThis
-	public push(notifiee: LocalUser['id'], reason: NotificationType) {
+	public push(notifiee: MiLocalUser['id'], reason: NotificationType) {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
 
@@ -119,32 +119,32 @@ class NotificationManager {
 }
 
 type MinimumUser = {
-	id: User['id'];
-	host: User['host'];
-	username: User['username'];
-	uri: User['uri'];
+	id: MiUser['id'];
+	host: MiUser['host'];
+	username: MiUser['username'];
+	uri: MiUser['uri'];
 };
 
 type Option = {
 	createdAt?: Date | null;
 	name?: string | null;
 	text?: string | null;
-	reply?: Note | null;
-	renote?: Note | null;
-	files?: DriveFile[] | null;
+	reply?: MiNote | null;
+	renote?: MiNote | null;
+	files?: MiDriveFile[] | null;
 	poll?: IPoll | null;
 	localOnly?: boolean | null;
-	reactionAcceptance?: Note['reactionAcceptance'];
+	reactionAcceptance?: MiNote['reactionAcceptance'];
 	cw?: string | null;
 	visibility?: string;
 	visibleUsers?: MinimumUser[] | null;
-	channel?: Channel | null;
+	channel?: MiChannel | null;
 	apMentions?: MinimumUser[] | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 	uri?: string | null;
 	url?: string | null;
-	app?: App | null;
+	app?: MiApp | null;
 };
 
 @Injectable()
@@ -211,12 +211,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	public async create(user: {
-		id: User['id'];
-		username: User['username'];
-		host: User['host'];
-		createdAt: User['createdAt'];
-		isBot: User['isBot'];
-	}, data: Option, silent = false): Promise<Note> {
+		id: MiUser['id'];
+		username: MiUser['username'];
+		host: MiUser['host'];
+		createdAt: MiUser['createdAt'];
+		isBot: MiUser['isBot'];
+	}, data: Option, silent = false): Promise<MiNote> {
 		// チャンネル外にリプライしたら対象のスコープに合わせる
 		// (クライアントサイドでやっても良い処理だと思うけどとりあえずサーバーサイドで)
 		if (data.reply && data.channel && data.reply.channelId !== data.channel.id) {
@@ -348,8 +348,8 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async insertNote(user: { id: User['id']; host: User['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
-		const insert = new Note({
+	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
+		const insert = new MiNote({
 			id: this.idService.genId(data.createdAt!),
 			createdAt: data.createdAt!,
 			fileIds: data.files ? data.files.map(file => file.id) : [],
@@ -411,9 +411,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 			if (insert.hasPoll) {
 				// Start transaction
 				await this.db.transaction(async transactionalEntityManager => {
-					await transactionalEntityManager.insert(Note, insert);
+					await transactionalEntityManager.insert(MiNote, insert);
 
-					const poll = new Poll({
+					const poll = new MiPoll({
 						noteId: insert.id,
 						choices: data.poll!.choices,
 						expiresAt: data.poll!.expiresAt,
@@ -424,7 +424,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 						userHost: user.host,
 					});
 
-					await transactionalEntityManager.insert(Poll, poll);
+					await transactionalEntityManager.insert(MiPoll, poll);
 				});
 			} else {
 				await this.notesRepository.insert(insert);
@@ -446,12 +446,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async postNoteCreated(note: Note, user: {
-		id: User['id'];
-		username: User['username'];
-		host: User['host'];
-		createdAt: User['createdAt'];
-		isBot: User['isBot'];
+	private async postNoteCreated(note: MiNote, user: {
+		id: MiUser['id'];
+		username: MiUser['username'];
+		host: MiUser['host'];
+		createdAt: MiUser['createdAt'];
+		isBot: MiUser['isBot'];
 	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		const meta = await this.metaService.fetch();
 
@@ -625,7 +625,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 					// メンションされたリモートユーザーに配送
 					for (const u of mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u))) {
-						dm.addDirectRecipe(u as RemoteUser);
+						dm.addDirectRecipe(u as MiRemoteUser);
 					}
 
 					// 投稿がリプライかつ投稿者がローカルユーザーかつリプライ先の投稿の投稿者がリモートユーザーなら配送
@@ -703,7 +703,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private incRenoteCount(renote: Note) {
+	private incRenoteCount(renote: MiNote) {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
 				renoteCount: () => '"renoteCount" + 1',
@@ -714,7 +714,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: Note, nm: NotificationManager) {
+	private async createMentionedEvents(mentionedUsers: MinimumUser[], note: MiNote, nm: NotificationManager) {
 		for (const u of mentionedUsers.filter(u => this.userEntityService.isLocalUser(u))) {
 			const isThreadMuted = await this.noteThreadMutingsRepository.exist({
 				where: {
@@ -746,12 +746,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private saveReply(reply: Note, note: Note) {
+	private saveReply(reply: MiNote, note: MiNote) {
 		this.notesRepository.increment({ id: reply.id }, 'repliesCount', 1);
 	}
 
 	@bindThis
-	private async renderNoteOrRenoteActivity(data: Option, note: Note) {
+	private async renderNoteOrRenoteActivity(data: Option, note: MiNote) {
 		if (data.localOnly) return null;
 
 		const content = data.renote && data.text == null && data.poll == null && (data.files == null || data.files.length === 0)
@@ -762,14 +762,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private index(note: Note) {
+	private index(note: MiNote) {
 		if (note.text == null && note.cw == null) return;
 
 		this.searchService.indexNote(note);
 	}
 
 	@bindThis
-	private incNotesCountOfUser(user: { id: User['id']; }) {
+	private incNotesCountOfUser(user: { id: MiUser['id']; }) {
 		this.usersRepository.createQueryBuilder().update()
 			.set({
 				updatedAt: new Date(),
@@ -780,13 +780,13 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async extractMentionedUsers(user: { host: User['host']; }, tokens: mfm.MfmNode[]): Promise<User[]> {
+	private async extractMentionedUsers(user: { host: MiUser['host']; }, tokens: mfm.MfmNode[]): Promise<MiUser[]> {
 		if (tokens == null) return [];
 
 		const mentions = extractMentions(tokens);
 		let mentionedUsers = (await Promise.all(mentions.map(m =>
 			this.remoteUserResolveService.resolveUser(m.username, m.host ?? user.host).catch(() => null),
-		))).filter(x => x != null) as User[];
+		))).filter(x => x != null) as MiUser[];
 
 		// Drop duplicate users
 		mentionedUsers = mentionedUsers.filter((u, i, self) =>

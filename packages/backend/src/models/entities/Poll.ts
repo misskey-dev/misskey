@@ -6,19 +6,19 @@
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
 import { noteVisibilities } from '../../types.js';
-import { Note } from './Note.js';
-import type { User } from './User.js';
+import { MiNote } from './Note.js';
+import type { MiUser } from './User.js';
 
-@Entity()
-export class Poll {
+@Entity('poll')
+export class MiPoll {
 	@PrimaryColumn(id())
-	public noteId: Note['id'];
+	public noteId: MiNote['id'];
 
-	@OneToOne(type => Note, {
+	@OneToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Note | null;
+	public note: MiNote | null;
 
 	@Column('timestamp with time zone', {
 		nullable: true,
@@ -50,7 +50,7 @@ export class Poll {
 		...id(),
 		comment: '[Denormalized]',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
 	@Index()
 	@Column('varchar', {
@@ -60,7 +60,7 @@ export class Poll {
 	public userHost: string | null;
 	//#endregion
 
-	constructor(data: Partial<Poll>) {
+	constructor(data: Partial<MiPoll>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

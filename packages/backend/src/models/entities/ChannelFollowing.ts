@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Channel } from './Channel.js';
+import { MiUser } from './User.js';
+import { MiChannel } from './Channel.js';
 
-@Entity()
+@Entity('channel_following')
 @Index(['followerId', 'followeeId'], { unique: true })
-export class ChannelFollowing {
+export class MiChannelFollowing {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -25,24 +25,24 @@ export class ChannelFollowing {
 		...id(),
 		comment: 'The followee channel ID.',
 	})
-	public followeeId: Channel['id'];
+	public followeeId: MiChannel['id'];
 
-	@ManyToOne(type => Channel, {
+	@ManyToOne(type => MiChannel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public followee: Channel | null;
+	public followee: MiChannel | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The follower user ID.',
 	})
-	public followerId: User['id'];
+	public followerId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public follower: User | null;
+	public follower: MiUser | null;
 }

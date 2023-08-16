@@ -5,10 +5,10 @@
 
 import { Entity, Index, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class Announcement {
+@Entity('announcement')
+export class MiAnnouncement {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -77,15 +77,15 @@ export class Announcement {
 		...id(),
 		nullable: true,
 	})
-	public userId: User['id'] | null;
+	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
-	constructor(data: Partial<Announcement>) {
+	constructor(data: Partial<MiAnnouncement>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

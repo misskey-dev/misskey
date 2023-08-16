@@ -13,9 +13,9 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { Promiseable } from '@/misc/prelude/await-all.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { LocalUser, PartialLocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, UserProfile, RenoteMutingsRepository, UserMemoRepository, Announcement } from '@/models/index.js';
+import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, MiUserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -38,15 +38,15 @@ type IsMeAndIsUserDetailed<ExpectsMe extends boolean | null, Detailed extends bo
 const Ajv = _Ajv.default;
 const ajv = new Ajv();
 
-function isLocalUser(user: User): user is LocalUser;
-function isLocalUser<T extends { host: User['host'] }>(user: T): user is (T & { host: null; });
-function isLocalUser(user: User | { host: User['host'] }): boolean {
+function isLocalUser(user: MiUser): user is MiLocalUser;
+function isLocalUser<T extends { host: MiUser['host'] }>(user: T): user is (T & { host: null; });
+function isLocalUser(user: MiUser | { host: MiUser['host'] }): boolean {
 	return user.host == null;
 }
 
-function isRemoteUser(user: User): user is RemoteUser;
-function isRemoteUser<T extends { host: User['host'] }>(user: T): user is (T & { host: string; });
-function isRemoteUser(user: User | { host: User['host'] }): boolean {
+function isRemoteUser(user: MiUser): user is MiRemoteUser;
+function isRemoteUser<T extends { host: MiUser['host'] }>(user: T): user is (T & { host: string; });
+function isRemoteUser(user: MiUser | { host: MiUser['host'] }): boolean {
 	return !isLocalUser(user);
 }
 
@@ -145,7 +145,7 @@ export class UserEntityService implements OnModuleInit {
 	public isRemoteUser = isRemoteUser;
 
 	@bindThis
-	public async getRelation(me: User['id'], target: User['id']) {
+	public async getRelation(me: MiUser['id'], target: MiUser['id']) {
 		return awaitAll({
 			id: target,
 			isFollowing: this.followingsRepository.count({
@@ -208,7 +208,7 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getHasUnreadAntenna(userId: User['id']): Promise<boolean> {
+	public async getHasUnreadAntenna(userId: MiUser['id']): Promise<boolean> {
 		/*
 		const myAntennas = (await this.antennaService.getAntennas()).filter(a => a.userId === userId);
 
@@ -225,7 +225,7 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getHasUnreadNotification(userId: User['id']): Promise<boolean> {
+	public async getHasUnreadNotification(userId: MiUser['id']): Promise<boolean> {
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 
 		const latestNotificationIdsRes = await this.redisClient.xrevrange(
@@ -239,7 +239,7 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async getHasPendingReceivedFollowRequest(userId: User['id']): Promise<boolean> {
+	public async getHasPendingReceivedFollowRequest(userId: MiUser['id']): Promise<boolean> {
 		const count = await this.followRequestsRepository.countBy({
 			followeeId: userId,
 		});
@@ -248,7 +248,7 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public getOnlineStatus(user: User): 'unknown' | 'online' | 'active' | 'offline' {
+	public getOnlineStatus(user: MiUser): 'unknown' | 'online' | 'active' | 'offline' {
 		if (user.hideOnlineStatus) return 'unknown';
 		if (user.lastActiveDate == null) return 'unknown';
 		const elapsed = Date.now() - user.lastActiveDate.getTime();
@@ -260,12 +260,12 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public getIdenticonUrl(user: User): string {
+	public getIdenticonUrl(user: MiUser): string {
 		return `${this.config.url}/identicon/${user.username.toLowerCase()}@${user.host ?? this.config.host}`;
 	}
 
 	@bindThis
-	public getUserUri(user: LocalUser | PartialLocalUser | RemoteUser | PartialRemoteUser): string {
+	public getUserUri(user: MiLocalUser | MiPartialLocalUser | MiRemoteUser | MiPartialRemoteUser): string {
 		return this.isRemoteUser(user)
 			? user.uri : this.genLocalUserUri(user.id);
 	}
@@ -276,12 +276,12 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	public async pack<ExpectsMe extends boolean | null = null, D extends boolean = false>(
-		src: User['id'] | User,
-		me?: { id: User['id']; } | null | undefined,
+		src: MiUser['id'] | MiUser,
+		me?: { id: MiUser['id']; } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,
-			userProfile?: UserProfile,
+			userProfile?: MiUserProfile,
 		},
 	): Promise<IsMeAndIsUserDetailed<ExpectsMe, D>> {
 		const opts = Object.assign({
@@ -311,7 +311,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const meId = me ? me.id : null;
 		const isMe = meId === user.id;
-		const iAmModerator = me ? await this.roleService.isModerator(me as User) : false;
+		const iAmModerator = me ? await this.roleService.isModerator(me as MiUser) : false;
 
 		const relation = meId && !isMe && opts.detail ? await this.getRelation(meId, user.id) : null;
 		const pins = opts.detail ? await this.userNotePiningsRepository.createQueryBuilder('pin')
@@ -491,8 +491,8 @@ export class UserEntityService implements OnModuleInit {
 	}
 
 	public packMany<D extends boolean = false>(
-		users: (User['id'] | User)[],
-		me?: { id: User['id'] } | null | undefined,
+		users: (MiUser['id'] | MiUser)[],
+		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: D,
 			includeSecrets?: boolean,

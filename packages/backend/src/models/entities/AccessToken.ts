@@ -5,11 +5,11 @@
 
 import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { App } from './App.js';
+import { MiUser } from './User.js';
+import { MiApp } from './App.js';
 
-@Entity()
-export class AccessToken {
+@Entity('access_token')
+export class MiAccessToken {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -44,25 +44,25 @@ export class AccessToken {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public appId: App['id'] | null;
+	public appId: MiApp['id'] | null;
 
-	@ManyToOne(type => App, {
+	@ManyToOne(type => MiApp, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public app: App | null;
+	public app: MiApp | null;
 
 	@Column('varchar', {
 		length: 128,

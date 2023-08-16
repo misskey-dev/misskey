@@ -6,7 +6,7 @@
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, PagesRepository } from '@/models/index.js';
-import type { Page } from '@/models/entities/Page.js';
+import type { MiPage } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -58,7 +58,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private pageEntityService: PageEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let page: Page | null = null;
+			let page: MiPage | null = null;
 
 			if (ps.pageId) {
 				page = await this.pagesRepository.findOneBy({ id: ps.pageId });
