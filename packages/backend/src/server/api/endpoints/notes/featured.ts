@@ -67,9 +67,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 					new Brackets(qb => {
 						qb.where('note.text NOT LIKE \'%おはよう%\'')
 							.andWhere('note.text NOT LIKE \'%:ohayo_nirila_misskey:%\'')
+							.andWhere('note.text NOT LIKE \'%おやすみ%\'')
+							.andWhere('note.text NOT LIKE \'%:oyasumi_nirila_misskey:%\'')
 							.andWhere(new Brackets(qb => {
 								qb.where('note.cw NOT LIKE \'%おはよう%\'')
 									.andWhere('note.cw NOT LIKE \'%:ohayo_nirila_misskey:%\'')
+									.andWhere('note.cw NOT LIKE \'%おやすみ%\'')
+									.andWhere('note.cw NOT LIKE \'%:oyasumi_nirila_misskey:%\'')
 									.orWhere('note.cw IS NULL');
 							}))
 							.orWhere('note.fileIds != \'{}\'');

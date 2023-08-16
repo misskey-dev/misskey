@@ -15,6 +15,7 @@
 ## 13.14.2-kinel.4 (unreleased)
 
 ### General
+- ハイライトからテキストのみのおやすみnoteを除外するようになりました
 
 ### Client
 
