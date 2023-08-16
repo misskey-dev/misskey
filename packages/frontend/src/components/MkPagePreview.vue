@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkA :to="`/@${page.user.username}/pages/${page.name}`" class="vhpxefrj" tabindex="-1">
 	<div v-if="page.eyeCatchingImage" class="thumbnail" :style="`background-image: url('${page.eyeCatchingImage.thumbnailUrl}')`"></div>

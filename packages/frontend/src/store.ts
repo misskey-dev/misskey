@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { markRaw, ref } from 'vue';
 import { Storage } from './pizzax';
 
@@ -81,6 +86,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	keepOriginalUploading: {
 		where: 'account',
 		default: false,
+	},
+	imageCompressionMode: {
+		where: 'account',
+		default: 'resizeCompress' as 'resizeCompress' | 'noResizeCompress' | 'resizeCompressLossy' | 'noResizeCompressLossy' | null,
 	},
 	memo: {
 		where: 'account',

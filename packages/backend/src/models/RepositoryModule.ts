@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, RenoteMuting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelFavorite, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment, ClipFavorite, UserMemo, UserListFavorite } from './index.js';

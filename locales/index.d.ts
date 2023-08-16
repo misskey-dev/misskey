@@ -767,6 +767,7 @@ export interface Locale {
     "publish": string;
     "inChannelSearch": string;
     "useReactionPickerForContextMenu": string;
+    "collapseSensitiveChannel": string;
     "typingUsers": string;
     "jumpToSpecifiedDate": string;
     "showingPastTimeline": string;
@@ -1098,6 +1099,22 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "dialog": string;
+    "icon": string;
+    "forYou": string;
+    "currentAnnouncements": string;
+    "pastAnnouncements": string;
+    "youHaveUnreadAnnouncements": string;
+    "_announcement": {
+        "forExistingUsers": string;
+        "forExistingUsersDescription": string;
+        "needConfirmationToRead": string;
+        "needConfirmationToReadDescription": string;
+        "end": string;
+        "tooManyActiveAnnouncementDescription": string;
+        "readConfirmTitle": string;
+        "readConfirmText": string;
+    };
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -2182,6 +2199,14 @@ export interface Locale {
             "usersLabel": string;
             "usersCaption": string;
         };
+    };
+    "_imageCompressionMode": {
+        "title": string;
+        "description": string;
+        "resizeCompress": string;
+        "noResizeCompress": string;
+        "resizeCompressLossy": string;
+        "noResizeCompressLossy": string;
     };
 }
 declare const locales: {
