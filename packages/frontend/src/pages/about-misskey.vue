@@ -92,7 +92,7 @@
 							<span :class="$style.contributorUsername">@Sayamame-beans</span>
 						</a>
 					</div>
-					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allForkContributors }}</MkLink></template>
+					<template #caption><MkLink url="https://github.com/niri-la/misskey.niri.la/graphs/contributors">{{ i18n.ts._aboutMisskey.allForkContributors }}</MkLink></template>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
