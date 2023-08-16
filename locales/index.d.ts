@@ -120,6 +120,7 @@ export interface Locale {
     "you": string;
     "clickToShow": string;
     "sensitive": string;
+    "sensitiveChannelAutoCW": string;
     "add": string;
     "reaction": string;
     "reactions": string;
