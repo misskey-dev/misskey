@@ -11,7 +11,7 @@ import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
 import accepts from 'accepts';
 import vary from 'vary';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository } from '@/models/index.js';
+import type { MiFollowingsRepository, MiNotesRepository, MiEmojisRepository, MiNoteReactionsRepository, MiUserProfilesRepository, MiUserNotePiningsRepository, MiUsersRepository, MiFollowRequestsRepository } from '@/models/index.js';
 import * as url from '@/misc/prelude/url.js';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -39,28 +39,28 @@ export class ActivityPubServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
+		private noteReactionsRepository: MiNoteReactionsRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
+		private emojisRepository: MiEmojisRepository,
 
 		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: UserNotePiningsRepository,
+		private userNotePiningsRepository: MiUserNotePiningsRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: FollowRequestsRepository,
+		private followRequestsRepository: MiFollowRequestsRepository,
 
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,

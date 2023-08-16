@@ -5,7 +5,7 @@
 
 import { Brackets, In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, MutingsRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiMutingsRepository, MiPollsRepository, MiPollVotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -40,16 +40,16 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
+		private pollsRepository: MiPollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: PollVotesRepository,
+		private pollVotesRepository: MiPollVotesRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
+		private mutingsRepository: MiMutingsRepository,
 
 		private noteEntityService: NoteEntityService,
 	) {

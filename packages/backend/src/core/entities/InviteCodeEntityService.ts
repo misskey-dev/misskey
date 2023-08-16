@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository } from '@/models/index.js';
+import type { MiRegistrationTicketsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiUser } from '@/models/entities/User.js';
@@ -17,7 +17,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class InviteCodeEntityService {
 	constructor(
 		@Inject(DI.registrationTicketsRepository)
-		private registrationTicketsRepository: RegistrationTicketsRepository,
+		private registrationTicketsRepository: MiRegistrationTicketsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

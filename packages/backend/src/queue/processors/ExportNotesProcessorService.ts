@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiPollsRepository, MiUsersRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
@@ -27,13 +27,13 @@ export class ExportNotesProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
+		private pollsRepository: MiPollsRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,

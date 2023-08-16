@@ -6,7 +6,7 @@
 import { Brackets, In } from 'typeorm';
 import * as Redis from 'ioredis';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import type { MiNotesRepository } from '@/models/index.js';
 import { obsoleteNotificationTypes, notificationTypes } from '@/types.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
@@ -65,7 +65,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		private idService: IdService,
 		private notificationEntityService: NotificationEntityService,

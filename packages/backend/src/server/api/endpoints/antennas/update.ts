@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AntennasRepository, UserListsRepository } from '@/models/index.js';
+import type { MiAntennasRepository, MiUserListsRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -74,10 +74,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.antennasRepository)
-		private antennasRepository: AntennasRepository,
+		private antennasRepository: MiAntennasRepository,
 
 		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
+		private userListsRepository: MiUserListsRepository,
 
 		private antennaEntityService: AntennaEntityService,
 		private globalEventService: GlobalEventService,

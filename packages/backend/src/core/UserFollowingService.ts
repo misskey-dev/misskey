@@ -19,7 +19,7 @@ import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, FollowRequestsRepository, InstancesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MiFollowingsRepository, MiFollowRequestsRepository, MiInstancesRepository, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { bindThis } from '@/decorators.js';
@@ -56,19 +56,19 @@ export class UserFollowingService implements OnModuleInit {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: FollowRequestsRepository,
+		private followRequestsRepository: MiFollowRequestsRepository,
 
 		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
+		private instancesRepository: MiInstancesRepository,
 
 		private cacheService: CacheService,
 		private userEntityService: UserEntityService,

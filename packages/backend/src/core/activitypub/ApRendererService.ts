@@ -23,7 +23,7 @@ import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { MiUserKeypair } from '@/models/entities/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiUserProfilesRepository, MiNotesRepository, MiDriveFilesRepository, MiPollsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
@@ -38,19 +38,19 @@ export class ApRendererService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
+		private pollsRepository: MiPollsRepository,
 
 		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,

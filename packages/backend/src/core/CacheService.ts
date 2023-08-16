@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MiBlockingsRepository, MiChannelFollowingsRepository, MiFollowingsRepository, MiMutingsRepository, MiRenoteMutingsRepository, MiUserProfile, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
@@ -36,25 +36,25 @@ export class CacheService implements OnApplicationShutdown {
 		private redisForSub: Redis.Redis,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
+		private mutingsRepository: MiMutingsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+		private blockingsRepository: MiBlockingsRepository,
 
 		@Inject(DI.renoteMutingsRepository)
-		private renoteMutingsRepository: RenoteMutingsRepository,
+		private renoteMutingsRepository: MiRenoteMutingsRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
+		private channelFollowingsRepository: MiChannelFollowingsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

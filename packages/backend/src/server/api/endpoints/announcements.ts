@@ -9,7 +9,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { DI } from '@/di-symbols.js';
-import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/index.js';
+import type { MiAnnouncementReadsRepository, MiAnnouncementsRepository } from '@/models/index.js';
 
 export const meta = {
 	tags: ['meta'],
@@ -43,10 +43,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
+		private announcementsRepository: MiAnnouncementsRepository,
 
 		@Inject(DI.announcementReadsRepository)
-		private announcementReadsRepository: AnnouncementReadsRepository,
+		private announcementReadsRepository: MiAnnouncementReadsRepository,
 
 		private queryService: QueryService,
 		private announcementService: AnnouncementService,

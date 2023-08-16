@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
-import type { ChannelsRepository } from '@/models/index.js';
+import type { MiChannelsRepository } from '@/models/index.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
@@ -45,7 +45,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
+		private channelsRepository: MiChannelsRepository,
 
 		private channelEntityService: ChannelEntityService,
 		private queryService: QueryService,

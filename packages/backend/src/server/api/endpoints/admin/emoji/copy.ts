@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/index.js';
+import type { MiEmojisRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import { DI } from '@/di-symbols.js';
@@ -56,7 +56,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
+		private emojisRepository: MiEmojisRepository,
 
 		private emojiEntityService: EmojiEntityService,
 		private idService: IdService,

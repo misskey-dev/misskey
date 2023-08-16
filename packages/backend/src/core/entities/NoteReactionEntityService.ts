@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteReactionsRepository } from '@/models/index.js';
+import type { MiNoteReactionsRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -27,7 +27,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
+		private noteReactionsRepository: MiNoteReactionsRepository,
 
 		//private userEntityService: UserEntityService,
 		//private noteEntityService: NoteEntityService,

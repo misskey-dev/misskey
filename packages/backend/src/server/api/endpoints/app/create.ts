@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository } from '@/models/index.js';
+import type { MiAppsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { unique } from '@/misc/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
@@ -42,7 +42,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.appsRepository)
-		private appsRepository: AppsRepository,
+		private appsRepository: MiAppsRepository,
 
 		private appEntityService: AppEntityService,
 		private idService: IdService,

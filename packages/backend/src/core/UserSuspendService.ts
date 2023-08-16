@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Not, IsNull } from 'typeorm';
-import type { FollowingsRepository } from '@/models/index.js';
+import type { MiFollowingsRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -18,7 +18,7 @@ import { bindThis } from '@/decorators.js';
 export class UserSuspendService {
 	constructor(
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		private userEntityService: UserEntityService,
 		private queueService: QueueService,

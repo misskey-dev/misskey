@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MiDriveFile, DriveFilesRepository } from '@/models/index.js';
+import type { MiDriveFile, MiDriveFilesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -19,7 +19,7 @@ export class CleanRemoteFilesProcessorService {
 
 	constructor(
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		private driveService: DriveService,
 		private queueLoggerService: QueueLoggerService,

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { MiUsersRepository } from '@/models/index.js';
 import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { localUsernameSchema, passwordSchema } from '@/models/entities/User.js';
@@ -42,7 +42,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		private userEntityService: UserEntityService,
 		private signupService: SignupService,

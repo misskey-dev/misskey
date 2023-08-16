@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { NoteFavoritesRepository } from '@/models/index.js';
+import type { MiNoteFavoritesRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -54,7 +54,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteFavoritesRepository)
-		private noteFavoritesRepository: NoteFavoritesRepository,
+		private noteFavoritesRepository: MiNoteFavoritesRepository,
 
 		private idService: IdService,
 		private getterService: GetterService,

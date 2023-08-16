@@ -14,7 +14,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiNotesRepository, MiFollowingsRepository, MiPollsRepository, MiPollVotesRepository, MiNoteReactionsRepository, MiChannelsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -34,25 +34,25 @@ export class NoteEntityService implements OnModuleInit {
 		private moduleRef: ModuleRef,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
+		private pollsRepository: MiPollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: PollVotesRepository,
+		private pollVotesRepository: MiPollVotesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
+		private noteReactionsRepository: MiNoteReactionsRepository,
 
 		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
+		private channelsRepository: MiChannelsRepository,
 
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,

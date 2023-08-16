@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, MiRegistrationTicket } from '@/models/index.js';
+import type { MiRegistrationTicketsRepository, MiUsedUsernamesRepository, MiUserPendingsRepository, MiUserProfilesRepository, MiUsersRepository, MiRegistrationTicket } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
@@ -29,19 +29,19 @@ export class SignupApiService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.userPendingsRepository)
-		private userPendingsRepository: UserPendingsRepository,
+		private userPendingsRepository: MiUserPendingsRepository,
 
 		@Inject(DI.usedUsernamesRepository)
-		private usedUsernamesRepository: UsedUsernamesRepository,
+		private usedUsernamesRepository: MiUsedUsernamesRepository,
 
 		@Inject(DI.registrationTicketsRepository)
-		private registrationTicketsRepository: RegistrationTicketsRepository,
+		private registrationTicketsRepository: MiRegistrationTicketsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

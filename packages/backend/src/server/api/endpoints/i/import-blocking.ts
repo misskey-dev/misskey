@@ -8,7 +8,7 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueueService } from '@/core/QueueService.js';
 import { AccountMoveService } from '@/core/AccountMoveService.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { MiDriveFilesRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -62,7 +62,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		private queueService: QueueService,
 		private accountMoveService: AccountMoveService,

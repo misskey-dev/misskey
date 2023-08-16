@@ -9,7 +9,7 @@ import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UserSecurityKeysRepository, SigninsRepository, UserProfilesRepository, AttestationChallengesRepository, UsersRepository } from '@/models/index.js';
+import type { MiUserSecurityKeysRepository, MiSigninsRepository, MiUserProfilesRepository, MiAttestationChallengesRepository, MiUsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser } from '@/models/entities/User.js';
@@ -27,19 +27,19 @@ export class SigninApiService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: UserSecurityKeysRepository,
+		private userSecurityKeysRepository: MiUserSecurityKeysRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.attestationChallengesRepository)
-		private attestationChallengesRepository: AttestationChallengesRepository,
+		private attestationChallengesRepository: MiAttestationChallengesRepository,
 
 		@Inject(DI.signinsRepository)
-		private signinsRepository: SigninsRepository,
+		private signinsRepository: MiSigninsRepository,
 
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,

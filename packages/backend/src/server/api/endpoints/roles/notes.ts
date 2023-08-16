@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NotesRepository, RolesRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiRolesRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -58,10 +58,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.rolesRepository)
-		private rolesRepository: RolesRepository,
+		private rolesRepository: MiRolesRepository,
 
 		private idService: IdService,
 		private noteEntityService: NoteEntityService,

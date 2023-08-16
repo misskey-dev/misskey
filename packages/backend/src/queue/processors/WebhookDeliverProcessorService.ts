@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { DI } from '@/di-symbols.js';
-import type { WebhooksRepository } from '@/models/index.js';
+import type { MiWebhooksRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -24,7 +24,7 @@ export class WebhookDeliverProcessorService {
 		private config: Config,
 
 		@Inject(DI.webhooksRepository)
-		private webhooksRepository: WebhooksRepository,
+		private webhooksRepository: MiWebhooksRepository,
 
 		private httpRequestService: HttpRequestService,
 		private queueLoggerService: QueueLoggerService,

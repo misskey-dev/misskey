@@ -5,7 +5,7 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiFollowingsRepository, MiUserProfilesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
@@ -71,13 +71,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		private utilityService: UtilityService,
 		private followingEntityService: FollowingEntityService,

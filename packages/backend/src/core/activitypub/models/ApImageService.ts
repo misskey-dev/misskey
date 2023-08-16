@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { MiDriveFilesRepository } from '@/models/index.js';
 import type { MiRemoteUser } from '@/models/entities/User.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import { MetaService } from '@/core/MetaService.js';
@@ -25,7 +25,7 @@ export class ApImageService {
 
 	constructor(
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		private metaService: MetaService,
 		private apResolverService: ApResolverService,

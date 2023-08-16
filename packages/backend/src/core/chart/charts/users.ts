@@ -9,7 +9,7 @@ import type { MiUser } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { MiUsersRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
@@ -27,7 +27,7 @@ export default class UsersChart extends Chart<typeof schema> {
 		private db: DataSource,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		private appLockService: AppLockService,
 		private userEntityService: UserEntityService,

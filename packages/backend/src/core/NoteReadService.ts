@@ -12,7 +12,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { NoteUnreadsRepository, MutingsRepository, NoteThreadMutingsRepository } from '@/models/index.js';
+import type { MiNoteUnreadsRepository, MiMutingsRepository, MiNoteThreadMutingsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -21,13 +21,13 @@ export class NoteReadService implements OnApplicationShutdown {
 
 	constructor(
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: NoteUnreadsRepository,
+		private noteUnreadsRepository: MiNoteUnreadsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
+		private mutingsRepository: MiMutingsRepository,
 
 		@Inject(DI.noteThreadMutingsRepository)
-		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
+		private noteThreadMutingsRepository: MiNoteThreadMutingsRepository,
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,

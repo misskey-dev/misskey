@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserListFavoritesRepository, UserListsRepository } from '@/models/index.js';
+import type { MiUserListFavoritesRepository, MiUserListsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { ApiError } from '@/server/api/error.js';
 import { DI } from '@/di-symbols.js';
@@ -39,10 +39,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor (
 		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
+		private userListsRepository: MiUserListsRepository,
 
 		@Inject(DI.userListFavoritesRepository)
-		private userListFavoritesRepository: UserListFavoritesRepository,
+		private userListFavoritesRepository: MiUserListFavoritesRepository,
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

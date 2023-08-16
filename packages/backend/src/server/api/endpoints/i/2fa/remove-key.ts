@@ -6,7 +6,7 @@
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import type { MiUserProfilesRepository, MiUserSecurityKeysRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -31,10 +31,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: UserSecurityKeysRepository,
+		private userSecurityKeysRepository: MiUserSecurityKeysRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,

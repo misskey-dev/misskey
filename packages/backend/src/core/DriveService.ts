@@ -11,7 +11,7 @@ import { sharpBmp } from 'sharp-read-bmp';
 import { IsNull } from 'typeorm';
 import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
+import type { MiDriveFilesRepository, MiUsersRepository, MiDriveFoldersRepository, MiUserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
 import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
@@ -95,16 +95,16 @@ export class DriveService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		@Inject(DI.driveFoldersRepository)
-		private driveFoldersRepository: DriveFoldersRepository,
+		private driveFoldersRepository: MiDriveFoldersRepository,
 
 		private fileInfoService: FileInfoService,
 		private userEntityService: UserEntityService,

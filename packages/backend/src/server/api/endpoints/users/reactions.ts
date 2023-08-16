@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, NoteReactionsRepository } from '@/models/index.js';
+import type { MiUserProfilesRepository, MiNoteReactionsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
@@ -55,10 +55,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
+		private noteReactionsRepository: MiNoteReactionsRepository,
 
 		private noteReactionEntityService: NoteReactionEntityService,
 		private queryService: QueryService,

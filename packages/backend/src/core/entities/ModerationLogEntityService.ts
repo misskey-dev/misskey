@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ModerationLogsRepository } from '@/models/index.js';
+import type { MiModerationLogsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiModerationLog } from '@/models/entities/ModerationLog.js';
@@ -16,7 +16,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class ModerationLogEntityService {
 	constructor(
 		@Inject(DI.moderationLogsRepository)
-		private moderationLogsRepository: ModerationLogsRepository,
+		private moderationLogsRepository: MiModerationLogsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

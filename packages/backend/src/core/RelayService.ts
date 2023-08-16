@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
-import type { RelaysRepository, UsersRepository } from '@/models/index.js';
+import type { MiRelaysRepository, MiUsersRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import { MemorySingleCache } from '@/misc/cache.js';
 import type { MiRelay } from '@/models/entities/Relay.js';
@@ -25,10 +25,10 @@ export class RelayService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.relaysRepository)
-		private relaysRepository: RelaysRepository,
+		private relaysRepository: MiRelaysRepository,
 
 		private idService: IdService,
 		private queueService: QueueService,

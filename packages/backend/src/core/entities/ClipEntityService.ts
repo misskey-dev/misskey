@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/index.js';
+import type { MiClipFavoritesRepository, MiClipsRepository, MiUser } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -17,10 +17,10 @@ import { UserEntityService } from './UserEntityService.js';
 export class ClipEntityService {
 	constructor(
 		@Inject(DI.clipsRepository)
-		private clipsRepository: ClipsRepository,
+		private clipsRepository: MiClipsRepository,
 
 		@Inject(DI.clipFavoritesRepository)
-		private clipFavoritesRepository: ClipFavoritesRepository,
+		private clipFavoritesRepository: MiClipFavoritesRepository,
 
 		private userEntityService: UserEntityService,
 	) {

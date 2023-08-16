@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MiDriveFilesRepository, MiNotesRepository, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
@@ -24,16 +24,16 @@ export class DeleteAccountProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		private driveService: DriveService,
 		private emailService: EmailService,

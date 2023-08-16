@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FlashsRepository, FlashLikesRepository } from '@/models/index.js';
+import type { MiFlashsRepository, MiFlashLikesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -18,10 +18,10 @@ import { UserEntityService } from './UserEntityService.js';
 export class FlashEntityService {
 	constructor(
 		@Inject(DI.flashsRepository)
-		private flashsRepository: FlashsRepository,
+		private flashsRepository: MiFlashsRepository,
 
 		@Inject(DI.flashLikesRepository)
-		private flashLikesRepository: FlashLikesRepository,
+		private flashLikesRepository: MiFlashLikesRepository,
 
 		private userEntityService: UserEntityService,
 	) {

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, AbuseUserReportsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiAbuseUserReportsRepository } from '@/models/index.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -34,10 +34,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: AbuseUserReportsRepository,
+		private abuseUserReportsRepository: MiAbuseUserReportsRepository,
 
 		private queueService: QueueService,
 		private instanceActorService: InstanceActorService,

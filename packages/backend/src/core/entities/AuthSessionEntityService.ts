@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AuthSessionsRepository } from '@/models/index.js';
+import type { MiAuthSessionsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiAuthSession } from '@/models/entities/AuthSession.js';
 import type { MiUser } from '@/models/entities/User.js';
@@ -16,7 +16,7 @@ import { AppEntityService } from './AppEntityService.js';
 export class AuthSessionEntityService {
 	constructor(
 		@Inject(DI.authSessionsRepository)
-		private authSessionsRepository: AuthSessionsRepository,
+		private authSessionsRepository: MiAuthSessionsRepository,
 
 		private appEntityService: AppEntityService,
 	) {

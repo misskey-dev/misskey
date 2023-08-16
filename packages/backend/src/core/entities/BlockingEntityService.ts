@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { BlockingsRepository } from '@/models/index.js';
+import type { MiBlockingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiBlocking } from '@/models/entities/Blocking.js';
@@ -17,7 +17,7 @@ import { UserEntityService } from './UserEntityService.js';
 export class BlockingEntityService {
 	constructor(
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+		private blockingsRepository: MiBlockingsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

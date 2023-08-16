@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository } from '@/models/index.js';
+import type { MiGalleryLikesRepository } from '@/models/index.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiGalleryLike } from '@/models/entities/GalleryLike.js';
 import { bindThis } from '@/decorators.js';
@@ -15,7 +15,7 @@ import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 export class GalleryLikeEntityService {
 	constructor(
 		@Inject(DI.galleryLikesRepository)
-		private galleryLikesRepository: GalleryLikesRepository,
+		private galleryLikesRepository: MiGalleryLikesRepository,
 
 		private galleryPostEntityService: GalleryPostEntityService,
 	) {

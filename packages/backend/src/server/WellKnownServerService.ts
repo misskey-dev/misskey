@@ -8,7 +8,7 @@ import { IsNull } from 'typeorm';
 import vary from 'vary';
 import fastifyAccepts from '@fastify/accepts';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { MiUsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
 import type { MiUser } from '@/models/entities/User.js';
@@ -26,7 +26,7 @@ export class WellKnownServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		private nodeinfoServerService: NodeinfoServerService,
 		private userEntityService: UserEntityService,

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RegistrationTicketsRepository } from '@/models/index.js';
+import type { MiRegistrationTicketsRepository } from '@/models/index.js';
 import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -39,7 +39,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.registrationTicketsRepository)
-		private registrationTicketsRepository: RegistrationTicketsRepository,
+		private registrationTicketsRepository: MiRegistrationTicketsRepository,
 
 		private roleService: RoleService,
 	) {

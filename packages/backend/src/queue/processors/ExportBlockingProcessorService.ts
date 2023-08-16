@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository, MiBlocking } from '@/models/index.js';
+import type { MiUsersRepository, MiBlockingsRepository, MiBlocking } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
@@ -24,10 +24,10 @@ export class ExportBlockingProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+		private blockingsRepository: MiBlockingsRepository,
 
 		private utilityService: UtilityService,
 		private driveService: DriveService,

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFoldersRepository } from '@/models/index.js';
+import type { MiDriveFoldersRepository } from '@/models/index.js';
 import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -42,7 +42,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.driveFoldersRepository)
-		private driveFoldersRepository: DriveFoldersRepository,
+		private driveFoldersRepository: MiDriveFoldersRepository,
 
 		private driveFolderEntityService: DriveFolderEntityService,
 	) {

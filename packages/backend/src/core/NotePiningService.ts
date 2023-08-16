@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiUserNotePiningsRepository, MiUsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiNote } from '@/models/entities/Note.js';
@@ -26,13 +26,13 @@ export class NotePiningService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: UserNotePiningsRepository,
+		private userNotePiningsRepository: MiUserNotePiningsRepository,
 
 		private userEntityService: UserEntityService,
 		private idService: IdService,

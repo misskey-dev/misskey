@@ -12,7 +12,7 @@ import fastifyStatic from '@fastify/static';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { EmojisRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MiEmojisRepository, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -44,13 +44,13 @@ export class ServerService implements OnApplicationShutdown {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
+		private emojisRepository: MiEmojisRepository,
 
 		private metaService: MetaService,
 		private userEntityService: UserEntityService,

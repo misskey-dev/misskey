@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/index.js';
+import type { MiRoleAssignmentsRepository, MiRolesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
@@ -42,10 +42,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.rolesRepository)
-		private rolesRepository: RolesRepository,
+		private rolesRepository: MiRolesRepository,
 
 		@Inject(DI.roleAssignmentsRepository)
-		private roleAssignmentsRepository: RoleAssignmentsRepository,
+		private roleAssignmentsRepository: MiRoleAssignmentsRepository,
 
 		private queryService: QueryService,
 		private userEntityService: UserEntityService,

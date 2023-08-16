@@ -9,7 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
-import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiDriveFilesRepository, MiUserProfilesRepository, MiPagesRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
 import type { MiUserProfile } from '@/models/entities/UserProfile.js';
@@ -175,16 +175,16 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
+		private pagesRepository: MiPagesRepository,
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,

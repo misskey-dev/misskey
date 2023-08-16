@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository } from '@/models/index.js';
+import type { MiAntennasRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiAntenna } from '@/models/entities/Antenna.js';
 import { bindThis } from '@/decorators.js';
@@ -14,7 +14,7 @@ import { bindThis } from '@/decorators.js';
 export class AntennaEntityService {
 	constructor(
 		@Inject(DI.antennasRepository)
-		private antennasRepository: AntennasRepository,
+		private antennasRepository: MiAntennasRepository,
 	) {
 	}
 

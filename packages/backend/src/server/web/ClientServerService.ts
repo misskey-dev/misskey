@@ -31,7 +31,7 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { MiChannelsRepository, MiClipsRepository, MiFlashsRepository, MiGalleryPostsRepository, MiMeta, MiNotesRepository, MiPagesRepository, MiUserProfilesRepository, MiUsersRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
@@ -61,28 +61,28 @@ export class ClientServerService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.galleryPostsRepository)
-		private galleryPostsRepository: GalleryPostsRepository,
+		private galleryPostsRepository: MiGalleryPostsRepository,
 
 		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
+		private channelsRepository: MiChannelsRepository,
 
 		@Inject(DI.clipsRepository)
-		private clipsRepository: ClipsRepository,
+		private clipsRepository: MiClipsRepository,
 
 		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
+		private pagesRepository: MiPagesRepository,
 
 		@Inject(DI.flashsRepository)
-		private flashsRepository: FlashsRepository,
+		private flashsRepository: MiFlashsRepository,
 
 		private flashEntityService: FlashEntityService,
 		private userEntityService: UserEntityService,

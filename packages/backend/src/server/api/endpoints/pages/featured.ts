@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { PagesRepository } from '@/models/index.js';
+import type { MiPagesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -36,7 +36,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
+		private pagesRepository: MiPagesRepository,
 
 		private pageEntityService: PageEntityService,
 	) {

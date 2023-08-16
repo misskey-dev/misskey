@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PollsRepository, PollVotesRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiPollsRepository, MiPollVotesRepository } from '@/models/index.js';
 import type { MiRemoteUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -81,13 +81,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
+		private pollsRepository: MiPollsRepository,
 
 		@Inject(DI.pollVotesRepository)
-		private pollVotesRepository: PollVotesRepository,
+		private pollVotesRepository: MiPollVotesRepository,
 
 		private idService: IdService,
 		private getterService: GetterService,

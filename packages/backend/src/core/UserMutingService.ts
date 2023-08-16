@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { MutingsRepository, MiMuting } from '@/models/index.js';
+import type { MiMutingsRepository, MiMuting } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
@@ -16,7 +16,7 @@ import { CacheService } from '@/core/CacheService.js';
 export class UserMutingService {
 	constructor(
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
+		private mutingsRepository: MiMutingsRepository,
 
 		private idService: IdService,
 		private cacheService: CacheService,

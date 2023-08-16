@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GalleryPostsRepository } from '@/models/index.js';
+import type { MiGalleryPostsRepository } from '@/models/index.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -36,7 +36,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.galleryPostsRepository)
-		private galleryPostsRepository: GalleryPostsRepository,
+		private galleryPostsRepository: MiGalleryPostsRepository,
 
 		private galleryPostEntityService: GalleryPostEntityService,
 	) {

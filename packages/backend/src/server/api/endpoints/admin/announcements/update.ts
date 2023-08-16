@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
+import type { MiAnnouncementsRepository } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -45,7 +45,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
+		private announcementsRepository: MiAnnouncementsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });

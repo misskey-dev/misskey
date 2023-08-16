@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiUserListsRepository, MiUserListJoiningsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -63,13 +63,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
+		private userListsRepository: MiUserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		private userListJoiningsRepository: MiUserListJoiningsRepository,
 
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ChannelFavoritesRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, NoteUnreadsRepository, NotesRepository } from '@/models/index.js';
+import type { MiChannelFavoritesRepository, MiChannelFollowingsRepository, MiChannelsRepository, MiDriveFilesRepository, MiNoteUnreadsRepository, MiNotesRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiUser } from '@/models/entities/User.js';
@@ -19,22 +19,22 @@ import { In } from 'typeorm';
 export class ChannelEntityService {
 	constructor(
 		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
+		private channelsRepository: MiChannelsRepository,
 
 		@Inject(DI.channelFollowingsRepository)
-		private channelFollowingsRepository: ChannelFollowingsRepository,
+		private channelFollowingsRepository: MiChannelFollowingsRepository,
 
 		@Inject(DI.channelFavoritesRepository)
-		private channelFavoritesRepository: ChannelFavoritesRepository,
+		private channelFavoritesRepository: MiChannelFavoritesRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: NoteUnreadsRepository,
+		private noteUnreadsRepository: MiNoteUnreadsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		private noteEntityService: NoteEntityService,
 		private driveFileEntityService: DriveFileEntityService,

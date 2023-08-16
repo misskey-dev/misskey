@@ -6,7 +6,7 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
+import type { MiAppsRepository, MiAuthSessionsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -58,10 +58,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 
 		@Inject(DI.appsRepository)
-		private appsRepository: AppsRepository,
+		private appsRepository: MiAppsRepository,
 
 		@Inject(DI.authSessionsRepository)
-		private authSessionsRepository: AuthSessionsRepository,
+		private authSessionsRepository: MiAuthSessionsRepository,
 
 		private idService: IdService,
 	) {

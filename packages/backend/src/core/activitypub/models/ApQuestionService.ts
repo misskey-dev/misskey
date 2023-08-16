@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiPollsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { IPoll } from '@/models/entities/Poll.js';
 import type Logger from '@/logger.js';
@@ -25,10 +25,10 @@ export class ApQuestionService {
 		private config: Config,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.pollsRepository)
-		private pollsRepository: PollsRepository,
+		private pollsRepository: MiPollsRepository,
 
 		private apResolverService: ApResolverService,
 		private apLoggerService: ApLoggerService,

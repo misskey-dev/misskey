@@ -24,7 +24,7 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiNotesRepository, MiFollowingsRepository, MiAbuseUserReportsRepository, MiFollowRequestsRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/entities/User.js';
 import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
@@ -47,19 +47,19 @@ export class ApInboxService {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		@Inject(DI.abuseUserReportsRepository)
-		private abuseUserReportsRepository: AbuseUserReportsRepository,
+		private abuseUserReportsRepository: MiAbuseUserReportsRepository,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: FollowRequestsRepository,
+		private followRequestsRepository: MiFollowRequestsRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,

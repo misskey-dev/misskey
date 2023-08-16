@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { WebhooksRepository } from '@/models/index.js';
+import type { MiWebhooksRepository } from '@/models/index.js';
 import type { MiWebhook } from '@/models/entities/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -22,7 +22,7 @@ export class WebhookService implements OnApplicationShutdown {
 		private redisForSub: Redis.Redis,
 
 		@Inject(DI.webhooksRepository)
-		private webhooksRepository: WebhooksRepository,
+		private webhooksRepository: MiWebhooksRepository,
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 		this.redisForSub.on('message', this.onMessage);

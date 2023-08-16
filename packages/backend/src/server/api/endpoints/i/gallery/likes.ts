@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GalleryLikesRepository } from '@/models/index.js';
+import type { MiGalleryLikesRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { GalleryLikeEntityService } from '@/core/entities/GalleryLikeEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -54,7 +54,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.galleryLikesRepository)
-		private galleryLikesRepository: GalleryLikesRepository,
+		private galleryLikesRepository: MiGalleryLikesRepository,
 
 		private galleryLikeEntityService: GalleryLikeEntityService,
 		private queryService: QueryService,

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { MiUserProfilesRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
@@ -91,7 +91,7 @@ export const ACHIEVEMENT_TYPES = [
 export class AchievementService {
 	constructor(
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		private notificationService: NotificationService,
 	) {

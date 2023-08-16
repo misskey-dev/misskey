@@ -15,7 +15,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
 import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, localUsernameSchema, locationSchema, nameSchema, passwordSchema } from '@/models/entities/User.js';
-import type { UsersRepository, UserSecurityKeysRepository, FollowingsRepository, FollowRequestsRepository, BlockingsRepository, MutingsRepository, DriveFilesRepository, NoteUnreadsRepository, UserNotePiningsRepository, UserProfilesRepository, AnnouncementReadsRepository, AnnouncementsRepository, MiUserProfile, RenoteMutingsRepository, UserMemoRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiUserSecurityKeysRepository, MiFollowingsRepository, MiFollowRequestsRepository, MiBlockingsRepository, MiMutingsRepository, MiDriveFilesRepository, MiNoteUnreadsRepository, MiUserNotePiningsRepository, MiUserProfilesRepository, MiAnnouncementReadsRepository, MiAnnouncementsRepository, MiUserProfile, MiRenoteMutingsRepository, MiUserMemoRepository } from '@/models/index.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
@@ -71,46 +71,46 @@ export class UserEntityService implements OnModuleInit {
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: UserSecurityKeysRepository,
+		private userSecurityKeysRepository: MiUserSecurityKeysRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		@Inject(DI.followRequestsRepository)
-		private followRequestsRepository: FollowRequestsRepository,
+		private followRequestsRepository: MiFollowRequestsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+		private blockingsRepository: MiBlockingsRepository,
 
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
+		private mutingsRepository: MiMutingsRepository,
 
 		@Inject(DI.renoteMutingsRepository)
-		private renoteMutingsRepository: RenoteMutingsRepository,
+		private renoteMutingsRepository: MiRenoteMutingsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		@Inject(DI.noteUnreadsRepository)
-		private noteUnreadsRepository: NoteUnreadsRepository,
+		private noteUnreadsRepository: MiNoteUnreadsRepository,
 
 		@Inject(DI.userNotePiningsRepository)
-		private userNotePiningsRepository: UserNotePiningsRepository,
+		private userNotePiningsRepository: MiUserNotePiningsRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.announcementReadsRepository)
-		private announcementReadsRepository: AnnouncementReadsRepository,
+		private announcementReadsRepository: MiAnnouncementReadsRepository,
 
 		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
+		private announcementsRepository: MiAnnouncementsRepository,
 
 		@Inject(DI.userMemosRepository)
-		private userMemosRepository: UserMemoRepository,
+		private userMemosRepository: MiUserMemoRepository,
 
 		//private noteEntityService: NoteEntityService,
 		//private driveFileEntityService: DriveFileEntityService,

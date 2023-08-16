@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { MiUsersRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { RelayService } from '@/core/RelayService.js';
@@ -17,7 +17,7 @@ import { bindThis } from '@/decorators.js';
 export class AccountUpdateService {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		private userEntityService: UserEntityService,
 		private apRendererService: ApRendererService,

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, DriveFilesRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiDriveFilesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -24,10 +24,10 @@ export class ImportMutingProcessorService {
 
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		private utilityService: UtilityService,
 		private userMutingService: UserMutingService,

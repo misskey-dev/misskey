@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { format as DateFormat } from 'date-fns';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, MiUser } from '@/models/index.js';
+import type { MiAntennasRepository, MiUsersRepository, MiUserListJoiningsRepository, MiUser } from '@/models/index.js';
 import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -24,13 +24,13 @@ export class ExportAntennasProcessorService {
 
 	constructor (
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.antennasRepository)
-		private antennsRepository: AntennasRepository,
+		private antennsRepository: MiAntennasRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		private userListJoiningsRepository: MiUserListJoiningsRepository,
 
 		private driveService: DriveService,
 		private utilityService: UtilityService,

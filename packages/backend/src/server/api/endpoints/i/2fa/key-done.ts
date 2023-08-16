@@ -13,7 +13,7 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { TwoFactorAuthenticationService } from '@/core/TwoFactorAuthenticationService.js';
-import type { AttestationChallengesRepository, UserProfilesRepository, UserSecurityKeysRepository } from '@/models/index.js';
+import type { MiAttestationChallengesRepository, MiUserProfilesRepository, MiUserSecurityKeysRepository } from '@/models/index.js';
 
 const cborDecodeFirst = promisify(cbor.decodeFirst) as any;
 
@@ -43,13 +43,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 
 		@Inject(DI.userSecurityKeysRepository)
-		private userSecurityKeysRepository: UserSecurityKeysRepository,
+		private userSecurityKeysRepository: MiUserSecurityKeysRepository,
 
 		@Inject(DI.attestationChallengesRepository)
-		private attestationChallengesRepository: AttestationChallengesRepository,
+		private attestationChallengesRepository: MiAttestationChallengesRepository,
 
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,

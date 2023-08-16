@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { RolesRepository } from '@/models/index.js';
+import type { MiRolesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
@@ -37,7 +37,7 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.rolesRepository)
-		private rolesRepository: RolesRepository,
+		private rolesRepository: MiRolesRepository,
 
 		private roleEntityService: RoleEntityService,
 	) {

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, MutedNotesRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/index.js';
+import type { MiAntennasRepository, MiMutedNotesRepository, MiRoleAssignmentsRepository, MiUserIpsRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -19,16 +19,16 @@ export class CleanProcessorService {
 
 	constructor(
 		@Inject(DI.userIpsRepository)
-		private userIpsRepository: UserIpsRepository,
+		private userIpsRepository: MiUserIpsRepository,
 
 		@Inject(DI.mutedNotesRepository)
-		private mutedNotesRepository: MutedNotesRepository,
+		private mutedNotesRepository: MiMutedNotesRepository,
 
 		@Inject(DI.antennasRepository)
-		private antennasRepository: AntennasRepository,
+		private antennasRepository: MiAntennasRepository,
 
 		@Inject(DI.roleAssignmentsRepository)
-		private roleAssignmentsRepository: RoleAssignmentsRepository,
+		private roleAssignmentsRepository: MiRoleAssignmentsRepository,
 
 		private queueLoggerService: QueueLoggerService,
 		private idService: IdService,

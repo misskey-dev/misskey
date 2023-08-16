@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { MiNotesRepository, MiUserPublickeysRepository, MiUsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MemoryKVCache } from '@/misc/cache.js';
 import type { MiUserPublickey } from '@/models/entities/UserPublickey.js';
@@ -43,13 +43,13 @@ export class ApDbResolverService implements OnApplicationShutdown {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.userPublickeysRepository)
-		private userPublickeysRepository: UserPublickeysRepository,
+		private userPublickeysRepository: MiUserPublickeysRepository,
 
 		private cacheService: CacheService,
 		private apPersonService: ApPersonService,

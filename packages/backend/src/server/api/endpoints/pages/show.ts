@@ -5,7 +5,7 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PagesRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiPagesRepository } from '@/models/index.js';
 import type { MiPage } from '@/models/entities/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
@@ -50,10 +50,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
+		private pagesRepository: MiPagesRepository,
 
 		private pageEntityService: PageEntityService,
 	) {

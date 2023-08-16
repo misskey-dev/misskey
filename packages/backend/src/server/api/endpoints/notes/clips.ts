@@ -5,7 +5,7 @@
 
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { MiClipNotesRepository, MiClipsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -49,10 +49,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.clipsRepository)
-		private clipsRepository: ClipsRepository,
+		private clipsRepository: MiClipsRepository,
 
 		@Inject(DI.clipNotesRepository)
-		private clipNotesRepository: ClipNotesRepository,
+		private clipNotesRepository: MiClipNotesRepository,
 
 		private clipEntityService: ClipEntityService,
 		private getterService: GetterService,

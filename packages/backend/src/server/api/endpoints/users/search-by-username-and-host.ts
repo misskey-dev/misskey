@@ -5,7 +5,7 @@
 
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiFollowingsRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/entities/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -54,10 +54,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private config: Config,
 
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		private userEntityService: UserEntityService,
 	) {

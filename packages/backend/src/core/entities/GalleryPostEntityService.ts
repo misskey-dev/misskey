@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/index.js';
+import type { MiGalleryLikesRepository, MiGalleryPostsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
@@ -19,10 +19,10 @@ import { DriveFileEntityService } from './DriveFileEntityService.js';
 export class GalleryPostEntityService {
 	constructor(
 		@Inject(DI.galleryPostsRepository)
-		private galleryPostsRepository: GalleryPostsRepository,
+		private galleryPostsRepository: MiGalleryPostsRepository,
 
 		@Inject(DI.galleryLikesRepository)
-		private galleryLikesRepository: GalleryLikesRepository,
+		private galleryLikesRepository: MiGalleryLikesRepository,
 
 		private userEntityService: UserEntityService,
 		private driveFileEntityService: DriveFileEntityService,

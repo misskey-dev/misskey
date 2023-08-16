@@ -5,7 +5,7 @@
 
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
+import type { MiFollowingsRepository, MiInstancesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
@@ -33,10 +33,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
+		private instancesRepository: MiInstancesRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		private instanceEntityService: InstanceEntityService,
 	) {

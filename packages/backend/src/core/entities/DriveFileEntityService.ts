@@ -6,7 +6,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository } from '@/models/index.js';
+import type { MiDriveFilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
@@ -35,7 +35,7 @@ export class DriveFileEntityService {
 		private config: Config,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		// 循環参照のため / for circular dependency
 		@Inject(forwardRef(() => UserEntityService))

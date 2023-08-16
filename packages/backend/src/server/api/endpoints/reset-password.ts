@@ -5,7 +5,7 @@
 
 import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, PasswordResetRequestsRepository } from '@/models/index.js';
+import type { MiUserProfilesRepository, MiPasswordResetRequestsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 
@@ -35,10 +35,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.passwordResetRequestsRepository)
-		private passwordResetRequestsRepository: PasswordResetRequestsRepository,
+		private passwordResetRequestsRepository: MiPasswordResetRequestsRepository,
 
 		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
+		private userProfilesRepository: MiUserProfilesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const req = await this.passwordResetRequestsRepository.findOneByOrFail({

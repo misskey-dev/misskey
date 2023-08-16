@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository } from '@/models/index.js';
+import type { MiMutingsRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
@@ -19,7 +19,7 @@ export class CheckExpiredMutingsProcessorService {
 
 	constructor(
 		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
+		private mutingsRepository: MiMutingsRepository,
 
 		private userMutingService: UserMutingService,
 		private queueLoggerService: QueueLoggerService,

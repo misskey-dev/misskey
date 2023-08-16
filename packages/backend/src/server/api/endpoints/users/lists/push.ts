@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/index.js';
+import type { MiUserListsRepository, MiUserListJoiningsRepository, MiBlockingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserListService } from '@/core/UserListService.js';
@@ -75,13 +75,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
+		private userListsRepository: MiUserListsRepository,
 
 		@Inject(DI.userListJoiningsRepository)
-		private userListJoiningsRepository: UserListJoiningsRepository,
+		private userListJoiningsRepository: MiUserListJoiningsRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+		private blockingsRepository: MiBlockingsRepository,
 
 		private getterService: GetterService,
 		private userListService: UserListService,

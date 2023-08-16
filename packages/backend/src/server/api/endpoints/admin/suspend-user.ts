@@ -6,7 +6,7 @@
 import { IsNull, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiFollowingsRepository } from '@/models/index.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -36,10 +36,10 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
+		private followingsRepository: MiFollowingsRepository,
 
 		private userSuspendService: UserSuspendService,
 		private roleService: RoleService,

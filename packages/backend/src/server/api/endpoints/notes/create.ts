@@ -7,7 +7,7 @@ import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { MiUser } from '@/models/entities/User.js';
-import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
+import type { MiUsersRepository, MiNotesRepository, MiBlockingsRepository, MiDriveFilesRepository, MiChannelsRepository } from '@/models/index.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiNote } from '@/models/entities/Note.js';
 import type { MiChannel } from '@/models/entities/Channel.js';
@@ -167,19 +167,19 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
+		private usersRepository: MiUsersRepository,
 
 		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
+		private notesRepository: MiNotesRepository,
 
 		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
+		private blockingsRepository: MiBlockingsRepository,
 
 		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
+		private driveFilesRepository: MiDriveFilesRepository,
 
 		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
+		private channelsRepository: MiChannelsRepository,
 
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,

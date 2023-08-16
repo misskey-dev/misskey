@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository, AccessTokensRepository, AuthSessionsRepository } from '@/models/index.js';
+import type { MiAppsRepository, MiAccessTokensRepository, MiAuthSessionsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -67,13 +67,13 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.appsRepository)
-		private appsRepository: AppsRepository,
+		private appsRepository: MiAppsRepository,
 
 		@Inject(DI.authSessionsRepository)
-		private authSessionsRepository: AuthSessionsRepository,
+		private authSessionsRepository: MiAuthSessionsRepository,
 
 		@Inject(DI.accessTokensRepository)
-		private accessTokensRepository: AccessTokensRepository,
+		private accessTokensRepository: MiAccessTokensRepository,
 
 		private userEntityService: UserEntityService,
 	) {
