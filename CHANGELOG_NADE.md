@@ -8,6 +8,11 @@
 
 ### Server
 -->
+
+## nade 1.1.1
+### General
+- Dockerイメージにてjemallocを利用するように変更
+
 ## nade 1.1.0
 ### General
 
