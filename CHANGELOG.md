@@ -12,7 +12,7 @@
 
 -->
 
-## 13.14.2-kinel.4 (unreleased)
+## 13.14.2-kinel.4
 
 ### General
 - お知らせ機能の強化
