@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { loadConfig } from '@/config.js';
-import { User, UsersRepository } from '@/models/index.js';
+import { MiUser, UsersRepository } from '@/models/index.js';
 import { jobQueue } from '@/boot/common.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { uploadFile, signup, startServer, initTestDb, api, sleep, successfulApiCall } from '../utils.js';
@@ -42,7 +42,7 @@ describe('Account Move', () => {
 		dave = await signup({ username: 'dave' });
 		eve = await signup({ username: 'eve' });
 		frank = await signup({ username: 'frank' });
-		Users = connection.getRepository(User);
+		Users = connection.getRepository(MiUser);
 	}, 1000 * 60 * 2);
 
 	afterAll(async () => {

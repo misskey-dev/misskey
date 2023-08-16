@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { UserList } from './UserList.js';
+import { MiUser } from './User.js';
+import { MiUserList } from './UserList.js';
 
-@Entity()
+@Entity('user_list_joining')
 @Index(['userId', 'userListId'], { unique: true })
-export class UserListJoining {
+export class MiUserListJoining {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,24 +24,24 @@ export class UserListJoining {
 		...id(),
 		comment: 'The user ID.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The list ID.',
 	})
-	public userListId: UserList['id'];
+	public userListId: MiUserList['id'];
 
-	@ManyToOne(type => UserList, {
+	@ManyToOne(type => MiUserList, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public userList: UserList | null;
+	public userList: MiUserList | null;
 }

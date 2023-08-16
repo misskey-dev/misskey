@@ -7,10 +7,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { NotesRepository, UserNotePiningsRepository, UsersRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { User } from '@/models/entities/User.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
-import type { UserNotePining } from '@/models/entities/UserNotePining.js';
+import type { MiUserNotePining } from '@/models/entities/UserNotePining.js';
 import { RelayService } from '@/core/RelayService.js';
 import type { Config } from '@/config.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -49,7 +49,7 @@ export class NotePiningService {
 	 * @param noteId
 	 */
 	@bindThis
-	public async addPinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
+	public async addPinned(user: { id: MiUser['id']; host: MiUser['host']; }, noteId: MiNote['id']) {
 	// Fetch pinee
 		const note = await this.notesRepository.findOneBy({
 			id: noteId,
@@ -75,7 +75,7 @@ export class NotePiningService {
 			createdAt: new Date(),
 			userId: user.id,
 			noteId: note.id,
-		} as UserNotePining);
+		} as MiUserNotePining);
 
 		// Deliver to remote followers
 		if (this.userEntityService.isLocalUser(user)) {
@@ -89,7 +89,7 @@ export class NotePiningService {
 	 * @param noteId
 	 */
 	@bindThis
-	public async removePinned(user: { id: User['id']; host: User['host']; }, noteId: Note['id']) {
+	public async removePinned(user: { id: MiUser['id']; host: MiUser['host']; }, noteId: MiNote['id']) {
 	// Fetch unpinee
 		const note = await this.notesRepository.findOneBy({
 			id: noteId,
@@ -112,7 +112,7 @@ export class NotePiningService {
 	}
 
 	@bindThis
-	public async deliverPinnedChange(userId: User['id'], noteId: Note['id'], isAddition: boolean) {
+	public async deliverPinnedChange(userId: MiUser['id'], noteId: MiNote['id'], isAddition: boolean) {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 		if (user == null) throw new Error('user not found');
 

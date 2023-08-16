@@ -6,8 +6,8 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity()
-export class Relay {
+@Entity('relay')
+export class MiRelay {
 	@PrimaryColumn(id())
 	public id: string;
 

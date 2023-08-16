@@ -6,7 +6,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { AppLockService } from '@/core/AppLockService.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
@@ -43,7 +43,7 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async read(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
+	public async read(user: { id: MiUser['id'], host: null, createdAt: MiUser['createdAt'] }): Promise<void> {
 		await this.commit({
 			'read': [user.id],
 			'registeredWithinWeek': (Date.now() - user.createdAt.getTime() < week) ? [user.id] : [],
@@ -56,7 +56,7 @@ export default class ActiveUsersChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async write(user: { id: User['id'], host: null, createdAt: User['createdAt'] }): Promise<void> {
+	public async write(user: { id: MiUser['id'], host: null, createdAt: MiUser['createdAt'] }): Promise<void> {
 		await this.commit({
 			'write': [user.id],
 		});

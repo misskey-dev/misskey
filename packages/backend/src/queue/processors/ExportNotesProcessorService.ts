@@ -12,8 +12,8 @@ import type { NotesRepository, PollsRepository, UsersRepository } from '@/models
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { Poll } from '@/models/entities/Poll.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/entities/Poll.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { Packed } from '@/misc/json-schema.js';
@@ -76,7 +76,7 @@ export class ExportNotesProcessorService {
 			await write('[');
 
 			let exportedNotesCount = 0;
-			let cursor: Note['id'] | null = null;
+			let cursor: MiNote['id'] | null = null;
 
 			while (true) {
 				const notes = await this.notesRepository.find({
@@ -88,7 +88,7 @@ export class ExportNotesProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as Note[];
+				}) as MiNote[];
 
 				if (notes.length === 0) {
 					job.updateProgress(100);
@@ -98,7 +98,7 @@ export class ExportNotesProcessorService {
 				cursor = notes.at(-1)?.id ?? null;
 
 				for (const note of notes) {
-					let poll: Poll | undefined;
+					let poll: MiPoll | undefined;
 					if (note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: note.id });
 					}
@@ -131,7 +131,7 @@ export class ExportNotesProcessorService {
 	}
 }
 
-function serialize(note: Note, poll: Poll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
+function serialize(note: MiNote, poll: MiPoll | null = null, files: Packed<'DriveFile'>[]): Record<string, unknown> {
 	return {
 		id: note.id,
 		text: note.text,
