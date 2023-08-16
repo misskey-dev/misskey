@@ -130,7 +130,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XPhotos :key="user.id" :user="user"/>
 					<XActivity :key="user.id" :user="user"/>
 				</template>
-				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination" :collapseSensitiveChannel="collapseSensitiveChannel"/>
+				<MkNotes v-if="!disableNotes" :class="$style.tl" :noGap="true" :pagination="pagination"/>
 			</div>
 		</div>
 		<div v-if="!narrow" class="sub _gaps" style="container-type: inline-size;">
@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
+import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch, provide } from 'vue';
 import calcAge from 's-age';
 import * as misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
@@ -191,6 +191,8 @@ let isEditingMemo = $ref(false);
 let moderationNote = $ref(props.user.moderationNote);
 let editModerationNote = $ref(false);
 let collapseSensitiveChannel = $ref(defaultStore.state.collapseSensitiveChannel);
+
+provide('collapseSensitiveChannel', collapseSensitiveChannel);
 
 watch($$(moderationNote), async () => {
 	await os.api('admin/update-user-note', { userId: props.user.id, text: moderationNote });
