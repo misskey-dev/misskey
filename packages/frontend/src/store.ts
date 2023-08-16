@@ -87,6 +87,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'account',
 		default: false,
 	},
+	imageCompressionMode: {
+		where: 'account',
+		default: 'resizeCompress' as 'resizeCompress' | 'noResizeCompress' | 'resizeCompressLossy' | 'noResizeCompressLossy' | null,
+	},
 	memo: {
 		where: 'account',
 		default: null,

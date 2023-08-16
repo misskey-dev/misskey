@@ -2115,3 +2115,11 @@ _webhookSettings:
     renote: "Renoteされたとき"
     reaction: "リアクションがあったとき"
     mention: "メンションされたとき"
+
+_imageCompressionMode:
+  title: "画像の圧縮形式"
+  description: "オリジナル画像を保持しない場合に、Web公開用画像の圧縮形式を選択できます。縮小する場合は2048x2048より小さくなるように縮小されます。非可逆圧縮を指定しない場合は、元画像に応じて非可逆圧縮か可逆圧縮かが自動的に選択されます。"
+  resizeCompress: "縮小して再圧縮する"
+  noResizeCompress: "縮小せず再圧縮する"
+  resizeCompressLossy: "縮小して非可逆圧縮する"
+  noResizeCompressLossy: "縮小せず非可逆圧縮する"
