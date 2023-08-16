@@ -32,7 +32,7 @@
 - Fix: iOSで画面を回転させるとテキストサイズが変わる問題を修正
 - Fix: word mute for sub note is not applied
 - Fix: タイムラインを下にスクロールしてノート画面に移動して再び戻ったら以前のスクロール位置を失う問題を修正
-- Fix: Misskeyプラグインをインストールする際のAiScriptバージョンのチェックが0.14.0以降に対応していない問題を修正 https://github.com/misskey-dev/misskey/issues/11420
+- Fix: Misskeyプラグインをインストールする際のAiScriptバージョンのチェックが0.14.0以降に対応していない問題を修正
 
 ### Server
 - cacheRemoteFilesの初期値はfalseになりました
