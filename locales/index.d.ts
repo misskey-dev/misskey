@@ -767,6 +767,7 @@ export interface Locale {
     "publish": string;
     "inChannelSearch": string;
     "useReactionPickerForContextMenu": string;
+    "collapseSensitiveChannel": string;
     "typingUsers": string;
     "jumpToSpecifiedDate": string;
     "showingPastTimeline": string;
@@ -1622,6 +1623,9 @@ export interface Locale {
         "donate": string;
         "morePatrons": string;
         "patrons": string;
+        "forkContributors": string;
+        "allForkContributors": string;
+        "forkSource": string;
     };
     "_displayOfSensitiveMedia": {
         "respect": string;

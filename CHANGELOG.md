@@ -17,6 +17,7 @@
 ### General
 
 ### Client
+- About Misskeyにこのforkに付いての情報を追加しました
 
 ### Server
 

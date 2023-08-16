@@ -29,6 +29,11 @@
 							{{ i18n.ts._aboutMisskey.source }}
 							<template #suffix>GitHub</template>
 						</FormLink>
+						<FormLink to="https://github.com/niri-la/misskey.niri.la" external>
+							<template #icon><i class="ti ti-code"></i></template>
+							{{ i18n.ts._aboutMisskey.forkSource }}
+							<template #suffix>GitHub</template>
+						</FormLink>
 						<FormLink to="https://crowdin.com/project/misskey" external>
 							<template #icon><i class="ti ti-language-hiragana"></i></template>
 							{{ i18n.ts._aboutMisskey.translation }}
@@ -70,6 +75,24 @@
 						</a>
 					</div>
 					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allContributors }}</MkLink></template>
+				</FormSection>
+				<FormSection>
+					<template #label>{{ i18n.ts._aboutMisskey.forkContributors }}</template>
+					<div :class="$style.contributors">
+						<a href="https://github.com/anatawa12" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/22656849?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@anatawa12</span>
+						</a>
+						<a href="https://github.com/niwaniwa" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/10182706?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@niwaniwa</span>
+						</a>
+						<a href="https://github.com/Sayamame-beans" target="_blank" :class="$style.contributor">
+							<img src="https://avatars.githubusercontent.com/u/61457993?v=4" :class="$style.contributorAvatar">
+							<span :class="$style.contributorUsername">@Sayamame-beans</span>
+						</a>
+					</div>
+					<template #caption><MkLink url="https://github.com/misskey-dev/misskey/graphs/contributors">{{ i18n.ts._aboutMisskey.allForkContributors }}</MkLink></template>
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
