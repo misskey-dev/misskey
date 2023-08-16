@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkPagination ref="pagingComponent" :pagination="pagination">
 	<template #empty>
@@ -19,7 +24,7 @@
 				:ad="true"
 				:class="$style.notes"
 			>
-				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note" :collapseSensitiveChannel="props.collapseSensitiveChannel"/>
+				<MkNote :key="note._featuredId_ || note._prId_ || note.id" :class="$style.note" :note="note"/>
 			</MkDateSeparatedList>
 		</div>
 	</template>
@@ -37,7 +42,6 @@ import { infoImageUrl } from '@/instance';
 const props = defineProps<{
 	pagination: Paging;
 	noGap?: boolean;
-  collapseSensitiveChannel?: boolean;
 }>();
 
 const pagingComponent = shallowRef<InstanceType<typeof MkPagination>>();

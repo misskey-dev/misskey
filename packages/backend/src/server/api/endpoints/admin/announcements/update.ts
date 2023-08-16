@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AnnouncementsRepository } from '@/models/index.js';
@@ -26,8 +31,13 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 0 },
+		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'] },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
+		forExistingUsers: { type: 'boolean' },
+		needConfirmationToRead: { type: 'boolean' },
+		isActive: { type: 'boolean' },
 	},
-	required: ['id', 'title', 'text', 'imageUrl'],
+	required: ['id'],
 } as const;
 
 // eslint-disable-next-line import/no-default-export
@@ -48,6 +58,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				text: ps.text,
 				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
 				imageUrl: ps.imageUrl || null,
+				display: ps.display,
+				icon: ps.icon,
+				forExistingUsers: ps.forExistingUsers,
+				needConfirmationToRead: ps.needConfirmationToRead,
+				isActive: ps.isActive,
 			});
 		});
 	}

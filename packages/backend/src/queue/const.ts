@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Config } from '@/config.js';
 import type * as Bull from 'bullmq';
 
@@ -16,7 +21,7 @@ export function baseQueueOptions(config: Config, queueName: typeof QUEUE[keyof t
 	return {
 		connection: {
 			...config.redisForJobQueue,
-			keyPrefix: undefined
+			keyPrefix: undefined,
 		},
 		prefix: config.redisForJobQueue.prefix ? `${config.redisForJobQueue.prefix}:queue:${queueName}` : `queue:${queueName}`,
 	};

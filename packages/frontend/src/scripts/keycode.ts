@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export default (input: string): string[] => {
 	if (Object.keys(aliases).some(a => a.toLowerCase() === input.toLowerCase())) {
 		const codes = aliases[input];

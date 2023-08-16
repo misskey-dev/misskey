@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';

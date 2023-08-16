@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { IncomingMessage } from 'http';
 import { signup, api, startServer, successfulApiCall, failedApiCall, uploadFile, waitFire, connectStream } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
 import type * as misskey from 'misskey-js';
-import { IncomingMessage } from 'http';
 
 describe('API', () => {
 	let app: INestApplicationContext;
