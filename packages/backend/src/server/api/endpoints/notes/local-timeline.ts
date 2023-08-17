@@ -83,14 +83,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me && ps.withBelowPublic) {
 				const localFollowees = await this.followingsRepository.createQueryBuilder('following')
 					.select('following.followeeId')
-					.where('following.foloweeHost IS NULL')
+					.where('following.followeeHost IS NULL')
 					.where('following.followerId = :followerId', { followerId: me.id })
 					.getMany();
 
 				if (localFollowees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...localFollowees.map(f => f.followeeId)];
 
-					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId IN (:...meOrFolloweeIds))', { meOrFolloweeIds: meOrFolloweeIds });
+					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId IN (:...meOrFolloweeIds) )', { meOrFolloweeIds: meOrFolloweeIds });
 				} else {
 					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId = :meId)', { meId: me.id });
 				}
