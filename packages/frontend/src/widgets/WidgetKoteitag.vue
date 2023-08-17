@@ -1,27 +1,25 @@
 <template>
 <MkContainer :show-header="widgetProps.showHeader" :scrollable="false" class="mkw-koteitag data-cy-mkw-koteitag">
-	<template #icon><i class="ti ti-hash"></i></template>
-	<template #header>{{ i18n.ts._widgets.koteitag }}</template>
-
-	<div :class="$style.container">
-		<div>
-			<MkSelect :class="$style.select" v-model="programs">
-				<template #label><i class="ti ti-hash"></i>実況する番組を選択</template>
-				<option v-for="option in widgetProps.options" v-bind:value="option.key">{{option.label}}</option>
-			</MkSelect>
-		</div>
-		<div>
-			<MkButton :class="$style.button" class="get" @click="getPrograms"><i :class="$style.iconInner" class="ti ti-reload"></i></MkButton>
-		</div>
-		<div v-if="widgetProps.options.length < 2">
-			番組表を取得中。
-		</div>
-	</div>
+  <template #icon><i class="ti ti-hash"></i></template>
+  <template #header>{{ i18n.ts._widgets.koteitag }}</template>
+  <div :class="$style.container">
+    <div>
+      <MkSelect :class="$style.select" v-model="program_selected">
+        <template #label><i class="ti ti-hash"></i>実況する番組を選択</template>
+        <option v-for="option in options" :value="option['key']">{{option['label']}}</option>
+      </MkSelect>
+    </div>
+    <div>
+      <MkButton :class="$style.button" class="get" @click="getPrograms">
+        <i :class="$style.iconInner" class="ti ti-reload"></i>
+      </MkButton>
+    </div>
+  </div>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentExpose } from './widget';
 import { GetFormResultType } from '@/scripts/form';
 import * as os from '@/os';
@@ -31,22 +29,13 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 
 const name = 'koteitag';
+const program_selected = ref('');
+let programs:object[] = [];
+let options = reactive({});
 
 const widgetPropsDef = {
-	showHeader: {
-		type: 'boolean' as const,
-		default: false,
-	},
-	programs: {
-		type: 'object' as const,
-		default: null,
-	},
-	options: {
-		type: 'object' as const,
-		default: null,
-	},
+  showHeader: {type: 'boolean' as const, default: false},
 };
-
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
 // 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
@@ -54,125 +43,109 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
 const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
-const { widgetProps, configure, save } = useWidgetPropsManager(name,
-	widgetPropsDef,
-	props,
-	emit,
+
+const { widgetProps, configure } = useWidgetPropsManager(
+  name,
+  widgetPropsDef,
+  props,
+  emit,
 );
-const programs = ref('');
 
 const getPrograms = async () => {
-	widgetProps.options = {
-		clear_tags: {key:'clear_tags', label: 'タグをクリア'},
-	};
-
-	fetch('/mulukhiya/api/program/update', {method: 'POST'})
-		.then(e => fetch('/mulukhiya/api/program'))
-		.then(e => e.json())
-		.then(e => {
-			widgetProps.programs = e;
-			Object.keys(widgetProps.programs).map(key => {
-				const program = widgetProps.programs[key];
-				if (!program.enable) return;
-				let label = [program.series];
-				if (program.episode) {label.push(`第${program.episode}${program.episode_suffix || '話'}`)};
-				if (program.subtitle) {label.push(`「${program.subtitle}」`)};
-				if (program.livecure) {label.push(program.air ? 'エア番組実況用タグ' : '実況用タグ')};
-				if (program.minutes) {label.push(`${program.minutes}分`)};
-				widgetProps.options[key] = {key: key, label: label.join(' ')};
-			});
-		}).then(e => {
-			widgetProps.options.episode_browser = {key:'episode_browser', label: 'その他の番組'};
-		}).catch(e => os.alert({type: 'error', title: '番組表の取得', text: e.message}));
+  options = {clear_tags: {key:'clear_tags', label: 'タグをクリア'}};
+  fetch('/mulukhiya/api/program/update', {method: 'POST'})
+    .then(e => fetch('/mulukhiya/api/program'))
+    .then(e => e.json())
+    .then(e => {
+      programs = e;
+      Object.keys(programs).map(k => {
+        const v = programs[k];
+        if (v?.enable) {
+          let label = [v?.series];
+          if (v?.episode) {label.push(`第${v.episode}${v.episode_suffix || '話'}`)};
+          if (v?.subtitle) {label.push(`「${v.subtitle}」`)};
+          if (v?.livecure) {label.push(v.air ? 'エア番組実況用タグ' : '実況用タグ')};
+          if (v?.minutes) {label.push(`${v.minutes}分`)};
+          options[k] = {key: k, label: label.join(' ')};
+        }
+      });
+    }).then(e => {
+      options['episode_browser'] = {key:'episode_browser', label: 'その他の番組'};
+    }).catch(e => os.alert({type: 'error', title: '番組表の取得', text: e.message}));
 }
 
 const setPrograms = async () => {
-	if (!programs.value) return;
+  const commandToot = {command: 'user_config', tagging: {}}
+  switch (program_selected.value) {
+    case 'episode_browser':
+      program_selected.value = '';
+      window.open('/mulukhiya/app/episode');
+      return;
 
-	let commandToot = ['command: user_config', 'tagging:'];
-	switch (programs.value) {
-		case 'episode_browser':
-			os.confirm({
-				type: 'info',
-				title: 'エピソードブラウザで他の番組を探しますか？',
-			}).then(({ canceled }) => {
-				programs.value = null;
-				if (canceled) return;
-				window.open('/mulukhiya/app/episode');
-			});
-			return;
+    case 'clear_tags':
+      commandToot.tagging['user_tags'] = null;
+      break;
 
-		case 'clear_tags':
-			commandToot.push('  user_tags: null');
-			break;
+    default:
+      const v = programs[program_selected.value];
+      commandToot.tagging['user_tags'] = [v?.series];
+      if (v?.episode) commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || '話'}`);
+      if (v?.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
+      if (v?.air) commandToot.tagging['user_tags'].push('エア番組');
+      if (v?.livecure) commandToot.tagging['user_tags'].push('実況');
+      if (v?.extra_tags) commandToot.tagging['user_tags'].concat(v.extra_tags);
+      if (v?.minutes) commandToot.tagging['minutes'] = v.minutes;
+      break;
+  }
 
-		default:
-			const program = widgetProps.programs[programs.value];
-			commandToot.push('  user_tags:');
-			commandToot.push(`  - ${program.series}`);
-			if (program.episode) {commandToot.push(`  - ${program.episode}${program.episode_suffix || '話'}`)};
-			if (program.subtitle) {commandToot.push(`  - ${program.subtitle}`)};
-			if (program.air) {commandToot.push('  - エア番組')};
-			if (program.livecure) {commandToot.push('  - 実況')};
-			if (program.extra_tags) {program.extra_tags.map(t => commandToot.push(`  - ${t}`))};
-			if (program.minutes) {commandToot.push(`  minutes: ${program.minutes}`)};
-			break;
-	}
-
-	const payload = {
-		localOnly: true, // コマンドトゥートは連合に流す必要なし
-		poll: null,
-		text: commandToot.join("\n"),
-		visibility: 'specified',
-		visibleUserIds: [],
-	};
-
-	os.confirm({
-		type: 'info',
-		title: 'この番組でよろしいでしょうか？',
-		text: widgetProps.options[programs.value].label,
-	}).then(({ canceled }) => {
-		programs.value = null;
-		if (canceled) return;
-		os.api('notes/create', payload).then(() => {
-			os.toast('固定タグ用コマンドを送信しました。');
-		});
-	});
+  os.confirm({
+    type: 'info',
+    title: 'この番組でよろしいでしょうか？',
+    text: options[program_selected.value].label,
+  }).then(({ canceled }) => {
+    program_selected.value = '';
+    if (!canceled) {
+			const payload = <object>{
+				localOnly: true, // コマンドトゥートは連合に流す必要なし
+				poll: null,
+				text: JSON.stringify(commandToot),
+				visibility: 'specified',
+				visibleUserIds: [],
+			};
+      os.api('notes/create', payload).then(() => os.toast('固定タグ用コマンドを送信しました。'));
+    }
+  });
 }
 
 defineExpose<WidgetComponentExpose>({
-	name,
-	configure,
-	id: props.widget ? props.widget.id : null,
+  name,
+  configure,
+  id: props.widget ? props.widget.id : null,
 });
 
-watch([programs], () => emit('update:modelValue', setPrograms()), {
-	deep: true,
-});
-
+watch(program_selected, (next, prev) => setPrograms());
 getPrograms();
-
 </script>
 
 <style lang="scss" module>
 .select {
-	padding: 5px;
+  padding: 5px;
 }
 .container {
-	display: grid;
-	grid-template-columns: 85% 15%;
-	grid-column-gap: 5px;
-	align-items: end;
+  display: grid;
+  grid-template-columns: 85% 15%;
+  grid-column-gap: 5px;
+  align-items: end;
 }
 .button {
-	margin-bottom: 5px;
-	min-width: 60%;
-	min-height: 35px;
-	padding: 0;
+  margin-bottom: 5px;
+  min-width: 60%;
+  min-height: 35px;
+  padding: 0;
 }
 .iconInner {
-	display: block;
-	margin: 0 auto;
-	font-size: 12px;
+  display: block;
+  margin: 0 auto;
+  font-size: 12px;
 }
 </style>
