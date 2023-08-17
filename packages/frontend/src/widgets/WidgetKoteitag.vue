@@ -1,5 +1,5 @@
 <template>
-<MkContainer :show-header="widgetProps.showHeader" :scrollable="false" class="mkw-koteitag data-cy-mkw-koteitag">
+<MkContainer :scrollable="false">
   <template #icon><i class="ti ti-hash"></i></template>
   <template #header>{{ i18n.ts._widgets.koteitag }}</template>
   <div :class="$style.container">
@@ -33,9 +33,7 @@ const program_selected = ref('');
 let programs:object[] = [];
 let options = reactive({});
 
-const widgetPropsDef = {
-  showHeader: {type: 'boolean' as const, default: false},
-};
+const widgetPropsDef = {};
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
 // 現時点ではvueの制限によりimportしたtypeをジェネリックに渡せない
@@ -43,13 +41,13 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 //const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 const props = defineProps<{ widget?: Widget<WidgetProps>; }>();
 const emit = defineEmits<{ (ev: 'updateProps', props: WidgetProps); }>();
+const { configure } = useWidgetPropsManager(name, widgetPropsDef, props, emit);
 
-const { widgetProps, configure } = useWidgetPropsManager(
+defineExpose<WidgetComponentExpose>({
   name,
-  widgetPropsDef,
-  props,
-  emit,
-);
+  configure,
+  id: props.widget ? props.widget.id : null,
+});
 
 const getPrograms = async () => {
   options = {clear_tags: {key:'clear_tags', label: 'タグをクリア'}};
@@ -61,7 +59,7 @@ const getPrograms = async () => {
       Object.keys(programs).map(k => {
         const v = programs[k];
         if (v?.enable) {
-          let label = [v?.series];
+          const label = [v?.series];
           if (v?.episode) label.push(`第${v.episode}${v.episode_suffix || '話'}`);
           if (v?.subtitle) label.push(`「${v.subtitle}」`);
           if (v?.livecure) label.push(v.air ? 'エア番組実況用タグ' : '実況用タグ');
@@ -116,12 +114,6 @@ const setPrograms = async () => {
     }
   });
 }
-
-defineExpose<WidgetComponentExpose>({
-  name,
-  configure,
-  id: props.widget ? props.widget.id : null,
-});
 
 watch(program_selected, (next, prev) => setPrograms());
 getPrograms();
