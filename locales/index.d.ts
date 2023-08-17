@@ -2185,6 +2185,17 @@ export interface Locale {
             "mention": string;
         };
     };
+    "_koteitag": {
+        "selectProgram": string;
+        "clearTags": string;
+        "air": string;
+        "livecure": string;
+        "episodeBrowser": string;
+        "fetch": string;
+        "episodeSuffix": string;
+        "confirmMessage": string;
+        "successMessage": string;
+    };
 }
 declare const locales: {
     [lang: string]: Locale;
