@@ -84,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				const localFollowees = await this.followingsRepository.createQueryBuilder('following')
 					.select('following.followeeId')
 					.where('following.followeeHost IS NULL')
-					.where('following.followerId = :followerId', { followerId: me.id })
+					.andWhere('following.followerId = :followerId', { followerId: me.id })
 					.getMany();
 
 				if (localFollowees.length > 0) {
