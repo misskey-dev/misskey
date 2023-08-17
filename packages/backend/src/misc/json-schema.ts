@@ -38,6 +38,7 @@ import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
 import { packedRoleSchema } from '@/models/json-schema/role.js';
 import { packedUserListSchema } from '@/models/json-schema/user-list.js';
+import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -49,6 +50,7 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,

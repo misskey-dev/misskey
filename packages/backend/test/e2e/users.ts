@@ -162,6 +162,7 @@ describe('ユーザー', () => {
 			hasUnreadChannel: user.hasUnreadChannel,
 			hasUnreadNotification: user.hasUnreadNotification,
 			hasPendingReceivedFollowRequest: user.hasPendingReceivedFollowRequest,
+			unreadAnnouncements: user.unreadAnnouncements,
 			mutedWords: user.mutedWords,
 			mutedInstances: user.mutedInstances,
 			mutingNotificationTypes: user.mutingNotificationTypes,
@@ -409,6 +410,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.hasUnreadChannel, false);
 		assert.strictEqual(response.hasUnreadNotification, false);
 		assert.strictEqual(response.hasPendingReceivedFollowRequest, false);
+		assert.deepStrictEqual(response.unreadAnnouncements, []);
 		assert.deepStrictEqual(response.mutedWords, []);
 		assert.deepStrictEqual(response.mutedInstances, []);
 		assert.deepStrictEqual(response.mutingNotificationTypes, []);

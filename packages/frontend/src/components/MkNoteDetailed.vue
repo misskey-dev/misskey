@@ -172,7 +172,6 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog';
 
 const props = defineProps<{
 	note: misskey.entities.Note;
-	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
