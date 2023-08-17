@@ -22,7 +22,8 @@ services:
 
   redis:
     restart: always
-    image: redis:7.2.0-alpine
+    # HACK 7.2.0-alpineにamd64がない
+    image: redis:7.0.12-alpine
     networks:
       - internal_network
     volumes:
@@ -76,7 +77,7 @@ services:
   #     - ./infra/cloudflare/.env
 
   nginx:
-    build: 
+    build:
       context: ./infra/nginx
       dockerfile: ./Dockerfile
     restart: always
