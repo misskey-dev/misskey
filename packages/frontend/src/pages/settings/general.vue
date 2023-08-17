@@ -25,6 +25,7 @@
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
+			<MkSwitch v-model="showLocalTimelineBelowPublic">{{ i18n.ts.flagShowLocalTimelineBelowPublic }} <span class="_beta">Nadesskey</span> <template #caption>{{ i18n.ts.flagShowLocalTimelineBelowPublicDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
 		</div>
 	</FormSection>
 
@@ -226,6 +227,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
+const showLocalTimelineBelowPublic = computed(defaultStore.makeGetterSetter('showLocalTimelineBelowPublic'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

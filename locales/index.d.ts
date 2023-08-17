@@ -167,6 +167,8 @@ export interface Locale {
     "flagAsCatDescription": string;
     "flagShowTimelineReplies": string;
     "flagShowTimelineRepliesDescription": string;
+    "flagShowLocalTimelineBelowPublic": string;
+    "flagShowLocalTimelineBelowPublicDescription": string;
     "autoAcceptFollowed": string;
     "addAccount": string;
     "reloadAccountsList": string;
