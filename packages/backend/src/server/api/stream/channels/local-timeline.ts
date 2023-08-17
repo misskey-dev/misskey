@@ -13,6 +13,7 @@ class LocalTimelineChannel extends Channel {
 	public static shouldShare = true;
 	public static requireCredential = false;
 	private withReplies: boolean;
+	private withBelowPublic: boolean;
 
 	constructor(
 		private metaService: MetaService,
@@ -32,6 +33,7 @@ class LocalTimelineChannel extends Channel {
 		if (!policies.ltlAvailable) return;
 
 		this.withReplies = params.withReplies as boolean;
+		this.withBelowPublic = params.withBelowPublic as boolean;
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -40,20 +42,35 @@ class LocalTimelineChannel extends Channel {
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
 		if (note.user.host !== null) return;
-		if (note.visibility !== 'public') return;
-		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
-
-		// リプライなら再pack
-		if (note.replyId != null) {
-			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
-				detail: true,
-			});
+		if (!this.withBelowPublic && note.visibility !== 'public') return;
+		if (note.channelId) {
+			if (!this.followingChannels.has(note.channelId)) return;
+		} else {
+			// パブリックでないかつその投稿のユーザーをフォローしていなかったら弾く
+			if ((note.visibility !== 'public') && ((this.user!.id !== note.userId) && !this.following.has(note.userId))) return;
 		}
-		// Renoteなら再pack
-		if (note.renoteId != null) {
-			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
+
+		if (['followers', 'specified'].includes(note.visibility)) {
+			note = await this.noteEntityService.pack(note.id, this.user!, {
 				detail: true,
 			});
+
+			if (note.isHidden) {
+				return;
+			}
+		} else {
+			// リプライなら再pack
+			if (note.replyId != null) {
+				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
+					detail: true,
+				});
+			}
+			// Renoteなら再pack
+			if (note.renoteId != null) {
+				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
+					detail: true,
+				});
+			}
 		}
 
 		// 関係ない返信は除外

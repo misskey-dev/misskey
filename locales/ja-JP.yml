@@ -164,6 +164,8 @@ flagAsCat: "にゃああああああああああああああ！！！！！！�
 flagAsCatDescription: "にゃにゃにゃ？？"
 flagShowTimelineReplies: "タイムラインにノートへの返信を表示する"
 flagShowTimelineRepliesDescription: "オンにすると、タイムラインにユーザーのノート以外にもそのユーザーの他のノートへの返信を表示します。"
+flagShowLocalTimelineBelowPublic: "ローカルタイムラインにローカルのパブリック未満のノートを表示する"
+flagShowLocalTimelineBelowPublicDescription: "オンにすると、ローカルタイムラインにもフォロー済みローカルユーザの公開範囲がパブリック未満のノートを表示します。"
 autoAcceptFollowed: "フォロー中ユーザーからのフォロリクを自動承認"
 addAccount: "アカウントを追加"
 reloadAccountsList: "アカウントリストの情報を更新"

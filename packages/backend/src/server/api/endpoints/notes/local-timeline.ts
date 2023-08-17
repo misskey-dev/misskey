@@ -1,6 +1,6 @@
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository, FollowingsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -38,6 +38,7 @@ export const paramDef = {
 	properties: {
 		withFiles: { type: 'boolean', default: false },
 		withReplies: { type: 'boolean', default: false },
+		withBelowPublic: { type: 'boolean', default: false },
 		fileType: { type: 'array', items: {
 			type: 'string',
 		} },
@@ -58,6 +59,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
 		private noteEntityService: NoteEntityService,
 		private queryService: QueryService,
 		private metaService: MetaService,
@@ -74,9 +78,27 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			//#region Construct query
 			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 				ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }) // 10日前まで
-				.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)')
-				.innerJoinAndSelect('note.user', 'user')
+				.andWhere('note.id > :minId', { minId: this.idService.genId(new Date(Date.now() - (1000 * 60 * 60 * 24 * 10))) }); // 10日前まで
+
+			if (me && ps.withBelowPublic) {
+				const localFollowees = await this.followingsRepository.createQueryBuilder('following')
+					.select('following.followeeId')
+					.where('following.foloweeHost IS NULL')
+					.where('following.followerId = :followerId', { followerId: me.id })
+					.getMany();
+
+				if (localFollowees.length > 0) {
+					const meOrFolloweeIds = [me.id, ...localFollowees.map(f => f.followeeId)];
+
+					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId IN (:...meOrFolloweeIds))', { meOrFolloweeIds: meOrFolloweeIds });
+				} else {
+					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId = :meId)', { meId: me.id });
+				}
+			} else {
+				query.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+			}
+
+			query.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
 				.leftJoinAndSelect('reply.user', 'replyUser')

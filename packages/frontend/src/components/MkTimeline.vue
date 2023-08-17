@@ -69,9 +69,11 @@ if (props.src === 'antenna') {
 	endpoint = 'notes/local-timeline';
 	query = {
 		withReplies: defaultStore.state.showTimelineReplies,
+		withBelowPublic: defaultStore.state.showLocalTimelineBelowPublic,
 	};
 	connection = stream.useChannel('localTimeline', {
 		withReplies: defaultStore.state.showTimelineReplies,
+		withBelowPublic: defaultStore.state.showLocalTimelineBelowPublic,
 	});
 	connection.on('note', prepend);
 } else if (props.src === 'social') {
