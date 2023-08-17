@@ -62,10 +62,10 @@ const getPrograms = async () => {
         const v = programs[k];
         if (v?.enable) {
           let label = [v?.series];
-          if (v?.episode) {label.push(`第${v.episode}${v.episode_suffix || '話'}`)};
-          if (v?.subtitle) {label.push(`「${v.subtitle}」`)};
-          if (v?.livecure) {label.push(v.air ? 'エア番組実況用タグ' : '実況用タグ')};
-          if (v?.minutes) {label.push(`${v.minutes}分`)};
+          if (v?.episode) label.push(`第${v.episode}${v.episode_suffix || '話'}`);
+          if (v?.subtitle) label.push(`「${v.subtitle}」`);
+          if (v?.livecure) label.push(v.air ? 'エア番組実況用タグ' : '実況用タグ');
+          if (v?.minutes) label.push(`${v.minutes}分`);
           options[k] = {key: k, label: label.join(' ')};
         }
       });
