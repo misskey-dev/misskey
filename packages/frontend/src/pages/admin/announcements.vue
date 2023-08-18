@@ -63,7 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -91,8 +91,8 @@ function add() {
 		imageUrl: null,
 		icon: 'info',
 		display: 'normal',
-		forExistingUsers: false,
-		needConfirmationToRead: false,
+		forExistingUsers: ref(false),
+		needConfirmationToRead: ref(false),
 	});
 }
 
