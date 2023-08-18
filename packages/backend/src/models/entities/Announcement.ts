@@ -60,11 +60,25 @@ export class Announcement {
 	})
 	public needConfirmationToRead: boolean;
 
+	@Column('integer', {
+		nullable: false,
+		default: 0,
+	})
+	public closeDuration: number;
+
 	@Index()
 	@Column('boolean', {
 		default: true,
 	})
 	public isActive: boolean;
+
+	// UIに表示する際の並び順用(大きいほど先頭)
+	@Index()
+	@Column('integer', {
+		nullable: false,
+		default: 0,
+	})
+	public displayOrder: number;
 
 	@Index()
 	@Column('boolean', {

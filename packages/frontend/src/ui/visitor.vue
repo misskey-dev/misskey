@@ -96,6 +96,7 @@ provideMetadataReceiver((info) => {
 
 const announcements = {
 	endpoint: 'announcements',
+	offsetMode: true,
 	limit: 10,
 };
 

@@ -45,6 +45,34 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			icon: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			display: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			forExistingUsers: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			needConfirmationToRead: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			closeDuration: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			displayOrder: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			userId: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 		},
 	},
 } as const;
@@ -59,6 +87,8 @@ export const paramDef = {
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
 		forExistingUsers: { type: 'boolean', default: false },
 		needConfirmationToRead: { type: 'boolean', default: false },
+		closeDuration: { type: 'number', default: 0 },
+		displayOrder: { type: 'number', default: 0 },
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
@@ -81,10 +111,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				display: ps.display,
 				forExistingUsers: ps.forExistingUsers,
 				needConfirmationToRead: ps.needConfirmationToRead,
+				closeDuration: ps.closeDuration,
+				displayOrder: ps.displayOrder,
 				userId: ps.userId,
 			});
 
-			return packed;
+			return {
+				id: packed.id,
+				createdAt: packed.createdAt,
+				updatedAt: packed.updatedAt,
+				title: packed.title,
+				text: packed.text,
+				imageUrl: packed.imageUrl,
+				icon: packed.icon,
+				display: packed.display,
+				forExistingUsers: raw.forExistingUsers,
+				needConfirmationToRead: packed.needConfirmationToRead,
+				closeDuration: packed.closeDuration,
+				displayOrder: packed.displayOrder,
+				userId: raw.userId,
+			};
 		});
 	}
 }

@@ -5,18 +5,19 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { jest } from '@jest/globals';
 import type { Announcement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, User } from '@/models/index.js';
-import { DI } from '@/di-symbols.js';
-import { genAid } from '@/misc/id/aid.js';
-import { CacheService } from '@/core/CacheService.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { IdService } from '@/core/IdService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { DI } from '@/di-symbols.js';
+import { CacheService } from '@/core/CacheService.js';
+import { genAid } from '@/misc/id/aid.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { TestingModule } from '@nestjs/testing';
 import type { MockFunctionMetadata } from 'jest-mock';
 
@@ -60,6 +61,7 @@ describe('AnnouncementService', () => {
 				GlobalModule,
 			],
 			providers: [
+				AnnouncementEntityService,
 				AnnouncementService,
 				CacheService,
 				IdService,

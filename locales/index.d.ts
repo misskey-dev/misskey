@@ -254,6 +254,7 @@ export interface Locale {
     "lookup": string;
     "announcements": string;
     "imageUrl": string;
+    "displayOrder": string;
     "remove": string;
     "removed": string;
     "removeAreYouSure": string;
@@ -1075,6 +1076,7 @@ export interface Locale {
     "additionalEmojiDictionary": string;
     "installed": string;
     "branding": string;
+    "dialogCloseDuration": string;
     "enableServerMachineStats": string;
     "enableIdenticonGeneration": string;
     "turnOffToImprovePerformance": string;

@@ -89,15 +89,6 @@ export async function mainBoot() {
 			}, {}, 'closed');
 		}
 
-		stream.on('announcementCreated', (ev) => {
-			const announcement = ev.announcement;
-			if (announcement.display === 'dialog') {
-				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
-					announcement,
-				}, {}, 'closed');
-			}
-		});
-
 		if ($i.isDeleted) {
 			alert({
 				type: 'warning',
@@ -224,6 +215,20 @@ export async function mainBoot() {
 			updateAccount(i);
 		});
 
+		main.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			updateAccount({
+				hasUnreadAnnouncement: true,
+				unreadAnnouncements: [...($i?.unreadAnnouncements ?? []), announcement],
+			});
+
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
+			}
+		});
+
 		main.on('readAllNotifications', () => {
 			updateAccount({ hasUnreadNotification: false });
 		});
@@ -257,8 +262,25 @@ export async function mainBoot() {
 			sound.play('antenna');
 		});
 
+		stream.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			updateAccount({
+				hasUnreadAnnouncement: true,
+				unreadAnnouncements: [...($i?.unreadAnnouncements ?? []), announcement],
+			});
+
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
+			}
+		});
+
 		main.on('readAllAnnouncements', () => {
-			updateAccount({ hasUnreadAnnouncement: false });
+			updateAccount({
+				hasUnreadAnnouncement: false,
+				unreadAnnouncements: [],
+			});
 		});
 
 		// トークンが再生成されたとき

@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
 							<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
 						</span>
-						<span>{{ announcement.title }}</span>
+						<Mfm :text="announcement.title"/>
 					</div>
 					<div :class="$style.content">
 						<Mfm :text="announcement.text"/>
@@ -40,17 +40,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
-import MkPagination from '@/components/MkPagination.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInfo from '@/components/MkInfo.vue';
+import { ref, watch } from 'vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { $i, updateAccount } from '@/account';
+import MkPagination from '@/components/MkPagination.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 
 const paginationCurrent = {
 	endpoint: 'announcements' as const,
+	offsetMode: true,
 	limit: 10,
 	params: {
 		isActive: true,
@@ -59,6 +60,7 @@ const paginationCurrent = {
 
 const paginationPast = {
 	endpoint: 'announcements' as const,
+	offsetMode: true,
 	limit: 10,
 	params: {
 		isActive: false,
@@ -66,10 +68,9 @@ const paginationPast = {
 };
 
 const paginationEl = ref<InstanceType<typeof MkPagination>>();
-
 const tab = ref('current');
 
-async function read(announcement) {
+async function read(announcement): Promise<void> {
 	if (announcement.needConfirmationToRead) {
 		const confirm = await os.confirm({
 			type: 'question',
@@ -84,10 +85,12 @@ async function read(announcement) {
 		a.isRead = true;
 		return a;
 	});
-	os.api('i/read-announcement', { announcementId: announcement.id });
-	updateAccount({
-		unreadAnnouncements: $i!.unreadAnnouncements.filter(a => a.id !== announcement.id),
-	});
+	await os.api('i/read-announcement', { announcementId: announcement.id });
+	if ($i) {
+		updateAccount({
+			unreadAnnouncements: $i.unreadAnnouncements.filter((a: { id: string; }) => a.id !== announcement.id),
+		});
+	}
 }
 
 const headerActions = $computed(() => []);
@@ -105,6 +108,15 @@ const headerTabs = $computed(() => [{
 definePageMetadata({
 	title: i18n.ts.announcements,
 	icon: 'ti ti-speakerphone',
+});
+
+const unreadCount = ref($i?.unreadAnnouncements.length ?? 0);
+watch(() => $i?.unreadAnnouncements.length ?? 0, () => {
+	// 未読が増えた場合はリロード
+	if (($i?.unreadAnnouncements.length ?? 0) > unreadCount.value) {
+		paginationEl.value?.reload();
+	}
+	unreadCount.value = $i?.unreadAnnouncements.length ?? 0;
 });
 </script>
 

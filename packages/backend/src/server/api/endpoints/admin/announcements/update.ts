@@ -5,9 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
+import { ApiError } from '@/server/api/error.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../../error.js';
+import type { AnnouncementsRepository } from '@/models/index.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -35,6 +36,8 @@ export const paramDef = {
 		display: { type: 'string', enum: ['normal', 'banner', 'dialog'] },
 		forExistingUsers: { type: 'boolean' },
 		needConfirmationToRead: { type: 'boolean' },
+		closeDuration: { type: 'number', default: 0 },
+		displayOrder: { type: 'number', default: 0 },
 		isActive: { type: 'boolean' },
 	},
 	required: ['id'],
@@ -46,24 +49,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
+
+		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const announcement = await this.announcementsRepository.findOneBy({ id: ps.id });
 
 			if (announcement == null) throw new ApiError(meta.errors.noSuchAnnouncement);
 
-			await this.announcementsRepository.update(announcement.id, {
-				updatedAt: new Date(),
-				title: ps.title,
-				text: ps.text,
-				/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- 空の文字列の場合、nullを渡すようにするため */
-				imageUrl: ps.imageUrl || null,
-				display: ps.display,
-				icon: ps.icon,
-				forExistingUsers: ps.forExistingUsers,
-				needConfirmationToRead: ps.needConfirmationToRead,
-				isActive: ps.isActive,
-			});
+			await this.announcementService.update(announcement.id, ps);
 		});
 	}
 }

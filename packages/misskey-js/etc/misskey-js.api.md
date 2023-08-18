@@ -33,6 +33,8 @@ type Announcement = {
     display: 'normal' | 'banner' | 'dialog';
     icon: 'info' | 'warning' | 'error' | 'success';
     needConfirmationToRead: boolean;
+    closeDuration: number;
+    displayOrder: number;
     forYou: boolean;
     isRead?: boolean;
 };
@@ -568,10 +570,9 @@ export type Endpoints = {
     };
     'announcements': {
         req: {
+            isActive?: boolean;
             limit?: number;
-            withUnreads?: boolean;
-            sinceId?: Announcement['id'];
-            untilId?: Announcement['id'];
+            offset?: number;
         };
         res: Announcement[];
     };

@@ -8,7 +8,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer :contentMax="900">
 		<div class="_gaps">
-			<MkInfo v-if="announcements.length > 5" warn>{{ i18n.ts._announcement.tooManyActiveAnnouncementDescription }}</MkInfo>
+			<MkFolder>
+				<template #label>{{ i18n.ts.options }}</template>
+
+				<MkFolder>
+					<template #label>{{ i18n.ts.specifyUser }}</template>
+					<template v-if="user" #suffix>@{{ user.username }}</template>
+
+					<div style="text-align: center;" class="_gaps">
+						<div v-if="user">@{{ user.username }}</div>
+						<div>
+							<MkButton v-if="user == null" primary rounded inline @click="selectUserFilter">{{ i18n.ts.selectUser }}</MkButton>
+							<MkButton v-else danger rounded inline @click="user = null">{{ i18n.ts.remove }}</MkButton>
+						</div>
+					</div>
+				</MkFolder>
+			</MkFolder>
 
 			<MkFolder v-for="announcement in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
 				<template #label>{{ announcement.title }}</template>
@@ -21,8 +36,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ announcement.text }}</template>
 
 				<div class="_gaps_m">
-					<MkInput v-model="announcement.title">
-						<template #label>{{ i18n.ts.title }}</template>
+					<MkInput ref="announceTitleEl" v-model="announcement.title" :large="false">
+						<template #label>{{ i18n.ts.title }}&nbsp;<button v-tooltip="i18n.ts.emoji" :class="['_button']" @click="insertEmoji"><i class="ti ti-mood-happy"></i></button></template>
 					</MkInput>
 					<MkTextarea v-model="announcement.text">
 						<template #label>{{ i18n.ts.text }}</template>
@@ -49,40 +64,69 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="announcement.needConfirmationToRead" :helpText="i18n.ts._announcement.needConfirmationToReadDescription">
 						{{ i18n.ts._announcement.needConfirmationToRead }}
 					</MkSwitch>
-					<p v-if="announcement.reads">{{ i18n.t('nUsersRead', { n: announcement.reads }) }}</p>
+					<MkInput v-model="announcement.closeDuration" type="number">
+						<template #label>{{ i18n.ts.dialogCloseDuration }}</template>
+						<template #suffix>{{ i18n.ts._time.second }}</template>
+					</MkInput>
+					<MkInput v-model="announcement.displayOrder" type="number">
+						<template #label>{{ i18n.ts.displayOrder }}</template>
+					</MkInput>
+					<p v-if="announcement.readCount">{{ i18n.t('nUsersRead', { n: announcement.readCount }) }}</p>
+					<MkUserCardMini v-if="announcement.userId" :user="announcement.user" @click="editUser(announcement)"></MkUserCardMini>
+					<MkButton v-else class="button" inline primary @click="editUser(announcement)">{{ i18n.ts.specifyUser }}</MkButton>
 					<div class="buttons _buttons">
-						<MkButton class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
-						<MkButton v-if="announcement.id != null" class="button" inline @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
+						<MkButton v-if="announcement.id == null || announcement.isActive" class="button" inline primary @click="save(announcement)"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
+						<MkButton v-if="announcement.id != null && announcement.isActive" class="button" inline @click="archive(announcement)"><i class="ti ti-check"></i> {{ i18n.ts._announcement.end }} ({{ i18n.ts.archive }})</MkButton>
 						<MkButton v-if="announcement.id != null" class="button" inline danger @click="del(announcement)"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 					</div>
 				</div>
 			</MkFolder>
+			<MkButton v-if="hasMore" :class="$style.more" :disabled="!hasMore" primary rounded @click="fetch()">{{ i18n.ts.loadMore }}</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { } from 'vue';
+import { ref, watch } from 'vue';
+import * as misskey from 'misskey-js';
 import XHeader from './_header_.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
+
+const announceTitleEl = $shallowRef<HTMLInputElement | null>(null);
+const user = ref<misskey.entities.UserLite | null>(null);
+const offset = ref(0);
+const hasMore = ref(false);
 
 let announcements: any[] = $ref([]);
 
-os.api('admin/announcements/list').then(announcementResponse => {
-	announcements = announcementResponse;
-});
+function selectUserFilter(): void {
+	os.selectUser().then(_user => {
+		user.value = _user;
+	});
+}
 
-function add() {
+function editUser(announcement): void {
+	os.selectUser().then(_user => {
+		announcement.userId = _user.id;
+		announcement.user = _user;
+	});
+}
+
+function insertEmoji(ev: MouseEvent): void {
+	os.openEmojiPicker((ev.currentTarget ?? ev.target) as HTMLElement, {}, announceTitleEl);
+}
+
+function add(): void {
 	announcements.unshift({
 		_id: Math.random().toString(36),
 		id: null,
@@ -93,10 +137,12 @@ function add() {
 		display: 'normal',
 		forExistingUsers: false,
 		needConfirmationToRead: false,
+		closeDuration: 0,
+		displayOrder: 0,
 	});
 }
 
-function del(announcement) {
+function del(announcement): void {
 	os.confirm({
 		type: 'warning',
 		text: i18n.t('deleteAreYouSure', { x: announcement.title }),
@@ -107,30 +153,43 @@ function del(announcement) {
 	});
 }
 
-async function archive(announcement) {
+async function archive(announcement): Promise<void> {
 	await os.apiWithDialog('admin/announcements/update', {
 		...announcement,
 		isActive: false,
 	});
-	refresh();
+	fetch(true);
 }
 
-async function save(announcement) {
+async function save(announcement): Promise<void> {
 	if (announcement.id == null) {
 		await os.apiWithDialog('admin/announcements/create', announcement);
-		refresh();
 	} else {
-		os.apiWithDialog('admin/announcements/update', announcement);
+		await os.apiWithDialog('admin/announcements/update', announcement);
 	}
+	fetch(true);
 }
 
-function refresh() {
-	os.api('admin/announcements/list').then(announcementResponse => {
-		announcements = announcementResponse;
+function fetch(resetOffset = false): void {
+	if (resetOffset) {
+		announcements = [];
+		offset.value = 0;
+	}
+
+	os.api('admin/announcements/list', {
+		offsetMode: true,
+		offset: offset.value,
+		limit: 10,
+		userId: user.value?.id,
+	}).then(announcementResponse => {
+		announcements = announcements.concat(announcementResponse);
+		hasMore.value = announcementResponse?.length === 10;
+		offset.value += announcements.length;
 	});
 }
 
-refresh();
+watch(user, () => fetch(true));
+fetch(true);
 
 const headerActions = $computed(() => [{
 	asFullButton: true,
@@ -146,3 +205,10 @@ definePageMetadata({
 	icon: 'ti ti-speakerphone',
 });
 </script>
+
+<style lang="scss" module>
+.more {
+	margin-left: auto;
+	margin-right: auto;
+}
+</style>
