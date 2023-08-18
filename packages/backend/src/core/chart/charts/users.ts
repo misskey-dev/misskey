@@ -19,9 +19,8 @@ import type { KVs } from '../core.js';
 /**
  * ユーザー数に関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class UsersChart extends Chart<typeof schema> {
+export default class UsersChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
