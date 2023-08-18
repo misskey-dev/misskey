@@ -2186,7 +2186,6 @@ export interface Locale {
         };
     };
     "_koteitag": {
-        "selectProgram": string;
         "clearTags": string;
         "air": string;
         "livecure": string;

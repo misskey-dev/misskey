@@ -2100,7 +2100,6 @@ _webhookSettings:
     mention: "メンションされたとき"
 
 _koteitag:
-  selectProgram: "実況する番組を選択"
   clearTags: "タグをクリア"
   air: "エア番組"
   livecure: "実況"

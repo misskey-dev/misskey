@@ -5,7 +5,6 @@
   <div :class="$style.container">
     <div>
       <MkSelect :class="$style.select" v-model="program_selected">
-        <template #label><i class="ti ti-hash"></i>{{ i18n.ts._koteitag.selectProgram }}</template>
         <option v-for="option in options" :value="option['key']">{{option['label']}}</option>
       </MkSelect>
     </div>
@@ -79,7 +78,6 @@ const setPrograms = async () => {
   const commandToot = {command: 'user_config', tagging: {}}
   switch (program_selected.value) {
     case 'episode_browser':
-      program_selected.value = '';
       window.open('/mulukhiya/app/episode');
       return;
 
@@ -106,7 +104,6 @@ const setPrograms = async () => {
     title: i18n.ts._koteitag.confirmMessage,
     text: options[program_selected.value].label,
   }).then(({ canceled }) => {
-    program_selected.value = '';
     if (!canceled) {
       const payload = <object>{
         localOnly: true, // コマンドトゥートは連合に流す必要なし

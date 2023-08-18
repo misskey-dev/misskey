@@ -2041,7 +2041,6 @@ _webhookSettings:
     mention: "When being mentioned"
 
 _koteitag:
-  selectProgram: "Select Program"
   clearTags: "Clear Tags"
   air: "Air Program"
   livecure: "Livecure"
