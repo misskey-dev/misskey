@@ -21,9 +21,8 @@ const year = 1000 * 60 * 60 * 24 * 365;
 /**
  * アクティブユーザーに関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class ActiveUsersChart extends Chart<typeof schema> {
+export default class ActiveUsersChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
