@@ -7,10 +7,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { RemoteUser, User } from '@/models/entities/User.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { IdService } from '@/core/IdService.js';
-import type { NoteReaction } from '@/models/entities/NoteReaction.js';
+import type { MiNoteReaction } from '@/models/entities/NoteReaction.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { NotificationService } from '@/core/NotificationService.js';
@@ -95,7 +95,7 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async create(user: { id: User['id']; host: User['host']; isBot: User['isBot'] }, note: Note, _reaction?: string | null) {
+	public async create(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot'] }, note: MiNote, _reaction?: string | null) {
 		// Check blocking
 		if (note.userId !== user.id) {
 			const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
@@ -146,7 +146,7 @@ export class ReactionService {
 			}
 		}
 
-		const record: NoteReaction = {
+		const record: MiNoteReaction = {
 			id: this.idService.genId(),
 			createdAt: new Date(),
 			noteId: note.id,
@@ -231,7 +231,7 @@ export class ReactionService {
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
-				dm.addDirectRecipe(reactee as RemoteUser);
+				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 
 			if (['public', 'home', 'followers'].includes(note.visibility)) {
@@ -239,7 +239,7 @@ export class ReactionService {
 			} else if (note.visibility === 'specified') {
 				const visibleUsers = await Promise.all(note.visibleUserIds.map(id => this.usersRepository.findOneBy({ id })));
 				for (const u of visibleUsers.filter(u => u && this.userEntityService.isRemoteUser(u))) {
-					dm.addDirectRecipe(u as RemoteUser);
+					dm.addDirectRecipe(u as MiRemoteUser);
 				}
 			}
 
@@ -249,7 +249,7 @@ export class ReactionService {
 	}
 
 	@bindThis
-	public async delete(user: { id: User['id']; host: User['host']; isBot: User['isBot']; }, note: Note) {
+	public async delete(user: { id: MiUser['id']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote) {
 		// if already unreacted
 		const exist = await this.noteReactionsRepository.findOneBy({
 			noteId: note.id,
@@ -289,7 +289,7 @@ export class ReactionService {
 			const dm = this.apDeliverManagerService.createDeliverManager(user, content);
 			if (note.userHost !== null) {
 				const reactee = await this.usersRepository.findOneBy({ id: note.userId });
-				dm.addDirectRecipe(reactee as RemoteUser);
+				dm.addDirectRecipe(reactee as MiRemoteUser);
 			}
 			dm.addFollowersRecipe();
 			dm.execute();

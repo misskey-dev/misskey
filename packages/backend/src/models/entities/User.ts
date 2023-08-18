@@ -5,11 +5,11 @@
 
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
-import { DriveFile } from './DriveFile.js';
+import { MiDriveFile } from './DriveFile.js';
 
-@Entity()
+@Entity('user')
 @Index(['usernameLower', 'host'], { unique: true })
-export class User {
+export class MiUser {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -103,26 +103,26 @@ export class User {
 		nullable: true,
 		comment: 'The ID of avatar DriveFile.',
 	})
-	public avatarId: DriveFile['id'] | null;
+	public avatarId: MiDriveFile['id'] | null;
 
-	@OneToOne(type => DriveFile, {
+	@OneToOne(type => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public avatar: DriveFile | null;
+	public avatar: MiDriveFile | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 		comment: 'The ID of banner DriveFile.',
 	})
-	public bannerId: DriveFile['id'] | null;
+	public bannerId: MiDriveFile['id'] | null;
 
-	@OneToOne(type => DriveFile, {
+	@OneToOne(type => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public banner: DriveFile | null;
+	public banner: MiDriveFile | null;
 
 	@Column('varchar', {
 		length: 512, nullable: true,
@@ -244,7 +244,7 @@ export class User {
 	})
 	public token: string | null;
 
-	constructor(data: Partial<User>) {
+	constructor(data: Partial<MiUser>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
@@ -253,24 +253,24 @@ export class User {
 	}
 }
 
-export type LocalUser = User & {
+export type MiLocalUser = MiUser & {
 	host: null;
 	uri: null;
 }
 
-export type PartialLocalUser = Partial<User> & {
-	id: User['id'];
+export type MiPartialLocalUser = Partial<MiUser> & {
+	id: MiUser['id'];
 	host: null;
 	uri: null;
 }
 
-export type RemoteUser = User & {
+export type MiRemoteUser = MiUser & {
 	host: string;
 	uri: string;
 }
 
-export type PartialRemoteUser = Partial<User> & {
-	id: User['id'];
+export type MiPartialRemoteUser = Partial<MiUser> & {
+	id: MiUser['id'];
 	host: string;
 	uri: string;
 }

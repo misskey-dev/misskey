@@ -8,12 +8,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { NoteFavorite, NoteFavoritesRepository, PollsRepository, User, UsersRepository } from '@/models/index.js';
+import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, UsersRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { Poll } from '@/models/entities/Poll.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/entities/Poll.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
@@ -72,7 +72,7 @@ export class ExportFavoritesProcessorService {
 			await write('[');
 
 			let exportedFavoritesCount = 0;
-			let cursor: NoteFavorite['id'] | null = null;
+			let cursor: MiNoteFavorite['id'] | null = null;
 
 			while (true) {
 				const favorites = await this.noteFavoritesRepository.find({
@@ -85,7 +85,7 @@ export class ExportFavoritesProcessorService {
 						id: 1,
 					},
 					relations: ['note', 'note.user'],
-				}) as (NoteFavorite & { note: Note & { user: User } })[];
+				}) as (MiNoteFavorite & { note: MiNote & { user: MiUser } })[];
 
 				if (favorites.length === 0) {
 					job.updateProgress(100);
@@ -95,7 +95,7 @@ export class ExportFavoritesProcessorService {
 				cursor = favorites.at(-1)?.id ?? null;
 
 				for (const favorite of favorites) {
-					let poll: Poll | undefined;
+					let poll: MiPoll | undefined;
 					if (favorite.note.hasPoll) {
 						poll = await this.pollsRepository.findOneByOrFail({ noteId: favorite.note.id });
 					}
@@ -127,7 +127,7 @@ export class ExportFavoritesProcessorService {
 	}
 }
 
-function serialize(favorite: NoteFavorite & { note: Note & { user: User } }, poll: Poll | null = null): Record<string, unknown> {
+function serialize(favorite: MiNoteFavorite & { note: MiNote & { user: MiUser } }, poll: MiPoll | null = null): Record<string, unknown> {
 	return {
 		id: favorite.id,
 		createdAt: favorite.createdAt,

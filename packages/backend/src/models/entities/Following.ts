@@ -5,11 +5,11 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
+@Entity('following')
 @Index(['followerId', 'followeeId'], { unique: true })
-export class Following {
+export class MiFollowing {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,26 +24,26 @@ export class Following {
 		...id(),
 		comment: 'The followee user ID.',
 	})
-	public followeeId: User['id'];
+	public followeeId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public followee: User | null;
+	public followee: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The follower user ID.',
 	})
-	public followerId: User['id'];
+	public followerId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public follower: User | null;
+	public follower: MiUser | null;
 
 	//#region Denormalized fields
 	@Index()

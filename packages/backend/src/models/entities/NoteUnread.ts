@@ -5,35 +5,35 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Note } from './Note.js';
-import type { Channel } from './Channel.js';
+import { MiUser } from './User.js';
+import { MiNote } from './Note.js';
+import type { MiChannel } from './Channel.js';
 
-@Entity()
+@Entity('note_unread')
 @Index(['userId', 'noteId'], { unique: true })
-export class NoteUnread {
+export class MiNoteUnread {
 	@PrimaryColumn(id())
 	public id: string;
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column(id())
-	public noteId: Note['id'];
+	public noteId: MiNote['id'];
 
-	@ManyToOne(type => Note, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Note | null;
+	public note: MiNote | null;
 
 	/**
 	 * メンションか否か
@@ -55,7 +55,7 @@ export class NoteUnread {
 		...id(),
 		comment: '[Denormalized]',
 	})
-	public noteUserId: User['id'];
+	public noteUserId: MiUser['id'];
 
 	@Index()
 	@Column({
@@ -63,6 +63,6 @@ export class NoteUnread {
 		nullable: true,
 		comment: '[Denormalized]',
 	})
-	public noteChannelId: Channel['id'] | null;
+	public noteChannelId: MiChannel['id'] | null;
 	//#endregion
 }
