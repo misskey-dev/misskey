@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Clip } from './Clip.js';
+import { MiUser } from './User.js';
+import { MiClip } from './Clip.js';
 
-@Entity()
+@Entity('clip_favorite')
 @Index(['userId', 'clipId'], { unique: true })
-export class ClipFavorite {
+export class MiClipFavorite {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,20 +19,20 @@ export class ClipFavorite {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column(id())
-	public clipId: Clip['id'];
+	public clipId: MiClip['id'];
 
-	@ManyToOne(type => Clip, {
+	@ManyToOne(type => MiClip, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public clip: Clip | null;
+	public clip: MiClip | null;
 }

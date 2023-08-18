@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AbuseUserReportsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
+import type { MiAbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -23,7 +23,7 @@ export class AbuseUserReportEntityService {
 
 	@bindThis
 	public async pack(
-		src: AbuseUserReport['id'] | AbuseUserReport,
+		src: MiAbuseUserReport['id'] | MiAbuseUserReport,
 	) {
 		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });
 

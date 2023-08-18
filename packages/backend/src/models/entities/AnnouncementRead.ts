@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Announcement } from './Announcement.js';
+import { MiUser } from './User.js';
+import { MiAnnouncement } from './Announcement.js';
 
-@Entity()
+@Entity('announcement_read')
 @Index(['userId', 'announcementId'], { unique: true })
-export class AnnouncementRead {
+export class MiAnnouncementRead {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -21,21 +21,21 @@ export class AnnouncementRead {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column(id())
-	public announcementId: Announcement['id'];
+	public announcementId: MiAnnouncement['id'];
 
-	@ManyToOne(type => Announcement, {
+	@ManyToOne(type => MiAnnouncement, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public announcement: Announcement | null;
+	public announcement: MiAnnouncement | null;
 }

@@ -5,7 +5,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -19,9 +19,8 @@ import type { KVs } from '../core.js';
 /**
  * ユーザー数に関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class UsersChart extends Chart<typeof schema> {
+export default class UsersChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -53,7 +52,7 @@ export default class UsersChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public async update(user: { id: User['id'], host: User['host'] }, isAdditional: boolean): Promise<void> {
+	public async update(user: { id: MiUser['id'], host: MiUser['host'] }, isAdditional: boolean): Promise<void> {
 		const prefix = this.userEntityService.isLocalUser(user) ? 'local' : 'remote';
 
 		await this.commit({

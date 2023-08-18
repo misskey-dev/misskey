@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserListsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
-import type { UserList } from '@/models/entities/UserList.js';
+import type { MiUserList } from '@/models/entities/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -47,9 +47,8 @@ export const paramDef = {
 	required: ['name'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
@@ -71,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				createdAt: new Date(),
 				userId: me.id,
 				name: ps.name,
-			} as UserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
+			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
 
 			return await this.userListEntityService.pack(userList);
 		});
