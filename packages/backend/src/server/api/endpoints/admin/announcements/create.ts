@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AnnouncementsRepository } from '@/models/index.js';
-import { IdService } from '@/core/IdService.js';
-import { DI } from '@/di-symbols.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -47,6 +45,26 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			icon: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			display: {
+				type: 'string',
+				optional: false, nullable: false,
+			},
+			forExistingUsers: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			needConfirmationToRead: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
+			closeDuration: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
 			displayOrder: {
 				type: 'number',
 				optional: false, nullable: false,
@@ -54,10 +72,6 @@ export const meta = {
 			userId: {
 				type: 'string',
 				optional: false, nullable: true,
-			},
-			closeDuration: {
-				type: 'number',
-				optional: false, nullable: false,
 			},
 		},
 	},
@@ -69,9 +83,13 @@ export const paramDef = {
 		title: { type: 'string', minLength: 1 },
 		text: { type: 'string', minLength: 1 },
 		imageUrl: { type: 'string', nullable: true, minLength: 1 },
-		displayOrder: { type: 'number' },
-		userId: { type: 'string', nullable: true, format: 'misskey:id' },
-		closeDuration: { type: 'number', nullable: false },
+		icon: { type: 'string', enum: ['info', 'warning', 'error', 'success'], default: 'info' },
+		display: { type: 'string', enum: ['normal', 'banner', 'dialog'], default: 'normal' },
+		forExistingUsers: { type: 'boolean', default: false },
+		needConfirmationToRead: { type: 'boolean', default: false },
+		closeDuration: { type: 'number', default: 0 },
+		displayOrder: { type: 'number', default: 0 },
+		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 	},
 	required: ['title', 'text', 'imageUrl'],
 } as const;
@@ -80,25 +98,39 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
-
-		private idService: IdService,
+		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const announcement = await this.announcementsRepository.insert({
-				id: this.idService.genId(),
+			const { raw, packed } = await this.announcementService.create({
 				createdAt: new Date(),
 				updatedAt: null,
 				title: ps.title,
 				text: ps.text,
 				imageUrl: ps.imageUrl,
-				displayOrder: ps.displayOrder,
-				userId: ps.userId ?? null,
+				icon: ps.icon,
+				display: ps.display,
+				forExistingUsers: ps.forExistingUsers,
+				needConfirmationToRead: ps.needConfirmationToRead,
 				closeDuration: ps.closeDuration,
-			}).then(x => this.announcementsRepository.findOneByOrFail(x.identifiers[0]));
+				displayOrder: ps.displayOrder,
+				userId: ps.userId,
+			});
 
-			return Object.assign({}, announcement, { createdAt: announcement.createdAt.toISOString(), updatedAt: null });
+			return {
+				id: packed.id,
+				createdAt: packed.createdAt,
+				updatedAt: packed.updatedAt,
+				title: packed.title,
+				text: packed.text,
+				imageUrl: packed.imageUrl,
+				icon: packed.icon,
+				display: packed.display,
+				forExistingUsers: raw.forExistingUsers,
+				needConfirmationToRead: packed.needConfirmationToRead,
+				closeDuration: packed.closeDuration,
+				displayOrder: packed.displayOrder,
+				userId: raw.userId,
+			};
 		});
 	}
 }

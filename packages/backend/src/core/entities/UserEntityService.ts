@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull, Not } from 'typeorm';
 import * as Redis from 'ioredis';
 import _Ajv from 'ajv';
 import { ModuleRef } from '@nestjs/core';
@@ -49,7 +48,7 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { AntennaService } from '../AntennaService.js';
+import type { AnnouncementService } from '../AnnouncementService.js';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
@@ -85,7 +84,7 @@ export class UserEntityService implements OnModuleInit {
 	private driveFileEntityService: DriveFileEntityService;
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
-	private antennaService: AntennaService;
+	private announcementService: AnnouncementService;
 	private roleService: RoleService;
 	private federatedInstanceService: FederatedInstanceService;
 
@@ -164,7 +163,7 @@ export class UserEntityService implements OnModuleInit {
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
-		this.antennaService = this.moduleRef.get('AntennaService');
+		this.announcementService = this.moduleRef.get('AnnouncementService');
 		this.roleService = this.moduleRef.get('RoleService');
 		this.federatedInstanceService = this.moduleRef.get('FederatedInstanceService');
 	}
@@ -242,21 +241,6 @@ export class UserEntityService implements OnModuleInit {
 				take: 1,
 			}).then(n => n > 0),
 		});
-	}
-
-	@bindThis
-	public async getHasUnreadAnnouncement(userId: User['id']): Promise<boolean> {
-		const reads = await this.announcementReadsRepository.findBy({
-			userId: userId,
-		});
-
-		const id = reads.length > 0 ? Not(In(reads.map(read => read.announcementId))) : undefined;
-		const count = await this.announcementsRepository.countBy([
-			{ id, userId: IsNull() },
-			{ id, userId: userId },
-		]);
-
-		return count > 0;
 	}
 
 	@bindThis
@@ -387,6 +371,7 @@ export class UserEntityService implements OnModuleInit {
 		const isModerator = isMe && opts.detail ? await this.roleService.isModerator(user) : null;
 		const isAdmin = isMe && opts.detail ? await this.roleService.isAdministrator(user) : null;
 		const policies = opts.detail ? await this.roleService.getUserPolicies(user.id) : null;
+		const unreadAnnouncements = isMe && opts.detail ? await this.announcementService.getUnreadAnnouncements(user) : null;
 
 		const falsy = opts.detail ? false : undefined;
 
@@ -498,7 +483,8 @@ export class UserEntityService implements OnModuleInit {
 					where: { userId: user.id, isMentioned: true },
 					take: 1,
 				}).then(count => count > 0),
-				hasUnreadAnnouncement: this.getHasUnreadAnnouncement(user.id),
+				hasUnreadAnnouncement: unreadAnnouncements!.length > 0,
+				unreadAnnouncements,
 				hasUnreadAntenna: this.getHasUnreadAntenna(user.id),
 				hasUnreadChannel: false, // 後方互換性のため
 				hasUnreadNotification: this.getHasUnreadNotification(user.id),

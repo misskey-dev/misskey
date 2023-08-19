@@ -3,14 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
-import type { AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository } from '@/models/index.js';
-import type { Announcement } from '@/models/entities/Announcement.js';
+import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { DI } from '@/di-symbols.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -41,17 +36,41 @@ export const meta = {
 					optional: false, nullable: true,
 					format: 'date-time',
 				},
-				text: {
-					type: 'string',
+				isActive: {
+					type: 'boolean',
 					optional: false, nullable: false,
 				},
 				title: {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				text: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
 				imageUrl: {
 					type: 'string',
 					optional: false, nullable: true,
+				},
+				icon: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				display: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				forExistingUsers: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				needConfirmationToRead: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				closeDuration: {
+					type: 'number',
+					optional: false, nullable: false,
 				},
 				displayOrder: {
 					type: 'number',
@@ -63,14 +82,10 @@ export const meta = {
 				},
 				user: {
 					type: 'object',
-					optional: true, nullable: false,
+					optional: false, nullable: true,
 					ref: 'UserLite',
 				},
-				reads: {
-					type: 'number',
-					optional: false, nullable: false,
-				},
-				closeDuration: {
+				readCount: {
 					type: 'number',
 					optional: false, nullable: false,
 				},
@@ -84,7 +99,7 @@ export const paramDef = {
 	properties: {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
-		userId: { type: 'string', format: 'misskey:id' },
+		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
 } as const;
@@ -93,62 +108,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
-		@Inject(DI.announcementsRepository)
-		private announcementsRepository: AnnouncementsRepository,
-
-		@Inject(DI.announcementReadsRepository)
-		private announcementReadsRepository: AnnouncementReadsRepository,
-
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		private userEntityService: UserEntityService,
+		private announcementService: AnnouncementService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.announcementsRepository.createQueryBuilder('announcement');
-			if (ps.userId) {
-				query.where('"userId" = :userId', { userId: ps.userId });
-			} else {
-				query.where('"userId" IS NULL');
-			}
-
-			query.orderBy({
-				'announcement."displayOrder"': 'DESC',
-				'announcement."createdAt"': 'DESC',
-			});
-
-			const announcements = await query
-				.offset(ps.offset)
-				.limit(ps.limit)
-				.getMany();
-
-			const reads = new Map<Announcement, number>();
-
-			for (const announcement of announcements) {
-				reads.set(announcement, await this.announcementReadsRepository.countBy({
-					announcementId: announcement.id,
-				}));
-			}
-
-			const users = await this.usersRepository.findBy({
-				id: In(announcements.map(a => a.userId).filter(id => id != null)),
-			});
-			const packedUsers = await this.userEntityService.packMany(users, me, {
-				detail: false,
-			});
+			const announcements = await this.announcementService.list(ps.userId ?? null, ps.limit, ps.offset, me);
 
 			return announcements.map(announcement => ({
 				id: announcement.id,
 				createdAt: announcement.createdAt.toISOString(),
 				updatedAt: announcement.updatedAt?.toISOString() ?? null,
+				isActive: announcement.isActive,
 				title: announcement.title,
 				text: announcement.text,
 				imageUrl: announcement.imageUrl,
+				icon: announcement.icon,
+				display: announcement.display,
+				forExistingUsers: announcement.forExistingUsers,
+				needConfirmationToRead: announcement.needConfirmationToRead,
+				closeDuration: announcement.closeDuration,
 				displayOrder: announcement.displayOrder,
 				userId: announcement.userId,
-				user: packedUsers.find(user => user.id === announcement.userId),
-				reads: reads.get(announcement)!,
-				closeDuration: announcement.closeDuration,
+				user: announcement.userInfo,
+				readCount: announcement.readCount,
 			}));
 		});
 	}

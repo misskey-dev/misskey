@@ -133,6 +133,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</MkFolder>
 
+				<MkFolder v-if="user.host == null && iAmModerator">
+					<template #icon><i class="ti ti-speakerphone"></i></template>
+					<template #label>{{ i18n.ts.announcements }}</template>
+					<div class="_gaps">
+						<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
+
+						<MkPagination ref="announcementsPaginationEl" :pagination="announcementsPagination">
+							<template #default="{ items }">
+								<div class="_gaps_s">
+									<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
+										<span style="margin-right: 0.5em;">
+											<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+											<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
+											<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
+											<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+										</span>
+										<span>{{ announcement.title }}</span>
+										<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
+									</div>
+								</div>
+							</template>
+						</MkPagination>
+					</div>
+				</MkFolder>
+
 				<MkFolder>
 					<template #icon><i class="ti ti-password"></i></template>
 					<template #label>IP</template>
@@ -186,28 +211,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, defineAsyncComponent, ref, watch } from 'vue';
 import * as misskey from 'misskey-js';
-import MkChart from '@/components/MkChart.vue';
-import MkObjectView from '@/components/MkObjectView.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import FormLink from '@/components/form/link.vue';
-import FormSection from '@/components/form/section.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import FormSuspense from '@/components/form/suspense.vue';
-import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
-import MkInfo from '@/components/MkInfo.vue';
 import * as os from '@/os';
 import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
 import { iAmAdmin, iAmModerator, $i } from '@/account';
+import FormLink from '@/components/form/link.vue';
+import FormSection from '@/components/form/section.vue';
+import FormSuspense from '@/components/form/suspense.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkChart from '@/components/MkChart.vue';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkObjectView from '@/components/MkObjectView.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import { updateColumn } from '@/ui/deck/deck-store';
 
 const props = withDefaults(defineProps<{
 	userId: string;
@@ -230,6 +257,15 @@ let suspended = $ref(false);
 let moderationNote = $ref('');
 const filesPagination = {
 	endpoint: 'admin/drive/files' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.userId,
+	})),
+};
+const announcementsPaginationEl = ref<InstanceType<typeof MkPagination>>();
+const announcementsPagination = {
+	endpoint: 'admin/announcements/list' as const,
+	offsetMode: true,
 	limit: 10,
 	params: computed(() => ({
 		userId: props.userId,
@@ -409,6 +445,27 @@ function toggleRoleItem(role) {
 	}
 }
 
+function createAnnouncement(): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+		user,
+	}, {
+		done: async () => {
+			announcementsPaginationEl.value?.reload();
+		},
+	}, 'closed');
+}
+
+function editAnnouncement(announcement): void {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+		user,
+		announcement,
+	}, {
+		done: async () => {
+			announcementsPaginationEl.value?.reload();
+		},
+	}, 'closed');
+}
+
 watch(() => props.userId, () => {
 	init = createFetcher();
 }, {
@@ -576,5 +633,12 @@ definePageMetadata(computed(() => ({
 	height: 32px;
 	margin-left: 8px;
 	align-self: center;
+}
+
+.announcementItem {
+	display: flex;
+	padding: 8px 12px;
+	border-radius: 6px;
+	cursor: pointer;
 }
 </style>

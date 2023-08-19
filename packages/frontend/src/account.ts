@@ -96,7 +96,6 @@ export async function removeAccount(idOrToken: Account['id']) {
 
 function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Promise<Account> {
 	return new Promise((done, fail) => {
-		// Fetch user
 		window.fetch(`${apiUrl}/i`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -108,8 +107,8 @@ function fetchAccount(token: string, id?: string, forceShowDialog?: boolean): Pr
 		})
 			.then(res => new Promise<Account | { error: Record<string, any> }>((done2, fail2) => {
 				if (res.status >= 500 && res.status < 600) {
-				// サーバーエラー(5xx)の場合をrejectとする
-				// （認証エラーなど4xxはresolve）
+					// サーバーエラー(5xx)の場合をrejectとする
+					// （認証エラーなど4xxはresolve）
 					return fail2(res);
 				}
 				res.json().then(done2, fail2);

@@ -106,6 +106,7 @@ export type MeDetailed = UserDetailed & {
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
+	unreadAnnouncements: Announcement[];
 	[other: string]: any;
 };
 
@@ -418,9 +419,13 @@ export type Announcement = {
 	text: string;
 	title: string;
 	imageUrl: string | null;
-	isRead?: boolean;
-	isPrivate: boolean;
+	display: 'normal' | 'banner' | 'dialog';
+	icon: 'info' | 'warning' | 'error' | 'success';
+	needConfirmationToRead: boolean;
 	closeDuration: number;
+	displayOrder: number;
+	forYou: boolean;
+	isRead?: boolean;
 };
 
 export type Antenna = {

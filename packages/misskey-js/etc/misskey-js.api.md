@@ -30,9 +30,13 @@ type Announcement = {
     text: string;
     title: string;
     imageUrl: string | null;
-    isRead?: boolean;
-    isPrivate: boolean;
+    display: 'normal' | 'banner' | 'dialog';
+    icon: 'info' | 'warning' | 'error' | 'success';
+    needConfirmationToRead: boolean;
     closeDuration: number;
+    displayOrder: number;
+    forYou: boolean;
+    isRead?: boolean;
 };
 
 // @public (undocumented)
@@ -566,11 +570,9 @@ export type Endpoints = {
     };
     'announcements': {
         req: {
+            isActive?: boolean;
             limit?: number;
-            withUnreads?: boolean;
-            sinceId?: Announcement['id'];
-            untilId?: Announcement['id'];
-            privateOnly?: boolean;
+            offset?: number;
         };
         res: Announcement[];
     };
@@ -2476,6 +2478,7 @@ type MeDetailed = UserDetailed & {
     noCrawle: boolean;
     receiveAnnouncementEmail: boolean;
     usePasswordLessLogin: boolean;
+    unreadAnnouncements: Announcement[];
     [other: string]: any;
 };
 
