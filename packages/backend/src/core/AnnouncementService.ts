@@ -98,6 +98,7 @@ export class AnnouncementService {
 		}
 
 		query.orderBy({
+			'announcement."isActive"': 'DESC',
 			'announcement."displayOrder"': 'DESC',
 			'announcement."createdAt"': 'DESC',
 		});
@@ -166,21 +167,26 @@ export class AnnouncementService {
 
 		const packed = await this.announcementEntityService.pack(
 			announcement,
-			values.userId ? { id: values.userId } : null,
+			announcement.userId ? { id: announcement.userId } : null,
 		);
 
-		if (values.userId) {
-			this.globalEventService.publishMainStream(
-				values.userId,
-				'announcementCreated',
-				{
-					announcement: packed,
-				},
-			);
-		} else {
-			this.globalEventService.publishBroadcastStream('announcementCreated', {
-				announcement: packed,
-			});
+		if (announcement.isActive) {
+			if (announcement.userId) {
+				this.globalEventService.publishMainStream(
+					announcement.userId,
+					'announcementCreated',
+					{
+						announcement: packed,
+					},
+				);
+			} else {
+				this.globalEventService.publishBroadcastStream(
+					'announcementCreated',
+					{
+						announcement: packed,
+					},
+				);
+			}
 		}
 
 		return {

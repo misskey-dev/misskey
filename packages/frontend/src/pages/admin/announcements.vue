@@ -28,6 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkFolder v-for="announcement in announcements" :key="announcement.id ?? announcement._id" :defaultOpen="announcement.id == null">
 				<template #label>{{ announcement.title }}</template>
 				<template #icon>
+					<i v-if="announcement.id && !announcement.isActive" class="ti ti-archive"></i>
 					<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
 					<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
 					<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
