@@ -238,7 +238,7 @@ export class MiUserProfile {
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {
-		length: 128, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]',
 	})
 	public userHost: string | null;

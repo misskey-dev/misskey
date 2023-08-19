@@ -54,7 +54,7 @@ export class MiPoll {
 
 	@Index()
 	@Column('varchar', {
-		length: 128, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]',
 	})
 	public userHost: string | null;

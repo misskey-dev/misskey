@@ -25,7 +25,7 @@ export class MiEmoji {
 
 	@Index()
 	@Column('varchar', {
-		length: 128, nullable: true,
+		length: 512, nullable: true,
 	})
 	public host: string | null;
 

@@ -204,7 +204,7 @@ export class MiNote {
 	//#region Denormalized fields
 	@Index()
 	@Column('varchar', {
-		length: 128, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]',
 	})
 	public userHost: string | null;
@@ -217,7 +217,7 @@ export class MiNote {
 	public replyUserId: MiUser['id'] | null;
 
 	@Column('varchar', {
-		length: 128, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]',
 	})
 	public replyUserHost: string | null;
@@ -230,7 +230,7 @@ export class MiNote {
 	public renoteUserId: MiUser['id'] | null;
 
 	@Column('varchar', {
-		length: 128, nullable: true,
+		length: 512, nullable: true,
 		comment: '[Denormalized]',
 	})
 	public renoteUserHost: string | null;
