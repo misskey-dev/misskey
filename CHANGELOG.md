@@ -54,6 +54,7 @@
 ### Server
 - Fix: APIのオフセットが壊れていたせいで「もっと見る」でもっと見れない問題を修正
 - Fix: 外部サーバーの投稿がタイムラインに表示されないことがある問題を修正
+- Enhance: Add address bind config option (outgoingAddress)
 
 ## 13.14.1
 
