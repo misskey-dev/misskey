@@ -24,12 +24,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkInfo v-if="user.username.includes('.')">{{ i18n.ts.isSystemAccount }}</MkInfo>
 
-				<div v-if="user.url" class="_formLinksGrid">
-					<FormLink :to="userPage(user)">Profile</FormLink>
-					<FormLink :to="user.url" :external="true">Profile (remote)</FormLink>
-				</div>
-				<FormLink v-else :to="userPage(user)">Profile</FormLink>
-
 				<FormLink v-if="user.host" :to="`/instance-info/${user.host}`">{{ i18n.ts.instanceInfo }}</FormLink>
 
 				<div style="display: flex; flex-direction: column; gap: 1em;">
@@ -57,6 +51,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkKeyValue>
 				</div>
 
+				<MkTextarea v-model="moderationNote" manualSave>
+					<template #label>Moderation note</template>
+				</MkTextarea>
+
+				<!--
 				<FormSection>
 					<template #label>ActivityPub</template>
 
@@ -90,70 +89,85 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkFolder>
 					</div>
 				</FormSection>
+			-->
+
+				<FormSection>
+					<div class="_gaps">
+						<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+
+						<div>
+							<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+						</div>
+
+						<MkFolder>
+							<template #icon><i class="ti ti-license"></i></template>
+							<template #label>{{ i18n.ts._role.policies }}</template>
+							<div class="_gaps">
+								<div v-for="policy in Object.keys(info.policies)" :key="policy">
+									{{ policy }} ... {{ info.policies[policy] }}
+								</div>
+							</div>
+						</MkFolder>
+
+						<MkFolder>
+							<template #icon><i class="ti ti-password"></i></template>
+							<template #label>IP</template>
+							<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
+							<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
+							<template v-if="iAmAdmin && ips">
+								<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
+									<span class="date">{{ record.createdAt }}</span>
+									<span class="ip">{{ record.ip }}</span>
+								</div>
+							</template>
+						</MkFolder>
+
+						<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
+					</div>
+				</FormSection>
 			</div>
 
-			<div v-else-if="tab === 'moderation'" class="_gaps_m">
-				<MkSwitch v-model="suspended" @update:modelValue="toggleSuspend">{{ i18n.ts.suspend }}</MkSwitch>
+			<div v-else-if="tab === 'roles'" class="_gaps">
+				<MkButton v-if="user.host == null" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
 
-				<div>
-					<MkButton v-if="user.host == null && iAmModerator" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
-					<MkButton v-if="$i.isAdmin" inline danger @click="deleteAccount">{{ i18n.ts.deleteAccount }}</MkButton>
+				<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
+					<div :class="$style.roleItemMain">
+						<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
+						<button class="_button" :class="$style.roleToggle" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
+						<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
+						<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+					</div>
+					<div v-if="expandedRoles.includes(role.id)" :class="$style.roleItemSub">
+						<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id).createdAt" mode="detail"/></div>
+						<div v-if="info.roleAssigns.find(a => a.roleId === role.id).expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id).expiresAt).toLocaleString() }}</div>
+						<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
+					</div>
 				</div>
+			</div>
 
-				<MkFolder>
-					<template #icon><i class="ti ti-license"></i></template>
-					<template #label>{{ i18n.ts._role.policies }}</template>
-					<div class="_gaps">
-						<div v-for="policy in Object.keys(info.policies)" :key="policy">
-							{{ policy }} ... {{ info.policies[policy] }}
-						</div>
-					</div>
-				</MkFolder>
+			<div v-else-if="tab === 'announcements'" class="_gaps">
+				<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
 
-				<MkFolder>
-					<template #icon><i class="ti ti-badges"></i></template>
-					<template #label>{{ i18n.ts.roles }}</template>
-					<div class="_gaps">
-						<MkButton v-if="user.host == null && iAmModerator" primary rounded @click="assignRole"><i class="ti ti-plus"></i> {{ i18n.ts.assign }}</MkButton>
-
-						<div v-for="role in info.roles" :key="role.id" :class="$style.roleItem">
-							<div :class="$style.roleItemMain">
-								<MkRolePreview :class="$style.role" :role="role" :forModeration="true"/>
-								<button class="_button" :class="$style.roleToggle" @click="toggleRoleItem(role)"><i class="ti ti-chevron-down"></i></button>
-								<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="unassignRole(role, $event)"><i class="ti ti-x"></i></button>
-								<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
+				<MkPagination :pagination="announcementsPagination">
+					<template #default="{ items }">
+						<div class="_gaps_s">
+							<div v-for="announcement in items" :key="announcement.id" v-panel :class="$style.announcementItem" @click="editAnnouncement(announcement)">
+								<span style="margin-right: 0.5em;">
+									<i v-if="announcement.icon === 'info'" class="ti ti-info-circle"></i>
+									<i v-else-if="announcement.icon === 'warning'" class="ti ti-alert-triangle" style="color: var(--warn);"></i>
+									<i v-else-if="announcement.icon === 'error'" class="ti ti-circle-x" style="color: var(--error);"></i>
+									<i v-else-if="announcement.icon === 'success'" class="ti ti-check" style="color: var(--success);"></i>
+								</span>
+								<span>{{ announcement.title }}</span>
+								<span v-if="announcement.reads > 0" style="margin-left: auto; opacity: 0.7;">{{ i18n.ts.messageRead }}</span>
 							</div>
-							<div v-if="expandedRoles.includes(role.id)" :class="$style.roleItemSub">
-								<div>Assigned: <MkTime :time="info.roleAssigns.find(a => a.roleId === role.id).createdAt" mode="detail"/></div>
-								<div v-if="info.roleAssigns.find(a => a.roleId === role.id).expiresAt">Period: {{ new Date(info.roleAssigns.find(a => a.roleId === role.id).expiresAt).toLocaleString() }}</div>
-								<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
-							</div>
-						</div>
-					</div>
-				</MkFolder>
-
-				<MkFolder>
-					<template #icon><i class="ti ti-password"></i></template>
-					<template #label>IP</template>
-					<MkInfo v-if="!iAmAdmin" warn>{{ i18n.ts.requireAdminForView }}</MkInfo>
-					<MkInfo v-else>The date is the IP address was first acknowledged.</MkInfo>
-					<template v-if="iAmAdmin && ips">
-						<div v-for="record in ips" :key="record.ip" class="_monospace" :class="$style.ip" style="margin: 1em 0;">
-							<span class="date">{{ record.createdAt }}</span>
-							<span class="ip">{{ record.ip }}</span>
 						</div>
 					</template>
-				</MkFolder>
+				</MkPagination>
+			</div>
 
-				<MkFolder>
-					<template #icon><i class="ti ti-cloud"></i></template>
-					<template #label>{{ i18n.ts.files }}</template>
-					<MkFileListForAdmin :pagination="filesPagination" viewMode="grid"/>
-				</MkFolder>
-
-				<MkTextarea v-model="moderationNote" manualSave>
-					<template #label>Moderation note</template>
-				</MkTextarea>
+			<div v-else-if="tab === 'drive'" class="_gaps">
+				<MkFileListForAdmin :pagination="filesPagination" viewMode="grid"/>
 			</div>
 
 			<div v-else-if="tab === 'chart'" class="_gaps_m">
@@ -185,7 +199,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, defineAsyncComponent, watch } from 'vue';
 import * as misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
@@ -205,8 +219,9 @@ import { url } from '@/config';
 import { userPage, acct } from '@/filters/user';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { i18n } from '@/i18n';
-import { iAmAdmin, iAmModerator, $i } from '@/account';
+import { iAmAdmin, $i } from '@/account';
 import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
 	userId: string;
@@ -233,37 +248,36 @@ const filesPagination = {
 		userId: props.userId,
 	})),
 };
+const announcementsPagination = {
+	endpoint: 'admin/announcements/list' as const,
+	limit: 10,
+	params: computed(() => ({
+		userId: props.userId,
+	})),
+};
 let expandedRoles = $ref([]);
 
 function createFetcher() {
-	if (iAmModerator) {
-		return () => Promise.all([os.api('users/show', {
-			userId: props.userId,
-		}), os.api('admin/show-user', {
-			userId: props.userId,
-		}), iAmAdmin ? os.api('admin/get-user-ips', {
-			userId: props.userId,
-		}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => {
-			user = _user;
-			info = _info;
-			ips = _ips;
-			moderator = info.isModerator;
-			silenced = info.isSilenced;
-			suspended = info.isSuspended;
-			moderationNote = info.moderationNote;
+	return () => Promise.all([os.api('users/show', {
+		userId: props.userId,
+	}), os.api('admin/show-user', {
+		userId: props.userId,
+	}), iAmAdmin ? os.api('admin/get-user-ips', {
+		userId: props.userId,
+	}) : Promise.resolve(null)]).then(([_user, _info, _ips]) => {
+		user = _user;
+		info = _info;
+		ips = _ips;
+		moderator = info.isModerator;
+		silenced = info.isSilenced;
+		suspended = info.isSuspended;
+		moderationNote = info.moderationNote;
 
-			watch($$(moderationNote), async () => {
-				await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
-				await refreshUser();
-			});
+		watch($$(moderationNote), async () => {
+			await os.api('admin/update-user-note', { userId: user.id, text: moderationNote });
+			await refreshUser();
 		});
-	} else {
-		return () => os.api('users/show', {
-			userId: props.userId,
-		}).then((res) => {
-			user = res;
-		});
-	}
+	});
 }
 
 function refreshUser() {
@@ -406,6 +420,19 @@ function toggleRoleItem(role) {
 	}
 }
 
+function createAnnouncement() {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+		user,
+	}, {}, 'closed');
+}
+
+function editAnnouncement(announcement) {
+	os.popup(defineAsyncComponent(() => import('@/components/MkUserAnnouncementEditDialog.vue')), {
+		user,
+		announcement,
+	}, {}, 'closed');
+}
+
 watch(() => props.userId, () => {
 	init = createFetcher();
 }, {
@@ -426,11 +453,19 @@ const headerTabs = $computed(() => [{
 	key: 'overview',
 	title: i18n.ts.overview,
 	icon: 'ti ti-info-circle',
-}, iAmModerator ? {
-	key: 'moderation',
-	title: i18n.ts.moderation,
-	icon: 'ti ti-user-exclamation',
-} : null, {
+}, {
+	key: 'roles',
+	title: i18n.ts.roles,
+	icon: 'ti ti-badges',
+}, {
+	key: 'announcements',
+	title: i18n.ts.announcements,
+	icon: 'ti ti-speakerphone',
+}, {
+	key: 'drive',
+	title: i18n.ts.drive,
+	icon: 'ti ti-cloud',
+}, {
 	key: 'chart',
 	title: i18n.ts.charts,
 	icon: 'ti ti-chart-line',
@@ -438,11 +473,11 @@ const headerTabs = $computed(() => [{
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',
-}].filter(x => x != null));
+}]);
 
 definePageMetadata(computed(() => ({
 	title: user ? acct(user) : i18n.ts.userInfo,
-	icon: 'ti ti-info-circle',
+	icon: 'ti ti-user-exclamation',
 })));
 </script>
 
@@ -568,5 +603,12 @@ definePageMetadata(computed(() => ({
 	height: 32px;
 	margin-left: 8px;
 	align-self: center;
+}
+
+.announcementItem {
+	display: flex;
+	padding: 8px 12px;
+	border-radius: 6px;
+	cursor: pointer;
 }
 </style>

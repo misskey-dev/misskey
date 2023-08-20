@@ -8,9 +8,8 @@ import { DI } from '@/di-symbols.js';
 import type { UserListJoiningsRepository, UserListsRepository } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { UserList } from '@/models/entities/UserList.js';
+import type { MiUserList } from '@/models/entities/UserList.js';
 import { bindThis } from '@/decorators.js';
-import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class UserListEntityService {
@@ -20,14 +19,12 @@ export class UserListEntityService {
 
 		@Inject(DI.userListJoiningsRepository)
 		private userListJoiningsRepository: UserListJoiningsRepository,
-
-		private userEntityService: UserEntityService,
 	) {
 	}
 
 	@bindThis
 	public async pack(
-		src: UserList['id'] | UserList,
+		src: MiUserList['id'] | MiUserList,
 	): Promise<Packed<'UserList'>> {
 		const userList = typeof src === 'object' ? src : await this.userListsRepository.findOneByOrFail({ id: src });
 

@@ -3,12 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { InstancesRepository } from '@/models/index.js';
+import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { Instance } from '@/models/entities/Instance.js';
+import type { MiInstance } from '@/models/entities/Instance.js';
 import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 import { UtilityService } from '../UtilityService.js';
@@ -16,9 +14,6 @@ import { UtilityService } from '../UtilityService.js';
 @Injectable()
 export class InstanceEntityService {
 	constructor(
-		@Inject(DI.instancesRepository)
-		private instancesRepository: InstancesRepository,
-
 		private metaService: MetaService,
 
 		private utilityService: UtilityService,
@@ -27,7 +22,7 @@ export class InstanceEntityService {
 
 	@bindThis
 	public async pack(
-		instance: Instance,
+		instance: MiInstance,
 	): Promise<Packed<'FederationInstance'>> {
 		const meta = await this.metaService.fetch();
 		return {
@@ -57,7 +52,7 @@ export class InstanceEntityService {
 
 	@bindThis
 	public packMany(
-		instances: Instance[],
+		instances: MiInstance[],
 	) {
 		return Promise.all(instances.map(x => this.pack(x)));
 	}

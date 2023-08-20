@@ -8,8 +8,8 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Note } from '@/models/entities/Note.js';
-import { User } from '@/models/index.js';
+import { MiNote } from '@/models/entities/Note.js';
+import { MiUser } from '@/models/index.js';
 import type { NotesRepository } from '@/models/index.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
@@ -109,7 +109,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async indexNote(note: Note): Promise<void> {
+	public async indexNote(note: MiNote): Promise<void> {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
@@ -145,7 +145,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async unindexNote(note: Note): Promise<void> {
+	public async unindexNote(note: MiNote): Promise<void> {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
@@ -154,15 +154,15 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: User | null, opts: {
-		userId?: Note['userId'] | null;
-		channelId?: Note['channelId'] | null;
+	public async searchNote(q: string, me: MiUser | null, opts: {
+		userId?: MiNote['userId'] | null;
+		channelId?: MiNote['channelId'] | null;
 		host?: string | null;
 	}, pagination: {
-		untilId?: Note['id'];
-		sinceId?: Note['id'];
+		untilId?: MiNote['id'];
+		sinceId?: MiNote['id'];
 		limit?: number;
-	}): Promise<Note[]> {
+	}): Promise<MiNote[]> {
 		if (this.meilisearch) {
 			const filter: Q = {
 				op: 'and',

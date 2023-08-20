@@ -9,16 +9,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-show="loaded" :class="$style.root">
 		<img :src="serverErrorImageUrl" class="_ghost" :class="$style.img"/>
 		<div class="_gaps">
-			<p><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></p>
-			<p v-if="meta && (version === meta.version)">{{ i18n.ts.pageLoadErrorDescription }}</p>
-			<p v-else-if="serverIsDead">{{ i18n.ts.serverIsDead }}</p>
+			<div><b><i class="ti ti-alert-triangle"></i> {{ i18n.ts.pageLoadError }}</b></div>
+			<div v-if="meta && (version === meta.version)">{{ i18n.ts.pageLoadErrorDescription }}</div>
+			<div v-else-if="serverIsDead">{{ i18n.ts.serverIsDead }}</div>
 			<template v-else>
-				<p>{{ i18n.ts.newVersionOfClientAvailable }}</p>
-				<p>{{ i18n.ts.youShouldUpgradeClient }}</p>
+				<div>{{ i18n.ts.newVersionOfClientAvailable }}</div>
+				<div>{{ i18n.ts.youShouldUpgradeClient }}</div>
 				<MkButton style="margin: 8px auto;" @click="reload">{{ i18n.ts.reload }}</MkButton>
 			</template>
-			<p><MkA to="/docs/general/troubleshooting" class="_link">{{ i18n.ts.troubleshooting }}</MkA></p>
-			<p v-if="error" style="opacity: 0.7;">ERROR: {{ error }}</p>
+			<div><MkA to="/docs/general/troubleshooting" class="_link">{{ i18n.ts.troubleshooting }}</MkA></div>
+			<div v-if="error" style="opacity: 0.7;">ERROR: {{ error }}</div>
 		</div>
 	</div>
 </Transition>

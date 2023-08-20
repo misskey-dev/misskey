@@ -5,19 +5,19 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
-import { Note } from './Note.js';
-import type { User } from './User.js';
+import { MiNote } from './Note.js';
+import type { MiUser } from './User.js';
 
-@Entity()
-export class PromoNote {
+@Entity('promo_note')
+export class MiPromoNote {
 	@PrimaryColumn(id())
-	public noteId: Note['id'];
+	public noteId: MiNote['id'];
 
-	@OneToOne(type => Note, {
+	@OneToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Note | null;
+	public note: MiNote | null;
 
 	@Column('timestamp with time zone')
 	public expiresAt: Date;
@@ -28,6 +28,6 @@ export class PromoNote {
 		...id(),
 		comment: '[Denormalized]',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 	//#endregion
 }

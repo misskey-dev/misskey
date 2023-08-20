@@ -5,10 +5,10 @@
 
 import { PrimaryColumn, Entity, JoinColumn, Column, ManyToOne, Index } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class UserSecurityKey {
+@Entity('user_security_key')
+export class MiUserSecurityKey {
 	@PrimaryColumn('varchar', {
 		comment: 'Variable-length id given to navigator.credentials.get()',
 	})
@@ -16,13 +16,13 @@ export class UserSecurityKey {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column('varchar', {
@@ -43,7 +43,7 @@ export class UserSecurityKey {
 	})
 	public name: string;
 
-	constructor(data: Partial<UserSecurityKey>) {
+	constructor(data: Partial<MiUserSecurityKey>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

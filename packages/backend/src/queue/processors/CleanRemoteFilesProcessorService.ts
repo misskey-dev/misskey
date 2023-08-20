@@ -6,8 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFile, DriveFilesRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { MiDriveFile, DriveFilesRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -19,9 +18,6 @@ export class CleanRemoteFilesProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
@@ -36,7 +32,7 @@ export class CleanRemoteFilesProcessorService {
 		this.logger.info('Deleting cached remote files...');
 
 		let deletedCount = 0;
-		let cursor: DriveFile['id'] | null = null;
+		let cursor: MiDriveFile['id'] | null = null;
 
 		while (true) {
 			const files = await this.driveFilesRepository.find({
