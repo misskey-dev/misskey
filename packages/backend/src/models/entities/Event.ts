@@ -1,19 +1,19 @@
 import { Entity, Index, Column, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
 import { noteVisibilities } from '../../types.js';
-import { Note } from './Note.js';
-import type { User } from './User.js';
+import { MiNote } from './Note.js';
+import type { MiUser } from './User.js';
 
-@Entity()
-export class Event {
+@Entity('event')
+export class MiEvent {
 	@PrimaryColumn(id())
-	public noteId: Note['id'];
+	public noteId: MiNote['id'];
 
-	@OneToOne(type => Note, {
+	@OneToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Note | null;
+	public note: MiNote | null;
 
 	@Index()
 	@Column('timestamp with time zone', {
@@ -55,7 +55,7 @@ export class Event {
 		...id(),
 		comment: '[Denormalized]',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
 	@Index()
 	@Column('varchar', {
