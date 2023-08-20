@@ -6,8 +6,8 @@
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity()
-export class UserPending {
+@Entity('user_pending')
+export class MiUserPending {
 	@PrimaryColumn(id())
 	public id: string;
 

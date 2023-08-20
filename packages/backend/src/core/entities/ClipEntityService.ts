@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { ClipFavoritesRepository, ClipsRepository, User } from '@/models/index.js';
+import type { ClipFavoritesRepository, ClipsRepository, MiUser } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { Clip } from '@/models/entities/Clip.js';
+import type { MiClip } from '@/models/entities/Clip.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -28,8 +28,8 @@ export class ClipEntityService {
 
 	@bindThis
 	public async pack(
-		src: Clip['id'] | Clip,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiClip['id'] | MiClip,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Clip'>> {
 		const meId = me ? me.id : null;
 		const clip = typeof src === 'object' ? src : await this.clipsRepository.findOneByOrFail({ id: src });
@@ -50,8 +50,8 @@ export class ClipEntityService {
 
 	@bindThis
 	public packMany(
-		clips: Clip[],
-		me?: { id: User['id'] } | null | undefined,
+		clips: MiClip[],
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		return Promise.all(clips.map(x => this.pack(x, me)));
 	}
