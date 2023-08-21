@@ -485,6 +485,7 @@ windowRestore: "Återställ"
 pleaseDonate: "Misskey är en gratis programvara som används på {host}. Donera gärna för att göra utvecklingen ständigt, tack!"
 resetPasswordConfirm: "Återställ verkligen ditt lösenord?"
 dataSaver: "Databesparing"
+icon: "Profilbild"
 _achievements:
   _types:
     _open3windows:
