@@ -57,17 +57,16 @@ const getPrograms = async () => {
       programs = e;
       Object.keys(programs).map(k => {
         const v = programs[k];
-        if (v?.enable) {
-          const label = [v?.series];
-          if (v?.episode) label.push(`第${v.episode}${v.episode_suffix || '話'}`);
-          if (v?.subtitle) label.push(`「${v.subtitle}」`);
-          if (v?.livecure) {
-            if (v?.air) label.push(i18n.ts._koteitag.air);
-            label.push(i18n.ts._koteitag.livecure);
-          }
-          if (v?.minutes) label.push(`${v.minutes}分`);
-          options[k] = {key: k, label: label.join(' ')};
+        if (!v?.enable) return;
+        const label = [v?.series];
+        if (v?.episode) label.push(`第${v.episode}${v.episode_suffix || i18n.ts._koteitag.episodeSuffix}`);
+        if (v?.subtitle) label.push(`「${v.subtitle}」`);
+        if (v?.livecure) {
+          if (v?.air) label.push(i18n.ts._koteitag.air);
+          label.push(i18n.ts._koteitag.livecure);
         }
+        if (v?.minutes) label.push(`${v.minutes}分`);
+        options[k] = {key: k, label: label.join(' ')};
       });
     }).then(e => {
       options['episode_browser'] = {key:'episode_browser', label: i18n.ts._koteitag.episodeBrowser};
@@ -78,6 +77,7 @@ const setPrograms = async () => {
   const commandToot = {command: 'user_config', tagging: {}}
   switch (program_selected.value) {
     case 'episode_browser':
+      program_selected.value = '';
       window.open('/mulukhiya/app/episode');
       return;
 
@@ -104,16 +104,16 @@ const setPrograms = async () => {
     title: i18n.ts._koteitag.confirmMessage,
     text: options[program_selected.value].label,
   }).then(({ canceled }) => {
-    if (!canceled) {
-      const payload = <object>{
-        localOnly: true, // コマンドトゥートは連合に流す必要なし
-        poll: null,
-        text: JSON.stringify(commandToot),
-        visibility: 'specified',
-        visibleUserIds: [],
-      };
-      os.api('notes/create', payload).then(() => os.toast(i18n.ts._koteitag.successMessage));
-    }
+    if (canceled) return;
+    program_selected.value = '';
+    const payload = <object>{
+      localOnly: true, // コマンドトゥートは連合に流す必要なし
+      poll: null,
+      text: JSON.stringify(commandToot),
+      visibility: 'specified',
+      visibleUserIds: [],
+    };
+    os.api('notes/create', payload).then(() => os.toast(i18n.ts._koteitag.successMessage));
   });
 }
 
