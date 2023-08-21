@@ -185,6 +185,14 @@ export default function(props: {
 						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
 						break;
 					}
+					case "crop": {
+						const top = parseFloat(token.props.args.top ?? "0");
+						const right = parseFloat(token.props.args.right ?? "0");
+						const bottom = parseFloat(token.props.args.bottom ?? "0");
+						const left = parseFloat(token.props.args.left ?? "0");
+						style = `clip-path: inset(${top}% ${right}% ${bottom}% ${left}%);`;
+						break;
+					}
 					case 'position': {
 						if (!defaultStore.state.advancedMfm) break;
 						const x = parseFloat(token.props.args.x ?? '0');
