@@ -56,22 +56,20 @@ const getPrograms = async () => {
     .then(e => e.json())
     .then(e => {
       programs = e;
-      Object.keys(programs).map(k => {
-        const v = programs[k];
-        if (!v?.enable) return;
-        const label = [v?.series];
-        if (v?.episode) {
-          label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
-        }
-        if (v?.subtitle) label.push(`「${v.subtitle}」`);
-        if (v?.livecure) {
-          if (v?.air) label.push(dic.air);
-          label.push(dic.livecure);
-        }
-        if (v?.minutes) label.push(`${v.minutes}分`);
-        options[k] = {key: k, label: label.join(' ')};
-      });
-    }).then(e => {
+      Object.keys(programs).filter(k => programs[k]?.enable).map(k => {
+				const v = programs[k];
+				const label = [v.series];
+				if (v.episode) {
+					label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
+				}
+				if (v.subtitle) label.push(`「${v.subtitle}」`);
+				if (v.livecure) {
+					if (v.air) label.push(dic.air);
+					label.push(dic.livecure);
+				}
+				if (v.minutes) label.push(`${v.minutes}分`);
+				options[k] = {key: k, label: label.join(' ')};
+			});
       options['episode_browser'] = {key:'episode_browser', label: dic.episodeBrowser};
     }).catch(e => os.alert({type: 'error', title: dic.fetch, text: e.message}));
 }
@@ -90,15 +88,15 @@ const setPrograms = async () => {
 
     default:
       const v = programs[program_selected.value];
-      commandToot.tagging['user_tags'] = [v?.series];
-      if (v?.episode) {
+      commandToot.tagging['user_tags'] = [v.series];
+      if (v.episode) {
         commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
       }
-      if (v?.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
-      if (v?.air) commandToot.tagging['user_tags'].push(dic.air);
-      if (v?.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
-      if (v?.extra_tags) commandToot.tagging['user_tags'].concat(v.extra_tags);
-      if (v?.minutes) commandToot.tagging['minutes'] = v.minutes;
+      if (v.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
+      if (v.air) commandToot.tagging['user_tags'].push(dic.air);
+      if (v.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
+      if (v.extra_tags) commandToot.tagging['user_tags'].concat(v.extra_tags);
+      if (v.minutes) commandToot.tagging['minutes'] = v.minutes;
       break;
   }
 
