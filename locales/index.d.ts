@@ -686,6 +686,7 @@ export interface Locale {
     "unclip": string;
     "confirmToUnclipAlreadyClippedNote": string;
     "public": string;
+    "private": string;
     "i18nInfo": string;
     "manageAccessTokens": string;
     "accountInfo": string;
