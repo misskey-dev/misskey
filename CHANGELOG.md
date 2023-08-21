@@ -53,6 +53,7 @@
 ### Client
 - リストTLで、ユーザーが追加・削除されてもTLを初期化しないように
 - URL取得変数を関数に変更　CURRENT_URL -> Mk:url()
+- プレビューの表示状態を記憶するように
 - Fix: モバイル表示のときページ下部がナビゲーションバーに隠れる問題を修正
 - Fix: 一部モーダルダイアログでスクロールできない問題を修正
 - Fix: Selecting all emojis in Custom emoji is impossible
