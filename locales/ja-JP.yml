@@ -681,6 +681,7 @@ createNewClip: "新しいクリップを作成"
 unclip: "クリップ解除"
 confirmToUnclipAlreadyClippedNote: "このノートはすでにクリップ「{name}」に含まれています。ノートをこのクリップから除外しますか？"
 public: "パブリック"
+private: "非公開"
 i18nInfo: "Misskeyは有志によって様々な言語に翻訳されています。{link}で翻訳に協力できます。"
 manageAccessTokens: "アクセストークンの管理"
 accountInfo: "アカウント情報"
@@ -1780,6 +1781,10 @@ _permissions:
   "write:gallery": "ギャラリーを操作する"
   "read:gallery-likes": "ギャラリーのいいねを見る"
   "write:gallery-likes": "ギャラリーのいいねを操作する"
+  "read:flash": "Playを見る"
+  "write:flash": "Playを操作する"
+  "read:flash-likes": "Playのいいねを見る"
+  "write:flash-likes": "Playのいいねを操作する"
 
 _auth:
   shareAccessTitle: "アプリへのアクセス許可"
