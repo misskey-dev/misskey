@@ -48,6 +48,7 @@ export interface Locale {
     "unpin": string;
     "copyContent": string;
     "copyLink": string;
+    "copyLinkRenote": string;
     "delete": string;
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
