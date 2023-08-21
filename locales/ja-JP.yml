@@ -2105,6 +2105,7 @@ _koteitag:
   livecure: "実況"
   episodeBrowser: "エピソードブラウザ"
   fetch: "番組表の取得"
+  episodePrefix: "第"
   episodeSuffix: "話"
   confirmMessage: "この番組でよろしいでしょうか？"
   successMessage: "固定タグ用コマンドを送信しました。"

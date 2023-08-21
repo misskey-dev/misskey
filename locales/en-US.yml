@@ -2046,6 +2046,7 @@ _koteitag:
   livecure: "Livecure"
   episodeBrowser: "Episode Browser"
   fetch: "Fetch Programs"
+  episodePrefix: "ep"
   episodeSuffix: ""
   confirmMessage: "Is this program correct?"
   successMessage: "Commands for fixed tags were sent."

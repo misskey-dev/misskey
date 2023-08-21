@@ -2191,6 +2191,7 @@ export interface Locale {
         "livecure": string;
         "episodeBrowser": string;
         "fetch": string;
+        "episodePrefix": string;
         "episodeSuffix": string;
         "confirmMessage": string;
         "successMessage": string;

@@ -28,6 +28,7 @@ import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n';
 
 const name = 'koteitag';
+const dic = i18n.ts._koteitag;
 const program_selected = ref('');
 let programs:object[] = [];
 let options = reactive({});
@@ -49,7 +50,7 @@ defineExpose<WidgetComponentExpose>({
 });
 
 const getPrograms = async () => {
-  options = {clear_tags: {key:'clear_tags', label: i18n.ts._koteitag.clearTags}};
+  options = {clear_tags: {key:'clear_tags', label: dic.clearTags}};
   fetch('/mulukhiya/api/program/update', {method: 'POST'})
     .then(e => fetch('/mulukhiya/api/program'))
     .then(e => e.json())
@@ -59,18 +60,20 @@ const getPrograms = async () => {
         const v = programs[k];
         if (!v?.enable) return;
         const label = [v?.series];
-        if (v?.episode) label.push(`第${v.episode}${v.episode_suffix || i18n.ts._koteitag.episodeSuffix}`);
+        if (v?.episode) {
+          label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
+        }
         if (v?.subtitle) label.push(`「${v.subtitle}」`);
         if (v?.livecure) {
-          if (v?.air) label.push(i18n.ts._koteitag.air);
-          label.push(i18n.ts._koteitag.livecure);
+          if (v?.air) label.push(dic.air);
+          label.push(dic.livecure);
         }
         if (v?.minutes) label.push(`${v.minutes}分`);
         options[k] = {key: k, label: label.join(' ')};
       });
     }).then(e => {
-      options['episode_browser'] = {key:'episode_browser', label: i18n.ts._koteitag.episodeBrowser};
-    }).catch(e => os.alert({type: 'error', title: i18n.ts._koteitag.fetch, text: e.message}));
+      options['episode_browser'] = {key:'episode_browser', label: dic.episodeBrowser};
+    }).catch(e => os.alert({type: 'error', title: dic.fetch, text: e.message}));
 }
 
 const setPrograms = async () => {
@@ -89,11 +92,11 @@ const setPrograms = async () => {
       const v = programs[program_selected.value];
       commandToot.tagging['user_tags'] = [v?.series];
       if (v?.episode) {
-        commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || i18n.ts._koteitag.episodeSuffix}`);
+        commandToot.tagging['user_tags'].push(`${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
       }
       if (v?.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
-      if (v?.air) commandToot.tagging['user_tags'].push(i18n.ts._koteitag.air);
-      if (v?.livecure) commandToot.tagging['user_tags'].push(i18n.ts._koteitag.livecure);
+      if (v?.air) commandToot.tagging['user_tags'].push(dic.air);
+      if (v?.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
       if (v?.extra_tags) commandToot.tagging['user_tags'].concat(v.extra_tags);
       if (v?.minutes) commandToot.tagging['minutes'] = v.minutes;
       break;
@@ -101,7 +104,7 @@ const setPrograms = async () => {
 
   os.confirm({
     type: 'info',
-    title: i18n.ts._koteitag.confirmMessage,
+    title: dic.confirmMessage,
     text: options[program_selected.value].label,
   }).then(({ canceled }) => {
     if (canceled) return;
@@ -113,7 +116,7 @@ const setPrograms = async () => {
       visibility: 'specified',
       visibleUserIds: [],
     };
-    os.api('notes/create', payload).then(() => os.toast(i18n.ts._koteitag.successMessage));
+    os.api('notes/create', payload).then(() => os.toast(dic.successMessage));
   });
 }
 
