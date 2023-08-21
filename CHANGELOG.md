@@ -12,7 +12,7 @@
 
 -->
 
-## 2023.8.0 (unreleased)
+## 2023.9.0 (unreleased)
 
 ### General
 - OAuth 2.0のサポート
@@ -27,18 +27,24 @@
 - 絵文字ピッカーの検索の表示件数を100件に増加
 - Enhance: ユーザーメニューでスイッチでユーザーリストに追加・削除できるように
 - Enhance: 自分が押したリアクションのデザインを改善
+- Enhance: ノート検索にローカルのみ検索可能なオプションの追加
+- Enhance: AiScriptで`LOCALE`として現在の設定言語を取得できるように
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
 - Fix: 未読のお知らせの「わかった」をクリック・タップしてもその場で「わかった」が消えない問題を修正
 - Fix: iOSで画面を回転させるとテキストサイズが変わる問題を修正
 - Fix: word mute for sub note is not applied
 - Fix: タイムラインを下にスクロールしてノート画面に移動して再び戻ったら以前のスクロール位置を失う問題を修正
+- Fix: Misskeyプラグインをインストールする際のAiScriptバージョンのチェックが0.14.0以降に対応していない問題を修正
+- Fix: 他のサーバーのユーザーへ「メッセージを送信」した時の初期テキストのメンションが間違っている問題を修正
 - `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
 
 ### Server
+- Fix: ノート検索 `notes/search` にてhostを指定した際に検索結果に反映されるように
 - cacheRemoteFilesの初期値はfalseになりました
 - ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
 - Fix: 一部のfeatured noteを照会できない問題を修正
 - Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
+- Fix: ジョブキュー管理画面の認証を回避できる問題を修正
 
 ## 13.14.2
 
@@ -53,6 +59,7 @@
 ### Server
 - Fix: APIのオフセットが壊れていたせいで「もっと見る」でもっと見れない問題を修正
 - Fix: 外部サーバーの投稿がタイムラインに表示されないことがある問題を修正
+- Enhance: Add address bind config option (outgoingAddress)
 
 ## 13.14.1
 
