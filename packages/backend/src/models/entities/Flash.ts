@@ -67,7 +67,7 @@ export class MiFlash {
 	 * private ... プロフィールには表示しない
 	 */
 	@Column('varchar', {
-		default: 'public',
+		length: 512, default: 'public',
 	})
 	public visibility: 'public' | 'private';
 }
