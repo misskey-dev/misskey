@@ -5,10 +5,10 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class AbuseUserReport {
+@Entity('abuse_user_report')
+export class MiAbuseUserReport {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -20,35 +20,35 @@ export class AbuseUserReport {
 
 	@Index()
 	@Column(id())
-	public targetUserId: User['id'];
+	public targetUserId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public targetUser: User | null;
+	public targetUser: MiUser | null;
 
 	@Index()
 	@Column(id())
-	public reporterId: User['id'];
+	public reporterId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public reporter: User | null;
+	public reporter: MiUser | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public assigneeId: User['id'] | null;
+	public assigneeId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public assignee: User | null;
+	public assignee: MiUser | null;
 
 	@Index()
 	@Column('boolean', {

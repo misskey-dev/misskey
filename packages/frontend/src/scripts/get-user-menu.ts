@@ -133,13 +133,13 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		action: () => {
 			copyToClipboard(`@${user.username}@${user.host ?? host}`);
 		},
-	}, {
-		icon: 'ti ti-info-circle',
-		text: i18n.ts.info,
+	}, ...(iAmModerator ? [{
+		icon: 'ti ti-user-exclamation',
+		text: i18n.ts.moderation,
 		action: () => {
-			router.push(`/user-info/${user.id}`);
+			router.push(`/admin/user/${user.id}`);
 		},
-	}, {
+	}] : []), {
 		icon: 'ti ti-rss',
 		text: i18n.ts.copyRSS,
 		action: () => {
@@ -156,7 +156,8 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-mail',
 		text: i18n.ts.sendMessage,
 		action: () => {
-			os.post({ specified: user, initialText: `@${user.username} ` });
+			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
+			os.post({ specified: user, initialText: `${canonical} ` });
 		},
 	}, null, {
 		icon: 'ti ti-pencil',
@@ -330,7 +331,9 @@ export function getUserMenu(user: misskey.entities.UserDetailed, router: Router 
 
 	const cleanup = () => {
 		if (_DEV_) console.log('user menu cleanup', cleanups);
-		cleanups.forEach(cleanup => cleanup());
+		for (const cl of cleanups) {
+			cl();
+		}
 	};
 
 	return {

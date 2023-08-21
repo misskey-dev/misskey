@@ -5,11 +5,11 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { DriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { MiDriveFile } from './DriveFile.js';
 
-@Entity()
-export class Channel {
+@Entity('channel')
+export class MiChannel {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -31,13 +31,13 @@ export class Channel {
 		nullable: true,
 		comment: 'The owner ID.',
 	})
-	public userId: User['id'] | null;
+	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('varchar', {
 		length: 128,
@@ -56,13 +56,13 @@ export class Channel {
 		nullable: true,
 		comment: 'The ID of banner Channel.',
 	})
-	public bannerId: DriveFile['id'] | null;
+	public bannerId: MiDriveFile['id'] | null;
 
-	@ManyToOne(type => DriveFile, {
+	@ManyToOne(type => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public banner: DriveFile | null;
+	public banner: MiDriveFile | null;
 
 	@Column('varchar', {
 		array: true, length: 128, default: '{}',

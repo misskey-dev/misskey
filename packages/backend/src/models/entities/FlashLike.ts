@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Flash } from './Flash.js';
+import { MiUser } from './User.js';
+import { MiFlash } from './Flash.js';
 
-@Entity()
+@Entity('flash_like')
 @Index(['userId', 'flashId'], { unique: true })
-export class FlashLike {
+export class MiFlashLike {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,20 +19,20 @@ export class FlashLike {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column(id())
-	public flashId: Flash['id'];
+	public flashId: MiFlash['id'];
 
-	@ManyToOne(type => Flash, {
+	@ManyToOne(type => MiFlash, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public flash: Flash | null;
+	public flash: MiFlash | null;
 }
