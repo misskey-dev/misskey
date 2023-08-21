@@ -57,19 +57,19 @@ const getPrograms = async () => {
     .then(e => {
       programs = e;
       Object.keys(programs).filter(k => programs[k]?.enable).map(k => {
-				const v = programs[k];
-				const label = [v.series];
-				if (v.episode) {
-					label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
-				}
-				if (v.subtitle) label.push(`「${v.subtitle}」`);
-				if (v.livecure) {
-					if (v.air) label.push(dic.air);
-					label.push(dic.livecure);
-				}
-				if (v.minutes) label.push(`${v.minutes}分`);
-				options[k] = {key: k, label: label.join(' ')};
-			});
+        const v = programs[k];
+        const label = [v.series];
+        if (v.episode) {
+          label.push(`${dic.episodePrefix}${v.episode}${v.episode_suffix || dic.episodeSuffix}`);
+        }
+        if (v.subtitle) label.push(`「${v.subtitle}」`);
+        if (v.livecure) {
+          if (v.air) label.push(dic.air);
+          label.push(dic.livecure);
+        }
+        if (v.minutes) label.push(`${v.minutes}分`);
+        options[k] = {key: k, label: label.join(' ')};
+      });
       options['episode_browser'] = {key:'episode_browser', label: dic.episodeBrowser};
     }).catch(e => os.alert({type: 'error', title: dic.fetch, text: e.message}));
 }
