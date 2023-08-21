@@ -1746,6 +1746,10 @@ _permissions:
   "write:gallery": "Deine Galerie bearbeiten"
   "read:gallery-likes": "Liste deiner mit \"Gefällt mir\" markierten Galerie-Beiträge lesen"
   "write:gallery-likes": "Liste deiner mit \"Gefällt mir\" markierten Galerie-Beiträge bearbeiten"
+  "read:flash": "Deine Plays lesen"
+  "write:flash": "Deine Plays bearbeiten oder löschen"
+  "read:flash-likes": "Liste der Plays, die mir gefallen, lesen"
+  "write:flash-likes": "Liste der Plays, die mir gefallen, bearbeiten"
 _auth:
   shareAccessTitle: "Verteilung von App-Berechtigungen"
   shareAccess: "Möchtest du „{name}“ authorisieren, auf dieses Benutzerkonto zugreifen zu können?"
