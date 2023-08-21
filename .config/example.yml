@@ -159,6 +159,9 @@ id: 'aid'
 #deliverJobMaxAttempts: 12
 #inboxJobMaxAttempts: 8
 
+# Local address used for outgoing requests
+#outgoingAddress: 127.0.0.1
+
 # IP address family used for outgoing request (ipv4, ipv6 or dual)
 #outgoingAddressFamily: ipv4
 
