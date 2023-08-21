@@ -66,9 +66,8 @@ export class MiFlash {
 	 * public ... 公開
 	 * private ... プロフィールには表示しない
 	 */
-	@Column('enum', { enum: ['public', 'private'] })
-		@Column('varchar', {
-			default: 'public',
-		})
-		public visibility: 'public' | 'private';
+	@Column('varchar', {
+		default: 'public',
+	})
+	public visibility: 'public' | 'private';
 }
