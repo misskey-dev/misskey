@@ -6,12 +6,12 @@ import { query as urlQuery } from '@/misc/prelude/url.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 
-type ILink = {
+export type ILink = {
 	href: string;
 	rel?: string;
 };
 
-type IWebFinger = {
+export type IWebFinger = {
 	links: ILink[];
 	subject: string;
 };

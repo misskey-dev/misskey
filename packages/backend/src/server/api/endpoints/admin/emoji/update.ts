@@ -70,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
-	
+
 			await this.customEmojiService.update(ps.id, {
 				driveFile,
 				name: ps.name,

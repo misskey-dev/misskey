@@ -79,12 +79,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check if already muting
-			const exist = await this.mutingsRepository.findOneBy({
-				muterId: muter.id,
-				muteeId: mutee.id,
+			const exist = await this.mutingsRepository.exist({
+				where: {
+					muterId: muter.id,
+					muteeId: mutee.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyMuting);
 			}
 

@@ -9,9 +9,9 @@
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": false,
-		"target": "es2021",
+		"target": "ES2022",
 		"module": "esnext",
-		"moduleResolution": "node",
+		"moduleResolution": "node16",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -23,12 +23,12 @@
 		"useDefineForClassFields": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
+			"@/*": ["./src/*"]
 		},
 		"typeRoots": [
 			"node_modules/@types",
 			"node_modules/@vue-macros",
-			"@types",
+			"@types"
 		],
 		"types": [
 			"vite/client",
@@ -47,6 +47,6 @@
 		"./**/*.vue"
 	],
 	"exclude": [
-		".storybook/**/*",
+		".storybook/**/*"
 	]
 }

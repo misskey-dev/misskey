@@ -47,7 +47,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('post.userId = :userId', { userId: ps.userId });
 
 			const posts = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.galleryPostEntityService.packMany(posts, me);

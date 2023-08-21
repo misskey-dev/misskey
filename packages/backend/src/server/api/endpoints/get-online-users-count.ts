@@ -9,6 +9,8 @@ export const meta = {
 	tags: ['meta'],
 
 	requireCredential: false,
+	allowGet: true,
+	cacheSec: 60 * 1,
 } as const;
 
 export const paramDef = {

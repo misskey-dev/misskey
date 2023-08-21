@@ -26,7 +26,7 @@ export const Default = {
 		};
 	},
 	args: {
-		
+
 	},
 	parameters: {
 		layout: 'centered',

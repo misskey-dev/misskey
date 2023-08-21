@@ -3,7 +3,7 @@ import promiseLimit from 'promise-limit';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { BlockingsRepository, MutingsRepository, FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type { LocalUser, RemoteUser } from '@/models/entities/User.js';
 import { User } from '@/models/entities/User.js';
@@ -15,7 +15,6 @@ import type Logger from '@/logger.js';
 import type { Note } from '@/models/entities/Note.js';
 import type { IdService } from '@/core/IdService.js';
 import type { MfmService } from '@/core/MfmService.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
 import { toArray } from '@/misc/prelude/array.js';
 import type { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -47,6 +46,8 @@ import type { IActor, IObject } from '../type.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
+
+type Field = Record<'name' | 'value', string>;
 
 @Injectable()
 export class ApPersonService implements OnModuleInit {
@@ -94,28 +95,10 @@ export class ApPersonService implements OnModuleInit {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
-
-		//private utilityService: UtilityService,
-		//private userEntityService: UserEntityService,
-		//private idService: IdService,
-		//private globalEventService: GlobalEventService,
-		//private metaService: MetaService,
-		//private federatedInstanceService: FederatedInstanceService,
-		//private fetchInstanceMetadataService: FetchInstanceMetadataService,
-		//private cacheService: CacheService,
-		//private apResolverService: ApResolverService,
-		//private apNoteService: ApNoteService,
-		//private apImageService: ApImageService,
-		//private apMfmService: ApMfmService,
-		//private mfmService: MfmService,
-		//private hashtagService: HashtagService,
-		//private usersChart: UsersChart,
-		//private instanceChart: InstanceChart,
-		//private apLoggerService: ApLoggerService,
 	) {
 	}
 
-	onModuleInit() {
+	onModuleInit(): void {
 		this.utilityService = this.moduleRef.get('UtilityService');
 		this.userEntityService = this.moduleRef.get('UserEntityService');
 		this.driveFileEntityService = this.moduleRef.get('DriveFileEntityService');
@@ -152,10 +135,6 @@ export class ApPersonService implements OnModuleInit {
 	@bindThis
 	private validateActor(x: IObject, uri: string): IActor {
 		const expectHost = this.punyHost(uri);
-
-		if (x == null) {
-			throw new Error('invalid Actor: object is null');
-		}
 
 		if (!isActor(x)) {
 			throw new Error(`invalid Actor type '${x.type}'`);
@@ -218,21 +197,19 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async fetchPerson(uri: string): Promise<LocalUser | RemoteUser | null> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
-
-		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null;
+		const cached = this.cacheService.uriPersonCache.get(uri) as LocalUser | RemoteUser | null | undefined;
 		if (cached) return cached;
 
 		// URIがこのサーバーを指しているならデータベースからフェッチ
 		if (uri.startsWith(`${this.config.url}/`)) {
 			const id = uri.split('/').pop();
-			const u = await this.usersRepository.findOneBy({ id }) as LocalUser;
+			const u = await this.usersRepository.findOneBy({ id }) as LocalUser | null;
 			if (u) this.cacheService.uriPersonCache.set(uri, u);
 			return u;
 		}
 
 		//#region このサーバーに既に登録されていたらそれを返す
-		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser;
+		const exist = await this.usersRepository.findOneBy({ uri }) as LocalUser | RemoteUser | null;
 
 		if (exist) {
 			this.cacheService.uriPersonCache.set(uri, exist);
@@ -241,6 +218,23 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		return null;
+	}
+
+	private async resolveAvatarAndBanner(user: RemoteUser, icon: any, image: any): Promise<Pick<RemoteUser, 'avatarId' | 'bannerId' | 'avatarUrl' | 'bannerUrl' | 'avatarBlurhash' | 'bannerBlurhash'>> {
+		const [avatar, banner] = await Promise.all([icon, image].map(img => {
+			if (img == null) return null;
+			if (user == null) throw new Error('failed to create user: user is null');
+			return this.apImageService.resolveImage(user, img).catch(() => null);
+		}));
+
+		return {
+			avatarId: avatar?.id ?? null,
+			bannerId: banner?.id ?? null,
+			avatarUrl: avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null,
+			bannerUrl: banner ? this.driveFileEntityService.getPublicUrl(banner) : null,
+			avatarBlurhash: avatar?.blurhash ?? null,
+			bannerBlurhash: banner?.blurhash ?? null,
+		};
 	}
 
 	/**
@@ -254,9 +248,11 @@ export class ApPersonService implements OnModuleInit {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
-		const object = await resolver.resolve(uri) as any;
+		const object = await resolver.resolve(uri);
+		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
 
 		const person = this.validateActor(object, uri);
 
@@ -264,9 +260,9 @@ export class ApPersonService implements OnModuleInit {
 
 		const host = this.punyHost(object.id);
 
-		const { fields } = this.analyzeAttachments(person.attachment ?? []);
+		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
+		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
 		const isBot = getApType(object) === 'Service';
 
@@ -279,9 +275,19 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// Create user
-		let user: RemoteUser;
+		let user: RemoteUser | null = null;
+
+		//#region カスタム絵文字取得
+		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host)
+			.then(_emojis => _emojis.map(emoji => emoji.name))
+			.catch(err => {
+				this.logger.error(`error occured while fetching user emojis`, { stack: err });
+				return [];
+			});
+		//#endregion
+
 		try {
-		// Start transaction
+			// Start transaction
 			await this.db.transaction(async transactionalEntityManager => {
 				user = await transactionalEntityManager.save(new User({
 					id: this.idService.genId(),
@@ -290,30 +296,31 @@ export class ApPersonService implements OnModuleInit {
 					createdAt: new Date(),
 					lastFetchedAt: new Date(),
 					name: truncate(person.name, nameLength),
-					isLocked: !!person.manuallyApprovesFollowers,
+					isLocked: person.manuallyApprovesFollowers,
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
 					alsoKnownAs: person.alsoKnownAs,
-					isExplorable: !!person.discoverable,
+					isExplorable: person.discoverable,
 					username: person.preferredUsername,
-					usernameLower: person.preferredUsername!.toLowerCase(),
+					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
 					inbox: person.inbox,
-					sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
+					sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
 					followersUri: person.followers ? getApId(person.followers) : undefined,
 					featured: person.featured ? getApId(person.featured) : undefined,
 					uri: person.id,
 					tags,
 					isBot,
 					isCat: (person as any).isCat === true,
+					emojis,
 				})) as RemoteUser;
 
 				await transactionalEntityManager.save(new UserProfile({
 					userId: user.id,
 					description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-					url: url,
+					url,
 					fields,
-					birthday: bday ? bday[0] : null,
+					birthday: bday?.[0] ?? null,
 					location: person['vcard:Address'] ?? null,
 					userHost: host,
 				}));
@@ -327,23 +334,23 @@ export class ApPersonService implements OnModuleInit {
 				}
 			});
 		} catch (e) {
-		// duplicate key error
+			// duplicate key error
 			if (isDuplicateKeyValueError(e)) {
-			// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
-				const u = await this.usersRepository.findOneBy({
-					uri: person.id,
-				});
+				// /users/@a => /users/:id のように入力がaliasなときにエラーになることがあるのを対応
+				const u = await this.usersRepository.findOneBy({ uri: person.id });
+				if (u == null) throw new Error('already registered');
 
-				if (u) {
-					user = u as RemoteUser;
-				} else {
-					throw new Error('already registered');
-				}
+				user = u as RemoteUser;
 			} else {
 				this.logger.error(e instanceof Error ? e : new Error(e as string));
 				throw e;
 			}
 		}
+
+		if (user == null) throw new Error('failed to create user: user is null');
+
+		// Register to the cache
+		this.cacheService.uriPersonCache.set(user.uri, user);
 
 		// Register host
 		this.federatedInstanceService.fetch(host).then(async i => {
@@ -354,68 +361,34 @@ export class ApPersonService implements OnModuleInit {
 			}
 		});
 
-		this.usersChart.update(user!, true);
+		this.usersChart.update(user, true);
 
 		// ハッシュタグ更新
-		this.hashtagService.updateUsertags(user!, tags);
+		this.hashtagService.updateUsertags(user, tags);
 
 		//#region アバターとヘッダー画像をフェッチ
-		const [avatar, banner] = await Promise.all([
-			person.icon,
-			person.image,
-		].map(img =>
-			img == null
-				? Promise.resolve(null)
-				: this.apImageService.resolveImage(user!, img).catch(() => null),
-		));
+		try {
+			const updates = await this.resolveAvatarAndBanner(user, person.icon, person.image);
+			await this.usersRepository.update(user.id, updates);
+			user = { ...user, ...updates };
 
-		const avatarId = avatar ? avatar.id : null;
-		const bannerId = banner ? banner.id : null;
-		const avatarUrl = avatar ? this.driveFileEntityService.getPublicUrl(avatar, 'avatar') : null;
-		const bannerUrl = banner ? this.driveFileEntityService.getPublicUrl(banner) : null;
-		const avatarBlurhash = avatar ? avatar.blurhash : null;
-		const bannerBlurhash = banner ? banner.blurhash : null;
-
-		await this.usersRepository.update(user!.id, {
-			avatarId,
-			bannerId,
-			avatarUrl,
-			bannerUrl,
-			avatarBlurhash,
-			bannerBlurhash,
-		});
-
-		user!.avatarId = avatarId;
-		user!.bannerId = bannerId;
-		user!.avatarUrl = avatarUrl;
-		user!.bannerUrl = bannerUrl;
-		user!.avatarBlurhash = avatarBlurhash;
-		user!.bannerBlurhash = bannerBlurhash;
+			// Register to the cache
+			this.cacheService.uriPersonCache.set(user.uri, user);
+		} catch (err) {
+			this.logger.error('error occured while fetching user avatar/banner', { stack: err });
+		}
 		//#endregion
 
-		//#region カスタム絵文字取得
-		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], host).catch(err => {
-			this.logger.info(`extractEmojis: ${err}`);
-			return [] as Emoji[];
-		});
+		await this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err));
 
-		const emojiNames = emojis.map(emoji => emoji.name);
-
-		await this.usersRepository.update(user!.id, {
-			emojis: emojiNames,
-		});
-		//#endregion
-
-		await this.updateFeatured(user!.id, resolver).catch(err => this.logger.error(err));
-
-		return user!;
+		return user;
 	}
 
 	/**
 	 * Personの情報を更新します。
 	 * Misskeyに対象のPersonが登録されていなければ無視します。
 	 * もしアカウントの移行が確認された場合、アカウント移行処理を行います。
-	 * 
+	 *
 	 * @param uri URI of Person
 	 * @param resolver Resolver
 	 * @param hint Hint of Person object (この値が正当なPersonの場合、Remote resolveをせずに更新に利用します)
@@ -426,18 +399,14 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
-		if (uri.startsWith(`${this.config.url}/`)) {
-			return;
-		}
+		if (uri.startsWith(`${this.config.url}/`)) return;
 
 		//#region このサーバーに既に登録されているか
-		const exist = await this.usersRepository.findOneBy({ uri }) as RemoteUser | null;
-
-		if (exist === null) {
-			return;
-		}
+		const exist = await this.fetchPerson(uri) as RemoteUser | null;
+		if (exist === null) return;
 		//#endregion
 
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
@@ -446,27 +415,17 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Updating the Person: ${person.id}`);
 
-		// アバターとヘッダー画像をフェッチ
-		const [avatar, banner] = await Promise.all([
-			person.icon,
-			person.image,
-		].map(img =>
-			img == null
-				? Promise.resolve(null)
-				: this.apImageService.resolveImage(exist, img).catch(() => null),
-		));
-
 		// カスタム絵文字取得
 		const emojis = await this.apNoteService.extractEmojis(person.tag ?? [], exist.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
-			return [] as Emoji[];
+			return [];
 		});
 
 		const emojiNames = emojis.map(emoji => emoji.name);
 
-		const { fields } = this.analyzeAttachments(person.attachment ?? []);
+		const fields = this.analyzeAttachments(person.attachment ?? []);
 
-		const tags = extractApHashtags(person.tag).map(tag => normalizeForSearch(tag)).splice(0, 32);
+		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
 		const bday = person['vcard:bday']?.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -479,7 +438,7 @@ export class ApPersonService implements OnModuleInit {
 		const updates = {
 			lastFetchedAt: new Date(),
 			inbox: person.inbox,
-			sharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
+			sharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox,
 			followersUri: person.followers ? getApId(person.followers) : undefined,
 			featured: person.featured,
 			emojis: emojiNames,
@@ -487,32 +446,32 @@ export class ApPersonService implements OnModuleInit {
 			tags,
 			isBot: getApType(object) === 'Service',
 			isCat: (person as any).isCat === true,
-			isLocked: !!person.manuallyApprovesFollowers,
+			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
-			isExplorable: !!person.discoverable,
+			isExplorable: person.discoverable,
+			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<RemoteUser> & Pick<RemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
-		const moving =
+		const moving = ((): boolean => {
 			// 移行先がない→ある
-			(!exist.movedToUri && updates.movedToUri) ||
+			if (
+				exist.movedToUri === null &&
+				updates.movedToUri
+			) return true;
+
 			// 移行先がある→別のもの
-			(exist.movedToUri !== updates.movedToUri && exist.movedToUri && updates.movedToUri);
+			if (
+				exist.movedToUri !== null &&
+				updates.movedToUri !== null &&
+				exist.movedToUri !== updates.movedToUri
+			) return true;
+
 			// 移行先がある→ない、ない→ないは無視
+			return false;
+		})();
 
 		if (moving) updates.movedAt = new Date();
-
-		if (avatar) {
-			updates.avatarId = avatar.id;
-			updates.avatarUrl = this.driveFileEntityService.getPublicUrl(avatar, 'avatar');
-			updates.avatarBlurhash = avatar.blurhash;
-		}
-
-		if (banner) {
-			updates.bannerId = banner.id;
-			updates.bannerUrl = this.driveFileEntityService.getPublicUrl(banner);
-			updates.bannerBlurhash = banner.blurhash;
-		}
 
 		// Update user
 		await this.usersRepository.update(exist.id, updates);
@@ -525,10 +484,10 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		await this.userProfilesRepository.update({ userId: exist.id }, {
-			url: url,
+			url,
 			fields,
 			description: person.summary ? this.apMfmService.htmlToMfm(truncate(person.summary, summaryLength), person.tag) : null,
-			birthday: bday ? bday[0] : null,
+			birthday: bday?.[0] ?? null,
 			location: person['vcard:Address'] ?? null,
 		});
 
@@ -538,11 +497,10 @@ export class ApPersonService implements OnModuleInit {
 		this.hashtagService.updateUsertags(exist, tags);
 
 		// 該当ユーザーが既にフォロワーになっていた場合はFollowingもアップデートする
-		await this.followingsRepository.update({
-			followerId: exist.id,
-		}, {
-			followerSharedInbox: person.sharedInbox ?? (person.endpoints ? person.endpoints.sharedInbox : undefined),
-		});
+		await this.followingsRepository.update(
+			{ followerId: exist.id },
+			{ followerSharedInbox: person.sharedInbox ?? person.endpoints?.sharedInbox },
+		);
 
 		await this.updateFeatured(exist.id, resolver).catch(err => this.logger.error(err));
 
@@ -580,27 +538,22 @@ export class ApPersonService implements OnModuleInit {
 	 */
 	@bindThis
 	public async resolvePerson(uri: string, resolver?: Resolver): Promise<LocalUser | RemoteUser> {
-		if (typeof uri !== 'string') throw new Error('uri is not string');
-
 		//#region このサーバーに既に登録されていたらそれを返す
 		const exist = await this.fetchPerson(uri);
-
-		if (exist) {
-			return exist;
-		}
+		if (exist) return exist;
 		//#endregion
 
 		// リモートサーバーからフェッチしてきて登録
+		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}
 
 	@bindThis
-	public analyzeAttachments(attachments: IObject | IObject[] | undefined) {
-		const fields: {
-		name: string,
-		value: string
-	}[] = [];
+	// TODO: `attachments`が`IObject`だった場合、返り値が`[]`になるようだが構わないのか？
+	public analyzeAttachments(attachments: IObject | IObject[] | undefined): Field[] {
+		const fields: Field[] = [];
+
 		if (Array.isArray(attachments)) {
 			for (const attachment of attachments.filter(isPropertyValue)) {
 				fields.push({
@@ -610,11 +563,11 @@ export class ApPersonService implements OnModuleInit {
 			}
 		}
 
-		return { fields };
+		return fields;
 	}
 
 	@bindThis
-	public async updateFeatured(userId: User['id'], resolver?: Resolver) {
+	public async updateFeatured(userId: User['id'], resolver?: Resolver): Promise<void> {
 		const user = await this.usersRepository.findOneByOrFail({ id: userId });
 		if (!this.userEntityService.isRemoteUser(user)) return;
 		if (!user.featured) return;
@@ -636,20 +589,23 @@ export class ApPersonService implements OnModuleInit {
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
 			.slice(0, 5)
-			.map(item => limit(() => this.apNoteService.resolveNote(item, _resolver))));
+			.map(item => limit(() => this.apNoteService.resolveNote(item, {
+				resolver: _resolver,
+				sentFrom: new URL(user.uri),
+			}))));
 
 		await this.db.transaction(async transactionalEntityManager => {
 			await transactionalEntityManager.delete(UserNotePining, { userId: user.id });
 
 			// とりあえずidを別の時間で生成して順番を維持
 			let td = 0;
-			for (const note of featuredNotes.filter(note => note != null)) {
+			for (const note of featuredNotes.filter((note): note is Note => note != null)) {
 				td -= 1000;
 				transactionalEntityManager.insert(UserNotePining, {
 					id: this.idService.genId(new Date(Date.now() + td)),
 					createdAt: new Date(),
 					userId: user.id,
-					noteId: note!.id,
+					noteId: note.id,
 				});
 			}
 		});
@@ -688,7 +644,7 @@ export class ApPersonService implements OnModuleInit {
 			// (uriが存在しなかったり応答がなかったりする場合resolvePersonはthrow Errorする)
 			dst = await this.resolvePerson(src.movedToUri);
 		}
- 
+
 		if (dst.movedToUri === dst.uri) return 'skip: movedTo itself (dst)'; // ？？？
 		if (src.movedToUri !== dst.uri) return 'skip: missmatch uri'; // ？？？
 		if (dst.movedToUri === src.uri) return 'skip: dst.movedToUri === src.uri';

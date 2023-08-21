@@ -3,7 +3,7 @@
 	<FormSlot>
 		<template #label>{{ i18n.ts.navbar }}</template>
 		<MkContainer :showHeader="false">
-			<Sortable 
+			<Sortable
 				v-model="items"
 				itemKey="id"
 				:animation="150"

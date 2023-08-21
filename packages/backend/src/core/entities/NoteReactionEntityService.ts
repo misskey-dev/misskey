@@ -17,7 +17,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
 	private noteEntityService: NoteEntityService;
 	private reactionService: ReactionService;
-	
+
 	constructor(
 		private moduleRef: ModuleRef,
 

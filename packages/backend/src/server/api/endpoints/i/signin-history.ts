@@ -35,7 +35,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const query = this.queryService.makePaginationQuery(this.signinsRepository.createQueryBuilder('signin'), ps.sinceId, ps.untilId)
 				.andWhere('signin.userId = :meId', { meId: me.id });
 
-			const history = await query.take(ps.limit).getMany();
+			const history = await query.limit(ps.limit).getMany();
 
 			return await Promise.all(history.map(record => this.signinEntityService.pack(record)));
 		});

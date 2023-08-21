@@ -39,7 +39,7 @@
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>
 		</template>
 	</MkFolder>
-	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace', [$style.containerCenter]: c.align === 'center' }]" :style="{ backgroundColor: c.bgColor ?? null, color: c.fgColor ?? null, borderWidth: c.borderWidth ? `${c.borderWidth}px` : 0, borderColor: c.borderColor ?? 'var(--divider)', padding: c.padding ? `${c.padding}px` : 0, borderRadius: c.rounded ? '8px' : 0 }">
+	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }]" :style="{ textAlign: c.align ?? null, backgroundColor: c.bgColor ?? null, color: c.fgColor ?? null, borderWidth: c.borderWidth ? `${c.borderWidth}px` : 0, borderColor: c.borderColor ?? 'var(--divider)', padding: c.padding ? `${c.padding}px` : 0, borderRadius: c.rounded ? '8px' : 0 }">
 		<template v-for="child in c.children" :key="child">
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size" :align="c.align"/>
 		</template>
@@ -100,10 +100,6 @@ function openPostForm() {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-}
-
-.containerCenter {
-	text-align: center;
 }
 
 .fontSerif {

@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.innerJoinAndSelect('assign.user', 'user');
 
 			const assigns = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await Promise.all(assigns.map(async assign => ({

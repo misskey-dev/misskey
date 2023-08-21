@@ -64,7 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('request.followeeId = :meId', { meId: me.id });
 
 			const requests = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await Promise.all(requests.map(req => this.followRequestEntityService.pack(req)));

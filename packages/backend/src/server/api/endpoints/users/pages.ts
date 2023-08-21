@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('page.visibility = \'public\'');
 
 			const pages = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await this.pageEntityService.packMany(pages);

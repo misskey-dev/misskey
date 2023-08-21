@@ -43,11 +43,13 @@ export class NoteReadService implements OnApplicationShutdown {
 		//#endregion
 
 		// スレッドミュート
-		const threadMute = await this.noteThreadMutingsRepository.findOneBy({
-			userId: userId,
-			threadId: note.threadId ?? note.id,
+		const isThreadMuted = await this.noteThreadMutingsRepository.exist({
+			where: {
+				userId: userId,
+				threadId: note.threadId ?? note.id,
+			},
 		});
-		if (threadMute) return;
+		if (isThreadMuted) return;
 
 		const unread = {
 			id: this.idService.genId(),
@@ -62,9 +64,9 @@ export class NoteReadService implements OnApplicationShutdown {
 
 		// 2秒経っても既読にならなかったら「未読の投稿がありますよ」イベントを発行する
 		setTimeout(2000, 'unread note', { signal: this.#shutdownController.signal }).then(async () => {
-			const exist = await this.noteUnreadsRepository.findOneBy({ id: unread.id });
+			const exist = await this.noteUnreadsRepository.exist({ where: { id: unread.id } });
 
-			if (exist == null) return;
+			if (!exist) return;
 
 			if (params.isMentioned) {
 				this.globalEventService.publishMainStream(userId, 'unreadMention', note.id);
@@ -99,7 +101,7 @@ export class NoteReadService implements OnApplicationShutdown {
 			});
 
 			// TODO: ↓まとめてクエリしたい
-	
+
 			this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isMentioned: true,
@@ -109,7 +111,7 @@ export class NoteReadService implements OnApplicationShutdown {
 					this.globalEventService.publishMainStream(userId, 'readAllUnreadMentions');
 				}
 			});
-	
+
 			this.noteUnreadsRepository.countBy({
 				userId: userId,
 				isSpecified: true,

@@ -3,8 +3,8 @@ import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository } from '@/models/index.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { GalleryLike } from '@/models/entities/GalleryLike.js';
-import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 
 @Injectable()
 export class GalleryLikeEntityService {

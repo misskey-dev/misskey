@@ -9,6 +9,7 @@ import XAntenna from './editor.vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { useRouter } from '@/router';
+import { antennasCache } from '@/cache';
 
 const router = useRouter();
 
@@ -26,12 +27,9 @@ let draft = $ref({
 });
 
 function onAntennaCreated() {
+	antennasCache.delete();
 	router.push('/my/antennas');
 }
-
-const headerActions = $computed(() => []);
-
-const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.manageAntennas,

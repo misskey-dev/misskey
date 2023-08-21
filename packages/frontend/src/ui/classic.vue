@@ -219,7 +219,7 @@ onMounted(() => {
 
 		&.fullView {
 			margin: 0;
-		
+
 			> .sidebar {
 				display: none;
 			}

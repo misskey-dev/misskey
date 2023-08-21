@@ -87,7 +87,7 @@ const props = defineProps<{
 
 	@media (max-width: 500px) {
 		font-size: 10px;
-		
+
 		> article {
 			padding: 8px;
 

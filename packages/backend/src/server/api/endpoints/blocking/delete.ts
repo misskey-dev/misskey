@@ -5,8 +5,8 @@ import type { UsersRepository, BlockingsRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account'],
@@ -84,12 +84,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			});
 
 			// Check not blocking
-			const exist = await this.blockingsRepository.findOneBy({
-				blockerId: blocker.id,
-				blockeeId: blockee.id,
+			const exist = await this.blockingsRepository.exist({
+				where: {
+					blockerId: blocker.id,
+					blockeeId: blockee.id,
+				},
 			});
 
-			if (exist == null) {
+			if (!exist) {
 				throw new ApiError(meta.errors.notBlocking);
 			}
 

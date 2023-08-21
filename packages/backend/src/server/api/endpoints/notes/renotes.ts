@@ -71,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (me) this.queryService.generateMutedUserQuery(query, me);
 			if (me) this.queryService.generateBlockedUserQuery(query, me);
 
-			const renotes = await query.take(ps.limit).getMany();
+			const renotes = await query.limit(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(renotes, me);
 		});

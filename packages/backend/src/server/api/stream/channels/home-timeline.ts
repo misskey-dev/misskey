@@ -26,7 +26,7 @@ class HomeTimelineChannel extends Channel {
 	@bindThis
 	public async init(params: any) {
 		this.withReplies = params.withReplies as boolean;
-	
+
 		this.subscriber.on('notesStream', this.onNote);
 	}
 

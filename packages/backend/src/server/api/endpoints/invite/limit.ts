@@ -1,8 +1,8 @@
-import rndstr from 'rndstr';
 import { Inject, Injectable } from '@nestjs/common';
+import { MoreThan } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { RegistrationTicketsRepository } from '@/models/index.js';
-import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
@@ -15,12 +15,9 @@ export const meta = {
 		type: 'object',
 		optional: false, nullable: false,
 		properties: {
-			code: {
-				type: 'string',
-				optional: false, nullable: false,
-				example: '2ERUA5VR',
-				maxLength: 8,
-				minLength: 8,
+			remaining: {
+				type: 'integer',
+				optional: false, nullable: true,
 			},
 		},
 	},
@@ -39,22 +36,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		@Inject(DI.registrationTicketsRepository)
 		private registrationTicketsRepository: RegistrationTicketsRepository,
 
-		private idService: IdService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const code = rndstr({
-				length: 8,
-				chars: '2-9A-HJ-NP-Z', // [0-9A-Z] w/o [01IO] (32 patterns)
-			});
+			const policies = await this.roleService.getUserPolicies(me.id);
 
-			await this.registrationTicketsRepository.insert({
-				id: this.idService.genId(),
-				createdAt: new Date(),
-				code,
-			});
+			const count = policies.inviteLimit ? await this.registrationTicketsRepository.countBy({
+				createdAt: MoreThan(new Date(Date.now() - (policies.inviteExpirationTime * 60 * 1000))),
+				createdById: me.id,
+			}) : null;
 
 			return {
-				code,
+				remaining: count !== null ? Math.max(0, policies.inviteLimit - count) : null,
 			};
 		});
 	}

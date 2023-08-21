@@ -23,13 +23,13 @@
     </rdf:RDF>
   </metadata>
 	<style>
-		#g8 { 
+		#g8 {
     	animation-name: floating;
     	animation-duration: 3s;
     	animation-iteration-count: infinite;
    	 	animation-timing-function: ease-in-out;
 		}
- 
+
 		@keyframes floating {
     	0% { transform: translate(0,  0px); }
     	50% { transform: translate(0, -5px); }

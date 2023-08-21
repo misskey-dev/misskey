@@ -94,7 +94,7 @@ export class ExportFavoritesProcessorService {
 					break;
 				}
 
-				cursor = favorites[favorites.length - 1].id;
+				cursor = favorites.at(-1)?.id ?? null;
 
 				for (const favorite of favorites) {
 					let poll: Poll | undefined;

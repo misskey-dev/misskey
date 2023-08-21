@@ -16,6 +16,7 @@ import { createTemp } from '@/misc/create-temp.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
@@ -45,6 +46,7 @@ export class ServerService implements OnApplicationShutdown {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		private metaService: MetaService,
 		private userEntityService: UserEntityService,
 		private apiServerService: ApiServerService,
 		private openApiServerService: OpenApiServerService,
@@ -161,11 +163,16 @@ export class ServerService implements OnApplicationShutdown {
 		});
 
 		fastify.get<{ Params: { x: string } }>('/identicon/:x', async (request, reply) => {
-			const [temp, cleanup] = await createTemp();
-			await genIdenticon(request.params.x, fs.createWriteStream(temp));
 			reply.header('Content-Type', 'image/png');
 			reply.header('Cache-Control', 'public, max-age=86400');
-			return fs.createReadStream(temp).on('close', () => cleanup());
+
+			if ((await this.metaService.fetch()).enableIdenticonGeneration) {
+				const [temp, cleanup] = await createTemp();
+				await genIdenticon(request.params.x, fs.createWriteStream(temp));
+				return fs.createReadStream(temp).on('close', () => cleanup());
+			} else {
+				return reply.redirect('/static-assets/avatar.png');
+			}
 		});
 
 		fastify.get<{ Params: { code: string } }>('/verify-email/:code', async (request, reply) => {
@@ -217,14 +224,25 @@ export class ServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+		if (this.config.socket) {
+			if (fs.existsSync(this.config.socket)) {
+				fs.unlinkSync(this.config.socket);
+			}
+			fastify.listen({ path: this.config.socket }, (err, address) => {
+				if (this.config.chmodSocket) {
+					fs.chmodSync(this.config.socket!, this.config.chmodSocket);
+				}
+			});
+		} else {
+			fastify.listen({ port: this.config.port, host: '0.0.0.0' });
+		}
 
 		await fastify.ready();
 	}
 
 	@bindThis
 	public async dispose(): Promise<void> {
-    await this.streamingApiServerService.detach();
+		await this.streamingApiServerService.detach();
 		await this.#fastify.close();
 	}
 

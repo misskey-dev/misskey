@@ -48,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere({ followerId: me.id });
 
 			const followings = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await Promise.all(followings.map(x => this.channelEntityService.pack(x.followeeId, me)));

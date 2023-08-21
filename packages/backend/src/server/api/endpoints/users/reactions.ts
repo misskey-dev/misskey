@@ -73,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			this.queryService.generateVisibilityQuery(query, me);
 
 			const reactions = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await Promise.all(reactions.map(reaction => this.noteReactionEntityService.pack(reaction, me, { withNote: true })));

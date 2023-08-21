@@ -49,7 +49,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere({ userId: me.id });
 
 			const channels = await query
-				.take(ps.limit)
+				.limit(ps.limit)
 				.getMany();
 
 			return await Promise.all(channels.map(x => this.channelEntityService.pack(x, me)));

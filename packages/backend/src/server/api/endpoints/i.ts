@@ -23,7 +23,7 @@ export const meta = {
 			id: 'e5b3b9f0-2b8f-4b9f-9c1f-8c5c1b2e1b1a',
 			kind: 'permission',
 		},
-	}
+	},
 } as const;
 
 export const paramDef = {
@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				});
 				userProfile.loggedInDates = [...userProfile.loggedInDates, today];
 			}
-			
+
 			return await this.userEntityService.pack<true, true>(userProfile.user!, userProfile.user!, {
 				detail: true,
 				includeSecrets: isSecure,

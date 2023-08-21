@@ -1,9 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import rndstr from 'rndstr';
 import bcrypt from 'bcryptjs';
 import { IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { RegistrationTicketsRepository, UsedUsernamesRepository, UserPendingsRepository, UserProfilesRepository, UsersRepository, RegistrationTicket } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
@@ -14,6 +13,7 @@ import { EmailService } from '@/core/EmailService.js';
 import { LocalUser } from '@/models/entities/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
+import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -67,7 +67,7 @@ export class SignupApiService {
 		const body = request.body;
 
 		const instance = await this.metaService.fetch(true);
-	
+
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
@@ -76,7 +76,7 @@ export class SignupApiService {
 					throw new FastifyReplyError(400, err);
 				});
 			}
-	
+
 			if (instance.enableRecaptcha && instance.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(instance.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
@@ -89,51 +89,61 @@ export class SignupApiService {
 				});
 			}
 		}
-	
+
 		const username = body['username'];
 		const password = body['password'];
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
-	
+
 		if (instance.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
 				reply.code(400);
 				return;
 			}
-	
+
 			const res = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!res.available) {
 				reply.code(400);
 				return;
 			}
 		}
-	
+
+		let ticket: RegistrationTicket | null = null;
+
 		if (instance.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
 				reply.code(400);
 				return;
 			}
-	
-			const ticket = await this.registrationTicketsRepository.findOneBy({
+
+			ticket = await this.registrationTicketsRepository.findOneBy({
 				code: invitationCode,
 			});
-	
+
 			if (ticket == null) {
 				reply.code(400);
 				return;
 			}
-	
-			this.registrationTicketsRepository.delete(ticket.id);
+
+			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
+				reply.code(400);
+				return;
+			}
+
+			if (ticket.usedAt) {
+				reply.code(400);
+				return;
+			}
 		}
-	
+
 		if (instance.emailRequiredForSignup) {
-			if (await this.usersRepository.findOneBy({ usernameLower: username.toLowerCase(), host: IsNull() })) {
+			if (await this.usersRepository.exist({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
 				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
-			if (await this.usedUsernamesRepository.findOneBy({ username: username.toLowerCase() })) {
+			if (await this.usedUsernamesRepository.exist({ where: { username: username.toLowerCase() } })) {
 				throw new FastifyReplyError(400, 'USED_USERNAME');
 			}
 
@@ -142,26 +152,33 @@ export class SignupApiService {
 				throw new FastifyReplyError(400, 'DENIED_USERNAME');
 			}
 
-			const code = rndstr('a-z0-9', 16);
+			const code = secureRndstr(16, { chars: L_CHARS });
 
 			// Generate hash of password
 			const salt = await bcrypt.genSalt(8);
 			const hash = await bcrypt.hash(password, salt);
 
-			await this.userPendingsRepository.insert({
+			const pendingUser = await this.userPendingsRepository.insert({
 				id: this.idService.genId(),
 				createdAt: new Date(),
 				code,
 				email: emailAddress!,
 				username: username,
 				password: hash,
-			});
+			}).then(x => this.userPendingsRepository.findOneByOrFail(x.identifiers[0]));
 
 			const link = `${this.config.url}/signup-complete/${code}`;
 
 			this.emailService.sendEmail(emailAddress!, 'Signup',
 				`To complete signup, please click this link:<br><a href="${link}">${link}</a>`,
 				`To complete signup, please click this link: ${link}`);
+
+			if (ticket) {
+				await this.registrationTicketsRepository.update(ticket.id, {
+					usedAt: new Date(),
+					pendingUserId: pendingUser.id,
+				});
+			}
 
 			reply.code(204);
 			return;
@@ -170,12 +187,20 @@ export class SignupApiService {
 				const { account, secret } = await this.signupService.signup({
 					username, password, host,
 				});
-	
+
 				const res = await this.userEntityService.pack(account, account, {
 					detail: true,
 					includeSecrets: true,
 				});
-	
+
+				if (ticket) {
+					await this.registrationTicketsRepository.update(ticket.id, {
+						usedAt: new Date(),
+						usedBy: account,
+						usedById: account.id,
+					});
+				}
+
 				return {
 					...res,
 					token: secret,
@@ -211,6 +236,15 @@ export class SignupApiService {
 				emailVerified: true,
 				emailVerifyCode: null,
 			});
+
+			const ticket = await this.registrationTicketsRepository.findOneBy({ pendingUserId: pendingUser.id });
+			if (ticket) {
+				await this.registrationTicketsRepository.update(ticket.id, {
+					usedBy: account,
+					usedById: account.id,
+					pendingUserId: null,
+				});
+			}
 
 			return this.signinService.signin(request, reply, account as LocalUser);
 		} catch (err) {

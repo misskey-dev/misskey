@@ -36,7 +36,7 @@ export class SigninService {
 				headers: request.headers as any,
 				success: true,
 			}).then(x => this.signinsRepository.findOneByOrFail(x.identifiers[0]));
-	
+
 			// Publish signin event
 			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
 		});

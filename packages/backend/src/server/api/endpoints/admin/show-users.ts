@@ -104,8 +104,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				default: query.orderBy('user.id', 'ASC'); break;
 			}
 
-			query.take(ps.limit);
-			query.skip(ps.offset);
+			query.limit(ps.limit);
+			query.offset(ps.offset);
 
 			const users = await query.getMany();
 

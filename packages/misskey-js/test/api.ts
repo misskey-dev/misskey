@@ -137,7 +137,7 @@ describe('API', () => {
 				origin: 'https://misskey.test',
 				credential: 'TOKEN',
 			});
-	
+
 			await cli.request('i', {}, null);
 		} catch (e) {
 			expect(isAPIError(e)).toEqual(true);
@@ -165,7 +165,7 @@ describe('API', () => {
 				origin: 'https://misskey.test',
 				credential: 'TOKEN',
 			});
-	
+
 			await cli.request('i');
 		} catch (e: any) {
 			expect(isAPIError(e)).toEqual(true);
@@ -182,7 +182,7 @@ describe('API', () => {
 				origin: 'https://misskey.test',
 				credential: 'TOKEN',
 			});
-	
+
 			await cli.request('i');
 		} catch (e) {
 			expect(isAPIError(e)).toEqual(false);
@@ -203,7 +203,7 @@ describe('API', () => {
 				origin: 'https://misskey.test',
 				credential: 'TOKEN',
 			});
-	
+
 			await cli.request('i');
 		} catch (e) {
 			expect(isAPIError(e)).toEqual(false);

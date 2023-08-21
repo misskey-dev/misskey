@@ -82,7 +82,7 @@ function openAccountMenu(ev: MouseEvent) {
 onMounted(() => {
 	window.addEventListener('resize', () => {
 		settingsWindowed = (window.innerWidth >= WINDOW_THRESHOLD);
-	}, { passive: true });	
+	}, { passive: true });
 });
 
 </script>
@@ -177,7 +177,7 @@ onMounted(() => {
 
 			> .post {
 				display: inline-block;
-			
+
 				> .button {
 					width: 40px;
 					height: 40px;

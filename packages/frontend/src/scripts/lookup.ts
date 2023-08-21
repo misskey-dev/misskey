@@ -6,18 +6,19 @@ import { Router } from '@/nirax';
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
 
-	const { canceled, result: query } = await os.inputText({
+	const { canceled, result: temp } = await os.inputText({
 		title: i18n.ts.lookup,
 	});
+	const query = temp ? temp.trim() : '';
 	if (canceled) return;
-	
+
 	if (query.startsWith('@') && !query.includes(' ')) {
 		_router.push(`/${query}`);
 		return;
 	}
 
 	if (query.startsWith('#')) {
-		_router.push(`/tags/${encodeURIComponent(query.substr(1))}`);
+		_router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
 		return;
 	}
 

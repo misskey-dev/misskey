@@ -303,7 +303,6 @@ copyUrl: "Kopírovať URL"
 rename: "Premenovať"
 avatar: "Avatar"
 banner: "BAnner"
-nsfw: "NSFW"
 whenServerDisconnected: "Keď sa stratí spojenie so serverom"
 disconnectedFromServer: "Spojenie so serverom bolo prerušené"
 reload: "Obnoviť"
@@ -1009,10 +1008,6 @@ _aboutMisskey:
   donate: "Podporiť Misskey"
   morePatrons: "Takisto oceňujeme podporu mnoých ďalších, ktorí tu nie sú uvedení. Ďakujeme! 🥰"
   patrons: "Prispievatelia"
-_nsfw:
-  respect: "Skryť NSFW médiá"
-  ignore: "Neskrývať NSFW médiá"
-  force: "Skryť všetky médiá"
 _instanceTicker:
   none: "Nikdy nezobrazovať"
   remote: "Zobraziť pre vzdialených používateľov"

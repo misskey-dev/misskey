@@ -22,17 +22,17 @@ export class ApMentionService {
 	}
 
 	@bindThis
-	public async extractApMentions(tags: IObject | IObject[] | null | undefined, resolver: Resolver) {
-		const hrefs = unique(this.extractApMentionObjects(tags).map(x => x.href as string));
+	public async extractApMentions(tags: IObject | IObject[] | null | undefined, resolver: Resolver): Promise<User[]> {
+		const hrefs = unique(this.extractApMentionObjects(tags).map(x => x.href));
 
 		const limit = promiseLimit<User | null>(2);
 		const mentionedUsers = (await Promise.all(
 			hrefs.map(x => limit(() => this.apPersonService.resolvePerson(x, resolver).catch(() => null))),
 		)).filter((x): x is User => x != null);
-	
+
 		return mentionedUsers;
 	}
-	
+
 	@bindThis
 	public extractApMentionObjects(tags: IObject | IObject[] | null | undefined): IApMention[] {
 		if (tags == null) return [];

@@ -3,13 +3,14 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { signup, api, post, connectStream, startServer } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
+import type * as misskey from 'misskey-js';
 
 describe('Note thread mute', () => {
 	let app: INestApplicationContext;
 
-	let alice: any;
-	let bob: any;
-	let carol: any;
+	let alice: misskey.entities.MeSignup;
+	let bob: misskey.entities.MeSignup;
+	let carol: misskey.entities.MeSignup;
 
 	beforeAll(async () => {
 		app = await startServer();

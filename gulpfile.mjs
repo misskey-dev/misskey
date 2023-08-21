@@ -2,14 +2,14 @@
  * Gulp tasks
  */
 
-const fs = require('fs');
-const gulp = require('gulp');
-const replace = require('gulp-replace');
-const terser = require('gulp-terser');
-const cssnano = require('gulp-cssnano');
+import * as fs from 'node:fs';
+import gulp from 'gulp';
+import replace from 'gulp-replace';
+import terser from 'gulp-terser';
+import cssnano from 'gulp-cssnano';
 
-const locales = require('./locales');
-const meta = require('./package.json');
+import locales from './locales/index.js';
+import meta from './package.json' assert { type: "json" };
 
 gulp.task('copy:backend:views', () =>
 	gulp.src('./packages/backend/src/server/web/views/**/*').pipe(gulp.dest('./packages/backend/built/server/web/views'))
