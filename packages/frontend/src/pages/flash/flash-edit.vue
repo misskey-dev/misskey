@@ -364,7 +364,8 @@ const props = defineProps<{
 }>();
 
 let flash = $ref(null);
-let visibility = $ref("public");
+let visibility = $ref('public');
+
 if (props.id) {
 	flash = await os.api('flash/show', {
 		flashId: props.id,
