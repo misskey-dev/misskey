@@ -12,7 +12,7 @@
 
 -->
 
-## 2023.8.0 (unreleased)
+## 2023.9.0 (unreleased)
 
 ### General
 - OAuth 2.0のサポート
