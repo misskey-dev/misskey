@@ -5,11 +5,11 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
+@Entity('blocking')
 @Index(['blockerId', 'blockeeId'], { unique: true })
-export class Blocking {
+export class MiBlocking {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,24 +24,24 @@ export class Blocking {
 		...id(),
 		comment: 'The blockee user ID.',
 	})
-	public blockeeId: User['id'];
+	public blockeeId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public blockee: User | null;
+	public blockee: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The blocker user ID.',
 	})
-	public blockerId: User['id'];
+	public blockerId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public blocker: User | null;
+	public blocker: MiUser | null;
 }

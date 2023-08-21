@@ -807,4 +807,5 @@ const endpoints: IEndpoint[] = (eps as [string, any]).map(([name, ep]) => {
 	};
 });
 
+// eslint-disable-next-line import/no-default-export
 export default endpoints;

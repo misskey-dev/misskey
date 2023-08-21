@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { format as DateFormat } from 'date-fns';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, User } from '@/models/index.js';
+import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, MiUser } from '@/models/index.js';
 import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
@@ -63,7 +63,7 @@ export class ExportAntennasProcessorService {
 			const antennas = await this.antennsRepository.findBy({ userId: job.data.user.id });
 			write('[');
 			for (const [index, antenna] of antennas.entries()) {
-				let users: User[] | undefined;
+				let users: MiUser[] | undefined;
 				if (antenna.userListId !== null) {
 					const joinings = await this.userListJoiningsRepository.findBy({ userListId: antenna.userListId });
 					users = await this.usersRepository.findBy({

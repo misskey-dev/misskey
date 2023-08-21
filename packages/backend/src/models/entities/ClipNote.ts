@@ -5,12 +5,12 @@
 
 import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
-import { Note } from './Note.js';
-import { Clip } from './Clip.js';
+import { MiNote } from './Note.js';
+import { MiClip } from './Clip.js';
 
-@Entity()
+@Entity('clip_note')
 @Index(['noteId', 'clipId'], { unique: true })
-export class ClipNote {
+export class MiClipNote {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,24 +19,24 @@ export class ClipNote {
 		...id(),
 		comment: 'The note ID.',
 	})
-	public noteId: Note['id'];
+	public noteId: MiNote['id'];
 
-	@ManyToOne(type => Note, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: Note | null;
+	public note: MiNote | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The clip ID.',
 	})
-	public clipId: Clip['id'];
+	public clipId: MiClip['id'];
 
-	@ManyToOne(type => Clip, {
+	@ManyToOne(type => MiClip, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public clip: Clip | null;
+	public clip: MiClip | null;
 }

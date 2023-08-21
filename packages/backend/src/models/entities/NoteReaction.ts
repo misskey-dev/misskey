@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Note } from './Note.js';
+import { MiUser } from './User.js';
+import { MiNote } from './Note.js';
 
-@Entity()
+@Entity('note_reaction')
 @Index(['userId', 'noteId'], { unique: true })
-export class NoteReaction {
+export class MiNoteReaction {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -22,23 +22,23 @@ export class NoteReaction {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user?: User | null;
+	public user?: MiUser | null;
 
 	@Index()
 	@Column(id())
-	public noteId: Note['id'];
+	public noteId: MiNote['id'];
 
-	@ManyToOne(type => Note, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note?: Note | null;
+	public note?: MiNote | null;
 
 	// TODO: 対象noteのuserIdを非正規化したい(「受け取ったリアクション一覧」のようなものを(JOIN無しで)実装したいため)
 

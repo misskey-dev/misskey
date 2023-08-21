@@ -5,10 +5,10 @@
 
 import { PrimaryColumn, Entity, Index, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class RegistrationTicket {
+@Entity('registration_ticket')
+export class MiRegistrationTicket {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -26,31 +26,31 @@ export class RegistrationTicket {
 	@Column('timestamp with time zone')
 	public createdAt: Date;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public createdBy: User | null;
+	public createdBy: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public createdById: User['id'] | null;
+	public createdById: MiUser['id'] | null;
 
-	@OneToOne(type => User, {
+	@OneToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public usedBy: User | null;
+	public usedBy: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public usedById: User['id'] | null;
+	public usedById: MiUser['id'] | null;
 
 	@Column('timestamp with time zone', {
 		nullable: true,
