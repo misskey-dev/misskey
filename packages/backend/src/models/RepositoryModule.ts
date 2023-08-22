@@ -5,7 +5,7 @@
 
 import { Module } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Poll, PollVote, UserProfile, UserKeypair, UserPending, AttestationChallenge, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, RenoteMuting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelFavorite, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment, ClipFavorite, UserMemo, UserListFavorite, AbuseReportResolver } from './index.js';
+import { User, Note, Announcement, AnnouncementRead, App, NoteFavorite, NoteThreadMuting, NoteReaction, NoteUnread, Poll, PollVote, UserProfile, UserKeypair, UserPending, UserSecurityKey, UserPublickey, UserList, UserListJoining, UserNotePining, UserIp, UsedUsername, Following, FollowRequest, Instance, Emoji, DriveFile, DriveFolder, Meta, Muting, RenoteMuting, Blocking, SwSubscription, Hashtag, AbuseUserReport, RegistrationTicket, AuthSession, AccessToken, Signin, Page, PageLike, GalleryPost, GalleryLike, ModerationLog, Clip, ClipNote, Antenna, PromoNote, PromoRead, Relay, MutedNote, Channel, ChannelFollowing, ChannelFavorite, RegistryItem, Webhook, Ad, PasswordResetRequest, RetentionAggregation, FlashLike, Flash, Role, RoleAssignment, ClipFavorite, UserMemo, UserListFavorite, AbuseReportResolver } from './index.js';
 import type { DataSource } from 'typeorm';
 import type { Provider } from '@nestjs/common';
 
@@ -90,12 +90,6 @@ const $userKeypairsRepository: Provider = {
 const $userPendingsRepository: Provider = {
 	provide: DI.userPendingsRepository,
 	useFactory: (db: DataSource) => db.getRepository(UserPending),
-	inject: [DI.db],
-};
-
-const $attestationChallengesRepository: Provider = {
-	provide: DI.attestationChallengesRepository,
-	useFactory: (db: DataSource) => db.getRepository(AttestationChallenge),
 	inject: [DI.db],
 };
 
@@ -429,7 +423,6 @@ const $abuseReportResolversRepository: Provider = {
 		$userProfilesRepository,
 		$userKeypairsRepository,
 		$userPendingsRepository,
-		$attestationChallengesRepository,
 		$userSecurityKeysRepository,
 		$userPublickeysRepository,
 		$userListsRepository,
@@ -498,7 +491,6 @@ const $abuseReportResolversRepository: Provider = {
 		$userProfilesRepository,
 		$userKeypairsRepository,
 		$userPendingsRepository,
-		$attestationChallengesRepository,
 		$userSecurityKeysRepository,
 		$userPublickeysRepository,
 		$userListsRepository,

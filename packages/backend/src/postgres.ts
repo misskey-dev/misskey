@@ -19,7 +19,6 @@ import { Announcement } from '@/models/entities/Announcement.js';
 import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { Antenna } from '@/models/entities/Antenna.js';
 import { App } from '@/models/entities/App.js';
-import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { AuthSession } from '@/models/entities/AuthSession.js';
 import { Blocking } from '@/models/entities/Blocking.js';
 import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
@@ -145,7 +144,6 @@ export const entities = [
 	UserNotePining,
 	UserSecurityKey,
 	UsedUsername,
-	AttestationChallenge,
 	Following,
 	FollowRequest,
 	Muting,

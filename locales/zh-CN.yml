@@ -1686,7 +1686,6 @@ _2fa:
   securityKeyNotSupported: "您的浏览器不支持安全密钥。"
   registerTOTPBeforeKey: "要注册安全密钥或 Passkey，请先设置验证器应用程序。"
   securityKeyInfo: "注册兼容 WebAuthn 的密钥，例如支持 FIDO2 的硬件安全密钥、设备上的生物识别功能、PIN 码以及 Passkey 等。"
-  chromePasskeyNotSupported: "目前不支持 Chrome 的 Passkey。"
   registerSecurityKey: "注册安全密钥或 Passkey"
   securityKeyName: "输入密钥名称"
   tapSecurityKey: "请按照浏览器说明操作来注册安全密钥或 Passkey。"

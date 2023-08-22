@@ -35,17 +35,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #icon><i class="ti ti-key"></i></template>
 			<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
 			<div class="_gaps_s">
-				<MkInfo>
-					{{ i18n.ts._2fa.securityKeyInfo }}<br>
-					<br>
-					{{ i18n.ts._2fa.chromePasskeyNotSupported }}
-				</MkInfo>
+				<MkInfo>{{ i18n.ts._2fa.securityKeyInfo }}</MkInfo>
 
-				<MkInfo v-if="!supportsCredentials" warn>
+				<MkInfo v-if="!WebAuthnSupported()" warn>
 					{{ i18n.ts._2fa.securityKeyNotSupported }}
 				</MkInfo>
 
-				<MkInfo v-else-if="supportsCredentials && !$i.twoFactorEnabled" warn>
+				<MkInfo v-else-if="WebAuthnSupported() && !$i.twoFactorEnabled" warn>
 					{{ i18n.ts._2fa.registerTOTPBeforeKey }}
 				</MkInfo>
 
@@ -72,9 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, defineAsyncComponent } from 'vue';
-import { hostname } from '@/config';
-import { byteify, hexify, stringify } from '@/scripts/2fa';
+import { defineAsyncComponent } from 'vue';
+import { supported as WebAuthnSupported, create as WebAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -92,11 +87,10 @@ withDefaults(defineProps<{
 	first: false,
 });
 
-const twoFactorData = ref<any>(null);
-const supportsCredentials = ref(!!navigator.credentials);
-const usePasswordLessLogin = $computed(() => $i!.usePasswordLessLogin);
+const usePasswordLessLogin = $computed(() => $i?.usePasswordLessLogin ?? false);
+let twoFactorData = $ref<{ qr: string; url: string; secret: string; label: string; issuer: string } | null>(null);
 
-async function registerTOTP() {
+async function registerTOTP(): Promise<void> {
 	const password = await os.inputText({
 		title: i18n.ts._2fa.registerTOTP,
 		text: i18n.ts._2fa.passwordToTOTP,
@@ -105,7 +99,8 @@ async function registerTOTP() {
 	});
 	if (password.canceled) return;
 
-	const twoFactorData = await os.apiWithDialog('i/2fa/register', {
+	twoFactorData = <{ qr: string; url: string; secret: string; label: string; issuer: string }>
+	await os.apiWithDialog('i/2fa/register', {
 		password: password.result,
 	});
 
@@ -126,7 +121,8 @@ async function registerTOTP() {
 	});
 	if (token.canceled) return;
 
-	const { backupCodes } = await os.apiWithDialog('i/2fa/done', {
+	const { backupCodes } = <{ backupCodes: string[] }>
+	await os.apiWithDialog('i/2fa/done', {
 		token: token.result.toString(),
 	});
 
@@ -136,7 +132,7 @@ async function registerTOTP() {
 	});
 }
 
-function unregisterTOTP() {
+function unregisterTOTP(): void {
 	os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
@@ -154,7 +150,7 @@ function unregisterTOTP() {
 	});
 }
 
-function renewTOTP() {
+function renewTOTP(): void {
 	os.confirm({
 		type: 'question',
 		title: i18n.ts._2fa.renewTOTP,
@@ -167,7 +163,7 @@ function renewTOTP() {
 	});
 }
 
-async function unregisterKey(key) {
+async function unregisterKey(key): Promise<void> {
 	const confirm = await os.confirm({
 		type: 'question',
 		title: i18n.ts._2fa.removeKey,
@@ -185,11 +181,15 @@ async function unregisterKey(key) {
 	await os.apiWithDialog('i/2fa/remove-key', {
 		password: password.result,
 		credentialId: key.id,
-	});
-	os.success();
+	})
+		.then(() => os.success())
+		.catch(error => os.alert({
+			type: 'error',
+			text: error,
+		}));
 }
 
-async function renameKey(key) {
+async function renameKey(key): Promise<void> {
 	const name = await os.inputText({
 		title: i18n.ts.rename,
 		default: key.name,
@@ -205,7 +205,7 @@ async function renameKey(key) {
 	});
 }
 
-async function addSecurityKey() {
+async function addSecurityKey(): Promise<void> {
 	const password = await os.inputText({
 		title: i18n.ts.password,
 		type: 'password',
@@ -213,8 +213,10 @@ async function addSecurityKey() {
 	});
 	if (password.canceled) return;
 
-	const challenge: any = await os.apiWithDialog('i/2fa/register-key', {
-		password: password.result,
+	const registrationOptions = parseCreationOptionsFromJSON({
+		publicKey: await os.apiWithDialog('i/2fa/register-key', {
+			password: password.result,
+		}),
 	});
 
 	const name = await os.inputText({
@@ -226,26 +228,8 @@ async function addSecurityKey() {
 	});
 	if (name.canceled) return;
 
-	const webAuthnCreation = navigator.credentials.create({
-		publicKey: {
-			challenge: byteify(challenge.challenge, 'base64'),
-			rp: {
-				id: hostname,
-				name: 'Misskey',
-			},
-			user: {
-				id: byteify($i!.id, 'ascii'),
-				name: $i!.username,
-				displayName: $i!.name,
-			},
-			pubKeyCredParams: [{ alg: -7, type: 'public-key' }],
-			timeout: 60000,
-			attestation: 'direct',
-		},
-	}) as Promise<PublicKeyCredential & { response: AuthenticatorAttestationResponse; } | null>;
-
 	const credential = await os.promiseDialog(
-		webAuthnCreation,
+		WebAuthnCreate(registrationOptions),
 		null,
 		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
 		i18n.ts._2fa.tapSecurityKey,
@@ -255,14 +239,11 @@ async function addSecurityKey() {
 	await os.apiWithDialog('i/2fa/key-done', {
 		password: password.result,
 		name: name.result,
-		challengeId: challenge.challengeId,
-		// we convert each 16 bits to a string to serialise
-		clientDataJSON: stringify(credential.response.clientDataJSON),
-		attestationObject: hexify(credential.response.attestationObject),
+		credential: credential.toJSON(),
 	});
 }
 
-async function updatePasswordLessLogin(value: boolean) {
+async function updatePasswordLessLogin(value: boolean): Promise<void> {
 	await os.apiWithDialog('i/2fa/password-less', {
 		value,
 	});

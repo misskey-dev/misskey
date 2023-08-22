@@ -1686,7 +1686,6 @@ _2fa:
   securityKeyNotSupported: "Dein Browser unterstützt keine Security-Tokens."
   registerTOTPBeforeKey: "Um einen Security-Token oder einen Passkey zu registrieren, musst du zuerst eine Authentifizierungs-App registrieren."
   securityKeyInfo: "Du kannst neben Fingerabdruck- oder PIN-Authentifizierung auf deinem Gerät auch Anmeldung mit Hilfe eines FIDO2-kompatiblen Hardware-Sicherheitsschlüssels einrichten."
-  chromePasskeyNotSupported: "Chrome-Passkeys werden zur Zeit nicht unterstützt."
   registerSecurityKey: "Security-Token oder Passkey registrieren"
   securityKeyName: "Schlüsselname eingeben"
   tapSecurityKey: "Bitten folge den Anweisungen deines Browsers zur Registrierung"

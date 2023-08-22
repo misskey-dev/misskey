@@ -24,24 +24,47 @@ export class UserSecurityKey {
 	@JoinColumn()
 	public user: User | null;
 
-	@Index()
-	@Column('varchar', {
-		comment:
-			'Variable-length public key used to verify attestations (hex-encoded).',
-	})
-	public publicKey: string;
-
-	@Column('timestamp with time zone', {
-		comment:
-			'The date of the last time the UserSecurityKey was successfully validated.',
-	})
-	public lastUsed: Date;
-
 	@Column('varchar', {
 		comment: 'User-defined name for this key',
 		length: 30,
 	})
 	public name: string;
+
+	@Index()
+	@Column('varchar', {
+		comment: 'The public key of the UserSecurityKey, hex-encoded.',
+	})
+	public publicKey: string;
+
+	@Column('bigint', {
+		comment: 'The number of times the UserSecurityKey was validated.',
+		default: 0,
+	})
+	public counter: number;
+
+	@Column('timestamp with time zone', {
+		comment: 'Timestamp of the last time the UserSecurityKey was used.',
+		default: () => 'now()',
+	})
+	public lastUsed: Date;
+
+	@Column('varchar', {
+		comment: 'The type of Backup Eligibility in authenticator data',
+		length: 32, nullable: true,
+	})
+	public credentialDeviceType?: string;
+
+	@Column('boolean', {
+		comment: 'Whether or not the credential has been backed up',
+		nullable: true,
+	})
+	public credentialBackedUp?: boolean;
+
+	@Column('varchar', {
+		comment: 'The type of the credential returned by the browser',
+		length: 32, array: true, nullable: true,
+	})
+	public transports?: string[];
 
 	constructor(data: Partial<UserSecurityKey>) {
 		if (data == null) return;

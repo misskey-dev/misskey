@@ -67,6 +67,7 @@ export type UserDetailed = UserLite & {
 	publicReactions: boolean;
 	securityKeys: boolean;
 	twoFactorEnabled: boolean;
+	usePasswordLessLogin: boolean;
 	updatedAt: DateString | null;
 	uri: string | null;
 	url: string | null;
@@ -105,7 +106,6 @@ export type MeDetailed = UserDetailed & {
 	mutingNotificationTypes: string[];
 	noCrawle: boolean;
 	receiveAnnouncementEmail: boolean;
-	usePasswordLessLogin: boolean;
 	unreadAnnouncements: Announcement[];
 	[other: string]: any;
 };

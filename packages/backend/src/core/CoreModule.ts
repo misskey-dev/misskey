@@ -43,7 +43,6 @@ import { RelayService } from './RelayService.js';
 import { RoleService } from './RoleService.js';
 import { S3Service } from './S3Service.js';
 import { SignupService } from './SignupService.js';
-import { TwoFactorAuthenticationService } from './TwoFactorAuthenticationService.js';
 import { UserBlockingService } from './UserBlockingService.js';
 import { CacheService } from './CacheService.js';
 import { UserFollowingService } from './UserFollowingService.js';
@@ -52,6 +51,7 @@ import { UserListService } from './UserListService.js';
 import { UserMutingService } from './UserMutingService.js';
 import { UserSuspendService } from './UserSuspendService.js';
 import { VideoProcessingService } from './VideoProcessingService.js';
+import { WebAuthnService } from './WebAuthnService.js';
 import { WebhookService } from './WebhookService.js';
 import { ProxyAccountService } from './ProxyAccountService.js';
 import { UtilityService } from './UtilityService.js';
@@ -169,7 +169,6 @@ const $RelayService: Provider = { provide: 'RelayService', useExisting: RelaySer
 const $RoleService: Provider = { provide: 'RoleService', useExisting: RoleService };
 const $S3Service: Provider = { provide: 'S3Service', useExisting: S3Service };
 const $SignupService: Provider = { provide: 'SignupService', useExisting: SignupService };
-const $TwoFactorAuthenticationService: Provider = { provide: 'TwoFactorAuthenticationService', useExisting: TwoFactorAuthenticationService };
 const $UserBlockingService: Provider = { provide: 'UserBlockingService', useExisting: UserBlockingService };
 const $CacheService: Provider = { provide: 'CacheService', useExisting: CacheService };
 const $UserFollowingService: Provider = { provide: 'UserFollowingService', useExisting: UserFollowingService };
@@ -178,6 +177,7 @@ const $UserListService: Provider = { provide: 'UserListService', useExisting: Us
 const $UserMutingService: Provider = { provide: 'UserMutingService', useExisting: UserMutingService };
 const $UserSuspendService: Provider = { provide: 'UserSuspendService', useExisting: UserSuspendService };
 const $VideoProcessingService: Provider = { provide: 'VideoProcessingService', useExisting: VideoProcessingService };
+const $WebAuthnService: Provider = { provide: 'WebAuthnService', useExisting: WebAuthnService };
 const $WebhookService: Provider = { provide: 'WebhookService', useExisting: WebhookService };
 const $UtilityService: Provider = { provide: 'UtilityService', useExisting: UtilityService };
 const $FileInfoService: Provider = { provide: 'FileInfoService', useExisting: FileInfoService };
@@ -298,7 +298,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		RoleService,
 		S3Service,
 		SignupService,
-		TwoFactorAuthenticationService,
 		UserBlockingService,
 		CacheService,
 		UserFollowingService,
@@ -307,6 +306,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserMutingService,
 		UserSuspendService,
 		VideoProcessingService,
+		WebAuthnService,
 		WebhookService,
 		UtilityService,
 		FileInfoService,
@@ -420,7 +420,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$RoleService,
 		$S3Service,
 		$SignupService,
-		$TwoFactorAuthenticationService,
 		$UserBlockingService,
 		$CacheService,
 		$UserFollowingService,
@@ -429,6 +428,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserMutingService,
 		$UserSuspendService,
 		$VideoProcessingService,
+		$WebAuthnService,
 		$WebhookService,
 		$UtilityService,
 		$FileInfoService,
@@ -543,7 +543,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		RoleService,
 		S3Service,
 		SignupService,
-		TwoFactorAuthenticationService,
 		UserBlockingService,
 		CacheService,
 		UserFollowingService,
@@ -552,6 +551,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		UserMutingService,
 		UserSuspendService,
 		VideoProcessingService,
+		WebAuthnService,
 		WebhookService,
 		UtilityService,
 		FileInfoService,
@@ -664,7 +664,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$RoleService,
 		$S3Service,
 		$SignupService,
-		$TwoFactorAuthenticationService,
 		$UserBlockingService,
 		$CacheService,
 		$UserFollowingService,
@@ -673,6 +672,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$UserMutingService,
 		$UserSuspendService,
 		$VideoProcessingService,
+		$WebAuthnService,
 		$WebhookService,
 		$UtilityService,
 		$FileInfoService,

@@ -1686,7 +1686,6 @@ _2fa:
   securityKeyNotSupported: "Tu navegador no soporta claves de autenticación."
   registerTOTPBeforeKey: "Please set up an authenticator app to register a security or pass key.\npor favor. configura una aplicación de autenticación para registrar una llave de seguridad."
   securityKeyInfo: "Se puede configurar el inicio de sesión usando una clave de seguridad de hardware que soporte FIDO2 o con un certificado de huella digital o con un PIN"
-  chromePasskeyNotSupported: "Las llaves de seguridad de Chrome no son soportadas por el momento."
   registerSecurityKey: "Registrar una llave de seguridad"
   securityKeyName: "Ingresa un nombre para la clave"
   tapSecurityKey: "Por favor, sigue tu navegador para registrar una llave de seguridad"

@@ -11,7 +11,6 @@ import { Announcement } from '@/models/entities/Announcement.js';
 import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { Antenna } from '@/models/entities/Antenna.js';
 import { App } from '@/models/entities/App.js';
-import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { AuthSession } from '@/models/entities/AuthSession.js';
 import { Blocking } from '@/models/entities/Blocking.js';
 import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
@@ -81,7 +80,6 @@ export {
 	AnnouncementRead,
 	Antenna,
 	App,
-	AttestationChallenge,
 	AuthSession,
 	Blocking,
 	ChannelFollowing,
@@ -150,7 +148,6 @@ export type AnnouncementsRepository = Repository<Announcement>;
 export type AnnouncementReadsRepository = Repository<AnnouncementRead>;
 export type AntennasRepository = Repository<Antenna>;
 export type AppsRepository = Repository<App>;
-export type AttestationChallengesRepository = Repository<AttestationChallenge>;
 export type AuthSessionsRepository = Repository<AuthSession>;
 export type BlockingsRepository = Repository<Blocking>;
 export type ChannelFollowingsRepository = Repository<ChannelFollowing>;

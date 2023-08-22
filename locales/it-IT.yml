@@ -1686,7 +1686,6 @@ _2fa:
   securityKeyNotSupported: "Il tuo browser non supporta le chiavi di sicurezza."
   registerTOTPBeforeKey: "Ti occorre un'app di autenticazione con OTP, prima di registrare la chiave di sicurezza."
   securityKeyInfo: "È possibile impostare il dispositivo per accedere utilizzando una chiave di sicurezza hardware che supporta FIDO2 o un'impronta digitale o un PIN sul dispositivo."
-  chromePasskeyNotSupported: "Le passkey di Chrome non sono attualmente supportate."
   registerSecurityKey: "Registra la chiave di sicurezza"
   securityKeyName: "Inserisci il nome della chiave"
   tapSecurityKey: "Segui le istruzioni del browser e registra la chiave di sicurezza."

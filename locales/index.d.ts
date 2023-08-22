@@ -416,6 +416,7 @@ export interface Locale {
     "2fa": string;
     "totp": string;
     "totpDescription": string;
+    "useSecurityKey": string;
     "moderator": string;
     "moderation": string;
     "nUsersMentioned": string;
@@ -1824,7 +1825,6 @@ export interface Locale {
         "securityKeyNotSupported": string;
         "registerTOTPBeforeKey": string;
         "securityKeyInfo": string;
-        "chromePasskeyNotSupported": string;
         "registerSecurityKey": string;
         "securityKeyName": string;
         "tapSecurityKey": string;

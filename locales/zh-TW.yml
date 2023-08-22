@@ -1686,7 +1686,6 @@ _2fa:
   securityKeyNotSupported: "您的瀏覽器不支援安全金鑰。"
   registerTOTPBeforeKey: "如要註冊安全金鑰或 Passkey，請先設定驗證應用程式。"
   securityKeyInfo: "您可以設定使用支援 FIDO2 的硬體安全鎖、終端設備的指紋認證，或者 PIN 碼來登入。"
-  chromePasskeyNotSupported: "目前不支援 Chrome 的 Passkey。"
   registerSecurityKey: "註冊安全金鑰或 Passkey"
   securityKeyName: "輸入金鑰名稱"
   tapSecurityKey: "按照瀏覽器的說明註冊安全金鑰或 Passkey。"

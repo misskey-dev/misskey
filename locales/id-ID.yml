@@ -1660,7 +1660,6 @@ _2fa:
   securityKeyNotSupported: "Peramban kamu tidak mendukung security key."
   registerTOTPBeforeKey: "Mohon atur aplikasi autentikator untuk mendaftarkan security key atau passkey."
   securityKeyInfo: "Kamu dapat memasang otentikasi WebAuthN untuk mengamankan proses login lebih lanjut dengan tidak hanya perangkat keras kunci keamanan yang mendukung FIDO2, namun juga sidik jari atau otentikasi PIN pada perangkatmu."
-  chromePasskeyNotSupported: "Passkey Chrome saat ini tidak didukung."
   registerSecurityKey: "Daftarkan security key atau passkey."
   securityKeyName: "Masukkan nama key."
   tapSecurityKey: "Mohon ikuti peramban kamu untuk mendaftarkan security key atau passkey"
