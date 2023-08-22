@@ -19,6 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 				</template>
 				<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+				<MkButton @click="generateRecoveryCode">{{ i18n.ts._2fa.generateRecoveryCode }}</MkButton>
+				<div v-if="showRecoveryCode">
+					{{ i18n.ts._2fa.recoveryCodeInfo }}
+					<li v-for="code in recoveryCodes" :key="code">{{ code }}</li>
+				</div>
 			</div>
 
 			<MkButton v-else-if="!twoFactorData && !$i.twoFactorEnabled" @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
@@ -88,6 +93,8 @@ withDefaults(defineProps<{
 const twoFactorData = ref<any>(null);
 const supportsCredentials = ref(!!navigator.credentials);
 const usePasswordLessLogin = $computed(() => $i!.usePasswordLessLogin);
+const showRecoveryCode = ref(false);
+const recoveryCodes = ref<string[]>([]);
 
 async function registerTOTP() {
 	const password = await os.inputText({
@@ -158,6 +165,28 @@ function renewTOTP() {
 		if (canceled) return;
 		registerTOTP();
 	});
+}
+
+async function generateRecoveryCode() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		title: i18n.ts._2fa.generateRecoveryCode,
+		text: i18n.ts._2fa.generateRecoveryCodeConfirm,
+		okText: i18n.ts._2fa.generateRecoveryCodeOK,
+		cancelText: i18n.ts._2fa.generateRecoveryCodeCancel,
+	});
+	if (confirm.canceled) return;
+
+	const password = await os.inputText({
+		title: i18n.ts.password,
+		type: 'password',
+		autocomplete: 'current-password',
+	});
+	const codes = await os.apiWithDialog('i/2fa/generate-recovery-codes', {
+		password: password.result,
+	});
+	recoveryCodes.value = codes;
+	showRecoveryCode.value = true;
 }
 
 async function unregisterKey(key) {
