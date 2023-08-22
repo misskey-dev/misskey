@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
 import vary from 'vary';
@@ -6,7 +11,7 @@ import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import * as Acct from '@/misc/acct.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -88,13 +93,13 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 */
 
 		fastify.get<{ Querystring: { resource: string } }>(webFingerPath, async (request, reply) => {
-			const fromId = (id: User['id']): FindOptionsWhere<User> => ({
+			const fromId = (id: MiUser['id']): FindOptionsWhere<MiUser> => ({
 				id,
 				host: IsNull(),
 				isSuspended: false,
 			});
 
-			const generateQuery = (resource: string): FindOptionsWhere<User> | number =>
+			const generateQuery = (resource: string): FindOptionsWhere<MiUser> | number =>
 				resource.startsWith(`${this.config.url.toLowerCase()}/users/`) ?
 					fromId(resource.split('/').pop()!) :
 					fromAcct(Acct.parse(
@@ -102,7 +107,7 @@ fastify.get('/.well-known/change-password', async (request, reply) => {
 						resource.startsWith('acct:') ? resource.slice('acct:'.length) :
 						resource));
 
-			const fromAcct = (acct: Acct.Acct): FindOptionsWhere<User> | number =>
+			const fromAcct = (acct: Acct.Acct): FindOptionsWhere<MiUser> | number =>
 				!acct.host || acct.host === this.config.host.toLowerCase() ? {
 					usernameLower: acct.username,
 					host: IsNull(),

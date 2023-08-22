@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class Flash {
+@Entity('flash')
+export class MiFlash {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -34,13 +39,13 @@ export class Flash {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('varchar', {
 		length: 65536,
@@ -56,4 +61,13 @@ export class Flash {
 		default: 0,
 	})
 	public likedCount: number;
+
+	/**
+	 * public ... 公開
+	 * private ... プロフィールには表示しない
+	 */
+	@Column('varchar', {
+		length: 512, default: 'public',
+	})
+	public visibility: 'public' | 'private';
 }

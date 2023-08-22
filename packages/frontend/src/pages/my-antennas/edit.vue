@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="">
 	<XAntenna v-if="antenna" :antenna="antenna" @updated="onAntennaUpdated"/>

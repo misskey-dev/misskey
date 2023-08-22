@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
 import { common } from './common';
 import { version, ui, lang, updateLocale } from '@/config';
@@ -75,6 +80,21 @@ export async function mainBoot() {
 		defaultStore.loaded.then(() => {
 			if (defaultStore.state.accountSetupWizard !== -1) {
 				popup(defineAsyncComponent(() => import('@/components/MkUserSetupDialog.vue')), {}, {}, 'closed');
+			}
+		});
+
+		for (const announcement of ($i.unreadAnnouncements ?? []).filter(x => x.display === 'dialog')) {
+			popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+				announcement,
+			}, {}, 'closed');
+		}
+
+		stream.on('announcementCreated', (ev) => {
+			const announcement = ev.announcement;
+			if (announcement.display === 'dialog') {
+				popup(defineAsyncComponent(() => import('@/components/MkAnnouncementDialog.vue')), {
+					announcement,
+				}, {}, 'closed');
 			}
 		});
 

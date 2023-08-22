@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -18,6 +23,11 @@
 				<MkButton @click="show"><i class="ti ti-eye"></i> {{ i18n.ts.show }}</MkButton>
 				<MkButton v-if="flash" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 			</div>
+			<MkSelect v-model="visibility">
+				<template #label>{{ i18n.ts.visibility }}</template>
+				<option :key="'public'" :value="'public'">{{ i18n.ts.public }}</option>
+				<option :key="'private'" :value="'private'">{{ i18n.ts.private }}</option>
+			</MkSelect>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -31,6 +41,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import { useRouter } from '@/router';
 
 const PRESET_DEFAULT = `/// @ 0.15.0
@@ -353,6 +364,7 @@ const props = defineProps<{
 }>();
 
 let flash = $ref(null);
+let visibility = $ref('public');
 
 if (props.id) {
 	flash = await os.api('flash/show', {
@@ -397,6 +409,7 @@ async function save() {
 			summary,
 			permissions,
 			script,
+			visibility,
 		});
 	} else {
 		const created = await os.apiWithDialog('flash/create', {

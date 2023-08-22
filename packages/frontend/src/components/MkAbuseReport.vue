@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="bcekxzvu _margin _panel">
 	<div class="target">
-		<MkA v-user-preview="report.targetUserId" class="info" :to="`/user-info/${report.targetUserId}`">
+		<MkA v-user-preview="report.targetUserId" class="info" :to="`/admin/user/${report.targetUserId}`">
 			<MkAvatar class="avatar" :user="report.targetUser" indicator/>
 			<div class="names">
 				<MkUserName class="name" :user="report.targetUser"/>
