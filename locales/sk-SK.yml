@@ -654,6 +654,7 @@ createNewClip: "Vytvoriť nový klip"
 unclip: "Odopnúť"
 confirmToUnclipAlreadyClippedNote: "Táto poznámka je už pripnutá ako \"{name}\". Naozaj ju chcete odopnúť?"
 public: "Verejné"
+private: "Súkromné"
 i18nInfo: "Misskey je prekladaný do rôznych jazykov dobrovoľníkmi. Pomôcť môžete na {link}."
 manageAccessTokens: "Spravovať prístupové tokeny"
 accountInfo: "Informácie o účte"
@@ -918,6 +919,7 @@ pleaseDonate: "Misskey je bezplatný softvér, ktorý používa {host}. Prosím,
 color: "Farba"
 horizontal: "Strana"
 youFollowing: "Sledované"
+icon: "Avatar"
 _role:
   priority: "Priorita"
   _priority:
