@@ -1747,6 +1747,10 @@ _permissions:
   "write:gallery": "操作图库"
   "read:gallery-likes": "读取喜欢的图片"
   "write:gallery-likes": "操作喜欢的图片"
+  "read:flash": "查看 Play"
+  "write:flash": "编辑 Play"
+  "read:flash-likes": "查看 Play 的点赞"
+  "write:flash-likes": "编辑 Play 的点赞列表"
 _auth:
   shareAccessTitle: "应用程序授权许可"
   shareAccess: "您要授权允许 “{name}” 访问您的帐户吗？"
