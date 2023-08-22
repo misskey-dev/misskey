@@ -1747,6 +1747,10 @@ _permissions:
   "write:gallery": "Gestione della galleria"
   "read:gallery-likes": "Visualizza i contenuti della galleria."
   "write:gallery-likes": "Manipolazione dei \"Mi piace\" della galleria."
+  "read:flash": "Visualizza Play"
+  "write:flash": "Modifica Play"
+  "read:flash-likes": "Visualizza lista di Play piaciuti"
+  "write:flash-likes": "Modifica lista di Play piaciuti"
 _auth:
   shareAccessTitle: "Permessi dell'applicazione"
   shareAccess: "Vuoi autorizzare {name} ad accedere al tuo profilo?"
