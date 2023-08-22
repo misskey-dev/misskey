@@ -364,7 +364,7 @@ export function getNoteMenu(props: {
 			}]
 			: []
 		),*/
-			...(appearNote.userId !== $i.id || (isRenote && props.note.userId !== $i.id) ? [
+			...(appearNote.userId !== $i.id ? [
 				null,
 				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
 			]
