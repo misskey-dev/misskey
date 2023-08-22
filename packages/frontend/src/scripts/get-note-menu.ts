@@ -292,7 +292,6 @@ export function getNoteMenu(props: {
 				text: i18n.ts.copyContent,
 				action: copyContent,
 			}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-			, (isRenote ? getCopyNoteLinkMenu(props.note, i18n.ts.copyLinkRenote) : undefined)
 			, (appearNote.url || appearNote.uri) ? {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
@@ -368,7 +367,6 @@ export function getNoteMenu(props: {
 			...(appearNote.userId !== $i.id || (isRenote && props.note.userId !== $i.id) ? [
 				null,
 				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
-				isRenote && props.note.userId !== $i.id ? getAbuseNoteMenu(props.note, i18n.ts.reportAbuseRenote) : undefined,
 			]
 			: []
 			),
@@ -398,7 +396,6 @@ export function getNoteMenu(props: {
 			text: i18n.ts.copyContent,
 			action: copyContent,
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
-		, (isRenote ? getCopyNoteLinkMenu(props.note, i18n.ts.copyLinkRenote) : undefined)
 		, (appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
