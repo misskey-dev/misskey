@@ -15,7 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</span>
 			<Mfm :text="announcement.title"/>
 		</div>
-		<div :class="$style.content"><Mfm :text="announcement.text"/></div>
+		<div :class="$style.content">
+			<Mfm :text="announcement.text"/>
+			<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
+		</div>
 		<MkButton :class="$style.gotIt" primary full :disabled="gotItDisabled" @click="gotIt">{{ i18n.ts.gotIt }}<span v-if="secVisible"> ({{ sec }})</span></MkButton>
 	</div>
 </MkModal>
@@ -109,6 +112,7 @@ onMounted(() => {
 }
 
 .header {
+	font-weight: bold;
 	font-size: 120%;
 }
 
@@ -118,5 +122,10 @@ onMounted(() => {
 
 .content {
 	margin: 1em 0;
+	> img {
+		display: block;
+		max-height: 300px;
+		max-width: 100%;
+	}
 }
 </style>

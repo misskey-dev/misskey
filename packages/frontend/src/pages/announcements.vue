@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.content">
 						<Mfm :text="announcement.text"/>
 						<img v-if="announcement.imageUrl" :src="announcement.imageUrl"/>
-						<div style="opacity: 0.7; font-size: 85%;">
+						<div style="margin-top: 8px; opacity: 0.7; font-size: 85%;">
 							<MkTime :time="announcement.updatedAt ?? announcement.createdAt" mode="detail"/>
 						</div>
 					</div>
@@ -137,6 +137,7 @@ watch(() => $i?.unreadAnnouncements.length ?? 0, () => {
 .header {
 	margin-bottom: 16px;
 	font-weight: bold;
+	font-size: 120%;
 }
 
 .content {
