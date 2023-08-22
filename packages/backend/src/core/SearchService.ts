@@ -75,7 +75,7 @@ export class SearchService {
 	) {
 		if (meilisearch) {
 			this.meilisearchNoteIndex = meilisearch.index(`${config.meilisearch!.index}---notes`);
-			this.meilisearchNoteIndex.updateSettings({
+			/*this.meilisearchNoteIndex.updateSettings({
 				searchableAttributes: [
 					'text',
 					'cw',
@@ -96,7 +96,7 @@ export class SearchService {
 				pagination: {
 					maxTotalHits: 10000,
 				},
-			});
+			});*/
 		}
 
 		if (config.meilisearch?.scope) {
