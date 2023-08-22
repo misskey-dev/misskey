@@ -86,4 +86,4 @@ ENV MALLOC_CONF=background_thread:true,metadata_thp:auto,dirty_decay_ms:30000,mu
 ENV NODE_ENV=production
 HEALTHCHECK --interval=5s --retries=20 CMD ["/bin/bash", "/misskey/healthcheck.sh"]
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["pnpm", "run", "migrateandstart"]
+CMD ["pnpm", "run", "migrateandstart:docker"]

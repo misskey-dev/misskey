@@ -173,13 +173,12 @@ export class StreamingApiServerService {
 	}
 
 	@bindThis
-	public detach(): Promise<void> {
+	public detach(): void {
 		if (this.#cleanConnectionsIntervalId) {
 			clearInterval(this.#cleanConnectionsIntervalId);
 			this.#cleanConnectionsIntervalId = null;
 		}
-		return new Promise((resolve) => {
-			this.#wss.close(() => resolve());
-		});
+		this.#wss.close();
+		this.#wss.clients.forEach(client => client.terminate());
 	}
 }

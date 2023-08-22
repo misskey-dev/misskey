@@ -29,23 +29,39 @@ const ev = new Xev();
 
 //#region Events
 
-// Listen new workers
-cluster.on('fork', worker => {
-	clusterLogger.debug(`Process forked: [${worker.id}]`);
-});
+if (cluster.isPrimary && !envOption.disableClustering) {
+	// Listen new workers
+	cluster.on('fork', worker => {
+		clusterLogger.debug(`Process forked: [${worker.id}]`);
+	});
 
-// Listen online workers
-cluster.on('online', worker => {
-	clusterLogger.debug(`Process is now online: [${worker.id}]`);
-});
+	// Listen online workers
+	cluster.on('online', worker => {
+		clusterLogger.debug(`Process is now online: [${worker.id}]`);
+	});
 
-// Listen for dying workers
-cluster.on('exit', worker => {
-	// Replace the dead worker,
-	// we're not sentimental
-	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));
-	cluster.fork();
-});
+	// Listen for dying workers
+	cluster.on('exit', (worker, code, signal?) => {
+		// Replace the dead worker,
+		// we're not sentimental
+		if (signal) {
+			switch (signal) {
+				case 'SIGINT':
+				case 'SIGTERM':
+					console.log(chalk.green(`[${worker.id}] exited by signal: ${signal}`));
+					break;
+				default:
+					console.error(chalk.red(`[${worker.id}] killed by signal: ${signal}`));
+					cluster.fork();
+					break;
+			}
+		} else if (code !== 0) {
+			console.error(chalk.red(`[${worker.id}] exited with error code: ${code}`));
+		} else {
+			console.log(chalk.green(`[${worker.id}] exited normally`));
+		}
+	});
+}
 
 // Display detail of unhandled promise rejection
 if (!envOption.quiet) {
