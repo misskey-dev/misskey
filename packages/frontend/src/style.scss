@@ -527,6 +527,13 @@ hr {
 	}
 }
 
+._mfm_rainbow_fallback_ {
+	background-image: linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 165, 0) 17%, rgb(255, 255, 0) 33%, rgb(0, 255, 0) 50%, rgb(0, 255, 255) 67%, rgb(0, 0, 255) 83%, rgb(255, 0, 255) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
 @keyframes mfm-spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }

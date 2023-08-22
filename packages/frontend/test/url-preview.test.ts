@@ -152,4 +152,13 @@ describe('MkUrlPreview', () => {
 		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
 		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
 	});
+
+	test('Loading a post in iframe', async () => {
+		const iframe = await renderAndOpenPreview({
+			url: 'https://x.com/i/web/status/1685072521782325249',
+		});
+		assert.exists(iframe, 'iframe should exist');
+		assert.strictEqual(iframe?.getAttribute('allow'), 'fullscreen;web-share');
+		assert.strictEqual(iframe?.getAttribute('sandbox'), 'allow-popups allow-scripts allow-same-origin');
+	});
 });
