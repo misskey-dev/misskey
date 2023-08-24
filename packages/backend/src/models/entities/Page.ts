@@ -5,12 +5,12 @@
 
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { DriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { MiDriveFile } from './DriveFile.js';
 
-@Entity()
+@Entity('page')
 @Index(['userId', 'name'], { unique: true })
-export class Page {
+export class MiPage {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -60,25 +60,25 @@ export class Page {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public eyeCatchingImageId: DriveFile['id'] | null;
+	public eyeCatchingImageId: MiDriveFile['id'] | null;
 
-	@ManyToOne(type => DriveFile, {
+	@ManyToOne(type => MiDriveFile, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public eyeCatchingImage: DriveFile | null;
+	public eyeCatchingImage: MiDriveFile | null;
 
 	@Column('jsonb', {
 		default: [],
@@ -109,14 +109,14 @@ export class Page {
 		...id(),
 		array: true, default: '{}',
 	})
-	public visibleUserIds: User['id'][];
+	public visibleUserIds: MiUser['id'][];
 
 	@Column('integer', {
 		default: 0,
 	})
 	public likedCount: number;
 
-	constructor(data: Partial<Page>) {
+	constructor(data: Partial<MiPage>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

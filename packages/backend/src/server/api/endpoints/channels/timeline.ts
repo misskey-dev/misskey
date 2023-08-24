@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelsRepository, Note, NotesRepository } from '@/models/index.js';
+import type { ChannelsRepository, MiNote, NotesRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
@@ -51,9 +51,8 @@ export const paramDef = {
 	required: ['channelId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -78,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new ApiError(meta.errors.noSuchChannel);
 			}
 
-			let timeline: Note[] = [];
+			let timeline: MiNote[] = [];
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			let noteIdsRes: [string, string[]][] = [];

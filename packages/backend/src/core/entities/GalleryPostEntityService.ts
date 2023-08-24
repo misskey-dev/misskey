@@ -9,8 +9,8 @@ import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/in
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { GalleryPost } from '@/models/entities/GalleryPost.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiGalleryPost } from '@/models/entities/GalleryPost.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFileEntityService } from './DriveFileEntityService.js';
@@ -31,8 +31,8 @@ export class GalleryPostEntityService {
 
 	@bindThis
 	public async pack(
-		src: GalleryPost['id'] | GalleryPost,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiGalleryPost['id'] | MiGalleryPost,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'GalleryPost'>> {
 		const meId = me ? me.id : null;
 		const post = typeof src === 'object' ? src : await this.galleryPostsRepository.findOneByOrFail({ id: src });
@@ -57,8 +57,8 @@ export class GalleryPostEntityService {
 
 	@bindThis
 	public packMany(
-		posts: GalleryPost[],
-		me?: { id: User['id'] } | null | undefined,
+		posts: MiGalleryPost[],
+		me?: { id: MiUser['id'] } | null | undefined,
 	) {
 		return Promise.all(posts.map(x => this.pack(x, me)));
 	}

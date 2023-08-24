@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/index.js';
-import type { Announcement } from '@/models/entities/Announcement.js';
+import type { MiAnnouncement } from '@/models/entities/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
@@ -71,9 +71,8 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
@@ -93,7 +92,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			const announcements = await query.limit(ps.limit).getMany();
 
-			const reads = new Map<Announcement, number>();
+			const reads = new Map<MiAnnouncement, number>();
 
 			for (const announcement of announcements) {
 				reads.set(announcement, await this.announcementReadsRepository.countBy({
