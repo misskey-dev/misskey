@@ -4,6 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
+<div v-if="!note"><!-- nothing to show --></div>
 <div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
@@ -40,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { ref } from 'vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -69,7 +70,7 @@ if (props.setNote) {
 }
 
 const note = noteManager.get(props.note.id);
-const muted = computed(() => !!note.value && checkWordMute(note.value, $i, defaultStore.state.mutedWords));
+const muted = ref(!!note.value && checkWordMute(note.value, $i, defaultStore.state.mutedWords));
 
 let showContent = $ref(false);
 let replies: { id: string }[] = $ref([]);
