@@ -76,6 +76,7 @@ export type Source = {
 
 	id: string;
 
+	outgoingAddress?: string;
 	outgoingAddressFamily?: 'ipv4' | 'ipv6' | 'dual';
 
 	deliverJobConcurrency?: number;

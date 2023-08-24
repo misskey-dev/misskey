@@ -47,6 +47,7 @@ export class WebhookDeliverProcessorService {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					server: this.config.url,
 					hookId: job.data.webhookId,
 					userId: job.data.userId,
 					eventId: job.data.eventId,

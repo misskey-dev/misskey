@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import * as mfm from 'mfm-js';
 import { MfmService } from '@/core/MfmService.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { bindThis } from '@/decorators.js';
 import { extractApHashtagObjects } from './models/tag.js';
 import type { IObject } from './type.js';
@@ -25,7 +25,7 @@ export class ApMfmService {
 	}
 
 	@bindThis
-	public getNoteHtml(note: Note): string | null {
+	public getNoteHtml(note: MiNote): string | null {
 		if (!note.text) return '';
 		return this.mfmService.toHtml(mfm.parse(note.text), JSON.parse(note.mentionedRemoteUsers));
 	}

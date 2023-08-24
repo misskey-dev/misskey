@@ -684,6 +684,7 @@ export interface Locale {
     "unclip": string;
     "confirmToUnclipAlreadyClippedNote": string;
     "public": string;
+    "private": string;
     "i18nInfo": string;
     "manageAccessTokens": string;
     "accountInfo": string;
@@ -1098,6 +1099,22 @@ export interface Locale {
     "doYouAgree": string;
     "beSureToReadThisAsItIsImportant": string;
     "iHaveReadXCarefullyAndAgree": string;
+    "dialog": string;
+    "icon": string;
+    "forYou": string;
+    "currentAnnouncements": string;
+    "pastAnnouncements": string;
+    "youHaveUnreadAnnouncements": string;
+    "_announcement": {
+        "forExistingUsers": string;
+        "forExistingUsersDescription": string;
+        "needConfirmationToRead": string;
+        "needConfirmationToReadDescription": string;
+        "end": string;
+        "tooManyActiveAnnouncementDescription": string;
+        "readConfirmTitle": string;
+        "readConfirmText": string;
+    };
     "_initialAccountSetting": {
         "accountCreated": string;
         "letsStartAccountSetup": string;
@@ -1846,6 +1863,10 @@ export interface Locale {
         "write:gallery": string;
         "read:gallery-likes": string;
         "write:gallery-likes": string;
+        "read:flash": string;
+        "write:flash": string;
+        "read:flash-likes": string;
+        "write:flash-likes": string;
     };
     "_auth": {
         "shareAccessTitle": string;

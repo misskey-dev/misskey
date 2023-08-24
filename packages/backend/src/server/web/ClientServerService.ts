@@ -31,7 +31,7 @@ import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, Meta, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { ChannelsRepository, ClipsRepository, FlashsRepository, GalleryPostsRepository, MiMeta, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
 import type Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
@@ -123,7 +123,7 @@ export class ClientServerService {
 	}
 
 	@bindThis
-	private generateCommonPugData(meta: Meta) {
+	private generateCommonPugData(meta: MiMeta) {
 		return {
 			instanceName: meta.name ?? 'Misskey',
 			icon: meta.iconUrl,
@@ -143,21 +143,23 @@ export class ClientServerService {
 
 		// Authenticate
 		fastify.addHook('onRequest', async (request, reply) => {
-			if (request.url === bullBoardPath || request.url.startsWith(bullBoardPath + '/')) {
+			// %71ueueとかでリクエストされたら困るため
+			const url = decodeURI(request.url);
+			if (url === bullBoardPath || url.startsWith(bullBoardPath + '/')) {
 				const token = request.cookies.token;
 				if (token == null) {
-					reply.code(401);
-					throw new Error('login required');
+					reply.code(401).send('Login required');
+					return;
 				}
 				const user = await this.usersRepository.findOneBy({ token });
 				if (user == null) {
-					reply.code(403);
-					throw new Error('no such user');
+					reply.code(403).send('No such user');
+					return;
 				}
 				const isAdministrator = await this.roleService.isAdministrator(user);
 				if (!isAdministrator) {
-					reply.code(403);
-					throw new Error('access denied');
+					reply.code(403).send('Access denied');
+					return;
 				}
 			}
 		});

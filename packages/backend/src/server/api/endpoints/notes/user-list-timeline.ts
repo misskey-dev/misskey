@@ -58,9 +58,8 @@ export const paramDef = {
 	required: ['listId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -96,6 +95,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
 
 			this.queryService.generateVisibilityQuery(query, me);
+			this.queryService.generateMutedUserQuery(query, me);
+			this.queryService.generateMutedNoteQuery(query, me);
+			this.queryService.generateBlockedUserQuery(query, me);
+			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {

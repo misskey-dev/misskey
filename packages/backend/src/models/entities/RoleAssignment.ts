@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { Role } from './Role.js';
-import { User } from './User.js';
+import { MiRole } from './Role.js';
+import { MiUser } from './User.js';
 
-@Entity()
+@Entity('role_assignment')
 @Index(['userId', 'roleId'], { unique: true })
-export class RoleAssignment {
+export class MiRoleAssignment {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,26 +24,26 @@ export class RoleAssignment {
 		...id(),
 		comment: 'The user ID.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The role ID.',
 	})
-	public roleId: Role['id'];
+	public roleId: MiRole['id'];
 
-	@ManyToOne(type => Role, {
+	@ManyToOne(type => MiRole, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public role: Role | null;
+	public role: MiRole | null;
 
 	@Index()
 	@Column('timestamp with time zone', {

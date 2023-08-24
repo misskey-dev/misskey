@@ -5,10 +5,10 @@
 
 import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class App {
+@Entity('app')
+export class MiApp {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,13 +24,13 @@ export class App {
 		nullable: true,
 		comment: 'The owner ID.',
 	})
-	public userId: User['id'] | null;
+	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column('varchar', {

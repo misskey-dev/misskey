@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserProfilesRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { NotificationService } from '@/core/NotificationService.js';
@@ -99,7 +99,7 @@ export class AchievementService {
 
 	@bindThis
 	public async create(
-		userId: User['id'],
+		userId: MiUser['id'],
 		type: typeof ACHIEVEMENT_TYPES[number],
 	): Promise<void> {
 		if (!ACHIEVEMENT_TYPES.includes(type)) return;
