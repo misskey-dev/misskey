@@ -9,13 +9,13 @@ import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
-import type { RemoteUser } from '@/models/entities/User.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiRemoteUser } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/entities/Note.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
+import type { MiEmoji } from '@/models/entities/Emoji.js';
 import { MetaService } from '@/core/MetaService.js';
 import { AppLockService } from '@/core/AppLockService.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
@@ -101,7 +101,7 @@ export class ApNoteService {
 	 * Misskeyに対象のNoteが登録されていればそれを返します。
 	 */
 	@bindThis
-	public async fetchNote(object: string | IObject): Promise<Note | null> {
+	public async fetchNote(object: string | IObject): Promise<MiNote | null> {
 		return await this.apDbResolverService.getNoteFromApId(object);
 	}
 
@@ -109,7 +109,7 @@ export class ApNoteService {
 	 * Noteを作成します。
 	 */
 	@bindThis
-	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<Note | null> {
+	public async createNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<MiNote | null> {
 		// eslint-disable-next-line no-param-reassign
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
@@ -147,7 +147,7 @@ export class ApNoteService {
 			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
 		}
 
-		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as RemoteUser;
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as MiRemoteUser;
 
 		// 投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
@@ -172,7 +172,7 @@ export class ApNoteService {
 		// 添付ファイル
 		// TODO: attachmentは必ずしもImageではない
 		// TODO: attachmentは必ずしも配列ではない
-		const limit = promiseLimit<DriveFile>(2);
+		const limit = promiseLimit<MiDriveFile>(2);
 		const files = (await Promise.all(toArray(note.attachment).map(attach => (
 			limit(() => this.apImageService.resolveImage(actor, {
 				...attach,
@@ -181,7 +181,7 @@ export class ApNoteService {
 		))));
 
 		// リプライ
-		const reply: Note | null = note.inReplyTo
+		const reply: MiNote | null = note.inReplyTo
 			? await this.resolveNote(note.inReplyTo, { resolver })
 				.then(x => {
 					if (x == null) {
@@ -198,11 +198,11 @@ export class ApNoteService {
 			: null;
 
 		// 引用
-		let quote: Note | undefined | null = null;
+		let quote: MiNote | undefined | null = null;
 
 		if (note._misskey_quote ?? note.quoteUrl) {
 			const tryResolveNote = async (uri: string): Promise<
-				| { status: 'ok'; res: Note }
+				| { status: 'ok'; res: MiNote }
 				| { status: 'permerror' | 'temperror' }
 			> => {
 				if (!/^https?:/.test(uri)) return { status: 'permerror' };
@@ -220,7 +220,7 @@ export class ApNoteService {
 			const uris = unique([note._misskey_quote, note.quoteUrl].filter((x): x is string => typeof x === 'string'));
 			const results = await Promise.all(uris.map(tryResolveNote));
 
-			quote = results.filter((x): x is { status: 'ok', res: Note } => x.status === 'ok').map(x => x.res).at(0);
+			quote = results.filter((x): x is { status: 'ok', res: MiNote } => x.status === 'ok').map(x => x.res).at(0);
 			if (!quote) {
 				if (results.some(x => x.status === 'temperror')) {
 					throw new Error('quote resolve failed');
@@ -310,7 +310,7 @@ export class ApNoteService {
 	 * リモートサーバーからフェッチしてMisskeyに登録しそれを返します。
 	 */
 	@bindThis
-	public async resolveNote(value: string | IObject, options: { sentFrom?: URL, resolver?: Resolver } = {}): Promise<Note | null> {
+	public async resolveNote(value: string | IObject, options: { sentFrom?: URL, resolver?: Resolver } = {}): Promise<MiNote | null> {
 		const uri = getApId(value);
 
 		// ブロックしていたら中断
@@ -342,7 +342,7 @@ export class ApNoteService {
 	}
 
 	@bindThis
-	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<Emoji[]> {
+	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<MiEmoji[]> {
 		// eslint-disable-next-line no-param-reassign
 		host = this.utilityService.toPuny(host);
 

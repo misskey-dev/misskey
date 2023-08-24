@@ -3,206 +3,206 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
-import { AccessToken } from '@/models/entities/AccessToken.js';
-import { Ad } from '@/models/entities/Ad.js';
-import { Announcement } from '@/models/entities/Announcement.js';
-import { AnnouncementRead } from '@/models/entities/AnnouncementRead.js';
-import { Antenna } from '@/models/entities/Antenna.js';
-import { App } from '@/models/entities/App.js';
-import { AttestationChallenge } from '@/models/entities/AttestationChallenge.js';
-import { AuthSession } from '@/models/entities/AuthSession.js';
-import { Blocking } from '@/models/entities/Blocking.js';
-import { ChannelFollowing } from '@/models/entities/ChannelFollowing.js';
-import { ChannelFavorite } from '@/models/entities/ChannelFavorite.js';
-import { Clip } from '@/models/entities/Clip.js';
-import { ClipNote } from '@/models/entities/ClipNote.js';
-import { ClipFavorite } from '@/models/entities/ClipFavorite.js';
-import { DriveFile } from '@/models/entities/DriveFile.js';
-import { DriveFolder } from '@/models/entities/DriveFolder.js';
-import { Emoji } from '@/models/entities/Emoji.js';
-import { Following } from '@/models/entities/Following.js';
-import { FollowRequest } from '@/models/entities/FollowRequest.js';
-import { GalleryLike } from '@/models/entities/GalleryLike.js';
-import { GalleryPost } from '@/models/entities/GalleryPost.js';
-import { Hashtag } from '@/models/entities/Hashtag.js';
-import { Instance } from '@/models/entities/Instance.js';
-import { Meta } from '@/models/entities/Meta.js';
-import { ModerationLog } from '@/models/entities/ModerationLog.js';
-import { MutedNote } from '@/models/entities/MutedNote.js';
-import { Muting } from '@/models/entities/Muting.js';
-import { RenoteMuting } from '@/models/entities/RenoteMuting.js';
-import { Note } from '@/models/entities/Note.js';
-import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
-import { NoteReaction } from '@/models/entities/NoteReaction.js';
-import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
-import { NoteUnread } from '@/models/entities/NoteUnread.js';
-import { Page } from '@/models/entities/Page.js';
-import { PageLike } from '@/models/entities/PageLike.js';
-import { PasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
-import { Poll } from '@/models/entities/Poll.js';
-import { PollVote } from '@/models/entities/PollVote.js';
-import { PromoNote } from '@/models/entities/PromoNote.js';
-import { PromoRead } from '@/models/entities/PromoRead.js';
-import { RegistrationTicket } from '@/models/entities/RegistrationTicket.js';
-import { RegistryItem } from '@/models/entities/RegistryItem.js';
-import { Relay } from '@/models/entities/Relay.js';
-import { Signin } from '@/models/entities/Signin.js';
-import { SwSubscription } from '@/models/entities/SwSubscription.js';
-import { UsedUsername } from '@/models/entities/UsedUsername.js';
-import { User } from '@/models/entities/User.js';
-import { UserIp } from '@/models/entities/UserIp.js';
-import { UserKeypair } from '@/models/entities/UserKeypair.js';
-import { UserList } from '@/models/entities/UserList.js';
-import { UserListJoining } from '@/models/entities/UserListJoining.js';
-import { UserNotePining } from '@/models/entities/UserNotePining.js';
-import { UserPending } from '@/models/entities/UserPending.js';
-import { UserProfile } from '@/models/entities/UserProfile.js';
-import { UserPublickey } from '@/models/entities/UserPublickey.js';
-import { UserSecurityKey } from '@/models/entities/UserSecurityKey.js';
-import { UserMemo } from '@/models/entities/UserMemo.js';
-import { Webhook } from '@/models/entities/Webhook.js';
-import { Channel } from '@/models/entities/Channel.js';
-import { RetentionAggregation } from '@/models/entities/RetentionAggregation.js';
-import { Role } from '@/models/entities/Role.js';
-import { RoleAssignment } from '@/models/entities/RoleAssignment.js';
-import { Flash } from '@/models/entities/Flash.js';
-import { FlashLike } from '@/models/entities/FlashLike.js';
-import { UserListFavorite } from './entities/UserListFavorite.js';
+import { MiAbuseUserReport } from '@/models/entities/AbuseUserReport.js';
+import { MiAccessToken } from '@/models/entities/AccessToken.js';
+import { MiAd } from '@/models/entities/Ad.js';
+import { MiAnnouncement } from '@/models/entities/Announcement.js';
+import { MiAnnouncementRead } from '@/models/entities/AnnouncementRead.js';
+import { MiAntenna } from '@/models/entities/Antenna.js';
+import { MiApp } from '@/models/entities/App.js';
+import { MiAttestationChallenge } from '@/models/entities/AttestationChallenge.js';
+import { MiAuthSession } from '@/models/entities/AuthSession.js';
+import { MiBlocking } from '@/models/entities/Blocking.js';
+import { MiChannelFollowing } from '@/models/entities/ChannelFollowing.js';
+import { MiChannelFavorite } from '@/models/entities/ChannelFavorite.js';
+import { MiClip } from '@/models/entities/Clip.js';
+import { MiClipNote } from '@/models/entities/ClipNote.js';
+import { MiClipFavorite } from '@/models/entities/ClipFavorite.js';
+import { MiDriveFile } from '@/models/entities/DriveFile.js';
+import { MiDriveFolder } from '@/models/entities/DriveFolder.js';
+import { MiEmoji } from '@/models/entities/Emoji.js';
+import { MiFollowing } from '@/models/entities/Following.js';
+import { MiFollowRequest } from '@/models/entities/FollowRequest.js';
+import { MiGalleryLike } from '@/models/entities/GalleryLike.js';
+import { MiGalleryPost } from '@/models/entities/GalleryPost.js';
+import { MiHashtag } from '@/models/entities/Hashtag.js';
+import { MiInstance } from '@/models/entities/Instance.js';
+import { MiMeta } from '@/models/entities/Meta.js';
+import { MiModerationLog } from '@/models/entities/ModerationLog.js';
+import { MiMutedNote } from '@/models/entities/MutedNote.js';
+import { MiMuting } from '@/models/entities/Muting.js';
+import { MiRenoteMuting } from '@/models/entities/RenoteMuting.js';
+import { MiNote } from '@/models/entities/Note.js';
+import { MiNoteFavorite } from '@/models/entities/NoteFavorite.js';
+import { MiNoteReaction } from '@/models/entities/NoteReaction.js';
+import { MiNoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
+import { MiNoteUnread } from '@/models/entities/NoteUnread.js';
+import { MiPage } from '@/models/entities/Page.js';
+import { MiPageLike } from '@/models/entities/PageLike.js';
+import { MiPasswordResetRequest } from '@/models/entities/PasswordResetRequest.js';
+import { MiPoll } from '@/models/entities/Poll.js';
+import { MiPollVote } from '@/models/entities/PollVote.js';
+import { MiPromoNote } from '@/models/entities/PromoNote.js';
+import { MiPromoRead } from '@/models/entities/PromoRead.js';
+import { MiRegistrationTicket } from '@/models/entities/RegistrationTicket.js';
+import { MiRegistryItem } from '@/models/entities/RegistryItem.js';
+import { MiRelay } from '@/models/entities/Relay.js';
+import { MiSignin } from '@/models/entities/Signin.js';
+import { MiSwSubscription } from '@/models/entities/SwSubscription.js';
+import { MiUsedUsername } from '@/models/entities/UsedUsername.js';
+import { MiUser } from '@/models/entities/User.js';
+import { MiUserIp } from '@/models/entities/UserIp.js';
+import { MiUserKeypair } from '@/models/entities/UserKeypair.js';
+import { MiUserList } from '@/models/entities/UserList.js';
+import { MiUserListJoining } from '@/models/entities/UserListJoining.js';
+import { MiUserNotePining } from '@/models/entities/UserNotePining.js';
+import { MiUserPending } from '@/models/entities/UserPending.js';
+import { MiUserProfile } from '@/models/entities/UserProfile.js';
+import { MiUserPublickey } from '@/models/entities/UserPublickey.js';
+import { MiUserSecurityKey } from '@/models/entities/UserSecurityKey.js';
+import { MiUserMemo } from '@/models/entities/UserMemo.js';
+import { MiWebhook } from '@/models/entities/Webhook.js';
+import { MiChannel } from '@/models/entities/Channel.js';
+import { MiRetentionAggregation } from '@/models/entities/RetentionAggregation.js';
+import { MiRole } from '@/models/entities/Role.js';
+import { MiRoleAssignment } from '@/models/entities/RoleAssignment.js';
+import { MiFlash } from '@/models/entities/Flash.js';
+import { MiFlashLike } from '@/models/entities/FlashLike.js';
+import { MiUserListFavorite } from './entities/UserListFavorite.js';
 import type { Repository } from 'typeorm';
 
 export {
-	AbuseUserReport,
-	AccessToken,
-	Ad,
-	Announcement,
-	AnnouncementRead,
-	Antenna,
-	App,
-	AttestationChallenge,
-	AuthSession,
-	Blocking,
-	ChannelFollowing,
-	ChannelFavorite,
-	Clip,
-	ClipNote,
-	ClipFavorite,
-	DriveFile,
-	DriveFolder,
-	Emoji,
-	Following,
-	FollowRequest,
-	GalleryLike,
-	GalleryPost,
-	Hashtag,
-	Instance,
-	Meta,
-	ModerationLog,
-	MutedNote,
-	Muting,
-	RenoteMuting,
-	Note,
-	NoteFavorite,
-	NoteReaction,
-	NoteThreadMuting,
-	NoteUnread,
-	Page,
-	PageLike,
-	PasswordResetRequest,
-	Poll,
-	PollVote,
-	PromoNote,
-	PromoRead,
-	RegistrationTicket,
-	RegistryItem,
-	Relay,
-	Signin,
-	SwSubscription,
-	UsedUsername,
-	User,
-	UserIp,
-	UserKeypair,
-	UserList,
-	UserListFavorite,
-	UserListJoining,
-	UserNotePining,
-	UserPending,
-	UserProfile,
-	UserPublickey,
-	UserSecurityKey,
-	Webhook,
-	Channel,
-	RetentionAggregation,
-	Role,
-	RoleAssignment,
-	Flash,
-	FlashLike,
-	UserMemo,
+	MiAbuseUserReport,
+	MiAccessToken,
+	MiAd,
+	MiAnnouncement,
+	MiAnnouncementRead,
+	MiAntenna,
+	MiApp,
+	MiAttestationChallenge,
+	MiAuthSession,
+	MiBlocking,
+	MiChannelFollowing,
+	MiChannelFavorite,
+	MiClip,
+	MiClipNote,
+	MiClipFavorite,
+	MiDriveFile,
+	MiDriveFolder,
+	MiEmoji,
+	MiFollowing,
+	MiFollowRequest,
+	MiGalleryLike,
+	MiGalleryPost,
+	MiHashtag,
+	MiInstance,
+	MiMeta,
+	MiModerationLog,
+	MiMutedNote,
+	MiMuting,
+	MiRenoteMuting,
+	MiNote,
+	MiNoteFavorite,
+	MiNoteReaction,
+	MiNoteThreadMuting,
+	MiNoteUnread,
+	MiPage,
+	MiPageLike,
+	MiPasswordResetRequest,
+	MiPoll,
+	MiPollVote,
+	MiPromoNote,
+	MiPromoRead,
+	MiRegistrationTicket,
+	MiRegistryItem,
+	MiRelay,
+	MiSignin,
+	MiSwSubscription,
+	MiUsedUsername,
+	MiUser,
+	MiUserIp,
+	MiUserKeypair,
+	MiUserList,
+	MiUserListFavorite,
+	MiUserListJoining,
+	MiUserNotePining,
+	MiUserPending,
+	MiUserProfile,
+	MiUserPublickey,
+	MiUserSecurityKey,
+	MiWebhook,
+	MiChannel,
+	MiRetentionAggregation,
+	MiRole,
+	MiRoleAssignment,
+	MiFlash,
+	MiFlashLike,
+	MiUserMemo,
 };
 
-export type AbuseUserReportsRepository = Repository<AbuseUserReport>;
-export type AccessTokensRepository = Repository<AccessToken>;
-export type AdsRepository = Repository<Ad>;
-export type AnnouncementsRepository = Repository<Announcement>;
-export type AnnouncementReadsRepository = Repository<AnnouncementRead>;
-export type AntennasRepository = Repository<Antenna>;
-export type AppsRepository = Repository<App>;
-export type AttestationChallengesRepository = Repository<AttestationChallenge>;
-export type AuthSessionsRepository = Repository<AuthSession>;
-export type BlockingsRepository = Repository<Blocking>;
-export type ChannelFollowingsRepository = Repository<ChannelFollowing>;
-export type ChannelFavoritesRepository = Repository<ChannelFavorite>;
-export type ClipsRepository = Repository<Clip>;
-export type ClipNotesRepository = Repository<ClipNote>;
-export type ClipFavoritesRepository = Repository<ClipFavorite>;
-export type DriveFilesRepository = Repository<DriveFile>;
-export type DriveFoldersRepository = Repository<DriveFolder>;
-export type EmojisRepository = Repository<Emoji>;
-export type FollowingsRepository = Repository<Following>;
-export type FollowRequestsRepository = Repository<FollowRequest>;
-export type GalleryLikesRepository = Repository<GalleryLike>;
-export type GalleryPostsRepository = Repository<GalleryPost>;
-export type HashtagsRepository = Repository<Hashtag>;
-export type InstancesRepository = Repository<Instance>;
-export type MetasRepository = Repository<Meta>;
-export type ModerationLogsRepository = Repository<ModerationLog>;
-export type MutedNotesRepository = Repository<MutedNote>;
-export type MutingsRepository = Repository<Muting>;
-export type RenoteMutingsRepository = Repository<RenoteMuting>;
-export type NotesRepository = Repository<Note>;
-export type NoteFavoritesRepository = Repository<NoteFavorite>;
-export type NoteReactionsRepository = Repository<NoteReaction>;
-export type NoteThreadMutingsRepository = Repository<NoteThreadMuting>;
-export type NoteUnreadsRepository = Repository<NoteUnread>;
-export type PagesRepository = Repository<Page>;
-export type PageLikesRepository = Repository<PageLike>;
-export type PasswordResetRequestsRepository = Repository<PasswordResetRequest>;
-export type PollsRepository = Repository<Poll>;
-export type PollVotesRepository = Repository<PollVote>;
-export type PromoNotesRepository = Repository<PromoNote>;
-export type PromoReadsRepository = Repository<PromoRead>;
-export type RegistrationTicketsRepository = Repository<RegistrationTicket>;
-export type RegistryItemsRepository = Repository<RegistryItem>;
-export type RelaysRepository = Repository<Relay>;
-export type SigninsRepository = Repository<Signin>;
-export type SwSubscriptionsRepository = Repository<SwSubscription>;
-export type UsedUsernamesRepository = Repository<UsedUsername>;
-export type UsersRepository = Repository<User>;
-export type UserIpsRepository = Repository<UserIp>;
-export type UserKeypairsRepository = Repository<UserKeypair>;
-export type UserListsRepository = Repository<UserList>;
-export type UserListFavoritesRepository = Repository<UserListFavorite>;
-export type UserListJoiningsRepository = Repository<UserListJoining>;
-export type UserNotePiningsRepository = Repository<UserNotePining>;
-export type UserPendingsRepository = Repository<UserPending>;
-export type UserProfilesRepository = Repository<UserProfile>;
-export type UserPublickeysRepository = Repository<UserPublickey>;
-export type UserSecurityKeysRepository = Repository<UserSecurityKey>;
-export type WebhooksRepository = Repository<Webhook>;
-export type ChannelsRepository = Repository<Channel>;
-export type RetentionAggregationsRepository = Repository<RetentionAggregation>;
-export type RolesRepository = Repository<Role>;
-export type RoleAssignmentsRepository = Repository<RoleAssignment>;
-export type FlashsRepository = Repository<Flash>;
-export type FlashLikesRepository = Repository<FlashLike>;
-export type UserMemoRepository = Repository<UserMemo>;
+export type AbuseUserReportsRepository = Repository<MiAbuseUserReport>;
+export type AccessTokensRepository = Repository<MiAccessToken>;
+export type AdsRepository = Repository<MiAd>;
+export type AnnouncementsRepository = Repository<MiAnnouncement>;
+export type AnnouncementReadsRepository = Repository<MiAnnouncementRead>;
+export type AntennasRepository = Repository<MiAntenna>;
+export type AppsRepository = Repository<MiApp>;
+export type AttestationChallengesRepository = Repository<MiAttestationChallenge>;
+export type AuthSessionsRepository = Repository<MiAuthSession>;
+export type BlockingsRepository = Repository<MiBlocking>;
+export type ChannelFollowingsRepository = Repository<MiChannelFollowing>;
+export type ChannelFavoritesRepository = Repository<MiChannelFavorite>;
+export type ClipsRepository = Repository<MiClip>;
+export type ClipNotesRepository = Repository<MiClipNote>;
+export type ClipFavoritesRepository = Repository<MiClipFavorite>;
+export type DriveFilesRepository = Repository<MiDriveFile>;
+export type DriveFoldersRepository = Repository<MiDriveFolder>;
+export type EmojisRepository = Repository<MiEmoji>;
+export type FollowingsRepository = Repository<MiFollowing>;
+export type FollowRequestsRepository = Repository<MiFollowRequest>;
+export type GalleryLikesRepository = Repository<MiGalleryLike>;
+export type GalleryPostsRepository = Repository<MiGalleryPost>;
+export type HashtagsRepository = Repository<MiHashtag>;
+export type InstancesRepository = Repository<MiInstance>;
+export type MetasRepository = Repository<MiMeta>;
+export type ModerationLogsRepository = Repository<MiModerationLog>;
+export type MutedNotesRepository = Repository<MiMutedNote>;
+export type MutingsRepository = Repository<MiMuting>;
+export type RenoteMutingsRepository = Repository<MiRenoteMuting>;
+export type NotesRepository = Repository<MiNote>;
+export type NoteFavoritesRepository = Repository<MiNoteFavorite>;
+export type NoteReactionsRepository = Repository<MiNoteReaction>;
+export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting>;
+export type NoteUnreadsRepository = Repository<MiNoteUnread>;
+export type PagesRepository = Repository<MiPage>;
+export type PageLikesRepository = Repository<MiPageLike>;
+export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest>;
+export type PollsRepository = Repository<MiPoll>;
+export type PollVotesRepository = Repository<MiPollVote>;
+export type PromoNotesRepository = Repository<MiPromoNote>;
+export type PromoReadsRepository = Repository<MiPromoRead>;
+export type RegistrationTicketsRepository = Repository<MiRegistrationTicket>;
+export type RegistryItemsRepository = Repository<MiRegistryItem>;
+export type RelaysRepository = Repository<MiRelay>;
+export type SigninsRepository = Repository<MiSignin>;
+export type SwSubscriptionsRepository = Repository<MiSwSubscription>;
+export type UsedUsernamesRepository = Repository<MiUsedUsername>;
+export type UsersRepository = Repository<MiUser>;
+export type UserIpsRepository = Repository<MiUserIp>;
+export type UserKeypairsRepository = Repository<MiUserKeypair>;
+export type UserListsRepository = Repository<MiUserList>;
+export type UserListFavoritesRepository = Repository<MiUserListFavorite>;
+export type UserListJoiningsRepository = Repository<MiUserListJoining>;
+export type UserNotePiningsRepository = Repository<MiUserNotePining>;
+export type UserPendingsRepository = Repository<MiUserPending>;
+export type UserProfilesRepository = Repository<MiUserProfile>;
+export type UserPublickeysRepository = Repository<MiUserPublickey>;
+export type UserSecurityKeysRepository = Repository<MiUserSecurityKey>;
+export type WebhooksRepository = Repository<MiWebhook>;
+export type ChannelsRepository = Repository<MiChannel>;
+export type RetentionAggregationsRepository = Repository<MiRetentionAggregation>;
+export type RolesRepository = Repository<MiRole>;
+export type RoleAssignmentsRepository = Repository<MiRoleAssignment>;
+export type FlashsRepository = Repository<MiFlash>;
+export type FlashLikesRepository = Repository<MiFlashLike>;
+export type UserMemoRepository = Repository<MiUserMemo>;

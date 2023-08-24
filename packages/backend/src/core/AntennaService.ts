@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { Antenna } from '@/models/entities/Antenna.js';
-import type { Note } from '@/models/entities/Note.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiAntenna } from '@/models/entities/Antenna.js';
+import type { MiNote } from '@/models/entities/Note.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import * as Acct from '@/misc/acct.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -21,7 +21,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
 	private antennasFetched: boolean;
-	private antennas: Antenna[];
+	private antennas: MiAntenna[];
 
 	constructor(
 		@Inject(DI.redis)
@@ -76,7 +76,7 @@ export class AntennaService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public async addNoteToAntennas(note: Note, noteUser: { id: User['id']; username: string; host: string | null; }): Promise<void> {
+	public async addNoteToAntennas(note: MiNote, noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<void> {
 		const antennas = await this.getAntennas();
 		const antennasWithMatchResult = await Promise.all(antennas.map(antenna => this.checkHitAntenna(antenna, note, noteUser).then(hit => [antenna, hit] as const)));
 		const matchedAntennas = antennasWithMatchResult.filter(([, hit]) => hit).map(([antenna]) => antenna);
@@ -99,7 +99,7 @@ export class AntennaService implements OnApplicationShutdown {
 	// NOTE: フォローしているユーザーのノート、リストのユーザーのノート、グループのユーザーのノート指定はパフォーマンス上の理由で無効になっている
 
 	@bindThis
-	public async checkHitAntenna(antenna: Antenna, note: (Note | Packed<'Note'>), noteUser: { id: User['id']; username: string; host: string | null; }): Promise<boolean> {
+	public async checkHitAntenna(antenna: MiAntenna, note: (MiNote | Packed<'Note'>), noteUser: { id: MiUser['id']; username: string; host: string | null; }): Promise<boolean> {
 		if (note.visibility === 'specified') return false;
 		if (note.visibility === 'followers') return false;
 

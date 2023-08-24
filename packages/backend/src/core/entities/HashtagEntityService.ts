@@ -6,7 +6,7 @@
 import { Injectable } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { Hashtag } from '@/models/entities/Hashtag.js';
+import type { MiHashtag } from '@/models/entities/Hashtag.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class HashtagEntityService {
 
 	@bindThis
 	public async pack(
-		src: Hashtag,
+		src: MiHashtag,
 	): Promise<Packed<'Hashtag'>> {
 		return {
 			tag: src.name,
@@ -32,7 +32,7 @@ export class HashtagEntityService {
 
 	@bindThis
 	public packMany(
-		hashtags: Hashtag[],
+		hashtags: MiHashtag[],
 	) {
 		return Promise.all(hashtags.map(x => this.pack(x)));
 	}

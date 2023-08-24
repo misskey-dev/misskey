@@ -6,8 +6,8 @@
 import { Entity, Index, Column, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity()
-export class Ad {
+@Entity('ad')
+export class MiAd {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -64,7 +64,7 @@ export class Ad {
 		default: 0, nullable: false,
 	})
 	public dayOfWeek: number;
-	constructor(data: Partial<Ad>) {
+	constructor(data: Partial<MiAd>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

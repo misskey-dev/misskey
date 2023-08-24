@@ -6,15 +6,15 @@
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { noteVisibilities } from '../../types.js';
-import { User } from './User.js';
-import { Channel } from './Channel.js';
-import type { DriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { MiChannel } from './Channel.js';
+import type { MiDriveFile } from './DriveFile.js';
 
-@Entity()
+@Entity('note')
 @Index('IDX_NOTE_TAGS', { synchronize: false })
 @Index('IDX_NOTE_MENTIONS', { synchronize: false })
 @Index('IDX_NOTE_VISIBLE_USER_IDS', { synchronize: false })
-export class Note {
+export class MiNote {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -30,13 +30,13 @@ export class Note {
 		nullable: true,
 		comment: 'The ID of reply target.',
 	})
-	public replyId: Note['id'] | null;
+	public replyId: MiNote['id'] | null;
 
-	@ManyToOne(type => Note, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public reply: Note | null;
+	public reply: MiNote | null;
 
 	@Index()
 	@Column({
@@ -44,13 +44,13 @@ export class Note {
 		nullable: true,
 		comment: 'The ID of renote target.',
 	})
-	public renoteId: Note['id'] | null;
+	public renoteId: MiNote['id'] | null;
 
-	@ManyToOne(type => Note, {
+	@ManyToOne(type => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public renote: Note | null;
+	public renote: MiNote | null;
 
 	@Index()
 	@Column('varchar', {
@@ -79,13 +79,13 @@ export class Note {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('boolean', {
 		default: false,
@@ -144,7 +144,7 @@ export class Note {
 		...id(),
 		array: true, default: '{}',
 	})
-	public fileIds: DriveFile['id'][];
+	public fileIds: MiDriveFile['id'][];
 
 	@Index()
 	@Column('varchar', {
@@ -157,14 +157,14 @@ export class Note {
 		...id(),
 		array: true, default: '{}',
 	})
-	public visibleUserIds: User['id'][];
+	public visibleUserIds: MiUser['id'][];
 
 	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}',
 	})
-	public mentions: User['id'][];
+	public mentions: MiUser['id'][];
 
 	@Column('text', {
 		default: '[]',
@@ -193,13 +193,13 @@ export class Note {
 		nullable: true,
 		comment: 'The ID of source channel.',
 	})
-	public channelId: Channel['id'] | null;
+	public channelId: MiChannel['id'] | null;
 
-	@ManyToOne(type => Channel, {
+	@ManyToOne(type => MiChannel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public channel: Channel | null;
+	public channel: MiChannel | null;
 
 	//#region Denormalized fields
 	@Index()
@@ -214,7 +214,7 @@ export class Note {
 		nullable: true,
 		comment: '[Denormalized]',
 	})
-	public replyUserId: User['id'] | null;
+	public replyUserId: MiUser['id'] | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -227,7 +227,7 @@ export class Note {
 		nullable: true,
 		comment: '[Denormalized]',
 	})
-	public renoteUserId: User['id'] | null;
+	public renoteUserId: MiUser['id'] | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -236,7 +236,7 @@ export class Note {
 	public renoteUserHost: string | null;
 	//#endregion
 
-	constructor(data: Partial<Note>) {
+	constructor(data: Partial<MiNote>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

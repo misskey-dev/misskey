@@ -9,7 +9,7 @@ import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/inde
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { DriveFolder } from '@/models/entities/DriveFolder.js';
+import type { MiDriveFolder } from '@/models/entities/DriveFolder.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class DriveFolderEntityService {
 
 	@bindThis
 	public async pack(
-		src: DriveFolder['id'] | DriveFolder,
+		src: MiDriveFolder['id'] | MiDriveFolder,
 		options?: {
 			detail: boolean
 		},
