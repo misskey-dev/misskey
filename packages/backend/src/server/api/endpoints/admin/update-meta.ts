@@ -4,12 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import type { MiMeta } from '@/models/entities/Meta.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
-import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -113,8 +111,6 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		private moduleRef: ModuleRef,
-
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
 	) {
@@ -427,14 +423,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.metaService.update(set);
 			this.moderationLogService.insertModerationLog(me, 'updateMeta');
-
-			if (set.enableServerMachineStats === true) {
-				const serverStatsService: ServerStatsService = await this.moduleRef.resolve(ServerStatsService);
-				await serverStatsService.start();
-			} else {
-				const serverStatsService: ServerStatsService = await this.moduleRef.resolve(ServerStatsService);
-				serverStatsService.dispose();
-			}
 		});
 	}
 }
