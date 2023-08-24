@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
@@ -11,6 +16,7 @@
 			<XClips v-else-if="tab === 'clips'" :user="user"/>
 			<XLists v-else-if="tab === 'lists'" :user="user"/>
 			<XPages v-else-if="tab === 'pages'" :user="user"/>
+			<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
 			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
 		</div>
 		<MkError v-else-if="error" @retry="fetchUser()"/>
@@ -37,6 +43,7 @@ const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
 const XLists = defineAsyncComponent(() => import('./lists.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
+const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 
 const props = withDefaults(defineProps<{
@@ -98,6 +105,10 @@ const headerTabs = $computed(() => user ? [{
 	key: 'pages',
 	title: i18n.ts.pages,
 	icon: 'ti ti-news',
+}, {
+	key: 'flashs',
+	title: 'Play',
+	icon: 'ti ti-player-play',
 }, {
 	key: 'gallery',
 	title: i18n.ts.gallery,

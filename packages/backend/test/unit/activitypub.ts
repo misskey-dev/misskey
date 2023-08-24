@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
@@ -253,6 +258,21 @@ describe('ActivityPub', () => {
 			// Reflects the original content instead of the fraud
 			assert.strictEqual(note.text, 'test test foo');
 			assert.strictEqual(note.uri, actor2Note.id);
+		});
+
+		test('Fetch a note that is a featured note of the attributed actor', async () => {
+			const actor = createRandomActor();
+			actor.featured = `${actor.id}/collections/featured`;
+
+			const featured = createRandomFeaturedCollection(actor, 5);
+			const firstNote = (featured.items as NonTransientIPost[])[0];
+
+			resolver.register(actor.id, actor);
+			resolver.register(actor.featured, featured);
+			resolver.register(firstNote.id, firstNote);
+
+			const note = await noteService.createNote(firstNote.id as string, resolver);
+			assert.strictEqual(note?.uri, firstNote.id);
 		});
 	});
 

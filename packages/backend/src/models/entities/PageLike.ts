@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { Page } from './Page.js';
+import { MiUser } from './User.js';
+import { MiPage } from './Page.js';
 
-@Entity()
+@Entity('page_like')
 @Index(['userId', 'pageId'], { unique: true })
-export class PageLike {
+export class MiPageLike {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -14,20 +19,20 @@ export class PageLike {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column(id())
-	public pageId: Page['id'];
+	public pageId: MiPage['id'];
 
-	@ManyToOne(type => Page, {
+	@ManyToOne(type => MiPage, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public page: Page | null;
+	public page: MiPage | null;
 }

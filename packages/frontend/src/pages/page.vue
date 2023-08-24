@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
@@ -166,7 +171,7 @@ const headerActions = $computed(() => []);
 const headerTabs = $computed(() => []);
 
 definePageMetadata(computed(() => page ? {
-	title: computed(() => page.title || page.name),
+	title: page.title || page.name,
 	avatar: page.user,
 	path: `/@${page.user.username}/pages/${page.name}`,
 	share: {

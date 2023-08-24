@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class Meta {
+@Entity('meta')
+export class MiMeta {
 	@PrimaryColumn({
 		type: 'varchar',
 		length: 32,
@@ -121,7 +126,7 @@ export class Meta {
 	public infoImageUrl: string | null;
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public cacheRemoteFiles: boolean;
 
@@ -134,13 +139,13 @@ export class Meta {
 		...id(),
 		nullable: true,
 	})
-	public proxyAccountId: User['id'] | null;
+	public proxyAccountId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public proxyAccount: User | null;
+	public proxyAccount: MiUser | null;
 
 	@Column('boolean', {
 		default: false,

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
 	:name="transitionName"
@@ -431,6 +436,7 @@ defineExpose({
 			margin: auto;
 			padding: 32px;
 			display: flex;
+			overflow: auto;
 
 			@media (max-width: 500px) {
 				padding: 16px;

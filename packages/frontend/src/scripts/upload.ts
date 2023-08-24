@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { readAndCompressImage } from 'browser-image-resizer';

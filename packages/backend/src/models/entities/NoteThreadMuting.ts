@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
+@Entity('note_thread_muting')
 @Index(['userId', 'threadId'], { unique: true })
-export class NoteThreadMuting {
+export class MiNoteThreadMuting {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -16,13 +21,13 @@ export class NoteThreadMuting {
 	@Column({
 		...id(),
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column('varchar', {

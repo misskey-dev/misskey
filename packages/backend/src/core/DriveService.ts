@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
@@ -9,9 +14,9 @@ import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import Logger from '@/logger.js';
-import type { RemoteUser, User } from '@/models/entities/User.js';
+import type { MiRemoteUser, MiUser } from '@/models/entities/User.js';
 import { MetaService } from '@/core/MetaService.js';
-import { DriveFile } from '@/models/entities/DriveFile.js';
+import { MiDriveFile } from '@/models/entities/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
@@ -22,7 +27,7 @@ import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import type { IImage } from '@/core/ImageProcessingService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { DriveFolder } from '@/models/entities/DriveFolder.js';
+import type { MiDriveFolder } from '@/models/entities/DriveFolder.js';
 import { createTemp } from '@/misc/create-temp.js';
 import DriveChart from '@/core/chart/charts/drive.js';
 import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
@@ -40,7 +45,7 @@ import { isMimeImage } from '@/misc/is-mime-image.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
-	user: { id: User['id']; host: User['host'] } | null;
+	user: { id: MiUser['id']; host: MiUser['host'] } | null;
 	/** File path */
 	path: string;
 	/** Name */
@@ -68,8 +73,8 @@ type AddFileArgs = {
 
 type UploadFromUrlArgs = {
 	url: string;
-	user: { id: User['id']; host: User['host'] } | null;
-	folderId?: DriveFolder['id'] | null;
+	user: { id: MiUser['id']; host: MiUser['host'] } | null;
+	folderId?: MiDriveFolder['id'] | null;
 	uri?: string | null;
 	sensitive?: boolean;
 	force?: boolean;
@@ -133,7 +138,7 @@ export class DriveService {
 	 * @param size Size for original
 	 */
 	@bindThis
-	private async save(file: DriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<DriveFile> {
+	private async save(file: MiDriveFile, path: string, name: string, type: string, hash: string, size: number): Promise<MiDriveFile> {
 	// thunbnail, webpublic を必要なら生成
 		const alts = await this.generateAlts(path, type, !file.uri);
 
@@ -327,7 +332,7 @@ export class DriveService {
 					this.registerLogger.debug('web image not created (not an required image)');
 				}
 			} catch (err) {
-				this.registerLogger.warn('web image not created (an error occured)', err as Error);
+				this.registerLogger.warn('web image not created (an error occurred)', err as Error);
 			}
 		} else {
 			if (satisfyWebpublic) this.registerLogger.info('web image not created (original satisfies webpublic)');
@@ -346,7 +351,7 @@ export class DriveService {
 				thumbnail = await this.imageProcessingService.convertSharpToWebp(img, 498, 422);
 			}
 		} catch (err) {
-			this.registerLogger.warn('thumbnail not created (an error occured)', err as Error);
+			this.registerLogger.warn('thumbnail not created (an error occurred)', err as Error);
 		}
 		// #endregion thumbnail
 
@@ -400,7 +405,7 @@ export class DriveService {
 
 	// Expire oldest file (without avatar or banner) of remote user
 	@bindThis
-	private async expireOldFile(user: RemoteUser, driveCapacity: number) {
+	private async expireOldFile(user: MiRemoteUser, driveCapacity: number) {
 		const q = this.driveFilesRepository.createQueryBuilder('file')
 			.where('file.userId = :userId', { userId: user.id })
 			.andWhere('file.isLink = FALSE');
@@ -446,7 +451,7 @@ export class DriveService {
 		requestIp = null,
 		requestHeaders = null,
 		ext = null,
-	}: AddFileArgs): Promise<DriveFile> {
+	}: AddFileArgs): Promise<MiDriveFile> {
 		let skipNsfwCheck = false;
 		const instance = await this.metaService.fetch();
 		const userRoleNSFW = user && (await this.roleService.getUserPolicies(user.id)).alwaysMarkNsfw;
@@ -515,7 +520,7 @@ export class DriveService {
 				if (isLocalUser) {
 					throw new IdentifiableError('c6244ed2-a39a-4e1c-bf93-f0fbd7764fa6', 'No free space.');
 				}
-				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as RemoteUser, driveCapacity - info.size);
+				await this.expireOldFile(await this.usersRepository.findOneByOrFail({ id: user.id }) as MiRemoteUser, driveCapacity - info.size);
 			}
 		}
 		//#endregion
@@ -553,7 +558,7 @@ export class DriveService {
 
 		const folder = await fetchFolder();
 
-		let file = new DriveFile();
+		let file = new MiDriveFile();
 		file.id = this.idService.genId();
 		file.createdAt = new Date();
 		file.userId = user ? user.id : null;
@@ -569,9 +574,7 @@ export class DriveService {
 		file.maybePorn = info.porn;
 		file.isSensitive = user
 			? this.userEntityService.isLocalUser(user) && profile!.alwaysMarkNsfw ? true :
-			(sensitive !== null && sensitive !== undefined)
-				? sensitive
-				: false
+			sensitive ?? false
 			: false;
 
 		if (info.sensitive && profile!.autoSensitive) file.isSensitive = true;
@@ -611,7 +614,7 @@ export class DriveService {
 					file = await this.driveFilesRepository.findOneBy({
 						uri: file.uri!,
 						userId: user ? user.id : IsNull(),
-					}) as DriveFile;
+					}) as MiDriveFile;
 				} else {
 					this.registerLogger.error(err as Error);
 					throw err;
@@ -645,7 +648,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	public async deleteFile(file: DriveFile, isExpired = false) {
+	public async deleteFile(file: MiDriveFile, isExpired = false) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
 
@@ -672,7 +675,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	public async deleteFileSync(file: DriveFile, isExpired = false) {
+	public async deleteFileSync(file: MiDriveFile, isExpired = false) {
 		if (file.storedInternal) {
 			this.internalStorageService.del(file.accessKey!);
 
@@ -703,7 +706,7 @@ export class DriveService {
 	}
 
 	@bindThis
-	private async deletePostProcess(file: DriveFile, isExpired = false) {
+	private async deletePostProcess(file: MiDriveFile, isExpired = false) {
 		// リモートファイル期限切れ削除後は直リンクにする
 		if (isExpired && file.userHost !== null && file.uri != null) {
 			this.driveFilesRepository.update(file.id, {
@@ -766,7 +769,7 @@ export class DriveService {
 		comment = null,
 		requestIp = null,
 		requestHeaders = null,
-	}: UploadFromUrlArgs): Promise<DriveFile> {
+	}: UploadFromUrlArgs): Promise<MiDriveFile> {
 		// Create temp file
 		const [path, cleanup] = await createTemp();
 

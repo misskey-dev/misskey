@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { App } from './App.js';
+import { MiUser } from './User.js';
+import { MiApp } from './App.js';
 
-@Entity()
-export class AuthSession {
+@Entity('auth_session')
+export class MiAuthSession {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -23,21 +28,21 @@ export class AuthSession {
 		...id(),
 		nullable: true,
 	})
-	public userId: User['id'] | null;
+	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 		nullable: true,
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column(id())
-	public appId: App['id'];
+	public appId: MiApp['id'];
 
-	@ManyToOne(type => App, {
+	@ManyToOne(type => MiApp, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public app: App | null;
+	public app: MiApp | null;
 }
