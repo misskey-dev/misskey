@@ -9,6 +9,7 @@
 
 import cluster from 'node:cluster';
 import { EventEmitter } from 'node:events';
+import process from 'node:process';
 import chalk from 'chalk';
 import Xev from 'xev';
 import Logger from '@/logger.js';
@@ -29,6 +30,8 @@ const ev = new Xev();
 
 //#region Events
 
+let isShuttingDown = false;
+
 if (cluster.isPrimary && !envOption.disableClustering) {
 	// Listen new workers
 	cluster.on('fork', worker => {
@@ -41,25 +44,22 @@ if (cluster.isPrimary && !envOption.disableClustering) {
 	});
 
 	// Listen for dying workers
-	cluster.on('exit', (worker, code, signal?) => {
+	cluster.on('exit', (worker, code, signal) => {
 		// Replace the dead worker,
 		// we're not sentimental
-		if (signal) {
-			switch (signal) {
-				case 'SIGINT':
-				case 'SIGTERM':
-					console.log(chalk.green(`[${worker.id}] exited by signal: ${signal}`));
-					break;
-				default:
-					console.error(chalk.red(`[${worker.id}] killed by signal: ${signal}`));
-					cluster.fork();
-					break;
-			}
-		} else if (code !== 0) {
-			console.error(chalk.red(`[${worker.id}] exited with error code: ${code}`));
-		} else {
-			console.log(chalk.green(`[${worker.id}] exited normally`));
-		}
+		clusterLogger.error(chalk.red(`[${worker.id}] died (${signal || code})`));
+		if (!isShuttingDown) cluster.fork();
+		else clusterLogger.info(chalk.yellow('Worker respawn disabled because of shutdown'));
+	});
+
+	process.on('SIGINT', () => {
+		logger.warn(chalk.yellow('Process received SIGINT'));
+		isShuttingDown = true;
+	});
+
+	process.on('SIGTERM', () => {
+		logger.warn(chalk.yellow('Process received SIGTERM'));
+		isShuttingDown = true;
 	});
 }
 
@@ -78,7 +78,14 @@ process.on('uncaughtException', err => {
 
 // Dying away...
 process.on('exit', code => {
-	logger.info(`The process is going to exit with code ${code}`);
+	logger.warn(chalk.yellow(`The process is going to exit with code ${code}`));
+});
+
+process.on('warning', warning => {
+	if ((warning as never)['code'] !== 'MISSKEY_SHUTDOWN') return;
+	logger.warn(chalk.yellow(`${warning.message}: ${(warning as never)['detail']}`));
+	for (const id in cluster.workers) cluster.workers[id]?.process.kill('SIGTERM');
+	process.exit();
 });
 
 //#endregion

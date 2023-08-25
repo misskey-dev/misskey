@@ -4,6 +4,7 @@
  */
 
 import { setTimeout } from 'node:timers/promises';
+import process from 'node:process';
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
@@ -103,5 +104,9 @@ export class GlobalModule implements OnApplicationShutdown {
 
 	async onApplicationShutdown(signal: string): Promise<void> {
 		await this.dispose();
+		process.emitWarning('Misskey is shutting down', {
+			code: 'MISSKEY_SHUTDOWN',
+			detail: `Application received ${signal} signal`,
+		});
 	}
 }
