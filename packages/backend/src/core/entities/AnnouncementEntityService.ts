@@ -11,7 +11,7 @@ import type {
 } from '@/models/index.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
-import { Announcement, User } from '@/models/index.js';
+import { MiAnnouncement, MiUser } from '@/models/index.js';
 
 @Injectable()
 export class AnnouncementEntityService {
@@ -26,14 +26,14 @@ export class AnnouncementEntityService {
 
 	@bindThis
 	public async pack(
-		src: Announcement['id'] | Announcement & { isRead?: boolean | null },
-		me: { id: User['id'] } | null | undefined,
+		src: MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null },
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Announcement'>> {
 		const announcement = typeof src === 'object'
 			? src
 			: await this.announcementsRepository.findOneByOrFail({
 				id: src,
-			}) as Announcement & { isRead?: boolean | null };
+			}) as MiAnnouncement & { isRead?: boolean | null };
 
 		if (me && announcement.isRead === undefined) {
 			announcement.isRead = await this.announcementReadsRepository.countBy({
@@ -61,8 +61,8 @@ export class AnnouncementEntityService {
 
 	@bindThis
 	public async packMany(
-		announcements: (Announcement['id'] | Announcement & { isRead?: boolean | null } | Announcement)[],
-		me: { id: User['id'] } | null | undefined,
+		announcements: (MiAnnouncement['id'] | MiAnnouncement & { isRead?: boolean | null } | MiAnnouncement)[],
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Announcement'>[]> {
 		return (await Promise.allSettled(announcements.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

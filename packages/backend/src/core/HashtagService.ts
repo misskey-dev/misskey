@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/core/IdService.js';
-import type { Hashtag } from '@/models/entities/Hashtag.js';
+import type { MiHashtag } from '@/models/entities/Hashtag.js';
 import type { HashtagsRepository, UsersRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -28,14 +28,14 @@ export class HashtagService {
 	}
 
 	@bindThis
-	public async updateHashtags(user: { id: User['id']; host: User['host']; }, tags: string[]) {
+	public async updateHashtags(user: { id: MiUser['id']; host: MiUser['host']; }, tags: string[]) {
 		for (const tag of tags) {
 			await this.updateHashtag(user, tag);
 		}
 	}
 
 	@bindThis
-	public async updateUsertags(user: User, tags: string[]) {
+	public async updateUsertags(user: MiUser, tags: string[]) {
 		for (const tag of tags) {
 			await this.updateHashtag(user, tag, true, true);
 		}
@@ -46,7 +46,7 @@ export class HashtagService {
 	}
 
 	@bindThis
-	public async updateHashtag(user: { id: User['id']; host: User['host']; }, tag: string, isUserAttached = false, inc = true) {
+	public async updateHashtag(user: { id: MiUser['id']; host: MiUser['host']; }, tag: string, isUserAttached = false, inc = true) {
 		tag = normalizeForSearch(tag);
 
 		const index = await this.hashtagsRepository.findOneBy({ name: tag });
@@ -126,7 +126,7 @@ export class HashtagService {
 					attachedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
 					attachedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
 					attachedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
-				} as Hashtag);
+				} as MiHashtag);
 			} else {
 				this.hashtagsRepository.insert({
 					id: this.idService.genId(),
@@ -143,7 +143,7 @@ export class HashtagService {
 					attachedLocalUsersCount: 0,
 					attachedRemoteUserIds: [],
 					attachedRemoteUsersCount: 0,
-				} as Hashtag);
+				} as MiHashtag);
 			}
 		}
 	}

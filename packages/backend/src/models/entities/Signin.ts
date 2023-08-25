@@ -5,10 +5,10 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class Signin {
+@Entity('signin')
+export class MiSignin {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,13 +19,13 @@ export class Signin {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('varchar', {
 		length: 128,

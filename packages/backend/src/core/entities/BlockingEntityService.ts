@@ -8,8 +8,8 @@ import { DI } from '@/di-symbols.js';
 import type { BlockingsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { Blocking } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiBlocking } from '@/models/entities/Blocking.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -25,8 +25,8 @@ export class BlockingEntityService {
 
 	@bindThis
 	public async pack(
-		src: Blocking['id'] | Blocking,
-		me: { id: User['id'] } | null | undefined,
+		src: MiBlocking['id'] | MiBlocking,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Blocking'>> {
 		const blocking = typeof src === 'object' ? src : await this.blockingsRepository.findOneByOrFail({ id: src });
 
@@ -42,8 +42,8 @@ export class BlockingEntityService {
 
 	@bindThis
 	public async packMany(
-		blockings: (Blocking['id'] | Blocking)[],
-		me: { id: User['id'] } | null | undefined,
+		blockings: (MiBlocking['id'] | MiBlocking)[],
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Blocking'>[]> {
 		return (await Promise.allSettled(blockings.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

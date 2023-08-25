@@ -7,8 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ModerationLogsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { User } from '@/models/entities/User.js';
-import type { ModerationLog } from '@/models/entities/ModerationLog.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiModerationLog } from '@/models/entities/ModerationLog.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -25,8 +25,8 @@ export class ModerationLogEntityService {
 
 	@bindThis
 	public async pack(
-		src: ModerationLog['id'] | ModerationLog,
-		me: { id: User['id'] } | null | undefined,
+		src: MiModerationLog['id'] | MiModerationLog,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'ModerationLog'>> {
 		const log = typeof src === 'object' ? src : await this.moderationLogsRepository.findOneByOrFail({ id: src });
 
@@ -44,8 +44,8 @@ export class ModerationLogEntityService {
 
 	@bindThis
 	public async packMany(
-		reports: (ModerationLog['id'] | ModerationLog)[],
-		me: { id: User['id'] } | null | undefined,
+		reports: (MiModerationLog['id'] | MiModerationLog)[],
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'ModerationLog'>[]> {
 		return (await Promise.allSettled(reports.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

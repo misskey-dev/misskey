@@ -5,12 +5,12 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
-import { UserList } from './UserList.js';
+import { MiUser } from './User.js';
+import { MiUserList } from './UserList.js';
 
-@Entity()
+@Entity('user_list_favorite')
 @Index(['userId', 'userListId'], { unique: true })
-export class UserListFavorite {
+export class MiUserListFavorite {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -19,20 +19,20 @@ export class UserListFavorite {
 
 	@Index()
 	@Column(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column(id())
-	public userListId: UserList['id'];
+	public userListId: MiUserList['id'];
 
-	@ManyToOne(type => UserList, {
+	@ManyToOne(type => MiUserList, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public userList: UserList | null;
+	public userList: MiUserList | null;
 }

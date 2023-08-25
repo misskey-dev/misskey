@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, In } from 'typeorm';
 import type { AnnouncementReadsRepository, AnnouncementsRepository, UsersRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
-import { Announcement, AnnouncementRead } from '@/models/index.js';
+import type { MiUser } from '@/models/entities/User.js';
+import { MiAnnouncement, MiAnnouncementRead } from '@/models/index.js';
 import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
@@ -36,8 +36,8 @@ export class AnnouncementService {
 
 	@bindThis
 	public async create(
-		values: Partial<Announcement>,
-	): Promise<{ raw: Announcement; packed: Packed<'Announcement'> }> {
+		values: Partial<MiAnnouncement>,
+	): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const announcement = await this.announcementsRepository
 			.insert({
 				id: this.idService.genId(),
@@ -85,11 +85,11 @@ export class AnnouncementService {
 
 	@bindThis
 	public async list(
-		userId: User['id'] | null,
+		userId: MiUser['id'] | null,
 		limit: number,
 		offset: number,
-		moderator: User,
-	): Promise<(Announcement & { userInfo: Packed<'UserLite'> | null, readCount: number })[]> {
+		moderator: MiUser,
+	): Promise<(MiAnnouncement & { userInfo: Packed<'UserLite'> | null, readCount: number })[]> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
 		if (userId) {
 			query.andWhere('announcement."userId" = :userId', { userId: userId });
@@ -108,7 +108,7 @@ export class AnnouncementService {
 			.offset(offset)
 			.getMany();
 
-		const reads = new Map<Announcement, number>();
+		const reads = new Map<MiAnnouncement, number>();
 
 		for (const announcement of announcements) {
 			reads.set(announcement, await this.announcementReadsRepository.countBy({
@@ -132,9 +132,9 @@ export class AnnouncementService {
 
 	@bindThis
 	public async update(
-		announcementId: Announcement['id'],
-		values: Partial<Announcement>,
-	): Promise<{ raw: Announcement; packed: Packed<'Announcement'> }> {
+		announcementId: MiAnnouncement['id'],
+		values: Partial<MiAnnouncement>,
+	): Promise<{ raw: MiAnnouncement; packed: Packed<'Announcement'> }> {
 		const oldAnnouncement = await this.announcementsRepository.findOneByOrFail({
 			id: announcementId,
 		});
@@ -196,7 +196,7 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async delete(announcementId: Announcement['id']): Promise<void> {
+	public async delete(announcementId: MiAnnouncement['id']): Promise<void> {
 		await this.announcementReadsRepository.delete({
 			announcementId: announcementId,
 		});
@@ -205,7 +205,7 @@ export class AnnouncementService {
 
 	@bindThis
 	public async getAnnouncements(
-		me: User | null,
+		me: MiUser | null,
 		limit: number,
 		offset: number,
 		isActive?: boolean,
@@ -213,7 +213,7 @@ export class AnnouncementService {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
 		if (me) {
 			query.leftJoin(
-				AnnouncementRead,
+				MiAnnouncementRead,
 				'read',
 				'read."announcementId" = announcement.id AND read."userId" = :userId',
 				{ userId: me.id },
@@ -262,16 +262,16 @@ export class AnnouncementService {
 			await query
 				.limit(limit)
 				.offset(offset)
-				.getRawMany<Announcement & { isRead?: boolean | null }>(),
+				.getRawMany<MiAnnouncement & { isRead?: boolean | null }>(),
 			me,
 		);
 	}
 
 	@bindThis
-	public async getUnreadAnnouncements(me: User): Promise<Packed<'Announcement'>[]> {
+	public async getUnreadAnnouncements(me: MiUser): Promise<Packed<'Announcement'>[]> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
 		query.leftJoinAndSelect(
-			AnnouncementRead,
+			MiAnnouncementRead,
 			'read',
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
 			{ userId: me.id },
@@ -307,10 +307,10 @@ export class AnnouncementService {
 	}
 
 	@bindThis
-	public async countUnreadAnnouncements(me: User): Promise<number> {
+	public async countUnreadAnnouncements(me: MiUser): Promise<number> {
 		const query = this.announcementsRepository.createQueryBuilder('announcement');
 		query.leftJoinAndSelect(
-			AnnouncementRead,
+			MiAnnouncementRead,
 			'read',
 			'read."announcementId" = announcement.id AND read."userId" = :userId',
 			{ userId: me.id },
@@ -339,8 +339,8 @@ export class AnnouncementService {
 
 	@bindThis
 	public async markAsRead(
-		me: User,
-		announcementId: Announcement['id'],
+		me: MiUser,
+		announcementId: MiAnnouncement['id'],
 	): Promise<void> {
 		try {
 			await this.announcementReadsRepository.insert({

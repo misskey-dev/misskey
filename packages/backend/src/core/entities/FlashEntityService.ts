@@ -8,8 +8,8 @@ import { DI } from '@/di-symbols.js';
 import type { FlashLikesRepository, FlashsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { User } from '@/models/entities/User.js';
-import type { Flash } from '@/models/entities/Flash.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiFlash } from '@/models/entities/Flash.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -28,8 +28,8 @@ export class FlashEntityService {
 
 	@bindThis
 	public async pack(
-		src: Flash['id'] | Flash,
-		me: { id: User['id'] } | null | undefined,
+		src: MiFlash['id'] | MiFlash,
+		me: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'Flash'>> {
 		const meId = me ? me.id : null;
 		const flash = typeof src === 'object' ? src : await this.flashsRepository.findOneByOrFail({ id: src });
@@ -50,8 +50,8 @@ export class FlashEntityService {
 
 	@bindThis
 	public async packMany(
-		flashs: (Flash['id'] | Flash)[],
-		me: { id: User['id'] } | null | undefined,
+		flashs: (MiFlash['id'] | MiFlash)[],
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'Flash'>[]> {
 		return (await Promise.allSettled(flashs.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

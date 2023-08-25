@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { SigninsRepository } from '@/models/index.js';
-import type { Signin } from '@/models/entities/Signin.js';
+import type { MiSignin } from '@/models/entities/Signin.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -22,7 +22,7 @@ export class SigninEntityService {
 
 	@bindThis
 	public async pack(
-		src: Signin,
+		src: MiSignin,
 	) {
 		return src;
 	}

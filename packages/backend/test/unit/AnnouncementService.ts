@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { jest } from '@jest/globals';
-import type { Announcement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, User } from '@/models/index.js';
+import type { MiAnnouncement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, MiUser } from '@/models/index.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { IdService } from '@/core/IdService.js';
@@ -31,7 +31,7 @@ describe('AnnouncementService', () => {
 	let announcementReadsRepository: AnnouncementReadsRepository;
 	let globalEventService: jest.Mocked<GlobalEventService>;
 
-	function createUser(data: Partial<User> = {}) {
+	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
 			id: genAid(new Date()),
@@ -43,7 +43,7 @@ describe('AnnouncementService', () => {
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	function createAnnouncement(data: Partial<Announcement> = {}) {
+	function createAnnouncement(data: Partial<MiAnnouncement> = {}) {
 		return announcementsRepository.insert({
 			id: genAid(new Date()),
 			createdAt: new Date(),

@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { FlashLikesRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
-import type { FlashLike } from '@/models/entities/FlashLike.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { MiFlashLike } from '@/models/entities/FlashLike.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
 import { FlashEntityService } from './FlashEntityService.js';
@@ -24,8 +24,8 @@ export class FlashLikeEntityService {
 
 	@bindThis
 	public async pack(
-		src: FlashLike['id'] | FlashLike,
-		me: { id: User['id'] } | null | undefined,
+		src: MiFlashLike['id'] | MiFlashLike,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'FlashLike'>> {
 		const like = typeof src === 'object' ? src : await this.flashLikesRepository.findOneByOrFail({ id: src });
 
@@ -37,8 +37,8 @@ export class FlashLikeEntityService {
 
 	@bindThis
 	public async packMany(
-		likes: (FlashLike['id'] | FlashLike)[],
-		me: { id: User['id'] } | null | undefined,
+		likes: (MiFlashLike['id'] | MiFlashLike)[],
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'FlashLike'>[]> {
 		return (await Promise.allSettled(likes.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')

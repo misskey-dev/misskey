@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, UsersRepository, BlockingsRepository, Muting } from '@/models/index.js';
+import type { MutingsRepository, UsersRepository, BlockingsRepository, MiMuting } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
@@ -61,7 +61,7 @@ export class ExportMutingProcessorService {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
 
 			let exportedCount = 0;
-			let cursor: Muting['id'] | null = null;
+			let cursor: MiMuting['id'] | null = null;
 
 			while (true) {
 				const mutes = await this.mutingsRepository.find({

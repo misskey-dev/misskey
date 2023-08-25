@@ -15,7 +15,7 @@ import type {
 } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/entities/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
@@ -104,7 +104,7 @@ export class SigninApiService {
 		const user = await this.usersRepository.findOneBy({
 			usernameLower: username.toLowerCase(),
 			host: IsNull(),
-		}) as LocalUser;
+		}) as MiLocalUser;
 
 		if (user == null) {
 			return error(404, {

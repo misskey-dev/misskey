@@ -6,8 +6,8 @@
 import { Column, Entity, PrimaryColumn, Index } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity()
-export class AbuseReportResolver {
+@Entity('abuse_report_resolver')
+export class MiAbuseReportResolver {
 	@PrimaryColumn(id())
 	public id: string;
 

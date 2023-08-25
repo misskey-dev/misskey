@@ -12,7 +12,7 @@ import { DI } from '@/di-symbols.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
-import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -109,7 +109,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.noSuchUser);
 			});
-			const destination = await this.getterService.getUser(moveTo.id) as LocalUser | RemoteUser;
+			const destination = await this.getterService.getUser(moveTo.id) as MiLocalUser | MiRemoteUser;
 			const newUri = this.userEntityService.getUserUri(destination);
 
 			// update local db

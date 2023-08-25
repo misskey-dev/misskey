@@ -7,10 +7,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AbuseUserReportsRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
+import type { MiAbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';
 import { Packed } from '@/misc/json-schema.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -25,8 +25,8 @@ export class AbuseUserReportEntityService {
 
 	@bindThis
 	public async pack(
-		src: AbuseUserReport['id'] | AbuseUserReport,
-		me: { id: User['id'] } | null | undefined,
+		src: MiAbuseUserReport['id'] | MiAbuseUserReport,
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'AbuseUserReport'>> {
 		const report = typeof src === 'object' ? src : await this.abuseUserReportsRepository.findOneByOrFail({ id: src });
 
@@ -53,8 +53,8 @@ export class AbuseUserReportEntityService {
 
 	@bindThis
 	public async packMany(
-		reports: (AbuseUserReport['id'] | AbuseUserReport)[],
-		me: { id: User['id'] } | null | undefined,
+		reports: (MiAbuseUserReport['id'] | MiAbuseUserReport)[],
+		me: { id: MiUser['id'] } | null | undefined,
 	) : Promise<Packed<'AbuseUserReport'>[]> {
 		return (await Promise.allSettled(reports.map(x => this.pack(x, me))))
 			.filter(result => result.status === 'fulfilled')
