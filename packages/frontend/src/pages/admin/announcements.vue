@@ -57,6 +57,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</MkFolder>
+			<MkButton class="button" @click="more()">
+				<i class="ti ti-reload"></i>{{ i18n.ts.more }}
+			</MkButton>
 		</div>
 	</MkSpacer>
 </MkStickyContainer>
@@ -122,6 +125,12 @@ async function save(announcement) {
 	} else {
 		os.apiWithDialog('admin/announcements/update', announcement);
 	}
+}
+
+function more() {
+	os.api('admin/announcements/list', { untilId: announcements.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id }).then(announcementResponse => {
+		announcements = announcements.concat(announcementResponse);
+	});
 }
 
 function refresh() {

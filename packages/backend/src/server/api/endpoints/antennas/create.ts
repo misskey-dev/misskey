@@ -85,8 +85,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if ((ps.keywords.length === 0) || ps.keywords[0].every(x => x === '')) {
-				throw new Error('invalid param');
+			if (ps.keywords.flat().every(x => x === '') && ps.excludeKeywords.flat().every(x => x === '')) {
+				throw new Error('either keywords or excludeKeywords is required.');
 			}
 
 			const currentAntennasCount = await this.antennasRepository.countBy({
