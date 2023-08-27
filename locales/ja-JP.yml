@@ -1136,7 +1136,6 @@ _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
 
 _event:
-  title: "題名"
   startDateTime: "開始日時"
   endDateTime: "終了日時"
   startDate: "開始日"
@@ -1146,7 +1145,6 @@ _event:
   detailName: "属性"
   detailValue: "値"
   location: "Location"
-  url: "URL"
   doorTime: "Door Time"
   organizer: "Organizer"
   organizerLink: "Organizer Link"

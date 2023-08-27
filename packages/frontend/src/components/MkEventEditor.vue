@@ -1,7 +1,7 @@
 <template>
 <div class="zmdxowut">
 	<MkInput v-model="title" small type="text" class="input">
-		<template #label>*{{ i18n.ts._event.title }}</template>
+		<template #label>*{{ i18n.ts.title }}</template>
 	</MkInput>
 	<section>
 		<div>
@@ -32,7 +32,7 @@
 			</section>
 			<section>
 				<MkInput v-model="url" small type="url" class="input">
-					<template #label>{{ i18n.ts._event.url }}</template>
+					<template #label>URL</template>
 				</MkInput>
 			</section>
 		</div>
@@ -194,7 +194,7 @@ function get(): misskey.entities.Note['event'] {
 	};
 }
 
-watch([title, startDate, startTime, endDate, endTime, location, url, doorTime, organizer, organizerLink, audience, language, 
+watch([title, startDate, startTime, endDate, endTime, location, url, doorTime, organizer, organizerLink, audience, language,
 							ageRange, ticketsUrl, isFree, price, availabilityStart, availabilityEnd, keywords], () => emit('update:modelValue', get()), {
 	deep: true,
 });
