@@ -10,7 +10,7 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "ESNext",
+		"module": "node16",
 		"moduleResolution": "node16",
 		"allowSyntheticDefaultImports": true,
 		"removeComments": false,
