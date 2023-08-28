@@ -160,6 +160,13 @@ export class SigninApiService {
 				});
 			}
 
+			if (profile.twoFactorBackupSecret?.includes(token)) {
+				await this.userProfilesRepository.update({ userId: profile.userId }, {
+					twoFactorBackupSecret: profile.twoFactorBackupSecret.filter((secret) => secret !== token),
+				});
+				return this.signinService.signin(request, reply, user);
+			}
+
 			const delta = OTPAuth.TOTP.validate({
 				secret: OTPAuth.Secret.fromBase32(profile.twoFactorSecret!),
 				digits: 6,
