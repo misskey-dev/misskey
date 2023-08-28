@@ -8,20 +8,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ i18n.ts['2fa'] }}</template>
 
 	<div v-if="$i" class="_gaps_s">
-		<MkFolder>
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'partial'" warn>
+			{{ i18n.ts._2fa.backupCodeUsedWarning }}
+		</MkInfo>
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'none'" warn>
+			{{ i18n.ts._2fa.backupCodesExhaustedWarning }}
+		</MkInfo>
+
+		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-shield-lock"></i></template>
 			<template #label>{{ i18n.ts.totp }}</template>
 			<template #caption>{{ i18n.ts.totpDescription }}</template>
+
 			<div v-if="$i.twoFactorEnabled" class="_gaps_s">
 				<div v-text="i18n.ts._2fa.alreadyRegistered"/>
 				<template v-if="$i.securityKeysList.length > 0">
 					<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 					<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 				</template>
-				<MkButton v-else @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
+				<MkButton v-else danger @click="unregisterTOTP">{{ i18n.ts.unregister }}</MkButton>
 			</div>
 
-			<MkButton v-else-if="!twoFactorData && !$i.twoFactorEnabled" @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
+			<MkButton v-else-if="!$i.twoFactorEnabled" primary gradate @click="registerTOTP">{{ i18n.ts._2fa.registerTOTP }}</MkButton>
 		</MkFolder>
 
 		<MkFolder>
@@ -85,7 +93,6 @@ withDefaults(defineProps<{
 	first: false,
 });
 
-const twoFactorData = ref<any>(null);
 const supportsCredentials = ref(!!navigator.credentials);
 const usePasswordLessLogin = $computed(() => $i!.usePasswordLessLogin);
 
@@ -102,31 +109,9 @@ async function registerTOTP() {
 		password: password.result,
 	});
 
-	const qrdialog = await new Promise<boolean>(res => {
-		os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
-			twoFactorData,
-		}, {
-			'ok': () => res(true),
-			'cancel': () => res(false),
-		}, 'closed');
-	});
-	if (!qrdialog) return;
-
-	const token = await os.inputNumber({
-		title: i18n.ts._2fa.step3Title,
-		text: i18n.ts._2fa.step3,
-		autocomplete: 'one-time-code',
-	});
-	if (token.canceled) return;
-
-	await os.apiWithDialog('i/2fa/done', {
-		token: token.result.toString(),
-	});
-
-	await os.alert({
-		type: 'success',
-		text: i18n.ts._2fa.step4,
-	});
+	os.popup(defineAsyncComponent(() => import('./2fa.qrdialog.vue')), {
+		twoFactorData,
+	}, {}, 'closed');
 }
 
 function unregisterTOTP() {

@@ -105,6 +105,7 @@ export type MeDetailed = UserDetailed & {
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
 	unreadAnnouncements: Announcement[];
+	twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
 	[other: string]: any;
 };
 
