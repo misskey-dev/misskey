@@ -8,6 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ i18n.ts['2fa'] }}</template>
 
 	<div v-if="$i" class="_gaps_s">
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'partial'" warn>
+			{{ i18n.ts._2fa.backupCodeUsedWarning }}
+		</MkInfo>
+		<MkInfo v-if="$i.twoFactorEnabled && $i.twoFactorBackupCodesStock === 'none'" warn>
+			{{ i18n.ts._2fa.backupCodesExhaustedWarning }}
+		</MkInfo>
+
 		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-shield-lock"></i></template>
 			<template #label>{{ i18n.ts.totp }}</template>

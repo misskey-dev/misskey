@@ -1834,6 +1834,8 @@ export interface Locale {
         "checkBackupCodesBeforeCloseThisWizard": string;
         "backupCodes": string;
         "backupCodesDescription": string;
+        "backupCodeUsedWarning": string;
+        "backupCodesExhaustedWarning": string;
     };
     "_permissions": {
         "read:account": string;

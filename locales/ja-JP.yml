@@ -1752,6 +1752,8 @@ _2fa:
   checkBackupCodesBeforeCloseThisWizard: "このウィザードを閉じる前に、以下のバックアップコードを確認してください。"
   backupCodes: "バックアップコード"
   backupCodesDescription: "認証アプリが使用できなくなった場合、以下のバックアップコードを使ってアカウントにアクセスできます。これらのコードは必ず安全な場所に保管してください。各コードは一回だけ使用できます。"
+  backupCodeUsedWarning: "バックアップコードが使用されました。認証アプリが使えなくなっている場合、なるべく早く認証アプリを再設定してください。"
+  backupCodesExhaustedWarning: "バックアップコードが全て使用されました。認証アプリを利用できない場合、これ以上アカウントにアクセスできなくなります。認証アプリを再登録してください。"
 
 _permissions:
   "read:account": "アカウントの情報を見る"
