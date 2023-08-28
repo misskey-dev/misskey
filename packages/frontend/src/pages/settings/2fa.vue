@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ i18n.ts['2fa'] }}</template>
 
 	<div v-if="$i" class="_gaps_s">
-		<MkFolder>
+		<MkFolder :defaultOpen="true">
 			<template #icon><i class="ti ti-shield-lock"></i></template>
 			<template #label>{{ i18n.ts.totp }}</template>
 			<template #caption>{{ i18n.ts.totpDescription }}</template>
