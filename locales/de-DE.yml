@@ -1696,7 +1696,6 @@ _2fa:
   step1: "Installiere zuerst eine Authentifizierungsapp (z.B. {a} oder {b}) auf deinem Gerät."
   step2: "Dann, scanne den angezeigten QR-Code mit deinem Gerät."
   step2Click: "Durch Klicken dieses QR-Codes kannst du Verifikation mit deinem Security-Token oder einer App registrieren."
-  step2Url: "Nutzt du ein Desktopprogramm kannst du alternativ diese URL eingeben:"
   step3Title: "Authentifizierungsscode eingeben"
   step3: "Gib zum Abschluss den Token ein, der von deiner App angezeigt wird."
   step4: "Alle folgenden Anmeldeversuche werden ab sofort die Eingabe eines solchen Tokens benötigen."
