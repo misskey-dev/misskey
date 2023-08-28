@@ -80,9 +80,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div class="_gaps">
 									<MkInfo warn>{{ i18n.ts._2fa.backupCodesDescription }}</MkInfo>
 
-									<div v-for="code in backupCodes" :key="code" class="_gaps_s">
-										<div class="_monospace">{{ code }}</div>
-									</div>
+									<ul v-for="code in backupCodes" :key="code" class="_gaps_s" style="margin: 0;">
+										<li class="_monospace">{{ code }}</li>
+									</ul>
 								</div>
 							</MkFolder>
 						</div>
@@ -107,6 +107,7 @@ import { i18n } from '@/i18n';
 import * as os from '@/os';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import { confetti } from '@/scripts/confetti';
 
 defineProps<{
 	twoFactorData: {
@@ -136,6 +137,10 @@ async function tokenDone() {
 	backupCodes.value = res.backupCodes;
 
 	page.value++;
+
+	confetti({
+		duration: 1000 * 3,
+	});
 }
 
 function allDone() {
