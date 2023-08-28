@@ -1698,6 +1698,7 @@ _2fa:
   step2Click: "Clicking on this QR code will allow you to register 2FA to your security key or phone authenticator app.\nTocar este código QR te permitirá registrar la autenticación 2FA a tu llave de seguridad o aplicación autenticadora."
   step3Title: "Ingresa un código de autenticación"
   step3: "Para terminar, ingrese el token mostrado en la aplicación."
+  setupCompleted: "Configuración completada"
   step4: "Ahora cuando inicie sesión, ingrese el mismo token"
   securityKeyNotSupported: "Tu navegador no soporta claves de autenticación."
   registerTOTPBeforeKey: "Please set up an authenticator app to register a security or pass key.\npor favor. configura una aplicación de autenticación para registrar una llave de seguridad."
