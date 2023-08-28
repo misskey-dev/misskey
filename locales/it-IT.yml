@@ -1696,7 +1696,6 @@ _2fa:
   step1: "Innanzitutto, installare sul dispositivo un'applicazione di autenticazione come {a} o {b}."
   step2: "Quindi, scansionare il codice QR visualizzato con l'app."
   step2Click: "Cliccando sul codice QR, puoi registrarlo con l'app di autenticazione o il portachiavi installato sul tuo dispositivo."
-  step2Url: "Nell'applicazione desktop inserire il seguente URL: "
   step3Title: "Inserisci il codice di verifica"
   step3: "Inserite il token visualizzato nell'app e il gioco è fatto."
   step4: "D'ora in poi, quando si accede, si inserisce il token nello stesso modo."
