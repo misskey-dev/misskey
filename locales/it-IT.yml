@@ -763,7 +763,7 @@ editCode: "Modifica codice"
 apply: "Applica"
 receiveAnnouncementFromInstance: "Ricevi i messaggi informativi dall'istanza"
 emailNotification: "Eventi per notifiche via mail"
-publish: "Pubblico"
+publish: "Pubblicare"
 inChannelSearch: "Cerca in canale"
 useReactionPickerForContextMenu: "Cliccare sul tasto destro per aprire il pannello di reazioni"
 typingUsers: "{users} sta(nno) scrivendo"
@@ -1469,7 +1469,7 @@ _emailUnavailable:
   mx: "Server email non corretto"
   smtp: "Il server email non risponde"
 _ffVisibility:
-  public: "Pubblico"
+  public: "Pubblica"
   followers: "Mostra solo ai follower"
   private: "Invisibile"
 _signup:
