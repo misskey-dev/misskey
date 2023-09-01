@@ -50,20 +50,20 @@ import { i18n } from '@/i18n';
 const modal = $shallowRef<InstanceType<typeof MkModal>>();
 
 const props = withDefaults(defineProps<{
-	currentVisibility: typeof misskey.noteVisibilities[number];
+	currentVisibility: typeof Misskey.noteVisibilities[number];
 	localOnly: boolean;
 	src?: HTMLElement;
 }>(), {
 });
 
 const emit = defineEmits<{
-	(ev: 'changeVisibility', v: typeof misskey.noteVisibilities[number]): void;
+	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
 	(ev: 'closed'): void;
 }>();
 
 let v = $ref(props.currentVisibility);
 
-function choose(visibility: typeof misskey.noteVisibilities[number]): void {
+function choose(visibility: typeof Misskey.noteVisibilities[number]): void {
 	v = visibility;
 	emit('changeVisibility', visibility);
 	nextTick(() => {
