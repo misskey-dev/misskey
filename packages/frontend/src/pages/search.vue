@@ -19,20 +19,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer v-else-if="tab === 'user'" :contentMax="800">
 		<XUser/>
 	</MkSpacer>
+	<MkSpacer v-else-if="tab === 'event'" :contentMax="800">
+		<XEvent/>
+	</MkSpacer>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
-import * as os from '@/os';
 import { $i } from '@/account';
 import { instance } from '@/instance';
 import MkInfo from '@/components/MkInfo.vue';
+import { $ref } from 'vue/macros';
 
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));
 const XUser = defineAsyncComponent(() => import('./search.user.vue'));
+const XEvent = defineAsyncComponent(() => import('./search.event.vue'));
 
 let tab = $ref('note');
 
@@ -48,6 +52,10 @@ const headerTabs = $computed(() => [{
 	key: 'user',
 	title: i18n.ts.users,
 	icon: 'ti ti-users',
+}, {
+	key: 'event',
+	title: i18n.ts.events,
+	icon: 'ti ti-calendar',
 }]);
 
 definePageMetadata(computed(() => ({

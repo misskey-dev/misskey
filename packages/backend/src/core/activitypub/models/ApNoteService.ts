@@ -34,6 +34,7 @@ import { ApPersonService } from './ApPersonService.js';
 import { extractApHashtags } from './tag.js';
 import { ApMentionService } from './ApMentionService.js';
 import { ApQuestionService } from './ApQuestionService.js';
+import { ApEventService } from './ApEventService.js';
 import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
@@ -65,6 +66,7 @@ export class ApNoteService {
 		private apMentionService: ApMentionService,
 		private apImageService: ApImageService,
 		private apQuestionService: ApQuestionService,
+		private apEventService: ApEventService,
 		private metaService: MetaService,
 		private appLockService: AppLockService,
 		private pollService: PollService,
@@ -270,6 +272,7 @@ export class ApNoteService {
 		const apEmojis = emojis.map(emoji => emoji.name);
 
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
+		const event = await this.apEventService.extractEventFromNote(note, resolver).catch(() => undefined);
 
 		try {
 			return await this.noteCreateService.create(actor, {
@@ -287,6 +290,7 @@ export class ApNoteService {
 				apHashtags,
 				apEmojis,
 				poll,
+				event,
 				uri: note.id,
 				url: url,
 			}, silent);

@@ -1031,6 +1031,9 @@ accountMoved: "このユーザーは新しいアカウントに移行しまし�
 accountMovedShort: "このアカウントは移行されています"
 operationForbidden: "この操作はできません"
 forceShowAds: "常に広告を表示する"
+event: "イベント"
+events: "イベント"
+reverseChronological: "倒叙"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
 reactionsList: "リアクション一覧"
@@ -1132,6 +1135,33 @@ _initialAccountSetting:
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
+
+_event:
+  startDateTime: "開始日時"
+  endDateTime: "終了日時"
+  startDate: "開始日"
+  endDate: "終了日"
+  startTime: "開始時刻"
+  endTime: "終了時刻"
+  detailName: "属性"
+  detailValue: "値"
+  location: "Location"
+  doorTime: "Door Time"
+  organizer: "Organizer"
+  organizerLink: "Organizer Link"
+  audience: "Audience"
+  language: "Language"
+  ageRange: "Age Range"
+  ticketsUrl: "Tickets"
+  isFree: "Free"
+  price: "Price"
+  availability: "Availability"
+  from: "From"
+  until: "Until"
+  availabilityStart: "Availability Start"
+  availabilityEnd: "Availability End"
+  keywords: "Keywords"
+  performers: "Performers"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"

@@ -233,6 +233,7 @@ Meilisearchの設定に`index`が必要になりました。値はMisskeyサー�
 - Node.js 18.16.0以上が必要になりました
 
 ### General
+- Add support for user created events. Includes basic federation of ActivityPub Event objects. [PR 10628](https://github.com/misskey-dev/misskey/pull/10628) @ssmucny
 - アカウントの引っ越し（フォロワー引き継ぎ）に対応
 - Meilisearchを全文検索に使用できるようになりました
   * 「フォロワーのみ」の投稿は検索結果に表示されません。

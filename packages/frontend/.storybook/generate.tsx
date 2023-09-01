@@ -399,10 +399,12 @@ function toStories(component: string): Promise<string> {
 }
 
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
+
 (async () => {
 	const globs = await Promise.all([
 		glob('src/components/global/*.vue'),
 		glob('src/components/Mk{A,B}*.vue'),
+    glob('src/components/MkEvent.vue'),
 		glob('src/components/MkDigitalClock.vue'),
 		glob('src/components/MkGalleryPostPreview.vue'),
 		glob('src/components/MkSignupServerRules.vue'),

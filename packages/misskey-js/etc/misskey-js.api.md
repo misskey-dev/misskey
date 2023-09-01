@@ -1727,6 +1727,12 @@ export type Endpoints = {
                 expiresAt?: null | number;
                 expiredAfter?: null | number;
             };
+            event?: null | {
+                title: string;
+                start: number;
+                end?: null | number;
+                metadata: Record<string, string>;
+            };
         };
         res: {
             createdNote: Note;
@@ -1803,6 +1809,24 @@ export type Endpoints = {
             choice: number;
         };
         res: null;
+    };
+    'notes/events/search': {
+        req: {
+            query?: string;
+            sinceId?: Note['id'];
+            untilId?: Note['id'];
+            limit?: number;
+            offset?: number;
+            users?: User['id'][];
+            sinceDate?: number;
+            untilDate?: number;
+            sortBy?: 'startDate' | 'craetedAt';
+            filters?: {
+                key: string[];
+                values: (string | null)[];
+            }[];
+        };
+        res: Note[];
     };
     'notes/reactions': {
         req: {
@@ -2514,6 +2538,12 @@ type Note = {
     replyId: Note['id'];
     renote?: Note;
     renoteId: Note['id'];
+    event?: {
+        title: string;
+        start: DateString;
+        end: DateString | null;
+        metadata: Record<string, string>;
+    };
     files: DriveFile[];
     fileIds: DriveFile['id'][];
     visibility: 'public' | 'home' | 'followers' | 'specified';
