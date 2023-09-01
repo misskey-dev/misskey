@@ -46,6 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: null,
+				twoFactorBackupSecret: null,
 				twoFactorEnabled: false,
 				usePasswordLessLogin: false,
 			});
