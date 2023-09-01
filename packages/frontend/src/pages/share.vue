@@ -35,7 +35,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import { noteVisibilities } from 'misskey-js';
 import * as Misskey from 'misskey-js';
-import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os';
