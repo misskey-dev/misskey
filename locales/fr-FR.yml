@@ -945,9 +945,12 @@ color: "Couleur"
 manageCustomEmojis: "Gestion des émojis personnalisés"
 preset: "Préréglage"
 selectFromPresets: "Sélectionner à partir des préréglages"
+achievements: "Accomplissements"
 thisPostMayBeAnnoying: "Cette note peut gêner d'autres personnes."
 thisPostMayBeAnnoyingCancel: "Annuler"
+thisPostMayBeAnnoyingIgnore: "Publier quand-même"
 internalServerError: "Erreur interne du serveur"
+disableFederationOk: "Désactiver"
 license: "Licence"
 video: "Vidéo"
 videos: "Vidéos"
@@ -964,14 +967,30 @@ vertical: "Vertical"
 horizontal: "Latéral"
 serverRules: "Règles du serveur"
 youFollowing: "Abonné·e"
+later: "Plus tard"
 goToMisskey: "Retour vers Misskey"
 expirationDate: "Date d’expiration"
+usedAt: "Utilisé le"
+unused: "Non-utilisé"
+used: "Utilisé"
+expired: "Expiré"
+doYouAgree: "Êtes-vous d’accord ?"
 icon: "Avatar"
+forYou: "Pour vous"
+_announcement:
+  readConfirmTitle: "Marquer comme lu ?"
+_initialAccountSetting:
+  profileSetting: "Paramètres du profil"
+  privacySetting: "Paramètres de confidentialité"
+_accountMigration:
+  startMigration: "Migrer"
 _achievements:
   _types:
     _notes1:
       description: "Publiez votre première note"
       flavor: "Passez un bon moment avec Misskey !"
+    _notes10:
+      title: "Quelques notes"
     _notes100:
       title: "Beaucoup de notes"
     _notes100000:
@@ -986,16 +1005,23 @@ _achievements:
       title: "Débutant Ⅲ"
       description: "Se connecter pour un total de 15 jours"
     _login30:
+      title: "Misskeynaute I"
       description: "Se connecter pour un total de 30 jours"
     _login60:
+      title: "Misskeynaute II"
       description: "Se connecter pour un total de 60 jours"
     _login100:
+      title: "Misskeynaute III"
       description: "Se connecter pour un total de 100 jours"
+      flavor: "Misskeynaute acharné·e"
     _login200:
+      title: "Régulier I"
       description: "Se connecter pour un total de 200 jours"
     _login300:
+      title: "Régulier II"
       description: "Se connecter pour un total de 300 jours"
     _login400:
+      title: "Régulier III"
       description: "Se connecter pour un total de 400 jours"
     _login500:
       description: "Se connecter pour un total de 500 jours"
@@ -1018,6 +1044,15 @@ _achievements:
       title: "Abonnez-moi !"
     _iLoveMisskey:
       title: "J’adore Misskey"
+      description: "Publication « J’❤ #Misskey »"
+    _foundTreasure:
+      title: "Chasse au trésor"
+      description: "Vous avez trouvé le trésor caché"
+    _postedAtLateNight:
+      flavor: "C’est l’heure d’aller au lit."
+    _postedAt0min0sec:
+      title: "Horloge parlante"
+      description: "Publication d’une note à 00:00"
     _viewInstanceChart:
       title: "Analyste"
     _loggedInOnBirthday:
