@@ -600,7 +600,7 @@ tokenRequested: "Autoriser l'accès au compte"
 pluginTokenRequestedDescription: "Ce plugin pourra utiliser les autorisations définies ici."
 notificationType: "Type de notifications"
 edit: "Editer"
-emailServer: "Serveur mail"
+emailServer: "Serveur de messagerie"
 enableEmail: "Activer la distribution de courriel"
 emailConfigInfo: "Utilisé pour confirmer votre adresse de courriel et la réinitialisation de votre mot de passe en cas d’oubli."
 email: "E-mail "
@@ -1053,6 +1053,7 @@ _achievements:
     _postedAt0min0sec:
       title: "Horloge parlante"
       description: "Publication d’une note à 00:00"
+      flavor: "Tic tac, tic tac, tic tac, ding !"
     _viewInstanceChart:
       title: "Analyste"
     _loggedInOnBirthday:
@@ -1062,7 +1063,11 @@ _achievements:
     _cookieClicked:
       flavor: "Attendez une minute, vous êtes sur le mauvais site web ?"
 _role:
+  name: "Nom du rôle"
+  description: "Description du rôle"
+  permission: "Rôle et autorisations"
   assignTarget: "Attribuer"
+  condition: "Condition"
   priority: "Priorité"
   _priority:
     low: "Basse"
