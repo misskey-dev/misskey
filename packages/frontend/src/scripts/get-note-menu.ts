@@ -4,7 +4,7 @@
  */
 
 import { defineAsyncComponent, Ref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { claimAchievement } from './achievements';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
@@ -19,9 +19,9 @@ import { clipsCache } from '@/cache';
 import { MenuItem } from '@/types/menu';
 
 export async function getNoteClipMenu(props: {
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	isDeleted: Ref<boolean>;
-	currentClip?: misskey.entities.Clip;
+	currentClip?: Misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -30,7 +30,7 @@ export async function getNoteClipMenu(props: {
 		props.note.poll == null
 	);
 
-	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
 
 	const clips = await clipsCache.fetch(() => os.api('clips/list'));
 	return [...clips.map(clip => ({
@@ -93,12 +93,12 @@ export async function getNoteClipMenu(props: {
 }
 
 export function getNoteMenu(props: {
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	menuButton: Ref<HTMLElement>;
 	translation: Ref<any>;
 	translating: Ref<boolean>;
 	isDeleted: Ref<boolean>;
-	currentClip?: misskey.entities.Clip;
+	currentClip?: Misskey.entities.Clip;
 }) {
 	const isRenote = (
 		props.note.renote != null &&
@@ -107,7 +107,7 @@ export function getNoteMenu(props: {
 		props.note.poll == null
 	);
 
-	const appearNote = isRenote ? props.note.renote as misskey.entities.Note : props.note;
+	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
 
 	const cleanups = [] as (() => void)[];
 

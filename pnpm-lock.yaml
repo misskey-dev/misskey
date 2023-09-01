@@ -309,8 +309,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       pureimage:
-        specifier: 0.4.8
-        version: 0.4.8
+        specifier: 0.3.17
+        version: 0.3.17
       qrcode:
         specifier: 1.5.3
         version: 1.5.3
@@ -17269,11 +17269,6 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: false
 
-  /pngjs@7.0.0:
-    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
-    engines: {node: '>=14.19.0'}
-    dev: false
-
   /polished@4.2.2:
     resolution: {integrity: sha512-Sz2Lkdxz6F2Pgnpi9U5Ng/WdWAUZxmHrNPoVlm3aAemxoy2Qy7LGjQg4uf8qKelDAUW94F4np3iH2YPf2qefcQ==}
     engines: {node: '>=10'}
@@ -17899,13 +17894,13 @@ packages:
     resolution: {integrity: sha512-rLSBxJjP+4DQOgcJAx6RZHT2he2pkhQdSnofG5VWyVl6GRq/K02ISOuOLcsMOrtKDIJb8JN2zm3FFzWNbezdPw==}
     dev: true
 
-  /pureimage@0.4.8:
-    resolution: {integrity: sha512-/yNBs67VB4moPB7tqfupxFhYYaSlpnBpDb5995B0FP+vTqKwR2KD2uEIvch9NmpqUpVnsXcDOsFgmuGTgLX/Lg==}
-    engines: {node: '>=14.19.0'}
+  /pureimage@0.3.17:
+    resolution: {integrity: sha512-JV4hfYF1BXxDwbSR8hjhVEhVTxwmAXos8uIXQ7Bw2eWrUEpLDJnQoQ8WLlWAO4TMGJ7mp9n6gvLKJ6MSaGUkXQ==}
+    engines: {node: '>=0.8'}
     dependencies:
       jpeg-js: 0.4.4
       opentype.js: 0.4.11
-      pngjs: 7.0.0
+      pngjs: 3.4.0
     dev: false
 
   /q@1.5.1:

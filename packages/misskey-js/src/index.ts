@@ -23,4 +23,5 @@ export const ffVisibility = consts.ffVisibility;
 //export * as entities from './entities.js';
 import * as api from './api.js';
 import * as entities from './entities.js';
-export { api, entities };
+import * as acct from './acct.js';
+export { api, entities, acct };
