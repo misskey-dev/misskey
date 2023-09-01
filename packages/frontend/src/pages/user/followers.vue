@@ -21,7 +21,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as Misskey from 'misskey-js';
 import XFollowList from './follow-list.vue';
 import * as os from '@/os';
 import { definePageMetadata } from '@/scripts/page-metadata';
