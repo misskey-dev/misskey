@@ -51,7 +51,7 @@
 		"matter-js": "0.19.0",
 		"mfm-js": "0.23.3",
 		"misskey-js": "workspace:*",
-		"photoswipe": "5.3.8",
+		"photoswipe": "5.3.9",
 		"prismjs": "1.29.0",
 		"punycode": "2.3.0",
 		"querystring": "0.2.1",
