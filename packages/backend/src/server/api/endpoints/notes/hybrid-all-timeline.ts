@@ -72,7 +72,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			if (!me?.isRoot) throw new Error('access denied');
+			if (!me?.isAdmin) throw new Error('access denied');
 
 			//#region Construct query
 			const followingQuery = this.followingsRepository.createQueryBuilder('following')
