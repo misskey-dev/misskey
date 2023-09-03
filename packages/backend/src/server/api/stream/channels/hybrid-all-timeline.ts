@@ -6,7 +6,6 @@
 import { Injectable } from '@nestjs/common';
 import { checkWordMute } from '@/misc/check-word-mute.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
-import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -17,7 +16,7 @@ import Channel from '../channel.js';
 class HybridAllTimelineChannel extends Channel {
 	public readonly chName = 'hybridAllTimeline';
 	public static shouldShare = true;
-	public static requireCredential = true;
+	public static requireCredential = false;
 	private withReplies: boolean;
 
 	constructor(
@@ -33,8 +32,10 @@ class HybridAllTimelineChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: any): Promise<void> {
-		if (this.user == null || !this.user.isRoot ) return;
+	public async init(params: any) {
+		const policies = await this.roleService.getUserPolicies(this.user ? this.user.id : null);
+		if (!policies.ltlAvailable) return;
+
 		this.withReplies = params.withReplies as boolean;
 
 		// Subscribe events
@@ -43,50 +44,28 @@ class HybridAllTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		// チャンネルの投稿ではなく、自分自身の投稿 または
-		// チャンネルの投稿ではなく、その投稿のユーザーをフォローしている または
-		// チャンネルの投稿ではなく、全体公開のローカルの投稿 または
-		// チャンネルの投稿ではなく、ホームのローカルの投稿 または
-		// フォローしているチャンネルの投稿 の場合だけ
-		if (!(
-			(note.channelId == null && this.user!.id === note.userId) ||
-			(note.channelId == null && this.following.has(note.userId)) ||
-			(note.channelId == null && (note.user.host == null && note.visibility === 'public')) ||
-			(note.channelId == null && (note.user.host == null && note.visibility === 'home')) ||
-			(note.channelId != null && this.followingChannels.has(note.channelId))
-		)) return;
+		if (note.user.host !== null) return;
+		if (!['public', 'home'].includes(note.visibility)) return;
+		if (note.channelId != null && !this.followingChannels.has(note.channelId)) return;
 
-		if (['followers', 'specified'].includes(note.visibility)) {
-			note = await this.noteEntityService.pack(note.id, this.user!, {
+		// リプライなら再pack
+		if (note.replyId != null) {
+			note.reply = await this.noteEntityService.pack(note.replyId, this.user, {
 				detail: true,
 			});
-
-			if (note.isHidden) {
-				return;
-			}
-		} else {
-			// リプライなら再pack
-			if (note.replyId != null) {
-				note.reply = await this.noteEntityService.pack(note.replyId, this.user!, {
-					detail: true,
-				});
-			}
-			// Renoteなら再pack
-			if (note.renoteId != null) {
-				note.renote = await this.noteEntityService.pack(note.renoteId, this.user!, {
-					detail: true,
-				});
-			}
+		}
+		// Renoteなら再pack
+		if (note.renoteId != null) {
+			note.renote = await this.noteEntityService.pack(note.renoteId, this.user, {
+				detail: true,
+			});
 		}
 
-		// Ignore notes from instances the user has muted
-		if (isInstanceMuted(note, new Set<string>(this.userProfile!.mutedInstances ?? []))) return;
-
 		// 関係ない返信は除外
-		if (note.reply && !this.withReplies) {
+		if (note.reply && this.user && !this.withReplies) {
 			const reply = note.reply;
 			// 「チャンネル接続主への返信」でもなければ、「チャンネル接続主が行った返信」でもなければ、「投稿者の投稿者自身への返信」でもない場合
-			if (reply.userId !== this.user!.id && note.userId !== this.user!.id && reply.userId !== note.userId) return;
+			if (reply.userId !== this.user.id && note.userId !== this.user.id && reply.userId !== note.userId) return;
 		}
 
 		// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
@@ -109,7 +88,7 @@ class HybridAllTimelineChannel extends Channel {
 	}
 
 	@bindThis
-	public dispose(): void {
+	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
 	}
