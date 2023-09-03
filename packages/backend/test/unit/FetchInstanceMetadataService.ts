@@ -35,7 +35,7 @@ describe('FetchInstanceMetadataService', () => {
 	let httpRequestService: jest.Mocked<HttpRequestService>;
 	let redisClient: jest.Mocked<Redis>;
 
-	beforeAll(async () => {
+	beforeEach(async () => {
 		app = await Test
 			.createTestingModule({
 				imports: [
@@ -66,7 +66,7 @@ describe('FetchInstanceMetadataService', () => {
 		httpRequestService = app.get<HttpRequestService>(HttpRequestService) as jest.Mocked<HttpRequestService>;
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await app.close();
 	});
 
