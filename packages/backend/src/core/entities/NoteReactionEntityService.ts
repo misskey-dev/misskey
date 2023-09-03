@@ -64,4 +64,17 @@ export class NoteReactionEntityService implements OnModuleInit {
 			} : {}),
 		};
 	}
+
+	@bindThis
+	public async packMany(
+		reactions: (MiNoteReaction['id'] | MiNoteReaction)[],
+		me: { id: MiUser['id'] } | null | undefined,
+		options?: {
+			withNote: boolean;
+		},
+	) : Promise<Packed<'NoteReaction'>[]> {
+		return (await Promise.allSettled(reactions.map(x => this.pack(x, me, options))))
+			.filter(result => result.status === 'fulfilled')
+			.map(result => (result as PromiseFulfilledResult<Packed<'NoteReaction'>>).value);
+	}
 }
