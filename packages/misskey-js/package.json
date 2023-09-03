@@ -23,7 +23,7 @@
 		"@microsoft/api-extractor": "7.36.4",
 		"@swc/jest": "0.2.29",
 		"@types/jest": "29.5.4",
-		"@types/node": "20.5.8",
+		"@types/node": "20.5.9",
 		"@typescript-eslint/eslint-plugin": "6.5.0",
 		"@typescript-eslint/parser": "6.5.0",
 		"eslint": "8.48.0",
