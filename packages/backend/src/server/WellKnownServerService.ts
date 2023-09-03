@@ -73,7 +73,7 @@ export class WellKnownServerService {
 		});
 
 		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
-			reply.header('Content-Type', jrd);
+			reply.header('Content-Type', 'application/json');
 			return {
 				links: [{
 					rel: 'lrdd',
