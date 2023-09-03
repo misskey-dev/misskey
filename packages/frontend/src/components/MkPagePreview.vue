@@ -46,17 +46,23 @@ const props = defineProps<{
 		color: var(--accent);
 	}
 
-	> .thumbnail > * {
-		width: 100%;
-		height: 200px;
-		border-radius: var(--radius) var(--radius) 0 0;
-		overflow: hidden;
+	> .thumbnail {
+		& + article {
+			border-radius: 0 0 var(--radius) var(--radius);
+		}
+
+		> * {
+			width: 100%;
+			height: 200px;
+			border-radius: var(--radius) var(--radius) 0 0;
+			overflow: hidden;
+		}
 	}
 
 	> article {
 		background-color: var(--panel);
 		padding: 16px;
-		border-radius: 0 0 var(--radius) var(--radius);
+		border-radius: var(--radius);
 
 		> header {
 			margin-bottom: 8px;
