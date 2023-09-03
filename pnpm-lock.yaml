@@ -360,8 +360,8 @@ importers:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
       systeminformation:
-        specifier: 5.21.3
-        version: 5.21.3
+        specifier: 5.21.4
+        version: 5.21.4
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
@@ -551,11 +551,11 @@ importers:
         specifier: 6.4.9
         version: 6.4.9
       '@types/oauth':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.9.2
+        version: 0.9.2
       '@types/oauth2orize':
-        specifier: 1.11.0
-        version: 1.11.0
+        specifier: 1.11.1
+        version: 1.11.1
       '@types/oauth2orize-pkce':
         specifier: 0.1.0
         version: 0.1.0
@@ -963,11 +963,11 @@ importers:
         specifier: 4.0.5
         version: 4.0.5
       msw:
-        specifier: 1.2.5
-        version: 1.2.5(typescript@5.2.2)
+        specifier: 1.3.0
+        version: 1.3.0(typescript@5.2.2)
       msw-storybook-addon:
         specifier: 1.8.0
-        version: 1.8.0(msw@1.2.5)
+        version: 1.8.0(msw@1.3.0)
       nodemon:
         specifier: 3.0.1
         version: 3.0.1
@@ -4654,7 +4654,7 @@ packages:
       '@types/debug': 4.1.7
       '@xmldom/xmldom': 0.8.6
       debug: 4.3.4(supports-color@8.1.1)
-      headers-polyfill: 3.1.2
+      headers-polyfill: 3.2.1
       outvariant: 1.4.0
       strict-event-emitter: 0.2.8
       web-encoding: 1.1.5
@@ -7897,18 +7897,18 @@ packages:
   /@types/oauth2orize-pkce@0.1.0:
     resolution: {integrity: sha512-k3FH+QtfjV/zAWFdJwzPOCISpYYXbGIwejtEbUWWGhUJ+gk/DyPesSKh3tblBkFBabN4RBRBRnYutWFwtVEZzw==}
     dependencies:
-      '@types/oauth2orize': 1.11.0
+      '@types/oauth2orize': 1.11.1
     dev: true
 
-  /@types/oauth2orize@1.11.0:
-    resolution: {integrity: sha512-jmnP/Ip36XBzs+nIn/I8wNBZkQcn/agmp8K9V81he+wOllLYMec8T8AqbRPJCFbnFwaL03bbR8gI3CknMCXohw==}
+  /@types/oauth2orize@1.11.1:
+    resolution: {integrity: sha512-U3L0c4eQA6lTSZRgW4LYfhKlR084Aw19akmYHrMdYzaqg9mQDfc2b/1iyqm9+1FJDEnVS5ONi5fxdDrB4/7CpQ==}
     dependencies:
       '@types/express': 4.17.17
       '@types/node': 20.5.9
     dev: true
 
-  /@types/oauth@0.9.1:
-    resolution: {integrity: sha512-a1iY62/a3yhZ7qH7cNUsxoI3U/0Fe9+RnuFrpTKr+0WVOzbKlSLojShCKe20aOD1Sppv+i8Zlq0pLDuTJnwS4A==}
+  /@types/oauth@0.9.2:
+    resolution: {integrity: sha512-Nu3/abQ6yR9VlsCdX3aiGsWFkj6OJvJqDvg/36t8Gwf2mFXdBZXPDN3K+2yfeA6Lo2m1Q12F8Qil9TZ48nWhOQ==}
     dependencies:
       '@types/node': 20.5.9
     dev: true
@@ -8033,6 +8033,12 @@ packages:
 
   /@types/set-cookie-parser@2.4.2:
     resolution: {integrity: sha512-fBZgytwhYAUkj/jC/FAV4RQ5EerRup1YQsXQCh8rZfiHkc4UahC192oH0smGwsXol3cL3A5oETuAHeQHmhXM4w==}
+    dependencies:
+      '@types/node': 20.5.9
+    dev: true
+
+  /@types/set-cookie-parser@2.4.3:
+    resolution: {integrity: sha512-7QhnH7bi+6KAhBB+Auejz1uV9DHiopZqu7LfR/5gZZTkejJV5nYeZZpgfFoE0N8aDsXuiYpfKyfyMatCwQhyTQ==}
     dependencies:
       '@types/node': 20.5.9
     dev: true
@@ -13360,8 +13366,11 @@ packages:
     hasBin: true
     dev: true
 
-  /headers-polyfill@3.1.2:
-    resolution: {integrity: sha512-tWCK4biJ6hcLqTviLXVR9DTRfYGQMXEIUj3gwJ2rZ5wO/at3XtkI4g8mCvFdUF9l1KMBNCfmNAdnahm1cgavQA==}
+  /headers-polyfill@3.2.1:
+    resolution: {integrity: sha512-jpY9fNMWPWwkqRN9CpSRNqL9svpiuSmg4CsbPl4s43KltIDIVHlPv75UOXVgc/PTP6BzHSUvd9UMdxSW1I+ETQ==}
+    dependencies:
+      '@types/set-cookie-parser': 2.4.3
+      set-cookie-parser: 2.6.0
     dev: true
 
   /highlight.js@10.7.3:
@@ -16012,22 +16021,22 @@ packages:
       msgpackr-extract: 3.0.2
     dev: false
 
-  /msw-storybook-addon@1.8.0(msw@1.2.5):
+  /msw-storybook-addon@1.8.0(msw@1.3.0):
     resolution: {integrity: sha512-dw3vZwqjixmiur0vouRSOax7wPSu9Og2Hspy9JZFHf49bZRjwDiLF0Pfn2NXEkGviYJOJiGxS1ejoTiUwoSg4A==}
     peerDependencies:
       msw: '>=0.35.0 <2.0.0'
     dependencies:
       is-node-process: 1.0.1
-      msw: 1.2.5(typescript@5.2.2)
+      msw: 1.3.0(typescript@5.2.2)
     dev: true
 
-  /msw@1.2.5(typescript@5.2.2):
-    resolution: {integrity: sha512-Y3MwnAHX3d162eSWrEUeRdCv3+8hmgz/+Wh7OUkE6VB55+YTswxrep3yU3evZnKWHJGAM63G1s+olAgzIFdYtQ==}
+  /msw@1.3.0(typescript@5.2.2):
+    resolution: {integrity: sha512-nnWAZlQyQOKeYRblCpseT1kSPt1aF5e/jHz1hn/18IxbsMFreSVV1cJriT0uV+YG6+wvwFRMHXU3zVuMvuwERQ==}
     engines: {node: '>=14'}
     hasBin: true
     requiresBuild: true
     peerDependencies:
-      typescript: '>= 4.4.x <= 5.1.x'
+      typescript: '>= 4.4.x <= 5.2.x'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -16041,7 +16050,7 @@ packages:
       chokidar: 3.5.3
       cookie: 0.4.2
       graphql: 16.6.0
-      headers-polyfill: 3.1.2
+      headers-polyfill: 3.2.1
       inquirer: 8.2.5
       is-node-process: 1.2.0
       js-levenshtein: 1.1.6
@@ -18942,6 +18951,10 @@ packages:
   /set-cookie-parser@2.5.1:
     resolution: {integrity: sha512-1jeBGaKNGdEq4FgIrORu/N570dwoPYio8lSoYLWmX7sQ//0JY08Xh9o5pBcgmHQ/MbsYp/aZnOe1s1lIsbLprQ==}
 
+  /set-cookie-parser@2.6.0:
+    resolution: {integrity: sha512-RVnVQxTXuerk653XfuliOxBP81Sf0+qfQE73LIYKcyMYHG94AuH0kgrQpRDuTZnSmjpysHmzxJXKNfa6PjFhyQ==}
+    dev: true
+
   /set-value@2.0.1:
     resolution: {integrity: sha512-JxHc1weCN68wRY0fhCoXpyK55m/XPHafOmK4UWD7m2CI14GMcFypt4w/0+NV5f/ZMby2F6S2wwA7fgynh9gWSw==}
     engines: {node: '>=0.10.0'}
@@ -19835,8 +19848,8 @@ packages:
     resolution: {integrity: sha512-AsS729u2RHUfEra9xJrE39peJcc2stq2+poBXX8bcM08Y6g9j/i/PUzwNQqkaJde7Ntg1TO7bSREbR5sdosQ+g==}
     dev: true
 
-  /systeminformation@5.21.3:
-    resolution: {integrity: sha512-+Xjja4LLZa6z/YdqHrzE6lDZLle/k+X1NLHCJhXux1ykMqIj++Nq5YbtjsYjn0p+M3Z/OLFqjLw15D2DrjP3ug==}
+  /systeminformation@5.21.4:
+    resolution: {integrity: sha512-fLW6j47UoAJDlZPEqykkWTKxubxb8IFuow6pMQlqf4irZ2lBgCrCReavMkH2t8VxxjOcg6wBlZ2EPQcluAT6xg==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
