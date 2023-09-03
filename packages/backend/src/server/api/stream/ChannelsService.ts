@@ -19,7 +19,7 @@ import { AntennaChannelService } from './channels/antenna.js';
 import { DriveChannelService } from './channels/drive.js';
 import { HashtagChannelService } from './channels/hashtag.js';
 import { RoleTimelineChannelService } from './channels/role-timeline.js';
-
+import { HybridAllTimelineChannelService } from './channels/hybrid-all-timeline.js';
 @Injectable()
 export class ChannelsService {
 	constructor(
@@ -27,6 +27,7 @@ export class ChannelsService {
 		private homeTimelineChannelService: HomeTimelineChannelService,
 		private localTimelineChannelService: LocalTimelineChannelService,
 		private hybridTimelineChannelService: HybridTimelineChannelService,
+		private hybridAllTimelineChannelService: HybridAllTimelineChannelService,
 		private globalTimelineChannelService: GlobalTimelineChannelService,
 		private userListChannelService: UserListChannelService,
 		private hashtagChannelService: HashtagChannelService,
@@ -47,6 +48,7 @@ export class ChannelsService {
 			case 'homeTimeline': return this.homeTimelineChannelService;
 			case 'localTimeline': return this.localTimelineChannelService;
 			case 'hybridTimeline': return this.hybridTimelineChannelService;
+			case 'hybridAllTimeline': return this.hybridAllTimelineChannelService;
 			case 'globalTimeline': return this.globalTimelineChannelService;
 			case 'userList': return this.userListChannelService;
 			case 'hashtag': return this.hashtagChannelService;
