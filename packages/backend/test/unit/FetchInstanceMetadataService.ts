@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* broken
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
@@ -113,4 +112,3 @@ describe('FetchInstanceMetadataService', () => {
 		expect(httpRequestService.getJson).toHaveBeenCalledTimes(0);
 	});
 });
-*/
