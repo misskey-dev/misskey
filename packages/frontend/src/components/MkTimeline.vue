@@ -93,7 +93,7 @@ if (props.src === 'antenna') {
     query = {
         withReplies: defaultStore.state.showTimelineReplies,
     };
-    connection = stream.useChannel(' ', {
+    connection = stream.useChannel('hybridAllTimeline', {
         withReplies: defaultStore.state.showTimelineReplies,
     });
     connection.on('note', prepend);
