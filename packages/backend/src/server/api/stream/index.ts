@@ -35,7 +35,7 @@ export default class Connection {
 	public userIdsWhoMeMuting: Set<string> = new Set();
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
-	private fetchIntervalId: NodeJS.Timer | null = null;
+	private fetchIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
 		private channelsService: ChannelsService,

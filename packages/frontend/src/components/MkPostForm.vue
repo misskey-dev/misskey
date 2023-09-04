@@ -100,10 +100,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { inject, watch, nextTick, onMounted, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode/';
-import * as Acct from 'misskey-js/built/acct';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkNotePreview from '@/components/MkNotePreview.vue';
 import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
@@ -129,17 +128,17 @@ import { claimAchievement } from '@/scripts/achievements';
 const modal = inject('modal');
 
 const props = withDefaults(defineProps<{
-	reply?: misskey.entities.Note;
-	renote?: misskey.entities.Note;
-	channel?: misskey.entities.Channel; // TODO
-	mention?: misskey.entities.User;
-	specified?: misskey.entities.User;
+	reply?: Misskey.entities.Note;
+	renote?: Misskey.entities.Note;
+	channel?: Misskey.entities.Channel; // TODO
+	mention?: Misskey.entities.User;
+	specified?: Misskey.entities.User;
 	initialText?: string;
-	initialVisibility?: (typeof misskey.noteVisibilities)[number];
-	initialFiles?: misskey.entities.DriveFile[];
+	initialVisibility?: (typeof Misskey.noteVisibilities)[number];
+	initialFiles?: Misskey.entities.DriveFile[];
 	initialLocalOnly?: boolean;
-	initialVisibleUsers?: misskey.entities.User[];
-	initialNote?: misskey.entities.Note;
+	initialVisibleUsers?: Misskey.entities.User[];
+	initialNote?: Misskey.entities.Note;
 	instant?: boolean;
 	fixed?: boolean;
 	autofocus?: boolean;
@@ -175,7 +174,7 @@ let showPreview = $ref(defaultStore.state.showPreview);
 watch($$(showPreview), () => defaultStore.set('showPreview', showPreview));
 let cw = $ref<string | null>(null);
 let localOnly = $ref<boolean>(props.initialLocalOnly ?? defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly);
-let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof misskey.noteVisibilities[number]);
+let visibility = $ref(props.initialVisibility ?? (defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility) as typeof Misskey.noteVisibilities[number]);
 let visibleUsers = $ref([]);
 if (props.initialVisibleUsers) {
 	props.initialVisibleUsers.forEach(pushVisibleUser);
@@ -416,7 +415,7 @@ function updateFileName(file, name) {
 	files[files.findIndex(x => x.id === file.id)].name = name;
 }
 
-function replaceFile(file: misskey.entities.DriveFile, newFile: misskey.entities.DriveFile): void {
+function replaceFile(file: Misskey.entities.DriveFile, newFile: Misskey.entities.DriveFile): void {
 	files[files.findIndex(x => x.id === file.id)] = newFile;
 }
 
@@ -516,7 +515,7 @@ function addVisibleUser() {
 		pushVisibleUser(user);
 
 		if (!text.toLowerCase().includes(`@${user.username.toLowerCase()}`)) {
-			text = `@${Acct.toString(user)} ${text}`;
+			text = `@${Misskey.acct.toString(user)} ${text}`;
 		}
 	});
 }
@@ -761,7 +760,7 @@ async function post(ev?: MouseEvent) {
 				'https://youtu.be/Efrlqw8ytg4',
 				'https://www.youtube.com/watch?v=Efrlqw8ytg4',
 				'https://m.youtube.com/watch?v=Efrlqw8ytg4',
-			
+
 				'https://youtu.be/XVCwzwxdHuA',
 				'https://www.youtube.com/watch?v=XVCwzwxdHuA',
 				'https://m.youtube.com/watch?v=XVCwzwxdHuA',
@@ -804,7 +803,7 @@ function cancel() {
 
 function insertMention() {
 	os.selectUser().then(user => {
-		insertTextAtCursor(textareaEl, '@' + Acct.toString(user) + ' ');
+		insertTextAtCursor(textareaEl, '@' + Misskey.acct.toString(user) + ' ');
 	});
 }
 
@@ -825,7 +824,7 @@ function showActions(ev) {
 	})), ev.currentTarget ?? ev.target);
 }
 
-let postAccount = $ref<misskey.entities.UserDetailed | null>(null);
+let postAccount = $ref<Misskey.entities.UserDetailed | null>(null);
 
 function openAccountMenu(ev: MouseEvent) {
 	openAccountMenu_({

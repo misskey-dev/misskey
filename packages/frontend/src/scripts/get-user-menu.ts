@@ -5,7 +5,7 @@
 
 import { toUnicode } from 'punycode';
 import { defineAsyncComponent, ref, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import copyToClipboard from '@/scripts/copy-to-clipboard';
 import { host, url } from '@/config';
@@ -16,7 +16,7 @@ import { mainRouter } from '@/router';
 import { Router } from '@/nirax';
 import { antennasCache, rolesCache, userListsCache } from '@/cache';
 
-export function getUserMenu(user: misskey.entities.UserDetailed, router: Router = mainRouter) {
+export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
 
 	const cleanups = [] as (() => void)[];

@@ -2083,6 +2083,8 @@ _deck:
   introduction2: "画面の右にある + を押して、いつでもカラムを追加できます。"
   widgetsIntroduction: "カラムのメニューから、「ウィジェットの編集」を選択してウィジェットを追加してください"
   useSimpleUiForNonRootPages: "非ルートページは簡易UIで表示"
+  usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
+  flexible: "幅を自動調整"
 
   _columns:
     main: "メイン"

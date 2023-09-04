@@ -140,7 +140,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -173,12 +173,12 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog';
 import { shouldCollapsed } from '@/scripts/collapsed';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
-const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
+const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 let note = $ref(deepClone(props.note));
 
@@ -206,7 +206,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;

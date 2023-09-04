@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { Note } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import { onUpdated } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
@@ -36,7 +36,7 @@ import * as os from '@/os';
 import { getScrollContainer } from '@/scripts/scroll';
 import { $i } from '@/account';
 
-let notes = $ref<Note[]>([]);
+let notes = $ref<Misskey.entities.Note[]>([]);
 let isScrolling = $ref(false);
 let scrollEl = $shallowRef<HTMLElement>();
 

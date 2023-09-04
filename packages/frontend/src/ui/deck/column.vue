@@ -116,11 +116,12 @@ function getMenu() {
 				width: {
 					type: 'number',
 					label: i18n.ts.width,
+					description: i18n.ts._deck.usedAsMinWidthWhenFlexible,
 					default: props.column.width,
 				},
 				flexible: {
 					type: 'boolean',
-					label: i18n.ts.flexible,
+					label: i18n.ts._deck.flexible,
 					default: props.column.flexible,
 				},
 			});
