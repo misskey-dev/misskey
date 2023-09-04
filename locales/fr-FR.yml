@@ -1604,6 +1604,7 @@ _deck:
   deleteProfile: "Supprimer le profil"
   introduction: "Créez l’interface parfaite qui vous sied en arrangeant librement les colonnes !"
   introduction2: "Cliquez sur le + à droite de l'écran pour ajouter de nouvelles colonnes quand vous le souhaitez."
+  flexible: "Ajuster automatiquement la largeur"
   _columns:
     main: "Principale"
     widgets: "Widgets"
