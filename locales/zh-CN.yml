@@ -2028,8 +2028,8 @@ _deck:
   introduction2: "您可以随时通过屏幕右侧的 + 来添加列"
   widgetsIntroduction: "从列菜单中，选择“小工具编辑”来添加小工具"
   useSimpleUiForNonRootPages: "用简易UI表示非根页面"
-  usedAsMinWidthWhenFlexible: "「自动调整宽度」被启用的时候，会被设定为最小宽度。"
-  flexible: "自动调整宽度"
+  usedAsMinWidthWhenFlexible: "「自适应宽度」被启用的时候，这就是最小的宽度"
+  flexible: "自适应宽度"
   _columns:
     main: "主列"
     widgets: "小工具"
