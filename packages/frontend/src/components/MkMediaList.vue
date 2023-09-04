@@ -64,7 +64,7 @@ async function getClientWidthWithCache(targetEl: HTMLElement, containerEl: HTMLE
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, shallowRef } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
@@ -77,7 +77,7 @@ import { defaultStore } from '@/store';
 import { getScrollContainer, getBodyScrollHeight } from '@/scripts/scroll';
 
 const props = defineProps<{
-	mediaList: misskey.entities.DriveFile[];
+	mediaList: Misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
 
@@ -252,7 +252,7 @@ onUnmounted(() => {
 	lightbox = null;
 });
 
-const previewable = (file: misskey.entities.DriveFile): boolean => {
+const previewable = (file: Misskey.entities.DriveFile): boolean => {
 	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);

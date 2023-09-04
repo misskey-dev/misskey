@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
 import bytes from '@/filters/bytes';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
@@ -55,7 +55,7 @@ import * as os from '@/os';
 import { iAmModerator } from '@/account';
 
 const props = defineProps<{
-	image: misskey.entities.DriveFile;
+	image: Misskey.entities.DriveFile;
 	raw?: boolean;
 }>();
 

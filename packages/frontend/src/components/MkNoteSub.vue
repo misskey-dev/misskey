@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
@@ -54,7 +54,7 @@ import { checkWordMute } from "@/scripts/check-word-mute";
 import { defaultStore } from "@/store";
 
 const props = withDefaults(defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	detail?: boolean;
 
 	// how many notes are in between this one and the note being viewed in detail
@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<{
 const muted = ref(checkWordMute(props.note, $i, defaultStore.state.mutedWords));
 
 let showContent = $ref(false);
-let replies: misskey.entities.Note[] = $ref([]);
+let replies: Misskey.entities.Note[] = $ref([]);
 
 if (props.detail) {
 	os.api('notes/children', {
