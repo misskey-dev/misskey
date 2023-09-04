@@ -62,7 +62,7 @@ import * as os from '@/os';
 import { iAmModerator } from '@/account';
 
 const props = withDefaults(defineProps<{
-	image: misskey.entities.DriveFile;
+	image: Misskey.entities.DriveFile;
 	raw?: boolean;
 	cover?: boolean;
 	disableImageLink?: boolean;
