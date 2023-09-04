@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:disableImageLink="true"
 			:controls="false"
 			:cover="true"
+			:class="$style.eyeCatchingImageRoot"
 		/>
 	</div>
 	<article>
@@ -37,6 +38,15 @@ const props = defineProps<{
 }>();
 </script>
 
+<style module>
+.eyeCatchingImageRoot {
+	width: 100%;
+	height: 200px;
+	border-radius: var(--radius) var(--radius) 0 0;
+	overflow: hidden;
+}
+</style>
+
 <style lang="scss" scoped>
 .vhpxefrj {
 	display: block;
@@ -49,13 +59,6 @@ const props = defineProps<{
 	> .thumbnail {
 		& + article {
 			border-radius: 0 0 var(--radius) var(--radius);
-		}
-
-		> * {
-			width: 100%;
-			height: 200px;
-			border-radius: var(--radius) var(--radius) 0 0;
-			overflow: hidden;
 		}
 	}
 
