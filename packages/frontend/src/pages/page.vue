@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:image="page.eyeCatchingImage"
 							:cover="true"
 							:disableImageLink="true"
+							class="thumbnail"
 						/>
 					</div>
 					<div class="content">
@@ -210,7 +211,7 @@ definePageMetadata(computed(() => page ? {
 		}
 
 		> .banner {
-			>* {
+			> .thumbnail {
 				// TODO: 良い感じのアスペクト比で表示
 				display: block;
 				width: 100%;
