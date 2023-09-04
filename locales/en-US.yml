@@ -2028,6 +2028,8 @@ _deck:
   introduction2: "Click on the + on the right of the screen to add new colums whenever you want."
   widgetsIntroduction: "Please select \"Edit widgets\" in the column menu and add a widget."
   useSimpleUiForNonRootPages: "Use simplified UI to navigated pages"
+  usedAsMinWidthWhenFlexible: "The width of this will be minimized when the \"Auto-adjust width\" option is enabled."
+  flexible: "Auto-adjust width"
   _columns:
     main: "Main"
     widgets: "Widgets"
