@@ -2168,6 +2168,8 @@ export interface Locale {
         "introduction2": string;
         "widgetsIntroduction": string;
         "useSimpleUiForNonRootPages": string;
+        "usedAsMinWidthWhenFlexible": string;
+        "flexible": string;
         "_columns": {
             "main": string;
             "widgets": string;
