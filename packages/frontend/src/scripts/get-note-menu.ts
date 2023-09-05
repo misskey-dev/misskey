@@ -92,6 +92,31 @@ export async function getNoteClipMenu(props: {
 	}];
 }
 
+export function getAbuseNoteMenu(note: misskey.entities.Note, text: string): MenuItem {
+	return {
+		icon: 'ti ti-exclamation-circle',
+		text,
+		action: (): void => {
+			const u = note.url ?? note.uri ?? `${url}/notes/${note.id}`;
+			os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+				user: note.user,
+				initialComment: `Note: ${u}\n-----\n`,
+			}, {}, 'closed');
+		},
+	};
+}
+
+export function getCopyNoteLinkMenu(note: misskey.entities.Note, text: string): MenuItem {
+	return {
+		icon: 'ti ti-link',
+		text,
+		action: (): void => {
+			copyToClipboard(`${url}/notes/${note.id}`);
+			os.success();
+		},
+	};
+}
+
 export function getNoteMenu(props: {
 	note: Misskey.entities.Note;
 	menuButton: Ref<HTMLElement>;
@@ -266,11 +291,8 @@ export function getNoteMenu(props: {
 				icon: 'ti ti-copy',
 				text: i18n.ts.copyContent,
 				action: copyContent,
-			}, {
-				icon: 'ti ti-link',
-				text: i18n.ts.copyLink,
-				action: copyLink,
-			}, (appearNote.url || appearNote.uri) ? {
+			}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
+			, (appearNote.url || appearNote.uri) ? {
 				icon: 'ti ti-external-link',
 				text: i18n.ts.showOnRemote,
 				action: () => {
@@ -344,17 +366,8 @@ export function getNoteMenu(props: {
 		),*/
 			...(appearNote.userId !== $i.id ? [
 				null,
-				{
-					icon: 'ti ti-exclamation-circle',
-					text: i18n.ts.reportAbuse,
-					action: () => {
-						const u = appearNote.url ?? appearNote.uri ?? `${url}/notes/${appearNote.id}`;
-						os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
-							user: appearNote.user,
-							initialComment: `Note: ${u}\n-----\n`,
-						}, {}, 'closed');
-					},
-				}]
+				appearNote.userId !== $i.id ? getAbuseNoteMenu(appearNote, i18n.ts.reportAbuse) : undefined,
+			]
 			: []
 			),
 			...(appearNote.userId === $i.id || $i.isModerator || $i.isAdmin ? [
@@ -382,11 +395,8 @@ export function getNoteMenu(props: {
 			icon: 'ti ti-copy',
 			text: i18n.ts.copyContent,
 			action: copyContent,
-		}, {
-			icon: 'ti ti-link',
-			text: i18n.ts.copyLink,
-			action: copyLink,
-		}, (appearNote.url || appearNote.uri) ? {
+		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink)
+		, (appearNote.url || appearNote.uri) ? {
 			icon: 'ti ti-external-link',
 			text: i18n.ts.showOnRemote,
 			action: () => {
