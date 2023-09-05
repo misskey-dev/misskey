@@ -35,6 +35,7 @@
 - Enhance: ノート検索にローカルのみ検索可能なオプションの追加
 - Enhance: AiScriptで`LOCALE`として現在の設定言語を取得できるように
 - Enhance: Renote自体を通報できるように
+- Enhance: Renoteを管理者権限で削除可能に
 - `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
 - Playの操作を行うAPI TokenをAPIコンソールから発行できるように
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
