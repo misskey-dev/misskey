@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/**
- * Config loader
- */
-
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
