@@ -10,8 +10,8 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "esnext",
-		"moduleResolution": "node16",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -26,9 +26,10 @@
 			"@/*": ["./src/*"]
 		},
 		"typeRoots": [
-			"node_modules/@types",
-			"node_modules/@vue-macros",
-			"@types"
+			"./@types",
+			"./node_modules/@types",
+			"./node_modules/@vue-macros",
+			"./node_modules"
 		],
 		"types": [
 			"vite/client",

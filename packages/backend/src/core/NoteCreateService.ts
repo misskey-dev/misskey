@@ -335,7 +335,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (data.channel) {
 			this.redisClient.xadd(
 				`channelTimeline:${data.channel.id}`,
-				'MAXLEN', '~', '1000',
+				'MAXLEN', '~', this.config.perChannelMaxNoteCacheCount.toString(),
 				'*',
 				'note', note.id);
 		}

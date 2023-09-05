@@ -10,7 +10,7 @@ import { ModuleMocker } from 'jest-mock';
 import { Test } from '@nestjs/testing';
 import { GlobalModule } from '@/GlobalModule.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
-import type { Announcement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, User } from '@/models/index.js';
+import type { MiAnnouncement, AnnouncementsRepository, AnnouncementReadsRepository, UsersRepository, MiUser } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { genAid } from '@/misc/id/aid.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -30,7 +30,7 @@ describe('AnnouncementService', () => {
 	let announcementReadsRepository: AnnouncementReadsRepository;
 	let globalEventService: jest.Mocked<GlobalEventService>;
 
-	function createUser(data: Partial<User> = {}) {
+	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
 			id: genAid(new Date()),
@@ -42,7 +42,7 @@ describe('AnnouncementService', () => {
 			.then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 	}
 
-	function createAnnouncement(data: Partial<Announcement> = {}) {
+	function createAnnouncement(data: Partial<MiAnnouncement> = {}) {
 		return announcementsRepository.insert({
 			id: genAid(new Date()),
 			createdAt: new Date(),
