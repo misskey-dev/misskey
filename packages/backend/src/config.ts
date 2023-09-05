@@ -68,8 +68,6 @@ type Source = {
 
 	maxFileSize?: number;
 
-	accesslog?: string;
-
 	clusterLimit?: number;
 
 	id: string;
@@ -132,7 +130,6 @@ export type Config = {
 	proxyBypassHosts: string[] | undefined;
 	allowedPrivateNetworks: string[] | undefined;
 	maxFileSize: number | undefined;
-	accesslog: string | undefined;
 	clusterLimit: number | undefined;
 	id: string;
 	outgoingAddress: string | undefined;
@@ -236,7 +233,6 @@ export function loadConfig(): Config {
 		proxyBypassHosts: config.proxyBypassHosts,
 		allowedPrivateNetworks: config.allowedPrivateNetworks,
 		maxFileSize: config.maxFileSize,
-		accesslog: config.accesslog,
 		clusterLimit: config.clusterLimit,
 		outgoingAddress: config.outgoingAddress,
 		outgoingAddressFamily: config.outgoingAddressFamily,
