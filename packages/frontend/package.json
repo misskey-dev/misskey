@@ -98,8 +98,6 @@
 		"@testing-library/vue": "7.0.0",
 		"@types/escape-regexp": "0.0.1",
 		"@types/estree": "1.0.1",
-		"@types/gulp": "4.0.13",
-		"@types/gulp-rename": "2.0.2",
 		"@types/matter-js": "0.19.0",
 		"@types/micromatch": "4.0.2",
 		"@types/node": "20.5.9",
