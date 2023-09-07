@@ -53,6 +53,7 @@
 - ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
 - Webhookのペイロードにサーバーのurlが含まれるようになりました
 - Webhook設定でsecretを空に出来るように
+- 使われていないアンテナの自動停止を設定可能に
 - Fix: 一部のfeatured noteを照会できない問題を修正
 - Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
 - Fix: ジョブキュー管理画面の認証を回避できる問題を修正
