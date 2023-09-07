@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import { Chart, ChartDataset } from 'chart.js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import gradient from 'chartjs-plugin-gradient';
 import * as os from '@/os';
 import { defaultStore } from '@/store';
@@ -29,7 +29,7 @@ import MkChartLegend from '@/components/MkChartLegend.vue';
 initChart();
 
 const props = defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>();
 
 const chartEl = $shallowRef<HTMLCanvasElement>(null);

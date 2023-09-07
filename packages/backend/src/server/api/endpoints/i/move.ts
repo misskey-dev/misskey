@@ -9,7 +9,7 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 
-import { LocalUser, RemoteUser } from '@/models/entities/User.js';
+import { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
 
 import { AccountMoveService } from '@/core/AccountMoveService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
@@ -74,9 +74,8 @@ export const paramDef = {
 	required: ['moveToAccount'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apiLoggerService: ApiLoggerService,
@@ -100,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				this.apiLoggerService.logger.warn(`failed to resolve remote user: ${e}`);
 				throw new ApiError(meta.errors.noSuchUser);
 			});
-			const destination = await this.getterService.getUser(moveTo.id) as LocalUser | RemoteUser;
+			const destination = await this.getterService.getUser(moveTo.id) as MiLocalUser | MiRemoteUser;
 			const newUri = this.userEntityService.getUserUri(destination);
 
 			// update local db

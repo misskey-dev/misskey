@@ -10,9 +10,9 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/index.js';
-import type { User } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/entities/User.js';
 import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
-import type { UserProfile } from '@/models/entities/UserProfile.js';
+import type { MiUserProfile } from '@/models/entities/UserProfile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';
@@ -170,9 +170,8 @@ export const paramDef = {
 	},
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -201,8 +200,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			const user = await this.usersRepository.findOneByOrFail({ id: _user.id });
 			const isSecure = token == null;
 
-			const updates = {} as Partial<User>;
-			const profileUpdates = {} as Partial<UserProfile>;
+			const updates = {} as Partial<MiUser>;
+			const profileUpdates = {} as Partial<MiUserProfile>;
 
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 

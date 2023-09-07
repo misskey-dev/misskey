@@ -5,10 +5,10 @@
 
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class UserList {
+@Entity('user_list')
+export class MiUserList {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -22,7 +22,7 @@ export class UserList {
 		...id(),
 		comment: 'The owner ID.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
 	@Index()
 	@Column('boolean', {
@@ -30,11 +30,11 @@ export class UserList {
 	})
 	public isPublic: boolean;
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('varchar', {
 		length: 128,

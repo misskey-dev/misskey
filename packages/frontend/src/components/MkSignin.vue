@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.password }}</template>
 					<template #prefix><i class="ti ti-lock"></i></template>
 				</MkInput>
-				<MkInput v-model="token" type="text" pattern="^[0-9]{6}$" autocomplete="one-time-code" :spellcheck="false" required>
+				<MkInput v-model="token" type="text" pattern="^([0-9]{6}|[A-Z0-9]{32})$" autocomplete="one-time-code" :spellcheck="false" required>
 					<template #label>{{ i18n.ts.token }}</template>
 					<template #prefix><i class="ti ti-123"></i></template>
 				</MkInput>

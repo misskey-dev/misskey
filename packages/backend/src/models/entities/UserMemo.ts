@@ -5,11 +5,11 @@
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
+@Entity('user_memo')
 @Index(['userId', 'targetUserId'], { unique: true })
-export class UserMemo {
+export class MiUserMemo {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -18,26 +18,26 @@ export class UserMemo {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The ID of target user.',
 	})
-	public targetUserId: User['id'];
+	public targetUserId: MiUser['id'];
 
-	@ManyToOne(type => User, {
+	@ManyToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public targetUser: User | null;
+	public targetUser: MiUser | null;
 
 	@Column('varchar', {
 		length: 2048,

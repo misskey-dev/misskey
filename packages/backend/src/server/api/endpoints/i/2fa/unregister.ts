@@ -25,9 +25,8 @@ export const paramDef = {
 	required: ['password'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -47,6 +46,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: null,
+				twoFactorBackupSecret: null,
 				twoFactorEnabled: false,
 				usePasswordLessLogin: false,
 			});

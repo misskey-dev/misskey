@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
 import { getStaticImageUrl } from '@/scripts/media-proxy';
@@ -42,7 +42,7 @@ const squareAvatars = $ref(defaultStore.state.squareAvatars);
 const useBlurEffect = $ref(defaultStore.state.useBlurEffect);
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 	target?: string | null;
 	link?: boolean;
 	preview?: boolean;

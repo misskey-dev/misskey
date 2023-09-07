@@ -34,19 +34,18 @@ export const paramDef = {
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', minLength: 1, maxLength: 1024 },
+		secret: { type: 'string', maxLength: 1024, default: '' },
 		on: { type: 'array', items: {
 			type: 'string', enum: webhookEventTypes,
 		} },
 	},
-	required: ['name', 'url', 'secret', 'on'],
+	required: ['name', 'url', 'on'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,

@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkPagination ref="pagingComponent" :pagination="pagination">
 				<template #default="{ items }">
 					<div class="_gaps_s">
-						<MkInviteCode v-for="item in (items as Invite[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
+						<MkInviteCode v-for="item in (items as Misskey.entities.Invite[])" :key="item.id" :invite="item" :onDeleted="deleted"/>
 					</div>
 				</template>
 			</MkPagination>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, shallowRef } from 'vue';
-import type { Invite } from 'misskey-js/built/entities';
+import type * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import * as os from '@/os';
 import MkButton from '@/components/MkButton.vue';

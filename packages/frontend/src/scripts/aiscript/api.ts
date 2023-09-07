@@ -8,14 +8,15 @@ import * as os from '@/os';
 import { $i } from '@/account';
 import { miLocalStorage } from '@/local-storage';
 import { customEmojis } from '@/custom-emojis';
+import { lang } from '@/config';
 
 export function createAiScriptEnv(opts) {
-	let apiRequests = 0;
 	return {
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
 		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
+		LOCALE: values.STR(lang),
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await os.alert({
 				type: type ? type.value : 'info',
@@ -38,8 +39,6 @@ export function createAiScriptEnv(opts) {
 				// バグがあればundefinedもあり得るため念のため
 				if (typeof token.value !== 'string') throw new Error('invalid token');
 			}
-			apiRequests++;
-			if (apiRequests > 16) return values.NULL;
 			const res = await os.api(ep.value, utils.valToJs(param), token ? token.value : (opts.token ?? null));
 			return utils.jsToVal(res);
 		}),

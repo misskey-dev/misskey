@@ -102,7 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else-if="tab === 'users'" class="_gaps_m">
 			<MkPagination v-slot="{items}" :pagination="usersPagination" style="display: grid; grid-template-columns: repeat(auto-fill,minmax(270px,1fr)); grid-gap: 12px;">
-				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/user-info/${user.id}`">
+				<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" class="user" :to="`/admin/user/${user.id}`">
 					<MkUserCardMini :user="user"/>
 				</MkA>
 			</MkPagination>
@@ -117,7 +117,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import FormLink from '@/components/form/link.vue';
@@ -143,8 +143,8 @@ const props = defineProps<{
 
 let tab = $ref('overview');
 let chartSrc = $ref('instance-requests');
-let meta = $ref<misskey.entities.AdminInstanceMetadata | null>(null);
-let instance = $ref<misskey.entities.Instance | null>(null);
+let meta = $ref<Misskey.entities.AdminInstanceMetadata | null>(null);
+let instance = $ref<Misskey.entities.Instance | null>(null);
 let suspended = $ref(false);
 let isBlocked = $ref(false);
 let faviconUrl = $ref<string | null>(null);

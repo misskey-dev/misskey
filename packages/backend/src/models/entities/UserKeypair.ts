@@ -5,18 +5,18 @@
 
 import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
-import { User } from './User.js';
+import { MiUser } from './User.js';
 
-@Entity()
-export class UserKeypair {
+@Entity('user_keypair')
+export class MiUserKeypair {
 	@PrimaryColumn(id())
-	public userId: User['id'];
+	public userId: MiUser['id'];
 
-	@OneToOne(type => User, {
+	@OneToOne(type => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: User | null;
+	public user: MiUser | null;
 
 	@Column('varchar', {
 		length: 4096,
@@ -28,7 +28,7 @@ export class UserKeypair {
 	})
 	public privateKey: string;
 
-	constructor(data: Partial<UserKeypair>) {
+	constructor(data: Partial<MiUserKeypair>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

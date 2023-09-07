@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</I18n>
 		<div :class="$style.renoteInfo">
 			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="ti ti-dots" :class="$style.renoteMenu"></i>
+				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
@@ -140,7 +140,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, inject, onMounted, ref, shallowRef, Ref, defineAsyncComponent } from 'vue';
 import * as mfm from 'mfm-js';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -161,7 +161,7 @@ import { reactionPicker } from '@/scripts/reaction-picker';
 import { extractUrlFromMfm } from '@/scripts/extract-url-from-mfm';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
+import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
 import { useNoteCapture } from '@/scripts/use-note-capture';
 import { deepClone } from '@/scripts/clone';
 import { useTooltip } from '@/scripts/use-tooltip';
@@ -173,12 +173,12 @@ import { showMovedDialog } from '@/scripts/show-moved-dialog';
 import { shouldCollapsed } from '@/scripts/collapsed';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 	pinned?: boolean;
 }>();
 
 const inChannel = inject('inChannel', null);
-const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
+const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 let note = $ref(deepClone(props.note));
 
@@ -206,7 +206,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
-let appearNote = $computed(() => isRenote ? note.renote as misskey.entities.Note : note);
+let appearNote = $computed(() => isRenote ? note.renote as Misskey.entities.Note : note);
 const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const urls = appearNote.text ? extractUrlFromMfm(mfm.parse(appearNote.text)) : null;
@@ -425,21 +425,39 @@ async function clip() {
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
-	if (!isMyRenote) return;
-	pleaseLogin();
-	os.popupMenu([{
-		text: i18n.ts.unrenote,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => {
-			os.api('notes/delete', {
-				noteId: note.id,
-			});
-			isDeleted.value = true;
-		},
-	}], renoteTime.value, {
-		viaKeyboard: viaKeyboard,
-	});
+	function getUnrenote(): MenuItem {
+		return {
+			text: i18n.ts.unrenote,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => {
+				os.api('notes/delete', {
+					noteId: note.id,
+				});
+				isDeleted.value = true;
+			},
+		};
+	}
+
+	if (isMyRenote) {
+		pleaseLogin();
+		os.popupMenu([
+			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			null,
+			getUnrenote(),
+		], renoteTime.value, {
+			viaKeyboard: viaKeyboard,
+		});
+	} else {
+		os.popupMenu([
+			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			null, 
+			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
+			$i.isModerator || $i.isAdmin ? getUnrenote() : undefined,
+		], renoteTime.value, {
+			viaKeyboard: viaKeyboard,
+		});
+	}
 }
 
 function focus() {
