@@ -21,6 +21,7 @@
 	- お知らせのバナー表示やダイアログ表示が可能に
 	- お知らせのアイコンを設定可能に
 - チャンネルをセンシティブ指定できるようになりました
+	- センシティブチャンネルのNoteのReNoteはデフォルトでHome TLに流れるようになりました
 - 二要素認証のバックアップコードが生成されるようになりました ref. https://github.com/MisskeyIO/misskey/pull/121
 
 ### Client
@@ -35,6 +36,8 @@
 - Enhance: ノート検索にローカルのみ検索可能なオプションの追加
 - Enhance: AiScriptで`LOCALE`として現在の設定言語を取得できるように
 - Enhance: Renote自体を通報できるように
+- Enhance: データセーバーモードの強化
+- Enhance: Renoteを管理者権限で削除可能に
 - `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
 - Playの操作を行うAPI TokenをAPIコンソールから発行できるように
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
@@ -50,6 +53,8 @@
 - cacheRemoteFilesの初期値はfalseになりました
 - ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
 - Webhookのペイロードにサーバーのurlが含まれるようになりました
+- Webhook設定でsecretを空に出来るように
+- 使われていないアンテナの自動停止を設定可能に
 - Fix: 一部のfeatured noteを照会できない問題を修正
 - Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
 - Fix: ジョブキュー管理画面の認証を回避できる問題を修正

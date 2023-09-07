@@ -34,13 +34,13 @@ export const paramDef = {
 		webhookId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', minLength: 1, maxLength: 1024 },
+		secret: { type: 'string', maxLength: 1024, default: '' },
 		on: { type: 'array', items: {
 			type: 'string', enum: webhookEventTypes,
 		} },
 		active: { type: 'boolean' },
 	},
-	required: ['webhookId', 'name', 'url', 'secret', 'on', 'active'],
+	required: ['webhookId', 'name', 'url', 'on', 'active'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す

@@ -120,6 +120,7 @@
 		"mime-types": "2.1.35",
 		"misskey-js": "workspace:*",
 		"ms": "3.0.0-canary.1",
+		"nanoid": "4.0.2",
 		"nested-property": "4.0.0",
 		"node-fetch": "3.3.2",
 		"nodemailer": "6.9.4",
