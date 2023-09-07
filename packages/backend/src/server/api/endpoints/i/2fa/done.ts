@@ -25,9 +25,8 @@ export const paramDef = {
 	required: ['token'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -55,8 +54,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw new Error('not verified');
 			}
 
+			const backupCodes = Array.from({ length: 5 }, () => new OTPAuth.Secret().base32);
+
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: profile.twoFactorTempSecret,
+				twoFactorBackupSecret: backupCodes,
 				twoFactorEnabled: true,
 			});
 
@@ -65,6 +67,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				detail: true,
 				includeSecrets: true,
 			}));
+
+			return {
+				backupCodes: backupCodes,
+			};
 		});
 	}
 }

@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { SigninsRepository } from '@/models/index.js';
 import { IdService } from '@/core/IdService.js';
-import type { LocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/entities/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -26,7 +26,7 @@ export class SigninService {
 	}
 
 	@bindThis
-	public signin(request: FastifyRequest, reply: FastifyReply, user: LocalUser) {
+	public signin(request: FastifyRequest, reply: FastifyReply, user: MiLocalUser) {
 		setImmediate(async () => {
 			// Append signin history
 			const record = await this.signinsRepository.insert({

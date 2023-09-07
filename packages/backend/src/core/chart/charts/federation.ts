@@ -18,9 +18,8 @@ import type { KVs } from '../core.js';
 /**
  * フェデレーションに関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class FederationChart extends Chart<typeof schema> {
+export default class FederationChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

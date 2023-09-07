@@ -43,10 +43,6 @@ export const routes = [{
 	path: '/clips/:clipId',
 	component: page(() => import('./pages/clip.vue')),
 }, {
-	path: '/user-info/:userId',
-	component: page(() => import('./pages/user-info.vue')),
-	hash: 'initialTab',
-}, {
 	path: '/instance-info/:host',
 	component: page(() => import('./pages/instance-info.vue')),
 }, {
@@ -334,6 +330,9 @@ export const routes = [{
 }, {
 	path: '/registry',
 	component: page(() => import('./pages/registry.vue')),
+}, {
+	path: '/admin/user/:userId',
+	component: iAmModerator ? page(() => import('./pages/admin-user.vue')) : page(() => import('./pages/not-found.vue')),
 }, {
 	path: '/admin/file/:fileId',
 	component: iAmModerator ? page(() => import('./pages/admin-file.vue')) : page(() => import('./pages/not-found.vue')),

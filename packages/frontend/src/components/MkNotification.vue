@@ -101,7 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, shallowRef } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import XReactionTooltip from '@/components/MkReactionTooltip.vue';
@@ -115,7 +115,7 @@ import { useTooltip } from '@/scripts/use-tooltip';
 import { $i } from '@/account';
 
 const props = withDefaults(defineProps<{
-	notification: misskey.entities.Notification;
+	notification: Misskey.entities.Notification;
 	withTime?: boolean;
 	full?: boolean;
 }>(), {
