@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent } from 'vue';
 import { toUnicode } from 'punycode/';
 import { UserDetailed } from 'misskey-js/built/entities';
-import { supported as WebAuthnSupported, get as WebAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
 import { showSuspendedDialog } from '@/scripts/show-suspended-dialog';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -114,7 +114,7 @@ function onLogin(res: any): Promise<void> | void {
 
 async function queryKey(): Promise<void> {
 	queryingKey = true;
-	await WebAuthnRequest(credentialRequest)
+	await webAuthnRequest(credentialRequest)
 		.catch(() => {
 			queryingKey = false;
 			return Promise.reject(null);
@@ -145,7 +145,7 @@ async function queryKey(): Promise<void> {
 function onSubmit(): void {
 	signing = true;
 	if (!totpLogin && user && user.twoFactorEnabled) {
-		if (WebAuthnSupported() && user.securityKeys) {
+		if (webAuthnSupported() && user.securityKeys) {
 			os.api('signin', {
 				username,
 				password,
