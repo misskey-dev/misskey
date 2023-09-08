@@ -16,13 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				-->
 					<div class="banner">
-						<MkMediaImage
-							v-if="page.eyeCatchingImageId"
-							:image="page.eyeCatchingImage"
-							:cover="true"
-							:disableImageLink="true"
-							class="thumbnail"
-						/>
+						<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
 					</div>
 					<div class="content">
 						<XPage :page="page"/>
@@ -80,7 +74,6 @@ import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { url } from '@/config';
-import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -211,14 +204,11 @@ definePageMetadata(computed(() => page ? {
 		}
 
 		> .banner {
-			> .thumbnail {
+			> img {
 				// TODO: 良い感じのアスペクト比で表示
 				display: block;
 				width: 100%;
-				height: auto;
-				aspect-ratio: 3/1;
-				border-radius: var(--radius);
-				overflow: hidden;
+				height: 150px;
 				object-fit: cover;
 			}
 		}

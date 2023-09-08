@@ -4,41 +4,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click.stop="onclick">
-	<component
-		:is="disableImageLink ? 'div' : 'a'"
-		v-bind="disableImageLink ? {
-			title: image.name,
-			class: $style.imageContainer,
-		} : {
-			title: image.name,
-			class: $style.imageContainer,
-			href: image.url,
-			style: 'cursor: zoom-in;'
-		}"
+<div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
+	<a
+		:class="$style.imageContainer"
+		:href="image.url"
+		:title="image.name"
 	>
 		<ImgWithBlurhash
 			:hash="image.blurhash"
 			:src="(defaultStore.state.enableDataSaverMode && hide) ? null : url"
 			:forceBlurhash="hide"
-			:cover="hide || cover"
+			:cover="hide"
 			:alt="image.comment || image.name"
 			:title="image.comment || image.name"
 			:width="image.properties.width"
 			:height="image.properties.height"
 			:style="hide ? 'filter: brightness(0.5);' : null"
 		/>
-	</component>
+	</a>
 	<template v-if="hide">
 		<div :class="$style.hiddenText">
 			<div :class="$style.hiddenTextWrapper">
 				<b v-if="image.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ defaultStore.state.enableDataSaverMode ? ` (${i18n.ts.image}${image.size ? ' ' + bytes(image.size) : ''})` : '' }}</b>
 				<b v-else style="display: block;"><i class="ti ti-photo"></i> {{ defaultStore.state.enableDataSaverMode && image.size ? bytes(image.size) : i18n.ts.image }}</b>
-				<span v-if="controls" style="display: block;">{{ i18n.ts.clickToShow }}</span>
+				<span style="display: block;">{{ i18n.ts.clickToShow }}</span>
 			</div>
 		</div>
 	</template>
-	<template v-else-if="controls">
+	<template v-else>
 		<div :class="$style.indicators">
 			<div v-if="['image/gif', 'image/apng'].includes(image.type)" :class="$style.indicator">GIF</div>
 			<div v-if="image.comment" :class="$style.indicator">ALT</div>
@@ -61,17 +54,10 @@ import { i18n } from '@/i18n';
 import * as os from '@/os';
 import { iAmModerator } from '@/account';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	image: Misskey.entities.DriveFile;
 	raw?: boolean;
-	cover?: boolean;
-	disableImageLink?: boolean;
-	controls?: boolean;
-}>(), {
-	cover: false,
-	disableImageLink: false,
-	controls: true,
-});
+}>();
 
 let hide = $ref(true);
 let darkMode: boolean = $ref(defaultStore.state.darkMode);
@@ -84,9 +70,6 @@ const url = $computed(() => (props.raw || defaultStore.state.loadRawImages)
 );
 
 function onclick() {
-	if (!props.controls) {
-		return;
-	}
 	if (hide) {
 		hide = false;
 	}
@@ -184,6 +167,7 @@ function showMenu(ev: MouseEvent) {
 
 .imageContainer {
 	display: block;
+	cursor: zoom-in;
 	overflow: hidden;
 	width: 100%;
 	height: 100%;
