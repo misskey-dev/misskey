@@ -18,7 +18,6 @@ import { MiAnnouncement } from '@/models/entities/Announcement.js';
 import { MiAnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { MiAntenna } from '@/models/entities/Antenna.js';
 import { MiApp } from '@/models/entities/App.js';
-import { MiAttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { MiAuthSession } from '@/models/entities/AuthSession.js';
 import { MiBlocking } from '@/models/entities/Blocking.js';
 import { MiChannelFollowing } from '@/models/entities/ChannelFollowing.js';
@@ -143,7 +142,6 @@ export const entities = [
 	MiUserNotePining,
 	MiUserSecurityKey,
 	MiUsedUsername,
-	MiAttestationChallenge,
 	MiFollowing,
 	MiFollowRequest,
 	MiMuting,
