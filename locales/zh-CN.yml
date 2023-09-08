@@ -1105,7 +1105,7 @@ forYou: "您的"
 currentAnnouncements: "现在的公告"
 pastAnnouncements: "过去的公告"
 youHaveUnreadAnnouncements: "您有未读的公告"
-useSecurityKey: "请根据浏览器或设备的提示，使用安全密钥或密码。"
+useSecurityKey: "请根据浏览器或设备的提示，使用安全密钥或通行密钥。"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
