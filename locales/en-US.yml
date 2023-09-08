@@ -1105,6 +1105,7 @@ forYou: "For you"
 currentAnnouncements: "Current announcements"
 pastAnnouncements: "Past announcements"
 youHaveUnreadAnnouncements: "There are unread announcements."
+useSecurityKey: "Please follow your browser's or device's instructions to use your security- or passkey."
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
