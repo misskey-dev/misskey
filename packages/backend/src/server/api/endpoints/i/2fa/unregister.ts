@@ -10,11 +10,20 @@ import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { UserProfilesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: '7add0395-9901-4098-82f9-4f67af65f775',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -38,10 +47,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
-			const same = await bcrypt.compare(ps.password, profile.password!);
+			const same = await bcrypt.compare(ps.password, profile.password ?? '');
 
 			if (!same) {
-				throw new Error('incorrect password');
+				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			await this.userProfilesRepository.update(me.id, {

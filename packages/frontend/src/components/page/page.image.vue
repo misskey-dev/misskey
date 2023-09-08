@@ -5,24 +5,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<MediaImage
-		v-if="image"
-		:image="image"
-		:disableImageLink="true"
-	/>
+	<ImgWithBlurhash v-if="image" style="max-width: 100%;" :hash="image.blurhash" :src="image.url" :alt="image.comment" :title="image.comment" :width="image.properties.width" :height="image.properties.height" :cover="false"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import { ImageBlock } from './block.type';
-import MediaImage from '@/components/MkMediaImage.vue';
+import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
 
 const props = defineProps<{
 	block: ImageBlock,
 	page: Misskey.entities.Page,
 }>();
 
-const image = ref<Misskey.entities.DriveFile>(props.page.attachedFiles.find(x => x.id === props.block.fileId));
+const image = props.page.attachedFiles.find(x => x.id === props.block.fileId);
 </script>

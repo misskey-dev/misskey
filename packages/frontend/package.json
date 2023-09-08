@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "14.1.2",
+		"@github/webauthn-json": "2.1.1",
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/plugin-replace": "5.0.2",
