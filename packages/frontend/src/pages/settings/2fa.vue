@@ -38,9 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.securityKeyAndPasskey }}</template>
 			<div class="_gaps_s">
 				<MkInfo>
-					{{ i18n.ts._2fa.securityKeyInfo }}<br>
-					<br>
-					{{ i18n.ts._2fa.chromePasskeyNotSupported }}
+					{{ i18n.ts._2fa.securityKeyInfo }}
 				</MkInfo>
 
 				<MkInfo v-if="!webAuthnSupported()" warn>
