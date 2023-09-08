@@ -56,7 +56,7 @@ export class WebAuthnService {
 	}
 
 	@bindThis
-	public async initiateRegistration(userId: User['id'], userName: string, userDisplayName?: string): Promise<PublicKeyCredentialCreationOptionsJSON> {
+	public async initiateRegistration(userId: MiUser['id'], userName: string, userDisplayName?: string): Promise<PublicKeyCredentialCreationOptionsJSON> {
 		const relyingParty = await this.getRelyingParty();
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
@@ -86,7 +86,7 @@ export class WebAuthnService {
 	}
 
 	@bindThis
-	public async verifyRegistration(userId: User['id'], response: RegistrationResponseJSON): Promise<{
+	public async verifyRegistration(userId: MiUser['id'], response: RegistrationResponseJSON): Promise<{
 		credentialID: Uint8Array;
 		credentialPublicKey: Uint8Array;
 		attestationObject: Uint8Array;
@@ -143,7 +143,7 @@ export class WebAuthnService {
 	}
 
 	@bindThis
-	public async initiateAuthentication(userId: User['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
+	public async initiateAuthentication(userId: MiUser['id']): Promise<PublicKeyCredentialRequestOptionsJSON> {
 		const keys = await this.userSecurityKeysRepository.findBy({
 			userId: userId,
 		});
@@ -167,7 +167,7 @@ export class WebAuthnService {
 	}
 
 	@bindThis
-	public async verifyAuthentication(userId: User['id'], response: AuthenticationResponseJSON): Promise<boolean> {
+	public async verifyAuthentication(userId: MiUser['id'], response: AuthenticationResponseJSON): Promise<boolean> {
 		const challenge = await this.redisClient.get(`webauthn:challenge:${userId}`);
 
 		if (!challenge) {
