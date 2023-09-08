@@ -1105,6 +1105,7 @@ forYou: "給您"
 currentAnnouncements: "最新公告"
 pastAnnouncements: "歷史公告"
 youHaveUnreadAnnouncements: "有未讀的公告。"
+useSecurityKey: "請按照瀏覽器或設備上的說明使用安全金鑰或 Passkey。"
 _announcement:
   forExistingUsers: "僅限既有的使用者"
   forExistingUsersDescription: "啟用代表僅向現存使用者顯示；停用代表張貼後註冊的新使用者也會看到。"
