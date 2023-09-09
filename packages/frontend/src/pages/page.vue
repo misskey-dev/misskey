@@ -62,8 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
+					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
 			</div>
@@ -287,5 +287,15 @@ definePageMetadata(computed(() => page ? {
 		font-size: 85%;
 		opacity: 0.75;
 	}
+}
+</style>
+
+<style module>
+.relatedPagesRoot {
+	padding: var(--margin);
+}
+
+.relatedPagesItem > article {
+	background-color: var(--panelHighlight) !important;
 }
 </style>
