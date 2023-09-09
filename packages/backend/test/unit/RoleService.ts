@@ -14,7 +14,7 @@ import { RoleService } from '@/core/RoleService.js';
 import type { MiRole, RolesRepository, RoleAssignmentsRepository, UsersRepository, MiUser } from '@/models/index.js';
 import { DI } from '@/di-symbols.js';
 import { MetaService } from '@/core/MetaService.js';
-import { genAid } from '@/misc/id/aid.js';
+import { genAidx } from '@/misc/id/aidx.js';
 import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -37,7 +37,7 @@ describe('RoleService', () => {
 	function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
 		return usersRepository.insert({
-			id: genAid(new Date()),
+			id: genAidx(new Date()),
 			createdAt: new Date(),
 			username: un,
 			usernameLower: un,
@@ -48,7 +48,7 @@ describe('RoleService', () => {
 
 	function createRole(data: Partial<MiRole> = {}) {
 		return rolesRepository.insert({
-			id: genAid(new Date()),
+			id: genAidx(new Date()),
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			lastUsedAt: new Date(),

@@ -88,6 +88,7 @@ type Source = {
 
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
+	deactivateAntennaThreshold?: number;
 };
 
 export type Config = {
@@ -161,6 +162,7 @@ export type Config = {
 	redisForJobQueue: RedisOptions & RedisOptionsSource;
 	perChannelMaxNoteCacheCount: number;
 	perUserNotificationsMaxCount: number;
+	deactivateAntennaThreshold: number;
 };
 
 const _filename = fileURLToPath(import.meta.url);
@@ -252,6 +254,7 @@ export function loadConfig(): Config {
 		clientManifestExists: clientManifestExists,
 		perChannelMaxNoteCacheCount: config.perChannelMaxNoteCacheCount ?? 1000,
 		perUserNotificationsMaxCount: config.perUserNotificationsMaxCount ?? 300,
+		deactivateAntennaThreshold: config.deactivateAntennaThreshold ?? (1000 * 60 * 60 * 24 * 7),
 	};
 }
 

@@ -16,6 +16,7 @@
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "14.1.2",
+		"@github/webauthn-json": "2.1.1",
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/plugin-replace": "5.0.2",
@@ -98,8 +99,6 @@
 		"@testing-library/vue": "7.0.0",
 		"@types/escape-regexp": "0.0.1",
 		"@types/estree": "1.0.1",
-		"@types/gulp": "4.0.13",
-		"@types/gulp-rename": "2.0.2",
 		"@types/matter-js": "0.19.0",
 		"@types/micromatch": "4.0.2",
 		"@types/node": "20.5.9",
