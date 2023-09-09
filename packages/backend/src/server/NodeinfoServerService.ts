@@ -125,7 +125,11 @@ export class NodeinfoServerService {
 		fastify.get(nodeinfo2_1path, async (request, reply) => {
 			const base = await cache.fetch(() => nodeinfo2(21));
 
-			reply.header('Cache-Control', 'public, max-age=600');
+			reply
+				.type(
+					'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
+				)
+				.header('Cache-Control', 'public, max-age=600');
 			return { version: '2.1', ...base };
 		});
 
@@ -134,7 +138,11 @@ export class NodeinfoServerService {
 
 			delete (base as any).software.repository;
 
-			reply.header('Cache-Control', 'public, max-age=600');
+			reply
+				.type(
+					'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.0#"',
+				)
+				.header('Cache-Control', 'public, max-age=600');
 			return { version: '2.0', ...base };
 		});
 
