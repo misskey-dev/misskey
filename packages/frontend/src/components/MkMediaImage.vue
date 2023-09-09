@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click.stop="onclick">
+<div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -134,6 +134,7 @@ function showMenu(ev: MouseEvent) {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	cursor: pointer;
 }
 
 .hide {
