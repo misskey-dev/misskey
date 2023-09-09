@@ -46,7 +46,7 @@ export class NodeinfoServerService {
 
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		const nodeinfo2 = async () => {
+		const nodeinfo2 = async (version: number) => {
 			const now = Date.now();
 
 			const notesChart = await this.notesChart.getChart('hour', 1, null);
@@ -73,11 +73,10 @@ export class NodeinfoServerService {
 
 			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-			return {
+			let document: any = {
 				software: {
 					name: 'misskey',
 					version: this.config.version,
-					repository: meta.repositoryUrl,
 				},
 				protocols: ['activitypub'],
 				services: {
@@ -114,19 +113,23 @@ export class NodeinfoServerService {
 					themeColor: meta.themeColor ?? '#86b300',
 				},
 			};
+			if(version >= 21) {
+				document.software.repository = meta.repositoryUrl;
+			}
+			return document;
 		};
 
 		const cache = new MemorySingleCache<Awaited<ReturnType<typeof nodeinfo2>>>(1000 * 60 * 10);
 
 		fastify.get(nodeinfo2_1path, async (request, reply) => {
-			const base = await cache.fetch(() => nodeinfo2());
+			const base = await cache.fetch(() => nodeinfo2(21));
 
 			reply.header('Cache-Control', 'public, max-age=600');
 			return { version: '2.1', ...base };
 		});
 
 		fastify.get(nodeinfo2_0path, async (request, reply) => {
-			const base = await cache.fetch(() => nodeinfo2());
+			const base = await cache.fetch(() => nodeinfo2(20));
 
 			delete (base as any).software.repository;
 
