@@ -115,6 +115,7 @@ export class NodeinfoServerService {
 			};
 			if(version >= 21) {
 				document.software.repository = meta.repositoryUrl;
+				document.software.homepage = meta.repositoryUrl;
 			}
 			return document;
 		};
