@@ -51,13 +51,14 @@
 - Fix: 他のサーバーのユーザーへ「メッセージを送信」した時の初期テキストのメンションが間違っている問題を修正
 
 ### Server
-- Fix: ノート検索 `notes/search` にてhostを指定した際に検索結果に反映されるように
 - cacheRemoteFilesの初期値はfalseになりました
 - ファイルアップロード時等にファイル名の拡張子を修正する関数(correctFilename)の挙動を改善
 - Webhookのペイロードにサーバーのurlが含まれるようになりました
 - Webhook設定でsecretを空に出来るように
 - 使われていないアンテナの自動停止を設定可能に
+- nodeinfo 2.1対応
 - 自分へのメンション一覧を取得する際のパフォーマンスを向上
+- Fix: ノート検索 `notes/search` にてhostを指定した際に検索結果に反映されるように
 - Fix: 一部のfeatured noteを照会できない問題を修正
 - Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
 - Fix: ジョブキュー管理画面の認証を回避できる問題を修正
