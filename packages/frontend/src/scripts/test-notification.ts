@@ -28,7 +28,7 @@ export function testNotification(type: 'client' | 'server'): void {
 			os.api('notifications/test-notification');
 			break;
 		case 'client':
-			globalEvents.emit('notification', notification);
+			globalEvents.emit('clientNotification', notification);
 			break;
 	}
 }

@@ -89,7 +89,7 @@ function onNotification(notification: Misskey.entities.Notification, isClient: b
 if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
-	globalEvents.on('notification', notification => onNotification(notification, true));
+	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
 	//#region Listen message from SW
 	if ('serviceWorker' in navigator) {
