@@ -1023,6 +1023,7 @@ retryAllQueuesConfirmText: "La carga del servidor está incrementándose tempora
 enableChartsForRemoteUser: "Generar gráficas de usuarios remotos."
 enableChartsForFederatedInstances: "Generar gráficos de servidores remotos"
 showClipButtonInNoteFooter: "Añadir \"Clip\" al menú de notas"
+reactionsDisplaySize: "Tamaño de las reacciones"
 noteIdOrUrl: "ID o URL de la nota"
 video: "Video"
 videos: "Video"
