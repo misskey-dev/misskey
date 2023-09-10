@@ -38,6 +38,7 @@ import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 import { $i } from '@/account';
 import { definePageMetadata } from '@/scripts/page-metadata';
+import { miLocalStorage } from '@/local-storage';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -67,17 +68,24 @@ function top(): void {
 }
 
 async function chooseList(ev: MouseEvent): Promise<void> {
-	const lists = await os.api('users/lists/list');
+	const cachedLists = miLocalStorage.getItemAsJson('userListsCache');
+	const lists = cachedLists ?? await os.api('users/lists/list');
 	const items = lists.map(list => ({
 		type: 'link' as const,
 		text: list.name,
 		to: `/timeline/list/${list.id}`,
 	}));
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	if (cachedLists == null) {
+		miLocalStorage.setItemAsJson('userListsCache', lists);
+	} else {
+		miLocalStorage.setItemAsJson('userListsCache', await os.api('users/lists/list'));
+	}
 }
 
 async function chooseAntenna(ev: MouseEvent): Promise<void> {
-	const antennas = await os.api('antennas/list');
+	const cachedAntennas = miLocalStorage.getItemAsJson('antennasCache');
+	const antennas = cachedAntennas ?? await os.api('antennas/list');
 	const items = antennas.map(antenna => ({
 		type: 'link' as const,
 		text: antenna.name,
@@ -85,6 +93,11 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 		to: `/timeline/antenna/${antenna.id}`,
 	}));
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
+	if (cachedAntennas == null) {
+		miLocalStorage.setItemAsJson('antennasCache', antennas);
+	} else {
+		miLocalStorage.setItemAsJson('antennasCache', await os.api('antennas/list'));
+	}
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
