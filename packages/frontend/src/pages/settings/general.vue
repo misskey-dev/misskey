@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
 			</MkRadios>
 
-			<MkButton @click="testNotification()">{{ i18n.ts._notification.doTestNotification }}</MkButton>
+			<MkButton @click="testNotification('client')">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 		</div>
 	</FormSection>
 
@@ -192,7 +192,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
-import { infoImageUrl } from '@/instance';
+import { testNotification } from '@/scripts/test-notification';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -303,14 +303,6 @@ function removeEmojiIndex(lang: string) {
 	}
 
 	os.promiseDialog(main());
-}
-
-function testNotification(): void {
-	os.api('notifications/create', {
-		header: i18n.ts._notification.testNotification,
-		body: i18n.ts._notification.notificationWillBeDisplayedLikeThis,
-		icon: infoImageUrl.value,
-	});
 }
 
 const headerActions = $computed(() => []);

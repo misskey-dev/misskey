@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</FormSection>
 	<FormSection>
 		<div class="_gaps_m">
-			<FormLink @click="testNotification">{{ i18n.ts._notification.doTestNotification }}</FormLink>
+			<FormLink @click="testNotification('server')">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -46,7 +46,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import MkPushNotificationAllowButton from '@/components/MkPushNotificationAllowButton.vue';
 import { notificationTypes } from '@/const';
-import { infoImageUrl } from '@/instance';
+import { testNotification } from '@/scripts/test-notification';
 
 let allowButton = $shallowRef<InstanceType<typeof MkPushNotificationAllowButton>>();
 let pushRegistrationInServer = $computed(() => allowButton?.pushRegistrationInServer);
@@ -86,14 +86,6 @@ function onChangeSendReadMessage(v: boolean) {
 	}).then(res => {
 		if (!allowButton)	return;
 		allowButton.pushRegistrationInServer = res;
-	});
-}
-
-function testNotification(): void {
-	os.api('notifications/create', {
-		header: i18n.ts._notification.testNotification,
-		body: i18n.ts._notification.notificationWillBeDisplayedLikeThis,
-		icon: infoImageUrl.value,
 	});
 }
 

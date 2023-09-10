@@ -2133,7 +2133,8 @@ export interface Locale {
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
         "testNotification": string;
-        "doTestNotification": string;
+        "checkNotificationBehavior": string;
+        "sendTestNotification": string;
         "notificationWillBeDisplayedLikeThis": string;
         "_types": {
             "all": string;
