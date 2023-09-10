@@ -1021,7 +1021,6 @@ retryAllQueuesConfirmText: "일시적으로 서버의 부하가 증가할 수 �
 enableChartsForRemoteUser: "리모트 유저의 차트를 생성"
 enableChartsForFederatedInstances: "리모트 서버의 차트를 생성"
 showClipButtonInNoteFooter: "노트 동작에 클립을 추가"
-largeNoteReactions: "노트의 리액션을 크게 표시"
 noteIdOrUrl: "노트 ID 및 URL"
 video: "동영상"
 videos: "동영상"
