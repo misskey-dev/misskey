@@ -1023,6 +1023,7 @@ retryAllQueuesConfirmText: "Dies wird zu einer temporären Erhöhung der Serverl
 enableChartsForRemoteUser: "Diagramme für Nutzer fremder Instanzen erstellen"
 enableChartsForFederatedInstances: "Diagramme für fremde Instanzen erstellen"
 showClipButtonInNoteFooter: "\"Clip\" zum Notizmenu hinzufügen"
+reactionsDisplaySize: "Reaktionsanzeigegröße"
 noteIdOrUrl: "Notiz-ID oder URL"
 video: "Video"
 videos: "Videos"
