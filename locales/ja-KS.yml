@@ -1020,7 +1020,6 @@ retryAllQueuesConfirmText: "一時的にサーバー重なるかもしれへん�
 enableChartsForRemoteUser: "リモートユーザーのチャートを作る"
 enableChartsForFederatedInstances: "リモートサーバーのチャートを作る"
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
-largeNoteReactions: "ノートのツッコミを大きする"
 noteIdOrUrl: "ノートIDかURL"
 video: "動画"
 videos: "動画"
