@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	ref="buttonEl"
 	v-ripple="canToggle"
 	class="_button"
-	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.large]: defaultStore.state.largeNoteReactions }]"
+	:class="[$style.root, { [$style.reacted]: note.myReaction == reaction, [$style.canToggle]: canToggle, [$style.small]: defaultStore.state.reactionsDisplaySize === 'small', [$style.large]: defaultStore.state.reactionsDisplaySize === 'large' }]"
 	@click="toggleReaction()"
 >
 	<MkReactionIcon :class="$style.icon" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
@@ -115,10 +115,11 @@ useTooltip(buttonEl, async (showing) => {
 <style lang="scss" module>
 .root {
 	display: inline-block;
-	height: 32px;
+	height: 42px;
 	margin: 2px;
 	padding: 0 6px;
-	border-radius: 4px;
+	font-size: 1.5em;
+	border-radius: 6px;
 
 	&.canToggle {
 		background: var(--buttonBg);
@@ -132,14 +133,25 @@ useTooltip(buttonEl, async (showing) => {
 		cursor: default;
 	}
 
-	&.large {
-		height: 42px;
-		font-size: 1.5em;
-		border-radius: 6px;
+	&.small {
+		height: 32px;
+		font-size: 1em;
+		border-radius: 4px;
 
 		> .count {
-			font-size: 0.7em;
-			line-height: 42px;
+			font-size: 0.9em;
+			line-height: 32px;
+		}
+	}
+
+	&.large {
+		height: 52px;
+		font-size: 2em;
+		border-radius: 8px;
+
+		> .count {
+			font-size: 0.6em;
+			line-height: 52px;
 		}
 	}
 
@@ -159,8 +171,8 @@ useTooltip(buttonEl, async (showing) => {
 }
 
 .count {
-	font-size: 0.9em;
-	line-height: 32px;
+	font-size: 0.7em;
+	line-height: 42px;
 	margin: 0 0 0 4px;
 }
 </style>
