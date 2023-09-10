@@ -68,6 +68,7 @@ const getPrograms = async () => {
           label.push(dic.livecure);
         }
         if (v.minutes) label.push(`${v.minutes}分`);
+        (v.extra_tags || []).map((tag: string) => label.push(tag));
         options[k] = {key: k, label: label.join(' ')};
       });
       options['episode_browser'] = {key:'episode_browser', label: dic.episodeBrowser};
@@ -95,7 +96,7 @@ const setPrograms = async () => {
       if (v.subtitle) commandToot.tagging['user_tags'].push(v.subtitle);
       if (v.air) commandToot.tagging['user_tags'].push(dic.air);
       if (v.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
-      if (v.extra_tags) commandToot.tagging['user_tags'].concat(v.extra_tags);
+      (v.extra_tags || []).map((tag: string) => commandToot.tagging['user_tags'].push(tag));
       if (v.minutes) commandToot.tagging['minutes'] = v.minutes;
       break;
   }
@@ -107,13 +108,13 @@ const setPrograms = async () => {
   }).then(({ canceled }) => {
     if (canceled) return;
     program_selected.value = '';
-    const payload = <object>{
+    const payload = {
       localOnly: true, // コマンドトゥートは連合に流す必要なし
       poll: null,
       text: JSON.stringify(commandToot),
       visibility: 'specified',
       visibleUserIds: [],
-    };
+    } as object;
     os.api('notes/create', payload).then(() => os.toast(dic.successMessage));
   });
 }
