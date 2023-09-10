@@ -40,13 +40,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s">
 				<MkSwitch v-model="showNoteActionsOnlyHover">{{ i18n.ts.showNoteActionsOnlyHover }}</MkSwitch>
 				<MkSwitch v-model="showClipButtonInNoteFooter">{{ i18n.ts.showClipButtonInNoteFooter }}</MkSwitch>
-				<MkSwitch v-model="largeNoteReactions">{{ i18n.ts.largeNoteReactions }}</MkSwitch>
 				<MkSwitch v-model="collapseRenotes">{{ i18n.ts.collapseRenotes }}</MkSwitch>
 				<MkSwitch v-model="advancedMfm">{{ i18n.ts.enableAdvancedMfm }}</MkSwitch>
 				<MkSwitch v-if="advancedMfm" v-model="animatedMfm">{{ i18n.ts.enableAnimatedMfm }}</MkSwitch>
 				<MkSwitch v-model="showGapBetweenNotesInTimeline">{{ i18n.ts.showGapBetweenNotesInTimeline }}</MkSwitch>
 				<MkSwitch v-model="loadRawImages">{{ i18n.ts.loadRawImages }}</MkSwitch>
 				<MkSwitch v-model="useReactionPickerForContextMenu">{{ i18n.ts.useReactionPickerForContextMenu }}</MkSwitch>
+				<MkRadios v-model="reactionsDisplaySize">
+					<template #label>{{ i18n.ts.reactionsDisplaySize }}</template>
+					<option value="small">{{ i18n.ts.small }}</option>
+					<option value="medium">{{ i18n.ts.medium }}</option>
+					<option value="large">{{ i18n.ts.large }}</option>
+				</MkRadios>
 			</div>
 
 			<MkSelect v-model="instanceTicker">
@@ -204,7 +209,7 @@ const overridedDeviceKind = computed(defaultStore.makeGetterSetter('overridedDev
 const serverDisconnectedBehavior = computed(defaultStore.makeGetterSetter('serverDisconnectedBehavior'));
 const showNoteActionsOnlyHover = computed(defaultStore.makeGetterSetter('showNoteActionsOnlyHover'));
 const showClipButtonInNoteFooter = computed(defaultStore.makeGetterSetter('showClipButtonInNoteFooter'));
-const largeNoteReactions = computed(defaultStore.makeGetterSetter('largeNoteReactions'));
+const reactionsDisplaySize = computed(defaultStore.makeGetterSetter('reactionsDisplaySize'));
 const collapseRenotes = computed(defaultStore.makeGetterSetter('collapseRenotes'));
 const reduceAnimation = computed(defaultStore.makeGetterSetter('animation', v => !v, v => !v));
 const useBlurEffectForModal = computed(defaultStore.makeGetterSetter('useBlurEffectForModal'));
@@ -264,6 +269,7 @@ watch([
 	instanceTicker,
 	overridedDeviceKind,
 	mediaListWithOneImageAppearance,
+	reactionsDisplaySize,
 ], async () => {
 	await reloadAsk();
 });

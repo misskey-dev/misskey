@@ -1026,7 +1026,7 @@ export interface Locale {
     "enableChartsForRemoteUser": string;
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
-    "largeNoteReactions": string;
+    "reactionsDisplaySize": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
