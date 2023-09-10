@@ -1023,7 +1023,7 @@ retryAllQueuesConfirmText: "一時的にサーバーの負荷が増大するこ�
 enableChartsForRemoteUser: "リモートユーザーのチャートを生成"
 enableChartsForFederatedInstances: "リモートサーバーのチャートを生成"
 showClipButtonInNoteFooter: "ノートのアクションにクリップを追加"
-largeNoteReactions: "ノートのリアクションを大きく表示"
+reactionsDisplaySize: "リアクションの表示サイズ"
 noteIdOrUrl: "ノートIDまたはURL"
 video: "動画"
 videos: "動画"
