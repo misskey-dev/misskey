@@ -2132,6 +2132,9 @@ export interface Locale {
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
+        "testNotification": string;
+        "doTestNotification": string;
+        "notificationWillBeDisplayedLikeThis": string;
         "_types": {
             "all": string;
             "follow": string;

@@ -2047,6 +2047,9 @@ _notification:
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
+  testNotification: "通知テスト"
+  doTestNotification: "通知をテストする"
+  notificationWillBeDisplayedLikeThis: "通知はこのように表示されます"
 
   _types:
     all: "すべて"
