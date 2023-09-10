@@ -1019,7 +1019,6 @@ retryAllQueuesConfirmText: "Hal ini akan meningkatkan beban sementara ke peladen
 enableChartsForRemoteUser: "Buat bagan data pengguna instansi luar"
 enableChartsForFederatedInstances: "Buat bagan data peladen instansi luar"
 showClipButtonInNoteFooter: "Tambahkan \"Klip\" ke menu aksi catatan"
-largeNoteReactions: "Besarkan reaksi yang ditampilkan"
 noteIdOrUrl: "ID catatan atau URL"
 video: "Video"
 videos: "Video"
