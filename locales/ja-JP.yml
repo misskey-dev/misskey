@@ -1391,6 +1391,10 @@ _achievements:
       title: "Brain Diver"
       description: "Brain Diverへのリンクを投稿した"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "セルフ通知破壊"
+      description: "通知テストを連打した"
+      flavor: "ほどほどにしておきましょう"
 
 _role:
   new: "ロールの作成"

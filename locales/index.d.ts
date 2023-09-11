@@ -1467,6 +1467,11 @@ export interface Locale {
                 "description": string;
                 "flavor": string;
             };
+            "_smashTestNotificationButton": {
+                "title": string;
+                "description": string;
+                "flavor": string;
+            };
         };
     };
     "_role": {
