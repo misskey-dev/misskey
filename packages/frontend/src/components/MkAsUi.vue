@@ -38,6 +38,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
 	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" inline @click="openPostForm">{{ c.text }}</MkButton>
+	<div v-else-if="c.type === 'postForm'" :class="$style.postForm">
+		<MkPostForm
+			fixed
+			:instant="true"
+			:initialText="c.form.text"
+		/>
+	</div>
 	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
 		<template #label>{{ c.title }}</template>
 		<template v-for="child in c.children" :key="child">
@@ -62,6 +69,7 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import { AsUiComponent } from '@/scripts/aiscript/ui';
 import MkFolder from '@/components/MkFolder.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
@@ -113,5 +121,10 @@ function openPostForm() {
 
 .fontMonospace {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+}
+
+.postForm {
+	background: var(--bg);
+	border-radius: 8px;
 }
 </style>
