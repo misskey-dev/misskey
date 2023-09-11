@@ -95,6 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="vertical"><i class="ti ti-carousel-vertical"></i> {{ i18n.ts.vertical }}</option>
 				<option value="horizontal"><i class="ti ti-carousel-horizontal"></i> {{ i18n.ts.horizontal }}</option>
 			</MkRadios>
+
+			<MkButton @click="testNotification('client')">{{ i18n.ts._notification.checkNotificationBehavior }}</MkButton>
 		</div>
 	</FormSection>
 
@@ -190,6 +192,7 @@ import { unisonReload } from '@/scripts/unison-reload';
 import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { miLocalStorage } from '@/local-storage';
+import { testNotification } from '@/scripts/test-notification';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));

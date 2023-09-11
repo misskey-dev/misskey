@@ -56,6 +56,7 @@ import { $i } from '@/account';
 import { useStream } from '@/stream';
 import { i18n } from '@/i18n';
 import { defaultStore } from '@/store';
+import { globalEvents } from '@/events';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
@@ -64,11 +65,13 @@ const dev = _DEV_;
 
 let notifications = $ref<Misskey.entities.Notification[]>([]);
 
-function onNotification(notification) {
+function onNotification(notification: Misskey.entities.Notification, isClient: boolean = false) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
-		useStream().send('readNotification');
+		if (!isClient) {
+			useStream().send('readNotification');
+		}
 
 		notifications.unshift(notification);
 		window.setTimeout(() => {
@@ -86,6 +89,7 @@ function onNotification(notification) {
 if ($i) {
 	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
+	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
 	//#region Listen message from SW
 	if ('serviceWorker' in navigator) {
