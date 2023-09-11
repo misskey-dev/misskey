@@ -80,8 +80,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('note.channel', 'channel')
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
+
+			query.andWhere(new Brackets(qb => {
+				qb.orWhere('note.channelId IS NULL');
+				qb.orWhere('channel.isSensitive = false');
+			}));
 
 			this.queryService.generateVisibilityQuery(query, me);
 			if (me) {
