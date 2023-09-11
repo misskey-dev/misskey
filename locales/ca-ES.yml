@@ -399,7 +399,6 @@ _sfx:
   chat: "Xat"
   antenna: "Antenes"
 _2fa:
-  step2Url: "També pots inserir aquest enllaç i utilitzes una aplicació d'escriptori:"
   renewTOTPCancel: "No, gràcies"
 _antennaSources:
   all: "Totes les publicacions"

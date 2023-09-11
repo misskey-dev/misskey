@@ -12,6 +12,15 @@ export type Acct = {
     host: string | null;
 };
 
+declare namespace acct {
+    export {
+        parse,
+        toString_2 as toString,
+        Acct
+    }
+}
+export { acct }
+
 // Warning: (ae-forgotten-export) The symbol "TODO_2" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -1906,6 +1915,10 @@ export type Endpoints = {
         };
         res: null;
     };
+    'notifications/test-notification': {
+        req: NoParams;
+        res: null;
+    };
     'notifications/mark-all-as-read': {
         req: NoParams;
         res: null;
@@ -2462,6 +2475,7 @@ type MeDetailed = UserDetailed & {
     receiveAnnouncementEmail: boolean;
     usePasswordLessLogin: boolean;
     unreadAnnouncements: Announcement[];
+    twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
     [other: string]: any;
 };
 
@@ -2617,6 +2631,8 @@ type Notification_2 = {
     header?: string | null;
     body: string;
     icon?: string | null;
+} | {
+    type: 'test';
 });
 
 // @public (undocumented)
@@ -2656,6 +2672,9 @@ type PageEvent = {
     userId: User['id'];
     user: User;
 };
+
+// @public (undocumented)
+function parse(acct: string): Acct;
 
 // @public (undocumented)
 export const permissions: string[];
@@ -2734,6 +2753,9 @@ export class Stream extends EventEmitter<StreamEvents> {
     // (undocumented)
     useChannel<C extends keyof Channels>(channel: C, params?: Channels[C]['params'], name?: string): ChannelConnection<Channels[C]>;
 }
+
+// @public (undocumented)
+function toString_2(acct: Acct): string;
 
 // @public (undocumented)
 type User = UserLite | UserDetailed;
@@ -2826,7 +2848,7 @@ type UserSorting = '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+u
 //
 // src/api.types.ts:16:32 - (ae-forgotten-export) The symbol "TODO" needs to be exported by the entry point index.d.ts
 // src/api.types.ts:18:25 - (ae-forgotten-export) The symbol "NoParams" needs to be exported by the entry point index.d.ts
-// src/api.types.ts:630:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
+// src/api.types.ts:631:18 - (ae-forgotten-export) The symbol "ShowUserReq" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:33:4 - (ae-forgotten-export) The symbol "FIXME" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)

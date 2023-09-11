@@ -1681,7 +1681,6 @@ _2fa:
   step1: "Nejprve si do zařízení nainstalujte aplikaci pro ověřování (například {a} nebo {b})."
   step2: "Poté naskenujte QR kód zobrazený na této obrazovce."
   step2Click: "Kliknutím na tento QR kód můžete zaregistrovat 2FA do bezpečnostního klíče nebo aplikace autentizace telefonu."
-  step2Url: "Tuto adresu URL můžete zadat také v případě, že používáte program pro stolní počítače:"
   step3Title: "Zadejte ověřovací kód"
   step3: "Pro dokončení nastavení zadejte token poskytnutý vaší aplikací."
   step4: "Od této chvíle budou všechny budoucí pokusy o přihlášení vyžadovat tento přihlašovací token."

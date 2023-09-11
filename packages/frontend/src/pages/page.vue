@@ -16,7 +16,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 				-->
 					<div class="banner">
-						<img v-if="page.eyeCatchingImageId" :src="page.eyeCatchingImage.url"/>
+						<MkMediaImage
+							v-if="page.eyeCatchingImageId"
+							:image="page.eyeCatchingImage"
+							:cover="true"
+							:disableImageLink="true"
+							class="thumbnail"
+						/>
 					</div>
 					<div class="content">
 						<XPage :page="page"/>
@@ -56,8 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination">
-						<MkPagePreview v-for="page in items" :key="page.id" :page="page" class="_margin"/>
+					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
 			</div>
@@ -74,6 +80,7 @@ import XPage from '@/components/page/page.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os';
 import { url } from '@/config';
+import MkMediaImage from '@/components/MkMediaImage.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
@@ -204,11 +211,14 @@ definePageMetadata(computed(() => page ? {
 		}
 
 		> .banner {
-			> img {
+			> .thumbnail {
 				// TODO: 良い感じのアスペクト比で表示
 				display: block;
 				width: 100%;
-				height: 150px;
+				height: auto;
+				aspect-ratio: 3/1;
+				border-radius: var(--radius);
+				overflow: hidden;
 				object-fit: cover;
 			}
 		}
@@ -277,5 +287,15 @@ definePageMetadata(computed(() => page ? {
 		font-size: 85%;
 		opacity: 0.75;
 	}
+}
+</style>
+
+<style module>
+.relatedPagesRoot {
+	padding: var(--margin);
+}
+
+.relatedPagesItem > article {
+	background-color: var(--panelHighlight) !important;
 }
 </style>

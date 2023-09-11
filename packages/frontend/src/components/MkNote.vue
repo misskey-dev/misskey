@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</I18n>
 		<div :class="$style.renoteInfo">
 			<button ref="renoteTime" :class="$style.renoteTime" class="_button" @click="showRenoteMenu()">
-				<i v-if="isMyRenote" class="ti ti-dots" :class="$style.renoteMenu"></i>
+				<i class="ti ti-dots" :class="$style.renoteMenu"></i>
 				<MkTime :time="note.createdAt"/>
 			</button>
 			<span v-if="note.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[note.visibility]">
@@ -141,7 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { inject, onUnmounted, ref, shallowRef, Ref, defineAsyncComponent, onActivated, onDeactivated, onMounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
@@ -161,7 +161,7 @@ import { defaultStore } from '@/store';
 import { reactionPicker } from '@/scripts/reaction-picker';
 import { $i } from '@/account';
 import { i18n } from '@/i18n';
-import { getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
+import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu } from '@/scripts/get-note-menu';
 import { noteManager } from '@/scripts/entity-manager';
 import { useTooltip } from '@/scripts/use-tooltip';
 import { claimAchievement } from '@/scripts/achievements';
@@ -177,7 +177,7 @@ const props = defineProps<{
 }>();
 
 const inChannel = inject('inChannel', null);
-const currentClip = inject<Ref<misskey.entities.Clip> | null>('currentClip', null);
+const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 if (props.setNote) {
 	noteManager.set(props.note as any);
@@ -314,9 +314,15 @@ function renote(viaKeyboard = false) {
 			const configuredVisibility = defaultStore.state.rememberNoteVisibility ? defaultStore.state.visibility : defaultStore.state.defaultNoteVisibility;
 			const localOnly = defaultStore.state.rememberNoteVisibility ? defaultStore.state.localOnly : defaultStore.state.defaultNoteLocalOnly;
 
+			let visibility = appearNote.value.visibility;
+			visibility = smallerVisibility(visibility, configuredVisibility);
+			if (appearNote.value.channel?.isSensitive) {
+				visibility = smallerVisibility(visibility, 'home');
+			}
+
 			os.api('notes/create', {
 				localOnly,
-				visibility: smallerVisibility(appearNote.value.visibility, configuredVisibility),
+				visibility,
 				renoteId: appearNote.value.id,
 			}).then(() => {
 				os.toast(i18n.ts.renoted);
@@ -427,22 +433,39 @@ async function clip() {
 }
 
 function showRenoteMenu(viaKeyboard = false): void {
-	if (!isMyRenote.value) return;
-	pleaseLogin();
-	os.popupMenu([{
-		text: i18n.ts.unrenote,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => {
-			if (!note.value) return;
-			os.api('notes/delete', {
-				noteId: note.value.id,
-			});
-			isDeleted.value = true;
-		},
-	}], renoteTime.value, {
-		viaKeyboard: viaKeyboard,
-	});
+	function getUnrenote(): MenuItem {
+		return {
+			text: i18n.ts.unrenote,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => {
+				os.api('notes/delete', {
+					noteId: note.value.id,
+				});
+				isDeleted.value = true;
+			},
+		};
+	}
+
+	if (isMyRenote.value) {
+		pleaseLogin();
+		os.popupMenu([
+			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			null,
+			getUnrenote(),
+		], renoteTime.value, {
+			viaKeyboard: viaKeyboard,
+		});
+	} else {
+		os.popupMenu([
+			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
+			null, 
+			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
+			$i.isModerator || $i.isAdmin ? getUnrenote() : undefined,
+		], renoteTime.value, {
+			viaKeyboard: viaKeyboard,
+		});
+	}
 }
 
 function focus() {

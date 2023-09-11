@@ -283,6 +283,7 @@ import * as ep___notes_unrenote from './endpoints/notes/unrenote.js';
 import * as ep___notes_userListTimeline from './endpoints/notes/user-list-timeline.js';
 import * as ep___notifications_create from './endpoints/notifications/create.js';
 import * as ep___notifications_markAllAsRead from './endpoints/notifications/mark-all-as-read.js';
+import * as ep___notifications_testNotification from './endpoints/notifications/test-notification.js';
 import * as ep___pagePush from './endpoints/page-push.js';
 import * as ep___pages_create from './endpoints/pages/create.js';
 import * as ep___pages_delete from './endpoints/pages/delete.js';
@@ -629,6 +630,7 @@ const $notes_unrenote: Provider = { provide: 'ep:notes/unrenote', useClass: ep__
 const $notes_userListTimeline: Provider = { provide: 'ep:notes/user-list-timeline', useClass: ep___notes_userListTimeline.default };
 const $notifications_create: Provider = { provide: 'ep:notifications/create', useClass: ep___notifications_create.default };
 const $notifications_markAllAsRead: Provider = { provide: 'ep:notifications/mark-all-as-read', useClass: ep___notifications_markAllAsRead.default };
+const $notifications_testNotification: Provider = { provide: 'ep:notifications/test-notification', useClass: ep___notifications_testNotification.default };
 const $pagePush: Provider = { provide: 'ep:page-push', useClass: ep___pagePush.default };
 const $pages_create: Provider = { provide: 'ep:pages/create', useClass: ep___pages_create.default };
 const $pages_delete: Provider = { provide: 'ep:pages/delete', useClass: ep___pages_delete.default };
@@ -979,6 +981,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_userListTimeline,
 		$notifications_create,
 		$notifications_markAllAsRead,
+		$notifications_testNotification,
 		$pagePush,
 		$pages_create,
 		$pages_delete,
