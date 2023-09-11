@@ -32,7 +32,7 @@ export async function getNoteClipMenu(props: {
 
 	const appearNote = isRenote ? props.note.renote as Misskey.entities.Note : props.note;
 
-	const clips = await clipsCache.fetch(() => os.api('clips/list'));
+	const clips = await clipsCache.fetch();
 	return [...clips.map(clip => ({
 		text: clip.name,
 		action: () => {

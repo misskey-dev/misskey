@@ -30,8 +30,6 @@ type Keys =
 	'message_drafts' |
 	'scratchpad' |
 	'debug' |
-	'userListsCache' |
-	'antennasCache' |
 	`miux:${string}` |
 	`ui:folder:${string}` |
 	`themes:${string}` |
