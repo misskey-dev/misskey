@@ -1998,6 +1998,7 @@ _notification:
   testNotification: "通知測試"
   checkNotificationBehavior: "確認通知的顯示行為"
   sendTestNotification: "發送測試通知"
+  notificationWillBeDisplayedLikeThis: "通知會以這樣的方式顯示"
   _types:
     all: "全部 "
     follow: "追隨中"
