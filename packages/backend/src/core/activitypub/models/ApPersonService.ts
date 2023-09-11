@@ -153,6 +153,21 @@ export class ApPersonService implements OnModuleInit {
 			throw new Error('invalid Actor: wrong inbox');
 		}
 
+		try {
+			new URL(x.inbox);
+		} catch {
+			throw new Error('invalid Actor: wrong inbox');
+		}
+
+		const sharedInbox = x.sharedInbox ?? x.endpoints?.sharedInbox;
+		if (typeof sharedInbox === 'string') {
+			try {
+				new URL(sharedInbox);
+			} catch {
+				throw new Error('invalid Actor: wrong sharedInbox');
+			}
+		}
+
 		if (!(typeof x.preferredUsername === 'string' && x.preferredUsername.length > 0 && x.preferredUsername.length <= 128 && /^\w([\w-.]*\w)?$/.test(x.preferredUsername))) {
 			throw new Error('invalid Actor: wrong username');
 		}
