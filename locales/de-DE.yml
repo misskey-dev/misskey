@@ -1995,6 +1995,10 @@ _notification:
   unreadAntennaNote: "Antenne {name}"
   emptyPushNotificationMessage: "Push-Benachrichtigungen wurden aktualisiert"
   achievementEarned: "Errungenschaft freigeschaltet"
+  testNotification: "Testbenachrichtigung"
+  checkNotificationBehavior: "Benachrichtigungsanzeige überprüfen"
+  sendTestNotification: "Testbenachrichtigung senden"
+  notificationWillBeDisplayedLikeThis: "Benachrichtigungen sehen so aus"
   _types:
     all: "Alle"
     follow: "Neue Follower"
