@@ -16,10 +16,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [20.5.1]
 
     steps:
-    - uses: actions/checkout@v3.6.0
+    - uses: actions/checkout@v4.0.0
       with:
         submodules: true
     - name: Install pnpm

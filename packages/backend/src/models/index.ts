@@ -10,7 +10,6 @@ import { MiAnnouncement } from '@/models/entities/Announcement.js';
 import { MiAnnouncementRead } from '@/models/entities/AnnouncementRead.js';
 import { MiAntenna } from '@/models/entities/Antenna.js';
 import { MiApp } from '@/models/entities/App.js';
-import { MiAttestationChallenge } from '@/models/entities/AttestationChallenge.js';
 import { MiAuthSession } from '@/models/entities/AuthSession.js';
 import { MiBlocking } from '@/models/entities/Blocking.js';
 import { MiChannelFollowing } from '@/models/entities/ChannelFollowing.js';
@@ -79,7 +78,6 @@ export {
 	MiAnnouncementRead,
 	MiAntenna,
 	MiApp,
-	MiAttestationChallenge,
 	MiAuthSession,
 	MiBlocking,
 	MiChannelFollowing,
@@ -147,7 +145,6 @@ export type AnnouncementsRepository = Repository<MiAnnouncement>;
 export type AnnouncementReadsRepository = Repository<MiAnnouncementRead>;
 export type AntennasRepository = Repository<MiAntenna>;
 export type AppsRepository = Repository<MiApp>;
-export type AttestationChallengesRepository = Repository<MiAttestationChallenge>;
 export type AuthSessionsRepository = Repository<MiAuthSession>;
 export type BlockingsRepository = Repository<MiBlocking>;
 export type ChannelFollowingsRepository = Repository<MiChannelFollowing>;

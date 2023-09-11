@@ -1,6 +1,11 @@
 import * as fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 import * as yaml from 'js-yaml';
-import * as ts from 'typescript';
+import ts from 'typescript';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function createMembers(record) {
 	return Object.entries(record)

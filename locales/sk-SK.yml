@@ -1149,7 +1149,6 @@ _2fa:
   alreadyRegistered: "Už ste zaregistrovali 2-faktorové autentifikačné zariadenie."
   step1: "Najprv si nainštalujte autentifikačnú aplikáciu (napríklad {a} alebo {b}) na svoje zariadenie."
   step2: "Potom, naskenujte QR kód zobrazený na obrazovke."
-  step2Url: "Do aplikácie zadajte nasledujúcu URL adresu:"
   step3: "Nastavenie dokončíte zadaním tokenu z vašej aplikácie."
   step4: "Od teraz, všetky ďalšie prihlásenia budú vyžadovať prihlasovací token."
   securityKeyInfo: "Okrem odtlačku prsta alebo PIN autentifikácie si môžete nastaviť autentifikáciu cez hardvérový bezpečnostný kľúč podporujúci FIDO2 a tak ešte viac zabezpečiť svoj účet."
