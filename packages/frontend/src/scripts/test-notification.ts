@@ -38,7 +38,7 @@ export function testNotification(type: 'client' | 'server'): void {
 
 	// セルフ通知破壊 実績関連
 	smashCount++;
-	if (smashCount >= 7) {
+	if (smashCount >= 10) {
 		claimAchievement('smashTestNotificationButton');
 		smashCount = 0;
 	}
