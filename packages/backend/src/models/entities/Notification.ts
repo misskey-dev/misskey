@@ -33,6 +33,7 @@ export type MiNotification = {
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
 	 * achievementEarned - 実績を獲得
 	 * app - アプリ通知
+	 * test - テスト通知（サーバー側）
 	 */
 	type: typeof notificationTypes[number];
 

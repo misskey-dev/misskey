@@ -35,7 +35,7 @@ const accessDenied = {
 export class ApiCallService implements OnApplicationShutdown {
 	private logger: Logger;
 	private userIpHistories: Map<MiUser['id'], Set<string>>;
-	private userIpHistoriesClearIntervalId: NodeJS.Timer;
+	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
 
 	constructor(
 		@Inject(DI.userIpsRepository)

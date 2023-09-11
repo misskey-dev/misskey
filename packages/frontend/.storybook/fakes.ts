@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import type { entities } from 'misskey-js'
 
 export function abuseUserReport() {
@@ -110,6 +115,7 @@ export function userDetailed(id = 'someuserid', username = 'miskist', host = 'mi
 		publicReactions: false,
 		securityKeys: false,
 		twoFactorEnabled: false,
+		twoFactorBackupCodesStock: 'none',
 		updatedAt: null,
 		uri: null,
 		url: null,

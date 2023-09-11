@@ -18,11 +18,11 @@ import { CoreModule } from '@/core/CoreModule.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type { IActivity, IApDocument, IActor, ICollection, IObject, IOrderedCollection, IOrderedCollectionPage, IPost } from '@/core/activitypub/type.js';
-import { Meta, Note } from '@/models/index.js';
+import { MiMeta, MiNote } from '@/models/index.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { MetaService } from '@/core/MetaService.js';
-import type { RemoteUser } from '@/models/entities/User.js';
+import type { MiRemoteUser } from '@/models/entities/User.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';
@@ -132,7 +132,7 @@ function createRandomPagedOutbox(actor: NonTransientIActor): NonTransientIOrdere
 async function createRandomRemoteUser(
 	resolver: MockResolver,
 	personService: ApPersonService,
-): Promise<RemoteUser> {
+): Promise<MiRemoteUser> {
 	const actor = createRandomActor();
 	resolver.register(actor.id, actor);
 
@@ -151,7 +151,7 @@ describe('ActivityPub', () => {
 		cacheRemoteSensitiveFiles: true,
 		blockedHosts: [] as string[],
 		sensitiveWords: [] as string[],
-	} as Meta;
+	} as MiMeta;
 	let meta = metaInitial;
 
 	beforeAll(async () => {
@@ -166,7 +166,7 @@ describe('ActivityPub', () => {
 				},
 			})
 			.overrideProvider(MetaService).useValue({
-				async fetch(): Promise<Meta> {
+				async fetch(): Promise<MiMeta> {
 					return meta;
 				},
 			}).compile();
@@ -256,7 +256,7 @@ describe('ActivityPub', () => {
 			rendererService.renderAnnounce('hoge', {
 				createdAt: new Date(0),
 				visibility: 'followers',
-			} as Note);
+			} as MiNote);
 		});
 	});
 

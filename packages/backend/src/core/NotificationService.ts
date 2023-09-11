@@ -17,12 +17,16 @@ import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
+import type { Config } from '@/config.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
 	#shutdownController = new AbortController();
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
@@ -96,7 +100,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 		const redisIdPromise = this.redisClient.xadd(
 			`notificationTimeline:${notifieeId}`,
-			'MAXLEN', '~', '300',
+			'MAXLEN', '~', this.config.perUserNotificationsMaxCount.toString(),
 			'*',
 			'data', JSON.stringify(notification));
 

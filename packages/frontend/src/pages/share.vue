@@ -33,8 +33,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 // SPECIFICATION: https://misskey-hub.net/docs/features/share-form.html
 
 import { } from 'vue';
-import { noteVisibilities } from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
@@ -45,7 +43,7 @@ import { i18n } from '@/i18n';
 
 const urlParams = new URLSearchParams(window.location.search);
 const localOnlyQuery = urlParams.get('localOnly');
-const visibilityQuery = urlParams.get('visibility') as typeof noteVisibilities[number];
+const visibilityQuery = urlParams.get('visibility') as typeof Misskey.noteVisibilities[number];
 
 let state = $ref('fetching' as 'fetching' | 'writing' | 'posted');
 let title = $ref(urlParams.get('title'));
@@ -54,7 +52,7 @@ const url = urlParams.get('url');
 let initialText = $ref<string | undefined>();
 let reply = $ref<Misskey.entities.Note | undefined>();
 let renote = $ref<Misskey.entities.Note | undefined>();
-let visibility = $ref(noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
+let visibility = $ref(Misskey.noteVisibilities.includes(visibilityQuery) ? visibilityQuery : undefined);
 let localOnly = $ref(localOnlyQuery === '0' ? false : localOnlyQuery === '1' ? true : undefined);
 let files = $ref([] as Misskey.entities.DriveFile[]);
 let visibleUsers = $ref([] as Misskey.entities.User[]);
@@ -74,7 +72,7 @@ async function init() {
 		await Promise.all(
 			[
 				...(visibleUserIds ? visibleUserIds.split(',').map(userId => ({ userId })) : []),
-				...(visibleAccts ? visibleAccts.split(',').map(Acct.parse) : []),
+				...(visibleAccts ? visibleAccts.split(',').map(Misskey.acct.parse) : []),
 			]
 			// TypeScriptの指示通りに変換する
 				.map(q => 'username' in q ? { username: q.username, host: q.host === null ? undefined : q.host } : q)

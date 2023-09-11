@@ -63,6 +63,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.where(`'{"${me.id}"}' <@ note.mentions`)
 					.orWhere(`'{"${me.id}"}' <@ note.visibleUserIds`);
 				}))
+				// Avoid scanning primary key index
+				.orderBy('CONCAT(note.id)', 'DESC')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')

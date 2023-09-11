@@ -30,13 +30,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n';
 import { notePage } from '@/filters/note';
 import { userPage } from '@/filters/user';
 
 defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 }>();
 </script>
 

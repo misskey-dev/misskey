@@ -48,6 +48,7 @@ export interface Locale {
     "unpin": string;
     "copyContent": string;
     "copyLink": string;
+    "copyLinkRenote": string;
     "delete": string;
     "deleteAndEdit": string;
     "deleteAndEditConfirm": string;
@@ -414,6 +415,7 @@ export interface Locale {
     "administrator": string;
     "token": string;
     "2fa": string;
+    "setupOf2fa": string;
     "totp": string;
     "totpDescription": string;
     "moderator": string;
@@ -657,6 +659,7 @@ export interface Locale {
     "sample": string;
     "abuseReports": string;
     "reportAbuse": string;
+    "reportAbuseRenote": string;
     "reportAbuseOf": string;
     "fillAbuseReportDescription": string;
     "abuseReported": string;
@@ -1023,7 +1026,7 @@ export interface Locale {
     "enableChartsForRemoteUser": string;
     "enableChartsForFederatedInstances": string;
     "showClipButtonInNoteFooter": string;
-    "largeNoteReactions": string;
+    "reactionsDisplaySize": string;
     "noteIdOrUrl": string;
     "video": string;
     "videos": string;
@@ -1105,6 +1108,7 @@ export interface Locale {
     "currentAnnouncements": string;
     "pastAnnouncements": string;
     "youHaveUnreadAnnouncements": string;
+    "useSecurityKey": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -1811,14 +1815,14 @@ export interface Locale {
         "step1": string;
         "step2": string;
         "step2Click": string;
-        "step2Url": string;
+        "step2Uri": string;
         "step3Title": string;
         "step3": string;
+        "setupCompleted": string;
         "step4": string;
         "securityKeyNotSupported": string;
         "registerTOTPBeforeKey": string;
         "securityKeyInfo": string;
-        "chromePasskeyNotSupported": string;
         "registerSecurityKey": string;
         "securityKeyName": string;
         "tapSecurityKey": string;
@@ -1829,6 +1833,11 @@ export interface Locale {
         "renewTOTPConfirm": string;
         "renewTOTPOk": string;
         "renewTOTPCancel": string;
+        "checkBackupCodesBeforeCloseThisWizard": string;
+        "backupCodes": string;
+        "backupCodesDescription": string;
+        "backupCodeUsedWarning": string;
+        "backupCodesExhaustedWarning": string;
     };
     "_permissions": {
         "read:account": string;
@@ -2123,6 +2132,10 @@ export interface Locale {
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
+        "testNotification": string;
+        "checkNotificationBehavior": string;
+        "sendTestNotification": string;
+        "notificationWillBeDisplayedLikeThis": string;
         "_types": {
             "all": string;
             "follow": string;
@@ -2161,6 +2174,8 @@ export interface Locale {
         "introduction2": string;
         "widgetsIntroduction": string;
         "useSimpleUiForNonRootPages": string;
+        "usedAsMinWidthWhenFlexible": string;
+        "flexible": string;
         "_columns": {
             "main": string;
             "widgets": string;

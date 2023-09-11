@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
 import { i18n } from '@/i18n';
@@ -39,7 +39,7 @@ import { $i } from '@/account';
 import { shouldCollapsed } from '@/scripts/collapsed';
 
 const props = defineProps<{
-	note: misskey.entities.Note;
+	note: Misskey.entities.Note;
 }>();
 
 const isLong = shouldCollapsed(props.note);

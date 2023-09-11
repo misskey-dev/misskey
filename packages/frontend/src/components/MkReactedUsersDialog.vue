@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
@@ -54,12 +54,12 @@ const emit = defineEmits<{
 }>();
 
 const props = defineProps<{
-	noteId: misskey.entities.Note['id'];
+	noteId: Misskey.entities.Note['id'];
 }>();
 
 const dialog = $shallowRef<InstanceType<typeof MkModalWindow>>();
 
-let note = $ref<misskey.entities.Note>();
+let note = $ref<Misskey.entities.Note>();
 let tab = $ref<string>();
 let reactions = $ref<string[]>();
 let users = $ref();
