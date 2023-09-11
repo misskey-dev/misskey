@@ -1995,6 +1995,10 @@ _notification:
   unreadAntennaNote: "天线 {name}"
   emptyPushNotificationMessage: "推送通知已更新"
   achievementEarned: "获得成就"
+  testNotification: "测试通知"
+  checkNotificationBehavior: "检查通知显示"
+  sendTestNotification: "发送测试通知"
+  notificationWillBeDisplayedLikeThis: "通知将会这样表示"
   _types:
     all: "全部"
     follow: "关注中"
