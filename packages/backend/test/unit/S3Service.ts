@@ -11,7 +11,7 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { S3Service } from '@/core/S3Service.js';
-import { MiMeta } from '@/models/index.js';
+import { MiMeta } from '@/models/_.js';
 import type { TestingModule } from '@nestjs/testing';
 
 describe('S3Service', () => {

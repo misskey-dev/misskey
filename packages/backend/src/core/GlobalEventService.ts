@@ -25,7 +25,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { MiRole } from '@/models/index.js';
+import { MiRole } from '@/models/_.js';
 
 @Injectable()
 export class GlobalEventService {

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/index.js';
+import type { NotesRepository, NoteThreadMutingsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';

@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, FollowRequestsRepository, NotesRepository, MiUser, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, FollowRequestsRepository, NotesRepository, MiUser, UsersRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiNotification } from '@/models/entities/Notification.js';
 import type { MiNote } from '@/models/entities/Note.js';

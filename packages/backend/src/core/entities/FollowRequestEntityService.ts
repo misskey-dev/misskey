@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository } from '@/models/index.js';
+import type { FollowRequestsRepository } from '@/models/_.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiFollowRequest } from '@/models/entities/FollowRequest.js';
