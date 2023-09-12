@@ -1388,6 +1388,9 @@ _achievements:
       title: "Brain Diver"
       description: "Post the link to Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "Test overflow"
+      description: "Trigger the notification test repeatedly within an extremely short time"
 _role:
   new: "New role"
   edit: "Edit role"
