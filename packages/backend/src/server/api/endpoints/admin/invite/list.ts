@@ -60,7 +60,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			query.limit(ps.limit);
-			query.skip(ps.offset);
+			query.offset(ps.offset);
 
 			const tickets = await query.getMany();
 

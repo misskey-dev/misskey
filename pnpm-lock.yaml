@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -330,8 +330,8 @@ importers:
         specifier: github:misskey-dev/sharp-read-bmp
         version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
       slacc:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
@@ -340,7 +340,7 @@ importers:
         version: 2.1.0
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
+        version: github.com/misskey-dev/summaly/089a0ad8e8c780e5c088b1c528aa95c5827cbdcc
       systeminformation:
         specifier: 5.18.7
         version: 5.18.7
@@ -390,6 +390,9 @@ importers:
       '@swc/core-darwin-x64':
         specifier: 1.3.56
         version: 1.3.56
+      '@swc/core-freebsd-x64':
+        specifier: 1.3.11
+        version: 1.3.11
       '@swc/core-linux-arm-gnueabihf':
         specifier: 1.3.56
         version: 1.3.56
@@ -424,41 +427,44 @@ importers:
         specifier: ^4.0.7
         version: 4.0.7
       slacc-android-arm-eabi:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-android-arm64:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-darwin-arm64:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-darwin-universal:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-darwin-x64:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-freebsd-x64:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-linux-arm-gnueabihf:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-linux-arm64-gnu:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-linux-arm64-musl:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-linux-x64-gnu:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
+      slacc-linux-x64-musl:
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-win32-arm64-msvc:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       slacc-win32-x64-msvc:
-        specifier: 0.0.9
-        version: 0.0.9
+        specifier: 0.0.10
+        version: 0.0.10
       utf-8-validate:
         specifier: ^6.0.3
         version: 6.0.3
@@ -955,7 +961,7 @@ importers:
         version: github.com/misskey-dev/storybook-addon-misskey-theme/cf583db098365b2ccc81a82f63ca9c93bc32b640(@storybook/blocks@7.0.27)(@storybook/components@7.1.0)(@storybook/core-events@7.0.27)(@storybook/manager-api@7.0.27)(@storybook/preview-api@7.0.27)(@storybook/theming@7.0.27)(@storybook/types@7.0.27)(react-dom@18.2.0)(react@18.2.0)
       summaly:
         specifier: github:misskey-dev/summaly
-        version: github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503
+        version: github.com/misskey-dev/summaly/089a0ad8e8c780e5c088b1c528aa95c5827cbdcc
       vite-plugin-turbosnap:
         specifier: 1.0.2
         version: 1.0.2
@@ -976,7 +982,7 @@ importers:
     dependencies:
       '@swc/cli':
         specifier: 0.1.62
-        version: 0.1.62(@swc/core@1.3.70)(chokidar@3.5.3)
+        version: 0.1.62(@swc/core@1.3.69)
       '@swc/core':
         specifier: 1.3.69
         version: 1.3.69
@@ -7222,11 +7228,31 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.3.4
-      vue-component-type-helpers: 1.8.5
+      vue-component-type-helpers: 1.8.6
     transitivePeerDependencies:
       - encoding
       - supports-color
     dev: true
+
+  /@swc/cli@0.1.62(@swc/core@1.3.69):
+    resolution: {integrity: sha512-kOFLjKY3XH1DWLfXL1/B5MizeNorHR8wHKEi92S/Zi9Md/AK17KSqR8MgyRJ6C1fhKHvbBCl8wboyKAFXStkYw==}
+    engines: {node: '>= 12.13'}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': ^1.2.66
+      chokidar: ^3.5.1
+    peerDependenciesMeta:
+      chokidar:
+        optional: true
+    dependencies:
+      '@mole-inc/bin-wrapper': 8.0.1
+      '@swc/core': 1.3.69
+      commander: 7.2.0
+      fast-glob: 3.2.12
+      semver: 7.5.4
+      slash: 3.0.0
+      source-map: 0.7.4
+    dev: false
 
   /@swc/cli@0.1.62(@swc/core@1.3.70)(chokidar@3.5.3):
     resolution: {integrity: sha512-kOFLjKY3XH1DWLfXL1/B5MizeNorHR8wHKEi92S/Zi9Md/AK17KSqR8MgyRJ6C1fhKHvbBCl8wboyKAFXStkYw==}
@@ -7308,6 +7334,17 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    optional: true
+
+  /@swc/core-freebsd-x64@1.3.11:
+    resolution: {integrity: sha512-02uqYktPp6WmZfZ2Crc/yIVOcgANtjo8ciHcT7yLHvz7v+S7gx1I2tyNGUFtTX5hcR2IFNGrL8Yj4DvpTABFHg==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    dependencies:
+      '@swc/wasm': 1.2.130
+    dev: false
     optional: true
 
   /@swc/core-linux-arm-gnueabihf@1.3.56:
@@ -19097,8 +19134,8 @@ packages:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: true
 
-  /slacc-android-arm-eabi@0.0.9:
-    resolution: {integrity: sha512-T5P5kJ5UwW3UMoPXqqHh9TpCnuCJDCoivoiuONDXrYPYKF8sKDPMVVg1x/KU9/m7e562x9vAMBrIyqFFbEW0Jw==}
+  /slacc-android-arm-eabi@0.0.10:
+    resolution: {integrity: sha512-U3dVBuM1m8rT1D/w6S4knJ/uscNwsCR+MKxSQFbgDJEh8Atv+ovuC+FMGuaBT4iOQjpMj5dWSsN3ZPjVeo3hgA==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [android]
@@ -19106,8 +19143,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-android-arm64@0.0.9:
-    resolution: {integrity: sha512-bcKB3ukcI5wWJa2clK/5cy6a4TKp51DRkdRuFgKLG05gBj1jbH+7+8iBPojljeY28LC2frmwVHGj3vDmkFUeYg==}
+  /slacc-android-arm64@0.0.10:
+    resolution: {integrity: sha512-guVp88sW+4j1clTSXMzyDJHG8ondVnd8/FMKXIOfzKCEwSwX3uBxsuyHqtGvXkEwyZAGsBUy13Ei/PZAwElwYA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
@@ -19115,8 +19152,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-darwin-arm64@0.0.9:
-    resolution: {integrity: sha512-EspX0Hj6t0Afxbsyc6rY9mTOUQQrPVtWPwwNRaljGRorPyRDDefrU1OnJXRcwcIp0oCZrRrivRYlO7lai63EMw==}
+  /slacc-darwin-arm64@0.0.10:
+    resolution: {integrity: sha512-633qnOMTP7egvd5IeljAOku0tnxlBXSoCRu7HiT0yeXxN9y5Tbg2X2/FaRzstI36lClfIJ0Lavne4mOw/90z9A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -19124,16 +19161,16 @@ packages:
     dev: false
     optional: true
 
-  /slacc-darwin-universal@0.0.9:
-    resolution: {integrity: sha512-oQySg+9MPyKI9rwwwhmSZQkPks2/rq3k1P5HKwUgnaFZDvDtS/hpDycB3BxSDqWdD5kVA8PLCVa8pt9T5KyKfg==}
+  /slacc-darwin-universal@0.0.10:
+    resolution: {integrity: sha512-x5kEqRMTEQTi3NCufPEukWvaWqcOL+7EkP18ZCCiajcWH83jWnT8DOSGOmmLYdrXd0B7ZZcbd8GyLp3i5zu8PA==}
     engines: {node: '>= 10'}
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-  /slacc-darwin-x64@0.0.9:
-    resolution: {integrity: sha512-9Xp7mVKKF2QvDiIZOBgwsDdL/+95KBiFTdbo+XtH6YKoh6zNw0aPpkA3JojsdSMYdGHUrxl8b7avhzI0USqeEg==}
+  /slacc-darwin-x64@0.0.10:
+    resolution: {integrity: sha512-5gQYboy/4T6Bj3sVXiCpM3EvF1sK/Zx1Nq5YBMUuYb2GzrIwywghHbCD6bK4JYGvNsLN7r4PC45ZUB4gVkU8yA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -19141,8 +19178,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-freebsd-x64@0.0.9:
-    resolution: {integrity: sha512-jRd8WmXZLU2mcxV7SN8CzZzGiwbpxtaTjLwrYMTryQZ2TFr1xd1r5mQfTN5sBiwu3tnyK5dmHnRAPy+215mOkQ==}
+  /slacc-freebsd-x64@0.0.10:
+    resolution: {integrity: sha512-Jmi5YszELef/aCzYto+LwiNGhCk5mrlJfTJU/pOI91HBbrZlV+aRyIsPCcxAMg5yPsPQuyRljrDouVYrPzNmjw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [freebsd]
@@ -19150,8 +19187,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-arm-gnueabihf@0.0.9:
-    resolution: {integrity: sha512-nhP6+jgd30sq+zFxFW7fGhnPwCfCCU0l1JKk3ORGFMl7wH7ippTDd1xGapKq7N+zgdgURbyj83P3wWb2gcRZ1w==}
+  /slacc-linux-arm-gnueabihf@0.0.10:
+    resolution: {integrity: sha512-9lTM3DGtISQlZYSKrMuQyKCiUnHYRcy04mY6HF1ywYcQ2sqfv3bKEnrypVewepIFUtytlIGzkgpiUAk/ghYGoA==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
@@ -19159,8 +19196,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-arm64-gnu@0.0.9:
-    resolution: {integrity: sha512-x7v0rDe0KNVe1Hl6/XCtkCpqdT283pyVaUmk+af0AnoesNRjYEK8DBc8i53N4nhotionHzPIZfu5gPAFkf6RhA==}
+  /slacc-linux-arm64-gnu@0.0.10:
+    resolution: {integrity: sha512-qXrNWSINXOjHRO3c9idGm8DeOAjAjG1xHY8WiplCoHWgsZf3E7V+sPhWqRUaGQEvftsJg40+cFYREBaLQhpAVQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -19168,8 +19205,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-arm64-musl@0.0.9:
-    resolution: {integrity: sha512-jyq/ylITHIXTQX5ZqAbi7Mn5SdRgYJi+uEoUCi5UhoXb9LjpNzhkFuY29Je3IkVIIV7AEcAxIlvjdymXdzcF5w==}
+  /slacc-linux-arm64-musl@0.0.10:
+    resolution: {integrity: sha512-3lUX7752f6Okn54aONioaA+9M5TvifqXBAart+u2lNXEdWmmh003cVSU2Vcwg7nJ9lLHtju2DkDmKKfJjFuShA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -19177,8 +19214,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-linux-x64-gnu@0.0.9:
-    resolution: {integrity: sha512-Xs/F81H7cKhlIBigFID6CJlgjy0NeDUGV1CI1MI5mSVHsVI8dUO8zXWETjo6o8krJPgfjT5Jd4tAgvUFct5hng==}
+  /slacc-linux-x64-gnu@0.0.10:
+    resolution: {integrity: sha512-BxxvylF9zlOLRLCpiyMvKTIUpdLlpetNBJ+DSMDh5+Ggq+AmQz2NUGawmcBJw58F8nMCj9TpWLlGNWc2AuY+JQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -19186,8 +19223,17 @@ packages:
     dev: false
     optional: true
 
-  /slacc-win32-arm64-msvc@0.0.9:
-    resolution: {integrity: sha512-C+H0VkKbEEnRbcXRIG5rIaXlg7IZw3o1BbvqA71B8ouQRCu/dNRuH9EQsOYXWltndY42zZi8IupNIwydTUg+Mg==}
+  /slacc-linux-x64-musl@0.0.10:
+    resolution: {integrity: sha512-TYJi8LOtJiTFcZvka4du7bMjF9Bz1RHRwyLnScr5E5yjjgoLRrsvgSu7bxp87xH+rgJ3CdEwE3w3Ux8EiewHpA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /slacc-win32-arm64-msvc@0.0.10:
+    resolution: {integrity: sha512-1CHPLiDB4exzFyT5ndtJDsRRhBxNg8mGz6I6eJEMjelGkJR2KZPT9LZuby/1bS/bcVOr7zuJvGNfbEGBeHRwPQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -19195,8 +19241,8 @@ packages:
     dev: false
     optional: true
 
-  /slacc-win32-x64-msvc@0.0.9:
-    resolution: {integrity: sha512-bElMnBbeMatCtVp2/+hBS6Z+846nQImEul9nBEr4gfezHotOM6MqR6PI7UQQzGhozpgwiDg2l1ub1MdOIgYizg==}
+  /slacc-win32-x64-msvc@0.0.10:
+    resolution: {integrity: sha512-wAXBy5yKCAzfYWjVlyPpu6PscD+j4QhCQEy0wZaVuzNyx60HpXWcTZxxVnMR730Y7tfc7cBxSI8NtRb8RguSgg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -19204,22 +19250,23 @@ packages:
     dev: false
     optional: true
 
-  /slacc@0.0.9:
-    resolution: {integrity: sha512-BwhjD3daQB3VIx7GxkComMYrnkWuMt4YmDAueMMchblfUUBbP8EcuonJ1Bz9nqtRn1mAH2YPrrRDP95akM+ZuQ==}
+  /slacc@0.0.10:
+    resolution: {integrity: sha512-2jgms2/4mLr1AMq4oloAwPdKQK9RQvgmoEpMIxvC+HeHMwCR0XxB7gr/rKo4iLOKJ6gx02mnBU0JHWcTIonpmA==}
     engines: {node: '>= 10'}
     optionalDependencies:
-      slacc-android-arm-eabi: 0.0.9
-      slacc-android-arm64: 0.0.9
-      slacc-darwin-arm64: 0.0.9
-      slacc-darwin-universal: 0.0.9
-      slacc-darwin-x64: 0.0.9
-      slacc-freebsd-x64: 0.0.9
-      slacc-linux-arm-gnueabihf: 0.0.9
-      slacc-linux-arm64-gnu: 0.0.9
-      slacc-linux-arm64-musl: 0.0.9
-      slacc-linux-x64-gnu: 0.0.9
-      slacc-win32-arm64-msvc: 0.0.9
-      slacc-win32-x64-msvc: 0.0.9
+      slacc-android-arm-eabi: 0.0.10
+      slacc-android-arm64: 0.0.10
+      slacc-darwin-arm64: 0.0.10
+      slacc-darwin-universal: 0.0.10
+      slacc-darwin-x64: 0.0.10
+      slacc-freebsd-x64: 0.0.10
+      slacc-linux-arm-gnueabihf: 0.0.10
+      slacc-linux-arm64-gnu: 0.0.10
+      slacc-linux-arm64-musl: 0.0.10
+      slacc-linux-x64-gnu: 0.0.10
+      slacc-linux-x64-musl: 0.0.10
+      slacc-win32-arm64-msvc: 0.0.10
+      slacc-win32-x64-msvc: 0.0.10
     dev: false
 
   /slash@3.0.0:
@@ -20982,8 +21029,8 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
-  /vue-component-type-helpers@1.8.5:
-    resolution: {integrity: sha512-SBNsskF7L5x604V1BN4ZzdTtWgCqo5cfl//YuBXtc3LLyPdFRqUeJn2Q+FPNmCtl23LBT2tH79M/uv13fL0MgQ==}
+  /vue-component-type-helpers@1.8.6:
+    resolution: {integrity: sha512-vKWeoKVEV51ZzoB8+UY0apMXiifbPQxWlcZlvQRDVdiOHmEkCBClWeIGbqQ8cCR9P4j+oCyLW87sraZFMz/qnA==}
     dev: true
 
   /vue-docgen-api@4.64.1(vue@3.3.4):
@@ -21585,8 +21632,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  github.com/misskey-dev/summaly/77dd5654bb82280b38c1f50e51a771c33f3df503:
-    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/77dd5654bb82280b38c1f50e51a771c33f3df503}
+  github.com/misskey-dev/summaly/089a0ad8e8c780e5c088b1c528aa95c5827cbdcc:
+    resolution: {tarball: https://codeload.github.com/misskey-dev/summaly/tar.gz/089a0ad8e8c780e5c088b1c528aa95c5827cbdcc}
     name: summaly
     version: 4.0.2
     dependencies:

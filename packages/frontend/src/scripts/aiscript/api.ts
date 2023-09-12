@@ -11,7 +11,6 @@ export function createAiScriptEnv(opts) {
 		USER_NAME: $i ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
 		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
-		CURRENT_URL: values.STR(window.location.href),
 		'Mk:dialog': values.FN_NATIVE(async ([title, text, type]) => {
 			await os.alert({
 				type: type ? type.value : 'info',
@@ -47,6 +46,9 @@ export function createAiScriptEnv(opts) {
 		'Mk:load': values.FN_NATIVE(([key]) => {
 			utils.assertString(key);
 			return utils.jsToVal(JSON.parse(miLocalStorage.getItem(`aiscript:${opts.storageKey}:${key.value}`)));
+		}),
+		'Mk:url': values.FN_NATIVE(() => {
+			return values.STR(window.location.href);
 		}),
 	};
 }
