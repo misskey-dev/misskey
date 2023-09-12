@@ -417,6 +417,8 @@ totp: "身份验证应用"
 totpDescription: "使用认证应用输入一次性密码。"
 moderator: "监察员"
 moderation: "管理"
+moderationNote: "管理笔记"
+addModerationNote: "添加管理笔记"
 nUsersMentioned: "{n} 被提到"
 securityKeyAndPasskey: "安全密钥或 Passkey"
 securityKey: "安全密钥"
@@ -1386,6 +1388,9 @@ _achievements:
       title: "Brain Diver"
       description: "发布了包含 Brain Diver 链接的帖子"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "过度测试"
+      description: "短时间内连续测试通知"
 _role:
   new: "创建角色"
   edit: "编辑角色"
