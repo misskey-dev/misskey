@@ -420,6 +420,8 @@ export interface Locale {
     "totpDescription": string;
     "moderator": string;
     "moderation": string;
+    "moderationNote": string;
+    "addModerationNote": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;
