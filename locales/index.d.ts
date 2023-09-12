@@ -1470,7 +1470,6 @@ export interface Locale {
             "_smashTestNotificationButton": {
                 "title": string;
                 "description": string;
-                "flavor": string;
             };
         };
     };
