@@ -417,6 +417,8 @@ totp: "Authentifizierungs-App"
 totpDescription: "Logge dich via Authentifizierungs-App mit Einmalpasswort ein"
 moderator: "Moderator"
 moderation: "Moderation"
+moderationNote: "Moderationsnotiz"
+addModerationNote: "Moderationsnotiz hinzufügen"
 nUsersMentioned: "Von {n} Benutzern erwähnt"
 securityKeyAndPasskey: "Hardware-Sicherheitsschlüssel und Passkeys"
 securityKey: "Hardware-Sicherheitsschlüssel"
@@ -1386,6 +1388,8 @@ _achievements:
       title: "Brain Diver"
       description: "Sende den Link zu Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "Testüberfluss"
 _role:
   new: "Rolle erstellen"
   edit: "Rolle bearbeiten"
