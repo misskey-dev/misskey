@@ -417,6 +417,8 @@ totp: "App di autenticazione"
 totpDescription: "Inserisci un codice OTP tramite un'app di autenticazione"
 moderator: "Moderatore"
 moderation: "moderazione"
+moderationNote: "Promemoria di moderazione"
+addModerationNote: "Aggiungi promemoria di moderazione"
 nUsersMentioned: "{n} profili menzionati"
 securityKeyAndPasskey: "Chiave di sicurezza e accesso"
 securityKey: "Chiave di sicurezza"
@@ -1386,6 +1388,9 @@ _achievements:
       title: "Brain Diver"
       description: "Pubblica un link a Brain Diver"
       flavor: "Sulle note di Brain Diver"
+    _smashTestNotificationButton:
+      title: "Prove eccessive"
+      description: "Hai provato le notifiche consecutivamente in un periodo di tempo molto breve"
 _role:
   new: "Nuovo ruolo"
   edit: "Modifica ruolo"
