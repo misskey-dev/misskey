@@ -1390,6 +1390,7 @@ _achievements:
       flavor: "Misskey-Misskey La-Tu-Ma"
     _smashTestNotificationButton:
       title: "Testüberfluss"
+      description: "Betätige den Benachrichtigungstest mehrfach innerhalb einer extrem kurzen Zeitspanne"
 _role:
   new: "Rolle erstellen"
   edit: "Rolle bearbeiten"
