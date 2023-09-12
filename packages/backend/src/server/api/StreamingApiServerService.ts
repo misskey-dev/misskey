@@ -15,7 +15,7 @@ import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiLocalUser } from '@/models/entities/User.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import MainStreamConnection from './stream/index.js';
+import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
 import type * as http from 'node:http';
 
