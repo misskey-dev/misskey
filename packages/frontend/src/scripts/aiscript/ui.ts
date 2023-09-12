@@ -124,7 +124,14 @@ export type AsUiPostFormButton = AsUiComponentBase & {
 	};
 };
 
-export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton;
+export type AsUiPostForm = AsUiComponentBase & {
+	type: 'postForm';
+	form?: {
+		text: string;
+	};
+};
+
+export type AsUiComponent = AsUiRoot | AsUiContainer | AsUiText | AsUiMfm | AsUiButton | AsUiButtons | AsUiSwitch | AsUiTextarea | AsUiTextInput | AsUiNumberInput | AsUiSelect | AsUiFolder | AsUiPostFormButton | AsUiPostForm;
 
 export function patch(id: string, def: values.Value, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>) {
 	// TODO
@@ -462,6 +469,27 @@ function getPostFormButtonOptions(def: values.Value | undefined, call: (fn: valu
 	};
 }
 
+function getPostFormOptions(def: values.Value | undefined, call: (fn: values.VFn, args: values.Value[]) => Promise<values.Value>): Omit<AsUiPostForm, 'id' | 'type'> {
+	utils.assertObject(def);
+
+	const form = def.value.get('form');
+	if (form) utils.assertObject(form);
+
+	const getForm = () => {
+		const text = form!.value.get('text');
+		utils.assertString(text);
+		return {
+			text: text.value,
+		};
+	};
+
+	return {
+		form: form ? getForm() : {
+			text: '',
+		},
+	};
+}
+
 export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: Ref<AsUiRoot>) => void) {
 	const instances = {};
 
@@ -568,6 +596,10 @@ export function registerAsUiLib(components: Ref<AsUiComponent>[], done: (root: R
 
 		'Ui:C:postFormButton': values.FN_NATIVE(([def, id], opts) => {
 			return createComponentInstance('postFormButton', def, id, getPostFormButtonOptions, opts.call);
+		}),
+
+		'Ui:C:postForm': values.FN_NATIVE(([def, id], opts) => {
+			return createComponentInstance('postForm', def, id, getPostFormOptions, opts.call);
 		}),
 	};
 }

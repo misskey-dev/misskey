@@ -54,8 +54,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new Error('not verified');
 			}
 
+			const backupCodes = Array.from({ length: 5 }, () => new OTPAuth.Secret().base32);
+
 			await this.userProfilesRepository.update(me.id, {
 				twoFactorSecret: profile.twoFactorTempSecret,
+				twoFactorBackupSecret: backupCodes,
 				twoFactorEnabled: true,
 			});
 
@@ -64,6 +67,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				detail: true,
 				includeSecrets: true,
 			}));
+
+			return {
+				backupCodes: backupCodes,
+			};
 		});
 	}
 }

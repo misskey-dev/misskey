@@ -42,7 +42,7 @@ import { $i } from '@/account';
 const items = $computed(() => userListsCache.value.value ?? []);
 
 function fetch() {
-	userListsCache.fetch(() => os.api('users/lists/list'));
+	userListsCache.fetch();
 }
 
 fetch();

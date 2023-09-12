@@ -105,6 +105,7 @@ export type MeDetailed = UserDetailed & {
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
 	unreadAnnouncements: Announcement[];
+	twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
 	[other: string]: any;
 };
 
@@ -256,6 +257,8 @@ export type Notification = {
 	header?: string | null;
 	body: string;
 	icon?: string | null;
+} | {
+	type: 'test';
 });
 
 export type MessagingMessage = {

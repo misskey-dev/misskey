@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkSpacer :contentMax="800">
 	<div :class="$style.root">
 		<div :class="$style.editor" class="_panel">
-			<PrismEditor v-model="code" class="_code code" :highlight="highlighter" :lineNumbers="false"/>
+			<PrismEditor v-model="code" class="_monospace" :class="$style.code" :highlight="highlighter" :lineNumbers="false"/>
 			<MkButton style="position: absolute; top: 8px; right: 8px;" primary @click="run()"><i class="ti ti-player-play"></i></MkButton>
 		</div>
 
@@ -173,6 +173,14 @@ definePageMetadata({
 
 .editor {
 	position: relative;
+}
+
+.code {
+	background: #2d2d2d;
+	color: #ccc;
+	font-size: 14px;
+	line-height: 1.5;
+	padding: 5px;
 }
 
 .ui {
