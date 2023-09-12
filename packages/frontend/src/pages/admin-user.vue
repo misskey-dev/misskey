@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<MkTextarea v-model="moderationNote" manualSave>
-					<template #label>Moderation note</template>
+					<template #label>{{ i18n.ts.moderationNote }}</template>
 				</MkTextarea>
 
 				<!--
