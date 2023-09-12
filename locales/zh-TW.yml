@@ -417,6 +417,8 @@ totp: "驗證應用程式"
 totpDescription: "以驗證應用程式輸入一次性密碼"
 moderator: "審查員"
 moderation: "審查"
+moderationNote: "管理筆記"
+addModerationNote: "新增管理筆記"
 nUsersMentioned: "被提及到 {n} 次"
 securityKeyAndPasskey: "安全金鑰、Passkey"
 securityKey: "安全金鑰"
@@ -1386,6 +1388,9 @@ _achievements:
       title: "Brain Driver"
       description: "發佈一篇含歌曲《Brain Driver》連結的貼文"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "過度測試"
+      description: "極短時間內連續測試通知"
 _role:
   new: "建立角色"
   edit: "編輯角色"
