@@ -105,7 +105,7 @@
 		"@types/punycode": "2.1.0",
 		"@types/sanitize-html": "2.9.0",
 		"@types/throttle-debounce": "5.0.0",
-		"@types/tinycolor2": "1.4.3",
+		"@types/tinycolor2": "1.4.4",
 		"@types/uuid": "9.0.3",
 		"@types/websocket": "1.0.6",
 		"@types/ws": "8.5.5",
@@ -115,7 +115,7 @@
 		"@vue/runtime-core": "3.3.4",
 		"acorn": "8.10.0",
 		"cross-env": "7.0.3",
-		"cypress": "13.1.0",
+		"cypress": "13.2.0",
 		"eslint": "8.49.0",
 		"eslint-plugin-import": "2.28.1",
 		"eslint-plugin-vue": "9.17.0",
@@ -136,6 +136,6 @@
 		"vitest": "0.34.4",
 		"vitest-fetch-mock": "0.2.2",
 		"vue-eslint-parser": "9.3.1",
-		"vue-tsc": "1.8.10"
+		"vue-tsc": "1.8.11"
 	}
 }
