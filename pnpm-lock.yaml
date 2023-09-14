@@ -766,9 +766,6 @@ importers:
       rollup:
         specifier: 3.29.1
         version: 3.29.1
-      s-age:
-        specifier: 1.1.2
-        version: 1.1.2
       sanitize-html:
         specifier: 2.11.0
         version: 2.11.0
@@ -778,9 +775,6 @@ importers:
       strict-event-emitter-types:
         specifier: 2.0.0
         version: 2.0.0
-      syuilo-password-strength:
-        specifier: 0.0.1
-        version: 0.0.1
       textarea-caret:
         specifier: 3.1.0
         version: 3.1.0
@@ -17327,10 +17321,6 @@ packages:
     dependencies:
       tslib: 2.5.0
 
-  /s-age@1.1.2:
-    resolution: {integrity: sha512-aSN2TlF39WLoZA/6cgYSJZhKt63kJ4EaadejPWjWY9/h4rksIqvfWY3gfd+3uAegSM1IXsA9aWeEhJtkxkFQtA==}
-    dev: false
-
   /safe-array-concat@1.0.0:
     resolution: {integrity: sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==}
     engines: {node: '>=0.4'}
@@ -18272,10 +18262,6 @@ packages:
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
-    dev: false
-
-  /syuilo-password-strength@0.0.1:
-    resolution: {integrity: sha512-g9rPT3V1Q4WjWFZ/t5BdGC1mT/FpYnsLdBl+M5e6MlRkuE1RSR+R43wcY/3mKI59B9KEr+vxdWCuWNMD3oNHKA==}
     dev: false
 
   /tar-fs@2.1.1:
