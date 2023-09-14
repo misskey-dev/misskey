@@ -69,7 +69,7 @@
 		"@fastify/express": "2.3.0",
 		"@fastify/http-proxy": "9.2.1",
 		"@fastify/multipart": "7.7.3",
-		"@fastify/static": "6.11.0",
+		"@fastify/static": "6.11.1",
 		"@fastify/view": "8.1.0",
 		"@nestjs/common": "10.2.5",
 		"@nestjs/core": "10.2.5",
