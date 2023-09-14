@@ -18,6 +18,7 @@ import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';
+const nodeinfo_homepage = 'https://misskey-hub.net';
 
 @Injectable()
 export class NodeinfoServerService {
@@ -78,6 +79,8 @@ export class NodeinfoServerService {
 				software: {
 					name: 'misskey',
 					version: this.config.version,
+					homepage: nodeinfo_homepage,
+					repository: meta.repositoryUrl,
 				},
 				protocols: ['activitypub'],
 				services: {
