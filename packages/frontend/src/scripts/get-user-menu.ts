@@ -170,7 +170,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-list',
 		text: i18n.ts.addToList,
 		children: async () => {
-			const lists = await userListsCache.fetch(() => os.api('users/lists/list'));
+			const lists = await userListsCache.fetch();
 			return lists.map(list => {
 				const isListed = ref(list.userIds.includes(user.id));
 				cleanups.push(watch(isListed, () => {
@@ -203,7 +203,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-antenna',
 		text: i18n.ts.addToAntenna,
 		children: async () => {
-			const antennas = await antennasCache.fetch(() => os.api('antennas/list'));
+			const antennas = await antennasCache.fetch();
 			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
 			return antennas.filter((a) => a.src === 'users').map(antenna => ({
 				text: antenna.name,
@@ -234,7 +234,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 				icon: 'ti ti-badges',
 				text: i18n.ts.roles,
 				children: async () => {
-					const roles = await rolesCache.fetch(() => os.api('admin/roles/list'));
+					const roles = await rolesCache.fetch();
 
 					return roles.filter(r => r.target === 'manual').map(r => ({
 						text: r.name,

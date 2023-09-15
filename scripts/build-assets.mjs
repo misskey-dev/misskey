@@ -10,6 +10,7 @@ import postcss from 'postcss';
 import * as terser from 'terser';
 
 import locales from '../locales/index.js';
+import generateDTS from '../locales/generateDTS.js';
 import meta from '../package.json' assert { type: "json" };
 
 async function copyFrontendFonts() {
@@ -21,6 +22,8 @@ async function copyFrontendTablerIcons() {
 }
 
 async function copyFrontendLocales() {
+  generateDTS();
+
   await fs.mkdir('./built/_frontend_dist_/locales', { recursive: true });
 
   const v = { '_version_': meta.version };

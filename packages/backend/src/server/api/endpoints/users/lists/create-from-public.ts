@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/index.js';
+import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { MiUserList } from '@/models/entities/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

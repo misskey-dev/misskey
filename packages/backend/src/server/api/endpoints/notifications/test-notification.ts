@@ -18,19 +18,12 @@ export const meta = {
 		duration: 1000 * 60,
 		max: 10,
 	},
-
-	errors: {
-	},
 } as const;
 
 export const paramDef = {
 	type: 'object',
-	properties: {
-		body: { type: 'string' },
-		header: { type: 'string', nullable: true },
-		icon: { type: 'string', nullable: true },
-	},
-	required: ['body'],
+	properties: {},
+	required: [],
 } as const;
 
 @Injectable()
@@ -38,13 +31,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private notificationService: NotificationService,
 	) {
-		super(meta, paramDef, async (ps, user, token) => {
-			this.notificationService.createNotification(user.id, 'app', {
-				appAccessTokenId: token ? token.id : null,
-				customBody: ps.body,
-				customHeader: ps.header,
-				customIcon: ps.icon,
-			});
+		super(meta, paramDef, async (ps, user) => {
+			this.notificationService.createNotification(user.id, 'test', {});
 		});
 	}
 }
