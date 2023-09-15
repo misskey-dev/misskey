@@ -74,15 +74,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
-
-			let driveFile: MiDriveFile;
-
-			try {
-				// Create file
-				driveFile = await this.driveService.uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
-			} catch (e) {
-				throw new ApiError();
-			}
 			const existEmoji = await this.emojisRepository.exist({
 				where: {
 					name: emoji.name,
@@ -91,6 +82,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (existEmoji) {
 				throw new ApiError(meta.errors.duplicationEmojiAdd);
+			}
+			let driveFile: MiDriveFile;
+
+			try {
+				// Create file
+				driveFile = await this.driveService.uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
+			} catch (e) {
+				throw new ApiError();
 			}
 
 			const copied = await this.emojisRepository.insert({
