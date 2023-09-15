@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
@@ -24,6 +24,11 @@ export const meta = {
 			code: 'NO_SUCH_FILE',
 			id: 'fc46b5a4-6b92-4c33-ac66-b806659bb5cf',
 		},
+		duplicationEmojiAdd: {
+			message: 'This emoji is already added.',
+      code: 'DUPLICATION_EMOJI_ADD',
+      id: 'mattyaski_emoji_duplication_error',
+		}
 	},
 } as const;
 
@@ -57,7 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-
+		private emojisRepository: EmojisRepository,
 		private customEmojiService: CustomEmojiService,
 
 		private emojiEntityService: EmojiEntityService,
@@ -66,6 +71,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 			if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
+
+			const existEmoji = await this.emojisRepository.exist({
+				where: {
+					name: ps.name,
+				},
+			});
+
+			if (existEmoji) {
+				throw new ApiError(meta.errors.duplicationEmojiAdd);
+			}
 
 			const emoji = await this.customEmojiService.add({
 				driveFile,
@@ -78,6 +93,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				localOnly: ps.localOnly ?? false,
 				roleIdsThatCanBeUsedThisEmojiAsReaction: ps.roleIdsThatCanBeUsedThisEmojiAsReaction ?? [],
 			});
+
+
 
 			this.moderationLogService.insertModerationLog(me, 'addEmoji', {
 				emojiId: emoji.id,

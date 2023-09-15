@@ -26,6 +26,11 @@ export const meta = {
 			code: 'NO_SUCH_EMOJI',
 			id: 'e2785b66-dca3-4087-9cac-b93c541cc425',
 		},
+		duplicationEmojiAdd: {
+			message: 'This emoji is already added.',
+			code: 'DUPLICATION_EMOJI_ADD',
+			id: 'mattyaski_emoji_duplication_error',
+		}
 	},
 
 	res: {
@@ -57,6 +62,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+
 		private emojiEntityService: EmojiEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
@@ -76,6 +82,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				driveFile = await this.driveService.uploadFromUrl({ url: emoji.originalUrl, user: null, force: true });
 			} catch (e) {
 				throw new ApiError();
+			}
+			const existEmoji = await this.emojisRepository.exist({
+				where: {
+					name: emoji.name,
+				},
+			});
+
+			if (existEmoji) {
+				throw new ApiError(meta.errors.duplicationEmojiAdd);
 			}
 
 			const copied = await this.emojisRepository.insert({
