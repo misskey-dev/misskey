@@ -69,6 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 		private customEmojiService: CustomEmojiService,
 	) {
