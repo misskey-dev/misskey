@@ -69,8 +69,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -80,15 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				driveFile = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
 				if (driveFile == null) throw new ApiError(meta.errors.noSuchFile);
 			}
-			const existEmoji = await this.emojisRepository.exist({
-				where: {
-					name: ps.name,
-				},
-			});
 
-			if (existEmoji) {
-				throw new ApiError(meta.errors.duplicationEmojiAdd);
-			}
 			await this.customEmojiService.update(ps.id, {
 				driveFile,
 				name: ps.name,
