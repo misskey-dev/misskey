@@ -12,7 +12,7 @@ import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { MiDriveFile } from '@/models/entities/DriveFile.js';
 import type { MiEmoji } from '@/models/entities/Emoji.js';
-import type { EmojisRepository, MiRole } from '@/models/index.js';
+import type { EmojisRepository, MiRole } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { MemoryKVCache, RedisSingleCache } from '@/misc/cache.js';
 import { UtilityService } from '@/core/UtilityService.js';

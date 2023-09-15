@@ -420,6 +420,8 @@ export interface Locale {
     "totpDescription": string;
     "moderator": string;
     "moderation": string;
+    "moderationNote": string;
+    "addModerationNote": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;
@@ -1466,6 +1468,10 @@ export interface Locale {
                 "title": string;
                 "description": string;
                 "flavor": string;
+            };
+            "_smashTestNotificationButton": {
+                "title": string;
+                "description": string;
             };
         };
     };

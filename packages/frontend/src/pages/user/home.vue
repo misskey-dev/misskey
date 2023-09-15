@@ -57,10 +57,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 					<div v-if="iAmModerator" class="moderationNote">
 						<MkTextarea v-if="editModerationNote || (moderationNote != null && moderationNote !== '')" v-model="moderationNote" manualSave>
-							<template #label>Moderation note</template>
+							<template #label>{{ i18n.ts.moderationNote }}</template>
 						</MkTextarea>
 						<div v-else>
-							<MkButton small @click="editModerationNote = true">Add moderation note</MkButton>
+							<MkButton small @click="editModerationNote = true">{{ i18n.ts.addModerationNote }}</MkButton>
 						</div>
 					</div>
 					<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
@@ -143,7 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import calcAge from 's-age';
 import * as Misskey from 'misskey-js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -166,6 +165,21 @@ import { confetti } from '@/scripts/confetti';
 import MkNotes from '@/components/MkNotes.vue';
 import { api } from '@/os';
 import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
+
+function calcAge(birthdate: string): number {
+	const date = new Date(birthdate);
+	const now = new Date();
+
+	let yearDiff = now.getFullYear() - date.getFullYear();
+	const monthDiff = now.getMonth() - date.getMonth();
+	const pastDate = now.getDate() < date.getDate();
+
+	if (monthDiff < 0 || (monthDiff === 0 && pastDate)) {
+		yearDiff--;
+	}
+
+	return yearDiff;
+}
 
 const XPhotos = defineAsyncComponent(() => import('./index.photos.vue'));
 const XActivity = defineAsyncComponent(() => import('./index.activity.vue'));

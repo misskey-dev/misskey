@@ -417,6 +417,8 @@ totp: "認証アプリ"
 totpDescription: "認証アプリを使ってワンタイムパスワードを入力"
 moderator: "モデレーター"
 moderation: "モデレーション"
+moderationNote: "モデレーションノート"
+addModerationNote: "モデレーションノートを追加する"
 nUsersMentioned: "{n}人が投稿"
 securityKeyAndPasskey: "セキュリティキー・パスキー"
 securityKey: "セキュリティキー"
@@ -1391,6 +1393,9 @@ _achievements:
       title: "Brain Diver"
       description: "Brain Diverへのリンクを投稿した"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "テスト過剰"
+      description: "通知のテストをごく短時間のうちに連続して行った"
 
 _role:
   new: "ロールの作成"

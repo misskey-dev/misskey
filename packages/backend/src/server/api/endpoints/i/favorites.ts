@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NoteFavoritesRepository } from '@/models/index.js';
+import type { NoteFavoritesRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteFavoriteEntityService } from '@/core/entities/NoteFavoriteEntityService.js';
 import { DI } from '@/di-symbols.js';

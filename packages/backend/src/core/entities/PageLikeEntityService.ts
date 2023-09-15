@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { PageLikesRepository } from '@/models/index.js';
+import type { PageLikesRepository } from '@/models/_.js';
 import type { } from '@/models/entities/Blocking.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiPageLike } from '@/models/entities/PageLike.js';

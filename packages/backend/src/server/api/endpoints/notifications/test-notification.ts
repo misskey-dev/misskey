@@ -13,6 +13,11 @@ export const meta = {
 	requireCredential: true,
 
 	kind: 'write:notifications',
+
+	limit: {
+		duration: 1000 * 60,
+		max: 10,
+	},
 } as const;
 
 export const paramDef = {
