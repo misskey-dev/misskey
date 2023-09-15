@@ -63,14 +63,14 @@ importers:
         specifier: 3.412.0
         version: 3.412.0(@aws-sdk/client-s3@3.412.0)
       '@bull-board/api':
-        specifier: 5.8.2
-        version: 5.8.2(@bull-board/ui@5.8.2)
+        specifier: 5.8.3
+        version: 5.8.3(@bull-board/ui@5.8.3)
       '@bull-board/fastify':
-        specifier: 5.8.2
-        version: 5.8.2
+        specifier: 5.8.3
+        version: 5.8.3
       '@bull-board/ui':
-        specifier: 5.8.2
-        version: 5.8.2
+        specifier: 5.8.3
+        version: 5.8.3
       '@discordapp/twemoji':
         specifier: 14.1.2
         version: 14.1.2
@@ -180,8 +180,8 @@ importers:
         specifier: 0.1.21
         version: 0.1.21
       fastify:
-        specifier: 4.23.1
-        version: 4.23.1
+        specifier: 4.23.2
+        version: 4.23.2
       feed:
         specifier: 4.2.2
         version: 4.2.2
@@ -354,8 +354,8 @@ importers:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
       systeminformation:
-        specifier: 5.21.4
-        version: 5.21.4
+        specifier: 5.21.5
+        version: 5.21.5
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
@@ -384,8 +384,8 @@ importers:
         specifier: 1.1.2
         version: 1.1.2
       web-push:
-        specifier: 3.6.5
-        version: 3.6.5
+        specifier: 3.6.6
+        version: 3.6.6
       ws:
         specifier: 8.14.1
         version: 8.14.1(bufferutil@4.0.7)(utf-8-validate@6.0.3)
@@ -512,8 +512,8 @@ importers:
         specifier: 0.5.6
         version: 0.5.6
       '@types/fluent-ffmpeg':
-        specifier: 2.1.21
-        version: 2.1.21
+        specifier: 2.1.22
+        version: 2.1.22
       '@types/http-link-header':
         specifier: 1.0.3
         version: 1.0.3
@@ -903,8 +903,8 @@ importers:
         specifier: 1.4.4
         version: 1.4.4
       '@types/uuid':
-        specifier: 9.0.3
-        version: 9.0.3
+        specifier: 9.0.4
+        version: 9.0.4
       '@types/websocket':
         specifier: 1.0.6
         version: 1.0.6
@@ -3074,29 +3074,29 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@bull-board/api@5.8.2(@bull-board/ui@5.8.2):
-    resolution: {integrity: sha512-GeQ7xOCYDKoCLpol3LePq8GOjj/Dcv2JW1xyGxSK5ZD8GUTJOhGGx09XKm26DfstPcDfQlvZX/pddRsCRm4JHA==}
+  /@bull-board/api@5.8.3(@bull-board/ui@5.8.3):
+    resolution: {integrity: sha512-xiVSXc99WQIhrsXTo/rCVxmV9uphyJA4a6ytBP7RyTGO/+IGTg7zLo2yrnYdv3p8RYw4YzdJ4aY1E+MgP5mj8Q==}
     peerDependencies:
-      '@bull-board/ui': 5.8.2
+      '@bull-board/ui': 5.8.3
     dependencies:
-      '@bull-board/ui': 5.8.2
+      '@bull-board/ui': 5.8.3
       redis-info: 3.1.0
     dev: false
 
-  /@bull-board/fastify@5.8.2:
-    resolution: {integrity: sha512-Py/E//RX/qnfTOnn8JYw3+riCPbJTs0JP/UUyF7SHKPtmtd9cR2uMnxgGTawVkArstpziYihZ3UcbO/4o1A43w==}
+  /@bull-board/fastify@5.8.3:
+    resolution: {integrity: sha512-NGr3dUnxHbufEsgocVX2a7t4SevpAc6ffRsvyCQ19XCnjq8/QCXvaT0bU5hTuGZp6OmSGDjrhyJW/dQXP23lTg==}
     dependencies:
-      '@bull-board/api': 5.8.2(@bull-board/ui@5.8.2)
-      '@bull-board/ui': 5.8.2
+      '@bull-board/api': 5.8.3(@bull-board/ui@5.8.3)
+      '@bull-board/ui': 5.8.3
       '@fastify/static': 6.11.1
       '@fastify/view': 7.4.1
       ejs: 3.1.8
     dev: false
 
-  /@bull-board/ui@5.8.2:
-    resolution: {integrity: sha512-UN6CLI3qeXFZIzPS0aUXfuwlO2swchz2CBxfDXaqYJo5BbLK9ovZxhiV2dHXY3f/L494bMFIFVxHBoQo8XRLzg==}
+  /@bull-board/ui@5.8.3:
+    resolution: {integrity: sha512-pQhmboukRZccs6WaTkRVGPZucL1ND8/+7JdK1pNKa0RVGVkpshH7QaHdfI30DR0h/Jv/VFaenWV1vS3KnvqeHw==}
     dependencies:
-      '@bull-board/api': 5.8.2(@bull-board/ui@5.8.2)
+      '@bull-board/api': 5.8.3(@bull-board/ui@5.8.3)
     dev: false
 
   /@canvas/image-data@1.0.0:
@@ -7587,8 +7587,8 @@ packages:
     resolution: {integrity: sha512-frsJrz2t/CeGifcu/6uRo4b+SzAwT4NYCVPu1GN8IB9XTzrpPkGuV0tmh9mN+/L0PklAlsC3u5Fxt0ju00LXIw==}
     dev: true
 
-  /@types/fluent-ffmpeg@2.1.21:
-    resolution: {integrity: sha512-+n3dy/Tegt6n+YwGZUiGq6i8Jrnt8+MoyPiW1L6J5EWUl7GSt18a/VyReecfCsvTTNBXNMIKOMHDstiQM8nJLA==}
+  /@types/fluent-ffmpeg@2.1.22:
+    resolution: {integrity: sha512-ZZPDDrDOb2Ahp5fxZzuw64f0rCcviv+SDuCyJ1PIF/UFn9wNHtb/bY8Dj/2nrbQ7SNsGI7gaO2wJVkkU2HBcMg==}
     dependencies:
       '@types/node': 20.6.0
     dev: true
@@ -7953,8 +7953,8 @@ packages:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
     dev: true
 
-  /@types/uuid@9.0.3:
-    resolution: {integrity: sha512-taHQQH/3ZyI3zP8M/puluDEIEvtQHVYcC6y3N8ijFtAd28+Ey/G4sg1u2gB01S8MwybLOKAp9/yCMu/uR5l3Ug==}
+  /@types/uuid@9.0.4:
+    resolution: {integrity: sha512-zAuJWQflfx6dYJM62vna+Sn5aeSWhh3OB+wfUEACNcqUSc0AGc5JKl+ycL1vrH7frGTXhJchYjE1Hak8L819dA==}
     dev: true
 
   /@types/vary@1.1.0:
@@ -11573,8 +11573,8 @@ packages:
     resolution: {integrity: sha512-79ak0JxddO0utAXAQ5ccKhvs6vX2MGyHHMMsmZkBANrq3hXc1CHzvNPHOcvTsVMEPl5I+NT+RO4YKMGehOfSIg==}
     dev: false
 
-  /fastify@4.23.1:
-    resolution: {integrity: sha512-JhZWyz2PgjzkDTrTX/PQ6+03s+/r2hC3RiOoF9WQUUHbPGiDJtQch1mg5IyJjUjwhug+/z1XHt5yweZNW4kbMg==}
+  /fastify@4.23.2:
+    resolution: {integrity: sha512-WFSxsHES115svC7NrerNqZwwM0UOxbC/P6toT9LRHgAAFvG7o2AN5W+H4ihCtOGuYXjZf4z+2jXC89rVEoPWOA==}
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
       '@fastify/error': 3.2.0
@@ -18229,8 +18229,8 @@ packages:
     resolution: {integrity: sha512-AsS729u2RHUfEra9xJrE39peJcc2stq2+poBXX8bcM08Y6g9j/i/PUzwNQqkaJde7Ntg1TO7bSREbR5sdosQ+g==}
     dev: true
 
-  /systeminformation@5.21.4:
-    resolution: {integrity: sha512-fLW6j47UoAJDlZPEqykkWTKxubxb8IFuow6pMQlqf4irZ2lBgCrCReavMkH2t8VxxjOcg6wBlZ2EPQcluAT6xg==}
+  /systeminformation@5.21.5:
+    resolution: {integrity: sha512-W1bvYcSM6hVIEqFmjAWTtfX+Qq1Mc3sEZq4AxjtkNya01WbcleahsCzM2/eAey+no+XxPk6a0/7RnCLX6/BmOQ==}
     engines: {node: '>=8.0.0'}
     os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
     hasBin: true
@@ -19398,8 +19398,8 @@ packages:
       '@zxing/text-encoding': 0.9.0
     dev: true
 
-  /web-push@3.6.5:
-    resolution: {integrity: sha512-rc/i0LRwA4EAeajRVHQp6+RW+NlCMuk3CgFLb+IR/NJ1RleeNzQ9iwayVHgc4LmcxaaWeslHBM1qLUq1yi0O6A==}
+  /web-push@3.6.6:
+    resolution: {integrity: sha512-SyteEck9fiCskNmPxs/GFhJsZrIyLfRvjWNmcUwULLJyCU0f1oxo2sWTokXA1mDAq9vxk4e4gVcb/8agq73NkQ==}
     engines: {node: '>= 16'}
     hasBin: true
     dependencies:

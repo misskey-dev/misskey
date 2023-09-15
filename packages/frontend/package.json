@@ -104,7 +104,7 @@
 		"@types/sanitize-html": "2.9.0",
 		"@types/throttle-debounce": "5.0.0",
 		"@types/tinycolor2": "1.4.4",
-		"@types/uuid": "9.0.3",
+		"@types/uuid": "9.0.4",
 		"@types/websocket": "1.0.6",
 		"@types/ws": "8.5.5",
 		"@typescript-eslint/eslint-plugin": "6.7.0",
