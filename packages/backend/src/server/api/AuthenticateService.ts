@@ -5,7 +5,7 @@
 
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/entities/User.js';
 import type { MiAccessToken } from '@/models/entities/AccessToken.js';
 import { MemoryKVCache } from '@/misc/cache.js';

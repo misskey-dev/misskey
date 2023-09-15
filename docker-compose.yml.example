@@ -50,7 +50,7 @@ services:
 
 #  meilisearch:
 #    restart: always
-#    image: getmeili/meilisearch:v1.1.1
+#    image: getmeili/meilisearch:v1.3.4
 #    environment:
 #      - MEILI_NO_ANALYTICS=true
 #      - MEILI_ENV=production
