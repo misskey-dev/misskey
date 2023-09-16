@@ -356,7 +356,6 @@ invite: "邀请"
 driveCapacityPerLocalAccount: "每个用户的网盘容量"
 driveCapacityPerRemoteAccount: "每个远程用户的网盘容量"
 inMb: "以兆字节(MegaByte)为单位"
-iconUrl: "图标 URL"
 bannerUrl: "横幅 URL"
 backgroundImageUrl: "背景图 URL"
 basicInfo: "基本信息"
@@ -1134,6 +1133,8 @@ _initialAccountSetting:
   laterAreYouSure: "要稍后再进行初始设定吗？"
 _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
+_serverSettings:
+  iconUrl: "图标 URL"
 _accountMigration:
   moveFrom: "从别的账号迁移到此账户"
   moveFromSub: "为另一个账户建立别名"
