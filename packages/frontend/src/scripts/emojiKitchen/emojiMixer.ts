@@ -26,17 +26,24 @@ const convertBase = (value, from_base, to_base) => {
 	return new_value || '0';
 };
 
+const emojiSplit = String.fromCodePoint(0x200d);
 const hexEncodeEmoji = (chr) => {
-	if (chr.length !== 1) {
+	if (chr.length === 3) return hexEncodeEmoji(chr.slice(0, 2)) + '-' + hexEncodeEmoji(chr.slice(2, chr.length));
+	else if (chr.length === 2) {
 		const hi = chr.charCodeAt(0);
 		const lo = chr.charCodeAt(1);
 		if (0xD800 <= hi && hi < 0xDC00 && 0xDC00 <= lo && lo < 0xE000) {
 			return (0x10000 + (hi - 0xD800) * 0x400 + (lo - 0xDC00)).toString(16);
 		}
-		return ("000" + hi.toString(16)).slice(-4) + '-' + ("000" + lo.toString(16)).slice(-4);
+		return hi.toString(16) + '-' + lo.toString(16);
+	}
+	else if (chr.length === 1) {
+		return chr.charCodeAt(0).toString(16);
 	}
 	else {
-		return ("000" + chr.charCodeAt(0).toString(16)).slice(-4);
+		const sp = chr.split(emojiSplit);
+		if (sp.length !== 2) return '';
+		return hexEncodeEmoji(sp[0]) + '-200d-' + hexEncodeEmoji(sp[1]);
 	}
 };
 
