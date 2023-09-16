@@ -356,7 +356,6 @@ invite: "Einladen"
 driveCapacityPerLocalAccount: "Drive-Kapazität pro lokalem Benutzerkonto"
 driveCapacityPerRemoteAccount: "Drive-Kapazität pro Benutzer fremder Instanzen"
 inMb: "In Megabytes"
-iconUrl: "Icon-URL (favicon etc)"
 bannerUrl: "Banner-URL"
 backgroundImageUrl: "Hintergrundbild-URL"
 basicInfo: "Grundlegende Informationen"
@@ -1134,6 +1133,8 @@ _initialAccountSetting:
   laterAreYouSure: "Die Kontoeinrichtung wirklich später erledigen?"
 _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
+_serverSettings:
+  iconUrl: "Icon-URL"
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"
