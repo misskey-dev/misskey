@@ -17,7 +17,7 @@ import type { MiPage } from '@/models/entities/Page.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiWebhook } from '@/models/entities/Webhook.js';
 import type { MiMeta } from '@/models/entities/Meta.js';
-import { MiRole, MiRoleAssignment } from '@/models/index.js';
+import { MiRole, MiRoleAssignment } from '@/models/_.js';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 

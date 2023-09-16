@@ -1410,7 +1410,6 @@ _2fa:
   securityKeyNotSupported: "Trình duyệt của bạn không hỗ trợ khóa bảo mật"
   registerTOTPBeforeKey: "Vui lòng thiết lập một ứng dụng xác thực để đăng ký khóa bảo mật hoặc mật khẩu."
   securityKeyInfo: "Bên cạnh xác minh bằng vân tay hoặc mã PIN, bạn cũng có thể thiết lập xác minh thông qua khóa bảo mật phần cứng hỗ trợ FIDO2 để bảo mật hơn nữa cho tài khoản của mình."
-  chromePasskeyNotSupported: "Mật khẩu Chrome hiện không được hỗ trợ."
   registerSecurityKey: "Tạo khóa bảo mật hoặc mã bảo mật"
   securityKeyName: "Nhập tên khóa bảo mật"
   tapSecurityKey: "Vui lòng làm theo hướng dẫn của trình duyệt để đăng ký mã bảo mật hoặc mã khóa"
