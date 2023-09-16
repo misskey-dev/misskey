@@ -356,7 +356,6 @@ invite: "招待"
 driveCapacityPerLocalAccount: "ローカルユーザーひとりあたりのドライブ容量"
 driveCapacityPerRemoteAccount: "リモートユーザーひとりあたりのドライブ容量"
 inMb: "メガバイト単位"
-iconUrl: "アイコン画像のURL (faviconなど)"
 bannerUrl: "バナー画像のURL"
 backgroundImageUrl: "背景画像のURL"
 basicInfo: "基本情報"
@@ -1137,6 +1136,14 @@ _initialAccountSetting:
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
+
+_serverSettings:
+  iconUrl: "アイコン画像のURL"
+  appIconDescription: "{host}がアプリとして表示される際のアイコンを指定します。"
+  appIconUsageExample: "例: PWAや、スマートフォンのホーム画面にブックマークとして追加された時など"
+  appIconStyleRecommendation: "画像は透過部分が無く、塗りつぶされた余白がある背景を持つことが推奨されます。"
+  appIconResolutionMustBe: "解像度は必ず{resolution}である必要があります。"
+  manifestJsonOverride: "manifest.jsonのオーバーライド"
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
