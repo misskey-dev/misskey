@@ -356,7 +356,6 @@ invite: "초대"
 driveCapacityPerLocalAccount: "로컬 유저 한 명당 드라이브 용량"
 driveCapacityPerRemoteAccount: "리모트 유저 한 명당 드라이브 용량"
 inMb: "메가바이트 단위"
-iconUrl: "아이콘 URL"
 bannerUrl: "배너 이미지 URL"
 backgroundImageUrl: "배경 이미지 URL"
 basicInfo: "기본 정보"
@@ -1132,6 +1131,8 @@ _initialAccountSetting:
   laterAreYouSure: "초기 설정을 나중에 진행하시겠습니까?"
 _serverRules:
   description: "회원 가입 이전에 간단하게 표시할 서버 규칙입니다. 이용 약관의 요약으로 구성하는 것을 추천합니다."
+_serverSettings:
+  iconUrl: "아이콘 URL"
 _accountMigration:
   moveFrom: "다른 계정에서 이 계정으로 이사"
   moveFromSub: "다른 계정에 대한 별칭을 생성"
