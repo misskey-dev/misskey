@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { VNode, h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -11,12 +6,14 @@ import MkLink from '@/components/MkLink.vue';
 import MkMention from '@/components/MkMention.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
+import MkEmojiKitchen from '@/components/global/MkEmojiKitchen.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
 import { host } from '@/config';
 import { defaultStore } from '@/store';
+import { mixEmoji } from '@/scripts/emojiKitchen/emojiMixer';
 
 const QUOTE_STYLE = `
 display: block;
@@ -26,6 +23,38 @@ color: var(--fg);
 border-left: solid 3px var(--fg);
 opacity: 0.7;
 `.split('\n').join(' ');
+
+const colorRegexp = /^([0-9a-f]{3,4}?|[0-9a-f]{6}?|[0-9a-f]{8}?)$/i;
+function checkColorHex(text: string) {
+	return colorRegexp.test(text);
+}
+
+const gradientCounterRegExp = /^(color|step)(\d+)/;
+
+function toGradientText(args: Record<string, string>) {
+	const colors: { index: number; step?: string, color?: string }[] = [];
+	for (const k in args) {
+		const matches = k.match(gradientCounterRegExp);
+		if (matches == null) continue;
+		const mindex = parseInt(matches[2]);
+		let i = colors.findIndex(v => v.index === mindex);
+		if (i === -1) {
+			i = colors.length;
+			colors.push({ index: mindex });
+		}
+		colors[i][matches[1]] = args[k];
+	}
+	let deg = parseFloat(args.deg || '90');
+	let res = `linear-gradient(${deg}deg`;
+	for (const colorProp of colors.sort((a, b) => a.index - b.index)) {
+		let color = colorProp.color;
+		if (!color || !checkColorHex(color)) color = 'f00';
+		let step = parseFloat(colorProp.step ?? '');
+		let stepText = isNaN(step) ? '' : ` ${step}%`;
+		res += `, #${color}${stepText}`;
+	}
+	return res + ')';
+}
 
 export default function(props: {
 	text: string;
@@ -44,7 +73,7 @@ export default function(props: {
 	const ast = (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
 
 	const validTime = (t: string | null | undefined) => {
-		if (t == null) return null;
+		if (t == null || typeof t === 'boolean') return null;
 		return t.match(/^[0-9.]+s$/) ? t : null;
 	};
 
@@ -170,18 +199,15 @@ export default function(props: {
 						break;
 					}
 					case 'blur': {
+						const radius = parseFloat(token.props.args.rad ?? '6');
 						return h('span', {
 							class: '_mfm_blur_',
+							style: `--blur-px: ${radius}px;`
 						}, genEl(token.children, scale));
 					}
 					case 'rainbow': {
-						if (!useAnim) {
-							return h('span', {
-								class: '_mfm_rainbow_fallback_',
-							}, genEl(token.children, scale));
-						}
 						const speed = validTime(token.props.args.speed) ?? '1s';
-						style = `animation: mfm-rainbow ${speed} linear infinite;`;
+						style = useAnim ? `animation: mfm-rainbow ${speed} linear infinite;` : '';
 						break;
 					}
 					case 'sparkle': {
@@ -192,7 +218,23 @@ export default function(props: {
 					}
 					case 'rotate': {
 						const degrees = parseFloat(token.props.args.deg ?? '90');
-						style = `transform: rotate(${degrees}deg); transform-origin: center center;`;
+						let rotateText = `rotate(${degrees}deg)`;
+						if (!token.props.args.deg && (token.props.args.x || token.props.args.y || token.props.args.z)) {
+							rotateText = '';
+						}
+						if (token.props.args.x) {
+							const degrees = parseFloat(token.props.args.x ?? '0');
+							rotateText += ` rotateX(${degrees}deg)`;
+						}
+						if (token.props.args.y) {
+							const degrees = parseFloat(token.props.args.y ?? '0');
+							rotateText += ` rotateY(${degrees}deg)`;
+						}
+						if (token.props.args.z) {
+							const degrees = parseFloat(token.props.args.z ?? '0');
+							rotateText += ` rotateZ(${degrees}deg)`;
+						}
+						style = `transform: ${rotateText}; transform-origin: center center;`;
 						break;
 					}
 					case 'position': {
@@ -213,17 +255,100 @@ export default function(props: {
 						scale = scale * Math.max(x, y);
 						break;
 					}
+					case 'skew': {
+						if (!defaultStore.state.advancedMfm) {
+							style = '';
+							break;
+						}
+						const x = parseFloat(token.props.args.x ?? '0');
+						const y = parseFloat(token.props.args.y ?? '0');
+						style = `transform: skew(${x}deg, ${y}deg);`;
+						break;
+					}
+					case 'fgg': {
+						if (!defaultStore.state.advancedMfm) break;
+						style = `-webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: ${toGradientText(token.props.args)};`
+						break;
+					}
 					case 'fg': {
 						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						if (!checkColorHex(color)) color = 'f00';
 						style = `color: #${color};`;
+						break;
+					}
+					case 'bgg': {
+						if (!defaultStore.state.advancedMfm) break;
+						style = `background-image: ${toGradientText(token.props.args)};`
 						break;
 					}
 					case 'bg': {
 						let color = token.props.args.color;
-						if (!/^[0-9a-f]{3,6}$/i.test(color)) color = 'f00';
+						if (!checkColorHex(color)) color = 'f00';
 						style = `background-color: #${color};`;
 						break;
+					}
+					case 'clip': {
+						if (!defaultStore.state.advancedMfm) break;
+
+						let path = '';
+						if (token.props.args.circle) {
+							const percent = parseFloat(token.props.args.circle ?? '');
+							const percentText = isNaN(percent) ? '' : `${percent}%`;
+							path = `circle(${percentText})`;
+						}
+						else {
+							const top = parseFloat(token.props.args.t ?? '0');
+							const bottom = parseFloat(token.props.args.b ?? '0');
+							const left = parseFloat(token.props.args.l ?? '0');
+							const right = parseFloat(token.props.args.r ?? '0');
+							path = `inset(${top}% ${right}% ${bottom}% ${left}%)`;
+						}
+						style = `clip-path: ${path};`;
+						break;
+					}
+					case 'move': {
+						const speed = validTime(token.props.args.speed) ?? '1s';
+						const fromX = parseFloat(token.props.args.fromx ?? '0');
+						const fromY = parseFloat(token.props.args.fromy ?? '0');
+						const toX = parseFloat(token.props.args.tox ?? '0');
+						const toY = parseFloat(token.props.args.toy ?? '0');
+						const ease =
+							token.props.args.ease ? 'ease' :
+							token.props.args.easein ? 'ease-in' :
+							token.props.args.easeout ? 'ease-out' :
+							token.props.args.easeinout ? 'ease-in-out' :
+							'linear';
+						const delay = validTime(token.props.args.delay) ?? '0s';
+						const direction =
+							token.props.args.rev && token.props.args.once ? 'reverse' :
+							token.props.args.rev ? 'alternate-reverse' :
+							token.props.args.once ? 'normal' :
+							'alternate';
+						style = useAnim ? `--move-fromX: ${fromX}em; --move-fromY: ${fromY}em; --move-toX: ${toX}em; --move-toY: ${toY}em; animation: ${speed} ${ease} ${delay} infinite ${direction} mfm-move;` : '';
+						break;
+					}
+					case 'mix': {
+						const ch = token.children;
+						if (ch.length != 2 || ch.some(c => c.type !== 'unicodeEmoji')) {
+							style = null;
+							break;
+						}
+
+						const emoji1 = ch[0].props.emoji;
+						const emoji2 = ch[1].props.emoji;
+
+						const mixedEmojiUrl = mixEmoji(emoji1, emoji2);
+						if (!mixedEmojiUrl) {
+							style = null;
+							break;
+						}
+
+						return h(MkEmojiKitchen, {
+							key: Math.random(),
+							name: emoji1 + emoji2,
+							normal: props.plain,
+							url: mixedEmojiUrl
+						});
 					}
 				}
 				if (style == null) {
