@@ -356,7 +356,6 @@ invite: "Invita"
 driveCapacityPerLocalAccount: "Capienza del Drive per profilo locale"
 driveCapacityPerRemoteAccount: "Capienza del Drive per profilo remoto"
 inMb: "in Megabytes"
-iconUrl: "URL di icona (favicon, ecc.)"
 bannerUrl: "URL dell'immagine d'intestazione"
 backgroundImageUrl: "URL dello sfondo"
 basicInfo: "Informazioni fondamentali"
@@ -1134,6 +1133,8 @@ _initialAccountSetting:
   laterAreYouSure: "Vuoi davvero rimandare la configurazione iniziale?"
 _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
+_serverSettings:
+  iconUrl: "URL dell'icona"
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"
