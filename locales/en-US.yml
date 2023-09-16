@@ -1136,7 +1136,7 @@ _serverRules:
 _serverSettings:
   iconUrl: "Icon URL"
   appIconDescription: "Specifies the icon to use when {host} is displayed as an app."
-  appIconUsageExample: "E.g. PWAs, or when displayed as a home screen bookmark on a phone"
+  appIconUsageExample: "E.g. As PWA, or when displayed as a home screen bookmark on a phone"
   appIconStyleRecommendation: "As the icon may be cropped to a square or circle, an icon with colored margin around the content is recommended."
   appIconResolutionMustBe: "The minimum resolution is {resolution}."
   manifestJsonOverride: "manifest.json Override"
