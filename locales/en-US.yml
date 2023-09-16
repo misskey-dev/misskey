@@ -356,7 +356,6 @@ invite: "Invite"
 driveCapacityPerLocalAccount: "Drive capacity per local user"
 driveCapacityPerRemoteAccount: "Drive capacity per remote user"
 inMb: "In megabytes"
-iconUrl: "Icon URL"
 bannerUrl: "Banner image URL"
 backgroundImageUrl: "Background image URL"
 basicInfo: "Basic info"
@@ -1134,6 +1133,8 @@ _initialAccountSetting:
   laterAreYouSure: "Really do profile setup later?"
 _serverRules:
   description: "A set of rules to be displayed before registration. Setting a summary of the Terms of Service is recommended."
+_serverSettings:
+  iconUrl: "Icon URL"
 _accountMigration:
   moveFrom: "Migrate another account to this one"
   moveFromSub: "Create alias to another account"
