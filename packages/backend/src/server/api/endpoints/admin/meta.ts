@@ -85,6 +85,14 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			app192IconUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			app512IconUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
 			enableEmail: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -278,6 +286,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			manifestJsonOverride: {
+				type: 'string',
+				optional: true, nullable: false,
+			},
 			policies: {
 				type: 'object',
 				optional: false, nullable: false,
@@ -331,6 +343,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				notFoundImageUrl: instance.notFoundImageUrl,
 				infoImageUrl: instance.infoImageUrl,
 				iconUrl: instance.iconUrl,
+				app192IconUrl: instance.app192IconUrl,
+				app512IconUrl: instance.app512IconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
 				defaultLightTheme: instance.defaultLightTheme,
@@ -383,6 +397,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableServerMachineStats: instance.enableServerMachineStats,
 				enableIdenticonGeneration: instance.enableIdenticonGeneration,
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
+				manifestJsonOverride: instance.manifestJsonOverride,
 			};
 		});
 	}

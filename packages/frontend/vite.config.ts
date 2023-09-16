@@ -112,8 +112,8 @@ export function getConfig(): UserConfig {
 
 		build: {
 			target: [
-				'chrome108',
-				'firefox109',
+				'chrome116',
+				'firefox116',
 				'safari16',
 			],
 			manifest: 'manifest.json',

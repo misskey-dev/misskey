@@ -9,7 +9,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { DI } from '@/di-symbols.js';
-import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/index.js';
+import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['meta'],

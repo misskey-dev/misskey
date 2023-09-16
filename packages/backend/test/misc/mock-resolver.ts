@@ -15,7 +15,7 @@ import type { LoggerService } from '@/core/LoggerService.js';
 import type { MetaService } from '@/core/MetaService.js';
 import type { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
-import type { NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/index.js';
+import type { NoteReactionsRepository, NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 
 type MockResponse = {
 	type: string;

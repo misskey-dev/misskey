@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListJoiningsRepository } from '@/models/index.js';
+import type { UserListJoiningsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiUserList } from '@/models/entities/UserList.js';
 import type { MiUserListJoining } from '@/models/entities/UserListJoining.js';

@@ -12,7 +12,7 @@ import type {
 	SigninsRepository,
 	UserProfilesRepository,
 	UsersRepository,
-} from '@/models/index.js';
+} from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser } from '@/models/entities/User.js';

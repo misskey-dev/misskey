@@ -14,6 +14,11 @@ export const meta = {
 
 	kind: 'write:notifications',
 
+	limit: {
+		duration: 1000 * 60,
+		max: 10,
+	},
+
 	errors: {
 	},
 } as const;

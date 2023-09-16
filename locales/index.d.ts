@@ -359,7 +359,6 @@ export interface Locale {
     "driveCapacityPerLocalAccount": string;
     "driveCapacityPerRemoteAccount": string;
     "inMb": string;
-    "iconUrl": string;
     "bannerUrl": string;
     "backgroundImageUrl": string;
     "basicInfo": string;
@@ -420,6 +419,8 @@ export interface Locale {
     "totpDescription": string;
     "moderator": string;
     "moderation": string;
+    "moderationNote": string;
+    "addModerationNote": string;
     "nUsersMentioned": string;
     "securityKeyAndPasskey": string;
     "securityKey": string;
@@ -1138,6 +1139,14 @@ export interface Locale {
     "_serverRules": {
         "description": string;
     };
+    "_serverSettings": {
+        "iconUrl": string;
+        "appIconDescription": string;
+        "appIconUsageExample": string;
+        "appIconStyleRecommendation": string;
+        "appIconResolutionMustBe": string;
+        "manifestJsonOverride": string;
+    };
     "_accountMigration": {
         "moveFrom": string;
         "moveFromSub": string;
@@ -1466,6 +1475,10 @@ export interface Locale {
                 "title": string;
                 "description": string;
                 "flavor": string;
+            };
+            "_smashTestNotificationButton": {
+                "title": string;
+                "description": string;
             };
         };
     };
