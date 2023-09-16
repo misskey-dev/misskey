@@ -5,7 +5,7 @@
 
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
+import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AbuseUserReportsRepository } from '@/models/index.js';
+import type { AbuseUserReportsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiAbuseUserReport } from '@/models/entities/AbuseUserReport.js';
 import { bindThis } from '@/decorators.js';

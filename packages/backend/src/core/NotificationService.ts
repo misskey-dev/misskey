@@ -8,7 +8,7 @@ import * as Redis from 'ioredis';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { MiNotification } from '@/models/entities/Notification.js';
 import { bindThis } from '@/decorators.js';
