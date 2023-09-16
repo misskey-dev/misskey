@@ -1135,6 +1135,7 @@ _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
 _serverSettings:
   iconUrl: "图标 URL"
+  appIconUsageExample: "例如：PWA和新增至手机主屏幕的书签。"
   appIconStyleRecommendation: "因为可能会被裁切为圆形或者圆角图形，所以建议将背景用单色填充。"
   appIconResolutionMustBe: "分辨率必须符合{resolution}。"
 _accountMigration:
