@@ -1139,6 +1139,7 @@ _serverSettings:
   appIconUsageExample: "例如以漸進式網路應用程式（PWA）或書籤形式新增至手機桌面時。"
   appIconStyleRecommendation: "建議圖像不具任何透明部分，並以單一顏色填滿背景。"
   appIconResolutionMustBe: "解析度必須為 {resolution}。"
+  manifestJsonOverride: "覆寫 manifest.json"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
