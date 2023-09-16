@@ -1135,6 +1135,11 @@ _serverRules:
   description: "Eine Reihe von Regeln, die vor der Registrierung angezeigt werden. Eine Zusammenfassung der Nutzungsbedingungen anzuzeigen ist empfohlen."
 _serverSettings:
   iconUrl: "Icon-URL"
+  appIconDescription: "Gibt das Icon bei der Anzeige von {host} als App an."
+  appIconUsageExample: "Beispielsweise PWAs, oder bei Lesezeichen auf dem Startbildschirm von Smartphones"
+  appIconStyleRecommendation: "Da das Icon zu einem Kreis oder Quadrat zugeschnitten wird, wird ein Icon mit gefülltem Margin um den Inhalt herum empfohlen."
+  appIconResolutionMustBe: "Die Mindestauflösung ist {resolution}."
+  manifestJsonOverride: "Überschreiben von manifest.json"
 _accountMigration:
   moveFrom: "Von einem anderen Konto zu diesem migrieren"
   moveFromSub: "Alias für ein anderes Konto erstellen"
