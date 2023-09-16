@@ -1141,7 +1141,7 @@ _serverSettings:
   iconUrl: "アイコン画像のURL"
   appIconDescription: "{host}がアプリとして表示される際のアイコンを指定します。"
   appIconUsageExample: "例: PWAや、スマートフォンのホーム画面にブックマークとして追加された時など"
-  appIconStyleRecommendation: "画像は透過部分が無く、塗りつぶされた余白がある背景を持つことが推奨されます。"
+  appIconStyleRecommendation: "円形もしくは角丸にクロップされる場合があるため、塗り潰された余白のある背景を持つことが推奨されます。"
   appIconResolutionMustBe: "解像度は必ず{resolution}である必要があります。"
   manifestJsonOverride: "manifest.jsonのオーバーライド"
 
