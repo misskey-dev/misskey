@@ -356,7 +356,6 @@ invite: "เชิญชวน"
 driveCapacityPerLocalAccount: "ความจุของไดรฟ์ต่อผู้ใช้ภายในเครื่อง"
 driveCapacityPerRemoteAccount: "ความจุของไดรฟ์ต่อผู้ใช้ระยะไกล"
 inMb: "เป็นเมกะไบต์"
-iconUrl: "ไอคอน URL"
 bannerUrl: "URL รูปภาพแบนเนอร์"
 backgroundImageUrl: "URL ภาพพื้นหลัง"
 basicInfo: "ข้อมูลเบื้องต้น"
@@ -1125,6 +1124,8 @@ _initialAccountSetting:
   laterAreYouSure: "ต้องการตั้งค่าโปรไฟล์ในภายหลังจริงๆอย่างงั้นหรอ?"
 _serverRules:
   description: "ชุดของกฎที่จะแสดงก่อนการลงทะเบียนเราขอแนะนำให้ตั้งค่าสรุปข้อกำหนดในการให้บริการ"
+_serverSettings:
+  iconUrl: "ไอคอน URL"
 _accountMigration:
   moveFrom: "ย้ายข้อมูลบัญชีอื่นไปยังอีกบัญชีนี้หนึ่ง"
   moveFromSub: "สร้างนามแฝงไปยังบัญชีอื่น"
