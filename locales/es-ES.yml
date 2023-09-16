@@ -1135,6 +1135,7 @@ _serverRules:
   description: "Un conjunto de reglas que serán mostradas antes del registro. Configurar un sumario de términos de servicio es recomendado."
 _serverSettings:
   iconUrl: "URL del ícono"
+  manifestJsonOverride: "Sobreescribir manifest.json"
 _accountMigration:
   moveFrom: "Trasladar de otra cuenta a ésta"
   moveFromSub: "Crear un alias para otra cuenta."
@@ -1389,6 +1390,9 @@ _achievements:
       title: "Brain Diver"
       description: "Publicaste un vínculo a \"Brain Diver\""
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "Sobrecarga de pruebas"
+      description: "Envía muchas notificaciones de prueba en un corto espacio de tiempo"
 _role:
   new: "Crear rol"
   edit: "Editar rol"
