@@ -356,7 +356,6 @@ invite: "邀請"
 driveCapacityPerLocalAccount: "每個本地使用者的雲端硬碟容量"
 driveCapacityPerRemoteAccount: "每個非本地用戶的雲端空間大小"
 inMb: "以Mbps為單位"
-iconUrl: "圖標 URL（例如 favicon）"
 bannerUrl: "橫幅圖片URL"
 backgroundImageUrl: "背景圖片的來源網址 "
 basicInfo: "基本資訊"
@@ -1134,6 +1133,12 @@ _initialAccountSetting:
   laterAreYouSure: "稍後再重新進行初始設定嗎？"
 _serverRules:
   description: "設定在註冊頁面顯示的伺服器簡要規則。建議是服務條款的摘要。"
+_serverSettings:
+  iconUrl: "圖示的URL"
+  appIconDescription: "指定顯示 {host} 為應用程式時的圖示。"
+  appIconUsageExample: "例如以漸進式網路應用程式（PWA）或書籤形式新增至手機桌面時。"
+  appIconStyleRecommendation: "建議圖像不具任何透明部分，並以單一顏色填滿背景。"
+  appIconResolutionMustBe: "解析度必須為 {resolution}。"
 _accountMigration:
   moveFrom: "從其他帳戶遷移到這個帳戶"
   moveFromSub: "為另一個帳戶建立別名"
