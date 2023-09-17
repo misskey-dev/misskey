@@ -630,6 +630,8 @@ searchByGoogle: "Caută"
 file: "Fișiere"
 show: "Arată"
 icon: "Avatar"
+replies: "Răspunde"
+renotes: "Re-notează"
 _role:
   _priority:
     middle: "Mediu"
