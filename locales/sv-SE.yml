@@ -337,7 +337,6 @@ registration: "Registrera"
 enableRegistration: "Aktivera registrering av nya användare"
 invite: "Inbjudan"
 inMb: "I megabyte"
-iconUrl: "URL till profilbilden"
 bannerUrl: "URL till banner-bilden"
 basicInfo: "Grundläggande info"
 pinnedUsers: "Fästa användare"
@@ -486,6 +485,8 @@ pleaseDonate: "Misskey är en gratis programvara som används på {host}. Donera
 resetPasswordConfirm: "Återställ verkligen ditt lösenord?"
 dataSaver: "Databesparing"
 icon: "Profilbild"
+replies: "Svara"
+renotes: "Omnotera"
 _achievements:
   _types:
     _open3windows:

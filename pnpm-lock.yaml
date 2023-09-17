@@ -659,8 +659,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4(rollup@3.29.1)
       '@syuilo/aiscript':
-        specifier: 0.15.0
-        version: 0.15.0
+        specifier: 0.16.0
+        version: 0.16.0
       '@tabler/icons-webfont':
         specifier: 2.32.0
         version: 2.32.0
@@ -7162,13 +7162,12 @@ packages:
     dev: false
     optional: true
 
-  /@syuilo/aiscript@0.15.0:
-    resolution: {integrity: sha512-vauMbqacuHufE4W7bAm5BDWlci3mWg1ZaerPNHKBMrRXDjEfvBkBGZNXKSWvi+zmhiYAbWyozPIlV6byttYpCw==}
+  /@syuilo/aiscript@0.16.0:
+    resolution: {integrity: sha512-CXvoWOq6kmOSUQtKv0IEf7Ebfkk5PO1LxAgLqgRRPgssPvDvINCXu/gFNXKdapkFMkmX+Gj8qjemKR1vnUS4ZA==}
     dependencies:
-      autobind-decorator: 2.4.0
       seedrandom: 3.0.5
       stringz: 2.1.0
-      uuid: 9.0.0
+      uuid: 9.0.1
     dev: false
 
   /@szmarczak/http-timer@4.0.6:
@@ -8912,11 +8911,6 @@ packages:
   /atomic-sleep@1.0.0:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
-    dev: false
-
-  /autobind-decorator@2.4.0:
-    resolution: {integrity: sha512-OGYhWUO72V6DafbF8PM8rm3EPbfuyMZcJhtm5/n26IDwO18pohE4eNazLoCGhPiXOCD0gEGmrbU3849QvM8bbw==}
-    engines: {node: '>=8.10', npm: '>=6.4.1'}
     dev: false
 
   /autosize@6.0.1:

@@ -354,7 +354,6 @@ invite: "Pozvat"
 driveCapacityPerLocalAccount: "Kapacita disku na lokálního uživatele"
 driveCapacityPerRemoteAccount: "Kapacita disku na vzdáleného uživatele"
 inMb: "V megabajtech"
-iconUrl: "Favicon URL"
 bannerUrl: "Baner URL"
 backgroundImageUrl: "Adresa URL obrázku pozadí"
 basicInfo: "Základní informace"
@@ -1095,6 +1094,8 @@ doYouAgree: "Souhlasíte?"
 beSureToReadThisAsItIsImportant: "Přečtěte si prosím tyto důležité informace."
 iHaveReadXCarefullyAndAgree: "Přečetl jsem si text \"{x}\" a souhlasím s ním."
 icon: "Avatar"
+replies: "Odpovědět"
+renotes: "Přeposlat"
 _initialAccountSetting:
   accountCreated: "Váš účet byl úspěšně vytvořen!"
   letsStartAccountSetup: "Pro začátek si nastavte svůj profil."
@@ -1112,6 +1113,8 @@ _initialAccountSetting:
   laterAreYouSure: "Opravdu chcete provést nastavení profilu později?"
 _serverRules:
   description: "Soubor pravidel, která se zobrazí před registrací. Doporučuje se nastavit shrnutí podmínek služby."
+_serverSettings:
+  iconUrl: "URL ikony"
 _accountMigration:
   moveFrom: "Migrace jiného účtu na tento účet"
   moveFromSub: "Vytvořit alias na jiný účet"

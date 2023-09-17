@@ -8,7 +8,7 @@ import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
+import type { ClipNotesRepository, ClipsRepository, NotesRepository } from '@/models/_.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
@@ -72,6 +72,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private idService: IdService,
 		private roleService: RoleService,
 		private getterService: GetterService,
@@ -115,9 +118,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				clipId: clip.id,
 			});
 
-			await this.clipsRepository.update(clip.id, {
+			this.clipsRepository.update(clip.id, {
 				lastClippedAt: new Date(),
 			});
+
+			this.notesRepository.increment({ id: note.id }, 'clippedCount', 1);
 		});
 	}
 }
