@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	v-hotkey="keymap"
 	:class="$style.root"
 >
-	<div v-if="appearNote.reply.replyId">
+	<div v-if="appearNote.reply && appearNote.reply.replyId">
 		<div v-if="!conversationLoaded" style="padding: 16px">
 			<MkButton style="margin: 0 auto;" primary rounded @click="loadConversation">{{ i18n.ts.loadConversation }}</MkButton>
 		</div>
