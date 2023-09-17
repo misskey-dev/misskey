@@ -838,6 +838,8 @@ color: "রং"
 horizontal: "পাশে"
 youFollowing: "অনুসরণ করা হচ্ছে"
 icon: "প্রোফাইল ছবি"
+replies: "জবাব"
+renotes: "রিনোট"
 _role:
   priority: "অগ্রাধিকার"
   _priority:
