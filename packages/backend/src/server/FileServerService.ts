@@ -284,7 +284,7 @@ export class FileServerService {
 				} else {
 					const data = (await sharpBmp(file.path, file.mime, { animated: !('static' in request.query) }))
 						.resize({
-							height: 'emoji' in request.query ? 128 : 320,
+							height: 'emoji' in request.query ? 64 : 128,
 							withoutEnlargement: true,
 						})
 						.webp(webpDefault);
