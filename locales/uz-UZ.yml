@@ -843,6 +843,8 @@ rolesAssignedToMe: "Mening rollarim"
 resetPasswordConfirm: "Qayta parol o'rnatmoqchimisiz?"
 sensitiveWords: "Ta'sirchan so'zlar"
 icon: "Avatar"
+replies: "Javob berish"
+renotes: "Qayta qayd etish"
 _achievements:
   _types:
     _viewInstanceChart:
