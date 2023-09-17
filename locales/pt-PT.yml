@@ -1006,6 +1006,8 @@ rolesThatCanBeUsedThisEmojiAsReactionEmptyDescription: "Se nenhum cargo for espe
 rolesThatCanBeUsedThisEmojiAsReactionPublicRoleWarn: "Estes cargos devem ser públicos."
 waitingForMailAuth: "Verificação de e-mail pendente "
 icon: "Avatar"
+replies: "Responder"
+renotes: "Repostar"
 _initialAccountSetting:
   followUsers: "Siga usuários que lhe interessam para criar a sua linha do tempo."
 _serverSettings:
