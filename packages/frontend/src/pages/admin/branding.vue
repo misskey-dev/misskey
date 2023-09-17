@@ -37,11 +37,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</template>
 					</MkInput>
 
-					<MkInput v-model="appleTouchIconUrl">
-						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>苹果设备图标URL</template>
-					</MkInput>
-
 					<MkInput v-model="bannerUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
 						<template #label>{{ i18n.ts.bannerUrl }}</template>
