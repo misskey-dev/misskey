@@ -13,6 +13,7 @@ import { DriveService } from '@/core/DriveService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
+import {IsNull} from "typeorm";
 
 export const meta = {
 	tags: ['admin'],
@@ -78,6 +79,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const duplicationEmoji = await this.emojisRepository.find({
 				where: {
 					name: emoji.name,
+					host: IsNull()
 				},
 			});
 
