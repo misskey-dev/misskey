@@ -1065,6 +1065,8 @@ unused: "Неиспользуемый"
 expired: "Срок действия приглашения истёк"
 doYouAgree: "Согласны?"
 icon: "Аватар"
+replies: "Ответить"
+renotes: "Репост"
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
   letsStartAccountSetup: "Давайте настроим вашу учётную запись."
