@@ -997,6 +997,8 @@ expirationDate: "تاريخ انتهاء الصلاحية"
 unused: "غير مستعمَل"
 expired: "منتهية صلاحيته"
 icon: "الصورة الرمزية"
+replies: "رد"
+renotes: "أعد النشر"
 _initialAccountSetting:
   accountCreated: "نجح إنشاء حسابك!"
   letsStartAccountSetup: "إذا كنت جديدًا لنعدّ حسابك الشخصي."
