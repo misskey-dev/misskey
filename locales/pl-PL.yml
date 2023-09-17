@@ -871,6 +871,8 @@ show: "Wyświetlanie"
 color: "Kolor"
 youFollowing: "Śledzeni"
 icon: "Awatar"
+replies: "Odpowiedz"
+renotes: "Udostępnij"
 _role:
   priority: "Priorytet"
   _priority:
