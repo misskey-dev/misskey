@@ -1551,6 +1551,7 @@ _aboutMisskey:
   contributors: "Main contributors"
   allContributors: "All contributors"
   source: "Source code"
+  forksource: "Source code for this fork"
   translation: "Translate Misskey"
   donate: "Donate to Misskey"
   morePatrons: "We also appreciate the support of many other helpers not listed here. Thank you! 🥰"
