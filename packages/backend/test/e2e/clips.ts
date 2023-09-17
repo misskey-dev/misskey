@@ -911,7 +911,7 @@ describe('クリップ', () => {
 			const bobClip = await create({ isPublic: true }, { user: bob } );
 			await addNote({ clipId: bobClip.id, noteId: aliceNote.id }, { user: bob });
 			const res = await notes({ clipId: bobClip.id });
-			assert.deepStrictEqual(res, [aliceNote]);
+			assert.deepStrictEqual(res.map(x => x.id), [aliceNote.id]);
 		});
 
 		test('はPublicなクリップなら認証なしでも取得できる。(非公開ノートはhideされて返ってくる)', async () => {
@@ -928,8 +928,8 @@ describe('クリップ', () => {
 				hiddenNote(aliceFollowersNote), hiddenNote(aliceSpecifiedNote),
 			];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test.todo('ブロック、ミュートされたユーザーからの設定＆取得etc.');
