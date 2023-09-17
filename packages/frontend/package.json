@@ -21,7 +21,7 @@
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/plugin-replace": "5.0.2",
 		"@rollup/pluginutils": "5.0.4",
-		"@syuilo/aiscript": "0.15.0",
+		"@syuilo/aiscript": "0.16.0",
 		"@tabler/icons-webfont": "2.32.0",
 		"@vitejs/plugin-vue": "4.3.4",
 		"@vue-macros/reactivity-transform": "0.3.23",

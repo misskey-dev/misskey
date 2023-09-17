@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/_.js';
+import type { ClipNotesRepository, ClipsRepository, NotesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
@@ -52,6 +52,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -73,6 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				noteId: note.id,
 				clipId: clip.id,
 			});
+
+			this.notesRepository.decrement({ id: note.id }, 'clippedCount', 1);
 		});
 	}
 }
