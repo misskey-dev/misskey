@@ -75,6 +75,20 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
 
+			const duplicationEmoji = await this.emojisRepository.find({
+				where: {
+					name: emoji.name,
+				},
+			});
+
+			duplicationEmoji.forEach(
+				(_emoji) => {
+					if (_emoji.name === emoji.name) {
+						throw new ApiError(meta.errors.duplicationEmojiAdd);
+					}
+				}
+			)
+
 			let driveFile: MiDriveFile;
 
 			try {
