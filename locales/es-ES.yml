@@ -1107,6 +1107,8 @@ currentAnnouncements: "Anuncios actuales"
 pastAnnouncements: "Anuncios anteriores"
 youHaveUnreadAnnouncements: "Hay anuncios sin leer"
 useSecurityKey: "Por favor, sigue las instrucciones de tu dispositivo o navegador para usar tu clave de seguridad o tu clave de paso."
+replies: "Responder"
+renotes: "Renotar"
 _announcement:
   forExistingUsers: "Solo para usuarios registrados"
   forExistingUsersDescription: "Este anuncio solo se mostrará a aquellos usuarios registrados en el momento de su publicación. Si se deshabilita esta opción, aquellos usuarios que se registren tras su publicación también lo verán."
