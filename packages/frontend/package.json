@@ -130,6 +130,7 @@
 		"storybook": "7.4.1",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"summaly": "github:misskey-dev/summaly",
+		"vite-plugin-compression2": "^0.10.4",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "0.34.4",
 		"vitest-fetch-mock": "0.2.2",
