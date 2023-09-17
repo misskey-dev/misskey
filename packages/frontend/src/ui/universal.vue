@@ -115,6 +115,20 @@ const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announce
 const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
+onMounted(() => {
+  if (
+      window.navigator.connection.type === "cellular" &&
+      !defaultStore.state.enableDataSaverMode &&
+      defaultStore.state.enableCellularWithDataSaver
+  ) {
+    defaultStore.state.enableDataSaverMode = true;
+  } else if (
+      window.navigator.connection.type !== "cellular" &&
+      defaultStore.state.enableDataSaverMode &&
+      !defaultStore.state.enableCellularWithDataSaver)  {
+    defaultStore.state.enableDataSaverMode = false;
+  }
+});
 // デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
