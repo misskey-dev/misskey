@@ -340,6 +340,8 @@ export class NoteEntityService implements OnModuleInit {
 			url: note.url ?? undefined,
 
 			...(opts.detail ? {
+				clippedCount: note.clippedCount,
+
 				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					_hint_: options?._hint_,

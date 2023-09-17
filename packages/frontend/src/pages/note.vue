@@ -94,13 +94,14 @@ function fetchNote() {
 		noteId: props.noteId,
 	}).then(res => {
 		note = res;
-		Promise.all([
+		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
+		if (note.clippedCount > 0 || new Date(note.createdAt).getTime() < new Date('2023-10-01').getTime()) {
 			os.api('notes/clips', {
 				noteId: note.id,
-			}),
-		]).then(([_clips]) => {
-			clips = _clips;
-		});
+			}).then((_clips) => {
+				clips = _clips;
+			});
+		}
 	}).catch(err => {
 		error = err;
 	});

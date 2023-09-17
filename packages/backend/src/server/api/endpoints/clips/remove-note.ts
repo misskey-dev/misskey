@@ -52,6 +52,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private getterService: GetterService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -73,6 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				noteId: note.id,
 				clipId: clip.id,
 			});
+
+			this.notesRepository.decrement({ id: note.id }, 'clippedCount', 1);
 		});
 	}
 }

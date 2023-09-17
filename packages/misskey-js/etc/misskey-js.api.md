@@ -2539,6 +2539,7 @@ type Note = {
     reactions: Record<string, number>;
     renoteCount: number;
     repliesCount: number;
+    clippedCount?: number;
     poll?: {
         expiresAt: DateString | null;
         multiple: boolean;
