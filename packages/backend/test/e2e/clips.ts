@@ -721,7 +721,7 @@ describe('クリップ', () => {
 			await addNote({ clipId: aliceClip.id, noteId: aliceNote.id });
 			const res = await show({ clipId: aliceClip.id });
 			assert.strictEqual(res.lastClippedAt, new Date(res.lastClippedAt ?? '').toISOString());
-			assert.deepStrictEqual(await notes({ clipId: aliceClip.id }), [aliceNote]);
+			assert.deepStrictEqual((await notes({ clipId: aliceClip.id })).map(x => x.id), [aliceNote.id]);
 
 			// 他人の非公開ノートも突っ込める
 			await addNote({ clipId: aliceClip.id, noteId: bobHomeNote.id });
@@ -861,8 +861,8 @@ describe('クリップ', () => {
 				bobNote, bobHomeNote,
 			];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test('を始端IDとlimitで取得できる。', async () => {
@@ -881,8 +881,8 @@ describe('クリップ', () => {
 			// Promise.allで返ってくる配列はID順で並んでないのでソートして厳密比較
 			const expects = [noteList[3], noteList[4], noteList[5]];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test('をID範囲指定で取得できる。', async () => {
@@ -901,8 +901,8 @@ describe('クリップ', () => {
 			// Promise.allで返ってくる配列はID順で並んでないのでソートして厳密比較
 			const expects = [noteList[2], noteList[3]];
 			assert.deepStrictEqual(
-				res.sort(compareBy(s => s.id)),
-				expects.sort(compareBy(s => s.id)));
+				res.sort(compareBy(s => s.id)).map(x => x.id),
+				expects.sort(compareBy(s => s.id)).map(x => x.id));
 		});
 
 		test.todo('Remoteのノートもクリップできる。どうテストしよう？');
