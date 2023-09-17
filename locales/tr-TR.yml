@@ -371,6 +371,8 @@ noRole: "Rol bulunamadı"
 color: "Renk"
 addMemo: "Kısa not ekle"
 icon: "Avatar"
+replies: "yanıt"
+renotes: "vazgeçme"
 _accountDelete:
   started: "Silme işlemi başlatıldı"
 _email:
