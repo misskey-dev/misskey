@@ -905,6 +905,8 @@ letsLookAtTimeline: "Перегляд історії"
 horizontal: "Збоку"
 youFollowing: "Підписки"
 icon: "Аватар"
+replies: "Відповісти"
+renotes: "Поширити"
 _achievements:
   earnedAt: "Відкрито"
   _types:
