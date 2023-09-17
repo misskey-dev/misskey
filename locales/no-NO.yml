@@ -462,6 +462,8 @@ continue: "Fortsett"
 youFollowing: "Følger"
 options: "Alternativ"
 icon: "Avatar"
+replies: "Svar"
+renotes: "Renote"
 _initialAccountSetting:
   theseSettingsCanEditLater: "Du kan endre disse innstillingene senere."
 _achievements:
