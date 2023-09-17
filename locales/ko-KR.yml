@@ -356,7 +356,6 @@ invite: "초대"
 driveCapacityPerLocalAccount: "로컬 유저 한 명당 드라이브 용량"
 driveCapacityPerRemoteAccount: "리모트 유저 한 명당 드라이브 용량"
 inMb: "메가바이트 단위"
-iconUrl: "아이콘 URL"
 bannerUrl: "배너 이미지 URL"
 backgroundImageUrl: "배경 이미지 URL"
 basicInfo: "기본 정보"
@@ -1106,6 +1105,8 @@ currentAnnouncements: "현재 공지사항"
 pastAnnouncements: "과거 공지사항"
 youHaveUnreadAnnouncements: "읽지 않은 공지사항이 있습니다."
 useSecurityKey: "브라우저 또는 기기의 안내에 따라 보안 키 또는 패스키를 사용해 주십시오."
+replies: "답글"
+renotes: "리노트"
 _announcement:
   forExistingUsers: "기존 유저에게만 알림"
   forExistingUsersDescription: "활성화하면 이 공지사항을 게시한 시점에서 이미 가입한 유저에게만 표시합니다. 비활성화하면 게시 후에 가입한 유저에게도 표시합니다."
@@ -1132,6 +1133,8 @@ _initialAccountSetting:
   laterAreYouSure: "초기 설정을 나중에 진행하시겠습니까?"
 _serverRules:
   description: "회원 가입 이전에 간단하게 표시할 서버 규칙입니다. 이용 약관의 요약으로 구성하는 것을 추천합니다."
+_serverSettings:
+  iconUrl: "아이콘 URL"
 _accountMigration:
   moveFrom: "다른 계정에서 이 계정으로 이사"
   moveFromSub: "다른 계정에 대한 별칭을 생성"

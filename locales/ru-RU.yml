@@ -354,7 +354,6 @@ invite: "Пригласить"
 driveCapacityPerLocalAccount: "Объём диска на одного локального пользователя"
 driveCapacityPerRemoteAccount: "Объём диска на одного пользователя с другого сайта"
 inMb: "В мегабайтах"
-iconUrl: "Ссылка на аватар"
 bannerUrl: "Ссылка на изображение в шапке"
 backgroundImageUrl: "Ссылка на фоновое изображение"
 basicInfo: "Общая информация"
@@ -1066,6 +1065,8 @@ unused: "Неиспользуемый"
 expired: "Срок действия приглашения истёк"
 doYouAgree: "Согласны?"
 icon: "Аватар"
+replies: "Ответить"
+renotes: "Репост"
 _initialAccountSetting:
   accountCreated: "Аккаунт успешно создан!"
   letsStartAccountSetup: "Давайте настроим вашу учётную запись."
@@ -1073,6 +1074,8 @@ _initialAccountSetting:
   privacySetting: "Настройки конфиденциальности"
   initialAccountSettingCompleted: "Первоначальная настройка успешно завершена!"
   skipAreYouSure: "Пропустить настройку?"
+_serverSettings:
+  iconUrl: "Адрес на иконку роли"
 _achievements:
   earnedAt: "Разблокировано в"
   _types:

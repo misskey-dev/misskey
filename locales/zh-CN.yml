@@ -356,7 +356,6 @@ invite: "邀请"
 driveCapacityPerLocalAccount: "每个用户的网盘容量"
 driveCapacityPerRemoteAccount: "每个远程用户的网盘容量"
 inMb: "以兆字节(MegaByte)为单位"
-iconUrl: "图标 URL"
 bannerUrl: "横幅 URL"
 backgroundImageUrl: "背景图 URL"
 basicInfo: "基本信息"
@@ -1108,6 +1107,8 @@ currentAnnouncements: "现在的公告"
 pastAnnouncements: "过去的公告"
 youHaveUnreadAnnouncements: "您有未读的公告"
 useSecurityKey: "请根据浏览器或设备的提示，使用安全密钥或通行密钥。"
+replies: "回复"
+renotes: "转发"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
@@ -1134,6 +1135,11 @@ _initialAccountSetting:
   laterAreYouSure: "要稍后再进行初始设定吗？"
 _serverRules:
   description: "在新用户注册前显示服务器的简单规则。推荐显示服务条款的主要内容。"
+_serverSettings:
+  iconUrl: "图标 URL"
+  appIconUsageExample: "例如：PWA和新增至手机主屏幕的书签。"
+  appIconStyleRecommendation: "因为可能会被裁切为圆形或者圆角图形，所以建议将背景用单色填充。"
+  appIconResolutionMustBe: "分辨率必须符合{resolution}。"
 _accountMigration:
   moveFrom: "从别的账号迁移到此账户"
   moveFromSub: "为另一个账户建立别名"
