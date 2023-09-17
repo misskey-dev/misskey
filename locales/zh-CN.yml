@@ -1109,6 +1109,8 @@ youHaveUnreadAnnouncements: "您有未读的公告"
 useSecurityKey: "请根据浏览器或设备的提示，使用安全密钥或通行密钥。"
 replies: "回复"
 renotes: "转发"
+loadReplies: "查看回复"
+loadConversation: "查看对话"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
