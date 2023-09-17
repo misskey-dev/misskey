@@ -72,6 +72,7 @@
 - nodeinfo 2.1対応
 - 自分へのメンション一覧を取得する際のパフォーマンスを向上
 - Docker環境でjemallocを使用することでメモリ使用量を削減
+- Fix: MK_ONLY_SERVERオプションを指定した際にクラッシュする問題を修正
 - Fix: ノート検索 `notes/search` にてhostを指定した際に検索結果に反映されるように
 - Fix: 一部のfeatured noteを照会できない問題を修正
 - Fix: muteがapiからのuser list timeline取得で機能しない問題を修正
