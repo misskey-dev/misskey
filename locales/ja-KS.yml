@@ -1102,6 +1102,8 @@ forYou: "あんたへ"
 currentAnnouncements: "現在のお知らせやで"
 pastAnnouncements: "過去のお知らせやで"
 youHaveUnreadAnnouncements: "あんたまだこのお知らせ読んどらんやろ。"
+replies: "返事"
+renotes: "Renote"
 _announcement:
   forExistingUsers: "もうおるユーザーのみ"
   forExistingUsersDescription: "有効にすると、このお知らせ作成時点でおるユーザーにのみお知らせが表示されます。無効にすると、このお知らせ作成後にアカウントを作成したユーザーにもお知らせが表示されます。"
