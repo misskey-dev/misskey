@@ -1110,6 +1110,10 @@ export interface Locale {
     "pastAnnouncements": string;
     "youHaveUnreadAnnouncements": string;
     "useSecurityKey": string;
+    "replies": string;
+    "renotes": string;
+    "loadReplies": string;
+    "loadConversation": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
