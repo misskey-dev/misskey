@@ -109,11 +109,11 @@ async function run() {
 				print: true,
 			});
 		},
-		err: (e) => {
+		err: (err) => {
 			os.alert({
 				type: 'error',
 				title: 'AiScript Error',
-				text: e.toString(),
+				text: err.toString(),
 			});
 		},
 		log: (type, params) => {
