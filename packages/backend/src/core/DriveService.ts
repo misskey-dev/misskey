@@ -302,12 +302,14 @@ export class DriveService {
 			const metadata = await img.metadata();
 			isAnimated = !!(metadata.pages && metadata.pages > 1);
 
+			// nirila Extension: We want to keep original size as possible
+			// noinspection PointlessBooleanExpressionJS
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
-				type !== 'image/avif' && // not supported by Mastodon and MS Edge
-			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
-			metadata.width && metadata.width <= 2048 &&
-			metadata.height && metadata.height <= 2048
+				type !== 'image/avif' // not supported by Mastodon and MS Edge
+			//!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
+			//metadata.width && metadata.width <= 2048 &&
+			//metadata.height && metadata.height <= 2048
 			);
 		} catch (err) {
 			this.registerLogger.warn(`sharp failed: ${err}`);
