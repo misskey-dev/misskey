@@ -15,6 +15,7 @@
 ## 13.14.2-kinel.5 (unreleased)
 
 ### General
+- 4K/8K画像が2K以下になってしまうのを修正しました
 
 ### Client
 
