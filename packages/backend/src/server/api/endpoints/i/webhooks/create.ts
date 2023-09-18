@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
-import type { WebhooksRepository } from '@/models/index.js';
+import type { WebhooksRepository } from '@/models/_.js';
 import { webhookEventTypes } from '@/models/entities/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -34,12 +34,12 @@ export const paramDef = {
 	properties: {
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', minLength: 1, maxLength: 1024 },
+		secret: { type: 'string', maxLength: 1024, default: '' },
 		on: { type: 'array', items: {
 			type: 'string', enum: webhookEventTypes,
 		} },
 	},
-	required: ['name', 'url', 'secret', 'on'],
+	required: ['name', 'url', 'on'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す

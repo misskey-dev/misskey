@@ -6,7 +6,7 @@
 import { IsNull, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/entities/User.js';
 import type { RelationshipJobData } from '@/queue/types.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';

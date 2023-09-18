@@ -107,6 +107,11 @@ export class MiNote {
 	})
 	public repliesCount: number;
 
+	@Column('smallint', {
+		default: 0,
+	})
+	public clippedCount: number;
+
 	@Column('jsonb', {
 		default: {},
 	})

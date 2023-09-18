@@ -105,6 +105,7 @@ export type MeDetailed = UserDetailed & {
 	receiveAnnouncementEmail: boolean;
 	usePasswordLessLogin: boolean;
 	unreadAnnouncements: Announcement[];
+	twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
 	[other: string]: any;
 };
 
@@ -174,6 +175,7 @@ export type Note = {
 	reactions: Record<string, number>;
 	renoteCount: number;
 	repliesCount: number;
+	clippedCount?: number;
 	poll?: {
 		expiresAt: DateString | null;
 		multiple: boolean;
@@ -256,6 +258,8 @@ export type Notification = {
 	header?: string | null;
 	body: string;
 	icon?: string | null;
+} | {
+	type: 'test';
 });
 
 export type MessagingMessage = {
@@ -350,6 +354,9 @@ export type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
 export type AdminInstanceMetadata = DetailedInstanceMetadata & {
 	// TODO: There are more fields.
 	blockedHosts: string[];
+	app192IconUrl: string | null;
+	app512IconUrl: string | null;
+	manifestJsonOverride: string;
 };
 
 export type ServerInfo = {

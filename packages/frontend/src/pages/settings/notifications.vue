@@ -13,6 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</FormSection>
 	<FormSection>
+		<div class="_gaps_m">
+			<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
+		</div>
+	</FormSection>
+	<FormSection>
 		<template #label>{{ i18n.ts.pushNotification }}</template>
 
 		<div class="_gaps_m">
@@ -81,6 +86,10 @@ function onChangeSendReadMessage(v: boolean) {
 		if (!allowButton)	return;
 		allowButton.pushRegistrationInServer = res;
 	});
+}
+
+function testNotification(): void {
+	os.api('notifications/test-notification');
 }
 
 const headerActions = $computed(() => []);

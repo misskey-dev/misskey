@@ -7,15 +7,24 @@ import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import * as QRCode from 'qrcode';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository } from '@/models/index.js';
+import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: '78d6c839-20c9-4c66-b90a-fc0542168b48',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -39,10 +48,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: me.id });
 
 			// Compare password
-			const same = await bcrypt.compare(ps.password, profile.password!);
+			const same = await bcrypt.compare(ps.password, profile.password ?? '');
 
 			if (!same) {
-				throw new Error('incorrect password');
+				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			// Generate user's secret key

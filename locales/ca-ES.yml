@@ -381,6 +381,8 @@ user: "Usuaris"
 global: "Global"
 searchByGoogle: "Cercar"
 file: "Fitxers"
+replies: "Respondre"
+renotes: "Impulsa"
 _role:
   _options:
     antennaMax: "Nombre màxim d'antenes"
@@ -399,7 +401,6 @@ _sfx:
   chat: "Xat"
   antenna: "Antenes"
 _2fa:
-  step2Url: "També pots inserir aquest enllaç i utilitzes una aplicació d'escriptori:"
   renewTOTPCancel: "No, gràcies"
 _antennaSources:
   all: "Totes les publicacions"

@@ -8,7 +8,7 @@ import { IsNull } from 'typeorm';
 import vary from 'vary';
 import fastifyAccepts from '@fastify/accepts';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/index.js';
+import type { UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
 import type { MiUser } from '@/models/entities/User.js';
@@ -73,7 +73,7 @@ export class WellKnownServerService {
 		});
 
 		fastify.get('/.well-known/host-meta.json', async (request, reply) => {
-			reply.header('Content-Type', jrd);
+			reply.header('Content-Type', 'application/json');
 			return {
 				links: [{
 					rel: 'lrdd',

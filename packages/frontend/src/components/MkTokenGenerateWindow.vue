@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { permissions as kinds } from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
@@ -74,7 +74,7 @@ if (props.initialPermissions) {
 		permissions[kind] = true;
 	}
 } else {
-	for (const kind of kinds) {
+	for (const kind of Misskey.permissions) {
 		permissions[kind] = false;
 	}
 }

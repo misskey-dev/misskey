@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { format as DateFormat } from 'date-fns';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, MiUser } from '@/models/index.js';
+import type { AntennasRepository, UsersRepository, UserListJoiningsRepository, MiUser } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
