@@ -76,6 +76,7 @@
 - リプライをホーム投稿に # mattyaski独自
 - nodeinfo 2.1対応
 - Enhance: 絵文字の重複登録を不可に # mattyaski独自
+- Enhance: frontendのbuildに圧縮をかけるように # mattyaski独自
 - 自分へのメンション一覧を取得する際のパフォーマンスを向上
 - Docker環境でjemallocを使用することでメモリ使用量を削減
 - Fix: MK_ONLY_SERVERオプションを指定した際にクラッシュする問題を修正
