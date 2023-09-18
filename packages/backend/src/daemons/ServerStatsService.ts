@@ -37,6 +37,9 @@ export class ServerStatsService implements OnApplicationShutdown {
 		const log = [] as any[];
 
 		ev.on('requestServerStatsLog', x => {
+			// skip when service deactivated
+			if (this.intervalId === null) return;
+
 			ev.emit(`serverStatsLog:${x.id}`, log.slice(0, x.length ?? 50));
 		});
 

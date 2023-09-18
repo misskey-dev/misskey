@@ -6,19 +6,24 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import { MiMeta } from '@/models/entities/Meta.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ServerStatsService } from '@/daemons/ServerStatsService.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class MetaService implements OnApplicationShutdown {
+	private serverStatsService: ServerStatsService;
 	private cache: MiMeta | undefined;
 	private intervalId: NodeJS.Timeout;
 
 	constructor(
+		private moduleRef: ModuleRef,
+
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
@@ -39,6 +44,10 @@ export class MetaService implements OnApplicationShutdown {
 		}
 
 		this.redisForSub.on('message', this.onMessage);
+	}
+
+	onModuleInit() {
+		this.serverStatsService = this.moduleRef.get('ServerStatsService');
 	}
 
 	@bindThis
@@ -120,6 +129,12 @@ export class MetaService implements OnApplicationShutdown {
 		});
 
 		this.globalEventService.publishInternalEvent('metaUpdated', updated);
+
+		if (updated.enableServerMachineStats === true) {
+			await this.serverStatsService.start();
+		} else {
+			this.serverStatsService.dispose();
+		}
 
 		return updated;
 	}
