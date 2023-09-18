@@ -306,8 +306,8 @@ export class DriveService {
 			// noinspection PointlessBooleanExpressionJS
 			satisfyWebpublic = !!(
 				type !== 'image/svg+xml' && // security reason
-				type !== 'image/avif' // not supported by Mastodon and MS Edge
-			//!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop) &&
+				type !== 'image/avif' && // not supported by Mastodon and MS Edge
+			!(metadata.exif ?? metadata.iptc ?? metadata.xmp ?? metadata.tifftagPhotoshop)
 			//metadata.width && metadata.width <= 2048 &&
 			//metadata.height && metadata.height <= 2048
 			);
