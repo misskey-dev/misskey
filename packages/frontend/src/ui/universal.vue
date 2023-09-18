@@ -132,6 +132,18 @@ const MOBILE_THRESHOLD = 500;
 onMounted(() => {
   if (
       window.navigator.connection.type === "cellular" &&
+      !defaultStore.state.enableUltimateDataSaverMode &&
+      defaultStore.state.enableCellularWithUltimateDataSaver
+  ) {
+    defaultStore.state.enableDataSaverMode = true;
+    defaultStore.state.enableUltimateDataSaverMode = true;
+  } else if (window.navigator.connection.type !== "cellular" && window.navigator.connection.type !== "undefined" && defaultStore.state.enableDataSaverMode && defaultStore.state.enableCellularWithDataSaver) {
+    defaultStore.state.enableDataSaverMode = false;
+    defaultStore.state.enableUltimateDataSaverMode = true;
+  }
+
+  if (
+      window.navigator.connection.type === "cellular" &&
       !defaultStore.state.enableDataSaverMode &&
       defaultStore.state.enableCellularWithDataSaver
   ) {
@@ -139,6 +151,9 @@ onMounted(() => {
 
   } else if (window.navigator.connection.type !== "cellular" && window.navigator.connection.type !== "undefined" && defaultStore.state.enableDataSaverMode && defaultStore.state.enableCellularWithDataSaver) {
     defaultStore.state.enableDataSaverMode = false;
+  }
+  if (defaultStore.state.enableUltimateDataSaverMode) {
+    defaultStore.state.enableDataSaverMode = true;
   }
 });
 // デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない

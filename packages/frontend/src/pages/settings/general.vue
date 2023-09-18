@@ -113,8 +113,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch v-model="useSystemFont">{{ i18n.ts.useSystemFont }}</MkSwitch>
 				<MkSwitch v-model="disableDrawer">{{ i18n.ts.disableDrawer }}</MkSwitch>
 				<MkSwitch v-model="forceShowAds">{{ i18n.ts.forceShowAds }}</MkSwitch>
-				<MkSwitch v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
-				<MkSwitch v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
+				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableDataSaverMode">{{ i18n.ts.dataSaver }}</MkSwitch>
+				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
+				<MkSwitch v-model="enableUltimateDataSaverMode">{{ i18n.ts.UltimateDataSaver }}</MkSwitch>
+				<MkSwitch v-model="enableCellularWithUltimateDataSaver">{{ i18n.ts.cellularWithUltimateDataSaver }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -230,6 +232,8 @@ const forceShowAds = computed(defaultStore.makeGetterSetter('forceShowAds'));
 const loadRawImages = computed(defaultStore.makeGetterSetter('loadRawImages'));
 const enableDataSaverMode = computed(defaultStore.makeGetterSetter('enableDataSaverMode')) ;
 const enableCellularWithDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithDataSaver'));
+const enableUltimateDataSaverMode = computed(defaultStore.makeGetterSetter('enableUltimateDataSaverMode'))
+const enableCellularWithUltimateDataSaver = computed(defaultStore.makeGetterSetter('enableCellularWithUltimateDataSaver'));
 const imageNewTab = computed(defaultStore.makeGetterSetter('imageNewTab'));
 const nsfw = computed(defaultStore.makeGetterSetter('nsfw'));
 const showFixedPostForm = computed(defaultStore.makeGetterSetter('showFixedPostForm'));
@@ -243,6 +247,8 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
+
+
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);

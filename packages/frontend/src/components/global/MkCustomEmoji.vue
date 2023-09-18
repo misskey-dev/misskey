@@ -39,7 +39,7 @@ const rawUrl = computed(() => {
 const url = computed(() => {
 	if (rawUrl.value == null) return null;
   const useOriginalSize = props.useOriginalSize;
-  const enableDataSaverMode = defaultStore.state.enableDataSaverMode;
+  const enableDataSaverMode = defaultStore.state.enableUltimateDataSaverMode;
   let datasaver_result ;
   if (enableDataSaverMode) {
     datasaver_result = useOriginalSize ? undefined : 'datasaver';

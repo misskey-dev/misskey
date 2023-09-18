@@ -50,7 +50,7 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
-			compression(),
+			compression({ algorithm: 'brotliCompress'}),
 			pluginVue({
 				reactivityTransform: true,
 			}),
