@@ -158,7 +158,7 @@ useTooltip(buttonEl, async (showing) => {
 	&.reacted, &.reacted:hover {
     background: var(--accentedBg);
     color: var(--accent);
-    border: 1px solid var(--accent);
+    box-shadow: 0 0 0px 1px var(--accent) inset;
 
 		> .count {
 			color: var(--accent);
