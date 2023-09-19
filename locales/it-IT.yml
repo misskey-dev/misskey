@@ -1137,6 +1137,8 @@ _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
 _serverSettings:
   iconUrl: "URL dell'icona"
+  appIconResolutionMustBe: "La risoluzione minima è {resolution}."
+  manifestJsonOverride: "Sostituire il file manifest.json"
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"
