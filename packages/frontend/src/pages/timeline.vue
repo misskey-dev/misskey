@@ -16,7 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTimeline
 					ref="tlComponent"
 					:key="src"
-					:src="src"
+					:src="src.split(':')[0]"
+					:list="src.split(':')[1]"
 					:sound="true"
 					@queue="queueUpdated"
 				/>
@@ -102,10 +103,15 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
+	let userList = null;
+	if (newSrc.startsWith('userList:')) {
+		const id = newSrc.substring('userList:'.length);
+		userList = defaultStore.reactiveState.pinnedUserLists.value.find(l => l.id === id);
+	}
 	defaultStore.set('tl', {
-		...defaultStore.state.tl,
 		src: newSrc,
+		userList,
 	});
 	srcWhenNotSignin = newSrc;
 }
@@ -125,7 +131,12 @@ function focus(): void {
 
 const headerActions = $computed(() => []);
 
-const headerTabs = $computed(() => [{
+const headerTabs = $computed(() => [...(defaultStore.reactiveState.pinnedUserLists.value.map(l => ({
+	key: 'list:' + l.id,
+	title: l.name,
+	icon: 'ti ti-star',
+	iconOnly: true,
+}))), {
 	key: 'home',
 	title: i18n.ts._timelines.home,
 	icon: 'ti ti-home',

@@ -1111,6 +1111,7 @@ replies: "返信"
 renotes: "リノート"
 loadReplies: "返信を見る"
 loadConversation: "会話を見る"
+pinnedList: "ピン留めされたリスト"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
