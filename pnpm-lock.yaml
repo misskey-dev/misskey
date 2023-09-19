@@ -327,8 +327,8 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
       sharp:
-        specifier: 0.32.3
-        version: 0.32.3
+        specifier: 0.32.6
+        version: 0.32.6
       sharp-read-bmp:
         specifier: github:misskey-dev/sharp-read-bmp
         version: github.com/misskey-dev/sharp-read-bmp/02d9dc189fa7df0c4bea09330be26741772dac01
@@ -7037,10 +7037,10 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/expect@27.5.2-0:
-    resolution: {integrity: sha512-cP99mhWN/JeCp7VSIiymvj5tmuMY050iFohvp8Zq+kewKsBSZ6/qpTJAGCCZk6pneTcp4S0Fm5BSqyxzbyJ3gw==}
+  /@storybook/expect@28.1.3-5:
+    resolution: {integrity: sha512-lS1oJnY1qTAxnH87C765NdfvGhksA6hBcbUVI5CHiSbNsEtr456wtg/z+dT9XlPriq1D5t2SgfNL9dBAoIGyIA==}
     dependencies:
-      '@types/jest': 29.5.3
+      '@types/jest': 28.1.3
     dev: true
 
   /@storybook/global@5.0.0:
@@ -7070,7 +7070,7 @@ packages:
   /@storybook/jest@0.1.0:
     resolution: {integrity: sha512-TmybnEXlv5Fu2/Hq4nRj7alS9mw4CasLR0RDwaAzS+Vpvu1TC4+j9rh+b1BHtmWebbJh0JMT6mgzPqOyJdgtQA==}
     dependencies:
-      '@storybook/expect': 27.5.2-0
+      '@storybook/expect': 28.1.3-5
       '@storybook/instrumenter': 7.0.2
       '@testing-library/jest-dom': 5.16.5
       jest-mock: 27.5.1
@@ -7393,7 +7393,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.3.4
-      vue-component-type-helpers: 1.8.8
+      vue-component-type-helpers: 1.8.11
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -8266,6 +8266,13 @@ packages:
       '@types/istanbul-lib-report': 3.0.0
     dev: true
 
+  /@types/jest@28.1.3:
+    resolution: {integrity: sha512-Tsbjk8Y2hkBaY/gJsataeb4q9Mubw9EOz7+4RjPkzD5KjTvHHs7cpws22InaoXxAVAhF5HfFbzJjo6oKWqSZLw==}
+    dependencies:
+      jest-matcher-utils: 28.1.3
+      pretty-format: 28.1.3
+    dev: true
+
   /@types/jest@29.5.3:
     resolution: {integrity: sha512-1Nq7YrO/vJE/FYnqYyw0FS8LdrjExSgIiHyKg7xPpn+yi8Q4huZryKnkJatN1ZRH89Kw2v33/8ZMB7DuZeSLlA==}
     dependencies:
@@ -8523,7 +8530,7 @@ packages:
     resolution: {integrity: sha512-OOi3kL+FZDnPhVzsfD37J88FNeZh6gQsGcLc95NbeURRGvmSjeXiDcyWzF2o3yh/gQAUn2uhh/e+CPCa5nwAxw==}
     deprecated: This is a stub types definition. sharp provides its own type definitions, so you do not need this installed.
     dependencies:
-      sharp: 0.32.3
+      sharp: 0.32.6
     dev: true
 
   /@types/sinon@10.0.13:
@@ -11529,6 +11536,11 @@ packages:
 
   /detect-libc@2.0.1:
     resolution: {integrity: sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /detect-libc@2.0.2:
+    resolution: {integrity: sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==}
     engines: {node: '>=8'}
 
   /detect-newline@3.1.0:
@@ -14924,6 +14936,16 @@ packages:
       pretty-format: 29.6.1
     dev: true
 
+  /jest-matcher-utils@28.1.3:
+    resolution: {integrity: sha512-kQeJ7qHemKfbzKoGjHHrRKH6atgxMk8Enkk2iPQ3XwO6oE/KYD8lMYOziCkeSB9G4adPM4nR1DE8Tf5JeWH6Bw==}
+    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
+    dependencies:
+      chalk: 4.1.2
+      jest-diff: 28.1.3
+      jest-get-type: 28.0.2
+      pretty-format: 28.1.3
+    dev: true
+
   /jest-matcher-utils@29.6.1:
     resolution: {integrity: sha512-SLaztw9d2mfQQKHmJXKM0HCbl2PPVld/t9Xa6P9sgiExijviSp7TnZZpw2Fpt+OI3nwUO/slJbOfzfUMKKC5QA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -17886,7 +17908,7 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      detect-libc: 2.0.1
+      detect-libc: 2.0.2
       expand-template: 2.0.3
       github-from-package: 0.0.0
       minimist: 1.2.8
@@ -19258,13 +19280,13 @@ packages:
       tunnel-agent: 0.6.0
     dev: false
 
-  /sharp@0.32.3:
-    resolution: {integrity: sha512-i1gFPiNqyqxC4ouVvCKj5G8WfPIMeeSxpKcMrjic6NY4e8zktW7bIdqHPc3FCG+pNKU/XCEabKA57hhvZi8UmQ==}
+  /sharp@0.32.6:
+    resolution: {integrity: sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==}
     engines: {node: '>=14.15.0'}
     requiresBuild: true
     dependencies:
       color: 4.2.3
-      detect-libc: 2.0.1
+      detect-libc: 2.0.2
       node-addon-api: 6.1.0
       prebuild-install: 7.1.1
       semver: 7.5.4
@@ -21272,8 +21294,8 @@ packages:
     resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
 
-  /vue-component-type-helpers@1.8.8:
-    resolution: {integrity: sha512-Ohv9HQY92nSbpReC6WhY0X4YkOszHzwUHaaN/lev5tHQLM1AEw+LrLeB2bIGIyKGDU7ZVrncXcv/oBny4rjbYg==}
+  /vue-component-type-helpers@1.8.11:
+    resolution: {integrity: sha512-CWItFzuEWjkSXDeMGwQEc5cFH4FaueyPQHfi1mBDe+wA2JABqNjFxFUtmZJ9WHkb0HpEwqgBg1umiXrWYXkXHw==}
     dev: true
 
   /vue-docgen-api@4.64.1(vue@3.3.4):
