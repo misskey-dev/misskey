@@ -58,7 +58,7 @@ let queue = $ref(0);
 let srcWhenNotSignin = $ref(isLocalTimelineAvailable ? 'local' : 'global');
 const src = $computed({ get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin), set: (x) => saveSrc(x) });
 
-watch ($$(src), () => queue = 0);
+watch($$(src), () => queue = 0);
 
 function queueUpdated(q: number): void {
 	queue = q;
