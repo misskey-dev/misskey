@@ -63,7 +63,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				try {
 					host = new URL(job.data.to).host;
 				} catch (e) {
-					this.apiLoggerService.logger.warn(`failed to parse url '${job.data.to}': ${e}`);
+					this.apiLoggerService.logger.warn(`failed to parse url in ${job.id}: ${e}`);
+					this.apiLoggerService.logger.warn(`id: ${job.id}, data: ${JSON.stringify(job.data)}`);
 					continue;
 				}
 
