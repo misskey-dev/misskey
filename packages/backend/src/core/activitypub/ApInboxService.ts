@@ -27,7 +27,7 @@ import { QueueService } from '@/core/QueueService.js';
 import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import type { MiRemoteUser } from '@/models/entities/User.js';
-import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isOrderedCollectionPage, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
@@ -87,11 +87,19 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: MiRemoteUser, activity: IObject): Promise<void> {
-		if (isCollectionOrOrderedCollection(activity)) {
+	public async performActivity(actor: MiRemoteUser, activity: IObject, {
+		limit = Infinity,
+		allow = null as (string[] | null) } = {},
+	): Promise<void> {
+		if (isCollectionOrOrderedCollection(activity) || isOrderedCollectionPage(activity)) {
 			const resolver = this.apResolverService.createResolver();
-			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
+			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems).slice(0, limit)) {
 				const act = await resolver.resolve(item);
+				const type = getApType(act);
+				if (allow && !allow.includes(type)) {
+					this.logger.info(`skipping activity type: ${type}`);
+					continue;
+				}
 				try {
 					await this.performOneActivity(actor, act);
 				} catch (err) {
@@ -367,7 +375,7 @@ export class ApInboxService {
 		});
 
 		if (isPost(object)) {
-			this.createNote(resolver, actor, object, false, activity);
+			await this.createNote(resolver, actor, object, false, activity);
 		} else {
 			this.logger.warn(`Unknown type: ${getApType(object)}`);
 		}

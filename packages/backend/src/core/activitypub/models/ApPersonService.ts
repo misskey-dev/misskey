@@ -38,7 +38,8 @@ import { MetaService } from '@/core/MetaService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
-import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
+import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isOrderedCollection, isOrderedCollectionPage, isPropertyValue } from '../type.js';
+import { ApInboxService } from '../ApInboxService.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { ApNoteService } from './ApNoteService.js';
@@ -68,6 +69,7 @@ export class ApPersonService implements OnModuleInit {
 	private apResolverService: ApResolverService;
 	private apNoteService: ApNoteService;
 	private apImageService: ApImageService;
+	private apInboxService: ApInboxService;
 	private apMfmService: ApMfmService;
 	private mfmService: MfmService;
 	private hashtagService: HashtagService;
@@ -116,6 +118,7 @@ export class ApPersonService implements OnModuleInit {
 		this.apResolverService = this.moduleRef.get('ApResolverService');
 		this.apNoteService = this.moduleRef.get('ApNoteService');
 		this.apImageService = this.moduleRef.get('ApImageService');
+		this.apInboxService = this.moduleRef.get('ApInboxService');
 		this.apMfmService = this.moduleRef.get('ApMfmService');
 		this.mfmService = this.moduleRef.get('MfmService');
 		this.hashtagService = this.moduleRef.get('HashtagService');
@@ -384,7 +387,10 @@ export class ApPersonService implements OnModuleInit {
 		}
 		//#endregion
 
-		await this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err));
+		await Promise.allSettled([
+			this.updateFeatured(user.id, resolver).catch(err => this.logger.error(err)),
+			this.updateOutboxFirstPage(user, person.outbox, resolver).catch(err => this.logger.error(err)),
+		]);
 
 		return user;
 	}
@@ -589,7 +595,7 @@ export class ApPersonService implements OnModuleInit {
 		const unresolvedItems = isCollection(collection) ? collection.items : collection.orderedItems;
 		const items = await Promise.all(toArray(unresolvedItems).map(x => _resolver.resolve(x)));
 
-		// Resolve and regist Notes
+		// Resolve and register Notes
 		const limit = promiseLimit<MiNote | null>(2);
 		const featuredNotes = await Promise.all(items
 			.filter(item => getApType(item) === 'Note')	// TODO: Noteでなくてもいいかも
@@ -614,6 +620,35 @@ export class ApPersonService implements OnModuleInit {
 				});
 			}
 		});
+	}
+
+	/**
+	 * Retrieve outbox from an actor object.
+	 *
+	 * This only retrieves the first page for now.
+	 */
+	public async updateOutboxFirstPage(user: RemoteUser, outbox: IActor['outbox'], resolver: Resolver): Promise<void> {
+		if (!this.config.outboxNotesFetchLimit) return;
+
+		// https://www.w3.org/TR/activitypub/#actor-objects
+		// Outbox is a required property for all actors
+		if (!outbox) {
+			throw new Error('No outbox property');
+		}
+
+		this.logger.info(`Fetching the outbox for ${user.uri}: ${outbox}`);
+
+		const collection = await resolver.resolveCollection(outbox);
+		if (!isOrderedCollection(collection)) {
+			throw new Error('Outbox must be an ordered collection');
+		}
+
+		const firstPage = collection.first ?
+			await resolver.resolveOrderedCollectionPage(collection.first) :
+			collection;
+
+		// Perform activity but only the first outboxNotesFetchLimit ones with `type: Create`
+		await this.apInboxService.performActivity(user, firstPage, { limit: this.config.outboxNotesFetchLimit, allow: ['Create'] });
 	}
 
 	/**

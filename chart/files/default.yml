@@ -187,6 +187,10 @@ id: "aidx"
 # Sign to ActivityPub GET request (default: true)
 signToActivityPubGet: true
 
+# Limit of notes to fetch from outbox with remote user first fetched (default: 5)
+# https://github.com/misskey-dev/misskey/pull/11130
+outboxNotesFetchLimit: 5
+
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]

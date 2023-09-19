@@ -85,6 +85,7 @@ type Source = {
 	videoThumbnailGenerator?: string;
 
 	signToActivityPubGet?: boolean;
+	outboxNotesFetchLimit?: number;
 
 	perChannelMaxNoteCacheCount?: number;
 	perUserNotificationsMaxCount?: number;
