@@ -50,11 +50,11 @@ const hide = ref((defaultStore.state.nsfw === 'force' || defaultStore.state.enab
 }
 
 .sensitiveContainer {
-	border: 3px solid var(--warn);
+	border: 4px solid var(--warn);
 }
 
 .nonSensitiveContainer {
-	border: 3px solid transparent;
+	border: 4px solid transparent;
 }
 
 .hide {

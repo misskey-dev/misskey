@@ -125,11 +125,11 @@ function showMenu(ev: MouseEvent) {
 }
 
 .sensitive {
-	border: 3px solid var(--warn);
+	border: 4px solid var(--warn);
 }
 
 .nonSensitive {
-	border: 3px solid transparent;
+	border: 4px solid transparent;
 }
 
 .hiddenText {
