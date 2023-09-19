@@ -713,6 +713,7 @@ export interface Locale {
     "alwaysMarkSensitive": string;
     "loadRawImages": string;
     "disableShowingAnimatedImages": string;
+    "highlightSensitiveImages": string;
     "verificationEmailSent": string;
     "notSet": string;
     "emailVerified": string;

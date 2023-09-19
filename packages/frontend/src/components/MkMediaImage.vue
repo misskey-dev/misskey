@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="hide ? $style.hidden : $style.visible" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && defaultStore.state.highlightSensitiveImages) ? $style.sensitive : $style.nonSensitive]" :style="darkMode ? '--c: rgb(255 255 255 / 2%);' : '--c: rgb(0 0 0 / 2%);'" @click="onclick">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:title="image.comment || image.name"
 			:width="image.properties.width"
 			:height="image.properties.height"
-			:style="hide ? 'filter: brightness(0.5);' : null"
+			:style="hide ? 'filter: brightness(0.7);' : null"
 		/>
 	</component>
 	<template v-if="hide">
@@ -122,6 +122,14 @@ function showMenu(ev: MouseEvent) {
 <style lang="scss" module>
 .hidden {
 	position: relative;
+}
+
+.sensitive {
+	border: 3px solid var(--warn);
+}
+
+.nonSensitive {
+	border: 3px solid transparent;
 }
 
 .hiddenText {
