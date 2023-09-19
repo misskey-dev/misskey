@@ -184,7 +184,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: 'respect' as 'respect' | 'force' | 'ignore',
 	},
-	highlightSensitiveImages: {
+	highlightSensitiveMedia: {
 		where: 'device',
 		default: false,
 	},
