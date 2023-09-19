@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { deviceKind } from '@/scripts/device-kind';
+import { deviceKind } from '@/scripts/device-kind.js';
 
 const isTouchSupported = 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0;
 

@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue';
 import { toUnicode as decodePunycode } from 'punycode/';
-import { url as local } from '@/config';
-import * as os from '@/os';
-import { useTooltip } from '@/scripts/use-tooltip';
-import { safeURIDecode } from '@/scripts/safe-uri-decode';
+import { url as local } from '@/config.js';
+import * as os from '@/os.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import { safeURIDecode } from '@/scripts/safe-uri-decode.js';
 
 const props = defineProps<{
 	url: string;

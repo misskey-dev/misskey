@@ -1,6 +1,7 @@
 {
 	"name": "frontend",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"watch": "vite",
 		"build": "vite build",

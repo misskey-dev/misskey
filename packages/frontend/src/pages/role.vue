@@ -29,13 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import MkUserList from '@/components/MkUserList.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { instanceName } from '@/config';
-import { serverErrorImageUrl } from '@/instance';
+import { instanceName } from '@/config.js';
+import { serverErrorImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	role: string;

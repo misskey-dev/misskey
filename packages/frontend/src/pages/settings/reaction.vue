@@ -67,11 +67,11 @@ import FromSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { deepClone } from '@/scripts/clone';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { deepClone } from '@/scripts/clone.js';
 
 let reactions = $ref(deepClone(defaultStore.state.reactions));
 

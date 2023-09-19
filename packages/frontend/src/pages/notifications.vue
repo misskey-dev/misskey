@@ -24,9 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import XNotifications from '@/components/MkNotifications.vue';
 import MkNotes from '@/components/MkNotes.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { notificationTypes } from '@/const';
 
 let tab = $ref('all');

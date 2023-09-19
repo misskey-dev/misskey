@@ -5,8 +5,8 @@
 
 import { Endpoints } from 'misskey-js/built/api.types';
 import { ref } from 'vue';
-import { apiUrl } from '@/config';
-import { $i } from '@/account';
+import { apiUrl } from '@/config.js';
+import { $i } from '@/account.js';
 export const pendingApiRequestsCount = ref(0);
 
 // Implements Misskey.api.ApiClient.request

@@ -5,7 +5,7 @@
 
 import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { Storage } from './pizzax';
+import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
 	title: string,

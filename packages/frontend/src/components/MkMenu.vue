@@ -63,12 +63,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { Ref, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { focusPrev, focusNext } from '@/scripts/focus';
+import { focusPrev, focusNext } from '@/scripts/focus.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
 import { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuParent } from '@/types/menu';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { isTouchUsing } from '@/scripts/touch';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { isTouchUsing } from '@/scripts/touch.js';
 
 const childrenCache = new WeakMap<MenuParent, MenuItem[]>();
 </script>

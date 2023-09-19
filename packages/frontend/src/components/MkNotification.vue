@@ -109,14 +109,14 @@ import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
 import XReactionTooltip from '@/components/MkReactionTooltip.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getNoteSummary } from '@/scripts/get-note-summary';
-import { notePage } from '@/filters/note';
-import { userPage } from '@/filters/user';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { useTooltip } from '@/scripts/use-tooltip';
-import { $i } from '@/account';
-import { infoImageUrl } from '@/instance';
+import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { notePage } from '@/filters/note.js';
+import { userPage } from '@/filters/user.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import { $i } from '@/account.js';
+import { infoImageUrl } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	notification: Misskey.entities.Notification;

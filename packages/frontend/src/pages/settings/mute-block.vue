@@ -107,12 +107,12 @@ import MkPagination from '@/components/MkPagination.vue';
 import MkTab from '@/components/MkTab.vue';
 import FormInfo from '@/components/MkInfo.vue';
 import FormLink from '@/components/form/link.vue';
-import { userPage } from '@/filters/user';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { userPage } from '@/filters/user.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import * as os from '@/os';
-import { infoImageUrl } from '@/instance';
+import * as os from '@/os.js';
+import { infoImageUrl } from '@/instance.js';
 
 let tab = $ref('renoteMute');
 

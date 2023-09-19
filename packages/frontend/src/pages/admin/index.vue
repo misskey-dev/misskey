@@ -29,14 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onActivated, onMounted, onUnmounted, provide, watch } from 'vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { instance } from '@/instance';
-import * as os from '@/os';
-import { lookupUser } from '@/scripts/lookup-user';
-import { useRouter } from '@/router';
-import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { lookupUser } from '@/scripts/lookup-user.js';
+import { useRouter } from '@/router.js';
+import { definePageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
 
 const isEmpty = (x: string | null) => x == null || x === '';
 

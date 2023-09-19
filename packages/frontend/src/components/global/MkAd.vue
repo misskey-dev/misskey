@@ -33,13 +33,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { host } from '@/config';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { host } from '@/config.js';
 import MkButton from '@/components/MkButton.vue';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
-import { $i } from '@/account';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
 
 type Ad = (typeof instance)['ads'][number];
 

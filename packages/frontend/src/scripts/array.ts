@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EndoRelation, Predicate } from './relation';
+import { EndoRelation, Predicate } from './relation.js';
 
 /**
  * Count the number of elements that satisfy the predicate
