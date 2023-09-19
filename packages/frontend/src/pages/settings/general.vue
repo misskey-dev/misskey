@@ -30,6 +30,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
+			<MkFolder>
+				<template #label>{{ i18n.ts.pinnedList }}</template>
+				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
+				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -305,6 +311,23 @@ function removeEmojiIndex(lang: string) {
 	}
 
 	os.promiseDialog(main());
+}
+
+async function setPinnedList() {
+	const lists = await os.api('users/lists/list');
+	const { canceled, result: list } = await os.select({
+		title: i18n.ts.selectList,
+		items: lists.map(x => ({
+			value: x, text: x.name,
+		})),
+	});
+	if (canceled) return;
+
+	defaultStore.set('pinnedUserLists', [list]);
+}
+
+function removePinnedList() {
+	defaultStore.set('pinnedUserLists', []);
 }
 
 let smashCount = 0;

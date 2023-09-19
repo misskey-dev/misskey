@@ -1114,6 +1114,7 @@ export interface Locale {
     "renotes": string;
     "loadReplies": string;
     "loadConversation": string;
+    "pinnedList": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;

@@ -4,7 +4,7 @@
  */
 
 import { markRaw, ref } from 'vue';
-import misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { Storage } from './pizzax';
 
 interface PostFormAction {
@@ -163,9 +163,13 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global',
-			arg: null,
+			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
+			userList: null as Misskey.entities.UserList | null,
 		},
+	},
+	pinnedUserLists: {
+		where: 'deviceAccount',
+		default: [] as Misskey.entities.UserList[],
 	},
 
 	overridedDeviceKind: {
