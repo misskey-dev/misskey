@@ -57,6 +57,7 @@
 - AiScriptを0.16.0に更新
 - Mk:apiが失敗した時にエラー型の値（AiScript 0.16.0で追加）を返すように
 - タイムラインでリスト/アンテナ選択時のパフォーマンスを改善
+- ScratchpadでAsync:系関数やボタンのコールバックなどのエラーにもダイアログを出すように（試験的なためPlayなどには未実装）
 - 「Moderation note」、「Add moderation note」をローカライズできるように
 - 新しい実績を追加
 - Fix: サーバー情報画面(`/instance-info/{domain}`)でブロックができないのを修正
