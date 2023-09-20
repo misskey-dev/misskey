@@ -69,12 +69,6 @@ const $noteNotificationsRepository: Provider = {
 	inject: [DI.db],
 };
 
-const $noteNotificationsRepository: Provider = {
-	provide: DI.noteNotificationsRepository,
-	useFactory: (db: DataSource) => db.getRepository(NoteNotification),
-	inject: [DI.db],
-};
-
 const $pollsRepository: Provider = {
 	provide: DI.pollsRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiPoll),
