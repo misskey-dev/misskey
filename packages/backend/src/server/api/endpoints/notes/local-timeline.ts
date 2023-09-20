@@ -90,9 +90,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				if (localFollowees.length > 0) {
 					const meOrFolloweeIds = [me.id, ...localFollowees.map(f => f.followeeId)];
 
-					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId IN (:...meOrFolloweeIds) )', { meOrFolloweeIds: meOrFolloweeIds });
+					query.andWhere(new Brackets(qb => {
+						qb.where('(note.userId IN (:...meOrFolloweeIds) )', { meOrFolloweeIds: meOrFolloweeIds })
+							.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					}));
 				} else {
-					query.andWhere('((note.visibility = \'public\') AND (note.userHost IS NULL)) OR (note.userId = :meId)', { meId: me.id });
+					query.andWhere(new Brackets(qb => {
+						qb.where('(note.userId = :meId)', { meId: me.id })
+							.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					}));
 				}
 			} else {
 				query.andWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
