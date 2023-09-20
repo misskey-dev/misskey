@@ -933,6 +933,7 @@ export interface Locale {
     "cannotUploadBecauseNoFreeSpace": string;
     "cannotUploadBecauseExceedsFileSizeLimit": string;
     "beta": string;
+    "originalFeature": string;
     "enableAutoSensitive": string;
     "enableAutoSensitiveDescription": string;
     "activeEmailValidationDescription": string;
