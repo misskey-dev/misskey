@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import type { WebhooksRepository } from '@/models/_.js';
-import type { MiWebhook } from '@/models/entities/Webhook.js';
+import type { MiWebhook } from '@/models/Webhook.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { StreamMessages } from '@/server/api/stream/types.js';

@@ -32,9 +32,9 @@ import { onUpdated } from 'vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import * as os from '@/os';
-import { getScrollContainer } from '@/scripts/scroll';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { getScrollContainer } from '@/scripts/scroll.js';
+import { $i } from '@/account.js';
 
 let notes = $ref<Misskey.entities.Note[]>([]);
 let isScrolling = $ref(false);

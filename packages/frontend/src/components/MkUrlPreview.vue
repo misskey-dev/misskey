@@ -85,13 +85,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, onUnmounted } from 'vue';
 import type { summaly } from 'summaly';
-import { url as local } from '@/config';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { deviceKind } from '@/scripts/device-kind';
+import { url as local } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
-import { versatileLang } from '@/scripts/intl-const';
-import { defaultStore } from '@/store';
+import { versatileLang } from '@/scripts/intl-const.js';
+import { defaultStore } from '@/store.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 

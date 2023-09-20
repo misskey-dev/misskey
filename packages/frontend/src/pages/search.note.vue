@@ -48,13 +48,13 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { $i } from '@/account';
-import { instance } from '@/instance';
+import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import MkInfo from '@/components/MkInfo.vue';
-import { useRouter } from '@/router';
+import { useRouter } from '@/router.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const router = useRouter();

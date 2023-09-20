@@ -58,9 +58,9 @@ import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string';
-import { addTime } from '@/scripts/time';
-import { i18n } from '@/i18n';
+import { formatDateTimeString } from '@/scripts/format-time-string.js';
+import { addTime } from '@/scripts/time.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue: {

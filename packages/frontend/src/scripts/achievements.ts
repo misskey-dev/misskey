@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as os from '@/os';
-import { $i } from '@/account';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
 
 export const ACHIEVEMENT_TYPES = [
 	'notes1',

@@ -53,13 +53,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
-import bytes from '@/filters/bytes';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import bytes from '@/filters/bytes.js';
 import ImgWithBlurhash from '@/components/MkImgWithBlurhash.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
-import { iAmModerator } from '@/account';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { iAmModerator } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;

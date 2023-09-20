@@ -4,8 +4,8 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 
 export async function lookupUser() {
 	const { canceled, result } = await os.inputText({

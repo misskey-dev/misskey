@@ -127,15 +127,15 @@ import FormSection from '@/components/form/section.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import number from '@/filters/number';
-import { iAmModerator, iAmAdmin } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import number from '@/filters/number.js';
+import { iAmModerator, iAmAdmin } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
-import { dateString } from '@/filters/date';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { dateString } from '@/filters/date.js';
 
 const props = defineProps<{
 	host: string;

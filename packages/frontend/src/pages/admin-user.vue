@@ -214,12 +214,12 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { url } from '@/config';
-import { userPage, acct } from '@/filters/user';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { iAmAdmin, $i } from '@/account';
+import * as os from '@/os.js';
+import { url } from '@/config.js';
+import { userPage, acct } from '@/filters/user.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { iAmAdmin, $i } from '@/account.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
 

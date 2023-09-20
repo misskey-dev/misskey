@@ -7,11 +7,11 @@
  * Notification manager for SW
  */
 import type { BadgeNames, PushNotificationDataMap } from '@/types';
-import { char2fileName } from '@/scripts/twemoji-base';
-import { cli } from '@/scripts/operations';
-import { getAccountFromId } from '@/scripts/get-account-from-id';
-import { swLang } from '@/scripts/lang';
-import { getUserName } from '@/scripts/get-user-name';
+import { char2fileName } from '@/scripts/twemoji-base.js';
+import { cli } from '@/scripts/operations.js';
+import { getAccountFromId } from '@/scripts/get-account-from-id.js';
+import { swLang } from '@/scripts/lang.js';
+import { getUserName } from '@/scripts/get-user-name.js';
 
 const closeNotificationsByTags = async (tags: string[]): Promise<void> => {
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {

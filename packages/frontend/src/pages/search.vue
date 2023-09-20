@@ -24,11 +24,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted } from 'vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { instance } from '@/instance';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 import MkInfo from '@/components/MkInfo.vue';
 
 const XNote = defineAsyncComponent(() => import('./search.note.vue'));

@@ -40,9 +40,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import bytes from '@/filters/bytes';
-import { i18n } from '@/i18n';
-import { dateString } from '@/filters/date';
+import bytes from '@/filters/bytes.js';
+import { i18n } from '@/i18n.js';
+import { dateString } from '@/filters/date.js';
 
 const props = defineProps<{
 	pagination: any;
