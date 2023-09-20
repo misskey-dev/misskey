@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
-import type { MiAntenna } from '@/models/entities/Antenna.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUserList } from '@/models/UserList.js';
+import type { MiAntenna } from '@/models/Antenna.js';
 import type {
 	StreamChannels,
 	AdminStreamTypes,

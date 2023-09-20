@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { } from '@/models/entities/Blocking.js';
-import type { MiSignin } from '@/models/entities/Signin.js';
+import type { } from '@/models/Blocking.js';
+import type { MiSignin } from '@/models/Signin.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
