@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import { QueryFailedError } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { ClipsRepository, MiNote, MiClip, ClipNotesRepository, NotesRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
@@ -22,12 +22,6 @@ export class ClipService {
 	public static TooManyClipsError = class extends Error {};
 
 	constructor(
-		@Inject(DI.redis)
-		private redisClient: Redis.Redis,
-
-		@Inject(DI.redisForSub)
-		private redisForSub: Redis.Redis,
-
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
@@ -119,11 +113,13 @@ export class ClipService {
 				noteId: noteId,
 				clipId: clip.id,
 			});
-		} catch (e: any) {
-			if (isDuplicateKeyValueError(e)) {
-				throw new ClipService.AlreadyAddedError();
-			} else if (e.detail.includes('is not present in table "note".')) {
-				throw new ClipService.NoSuchNoteError();
+		} catch (e: unknown) {
+			if (e instanceof QueryFailedError) {
+				if (isDuplicateKeyValueError(e)) {
+					throw new ClipService.AlreadyAddedError();
+				} else if (e.driverError.detail.includes('is not present in table "note".')) {
+					throw new ClipService.NoSuchNoteError();
+				}
 			}
 
 			throw e;
