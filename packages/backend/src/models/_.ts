@@ -173,6 +173,7 @@ export type NoteFavoritesRepository = Repository<MiNoteFavorite>;
 export type NoteReactionsRepository = Repository<MiNoteReaction>;
 export type NoteThreadMutingsRepository = Repository<MiNoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<MiNoteUnread>;
+export type NoteNotificationsRepository = Repository<MiNoteNotification>;
 export type PagesRepository = Repository<MiPage>;
 export type PageLikesRepository = Repository<MiPageLike>;
 export type PasswordResetRequestsRepository = Repository<MiPasswordResetRequest>;
