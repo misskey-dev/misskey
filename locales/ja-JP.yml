@@ -930,9 +930,12 @@ cannotUploadBecauseInappropriate: "不適切な内容を含む可能性がある
 cannotUploadBecauseNoFreeSpace: "ドライブの空き容量が無いためアップロードできません。"
 cannotUploadBecauseExceedsFileSizeLimit: "ファイルサイズの制限を超えているためアップロードできません。"
 beta: "ベータ"
+originalFeature: "Nadesskey"
 enableAutoSensitive: "自動センシティブ判定"
 enableAutoSensitiveDescription: "利用可能な場合は、機械学習を利用して自動でメディアにセンシティブフラグを設定します。この機能をオフにしても、サーバーによっては自動で設定されることがあります。"
 activeEmailValidationDescription: "ユーザーのメールアドレスのバリデーションを、捨てアドかどうかや実際に通信可能かどうかなどを判定しより積極的に行います。オフにすると単に文字列として正しいかどうかのみチェックされます。"
+filenameRandomize: "ファイル名をランダム化"
+filenameRandomizeDescription: "ファイルのアップロード時にファイル名をランダムな文字列に変更します。以前にアップロードしたファイルのファイル名は変更されません。"
 navbar: "ナビゲーションバー"
 shuffle: "シャッフル"
 account: "アカウント"
@@ -1030,6 +1033,8 @@ accountMoved: "このユーザーは新しいアカウントに移行しまし�
 accountMovedShort: "このアカウントは移行されています"
 operationForbidden: "この操作はできません"
 forceShowAds: "常に広告を表示する"
+noteSubscribe: "ノート通知を有効にする"
+noteUnsubscribe: "ノート通知を無効にする"
 addMemo: "メモを追加"
 editMemo: "メモを編集"
 reactionsList: "リアクション一覧"
@@ -1115,6 +1120,7 @@ _initialAccountSetting:
 
 _serverRules:
   description: "新規登録前に表示する、サーバーの簡潔なルールを設定します。内容は利用規約の要約とすることを推奨します。"
+
 
 _accountMigration:
   moveFrom: "別のアカウントからこのアカウントに移行"
@@ -2018,6 +2024,7 @@ _notification:
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
+  newNote: "{name}がノートしました"
 
   _types:
     all: "すべて"

@@ -29,6 +29,7 @@ import { Muting } from '@/models/entities/Muting.js';
 import { RenoteMuting } from '@/models/entities/RenoteMuting.js';
 import { Note } from '@/models/entities/Note.js';
 import { NoteFavorite } from '@/models/entities/NoteFavorite.js';
+import { NoteNotification } from '@/models/entities/NoteNotification.js';
 import { NoteReaction } from '@/models/entities/NoteReaction.js';
 import { NoteThreadMuting } from '@/models/entities/NoteThreadMuting.js';
 import { NoteUnread } from '@/models/entities/NoteUnread.js';
@@ -98,6 +99,7 @@ export {
 	RenoteMuting,
 	Note,
 	NoteFavorite,
+	NoteNotification,
 	NoteReaction,
 	NoteThreadMuting,
 	NoteUnread,
@@ -166,6 +168,7 @@ export type MutingsRepository = Repository<Muting>;
 export type RenoteMutingsRepository = Repository<RenoteMuting>;
 export type NotesRepository = Repository<Note>;
 export type NoteFavoritesRepository = Repository<NoteFavorite>;
+export type NoteNotificationsRepository = Repository<NoteNotification>;
 export type NoteReactionsRepository = Repository<NoteReaction>;
 export type NoteThreadMutingsRepository = Repository<NoteThreadMuting>;
 export type NoteUnreadsRepository = Repository<NoteUnread>;

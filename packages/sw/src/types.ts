@@ -42,6 +42,7 @@ export type BadgeNames =
 	| 'messages'
 	| 'plus'
 	| 'quote'
+	| 'bell'
 	| 'repeat'
 	| 'user-plus'
 	| 'users';
