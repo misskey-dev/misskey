@@ -1112,6 +1112,7 @@ renotes: "转发"
 loadReplies: "查看回复"
 loadConversation: "查看对话"
 pinnedList: "已置顶的列表"
+keepScreenOn: "保持设备屏幕开启"
 _announcement:
   forExistingUsers: "仅限现有用户"
   forExistingUsersDescription: "若启用，该公告将仅对创建此公告时存在的用户可见。 如果禁用，则在创建此公告后注册的用户也可以看到该公告。"
