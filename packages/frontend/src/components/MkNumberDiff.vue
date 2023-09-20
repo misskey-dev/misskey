@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import number from '@/filters/number';
+import number from '@/filters/number.js';
 
 const props = defineProps<{
 	value: number;

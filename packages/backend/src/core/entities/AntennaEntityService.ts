@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { AntennasRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiAntenna } from '@/models/entities/Antenna.js';
+import type { MiAntenna } from '@/models/Antenna.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()

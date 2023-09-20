@@ -103,11 +103,11 @@ import MkButton from '@/components/MkButton.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkInput from '@/components/MkInput.vue';
-import { i18n } from '@/i18n';
-import * as os from '@/os';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { confetti } from '@/scripts/confetti';
+import { confetti } from '@/scripts/confetti.js';
 
 defineProps<{
 	twoFactorData: {

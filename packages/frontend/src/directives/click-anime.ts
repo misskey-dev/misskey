@@ -4,7 +4,7 @@
  */
 
 import { Directive } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 
 export default {
 	mounted(el: HTMLElement, binding, vn) {

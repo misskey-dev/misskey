@@ -34,11 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { claimAchievement } from '@/scripts/achievements';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { claimAchievement } from '@/scripts/achievements.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
 
 const props = withDefaults(defineProps<{
 	folder: Misskey.entities.DriveFolder;

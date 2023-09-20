@@ -15,8 +15,8 @@ import MkCode from '@/components/MkCode.vue';
 import MkGoogle from '@/components/MkGoogle.vue';
 import MkSparkle from '@/components/MkSparkle.vue';
 import MkA from '@/components/global/MkA.vue';
-import { host } from '@/config';
-import { defaultStore } from '@/store';
+import { host } from '@/config.js';
+import { defaultStore } from '@/store.js';
 
 const QUOTE_STYLE = `
 display: block;

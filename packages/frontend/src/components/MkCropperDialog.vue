@@ -36,12 +36,12 @@ import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { defaultStore } from '@/store';
-import { apiUrl } from '@/config';
-import { i18n } from '@/i18n';
-import { getProxiedImageUrl } from '@/scripts/media-proxy';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+import { apiUrl } from '@/config.js';
+import { i18n } from '@/i18n.js';
+import { getProxiedImageUrl } from '@/scripts/media-proxy.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', cropped: Misskey.entities.DriveFile): void;

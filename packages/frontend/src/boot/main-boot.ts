@@ -4,21 +4,21 @@
  */
 
 import { computed, createApp, watch, markRaw, version as vueVersion, defineAsyncComponent } from 'vue';
-import { common } from './common';
-import { version, ui, lang, updateLocale } from '@/config';
-import { i18n, updateI18n } from '@/i18n';
-import { confirm, alert, post, popup, toast } from '@/os';
-import { useStream } from '@/stream';
-import * as sound from '@/scripts/sound';
-import { $i, refreshAccount, login, updateAccount, signout } from '@/account';
-import { defaultStore, ColdDeviceStorage } from '@/store';
-import { makeHotkey } from '@/scripts/hotkey';
-import { reactionPicker } from '@/scripts/reaction-picker';
-import { miLocalStorage } from '@/local-storage';
-import { claimAchievement, claimedAchievements } from '@/scripts/achievements';
-import { mainRouter } from '@/router';
-import { initializeSw } from '@/scripts/initialize-sw';
-import { deckStore } from '@/ui/deck/deck-store';
+import { common } from './common.js';
+import { version, ui, lang, updateLocale } from '@/config.js';
+import { i18n, updateI18n } from '@/i18n.js';
+import { confirm, alert, post, popup, toast } from '@/os.js';
+import { useStream } from '@/stream.js';
+import * as sound from '@/scripts/sound.js';
+import { $i, refreshAccount, login, updateAccount, signout } from '@/account.js';
+import { defaultStore, ColdDeviceStorage } from '@/store.js';
+import { makeHotkey } from '@/scripts/hotkey.js';
+import { reactionPicker } from '@/scripts/reaction-picker.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { claimAchievement, claimedAchievements } from '@/scripts/achievements.js';
+import { mainRouter } from '@/router.js';
+import { initializeSw } from '@/scripts/initialize-sw.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
 
 export async function mainBoot() {
 	const { isClientUpdated } = await common(() => createApp(

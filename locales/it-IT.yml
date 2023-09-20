@@ -1109,6 +1109,9 @@ youHaveUnreadAnnouncements: "Ci sono Annunci non letti"
 useSecurityKey: "Per utilizzare la chiave di sicurezza o la passkey, segui le indicazioni del dispositivo"
 replies: "Rispondi"
 renotes: "Rinota"
+loadReplies: "Leggi le risposte"
+loadConversation: "Leggi la conversazione"
+pinnedList: "Elenco in primo piano"
 _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
@@ -1137,6 +1140,11 @@ _serverRules:
   description: "In Europa è necessario mostrare l'informativa sul trattamento dei dati personali, prima della registrazione al servizio."
 _serverSettings:
   iconUrl: "URL dell'icona"
+  appIconDescription: "Indicare l'icona da usare quando {host} viene salvata come App."
+  appIconUsageExample: "Ad esempio quando si aggiunge il segnalibro alla PWA (Progressive Web App), oppure alla schermata iniziale del dispositivo mobile "
+  appIconStyleRecommendation: "Poiché l'icona potrebbe essere ritagliata in un quadrato o in un cerchio, si raccomanda che abbia un margine colorato."
+  appIconResolutionMustBe: "La risoluzione minima è {resolution}"
+  manifestJsonOverride: "Sostituire il file manifest.json"
 _accountMigration:
   moveFrom: "Migra un altro profilo dentro a questo"
   moveFromSub: "Crea un alias verso un altro profilo remoto"

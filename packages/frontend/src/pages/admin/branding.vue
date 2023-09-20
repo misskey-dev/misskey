@@ -103,13 +103,13 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import * as os from '@/os';
-import { instance, fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { instance, fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
-import { host } from '@/config';
+import { host } from '@/config.js';
 
 let iconUrl: string | null = $ref(null);
 let app192IconUrl: string | null = $ref(null);

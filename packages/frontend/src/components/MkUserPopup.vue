@@ -58,14 +58,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { userPage } from '@/filters/user';
-import * as os from '@/os';
-import { getUserMenu } from '@/scripts/get-user-menu';
-import number from '@/filters/number';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
-import { $i } from '@/account';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe';
+import { userPage } from '@/filters/user.js';
+import * as os from '@/os.js';
+import { getUserMenu } from '@/scripts/get-user-menu.js';
+import number from '@/filters/number.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
+import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
 
 const props = defineProps<{
 	showing: boolean;

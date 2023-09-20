@@ -12,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { instanceName } from '@/config';
-import { instance as Instance } from '@/instance';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy';
+import { instanceName } from '@/config.js';
+import { instance as Instance } from '@/instance.js';
+import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
 
 const props = defineProps<{
 	instance?: {

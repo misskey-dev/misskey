@@ -33,9 +33,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import bytes from '@/filters/bytes';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import bytes from '@/filters/bytes.js';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;

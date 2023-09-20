@@ -82,11 +82,11 @@ import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
-import * as config from '@/config';
-import * as os from '@/os';
-import { login } from '@/account';
-import { instance } from '@/instance';
-import { i18n } from '@/i18n';
+import * as config from '@/config.js';
+import * as os from '@/os.js';
+import { login } from '@/account.js';
+import { instance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;

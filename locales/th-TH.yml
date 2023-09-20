@@ -1102,6 +1102,8 @@ icon: "ไอคอน"
 forYou: "สำหรับคุณ"
 replies: "ตอบกลับ"
 renotes: "รีโน้ต"
+loadReplies: "แสดงการตอบกลับ"
+loadConversation: "แสดงบทสนทนา"
 _announcement:
   forExistingUsersDescription: "การประกาศนี้จะแสดงต่อผู้ใช้ที่มีอยู่ ณ จุดที่เผยแพร่นั้นๆถ้าหากเปิดใช้งาน ถ้าหากปิดใช้งานผู้ที่กำลังสมัครใหม่หลังจากโพสต์แล้วนั้นก็จะเห็นเช่นกัน"
   needConfirmationToReadDescription: "ข้อความแจ้งแยก ถ้าหากต้องการเพื่อยืนยันว่ากำลังทำเครื่องหมายประกาศนี้ว่าอ่านแล้วจะแสดงขึ้นถ้าหากเปิดใช้งาน การประกาศนั้นจะไม่รวมอยู่ในฟังก์ชั่นว่า \"ทำเครื่องหมายทั้งหมดว่าอ่านแล้ว\""
@@ -1382,6 +1384,8 @@ _achievements:
       title: "Brain Diver"
       description: "โพสต์ลิงก์ไปยัง Brain Diver"
       flavor: "Misskey-Misskey La-Tu-Ma"
+    _smashTestNotificationButton:
+      title: "ทดสอบโอเวอร์โฟลว์"
 _role:
   new: "บทบาทใหม่"
   edit: "แก้ไขบทบาท"
@@ -1986,6 +1990,10 @@ _notification:
   unreadAntennaNote: "เสาอากาศ {name}"
   emptyPushNotificationMessage: "การแจ้งเตือนแบบพุชได้รับการอัพเดทแล้ว"
   achievementEarned: "รับความสำเร็จ"
+  testNotification: "ทดสอบการแจ้งเตือน"
+  checkNotificationBehavior: "ตรวจสอบลักษณะที่ปรากฏการแจ้งเตือน"
+  sendTestNotification: "ส่งทดสอบการแจ้งเตือน"
+  notificationWillBeDisplayedLikeThis: "การแจ้งเตือนมีลักษณะแบบนี้"
   _types:
     all: "ทั้งหมด"
     follow: "กำลังติดตาม"

@@ -30,6 +30,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="showFixedPostForm">{{ i18n.ts.showFixedPostForm }}</MkSwitch>
 			<MkSwitch v-model="showFixedPostFormInChannel">{{ i18n.ts.showFixedPostFormInChannel }}</MkSwitch>
 			<MkSwitch v-model="showTimelineReplies">{{ i18n.ts.flagShowTimelineReplies }}<template #caption>{{ i18n.ts.flagShowTimelineRepliesDescription }} {{ i18n.ts.reflectMayTakeTime }}</template></MkSwitch>
+			<MkFolder>
+				<template #label>{{ i18n.ts.pinnedList }}</template>
+				<!-- 複数ピン止め管理できるようにしたいけどめんどいので一旦ひとつのみ -->
+				<MkButton v-if="defaultStore.reactiveState.pinnedUserLists.value.length === 0" @click="setPinnedList()">{{ i18n.ts.add }}</MkButton>
+				<MkButton v-else danger @click="removePinnedList()"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
+			</MkFolder>
 		</div>
 	</FormSection>
 
@@ -142,6 +148,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s">
 				<MkSwitch v-model="imageNewTab">{{ i18n.ts.openImageInNewTab }}</MkSwitch>
 				<MkSwitch v-model="enableInfiniteScroll">{{ i18n.ts.enableInfiniteScroll }}</MkSwitch>
+				<MkSwitch v-model="keepScreenOn">{{ i18n.ts.keepScreenOn }}</MkSwitch>
 			</div>
 			<MkSelect v-model="serverDisconnectedBehavior">
 				<template #label>{{ i18n.ts.whenServerDisconnected }}</template>
@@ -186,15 +193,15 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
-import { langs } from '@/config';
-import { defaultStore } from '@/store';
-import * as os from '@/os';
-import { unisonReload } from '@/scripts/unison-reload';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
+import { langs } from '@/config.js';
+import { defaultStore } from '@/store.js';
+import * as os from '@/os.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { miLocalStorage } from '@/local-storage.js';
 import { globalEvents } from '@/events';
-import { claimAchievement } from '@/scripts/achievements';
+import { claimAchievement } from '@/scripts/achievements.js';
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const fontSize = ref(miLocalStorage.getItem('fontSize'));
@@ -241,6 +248,7 @@ const mediaListWithOneImageAppearance = computed(defaultStore.makeGetterSetter('
 const notificationPosition = computed(defaultStore.makeGetterSetter('notificationPosition'));
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
+const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
 
 watch(lang, () => {
 	miLocalStorage.setItem('lang', lang.value as string);
@@ -275,6 +283,7 @@ watch([
 	overridedDeviceKind,
 	mediaListWithOneImageAppearance,
 	reactionsDisplaySize,
+	keepScreenOn,
 ], async () => {
 	await reloadAsk();
 });
@@ -305,6 +314,23 @@ function removeEmojiIndex(lang: string) {
 	}
 
 	os.promiseDialog(main());
+}
+
+async function setPinnedList() {
+	const lists = await os.api('users/lists/list');
+	const { canceled, result: list } = await os.select({
+		title: i18n.ts.selectList,
+		items: lists.map(x => ({
+			value: x, text: x.name,
+		})),
+	});
+	if (canceled) return;
+
+	defaultStore.set('pinnedUserLists', [list]);
+}
+
+function removePinnedList() {
+	defaultStore.set('pinnedUserLists', []);
 }
 
 let smashCount = 0;
