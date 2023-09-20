@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkModalWindow
 	ref="dialog"
@@ -35,13 +40,13 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
-import { permissions as kinds } from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkInput from './MkInput.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
 import MkInfo from './MkInfo.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	title?: string | null;
@@ -69,7 +74,7 @@ if (props.initialPermissions) {
 		permissions[kind] = true;
 	}
 } else {
-	for (const kind of kinds) {
+	for (const kind of Misskey.permissions) {
 		permissions[kind] = false;
 	}
 }

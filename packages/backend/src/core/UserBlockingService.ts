@@ -1,13 +1,17 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { IdService } from '@/core/IdService.js';
-import type { User } from '@/models/entities/User.js';
-import type { Blocking } from '@/models/entities/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
+import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
@@ -54,7 +58,7 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async block(blocker: User, blockee: User, silent = false) {
+	public async block(blocker: MiUser, blockee: MiUser, silent = false) {
 		await Promise.all([
 			this.cancelRequest(blocker, blockee, silent),
 			this.cancelRequest(blockee, blocker, silent),
@@ -70,7 +74,7 @@ export class UserBlockingService implements OnModuleInit {
 			blockerId: blocker.id,
 			blockee,
 			blockeeId: blockee.id,
-		} as Blocking;
+		} as MiBlocking;
 
 		await this.blockingsRepository.insert(blocking);
 
@@ -89,7 +93,7 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async cancelRequest(follower: User, followee: User, silent = false) {
+	private async cancelRequest(follower: MiUser, followee: MiUser, silent = false) {
 		const request = await this.followRequestsRepository.findOneBy({
 			followeeId: followee.id,
 			followerId: follower.id,
@@ -139,7 +143,7 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	private async removeFromList(listOwner: User, user: User) {
+	private async removeFromList(listOwner: MiUser, user: MiUser) {
 		const userLists = await this.userListsRepository.findBy({
 			userId: listOwner.id,
 		});
@@ -153,7 +157,7 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async unblock(blocker: User, blockee: User) {
+	public async unblock(blocker: MiUser, blockee: MiUser) {
 		const blocking = await this.blockingsRepository.findOneBy({
 			blockerId: blocker.id,
 			blockeeId: blockee.id,
@@ -187,7 +191,7 @@ export class UserBlockingService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async checkBlocked(blockerId: User['id'], blockeeId: User['id']): Promise<boolean> {
+	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
 		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
 	}
 }

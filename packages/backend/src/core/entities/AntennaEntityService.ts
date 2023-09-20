@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { AntennasRepository } from '@/models/index.js';
+import type { AntennasRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { Antenna } from '@/models/entities/Antenna.js';
+import type { MiAntenna } from '@/models/Antenna.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
@@ -15,7 +20,7 @@ export class AntennaEntityService {
 
 	@bindThis
 	public async pack(
-		src: Antenna['id'] | Antenna,
+		src: MiAntenna['id'] | MiAntenna,
 	): Promise<Packed<'Antenna'>> {
 		const antenna = typeof src === 'object' ? src : await this.antennasRepository.findOneByOrFail({ id: src });
 

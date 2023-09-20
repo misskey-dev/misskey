@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <XColumn :menu="menu" :naked="true" :column="column" :isStacked="isStacked">
 	<template #header><i class="ti ti-apps" style="margin-right: 8px;"></i>{{ column.name }}</template>
@@ -12,9 +17,9 @@
 <script lang="ts" setup>
 import { } from 'vue';
 import XColumn from './column.vue';
-import { addColumnWidget, Column, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store';
+import { addColumnWidget, Column, removeColumnWidget, setColumnWidgets, updateColumnWidget } from './deck-store.js';
 import XWidgets from '@/components/MkWidgets.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	column: Column;

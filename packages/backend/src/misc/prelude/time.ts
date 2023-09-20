@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 const dateTimeIntervals = {
 	'day': 86400000,
 	'hour': 3600000,

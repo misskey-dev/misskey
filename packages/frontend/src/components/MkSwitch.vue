@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]">
 	<input
@@ -7,12 +12,15 @@
 		:class="$style.input"
 		@keydown.enter="toggle"
 	>
-	<span ref="button" v-tooltip="checked ? i18n.ts.itsOn : i18n.ts.itsOff" :class="$style.button" data-cy-switch-toggle @click.prevent="toggle">
-		<div :class="$style.knob"></div>
-	</span>
+	<XButton :checked="checked" :disabled="disabled" @toggle="toggle"/>
 	<span :class="$style.body">
 		<!-- TODO: 無名slotの方は廃止 -->
-		<span :class="$style.label" @click="toggle"><slot name="label"></slot><slot></slot></span>
+		<span :class="$style.label">
+			<span @click="toggle">
+				<slot name="label"></slot><slot></slot>
+			</span>
+			<span v-if="helpText" v-tooltip:dialog="helpText" class="_button _help" :class="$style.help"><i class="ti ti-help-circle"></i></span>
+		</span>
 		<p :class="$style.caption"><slot name="caption"></slot></p>
 	</span>
 </div>
@@ -20,26 +28,22 @@
 
 <script lang="ts" setup>
 import { toRefs, Ref } from 'vue';
-import { i18n } from '@/i18n';
+import XButton from '@/components/MkSwitch.button.vue';
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;
 	disabled?: boolean;
+	helpText?: string;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: boolean): void;
 }>();
 
-let button = $shallowRef<HTMLElement>();
 const checked = toRefs(props).modelValue;
 const toggle = () => {
 	if (props.disabled) return;
 	emit('update:modelValue', !checked.value);
-
-	if (!checked.value) {
-
-	}
 };
 </script>
 
@@ -61,17 +65,8 @@ const toggle = () => {
 		cursor: not-allowed;
 	}
 
-	&.checked {
-		> .button {
-			background-color: var(--switchOnBg) !important;
-			border-color: var(--switchOnBg) !important;
-
-			> .knob {
-				left: 12px;
-				background: var(--switchOnFg);
-			}
-		}
-	}
+	//&.checked {
+	//}
 }
 
 .input {
@@ -81,36 +76,6 @@ const toggle = () => {
 	opacity: 0;
 	margin: 0;
 }
-
-.button {
-	position: relative;
-	display: inline-flex;
-	flex-shrink: 0;
-	margin: 0;
-	box-sizing: border-box;
-	width: 32px;
-	height: 23px;
-	outline: none;
-	background: var(--switchOffBg);
-	background-clip: content-box;
-	border: solid 1px var(--switchOffBg);
-	border-radius: 999px;
-	cursor: pointer;
-	transition: inherit;
-	user-select: none;
-}
-
-.knob {
-	position: absolute;
-	top: 3px;
-	left: 3px;
-	width: 15px;
-	height: 15px;
-	background: var(--switchOffFg);
-	border-radius: 999px;
-	transition: all 0.2s ease;
-}
-
 .body {
 	margin-left: 12px;
 	margin-top: 2px;
@@ -134,5 +99,11 @@ const toggle = () => {
 	&:empty {
 		display: none;
 	}
+}
+
+.help {
+	margin-left: 0.5em;
+	font-size: 85%;
+	vertical-align: top;
 }
 </style>

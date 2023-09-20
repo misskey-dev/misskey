@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { onUnmounted, Ref } from 'vue';
-import * as misskey from 'misskey-js';
-import { useStream } from '@/stream';
-import { $i } from '@/account';
+import * as Misskey from 'misskey-js';
+import { useStream } from '@/stream.js';
+import { $i } from '@/account.js';
 
 export function useNoteCapture(props: {
 	rootEl: Ref<HTMLElement>;
-	note: Ref<misskey.entities.Note>;
+	note: Ref<Misskey.entities.Note>;
 	isDeletedRef: Ref<boolean>;
 }) {
 	const note = props.note;

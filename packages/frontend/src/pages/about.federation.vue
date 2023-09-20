@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div>
@@ -48,10 +53,10 @@
 import { computed } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 let host = $ref('');
 let state = $ref('federating');
@@ -59,6 +64,7 @@ let sort = $ref('+pubSub');
 const pagination = {
 	endpoint: 'federation/instances' as const,
 	limit: 10,
+	displayLimit: 50,
 	offsetMode: true,
 	params: computed(() => ({
 		sort: sort,
@@ -72,7 +78,7 @@ const pagination = {
 			state === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-};
+} as Paging;
 
 function getStatus(instance) {
 	if (instance.isSuspended) return 'Suspended';

@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <component
 	:is="self ? 'MkA' : 'a'" ref="el" style="word-break: break-all;" class="_link" :[attr]="self ? url.substring(local.length) : url" :rel="rel" :target="target"
@@ -10,9 +15,9 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import { url as local } from '@/config';
-import { useTooltip } from '@/scripts/use-tooltip';
-import * as os from '@/os';
+import { url as local } from '@/config.js';
+import { useTooltip } from '@/scripts/use-tooltip.js';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	url: string;

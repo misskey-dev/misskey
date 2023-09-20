@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkContainer :showHeader="widgetProps.showHeader" :naked="widgetProps.transparent" :class="$style.root" :data-transparent="widgetProps.transparent ? true : null" data-cy-mkw-photos class="mkw-photos">
 	<template #icon><i class="ti ti-camera"></i></template>
@@ -19,13 +24,13 @@
 <script lang="ts" setup>
 import { onUnmounted, ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { useStream } from '@/stream';
-import { getStaticImageUrl } from '@/scripts/media-proxy';
-import * as os from '@/os';
+import { GetFormResultType } from '@/scripts/form.js';
+import { useStream } from '@/stream.js';
+import { getStaticImageUrl } from '@/scripts/media-proxy.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { defaultStore } from '@/store';
-import { i18n } from '@/i18n';
+import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'photos';
 
