@@ -202,6 +202,18 @@ export async function common(createVue: () => App<Element>) {
 		}
 	}, { immediate: true });
 
+	if (defaultStore.state.keepScreenOn) {
+		if ('wakeLock' in navigator) {
+			navigator.wakeLock.request('screen');
+
+			document.addEventListener('visibilitychange', async () => {
+				if (document.visibilityState === 'visible') {
+					navigator.wakeLock.request('screen');
+				}
+			});
+		}
+	}
+
 	//#region Fetch user
 	if ($i && $i.token) {
 		if (_DEV_) {

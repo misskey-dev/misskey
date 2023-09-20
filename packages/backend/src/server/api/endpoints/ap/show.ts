@@ -6,8 +6,8 @@
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiLocalUser, MiUser } from '@/models/entities/User.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
 import type { SchemaType } from '@/misc/json-schema.js';
 import { ApResolverService } from '@/core/activitypub/ApResolverService.js';

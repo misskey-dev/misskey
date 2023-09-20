@@ -15,7 +15,7 @@ import type {
 } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
-import type { MiLocalUser } from '@/models/entities/User.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';

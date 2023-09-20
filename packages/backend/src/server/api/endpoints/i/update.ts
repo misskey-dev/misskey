@@ -10,9 +10,9 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import * as Acct from '@/misc/acct.js';
 import type { UsersRepository, DriveFilesRepository, UserProfilesRepository, PagesRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/entities/User.js';
-import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/entities/User.js';
-import type { MiUserProfile } from '@/models/entities/UserProfile.js';
+import type { MiUser } from '@/models/User.js';
+import { birthdaySchema, descriptionSchema, locationSchema, nameSchema } from '@/models/User.js';
+import type { MiUserProfile } from '@/models/UserProfile.js';
 import { notificationTypes } from '@/types.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { langmap } from '@/misc/langmap.js';

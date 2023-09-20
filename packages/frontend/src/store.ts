@@ -5,6 +5,7 @@
 
 import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { miLocalStorage } from './local-storage';
 import { Storage } from '@/pizzax.js';
 
 interface PostFormAction {
@@ -360,6 +361,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: {} as Record<string, Record<string, string[]>>,
 	},
+	keepScreenOn: {
+		where: 'device',
+		default: false,
+	},
 }));
 
 // TODO: 他のタブと永続化されたstateを同期
@@ -386,7 +391,6 @@ interface Watcher {
 /**
  * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
  */
-import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
 
