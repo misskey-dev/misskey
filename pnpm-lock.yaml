@@ -658,6 +658,7 @@ importers:
       '@rollup/pluginutils':
         specifier: 5.0.4
         version: 5.0.4(rollup@3.29.2)
+
       '@syuilo/aiscript':
         specifier: 0.16.0
         version: 0.16.0
@@ -980,9 +981,6 @@ importers:
       summaly:
         specifier: github:misskey-dev/summaly
         version: github.com/misskey-dev/summaly/d2d8db49943ccb201c1b1b283e9d0a630519fac7
-      vite-plugin-compression2:
-        specifier: ^0.10.4
-        version: 0.10.4(rollup@3.29.1)
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -18959,14 +18957,6 @@ packages:
       - sugarss
       - supports-color
       - terser
-    dev: true
-
-  /vite-plugin-compression2@0.10.4(rollup@3.29.1):
-    resolution: {integrity: sha512-9YcESw0n1j8KxxY1NJKEcItlT0bLS+K/NKa/xPqZGEHW/qwgigIeRF/bCTUdZ/bn/mg2+PeERWgRmK8G1L0tyg==}
-    dependencies:
-      '@rollup/pluginutils': 5.0.4(rollup@3.29.1)
-    transitivePeerDependencies:
-      - rollup
     dev: true
 
   /vite-plugin-turbosnap@1.0.3:
