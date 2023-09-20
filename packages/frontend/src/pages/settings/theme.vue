@@ -98,7 +98,7 @@ import MkButton from '@/components/MkButton.vue';
 import {getBuiltinThemesRef} from '@/scripts/theme';
 import {selectFile} from '@/scripts/select-file';
 import {isDeviceDarkmode} from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage, defaultStore , bannerDark,bannerLight} from '@/store';
+import {ColdDeviceStorage, defaultStore, bannerDark, bannerLight, iconDark, iconLight} from '@/store';
 import {i18n} from '@/i18n';
 import {instance} from '@/instance';
 import {uniqueBy} from '@/scripts/array';
@@ -148,10 +148,13 @@ const themesCount = installedThemes.value.length;
 watch(darkMode, () => {
 	if (darkMode.value) {
 		defaultStore.set('bannerUrl', bannerDark)
+    defaultStore.set('iconUrl', iconDark)
 	}else if(!darkMode.value) {
     defaultStore.set('bannerUrl', bannerLight)
+    defaultStore.set('iconUrl', iconLight)
 	}else{
     defaultStore.set('bannerUrl', bannerDark)
+    defaultStore.set('iconUrl', iconDark)
   }
 })
 

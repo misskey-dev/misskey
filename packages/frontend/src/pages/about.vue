@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m">
 			<div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }">
 				<div style="overflow: clip;">
-					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
+					<img :src="iconUrl" alt="" :class="$style.bannerIcon"/>
 					<div :class="$style.bannerName">
 						<b>{{ instance.name ?? host }}</b>
 					</div>
@@ -115,7 +115,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement } from '@/scripts/achievements';
 import { instance } from '@/instance';
-import {bannerDark, bannerLight, defaultStore} from "@/store";
+import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store";
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -132,13 +132,15 @@ watch($$(tab), () => {
 	}
 });
 let bannerUrl = ref(defaultStore.state.bannerUrl);
-
+let iconUrl = ref(defaultStore.state.iconUrl);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 watch(darkMode, () => {
   if (darkMode.value){
     bannerUrl.value = bannerDark;
+    iconUrl.value = iconDark;
   }else{
     bannerUrl.value = bannerLight;
+    iconUrl.value = iconLight;
   }
 })
 const initStats = () => os.api('stats', {

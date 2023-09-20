@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_panel">
 	<div :class="$style.container" :style="{ backgroundImage: instance.bannerUrl ? `url(${ bannerUrl })` : null }">
 		<div :class="$style.iconContainer">
-			<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.icon"/>
+			<img :src="iconUrl" alt="" :class="$style.icon"/>
 		</div>
 		<div :class="$style.bodyContainer">
 			<div :class="$style.body">
@@ -24,20 +24,23 @@ import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExp
 import { GetFormResultType } from '@/scripts/form';
 import { host } from '@/config';
 import { instance } from '@/instance';
-import {bannerDark, bannerLight, defaultStore} from "@/store";
+import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from "@/store";
 import {computed, ref, watch} from "vue";
 
 const name = 'instanceInfo';
 let bannerUrl = ref(defaultStore.state.bannerUrl);
-
+let iconUrl = ref(defaultStore.state.iconUrl);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 watch(darkMode, () => {
   if (darkMode.value){
     bannerUrl.value = bannerDark;
+    iconUrl.value = iconDark;
   }else{
     bannerUrl.value = bannerLight;
+    iconUrl.value = iconLight;
   }
 })
+
 const widgetPropsDef = {
 };
 

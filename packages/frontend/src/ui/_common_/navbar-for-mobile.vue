@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.top">
 		<div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }"></div>
 		<button class="_button" :class="$style.instance" @click="openInstanceMenu">
-			<img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+			<img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
 		</button>
 	</div>
 	<div :class="$style.middle">
@@ -51,17 +51,19 @@ import { openInstanceMenu } from './common';
 import * as os from '@/os';
 import { navbarItemDef } from '@/navbar';
 import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
-import {bannerDark, bannerLight, defaultStore} from '@/store';
+import {bannerDark, bannerLight, defaultStore, iconDark, iconLight} from '@/store';
 import { i18n } from '@/i18n';
 import { instance } from '@/instance';
 let bannerUrl = ref(defaultStore.state.bannerUrl);
-
+let iconUrl = ref(defaultStore.state.iconUrl);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
 watch(darkMode, () => {
   if (darkMode.value){
     bannerUrl.value = bannerDark;
+    iconUrl.value = iconDark;
   }else{
     bannerUrl.value = bannerLight;
+    iconUrl.value = iconLight;
   }
 })
 const menu = toRef(defaultStore.state, 'menu');
