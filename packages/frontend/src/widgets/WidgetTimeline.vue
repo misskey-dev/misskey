@@ -36,13 +36,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import * as os from '@/os';
+import { GetFormResultType } from '@/scripts/form.js';
+import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkTimeline from '@/components/MkTimeline.vue';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { instance } from '@/instance';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { instance } from '@/instance.js';
 
 const name = 'timeline';
 const isLocalTimelineAvailable = (($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable));

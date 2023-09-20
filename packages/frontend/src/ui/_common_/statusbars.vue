@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import { defaultStore } from '@/store';
+import { defaultStore } from '@/store.js';
 const XRss = defineAsyncComponent(() => import('./statusbar-rss.vue'));
 const XFederation = defineAsyncComponent(() => import('./statusbar-federation.vue'));
 const XUserList = defineAsyncComponent(() => import('./statusbar-user-list.vue'));

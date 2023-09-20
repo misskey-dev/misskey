@@ -23,9 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useWidgetPropsManager, Widget, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget';
-import { GetFormResultType } from '@/scripts/form';
-import { $i } from '@/account';
-import { userPage } from '@/filters/user';
+import { GetFormResultType } from '@/scripts/form.js';
+import { $i } from '@/account.js';
+import { userPage } from '@/filters/user.js';
 
 const name = 'profile';
 

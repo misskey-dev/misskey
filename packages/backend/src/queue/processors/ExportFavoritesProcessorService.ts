@@ -12,8 +12,8 @@ import type { MiNoteFavorite, NoteFavoritesRepository, PollsRepository, MiUser, 
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
-import type { MiPoll } from '@/models/entities/Poll.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiNote } from '@/models/Note.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';

@@ -37,12 +37,12 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import { Theme, getBuiltinThemesRef } from '@/scripts/theme';
-import copyToClipboard from '@/scripts/copy-to-clipboard';
-import * as os from '@/os';
+import { Theme, getBuiltinThemesRef } from '@/scripts/theme.js';
+import copyToClipboard from '@/scripts/copy-to-clipboard.js';
+import * as os from '@/os.js';
 import { getThemes, removeTheme } from '@/theme-store';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();

@@ -4,11 +4,11 @@
  */
 
 import { utils, values } from '@syuilo/aiscript';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { miLocalStorage } from '@/local-storage';
-import { customEmojis } from '@/custom-emojis';
-import { lang } from '@/config';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { customEmojis } from '@/custom-emojis.js';
+import { lang } from '@/config.js';
 
 export function createAiScriptEnv(opts) {
 	return {

@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import MkTooltip from './MkTooltip.vue';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
-import { getEmojiName } from '@/scripts/emojilist';
+import { getEmojiName } from '@/scripts/emojilist.js';
 
 defineProps<{
 	showing: boolean;

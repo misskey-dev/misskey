@@ -37,8 +37,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted, ref } from 'vue';
 import XChart from './overview.queue.chart.vue';
-import number from '@/filters/number';
-import { useStream } from '@/stream';
+import number from '@/filters/number.js';
+import { useStream } from '@/stream.js';
 
 const connection = markRaw(useStream().useChannel('queueStats'));
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { MiNote } from '@/models/entities/Note.js';
+import type { MiNote } from '@/models/Note.js';
 
 // eslint-disable-next-line import/no-default-export
 export default function(note: MiNote): boolean {
