@@ -100,7 +100,7 @@
 		"@types/estree": "1.0.1",
 		"@types/matter-js": "0.19.0",
 		"@types/micromatch": "4.0.2",
-		"@types/node": "20.6.2",
+		"@types/node": "20.6.3",
 		"@types/punycode": "2.1.0",
 		"@types/sanitize-html": "2.9.0",
 		"@types/throttle-debounce": "5.0.0",
