@@ -16,7 +16,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: tibdex/github-app-token@v2.0.0
+    - uses: tibdex/github-app-token@v2.1.0
       with:
         app_id: ${{ inputs.app_id }}
         private_key: ${{ inputs.private_key }}
