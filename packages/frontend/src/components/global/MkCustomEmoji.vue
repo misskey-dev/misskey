@@ -38,13 +38,20 @@ const rawUrl = computed(() => {
 
 const url = computed(() => {
 	if (rawUrl.value == null) return null;
-
+  const useOriginalSize = props.useOriginalSize;
+  const enableDataSaverMode = defaultStore.state.enableUltimateDataSaverMode;
+  let datasaver_result ;
+  if (enableDataSaverMode) {
+    datasaver_result = useOriginalSize ? undefined : 'datasaver';
+  } else {
+    datasaver_result = useOriginalSize ? undefined : 'emoji';
+  }
 	const proxied =
 		(rawUrl.value.startsWith('/emoji/') || (props.useOriginalSize && isLocal.value))
 			? rawUrl.value
 			: getProxiedImageUrl(
 				rawUrl.value,
-				props.useOriginalSize ? undefined : 'emoji',
+            datasaver_result,
 				false,
 				true,
 			);

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveFilesRepository } from '@/models/_.js';
+import type { DriveFilesRepository , EmojisRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
 
@@ -32,6 +32,11 @@ export const meta = {
 			code: 'SAME_NAME_EMOJI_EXISTS',
 			id: '7180fe9d-1ee3-bff9-647d-fe9896d2ffb8',
 		},
+		duplicationEmojiAdd: {
+			message: 'This emoji is already added.',
+			code: 'DUPLICATION_EMOJI_ADD',
+			id: 'mattyaski_emoji_duplication_error',
+		}
 	},
 } as const;
 
@@ -64,7 +69,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
-
 		private customEmojiService: CustomEmojiService,
 	) {
 		super(meta, paramDef, async (ps, me) => {

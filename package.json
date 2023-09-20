@@ -1,10 +1,10 @@
 {
 	"name": "misskey",
-	"version": "2023.9.0-beta.8",
+	"version": "2023.9.0-beta.8-mattyaski.5",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/misskey-dev/misskey.git"
+		"url": "https://github.com/mattyatea/misskey.git"
 	},
 	"packageManager": "pnpm@8.7.5",
 	"workspaces": [

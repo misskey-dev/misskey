@@ -13,6 +13,7 @@ import { DriveService } from '@/core/DriveService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { ApiError } from '../../../error.js';
+import {IsNull} from "typeorm";
 
 export const meta = {
 	tags: ['admin'],
@@ -26,6 +27,11 @@ export const meta = {
 			code: 'NO_SUCH_EMOJI',
 			id: 'e2785b66-dca3-4087-9cac-b93c541cc425',
 		},
+		duplicationEmojiAdd: {
+			message: 'This emoji is already added.',
+			code: 'DUPLICATION_EMOJI_ADD',
+			id: 'mattyaski_emoji_duplication_error',
+		}
 	},
 
 	res: {
@@ -57,6 +63,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+
 		private emojiEntityService: EmojiEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
@@ -68,6 +75,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (emoji == null) {
 				throw new ApiError(meta.errors.noSuchEmoji);
 			}
+
+			const duplicationEmoji = await this.emojisRepository.find({
+				where: {
+					name: emoji.name,
+					host: IsNull()
+				},
+			});
+
+			duplicationEmoji.forEach(
+				(_emoji) => {
+					if (_emoji.name === emoji.name) {
+						throw new ApiError(meta.errors.duplicationEmojiAdd);
+					}
+				}
+			)
 
 			let driveFile: MiDriveFile;
 

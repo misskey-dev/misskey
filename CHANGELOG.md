@@ -12,7 +12,7 @@
 
 -->
 
-## 2023.9.0 (unreleased)
+## 2023.9.0-mattyaski (unreleased)
 
 ### General
 - OAuth 2.0のサポート
@@ -48,7 +48,10 @@
 - Enhance: AiScriptで`LOCALE`として現在の設定言語を取得できるように
 - Enhance: Renote自体を通報できるように
 - Enhance: データセーバーモードの強化
+  - Safariは非対応だけど、LTEだと自動的にオンにする機能も追加 (https://developer.mozilla.org/ja/docs/Web/API/Navigator/connection)
+  - アイコンをblurで表示させるように
 - Enhance: Renoteを管理者権限で削除可能に
+- Enhance: `$[mix ]`(emojiKitchen) 記法を追加 # mattyaski独自
 - `$[rainbow ]`記法が、動きのあるMFMが無効になっていても使用できるようになりました
 - Playの操作を行うAPI TokenをAPIコンソールから発行できるように
 - リアクションの表示サイズをより大きくできるように
@@ -70,7 +73,10 @@
 - Webhookのペイロードにサーバーのurlが含まれるようになりました
 - Webhook設定でsecretを空に出来るように
 - 使われていないアンテナの自動停止を設定可能に
+- リプライをホーム投稿に # mattyaski独自
 - nodeinfo 2.1対応
+- Enhance: 絵文字の重複登録を不可に # mattyaski独自
+- Enhance: frontendのbuildに圧縮をかけるように # mattyaski独自
 - 自分へのメンション一覧を取得する際のパフォーマンスを向上
 - Docker環境でjemallocを使用することでメモリ使用量を削減
 - Fix: MK_ONLY_SERVERオプションを指定した際にクラッシュする問題を修正

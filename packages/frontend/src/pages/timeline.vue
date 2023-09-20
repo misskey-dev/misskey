@@ -47,6 +47,7 @@ const XTutorial = defineAsyncComponent(() => import('./timeline.tutorial.vue'));
 
 const isLocalTimelineAvailable = ($i == null && instance.policies.ltlAvailable) || ($i != null && $i.policies.ltlAvailable);
 const isGlobalTimelineAvailable = ($i == null && instance.policies.gtlAvailable) || ($i != null && $i.policies.gtlAvailable);
+const isAdmin = ($i != null && $i.isAdmin);
 const keymap = {
 	't': focus,
 };
@@ -102,7 +103,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global'): void {
+function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | 'all'): void {
 	defaultStore.set('tl', {
 		...defaultStore.state.tl,
 		src: newSrc,
@@ -143,6 +144,11 @@ const headerTabs = $computed(() => [{
 }] : []), ...(isGlobalTimelineAvailable ? [{
 	key: 'global',
 	title: i18n.ts._timelines.global,
+	icon: 'ti ti-whirl',
+	iconOnly: true,
+}] : []), ...(isAdmin ? [{
+	key: 'all',
+	title: 'all',
 	icon: 'ti ti-whirl',
 	iconOnly: true,
 }] : []), {

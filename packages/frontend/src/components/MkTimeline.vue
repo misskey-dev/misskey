@@ -88,6 +88,15 @@ if (props.src === 'antenna') {
 		withReplies: defaultStore.state.showTimelineReplies,
 	});
 	connection.on('note', prepend);
+} else if (props.src === 'all') {
+    endpoint = 'notes/hybrid-all-timeline';
+    query = {
+        withReplies: defaultStore.state.showTimelineReplies,
+    };
+    connection = stream.useChannel('hybridAllTimeline', {
+        withReplies: defaultStore.state.showTimelineReplies,
+    });
+    connection.on('note', prepend);
 } else if (props.src === 'global') {
 	endpoint = 'notes/global-timeline';
 	query = {

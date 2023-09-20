@@ -17,6 +17,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
+import {noteVisibilities} from "@/types.js";
 
 export const meta = {
 	tags: ['notes'],
@@ -232,7 +233,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 			}
-
+			let visibility = ps.visibility;
 			let reply: MiNote | null = null;
 			if (ps.replyId != null) {
 				// Fetch reply
@@ -243,7 +244,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else if (reply.renoteId && !reply.text && !reply.fileIds && !reply.hasPoll) {
 					throw new ApiError(meta.errors.cannotReplyToPureRenote);
 				}
-
+				// ノートがリプライでパブリック投稿の場合はホームにする
+				if (ps.visibility != 'home' && ps.visibility!== 'followers' && ps.visibility!=='specified' ){
+					visibility = 'home';
+				}
 				// Check blocking
 				if (reply.userId !== me.id) {
 					const blockExist = await this.blockingsRepository.exist({
@@ -292,7 +296,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				cw: ps.cw,
 				localOnly: ps.localOnly,
 				reactionAcceptance: ps.reactionAcceptance,
-				visibility: ps.visibility,
+				visibility,
 				visibleUsers,
 				channel,
 				apMentions: ps.noExtractMentions ? [] : undefined,

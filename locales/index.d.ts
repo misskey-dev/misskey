@@ -1032,6 +1032,9 @@ export interface Locale {
     "video": string;
     "videos": string;
     "dataSaver": string;
+    "cellularWithDataSaver": string;
+    "UltimateDataSaver": string;
+    "cellularWithUltimateDataSaver": string;
     "accountMigration": string;
     "accountMoved": string;
     "accountMovedShort": string;
@@ -1656,6 +1659,7 @@ export interface Locale {
         "contributors": string;
         "allContributors": string;
         "source": string;
+        "forksource": string;
         "translation": string;
         "donate": string;
         "morePatrons": string;

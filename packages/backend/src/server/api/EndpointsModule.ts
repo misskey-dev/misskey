@@ -262,6 +262,7 @@ import * as ep___notes_favorites_delete from './endpoints/notes/favorites/delete
 import * as ep___notes_featured from './endpoints/notes/featured.js';
 import * as ep___notes_globalTimeline from './endpoints/notes/global-timeline.js';
 import * as ep___notes_hybridTimeline from './endpoints/notes/hybrid-timeline.js';
+import * as ep___notes_hybrid_All_Timeline from './endpoints/notes/hybrid-all-timeline.js';
 import * as ep___notes_localTimeline from './endpoints/notes/local-timeline.js';
 import * as ep___notes_mentions from './endpoints/notes/mentions.js';
 import * as ep___notes_polls_recommendation from './endpoints/notes/polls/recommendation.js';
@@ -609,6 +610,7 @@ const $notes_favorites_delete: Provider = { provide: 'ep:notes/favorites/delete'
 const $notes_featured: Provider = { provide: 'ep:notes/featured', useClass: ep___notes_featured.default };
 const $notes_globalTimeline: Provider = { provide: 'ep:notes/global-timeline', useClass: ep___notes_globalTimeline.default };
 const $notes_hybridTimeline: Provider = { provide: 'ep:notes/hybrid-timeline', useClass: ep___notes_hybridTimeline.default };
+const $notes_hybridAllTimeline: Provider = { provide: 'ep:notes/hybrid-all-timeline', useClass: ep___notes_hybrid_All_Timeline.default };
 const $notes_localTimeline: Provider = { provide: 'ep:notes/local-timeline', useClass: ep___notes_localTimeline.default };
 const $notes_mentions: Provider = { provide: 'ep:notes/mentions', useClass: ep___notes_mentions.default };
 const $notes_polls_recommendation: Provider = { provide: 'ep:notes/polls/recommendation', useClass: ep___notes_polls_recommendation.default };
@@ -960,6 +962,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_featured,
 		$notes_globalTimeline,
 		$notes_hybridTimeline,
+		$notes_hybridAllTimeline,
 		$notes_localTimeline,
 		$notes_mentions,
 		$notes_polls_recommendation,
@@ -1305,6 +1308,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$notes_featured,
 		$notes_globalTimeline,
 		$notes_hybridTimeline,
+		$notes_hybridAllTimeline,
 		$notes_localTimeline,
 		$notes_mentions,
 		$notes_polls_recommendation,
