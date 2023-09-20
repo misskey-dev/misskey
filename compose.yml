@@ -22,8 +22,7 @@ services:
 
   redis:
     restart: always
-    # HACK 7.2.0-alpineにamd64がない
-    image: redis:7.0.12-alpine
+    image: redis:7.2.1-alpine
     networks:
       - internal_network
     volumes:
