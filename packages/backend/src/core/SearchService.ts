@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { Note } from '@/models/entities/Note.js';
-import { User } from '@/models/index.js';
-import type { NotesRepository } from '@/models/index.js';
+import { MiNote } from '@/models/Note.js';
+import { MiUser } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
@@ -20,6 +25,8 @@ type Q =
 	{ op: '<', k: K, v: number } |
 	{ op: '>=', k: K, v: number } |
 	{ op: '<=', k: K, v: number } |
+	{ op: 'is null', k: K} |
+	{ op: 'is not null', k: K} |
 	{ op: 'is null', k: K} |
 	{ op: 'is not null', k: K} |
 	{ op: 'and', qs: Q[] } |
@@ -104,7 +111,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async indexNote(note: Note): Promise<void> {
+	public async indexNote(note: MiNote): Promise<void> {
 		if (note.text == null && note.cw == null) return;
 		if (!['home', 'public'].includes(note.visibility)) return;
 
@@ -140,7 +147,7 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async unindexNote(note: Note): Promise<void> {
+	public async unindexNote(note: MiNote): Promise<void> {
 		if (!['home', 'public'].includes(note.visibility)) return;
 
 		if (this.meilisearch) {
@@ -149,15 +156,15 @@ export class SearchService {
 	}
 
 	@bindThis
-	public async searchNote(q: string, me: User | null, opts: {
-		userId?: Note['userId'] | null;
-		channelId?: Note['channelId'] | null;
+	public async searchNote(q: string, me: MiUser | null, opts: {
+		userId?: MiNote['userId'] | null;
+		channelId?: MiNote['channelId'] | null;
 		host?: string | null;
 	}, pagination: {
-		untilId?: Note['id'];
-		sinceId?: Note['id'];
+		untilId?: MiNote['id'];
+		sinceId?: MiNote['id'];
 		limit?: number;
-	}): Promise<Note[]> {
+	}): Promise<MiNote[]> {
 		if (this.meilisearch) {
 			const filter: Q = {
 				op: 'and',
@@ -205,7 +212,7 @@ export class SearchService {
 
 			if (opts.host) {
 				if (opts.host === '.') {
-					query.andWhere('user.host IS NULL ');
+					query.andWhere('user.host IS NULL');
 				} else {
 					query.andWhere('user.host = :host', { host: opts.host });
 				}

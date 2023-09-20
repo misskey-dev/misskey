@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { addons } from '@storybook/addons';
 import { FORCE_REMOUNT } from '@storybook/core-events';
 import { type Preview, setup } from '@storybook/vue3';

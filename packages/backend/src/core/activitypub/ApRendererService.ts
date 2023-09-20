@@ -1,24 +1,29 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { PartialLocalUser, LocalUser, PartialRemoteUser, RemoteUser, User } from '@/models/entities/User.js';
-import type { IMentionedRemoteUsers, Note } from '@/models/entities/Note.js';
-import type { Blocking } from '@/models/entities/Blocking.js';
-import type { Relay } from '@/models/entities/Relay.js';
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { NoteReaction } from '@/models/entities/NoteReaction.js';
-import type { Emoji } from '@/models/entities/Emoji.js';
-import type { Poll } from '@/models/entities/Poll.js';
-import type { PollVote } from '@/models/entities/PollVote.js';
+import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
+import type { MiBlocking } from '@/models/Blocking.js';
+import type { MiRelay } from '@/models/Relay.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { MiPoll } from '@/models/Poll.js';
+import type { MiPollVote } from '@/models/PollVote.js';
 import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { MfmService } from '@/core/MfmService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { UserKeypair } from '@/models/entities/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, EmojisRepository, PollsRepository } from '@/models/index.js';
+import type { MiUserKeypair } from '@/models/UserKeypair.js';
+import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { isNotNull } from '@/misc/is-not-null.js';
@@ -44,9 +49,6 @@ export class ApRendererService {
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
 
-		@Inject(DI.emojisRepository)
-		private emojisRepository: EmojisRepository,
-
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
@@ -61,7 +63,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAccept(object: string | IObject, user: { id: User['id']; host: null }): IAccept {
+	public renderAccept(object: string | IObject, user: { id: MiUser['id']; host: null }): IAccept {
 		return {
 			type: 'Accept',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -70,7 +72,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAdd(user: LocalUser, target: string | IObject | undefined, object: string | IObject): IAdd {
+	public renderAdd(user: MiLocalUser, target: string | IObject | undefined, object: string | IObject): IAdd {
 		return {
 			type: 'Add',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -80,7 +82,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderAnnounce(object: string | IObject, note: Note): IAnnounce {
+	public renderAnnounce(object: string | IObject, note: MiNote): IAnnounce {
 		const attributedTo = this.userEntityService.genLocalUserUri(note.userId);
 
 		let to: string[] = [];
@@ -116,7 +118,7 @@ export class ApRendererService {
 	 * @param block The block to be rendered. The blockee relation must be loaded.
 	 */
 	@bindThis
-	public renderBlock(block: Blocking): IBlock {
+	public renderBlock(block: MiBlocking): IBlock {
 		if (block.blockee?.uri == null) {
 			throw new Error('renderBlock: missing blockee uri');
 		}
@@ -130,7 +132,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderCreate(object: IObject, note: Note): ICreate {
+	public renderCreate(object: IObject, note: MiNote): ICreate {
 		const activity: ICreate = {
 			id: `${this.config.url}/notes/${note.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(note.userId),
@@ -146,7 +148,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderDelete(object: IObject | string, user: { id: User['id']; host: null }): IDelete {
+	public renderDelete(object: IObject | string, user: { id: MiUser['id']; host: null }): IDelete {
 		return {
 			type: 'Delete',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -156,7 +158,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderDocument(file: DriveFile): IApDocument {
+	public renderDocument(file: MiDriveFile): IApDocument {
 		return {
 			type: 'Document',
 			mediaType: file.webpublicType ?? file.type,
@@ -166,7 +168,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderEmoji(emoji: Emoji): IApEmoji {
+	public renderEmoji(emoji: MiEmoji): IApEmoji {
 		return {
 			id: `${this.config.url}/emojis/${emoji.name}`,
 			type: 'Emoji',
@@ -183,7 +185,7 @@ export class ApRendererService {
 
 	// to anonymise reporters, the reporting actor must be a system user
 	@bindThis
-	public renderFlag(user: LocalUser, object: IObject | string, content: string): IFlag {
+	public renderFlag(user: MiLocalUser, object: IObject | string, content: string): IFlag {
 		return {
 			type: 'Flag',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -193,7 +195,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderFollowRelay(relay: Relay, relayActor: LocalUser): IFollow {
+	public renderFollowRelay(relay: MiRelay, relayActor: MiLocalUser): IFollow {
 		return {
 			id: `${this.config.url}/activities/follow-relay/${relay.id}`,
 			type: 'Follow',
@@ -207,15 +209,15 @@ export class ApRendererService {
 	 * @param id Follower|Followee ID
 	 */
 	@bindThis
-	public async renderFollowUser(id: User['id']): Promise<string> {
-		const user = await this.usersRepository.findOneByOrFail({ id: id }) as PartialLocalUser | PartialRemoteUser;
+	public async renderFollowUser(id: MiUser['id']): Promise<string> {
+		const user = await this.usersRepository.findOneByOrFail({ id: id }) as MiPartialLocalUser | MiPartialRemoteUser;
 		return this.userEntityService.getUserUri(user);
 	}
 
 	@bindThis
 	public renderFollow(
-		follower: PartialLocalUser | PartialRemoteUser,
-		followee: PartialLocalUser | PartialRemoteUser,
+		follower: MiPartialLocalUser | MiPartialRemoteUser,
+		followee: MiPartialLocalUser | MiPartialRemoteUser,
 		requestId?: string,
 	): IFollow {
 		return {
@@ -236,7 +238,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderImage(file: DriveFile): IApImage {
+	public renderImage(file: MiDriveFile): IApImage {
 		return {
 			type: 'Image',
 			url: this.driveFileEntityService.getPublicUrl(file),
@@ -246,7 +248,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderKey(user: LocalUser, key: UserKeypair, postfix?: string): IKey {
+	public renderKey(user: MiLocalUser, key: MiUserKeypair, postfix?: string): IKey {
 		return {
 			id: `${this.config.url}/users/${user.id}${postfix ?? '/publickey'}`,
 			type: 'Key',
@@ -259,7 +261,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderLike(noteReaction: NoteReaction, note: { uri: string | null }): Promise<ILike> {
+	public async renderLike(noteReaction: MiNoteReaction, note: { uri: string | null }): Promise<ILike> {
 		const reaction = noteReaction.reaction;
 
 		const object: ILike = {
@@ -282,18 +284,18 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderMention(mention: PartialLocalUser | PartialRemoteUser): IApMention {
+	public renderMention(mention: MiPartialLocalUser | MiPartialRemoteUser): IApMention {
 		return {
 			type: 'Mention',
 			href: this.userEntityService.getUserUri(mention),
-			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as LocalUser).username}`,
+			name: this.userEntityService.isRemoteUser(mention) ? `@${mention.username}@${mention.host}` : `@${(mention as MiLocalUser).username}`,
 		};
 	}
 
 	@bindThis
 	public renderMove(
-		src: PartialLocalUser | PartialRemoteUser,
-		dst: PartialLocalUser | PartialRemoteUser,
+		src: MiPartialLocalUser | MiPartialRemoteUser,
+		dst: MiPartialLocalUser | MiPartialRemoteUser,
 	): IMove {
 		const actor = this.userEntityService.getUserUri(src);
 		const target = this.userEntityService.getUserUri(dst);
@@ -307,15 +309,15 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderNote(note: Note, dive = true): Promise<IPost> {
-		const getPromisedFiles = async (ids: string[]): Promise<DriveFile[]> => {
+	public async renderNote(note: MiNote, dive = true): Promise<IPost> {
+		const getPromisedFiles = async (ids: string[]): Promise<MiDriveFile[]> => {
 			if (ids.length === 0) return [];
 			const items = await this.driveFilesRepository.findBy({ id: In(ids) });
-			return ids.map(id => items.find(item => item.id === id)).filter((item): item is DriveFile => item != null);
+			return ids.map(id => items.find(item => item.id === id)).filter((item): item is MiDriveFile => item != null);
 		};
 
 		let inReplyTo;
-		let inReplyToNote: Note | null;
+		let inReplyToNote: MiNote | null;
 
 		if (note.replyId) {
 			inReplyToNote = await this.notesRepository.findOneBy({ id: note.replyId });
@@ -374,12 +376,12 @@ export class ApRendererService {
 		}) : [];
 
 		const hashtagTags = note.tags.map(tag => this.renderHashtag(tag));
-		const mentionTags = mentionedUsers.map(u => this.renderMention(u as LocalUser | RemoteUser));
+		const mentionTags = mentionedUsers.map(u => this.renderMention(u as MiLocalUser | MiRemoteUser));
 
 		const files = await getPromisedFiles(note.fileIds);
 
 		const text = note.text ?? '';
-		let poll: Poll | null = null;
+		let poll: MiPoll | null = null;
 
 		if (note.hasPoll) {
 			poll = await this.pollsRepository.findOneBy({ noteId: note.id });
@@ -447,7 +449,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async renderPerson(user: LocalUser) {
+	public async renderPerson(user: MiLocalUser) {
 		const id = this.userEntityService.genLocalUserUri(user.id);
 		const isSystem = user.username.includes('.');
 
@@ -521,7 +523,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderQuestion(user: { id: User['id'] }, note: Note, poll: Poll): IQuestion {
+	public renderQuestion(user: { id: MiUser['id'] }, note: MiNote, poll: MiPoll): IQuestion {
 		return {
 			type: 'Question',
 			id: `${this.config.url}/questions/${note.id}`,
@@ -539,7 +541,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderReject(object: string | IObject, user: { id: User['id'] }): IReject {
+	public renderReject(object: string | IObject, user: { id: MiUser['id'] }): IReject {
 		return {
 			type: 'Reject',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -548,7 +550,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderRemove(user: { id: User['id'] }, target: string | IObject | undefined, object: string | IObject): IRemove {
+	public renderRemove(user: { id: MiUser['id'] }, target: string | IObject | undefined, object: string | IObject): IRemove {
 		return {
 			type: 'Remove',
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -566,7 +568,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUndo(object: string | IObject, user: { id: User['id'] }): IUndo {
+	public renderUndo(object: string | IObject, user: { id: MiUser['id'] }): IUndo {
 		const id = typeof object !== 'string' && typeof object.id === 'string' && object.id.startsWith(this.config.url) ? `${object.id}/undo` : undefined;
 
 		return {
@@ -579,7 +581,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderUpdate(object: string | IObject, user: { id: User['id'] }): IUpdate {
+	public renderUpdate(object: string | IObject, user: { id: MiUser['id'] }): IUpdate {
 		return {
 			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -591,7 +593,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public renderVote(user: { id: User['id'] }, vote: PollVote, note: Note, poll: Poll, pollOwner: RemoteUser): ICreate {
+	public renderVote(user: { id: MiUser['id'] }, vote: MiPollVote, note: MiNote, poll: MiPoll, pollOwner: MiRemoteUser): ICreate {
 		return {
 			id: `${this.config.url}/users/${user.id}#votes/${vote.id}/activity`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
@@ -649,7 +651,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	public async attachLdSignature(activity: any, user: { id: User['id']; host: null; }): Promise<IActivity> {
+	public async attachLdSignature(activity: any, user: { id: MiUser['id']; host: null; }): Promise<IActivity> {
 		const keypair = await this.userKeypairService.getUserKeypair(user.id);
 
 		const ldSignature = this.ldSignatureService.use();
@@ -708,7 +710,7 @@ export class ApRendererService {
 	}
 
 	@bindThis
-	private async getEmojis(names: string[]): Promise<Emoji[]> {
+	private async getEmojis(names: string[]): Promise<MiEmoji[]> {
 		if (names.length === 0) return [];
 
 		const allEmojis = await this.customEmojiService.localEmojisCache.fetch();

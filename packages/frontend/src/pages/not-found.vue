@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div class="_fullinfo">
@@ -8,10 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { pleaseLogin } from '@/scripts/please-login';
-import { notFoundImageUrl } from '@/instance';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
+import { notFoundImageUrl } from '@/instance.js';
 
 const props = defineProps<{
 	showLoginPopup?: boolean;

@@ -1,13 +1,18 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { describe, test, assert, afterEach } from 'vitest';
 import { render, cleanup, type RenderResult } from '@testing-library/vue';
 import './init';
-import type { DriveFile } from 'misskey-js/built/entities';
+import type * as Misskey from 'misskey-js';
 import { components } from '@/components';
 import { directives } from '@/directives';
 import MkMediaImage from '@/components/MkMediaImage.vue';
 
 describe('MkMediaImage', () => {
-	const renderMediaImage = (image: Partial<DriveFile>): RenderResult => {
+	const renderMediaImage = (image: Partial<Misskey.entities.DriveFile>): RenderResult => {
 		return render(MkMediaImage, {
 			props: {
 				image: {

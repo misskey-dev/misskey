@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { setTimeout } from 'node:timers/promises';
 import { Global, Inject, Module } from '@nestjs/common';
 import * as Redis from 'ioredis';

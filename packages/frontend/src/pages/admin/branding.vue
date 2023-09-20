@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
@@ -7,7 +12,29 @@
 				<div class="_gaps_m">
 					<MkInput v-model="iconUrl">
 						<template #prefix><i class="ti ti-link"></i></template>
-						<template #label>{{ i18n.ts.iconUrl }}</template>
+						<template #label>{{ i18n.ts._serverSettings.iconUrl }}</template>
+					</MkInput>
+
+					<MkInput v-model="app192IconUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/192px)</template>
+						<template #caption>
+							<div>{{ i18n.t('_serverSettings.appIconDescription', { host: instance.name ?? host }) }}</div>
+							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
+							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
+							<div><strong>{{ i18n.t('_serverSettings.appIconResolutionMustBe', { resolution: '192x192px' }) }}</strong></div>
+						</template>
+					</MkInput>
+
+					<MkInput v-model="app512IconUrl">
+						<template #prefix><i class="ti ti-link"></i></template>
+						<template #label>{{ i18n.ts._serverSettings.iconUrl }} (App/512px)</template>
+						<template #caption>
+							<div>{{ i18n.t('_serverSettings.appIconDescription', { host: instance.name ?? host }) }}</div>
+							<div>({{ i18n.ts._serverSettings.appIconUsageExample }})</div>
+							<div>{{ i18n.ts._serverSettings.appIconStyleRecommendation }}</div>
+							<div><strong>{{ i18n.t('_serverSettings.appIconResolutionMustBe', { resolution: '512x512px' }) }}</strong></div>
+						</template>
 					</MkInput>
 
 					<MkInput v-model="bannerUrl">
@@ -48,6 +75,10 @@
 						<template #label>{{ i18n.ts.instanceDefaultDarkTheme }}</template>
 						<template #caption>{{ i18n.ts.instanceDefaultThemeDescription }}</template>
 					</MkTextarea>
+
+					<MkTextarea v-model="manifestJsonOverride">
+						<template #label>{{ i18n.ts._serverSettings.manifestJsonOverride }}</template>
+					</MkTextarea>
 				</div>
 			</FormSuspense>
 		</MkSpacer>
@@ -64,6 +95,7 @@
 
 <script lang="ts" setup>
 import { } from 'vue';
+import JSON5 from 'json5';
 import XHeader from './_header_.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -71,14 +103,17 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { instance, fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
+import { host } from '@/config.js';
 
 let iconUrl: string | null = $ref(null);
+let app192IconUrl: string | null = $ref(null);
+let app512IconUrl: string | null = $ref(null);
 let bannerUrl: string | null = $ref(null);
 let backgroundImageUrl: string | null = $ref(null);
 let themeColor: any = $ref(null);
@@ -87,10 +122,13 @@ let defaultDarkTheme: any = $ref(null);
 let serverErrorImageUrl: string | null = $ref(null);
 let infoImageUrl: string | null = $ref(null);
 let notFoundImageUrl: string | null = $ref(null);
+let manifestJsonOverride: string = $ref('{}');
 
 async function init() {
 	const meta = await os.api('admin/meta');
 	iconUrl = meta.iconUrl;
+	app192IconUrl = meta.app192IconUrl;
+	app512IconUrl = meta.app512IconUrl;
 	bannerUrl = meta.bannerUrl;
 	backgroundImageUrl = meta.backgroundImageUrl;
 	themeColor = meta.themeColor;
@@ -99,11 +137,14 @@ async function init() {
 	serverErrorImageUrl = meta.serverErrorImageUrl;
 	infoImageUrl = meta.infoImageUrl;
 	notFoundImageUrl = meta.notFoundImageUrl;
+	manifestJsonOverride = meta.manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON.parse(meta.manifestJsonOverride), null, '\t');
 }
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
 		iconUrl,
+		app192IconUrl,
+		app512IconUrl,
 		bannerUrl,
 		backgroundImageUrl,
 		themeColor: themeColor === '' ? null : themeColor,
@@ -112,6 +153,7 @@ function save() {
 		infoImageUrl,
 		notFoundImageUrl,
 		serverErrorImageUrl,
+		manifestJsonOverride: manifestJsonOverride === '' ? '{}' : JSON.stringify(JSON5.parse(manifestJsonOverride)),
 	}).then(() => {
 		fetchInstance();
 	});

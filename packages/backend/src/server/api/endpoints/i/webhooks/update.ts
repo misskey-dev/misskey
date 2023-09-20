@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { WebhooksRepository } from '@/models/index.js';
-import { webhookEventTypes } from '@/models/entities/Webhook.js';
+import type { WebhooksRepository } from '@/models/_.js';
+import { webhookEventTypes } from '@/models/Webhook.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../../error.js';
@@ -29,20 +34,19 @@ export const paramDef = {
 		webhookId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
 		url: { type: 'string', minLength: 1, maxLength: 1024 },
-		secret: { type: 'string', minLength: 1, maxLength: 1024 },
+		secret: { type: 'string', maxLength: 1024, default: '' },
 		on: { type: 'array', items: {
 			type: 'string', enum: webhookEventTypes,
 		} },
 		active: { type: 'boolean' },
 	},
-	required: ['webhookId', 'name', 'url', 'secret', 'on', 'active'],
+	required: ['webhookId', 'name', 'url', 'on', 'active'],
 } as const;
 
 // TODO: ロジックをサービスに切り出す
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.webhooksRepository)
 		private webhooksRepository: WebhooksRepository,
