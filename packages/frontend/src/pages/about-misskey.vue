@@ -286,6 +286,7 @@ const patrons = [
 	'Nick / pprmint.',
 	'kino3277',
 	'美少女JKぐーちゃん',
+	'てば',
 ];
 
 let thereIsTreasure = $ref($i && !claimedAchievements.includes('foundTreasure'));

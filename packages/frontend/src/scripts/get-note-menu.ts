@@ -5,7 +5,7 @@
 
 import { defineAsyncComponent, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { claimAchievement } from './achievements';
+import { claimAchievement } from './achievements.js';
 import { $i } from '@/account.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
@@ -15,8 +15,8 @@ import { url } from '@/config.js';
 import { defaultStore, noteActions } from '@/store.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { getUserMenu } from '@/scripts/get-user-menu.js';
-import { clipsCache } from '@/cache';
-import { MenuItem } from '@/types/menu';
+import { clipsCache } from '@/cache.js';
+import { MenuItem } from '@/types/menu.js';
 
 export async function getNoteClipMenu(props: {
 	note: Misskey.entities.Note;
