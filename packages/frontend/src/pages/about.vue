@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<MkSpacer v-if="tab === 'overview'" :contentMax="600" :marginMin="20">
 		<div class="_gaps_m">
-			<div :class="$style.banner" :style="{ backgroundImage: `url(${ instance.bannerUrl })` }">
+			<div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }">
 				<div style="overflow: clip;">
 					<img :src="instance.iconUrl ?? instance.faviconUrl ?? '/favicon.ico'" alt="" :class="$style.bannerIcon"/>
 					<div :class="$style.bannerName">
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import {computed, ref, watch} from 'vue';
 import XEmojis from './about.emojis.vue';
 import XFederation from './about.federation.vue';
 import { version, host } from '@/config';
@@ -115,6 +115,7 @@ import { i18n } from '@/i18n';
 import { definePageMetadata } from '@/scripts/page-metadata';
 import { claimAchievement } from '@/scripts/achievements';
 import { instance } from '@/instance';
+import {bannerDark, bannerLight, defaultStore} from "@/store";
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;
@@ -130,7 +131,16 @@ watch($$(tab), () => {
 		claimAchievement('viewInstanceChart');
 	}
 });
+let bannerUrl = ref(defaultStore.state.bannerUrl);
 
+const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+watch(darkMode, () => {
+  if (darkMode.value){
+    bannerUrl.value = bannerDark;
+  }else{
+    bannerUrl.value = bannerLight;
+  }
+})
 const initStats = () => os.api('stats', {
 }).then((res) => {
 	stats = res;

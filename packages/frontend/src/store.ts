@@ -40,6 +40,9 @@ export const noteActions: NoteAction[] = [];
 export const noteViewInterruptors: NoteViewInterruptor[] = [];
 export const notePostInterruptors: NotePostInterruptor[] = [];
 export const pageViewInterruptors: PageViewInterruptor[] = [];
+export const bannerDark='https://files.prismisskey.space/misskey/ac141052-7a16-4608-bc08-263566326a6d.jpg'
+export const bannerLight ='https://files.prismisskey.space/misskey/e8d13afc-2348-4b13-a64a-f55a19e8d7aa.jpg'
+
 
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
@@ -247,6 +250,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	darkMode: {
 		where: 'device',
 		default: false,
+	},
+	bannerUrl:{
+		where: 'device',
+		default: bannerDark
 	},
 	instanceTicker: {
 		where: 'device',
