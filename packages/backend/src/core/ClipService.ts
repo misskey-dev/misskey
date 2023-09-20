@@ -143,6 +143,12 @@ export class ClipService {
 			throw new ClipService.NoSuchClipError();
 		}
 
+		const note = await this.notesRepository.findOneBy({ id: noteId });
+
+		if (note == null) {
+			throw new ClipService.NoSuchNoteError();
+		}
+
 		await this.clipNotesRepository.delete({
 			noteId: noteId,
 			clipId: clip.id,

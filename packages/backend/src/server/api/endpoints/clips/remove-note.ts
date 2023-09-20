@@ -52,6 +52,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (e) {
 				if (e instanceof ClipService.NoSuchClipError) {
 					throw new ApiError(meta.errors.noSuchClip);
+				} else if (e instanceof ClipService.NoSuchNoteError) {
+					throw new ApiError(meta.errors.noSuchNote);
 				}
 				throw e;
 			}
