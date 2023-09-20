@@ -84,8 +84,16 @@ import {instance} from '@/instance';
 
 const iconOnly = ref(false);
 let bannerUrl = ref(defaultStore.state.bannerUrl);
-let iconUrl = ref(defaultStore.state.iconUrl);
+let iconUrl = ref();
+
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value){
+  bannerUrl.value = bannerDark;
+  iconUrl.value = iconDark;
+}else{
+  bannerUrl.value = bannerLight;
+  iconUrl.value = iconLight;
+}
 watch(darkMode, () => {
   if (darkMode.value){
     bannerUrl.value = bannerDark;
@@ -167,7 +175,7 @@ function more(ev: MouseEvent) {
     top: 0;
     z-index: 1;
     padding: 20px 0;
-    background: var(--X14);
+    //background: var(--X14);
     -webkit-backdrop-filter: var(--blur, blur(8px));
     backdrop-filter: var(--blur, blur(8px));
   }
@@ -180,8 +188,8 @@ function more(ev: MouseEvent) {
     height: 100%;
     background-size: cover;
     background-position: center center;
-    -webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.75) 100%);
-    mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 0.75) 100%);
+    -webkit-mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 20%);
+    mask-image: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 20%);
   }
 
   .instance {

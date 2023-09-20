@@ -134,6 +134,13 @@ watch($$(tab), () => {
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref(defaultStore.state.iconUrl);
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
+if (darkMode.value){
+  bannerUrl.value = bannerDark;
+  iconUrl.value = iconDark;
+}else{
+  bannerUrl.value = bannerLight;
+  iconUrl.value = iconLight;
+}
 watch(darkMode, () => {
   if (darkMode.value){
     bannerUrl.value = bannerDark;
