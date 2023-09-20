@@ -15,6 +15,7 @@ import type { MiLocalUser } from '@/models/entities/User.js';
 
 @Injectable()
 export class ClipService {
+	public static NoSuchNoteError = class extends Error {};
 	public static NoSuchClipError = class extends Error {};
 	public static AlreadyAddedError = class extends Error {};
 	public static TooManyClipNotesError = class extends Error {};
@@ -118,10 +119,14 @@ export class ClipService {
 				noteId: noteId,
 				clipId: clip.id,
 			});
-		} catch (e) {
+		} catch (e: any) {
 			if (isDuplicateKeyValueError(e)) {
 				throw new ClipService.AlreadyAddedError();
+			} else if (e.detail.includes('is not present in table "note".')) {
+				throw new ClipService.NoSuchNoteError();
 			}
+
+			throw e;
 		}
 
 		this.clipsRepository.update(clip.id, {
