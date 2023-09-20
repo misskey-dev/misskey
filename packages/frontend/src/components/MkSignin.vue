@@ -51,19 +51,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import { toUnicode } from 'punycode/';
-import { UserDetailed } from 'misskey-js/built/entities';
+import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, get as webAuthnRequest, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-import { showSuspendedDialog } from '@/scripts/show-suspended-dialog';
+import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { host as configHost } from '@/config';
-import * as os from '@/os';
-import { login } from '@/account';
-import { i18n } from '@/i18n';
+import { host as configHost } from '@/config.js';
+import * as os from '@/os.js';
+import { login } from '@/account.js';
+import { i18n } from '@/i18n.js';
 
 let signing = $ref(false);
-let user = $ref<UserDetailed | null>(null);
+let user = $ref<Misskey.entities.UserDetailed | null>(null);
 let username = $ref('');
 let password = $ref('');
 let token = $ref('');

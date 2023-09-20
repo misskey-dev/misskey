@@ -22,7 +22,7 @@ import { MiMeta, MiNote } from '@/models/_.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
 import { MetaService } from '@/core/MetaService.js';
-import type { MiRemoteUser } from '@/models/entities/User.js';
+import type { MiRemoteUser } from '@/models/User.js';
 import { MockResolver } from '../misc/mock-resolver.js';
 
 const host = 'https://host1.test';

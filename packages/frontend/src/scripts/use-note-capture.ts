@@ -5,8 +5,8 @@
 
 import { onUnmounted, Ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useStream } from '@/stream';
-import { $i } from '@/account';
+import { useStream } from '@/stream.js';
+import { $i } from '@/account.js';
 
 export function useNoteCapture(props: {
 	rootEl: Ref<HTMLElement>;

@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import type { ModerationLogsRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/entities/User.js';
+import type { MiUser } from '@/models/User.js';
 import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 

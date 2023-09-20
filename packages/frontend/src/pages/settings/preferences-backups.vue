@@ -42,15 +42,15 @@ import { v4 as uuid } from 'uuid';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os';
-import { ColdDeviceStorage, defaultStore } from '@/store';
-import { unisonReload } from '@/scripts/unison-reload';
-import { useStream } from '@/stream';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { version, host } from '@/config';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
+import * as os from '@/os.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { unisonReload } from '@/scripts/unison-reload.js';
+import { useStream } from '@/stream.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { version, host } from '@/config.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { miLocalStorage } from '@/local-storage.js';
 const { t, ts } = i18n;
 
 const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [

@@ -48,11 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XPie from './overview.pie.vue';
-import * as os from '@/os';
-import number from '@/filters/number';
+import * as os from '@/os.js';
+import number from '@/filters/number.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
-import { i18n } from '@/i18n';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { i18n } from '@/i18n.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
 
 let topSubInstancesForPie: any = $ref(null);
 let topPubInstancesForPie: any = $ref(null);

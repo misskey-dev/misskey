@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserListsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
+import type { MiUserList } from '@/models/UserList.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';

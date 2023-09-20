@@ -1102,6 +1102,7 @@ forYou: "あんたへ"
 currentAnnouncements: "現在のお知らせやで"
 pastAnnouncements: "過去のお知らせやで"
 youHaveUnreadAnnouncements: "あんたまだこのお知らせ読んどらんやろ。"
+useSecurityKey: "ブラウザまたはデバイスの言う通りに、セキュリティキーまたはパスキーを使ってや。"
 replies: "返事"
 renotes: "Renote"
 _announcement:
