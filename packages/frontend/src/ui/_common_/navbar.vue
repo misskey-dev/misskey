@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
         <div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl  })` }"></div>
         <button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance"
                 @click="openInstanceMenu">
-          <img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
+          <img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
         </button>
       </div>
       <div :class="$style.middle">
