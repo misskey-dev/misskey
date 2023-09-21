@@ -22,18 +22,6 @@ export type MiNotification = {
 
 	/**
 	 * 通知の種類。
-	 * follow - フォローされた
-	 * mention - 投稿で自分が言及された
-	 * reply - 投稿に返信された
-	 * renote - 投稿がRenoteされた
-	 * quote - 投稿が引用Renoteされた
-	 * reaction - 投稿にリアクションされた
-	 * pollEnded - 自分のアンケートもしくは自分が投票したアンケートが終了した
-	 * receiveFollowRequest - フォローリクエストされた
-	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
-	 * achievementEarned - 実績を獲得
-	 * app - アプリ通知
-	 * test - テスト通知（サーバー側）
 	 */
 	type: typeof notificationTypes[number];
 

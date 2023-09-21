@@ -20,7 +20,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { NoteEntityService } from './NoteEntityService.js';
 
-const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded'] as (typeof notificationTypes[number])[]);
+const NOTE_REQUIRED_NOTIFICATION_TYPES = new Set(['note', 'mention', 'reply', 'renote', 'quote', 'reaction', 'pollEnded'] as (typeof notificationTypes[number])[]);
 
 @Injectable()
 export class NotificationEntityService implements OnModuleInit {

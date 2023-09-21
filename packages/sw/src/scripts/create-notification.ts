@@ -134,6 +134,13 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 						],
 					}];
 
+				case 'note':
+					return [t('_notification.newNote') + ': ' + getUserName(data.body.user), {
+						body: data.body.note.text ?? '',
+						icon: data.body.user.avatarUrl,
+						data,
+					}];
+
 				case 'reaction': {
 					let reaction = data.body.reaction;
 					let badge: string | undefined;

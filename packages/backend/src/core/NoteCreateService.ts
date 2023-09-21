@@ -14,7 +14,7 @@ import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mf
 import { extractHashtags } from '@/misc/extract-hashtags.js';
 import type { IMentionedRemoteUsers } from '@/models/Note.js';
 import { MiNote } from '@/models/Note.js';
-import type { ChannelsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { ChannelsRepository, FollowingsRepository, InstancesRepository, MutedNotesRepository, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiApp } from '@/models/App.js';
 import { concat } from '@/misc/prelude/array.js';
@@ -184,6 +184,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.noteThreadMutingsRepository)
 		private noteThreadMutingsRepository: NoteThreadMutingsRepository,
+
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
 
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
@@ -503,6 +506,20 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);
+		}
+
+		if (data.reply == null) {
+			this.followingsRepository.findBy({
+				followeeId: user.id,
+				notify: 'normal',
+			}).then(followings => {
+				for (const following of followings) {
+					this.notificationService.createNotification(following.followerId, 'note', {
+						notifierId: user.id,
+						noteId: note.id,
+					});
+				}
+			});
 		}
 
 		// この投稿を除く指定したユーザーによる指定したノートのリノートが存在しないとき
