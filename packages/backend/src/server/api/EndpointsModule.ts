@@ -160,6 +160,7 @@ import * as ep___federation_users from './endpoints/federation/users.js';
 import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
+import * as ep___following_update from './endpoints/following/update.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
 import * as ep___following_requests_accept from './endpoints/following/requests/accept.js';
 import * as ep___following_requests_cancel from './endpoints/following/requests/cancel.js';
@@ -507,6 +508,7 @@ const $federation_users: Provider = { provide: 'ep:federation/users', useClass: 
 const $federation_stats: Provider = { provide: 'ep:federation/stats', useClass: ep___federation_stats.default };
 const $following_create: Provider = { provide: 'ep:following/create', useClass: ep___following_create.default };
 const $following_delete: Provider = { provide: 'ep:following/delete', useClass: ep___following_delete.default };
+const $following_update: Provider = { provide: 'ep:following/update', useClass: ep___following_update.default };
 const $following_invalidate: Provider = { provide: 'ep:following/invalidate', useClass: ep___following_invalidate.default };
 const $following_requests_accept: Provider = { provide: 'ep:following/requests/accept', useClass: ep___following_requests_accept.default };
 const $following_requests_cancel: Provider = { provide: 'ep:following/requests/cancel', useClass: ep___following_requests_cancel.default };
@@ -858,6 +860,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$federation_stats,
 		$following_create,
 		$following_delete,
+		$following_update,
 		$following_invalidate,
 		$following_requests_accept,
 		$following_requests_cancel,
@@ -1203,6 +1206,7 @@ const $retention: Provider = { provide: 'ep:retention', useClass: ep___retention
 		$federation_stats,
 		$following_create,
 		$following_delete,
+		$following_update,
 		$following_invalidate,
 		$following_requests_accept,
 		$following_requests_cancel,

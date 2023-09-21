@@ -160,6 +160,7 @@ import * as ep___federation_users from './endpoints/federation/users.js';
 import * as ep___federation_stats from './endpoints/federation/stats.js';
 import * as ep___following_create from './endpoints/following/create.js';
 import * as ep___following_delete from './endpoints/following/delete.js';
+import * as ep___following_update from './endpoints/following/update.js';
 import * as ep___following_invalidate from './endpoints/following/invalidate.js';
 import * as ep___following_requests_accept from './endpoints/following/requests/accept.js';
 import * as ep___following_requests_cancel from './endpoints/following/requests/cancel.js';
@@ -505,6 +506,7 @@ const eps = [
 	['federation/stats', ep___federation_stats],
 	['following/create', ep___following_create],
 	['following/delete', ep___following_delete],
+	['following/update', ep___following_update],
 	['following/invalidate', ep___following_invalidate],
 	['following/requests/accept', ep___following_requests_accept],
 	['following/requests/cancel', ep___following_requests_cancel],

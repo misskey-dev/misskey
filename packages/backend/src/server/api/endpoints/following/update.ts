@@ -29,19 +29,19 @@ export const meta = {
 		noSuchUser: {
 			message: 'No such user.',
 			code: 'NO_SUCH_USER',
-			id: 'b77e6ae6-a3e5-40da-9cc8-c240115479cc',
+			id: '14318698-f67e-492a-99da-5353a5ac52be',
 		},
 
-		followerIsYourself: {
-			message: 'Follower is yourself.',
-			code: 'FOLLOWER_IS_YOURSELF',
-			id: '07dc03b9-03da-422d-885b-438313707662',
+		followeeIsYourself: {
+			message: 'Followee is yourself.',
+			code: 'FOLLOWEE_IS_YOURSELF',
+			id: '4c4cbaf9-962a-463b-8418-a5e365dbf2eb',
 		},
 
 		notFollowing: {
-			message: 'The other use is not following you.',
+			message: 'You are not following that user.',
 			code: 'NOT_FOLLOWING',
-			id: '918faac3-074f-41ae-9c43-ed5d2946770d',
+			id: 'b8dc75cf-1cb5-46c9-b14b-5f1ffbd782c9',
 		},
 	},
 
@@ -56,8 +56,9 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		userId: { type: 'string', format: 'misskey:id' },
+		notify: { type: 'string', enum: ['normal', 'none'] },
 	},
-	required: ['userId'],
+	required: ['userId', 'notify'],
 } as const;
 
 @Injectable()
@@ -71,15 +72,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private userFollowingService: UserFollowingService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const followee = me;
+			const follower = me;
 
 			// Check if the follower is yourself
 			if (me.id === ps.userId) {
-				throw new ApiError(meta.errors.followerIsYourself);
+				throw new ApiError(meta.errors.followeeIsYourself);
 			}
 
-			// Get follower
-			const follower = await this.getterService.getUser(ps.userId).catch(err => {
+			// Get followee
+			const followee = await this.getterService.getUser(ps.userId).catch(err => {
 				if (err.id === '15348ddd-432d-49c2-8a5a-8069753becff') throw new ApiError(meta.errors.noSuchUser);
 				throw err;
 			});
@@ -94,9 +95,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.notFollowing);
 			}
 
-			await this.userFollowingService.unfollow(follower, followee);
+			await this.followingsRepository.update({
+				id: exist.id,
+			}, {
+				notify: ps.notify === 'none' ? null : ps.notify,
+			});
 
-			return await this.userEntityService.pack(followee.id, me);
+			return await this.userEntityService.pack(follower.id, me);
 		});
 	}
 }
