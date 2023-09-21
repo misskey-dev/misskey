@@ -1115,6 +1115,8 @@ loadConversation: "会話を見る"
 pinnedList: "ピン留めされたリスト"
 keepScreenOn: "デバイスの画面を常にオンにする"
 verifiedLink: "このリンク先の所有者であることが確認されました"
+notifyNotes: "投稿を通知"
+unnotifyNotes: "投稿の通知を解除"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"
@@ -2065,6 +2067,7 @@ _notification:
   youReceivedFollowRequest: "フォローリクエストが来ました"
   yourFollowRequestAccepted: "フォローリクエストが承認されました"
   pollEnded: "アンケートの結果が出ました"
+  newNote: "新しい投稿"
   unreadAntennaNote: "アンテナ {name}"
   emptyPushNotificationMessage: "プッシュ通知の更新をしました"
   achievementEarned: "実績を獲得"
