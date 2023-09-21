@@ -936,6 +936,7 @@ cannotUploadBecauseInappropriate: "This file could not be uploaded because parts
 cannotUploadBecauseNoFreeSpace: "Upload failed due to lack of Drive capacity."
 cannotUploadBecauseExceedsFileSizeLimit: "This file cannot be uploaded as it exceeds the file size limit."
 beta: "Beta"
+originalFeature: "Nadesskey"
 enableAutoSensitive: "Automatic marking as sensitive"
 enableAutoSensitiveDescription: "Allows automatic detection and marking of sensitive media through Machine Learning where possible. Even if this option is disabled, it may be enabled instance-wide."
 activeEmailValidationDescription: "Enables stricter validation of email addresses, which includes checking for disposable addresses and by whether it can actually be communicated with. When unchecked, only the format of the email is validated."
