@@ -939,9 +939,12 @@ export interface Locale {
     "cannotUploadBecauseNoFreeSpace": string;
     "cannotUploadBecauseExceedsFileSizeLimit": string;
     "beta": string;
+    "originalFeature": string;
     "enableAutoSensitive": string;
     "enableAutoSensitiveDescription": string;
     "activeEmailValidationDescription": string;
+    "filenameRandomize": string;
+    "filenameRandomizeDescription": string;
     "navbar": string;
     "shuffle": string;
     "account": string;
@@ -1039,6 +1042,8 @@ export interface Locale {
     "accountMovedShort": string;
     "operationForbidden": string;
     "forceShowAds": string;
+    "noteSubscribe": string;
+    "noteUnsubscribe": string;
     "addMemo": string;
     "editMemo": string;
     "reactionsList": string;
@@ -2153,6 +2158,7 @@ export interface Locale {
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
+        "newNote": string;
         "testNotification": string;
         "checkNotificationBehavior": string;
         "sendTestNotification": string;

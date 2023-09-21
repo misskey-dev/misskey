@@ -41,6 +41,7 @@ import { NotificationService } from '@/core/NotificationService.js';
 import { WebhookService } from '@/core/WebhookService.js';
 import { HashtagService } from '@/core/HashtagService.js';
 import { AntennaService } from '@/core/AntennaService.js';
+import { NoteNotificationService } from '@/core/NoteNotificationService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -56,7 +57,7 @@ import { SearchService } from '@/core/SearchService.js';
 
 const mutedWordsCache = new MemorySingleCache<{ userId: MiUserProfile['userId']; mutedWords: MiUserProfile['mutedWords']; }[]>(1000 * 60 * 5);
 
-type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
+type NotificationType = 'reply' | 'renote' | 'note' | 'quote' | 'mention';
 
 class NotificationManager {
 	private notifier: { id: MiUser['id']; };
@@ -196,6 +197,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		private federatedInstanceService: FederatedInstanceService,
 		private hashtagService: HashtagService,
 		private antennaService: AntennaService,
+		private noteNotificationService: NoteNotificationService,
 		private webhookService: WebhookService,
 		private remoteUserResolveService: RemoteUserResolveService,
 		private apDeliverManagerService: ApDeliverManagerService,
@@ -500,6 +502,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		});
 
 		this.antennaService.addNoteToAntennas(note, user);
+		this.noteNotificationService.sendNotificationToSubscriber(note, user);
 
 		if (data.reply) {
 			this.saveReply(data.reply, note);

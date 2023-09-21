@@ -37,6 +37,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		{{ i18n.ts.makeExplorable }}
 		<template #caption>{{ i18n.ts.makeExplorableDescription }}</template>
 	</MkSwitch>
+	<MkSwitch v-model="filenameRandomize">
+		<template #label>{{ i18n.ts.filenameRandomize }}<span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
+		<template #caption>{{ i18n.ts.filenameRandomizeDescription }}</template>
+	</MkSwitch>
 
 	<FormSection>
 		<div class="_gaps_m">
@@ -90,6 +94,7 @@ let defaultNoteVisibility = $computed(defaultStore.makeGetterSetter('defaultNote
 let defaultNoteLocalOnly = $computed(defaultStore.makeGetterSetter('defaultNoteLocalOnly'));
 let rememberNoteVisibility = $computed(defaultStore.makeGetterSetter('rememberNoteVisibility'));
 let keepCw = $computed(defaultStore.makeGetterSetter('keepCw'));
+let filenameRandomize = $computed(defaultStore.makeGetterSetter('filenameRandomize'));
 
 function save() {
 	os.api('i/update', {

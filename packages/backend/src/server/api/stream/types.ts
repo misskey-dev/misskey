@@ -8,6 +8,7 @@ import type { MiUser } from '@/models/User.js';
 import type { MiUserProfile } from '@/models/UserProfile.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiAntenna } from '@/models/Antenna.js';
+import type { MiNoteNotification } from '@/models/NoteNotification.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiDriveFolder } from '@/models/DriveFolder.js';
 import type { MiUserList } from '@/models/UserList.js';
@@ -42,6 +43,8 @@ export interface InternalStreamTypes {
 	antennaCreated: MiAntenna;
 	antennaDeleted: MiAntenna;
 	antennaUpdated: MiAntenna;
+	noteNotificationCreated: MiNoteNotification;
+	noteNotificationDeleted: MiNoteNotification;
 	metaUpdated: MiMeta;
 	followChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
 	unfollowChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };

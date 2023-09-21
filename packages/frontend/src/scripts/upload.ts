@@ -5,6 +5,7 @@
 
 import { reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { v4 as uuid } from 'uuid';
 import { readAndCompressImage } from 'browser-image-resizer';
 import { getCompressionConfig } from './upload/compress-config.js';
 import { defaultStore } from '@/store.js';
@@ -45,7 +46,7 @@ export function uploadFile(
 		reader.onload = async (): Promise<void> => {
 			const ctx = reactive<Uploading>({
 				id: id,
-				name: name ?? file.name ?? 'untitled',
+				name: defaultStore.state.filenameRandomize ? uuid() : name ?? file.name ?? 'untitled',
 				progressMax: undefined,
 				progressValue: undefined,
 				img: window.URL.createObjectURL(file),
