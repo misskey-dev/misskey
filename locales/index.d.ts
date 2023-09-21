@@ -1032,6 +1032,7 @@ export interface Locale {
     "video": string;
     "videos": string;
     "dataSaver": string;
+    "copyEmbedCode": string;
     "accountMigration": string;
     "accountMoved": string;
     "accountMovedShort": string;
