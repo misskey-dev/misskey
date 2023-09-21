@@ -2,7 +2,7 @@ import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typ
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
-@Entity()
+@Entity('note_notification')
 export class MiNoteNotification {
 	@PrimaryColumn(id())
 	public id: string;
