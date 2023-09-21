@@ -1936,6 +1936,7 @@ _profile:
   metadataContent: "内容"
   changeAvatar: "アイコン画像を変更"
   changeBanner: "バナー画像を変更"
+  verifiedLinkDescription: "内容にURLを設定すると、リンク先のWebサイトに自分のプロフィールへのリンクが含まれている場合に所有者確認済みアイコンを表示させることができます。"
 
 _exportOrImport:
   allNotes: "全てのノート"
