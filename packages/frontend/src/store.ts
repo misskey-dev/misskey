@@ -270,6 +270,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
+	gamingMode: {
+		where: 'device',
+		default: false,
+	},
 	bannerUrl:{
 		where: 'device',
 		default: bannerDark

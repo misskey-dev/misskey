@@ -123,6 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch :disabled="enableUltimateDataSaverMode || enableCellularWithUltimateDataSaver" v-model="enableCellularWithDataSaver">{{ i18n.ts.cellularWithDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableUltimateDataSaverMode">{{ i18n.ts.UltimateDataSaver }}</MkSwitch>
 				<MkSwitch v-model="enableCellularWithUltimateDataSaver">{{ i18n.ts.cellularWithUltimateDataSaver }}</MkSwitch>
+				<MkSwitch v-model="enableGamingMode">{{ i18n.ts.gamingMode }}</MkSwitch>
 			</div>
 			<div>
 				<MkRadios v-model="emojiStyle">
@@ -255,7 +256,7 @@ const notificationPosition = computed(defaultStore.makeGetterSetter('notificatio
 const notificationStackAxis = computed(defaultStore.makeGetterSetter('notificationStackAxis'));
 const showTimelineReplies = computed(defaultStore.makeGetterSetter('showTimelineReplies'));
 const keepScreenOn = computed(defaultStore.makeGetterSetter('keepScreenOn'));
-
+const enableGamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 
 
 watch(lang, () => {

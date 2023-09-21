@@ -295,6 +295,7 @@ export interface Locale {
     "theme": string;
     "themeForLightMode": string;
     "themeForDarkMode": string;
+    "gamingMode": string;
     "light": string;
     "dark": string;
     "lightThemes": string;

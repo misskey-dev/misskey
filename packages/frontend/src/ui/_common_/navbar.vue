@@ -10,11 +10,13 @@ SPDX-License-Identifier: AGPL-3.0-only
         <div :class="$style.banner" :style="{ backgroundImage: `url(${ bannerUrl })` }"></div>
         <button v-tooltip.noDelay.right="instance.name ?? i18n.ts.instance" class="_button" :class="$style.instance"
                 @click="openInstanceMenu">
-          <img :src="iconUrl" alt="" :class="$style.instanceIcon"/>
+          <img :src="instance.iconUrl || instance.faviconUrl || '/favicon.ico'" alt="" :class="$style.instanceIcon"/>
         </button>
       </div>
       <div :class="$style.middle">
-        <MkA v-tooltip.noDelay.right="i18n.ts.timeline" :class="$style.item" :activeClass="$style.active" to="/" exact>
+        <MkA v-tooltip.noDelay.right="i18n.ts.timeline"
+             :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
+             :activeClass="$style.active" to="/" exact>
           <i :class="$style.itemIcon" class="ti ti-home ti-fw"></i><span :class="$style.itemText">{{
             i18n.ts.timeline
           }}</span>
@@ -26,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
               v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
               v-tooltip.noDelay.right="navbarItemDef[item].title"
               class="_button"
-              :class="[$style.item, { [$style.active]: navbarItemDef[item].active }]"
+              :class="[$style.item, { [$style.active]: gaming === '' && navbarItemDef[item].active, [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
               :activeClass="$style.active"
               :to="navbarItemDef[item].to"
               v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
@@ -38,25 +40,27 @@ SPDX-License-Identifier: AGPL-3.0-only
           </component>
         </template>
         <div :class="$style.divider"></div>
-        <MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item"
+        <MkA v-if="$i.isAdmin || $i.isModerator" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]"
              :activeClass="$style.active" to="/admin">
           <i :class="$style.itemIcon" class="ti ti-dashboard ti-fw"></i><span
             :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
         </MkA>
-        <button class="_button" :class="$style.item" @click="more">
+        <button class="_button" :class="[$style.item, { [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" @click="more">
           <i :class="$style.itemIcon" class="ti ti-grid-dots ti-fw"></i><span :class="$style.itemText">{{
             i18n.ts.more
           }}</span>
           <span v-if="otherMenuItemIndicated" :class="$style.itemIndicator"><i class="_indicatorCircle"></i></span>
         </button>
-        <MkA v-tooltip.noDelay.right="i18n.ts.settings" :class="$style.item" :activeClass="$style.active"
+        <MkA v-tooltip.noDelay.right="i18n.ts.settings" :class="[$style.item, {  [$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light' }]" :activeClass="$style.active"
              to="/settings">
           <i :class="$style.itemIcon" class="ti ti-settings ti-fw"></i><span
             :class="$style.itemText">{{ i18n.ts.settings }}</span>
         </MkA>
       </div>
       <div :class="$style.bottom">
-        <button v-tooltip.noDelay.right="i18n.ts.note" class="_button" :class="[$style.post]" data-cy-open-post-form
+        <button v-tooltip.noDelay.right="i18n.ts.note" class="_button"
+                :class="[$style.post ,{[$style.gamingDark]: gaming === 'dark',[$style.gamingLight]: gaming === 'light',}]"
+                data-cy-open-post-form
                 @click="os.post">
           <i class="ti ti-pencil ti-fw" :class="$style.postIcon"></i><span :class="$style.postText">{{
             i18n.ts.note
@@ -85,22 +89,56 @@ import {instance} from '@/instance';
 const iconOnly = ref(false);
 let bannerUrl = ref(defaultStore.state.bannerUrl);
 let iconUrl = ref();
+let gaming = ref('');
 
+const gamingMode = computed(defaultStore.makeGetterSetter('gamingMode'));
 const darkMode = computed(defaultStore.makeGetterSetter('darkMode'));
-if (darkMode.value){
+
+if (darkMode.value) {
   bannerUrl.value = bannerDark;
   iconUrl.value = iconDark;
-}else{
+} else {
   bannerUrl.value = bannerLight;
   iconUrl.value = iconLight;
 }
+
 watch(darkMode, () => {
-  if (darkMode.value){
+  if (darkMode.value) {
     bannerUrl.value = bannerDark;
     iconUrl.value = iconDark;
-  }else{
+  } else {
     bannerUrl.value = bannerLight;
     iconUrl.value = iconLight;
+  }
+})
+
+// gaming.valueに新しい値を代入する
+if (darkMode.value && gamingMode.value == true) {
+  gaming.value = 'dark';
+} else if (!darkMode.value && gamingMode.value == true) {
+  gaming.value = 'light';
+} else {
+  gaming.value = '';
+}
+
+watch(darkMode, () => {
+  console.log(gaming)
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
+  }
+})
+
+watch(gamingMode, () => {
+  if (darkMode.value && gamingMode.value == true) {
+    gaming.value = 'dark';
+  } else if (!darkMode.value && gamingMode.value == true) {
+    gaming.value = 'light';
+  } else {
+    gaming.value = '';
   }
 })
 
@@ -243,6 +281,65 @@ function more(ev: MouseEvent) {
         background: var(--accentLighten);
       }
     }
+
+    &.gamingLight:before {
+      content: "";
+      display: block;
+      width: calc(100% - 38px);
+      height: 100%;
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+
+    &.gamingLight:hover, &.gamingLight.active {
+      &.gamingLight:before {
+        background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
+
+    &.gamingDark:before {
+      content: "";
+      display: block;
+      width: calc(100% - 38px);
+      height: 100%;
+      margin: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+      background-size: 1800% 1800%;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    }
+
+    &.gamingDark:hover, &.gamingDark.active {
+      &.gamingDark:before {
+        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
+
   }
 
   .postIcon {
@@ -329,6 +426,85 @@ function more(ev: MouseEvent) {
         bottom: 0;
         border-radius: 999px;
         background: var(--accentedBg);
+      }
+    }
+
+    &.gamingDark:hover {
+      color: white;
+      background-size: 1800% 1800%;
+      text-decoration: none;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    }
+
+    &.gamingDark.active {
+      color: white;
+      background-size: 1800% 1800%;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    }
+
+    &.gamingDark:hover, &.gamingDark.active {
+      color: white;
+
+      &.gamingDark:before {
+        content: "";
+        display: block;
+        width: calc(100% - 34px);
+        height: 100%;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 999px;
+        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
+
+    &.gamingLight:hover {
+      color: black;
+      background-size: 1800% 1800% !important;
+      text-decoration: none;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+
+    &.gamingLight:active {
+      color: black;
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+
+    &.gamingLight:hover, &.gamingLight.active {
+      color: black;
+      &.gamingLight:before {
+        content: "";
+        display: block;
+        width: calc(100% - 34px);
+        height: 100%;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 999px;
+        background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
       }
     }
   }
@@ -421,6 +597,66 @@ function more(ev: MouseEvent) {
         background: var(--accentLighten);
       }
     }
+
+    &.gamingLight:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      width: 52px;
+      aspect-ratio: 1/1;
+      border-radius: 100%;
+      background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+      background-size: 1800% 1800% !important;
+      -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+    }
+
+    &.gamingLight:hover, &.gamingLight.active {
+      &.gamingLight:before {
+        background: linear-gradient(270deg, #d08c8c, #cfb28c, #dbdb8b, #95d08e, #8bdbdb, #94a9cf, #b09ecf, #cfa0cf, #e0a0bd);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
+
+    &.gamingDark:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      width: 52px;
+      aspect-ratio: 1/1;
+      border-radius: 100%;
+      background: linear-gradient(270deg, #c06161, #c0a567, #b6ba69, #81bc72, #63c3be, #8bacd6, #9f8bd6, #d18bd6, #d883b4);
+      background-size: 1800% 1800%;
+      -webkit-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      -moz-animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+      animation: AnimationDark 44s cubic-bezier(0, 0.25, 0.25, 1) infinite;
+    }
+
+    &.gamingDark:hover, &.gamingDark.active {
+      &.gamingDark:before {
+        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
+
+
   }
 
   .postIcon {
@@ -489,6 +725,53 @@ function more(ev: MouseEvent) {
         opacity: 1;
       }
     }
+
+    &.gamingDark:hover, &.gamingDark.active {
+      text-decoration: none;
+      color: var(--accent);
+
+      &.gamingDark:before {
+        content: "";
+        display: block;
+        height: 100%;
+        aspect-ratio: 1;
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 999px;
+        background: linear-gradient(270deg, #a84f4f, #a88c4f, #9aa24b, #6da85c, #53a8a6, #7597b5, #8679b5, #b579b5, #b56d96);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationDark 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
+    &.gamingLight:hover, &.gamingLight.active {
+      text-decoration: none;
+      color: var(--accent);
+
+      &.gamingLight:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 52px;
+        aspect-ratio: 1/1;
+        border-radius: 100%;
+        background: linear-gradient(270deg, #e7a2a2, #e3cfa2, #ebefa1, #b3e7a6, #a6ebe7, #aec5e3, #cabded, #e0b9e3, #f4bddd);
+        background-size: 1800% 1800% !important;
+        -webkit-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        -moz-animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+        animation: AnimationLight 45s cubic-bezier(0, 0.25, 0.25, 1) infinite !important;
+      }
+    }
   }
 
   .itemIcon {
@@ -508,6 +791,73 @@ function more(ev: MouseEvent) {
     color: var(--navIndicator);
     font-size: 8px;
     animation: blink 1s infinite;
+  }
+
+  @-webkit-keyframes AnimationLight {
+    0% {
+      background-position: 0% 50%
+    }
+    50% {
+      background-position: 100% 50%
+    }
+    100% {
+      background-position: 0% 50%
+    }
+  }
+  @-moz-keyframes AnimationLight {
+    0% {
+      background-position: 0% 50%
+    }
+    50% {
+      background-position: 100% 50%
+    }
+    100% {
+      background-position: 0% 50%
+    }
+  }
+  @keyframes AnimationLight {
+    0% {
+      background-position: 0% 50%
+    }
+    50% {
+      background-position: 100% 50%
+    }
+    100% {
+      background-position: 0% 50%
+    }
+  }
+  @-webkit-keyframes AnimationDark {
+    0% {
+      background-position: 0% 50%
+    }
+    50% {
+      background-position: 100% 50%
+    }
+    100% {
+      background-position: 0% 50%
+    }
+  }
+  @-moz-keyframes AnimationDark {
+    0% {
+      background-position: 0% 50%
+    }
+    50% {
+      background-position: 100% 50%
+    }
+    100% {
+      background-position: 0% 50%
+    }
+  }
+  @keyframes AnimationDark {
+    0% {
+      background-position: 0% 50%
+    }
+    50% {
+      background-position: 100% 50%
+    }
+    100% {
+      background-position: 0% 50%
+    }
   }
 }
 </style>

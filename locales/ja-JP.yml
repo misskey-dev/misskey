@@ -292,6 +292,7 @@ location: "場所"
 theme: "テーマ"
 themeForLightMode: "ライトモードで使うテーマ"
 themeForDarkMode: "ダークモードで使うテーマ"
+gamingMode: 'ゲーミングモード'
 light: "ライト"
 dark: "ダーク"
 lightThemes: "明るいテーマ"
