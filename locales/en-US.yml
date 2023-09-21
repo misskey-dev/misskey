@@ -1113,6 +1113,7 @@ loadReplies: "Show replies"
 loadConversation: "Show conversation"
 pinnedList: "Pinned list"
 keepScreenOn: "Keep screen on"
+verifiedLink: "Link ownership has been verified"
 _announcement:
   forExistingUsers: "Existing users only"
   forExistingUsersDescription: "This announcement will only be shown to users existing at the point of publishment if enabled. If disabled, those newly signing up after it has been posted will also see it."
