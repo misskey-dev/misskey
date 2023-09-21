@@ -26,6 +26,7 @@
 - Feat: 二要素認証のバックアップコードが生成されるようになりました
 	- ref. https://github.com/MisskeyIO/misskey/pull/121
 - Feat: 二要素認証でパスキーをサポートするようになりました
+- Feat: プロフィールでのリンク検証
 - Feat: 通知をテストできるようになりました
 - Feat: PWAのアイコンが設定できるようになりました
 - Enhance: manifest.jsonをオーバーライド可能に
