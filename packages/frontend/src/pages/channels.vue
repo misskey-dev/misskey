@@ -1,18 +1,13 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
+	<MkSpacer :content-max="700">
 		<div v-if="tab === 'search'">
 			<div class="_gaps">
 				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
-				<MkRadios v-model="searchType" @update:modelValue="search()">
+				<MkRadios v-model="searchType" @update:model-value="search()">
 					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
 					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
 				</MkRadios>
@@ -58,9 +53,9 @@ import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { useRouter } from '@/router.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { i18n } from '@/i18n.js';
+import { useRouter } from '@/router';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const router = useRouter();
 
@@ -101,7 +96,7 @@ const ownedPagination = {
 async function search() {
 	const query = searchQuery.toString().trim();
 
-	if (query == null) return;
+	if (query == null || query === '') return;
 
 	const type = searchType.toString().trim();
 

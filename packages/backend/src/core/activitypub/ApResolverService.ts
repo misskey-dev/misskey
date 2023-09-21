@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
+import type { LocalUser } from '@/models/entities/User.js';
 import { InstanceActorService } from '@/core/InstanceActorService.js';
-import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/_.js';
+import type { NotesRepository, PollsRepository, NoteReactionsRepository, UsersRepository } from '@/models/index.js';
 import type { Config } from '@/config.js';
 import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -23,7 +18,7 @@ import type { IObject, ICollection, IOrderedCollection } from './type.js';
 
 export class Resolver {
 	private history: Set<string>;
-	private user?: MiLocalUser;
+	private user?: LocalUser;
 	private logger: Logger;
 
 	constructor(
@@ -66,6 +61,10 @@ export class Resolver {
 
 	@bindThis
 	public async resolve(value: string | IObject): Promise<IObject> {
+		if (value == null) {
+			throw new Error('resolvee is null (or undefined)');
+		}
+
 		if (typeof value !== 'string') {
 			return value;
 		}
@@ -105,11 +104,11 @@ export class Resolver {
 			? await this.apRequestService.signedGet(value, this.user) as IObject
 			: await this.httpRequestService.getJson(value, 'application/activity+json, application/ld+json')) as IObject;
 
-		if (
+		if (object == null || (
 			Array.isArray(object['@context']) ?
 				!(object['@context'] as unknown[]).includes('https://www.w3.org/ns/activitystreams') :
 				object['@context'] !== 'https://www.w3.org/ns/activitystreams'
-		) {
+		)) {
 			throw new Error('invalid response');
 		}
 
@@ -134,7 +133,7 @@ export class Resolver {
 					});
 			case 'users':
 				return this.usersRepository.findOneByOrFail({ id: parsed.id })
-					.then(user => this.apRendererService.renderPerson(user as MiLocalUser));
+					.then(user => this.apRendererService.renderPerson(user as LocalUser));
 			case 'questions':
 				// Polls are indexed by the note they are attached to.
 				return Promise.all([
@@ -152,7 +151,7 @@ export class Resolver {
 				return Promise.all(
 					[parsed.id, parsed.rest].map(id => this.usersRepository.findOneByOrFail({ id })),
 				)
-					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower as MiLocalUser | MiRemoteUser, followee as MiLocalUser | MiRemoteUser, url)));
+					.then(([follower, followee]) => this.apRendererService.addContext(this.apRendererService.renderFollow(follower, followee, url)));
 			default:
 				throw new Error(`resolveLocal: type ${parsed.type} unhandled`);
 		}

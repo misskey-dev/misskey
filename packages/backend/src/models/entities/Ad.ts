@@ -1,13 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Index, Column, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity('ad')
-export class MiAd {
+@Entity()
+export class Ad {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -60,11 +55,8 @@ export class MiAd {
 		length: 8192, nullable: false,
 	})
 	public memo: string;
-	@Column('integer', {
-		default: 0, nullable: false,
-	})
-	public dayOfWeek: number;
-	constructor(data: Partial<MiAd>) {
+
+	constructor(data: Partial<Ad>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

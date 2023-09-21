@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { HashtagsRepository } from '@/models/_.js';
+import type { HashtagsRepository } from '@/models/index.js';
 import { HashtagEntityService } from '@/core/entities/HashtagEntityService.js';
 import { DI } from '@/di-symbols.js';
 
@@ -37,8 +32,9 @@ export const paramDef = {
 	required: ['sort'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.hashtagsRepository)
 		private hashtagsRepository: HashtagsRepository,
@@ -77,7 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				'tag.attachedRemoteUsersCount',
 			]);
 
-			const tags = await query.limit(ps.limit).getMany();
+			const tags = await query.take(ps.limit).getMany();
 
 			return this.hashtagEntityService.packMany(tags);
 		});

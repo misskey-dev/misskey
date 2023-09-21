@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository } from '@/models/_.js';
+import type { RolesRepository } from '@/models/index.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
@@ -38,7 +33,6 @@ export const paramDef = {
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
-		isExplorable: { type: 'boolean' },
 		asBadge: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
 		displayOrder: { type: 'number' },
@@ -64,8 +58,9 @@ export const paramDef = {
 	],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
@@ -73,8 +68,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps) => {
-			const roleExist = await this.rolesRepository.exist({ where: { id: ps.roleId } });
-			if (!roleExist) {
+			const role = await this.rolesRepository.findOneBy({ id: ps.roleId });
+			if (role == null) {
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
@@ -90,7 +85,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isPublic: ps.isPublic,
 				isModerator: ps.isModerator,
 				isAdministrator: ps.isAdministrator,
-				isExplorable: ps.isExplorable,
 				asBadge: ps.asBadge,
 				canEditMembersByModerator: ps.canEditMembersByModerator,
 				displayOrder: ps.displayOrder,

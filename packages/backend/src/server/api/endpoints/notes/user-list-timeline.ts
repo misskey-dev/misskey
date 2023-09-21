@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/_.js';
+import type { NotesRepository, UserListsRepository, UserListJoiningsRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -58,8 +53,9 @@ export const paramDef = {
 	required: ['listId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -95,10 +91,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('userListJoining.userListId = :userListId', { userListId: list.id });
 
 			this.queryService.generateVisibilityQuery(query, me);
-			this.queryService.generateMutedUserQuery(query, me);
-			this.queryService.generateMutedNoteQuery(query, me);
-			this.queryService.generateBlockedUserQuery(query, me);
-			this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
 
 			if (ps.includeMyRenotes === false) {
 				query.andWhere(new Brackets(qb => {
@@ -135,7 +127,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 			//#endregion
 
-			const timeline = await query.limit(ps.limit).getMany();
+			const timeline = await query.take(ps.limit).getMany();
 
 			this.activeUsersChart.read(me);
 

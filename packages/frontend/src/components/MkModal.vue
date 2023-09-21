@@ -1,36 +1,11 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <Transition
 	:name="transitionName"
-	:enterActiveClass="normalizeClass({
-		[$style.transition_modalDrawer_enterActive]: transitionName === 'modal-drawer',
-		[$style.transition_modalPopup_enterActive]: transitionName === 'modal-popup',
-		[$style.transition_modal_enterActive]: transitionName === 'modal',
-		[$style.transition_send_enterActive]: transitionName === 'send',
-	})"
-	:leaveActiveClass="normalizeClass({
-		[$style.transition_modalDrawer_leaveActive]: transitionName === 'modal-drawer',
-		[$style.transition_modalPopup_leaveActive]: transitionName === 'modal-popup',
-		[$style.transition_modal_leaveActive]: transitionName === 'modal',
-		[$style.transition_send_leaveActive]: transitionName === 'send',
-	})"
-	:enterFromClass="normalizeClass({
-		[$style.transition_modalDrawer_enterFrom]: transitionName === 'modal-drawer',
-		[$style.transition_modalPopup_enterFrom]: transitionName === 'modal-popup',
-		[$style.transition_modal_enterFrom]: transitionName === 'modal',
-		[$style.transition_send_enterFrom]: transitionName === 'send',
-	})"
-	:leaveToClass="normalizeClass({
-		[$style.transition_modalDrawer_leaveTo]: transitionName === 'modal-drawer',
-		[$style.transition_modalPopup_leaveTo]: transitionName === 'modal-popup',
-		[$style.transition_modal_leaveTo]: transitionName === 'modal',
-		[$style.transition_send_leaveTo]: transitionName === 'send',
-	})"
-	:duration="transitionDuration" appear @afterLeave="emit('closed')" @enter="emit('opening')" @afterEnter="onOpened"
+	:enter-active-class="$style['transition_' + transitionName + '_enterActive']"
+	:leave-active-class="$style['transition_' + transitionName + '_leaveActive']"
+	:enter-from-class="$style['transition_' + transitionName + '_enterFrom']"
+	:leave-to-class="$style['transition_' + transitionName + '_leaveTo']"
+	:duration="transitionDuration" appear @after-leave="emit('closed')" @enter="emit('opening')" @after-enter="onOpened"
 >
 	<div v-show="manualShowing != null ? manualShowing : showing" v-hotkey.global="keymap" :class="[$style.root, { [$style.drawer]: type === 'drawer', [$style.dialog]: type === 'dialog', [$style.popup]: type === 'popup' }]" :style="{ zIndex, pointerEvents: (manualShowing != null ? manualShowing : showing) ? 'auto' : 'none', '--transformOrigin': transformOrigin }">
 		<div data-cy-bg :data-cy-transparent="isEnableBgTransparent" class="_modalBg" :class="[$style.bg, { [$style.bgTransparent]: isEnableBgTransparent }]" :style="{ zIndex }" @click="onBgClick" @mousedown="onBgClick" @contextmenu.prevent.stop="() => {}"></div>
@@ -42,11 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch } from 'vue';
-import * as os from '@/os.js';
-import { isTouchUsing } from '@/scripts/touch.js';
-import { defaultStore } from '@/store.js';
-import { deviceKind } from '@/scripts/device-kind.js';
+import { nextTick, onMounted, watch, provide } from 'vue';
+import * as os from '@/os';
+import { isTouchUsing } from '@/scripts/touch';
+import { defaultStore } from '@/store';
+import { deviceKind } from '@/scripts/device-kind';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -63,7 +38,7 @@ type ModalTypes = 'popup' | 'dialog' | 'drawer';
 const props = withDefaults(defineProps<{
 	manualShowing?: boolean | null;
 	anchor?: { x: string; y: string; };
-	src?: HTMLElement | null;
+	src?: HTMLElement;
 	preferType?: ModalTypes | 'auto';
 	zPriority?: 'low' | 'middle' | 'high';
 	noOverlap?: boolean;
@@ -289,10 +264,6 @@ const onOpened = () => {
 	}, { passive: true });
 };
 
-const alignObserver = new ResizeObserver((entries, observer) => {
-	align();
-});
-
 onMounted(() => {
 	watch(() => props.src, async () => {
 		if (props.src) {
@@ -307,12 +278,10 @@ onMounted(() => {
 	}, { immediate: true });
 
 	nextTick(() => {
-		alignObserver.observe(content!);
+		new ResizeObserver((entries, observer) => {
+			align();
+		}).observe(content!);
 	});
-});
-
-onUnmounted(() => {
-	alignObserver.disconnect();
 });
 
 defineExpose({
@@ -370,8 +339,8 @@ defineExpose({
 	}
 }
 
-.transition_modalPopup_enterActive,
-.transition_modalPopup_leaveActive {
+.transition_modal-popup_enterActive,
+.transition_modal-popup_leaveActive {
 	> .bg {
 		transition: opacity 0.1s !important;
 	}
@@ -381,8 +350,8 @@ defineExpose({
 		transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1), transform 0.1s cubic-bezier(0, 0, 0.2, 1) !important;
 	}
 }
-.transition_modalPopup_enterFrom,
-.transition_modalPopup_leaveTo {
+.transition_modal-popup_enterFrom,
+.transition_modal-popup_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -395,7 +364,7 @@ defineExpose({
 	}
 }
 
-.transition_modalDrawer_enterActive {
+.transition_modal-drawer_enterActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -404,7 +373,7 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.transition_modalDrawer_leaveActive {
+.transition_modal-drawer_leaveActive {
 	> .bg {
 		transition: opacity 0.2s !important;
 	}
@@ -413,8 +382,8 @@ defineExpose({
 		transition: transform 0.2s cubic-bezier(0,.5,0,1) !important;
 	}
 }
-.transition_modalDrawer_enterFrom,
-.transition_modalDrawer_leaveTo {
+.transition_modal-drawer_enterFrom,
+.transition_modal-drawer_leaveTo {
 	> .bg {
 		opacity: 0;
 	}
@@ -435,11 +404,16 @@ defineExpose({
 			right: 0;
 			margin: auto;
 			padding: 32px;
-			display: flex;
+			// TODO: mask-imageはiOSだとやたら重い。なんとかしたい
+			-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
+			mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 32px, rgba(0,0,0,1) calc(100% - 32px), rgba(0,0,0,0) 100%);
 			overflow: auto;
+			display: flex;
 
 			@media (max-width: 500px) {
 				padding: 16px;
+				-webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
+				mask-image: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 16px, rgba(0,0,0,1) calc(100% - 16px), rgba(0,0,0,0) 100%);
 			}
 		}
 	}

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div ref="rootEl">
 	<MkLoading v-if="fetching"/>
@@ -15,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
+import * as os from '@/os';
+import { defaultStore } from '@/store';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { alpha } from '@/scripts/color';
+import { initChart } from '@/scripts/init-chart';
 
 initChart();
 
@@ -45,17 +40,11 @@ async function renderChart() {
 
 	let raw = await os.api('retention', { });
 
-	raw = raw.slice(0, maxDays + 1);
+	raw = raw.slice(0, maxDays);
 
 	const data = [];
 	for (const record of raw) {
-		data.push({
-			x: 0,
-			y: record.createdAt,
-			v: record.users,
-		});
-
-		let i = 1;
+		let i = 0;
 		for (const date of Object.keys(record.data).sort((a, b) => new Date(a).getTime() - new Date(b).getTime())) {
 			data.push({
 				x: i,
@@ -72,14 +61,8 @@ async function renderChart() {
 
 	const color = defaultStore.state.darkMode ? '#b4e900' : '#86b300';
 
-	const getYYYYMMDD = (date: Date) => {
-		const y = date.getFullYear().toString().padStart(2, '0');
-		const m = (date.getMonth() + 1).toString().padStart(2, '0');
-		const d = date.getDate().toString().padStart(2, '0');
-		return `${y}/${m}/${d}`;
-	};
-
-	const max = (createdAt: string) => raw.find(x => x.createdAt === createdAt)!.users;
+	// 視覚上の分かりやすさのため上から最も大きい3つの値の平均を最大値とする
+	const max = raw.map(x => x.users).slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / 3;
 
 	const marginEachCell = 12;
 
@@ -95,13 +78,8 @@ async function renderChart() {
 				borderRadius: 3,
 				backgroundColor(c) {
 					const value = c.dataset.data[c.dataIndex].v;
-					const m = max(c.dataset.data[c.dataIndex].y);
-					if (m === 0) {
-						return alpha(color, 0);
-					} else {
-						const a = value / m;
-						return alpha(color, a);
-					}
+					const a = value / max;
+					return alpha(color, a);
 				},
 				fill: true,
 				width(c) {
@@ -137,11 +115,7 @@ async function renderChart() {
 						maxRotation: 0,
 						autoSkipPadding: 0,
 						autoSkip: false,
-						callback: (value, index, values) => value,
-					},
-					title: {
-						display: true,
-						text: 'Days later',
+						callback: (value, index, values) => value + 1,
 					},
 				},
 				y: {
@@ -176,16 +150,11 @@ async function renderChart() {
 					callbacks: {
 						title(context) {
 							const v = context[0].dataset.data[context[0].dataIndex];
-							return getYYYYMMDD(new Date(new Date(v.y).getTime() + (v.x * 86400000)));
+							return v.d;
 						},
 						label(context) {
 							const v = context.dataset.data[context.dataIndex];
-							const m = max(v.y);
-							if (m === 0) {
-								return [`Active: ${v.v} (-%)`];
-							} else {
-								return [`Active: ${v.v} (${Math.round((v.v / m) * 100)}%)`];
-							}
+							return ['Active: ' + v.v];
 						},
 					},
 					//mode: 'index',

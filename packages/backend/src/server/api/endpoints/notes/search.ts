@@ -1,12 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import type { NotesRepository } from '@/models/index.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { SearchService } from '@/core/SearchService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { Config } from '@/config.js';
+import { DI } from '@/di-symbols.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
 
@@ -44,7 +43,8 @@ export const paramDef = {
 		offset: { type: 'integer', default: 0 },
 		host: {
 			type: 'string',
-			description: 'The local host is represented with `.`.',
+			nullable: true,
+			description: 'The local host is represented with `null`.',
 		},
 		userId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
 		channelId: { type: 'string', format: 'misskey:id', nullable: true, default: null },
@@ -54,11 +54,18 @@ export const paramDef = {
 
 // TODO: ロジックをサービスに切り出す
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+	
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private noteEntityService: NoteEntityService,
-		private searchService: SearchService,
+		private queryService: QueryService,
 		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -66,16 +73,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (!policies.canSearchNotes) {
 				throw new ApiError(meta.errors.unavailable);
 			}
+	
+			const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId);
 
-			const notes = await this.searchService.searchNote(ps.query, me, {
-				userId: ps.userId,
-				channelId: ps.channelId,
-				host: ps.host,
-			}, {
-				untilId: ps.untilId,
-				sinceId: ps.sinceId,
-				limit: ps.limit,
-			});
+			if (ps.userId) {
+				query.andWhere('note.userId = :userId', { userId: ps.userId });
+			} else if (ps.channelId) {
+				query.andWhere('note.channelId = :channelId', { channelId: ps.channelId });
+			}
+
+			query
+				.andWhere('note.text ILIKE :q', { q: `%${ sqlLikeEscape(ps.query) }%` })
+				.innerJoinAndSelect('note.user', 'user')
+				.leftJoinAndSelect('note.reply', 'reply')
+				.leftJoinAndSelect('note.renote', 'renote')
+				.leftJoinAndSelect('reply.user', 'replyUser')
+				.leftJoinAndSelect('renote.user', 'renoteUser');
+
+			this.queryService.generateVisibilityQuery(query, me);
+			if (me) this.queryService.generateMutedUserQuery(query, me);
+			if (me) this.queryService.generateBlockedUserQuery(query, me);
+
+			const notes = await query.take(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

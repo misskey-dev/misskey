@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { id } from '../id.js';
-import { MiDriveFile } from './DriveFile.js';
+import { DriveFile } from './DriveFile.js';
 
-@Entity('user')
+@Entity()
 @Index(['usernameLower', 'host'], { unique: true })
-export class MiUser {
+export class User {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -80,12 +75,6 @@ export class MiUser {
 	})
 	public movedToUri: string | null;
 
-	@Column('timestamp with time zone', {
-		nullable: true,
-		comment: 'When the user moved to another account',
-	})
-	public movedAt: Date | null;
-
 	@Column('simple-array', {
 		nullable: true,
 		comment: 'URIs the user is known as too',
@@ -103,26 +92,26 @@ export class MiUser {
 		nullable: true,
 		comment: 'The ID of avatar DriveFile.',
 	})
-	public avatarId: MiDriveFile['id'] | null;
+	public avatarId: DriveFile['id'] | null;
 
-	@OneToOne(type => MiDriveFile, {
+	@OneToOne(type => DriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public avatar: MiDriveFile | null;
+	public avatar: DriveFile | null;
 
 	@Column({
 		...id(),
 		nullable: true,
 		comment: 'The ID of banner DriveFile.',
 	})
-	public bannerId: MiDriveFile['id'] | null;
+	public bannerId: DriveFile['id'] | null;
 
-	@OneToOne(type => MiDriveFile, {
+	@OneToOne(type => DriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public banner: MiDriveFile | null;
+	public banner: DriveFile | null;
 
 	@Column('varchar', {
 		length: 512, nullable: true,
@@ -237,6 +226,12 @@ export class MiUser {
 	})
 	public followersUri: string | null;
 
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether to show users replying to other users in the timeline.',
+	})
+	public showTimelineReplies: boolean;
+
 	@Index({ unique: true })
 	@Column('char', {
 		length: 16, nullable: true, unique: true,
@@ -244,7 +239,7 @@ export class MiUser {
 	})
 	public token: string | null;
 
-	constructor(data: Partial<MiUser>) {
+	constructor(data: Partial<User>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {
@@ -253,24 +248,12 @@ export class MiUser {
 	}
 }
 
-export type MiLocalUser = MiUser & {
+export type LocalUser = User & {
 	host: null;
 	uri: null;
 }
 
-export type MiPartialLocalUser = Partial<MiUser> & {
-	id: MiUser['id'];
-	host: null;
-	uri: null;
-}
-
-export type MiRemoteUser = MiUser & {
-	host: string;
-	uri: string;
-}
-
-export type MiPartialRemoteUser = Partial<MiUser> & {
-	id: MiUser['id'];
+export type RemoteUser = User & {
 	host: string;
 	uri: string;
 }

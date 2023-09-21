@@ -1,16 +1,11 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-/*
  * Operations
  * 各種操作
  */
 import * as Misskey from 'misskey-js';
 import type { SwMessage, SwMessageOrderType } from '@/types';
-import { getAccountFromId } from '@/scripts/get-account-from-id.js';
-import { getUrlWithLoginId } from '@/scripts/login-id.js';
+import { getAccountFromId } from '@/scripts/get-account-from-id';
+import { getUrlWithLoginId } from '@/scripts/login-id';
 
 export const cli = new Misskey.api.APIClient({ origin, fetch: (...args): Promise<Response> => fetch(...args) });
 

@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <span :class="$style.root">
 	<span ref="el" style="display: inline-block;">
@@ -37,8 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</path>
 	</svg>
 	-->
-	<!-- MFMで上位レイヤーに表示されるため、リンクをクリックできるようにstyleにpointer-events: none;を付与。 -->
-	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px; pointer-events: none;">
+	<svg v-for="particle in particles" :key="particle.id" :width="width" :height="height" :viewBox="`0 0 ${width} ${height}`" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: -32px; left: -32px;">
 		<path
 			style="transform-origin: center; transform-box: fill-box;"
 			:transform="`translate(${particle.x} ${particle.y})`"
@@ -121,5 +115,6 @@ onUnmounted(() => {
 .root {
 	position: relative;
 	display: inline-block;
+	pointer-events: none;
 }
 </style>

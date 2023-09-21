@@ -1,22 +1,17 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, JoinColumn, Column, OneToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('user_keypair')
-export class MiUserKeypair {
+@Entity()
+export class UserKeypair {
 	@PrimaryColumn(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@OneToOne(type => MiUser, {
+	@OneToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 4096,
@@ -28,7 +23,7 @@ export class MiUserKeypair {
 	})
 	public privateKey: string;
 
-	constructor(data: Partial<MiUserKeypair>) {
+	constructor(data: Partial<UserKeypair>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

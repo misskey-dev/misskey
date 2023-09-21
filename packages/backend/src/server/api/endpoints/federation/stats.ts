@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
+import type { FollowingsRepository, InstancesRepository } from '@/models/index.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
@@ -28,8 +23,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,

@@ -1,15 +1,10 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <script lang="ts">
 import { defineComponent, h, PropType, TransitionGroup, useCssModule } from 'vue';
 import MkAd from '@/components/global/MkAd.vue';
 import { isDebuggerEnabled, stackTraceInstances } from '@/debug';
-import { i18n } from '@/i18n.js';
-import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
+import { i18n } from '@/i18n';
+import * as os from '@/os';
+import { defaultStore } from '@/store';
 import { MisskeyEntity } from '@/types/date-separated-list';
 
 export default defineComponent({
@@ -41,7 +36,7 @@ export default defineComponent({
 	},
 
 	setup(props, { slots, expose }) {
-		const $style = useCssModule(); // カスタムレンダラなので使っても大丈夫
+		const $style = useCssModule();
 		function getDateText(time: string) {
 			const date = new Date(time).getDate();
 			const month = new Date(time).getMonth() + 1;
@@ -168,10 +163,10 @@ export default defineComponent({
 	> *:empty {
 		display: none;
 	}
-	}
 
-	&:not(.date-separated-list-nogap) > *:not(:last-child) {
+	> *:not(:last-child) {
 		margin-bottom: var(--margin);
+	}
 	}
 }
 

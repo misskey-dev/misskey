@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Index, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { id } from '../id.js';
-import type { MiUser } from './User.js';
+import type { User } from './User.js';
 
-@Entity('user_ip')
+@Entity()
 @Index(['userId', 'ip'], { unique: true })
-export class MiUserIp {
+export class UserIp {
 	@PrimaryGeneratedColumn()
 	public id: string;
 
@@ -19,7 +14,7 @@ export class MiUserIp {
 
 	@Index()
 	@Column(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
 	@Column('varchar', {
 		length: 128,

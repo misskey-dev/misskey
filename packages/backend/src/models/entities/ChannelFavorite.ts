@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiChannel } from './Channel.js';
+import { User } from './User.js';
+import { Channel } from './Channel.js';
 
-@Entity('channel_favorite')
+@Entity()
 @Index(['userId', 'channelId'], { unique: true })
-export class MiChannelFavorite {
+export class ChannelFavorite {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,23 +19,23 @@ export class MiChannelFavorite {
 	@Column({
 		...id(),
 	})
-	public channelId: MiChannel['id'];
+	public channelId: Channel['id'];
 
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(type => Channel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public channel: MiChannel | null;
+	public channel: Channel | null;
 
 	@Index()
 	@Column({
 		...id(),
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 }

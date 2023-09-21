@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkSpacer :contentMax="800">
+<MkSpacer :content-max="800">
 	<MkTab v-model="tab" style="margin-bottom: var(--margin);">
 		<option value="notes">{{ i18n.ts.notes }}</option>
 		<option value="polls">{{ i18n.ts.poll }}</option>
@@ -17,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import MkNotes from '@/components/MkNotes.vue';
 import MkTab from '@/components/MkTab.vue';
-import { i18n } from '@/i18n.js';
+import { i18n } from '@/i18n';
 
 const paginationForNotes = {
 	endpoint: 'notes/featured' as const,

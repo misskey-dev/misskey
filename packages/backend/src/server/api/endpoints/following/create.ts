@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { FollowingsRepository } from '@/models/_.js';
+import type { UsersRepository, FollowingsRepository } from '@/models/index.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -23,8 +18,6 @@ export const meta = {
 	},
 
 	requireCredential: true,
-
-	prohibitMoved: true,
 
 	kind: 'write:following',
 
@@ -75,9 +68,13 @@ export const paramDef = {
 	required: ['userId'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
@@ -100,14 +97,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			// Check if already following
-			const exist = await this.followingsRepository.exist({
-				where: {
-					followerId: follower.id,
-					followeeId: followee.id,
-				},
+			const exist = await this.followingsRepository.findOneBy({
+				followerId: follower.id,
+				followeeId: followee.id,
 			});
 
-			if (exist) {
+			if (exist != null) {
 				throw new ApiError(meta.errors.alreadyFollowing);
 			}
 

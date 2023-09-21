@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as assert from 'assert';
 import { Test } from '@nestjs/testing';
 
@@ -20,74 +15,78 @@ describe('ReactionService', () => {
 		reactionService = app.get<ReactionService>(ReactionService);
 	});
 
-	describe('normalize', () => {
+	describe('toDbReaction', () => {
 		test('絵文字リアクションはそのまま', async () => {
-			assert.strictEqual(await reactionService.normalize('👍'), '👍');
-			assert.strictEqual(await reactionService.normalize('🍅'), '🍅');
+			assert.strictEqual(await reactionService.toDbReaction('👍'), '👍');
+			assert.strictEqual(await reactionService.toDbReaction('🍅'), '🍅');
 		});
 
 		test('既存のリアクションは絵文字化する pudding', async () => {
-			assert.strictEqual(await reactionService.normalize('pudding'), '🍮');
+			assert.strictEqual(await reactionService.toDbReaction('pudding'), '🍮');
 		});
 
 		test('既存のリアクションは絵文字化する like', async () => {
-			assert.strictEqual(await reactionService.normalize('like'), '👍');
+			assert.strictEqual(await reactionService.toDbReaction('like'), '👍');
 		});
 
 		test('既存のリアクションは絵文字化する love', async () => {
-			assert.strictEqual(await reactionService.normalize('love'), '❤');
+			assert.strictEqual(await reactionService.toDbReaction('love'), '❤');
 		});
 
 		test('既存のリアクションは絵文字化する laugh', async () => {
-			assert.strictEqual(await reactionService.normalize('laugh'), '😆');
+			assert.strictEqual(await reactionService.toDbReaction('laugh'), '😆');
 		});
 
 		test('既存のリアクションは絵文字化する hmm', async () => {
-			assert.strictEqual(await reactionService.normalize('hmm'), '🤔');
+			assert.strictEqual(await reactionService.toDbReaction('hmm'), '🤔');
 		});
 
 		test('既存のリアクションは絵文字化する surprise', async () => {
-			assert.strictEqual(await reactionService.normalize('surprise'), '😮');
+			assert.strictEqual(await reactionService.toDbReaction('surprise'), '😮');
 		});
 
 		test('既存のリアクションは絵文字化する congrats', async () => {
-			assert.strictEqual(await reactionService.normalize('congrats'), '🎉');
+			assert.strictEqual(await reactionService.toDbReaction('congrats'), '🎉');
 		});
 
 		test('既存のリアクションは絵文字化する angry', async () => {
-			assert.strictEqual(await reactionService.normalize('angry'), '💢');
+			assert.strictEqual(await reactionService.toDbReaction('angry'), '💢');
 		});
 
 		test('既存のリアクションは絵文字化する confused', async () => {
-			assert.strictEqual(await reactionService.normalize('confused'), '😥');
+			assert.strictEqual(await reactionService.toDbReaction('confused'), '😥');
 		});
 
 		test('既存のリアクションは絵文字化する rip', async () => {
-			assert.strictEqual(await reactionService.normalize('rip'), '😇');
+			assert.strictEqual(await reactionService.toDbReaction('rip'), '😇');
 		});
 
 		test('既存のリアクションは絵文字化する star', async () => {
-			assert.strictEqual(await reactionService.normalize('star'), '⭐');
+			assert.strictEqual(await reactionService.toDbReaction('star'), '⭐');
 		});
 
 		test('異体字セレクタ除去', async () => {
-			assert.strictEqual(await reactionService.normalize('㊗️'), '㊗');
+			assert.strictEqual(await reactionService.toDbReaction('㊗️'), '㊗');
 		});
 
 		test('異体字セレクタ除去 必要なし', async () => {
-			assert.strictEqual(await reactionService.normalize('㊗'), '㊗');
+			assert.strictEqual(await reactionService.toDbReaction('㊗'), '㊗');
+		});
+
+		test('fallback - undefined', async () => {
+			assert.strictEqual(await reactionService.toDbReaction(undefined), '❤');
 		});
 
 		test('fallback - null', async () => {
-			assert.strictEqual(await reactionService.normalize(null), '❤');
+			assert.strictEqual(await reactionService.toDbReaction(null), '❤');
 		});
 
 		test('fallback - empty', async () => {
-			assert.strictEqual(await reactionService.normalize(''), '❤');
+			assert.strictEqual(await reactionService.toDbReaction(''), '❤');
 		});
 
 		test('fallback - unknown', async () => {
-			assert.strictEqual(await reactionService.normalize('unknown'), '❤');
+			assert.strictEqual(await reactionService.toDbReaction('unknown'), '❤');
 		});
 	});
 });

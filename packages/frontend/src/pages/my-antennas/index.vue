@@ -1,57 +1,34 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
-<template>
-<MkStickyContainer>
+<template><MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
-		<div>
-			<div v-if="antennas.length === 0" class="empty">
-				<div class="_fullinfo">
-					<img :src="infoImageUrl" class="_ghost"/>
-					<div>{{ i18n.ts.nothing }}</div>
-				</div>
-			</div>
+		<MkSpacer :content-max="700">
+	<div class="ieepwinx">
+		<MkButton :link="true" to="/my/antennas/create" primary class="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 
-			<MkButton :link="true" to="/my/antennas/create" primary :class="$style.add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
-
-			<div v-if="antennas.length > 0" class="_gaps">
-				<MkA v-for="antenna in antennas" :key="antenna.id" :class="$style.antenna" :to="`/my/antennas/${antenna.id}`">
+		<div class="">
+			<MkPagination v-slot="{items}" ref="list" :pagination="pagination">
+				<MkA v-for="antenna in items" :key="antenna.id" class="ljoevbzj" :to="`/my/antennas/${antenna.id}`">
 					<div class="name">{{ antenna.name }}</div>
 				</MkA>
-			</div>
+			</MkPagination>
 		</div>
-	</MkSpacer>
-</MkStickyContainer>
+	</div>
+</MkSpacer></MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { onActivated } from 'vue';
+import { } from 'vue';
+import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache } from '@/cache';
-import { infoImageUrl } from '@/instance.js';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
-const antennas = $computed(() => antennasCache.value.value ?? []);
+const pagination = {
+	endpoint: 'antennas/list' as const,
+	noPaging: true,
+	limit: 10,
+};
 
-function fetch() {
-	antennasCache.fetch();
-}
-
-fetch();
-
-const headerActions = $computed(() => [{
-	asFullButton: true,
-	icon: 'ti ti-refresh',
-	text: i18n.ts.reload,
-	handler: () => {
-		antennasCache.delete();
-		fetch();
-	},
-}]);
+const headerActions = $computed(() => []);
 
 const headerTabs = $computed(() => []);
 
@@ -59,30 +36,30 @@ definePageMetadata({
 	title: i18n.ts.manageAntennas,
 	icon: 'ti ti-antenna',
 });
-
-onActivated(() => {
-	antennasCache.fetch();
-});
 </script>
 
-<style lang="scss" module>
-.add {
-	margin: 0 auto 16px auto;
-}
+<style lang="scss" scoped>
+.ieepwinx {
 
-.antenna {
-	display: block;
-	padding: 16px;
-	border: solid 1px var(--divider);
-	border-radius: 6px;
-
-	&:hover {
-		border: solid 1px var(--accent);
-		text-decoration: none;
+	> .add {
+		margin: 0 auto 16px auto;
 	}
-}
 
-.name {
-	font-weight: bold;
+	.ljoevbzj {
+		display: block;
+		padding: 16px;
+		margin-bottom: 8px;
+		border: solid 1px var(--divider);
+		border-radius: 6px;
+
+		&:hover {
+			border: solid 1px var(--accent);
+			text-decoration: none;
+		}
+
+		> .name {
+			font-weight: bold;
+		}
+	}
 }
 </style>

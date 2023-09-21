@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
-import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/_.js';
-import type { MiAnnouncement } from '@/models/entities/Announcement.js';
+import type { AnnouncementsRepository, AnnouncementReadsRepository } from '@/models/index.js';
+import type { Announcement } from '@/models/entities/Announcement.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
@@ -66,13 +61,13 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
-		userId: { type: 'string', format: 'misskey:id', nullable: true },
 	},
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.announcementsRepository)
 		private announcementsRepository: AnnouncementsRepository,
@@ -84,15 +79,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.announcementsRepository.createQueryBuilder('announcement'), ps.sinceId, ps.untilId);
-			if (ps.userId) {
-				query.andWhere('announcement.userId = :userId', { userId: ps.userId });
-			} else {
-				query.andWhere('announcement.userId IS NULL');
-			}
 
-			const announcements = await query.limit(ps.limit).getMany();
+			const announcements = await query.take(ps.limit).getMany();
 
-			const reads = new Map<MiAnnouncement, number>();
+			const reads = new Map<Announcement, number>();
 
 			for (const announcement of announcements) {
 				reads.set(announcement, await this.announcementReadsRepository.countBy({
@@ -107,12 +97,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				title: announcement.title,
 				text: announcement.text,
 				imageUrl: announcement.imageUrl,
-				icon: announcement.icon,
-				display: announcement.display,
-				isActive: announcement.isActive,
-				forExistingUsers: announcement.forExistingUsers,
-				needConfirmationToRead: announcement.needConfirmationToRead,
-				userId: announcement.userId,
 				reads: reads.get(announcement)!,
 			}));
 		});

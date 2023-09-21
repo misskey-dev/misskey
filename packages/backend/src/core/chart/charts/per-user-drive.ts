@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { DriveFilesRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
+import type { DriveFilesRepository } from '@/models/index.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
@@ -19,8 +14,9 @@ import type { KVs } from '../core.js';
 /**
  * ユーザーごとのドライブに関するチャート
  */
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class PerUserDriveChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
+export default class PerUserDriveChart extends Chart<typeof schema> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -52,7 +48,7 @@ export default class PerUserDriveChart extends Chart<typeof schema> { // eslint-
 	}
 
 	@bindThis
-	public async update(file: MiDriveFile, isAdditional: boolean): Promise<void> {
+	public async update(file: DriveFile, isAdditional: boolean): Promise<void> {
 		const fileSizeKb = file.size / 1000;
 		await this.commit({
 			'totalCount': isAdditional ? 1 : -1,

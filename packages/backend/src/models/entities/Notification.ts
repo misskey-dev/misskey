@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { notificationTypes } from '@/types.js';
-import { MiUser } from './User.js';
-import { MiNote } from './Note.js';
-import { MiFollowRequest } from './FollowRequest.js';
-import { MiAccessToken } from './AccessToken.js';
+import { User } from './User.js';
+import { Note } from './Note.js';
+import { FollowRequest } from './FollowRequest.js';
+import { AccessToken } from './AccessToken.js';
 
-export type MiNotification = {
+export type Notification = {
 	id: string;
 
 	// RedisのためDateではなくstring
@@ -18,7 +13,7 @@ export type MiNotification = {
 	/**
 	 * 通知の送信者(initiator)
 	 */
-	notifierId: MiUser['id'] | null;
+	notifierId: User['id'] | null;
 
 	/**
 	 * 通知の種類。
@@ -33,13 +28,12 @@ export type MiNotification = {
 	 * followRequestAccepted - 自分の送ったフォローリクエストが承認された
 	 * achievementEarned - 実績を獲得
 	 * app - アプリ通知
-	 * test - テスト通知（サーバー側）
 	 */
 	type: typeof notificationTypes[number];
 
-	noteId: MiNote['id'] | null;
+	noteId: Note['id'] | null;
 
-	followRequestId: MiFollowRequest['id'] | null;
+	followRequestId: FollowRequest['id'] | null;
 
 	reaction: string | null;
 
@@ -67,5 +61,5 @@ export type MiNotification = {
 	/**
 	 * アプリ通知のアプリ(のトークン)
 	 */
-	appAccessTokenId: MiAccessToken['id'] | null;
+	appAccessTokenId: AccessToken['id'] | null;
 }

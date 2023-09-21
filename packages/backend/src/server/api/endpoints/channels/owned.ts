@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ChannelsRepository } from '@/models/_.js';
+import type { ChannelsRepository } from '@/models/index.js';
 import { QueryService } from '@/core/QueryService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -38,8 +33,9 @@ export const paramDef = {
 	required: [],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
@@ -48,12 +44,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder('channel'), ps.sinceId, ps.untilId)
-				.andWhere('channel.isArchived = FALSE')
+			const query = this.queryService.makePaginationQuery(this.channelsRepository.createQueryBuilder(), ps.sinceId, ps.untilId)
 				.andWhere({ userId: me.id });
 
 			const channels = await query
-				.limit(ps.limit)
+				.take(ps.limit)
 				.getMany();
 
 			return await Promise.all(channels.map(x => this.channelEntityService.pack(x, me)));

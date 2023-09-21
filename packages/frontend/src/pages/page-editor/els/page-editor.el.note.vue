@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
 <XContainer :draggable="true" @remove="() => $emit('remove')">
@@ -29,8 +24,8 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	modelValue: any

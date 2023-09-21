@@ -1,16 +1,11 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkModal
 	ref="modal"
 	v-slot="{ type, maxHeight }"
-	:zPriority="'middle'"
-	:preferType="asReactionPicker && defaultStore.state.reactionPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
-	:transparentBg="true"
-	:manualShowing="manualShowing"
+	:z-priority="'middle'"
+	:prefer-type="asReactionPicker && defaultStore.state.reactionPickerUseDrawerForMobile === false ? 'popup' : 'auto'"
+	:transparent-bg="true"
+	:manual-showing="manualShowing"
 	:src="src"
 	@click="modal?.close()"
 	@opening="opening"
@@ -19,11 +14,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<MkEmojiPicker
 		ref="picker"
-		class="_popup _shadow"
-		:class="{ [$style.drawer]: type === 'drawer' }"
-		:showPinned="showPinned"
-		:asReactionPicker="asReactionPicker"
-		:asDrawer="type === 'drawer'"
+		class="ryghynhb _popup _shadow"
+		:class="{ drawer: type === 'drawer' }"
+		:show-pinned="showPinned"
+		:as-reaction-picker="asReactionPicker"
+		:as-drawer="type === 'drawer'"
 		:max-height="maxHeight"
 		@chosen="chosen"
 	/>
@@ -34,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkEmojiPicker from '@/components/MkEmojiPicker.vue';
-import { defaultStore } from '@/store.js';
+import { defaultStore } from '@/store';
 
 withDefaults(defineProps<{
 	manualShowing?: boolean | null;
@@ -72,10 +67,12 @@ function opening() {
 }
 </script>
 
-<style lang="scss" module>
-.drawer {
-	border-radius: 24px;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
+<style lang="scss" scoped>
+.ryghynhb {
+	&.drawer {
+		border-radius: 24px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
 }
 </style>

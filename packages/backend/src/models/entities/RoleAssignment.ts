@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiRole } from './Role.js';
-import { MiUser } from './User.js';
+import { Role } from './Role.js';
+import { User } from './User.js';
 
-@Entity('role_assignment')
+@Entity()
 @Index(['userId', 'roleId'], { unique: true })
-export class MiRoleAssignment {
+export class RoleAssignment {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,26 +19,26 @@ export class MiRoleAssignment {
 		...id(),
 		comment: 'The user ID.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The role ID.',
 	})
-	public roleId: MiRole['id'];
+	public roleId: Role['id'];
 
-	@ManyToOne(type => MiRole, {
+	@ManyToOne(type => Role, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public role: MiRole | null;
+	public role: Role | null;
 
 	@Index()
 	@Column('timestamp with time zone', {

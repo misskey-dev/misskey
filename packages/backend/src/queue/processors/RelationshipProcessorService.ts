@@ -1,21 +1,15 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
+import type Bull from 'bull';
 
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
 
-import type { UsersRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { MiLocalUser, MiRemoteUser } from '@/models/entities/User.js';
-import { RelationshipJobData } from '../types.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import { RelationshipJobData } from '../types.js';
+import type { UsersRepository } from '@/models/index.js';
+import { DI } from '@/di-symbols.js';
 
 @Injectable()
 export class RelationshipProcessorService {
@@ -45,7 +39,7 @@ export class RelationshipProcessorService {
 		const [follower, followee] = await Promise.all([
 			this.usersRepository.findOneByOrFail({ id: job.data.from.id }),
 			this.usersRepository.findOneByOrFail({ id: job.data.to.id }),
-		]) as [MiLocalUser | MiRemoteUser, MiLocalUser | MiRemoteUser];
+		]);
 		await this.userFollowingService.unfollow(follower, followee, job.data.silent);
 		return 'ok';
 	}

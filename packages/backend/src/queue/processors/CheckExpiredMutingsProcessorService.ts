@@ -1,23 +1,22 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository } from '@/models/_.js';
+import type { MutingsRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { UserMutingService } from '@/core/UserMutingService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 
 @Injectable()
 export class CheckExpiredMutingsProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
 
@@ -28,7 +27,7 @@ export class CheckExpiredMutingsProcessorService {
 	}
 
 	@bindThis
-	public async process(): Promise<void> {
+	public async process(job: Bull.Job<Record<string, unknown>>, done: () => void): Promise<void> {
 		this.logger.info('Checking expired mutings...');
 
 		const expired = await this.mutingsRepository.createQueryBuilder('muting')
@@ -42,5 +41,6 @@ export class CheckExpiredMutingsProcessorService {
 		}
 
 		this.logger.succ('All expired mutings checked.');
+		done();
 	}
 }

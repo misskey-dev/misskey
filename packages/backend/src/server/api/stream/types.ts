@@ -1,53 +1,48 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import type { MiChannel } from '@/models/entities/Channel.js';
-import type { MiUser } from '@/models/entities/User.js';
-import type { MiUserProfile } from '@/models/entities/UserProfile.js';
-import type { MiNote } from '@/models/entities/Note.js';
-import type { MiAntenna } from '@/models/entities/Antenna.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiDriveFolder } from '@/models/entities/DriveFolder.js';
-import type { MiUserList } from '@/models/entities/UserList.js';
-import type { MiAbuseUserReport } from '@/models/entities/AbuseUserReport.js';
-import type { MiSignin } from '@/models/entities/Signin.js';
-import type { MiPage } from '@/models/entities/Page.js';
+import type { Channel } from '@/models/entities/Channel.js';
+import type { User } from '@/models/entities/User.js';
+import type { UserProfile } from '@/models/entities/UserProfile.js';
+import type { Note } from '@/models/entities/Note.js';
+import type { Antenna } from '@/models/entities/Antenna.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { DriveFolder } from '@/models/entities/DriveFolder.js';
+import type { UserList } from '@/models/entities/UserList.js';
+import type { AbuseUserReport } from '@/models/entities/AbuseUserReport.js';
+import type { Signin } from '@/models/entities/Signin.js';
+import type { Page } from '@/models/entities/Page.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { MiWebhook } from '@/models/entities/Webhook.js';
-import type { MiMeta } from '@/models/entities/Meta.js';
-import { MiRole, MiRoleAssignment } from '@/models/_.js';
+import type { Webhook } from '@/models/entities/Webhook.js';
+import type { Meta } from '@/models/entities/Meta.js';
+import { Role, RoleAssignment } from '@/models';
 import type Emitter from 'strict-event-emitter-types';
 import type { EventEmitter } from 'events';
 
 //#region Stream type-body definitions
 export interface InternalStreamTypes {
-	userChangeSuspendedState: { id: MiUser['id']; isSuspended: MiUser['isSuspended']; };
-	userTokenRegenerated: { id: MiUser['id']; oldToken: string; newToken: string; };
-	remoteUserUpdated: { id: MiUser['id']; };
-	follow: { followerId: MiUser['id']; followeeId: MiUser['id']; };
-	unfollow: { followerId: MiUser['id']; followeeId: MiUser['id']; };
-	blockingCreated: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
-	blockingDeleted: { blockerId: MiUser['id']; blockeeId: MiUser['id']; };
-	policiesUpdated: MiRole['policies'];
-	roleCreated: MiRole;
-	roleDeleted: MiRole;
-	roleUpdated: MiRole;
-	userRoleAssigned: MiRoleAssignment;
-	userRoleUnassigned: MiRoleAssignment;
-	webhookCreated: MiWebhook;
-	webhookDeleted: MiWebhook;
-	webhookUpdated: MiWebhook;
-	antennaCreated: MiAntenna;
-	antennaDeleted: MiAntenna;
-	antennaUpdated: MiAntenna;
-	metaUpdated: MiMeta;
-	followChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
-	unfollowChannel: { userId: MiUser['id']; channelId: MiChannel['id']; };
-	updateUserProfile: MiUserProfile;
-	mute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
-	unmute: { muterId: MiUser['id']; muteeId: MiUser['id']; };
+	userChangeSuspendedState: { id: User['id']; isSuspended: User['isSuspended']; };
+	userTokenRegenerated: { id: User['id']; oldToken: string; newToken: string; };
+	remoteUserUpdated: { id: User['id']; };
+	follow: { followerId: User['id']; followeeId: User['id']; };
+	unfollow: { followerId: User['id']; followeeId: User['id']; };
+	blockingCreated: { blockerId: User['id']; blockeeId: User['id']; };
+	blockingDeleted: { blockerId: User['id']; blockeeId: User['id']; };
+	policiesUpdated: Role['policies'];
+	roleCreated: Role;
+	roleDeleted: Role;
+	roleUpdated: Role;
+	userRoleAssigned: RoleAssignment;
+	userRoleUnassigned: RoleAssignment;
+	webhookCreated: Webhook;
+	webhookDeleted: Webhook;
+	webhookUpdated: Webhook;
+	antennaCreated: Antenna;
+	antennaDeleted: Antenna;
+	antennaUpdated: Antenna;
+	metaUpdated: Meta;
+	followChannel: { userId: User['id']; channelId: Channel['id']; };
+	unfollowChannel: { userId: User['id']; channelId: Channel['id']; };
+	updateUserProfile: UserProfile;
+	mute: { muterId: User['id']; muteeId: User['id']; };
+	unmute: { muterId: User['id']; muteeId: User['id']; };
 }
 
 export interface BroadcastTypes {
@@ -64,9 +59,6 @@ export interface BroadcastTypes {
 			[other: string]: any;
 		}[];
 	};
-	announcementCreated: {
-		announcement: Packed<'Announcement'>;
-	};
 }
 
 export interface MainStreamTypes {
@@ -79,10 +71,10 @@ export interface MainStreamTypes {
 	unfollow: Packed<'User'>;
 	meUpdated: Packed<'User'>;
 	pageEvent: {
-		pageId: MiPage['id'];
+		pageId: Page['id'];
 		event: string;
 		var: any;
-		userId: MiUser['id'];
+		userId: User['id'];
 		user: Packed<'User'>;
 	};
 	urlUploadFinished: {
@@ -91,41 +83,38 @@ export interface MainStreamTypes {
 	};
 	readAllNotifications: undefined;
 	unreadNotification: Packed<'Notification'>;
-	unreadMention: MiNote['id'];
+	unreadMention: Note['id'];
 	readAllUnreadMentions: undefined;
-	unreadSpecifiedNote: MiNote['id'];
+	unreadSpecifiedNote: Note['id'];
 	readAllUnreadSpecifiedNotes: undefined;
 	readAllAntennas: undefined;
-	unreadAntenna: MiAntenna;
+	unreadAntenna: Antenna;
 	readAllAnnouncements: undefined;
 	myTokenRegenerated: undefined;
-	signin: MiSignin;
+	signin: Signin;
 	registryUpdated: {
 		scope?: string[];
 		key: string;
 		value: any | null;
 	};
 	driveFileCreated: Packed<'DriveFile'>;
-	readAntenna: MiAntenna;
+	readAntenna: Antenna;
 	receiveFollowRequest: Packed<'User'>;
-	announcementCreated: {
-		announcement: Packed<'Announcement'>;
-	};
 }
 
 export interface DriveStreamTypes {
 	fileCreated: Packed<'DriveFile'>;
-	fileDeleted: MiDriveFile['id'];
+	fileDeleted: DriveFile['id'];
 	fileUpdated: Packed<'DriveFile'>;
 	folderCreated: Packed<'DriveFolder'>;
-	folderDeleted: MiDriveFolder['id'];
+	folderDeleted: DriveFolder['id'];
 	folderUpdated: Packed<'DriveFolder'>;
 }
 
 export interface NoteStreamTypes {
 	pollVoted: {
 		choice: number;
-		userId: MiUser['id'];
+		userId: User['id'];
 	};
 	deleted: {
 		deletedAt: Date;
@@ -136,16 +125,16 @@ export interface NoteStreamTypes {
 			name: string;
 			url: string;
 		} | null;
-		userId: MiUser['id'];
+		userId: User['id'];
 	};
 	unreacted: {
 		reaction: string;
-		userId: MiUser['id'];
+		userId: User['id'];
 	};
 }
 type NoteStreamEventTypes = {
 	[key in keyof NoteStreamTypes]: {
-		id: MiNote['id'];
+		id: Note['id'];
 		body: NoteStreamTypes[key];
 	};
 };
@@ -156,7 +145,7 @@ export interface UserListStreamTypes {
 }
 
 export interface AntennaStreamTypes {
-	note: MiNote;
+	note: Note;
 }
 
 export interface RoleTimelineStreamTypes {
@@ -165,9 +154,9 @@ export interface RoleTimelineStreamTypes {
 
 export interface AdminStreamTypes {
 	newAbuseUserReport: {
-		id: MiAbuseUserReport['id'];
-		targetUserId: MiUser['id'],
-		reporterId: MiUser['id'],
+		id: AbuseUserReport['id'];
+		targetUserId: User['id'],
+		reporterId: User['id'],
 		comment: string;
 	};
 }
@@ -209,31 +198,31 @@ export type StreamMessages = {
 		payload: EventUnionFromDictionary<SerializedAll<BroadcastTypes>>;
 	};
 	main: {
-		name: `mainStream:${MiUser['id']}`;
+		name: `mainStream:${User['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<MainStreamTypes>>;
 	};
 	drive: {
-		name: `driveStream:${MiUser['id']}`;
+		name: `driveStream:${User['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<DriveStreamTypes>>;
 	};
 	note: {
-		name: `noteStream:${MiNote['id']}`;
+		name: `noteStream:${Note['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<NoteStreamEventTypes>>;
 	};
 	userList: {
-		name: `userListStream:${MiUserList['id']}`;
+		name: `userListStream:${UserList['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<UserListStreamTypes>>;
 	};
 	roleTimeline: {
-		name: `roleTimelineStream:${MiRole['id']}`;
+		name: `roleTimelineStream:${Role['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<RoleTimelineStreamTypes>>;
 	};
 	antenna: {
-		name: `antennaStream:${MiAntenna['id']}`;
+		name: `antennaStream:${Antenna['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<AntennaStreamTypes>>;
 	};
 	admin: {
-		name: `adminStream:${MiUser['id']}`;
+		name: `adminStream:${User['id']}`;
 		payload: EventUnionFromDictionary<SerializedAll<AdminStreamTypes>>;
 	};
 	notes: {
@@ -244,7 +233,7 @@ export type StreamMessages = {
 
 // API event definitions
 // ストリームごとのEmitterの辞書を用意
-type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter.default<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['payload']) => void }> };
+type EventEmitterDictionary = { [x in keyof StreamMessages]: Emitter<EventEmitter, { [y in StreamMessages[x]['name']]: (e: StreamMessages[x]['payload']) => void }> };
 // 共用体型を交差型にする型 https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 // Emitter辞書から共用体型を作り、UnionToIntersectionで交差型にする

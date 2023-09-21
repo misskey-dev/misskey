@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('renote_muting')
+@Entity()
 @Index(['muterId', 'muteeId'], { unique: true })
-export class MiRenoteMuting {
+export class RenoteMuting {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,24 +19,24 @@ export class MiRenoteMuting {
 		...id(),
 		comment: 'The mutee user ID.',
 	})
-	public muteeId: MiUser['id'];
+	public muteeId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public mutee: MiUser | null;
+	public mutee: User | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The muter user ID.',
 	})
-	public muterId: MiUser['id'];
+	public muterId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public muter: MiUser | null;
+	public muter: User | null;
 }

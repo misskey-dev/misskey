@@ -1,19 +1,14 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
+import rndstr from 'rndstr';
 import ms from 'ms';
 import bcrypt from 'bcryptjs';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { UserProfilesRepository } from '@/models/_.js';
+import type { UsersRepository, UserProfilesRepository } from '@/models/index.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -50,11 +45,15 @@ export const paramDef = {
 	required: ['password'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
@@ -95,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			this.globalEventService.publishMainStream(me.id, 'meUpdated', iObj);
 
 			if (ps.email != null) {
-				const code = secureRndstr(16, { chars: L_CHARS });
+				const code = rndstr('a-z0-9', 16);
 
 				await this.userProfilesRepository.update(me.id, {
 					emailVerifyCode: code,

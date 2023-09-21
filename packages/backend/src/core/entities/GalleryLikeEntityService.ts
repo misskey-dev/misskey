@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { GalleryLikesRepository } from '@/models/_.js';
+import type { GalleryLikesRepository } from '@/models/index.js';
 import type { } from '@/models/entities/Blocking.js';
-import type { MiGalleryLike } from '@/models/entities/GalleryLike.js';
-import { bindThis } from '@/decorators.js';
+import type { GalleryLike } from '@/models/entities/GalleryLike.js';
 import { GalleryPostEntityService } from './GalleryPostEntityService.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class GalleryLikeEntityService {
@@ -23,7 +18,7 @@ export class GalleryLikeEntityService {
 
 	@bindThis
 	public async pack(
-		src: MiGalleryLike['id'] | MiGalleryLike,
+		src: GalleryLike['id'] | GalleryLike,
 		me?: any,
 	) {
 		const like = typeof src === 'object' ? src : await this.galleryLikesRepository.findOneByOrFail({ id: src });

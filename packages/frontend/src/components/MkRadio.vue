@@ -1,12 +1,8 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div
 	v-adaptive-border
-	:class="[$style.root, { [$style.disabled]: disabled, [$style.checked]: checked }]"
+	class="novjtctn"
+	:class="{ disabled, checked }"
 	:aria-checked="checked"
 	:aria-disabled="disabled"
 	@click="toggle"
@@ -14,12 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<input
 		type="radio"
 		:disabled="disabled"
-		:class="$style.input"
 	>
-	<span :class="$style.button">
+	<span class="button">
 		<span></span>
 	</span>
-	<span :class="$style.label"><slot></slot></span>
+	<span class="label"><slot></slot></span>
 </div>
 </template>
 
@@ -44,8 +39,8 @@ function toggle(): void {
 }
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.novjtctn {
 	position: relative;
 	display: inline-block;
 	text-align: left;
@@ -58,11 +53,17 @@ function toggle(): void {
 	border-radius: 6px;
 	font-size: 90%;
 	transition: all 0.2s;
-	user-select: none;
+
+	> * {
+		user-select: none;
+	}
 
 	&.disabled {
 		opacity: 0.6;
-		cursor: not-allowed !important;
+
+		&, * {
+			cursor: not-allowed !important;
+		}
 	}
 
 	&:hover {
@@ -73,7 +74,10 @@ function toggle(): void {
 		background-color: var(--accentedBg) !important;
 		border-color: var(--accentedBg) !important;
 		color: var(--accent);
-		cursor: default !important;
+
+		&, * {
+			cursor: default !important;
+		}
 
 		> .button {
 			border-color: var(--accent);
@@ -85,44 +89,44 @@ function toggle(): void {
 			}
 		}
 	}
-}
 
-.input {
-	position: absolute;
-	width: 0;
-	height: 0;
-	opacity: 0;
-	margin: 0;
-}
-
-.button {
-	position: absolute;
-	width: 14px;
-	height: 14px;
-	background: none;
-	border: solid 2px var(--inputBorder);
-	border-radius: 100%;
-	transition: inherit;
-
-	&:after {
-		content: '';
-		display: block;
+	> input {
 		position: absolute;
-		top: 3px;
-		right: 3px;
-		bottom: 3px;
-		left: 3px;
-		border-radius: 100%;
+		width: 0;
+		height: 0;
 		opacity: 0;
-		transform: scale(0);
-		transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+		margin: 0;
 	}
-}
 
-.label {
-	margin-left: 28px;
-	display: block;
-	line-height: 20px;
-	cursor: pointer;
+	> .button {
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		background: none;
+		border: solid 2px var(--inputBorder);
+		border-radius: 100%;
+		transition: inherit;
+
+		&:after {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			bottom: 3px;
+			left: 3px;
+			border-radius: 100%;
+			opacity: 0;
+			transform: scale(0);
+			transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+		}
+	}
+
+	> .label {
+		margin-left: 28px;
+		display: block;
+		line-height: 20px;
+		cursor: pointer;
+	}
 }
 </style>

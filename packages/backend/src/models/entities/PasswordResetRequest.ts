@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('password_reset_request')
-export class MiPasswordResetRequest {
+@Entity()
+export class PasswordResetRequest {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -25,11 +20,11 @@ export class MiPasswordResetRequest {
 	@Column({
 		...id(),
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 }

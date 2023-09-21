@@ -1,20 +1,14 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import { signup, api, startServer, simpleGet } from '../utils.js';
 import type { INestApplicationContext } from '@nestjs/common';
-import type * as misskey from 'misskey-js';
 
 describe('FF visibility', () => {
 	let app: INestApplicationContext;
 
-	let alice: misskey.entities.MeSignup;
-	let bob: misskey.entities.MeSignup;
+	let alice: any;
+	let bob: any;
 
 	beforeAll(async () => {
 		app = await startServer();

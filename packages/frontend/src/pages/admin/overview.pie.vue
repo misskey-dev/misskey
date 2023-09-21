@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <canvas ref="chartEl"></canvas>
 </template>
@@ -10,8 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, shallowRef } from 'vue';
 import { Chart } from 'chart.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { initChart } from '@/scripts/init-chart.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip';
+import { initChart } from '@/scripts/init-chart';
 
 initChart();
 
@@ -72,3 +67,7 @@ onMounted(() => {
 	});
 });
 </script>
+
+<style lang="scss" scoped>
+
+</style>

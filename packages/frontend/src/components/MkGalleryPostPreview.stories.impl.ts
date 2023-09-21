@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect } from '@storybook/jest';
 import { userEvent, waitFor, within } from '@storybook/testing-library';
@@ -33,11 +28,9 @@ export const Default = {
 	async play({ canvasElement }) {
 		const canvas = within(canvasElement);
 		const links = canvas.getAllByRole('link');
-		expect(links).toHaveLength(2);
-		expect(links[0]).toHaveAttribute('href', `/gallery/${galleryPost().id}`);
-		expect(links[1]).toHaveAttribute('href', `/@${galleryPost().user.username}@${galleryPost().user.host}`);
-		const images = canvas.getAllByRole<HTMLImageElement>('img');
-		await waitFor(() => expect(Promise.all(images.map((image) => image.decode()))).resolves.toBeDefined());
+		await expect(links).toHaveLength(2);
+		await expect(links[0]).toHaveAttribute('href', `/gallery/${galleryPost().id}`);
+		await expect(links[1]).toHaveAttribute('href', `/@${galleryPost().user.username}@${galleryPost().user.host}`);
 	},
 	args: {
 		post: galleryPost(),
@@ -49,10 +42,6 @@ export const Default = {
 	],
 	parameters: {
 		layout: 'centered',
-		chromatic: {
-			// FIXME: flaky
-			disableSnapshot: true,
-		},
 	},
 } satisfies StoryObj<typeof MkGalleryPostPreview>;
 export const Hover = {

@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiNote } from './Note.js';
-import { MiUser } from './User.js';
+import { Note } from './Note.js';
+import { User } from './User.js';
 
-@Entity('user_note_pining')
+@Entity()
 @Index(['userId', 'noteId'], { unique: true })
-export class MiUserNotePining {
+export class UserNotePining {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -21,20 +16,20 @@ export class MiUserNotePining {
 
 	@Index()
 	@Column(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column(id())
-	public noteId: MiNote['id'];
+	public noteId: Note['id'];
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: MiNote | null;
+	public note: Note | null;
 }

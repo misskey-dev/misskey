@@ -1,11 +1,5 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { markRaw, ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { Storage } from '@/pizzax.js';
+import { Storage } from './pizzax';
 
 interface PostFormAction {
 	title: string,
@@ -14,16 +8,16 @@ interface PostFormAction {
 
 interface UserAction {
 	title: string,
-	handler: (user: Misskey.entities.UserDetailed) => void;
+	handler: (user: UserDetailed) => void;
 }
 
 interface NoteAction {
 	title: string,
-	handler: (note: Misskey.entities.Note) => void;
+	handler: (note: Note) => void;
 }
 
 interface NoteViewInterruptor {
-	handler: (note: Misskey.entities.Note) => unknown;
+	handler: (note: Note) => unknown;
 }
 
 interface NotePostInterruptor {
@@ -31,7 +25,7 @@ interface NotePostInterruptor {
 }
 
 interface PageViewInterruptor {
-	handler: (page: Misskey.entities.Page) => unknown;
+	handler: (page: Page) => unknown;
 }
 
 export const postFormActions: PostFormAction[] = [];
@@ -44,11 +38,7 @@ export const pageViewInterruptors: PageViewInterruptor[] = [];
 // TODO: それぞれいちいちwhereとかdefaultというキーを付けなきゃいけないの冗長なのでなんとかする(ただ型定義が面倒になりそう)
 //       あと、現行の定義の仕方なら「whereが何であるかに関わらずキー名の重複不可」という制約を付けられるメリットもあるからそのメリットを引き継ぐ方法も考えないといけない
 export const defaultStore = markRaw(new Storage('base', {
-	accountSetupWizard: {
-		where: 'account',
-		default: 0,
-	},
-	timelineTutorial: {
+	tutorial: {
 		where: 'account',
 		default: 0,
 	},
@@ -98,7 +88,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	reactionAcceptance: {
 		where: 'account',
-		default: 'nonSensitiveOnly' as 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null,
+		default: null as 'likeOnly' | 'likeOnlyForRemote' | null,
 	},
 	mutedWords: {
 		where: 'account',
@@ -107,10 +97,6 @@ export const defaultStore = markRaw(new Storage('base', {
 	mutedAds: {
 		where: 'account',
 		default: [] as string[],
-	},
-	showTimelineReplies: {
-		where: 'account',
-		default: false,
 	},
 
 	menu: {
@@ -136,10 +122,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: false,
 	},
-	showPreview: {
-		where: 'device',
-		default: false,
-	},
 	statusbars: {
 		where: 'deviceAccount',
 		default: [] as {
@@ -163,13 +145,9 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
-			userList: null as Misskey.entities.UserList | null,
+			src: 'home' as 'home' | 'local' | 'social' | 'global',
+			arg: null,
 		},
-	},
-	pinnedUserLists: {
-		where: 'deviceAccount',
-		default: [] as Misskey.entities.UserList[],
 	},
 
 	overridedDeviceKind: {
@@ -186,7 +164,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	animation: {
 		where: 'device',
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !matchMedia('(prefers-reduced-motion)').matches,
 	},
 	animatedMfm: {
 		where: 'device',
@@ -210,7 +188,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: window.matchMedia('(prefers-reduced-motion)').matches,
+		default: matchMedia('(prefers-reduced-motion)').matches,
 	},
 	emojiStyle: {
 		where: 'device',
@@ -320,9 +298,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	reactionsDisplaySize: {
+	largeNoteReactions: {
 		where: 'device',
-		default: 'medium' as 'small' | 'medium' | 'large',
+		default: false,
 	},
 	forceShowAds: {
 		where: 'device',
@@ -332,29 +310,9 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: false,
 	},
-	devMode: {
-		where: 'device',
-		default: false,
-	},
 	mediaListWithOneImageAppearance: {
 		where: 'device',
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
-	},
-	notificationPosition: {
-		where: 'device',
-		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
-	},
-	notificationStackAxis: {
-		where: 'device',
-		default: 'horizontal' as 'vertical' | 'horizontal',
-	},
-	enableCondensedLineForAcct: {
-		where: 'device',
-		default: false,
-	},
-	additionalUnicodeEmojiIndexes: {
-		where: 'device',
-		default: {} as Record<string, Record<string, string[]>>,
 	},
 }));
 
@@ -385,6 +343,7 @@ interface Watcher {
 import { miLocalStorage } from './local-storage';
 import lightTheme from '@/themes/l-light.json5';
 import darkTheme from '@/themes/d-green-lime.json5';
+import { Note, UserDetailed, Page } from 'misskey-js/built/entities';
 
 export class ColdDeviceStorage {
 	public static default = {

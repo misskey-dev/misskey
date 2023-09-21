@@ -1,11 +1,5 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import * as http from 'node:http';
 import * as https from 'node:https';
-import * as net from 'node:net';
 import CacheableLookup from 'cacheable-lookup';
 import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
@@ -48,23 +42,21 @@ export class HttpRequestService {
 			errorTtl: 30,	// 30secs
 			lookup: false,	// nativeのdns.lookupにfallbackしない
 		});
-
+		
 		this.http = new http.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
-			lookup: cache.lookup as unknown as net.LookupFunction,
-			localAddress: config.outgoingAddress,
-		});
-
+			lookup: cache.lookup,
+		} as http.AgentOptions);
+		
 		this.https = new https.Agent({
 			keepAlive: true,
 			keepAliveMsecs: 30 * 1000,
-			lookup: cache.lookup as unknown as net.LookupFunction,
-			localAddress: config.outgoingAddress,
-		});
-
+			lookup: cache.lookup,
+		} as https.AgentOptions);
+		
 		const maxSockets = Math.max(256, config.deliverJobConcurrency ?? 128);
-
+		
 		this.httpAgent = config.proxy
 			? new HttpProxyAgent({
 				keepAlive: true,
@@ -73,7 +65,6 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
-				localAddress: config.outgoingAddress,
 			})
 			: this.http;
 
@@ -85,7 +76,6 @@ export class HttpRequestService {
 				maxFreeSockets: 256,
 				scheduling: 'lifo',
 				proxy: config.proxy,
-				localAddress: config.outgoingAddress,
 			})
 			: this.https;
 	}
@@ -97,7 +87,7 @@ export class HttpRequestService {
 	 */
 	@bindThis
 	public getAgentByUrl(url: URL, bypassProxy = false): http.Agent | https.Agent {
-		if (bypassProxy || (this.config.proxyBypassHosts ?? []).includes(url.hostname)) {
+		if (bypassProxy || (this.config.proxyBypassHosts || []).includes(url.hostname)) {
 			return url.protocol === 'http:' ? this.http : this.https;
 		} else {
 			return url.protocol === 'http:' ? this.httpAgent : this.httpsAgent;
@@ -154,7 +144,7 @@ export class HttpRequestService {
 			method: args.method ?? 'GET',
 			headers: {
 				'User-Agent': this.config.userAgent,
-				...(args.headers ?? {}),
+				...(args.headers ?? {})
 			},
 			body: args.body,
 			size: args.size ?? 10 * 1024 * 1024,

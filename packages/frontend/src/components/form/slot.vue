@@ -1,15 +1,10 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div>
-	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
-	<div>
+<div class="adhpbeou">
+	<div class="label" @click="focus"><slot name="label"></slot></div>
+	<div class="content">
 		<slot></slot>
 	</div>
-	<div :class="$style.caption"><slot name="caption"></slot></div>
+	<div class="caption"><slot name="caption"></slot></div>
 </div>
 </template>
 
@@ -21,24 +16,26 @@ function focus() {
 }
 </script>
 
-<style lang="scss" module>
-.label {
-	font-size: 0.85em;
-	padding: 0 0 8px 0;
-	user-select: none;
+<style lang="scss" scoped>
+.adhpbeou {
+	> .label {
+		font-size: 0.85em;
+		padding: 0 0 8px 0;
+		user-select: none;
 
-	&:empty {
-		display: none;
+		&:empty {
+			display: none;
+		}
 	}
-}
 
-.caption {
-	font-size: 0.85em;
-	padding: 8px 0 0 0;
-	color: var(--fgTransparentWeak);
+	> .caption {
+		font-size: 0.85em;
+		padding: 8px 0 0 0;
+		color: var(--fgTransparentWeak);
 
-	&:empty {
-		display: none;
+		&:empty {
+			display: none;
+		}
 	}
 }
 </style>

@@ -1,18 +1,13 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div
-	:class="[$style.root, { [$style.draghover]: draghover }]"
+<div class="drylbebk"
+	:class="{ draghover }"
 	@click="onClick"
 	@dragover.prevent.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
 	@drop.stop="onDrop"
 >
-	<i v-if="folder == null" class="ti ti-cloud" style="margin-right: 4px;"></i>
+	<i v-if="folder == null" class="ti ti-cloud"></i>
 	<span>{{ folder == null ? i18n.ts.drive : folder.name }}</span>
 </div>
 </template>
@@ -20,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	folder?: Misskey.entities.DriveFolder;
@@ -66,9 +61,9 @@ function onDragover(ev: DragEvent) {
 		switch (ev.dataTransfer.effectAllowed) {
 			case 'all':
 			case 'uninitialized':
-			case 'copy':
-			case 'copyLink':
-			case 'copyMove':
+			case 'copy': 
+			case 'copyLink': 
+			case 'copyMove': 
 				ev.dataTransfer.dropEffect = 'copy';
 				break;
 			case 'linkMove':
@@ -135,10 +130,18 @@ function onDrop(ev: DragEvent) {
 }
 </script>
 
-<style lang="scss" module>
-.root {
+<style lang="scss" scoped>
+.drylbebk {
+	> * {
+		pointer-events: none;
+	}
+
 	&.draghover {
 		background: #eee;
+	}
+
+	> i {
+		margin-right: 4px;
 	}
 }
 </style>

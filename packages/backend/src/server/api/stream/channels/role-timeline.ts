@@ -1,14 +1,8 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Injectable } from '@nestjs/common';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
 import Channel from '../channel.js';
 import { StreamMessages } from '../types.js';
 
@@ -20,7 +14,6 @@ class RoleTimelineChannel extends Channel {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -40,11 +33,6 @@ class RoleTimelineChannel extends Channel {
 	private async onEvent(data: StreamMessages['roleTimeline']['payload']) {
 		if (data.type === 'note') {
 			const note = data.body;
-
-			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
-				return;
-			}
-			if (note.visibility !== 'public') return;
 
 			// 流れてきたNoteがミュートしているユーザーが関わるものだったら無視する
 			if (isUserRelated(note, this.userIdsWhoMeMuting)) return;
@@ -73,7 +61,6 @@ export class RoleTimelineChannelService {
 
 	constructor(
 		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
 	) {
 	}
 
@@ -81,7 +68,6 @@ export class RoleTimelineChannelService {
 	public create(id: string, connection: Channel['connection']): RoleTimelineChannel {
 		return new RoleTimelineChannel(
 			this.noteEntityService,
-			this.roleservice,
 			id,
 			connection,
 		);

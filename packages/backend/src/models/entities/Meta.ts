@@ -1,14 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
+import type { Clip } from './Clip.js';
 
-@Entity('meta')
-export class MiMeta {
+@Entity()
+export class Meta {
 	@PrimaryColumn({
 		type: 'varchar',
 		length: 32,
@@ -105,59 +101,30 @@ export class MiMeta {
 		length: 1024,
 		nullable: true,
 	})
+	public errorImageUrl: string | null;
+
+	@Column('varchar', {
+		length: 1024,
+		nullable: true,
+	})
 	public iconUrl: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public app192IconUrl: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public app512IconUrl: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public serverErrorImageUrl: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public notFoundImageUrl: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public infoImageUrl: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public cacheRemoteFiles: boolean;
 
 	@Column('boolean', {
 		default: true,
 	})
-	public cacheRemoteSensitiveFiles: boolean;
+	public cacheRemoteFiles: boolean;
 
 	@Column({
 		...id(),
 		nullable: true,
 	})
-	public proxyAccountId: MiUser['id'] | null;
+	public proxyAccountId: User['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public proxyAccount: MiUser | null;
+	public proxyAccount: User | null;
 
 	@Column('boolean', {
 		default: false,
@@ -434,36 +401,8 @@ export class MiMeta {
 	})
 	public enableChartsForFederatedInstances: boolean;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public enableServerMachineStats: boolean;
-
-	@Column('boolean', {
-		default: true,
-	})
-	public enableIdenticonGeneration: boolean;
-
 	@Column('jsonb', {
 		default: { },
 	})
 	public policies: Record<string, any>;
-
-	@Column('varchar', {
-		length: 280,
-		array: true,
-		default: '{}',
-	})
-	public serverRules: string[];
-
-	@Column('varchar', {
-		length: 8192,
-		default: '{}',
-	})
-	public manifestJsonOverride: string;
-
-	@Column('varchar', {
-		length: 1024, array: true, default: '{ "admin", "administrator", "root", "system", "maintainer", "host", "mod", "moderator", "owner", "superuser", "staff", "auth", "i", "me", "everyone", "all", "mention", "mentions", "example", "user", "users", "account", "accounts", "official", "help", "helps", "support", "supports", "info", "information", "informations", "announce", "announces", "announcement", "announcements", "notice", "notification", "notifications", "dev", "developer", "developers", "tech", "misskey" }',
-	})
-	public preservedUsernames: string[];
 }

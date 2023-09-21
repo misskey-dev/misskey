@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :isStacked="isStacked">
+<XColumn v-if="deckStore.state.alwaysShowMainColumn || mainRouter.currentRoute.value.name !== 'index'" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
 	<template #header>
 		<template v-if="pageMetadata?.value">
 			<i :class="pageMetadata?.value.icon"></i>
@@ -12,29 +7,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</template>
 
-	<div ref="contents">
-		<RouterView @contextmenu.stop="onContextmenu"/>
-	</div>
+	<RouterView @contextmenu.stop="onContextmenu"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
-import { ComputedRef, provide, shallowRef } from 'vue';
+import { ComputedRef, provide } from 'vue';
 import XColumn from './column.vue';
-import { deckStore, Column } from '@/ui/deck/deck-store.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
-import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata.js';
-import { useScrollPositionManager } from '@/nirax';
-import { getScrollContainer } from '@/scripts/scroll.js';
+import { deckStore, Column } from '@/ui/deck/deck-store';
+import * as os from '@/os';
+import { i18n } from '@/i18n';
+import { mainRouter } from '@/router';
+import { PageMetadata, provideMetadataReceiver } from '@/scripts/page-metadata';
 
 defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-const contents = shallowRef<HTMLElement>();
+const emit = defineEmits<{
+	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
+}>();
+
 let pageMetadata = $ref<null | ComputedRef<PageMetadata>>();
 
 provide('router', mainRouter);
@@ -71,6 +65,4 @@ function onContextmenu(ev: MouseEvent) {
 		},
 	}], ev);
 }
-
-useScrollPositionManager(() => getScrollContainer(contents.value), mainRouter);
 </script>

@@ -1,12 +1,7 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="500">
+	<MkSpacer :content-max="500">
 		<div v-if="state == 'fetch-session-error'">
 			<p>{{ i18n.ts.somethingHappened }}</p>
 		</div>
@@ -43,20 +38,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import { AuthSession } from 'misskey-js/built/entities';
 import XForm from './auth.form.vue';
 import MkSignin from '@/components/MkSignin.vue';
-import * as os from '@/os.js';
-import { $i, login } from '@/account.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { i18n } from '@/i18n.js';
+import * as os from '@/os';
+import { $i, login } from '@/account';
+import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
 	token: string;
 }>();
 
 let state = $ref<'waiting' | 'accepted' | 'fetch-session-error' | 'denied' | null>(null);
-let session = $ref<Misskey.entities.AuthSession | null>(null);
+let session = $ref<AuthSession | null>(null);
 
 function accepted() {
 	state = 'accepted';

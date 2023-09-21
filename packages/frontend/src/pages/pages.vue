@@ -1,34 +1,23 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="700">
-		<div v-if="tab === 'featured'">
+	<MkSpacer :content-max="700">
+		<div v-if="tab === 'featured'" class="rknalgpo">
 			<MkPagination v-slot="{items}" :pagination="featuredPagesPagination">
-				<div class="_gaps">
-					<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
-				</div>
+				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
 			</MkPagination>
 		</div>
 
-		<div v-else-if="tab === 'my'" class="_gaps">
+		<div v-else-if="tab === 'my'" class="rknalgpo my">
 			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
 			<MkPagination v-slot="{items}" :pagination="myPagesPagination">
-				<div class="_gaps">
-					<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
-				</div>
+				<MkPagePreview v-for="page in items" :key="page.id" class="ckltabjg" :page="page"/>
 			</MkPagination>
 		</div>
 
-		<div v-else-if="tab === 'liked'">
+		<div v-else-if="tab === 'liked'" class="rknalgpo">
 			<MkPagination v-slot="{items}" :pagination="likedPagesPagination">
-				<div class="_gaps">
-					<MkPagePreview v-for="like in items" :key="like.page.id" :page="like.page"/>
-				</div>
+				<MkPagePreview v-for="like in items" :key="like.page.id" class="ckltabjg" :page="like.page"/>
 			</MkPagination>
 		</div>
 	</MkSpacer>
@@ -40,9 +29,9 @@ import { computed } from 'vue';
 import MkPagePreview from '@/components/MkPagePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import { useRouter } from '@/router.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const router = useRouter();
 
@@ -90,3 +79,21 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-note',
 })));
 </script>
+
+<style lang="scss" scoped>
+.rknalgpo {
+	&.my .ckltabjg:first-child {
+		margin-top: 16px;
+	}
+
+	.ckltabjg:not(:last-child) {
+		margin-bottom: 8px;
+	}
+
+	@media (min-width: 500px) {
+		.ckltabjg:not(:last-child) {
+			margin-bottom: 16px;
+		}
+	}
+}
+</style>

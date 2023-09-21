@@ -1,27 +1,22 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <MkModalWindow
 	ref="dialogEl"
-	:withOkButton="true"
-	:okButtonDisabled="selected == null"
+	:with-ok-button="true"
+	:ok-button-disabled="selected == null"
 	@click="cancel()"
 	@close="cancel()"
 	@ok="ok()"
 	@closed="$emit('closed')"
 >
 	<template #header>{{ i18n.ts.selectUser }}</template>
-	<div>
+	<div :class="$style.root">
 		<div :class="$style.form">
-			<FormSplit :minWidth="170">
-				<MkInput v-model="username" :autofocus="true" @update:modelValue="search">
+			<FormSplit :min-width="170">
+				<MkInput v-model="username" :autofocus="true" @update:model-value="search">
 					<template #label>{{ i18n.ts.username }}</template>
 					<template #prefix>@</template>
 				</MkInput>
-				<MkInput v-model="host" :datalist="[hostname]" @update:modelValue="search">
+				<MkInput v-model="host" :datalist="[hostname]" @update:model-value="search">
 					<template #label>{{ i18n.ts.host }}</template>
 					<template #prefix>@</template>
 				</MkInput>
@@ -58,18 +53,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import * as misskey from 'misskey-js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os.js';
-import { defaultStore } from '@/store.js';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { hostname } from '@/config.js';
+import * as os from '@/os';
+import { defaultStore } from '@/store';
+import { i18n } from '@/i18n';
+import { $i } from '@/account';
+import { hostname } from '@/config';
 
 const emit = defineEmits<{
-	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
+	(ev: 'ok', selected: misskey.entities.UserDetailed): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -80,9 +75,9 @@ const props = defineProps<{
 
 let username = $ref('');
 let host = $ref('');
-let users: Misskey.entities.UserDetailed[] = $ref([]);
-let recentUsers: Misskey.entities.UserDetailed[] = $ref([]);
-let selected: Misskey.entities.UserDetailed | null = $ref(null);
+let users: misskey.entities.UserDetailed[] = $ref([]);
+let recentUsers: misskey.entities.UserDetailed[] = $ref([]);
+let selected: misskey.entities.UserDetailed | null = $ref(null);
 let dialogEl = $ref();
 
 const search = () => {
@@ -131,6 +126,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" module>
+.root {
+}
 
 .form {
 	padding: 0 var(--root-margin);

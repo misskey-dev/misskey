@@ -1,27 +1,14 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<div
-	v-tooltip="text"
-	:class="[$style.root, {
-		[$style.status_online]: user.onlineStatus === 'online',
-		[$style.status_active]: user.onlineStatus === 'active',
-		[$style.status_offline]: user.onlineStatus === 'offline',
-		[$style.status_unknown]: user.onlineStatus === 'unknown',
-	}]"
-></div>
+<div v-tooltip="text" :class="[$style.root, $style['status_' + user.onlineStatus]]"></div>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Misskey from 'misskey-js';
-import { i18n } from '@/i18n.js';
+import * as misskey from 'misskey-js';
+import { i18n } from '@/i18n';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
+	user: misskey.entities.User;
 }>();
 
 const text = $computed(() => {

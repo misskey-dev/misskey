@@ -1,8 +1,3 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div :class="$style.root">
 	<XNotification :notification="notification" class="notification _acrylic" :full="false"/>
@@ -11,11 +6,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Misskey from 'misskey-js';
+import * as misskey from 'misskey-js';
 import XNotification from '@/components/MkNotification.vue';
 
 defineProps<{
-	notification: Misskey.entities.Notification;
+	notification: misskey.entities.Notification;
 }>();
 </script>
 

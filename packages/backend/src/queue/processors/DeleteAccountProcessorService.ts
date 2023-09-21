@@ -1,28 +1,26 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { DriveFilesRepository, NotesRepository, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { Config } from '@/config.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
-import type { MiDriveFile } from '@/models/entities/DriveFile.js';
-import type { MiNote } from '@/models/entities/Note.js';
+import type { DriveFile } from '@/models/entities/DriveFile.js';
+import type { Note } from '@/models/entities/Note.js';
 import { EmailService } from '@/core/EmailService.js';
-import { bindThis } from '@/decorators.js';
-import { SearchService } from '@/core/SearchService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
+import type Bull from 'bull';
 import type { DbUserDeleteJobData } from '../types.js';
+import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class DeleteAccountProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -38,7 +36,6 @@ export class DeleteAccountProcessorService {
 		private driveService: DriveService,
 		private emailService: EmailService,
 		private queueLoggerService: QueueLoggerService,
-		private searchService: SearchService,
 	) {
 		this.logger = this.queueLoggerService.logger.createSubLogger('delete-account');
 	}
@@ -53,7 +50,7 @@ export class DeleteAccountProcessorService {
 		}
 
 		{ // Delete notes
-			let cursor: MiNote['id'] | null = null;
+			let cursor: Note['id'] | null = null;
 
 			while (true) {
 				const notes = await this.notesRepository.find({
@@ -65,26 +62,22 @@ export class DeleteAccountProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as MiNote[];
+				}) as Note[];
 
 				if (notes.length === 0) {
 					break;
 				}
 
-				cursor = notes.at(-1)?.id ?? null;
+				cursor = notes[notes.length - 1].id;
 
 				await this.notesRepository.delete(notes.map(note => note.id));
-
-				for (const note of notes) {
-					await this.searchService.unindexNote(note);
-				}
 			}
 
 			this.logger.succ('All of notes deleted');
 		}
 
 		{ // Delete files
-			let cursor: MiDriveFile['id'] | null = null;
+			let cursor: DriveFile['id'] | null = null;
 
 			while (true) {
 				const files = await this.driveFilesRepository.find({
@@ -96,13 +89,13 @@ export class DeleteAccountProcessorService {
 					order: {
 						id: 1,
 					},
-				}) as MiDriveFile[];
+				}) as DriveFile[];
 
 				if (files.length === 0) {
 					break;
 				}
 
-				cursor = files.at(-1)?.id ?? null;
+				cursor = files[files.length - 1].id;
 
 				for (const file of files) {
 					await this.driveService.deleteFileSync(file);

@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { JoinColumn, ManyToOne, Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('drive_folder')
-export class MiDriveFolder {
+@Entity()
+export class DriveFolder {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -30,13 +25,13 @@ export class MiDriveFolder {
 		nullable: true,
 		comment: 'The owner ID.',
 	})
-	public userId: MiUser['id'] | null;
+	public userId: User['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Index()
 	@Column({
@@ -44,11 +39,11 @@ export class MiDriveFolder {
 		nullable: true,
 		comment: 'The parent folder ID. If null, it means the DriveFolder is located in root.',
 	})
-	public parentId: MiDriveFolder['id'] | null;
+	public parentId: DriveFolder['id'] | null;
 
-	@ManyToOne(type => MiDriveFolder, {
+	@ManyToOne(type => DriveFolder, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public parent: MiDriveFolder | null;
+	public parent: DriveFolder | null;
 }

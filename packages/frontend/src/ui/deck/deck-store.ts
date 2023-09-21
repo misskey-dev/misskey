@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { throttle } from 'throttle-debounce';
 import { markRaw } from 'vue';
 import { notificationTypes } from 'misskey-js';
-import { Storage } from '@/pizzax.js';
-import { api } from '@/os.js';
-import { deepClone } from '@/scripts/clone.js';
+import { Storage } from '../../pizzax';
+import { api } from '@/os';
+import { deepClone } from '@/scripts/clone';
 
 type ColumnWidget = {
 	name: string;
@@ -54,10 +49,6 @@ export const deckStore = markRaw(new Storage('deck', {
 		default: true,
 	},
 	navWindow: {
-		where: 'deviceAccount',
-		default: true,
-	},
-	useSimpleUiForNonRootPages: {
 		where: 'deviceAccount',
 		default: true,
 	},

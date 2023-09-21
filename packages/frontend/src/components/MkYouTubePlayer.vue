@@ -1,10 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
-<MkWindow :initialWidth="640" :initialHeight="402" :canResize="true" :closeButton="true">
+<MkWindow :initial-width="640" :initial-height="402" :can-resize="true" :close-button="true">
 	<template #header>
 		<i class="icon ti ti-brand-youtube" style="margin-right: 0.5em;"></i>
 		<span>{{ title ?? 'YouTube' }}</span>
@@ -25,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import MkWindow from '@/components/MkWindow.vue';
-import { versatileLang } from '@/scripts/intl-const.js';
-import { defaultStore } from '@/store.js';
+import { versatileLang } from '@/scripts/intl-const';
+import { defaultStore } from '@/store';
 
 const props = defineProps<{
 	url: string;

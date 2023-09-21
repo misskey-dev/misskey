@@ -1,11 +1,6 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository } from '@/models/_.js';
+import type { NotesRepository } from '@/models/index.js';
 import { safeForSql } from '@/misc/safe-for-sql.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -63,8 +58,9 @@ export const paramDef = {
 	],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -86,14 +82,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			try {
 				if (ps.tag) {
-					if (!safeForSql(normalizeForSearch(ps.tag))) throw new Error('Injection');
+					if (!safeForSql(normalizeForSearch(ps.tag))) throw 'Injection';
 					query.andWhere(`'{"${normalizeForSearch(ps.tag)}"}' <@ note.tags`);
 				} else {
 					query.andWhere(new Brackets(qb => {
 						for (const tags of ps.query!) {
 							qb.orWhere(new Brackets(qb => {
 								for (const tag of tags) {
-									if (!safeForSql(normalizeForSearch(tag))) throw new Error('Injection');
+									if (!safeForSql(normalizeForSearch(tag))) throw 'Injection';
 									qb.andWhere(`'{"${normalizeForSearch(tag)}"}' <@ note.tags`);
 								}
 							}));
@@ -134,7 +130,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// Search notes
-			const notes = await query.limit(ps.limit).getMany();
+			const notes = await query.take(ps.limit).getMany();
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

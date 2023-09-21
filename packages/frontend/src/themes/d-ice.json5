@@ -8,7 +8,6 @@
 
 	props: {
 		accent: '#47BFE8',
-		fgOnWhite: '@accent',
 		bg: '#212526',
 	},
 }

@@ -1,20 +1,15 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
 import { noteVisibilities } from '../../types.js';
-import { MiUser } from './User.js';
-import { MiChannel } from './Channel.js';
-import type { MiDriveFile } from './DriveFile.js';
+import { User } from './User.js';
+import { Channel } from './Channel.js';
+import type { DriveFile } from './DriveFile.js';
 
-@Entity('note')
+@Entity()
 @Index('IDX_NOTE_TAGS', { synchronize: false })
 @Index('IDX_NOTE_MENTIONS', { synchronize: false })
 @Index('IDX_NOTE_VISIBLE_USER_IDS', { synchronize: false })
-export class MiNote {
+export class Note {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -30,13 +25,13 @@ export class MiNote {
 		nullable: true,
 		comment: 'The ID of reply target.',
 	})
-	public replyId: MiNote['id'] | null;
+	public replyId: Note['id'] | null;
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public reply: MiNote | null;
+	public reply: Note | null;
 
 	@Index()
 	@Column({
@@ -44,13 +39,13 @@ export class MiNote {
 		nullable: true,
 		comment: 'The ID of renote target.',
 	})
-	public renoteId: MiNote['id'] | null;
+	public renoteId: Note['id'] | null;
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public renote: MiNote | null;
+	public renote: Note | null;
 
 	@Index()
 	@Column('varchar', {
@@ -79,13 +74,13 @@ export class MiNote {
 		...id(),
 		comment: 'The ID of author.',
 	})
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('boolean', {
 		default: false,
@@ -95,7 +90,7 @@ export class MiNote {
 	@Column('varchar', {
 		length: 64, nullable: true,
 	})
-	public reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+	public reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | null;
 
 	@Column('smallint', {
 		default: 0,
@@ -106,11 +101,6 @@ export class MiNote {
 		default: 0,
 	})
 	public repliesCount: number;
-
-	@Column('smallint', {
-		default: 0,
-	})
-	public clippedCount: number;
 
 	@Column('jsonb', {
 		default: {},
@@ -149,7 +139,7 @@ export class MiNote {
 		...id(),
 		array: true, default: '{}',
 	})
-	public fileIds: MiDriveFile['id'][];
+	public fileIds: DriveFile['id'][];
 
 	@Index()
 	@Column('varchar', {
@@ -162,14 +152,14 @@ export class MiNote {
 		...id(),
 		array: true, default: '{}',
 	})
-	public visibleUserIds: MiUser['id'][];
+	public visibleUserIds: User['id'][];
 
 	@Index()
 	@Column({
 		...id(),
 		array: true, default: '{}',
 	})
-	public mentions: MiUser['id'][];
+	public mentions: User['id'][];
 
 	@Column('text', {
 		default: '[]',
@@ -198,13 +188,13 @@ export class MiNote {
 		nullable: true,
 		comment: 'The ID of source channel.',
 	})
-	public channelId: MiChannel['id'] | null;
+	public channelId: Channel['id'] | null;
 
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(type => Channel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public channel: MiChannel | null;
+	public channel: Channel | null;
 
 	//#region Denormalized fields
 	@Index()
@@ -219,7 +209,7 @@ export class MiNote {
 		nullable: true,
 		comment: '[Denormalized]',
 	})
-	public replyUserId: MiUser['id'] | null;
+	public replyUserId: User['id'] | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -232,7 +222,7 @@ export class MiNote {
 		nullable: true,
 		comment: '[Denormalized]',
 	})
-	public renoteUserId: MiUser['id'] | null;
+	public renoteUserId: User['id'] | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -241,7 +231,7 @@ export class MiNote {
 	public renoteUserHost: string | null;
 	//#endregion
 
-	constructor(data: Partial<MiNote>) {
+	constructor(data: Partial<Note>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

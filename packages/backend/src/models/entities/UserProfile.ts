@@ -1,26 +1,21 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { obsoleteNotificationTypes, ffVisibility, notificationTypes } from '@/types.js';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiPage } from './Page.js';
+import { User } from './User.js';
+import { Page } from './Page.js';
 
 // TODO: このテーブルで管理している情報すべてレジストリで管理するようにしても良いかも
 //       ただ、「emailVerified が true なユーザーを find する」のようなクエリは書けなくなるからウーン
-@Entity('user_profile')
-export class MiUserProfile {
+@Entity()
+export class UserProfile {
 	@PrimaryColumn(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@OneToOne(type => MiUser, {
+	@OneToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Column('varchar', {
 		length: 128, nullable: true,
@@ -81,7 +76,7 @@ export class MiUserProfile {
 	public emailNotificationTypes: string[];
 
 	@Column('boolean', {
-		default: true,
+		default: false,
 	})
 	public publicReactions: boolean;
 
@@ -100,11 +95,6 @@ export class MiUserProfile {
 		length: 128, nullable: true,
 	})
 	public twoFactorSecret: string | null;
-
-	@Column('varchar', {
-		nullable: true, array: true,
-	})
-	public twoFactorBackupSecret: string[] | null;
 
 	@Column('boolean', {
 		default: false,
@@ -158,11 +148,6 @@ export class MiUserProfile {
 	public noCrawle: boolean;
 
 	@Column('boolean', {
-		default: true,
-	})
-	public preventAiLearning: boolean;
-
-	@Column('boolean', {
 		default: false,
 	})
 	public alwaysMarkNsfw: boolean;
@@ -191,13 +176,13 @@ export class MiUserProfile {
 		...id(),
 		nullable: true,
 	})
-	public pinnedPageId: MiPage['id'] | null;
+	public pinnedPageId: Page['id'] | null;
 
-	@OneToOne(type => MiPage, {
+	@OneToOne(type => Page, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
-	public pinnedPage: MiPage | null;
+	public pinnedPage: Page | null;
 
 	@Index()
 	@Column('boolean', {
@@ -217,7 +202,7 @@ export class MiUserProfile {
 	public mutedInstances: string[];
 
 	@Column('enum', {
-		enum: [
+		enum: [ 
 			...notificationTypes,
 			// マイグレーションで削除が困難なので古いenumは残しておく
 			...obsoleteNotificationTypes,
@@ -249,7 +234,7 @@ export class MiUserProfile {
 	public userHost: string | null;
 	//#endregion
 
-	constructor(data: Partial<MiUserProfile>) {
+	constructor(data: Partial<UserProfile>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

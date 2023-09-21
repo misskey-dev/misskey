@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity('emoji')
+@Entity()
 @Index(['name', 'host'], { unique: true })
-export class MiEmoji {
+export class Emoji {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -65,20 +60,4 @@ export class MiEmoji {
 		length: 1024, nullable: true,
 	})
 	public license: string | null;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public localOnly: boolean;
-
-	@Column('boolean', {
-		default: false,
-	})
-	public isSensitive: boolean;
-
-	// TODO: 定期ジョブで存在しなくなったロールIDを除去するようにする
-	@Column('varchar', {
-		array: true, length: 128, default: '{}',
-	})
-	public roleIdsThatCanBeUsedThisEmojiAsReaction: string[];
 }

@@ -2,7 +2,7 @@ import type {
 	Ad, Announcement, Antenna, App, AuthSession, Blocking, Channel, Clip, DateString, DetailedInstanceMetadata, DriveFile, DriveFolder, Following, FollowingFolloweePopulated, FollowingFollowerPopulated, FollowRequest, GalleryPost, Instance,
 	LiteInstanceMetadata,
 	MeDetailed,
-	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, MeSignup, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage, Invite, InviteLimit, AdminInstanceMetadata,
+	Note, NoteFavorite, OriginType, Page, ServerInfo, Stats, User, UserDetailed, UserGroup, UserList, UserSorting, Notification, NoteReaction, Signin, MessagingMessage,
 } from './entities.js';
 
 type TODO = Record<string, any> | null;
@@ -20,7 +20,6 @@ export type Endpoints = {
 	'admin/get-table-stats': { req: TODO; res: TODO; };
 	'admin/invite': { req: TODO; res: TODO; };
 	'admin/logs': { req: TODO; res: TODO; };
-	'admin/meta': { req: NoParams; res: AdminInstanceMetadata; };
 	'admin/reset-password': { req: TODO; res: TODO; };
 	'admin/resolve-abuse-user-report': { req: TODO; res: TODO; };
 	'admin/resync-chart': { req: TODO; res: TODO; };
@@ -58,8 +57,6 @@ export type Endpoints = {
 	'admin/federation/refresh-remote-instance-metadata': { req: TODO; res: TODO; };
 	'admin/federation/remove-all-following': { req: TODO; res: TODO; };
 	'admin/federation/update-instance': { req: TODO; res: TODO; };
-	'admin/invite/create': { req: TODO; res: TODO; };
-	'admin/invite/list': { req: TODO; res: TODO; };
 	'admin/moderators/add': { req: TODO; res: TODO; };
 	'admin/moderators/remove': { req: TODO; res: TODO; };
 	'admin/promo/create': { req: TODO; res: TODO; };
@@ -265,16 +262,7 @@ export type Endpoints = {
 	'drive/files': { req: { folderId?: DriveFolder['id'] | null; type?: DriveFile['type'] | null; limit?: number; sinceId?: DriveFile['id']; untilId?: DriveFile['id']; }; res: DriveFile[]; };
 	'drive/files/attached-notes': { req: TODO; res: TODO; };
 	'drive/files/check-existence': { req: TODO; res: TODO; };
-	'drive/files/create': {
-		req: {
-			folderId?: string,
-			name?: string,
-			comment?: string,
-			isSentisive?: boolean,
-			force?: boolean,
-		};
-		res: DriveFile;
-	};
+	'drive/files/create': { req: TODO; res: TODO; };
 	'drive/files/delete': { req: { fileId: DriveFile['id']; }; res: null; };
 	'drive/files/find-by-hash': { req: TODO; res: TODO; };
 	'drive/files/find': { req: { name: string; folderId?: DriveFolder['id'] | null; }; res: DriveFile[]; };
@@ -375,6 +363,7 @@ export type Endpoints = {
 	'i/import-following': { req: TODO; res: TODO; };
 	'i/import-user-lists': { req: TODO; res: TODO; };
 	'i/move': { req: TODO; res: TODO; };
+	'i/known-as': { req: TODO; res: TODO; };
 	'i/notifications': { req: {
 		limit?: number;
 		sinceId?: Notification['id'];
@@ -432,7 +421,6 @@ export type Endpoints = {
 		mutedWords?: string[][];
 		mutingNotificationTypes?: Notification['type'][];
 		emailNotificationTypes?: string[];
-		alsoKnownAs?: string[];
 	}; res: MeDetailed; };
 	'i/user-group-invites': { req: TODO; res: TODO; };
 	'i/2fa/done': { req: TODO; res: TODO; };
@@ -442,12 +430,6 @@ export type Endpoints = {
 	'i/2fa/register': { req: TODO; res: TODO; };
 	'i/2fa/remove-key': { req: TODO; res: TODO; };
 	'i/2fa/unregister': { req: TODO; res: TODO; };
-
-	// invite
-	'invite/create': { req: NoParams; res: Invite; };
-	'invite/delete': { req: { inviteId: Invite['id']; }; res: null; };
-	'invite/list': { req: { limit?: number; sinceId?: Invite['id']; untilId?: Invite['id'] }; res: Invite[]; };
-	'invite/limit': { req: NoParams; res: InviteLimit; };
 
 	// messaging
 	'messaging/history': { req: { limit?: number; group?: boolean; }; res: MessagingMessage[]; };
@@ -534,7 +516,6 @@ export type Endpoints = {
 
 	// notifications
 	'notifications/create': { req: { body: string; header?: string | null; icon?: string | null; }; res: null; };
-	'notifications/test-notification': { req: NoParams; res: null; };
 	'notifications/mark-all-as-read': { req: NoParams; res: null; };
 
 	// page-push
@@ -567,21 +548,6 @@ export type Endpoints = {
 	// room
 	'room/show': { req: TODO; res: TODO; };
 	'room/update': { req: TODO; res: TODO; };
-
-	// signup
-	'signup': {
-		req: {
-			username: string;
-			password: string;
-			host?: string;
-			invitationCode?: string;
-			emailAddress?: string;
-			'hcaptcha-response'?: string;
-			'g-recaptcha-response'?: string;
-			'turnstile-response'?: string;
-		};
-		res: MeSignup | null;
-	};
 
 	// stats
 	'stats': { req: NoParams; res: Stats; };
@@ -622,7 +588,6 @@ export type Endpoints = {
 	'users/lists/update': { req: { listId: UserList['id']; name: string; }; res: UserList; };
 	'users/notes': { req: { userId: User['id']; limit?: number; sinceId?: Note['id']; untilId?: Note['id']; sinceDate?: number; untilDate?: number; }; res: Note[]; };
 	'users/pages': { req: TODO; res: TODO; };
-	'users/flashs': { req: TODO; res: TODO; };
 	'users/recommendation': { req: TODO; res: TODO; };
 	'users/relation': { req: TODO; res: TODO; };
 	'users/report-abuse': { req: TODO; res: TODO; };
@@ -637,4 +602,5 @@ export type Endpoints = {
 			$default: UserDetailed;
 		};
 	}; };
+	'users/stats': { req: TODO; res: TODO; };
 };

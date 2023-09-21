@@ -1,9 +1,4 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { deviceKind } from '@/scripts/device-kind.js';
+import { deviceKind } from '@/scripts/device-kind';
 
 const isTouchSupported = 'maxTouchPoints' in navigator && navigator.maxTouchPoints > 0;
 

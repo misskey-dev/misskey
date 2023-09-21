@@ -1,13 +1,8 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :contentMax="900">
+		<MkSpacer :content-max="900">
 			<div class="_gaps">
 				<div :class="$style.inputs">
 					<MkSelect v-model="sort" style="flex: 1;">
@@ -33,11 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 				</div>
 				<div :class="$style.inputs">
-					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:modelValue="$refs.users.reload()">
+					<MkInput v-model="searchUsername" style="flex: 1;" type="text" :spellcheck="false" @update:model-value="$refs.users.reload()">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.username }}</template>
 					</MkInput>
-					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:modelValue="$refs.users.reload()">
+					<MkInput v-model="searchHost" style="flex: 1;" type="text" :spellcheck="false" :disabled="pagination.params.origin === 'local'" @update:model-value="$refs.users.reload()">
 						<template #prefix>@</template>
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
@@ -45,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkPagination v-slot="{items}" ref="paginationComponent" :pagination="pagination">
 					<div :class="$style.users">
-						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/admin/user/${user.id}`">
+						<MkA v-for="user in items" :key="user.id" v-tooltip.mfm="`Last posted: ${dateString(user.updatedAt)}`" :class="$style.user" :to="`/user-info/${user.id}`">
 							<MkUserCardMini :user="user"/>
 						</MkA>
 					</div>
@@ -62,12 +57,12 @@ import XHeader from './_header_.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import * as os from '@/os.js';
-import { lookupUser } from '@/scripts/lookup-user.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import * as os from '@/os';
+import { lookupUser } from '@/scripts/lookup-user';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { dateString } from '@/filters/date.js';
+import { dateString } from '@/filters/date';
 
 let paginationComponent = $shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -116,7 +111,7 @@ async function addUser() {
 }
 
 function show(user) {
-	os.pageWindow(`/admin/user/${user.id}`);
+	os.pageWindow(`/user-info/${user.id}`);
 }
 
 const headerActions = $computed(() => [{

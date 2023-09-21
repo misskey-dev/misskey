@@ -1,8 +1,3 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { URL } from 'node:url';
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -59,14 +54,15 @@ export const paramDef = {
 	required: ['inbox'],
 } as const;
 
+// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private relayService: RelayService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			try {
-				if (new URL(ps.inbox).protocol !== 'https:') throw new Error('https only');
+				if (new URL(ps.inbox).protocol !== 'https:') throw 'https only';
 			} catch {
 				throw new ApiError(meta.errors.invalidUrl);
 			}

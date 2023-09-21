@@ -1,12 +1,5 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <div class="_gaps_m">
-	<MkSwitch v-model="useSimpleUiForNonRootPages">{{ i18n.ts._deck.useSimpleUiForNonRootPages }}</MkSwitch>
-
 	<MkSwitch v-model="navWindow">{{ i18n.ts.defaultNavigationBehaviour }}: {{ i18n.ts.openInWindow }}</MkSwitch>
 
 	<MkSwitch v-model="alwaysShowMainColumn">{{ i18n.ts._deck.alwaysShowMainColumn }}</MkSwitch>
@@ -23,12 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import { deckStore } from '@/ui/deck/deck-store.js';
-import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { deckStore } from '@/ui/deck/deck-store';
+import { i18n } from '@/i18n';
+import { definePageMetadata } from '@/scripts/page-metadata';
 
 const navWindow = computed(deckStore.makeGetterSetter('navWindow'));
-const useSimpleUiForNonRootPages = computed(deckStore.makeGetterSetter('useSimpleUiForNonRootPages'));
 const alwaysShowMainColumn = computed(deckStore.makeGetterSetter('alwaysShowMainColumn'));
 const columnAlign = computed(deckStore.makeGetterSetter('columnAlign'));
 

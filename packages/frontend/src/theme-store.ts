@@ -1,12 +1,7 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
-import { Theme } from '@/scripts/theme.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { api } from '@/os.js';
-import { $i } from '@/account.js';
+import { Theme } from './scripts/theme';
+import { miLocalStorage } from './local-storage';
+import { api } from '@/os';
+import { $i } from '@/account';
 
 const lsCacheKey = $i ? `themes:${$i.id}` as const : null;
 

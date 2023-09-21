@@ -1,15 +1,10 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('blocking')
+@Entity()
 @Index(['blockerId', 'blockeeId'], { unique: true })
-export class MiBlocking {
+export class Blocking {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,24 +19,24 @@ export class MiBlocking {
 		...id(),
 		comment: 'The blockee user ID.',
 	})
-	public blockeeId: MiUser['id'];
+	public blockeeId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public blockee: MiUser | null;
+	public blockee: User | null;
 
 	@Index()
 	@Column({
 		...id(),
 		comment: 'The blocker user ID.',
 	})
-	public blockerId: MiUser['id'];
+	public blockerId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public blocker: MiUser | null;
+	public blocker: User | null;
 }

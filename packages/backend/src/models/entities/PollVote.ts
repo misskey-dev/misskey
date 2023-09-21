@@ -1,16 +1,11 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
-import { MiNote } from './Note.js';
+import { User } from './User.js';
+import { Note } from './Note.js';
 
-@Entity('poll_vote')
+@Entity()
 @Index(['userId', 'noteId', 'choice'], { unique: true })
-export class MiPollVote {
+export class PollVote {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -22,23 +17,23 @@ export class MiPollVote {
 
 	@Index()
 	@Column(id())
-	public userId: MiUser['id'];
+	public userId: User['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Index()
 	@Column(id())
-	public noteId: MiNote['id'];
+	public noteId: Note['id'];
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(type => Note, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
-	public note: MiNote | null;
+	public note: Note | null;
 
 	@Column('integer')
 	public choice: number;

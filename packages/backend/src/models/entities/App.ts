@@ -1,14 +1,9 @@
-/*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
- * SPDX-License-Identifier: AGPL-3.0-only
- */
-
 import { Entity, PrimaryColumn, Column, Index, ManyToOne } from 'typeorm';
 import { id } from '../id.js';
-import { MiUser } from './User.js';
+import { User } from './User.js';
 
-@Entity('app')
-export class MiApp {
+@Entity()
+export class App {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -24,13 +19,13 @@ export class MiApp {
 		nullable: true,
 		comment: 'The owner ID.',
 	})
-	public userId: MiUser['id'] | null;
+	public userId: User['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(type => User, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
-	public user: MiUser | null;
+	public user: User | null;
 
 	@Index()
 	@Column('varchar', {

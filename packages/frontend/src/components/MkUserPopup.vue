@@ -1,15 +1,10 @@
-<!--
-SPDX-FileCopyrightText: syuilo and other misskey contributors
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 <template>
 <Transition
-	:enterActiveClass="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
-	:leaveActiveClass="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
-	:enterFromClass="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
-	:leaveToClass="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
-	appear @afterLeave="emit('closed')"
+	:enter-active-class="defaultStore.state.animation ? $style.transition_popup_enterActive : ''"
+	:leave-active-class="defaultStore.state.animation ? $style.transition_popup_leaveActive : ''"
+	:enter-from-class="defaultStore.state.animation ? $style.transition_popup_enterFrom : ''"
+	:leave-to-class="defaultStore.state.animation ? $style.transition_popup_leaveTo : ''"
+	appear @after-leave="emit('closed')"
 >
 	<div v-if="showing" :class="$style.root" class="_popup _shadow" :style="{ zIndex, top: top + 'px', left: left + 'px' }" @mouseover="() => { emit('mouseover'); }" @mouseleave="() => { emit('mouseleave'); }">
 		<div v-if="user != null">
@@ -27,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.username"><MkAcct :user="user"/></div>
 			</div>
 			<div :class="$style.description">
-				<Mfm v-if="user.description" :class="$style.mfm" :text="user.description" :author="user" :i="$i"/>
+				<Mfm v-if="user.description" :text="user.description" :author="user" :i="$i"/>
 				<div v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</div>
 			</div>
 			<div :class="$style.status">
@@ -35,11 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.statusItemLabel">{{ i18n.ts.notes }}</div>
 					<div>{{ number(user.notesCount) }}</div>
 				</div>
-				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+				<div :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.following }}</div>
 					<div>{{ number(user.followingCount) }}</div>
 				</div>
-				<div v-if="isFfVisibleForMe(user)" :class="$style.statusItem">
+				<div :class="$style.statusItem">
 					<div :class="$style.statusItemLabel">{{ i18n.ts.followers }}</div>
 					<div>{{ number(user.followersCount) }}</div>
 				</div>
@@ -56,16 +51,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import * as Acct from 'misskey-js/built/acct';
+import * as misskey from 'misskey-js';
 import MkFollowButton from '@/components/MkFollowButton.vue';
-import { userPage } from '@/filters/user.js';
-import * as os from '@/os.js';
-import { getUserMenu } from '@/scripts/get-user-menu.js';
-import number from '@/filters/number.js';
-import { i18n } from '@/i18n.js';
-import { defaultStore } from '@/store.js';
-import { $i } from '@/account.js';
-import { isFfVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
+import { userPage } from '@/filters/user';
+import * as os from '@/os';
+import { getUserMenu } from '@/scripts/get-user-menu';
+import number from '@/filters/number';
+import { i18n } from '@/i18n';
+import { defaultStore } from '@/store';
+import { $i } from '@/account';
 
 const props = defineProps<{
 	showing: boolean;
@@ -80,13 +75,12 @@ const emit = defineEmits<{
 }>();
 
 const zIndex = os.claimZIndex('middle');
-let user = $ref<Misskey.entities.UserDetailed | null>(null);
+let user = $ref<misskey.entities.UserDetailed | null>(null);
 let top = $ref(0);
 let left = $ref(0);
 
 function showMenu(ev: MouseEvent) {
-	const { menu, cleanup } = getUserMenu(user);
-	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
+	os.popupMenu(getUserMenu(user), ev.currentTarget ?? ev.target);
 }
 
 onMounted(() => {
@@ -94,7 +88,7 @@ onMounted(() => {
 		user = props.q;
 	} else {
 		const query = props.q.startsWith('@') ?
-			Misskey.acct.parse(props.q.substring(1)) :
+			Acct.parse(props.q.substr(1)) :
 			{ userId: props.q };
 
 		os.api('users/show', query).then(res => {
@@ -196,13 +190,6 @@ onMounted(() => {
 	text-align: center;
 	border-top: solid 1px var(--divider);
 	border-bottom: solid 1px var(--divider);
-}
-
-.mfm {
-	display: -webkit-box;
-	-webkit-line-clamp: 5;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
 }
 
 .status {
