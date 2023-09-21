@@ -12,6 +12,7 @@
 				[$style.t_receiveFollowRequest]: notification.type === 'receiveFollowRequest',
 				[$style.t_renote]: notification.type === 'renote',
 				[$style.t_reply]: notification.type === 'reply',
+				[$style.t_note]: notification.type == 'note',
 				[$style.t_mention]: notification.type === 'mention',
 				[$style.t_quote]: notification.type === 'quote',
 				[$style.t_pollEnded]: notification.type === 'pollEnded',
