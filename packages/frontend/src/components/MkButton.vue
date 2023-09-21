@@ -1,24 +1,31 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <button
 	v-if="!link"
 	ref="el" class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
 	:type="type"
+	:name="name"
+	:value="value"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
-	<div ref="ripples" :class="$style.ripples"></div>
+	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
 	<div :class="$style.content">
 		<slot></slot>
 	</div>
 </button>
 <MkA
 	v-else class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.asLike]: asLike }]"
+	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike }]"
 	:to="to"
 	@mousedown="onMousedown"
 >
-	<div ref="ripples" :class="$style.ripples"></div>
+	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
 	<div :class="$style.content">
 		<slot></slot>
 	</div>
@@ -26,9 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, useCssModule } from 'vue';
-
-const $style = useCssModule();
+import { nextTick, onMounted } from 'vue';
 
 const props = defineProps<{
 	type?: 'button' | 'submit' | 'reset';
@@ -44,7 +49,10 @@ const props = defineProps<{
 	full?: boolean;
 	small?: boolean;
 	large?: boolean;
+	transparent?: boolean;
 	asLike?: boolean;
+	name?: string;
+	value?: string;
 }>();
 
 const emit = defineEmits<{
@@ -80,7 +88,7 @@ function onMousedown(evt: MouseEvent): void {
 	const rect = target.getBoundingClientRect();
 
 	const ripple = document.createElement('div');
-	ripple.classList.add($style.ripple);
+	ripple.classList.add(ripples!.dataset.childrenClass!);
 	ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
 	ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
 
@@ -192,6 +200,10 @@ function onMousedown(evt: MouseEvent): void {
 				background: rgb(241 92 128);
 			}
 		}
+	}
+
+	&.transparent {
+		background: transparent;
 	}
 
 	&.gradate {

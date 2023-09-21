@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/index.js';
+import type { DriveFilesRepository, DriveFoldersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -40,8 +45,13 @@ export const meta = {
 			code: 'NO_SUCH_FOLDER',
 			id: 'ea8fb7a5-af77-4a08-b608-c0218176cd73',
 		},
-	},
 
+		restrictedByRole: {
+			message: 'This feature is restricted by your role.',
+			code: 'RESTRICTED_BY_ROLE',
+			id: '7f59dccb-f465-75ab-5cf4-3ce44e3282f7',
+		},
+	},
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
@@ -61,9 +71,8 @@ export const paramDef = {
 	required: ['fileId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
@@ -77,7 +86,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const file = await this.driveFilesRepository.findOneBy({ id: ps.fileId });
-
+			const alwaysMarkNsfw = (await this.roleService.getUserPolicies(me.id)).alwaysMarkNsfw;
 			if (file == null) {
 				throw new ApiError(meta.errors.noSuchFile);
 			}
@@ -92,6 +101,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			if (ps.comment !== undefined) file.comment = ps.comment;
+
+			if (ps.isSensitive !== undefined && ps.isSensitive !== file.isSensitive && alwaysMarkNsfw && !ps.isSensitive) {
+				throw new ApiError(meta.errors.restrictedByRole);
+			}
 
 			if (ps.isSensitive !== undefined) file.isSensitive = ps.isSensitive;
 

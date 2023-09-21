@@ -1,6 +1,11 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="taeiyria">
-	<div class="query">
+<div>
+	<div>
 		<MkInput v-model="host" :debounce="true" class="">
 			<template #prefix><i class="ti ti-search"></i></template>
 			<template #label>{{ i18n.ts.host }}</template>
@@ -35,8 +40,8 @@
 	</div>
 
 	<MkPagination v-slot="{items}" ref="instances" :key="host + state" :pagination="pagination">
-		<div class="dqokceoi">
-			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" class="instance" :to="`/instance-info/${instance.host}`">
+		<div :class="$style.items">
+			<MkA v-for="instance in items" :key="instance.id" v-tooltip.mfm="`Status: ${getStatus(instance)}`" :class="$style.item" :to="`/instance-info/${instance.host}`">
 				<MkInstanceCardMini :instance="instance"/>
 			</MkA>
 		</div>
@@ -48,10 +53,10 @@
 import { computed } from 'vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkPagination from '@/components/MkPagination.vue';
+import MkPagination, { Paging } from '@/components/MkPagination.vue';
 import MkInstanceCardMini from '@/components/MkInstanceCardMini.vue';
 import FormSplit from '@/components/form/split.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 let host = $ref('');
 let state = $ref('federating');
@@ -59,6 +64,7 @@ let sort = $ref('+pubSub');
 const pagination = {
 	endpoint: 'federation/instances' as const,
 	limit: 10,
+	displayLimit: 50,
 	offsetMode: true,
 	params: computed(() => ({
 		sort: sort,
@@ -72,7 +78,7 @@ const pagination = {
 			state === 'notResponding' ? { notResponding: true } :
 			{}),
 	})),
-};
+} as Paging;
 
 function getStatus(instance) {
 	if (instance.isSuspended) return 'Suspended';
@@ -82,21 +88,14 @@ function getStatus(instance) {
 }
 </script>
 
-<style lang="scss" scoped>
-.taeiyria {
-	> .query {
-		background: var(--bg);
-		margin-bottom: 16px;
-	}
-}
-
-.dqokceoi {
+<style lang="scss" module>
+.items {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
 	grid-gap: 12px;
+}
 
-	> .instance:hover {
-		text-decoration: none;
-	}
+.item:hover {
+	text-decoration: none;
 }
 </style>

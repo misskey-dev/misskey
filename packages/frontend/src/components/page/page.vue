@@ -1,56 +1,30 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div v-if="hpml" class="iroscrza" :class="{ center: page.alignCenter, serif: page.font === 'serif' }">
-	<XBlock v-for="child in page.content" :key="child.id" :block="child" :hpml="hpml" :h="2"/>
+<div :class="{ [$style.center]: page.alignCenter, [$style.serif]: page.font === 'serif' }" class="_gaps_s">
+	<XBlock v-for="child in page.content" :key="child.id" :page="page" :block="child" :h="2"/>
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, nextTick, PropType } from 'vue';
+<script lang="ts" setup>
+import { onMounted, nextTick } from 'vue';
+import * as Misskey from 'misskey-js';
 import XBlock from './page.block.vue';
-import { Hpml } from '@/scripts/hpml/evaluator';
-import { url } from '@/config';
-import { $i } from '@/account';
 
-export default defineComponent({
-	components: {
-		XBlock,
-	},
-	props: {
-		page: {
-			type: Object as PropType<Record<string, any>>,
-			required: true,
-		},
-	},
-	setup(props, ctx) {
-		const hpml = new Hpml(props.page, {
-			randomSeed: Math.random(),
-			visitor: $i,
-			url: url,
-		});
-
-		onMounted(() => {
-			nextTick(() => {
-				hpml.eval();
-			});
-		});
-
-		return {
-			hpml,
-		};
-	},
-});
+defineProps<{
+	page: Misskey.entities.Page,
+}>();
 </script>
 
-<style lang="scss" scoped>
-.iroscrza {
-	&.serif {
-		> div {
-			font-family: serif;
-		}
-	}
+<style lang="scss" module>
+.serif {
+	font-family: serif;
+}
 
-	&.center {
-		text-align: center;
-	}
+.center {
+	text-align: center;
 }
 </style>

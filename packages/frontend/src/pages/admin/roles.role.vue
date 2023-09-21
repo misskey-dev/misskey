@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+		<MkSpacer :contentMax="700">
 			<div class="_gaps">
 				<div class="_buttons">
 					<MkButton primary rounded @click="edit"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
@@ -11,9 +16,9 @@
 				<MkFolder>
 					<template #icon><i class="ti ti-info-circle"></i></template>
 					<template #label>{{ i18n.ts.info }}</template>
-					<XEditor :model-value="role" readonly/>
+					<XEditor :modelValue="role" readonly/>
 				</MkFolder>
-				<MkFolder v-if="role.target === 'manual'" default-open>
+				<MkFolder v-if="role.target === 'manual'" defaultOpen>
 					<template #icon><i class="ti ti-users"></i></template>
 					<template #label>{{ i18n.ts.users }}</template>
 					<template #suffix>{{ role.usersCount }}</template>
@@ -23,7 +28,7 @@
 						<MkPagination :pagination="usersPagination">
 							<template #empty>
 								<div class="_fullinfo">
-									<img src="https://xn--931a.moe/assets/info.jpg" class="_ghost"/>
+									<img :src="infoImageUrl" class="_ghost"/>
 									<div>{{ i18n.ts.noUsers }}</div>
 								</div>
 							</template>
@@ -32,7 +37,7 @@
 								<div class="_gaps_s">
 									<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpend]: expandedItems.includes(item.id) }]">
 										<div :class="$style.userItemMain">
-											<MkA :class="$style.userItemMainBody" :to="`/user-info/${item.user.id}`">
+											<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
 												<MkUserCardMini :user="item.user"/>
 											</MkA>
 											<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
@@ -40,7 +45,7 @@
 										</div>
 										<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
 											<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
-											<div v-if="item.expiresAt">Period: {{ item.expiresAt.toLocaleString() }}</div>
+											<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
 											<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 										</div>
 									</div>
@@ -61,14 +66,15 @@ import { computed, reactive } from 'vue';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination, { Paging } from '@/components/MkPagination.vue';
+import { infoImageUrl } from '@/instance.js';
 
 const router = useRouter();
 

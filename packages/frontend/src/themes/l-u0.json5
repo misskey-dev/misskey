@@ -55,6 +55,7 @@
 		codeNumber: '#cfff9e',
 		codeString: '#ffb675',
 		fgOnAccent: '#fff',
+		fgOnWhite: '@accent',
 		infoWarnBg: '#42321c',
 		infoWarnFg: '#ffbd3e',
 		navHoverFg: ':lighten<17<@fg',

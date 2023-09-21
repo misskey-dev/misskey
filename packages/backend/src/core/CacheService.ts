@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, UserProfile, UserProfilesRepository, UsersRepository } from '@/models/index.js';
+import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
-import type { LocalUser, User } from '@/models/entities/User.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -11,11 +16,11 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class CacheService implements OnApplicationShutdown {
-	public userByIdCache: MemoryKVCache<User>;
-	public localUserByNativeTokenCache: MemoryKVCache<LocalUser | null>;
-	public localUserByIdCache: MemoryKVCache<LocalUser>;
-	public uriPersonCache: MemoryKVCache<User | null>;
-	public userProfileCache: RedisKVCache<UserProfile>;
+	public userByIdCache: MemoryKVCache<MiUser, MiUser | string>;
+	public localUserByNativeTokenCache: MemoryKVCache<MiLocalUser | null, string | null>;
+	public localUserByIdCache: MemoryKVCache<MiLocalUser>;
+	public uriPersonCache: MemoryKVCache<MiUser | null, string | null>;
+	public userProfileCache: RedisKVCache<MiUserProfile>;
 	public userMutingsCache: RedisKVCache<Set<string>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
 	public userBlockedCache: RedisKVCache<Set<string>>; // NOTE: 「被」Blockキャッシュ
@@ -55,12 +60,43 @@ export class CacheService implements OnApplicationShutdown {
 	) {
 		//this.onMessage = this.onMessage.bind(this);
 
-		this.userByIdCache = new MemoryKVCache<User>(Infinity);
-		this.localUserByNativeTokenCache = new MemoryKVCache<LocalUser | null>(Infinity);
-		this.localUserByIdCache = new MemoryKVCache<LocalUser>(Infinity);
-		this.uriPersonCache = new MemoryKVCache<User | null>(Infinity);
+		const localUserByIdCache = new MemoryKVCache<MiLocalUser>(1000 * 60 * 60 * 6 /* 6h */);
+		this.localUserByIdCache	= localUserByIdCache;
 
-		this.userProfileCache = new RedisKVCache<UserProfile>(this.redisClient, 'userProfile', {
+		// ローカルユーザーならlocalUserByIdCacheにデータを追加し、こちらにはid(文字列)だけを追加する
+		const userByIdCache = new MemoryKVCache<MiUser, MiUser | string>(1000 * 60 * 60 * 6 /* 6h */, {
+			toMapConverter: user => {
+				if (user.host === null) {
+					localUserByIdCache.set(user.id, user as MiLocalUser);
+					return user.id;
+				}
+
+				return user;
+			},
+			fromMapConverter: userOrId => typeof userOrId === 'string' ? localUserByIdCache.get(userOrId) : userOrId,
+		});
+		this.userByIdCache = userByIdCache;
+
+		this.localUserByNativeTokenCache = new MemoryKVCache<MiLocalUser | null, string | null>(Infinity, {
+			toMapConverter: user => {
+				if (user === null) return null;
+
+				localUserByIdCache.set(user.id, user);
+				return user.id;
+			},
+			fromMapConverter: id => id === null ? null : localUserByIdCache.get(id),
+		});
+		this.uriPersonCache = new MemoryKVCache<MiUser | null, string | null>(Infinity, {
+			toMapConverter: user => {
+				if (user === null) return null;
+
+				userByIdCache.set(user.id, user);
+				return user.id;
+			},
+			fromMapConverter: id => id === null ? null : userByIdCache.get(id),
+		});
+
+		this.userProfileCache = new RedisKVCache<MiUserProfile>(this.redisClient, 'userProfile', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
 			fetcher: (key) => this.userProfilesRepository.findOneByOrFail({ userId: key }),
@@ -131,7 +167,7 @@ export class CacheService implements OnApplicationShutdown {
 					const user = await this.usersRepository.findOneByOrFail({ id: body.id });
 					this.userByIdCache.set(user.id, user);
 					for (const [k, v] of this.uriPersonCache.cache.entries()) {
-						if (v.value?.id === user.id) {
+						if (v.value === user.id) {
 							this.uriPersonCache.set(k, user);
 						}
 					}
@@ -142,7 +178,7 @@ export class CacheService implements OnApplicationShutdown {
 					break;
 				}
 				case 'userTokenRegenerated': {
-					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as LocalUser;
+					const user = await this.usersRepository.findOneByOrFail({ id: body.id }) as MiLocalUser;
 					this.localUserByNativeTokenCache.delete(body.oldToken);
 					this.localUserByNativeTokenCache.set(body.newToken, user);
 					break;
@@ -161,12 +197,28 @@ export class CacheService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public findUserById(userId: User['id']) {
+	public findUserById(userId: MiUser['id']) {
 		return this.userByIdCache.fetch(userId, () => this.usersRepository.findOneByOrFail({ id: userId }));
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		this.redisForSub.off('message', this.onMessage);
+		this.userByIdCache.dispose();
+		this.localUserByNativeTokenCache.dispose();
+		this.localUserByIdCache.dispose();
+		this.uriPersonCache.dispose();
+		this.userProfileCache.dispose();
+		this.userMutingsCache.dispose();
+		this.userBlockingCache.dispose();
+		this.userBlockedCache.dispose();
+		this.renoteMutingsCache.dispose();
+		this.userFollowingsCache.dispose();
+		this.userFollowingChannelsCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

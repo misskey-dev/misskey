@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <span>
 	<span v-text="hh"></span>
@@ -11,19 +16,21 @@
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { defaultIdlingRenderScheduler } from '@/scripts/idle-render.js';
 
 const props = withDefaults(defineProps<{
 	showS?: boolean;
 	showMs?: boolean;
 	offset?: number;
+	now?: () => Date;
 }>(), {
 	showS: true,
 	showMs: false,
 	offset: 0 - new Date().getTimezoneOffset(),
+	now: () => new Date(),
 });
 
-let intervalId;
 const hh = ref('');
 const mm = ref('');
 const ss = ref('');
@@ -39,9 +46,9 @@ watch(showColon, (v) => {
 	}
 });
 
-const tick = () => {
-	const now = new Date();
-	now.setMinutes(now.getMinutes() + (new Date().getTimezoneOffset() + props.offset));
+const tick = (): void => {
+	const now = props.now();
+	now.setMinutes(now.getMinutes() + now.getTimezoneOffset() + props.offset);
 	hh.value = now.getHours().toString().padStart(2, '0');
 	mm.value = now.getMinutes().toString().padStart(2, '0');
 	ss.value = now.getSeconds().toString().padStart(2, '0');
@@ -52,13 +59,12 @@ const tick = () => {
 
 tick();
 
-watch(() => props.showMs, () => {
-	if (intervalId) window.clearInterval(intervalId);
-	intervalId = window.setInterval(tick, props.showMs ? 10 : 1000);
-}, { immediate: true });
+onMounted(() => {
+	defaultIdlingRenderScheduler.add(tick);
+});
 
 onUnmounted(() => {
-	window.clearInterval(intervalId);
+	defaultIdlingRenderScheduler.delete(tick);
 });
 </script>
 

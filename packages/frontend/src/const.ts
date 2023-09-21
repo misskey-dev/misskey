@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // ブラウザで直接表示することを許可するファイルの種類のリスト
 // ここに含まれないものは application/octet-stream としてレスポンスされる
 // SVGはXSSを生むので許可しない
@@ -35,6 +40,11 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'audio/webm',
 
 	'audio/aac',
+
+	// see https://github.com/misskey-dev/misskey/pull/10686
+	'audio/flac',
+	'audio/wav',
+	// backward compatibility
 	'audio/x-flac',
 	'audio/vnd.wave',
 ];
@@ -52,10 +62,14 @@ export const ROLE_POLICIES = [
 	'ltlAvailable',
 	'canPublicNote',
 	'canInvite',
+	'inviteLimit',
+	'inviteLimitCycle',
+	'inviteExpirationTime',
 	'canManageCustomEmojis',
 	'canSearchNotes',
 	'canHideAds',
 	'driveCapacityMb',
+	'alwaysMarkNsfw',
 	'pinLimit',
 	'antennaLimit',
 	'wordMuteLimit',
@@ -72,3 +86,7 @@ export const ROLE_POLICIES = [
 //export const CURRENT_STICKY_BOTTOM = Symbol('CURRENT_STICKY_BOTTOM');
 export const CURRENT_STICKY_TOP = 'CURRENT_STICKY_TOP';
 export const CURRENT_STICKY_BOTTOM = 'CURRENT_STICKY_BOTTOM';
+
+export const DEFAULT_SERVER_ERROR_IMAGE_URL = 'https://xn--931a.moe/assets/error.jpg';
+export const DEFAULT_NOT_FOUND_IMAGE_URL = 'https://xn--931a.moe/assets/not-found.jpg';
+export const DEFAULT_INFO_IMAGE_URL = 'https://xn--931a.moe/assets/info.jpg';

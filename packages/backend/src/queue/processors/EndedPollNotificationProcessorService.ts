@@ -1,12 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { PollVotesRepository, NotesRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { PollVotesRepository, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
+import type * as Bull from 'bullmq';
 import type { EndedPollNotificationJobData } from '../types.js';
 
 @Injectable()
@@ -14,9 +18,6 @@ export class EndedPollNotificationProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
@@ -30,10 +31,9 @@ export class EndedPollNotificationProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<EndedPollNotificationJobData>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<EndedPollNotificationJobData>): Promise<void> {
 		const note = await this.notesRepository.findOneBy({ id: job.data.noteId });
 		if (note == null || !note.hasPoll) {
-			done();
 			return;
 		}
 
@@ -51,7 +51,5 @@ export class EndedPollNotificationProcessorService {
 				noteId: note.id,
 			});
 		}
-
-		done();
 	}
 }

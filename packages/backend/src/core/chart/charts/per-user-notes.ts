@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable, Inject } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import type { User } from '@/models/entities/User.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNote } from '@/models/Note.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
-import type { NotesRepository } from '@/models/index.js';
+import type { NotesRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
@@ -14,9 +19,8 @@ import type { KVs } from '../core.js';
 /**
  * ユーザーごとのノートに関するチャート
  */
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class PerUserNotesChart extends Chart<typeof schema> {
+export default class PerUserNotesChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,
@@ -45,7 +49,7 @@ export default class PerUserNotesChart extends Chart<typeof schema> {
 	}
 
 	@bindThis
-	public update(user: { id: User['id'] }, note: Note, isAdditional: boolean): void {
+	public update(user: { id: MiUser['id'] }, note: MiNote, isAdditional: boolean): void {
 		this.commit({
 			'total': isAdditional ? 1 : -1,
 			'inc': isAdditional ? 1 : 0,

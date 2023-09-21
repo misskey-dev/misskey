@@ -13,19 +13,19 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.5.1]
 
     steps:
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v4.0.0
       with:
         submodules: true
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 7
+        version: 8
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v3.8.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x]
+        node-version: [20.5.1]
         browser: [chrome]
 
     services:
@@ -68,7 +68,7 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v3.3.0
+    - uses: actions/checkout@v4.0.0
       with:
         submodules: true
     # https://github.com/cypress-io/cypress-docker-images/issues/150
@@ -83,7 +83,7 @@ jobs:
         version: 7
         run_install: false
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v3.8.1
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
@@ -101,12 +101,12 @@ jobs:
     - name: Cypress install
       run: pnpm exec cypress install
     - name: Cypress run
-      uses: cypress-io/github-action@v5
+      uses: cypress-io/github-action@v6
       with:
         install: false
         start: pnpm start:test
         wait-on: 'http://localhost:61812'
-        headless: false
+        headed: true
         browser: ${{ matrix.browser }}
     - uses: actions/upload-artifact@v2
       if: failure()

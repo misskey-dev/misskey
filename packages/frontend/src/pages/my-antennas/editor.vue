@@ -1,6 +1,11 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkSpacer :content-max="700">
-	<div class="shaynizk">
+<MkSpacer :contentMax="700">
+	<div>
 		<div class="_gaps_m">
 			<MkInput v-model="name">
 				<template #label>{{ i18n.ts.name }}</template>
@@ -33,7 +38,7 @@
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
 			<MkSwitch v-model="notify">{{ i18n.ts.notifyAntenna }}</MkSwitch>
 		</div>
-		<div class="actions">
+		<div :class="$style.actions">
 			<MkButton inline primary @click="saveAntenna()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 			<MkButton v-if="antenna.id != null" inline danger @click="deleteAntenna()"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
@@ -43,14 +48,14 @@
 
 <script lang="ts" setup>
 import { watch } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	antenna: any
@@ -122,18 +127,16 @@ async function deleteAntenna() {
 function addUser() {
 	os.selectUser().then(user => {
 		users = users.trim();
-		users += '\n@' + Acct.toString(user as any);
+		users += '\n@' + Misskey.acct.toString(user as any);
 		users = users.trim();
 	});
 }
 </script>
 
-<style lang="scss" scoped>
-.shaynizk {
-	> .actions {
-		margin-top: 16px;
-		padding: 24px 0;
-		border-top: solid 0.5px var(--divider);
-	}
+<style lang="scss" module>
+.actions {
+	margin-top: 16px;
+	padding: 24px 0;
+	border-top: solid 0.5px var(--divider);
 }
 </style>

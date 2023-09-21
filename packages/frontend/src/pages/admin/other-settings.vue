@@ -1,9 +1,42 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
-			none
+			<div class="_gaps">
+				<div class="_panel" style="padding: 16px;">
+					<MkSwitch v-model="enableServerMachineStats">
+						<template #label>{{ i18n.ts.enableServerMachineStats }}</template>
+						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+					</MkSwitch>
+				</div>
+
+				<div class="_panel" style="padding: 16px;">
+					<MkSwitch v-model="enableIdenticonGeneration">
+						<template #label>{{ i18n.ts.enableIdenticonGeneration }}</template>
+						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+					</MkSwitch>
+				</div>
+
+				<div class="_panel" style="padding: 16px;">
+					<MkSwitch v-model="enableChartsForRemoteUser">
+						<template #label>{{ i18n.ts.enableChartsForRemoteUser }}</template>
+						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+					</MkSwitch>
+				</div>
+
+				<div class="_panel" style="padding: 16px;">
+					<MkSwitch v-model="enableChartsForFederatedInstances">
+						<template #label>{{ i18n.ts.enableChartsForFederatedInstances }}</template>
+						<template #caption>{{ i18n.ts.turnOffToImprovePerformance }}</template>
+					</MkSwitch>
+				</div>
+			</div>
 		</FormSuspense>
 	</MkSpacer>
 </MkStickyContainer>
@@ -13,17 +46,32 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import FormSuspense from '@/components/form/suspense.vue';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import MkSwitch from '@/components/MkSwitch.vue';
+
+let enableServerMachineStats: boolean = $ref(false);
+let enableIdenticonGeneration: boolean = $ref(false);
+let enableChartsForRemoteUser: boolean = $ref(false);
+let enableChartsForFederatedInstances: boolean = $ref(false);
 
 async function init() {
-	await os.api('admin/meta');
+	const meta = await os.api('admin/meta');
+	enableServerMachineStats = meta.enableServerMachineStats;
+	enableIdenticonGeneration = meta.enableIdenticonGeneration;
+	enableChartsForRemoteUser = meta.enableChartsForRemoteUser;
+	enableChartsForFederatedInstances = meta.enableChartsForFederatedInstances;
 }
 
 function save() {
-	os.apiWithDialog('admin/update-meta').then(() => {
+	os.apiWithDialog('admin/update-meta', {
+		enableServerMachineStats,
+		enableIdenticonGeneration,
+		enableChartsForRemoteUser,
+		enableChartsForFederatedInstances,
+	}).then(() => {
 		fetchInstance();
 	});
 }

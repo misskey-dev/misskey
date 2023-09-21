@@ -1,9 +1,12 @@
 {
 	"compilerOptions": {
+		"target": "es2022",
+		"module": "Node16",
 		"strict": true,
 		"allowUnusedLabels": false,
 		"allowUnreachableCode": false,
 		"exactOptionalPropertyTypes": true,
+		"noEmitOnError": false,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,

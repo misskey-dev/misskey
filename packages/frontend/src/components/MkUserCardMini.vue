@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-adaptive-bg :class="[$style.root, { yellow: user.isSilenced, red: user.isSuspended, gray: false }]">
 	<MkAvatar class="avatar" :user="user" indicator/>
@@ -10,14 +15,14 @@
 </template>
 
 <script lang="ts" setup>
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import { onMounted } from 'vue';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import * as os from '@/os';
-import { acct } from '@/filters/user';
+import * as os from '@/os.js';
+import { acct } from '@/filters/user.js';
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 	withChart: boolean;
 }>(), {
 	withChart: true,

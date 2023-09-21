@@ -1,7 +1,13 @@
-import type { DriveFile } from '@/models/entities/DriveFile.js';
-import type { Note } from '@/models/entities/Note.js';
-import type { User } from '@/models/entities/User.js';
-import type { Webhook } from '@/models/entities/Webhook.js';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiWebhook } from '@/models/Webhook.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type httpSignature from '@peertube/http-signature';
 
@@ -33,12 +39,14 @@ export type DbJobData<T extends keyof DbJobMap> = DbJobMap[T];
 export type DbJobMap = {
 	deleteDriveFiles: DbJobDataWithUser;
 	exportCustomEmojis: DbJobDataWithUser;
+	exportAntennas: DBExportAntennasData;
 	exportNotes: DbJobDataWithUser;
 	exportFavorites: DbJobDataWithUser;
 	exportFollowing: DbExportFollowingData;
 	exportMuting: DbJobDataWithUser;
 	exportBlocking: DbJobDataWithUser;
 	exportUserLists: DbJobDataWithUser;
+	importAntennas: DBAntennaImportJobData;
 	importFollowing: DbUserImportJobData;
 	importFollowingToDb: DbUserImportToDbJobData;
 	importMuting: DbUserImportJobData;
@@ -59,6 +67,10 @@ export type DbExportFollowingData = {
 	excludeInactive: boolean;
 };
 
+export type DBExportAntennasData = {
+	user: ThinUser
+}
+
 export type DbUserDeleteJobData = {
 	user: ThinUser;
 	soft?: boolean;
@@ -66,8 +78,13 @@ export type DbUserDeleteJobData = {
 
 export type DbUserImportJobData = {
 	user: ThinUser;
-	fileId: DriveFile['id'];
+	fileId: MiDriveFile['id'];
 };
+
+export type DBAntennaImportJobData = {
+	user: ThinUser,
+	antenna: Antenna
+}
 
 export type DbUserImportToDbJobData = {
 	user: ThinUser;
@@ -81,14 +98,14 @@ export type ObjectStorageFileJobData = {
 };
 
 export type EndedPollNotificationJobData = {
-	noteId: Note['id'];
+	noteId: MiNote['id'];
 };
 
 export type WebhookDeliverJobData = {
 	type: string;
 	content: unknown;
-	webhookId: Webhook['id'];
-	userId: User['id'];
+	webhookId: MiWebhook['id'];
+	userId: MiUser['id'];
 	to: string;
 	secret: string;
 	createdAt: number;
@@ -96,5 +113,5 @@ export type WebhookDeliverJobData = {
 };
 
 export type ThinUser = {
-	id: User['id'];
+	id: MiUser['id'];
 };

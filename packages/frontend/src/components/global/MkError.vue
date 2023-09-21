@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" appear>
 	<div :class="$style.root">
-		<img :class="$style.img" src="https://xn--931a.moe/assets/error.jpg" class="_ghost"/>
+		<img :class="$style.img" :src="serverErrorImageUrl" class="_ghost"/>
 		<p :class="$style.text"><i class="ti ti-alert-triangle"></i> {{ i18n.ts.somethingHappened }}</p>
 		<MkButton :class="$style.button" @click="() => emit('retry')">{{ i18n.ts.retry }}</MkButton>
 	</div>
@@ -10,8 +15,9 @@
 
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { serverErrorImageUrl } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'retry'): void;

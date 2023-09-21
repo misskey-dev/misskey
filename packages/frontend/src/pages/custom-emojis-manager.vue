@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
 		<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="900">
+		<MkSpacer :contentMax="900">
 			<div class="ogwlenmc">
 				<div v-if="tab === 'local'" class="local">
 					<MkInput v-model="query" :debounce="true" type="search">
@@ -15,9 +20,10 @@
 					<div v-if="selectMode" class="_buttons">
 						<MkButton inline @click="selectAll">Select all</MkButton>
 						<MkButton inline @click="setCategoryBulk">Set category</MkButton>
+						<MkButton inline @click="setTagBulk">Set tag</MkButton>
 						<MkButton inline @click="addTagBulk">Add tag</MkButton>
 						<MkButton inline @click="removeTagBulk">Remove tag</MkButton>
-						<MkButton inline @click="setTagBulk">Set tag</MkButton>
+						<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 						<MkButton inline danger @click="delBulk">Delete</MkButton>
 					</div>
 					<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
@@ -74,10 +80,10 @@ import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
-import { selectFile, selectFiles } from '@/scripts/select-file';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { selectFile, selectFiles } from '@/scripts/select-file.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const emojisPaginationComponent = shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -109,7 +115,7 @@ const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
 	} else {
-		selectedEmojis.value = emojisPaginationComponent.value.items.map(item => item.id);
+		selectedEmojis.value = Array.from(emojisPaginationComponent.value.items.values(), item => item.id);
 	}
 };
 
@@ -122,15 +128,14 @@ const toggleSelect = (emoji) => {
 };
 
 const add = async (ev: MouseEvent) => {
-	const files = await selectFiles(ev.currentTarget ?? ev.target, null);
-
-	const promise = Promise.all(files.map(file => os.api('admin/emoji/add', {
-		fileId: file.id,
-	})));
-	promise.then(() => {
-		emojisPaginationComponent.value.reload();
-	});
-	os.promiseDialog(promise);
+	os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+	}, {
+		done: result => {
+			if (result.created) {
+				emojisPaginationComponent.value.prepend(result.created);
+			}
+		},
+	}, 'closed');
 };
 
 const edit = (emoji) => {
@@ -144,7 +149,7 @@ const edit = (emoji) => {
 					...result.updated,
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value.removeItem((item) => item.id === emoji.id);
+				emojisPaginationComponent.value.removeItem(emoji.id);
 			}
 		},
 	}, 'closed');
@@ -217,6 +222,18 @@ const setCategoryBulk = async () => {
 	await os.apiWithDialog('admin/emoji/set-category-bulk', {
 		ids: selectedEmojis.value,
 		category: result,
+	});
+	emojisPaginationComponent.value.reload();
+};
+
+const setLicenseBulk = async () => {
+	const { canceled, result } = await os.inputText({
+		title: 'License',
+	});
+	if (canceled) return;
+	await os.apiWithDialog('admin/emoji/set-license-bulk', {
+		ids: selectedEmojis.value,
+		license: result,
 	});
 	emojisPaginationComponent.value.reload();
 };
@@ -299,13 +316,13 @@ definePageMetadata(computed(() => ({
 		.empty {
 			margin: var(--margin);
 		}
-		
+
 		.ldhfsamy {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 			grid-gap: 12px;
 			margin: var(--margin) 0;
-	
+
 			> .emoji {
 				display: flex;
 				align-items: center;

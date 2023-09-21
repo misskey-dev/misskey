@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :x="x" :y="y" :max-width="340" :direction="'top'" :inner-margin="16" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :x="x" :y="y" :maxWidth="340" :direction="'top'" :innerMargin="16" @closed="emit('closed')">
 	<div v-if="title || series">
 		<div v-if="title" :class="$style.title">{{ title }}</div>
 		<template v-if="series">

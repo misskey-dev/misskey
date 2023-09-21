@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="zmdxowus">
 	<p v-if="choices.length < 2" class="caution">
@@ -5,7 +10,7 @@
 	</p>
 	<ul>
 		<li v-for="(choice, i) in choices" :key="i">
-			<MkInput class="input" small :model-value="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:model-value="onInput(i, $event)">
+			<MkInput class="input" small :modelValue="choice" :placeholder="i18n.t('_poll.choiceN', { n: i + 1 })" @update:modelValue="onInput(i, $event)">
 			</MkInput>
 			<button class="_button" @click="remove(i)">
 				<i class="ti ti-x"></i>
@@ -53,9 +58,9 @@ import MkInput from './MkInput.vue';
 import MkSelect from './MkSelect.vue';
 import MkSwitch from './MkSwitch.vue';
 import MkButton from './MkButton.vue';
-import { formatDateTimeString } from '@/scripts/format-time-string';
-import { addTime } from '@/scripts/time';
-import { i18n } from '@/i18n';
+import { formatDateTimeString } from '@/scripts/format-time-string.js';
+import { addTime } from '@/scripts/time.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue: {

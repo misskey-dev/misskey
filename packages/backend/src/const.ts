@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const MAX_NOTE_TEXT_LENGTH = 3000;
 
 export const USER_ONLINE_THRESHOLD = 1000 * 60 * 10; // 10min
@@ -56,6 +61,11 @@ export const FILE_TYPE_BROWSERSAFE = [
 	'audio/webm',
 
 	'audio/aac',
+
+	// see https://github.com/misskey-dev/misskey/pull/10686
+	'audio/flac',
+	'audio/wav',
+	// backward compatibility
 	'audio/x-flac',
 	'audio/vnd.wave',
 ];

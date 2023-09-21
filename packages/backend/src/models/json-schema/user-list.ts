@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const packedUserListSchema = {
 	type: 'object',
 	properties: {
@@ -24,6 +29,11 @@ export const packedUserListSchema = {
 				nullable: false, optional: false,
 				format: 'id',
 			},
+		},
+		isPublic: {
+			type: 'boolean',
+			nullable: false,
+			optional: false,
 		},
 	},
 } as const;

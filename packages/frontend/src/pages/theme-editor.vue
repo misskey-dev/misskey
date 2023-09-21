@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<div class="cwepdizn _gaps_m">
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.backgroundColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -19,7 +24,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.accentColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -30,7 +35,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="true">
+			<MkFolder :defaultOpen="true">
 				<template #label>{{ i18n.ts.textColor }}</template>
 				<div class="cwepdizn-colors">
 					<div class="row">
@@ -41,7 +46,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="false">
+			<MkFolder :defaultOpen="false">
 				<template #icon><i class="ti ti-code"></i></template>
 				<template #label>{{ i18n.ts.editCode }}</template>
 
@@ -53,7 +58,7 @@
 				</div>
 			</MkFolder>
 
-			<MkFolder :default-open="false">
+			<MkFolder :defaultOpen="false">
 				<template #label>{{ i18n.ts.addDescription }}</template>
 
 				<div class="_gaps_m">
@@ -78,17 +83,17 @@ import MkButton from '@/components/MkButton.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkFolder from '@/components/MkFolder.vue';
 
-import { $i } from '@/account';
-import { Theme, applyTheme } from '@/scripts/theme';
+import { $i } from '@/account.js';
+import { Theme, applyTheme } from '@/scripts/theme.js';
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
-import { host } from '@/config';
-import * as os from '@/os';
-import { ColdDeviceStorage, defaultStore } from '@/store';
+import { host } from '@/config.js';
+import * as os from '@/os.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
 import { addTheme } from '@/theme-store';
-import { i18n } from '@/i18n';
-import { useLeaveGuard } from '@/scripts/use-leave-guard';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import { useLeaveGuard } from '@/scripts/use-leave-guard.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const bgColors = [
 	{ color: '#f5f5f5', kind: 'light', forPreview: '#f5f5f5' },
