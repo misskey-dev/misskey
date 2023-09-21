@@ -146,15 +146,14 @@ export class UserEntityService implements OnModuleInit {
 
 	@bindThis
 	public async getRelation(me: MiUser['id'], target: MiUser['id']) {
+		const following = await this.followingsRepository.findOneBy({
+			followerId: me,
+			followeeId: target,
+		});
 		return awaitAll({
 			id: target,
-			isFollowing: this.followingsRepository.count({
-				where: {
-					followerId: me,
-					followeeId: target,
-				},
-				take: 1,
-			}).then(n => n > 0),
+			following,
+			isFollowing: following != null,
 			isFollowed: this.followingsRepository.count({
 				where: {
 					followerId: target,
@@ -384,6 +383,7 @@ export class UserEntityService implements OnModuleInit {
 				birthday: profile!.birthday,
 				lang: profile!.lang,
 				fields: profile!.fields,
+				verifiedLinks: profile!.verifiedLinks,
 				followersCount: followersCount ?? 0,
 				followingCount: followingCount ?? 0,
 				notesCount: user.notesCount,
@@ -485,6 +485,7 @@ export class UserEntityService implements OnModuleInit {
 				isBlocked: relation.isBlocked,
 				isMuted: relation.isMuted,
 				isRenoteMuted: relation.isRenoteMuted,
+				notify: relation.following?.notify ?? 'none',
 			} : {}),
 		} as Promiseable<Packed<'User'>> as Promiseable<IsMeAndIsUserDetailed<ExpectsMe, D>>;
 

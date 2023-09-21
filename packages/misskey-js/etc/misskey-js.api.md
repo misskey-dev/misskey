@@ -2609,7 +2609,12 @@ type Notification_2 = {
     userId: User['id'];
     note: Note;
 } | {
-    type: 'pollVote';
+    type: 'note';
+    user: User;
+    userId: User['id'];
+    note: Note;
+} | {
+    type: 'pollEnded';
     user: User;
     userId: User['id'];
     note: Note;
@@ -2640,7 +2645,7 @@ type Notification_2 = {
 });
 
 // @public (undocumented)
-export const notificationTypes: readonly ["follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollVote", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app"];
 
 // @public (undocumented)
 type OriginType = 'combined' | 'local' | 'remote';
@@ -2778,6 +2783,7 @@ type UserDetailed = UserLite & {
         name: string;
         value: string;
     }[];
+    verifiedLinks: string[];
     followersCount: number;
     followingCount: number;
     hasPendingFollowRequestFromYou: boolean;
@@ -2809,6 +2815,7 @@ type UserDetailed = UserLite & {
     updatedAt: DateString | null;
     uri: string | null;
     url: string | null;
+    notify: 'normal' | 'none';
 };
 
 // @public (undocumented)

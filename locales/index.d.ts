@@ -1123,6 +1123,9 @@ export interface Locale {
     "loadConversation": string;
     "pinnedList": string;
     "keepScreenOn": string;
+    "verifiedLink": string;
+    "notifyNotes": string;
+    "unnotifyNotes": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
@@ -2029,6 +2032,7 @@ export interface Locale {
         "metadataContent": string;
         "changeAvatar": string;
         "changeBanner": string;
+        "verifiedLinkDescription": string;
     };
     "_exportOrImport": {
         "allNotes": string;
@@ -2158,6 +2162,7 @@ export interface Locale {
         "youReceivedFollowRequest": string;
         "yourFollowRequestAccepted": string;
         "pollEnded": string;
+        "newNote": string;
         "unreadAntennaNote": string;
         "emptyPushNotificationMessage": string;
         "achievementEarned": string;
