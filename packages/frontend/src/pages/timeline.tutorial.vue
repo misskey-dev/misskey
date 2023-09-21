@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="tutorial === 0" :class="$style.body">
 		<div>{{ i18n.t('_timelineTutorial.step1_1', { name: instance.name ?? host }) }}</div>
 		<div>{{ i18n.t('_timelineTutorial.step1_2', { name: instance.name ?? host }) }}</div>
+    <div>{{ i18n.t('_timelineTutorial.step1_3', { name: instance.name ?? host }) }}</div>
 	</div>
 	<div v-else-if="tutorial === 1" :class="$style.body">
 		<div>{{ i18n.ts._timelineTutorial.step2_1 }}</div>

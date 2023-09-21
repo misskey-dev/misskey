@@ -272,7 +272,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	gamingMode: {
 		where: 'device',
-		default: false,
+		default: true,
 	},
 	bannerUrl:{
 		where: 'device',
@@ -349,6 +349,10 @@ export const defaultStore = markRaw(new Storage('base', {
 	showClipButtonInNoteFooter: {
 		where: 'device',
 		default: false,
+	},
+	showMediaTimeline:{
+		where: 'device',
+		default: true,
 	},
 	reactionsDisplaySize: {
 		where: 'device',

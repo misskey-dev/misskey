@@ -168,6 +168,8 @@ export interface Locale {
     "flagAsCat": string;
     "flagAsCatDescription": string;
     "flagShowTimelineReplies": string;
+    "showMediaTimeline": string;
+    "showMediaTimelineInfo": string;
     "flagShowTimelineRepliesDescription": string;
     "autoAcceptFollowed": string;
     "addAccount": string;
@@ -296,6 +298,7 @@ export interface Locale {
     "themeForLightMode": string;
     "themeForDarkMode": string;
     "gamingMode": string;
+    "gamingModeInfo": string;
     "light": string;
     "dark": string;
     "lightThemes": string;
@@ -1825,6 +1828,7 @@ export interface Locale {
         "title": string;
         "step1_1": string;
         "step1_2": string;
+        "step1_3": string;
         "step2_1": string;
         "step2_2": string;
         "step3_1": string;
