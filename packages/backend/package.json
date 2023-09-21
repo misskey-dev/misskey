@@ -95,6 +95,7 @@
 		"date-fns": "2.30.0",
 		"deep-email-validator": "0.1.21",
 		"fastify": "4.20.0",
+		"fastify-graceful-shutdown": "^3.5.1",
 		"feed": "4.2.2",
 		"file-type": "18.5.0",
 		"fluent-ffmpeg": "2.1.2",
