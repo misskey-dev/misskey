@@ -1892,6 +1892,7 @@ _profile:
   metadataContent: "Content"
   changeAvatar: "Change avatar"
   changeBanner: "Change banner"
+  verifiedLinkDescription: "By entering an URL that contains a link to your profile here, an ownership verification icon can be displayed next to the field."
 _exportOrImport:
   allNotes: "All notes"
   favoritedNotes: "Favorite notes"
