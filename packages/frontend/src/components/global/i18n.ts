@@ -1,42 +1,29 @@
-import { h, defineComponent } from 'vue';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-export default defineComponent({
-	props: {
-		src: {
-			type: String,
-			required: true,
-		},
-		tag: {
-			type: String,
-			required: false,
-			default: 'span',
-		},
-		textTag: {
-			type: String,
-			required: false,
-			default: null,
-		},
-	},
-	render() {
-		let str = this.src;
-		const parsed = [] as (string | { arg: string; })[];
-		while (true) {
-			const nextBracketOpen = str.indexOf('{');
-			const nextBracketClose = str.indexOf('}');
+import { h } from 'vue';
 
-			if (nextBracketOpen === -1) {
-				parsed.push(str);
-				break;
-			} else {
-				if (nextBracketOpen > 0) parsed.push(str.substr(0, nextBracketOpen));
-				parsed.push({
-					arg: str.substring(nextBracketOpen + 1, nextBracketClose),
-				});
-			}
+export default function(props: { src: string; tag?: string; textTag?: string; }, { slots }) {
+	let str = props.src;
+	const parsed = [] as (string | { arg: string; })[];
+	while (true) {
+		const nextBracketOpen = str.indexOf('{');
+		const nextBracketClose = str.indexOf('}');
 
-			str = str.substr(nextBracketClose + 1);
+		if (nextBracketOpen === -1) {
+			parsed.push(str);
+			break;
+		} else {
+			if (nextBracketOpen > 0) parsed.push(str.substring(0, nextBracketOpen));
+			parsed.push({
+				arg: str.substring(nextBracketOpen + 1, nextBracketClose),
+			});
 		}
 
-		return h(this.tag, parsed.map(x => typeof x === 'string' ? (this.textTag ? h(this.textTag, x) : x) : this.$slots[x.arg]()));
-	},
-});
+		str = str.substring(nextBracketClose + 1);
+	}
+
+	return h(props.tag ?? 'span', parsed.map(x => typeof x === 'string' ? (props.textTag ? h(props.textTag, x) : x) : slots[x.arg]()));
+}

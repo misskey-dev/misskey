@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <Transition
-	:enter-active-class="defaultStore.state.animation ? $style.transition_tooltip_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_tooltip_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_tooltip_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
-	appear @after-leave="emit('closed')"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_tooltip_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_tooltip_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_tooltip_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_tooltip_leaveTo : ''"
+	appear @afterLeave="emit('closed')"
 >
 	<div v-show="showing" ref="el" :class="$style.root" class="_acrylic _shadow" :style="{ zIndex, maxWidth: maxWidth + 'px' }">
 		<slot>
@@ -17,9 +22,9 @@
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, shallowRef } from 'vue';
-import * as os from '@/os';
-import { calcPopupPosition } from '@/scripts/popup-position';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { calcPopupPosition } from '@/scripts/popup-position.js';
+import { defaultStore } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;
@@ -40,6 +45,9 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
+
+// タイミングによっては最初から showing = false な場合があり、その場合に closed 扱いにしないと永久にDOMに残ることになる
+if (!props.showing) emit('closed');
 
 const el = shallowRef<HTMLElement>();
 const zIndex = os.claimZIndex('high');
@@ -66,10 +74,8 @@ onMounted(() => {
 		setPosition();
 
 		const loop = () => {
-			loopHandler = window.requestAnimationFrame(() => {
-				setPosition();
-				loop();
-			});
+			setPosition();
+			loopHandler = window.requestAnimationFrame(loop);
 		};
 
 		loop();

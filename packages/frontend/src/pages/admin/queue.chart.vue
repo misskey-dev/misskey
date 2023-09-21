@@ -1,35 +1,40 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="pumxzjhg _gaps">
+<div class="_gaps">
 	<div :class="$style.status">
-		<div class="item _panel"><div class="label">Process</div>{{ number(activeSincePrevTick) }}</div>
-		<div class="item _panel"><div class="label">Active</div>{{ number(active) }}</div>
-		<div class="item _panel"><div class="label">Waiting</div>{{ number(waiting) }}</div>
-		<div class="item _panel"><div class="label">Delayed</div>{{ number(delayed) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Process</div>{{ number(activeSincePrevTick) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Active</div>{{ number(active) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Waiting</div>{{ number(waiting) }}</div>
+		<div :class="$style.statusItem" class="_panel"><div :class="$style.statusLabel">Delayed</div>{{ number(delayed) }}</div>
 	</div>
-	<div class="charts">
-		<div class="chart">
-			<div class="title">Process</div>
+	<div :class="$style.charts">
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Process</div>
 			<XChart ref="chartProcess" type="process"/>
 		</div>
-		<div class="chart">
-			<div class="title">Active</div>
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Active</div>
 			<XChart ref="chartActive" type="active"/>
 		</div>
-		<div class="chart">
-			<div class="title">Delayed</div>
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Delayed</div>
 			<XChart ref="chartDelayed" type="delayed"/>
 		</div>
-		<div class="chart">
-			<div class="title">Waiting</div>
+		<div :class="$style.chart">
+			<div :class="$style.chartTitle">Waiting</div>
 			<XChart ref="chartWaiting" type="waiting"/>
 		</div>
 	</div>
-	<MkFolder :default-open="true" :max-height="250">
+	<MkFolder :defaultOpen="true" :max-height="250">
 		<template #icon><i class="ti ti-alert-triangle"></i></template>
 		<template #label>Errored instances</template>
 		<template #suffix>({{ number(jobs.reduce((a, b) => a + b[1], 0)) }} jobs)</template>
-		
-		<div :class="$style.jobs">
+
+		<div>
 			<div v-if="jobs.length > 0">
 				<div v-for="job in jobs" :key="job[0]">
 					<MkA :to="`/instance-info/${job[0]}`" behavior="window">{{ job[0] }}</MkA>
@@ -45,13 +50,13 @@
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted, ref } from 'vue';
 import XChart from './queue.chart.chart.vue';
-import number from '@/filters/number';
-import * as os from '@/os';
-import { stream } from '@/stream';
-import { i18n } from '@/i18n';
+import number from '@/filters/number.js';
+import * as os from '@/os.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 
-const connection = markRaw(stream.useChannel('queueStats'));
+const connection = markRaw(useStream().useChannel('queueStats'));
 
 const activeSincePrevTick = ref(0);
 const active = ref(0);
@@ -106,7 +111,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 		length: 200,
 	});
 });
@@ -118,45 +123,36 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.pumxzjhg {
-	> .charts {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 10px;
-
-		> .chart {
-			min-width: 0;
-			padding: 16px;
-			background: var(--panel);
-			border-radius: var(--radius);
-
-			> .title {
-				margin-bottom: 8px;
-			}
-		}
-	}
-}
-</style>
-
 <style lang="scss" module>
+.charts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+.chart {
+	min-width: 0;
+	padding: 16px;
+	background: var(--panel);
+	border-radius: var(--radius);
+}
+
+.chartTitle {
+	margin-bottom: 8px;
+}
+
 .status {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 	grid-gap: 10px;
-
-	&:global {
-		> .item {
-			padding: 12px 16px;
-
-			> .label {
-				font-size: 80%;
-				opacity: 0.6;
-			}
-		}
-	}
 }
 
-.jobs {
+.statusItem {
+	padding: 12px 16px;
+}
+
+.statusLabel {
+	font-size: 80%;
+	opacity: 0.6;
 }
 </style>

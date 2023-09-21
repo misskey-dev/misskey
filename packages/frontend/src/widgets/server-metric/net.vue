@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="oxxrhrto">
 	<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`">
@@ -45,7 +50,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount } from 'vue';
-import bytes from '@/filters/bytes';
+import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
 	connection: any,
@@ -70,7 +75,7 @@ onMounted(() => {
 	props.connection.on('stats', onStats);
 	props.connection.on('statsLog', onStatsLog);
 	props.connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 	});
 });
 
@@ -94,10 +99,10 @@ function onStats(connStats) {
 	inPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${inPolylinePoints} ${viewBoxX},${viewBoxY}`;
 	outPolygonPoints = `${viewBoxX - (stats.length - 1)},${viewBoxY} ${outPolylinePoints} ${viewBoxX},${viewBoxY}`;
 
-	inHeadX = inPolylinePointsStats[inPolylinePointsStats.length - 1][0];
-	inHeadY = inPolylinePointsStats[inPolylinePointsStats.length - 1][1];
-	outHeadX = outPolylinePointsStats[outPolylinePointsStats.length - 1][0];
-	outHeadY = outPolylinePointsStats[outPolylinePointsStats.length - 1][1];
+	inHeadX = inPolylinePointsStats.at(-1)![0];
+	inHeadY = inPolylinePointsStats.at(-1)![1];
+	outHeadX = outPolylinePointsStats.at(-1)![0];
+	outHeadY = outPolylinePointsStats.at(-1)![1];
 
 	inRecent = connStats.net.rx;
 	outRecent = connStats.net.tx;

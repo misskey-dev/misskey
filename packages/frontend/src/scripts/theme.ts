@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { ref } from 'vue';
 import tinycolor from 'tinycolor2';
 import { globalEvents } from '@/events';
@@ -14,7 +19,7 @@ export type Theme = {
 import lightTheme from '@/themes/_light.json5';
 import darkTheme from '@/themes/_dark.json5';
 import { deepClone } from './clone';
-import { miLocalStorage } from '@/local-storage';
+import { miLocalStorage } from '@/local-storage.js';
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
@@ -60,7 +65,7 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.classList.remove('_themeChanging_');
 	}, 1000);
 
-	const colorSchema = theme.base === 'dark' ? 'dark' : 'light';
+	const colorScheme = theme.base === 'dark' ? 'dark' : 'light';
 
 	// Deep copy
 	const _theme = deepClone(theme);
@@ -83,11 +88,11 @@ export function applyTheme(theme: Theme, persist = true) {
 		document.documentElement.style.setProperty(`--${k}`, v.toString());
 	}
 
-	document.documentElement.style.setProperty('color-schema', colorSchema);
+	document.documentElement.style.setProperty('color-scheme', colorScheme);
 
 	if (persist) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
-		miLocalStorage.setItem('colorSchema', colorSchema);
+		miLocalStorage.setItem('colorScheme', colorScheme);
 	}
 
 	// 色計算など再度行えるようにクライアント全体に通知
@@ -98,7 +103,7 @@ function compile(theme: Theme): Record<string, string> {
 	function getColor(val: string): tinycolor.Instance {
 		// ref (prop)
 		if (val[0] === '@') {
-			return getColor(theme.props[val.substr(1)]);
+			return getColor(theme.props[val.substring(1)]);
 		}
 
 		// ref (const)
@@ -109,7 +114,7 @@ function compile(theme: Theme): Record<string, string> {
 		// func
 		else if (val[0] === ':') {
 			const parts = val.split('<');
-			const func = parts.shift().substr(1);
+			const func = parts.shift().substring(1);
 			const arg = parseFloat(parts.shift());
 			const color = getColor(parts.join('<'));
 

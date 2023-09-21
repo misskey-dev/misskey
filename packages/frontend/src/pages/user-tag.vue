@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 
-	<MkSpacer :content-max="1200">
+	<MkSpacer :contentMax="1200">
 		<div class="_gaps_s">
 			<MkUserList :pagination="tagUsers"/>
 		</div>
@@ -12,9 +17,9 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import MkUserList from '@/components/MkUserList.vue';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const props = defineProps<{
 	tag: string;

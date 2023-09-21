@@ -1,18 +1,23 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkSpacer :content-max="1200">
-	<MkAchievements :user="user" :with-locked="false" :with-description="$i != null && (props.user.id === $i.id)"/>
+<MkSpacer :contentMax="1200">
+	<MkAchievements :user="user" :withLocked="false" :withDescription="$i != null && (props.user.id === $i.id)"/>
 </MkSpacer>
 </template>
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkAchievements from '@/components/MkAchievements.vue';
-import { claimAchievement } from '@/scripts/achievements';
-import { $i } from '@/account';
+import { claimAchievement } from '@/scripts/achievements.js';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>();
 
 let timer: number | null;

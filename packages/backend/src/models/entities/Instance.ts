@@ -1,8 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
 import { id } from '../id.js';
 
-@Entity()
-export class Instance {
+@Entity('instance')
+export class MiInstance {
 	@PrimaryColumn(id())
 	public id: string;
 

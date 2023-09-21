@@ -1,66 +1,115 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :class="$style.main">
-		<div v-if="list" class="members _margin">
-			<div class="">{{ i18n.ts.members }}</div>
-			<div class="_gaps_s">
-				<div v-for="user in users" :key="user.id" :class="$style.userItem">
-					<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
-						<MkUserCardMini :user="user"/>
-					</MkA>
-					<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
+	<MkSpacer :contentMax="700" :class="$style.main">
+		<div v-if="list" class="_gaps">
+			<MkFolder>
+				<template #label>{{ i18n.ts.settings }}</template>
+
+				<div class="_gaps">
+					<MkInput v-model="name">
+						<template #label>{{ i18n.ts.name }}</template>
+					</MkInput>
+					<MkSwitch v-model="isPublic">{{ i18n.ts.public }}</MkSwitch>
+					<div class="_buttons">
+						<MkButton rounded primary @click="updateSettings">{{ i18n.ts.save }}</MkButton>
+						<MkButton rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
+					</div>
 				</div>
-			</div>
+			</MkFolder>
+
+			<MkFolder defaultOpen>
+				<template #label>{{ i18n.ts.members }}</template>
+				<template #caption>{{ i18n.t('nUsers', { n: `${list.userIds.length}/${$i?.policies['userEachUserListsLimit']}` }) }}</template>
+
+				<div class="_gaps_s">
+					<MkButton rounded primary style="margin: 0 auto;" @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
+					<div v-for="user in users" :key="user.id" :class="$style.userItem">
+						<MkA :class="$style.userItemBody" :to="`${userPage(user)}`">
+							<MkUserCardMini :user="user"/>
+						</MkA>
+						<button class="_button" :class="$style.remove" @click="removeUser(user, $event)"><i class="ti ti-x"></i></button>
+					</div>
+					<MkButton v-if="!fetching && queueUserIds.length !== 0" v-appear="enableInfiniteScroll ? fetchMoreUsers : null" :class="$style.more" :style="{ cursor: 'pointer' }" primary rounded @click="fetchMoreUsers">
+						{{ i18n.ts.loadMore }}
+					</MkButton>
+					<MkLoading v-if="fetching" class="loading"/>
+				</div>
+			</MkFolder>
 		</div>
 	</MkSpacer>
-	<template #footer>
-		<div :class="$style.footer">
-			<MkSpacer :content-max="700" :margin-min="16" :margin-max="16">
-				<div class="_buttons">
-					<MkButton inline rounded primary @click="addUser()">{{ i18n.ts.addUser }}</MkButton>
-					<MkButton inline rounded @click="renameList()">{{ i18n.ts.rename }}</MkButton>
-					<MkButton inline rounded danger @click="deleteList()">{{ i18n.ts.delete }}</MkButton>
-				</div>
-			</MkSpacer>
-		</div>
-	</template>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { userPage } from '@/filters/user';
+import * as os from '@/os.js';
+import { mainRouter } from '@/router.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { userPage } from '@/filters/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
 import { userListsCache } from '@/cache';
+import { $i } from '@/account.js';
+import { defaultStore } from '@/store.js';
+const {
+	enableInfiniteScroll,
+} = defaultStore.reactiveState;
 
 const props = defineProps<{
 	listId: string;
 }>();
 
-let list = $ref(null);
-let users = $ref([]);
+const FETCH_USERS_LIMIT = 20;
+
+let list = $ref<Misskey.entities.UserList | null>(null);
+let users = $ref<Misskey.entities.UserLite[]>([]);
+let queueUserIds = $ref<string[]>([]);
+let fetching = $ref(true);
+const isPublic = ref(false);
+const name = ref('');
 
 function fetchList() {
+	fetching = true;
 	os.api('users/lists/show', {
 		listId: props.listId,
 	}).then(_list => {
 		list = _list;
-		os.api('users/show', {
-			userIds: list.userIds,
-		}).then(_users => {
-			users = _users;
-		});
+		name.value = list.name;
+		isPublic.value = list.isPublic;
+		queueUserIds = list.userIds;
+
+		return fetchMoreUsers();
+	});
+}
+
+function fetchMoreUsers() {
+	if (!list) return;
+	if (fetching && users.length !== 0) return; // fetchingがtrueならやめるが、usersが空なら続行
+	fetching = true;
+	os.api('users/show', {
+		userIds: queueUserIds.slice(0, FETCH_USERS_LIMIT),
+	}).then(_users => {
+		users = users.concat(_users);
+		queueUserIds = queueUserIds.slice(FETCH_USERS_LIMIT);
+	}).finally(() => {
+		fetching = false;
 	});
 }
 
 function addUser() {
 	os.selectUser().then(user => {
+		if (!list) return;
 		os.apiWithDialog('users/lists/push', {
 			listId: list.id,
 			userId: user.id,
@@ -76,6 +125,7 @@ async function removeUser(user, ev) {
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
+			if (!list) return;
 			os.api('users/lists/pull', {
 				listId: list.id,
 				userId: user.id,
@@ -86,24 +136,8 @@ async function removeUser(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function renameList() {
-	const { canceled, result: name } = await os.inputText({
-		title: i18n.ts.enterListName,
-		default: list.name,
-	});
-	if (canceled) return;
-
-	await os.api('users/lists/update', {
-		listId: list.id,
-		name: name,
-	});
-
-	userListsCache.delete();
-
-	list.name = name;
-}
-
 async function deleteList() {
+	if (!list) return;
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.t('removeAreYouSure', { x: list.name }),
@@ -115,6 +149,20 @@ async function deleteList() {
 	});
 	userListsCache.delete();
 	mainRouter.push('/my/lists');
+}
+
+async function updateSettings() {
+	if (!list) return;
+	await os.apiWithDialog('users/lists/update', {
+		listId: list.id,
+		name: name.value,
+		isPublic: isPublic.value,
+	});
+
+	userListsCache.delete();
+
+	list.name = name.value;
+	list.isPublic = isPublic.value;
 }
 
 watch(() => props.listId, fetchList, { immediate: true });
@@ -131,7 +179,7 @@ definePageMetadata(computed(() => list ? {
 
 <style lang="scss" module>
 .main {
-	min-height: calc(var(--containerHeight) - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
+	min-height: calc(100cqh - (var(--stickyTop, 0px) + var(--stickyBottom, 0px)));
 }
 
 .userItem {
@@ -152,6 +200,11 @@ definePageMetadata(computed(() => list ? {
 	width: 32px;
 	height: 32px;
 	align-self: center;
+}
+
+.more {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .footer {

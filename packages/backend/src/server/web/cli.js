@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 'use strict';
 
 window.onload = async () => {
@@ -8,7 +13,7 @@ window.onload = async () => {
 		const promise = new Promise((resolve, reject) => {
 			// Append a credential
 			if (i) data.i = i;
-	
+
 			// Send request
 			fetch(endpoint.indexOf('://') > -1 ? endpoint : `/api/${endpoint}`, {
 				headers: {
@@ -20,7 +25,7 @@ window.onload = async () => {
 				cache: 'no-cache'
 			}).then(async (res) => {
 				const body = res.status === 204 ? null : await res.json();
-	
+
 				if (res.status === 200) {
 					resolve(body);
 				} else if (res.status === 204) {
@@ -30,7 +35,7 @@ window.onload = async () => {
 				}
 			}).catch(reject);
 		});
-		
+
 		return promise;
 	};
 

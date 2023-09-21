@@ -1,9 +1,14 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormSection first>
 		<template #label>{{ i18n.ts.rolesAssignedToMe }}</template>
 		<div class="_gaps_s">
-			<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :for-moderation="false"/>
+			<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
 		</div>
 	</FormSection>
 	<FormSection>
@@ -28,16 +33,16 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormSection from '@/components/form/section.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { defaultStore } from '@/store';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { defaultStore } from '@/store.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 
 function save() {
 	os.apiWithDialog('i/update', {
-		
+
 	});
 }
 

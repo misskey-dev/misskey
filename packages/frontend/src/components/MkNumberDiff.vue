@@ -1,47 +1,37 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<span class="ceaaebcd" :class="{ isPlus, isMinus, isZero }">
+<span class="ceaaebcd" :class="{ [$style.isPlus]: isPlus, [$style.isMinus]: isMinus, [$style.isZero]: isZero }">
 	<slot name="before"></slot>{{ isPlus ? '+' : '' }}{{ number(value) }}<slot name="after"></slot>
 </span>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
-import number from '@/filters/number';
+<script lang="ts" setup>
+import { computed } from 'vue';
+import number from '@/filters/number.js';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Number,
-			required: true,
-		},
-	},
+const props = defineProps<{
+	value: number;
+}>();
 
-	setup(props) {
-		const isPlus = computed(() => props.value > 0);
-		const isMinus = computed(() => props.value < 0);
-		const isZero = computed(() => props.value === 0);
-		return {
-			isPlus,
-			isMinus,
-			isZero,
-			number,
-		};
-	},
-});
+const isPlus = computed(() => props.value > 0);
+const isMinus = computed(() => props.value < 0);
+const isZero = computed(() => props.value === 0);
 </script>
 
-<style lang="scss" scoped>
-.ceaaebcd {
-	&.isPlus {
-		color: var(--success);
-	}
+<style lang="scss" module>
+.isPlus {
+	color: var(--success);
+}
 
-	&.isMinus {
-		color: var(--error);
-	}
+.isMinus {
+	color: var(--error);
+}
 
-	&.isZero {
-		opacity: 0.5;
-	}
+.isZero {
+	opacity: 0.5;
 }
 </style>

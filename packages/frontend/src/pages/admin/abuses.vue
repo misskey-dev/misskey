@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="900">
-		<div class="lcixvhis">
+	<MkSpacer :contentMax="900">
+		<div>
 			<div class="reports">
 				<div class="">
 					<div class="inputs" style="display: flex;">
@@ -53,8 +58,8 @@ import XHeader from './_header_.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import XAbuseReport from '@/components/MkAbuseReport.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let reports = $shallowRef<InstanceType<typeof MkPagination>>();
 
@@ -75,7 +80,7 @@ const pagination = {
 };
 
 function resolved(reportId) {
-	reports.removeItem(item => item.id === reportId);
+	reports.removeItem(reportId);
 }
 
 const headerActions = $computed(() => []);
@@ -87,9 +92,3 @@ definePageMetadata({
 	icon: 'ti ti-exclamation-circle',
 });
 </script>
-
-<style lang="scss" scoped>
-.lcixvhis {
-	margin: var(--margin);
-}
-</style>

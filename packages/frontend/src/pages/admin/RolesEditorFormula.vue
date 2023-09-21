@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div :class="$style.root" class="_gaps">
+<div class="_gaps">
 	<div :class="$style.header">
 		<MkSelect v-model="type" :class="$style.typeSelect">
 			<option value="isLocal">{{ i18n.ts._role._condition.isLocal }}</option>
@@ -24,12 +29,12 @@
 		</button>
 	</div>
 
-	<div v-if="type === 'and' || type === 'or'" :class="$style.values" class="_gaps">
-		<Sortable v-model="v.values" tag="div" class="_gaps" item-key="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swap-threshold="0.5">
+	<div v-if="type === 'and' || type === 'or'" class="_gaps">
+		<Sortable v-model="v.values" tag="div" class="_gaps" itemKey="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swapThreshold="0.5">
 			<template #item="{element}">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-					<RolesEditorFormula :model-value="element" draggable @update:model-value="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
+					<RolesEditorFormula :modelValue="element" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
 				</div>
 			</template>
 		</Sortable>
@@ -55,8 +60,8 @@ import { v4 as uuid } from 'uuid';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n';
-import { deepClone } from '@/scripts/clone';
+import { i18n } from '@/i18n.js';
+import { deepClone } from '@/scripts/clone.js';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
@@ -118,10 +123,6 @@ function removeSelf() {
 </script>
 
 <style lang="scss" module>
-.root {
-
-}
-
 .header {
 	display: flex;
 }
@@ -147,9 +148,5 @@ function removeSelf() {
 	&:hover {
 		border-color: var(--accent);
 	}
-}
-
-.values {
-
 }
 </style>

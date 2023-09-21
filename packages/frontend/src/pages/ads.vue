@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader/></template>
 
-	<MkSpacer :content-max="500">
+	<MkSpacer :contentMax="500">
 		<div class="_gaps">
 			<MkAd v-for="ad in instance.ads" :key="ad.id" :specify="ad"/>
 		</div>
@@ -12,10 +17,10 @@
 
 <script lang="ts" setup>
 import { computed, watch } from 'vue';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 definePageMetadata({
 	title: i18n.ts.ads,

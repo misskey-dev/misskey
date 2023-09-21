@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkModal ref="modal" :prefer-type="'dialog'" :z-priority="'high'" @click="success ? done() : () => {}" @closed="emit('closed')">
+<MkModal ref="modal" :preferType="'dialog'" :zPriority="'high'" @click="success ? done() : () => {}" @closed="emit('closed')">
 	<div :class="[$style.root, { [$style.iconOnly]: (text == null) || success }]">
 		<i v-if="success" :class="[$style.icon, $style.success]" class="ti ti-check"></i>
 		<MkLoading v-else :class="[$style.icon, $style.waiting]" :em="true"/>

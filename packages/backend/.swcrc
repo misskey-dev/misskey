@@ -11,13 +11,13 @@
 			"decoratorMetadata": true
 		},
 		"experimental": {
-			"keepImportAssertions": true
+			"keepImportAttributes": true
 		},
 		"baseUrl": "src",
 		"paths": {
 			"@/*": ["*"]
 		},
-		"target": "es2021"
+		"target": "es2022"
 	},
 	"minify": false
 }

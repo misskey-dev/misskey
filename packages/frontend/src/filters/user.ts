@@ -1,12 +1,17 @@
-import * as misskey from 'misskey-js';
-import * as Acct from 'misskey-js/built/acct';
-import { url } from '@/config';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import * as Misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
+import { url } from '@/config.js';
 
 export const acct = (user: misskey.Acct) => {
-	return Acct.toString(user);
+	return Misskey.acct.toString(user);
 };
 
-export const userName = (user: misskey.entities.User) => {
+export const userName = (user: Misskey.entities.User) => {
 	return user.name || user.username;
 };
 

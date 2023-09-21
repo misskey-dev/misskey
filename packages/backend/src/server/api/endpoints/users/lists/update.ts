@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListsRepository } from '@/models/index.js';
+import type { UserListsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
 import { DI } from '@/di-symbols.js';
@@ -34,13 +39,13 @@ export const paramDef = {
 	properties: {
 		listId: { type: 'string', format: 'misskey:id' },
 		name: { type: 'string', minLength: 1, maxLength: 100 },
+		isPublic: { type: 'boolean' },
 	},
-	required: ['listId', 'name'],
+	required: ['listId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
@@ -48,7 +53,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		private userListEntityService: UserListEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			// Fetch the list
 			const userList = await this.userListsRepository.findOneBy({
 				id: ps.listId,
 				userId: me.id,
@@ -60,6 +64,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			await this.userListsRepository.update(userList.id, {
 				name: ps.name,
+				isPublic: ps.isPublic,
 			});
 
 			return await this.userListEntityService.pack(userList.id);

@@ -1,14 +1,25 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<span v-if="!fetching" class="osdsvwzy">
+<span v-if="!fetching" :class="$style.root">
 	<template v-if="display === 'marquee'">
-		<Transition name="change" mode="default">
+		<Transition
+			:enterActiveClass="$style.transition_change_enterActive"
+			:leaveActiveClass="$style.transition_change_leaveActive"
+			:enterFromClass="$style.transition_change_enterFrom"
+			:leaveToClass="$style.transition_change_leaveTo"
+			mode="default"
+		>
 			<MarqueeText :key="key" :duration="marqueeDuration" :reverse="marqueeReverse">
-				<span v-for="note in notes" :key="note.id" class="item">
-					<img class="avatar" :src="note.user.avatarUrl" decoding="async"/>
-					<MkA class="text" :to="notePage(note)">
-						<Mfm class="text" :text="getNoteSummary(note)" :plain="true" :nowrap="true"/>
+				<span v-for="note in notes" :key="note.id" :class="$style.item">
+					<img :class="$style.avatar" :src="note.user.avatarUrl" decoding="async"/>
+					<MkA :class="$style.text" :to="notePage(note)">
+						<Mfm :text="getNoteSummary(note)" :plain="true" :nowrap="true"/>
 					</MkA>
-					<span class="divider"></span>
+					<span :class="$style.divider"></span>
 				</span>
 			</MarqueeText>
 		</Transition>
@@ -21,12 +32,12 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MarqueeText from '@/components/MkMarquee.vue';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { getNoteSummary } from '@/scripts/get-note-summary';
-import { notePage } from '@/filters/note';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import { getNoteSummary } from '@/scripts/get-note-summary.js';
+import { notePage } from '@/filters/note.js';
 
 const props = defineProps<{
 	userListId?: string;
@@ -37,7 +48,7 @@ const props = defineProps<{
 	refreshIntervalSec?: number;
 }>();
 
-const notes = ref<misskey.entities.Note[]>([]);
+const notes = ref<Misskey.entities.Note[]>([]);
 const fetching = ref(true);
 let key = $ref(0);
 
@@ -60,54 +71,53 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 });
 </script>
 
-<style lang="scss" scoped>
-.change-enter-active, .change-leave-active {
+<style lang="scss" module>
+.transition_change_enterActive,
+.transition_change_leaveActive {
 	position: absolute;
 	top: 0;
   transition: all 1s ease;
 }
-.change-enter-from {
-  opacity: 0;
+.transition_change_enterFrom {
+	opacity: 0;
 	transform: translateY(-100%);
 }
-.change-leave-to {
-  opacity: 0;
+.transition_change_leaveTo {
+	opacity: 0;
 	transform: translateY(100%);
 }
 
-.osdsvwzy {
+.root {
 	display: inline-block;
 	position: relative;
+}
 
-	::v-deep(.item) {
-		display: inline-flex;
-		align-items: center;
-		vertical-align: bottom;
-		margin: 0;
+.item {
+	display: inline-flex;
+	align-items: center;
+	vertical-align: bottom;
+	margin: 0;
+}
 
-		> .avatar {
-			display: inline-block;
-			height: var(--height);
-			aspect-ratio: 1;
-			vertical-align: bottom;
-			margin-right: 8px;
-		}
+.avatar {
+	display: inline-block;
+	height: var(--height);
+	aspect-ratio: 1;
+	vertical-align: bottom;
+	margin-right: 8px;
+}
 
-		> .text {
-			> .text {
-				display: inline-block;
-				vertical-align: bottom;
-			}
-		}
+.text {
+	display: inline-block;
+	vertical-align: bottom;
+}
 
-		> .divider {
-			display: inline-block;
-			width: 0.5px;
-			height: 16px;
-			margin: 0 3em;
-			background: currentColor;
-			opacity: 0;
-		}
-	}
+.divider {
+	display: inline-block;
+	width: 0.5px;
+	height: 16px;
+	margin: 0 3em;
+	background: currentColor;
+	opacity: 0;
 }
 </style>

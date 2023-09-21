@@ -1,14 +1,21 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository, NotesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import { ApiError } from '../../error.js';
 import { GetterService } from '@/server/api/GetterService.js';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -36,15 +43,17 @@ export const paramDef = {
 	required: ['clipId', 'noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
 		private getterService: GetterService,
 	) {
@@ -67,6 +76,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				noteId: note.id,
 				clipId: clip.id,
 			});
+
+			this.notesRepository.decrement({ id: note.id }, 'clippedCount', 1);
 		});
 	}
 }

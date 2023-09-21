@@ -1,15 +1,20 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { onUnmounted, Ref } from 'vue';
-import * as misskey from 'misskey-js';
-import { stream } from '@/stream';
-import { $i } from '@/account';
+import * as Misskey from 'misskey-js';
+import { useStream } from '@/stream.js';
+import { $i } from '@/account.js';
 
 export function useNoteCapture(props: {
 	rootEl: Ref<HTMLElement>;
-	note: Ref<misskey.entities.Note>;
+	note: Ref<Misskey.entities.Note>;
 	isDeletedRef: Ref<boolean>;
 }) {
 	const note = props.note;
-	const connection = $i ? stream : null;
+	const connection = $i ? useStream() : null;
 
 	function onStreamNoteUpdated(noteData): void {
 		const { type, id, body } = noteData;
@@ -93,12 +98,12 @@ export function useNoteCapture(props: {
 	function onStreamConnected() {
 		capture(false);
 	}
-	
+
 	capture(true);
 	if (connection) {
 		connection.on('_connected_', onStreamConnected);
 	}
-	
+
 	onUnmounted(() => {
 		decapture(true);
 		if (connection) {
