@@ -1036,6 +1036,7 @@ export interface Locale {
     "accountMovedShort": string;
     "operationForbidden": string;
     "forceShowAds": string;
+    "noteNotification": string;
     "noteSubscribe": string;
     "noteUnsubscribe": string;
     "addMemo": string;
@@ -2116,6 +2117,7 @@ export interface Locale {
             "reply": string;
             "renote": string;
             "quote": string;
+            "note": string;
             "reaction": string;
             "pollEnded": string;
             "receiveFollowRequest": string;
