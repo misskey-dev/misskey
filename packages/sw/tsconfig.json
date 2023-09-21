@@ -9,9 +9,9 @@
 		"noFallthroughCasesInSwitch": true,
 		"declaration": false,
 		"sourceMap": false,
-		"target": "es2021",
-		"module": "esnext",
-		"moduleResolution": "node",
+		"target": "ES2022",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -21,11 +21,11 @@
 		"isolatedModules": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
+			"@/*": ["./src/*"]
 		},
 		"typeRoots": [
-			"node_modules/@types",
-			"@types",
+			"./node_modules/@types",
+			"./src/@types"
 		],
 		"lib": [
 			"esnext",

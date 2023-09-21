@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkTooltip ref="tooltip" :showing="showing" :target-element="targetElement" :max-width="340" @closed="emit('closed')">
+<MkTooltip ref="tooltip" :showing="showing" :targetElement="targetElement" :maxWidth="340" @closed="emit('closed')">
 	<div :class="$style.root">
-		<MkReactionIcon :reaction="reaction" :class="$style.icon" :no-style="true"/>
+		<MkReactionIcon :reaction="reaction" :class="$style.icon" :noStyle="true"/>
 		<div :class="$style.name">{{ reaction.replace('@.', '') }}</div>
 	</div>
 </MkTooltip>

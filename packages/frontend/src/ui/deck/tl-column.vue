@@ -1,5 +1,10 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<XColumn :menu="menu" :column="column" :is-stacked="isStacked" @parent-focus="$event => emit('parent-focus', $event)">
+<XColumn :menu="menu" :column="column" :isStacked="isStacked">
 	<template #header>
 		<i v-if="column.tl === 'home'" class="ti ti-home"></i>
 		<i v-else-if="column.tl === 'local'" class="ti ti-planet"></i>
@@ -15,28 +20,23 @@
 		</p>
 		<p :class="$style.disabledDescription">{{ i18n.ts._disabledTimeline.description }}</p>
 	</div>
-	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl" @after="() => emit('loaded')"/>
+	<MkTimeline v-else-if="column.tl" ref="timeline" :key="column.tl" :src="column.tl"/>
 </XColumn>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import XColumn from './column.vue';
-import { removeColumn, updateColumn, Column } from './deck-store';
+import { removeColumn, updateColumn, Column } from './deck-store.js';
 import MkTimeline from '@/components/MkTimeline.vue';
-import * as os from '@/os';
-import { $i } from '@/account';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
+import * as os from '@/os.js';
+import { $i } from '@/account.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
-}>();
-
-const emit = defineEmits<{
-	(ev: 'loaded'): void;
-	(ev: 'parent-focus', direction: 'up' | 'down' | 'left' | 'right'): void;
 }>();
 
 let disabled = $ref(false);

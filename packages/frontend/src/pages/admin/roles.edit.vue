@@ -1,13 +1,18 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="600" :margin-min="16" :margin-max="32">
+		<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
 			<XEditor v-if="data" v-model="data"/>
 		</MkSpacer>
 		<template #footer>
 			<div :class="$style.footer">
-				<MkSpacer :content-max="600" :margin-min="16" :margin-max="16">
+				<MkSpacer :contentMax="600" :marginMin="16" :marginMax="16">
 					<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 				</MkSpacer>
 			</div>
@@ -21,10 +26,10 @@ import { computed } from 'vue';
 import { v4 as uuid } from 'uuid';
 import XHeader from './_header_.vue';
 import XEditor from './roles.editor.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import { rolesCache } from '@/cache';
 
@@ -54,6 +59,7 @@ if (props.id) {
 		target: 'manual',
 		condFormula: { id: uuid(), type: 'isRemote' },
 		isPublic: false,
+		isExplorable: false,
 		asBadge: false,
 		canEditMembersByModerator: false,
 		displayOrder: 0,

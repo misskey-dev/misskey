@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div v-if="show" ref="el" :class="[$style.root]" :style="{ background: bg }">
 	<div :class="[$style.upper, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
@@ -21,7 +26,7 @@
 					</div>
 				</div>
 			</div>
-			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" :tabs="tabs" :root-el="el" @update:tab="key => emit('update:tab', key)" @tab-click="onTabClick"/>
+			<XTabs v-if="!narrow || hideTitle" :class="$style.tabs" :tab="tab" :tabs="tabs" :rootEl="el" @update:tab="key => emit('update:tab', key)" @tabClick="onTabClick"/>
 		</template>
 		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttonsRight">
 			<template v-for="action in actions">
@@ -30,7 +35,7 @@
 		</div>
 	</div>
 	<div v-if="(narrow && !hideTitle) && hasTabs" :class="[$style.lower, { [$style.slim]: narrow, [$style.thin]: thin_ }]">
-		<XTabs :class="$style.tabs" :tab="tab" :tabs="tabs" :root-el="el" @update:tab="key => emit('update:tab', key)" @tab-click="onTabClick"/>
+		<XTabs :class="$style.tabs" :tab="tab" :tabs="tabs" :rootEl="el" @update:tab="key => emit('update:tab', key)" @tabClick="onTabClick"/>
 	</div>
 </div>
 </template>
@@ -39,10 +44,10 @@
 import { onMounted, onUnmounted, ref, inject } from 'vue';
 import tinycolor from 'tinycolor2';
 import XTabs, { Tab } from './MkPageHeader.tabs.vue';
-import { scrollToTop } from '@/scripts/scroll';
+import { scrollToTop } from '@/scripts/scroll.js';
 import { globalEvents } from '@/events';
-import { injectPageMetadata } from '@/scripts/page-metadata';
-import { $i, openAccountMenu as openAccountMenu_ } from '@/account';
+import { injectPageMetadata } from '@/scripts/page-metadata.js';
+import { $i, openAccountMenu as openAccountMenu_ } from '@/account.js';
 
 const props = withDefaults(defineProps<{
 	tabs?: Tab[];
@@ -156,7 +161,7 @@ onUnmounted(() => {
 	}
 
 	&.thin {
-		--height: 42px;
+		--height: 40px;
 
 		> .buttons {
 			> .button {

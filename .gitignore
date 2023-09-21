@@ -44,7 +44,7 @@ built
 /data
 /.cache-loader
 /db
-/elasticsearch
+/meili_data
 npm-debug.log
 *.pem
 run.bat
@@ -64,3 +64,6 @@ temp
 *.blend3
 *.blend4
 *.blend5
+
+# VSCode addon
+.favorites.json

@@ -1,6 +1,12 @@
-import { IsNull, LessThanOrEqual, MoreThan } from 'typeorm';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { IsNull, LessThanOrEqual, MoreThan, Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { AdsRepository, UsersRepository } from '@/models/index.js';
+import JSON5 from 'json5';
+import type { AdsRepository, UsersRepository } from '@/models/_.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
@@ -82,6 +88,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			cacheRemoteSensitiveFiles: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			emailRequiredForSignup: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -123,10 +133,17 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: false,
 			},
-			errorImageUrl: {
+			serverErrorImageUrl: {
 				type: 'string',
-				optional: false, nullable: false,
-				default: 'https://xn--931a.moe/aiart/yubitun.png',
+				optional: false, nullable: true,
+			},
+			infoImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			notFoundImageUrl: {
+				type: 'string',
+				optional: false, nullable: true,
 			},
 			iconUrl: {
 				type: 'string',
@@ -201,10 +218,6 @@ export const meta = {
 						type: 'boolean',
 						optional: false, nullable: false,
 					},
-					elasticsearch: {
-						type: 'boolean',
-						optional: false, nullable: false,
-					},
 					hcaptcha: {
 						type: 'boolean',
 						optional: false, nullable: false,
@@ -240,13 +253,12 @@ export const paramDef = {
 	required: [],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-	
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -259,12 +271,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 		super(meta, paramDef, async (ps, me) => {
 			const instance = await this.metaService.fetch(true);
 
-			const ads = await this.adsRepository.find({
-				where: {
-					expiresAt: MoreThan(new Date()),
-					startsAt: LessThanOrEqual(new Date()),
-				},
-			});
+			const ads = await this.adsRepository.createQueryBuilder('ads')
+				.where('ads.expiresAt > :now', { now: new Date() })
+				.andWhere('ads.startsAt <= :now', { now: new Date() })
+				.andWhere(new Brackets(qb => {
+					// 曜日のビットフラグを確認する
+					qb.where('ads.dayOfWeek & :dayOfWeek > 0', { dayOfWeek: 1 << new Date().getDay() })
+						.orWhere('ads.dayOfWeek = 0');
+				}))
+				.getMany();
 
 			const response: any = {
 				maintainerName: instance.maintainerName,
@@ -291,24 +306,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
 				bannerUrl: instance.bannerUrl,
-				errorImageUrl: instance.errorImageUrl,
+				infoImageUrl: instance.infoImageUrl,
+				serverErrorImageUrl: instance.serverErrorImageUrl,
+				notFoundImageUrl: instance.notFoundImageUrl,
 				iconUrl: instance.iconUrl,
 				backgroundImageUrl: instance.backgroundImageUrl,
 				logoImageUrl: instance.logoImageUrl,
 				maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
-				defaultLightTheme: instance.defaultLightTheme,
-				defaultDarkTheme: instance.defaultDarkTheme,
+				// クライアントの手間を減らすためあらかじめJSONに変換しておく
+				defaultLightTheme: instance.defaultLightTheme ? JSON.stringify(JSON5.parse(instance.defaultLightTheme)) : null,
+				defaultDarkTheme: instance.defaultDarkTheme ? JSON.stringify(JSON5.parse(instance.defaultDarkTheme)) : null,
 				ads: ads.map(ad => ({
 					id: ad.id,
 					url: ad.url,
 					place: ad.place,
 					ratio: ad.ratio,
 					imageUrl: ad.imageUrl,
+					dayOfWeek: ad.dayOfWeek,
 				})),
 				enableEmail: instance.enableEmail,
 				enableServiceWorker: instance.enableServiceWorker,
 
 				translatorAvailable: instance.deeplAuthKey != null,
+
+				serverRules: instance.serverRules,
 
 				policies: { ...DEFAULT_POLICIES, ...instance.policies },
 
@@ -316,6 +337,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				...(ps.detail ? {
 					cacheRemoteFiles: instance.cacheRemoteFiles,
+					cacheRemoteSensitiveFiles: instance.cacheRemoteSensitiveFiles,
 					requireSetup: (await this.usersRepository.countBy({
 						host: IsNull(),
 					})) === 0,
@@ -329,7 +351,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				response.features = {
 					registration: !instance.disableRegistration,
 					emailRequiredForSignup: instance.emailRequiredForSignup,
-					elasticsearch: this.config.elasticsearch ? true : false,
 					hcaptcha: instance.enableHcaptcha,
 					recaptcha: instance.enableRecaptcha,
 					turnstile: instance.enableTurnstile,

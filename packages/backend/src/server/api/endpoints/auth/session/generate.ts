@@ -1,7 +1,12 @@
-import { v4 as uuid } from 'uuid';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository, AuthSessionsRepository } from '@/models/index.js';
+import type { AppsRepository, AuthSessionsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -45,9 +50,8 @@ export const paramDef = {
 	required: ['appSecret'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -71,7 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			// Generate token
-			const token = uuid();
+			const token = randomUUID();
 
 			// Create session token document
 			const doc = await this.authSessionsRepository.insert({

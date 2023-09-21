@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="cbbedffa">
+<div :class="$style.root">
 	<canvas ref="chartEl"></canvas>
 	<MkChartLegend ref="legendEl" style="margin-top: 8px;"/>
-	<div v-if="fetching" class="fetching">
+	<div v-if="fetching" :class="$style.fetching">
 		<MkLoading/>
 	</div>
 </div>
@@ -17,14 +22,14 @@
 import { onMounted, ref, shallowRef, watch, PropType } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
-import * as os from '@/os';
-import { defaultStore } from '@/store';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import { chartVLine } from '@/scripts/chart-vline';
-import { alpha } from '@/scripts/color';
-import date from '@/filters/date';
-import { initChart } from '@/scripts/init-chart';
-import { chartLegend } from '@/scripts/chart-legend';
+import * as os from '@/os.js';
+import { defaultStore } from '@/store.js';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { chartVLine } from '@/scripts/chart-vline.js';
+import { alpha } from '@/scripts/color.js';
+import date from '@/filters/date.js';
+import { initChart } from '@/scripts/init-chart.js';
+import { chartLegend } from '@/scripts/chart-legend.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();
@@ -817,22 +822,22 @@ onMounted(() => {
 /* eslint-enable id-denylist */
 </script>
 
-<style lang="scss" scoped>
-.cbbedffa {
+<style lang="scss" module>
+.root {
 	position: relative;
+}
 
-	> .fetching {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		-webkit-backdrop-filter: var(--blur, blur(12px));
-		backdrop-filter: var(--blur, blur(12px));
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		cursor: wait;
-	}
+.fetching {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	-webkit-backdrop-filter: var(--blur, blur(12px));
+	backdrop-filter: var(--blur, blur(12px));
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: wait;
 }
 </style>

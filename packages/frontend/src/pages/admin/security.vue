@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="700" :marginMin="16" :marginMax="32">
 		<FormSuspense :p="init">
 			<div class="_gaps_m">
 				<MkFolder>
@@ -33,7 +38,7 @@
 							<option value="remote">{{ i18n.ts.remoteOnly }}</option>
 						</MkRadios>
 
-						<MkRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :text-converter="(v) => `${v + 1}`">
+						<MkRange v-model="sensitiveMediaDetectionSensitivity" :min="0" :max="4" :step="1" :textConverter="(v) => `${v + 1}`">
 							<template #label>{{ i18n.ts._sensitiveMediaDetection.sensitivity }}</template>
 							<template #caption>{{ i18n.ts._sensitiveMediaDetection.sensitivityDescription }}</template>
 						</MkRange>
@@ -65,7 +70,7 @@
 
 					<div class="_gaps_m">
 						<span>{{ i18n.ts.activeEmailValidationDescription }}</span>
-						<MkSwitch v-model="enableActiveEmailValidation" @update:model-value="save">
+						<MkSwitch v-model="enableActiveEmailValidation" @update:modelValue="save">
 							<template #label>Enable</template>
 						</MkSwitch>
 					</div>
@@ -77,7 +82,7 @@
 					<template v-else #suffix>Disabled</template>
 
 					<div class="_gaps_m">
-						<MkSwitch v-model="enableIpLogging" @update:model-value="save">
+						<MkSwitch v-model="enableIpLogging" @update:modelValue="save">
 							<template #label>Enable</template>
 						</MkSwitch>
 					</div>
@@ -112,10 +117,10 @@ import FormSuspense from '@/components/form/suspense.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { fetchInstance } from '@/instance';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { fetchInstance } from '@/instance.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let summalyProxy: string = $ref('');
 let enableHcaptcha: boolean = $ref(false);

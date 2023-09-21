@@ -1,5 +1,10 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
-import { In, IsNull } from 'typeorm';
+import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
@@ -19,10 +24,10 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { QueueService } from '@/core/QueueService.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/index.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import type { RemoteUser } from '@/models/entities/User.js';
-import { getApHrefNullable, getApId, getApIds, getApType, getOneApHrefNullable, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 import { ApNoteService } from './models/ApNoteService.js';
 import { ApLoggerService } from './ApLoggerService.js';
 import { ApDbResolverService } from './ApDbResolverService.js';
@@ -82,7 +87,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: RemoteUser, activity: IObject) {
+	public async performActivity(actor: MiRemoteUser, activity: IObject): Promise<void> {
 		if (isCollectionOrOrderedCollection(activity)) {
 			const resolver = this.apResolverService.createResolver();
 			for (const item of toArray(isCollection(activity) ? activity.items : activity.orderedItems)) {
@@ -103,14 +108,14 @@ export class ApInboxService {
 		if (actor.uri) {
 			if (actor.lastFetchedAt == null || Date.now() - actor.lastFetchedAt.getTime() > 1000 * 60 * 60 * 24) {
 				setImmediate(() => {
-					this.apPersonService.updatePerson(actor.uri!);
+					this.apPersonService.updatePerson(actor.uri);
 				});
 			}
 		}
 	}
 
 	@bindThis
-	public async performOneActivity(actor: RemoteUser, activity: IObject): Promise<void> {
+	public async performOneActivity(actor: MiRemoteUser, activity: IObject): Promise<void> {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
@@ -140,14 +145,14 @@ export class ApInboxService {
 		} else if (isFlag(activity)) {
 			await this.flag(actor, activity);
 		} else if (isMove(activity)) {
-			//await this.move(actor, activity);
+			await this.move(actor, activity);
 		} else {
 			this.logger.warn(`unrecognized activity type: ${activity.type}`);
 		}
 	}
 
 	@bindThis
-	private async follow(actor: RemoteUser, activity: IFollow): Promise<string> {
+	private async follow(actor: MiRemoteUser, activity: IFollow): Promise<string> {
 		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 
 		if (followee == null) {
@@ -158,12 +163,13 @@ export class ApInboxService {
 			return 'skip: フォローしようとしているユーザーはローカルユーザーではありません';
 		}
 
+		// don't queue because the sender may attempt again when timeout
 		await this.userFollowingService.follow(actor, followee, activity.id);
 		return 'ok';
 	}
 
 	@bindThis
-	private async like(actor: RemoteUser, activity: ILike): Promise<string> {
+	private async like(actor: MiRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
 		const note = await this.apNoteService.fetchNote(targetUri);
@@ -181,7 +187,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async accept(actor: RemoteUser, activity: IAccept): Promise<string> {
+	private async accept(actor: MiRemoteUser, activity: IAccept): Promise<string> {
 		const uri = activity.id ?? activity;
 
 		this.logger.info(`Accept: ${uri}`);
@@ -199,7 +205,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async acceptFollow(actor: RemoteUser, activity: IFollow): Promise<string> {
+	private async acceptFollow(actor: MiRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
 		const follower = await this.apDbResolverService.getUserFromApId(activity.actor);
@@ -223,8 +229,8 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async add(actor: RemoteUser, activity: IAdd): Promise<void> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+	private async add(actor: MiRemoteUser, activity: IAdd): Promise<void> {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -243,7 +249,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announce(actor: RemoteUser, activity: IAnnounce): Promise<void> {
+	private async announce(actor: MiRemoteUser, activity: IAnnounce): Promise<void> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Announce: ${uri}`);
@@ -254,7 +260,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announceNote(actor: RemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
+	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, targetUri: string): Promise<void> {
 		const uri = getApId(activity);
 
 		if (actor.isSuspended) {
@@ -268,7 +274,7 @@ export class ApInboxService {
 		const unlock = await this.appLockService.getApLock(uri);
 
 		try {
-		// 既に同じURIを持つものが登録されていないかチェック
+			// 既に同じURIを持つものが登録されていないかチェック
 			const exist = await this.apNoteService.fetchNote(uri);
 			if (exist) {
 				return;
@@ -287,7 +293,7 @@ export class ApInboxService {
 						return;
 					}
 
-					this.logger.warn(`Error in announce target ${targetUri} - ${err.statusCode ?? err}`);
+					this.logger.warn(`Error in announce target ${targetUri} - ${err.statusCode}`);
 				}
 				throw err;
 			}
@@ -314,7 +320,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async block(actor: RemoteUser, activity: IBlock): Promise<string> {
+	private async block(actor: MiRemoteUser, activity: IBlock): Promise<string> {
 		// ※ activity.objectにブロック対象があり、それは存在するローカルユーザーのはず
 
 		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
@@ -332,7 +338,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async create(actor: RemoteUser, activity: ICreate): Promise<void> {
+	private async create(actor: MiRemoteUser, activity: ICreate): Promise<void> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Create: ${uri}`);
@@ -368,7 +374,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async createNote(resolver: Resolver, actor: RemoteUser, note: IObject, silent = false, activity?: ICreate): Promise<string> {
+	private async createNote(resolver: Resolver, actor: MiRemoteUser, note: IObject, silent = false, activity?: ICreate): Promise<string> {
 		const uri = getApId(note);
 
 		if (typeof note === 'object') {
@@ -403,8 +409,8 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async delete(actor: RemoteUser, activity: IDelete): Promise<string> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+	private async delete(actor: MiRemoteUser, activity: IDelete): Promise<string> {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -415,7 +421,7 @@ export class ApInboxService {
 			// typeが不明だけど、どうせ消えてるのでremote resolveしない
 			formerType = undefined;
 		} else {
-			const object = activity.object as IObject;
+			const object = activity.object;
 			if (isTombstone(object)) {
 				formerType = toSingle(object.formerType);
 			} else {
@@ -445,7 +451,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async deleteActor(actor: RemoteUser, uri: string): Promise<string> {
+	private async deleteActor(actor: MiRemoteUser, uri: string): Promise<string> {
 		this.logger.info(`Deleting the Actor: ${uri}`);
 
 		if (actor.uri !== uri) {
@@ -469,7 +475,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async deleteNote(actor: RemoteUser, uri: string): Promise<string> {
+	private async deleteNote(actor: MiRemoteUser, uri: string): Promise<string> {
 		this.logger.info(`Deleting the Note: ${uri}`);
 
 		const unlock = await this.appLockService.getApLock(uri);
@@ -493,12 +499,15 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async flag(actor: RemoteUser, activity: IFlag): Promise<string> {
+	private async flag(actor: MiRemoteUser, activity: IFlag): Promise<string> {
 		// objectは `(User|Note) | (User|Note)[]` だけど、全パターンDBスキーマと対応させられないので
 		// 対象ユーザーは一番最初のユーザー として あとはコメントとして格納する
 		const uris = getApIds(activity.object);
 
-		const userIds = uris.filter(uri => uri.startsWith(this.config.url + '/users/')).map(uri => uri.split('/').pop()!);
+		const userIds = uris
+			.filter(uri => uri.startsWith(this.config.url + '/users/'))
+			.map(uri => uri.split('/').at(-1))
+			.filter((userId): userId is string => userId !== undefined);
 		const users = await this.usersRepository.findBy({
 			id: In(userIds),
 		});
@@ -518,7 +527,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async reject(actor: RemoteUser, activity: IReject): Promise<string> {
+	private async reject(actor: MiRemoteUser, activity: IReject): Promise<string> {
 		const uri = activity.id ?? activity;
 
 		this.logger.info(`Reject: ${uri}`);
@@ -536,7 +545,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async rejectFollow(actor: RemoteUser, activity: IFollow): Promise<string> {
+	private async rejectFollow(actor: MiRemoteUser, activity: IFollow): Promise<string> {
 		// ※ activityはこっちから投げたフォローリクエストなので、activity.actorは存在するローカルユーザーである必要がある
 
 		const follower = await this.apDbResolverService.getUserFromApId(activity.actor);
@@ -560,8 +569,8 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async remove(actor: RemoteUser, activity: IRemove): Promise<void> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+	private async remove(actor: MiRemoteUser, activity: IRemove): Promise<void> {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -580,8 +589,8 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async undo(actor: RemoteUser, activity: IUndo): Promise<string> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+	private async undo(actor: MiRemoteUser, activity: IUndo): Promise<string> {
+		if (actor.uri !== activity.actor) {
 			throw new Error('invalid actor');
 		}
 
@@ -596,6 +605,7 @@ export class ApInboxService {
 			throw e;
 		});
 
+		// don't queue because the sender may attempt again when timeout
 		if (isFollow(object)) return await this.undoFollow(actor, object);
 		if (isBlock(object)) return await this.undoBlock(actor, object);
 		if (isLike(object)) return await this.undoLike(actor, object);
@@ -606,18 +616,20 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async undoAccept(actor: RemoteUser, activity: IAccept): Promise<string> {
+	private async undoAccept(actor: MiRemoteUser, activity: IAccept): Promise<string> {
 		const follower = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (follower == null) {
 			return 'skip: follower not found';
 		}
 
-		const following = await this.followingsRepository.findOneBy({
-			followerId: follower.id,
-			followeeId: actor.id,
+		const isFollowing = await this.followingsRepository.exist({
+			where: {
+				followerId: follower.id,
+				followeeId: actor.id,
+			},
 		});
 
-		if (following) {
+		if (isFollowing) {
 			await this.userFollowingService.unfollow(follower, actor);
 			return 'ok: unfollowed';
 		}
@@ -626,7 +638,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async undoAnnounce(actor: RemoteUser, activity: IAnnounce): Promise<string> {
+	private async undoAnnounce(actor: MiRemoteUser, activity: IAnnounce): Promise<string> {
 		const uri = getApId(activity);
 
 		const note = await this.notesRepository.findOneBy({
@@ -641,7 +653,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async undoBlock(actor: RemoteUser, activity: IBlock): Promise<string> {
+	private async undoBlock(actor: MiRemoteUser, activity: IBlock): Promise<string> {
 		const blockee = await this.apDbResolverService.getUserFromApId(activity.object);
 
 		if (blockee == null) {
@@ -657,7 +669,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async undoFollow(actor: RemoteUser, activity: IFollow): Promise<string> {
+	private async undoFollow(actor: MiRemoteUser, activity: IFollow): Promise<string> {
 		const followee = await this.apDbResolverService.getUserFromApId(activity.object);
 		if (followee == null) {
 			return 'skip: followee not found';
@@ -667,22 +679,26 @@ export class ApInboxService {
 			return 'skip: フォロー解除しようとしているユーザーはローカルユーザーではありません';
 		}
 
-		const req = await this.followRequestsRepository.findOneBy({
-			followerId: actor.id,
-			followeeId: followee.id,
+		const requestExist = await this.followRequestsRepository.exist({
+			where: {
+				followerId: actor.id,
+				followeeId: followee.id,
+			},
 		});
 
-		const following = await this.followingsRepository.findOneBy({
-			followerId: actor.id,
-			followeeId: followee.id,
+		const isFollowing = await this.followingsRepository.exist({
+			where: {
+				followerId: actor.id,
+				followeeId: followee.id,
+			},
 		});
 
-		if (req) {
+		if (requestExist) {
 			await this.userFollowingService.cancelFollowRequest(followee, actor);
 			return 'ok: follow request canceled';
 		}
 
-		if (following) {
+		if (isFollowing) {
 			await this.userFollowingService.unfollow(actor, followee);
 			return 'ok: unfollowed';
 		}
@@ -691,7 +707,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async undoLike(actor: RemoteUser, activity: ILike): Promise<string> {
+	private async undoLike(actor: MiRemoteUser, activity: ILike): Promise<string> {
 		const targetUri = getApId(activity.object);
 
 		const note = await this.apNoteService.fetchNote(targetUri);
@@ -706,8 +722,8 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async update(actor: RemoteUser, activity: IUpdate): Promise<string> {
-		if ('actor' in activity && actor.uri !== activity.actor) {
+	private async update(actor: MiRemoteUser, activity: IUpdate): Promise<string> {
+		if (actor.uri !== activity.actor) {
 			return 'skip: invalid actor';
 		}
 
@@ -721,7 +737,7 @@ export class ApInboxService {
 		});
 
 		if (isActor(object)) {
-			await this.apPersonService.updatePerson(actor.uri!, resolver, object);
+			await this.apPersonService.updatePerson(actor.uri, resolver, object);
 			return 'ok: Person updated';
 		} else if (getApType(object) === 'Question') {
 			await this.apQuestionService.updateQuestion(object, resolver).catch(err => console.error(err));
@@ -732,57 +748,11 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async move(actor: RemoteUser, activity: IMove): Promise<string> {
+	private async move(actor: MiRemoteUser, activity: IMove): Promise<string> {
 		// fetch the new and old accounts
 		const targetUri = getApHrefNullable(activity.target);
 		if (!targetUri) return 'skip: invalid activity target';
-		let new_acc = await this.apPersonService.resolvePerson(targetUri);
-		let old_acc = await this.apPersonService.resolvePerson(actor.uri);
 
-		// update them if they're remote
-		if (new_acc.uri) await this.apPersonService.updatePerson(new_acc.uri);
-		if (old_acc.uri) await this.apPersonService.updatePerson(old_acc.uri);
-
-		// retrieve updated users
-		new_acc = await this.apPersonService.resolvePerson(targetUri);
-		old_acc = await this.apPersonService.resolvePerson(actor.uri);
-
-		// check if alsoKnownAs of the new account is valid
-		let isValidMove = true;
-		if (old_acc.uri) {
-			if (!new_acc.alsoKnownAs?.includes(old_acc.uri)) {
-				isValidMove = false;
-			}
-		} else if (!new_acc.alsoKnownAs?.includes(old_acc.id)) {
-			isValidMove = false;
-		}
-		if (!isValidMove) {
-			return 'skip: accounts invalid';
-		}
-
-		// add target uri to movedToUri in order to indicate that the user has moved
-		await this.usersRepository.update(old_acc.id, { movedToUri: targetUri });
-
-		// follow the new account and unfollow the old one
-		const followings = await this.followingsRepository.find({
-			relations: {
-				follower: true,
-			},
-			where: {
-				followeeId: old_acc.id,
-				followerHost: IsNull(), // follower is local
-			},
-		});
-		for (const following of followings) {
-			if (!following.follower) continue;
-			try {
-				await this.userFollowingService.follow(following.follower, new_acc);
-				await this.userFollowingService.unfollow(following.follower, old_acc);
-			} catch {
-				/* empty */
-			}
-		}
-
-		return 'ok';
+		return await this.apPersonService.updatePerson(actor.uri) ?? 'skip: nothing to do';
 	}
 }

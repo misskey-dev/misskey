@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <component
 	:is="popup.component"
@@ -10,14 +15,24 @@
 <XUpload v-if="uploads.length > 0"/>
 
 <TransitionGroup
-	tag="div" :class="$style.notifications"
-	:move-class="defaultStore.state.animation ? $style.transition_notification_move : ''"
-	:enter-active-class="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
-	:leave-active-class="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
-	:enter-from-class="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
-	:leave-to-class="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
+	tag="div"
+	:class="[$style.notifications, {
+		[$style.notificationsPosition_leftTop]: defaultStore.state.notificationPosition === 'leftTop',
+		[$style.notificationsPosition_leftBottom]: defaultStore.state.notificationPosition === 'leftBottom',
+		[$style.notificationsPosition_rightTop]: defaultStore.state.notificationPosition === 'rightTop',
+		[$style.notificationsPosition_rightBottom]: defaultStore.state.notificationPosition === 'rightBottom',
+		[$style.notificationsStackAxis_vertical]: defaultStore.state.notificationStackAxis === 'vertical',
+		[$style.notificationsStackAxis_horizontal]: defaultStore.state.notificationStackAxis === 'horizontal',
+	}]"
+	:moveClass="defaultStore.state.animation ? $style.transition_notification_move : ''"
+	:enterActiveClass="defaultStore.state.animation ? $style.transition_notification_enterActive : ''"
+	:leaveActiveClass="defaultStore.state.animation ? $style.transition_notification_leaveActive : ''"
+	:enterFromClass="defaultStore.state.animation ? $style.transition_notification_enterFrom : ''"
+	:leaveToClass="defaultStore.state.animation ? $style.transition_notification_leaveTo : ''"
 >
-	<XNotification v-for="notification in notifications" :key="notification.id" :notification="notification" :class="$style.notification"/>
+	<div v-for="notification in notifications" :key="notification.id" :class="$style.notification">
+		<XNotification :notification="notification"/>
+	</div>
 </TransitionGroup>
 
 <XStreamIndicator/>
@@ -30,30 +45,33 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent } from 'vue';
-import * as misskey from 'misskey-js';
+import { defineAsyncComponent, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { swInject } from './sw-inject';
 import XNotification from './notification.vue';
-import { popups, pendingApiRequestsCount } from '@/os';
-import { uploads } from '@/scripts/upload';
-import * as sound from '@/scripts/sound';
-import { $i } from '@/account';
-import { stream } from '@/stream';
-import { i18n } from '@/i18n';
-import { defaultStore } from '@/store';
+import { popups, pendingApiRequestsCount } from '@/os.js';
+import { uploads } from '@/scripts/upload.js';
+import * as sound from '@/scripts/sound.js';
+import { $i } from '@/account.js';
+import { useStream } from '@/stream.js';
+import { i18n } from '@/i18n.js';
+import { defaultStore } from '@/store.js';
+import { globalEvents } from '@/events';
 
 const XStreamIndicator = defineAsyncComponent(() => import('./stream-indicator.vue'));
 const XUpload = defineAsyncComponent(() => import('./upload.vue'));
 
 const dev = _DEV_;
 
-let notifications = $ref<misskey.entities.Notification[]>([]);
+let notifications = $ref<Misskey.entities.Notification[]>([]);
 
-function onNotification(notification) {
+function onNotification(notification: Misskey.entities.Notification, isClient: boolean = false) {
 	if ($i.mutingNotificationTypes.includes(notification.type)) return;
 
 	if (document.visibilityState === 'visible') {
-		stream.send('readNotification');
+		if (!isClient) {
+			useStream().send('readNotification');
+		}
 
 		notifications.unshift(notification);
 		window.setTimeout(() => {
@@ -69,8 +87,9 @@ function onNotification(notification) {
 }
 
 if ($i) {
-	const connection = stream.useChannel('main', null, 'UI');
+	const connection = useStream().useChannel('main', null, 'UI');
 	connection.on('notification', onNotification);
+	globalEvents.on('clientNotification', notification => onNotification(notification, true));
 
 	//#region Listen message from SW
 	if ('serviceWorker' in navigator) {
@@ -85,7 +104,10 @@ if ($i) {
 .transition_notification_leaveActive {
 	transition: opacity 0.3s, transform 0.3s !important;
 }
-.transition_notification_enterFrom,
+.transition_notification_enterFrom {
+	opacity: 0;
+	transform: translateX(250px);
+}
 .transition_notification_leaveTo {
 	opacity: 0;
 	transform: translateX(-250px);
@@ -94,35 +116,90 @@ if ($i) {
 .notifications {
 	position: fixed;
 	z-index: 3900000;
-	left: 0;
-	width: 250px;
-	top: 32px;
-	padding: 0 32px;
+	padding: 0 var(--margin);
 	pointer-events: none;
-	container-type: inline-size;
+	display: flex;
+
+	&.notificationsPosition_leftTop {
+		top: var(--margin);
+		left: 0;
+	}
+
+	&.notificationsPosition_rightTop {
+		top: var(--margin);
+		right: 0;
+	}
+
+	&.notificationsPosition_leftBottom {
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		left: 0;
+	}
+
+	&.notificationsPosition_rightBottom {
+		bottom: calc(var(--minBottomSpacing) + var(--margin));
+		right: 0;
+	}
+
+	&.notificationsStackAxis_vertical {
+		width: 250px;
+
+		&.notificationsPosition_leftTop,
+		&.notificationsPosition_rightTop {
+			flex-direction: column;
+
+			.notification {
+				& + .notification {
+					margin-top: 8px;
+				}
+			}
+		}
+
+		&.notificationsPosition_leftBottom,
+		&.notificationsPosition_rightBottom {
+			flex-direction: column-reverse;
+
+			.notification {
+				& + .notification {
+					margin-bottom: 8px;
+				}
+			}
+		}
+	}
+
+	&.notificationsStackAxis_horizontal {
+		width: 100%;
+
+		&.notificationsPosition_leftTop,
+		&.notificationsPosition_leftBottom {
+			flex-direction: row;
+
+			.notification {
+				& + .notification {
+					margin-left: 8px;
+				}
+			}
+		}
+
+		&.notificationsPosition_rightTop,
+		&.notificationsPosition_rightBottom {
+			flex-direction: row-reverse;
+
+			.notification {
+				& + .notification {
+					margin-right: 8px;
+				}
+			}
+		}
+
+		.notification {
+			width: 250px;
+			flex-shrink: 0;
+		}
+	}
 }
 
 .notification {
-	& + .notification {
-		margin-top: 8px;
-	}
-}
-
-@media (max-width: 500px) {
-	.notifications {
-		top: initial;
-		bottom: calc(var(--minBottomSpacing) + var(--margin));
-		padding: 0 var(--margin);
-		display: flex;
-		flex-direction: column-reverse;
-	}
-
-	.notification {
-		& + .notification {
-			margin-top: 0;
-			margin-bottom: 8px;
-		}
-	}
+	container-type: inline-size;
 }
 </style>
 

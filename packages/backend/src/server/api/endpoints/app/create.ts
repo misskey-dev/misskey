@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AppsRepository } from '@/models/index.js';
+import type { AppsRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
 import { unique } from '@/misc/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
@@ -32,9 +37,8 @@ export const paramDef = {
 	required: ['name', 'description', 'permission'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.appsRepository)
 		private appsRepository: AppsRepository,
@@ -44,7 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Generate secret
-			const secret = secureRndstr(32, true);
+			const secret = secureRndstr(32);
 
 			// for backward compatibility
 			const permission = unique(ps.permission.map(v => v.replace(/^(.+)(\/|-)(read|write)$/, '$3:$1')));

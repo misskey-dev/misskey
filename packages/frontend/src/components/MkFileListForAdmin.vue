@@ -1,10 +1,15 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkPagination v-slot="{items}" :pagination="pagination" class="urempief" :class="{ grid: viewMode === 'grid' }">
 		<MkA
 			v-for="file in items"
 			:key="file.id"
-			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${dateString(file.createdAt)}\nby ${file.user ? '@' + Acct.toString(file.user) : 'system'}`"
+			v-tooltip.mfm="`${file.type}\n${bytes(file.size)}\n${dateString(file.createdAt)}\nby ${file.user ? '@' + Misskey.acct.toString(file.user) : 'system'}`"
 			:to="`/admin/file/${file.id}`"
 			class="file _button"
 		>
@@ -32,12 +37,12 @@
 </template>
 
 <script lang="ts" setup>
-import * as Acct from 'misskey-js/built/acct';
+import * as Misskey from 'misskey-js';
 import MkPagination from '@/components/MkPagination.vue';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import bytes from '@/filters/bytes';
-import { i18n } from '@/i18n';
-import { dateString } from '@/filters/date';
+import bytes from '@/filters/bytes.js';
+import { i18n } from '@/i18n.js';
+import { dateString } from '@/filters/date.js';
 
 const props = defineProps<{
 	pagination: any;
@@ -89,7 +94,7 @@ const props = defineProps<{
 		> .file {
 			position: relative;
 			aspect-ratio: 1;
-		
+
 			> .thumbnail {
 				width: 100%;
 				height: 100%;

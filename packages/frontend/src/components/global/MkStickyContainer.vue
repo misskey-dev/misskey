@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div ref="rootEl">
 	<div ref="headerEl">
@@ -14,6 +19,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, provide, inject, Ref, ref, watch } from 'vue';
+import { $$ } from 'vue/macros';
 import { CURRENT_STICKY_BOTTOM, CURRENT_STICKY_TOP } from '@/const';
 
 const rootEl = $shallowRef<HTMLElement>();
@@ -83,8 +89,8 @@ onMounted(() => {
 onUnmounted(() => {
 	observer.disconnect();
 });
+
+defineExpose({
+	rootEl: $$(rootEl),
+});
 </script>
-
-<style lang="scss" module>
-
-</style>

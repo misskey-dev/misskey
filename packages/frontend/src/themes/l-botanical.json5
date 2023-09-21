@@ -5,12 +5,13 @@
 	author: 'ThinaticSystem',
 
   base: 'light',
-	
+
 	props: {
 		accent: '#77b58c',
 		bg: 'e2deda',
 		fg: '#3d3d3d',
 		fgHighlighted: '#6bc9a0',
+		fgOnWhite: '@accent',
 		divider: '#cfcfcf',
 		panel: '@X14',
 		panelHeaderBg: '@panel',

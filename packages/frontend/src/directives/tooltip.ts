@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 // TODO: useTooltip関数使うようにしたい
 // ただディレクティブ内でonUnmountedなどのcomposition api使えるのか不明
 
 import { defineAsyncComponent, Directive, ref } from 'vue';
-import { isTouchUsing } from '@/scripts/touch';
-import { popup, alert } from '@/os';
+import { isTouchUsing } from '@/scripts/touch.js';
+import { popup, alert } from '@/os.js';
 
-const start = isTouchUsing ? 'touchstart' : 'mouseover';
+const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
 export default {
@@ -63,16 +68,24 @@ export default {
 			ev.preventDefault();
 		});
 
-		el.addEventListener(start, () => {
+		el.addEventListener(start, (ev) => {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
-			self.showTimer = window.setTimeout(self.show, delay);
+			if (delay === 0) {
+				self.show();
+			} else {
+				self.showTimer = window.setTimeout(self.show, delay);
+			}
 		}, { passive: true });
 
 		el.addEventListener(end, () => {
 			window.clearTimeout(self.showTimer);
 			window.clearTimeout(self.hideTimer);
-			self.hideTimer = window.setTimeout(self.close, delay);
+			if (delay === 0) {
+				self.close();
+			} else {
+				self.hideTimer = window.setTimeout(self.close, delay);
+			}
 		}, { passive: true });
 
 		el.addEventListener('click', () => {

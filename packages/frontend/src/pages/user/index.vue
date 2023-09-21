@@ -1,34 +1,38 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
 	<div>
-		<Transition name="fade" mode="out-in">
-			<div v-if="user">
-				<XHome v-if="tab === 'home'" :user="user"/>
-				<XTimeline v-else-if="tab === 'notes'" :user="user" />
-				<XActivity v-else-if="tab === 'activity'" :user="user"/>
-				<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
-				<XReactions v-else-if="tab === 'reactions'" :user="user"/>
-				<XClips v-else-if="tab === 'clips'" :user="user"/>
-				<XPages v-else-if="tab === 'pages'" :user="user"/>
-				<XGallery v-else-if="tab === 'gallery'" :user="user"/>
-			</div>
-			<MkError v-else-if="error" @retry="fetchUser()"/>
-			<MkLoading v-else/>
-		</Transition>
+		<div v-if="user">
+			<XHome v-if="tab === 'home'" :user="user"/>
+			<XTimeline v-else-if="tab === 'notes'" :user="user"/>
+			<XActivity v-else-if="tab === 'activity'" :user="user"/>
+			<XAchievements v-else-if="tab === 'achievements'" :user="user"/>
+			<XReactions v-else-if="tab === 'reactions'" :user="user"/>
+			<XClips v-else-if="tab === 'clips'" :user="user"/>
+			<XLists v-else-if="tab === 'lists'" :user="user"/>
+			<XPages v-else-if="tab === 'pages'" :user="user"/>
+			<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
+			<XGallery v-else-if="tab === 'gallery'" :user="user"/>
+		</div>
+		<MkError v-else-if="error" @retry="fetchUser()"/>
+		<MkLoading v-else/>
 	</div>
 </MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, watch } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
-import * as misskey from 'misskey-js';
-import { acct as getAcct } from '@/filters/user';
-import * as os from '@/os';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { i18n } from '@/i18n';
-import { $i } from '@/account';
+import * as Misskey from 'misskey-js';
+import { acct as getAcct } from '@/filters/user.js';
+import * as os from '@/os.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { i18n } from '@/i18n.js';
+import { $i } from '@/account.js';
 
 const XHome = defineAsyncComponent(() => import('./home.vue'));
 const XTimeline = defineAsyncComponent(() => import('./index.timeline.vue'));
@@ -36,7 +40,9 @@ const XActivity = defineAsyncComponent(() => import('./activity.vue'));
 const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
+const XLists = defineAsyncComponent(() => import('./lists.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
+const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 
 const props = withDefaults(defineProps<{
@@ -47,13 +53,13 @@ const props = withDefaults(defineProps<{
 });
 
 let tab = $ref(props.page);
-let user = $ref<null | misskey.entities.UserDetailed>(null);
+let user = $ref<null | Misskey.entities.UserDetailed>(null);
 let error = $ref(null);
 
 function fetchUser(): void {
 	if (props.acct == null) return;
 	user = null;
-	os.api('users/show', Acct.parse(props.acct)).then(u => {
+	os.api('users/show', Misskey.acct.parse(props.acct)).then(u => {
 		user = u;
 	}).catch(err => {
 		error = err;
@@ -91,9 +97,17 @@ const headerTabs = $computed(() => user ? [{
 	title: i18n.ts.clips,
 	icon: 'ti ti-paperclip',
 }, {
+	key: 'lists',
+	title: i18n.ts.lists,
+	icon: 'ti ti-list',
+}, {
 	key: 'pages',
 	title: i18n.ts.pages,
 	icon: 'ti ti-news',
+}, {
+	key: 'flashs',
+	title: 'Play',
+	icon: 'ti ti-player-play',
 }, {
 	key: 'gallery',
 	title: i18n.ts.gallery,
@@ -112,14 +126,3 @@ definePageMetadata(computed(() => user ? {
 	},
 } : null));
 </script>
-
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity 0.125s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-</style>

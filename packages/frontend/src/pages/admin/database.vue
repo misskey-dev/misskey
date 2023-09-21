@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800" :margin-min="16" :margin-max="32">
+	<MkSpacer :contentMax="800" :marginMin="16" :marginMax="32">
 		<FormSuspense v-slot="{ result: database }" :p="databasePromiseFactory">
 			<MkKeyValue v-for="table in database" :key="table[0]" oneline style="margin: 1em 0;">
 				<template #key>{{ table[0] }}</template>
@@ -16,11 +21,11 @@
 import { } from 'vue';
 import FormSuspense from '@/components/form/suspense.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
-import * as os from '@/os';
-import bytes from '@/filters/bytes';
-import number from '@/filters/number';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import bytes from '@/filters/bytes.js';
+import number from '@/filters/number.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const databasePromiseFactory = () => os.api('admin/get-table-stats').then(res => Object.entries(res).sort((a, b) => b[1].size - a[1].size));
 

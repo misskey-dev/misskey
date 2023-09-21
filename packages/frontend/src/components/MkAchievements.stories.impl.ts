@@ -1,10 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { StoryObj } from '@storybook/vue3';
 import { rest } from 'msw';
 import { userDetailed } from '../../.storybook/fakes';
 import { commonHandlers } from '../../.storybook/mocks';
 import MkAchievements from './MkAchievements.vue';
-import { ACHIEVEMENT_TYPES } from '@/scripts/achievements';
+import { ACHIEVEMENT_TYPES } from '@/scripts/achievements.js';
 export const Empty = {
 	render(args) {
 		return {

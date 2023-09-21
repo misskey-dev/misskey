@@ -1,11 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, NoteReactionsRepository, NotesRepository, User, UsersRepository } from '@/models/index.js';
+import type { AccessTokensRepository, FollowRequestsRepository, NotesRepository, MiUser, UsersRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Notification } from '@/models/entities/Notification.js';
-import type { Note } from '@/models/entities/Note.js';
+import type { MiNotification } from '@/models/Notification.js';
+import type { MiNote } from '@/models/Note.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { bindThis } from '@/decorators.js';
 import { isNotNull } from '@/misc/is-not-null.js';
@@ -32,8 +37,8 @@ export class NotificationEntityService implements OnModuleInit {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.noteReactionsRepository)
-		private noteReactionsRepository: NoteReactionsRepository,
+		@Inject(DI.followRequestsRepository)
+		private followRequestsRepository: FollowRequestsRepository,
 
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
@@ -52,15 +57,15 @@ export class NotificationEntityService implements OnModuleInit {
 
 	@bindThis
 	public async pack(
-		src: Notification,
-		meId: User['id'],
+		src: MiNotification,
+		meId: MiUser['id'],
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		options: {
-			
+
 		},
 		hint?: {
-			packedNotes: Map<Note['id'], Packed<'Note'>>;
-			packedUsers: Map<User['id'], Packed<'User'>>;
+			packedNotes: Map<MiNote['id'], Packed<'Note'>>;
+			packedUsers: Map<MiUser['id'], Packed<'User'>>;
 		},
 	): Promise<Packed<'Notification'>> {
 		const notification = src;
@@ -103,8 +108,8 @@ export class NotificationEntityService implements OnModuleInit {
 
 	@bindThis
 	public async packMany(
-		notifications: Notification[],
-		meId: User['id'],
+		notifications: MiNotification[],
+		meId: MiUser['id'],
 	) {
 		if (notifications.length === 0) return [];
 
@@ -130,6 +135,15 @@ export class NotificationEntityService implements OnModuleInit {
 			detail: false,
 		});
 		const packedUsers = new Map(packedUsersArray.map(p => [p.id, p]));
+
+		// 既に解決されたフォローリクエストの通知を除外
+		const followRequestNotifications = validNotifications.filter(x => x.type === 'receiveFollowRequest');
+		if (followRequestNotifications.length > 0) {
+			const reqs = await this.followRequestsRepository.find({
+				where: { followerId: In(followRequestNotifications.map(x => x.notifierId!)) },
+			});
+			validNotifications = validNotifications.filter(x => (x.type !== 'receiveFollowRequest') || reqs.some(r => r.followerId === x.notifierId));
+		}
 
 		return await Promise.all(validNotifications.map(x => this.pack(x, meId, {}, {
 			packedNotes,

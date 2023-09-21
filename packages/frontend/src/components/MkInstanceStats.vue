@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<MkFoldableSection class="item">
@@ -52,8 +57,11 @@
 
 	<MkFoldableSection class="item">
 		<template #header>Retention rate</template>
-		<div class="_panel" :class="$style.retention">
+		<div class="_panel" :class="$style.retentionHeatmap">
 			<MkRetentionHeatmap/>
+		</div>
+		<div class="_panel" :class="$style.retentionLine">
+			<MkRetentionLineChart/>
 		</div>
 	</MkFoldableSection>
 
@@ -80,13 +88,14 @@ import { onMounted } from 'vue';
 import { Chart } from 'chart.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
+import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
-import { initChart } from '@/scripts/init-chart';
+import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
+import { initChart } from '@/scripts/init-chart.js';
 
 initChart();
 
@@ -202,7 +211,12 @@ onMounted(() => {
 	margin-bottom: 16px;
 }
 
-.retention {
+.retentionHeatmap {
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.retentionLine {
 	padding: 16px;
 	margin-bottom: 16px;
 }

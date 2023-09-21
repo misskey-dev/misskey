@@ -1,32 +1,30 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
 import { format as dateFormat } from 'date-fns';
 import { DI } from '@/di-symbols.js';
-import type { MutingsRepository, UsersRepository, BlockingsRepository } from '@/models/index.js';
-import type { Config } from '@/config.js';
+import type { MutingsRepository, UsersRepository, MiMuting } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import { createTemp } from '@/misc/create-temp.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import type Bull from 'bull';
-import type { DbJobDataWithUser } from '../types.js';
 import { bindThis } from '@/decorators.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type * as Bull from 'bullmq';
+import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
 export class ExportMutingProcessorService {
 	private logger: Logger;
 
 	constructor(
-		@Inject(DI.config)
-		private config: Config,
-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.mutingsRepository)
 		private mutingsRepository: MutingsRepository,
@@ -39,12 +37,11 @@ export class ExportMutingProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbJobDataWithUser>, done: () => void): Promise<void> {
+	public async process(job: Bull.Job<DbJobDataWithUser>): Promise<void> {
 		this.logger.info(`Exporting muting of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
 		if (user == null) {
-			done();
 			return;
 		}
 
@@ -57,7 +54,7 @@ export class ExportMutingProcessorService {
 			const stream = fs.createWriteStream(path, { flags: 'a' });
 
 			let exportedCount = 0;
-			let cursor: any = null;
+			let cursor: MiMuting['id'] | null = null;
 
 			while (true) {
 				const mutes = await this.mutingsRepository.find({
@@ -73,11 +70,11 @@ export class ExportMutingProcessorService {
 				});
 
 				if (mutes.length === 0) {
-					job.progress(100);
+					job.updateProgress(100);
 					break;
 				}
 
-				cursor = mutes[mutes.length - 1].id;
+				cursor = mutes.at(-1)?.id ?? null;
 
 				for (const mute of mutes) {
 					const u = await this.usersRepository.findOneBy({ id: mute.muteeId });
@@ -103,7 +100,7 @@ export class ExportMutingProcessorService {
 					muterId: user.id,
 				});
 
-				job.progress(exportedCount / total);
+				job.updateProgress(exportedCount / total);
 			}
 
 			stream.end();
@@ -116,7 +113,5 @@ export class ExportMutingProcessorService {
 		} finally {
 			cleanup();
 		}
-
-		done();
 	}
 }

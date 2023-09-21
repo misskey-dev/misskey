@@ -1,57 +1,64 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<Sortable :model-value="modelValue" tag="div" item-key="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swap-threshold="0.5" @update:model-value="v => $emit('update:modelValue', v)">
+<Sortable :modelValue="modelValue" tag="div" itemKey="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swapThreshold="0.5" @update:modelValue="v => $emit('update:modelValue', v)">
 	<template #item="{element}">
 		<div :class="$style.item">
 			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-			<component :is="'x-' + element.type" :model-value="element" @update:model-value="updateItem" @remove="() => removeItem(element)"/>
+			<component :is="getComponent(element.type)" :modelValue="element" @update:modelValue="updateItem" @remove="() => removeItem(element)"/>
 		</div>
 	</template>
 </Sortable>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineAsyncComponent } from 'vue';
+<script lang="ts" setup>
+import { defineAsyncComponent } from 'vue';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
 
-export default defineComponent({
-	components: {
-		Sortable: defineAsyncComponent(() => import('vuedraggable').then(x => x.default)),
-		XSection, XText, XImage, XNote,
-	},
+function getComponent(type: string) {
+	switch (type) {
+		case 'section': return XSection;
+		case 'text': return XText;
+		case 'image': return XImage;
+		case 'note': return XNote;
+		default: return null;
+	}
+}
 
-	props: {
-		modelValue: {
-			type: Array,
-			required: true,
-		},
-	},
+const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-	emits: ['update:modelValue'],
+const props = defineProps<{
+	modelValue: any[];
+}>();
 
-	methods: {
-		updateItem(v) {
-			const i = this.modelValue.findIndex(x => x.id === v.id);
-			const newValue = [
-				...this.modelValue.slice(0, i),
-				v,
-				...this.modelValue.slice(i + 1),
-			];
-			this.$emit('update:modelValue', newValue);
-		},
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: any[]): void;
+}>();
 
-		removeItem(el) {
-			const i = this.modelValue.findIndex(x => x.id === el.id);
-			const newValue = [
-				...this.modelValue.slice(0, i),
-				...this.modelValue.slice(i + 1),
-			];
-			this.$emit('update:modelValue', newValue);
-		},
-	},
-});
+function updateItem(v) {
+	const i = props.modelValue.findIndex(x => x.id === v.id);
+	const newValue = [
+		...props.modelValue.slice(0, i),
+		v,
+		...props.modelValue.slice(i + 1),
+	];
+	emit('update:modelValue', newValue);
+}
+
+function removeItem(el) {
+	const i = props.modelValue.findIndex(x => x.id === el.id);
+	const newValue = [
+		...props.modelValue.slice(0, i),
+		...props.modelValue.slice(i + 1),
+	];
+	emit('update:modelValue', newValue);
+}
 </script>
 
 <style lang="scss" module>

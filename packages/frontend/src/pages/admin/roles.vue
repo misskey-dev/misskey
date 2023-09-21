@@ -1,8 +1,13 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<MkStickyContainer>
 		<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-		<MkSpacer :content-max="700">
+		<MkSpacer :contentMax="700">
 			<div class="_gaps">
 				<MkFolder>
 					<template #label>{{ i18n.ts._role.baseRole }}</template>
@@ -14,7 +19,7 @@
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.rateLimitFactor, 'rateLimitFactor'])">
 							<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
 							<template #suffix>{{ Math.floor(policies.rateLimitFactor * 100) }}%</template>
-							<MkRange :model-value="policies.rateLimitFactor * 100" :min="30" :max="300" :step="10" :text-converter="(v) => `${v}%`" @update:model-value="v => policies.rateLimitFactor = (v / 100)">
+							<MkRange :modelValue="policies.rateLimitFactor * 100" :min="30" :max="300" :step="10" :textConverter="(v) => `${v}%`" @update:modelValue="v => policies.rateLimitFactor = (v / 100)">
 								<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 							</MkRange>
 						</MkFolder>
@@ -51,6 +56,29 @@
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimit, 'inviteLimit'])">
+							<template #label>{{ i18n.ts._role._options.inviteLimit }}</template>
+							<template #suffix>{{ policies.inviteLimit }}</template>
+							<MkInput v-model="policies.inviteLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteLimitCycle, 'inviteLimitCycle'])">
+							<template #label>{{ i18n.ts._role._options.inviteLimitCycle }}</template>
+							<template #suffix>{{ policies.inviteLimitCycle + i18n.ts._time.minute }}</template>
+							<MkInput v-model="policies.inviteLimitCycle" type="number">
+								<template #suffix>{{ i18n.ts._time.minute }}</template>
+							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.inviteExpirationTime, 'inviteExpirationTime'])">
+							<template #label>{{ i18n.ts._role._options.inviteExpirationTime }}</template>
+							<template #suffix>{{ policies.inviteExpirationTime + i18n.ts._time.minute }}</template>
+							<MkInput v-model="policies.inviteExpirationTime" type="number">
+								<template #suffix>{{ i18n.ts._time.minute }}</template>
+							</MkInput>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canManageCustomEmojis, 'canManageCustomEmojis'])">
 							<template #label>{{ i18n.ts._role._options.canManageCustomEmojis }}</template>
 							<template #suffix>{{ policies.canManageCustomEmojis ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -73,6 +101,14 @@
 							<MkInput v-model="policies.driveCapacityMb" type="number">
 								<template #suffix>MB</template>
 							</MkInput>
+						</MkFolder>
+
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.alwaysMarkNsfw, 'alwaysMarkNsfw'])">
+							<template #label>{{ i18n.ts._role._options.alwaysMarkNsfw }}</template>
+							<template #suffix>{{ policies.alwaysMarkNsfw ? i18n.ts.yes : i18n.ts.no }}</template>
+							<MkSwitch v-model="policies.alwaysMarkNsfw">
+								<template #label>{{ i18n.ts.enable }}</template>
+							</MkSwitch>
 						</MkFolder>
 
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.pinMax, 'pinLimit'])">
@@ -148,13 +184,13 @@
 					<MkFoldableSection>
 						<template #header>Manual roles</template>
 						<div class="_gaps_s">
-							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :for-moderation="true"/>
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'manual')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 					<MkFoldableSection>
 						<template #header>Conditional roles</template>
 						<div class="_gaps_s">
-							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :for-moderation="true"/>
+							<MkRolePreview v-for="role in roles.filter(x => x.target === 'conditional')" :key="role.id" :role="role" :forModeration="true"/>
 						</div>
 					</MkFoldableSection>
 				</div>
@@ -173,11 +209,11 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
 import MkRolePreview from '@/components/MkRolePreview.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { instance } from '@/instance';
-import { useRouter } from '@/router';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { instance } from '@/instance.js';
+import { useRouter } from '@/router.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { ROLE_POLICIES } from '@/const';
 

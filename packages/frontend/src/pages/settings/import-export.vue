@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormSection first>
@@ -32,7 +37,7 @@
 					<MkButton primary :class="$style.button" inline @click="exportFollowing()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 				</div>
 			</MkFolder>
-			<MkFolder>
+			<MkFolder v-if="$i && !$i.movedTo">
 				<template #label>{{ i18n.ts.import }}</template>
 				<template #icon><i class="ti ti-upload"></i></template>
 				<MkButton primary :class="$style.button" inline @click="importFollowing($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -47,7 +52,7 @@
 				<template #icon><i class="ti ti-download"></i></template>
 				<MkButton primary :class="$style.button" inline @click="exportUserLists()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 			</MkFolder>
-			<MkFolder>
+			<MkFolder v-if="$i && !$i.movedTo">
 				<template #label>{{ i18n.ts.import }}</template>
 				<template #icon><i class="ti ti-upload"></i></template>
 				<MkButton primary :class="$style.button" inline @click="importUserLists($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -62,7 +67,7 @@
 				<template #icon><i class="ti ti-download"></i></template>
 				<MkButton primary :class="$style.button" inline @click="exportMuting()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 			</MkFolder>
-			<MkFolder>
+			<MkFolder v-if="$i && !$i.movedTo">
 				<template #label>{{ i18n.ts.import }}</template>
 				<template #icon><i class="ti ti-upload"></i></template>
 				<MkButton primary :class="$style.button" inline @click="importMuting($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
@@ -77,10 +82,25 @@
 				<template #icon><i class="ti ti-download"></i></template>
 				<MkButton primary :class="$style.button" inline @click="exportBlocking()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
 			</MkFolder>
-			<MkFolder>
+			<MkFolder v-if="$i && !$i.movedTo">
 				<template #label>{{ i18n.ts.import }}</template>
 				<template #icon><i class="ti ti-upload"></i></template>
 				<MkButton primary :class="$style.button" inline @click="importBlocking($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
+			</MkFolder>
+		</div>
+	</FormSection>
+	<FormSection>
+		<template #label><i class="ti ti-antenna"></i> {{ i18n.ts.antennas }}</template>
+		<div class="_gaps_s">
+			<MkFolder>
+				<template #label>{{ i18n.ts.export }}</template>
+				<template #icon><i class="ti ti-download"></i></template>
+				<MkButton primary :class="$style.button" inline @click="exportAntennas()"><i class="ti ti-download"></i> {{ i18n.ts.export }}</MkButton>
+			</MkFolder>
+			<MkFolder v-if="$i && !$i.movedTo">
+				<template #label>{{ i18n.ts.import }}</template>
+				<template #icon><i class="ti ti-upload"></i></template>
+				<MkButton primary :class="$style.button" inline @click="importAntennas($event)"><i class="ti ti-upload"></i> {{ i18n.ts.import }}</MkButton>
 			</MkFolder>
 		</div>
 	</FormSection>
@@ -93,10 +113,11 @@ import MkButton from '@/components/MkButton.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os';
-import { selectFile } from '@/scripts/select-file';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { $i } from '@/account.js';
 
 const excludeMutingUsers = ref(false);
 const excludeInactiveUsers = ref(false);
@@ -150,6 +171,10 @@ const exportMuting = () => {
 	os.api('i/export-mute', {}).then(onExportSuccess).catch(onError);
 };
 
+const exportAntennas = () => {
+	os.api('i/export-antennas', {}).then(onExportSuccess).catch(onError);
+};
+
 const importFollowing = async (ev) => {
 	const file = await selectFile(ev.currentTarget ?? ev.target);
 	os.api('i/import-following', { fileId: file.id }).then(onImportSuccess).catch(onError);
@@ -168,6 +193,11 @@ const importMuting = async (ev) => {
 const importBlocking = async (ev) => {
 	const file = await selectFile(ev.currentTarget ?? ev.target);
 	os.api('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
+};
+
+const importAntennas = async (ev) => {
+	const file = await selectFile(ev.currentTarget ?? ev.target);
+	os.api('i/import-antennas', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const headerActions = $computed(() => []);

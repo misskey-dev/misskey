@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import IPCIDR from 'ip-cidr';
 
-export function getIpHash(ip: string) {
+export function getIpHash(ip: string): string {
 	try {
 		// because a single person may control many IPv6 addresses,
 		// only a /64 subnet prefix of any IP will be taken into account.

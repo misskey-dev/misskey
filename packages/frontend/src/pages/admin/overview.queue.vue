@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div :class="$style.root">
 	<div class="_table status">
@@ -32,10 +37,10 @@
 <script lang="ts" setup>
 import { markRaw, onMounted, onUnmounted, ref } from 'vue';
 import XChart from './overview.queue.chart.vue';
-import number from '@/filters/number';
-import { stream } from '@/stream';
+import number from '@/filters/number.js';
+import { useStream } from '@/stream.js';
 
-const connection = markRaw(stream.useChannel('queueStats'));
+const connection = markRaw(useStream().useChannel('queueStats'));
 
 const activeSincePrevTick = ref(0);
 const active = ref(0);
@@ -85,7 +90,7 @@ onMounted(() => {
 	connection.on('stats', onStats);
 	connection.on('statsLog', onStatsLog);
 	connection.send('requestLog', {
-		id: Math.random().toString().substr(2, 8),
+		id: Math.random().toString().substring(2, 10),
 		length: 100,
 	});
 });
@@ -122,4 +127,4 @@ onUnmounted(() => {
 		}
 	}
 }
-</style>	
+</style>

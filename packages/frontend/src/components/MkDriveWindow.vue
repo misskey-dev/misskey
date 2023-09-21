@@ -1,15 +1,20 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkWindow
 	ref="window"
-	:initial-width="800"
-	:initial-height="500"
-	:can-resize="true"
+	:initialWidth="800"
+	:initialHeight="500"
+	:canResize="true"
 	@closed="emit('closed')"
 >
 	<template #header>
 		{{ i18n.ts.drive }}
 	</template>
-	<XDrive :initial-folder="initialFolder"/>
+	<XDrive :initialFolder="initialFolder"/>
 </MkWindow>
 </template>
 
@@ -18,7 +23,7 @@ import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import XDrive from '@/components/MkDrive.vue';
 import MkWindow from '@/components/MkWindow.vue';
-import { i18n } from '@/i18n';
+import { i18n } from '@/i18n.js';
 
 defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder;
