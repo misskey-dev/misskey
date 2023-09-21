@@ -1113,6 +1113,7 @@ loadReplies: "返信を見る"
 loadConversation: "会話を見る"
 pinnedList: "ピン留めされたリスト"
 keepScreenOn: "デバイスの画面を常にオンにする"
+verifiedLink: "このリンク先の所有者であることが確認されました"
 
 _announcement:
   forExistingUsers: "既存ユーザーのみ"

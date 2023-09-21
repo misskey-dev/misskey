@@ -101,6 +101,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dt>
 							<dd class="value">
 								<Mfm :text="field.value" :author="user" :i="$i" :colored="false"/>
+								<i v-if="user.verifiedLinks.includes(field.value)" v-tooltip:dialog="i18n.ts.verifiedLink" class="ti ti-circle-check" :class="$style.verifiedLink"></i>
 							</dd>
 						</dl>
 					</div>
@@ -671,7 +672,12 @@ onUnmounted(() => {
 <style lang="scss" module>
 .tl {
 	background: var(--bg);
-    border-radius: var(--radius);
-    overflow: clip;
+	border-radius: var(--radius);
+	overflow: clip;
+}
+
+.verifiedLink {
+	margin-left: 4px;
+	color: var(--success);
 }
 </style>

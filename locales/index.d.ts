@@ -1116,6 +1116,7 @@ export interface Locale {
     "loadConversation": string;
     "pinnedList": string;
     "keepScreenOn": string;
+    "verifiedLink": string;
     "_announcement": {
         "forExistingUsers": string;
         "forExistingUsersDescription": string;
