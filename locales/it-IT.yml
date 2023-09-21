@@ -1113,6 +1113,7 @@ loadReplies: "Leggi le risposte"
 loadConversation: "Leggi la conversazione"
 pinnedList: "Elenco in primo piano"
 keepScreenOn: "Mantieni lo schermo acceso"
+verifiedLink: "Abbiamo confermato la validità di questo collegamento"
 _announcement:
   forExistingUsers: "Solo ai profili attuali"
   forExistingUsersDescription: "L'annuncio sarà visibile solo ai profili esistenti in questo momento. Se disabilitato, sarà visibile anche ai profili che verranno creati dopo la pubblicazione di questo annuncio."
@@ -1891,6 +1892,7 @@ _profile:
   metadataContent: "Contenuto"
   changeAvatar: "Modifica immagine profilo"
   changeBanner: "Cambia intestazione"
+  verifiedLinkDescription: "Puoi verificare il tuo profilo mostrando una icona. Devi inserire la URL alla pagina che contiene un link al tuo profilo."
 _exportOrImport:
   allNotes: "Tutte le note"
   favoritedNotes: "Note preferite"
