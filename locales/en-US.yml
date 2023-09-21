@@ -2047,7 +2047,7 @@ _deck:
   newProfile: "New profile"
   deleteProfile: "Delete profile"
   introduction: "Create the perfect interface for you by arranging columns freely!"
-  introduction2: "Click on the + on the right of the screen to add new colums whenever you want."
+  introduction2: "Click on the + on the right of the screen to add new columns whenever you want."
   widgetsIntroduction: "Please select \"Edit widgets\" in the column menu and add a widget."
   useSimpleUiForNonRootPages: "Use simplified UI to navigated pages"
   usedAsMinWidthWhenFlexible: "Minimum width will be used for this when the \"Auto-adjust width\" option is enabled"
