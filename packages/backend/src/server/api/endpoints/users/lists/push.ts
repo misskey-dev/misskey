@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/index.js';
+import type { UserListsRepository, UserListJoiningsRepository, BlockingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { UserListService } from '@/core/UserListService.js';
@@ -11,6 +16,8 @@ export const meta = {
 	tags: ['lists', 'users'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -63,9 +70,8 @@ export const paramDef = {
 	required: ['listId', 'userId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
@@ -98,18 +104,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			// Check blocking
 			if (user.id !== me.id) {
-				const block = await this.blockingsRepository.findOneBy({
-					blockerId: user.id,
-					blockeeId: me.id,
+				const blockExist = await this.blockingsRepository.exist({
+					where: {
+						blockerId: user.id,
+						blockeeId: me.id,
+					},
 				});
-				if (block) {
+				if (blockExist) {
 					throw new ApiError(meta.errors.youHaveBeenBlocked);
 				}
 			}
 
-			const exist = await this.userListJoiningsRepository.findOneBy({
-				userListId: userList.id,
-				userId: user.id,
+			const exist = await this.userListJoiningsRepository.exist({
+				where: {
+					userListId: userList.id,
+					userId: user.id,
+				},
 			});
 
 			if (exist) {

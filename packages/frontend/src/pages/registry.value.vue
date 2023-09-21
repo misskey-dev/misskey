@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600" :margin-min="16">
+	<MkSpacer :contentMax="600" :marginMin="16">
 		<div class="_gaps_m">
 			<FormInfo warn>{{ i18n.ts.editTheseSettingsMayBreakAccount }}</FormInfo>
 
@@ -20,7 +25,7 @@
 						<template #value>{{ key }}</template>
 					</MkKeyValue>
 				</FormSplit>
-				
+
 				<MkTextarea v-model="valueForEditor" tall class="_monospace">
 					<template #label>{{ i18n.ts.value }} (JSON)</template>
 				</MkTextarea>
@@ -42,9 +47,9 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import JSON5 from 'json5';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import MkButton from '@/components/MkButton.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -118,6 +123,3 @@ definePageMetadata({
 	icon: 'ti ti-adjustments',
 });
 </script>
-
-<style lang="scss" scoped>
-</style>

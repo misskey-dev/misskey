@@ -1,9 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
-import type { ClipNotesRepository, ClipsRepository } from '@/models/index.js';
+import type { ClipNotesRepository, ClipsRepository, NotesRepository } from '@/models/_.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
@@ -12,6 +17,8 @@ export const meta = {
 	tags: ['account', 'notes', 'clips'],
 
 	requireCredential: true,
+
+	prohibitMoved: true,
 
 	kind: 'write:account',
 
@@ -56,15 +63,17 @@ export const paramDef = {
 	required: ['clipId', 'noteId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.clipsRepository)
 		private clipsRepository: ClipsRepository,
 
 		@Inject(DI.clipNotesRepository)
 		private clipNotesRepository: ClipNotesRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
 
 		private idService: IdService,
 		private roleService: RoleService,
@@ -85,12 +94,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				throw e;
 			});
 
-			const exist = await this.clipNotesRepository.findOneBy({
-				noteId: note.id,
-				clipId: clip.id,
+			const exist = await this.clipNotesRepository.exist({
+				where: {
+					noteId: note.id,
+					clipId: clip.id,
+				},
 			});
 
-			if (exist != null) {
+			if (exist) {
 				throw new ApiError(meta.errors.alreadyClipped);
 			}
 
@@ -107,9 +118,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				clipId: clip.id,
 			});
 
-			await this.clipsRepository.update(clip.id, {
+			this.clipsRepository.update(clip.id, {
 				lastClippedAt: new Date(),
 			});
+
+			this.notesRepository.increment({ id: note.id }, 'clippedCount', 1);
 		});
 	}
 }

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import {
 	packedUserLiteSchema,
 	packedUserDetailedNotMeOnlySchema,
@@ -19,6 +24,7 @@ import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js'
 import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
 import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
+import { packedInviteCodeSchema } from '@/models/json-schema/invite-code.js';
 import { packedPageSchema } from '@/models/json-schema/page.js';
 import { packedNoteFavoriteSchema } from '@/models/json-schema/note-favorite.js';
 import { packedChannelSchema } from '@/models/json-schema/channel.js';
@@ -29,6 +35,7 @@ import { packedQueueCountSchema } from '@/models/json-schema/queue.js';
 import { packedGalleryPostSchema } from '@/models/json-schema/gallery-post.js';
 import { packedEmojiDetailedSchema, packedEmojiSimpleSchema } from '@/models/json-schema/emoji.js';
 import { packedFlashSchema } from '@/models/json-schema/flash.js';
+import { packedAnnouncementSchema } from '@/models/json-schema/announcement.js';
 
 export const refs = {
 	UserLite: packedUserLiteSchema,
@@ -40,6 +47,7 @@ export const refs = {
 	User: packedUserSchema,
 
 	UserList: packedUserListSchema,
+	Announcement: packedAnnouncementSchema,
 	App: packedAppSchema,
 	Note: packedNoteSchema,
 	NoteReaction: packedNoteReactionSchema,
@@ -52,6 +60,7 @@ export const refs = {
 	RenoteMuting: packedRenoteMutingSchema,
 	Blocking: packedBlockingSchema,
 	Hashtag: packedHashtagSchema,
+	InviteCode: packedInviteCodeSchema,
 	Page: packedPageSchema,
 	Channel: packedChannelSchema,
 	QueueCount: packedQueueCountSchema,
@@ -131,7 +140,7 @@ type NullOrUndefined<p extends Schema, T> =
 	| T;
 
 // https://stackoverflow.com/questions/54938141/typescript-convert-union-to-intersection
-// Get intersection from union 
+// Get intersection from union
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
 type PartialIntersection<T> = Partial<UnionToIntersection<T>>;
 

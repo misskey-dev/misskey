@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 const dateTimeIntervals = {
 	'day': 86400000,
 	'hour': 3600000,
@@ -5,15 +10,16 @@ const dateTimeIntervals = {
 };
 
 export function dateUTC(time: number[]): Date {
-	const d = time.length === 2 ? Date.UTC(time[0], time[1])
-					: time.length === 3 ? Date.UTC(time[0], time[1], time[2])
-					: time.length === 4 ? Date.UTC(time[0], time[1], time[2], time[3])
-					: time.length === 5 ? Date.UTC(time[0], time[1], time[2], time[3], time[4])
-					: time.length === 6 ? Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5])
-					: time.length === 7 ? Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5], time[6])
-					: null;
+	const d =
+		time.length === 2 ? Date.UTC(time[0], time[1])
+		: time.length === 3 ? Date.UTC(time[0], time[1], time[2])
+		: time.length === 4 ? Date.UTC(time[0], time[1], time[2], time[3])
+		: time.length === 5 ? Date.UTC(time[0], time[1], time[2], time[3], time[4])
+		: time.length === 6 ? Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5])
+		: time.length === 7 ? Date.UTC(time[0], time[1], time[2], time[3], time[4], time[5], time[6])
+		: null;
 
-	if (!d) throw 'wrong number of arguments';
+	if (!d) throw new Error('wrong number of arguments');
 
 	return new Date(d);
 }

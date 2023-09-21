@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m rsljpzjq">
 	<div v-adaptive-border class="rfqxtzch _panel">
@@ -73,16 +78,16 @@ import MkSelect from '@/components/MkSelect.vue';
 import FormSection from '@/components/form/section.vue';
 import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
-import { getBuiltinThemesRef } from '@/scripts/theme';
-import { selectFile } from '@/scripts/select-file';
-import { isDeviceDarkmode } from '@/scripts/is-device-darkmode';
-import { ColdDeviceStorage, defaultStore } from '@/store';
-import { i18n } from '@/i18n';
-import { instance } from '@/instance';
-import { uniqueBy } from '@/scripts/array';
+import { getBuiltinThemesRef } from '@/scripts/theme.js';
+import { selectFile } from '@/scripts/select-file.js';
+import { isDeviceDarkmode } from '@/scripts/is-device-darkmode.js';
+import { ColdDeviceStorage, defaultStore } from '@/store.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { uniqueBy } from '@/scripts/array.js';
 import { fetchThemes, getThemes } from '@/theme-store';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { miLocalStorage } from '@/local-storage';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 const installedThemes = ref(getThemes());
 const builtinThemes = getBuiltinThemesRef();

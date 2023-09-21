@@ -19,5 +19,6 @@ https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md
 ## Checklist
 - [ ] Read the [contribution guide](https://github.com/misskey-dev/misskey/blob/develop/CONTRIBUTING.md)
 - [ ] Test working in a local environment
+- [ ] (If needed) Add story of storybook
 - [ ] (If needed) Update CHANGELOG.md
 - [ ] (If possible) Add tests

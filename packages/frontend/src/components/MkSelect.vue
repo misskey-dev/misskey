@@ -1,13 +1,18 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="vblkjoeq">
-	<div class="label" @click="focus"><slot name="label"></slot></div>
-	<div ref="container" class="input" :class="{ inline, disabled, focused }" @mousedown.prevent="show">
-		<div ref="prefixEl" class="prefix"><slot name="prefix"></slot></div>
+<div>
+	<div :class="$style.label" @click="focus"><slot name="label"></slot></div>
+	<div ref="container" :class="[$style.input, { [$style.inline]: inline, [$style.disabled]: disabled, [$style.focused]: focused }]" @mousedown.prevent="show">
+		<div ref="prefixEl" :class="$style.prefix"><slot name="prefix"></slot></div>
 		<select
 			ref="inputEl"
 			v-model="v"
 			v-adaptive-border
-			class="select"
+			:class="$style.inputCore"
 			:disabled="disabled"
 			:required="required"
 			:readonly="readonly"
@@ -18,9 +23,9 @@
 		>
 			<slot></slot>
 		</select>
-		<div ref="suffixEl" class="suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
+		<div ref="suffixEl" :class="$style.suffix"><i class="ti ti-chevron-down" :class="[$style.chevron, { [$style.chevronOpening]: opening }]"></i></div>
 	</div>
-	<div class="caption"><slot name="caption"></slot></div>
+	<div :class="$style.caption"><slot name="caption"></slot></div>
 
 	<MkButton v-if="manualSave && changed" primary @click="updated"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 </div>
@@ -29,9 +34,9 @@
 <script lang="ts" setup>
 import { onMounted, nextTick, ref, watch, computed, toRefs, VNode, useSlots } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { useInterval } from '@/scripts/use-interval';
-import { i18n } from '@/i18n';
+import * as os from '@/os.js';
+import { useInterval } from '@/scripts/use-interval.js';
+import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -169,121 +174,116 @@ function show(ev: MouseEvent) {
 }
 </script>
 
-<style lang="scss" scoped>
-.vblkjoeq {
-	> .label {
-		font-size: 0.85em;
-		padding: 0 0 8px 0;
-		user-select: none;
+<style lang="scss" module>
+.label {
+	font-size: 0.85em;
+	padding: 0 0 8px 0;
+	user-select: none;
 
-		&:empty {
-			display: none;
+	&:empty {
+		display: none;
+	}
+}
+
+.caption {
+	font-size: 0.85em;
+	padding: 8px 0 0 0;
+	color: var(--fgTransparentWeak);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.input {
+	position: relative;
+	cursor: pointer;
+
+	&.inline {
+		display: inline-block;
+		margin: 0;
+	}
+
+	&.focused {
+		> .inputCore {
+			border-color: var(--accent) !important;
+			//box-shadow: 0 0 0 4px var(--focus);
 		}
 	}
 
-	> .caption {
-		font-size: 0.85em;
-		padding: 8px 0 0 0;
-		color: var(--fgTransparentWeak);
+	&.disabled {
+		opacity: 0.7;
 
-		&:empty {
-			display: none;
+		&,
+		> .inputCore {
+			cursor: not-allowed !important;
 		}
 	}
 
-	> .input {
-		position: relative;
-		cursor: pointer;
-
-		&:hover {
-			> .select {
-				border-color: var(--inputBorderHover) !important;
-			}
-		}
-
-		> .select {
-			appearance: none;
-			-webkit-appearance: none;
-			display: block;
-			height: v-bind("height + 'px'");
-			width: 100%;
-			margin: 0;
-			padding: 0 12px;
-			font: inherit;
-			font-weight: normal;
-			font-size: 1em;
-			color: var(--fg);
-			background: var(--panel);
-			border: solid 1px var(--panel);
-			border-radius: 6px;
-			outline: none;
-			box-shadow: none;
-			box-sizing: border-box;
-			cursor: pointer;
-			transition: border-color 0.1s ease-out;
-			pointer-events: none;
-			user-select: none;
-		}
-
-		> .prefix,
-		> .suffix {
-			display: flex;
-			align-items: center;
-			position: absolute;
-			z-index: 1;
-			top: 0;
-			padding: 0 12px;
-			font-size: 1em;
-			height: v-bind("height + 'px'");
-			pointer-events: none;
-
-			&:empty {
-				display: none;
-			}
-
-			> * {
-				display: inline-block;
-				min-width: 16px;
-				max-width: 150px;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-			}
-		}
-
-		> .prefix {
-			left: 0;
-			padding-right: 6px;
-		}
-
-		> .suffix {
-			right: 0;
-			padding-left: 6px;
-		}
-
-		&.inline {
-			display: inline-block;
-			margin: 0;
-		}
-
-		&.focused {
-			> select {
-				border-color: var(--accent) !important;
-			}
-		}
-
-		&.disabled {
-			opacity: 0.7;
-
-			&, * {
-				cursor: not-allowed !important;
-			}
+	&:hover {
+		> .inputCore {
+			border-color: var(--inputBorderHover) !important;
 		}
 	}
 }
-</style>
 
-<style lang="scss" module>
+.inputCore {
+	appearance: none;
+	-webkit-appearance: none;
+	display: block;
+	height: v-bind("height + 'px'");
+	width: 100%;
+	margin: 0;
+	padding: 0 12px;
+	font: inherit;
+	font-weight: normal;
+	font-size: 1em;
+	color: var(--fg);
+	background: var(--panel);
+	border: solid 1px var(--panel);
+	border-radius: 6px;
+	outline: none;
+	box-shadow: none;
+	box-sizing: border-box;
+	transition: border-color 0.1s ease-out;
+	cursor: pointer;
+	pointer-events: none;
+	user-select: none;
+}
+
+.prefix,
+.suffix {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	padding: 0 12px;
+	font-size: 1em;
+	height: v-bind("height + 'px'");
+	min-width: 16px;
+	max-width: 150px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	box-sizing: border-box;
+	pointer-events: none;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.prefix {
+	left: 0;
+	padding-right: 6px;
+}
+
+.suffix {
+	right: 0;
+	padding-left: 6px;
+}
+
 .chevron {
 	transition: transform 0.1s ease-out;
 }

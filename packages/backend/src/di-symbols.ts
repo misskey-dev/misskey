@@ -1,6 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const DI = {
 	config: Symbol('config'),
 	db: Symbol('db'),
+	meilisearch: Symbol('meilisearch'),
 	redis: Symbol('redis'),
 	redisForPub: Symbol('redisForPub'),
 	redisForSub: Symbol('redisForSub'),
@@ -20,10 +26,10 @@ export const DI = {
 	userProfilesRepository: Symbol('userProfilesRepository'),
 	userKeypairsRepository: Symbol('userKeypairsRepository'),
 	userPendingsRepository: Symbol('userPendingsRepository'),
-	attestationChallengesRepository: Symbol('attestationChallengesRepository'),
 	userSecurityKeysRepository: Symbol('userSecurityKeysRepository'),
 	userPublickeysRepository: Symbol('userPublickeysRepository'),
 	userListsRepository: Symbol('userListsRepository'),
+	userListFavoritesRepository: Symbol('userListFavoritesRepository'),
 	userListJoiningsRepository: Symbol('userListJoiningsRepository'),
 	userNotePiningsRepository: Symbol('userNotePiningsRepository'),
 	userIpsRepository: Symbol('userIpsRepository'),

@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { DriveFilesRepository, ChannelsRepository } from '@/models/index.js';
+import type { DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -47,19 +52,21 @@ export const paramDef = {
 		name: { type: 'string', minLength: 1, maxLength: 128 },
 		description: { type: 'string', nullable: true, minLength: 1, maxLength: 2048 },
 		bannerId: { type: 'string', format: 'misskey:id', nullable: true },
+		isArchived: { type: 'boolean', nullable: true },
 		pinnedNoteIds: {
 			type: 'array',
 			items: {
 				type: 'string', format: 'misskey:id',
 			},
 		},
+		color: { type: 'string', minLength: 1, maxLength: 16 },
+		isSensitive: { type: 'boolean', nullable: true },
 	},
 	required: ['channelId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
@@ -104,7 +111,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				...(ps.name !== undefined ? { name: ps.name } : {}),
 				...(ps.description !== undefined ? { description: ps.description } : {}),
 				...(ps.pinnedNoteIds !== undefined ? { pinnedNoteIds: ps.pinnedNoteIds } : {}),
+				...(ps.color !== undefined ? { color: ps.color } : {}),
+				...(typeof ps.isArchived === 'boolean' ? { isArchived: ps.isArchived } : {}),
 				...(banner ? { bannerId: banner.id } : {}),
+				...(typeof ps.isSensitive === 'boolean' ? { isSensitive: ps.isSensitive } : {}),
 			});
 
 			return await this.channelEntityService.pack(channel.id, me);

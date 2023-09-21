@@ -1,30 +1,35 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="700">
-		<div v-if="tab === 'featured'" class="">
+	<MkSpacer :contentMax="700">
+		<div v-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :pagination="featuredFlashsPagination">
 				<div class="_gaps_s">
-					<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+					<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
 				</div>
 			</MkPagination>
 		</div>
 
-		<div v-else-if="tab === 'my'" class="my">
+		<div v-else-if="tab === 'my'">
 			<div class="_gaps">
-				<MkButton class="new" gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
+				<MkButton gradate rounded style="margin: 0 auto;" @click="create()"><i class="ti ti-plus"></i></MkButton>
 				<MkPagination v-slot="{items}" :pagination="myFlashsPagination">
 					<div class="_gaps_s">
-						<MkFlashPreview v-for="flash in items" :key="flash.id" class="" :flash="flash"/>
+						<MkFlashPreview v-for="flash in items" :key="flash.id" :flash="flash"/>
 					</div>
 				</MkPagination>
 			</div>
 		</div>
 
-		<div v-else-if="tab === 'liked'" class="">
+		<div v-else-if="tab === 'liked'">
 			<MkPagination v-slot="{items}" :pagination="likedFlashsPagination">
 				<div class="_gaps_s">
-					<MkFlashPreview v-for="like in items" :key="like.flash.id" class="" :flash="like.flash"/>
+					<MkFlashPreview v-for="like in items" :key="like.flash.id" :flash="like.flash"/>
 				</div>
 			</MkPagination>
 		</div>
@@ -37,9 +42,9 @@ import { computed } from 'vue';
 import MkFlashPreview from '@/components/MkFlashPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkButton from '@/components/MkButton.vue';
-import { useRouter } from '@/router';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import { useRouter } from '@/router.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const router = useRouter();
 
@@ -87,21 +92,3 @@ definePageMetadata(computed(() => ({
 	icon: 'ti ti-player-play',
 })));
 </script>
-
-<style lang="scss" scoped>
-.rknalgpo {
-	&.my .ckltabjg:first-child {
-		margin-top: 16px;
-	}
-
-	.ckltabjg:not(:last-child) {
-		margin-bottom: 8px;
-	}
-
-	@media (min-width: 500px) {
-		.ckltabjg:not(:last-child) {
-			margin-bottom: 16px;
-		}
-	}
-}
-</style>

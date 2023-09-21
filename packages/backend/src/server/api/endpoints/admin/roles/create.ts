@@ -1,6 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { RolesRepository } from '@/models/index.js';
+import type { RolesRepository } from '@/models/_.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
@@ -25,6 +30,7 @@ export const paramDef = {
 		isPublic: { type: 'boolean' },
 		isModerator: { type: 'boolean' },
 		isAdministrator: { type: 'boolean' },
+		isExplorable: { type: 'boolean', default: false }, // optional for backward compatibility
 		asBadge: { type: 'boolean' },
 		canEditMembersByModerator: { type: 'boolean' },
 		displayOrder: { type: 'number' },
@@ -49,9 +55,8 @@ export const paramDef = {
 	],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.rolesRepository)
 		private rolesRepository: RolesRepository,
@@ -76,12 +81,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 				isPublic: ps.isPublic,
 				isAdministrator: ps.isAdministrator,
 				isModerator: ps.isModerator,
+				isExplorable: ps.isExplorable,
 				asBadge: ps.asBadge,
 				canEditMembersByModerator: ps.canEditMembersByModerator,
 				displayOrder: ps.displayOrder,
 				policies: ps.policies,
 			}).then(x => this.rolesRepository.findOneByOrFail(x.identifiers[0]));
-	
+
 			this.globalEventService.publishInternalEvent('roleCreated', created);
 
 			return await this.roleEntityService.pack(created, me);

@@ -1,14 +1,19 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="mk-follow-page">
+<div>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { } from 'vue';
-import * as Acct from 'misskey-js/built/acct';
-import * as os from '@/os';
-import { mainRouter } from '@/router';
-import { i18n } from '@/i18n';
+import * as Misskey from 'misskey-js';
+import * as os from '@/os.js';
+import { mainRouter } from '@/router.js';
+import { i18n } from '@/i18n.js';
 
 async function follow(user): Promise<void> {
 	const { canceled } = await os.confirm({
@@ -20,7 +25,7 @@ async function follow(user): Promise<void> {
 		window.close();
 		return;
 	}
-	
+
 	os.apiWithDialog('following/create', {
 		userId: user.id,
 	});
@@ -52,7 +57,7 @@ if (acct.startsWith('https://')) {
 		}
 	});
 } else {
-	promise = os.api('users/show', Acct.parse(acct));
+	promise = os.api('users/show', Misskey.acct.parse(acct));
 	promise.then(user => {
 		follow(user);
 	});

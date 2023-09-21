@@ -1,15 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { User } from '@/models/entities/User.js';
-import type { UserKeypairsRepository } from '@/models/index.js';
+import type { MiUser } from '@/models/entities/User.js';
+import type { UserKeypairsRepository } from '@/models/_.js';
 import { RedisKVCache } from '@/misc/cache.js';
-import type { UserKeypair } from '@/models/entities/UserKeypair.js';
+import type { MiUserKeypair } from '@/models/entities/UserKeypair.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()
-export class UserKeypairService {
-	private cache: RedisKVCache<UserKeypair>;
+export class UserKeypairService implements OnApplicationShutdown {
+	private cache: RedisKVCache<MiUserKeypair>;
 
 	constructor(
 		@Inject(DI.redis)
@@ -18,7 +23,7 @@ export class UserKeypairService {
 		@Inject(DI.userKeypairsRepository)
 		private userKeypairsRepository: UserKeypairsRepository,
 	) {
-		this.cache = new RedisKVCache<UserKeypair>(this.redisClient, 'userKeypair', {
+		this.cache = new RedisKVCache<MiUserKeypair>(this.redisClient, 'userKeypair', {
 			lifetime: 1000 * 60 * 60 * 24, // 24h
 			memoryCacheLifetime: Infinity,
 			fetcher: (key) => this.userKeypairsRepository.findOneByOrFail({ userId: key }),
@@ -28,7 +33,17 @@ export class UserKeypairService {
 	}
 
 	@bindThis
-	public async getUserKeypair(userId: User['id']): Promise<UserKeypair> {
+	public async getUserKeypair(userId: MiUser['id']): Promise<MiUserKeypair> {
 		return await this.cache.fetch(userId);
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.cache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

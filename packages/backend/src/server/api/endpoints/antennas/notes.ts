@@ -1,7 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NotesRepository, AntennasRepository } from '@/models/index.js';
+import type { NotesRepository, AntennasRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NoteReadService } from '@/core/NoteReadService.js';
 import { DI } from '@/di-symbols.js';
@@ -48,9 +53,8 @@ export const paramDef = {
 	required: ['antennaId'],
 } as const;
 
-// eslint-disable-next-line import/no-default-export
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> {
+export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
@@ -75,6 +79,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (antenna == null) {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
+
+			this.antennasRepository.update(antenna.id, {
+				isActive: true,
+				lastUsedAt: new Date(),
+			});
 
 			const limit = ps.limit + (ps.untilId ? 1 : 0) + (ps.sinceId ? 1 : 0); // untilIdに指定したものも含まれるため+1
 			const noteIdsRes = await this.redisClient.xrevrange(
@@ -111,10 +120,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			if (notes.length > 0) {
 				this.noteReadService.read(me.id, notes);
 			}
-
-			this.antennasRepository.update(antenna.id, {
-				lastUsedAt: new Date(),
-			});
 
 			return await this.noteEntityService.packMany(notes, me);
 		});

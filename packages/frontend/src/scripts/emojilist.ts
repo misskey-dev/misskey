@@ -1,8 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export const unicodeEmojiCategories = ['face', 'people', 'animals_and_nature', 'food_and_drink', 'activity', 'travel_and_places', 'objects', 'symbols', 'flags'] as const;
 
 export type UnicodeEmojiDef = {
 	name: string;
-	keywords: string[];
 	char: string;
 	category: typeof unicodeEmojiCategories[number];
 }
@@ -10,11 +14,16 @@ export type UnicodeEmojiDef = {
 // initial converted from https://github.com/muan/emojilib/commit/242fe68be86ed6536843b83f7e32f376468b38fb
 import _emojilist from '../emojilist.json';
 
-export const emojilist = _emojilist as UnicodeEmojiDef[];
+export const emojilist: UnicodeEmojiDef[] = _emojilist.map(x => ({
+	name: x[1] as string,
+	char: x[0] as string,
+	category: unicodeEmojiCategories[x[2]],
+}));
 
 const _indexByChar = new Map<string, number>();
 const _charGroupByCategory = new Map<string, string[]>();
-emojilist.forEach((emo, i) => {
+for (let i = 0; i < emojilist.length; i++) {
+	const emo = emojilist[i];
 	_indexByChar.set(emo.char, i);
 
 	if (_charGroupByCategory.has(emo.category)) {
@@ -22,14 +31,14 @@ emojilist.forEach((emo, i) => {
 	} else {
 		_charGroupByCategory.set(emo.category, [emo.char]);
 	}
-});
+}
 
 export const emojiCharByCategory = _charGroupByCategory;
 
-export function getEmojiName(char: string): string | undefined {
+export function getEmojiName(char: string): string | null {
 	const idx = _indexByChar.get(char);
-	if (typeof idx === 'undefined') {
-		return undefined;
+	if (idx == null) {
+		return null;
 	} else {
 		return emojilist[idx].name;
 	}

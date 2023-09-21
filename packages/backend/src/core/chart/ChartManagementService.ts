@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { Injectable } from '@nestjs/common';
 
 import { bindThis } from '@/decorators.js';
@@ -18,7 +23,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 @Injectable()
 export class ChartManagementService implements OnApplicationShutdown {
 	private charts;
-	private saveIntervalId: NodeJS.Timer;
+	private saveIntervalId: NodeJS.Timeout;
 
 	constructor(
 		private federationChart: FederationChart,
@@ -60,12 +65,18 @@ export class ChartManagementService implements OnApplicationShutdown {
 		}, 1000 * 60 * 20);
 	}
 
-	async onApplicationShutdown(signal: string): Promise<void> {
+	@bindThis
+	public async dispose(): Promise<void> {
 		clearInterval(this.saveIntervalId);
 		if (process.env.NODE_ENV !== 'test') {
 			await Promise.all(
 				this.charts.map(chart => chart.save()),
 			);
 		}
+	}
+
+	@bindThis
+	async onApplicationShutdown(signal: string): Promise<void> {
+		await this.dispose();
 	}
 }

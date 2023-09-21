@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="600" :margin-min="16">
+	<MkSpacer :contentMax="600" :marginMin="16">
 		<div class="_gaps_m">
 			<FormSplit>
 				<MkKeyValue>
@@ -13,7 +18,7 @@
 					<template #value>{{ scope.join('/') }}</template>
 				</MkKeyValue>
 			</FormSplit>
-			
+
 			<MkButton primary @click="createKey">{{ i18n.ts._registry.createKey }}</MkButton>
 
 			<FormSection v-if="keys">
@@ -30,9 +35,9 @@
 <script lang="ts" setup>
 import { watch } from 'vue';
 import JSON5 from 'json5';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -93,6 +98,3 @@ definePageMetadata({
 	icon: 'ti ti-adjustments',
 });
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -52,6 +52,12 @@ describe('After setup instance', () => {
 		cy.intercept('POST', '/api/signup').as('signup');
 
 		cy.get('[data-cy-signup]').click();
+		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
+		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
+		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
+		cy.get('[data-cy-signup-rules-continue]').click();
+
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
 		cy.get('[data-cy-signup-username] input').type('alice');
 		cy.get('[data-cy-signup-submit]').should('be.disabled');
@@ -71,6 +77,12 @@ describe('After setup instance', () => {
 
 		// ユーザー名が重複している場合の挙動確認
 		cy.get('[data-cy-signup]').click();
+		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
+		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
+		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
+		cy.get('[data-cy-signup-rules-continue]').click();
+
 		cy.get('[data-cy-signup-username] input').type('alice');
 		cy.get('[data-cy-signup-password] input').type('alice1234');
 		cy.get('[data-cy-signup-password-retype] input').type('alice1234');
@@ -149,10 +161,59 @@ describe('After user signed in', () => {
 	});
 
   it('successfully loads', () => {
-		cy.get('[data-cy-open-post-form]').should('be.visible');
+		cy.get('[data-cy-user-setup-continue]').should('be.visible');
   });
 
+	it('account setup wizard', () => {
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		cy.get('[data-cy-user-setup-user-name] input').type('ありす');
+		cy.get('[data-cy-user-setup-user-description] textarea').type('ほげ');
+		// TODO: アイコン設定テスト
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		// プライバシー設定
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		// フォローはスキップ
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		// プッシュ通知設定はスキップ
+
+		cy.get('[data-cy-user-setup-continue]').click();
+
+		cy.get('[data-cy-user-setup-continue]').click();
+  });
+});
+
+describe('After user setup', () => {
+	beforeEach(() => {
+		cy.resetState();
+
+		// インスタンス初期セットアップ
+		cy.registerUser('admin', 'pass', true);
+
+		// ユーザー作成
+		cy.registerUser('alice', 'alice1234');
+
+		cy.login('alice', 'alice1234');
+
+		// アカウント初期設定ウィザード
+		cy.get('[data-cy-user-setup] [data-cy-modal-window-close]').click();
+		cy.get('[data-cy-modal-dialog-ok]').click();
+	});
+
+	afterEach(() => {
+		// テスト終了直前にページ遷移するようなテストケース(例えばアカウント作成)だと、たぶんCypressのバグでブラウザの内容が次のテストケースに引き継がれてしまう(例えばアカウントが作成し終わった段階からテストが始まる)。
+		// waitを入れることでそれを防止できる
+		cy.wait(1000);
+	});
+
 	it('note', () => {
+		cy.get('[data-cy-open-post-form]').should('be.visible');
 		cy.get('[data-cy-open-post-form]').click();
 		cy.get('[data-cy-post-form-text]').type('Hello, Misskey!');
 		cy.get('[data-cy-open-post-form-submit]').click();

@@ -21,6 +21,8 @@ import './commands'
 
 Cypress.on('uncaught:exception', (err, runnable) => {
 	if ([
+		'The source image cannot be decoded',
+
 		// Chrome
 		'ResizeObserver loop limit exceeded',
 

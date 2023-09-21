@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="timctyfi" :class="{ disabled, easing }">
 	<div class="label"><slot name="label"></slot></div>
@@ -17,8 +22,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch } from 'vue';
-import * as os from '@/os';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch, shallowRef } from 'vue';
+import * as os from '@/os.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;
@@ -39,8 +44,8 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: number): void;
 }>();
 
-const containerEl = ref<HTMLElement>();
-const thumbEl = ref<HTMLElement>();
+const containerEl = shallowRef<HTMLElement>();
+const thumbEl = shallowRef<HTMLElement>();
 
 const rawValue = ref((props.modelValue - props.min) / (props.max - props.min));
 const steppedRawValue = computed(() => {

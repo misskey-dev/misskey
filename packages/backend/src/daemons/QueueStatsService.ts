@@ -1,7 +1,16 @@
-import { Injectable } from '@nestjs/common';
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Inject, Injectable } from '@nestjs/common';
 import Xev from 'xev';
+import * as Bull from 'bullmq';
 import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
+import { QUEUE, baseQueueOptions } from '@/queue/const.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 
 const ev = new Xev();
@@ -10,9 +19,12 @@ const interval = 10000;
 
 @Injectable()
 export class QueueStatsService implements OnApplicationShutdown {
-	private intervalId: NodeJS.Timer;
+	private intervalId: NodeJS.Timeout;
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
 		private queueService: QueueService,
 	) {
 	}
@@ -31,11 +43,14 @@ export class QueueStatsService implements OnApplicationShutdown {
 		let activeDeliverJobs = 0;
 		let activeInboxJobs = 0;
 
-		this.queueService.deliverQueue.on('global:active', () => {
+		const deliverQueueEvents = new Bull.QueueEvents(QUEUE.DELIVER, baseQueueOptions(this.config, QUEUE.DELIVER));
+		const inboxQueueEvents = new Bull.QueueEvents(QUEUE.INBOX, baseQueueOptions(this.config, QUEUE.INBOX));
+
+		deliverQueueEvents.on('active', () => {
 			activeDeliverJobs++;
 		});
 
-		this.queueService.inboxQueue.on('global:active', () => {
+		inboxQueueEvents.on('active', () => {
 			activeInboxJobs++;
 		});
 
@@ -73,7 +88,12 @@ export class QueueStatsService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	public onApplicationShutdown(signal?: string | undefined) {
+	public dispose(): void {
 		clearInterval(this.intervalId);
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }

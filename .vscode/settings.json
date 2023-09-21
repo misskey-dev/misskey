@@ -6,5 +6,6 @@
     "files.associations": {
         "*.test.ts": "typescript"
     },
+    "jest.jestCommandLine": "pnpm run jest",
     "jest.autoRun": "off"
 }

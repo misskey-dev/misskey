@@ -1,7 +1,12 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<MkSpacer :content-max="700">
+<MkSpacer :contentMax="700">
 	<MkPagination v-slot="{items}" :pagination="pagination">
-		<div class="jrnovfpt">
+		<div :class="$style.root">
 			<MkGalleryPostPreview v-for="post in items" :key="post.id" :post="post" class="post"/>
 		</div>
 	</MkPagination>
@@ -10,12 +15,12 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import * as misskey from 'misskey-js';
+import * as Misskey from 'misskey-js';
 import MkGalleryPostPreview from '@/components/MkGalleryPostPreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 
 const props = withDefaults(defineProps<{
-	user: misskey.entities.User;
+	user: Misskey.entities.User;
 }>(), {
 });
 
@@ -28,8 +33,8 @@ const pagination = {
 };
 </script>
 
-<style lang="scss" scoped>
-.jrnovfpt {
+<style lang="scss" module>
+.root {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 	grid-gap: 12px;

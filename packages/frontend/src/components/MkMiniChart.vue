@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" style="overflow:visible">
 	<defs>
@@ -29,7 +34,7 @@
 import { watch } from 'vue';
 import { v4 as uuid } from 'uuid';
 import tinycolor from 'tinycolor2';
-import { useInterval } from '@/scripts/use-interval';
+import { useInterval } from '@/scripts/use-interval.js';
 
 const props = defineProps<{
 	src: number[];
@@ -59,8 +64,8 @@ function draw(): void {
 
 	polygonPoints = `0,${ viewBoxY } ${ polylinePoints } ${ viewBoxX },${ viewBoxY }`;
 
-	headX = _polylinePoints[_polylinePoints.length - 1][0];
-	headY = _polylinePoints[_polylinePoints.length - 1][1];
+	headX = _polylinePoints.at(-1)![0];
+	headY = _polylinePoints.at(-1)![1];
 }
 
 watch(() => props.src, draw, { immediate: true });

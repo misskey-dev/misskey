@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div>
 	<div v-if="c.type === 'root'" :class="$style.root">
@@ -11,35 +16,42 @@
 	<div v-else-if="c.type === 'buttons'" class="_buttons" :style="{ justifyContent: align }">
 		<MkButton v-for="button in c.buttons" :primary="button.primary" :rounded="button.rounded" :disabled="button.disabled" inline :small="size === 'small'" @click="button.onClick">{{ button.text }}</MkButton>
 	</div>
-	<MkSwitch v-else-if="c.type === 'switch'" :model-value="valueForSwitch" @update:model-value="onSwitchUpdate">
+	<MkSwitch v-else-if="c.type === 'switch'" :modelValue="valueForSwitch" @update:modelValue="onSwitchUpdate">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkSwitch>
-	<MkTextarea v-else-if="c.type === 'textarea'" :model-value="c.default" @update:model-value="c.onInput">
+	<MkTextarea v-else-if="c.type === 'textarea'" :modelValue="c.default" @update:modelValue="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkTextarea>
-	<MkInput v-else-if="c.type === 'textInput'" :small="size === 'small'" :model-value="c.default" @update:model-value="c.onInput">
+	<MkInput v-else-if="c.type === 'textInput'" :small="size === 'small'" :modelValue="c.default" @update:modelValue="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkInput v-else-if="c.type === 'numberInput'" :small="size === 'small'" :model-value="c.default" type="number" @update:model-value="c.onInput">
+	<MkInput v-else-if="c.type === 'numberInput'" :small="size === 'small'" :modelValue="c.default" type="number" @update:modelValue="c.onInput">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 	</MkInput>
-	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :model-value="c.default" @update:model-value="c.onChange">
+	<MkSelect v-else-if="c.type === 'select'" :small="size === 'small'" :modelValue="c.default" @update:modelValue="c.onChange">
 		<template v-if="c.label" #label>{{ c.label }}</template>
 		<template v-if="c.caption" #caption>{{ c.caption }}</template>
 		<option v-for="item in c.items" :key="item.value" :value="item.value">{{ item.text }}</option>
 	</MkSelect>
 	<MkButton v-else-if="c.type === 'postFormButton'" :primary="c.primary" :rounded="c.rounded" :small="size === 'small'" inline @click="openPostForm">{{ c.text }}</MkButton>
-	<MkFolder v-else-if="c.type === 'folder'" :default-open="c.opened">
+	<div v-else-if="c.type === 'postForm'" :class="$style.postForm">
+		<MkPostForm
+			fixed
+			:instant="true"
+			:initialText="c.form.text"
+		/>
+	</div>
+	<MkFolder v-else-if="c.type === 'folder'" :defaultOpen="c.opened">
 		<template #label>{{ c.title }}</template>
 		<template v-for="child in c.children" :key="child">
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size"/>
 		</template>
 	</MkFolder>
-	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace', [$style.containerCenter]: c.align === 'center' }]" :style="{ backgroundColor: c.bgColor ?? null, color: c.fgColor ?? null, borderWidth: c.borderWidth ? `${c.borderWidth}px` : 0, borderColor: c.borderColor ?? 'var(--divider)', padding: c.padding ? `${c.padding}px` : 0, borderRadius: c.rounded ? '8px' : 0 }">
+	<div v-else-if="c.type === 'container'" :class="[$style.container, { [$style.fontSerif]: c.font === 'serif', [$style.fontMonospace]: c.font === 'monospace' }]" :style="{ textAlign: c.align ?? null, backgroundColor: c.bgColor ?? null, color: c.fgColor ?? null, borderWidth: c.borderWidth ? `${c.borderWidth}px` : 0, borderColor: c.borderColor ?? 'var(--divider)', padding: c.padding ? `${c.padding}px` : 0, borderRadius: c.rounded ? '8px' : 0 }">
 		<template v-for="child in c.children" :key="child">
 			<MkAsUi v-if="!g(child).hidden" :component="g(child)" :components="props.components" :size="size" :align="c.align"/>
 		</template>
@@ -49,14 +61,15 @@
 
 <script lang="ts" setup>
 import { Ref } from 'vue';
-import * as os from '@/os';
+import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import { AsUiComponent } from '@/scripts/aiscript/ui';
+import { AsUiComponent } from '@/scripts/aiscript/ui.js';
 import MkFolder from '@/components/MkFolder.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
@@ -102,15 +115,16 @@ function openPostForm() {
 	gap: 12px;
 }
 
-.containerCenter {
-	text-align: center;
-}
-
 .fontSerif {
 	font-family: serif;
 }
 
 .fontMonospace {
 	font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+}
+
+.postForm {
+	background: var(--bg);
+	border-radius: 8px;
 }
 </style>

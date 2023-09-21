@@ -1,14 +1,19 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <MkStickyContainer>
 	<template #header><XHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :content-max="800">
+	<MkSpacer :contentMax="800">
 		<div class="_gaps">
 			<div v-for="relay in relays" :key="relay.inbox" class="relaycxt _panel" style="padding: 16px;">
 				<div>{{ relay.inbox }}</div>
-				<div class="status">
-					<i v-if="relay.status === 'accepted'" class="ti ti-check icon accepted"></i>
-					<i v-else-if="relay.status === 'rejected'" class="ti ti-ban icon rejected"></i>
-					<i v-else class="ti ti-clock icon requesting"></i>
+				<div style="margin: 8px 0;">
+					<i v-if="relay.status === 'accepted'" class="ti ti-check" :class="$style.icon" style="color: var(--success);"></i>
+					<i v-else-if="relay.status === 'rejected'" class="ti ti-ban" :class="$style.icon" style="color: var(--error);"></i>
+					<i v-else class="ti ti-clock" :class="$style.icon"></i>
 					<span>{{ i18n.t(`_relayStatus.${relay.status}`) }}</span>
 				</div>
 				<MkButton class="button" inline danger @click="remove(relay.inbox)"><i class="ti ti-trash"></i> {{ i18n.ts.remove }}</MkButton>
@@ -22,9 +27,9 @@
 import { } from 'vue';
 import XHeader from './_header_.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 let relays: any[] = $ref([]);
 
@@ -83,23 +88,9 @@ definePageMetadata({
 });
 </script>
 
-<style lang="scss" scoped>
-.relaycxt {
-	> .status {
-		margin: 8px 0;
-
-		> .icon {
-			width: 1em;
-			margin-right: 0.75em;
-
-			&.accepted {
-				color: var(--success);
-			}
-
-			&.rejected {
-				color: var(--error);
-			}
-		}
-	}
+<style lang="scss" module>
+.icon {
+	width: 1em;
+	margin-right: 0.75em;
 }
 </style>

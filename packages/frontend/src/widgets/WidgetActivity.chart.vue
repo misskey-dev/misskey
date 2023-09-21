@@ -1,26 +1,35 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" @mousedown.prevent="onMousedown">
+<svg :viewBox="`0 0 ${ viewBoxX } ${ viewBoxY }`" :class="$style.root" @mousedown.prevent="onMousedown">
 	<polyline
 		:points="pointsNote"
 		fill="none"
 		stroke-width="1"
-		stroke="#41ddde"/>
+		stroke="#41ddde"
+	/>
 	<polyline
 		:points="pointsReply"
 		fill="none"
 		stroke-width="1"
-		stroke="#f7796c"/>
+		stroke="#f7796c"
+	/>
 	<polyline
 		:points="pointsRenote"
 		fill="none"
 		stroke-width="1"
-		stroke="#a1de41"/>
+		stroke="#a1de41"
+	/>
 	<polyline
 		:points="pointsTotal"
 		fill="none"
 		stroke-width="1"
 		stroke="#555"
-		stroke-dasharray="2 2"/>
+		stroke-dasharray="2 2"
+	/>
 </svg>
 </template>
 
@@ -81,8 +90,8 @@ function render() {
 }
 </script>
 
-<style lang="scss" scoped>
-svg {
+<style lang="scss" module>
+.root {
 	display: block;
 	padding: 16px;
 	width: 100%;

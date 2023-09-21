@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
 <div class="_gaps_m">
 	<FormSection first>
@@ -9,7 +14,7 @@
 
 	<FormSection>
 		<template #label>{{ i18n.ts.signinHistory }}</template>
-		<MkPagination :pagination="pagination" disable-auto-load>
+		<MkPagination :pagination="pagination" disableAutoLoad>
 			<template #default="{items}">
 				<div>
 					<div v-for="item in items" :key="item.id" v-panel class="timnmucd">
@@ -40,9 +45,9 @@ import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import * as os from '@/os';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
 
 const pagination = {
 	endpoint: 'i/signin-history' as const,
@@ -78,7 +83,7 @@ async function change() {
 		});
 		return;
 	}
-	
+
 	os.apiWithDialog('i/change-password', {
 		currentPassword,
 		newPassword,

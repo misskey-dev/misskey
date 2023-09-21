@@ -1,14 +1,20 @@
+<!--
+SPDX-FileCopyrightText: syuilo and other misskey contributors
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <template>
-<div class="geegznzt">
+<div>
 	<XAntenna :antenna="draft" @created="onAntennaCreated"/>
 </div>
 </template>
 
 <script lang="ts" setup>
 import XAntenna from './editor.vue';
-import { i18n } from '@/i18n';
-import { definePageMetadata } from '@/scripts/page-metadata';
-import { useRouter } from '@/router';
+import { i18n } from '@/i18n.js';
+import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { useRouter } from '@/router.js';
+import { antennasCache } from '@/cache';
 
 const router = useRouter();
 
@@ -26,19 +32,12 @@ let draft = $ref({
 });
 
 function onAntennaCreated() {
+	antennasCache.delete();
 	router.push('/my/antennas');
 }
-
-const headerActions = $computed(() => []);
-
-const headerTabs = $computed(() => []);
 
 definePageMetadata({
 	title: i18n.ts.manageAntennas,
 	icon: 'ti ti-antenna',
 });
 </script>
-
-<style lang="scss" scoped>
-
-</style>

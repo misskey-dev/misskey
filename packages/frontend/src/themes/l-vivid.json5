@@ -52,6 +52,7 @@
 		driveFolderBg: ':alpha<0.3<@accent',
 		fgHighlighted: ':darken<3<@fg',
 		fgTransparent: ':alpha<0.5<@fg',
+		fgOnWhite: '@accent',
 		panelHeaderBg: ':lighten<3<@panel',
 		panelHeaderFg: '@fg',
 		htmlThemeColor: '@bg',
