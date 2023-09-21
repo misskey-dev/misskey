@@ -182,9 +182,6 @@ importers:
       fastify:
         specifier: 4.23.2
         version: 4.23.2
-      fastify-graceful-shutdown:
-        specifier: ^3.5.1
-        version: 3.5.1
       feed:
         specifier: 4.2.2
         version: 4.2.2
@@ -11696,20 +11693,8 @@ packages:
       strnum: 1.0.5
     dev: false
 
-  /fastify-graceful-shutdown@3.5.1:
-    resolution: {integrity: sha512-fNwwCn8ob+Ykjg1iFgQrhbxNryXxUAGWD8yxz93gUgwAFgavd7rsOO/RN1oQskzltWBjWTB2KAqeF8q4XrJIkA==}
-    engines: {node: '>=16.0.0'}
-    dependencies:
-      fastify-plugin: 4.5.1
-      fastparallel: 2.4.1
-    dev: false
-
   /fastify-plugin@4.5.0:
     resolution: {integrity: sha512-79ak0JxddO0utAXAQ5ccKhvs6vX2MGyHHMMsmZkBANrq3hXc1CHzvNPHOcvTsVMEPl5I+NT+RO4YKMGehOfSIg==}
-    dev: false
-
-  /fastify-plugin@4.5.1:
-    resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
     dev: false
 
   /fastify@4.23.2:
@@ -11733,13 +11718,6 @@ packages:
       toad-cache: 3.2.0
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  /fastparallel@2.4.1:
-    resolution: {integrity: sha512-qUmhxPgNHmvRjZKBFUNI0oZuuH9OlSIOXmJ98lhKPxMZZ7zS/Fi0wRHOihDSz0R1YiIOjxzOY4bq65YTcdBi2Q==}
-    dependencies:
-      reusify: 1.0.4
-      xtend: 4.0.2
     dev: false
 
   /fastq@1.15.0:

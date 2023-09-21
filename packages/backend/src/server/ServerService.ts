@@ -31,7 +31,6 @@ import { FileServerService } from './FileServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
-import fastifyGracefulShutdown from 'fastify-graceful-shutdown'
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -101,7 +100,6 @@ export class ServerService implements OnApplicationShutdown {
 		fastify.register(this.nodeinfoServerService.createServer);
 		fastify.register(this.wellKnownServerService.createServer);
 		fastify.register(this.oauth2ProviderService.createServer);
-		fastify.register(fastifyGracefulShutdown);
 
 		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;
