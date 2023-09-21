@@ -1892,6 +1892,7 @@ _profile:
   metadataContent: "Inhalt"
   changeAvatar: "Profilbild ändern"
   changeBanner: "Banner ändern"
+  verifiedLinkDescription: "Gibst du hier eine URL ein, die einen Link zu deinem Profile enthält, wird neben diesem Feld ein Icon zur Besitzbestätigung angezeigt."
 _exportOrImport:
   allNotes: "Alle Notizen"
   favoritedNotes: "Als Favorit markierte Notizen"
