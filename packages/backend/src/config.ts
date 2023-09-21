@@ -97,6 +97,7 @@ export type Source = {
 		abuseDiscordHook: string;
 		disableAbuseRepository?: boolean;
 		notificationLimit?: number;
+		maxWebImageSize?: number;
 	}
 };
 
