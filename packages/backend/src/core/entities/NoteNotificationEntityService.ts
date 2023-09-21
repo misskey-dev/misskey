@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
-import type { NoteNotificationsRepository } from '@/models/index.js';
+import type { NoteNotificationsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/entities/Blocking.js';
-import type { User } from '@/models/entities/User.js';
-import type { NoteNotification } from '@/models/entities/NoteNotification.js';
+import type { } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
+import type { MiNoteNotification } from '@/models/NoteNotification.js';
 import { bindThis } from '@/decorators.js';
 import { UserEntityService } from './UserEntityService.js';
 
@@ -21,8 +21,8 @@ export class NoteNotificationEntityService {
 
 	@bindThis
 	public async pack(
-		src: NoteNotification['id'] | NoteNotification,
-		me?: { id: User['id'] } | null | undefined,
+		src: MiNoteNotification['id'] | MiNoteNotification,
+		me?: { id: MiUser['id'] } | null | undefined,
 	): Promise<Packed<'NoteNotification'>> {
 		const target = typeof src === 'object' ? src : await this.noteNotificationsRepository.findOneByOrFail({ id: src });
 
@@ -39,7 +39,7 @@ export class NoteNotificationEntityService {
 	@bindThis
 	public packMany(
 		targets: any[],
-		me: { id: User['id'] },
+		me: { id: MiUser['id'] },
 	) {
 		return Promise.all(targets.map(x => this.pack(x, me)));
 	}
